@@ -29,25 +29,9 @@ import { Helmet } from "react-helmet-async";
 const PERKS = [
   { icon: Crown, title: "Gold Unique VIP Club ring", desc: "Your avatar gets a glowing gold ring everywhere on the platform. Everyone sees you're part of the club." },
   { icon: Sparkles, title: "Priority access to new modules", desc: "You get every new Unique module 7 days before the public launch." },
-  { icon: Gift, title: "Member-only monthly drop", desc: "One exclusive perk every single month — extra wheel spin, free coloring pack, private livestream, and more." },
-  { icon: Users, title: "Refer-a-friend €5 credit", desc: "Every friend who joins the club with your link earns you €5 in Unique credits. Forever." },
-  { icon: ShieldCheck, title: "Physical NFC card", desc: "Laser-engraved plastic card with your member number and NFC that opens your Unique profile when tapped." },
+  { icon: ShieldCheck, title: "Physical NFC card", desc: "Laser-engraved plastic card with NFC that opens your Unique profile when tapped." },
 ];
 
-function useGoodFund() {
-  const [total, setTotal] = useState<number>(0);
-  const [members, setMembers] = useState<number>(0);
-  useEffect(() => {
-    supabase.rpc("get_club_good_fund_total").then(({ data }) => {
-      const row = Array.isArray(data) ? data[0] : (data as any);
-      if (row) {
-        setTotal(Number(row.total_eur ?? 0));
-        setMembers(Number(row.member_count ?? 0));
-      }
-    });
-  }, []);
-  return { total, members };
-}
 
 export default function Club() {
   const navigate = useNavigate();
@@ -55,7 +39,7 @@ export default function Club() {
   const { toast } = useToast();
   const { membership, isMember, openBillingPortal, refresh } =
     useClubMembership();
-  const { total, members } = useGoodFund();
+  
   const [verifying, setVerifying] = useState(false);
 
   // Verify checkout after redirect
@@ -154,23 +138,6 @@ export default function Club() {
             One card. Every perk on Unique. And <strong className="text-pink-600 dark:text-pink-400">10% of every payment</strong> goes to real people in real need.
           </motion.p>
 
-          {/* Good fund live counter */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4 }}
-            className="mt-10 inline-flex flex-col sm:flex-row items-center gap-6 bg-white/70 dark:bg-black/40 backdrop-blur-xl border border-pink-500/30 rounded-3xl px-8 py-6 shadow-xl"
-          >
-            <HandHeart className="h-12 w-12 text-pink-500 shrink-0" />
-            <div className="text-left">
-              <div className="text-4xl md:text-5xl font-black text-pink-600 dark:text-pink-400">
-                €{total.toFixed(2)}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                already given to good causes by <strong>{members}</strong> members
-              </div>
-            </div>
-          </motion.div>
         </div>
       </section>
 
@@ -184,7 +151,7 @@ export default function Club() {
                   <Crown className="h-3 w-3 mr-1" /> Active member
                 </Badge>
                 <h2 className="text-2xl font-black">
-                  You are Member #{String(membership.member_number).padStart(4, "0")}
+                  Your Unique VIP Club card is active
                 </h2>
                 <p className="text-sm text-muted-foreground mt-1">
                   {membership.tier === "physical" ? "Physical NFC card" : "Digital card"}
@@ -205,31 +172,6 @@ export default function Club() {
               </div>
             </div>
 
-            {/* Referral link */}
-            <div className="mt-6 pt-6 border-t border-amber-500/30">
-              <div className="text-sm font-semibold mb-1">🎁 Invite friends — earn €5 credit each</div>
-              <div className="flex gap-2">
-                <input
-                  readOnly
-                  value={`${window.location.origin}/club?ref=${membership.id}`}
-                  className="flex-1 text-xs px-3 py-2 rounded-md bg-white/70 dark:bg-black/30 border border-white/40"
-                  onFocus={(e) => e.currentTarget.select()}
-                />
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    navigator.clipboard.writeText(`${window.location.origin}/club?ref=${membership.id}`);
-                    toast({ title: "Referral link copied" });
-                  }}
-                >
-                  Copy
-                </Button>
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                You get €5 credit whenever a friend joins the VIP Club through your link.
-              </p>
-            </div>
           </Card>
         </section>
       )}
@@ -356,7 +298,7 @@ export default function Club() {
             <li><strong>1.</strong> Pick Digital (€20) or Physical (€30). Pay once + €1.50/month.</li>
             <li><strong>2.</strong> Your gold ring and member perks activate instantly.</li>
             <li><strong>3.</strong> Physical cardholders receive a laser-engraved NFC card in the mail.</li>
-            <li><strong>4.</strong> Every month, €0.15 from your fee is added to the public Good Fund counter above.</li>
+            <li><strong>4.</strong> Every month, €0.15 from your fee goes to the Unique Good Fund.</li>
             <li><strong>5.</strong> Cancel any time via the billing portal — no strings attached.</li>
           </ol>
         </Card>
@@ -369,7 +311,7 @@ export default function Club() {
           <AccordionItem value="q1" className="border rounded-lg px-4">
             <AccordionTrigger>Where does the 10% actually go?</AccordionTrigger>
             <AccordionContent>
-              10% of every payment (signup + monthly) is recorded in the public Good Fund ledger and paid out to verified crisis campaigns on Unique. The total on this page updates in real time.
+              10% of every payment (signup + monthly) is recorded in the Good Fund ledger and paid out to verified crisis campaigns on Unique.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="q2" className="border rounded-lg px-4">
