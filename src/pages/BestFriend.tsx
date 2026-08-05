@@ -12,7 +12,8 @@ import { Send, Heart, Sparkles, CreditCard, Crown, ArrowLeft,
   User, Brain, Drama, Mic, FileText, Clock, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useBestFriendSubscription } from "@/hooks/useBestFriendSubscription";
+import { useBestFriendChatCredits, BEST_FRIEND_CHAT_COST } from "@/hooks/useBestFriendChatCredits";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { BestFriendHero } from "@/components/best-friend/BestFriendHero";
@@ -41,7 +42,7 @@ const CHAT_URL = `https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/best-fri
 type Message = { role: "user" | "assistant"; content: string };
 
 const tools = [
-  { id: "chat", icon: MessageCircle, title: "Best Friend Chat", description: "Talk to your AI best friend", badge: "Subscription", credits: 0, gradient: "from-purple-500/10 to-blue-500/5" },
+  { id: "chat", icon: MessageCircle, title: "Best Friend Chat", description: "Talk to your AI best friend", badge: "AI", credits: 1, gradient: "from-purple-500/10 to-blue-500/5" },
   { id: "mood_journal", icon: BookHeart, title: "AI Mood Journal", description: "Track emotions & get insights", badge: "AI", credits: 3, gradient: "from-purple-500/10 to-indigo-500/5" },
   { id: "conversation_starters", icon: MessageSquarePlus, title: "Conversation Starters", description: "AI-generated icebreakers", badge: "AI", credits: 2, gradient: "from-indigo-500/10 to-purple-500/5" },
   { id: "encouragement_cards", icon: HeartHandshake, title: "Encouragement Cards", description: "Personalized motivational cards", badge: "AI", credits: 3, gradient: "from-pink-500/10 to-rose-500/5" },
@@ -64,10 +65,11 @@ const BestFriend = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showSubscriptionDialog, setShowSubscriptionDialog] = useState(false);
+  const [showCreditsDialog, setShowCreditsDialog] = useState(false);
   const [loadingHistory, setLoadingHistory] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { subscription, refresh: refreshSubscription, createCheckout, manageSubscription, purchaseMessages } = useBestFriendSubscription();
+  const navigate = useNavigate();
+  const { credits, loading: creditsLoading, canSendMessage, refresh: refreshCredits } = useBestFriendChatCredits();
 
   useEffect(() => { loadHistory(); }, []);
 
@@ -110,8 +112,10 @@ const BestFriend = () => {
             .map(m => ({ role: m.role, content: m.content.slice(0, 4000) })) }) });
       if (!response.ok) {
         if (response.status === 402) {
-          const data = await response.json();
-          if (data.requiresSubscription) { setShowSubscriptionDialog(true); setMessages(p => p.slice(0, -1)); setIsLoading(false); return; }
+          setShowCreditsDialog(true);
+          setMessages(p => p.slice(0, -1));
+          setIsLoading(false);
+          return;
         }
         throw new Error("Failed");
       }
@@ -138,7 +142,7 @@ const BestFriend = () => {
         }
       }
     } catch (e: any) { toast.error("Error communicating"); setMessages(p => p.slice(0, -1)); }
-    finally { setIsLoading(false); refreshSubscription(); }
+    finally { setIsLoading(false); refreshCredits(); }
   };
 
   const handleSend = async () => {
@@ -152,7 +156,7 @@ const BestFriend = () => {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); }
   };
 
-  const messagesLeft = !subscription.subscribed ? Math.max(0, subscription.freeMessagesLimit - subscription.freeMessagesUsed) : null;
+  const messagesLeft = credits;
 
   const renderToolView = () => {
     switch (activeView) {
@@ -178,34 +182,23 @@ const BestFriend = () => {
 
   const renderChat = () => (
     <div className="max-w-4xl mx-auto">
-      {/* Subscription status */}
+      {/* Credit balance */}
       <div className="mb-4 text-center">
-        {subscription.subscribed ? (
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
-            <Crown className="w-4 h-4 text-emerald-400" />
-            <span className="text-sm text-emerald-400">
-              Premium Active • {subscription.monthlyMessagesUsed}/{subscription.monthlyMessagesLimit} msgs
-              {subscription.bonusMessages > 0 && ` (+${subscription.bonusMessages} bonus)`}
+        <div className="flex flex-col items-center gap-3">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-lg">
+            <Sparkles className="w-4 h-4 text-primary" />
+            <span className="text-sm text-primary">
+              {creditsLoading ? "Loading credits…" : `${credits} credits • ${BEST_FRIEND_CHAT_COST} credit per message`}
             </span>
-            <Button variant="ghost" size="sm" onClick={manageSubscription} className="ml-2 text-xs">Manage</Button>
           </div>
-        ) : (
-          <div className="flex flex-col items-center gap-3">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
-              <Sparkles className="w-4 h-4 text-yellow-400" />
-              <span className="text-sm text-yellow-400">{messagesLeft} free messages remaining</span>
-            </div>
-            <div className="flex gap-2">
-              <Button onClick={() => createCheckout()} size="sm" className="bg-gradient-to-r from-purple-600 to-blue-600">
-                <Crown className="w-4 h-4 mr-1" /> Subscribe €9.99/mo
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => purchaseMessages()}>
-                <CreditCard className="w-4 h-4 mr-1" /> +100 msgs €4.99
-              </Button>
-            </div>
-          </div>
-        )}
+          {!creditsLoading && !canSendMessage && (
+            <Button onClick={() => navigate("/ai-credits")} size="sm" className="bg-gradient-to-r from-purple-600 to-blue-600">
+              <CreditCard className="w-4 h-4 mr-1" /> Top up credits
+            </Button>
+          )}
+        </div>
       </div>
+
 
       <Card className="bg-card/80 backdrop-blur-xl border-purple-500/20 shadow-lg">
         <CardHeader className="border-b border-border/50">
@@ -265,7 +258,7 @@ const BestFriend = () => {
     </div>
   );
 
-  if (loadingHistory || subscription.loading) {
+  if (loadingHistory || creditsLoading) {
     return (
       <div className="min-h-screen bg-background pt-20 pb-8 flex items-center justify-center">
         <Heart className="w-12 h-12 text-purple-400 animate-pulse mx-auto" />
@@ -305,8 +298,8 @@ const BestFriend = () => {
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
                 <Card className="bg-card/80 backdrop-blur-xl border-purple-500/20 text-center p-4">
                   <Heart className="h-6 w-6 text-pink-400 mx-auto mb-2" />
-                  <div className="text-2xl font-black">{subscription.subscribed ? "Active" : "Free"}</div>
-                  <p className="text-xs text-muted-foreground">Subscription Status</p>
+                  <div className="text-2xl font-black">{credits}</div>
+                  <p className="text-xs text-muted-foreground">AI Credits</p>
                 </Card>
               </motion.div>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
@@ -385,21 +378,21 @@ const BestFriend = () => {
           </>
         )}
 
-        {/* Subscription Dialog */}
-        <Dialog open={showSubscriptionDialog} onOpenChange={setShowSubscriptionDialog}>
+        {/* Credits Dialog */}
+        <Dialog open={showCreditsDialog} onOpenChange={setShowCreditsDialog}>
           <DialogContent className="bg-card/95 backdrop-blur-xl">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
-                <Crown className="w-5 h-5 text-purple-400" /> Subscribe to Continue
+                <Sparkles className="w-5 h-5 text-primary" /> Not enough credits
               </DialogTitle>
               <DialogDescription>
-                You've used all free messages. Subscribe for €15/month to enjoy 1000 conversations.
+                Best Friend Chat costs {BEST_FRIEND_CHAT_COST} credit per message. Top up to keep chatting.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="flex items-start gap-3">
                 <Heart className="w-5 h-5 text-pink-400 mt-0.5" />
-                <div><p className="font-medium">1000 Messages/Month</p><p className="text-sm text-muted-foreground">Reset every billing period</p></div>
+                <div><p className="font-medium">Pay only for what you use</p><p className="text-sm text-muted-foreground">No subscription, credits never expire</p></div>
               </div>
               <div className="flex items-start gap-3">
                 <Sparkles className="w-5 h-5 text-purple-400 mt-0.5" />
@@ -407,9 +400,9 @@ const BestFriend = () => {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={() => setShowSubscriptionDialog(false)} className="flex-1">Maybe Later</Button>
-              <Button onClick={() => createCheckout()} className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600">
-                <Crown className="w-4 h-4 mr-2" /> Subscribe Now
+              <Button variant="outline" onClick={() => setShowCreditsDialog(false)} className="flex-1">Maybe Later</Button>
+              <Button onClick={() => navigate("/ai-credits")} className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600">
+                <CreditCard className="w-4 h-4 mr-2" /> Top up credits
               </Button>
             </div>
           </DialogContent>

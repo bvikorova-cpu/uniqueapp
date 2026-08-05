@@ -94,6 +94,25 @@ Rules:
       }
       const lastUserMessage = [...history].reverse().find((m) => m.role === "user")?.content ?? "";
 
+      // ── Credit gate: chat costs 1 credit per message (paid-only model) ──
+      const CHAT_COST = 1;
+      const { data: chatCredits } = await supabase
+        .from("ai_credits")
+        .select("credits_remaining")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      const chatRemaining = chatCredits?.credits_remaining || 0;
+      if (chatRemaining < CHAT_COST) {
+        return new Response(JSON.stringify({
+          error: "Insufficient credits",
+          insufficientCredits: true,
+          credits_remaining: chatRemaining,
+          cost: CHAT_COST,
+        }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+
+
       const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Lovable-API-Key": LOVABLE_API_KEY },
@@ -117,6 +136,17 @@ Rules:
         Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
         { auth: { persistSession: false } }
       );
+
+      // Deduct 1 credit for the chat message + ledger/usage log
+      await admin.from("ai_credits")
+        .update({ credits_remaining: chatRemaining - CHAT_COST, last_used_at: new Date().toISOString() })
+        .eq("user_id", user.id);
+      await admin.from("ai_usage_history").insert({
+        user_id: user.id,
+        usage_type: "best_friend_chat",
+        credits_used: CHAT_COST,
+        description: "Best Friend AI: chat message" });
+
       if (lastUserMessage) {
         const { error: uErr } = await admin.from("best_friend_conversations")
           .insert({ user_id: user.id, role: "user", content: lastUserMessage });
