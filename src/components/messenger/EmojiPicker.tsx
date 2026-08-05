@@ -11,15 +11,22 @@ const EMOJI_CATEGORIES: Record<string, string[]> = { "Smileys": "😀 😃 😄 
   "Objects": "⌚ 📱 📲 💻 ⌨️ 🖥️ 🖨️ 🖱️ 🖲️ 🕹️ 🗜️ 💽 💾 💿 📀 📼 📷 📸 📹 🎥 📽️ 🎞️ 📞 ☎️ 📟 📠 📺 📻 🎙️ 🎚️ 🎛️ 🧭 ⏱️ ⏲️ ⏰ 🕰️ ⌛ ⏳ 📡 🔋 🪫 🔌 💡 🔦 🕯️ 🪔 🧯 🛢️ 💸 💵 💴 💶 💷 🪙 💰 💳 💎 ⚖️ 🪜 🧰 🪛 🔧 🔨 ⚒️ 🛠️ ⛏️ 🪚 🔩 ⚙️ 🪤 🧱 ⛓️ 🧲 🔫 💣 🧨 🪓 🔪 🗡️ ⚔️ 🛡️ 🚬 ⚰️ 🪦 ⚱️ 🏺 🔮 📿 🧿 🪬 💈 ⚗️ 🔭 🔬 🕳️ 🩻 🩹 🩺 💊 💉 🩸 🧬 🦠 🧫 🧪 🌡️ 🧹 🪠 🧺 🧻 🚽 🚰 🚿 🛁 🛀 🧼 🪥 🪒 🧽 🪣 🧴 🛎️ 🔑 🗝️ 🚪 🪑 🛋️ 🛏️ 🛌 🧸 🪆 🖼️ 🪞 🪟 🛍️ 🛒 🎁 🎈 🎏 🎀 🪄 🪅 🎊 🎉 🎎 🏮 🎐".split(" "),
   "Symbols": "❤️ 🧡 💛 💚 💙 💜 🤎 🖤 🤍 ♻️ ⚜️ 🔱 📛 🔰 ⭕ ✅ ☑️ ✔️ ❌ ❎ ➕ ➖ ➗ ✖️ 🟰 ♾️ 💲 💱 ™️ ©️ ®️ 〰️ ➰ ➿ 🔚 🔙 🔛 🔝 🔜 ✳️ ✴️ ❇️ ⁉️ ‼️ ⚠️ ❓ ❔ ❕ ❗ 〽️ ⚠️ 🚸 🔱 ⚜️ 🔰 ♻️ ✅ 🈯 💹 ❇️ ✳️ ❎ 🌐 💠 Ⓜ️ 🌀 💤 🏧 🚾 ♿ 🅿️ 🛗 🈳 🈂️ 🛂 🛃 🛄 🛅 🚹 🚺 🚼 ⚧️ 🚻 🚮 🎦 📶 🈁 🔣 ℹ️ 🔤 🔡 🔠 🆖 🆗 🆙 🆒 🆕 🆓 0️⃣ 1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣ 8️⃣ 9️⃣ 🔟".split(" ") };
 
-export const EmojiPicker = ({ onSelect }: { onSelect: (emoji: string) => void }) => {
+export const EmojiPicker = ({ onSelect, userId }: { onSelect: (emoji: string) => void; userId?: string }) => {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>("Smileys");
+  const { emojis: customEmojis } = useCustomEmojis(userId);
+
+  const categories = useMemo(() => {
+    if (!customEmojis.length) return EMOJI_CATEGORIES;
+    return { "My Emojis": customEmojis.map((e) => e.emoji), ...EMOJI_CATEGORIES };
+  }, [customEmojis]);
 
   const filtered = useMemo(() => {
-    if (!query.trim()) return EMOJI_CATEGORIES[category];
-    const all = Object.values(EMOJI_CATEGORIES).flat();
-    return all;
-  }, [query, category]);
+    if (!query.trim()) return categories[category] ?? categories["Smileys"];
+    const q = query.trim().toLowerCase();
+    const matchedCustom = customEmojis.filter((e) => e.name.toLowerCase().includes(q)).map((e) => e.emoji);
+    return [...matchedCustom, ...Object.values(EMOJI_CATEGORIES).flat()];
+  }, [query, category, categories, customEmojis]);
 
   return (
     <div className="w-full">
@@ -31,7 +38,7 @@ export const EmojiPicker = ({ onSelect }: { onSelect: (emoji: string) => void })
       />
       {!query && (
         <div className="flex gap-1 overflow-x-auto pb-2 mb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {Object.keys(EMOJI_CATEGORIES).map((cat) => (
+          {Object.keys(categories).map((cat) => (
             <button
               key={cat}
               onClick={() => setCategory(cat)}
