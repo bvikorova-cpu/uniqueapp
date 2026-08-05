@@ -35,6 +35,8 @@ export const PhotoReveal = ({ matchId, partnerName }: Props) => {
   const { toast } = useToast();
   const [state, setState] = useState<PhotoState | null>(null);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+  const [loadingPhoto, setLoadingPhoto] = useState(false);
   const [busy, setBusy] = useState(false);
   const [tick, setTick] = useState(0);
 
@@ -45,10 +47,19 @@ export const PhotoReveal = ({ matchId, partnerName }: Props) => {
   }, [matchId]);
 
   const loadPhoto = useCallback(async () => {
+    setLoadingPhoto(true);
+    setPhotoError(null);
     const { data, error } = await supabase.functions.invoke("anon-date-photo", { body: { matchId } });
-    if (error) return;
-    setPhotoUrl((data as { url?: string | null })?.url ?? null);
+    setLoadingPhoto(false);
+    if (error) {
+      setPhotoError(error.message || "Could not load the photo.");
+      return;
+    }
+    const url = (data as { url?: string | null })?.url ?? null;
+    setPhotoUrl(url);
+    if (!url) setPhotoError("The photo isn't available yet.");
   }, [matchId]);
+
 
   useEffect(() => {
     loadState();
