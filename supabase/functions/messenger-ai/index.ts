@@ -14,6 +14,8 @@ const ACTION_COSTS: Record<string, number> = {
   "quantum-message": 5,
   "anonymous-compliment": 3,
   "what-if": 5,
+  "chat-theme": 5,
+
 };
 const DEFAULT_COST = 3;
 
