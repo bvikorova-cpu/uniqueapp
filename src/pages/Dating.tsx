@@ -1219,7 +1219,8 @@ const Dating = () => {
                 userId={user.id}
                 isSubscribed={isSubscribed}
                 likesYouCount={likesYouCount}
-                onSubscribe={() => handleSubscribe('monthly')}
+                onSubscribe={handlePayEntry}
+
               />
             )}
           </TabsContent>
