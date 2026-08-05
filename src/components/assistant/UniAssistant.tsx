@@ -163,11 +163,34 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
   };
 
 
-  const startListening = () => {
+  const startListening = async () => {
     if (!supported) {
-      toast({ title: "Voice not supported", description: "Your browser has no speech recognition.", variant: "destructive" });
+      toast({
+        title: "Voice not supported",
+        description: "This browser has no speech recognition — type your question below instead.",
+        variant: "destructive",
+      });
       return;
     }
+
+    // Ask for the microphone explicitly first: on mobile, SpeechRecognition
+    // often fails silently ("not-allowed") when permission was never granted.
+    try {
+      const stream = await navigator.mediaDevices?.getUserMedia?.({ audio: true });
+      stream?.getTracks().forEach((t) => t.stop());
+    } catch {
+      toast({
+        title: "Microphone blocked",
+        description: "Allow microphone access in your browser settings, then tap the mic again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Speaking output would be picked up by the mic — stop it before listening.
+    stopSpeaking();
+    try { recognitionRef.current?.abort?.(); } catch { /* noop */ }
+
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     const rec = new SR();
     rec.continuous = false;
@@ -186,13 +209,36 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       if (live) showCaption("user", live);
       if (final) send(final);
     };
-    rec.onerror = () => setListening(false);
+    rec.onerror = (e: any) => {
+      setListening(false);
+      const code = String(e?.error ?? "");
+      if (code === "aborted") return;
+      const description =
+        code === "not-allowed" || code === "service-not-allowed"
+          ? "Microphone access was denied. Allow it in your browser settings and try again."
+          : code === "no-speech"
+            ? "I didn't hear anything — tap the mic and speak again."
+            : code === "network"
+              ? "Speech recognition needs an internet connection."
+              : "Voice input failed. You can type your question below.";
+      toast({ title: "Voice call failed", description, variant: "destructive" });
+    };
     rec.onend = () => setListening(false);
     recognitionRef.current = rec;
     setListening(true);
     setTranscript("");
-    rec.start();
+    try {
+      rec.start();
+    } catch {
+      setListening(false);
+      toast({
+        title: "Couldn't start the mic",
+        description: "Close other tabs using the microphone and try again.",
+        variant: "destructive",
+      });
+    }
   };
+
 
   const stopListening = () => {
     try { recognitionRef.current?.stop?.(); } catch {}
@@ -224,7 +270,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     <div className={cn(
       "flex flex-col items-end gap-2",
       docked && "hidden md:flex",
-      !docked && "fixed bottom-24 right-4 md:right-6 z-40"
+      !docked && "fixed bottom-28 right-4 md:bottom-24 md:right-6 z-[9991]"
     )}>
       {uniButton}
     </div>
