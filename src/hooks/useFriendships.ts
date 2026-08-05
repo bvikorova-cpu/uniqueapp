@@ -170,7 +170,7 @@ export function useFriendships(userId: string | undefined) {
     },
     onSuccess: (res: any) => {
       toast.success(res?.accepted ? "Friend request accepted" : "Friend request sent");
-      qc.invalidateQueries({ queryKey: KEY });
+      qc.invalidateQueries({ queryKey: KEY }); qc.invalidateQueries({ queryKey: ["my-friends"] });
     },
     onError: (e: any) => toast.error(e.message ?? "Failed to send request") });
 
@@ -184,7 +184,7 @@ export function useFriendships(userId: string | undefined) {
     },
     onSuccess: () => {
       toast.success("Friend request accepted");
-      qc.invalidateQueries({ queryKey: KEY });
+      qc.invalidateQueries({ queryKey: KEY }); qc.invalidateQueries({ queryKey: ["my-friends"] });
     },
     onError: (e: any) => toast.error(e.message ?? "Failed") });
 
@@ -200,7 +200,7 @@ export function useFriendships(userId: string | undefined) {
     },
     onSuccess: () => {
       toast.success("Friend request cancelled");
-      qc.invalidateQueries({ queryKey: KEY });
+      qc.invalidateQueries({ queryKey: KEY }); qc.invalidateQueries({ queryKey: ["my-friends"] });
     },
     onError: (e: any) => toast.error(e.message ?? "Failed to cancel request") });
 
@@ -214,7 +214,7 @@ export function useFriendships(userId: string | undefined) {
     },
     onSuccess: () => {
       toast.success("Request dismissed");
-      qc.invalidateQueries({ queryKey: KEY });
+      qc.invalidateQueries({ queryKey: KEY }); qc.invalidateQueries({ queryKey: ["my-friends"] });
     } });
 
   const removeFriend = useMutation({
@@ -230,7 +230,7 @@ export function useFriendships(userId: string | undefined) {
     },
     onSuccess: () => {
       toast.success("Friend removed");
-      qc.invalidateQueries({ queryKey: KEY });
+      qc.invalidateQueries({ queryKey: KEY }); qc.invalidateQueries({ queryKey: ["my-friends"] });
     } });
 
   return { friends,
