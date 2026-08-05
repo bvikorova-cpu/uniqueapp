@@ -472,10 +472,17 @@ const Dating = () => {
       await supabase.from("dating_likes_you").insert([{ liker_id: user.id, liked_id: currentCard.user_id }]);
       const { data } = await supabase.from("dating_matches").select("*").or(`and(user1_id.eq.${user.id},user2_id.eq.${currentCard.user_id}),and(user1_id.eq.${currentCard.user_id},user2_id.eq.${user.id})`).maybeSingle();
       if (data) {
+        await supabase.rpc("send_user_notification", {
+          _user_id: currentCard.user_id,
+          _type: "dating_match",
+          _title: "🎉 New Match!",
+          _message: `You matched with ${currentProfile?.display_name || "someone"}!`,
+          _related_id: data.id,
+          _action_url: "/dating" });
         await supabase.from("notifications").insert([
-          { user_id: currentCard.user_id, type: "dating_match", title: "🎉 New Match!", message: `You matched with ${currentProfile?.display_name || "someone"}!`, related_id: data.id },
           { user_id: user.id, type: "dating_match", title: "🎉 New Match!", message: `You matched with ${currentCard.display_name}!`, related_id: data.id }
         ]);
+
         await loadMatches(user.id);
         setMatchCelebration({ match: { ...(data as any), profile: currentCard } as Match, partner: currentCard });
       }
