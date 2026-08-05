@@ -1257,11 +1257,28 @@ const Dating = () => {
                     {messages.length === 0 && sentGifts.length === 0 && (
                       <div className="text-center py-12"><Heart className="h-12 w-12 mx-auto text-primary/30 mb-3" /><p className="text-sm font-medium">It's a match! 🎉</p><p className="text-xs text-muted-foreground mt-1">Say something nice to start the conversation</p></div>
                     )}
-                    {messages.map((msg) => {
-                      const mine = msg.sender_id === user?.id;
-                      const partnerReceipts = selectedMatch.profile?.read_receipts_enabled !== false;
-                      const deleted = !!msg.deleted_at;
-                      return (
+                    {[
+                      ...messages.map((m) => ({ kind: "msg" as const, at: m.created_at, msg: m })),
+                      ...sentGifts.map((g) => ({ kind: "gift" as const, at: g.created_at, gift: g })),
+                    ]
+                      .sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime())
+                      .map((item) => {
+                        if (item.kind === "gift") {
+                          const gift = item.gift;
+                          return (
+                            <div key={`gift-${gift.id}`} className={`flex ${gift.sender_id === user?.id ? "justify-end" : "justify-start"}`}>
+                              <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl px-5 py-3 text-center border border-amber-200/50 dark:border-amber-800/50">
+                                <div className="text-3xl mb-1">{gift.gift.icon}</div><p className="text-xs font-medium">{gift.gift.name}</p>
+                                <p className="text-[10px] text-muted-foreground mt-1">{new Date(gift.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                              </div>
+                            </div>
+                          );
+                        }
+                        const msg = item.msg;
+                        const mine = msg.sender_id === user?.id;
+                        const partnerReceipts = selectedMatch.profile?.read_receipts_enabled !== false;
+                        const deleted = !!msg.deleted_at;
+                        return (
                       <div key={msg.id} className={`flex group ${mine ? "justify-end" : "justify-start"}`}>
                         {mine && !deleted && (
                           <MessageActions messageId={msg.id} currentContent={msg.content} createdAt={msg.created_at} onChanged={() => selectedMatch && loadMessages(selectedMatch.id)} />
@@ -1276,15 +1293,9 @@ const Dating = () => {
                           </div>
                         </div>
                       </div>
-                      );
-                    })}
-                    {sentGifts.map((gift) => (
-                      <div key={gift.id} className={`flex ${gift.sender_id === user?.id ? "justify-end" : "justify-start"}`}>
-                        <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl px-5 py-3 text-center border border-amber-200/50 dark:border-amber-800/50">
-                          <div className="text-3xl mb-1">{gift.gift.icon}</div><p className="text-xs font-medium">{gift.gift.name}</p>
-                        </div>
-                      </div>
-                    ))}
+                        );
+                      })}
+
                     <div ref={chatEndRef} />
                   </div>
                 </ScrollArea>
