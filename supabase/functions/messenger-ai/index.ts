@@ -85,7 +85,7 @@ Deno.serve(async (req) => {
       case "quantum-message": {
         const json = await callOpenAIJSON({
           system: `You are a creative message writer. ${variationPrompts[variationType] || variationPrompts.mood} Return a JSON object with: "variations" (array of objects with "type", "message", "emoji").`,
-          user: text || "",
+          user: `Create 3-4 variations of this message: ${params.originalMessage || text || ""}`,
           model: "gpt-4o-mini",
         });
         result = JSON.stringify(json);
