@@ -273,27 +273,20 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
     <div className="space-y-3">
       <Card className={`flex flex-col h-anon-chat overflow-hidden bg-gradient-to-br ${themeGradient(theme)} backdrop-blur-xl border-primary/20 shadow-2xl`}>
         {/* Header */}
-        <div className="flex flex-wrap items-center justify-between gap-y-2 p-3 border-b border-white/10 bg-black/25 backdrop-blur-md">
-          <div className="flex items-center gap-2 min-w-0">
-            <AnonymousAvatar seed={partnerName} size={36} online={partnerOnline} />
-            <div className="min-w-0">
-              <p className="font-bold text-sm leading-tight text-white truncate">{partnerName}</p>
-              <p className="text-[10px] text-white/70 truncate">
-                {partnerOnline ? "Online" : "Offline"}
-                {partnerMeta?.mood && ` · ${partnerMeta.mood}`}
-              </p>
+        <div className="p-3 border-b border-white/10 bg-black/25 backdrop-blur-md space-y-2">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 min-w-0 flex-1">
+              <AnonymousAvatar seed={partnerName} size={36} online={partnerOnline} />
+              <div className="min-w-0">
+                <p className="font-bold text-sm leading-tight text-white truncate">{partnerName}</p>
+                <p className="text-[10px] text-white/70 truncate">
+                  {partnerOnline ? "Online" : "Offline"}
+                  {partnerMeta?.mood && ` · ${partnerMeta.mood}`}
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="flex flex-wrap items-center justify-end gap-1.5 w-full sm:w-auto">
-            <Badge
-              variant={urgent ? "destructive" : "outline"}
-              className={`text-[10px] gap-1 ${urgent ? "" : "border-white/30 text-white"}`}
-            >
-              <Timer className="h-3 w-3" />
-              {timeLeft || "—"}
-            </Badge>
-            <StreakBadge days={sharedStreak} />
-            <Badge variant="outline" className="text-[10px] border-white/30 text-white">Anon</Badge>
+          <div className="flex items-center justify-end gap-1.5 shrink-0">
+
             <button onClick={downloadPDF} className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white" title="Export PDF">
               <Download className="h-3.5 w-3.5" />
             </button>
