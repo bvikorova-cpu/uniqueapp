@@ -26,14 +26,10 @@ import { MessengerHero } from "@/components/messenger/MessengerHero";
 import PushOptInButton from "@/components/notifications/PushOptInButton";
 import { ChatAnalyticsDashboard } from "@/components/messenger/ChatAnalyticsDashboard";
 import { AIChatThemes } from "@/components/messenger/AIChatThemes";
-import { VoiceRoom } from "@/components/messenger/VoiceRoom";
-import { MessageScheduler } from "@/components/messenger/MessageScheduler";
-import { ReadReceiptsAnalytics } from "@/components/messenger/ReadReceiptsAnalytics";
-import { ChatBackupExport } from "@/components/messenger/ChatBackupExport";
 import { AIMoodDetection } from "@/components/messenger/AIMoodDetection";
 import { CustomEmojiCreator } from "@/components/messenger/CustomEmojiCreator";
 import { ChatGames } from "@/components/messenger/ChatGames";
-import { SmartNotifications } from "@/components/messenger/SmartNotifications";
+
 import { motion } from "framer-motion";
 import { playMessageChime } from "@/lib/messageChime";
 import { requestNotificationPermission,
@@ -50,21 +46,17 @@ import { Popover,
   PopoverContent,
   PopoverTrigger } from "@/components/ui/popover";
 
-type MessengerView = "hub" | "chat" | "analytics" | "themes" | "voice" | "scheduler" | "receipts" | "backup" | "mood" | "emoji" | "games" | "notifications";
+type MessengerView = "hub" | "chat" | "analytics" | "themes" | "mood" | "emoji" | "games";
 
 const messengerTools = [
   { id: "chat" as MessengerView, icon: MessageCircle, title: "Open Chat", description: "Real-time messaging with all features", color: "cyan", badge: "Core" },
   { id: "analytics" as MessengerView, icon: BarChart3, title: "Chat Analytics", description: "Message stats, patterns & insights", color: "blue", badge: "New" },
   { id: "themes" as MessengerView, icon: Palette, title: "Chat Themes", description: "AI-generated themes & wallpapers", color: "purple", badge: "AI" },
-  { id: "voice" as MessengerView, icon: Radio, title: "Voice Rooms", description: "Drop-in live audio conversations", color: "emerald", badge: "Live" },
-  { id: "scheduler" as MessengerView, icon: Clock, title: "Message Scheduler", description: "Schedule messages for later delivery", color: "amber", badge: "New" },
-  { id: "receipts" as MessengerView, icon: CheckCheck, title: "Read Receipts", description: "Who reads your messages fastest?", color: "teal", badge: "New" },
-  { id: "backup" as MessengerView, icon: Download, title: "Backup & Export", description: "Download chats as TXT, JSON or PDF", color: "slate", badge: "New" },
   { id: "mood" as MessengerView, icon: Brain, title: "Mood Detection", description: "AI analysis of your emotional tone", color: "rose", badge: "AI" },
   { id: "emoji" as MessengerView, icon: Smile, title: "Emoji Creator", description: "Design custom emojis for chats", color: "pink", badge: "New" },
   { id: "games" as MessengerView, icon: Gamepad2, title: "Chat Games", description: "Trivia, RPS & more mini-games", color: "indigo", badge: "Fun" },
-  { id: "notifications" as MessengerView, icon: Bell, title: "Smart Notifications", description: "AI-powered notification management", color: "lime", badge: "AI" },
 ];
+
 
 interface Profile {
   id: string;
@@ -134,10 +126,8 @@ const safeAttachmentName = (name: string) =>
     .replace(/[^a-zA-Z0-9._-]+/g, "-")
     .replace(/^-+|-+$/g, "") || "attachment";
 
-const getRecordingMimeType = () => {
-  if (typeof MediaRecorder === "undefined") return "";
-  return ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"].find((type) => MediaRecorder.isTypeSupported(type)) || "";
-};
+
+
 
 
 const Messenger = () => {
@@ -157,8 +147,8 @@ const Messenger = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [otherUserTyping, setOtherUserTyping] = useState(false);
   const [replyingTo, setReplyingTo] = useState<MessageWithProfile | null>(null);
-  const [isRecording, setIsRecording] = useState(false);
-  const [recordingDuration, setRecordingDuration] = useState(0);
+
+
   
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
@@ -175,14 +165,12 @@ const Messenger = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const otherTypingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
-  const recordingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const recordingStartedAtRef = useRef<number>(0);
+
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const audioRefs = useRef<Map<string, HTMLAudioElement>>(new Map());
-  const attachmentInputsDisabled = uploadingAttachment || isRecording;
+  const attachmentInputsDisabled = uploadingAttachment;
   const attachmentUrls = useMemo(() => messages.map((message) => message.attachment_url || null), [messages]);
   const resolvedAttachmentUrls = useResolvedStorageUrls(attachmentUrls);
 
@@ -893,101 +881,8 @@ const Messenger = () => {
     // Input was already cleared optimistically above.
   };
 
-  // Voice recording functions
-  const startRecording = async () => { if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
-      toast({
-        title: "Microphone unavailable",
-        description: "This browser does not support voice recording.",
-        variant: "destructive" });
-      return;
-    }
 
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mimeType = getRecordingMimeType();
-      const mediaRecorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
-      mediaRecorderRef.current = mediaRecorder;
-      audioChunksRef.current = [];
-      recordingStartedAtRef.current = Date.now();
 
-      mediaRecorder.ondataavailable = (e) => {
-        audioChunksRef.current.push(e.data);
-      };
-
-      mediaRecorder.onstop = async () => {
-        const duration = Math.max(1, Math.round((Date.now() - recordingStartedAtRef.current) / 1000));
-        const audioBlob = new Blob(audioChunksRef.current, { type: mediaRecorder.mimeType || mimeType || "audio/webm" });
-        await uploadVoiceMessage(audioBlob, duration);
-        stream.getTracks().forEach(track => track.stop());
-      };
-
-      mediaRecorder.start();
-      setIsRecording(true);
-      setRecordingDuration(0);
-
-      recordingIntervalRef.current = setInterval(() => {
-        setRecordingDuration(prev => prev + 1);
-      }, 1000);
-    } catch (error: any) { const description = error?.name === "NotAllowedError"
-        ? "Allow microphone access in your browser settings."
-        : error?.name === "NotFoundError"
-          ? "No microphone was found on this device."
-          : error?.name === "NotReadableError"
-            ? "The microphone is already being used by another app."
-            : "Could not access microphone.";
-      toast({
-        title: "Microphone not working",
-        description,
-        variant: "destructive" });
-    }
-  };
-
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-      if (recordingIntervalRef.current) {
-        clearInterval(recordingIntervalRef.current);
-      }
-    }
-  };
-
-  const uploadVoiceMessage = async (blob: Blob, duration: number) => {
-    if (!selectedConversation || !user) return;
-
-    const extension = blob.type.includes("mp4") ? "m4a" : blob.type.includes("ogg") ? "ogg" : "webm";
-    const fileName = `${user.id}/${Date.now()}_voice.${extension}`;
-    setUploadingAttachment(true);
-    
-    const { error: uploadError } = await supabase.storage
-      .from('messenger-attachments')
-      .upload(fileName, blob, { contentType: blob.type || "audio/webm", upsert: false });
-
-    if (uploadError) { setUploadingAttachment(false);
-      toast({
-        title: "Error",
-        description: "Failed to upload voice message",
-        variant: "destructive" });
-      return;
-    }
-
-    const { error } = await supabase.from("messages").insert({
-      conversation_id: selectedConversation,
-      sender_id: user.id,
-      content: "🎤 Voice message",
-      attachment_url: `messenger-attachments/${fileName}`,
-      attachment_type: "voice",
-      voice_duration: duration,
-      reply_to_id: replyingTo?.id || null });
-
-    if (error) { toast({
-        title: "Error",
-        description: "Failed to send voice message",
-        variant: "destructive" });
-    }
-    setUploadingAttachment(false);
-    setReplyingTo(null);
-  };
 
   // Attachment upload
   const handleAttachmentUpload = async (e: React.ChangeEvent<HTMLInputElement>) => { const file = e.target.files?.[0];
@@ -1090,14 +985,10 @@ const Messenger = () => {
     switch (activeView) {
       case "analytics": return <ChatAnalyticsDashboard onBack={goToHub} userId={user.id} />;
       case "themes": return <AIChatThemes onBack={goToHub} userId={user.id} />;
-      case "voice": return <VoiceRoom onBack={goToHub} userId={user.id} />;
-      case "scheduler": return <MessageScheduler onBack={goToHub} userId={user.id} />;
-      case "receipts": return <ReadReceiptsAnalytics onBack={goToHub} userId={user.id} />;
-      case "backup": return <ChatBackupExport onBack={goToHub} userId={user.id} />;
       case "mood": return <AIMoodDetection onBack={goToHub} userId={user.id} />;
       case "emoji": return <CustomEmojiCreator onBack={goToHub} userId={user.id} />;
       case "games": return <ChatGames onBack={goToHub} userId={user.id} />;
-      case "notifications": return <SmartNotifications onBack={goToHub} userId={user.id} />;
+
       default: return null;
     }
   };
@@ -1753,8 +1644,8 @@ const Messenger = () => {
                           variant="ghost"
                           size="icon"
                           className="h-10 w-10 min-h-10 min-w-10 shrink-0 touch-manipulation rounded-full"
-                          disabled={isRecording}
                           aria-label="Emoji picker"
+
                         >
                           <Smile className="h-4 w-4" />
                         </Button>
@@ -1792,27 +1683,11 @@ const Messenger = () => {
 
                   {/* Input row */}
                   <div className="flex items-center gap-2">
-                    <Button
-                      variant={isRecording ? "destructive" : "ghost"}
-                      size="icon"
-                      className="shrink-0"
-                      onClick={isRecording ? stopRecording : startRecording}
-                    >
-                      {isRecording ? <Square className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                    </Button>
-
-                    {isRecording && (
-                      <span className="text-xs text-destructive animate-pulse shrink-0">
-                        {formatDuration(recordingDuration)}
-                      </span>
-                    )}
-
                     <Input
                       placeholder="Write a message..."
                       value={newMessage}
                       onChange={handleInputChange}
                       onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-                      disabled={isRecording}
                       maxLength={MAX_MESSAGE_LEN}
                       onFocus={(e) => {
                         const el = e.currentTarget;
@@ -1823,10 +1698,11 @@ const Messenger = () => {
                       }}
                       className="flex-1 min-w-0"
                     />
-                    <Button onClick={() => sendMessage()} size="icon" className="shrink-0" disabled={isRecording || !newMessage.trim()}>
+                    <Button onClick={() => sendMessage()} size="icon" className="shrink-0" disabled={!newMessage.trim()}>
                       <Send className="h-4 w-4" />
                     </Button>
                   </div>
+
                 </div>
               </>
             ) : (
