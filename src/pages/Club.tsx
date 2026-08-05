@@ -311,7 +311,7 @@ export default function Club() {
           <AccordionItem value="q1" className="border rounded-lg px-4">
             <AccordionTrigger>Where does the 10% actually go?</AccordionTrigger>
             <AccordionContent>
-              10% of every payment (signup + monthly) is recorded in the public Good Fund ledger and paid out to verified crisis campaigns on Unique. The total on this page updates in real time.
+              10% of every payment (signup + monthly) is recorded in the Good Fund ledger and paid out to verified crisis campaigns on Unique.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="q2" className="border rounded-lg px-4">
