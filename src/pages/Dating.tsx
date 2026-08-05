@@ -1222,12 +1222,6 @@ const Dating = () => {
                     />
                   )}
                 </div>
-                {user && (
-                  <div className="border-b p-3 bg-muted/20 space-y-2">
-                    <DatePlanCard matchId={selectedMatch.id} userId={user.id} />
-                    <MatchPollCard matchId={selectedMatch.id} userId={user.id} />
-                  </div>
-                )}
                 <ScrollArea className="h-[450px]">
                   <div className="p-4 space-y-3">
                     {messages.length === 0 && sentGifts.length === 0 && (
