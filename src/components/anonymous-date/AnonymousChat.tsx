@@ -17,6 +17,8 @@ import { useMatchMeta } from "@/hooks/useMatchMeta";
 import { TypingIndicator } from "./TypingIndicator";
 import { MessageReactions } from "./MessageReactions";
 import { VoiceRecorderButton } from "./VoiceRecorderButton";
+import { GiftPicker } from "./GiftPicker";
+
 import { AnonymousAvatar } from "./AnonymousAvatar";
 import { CompatibilityMeter } from "./CompatibilityMeter";
 import { StreakBadge } from "./StreakBadge";
@@ -394,9 +396,18 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
                 >
                   {m.message_type === "voice" && m.voice_url ? (
                     <audio controls src={m.voice_url} className="max-w-full h-10" />
+                  ) : m.message_type === "gift" ? (
+                    <div className="flex flex-col items-center gap-0.5 py-1">
+                      <span className="text-3xl leading-none">{m.content.split(" ")[0]}</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider opacity-80">
+                        {mine ? "Gift sent" : "Gift received"}
+                      </span>
+                      <span className="text-[10px] opacity-70">{m.content.split(" ").slice(1).join(" ")}</span>
+                    </div>
                   ) : (
                     <p>{m.content}</p>
                   )}
+
                 </div>
                 <div className={`flex items-center gap-1 mt-0.5 px-1 ${mine ? "flex-row-reverse" : ""}`}>
                   <span className="text-[9px] text-muted-foreground">
@@ -480,6 +491,8 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
               userId={currentUserId}
               onUploaded={(url) => { sendMessage("🎤 Voice message", "voice", url); bumpStreak(); }}
             />
+            <GiftPicker matchId={match.id} />
+
             <Button type="submit" size="icon" disabled={!input.trim() || moderating} className="rounded-full bg-anon-date-gradient">
               <Send className="h-4 w-4" />
             </Button>
