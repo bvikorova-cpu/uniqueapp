@@ -32,7 +32,7 @@ import { EmojiPicker } from "@/components/dating/EmojiPicker";
 import { CompatibilityQuiz, computeCompatibility } from "@/components/dating/CompatibilityQuiz";
 import { OpeningMoveEditor } from "@/components/dating/OpeningMoveEditor";
 import { MatchExpiryBadge } from "@/components/dating/MatchExpiryBadge";
-import { DiscoveryTabs, type DiscoveryMode } from "@/components/dating/DiscoveryTabs";
+import { DatingSearch } from "@/components/dating/DatingSearch";
 import { DatingPremiumPanel } from "@/components/dating/DatingPremiumPanel";
 import { DatingNotificationsCenter } from "@/components/dating/DatingNotificationsCenter";
 import { DatingAnalyticsPanel } from "@/components/dating/DatingAnalyticsPanel";
