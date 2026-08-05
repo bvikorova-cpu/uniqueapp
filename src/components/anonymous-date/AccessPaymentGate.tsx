@@ -69,11 +69,11 @@ export function AccessPaymentGate({ onPayAccess, loading }: AccessPaymentGatePro
                 <Lock className="h-8 w-8 text-pink-500" />
               </div>
               <div>
-                <h2 className="text-2xl font-black">Monthly Subscription</h2>
-                <div className="text-4xl font-black text-pink-500 mt-2">€1<span className="text-base font-medium text-muted-foreground">/month</span></div>
+                <h2 className="text-2xl font-black">Entry Fee</h2>
+                <div className="text-4xl font-black text-pink-500 mt-2">2<span className="text-base font-medium text-muted-foreground"> credits / entry</span></div>
               </div>
               <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                Safe, quality environment with verified users. Cancel anytime.
+                Safe, quality environment with verified users. No subscription — you only pay 2 credits each time you enter.
               </p>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-left max-w-md mx-auto">
@@ -91,10 +91,10 @@ export function AccessPaymentGate({ onPayAccess, loading }: AccessPaymentGatePro
                 size="lg"
                 className="w-full max-w-md"
               >
-                {loading ? "Processing..." : "Subscribe for €1/month & Start Dating"}
+                {loading ? "Processing..." : "Enter for 2 credits"}
               </Button>
               <p className="text-[10px] text-muted-foreground">
-                Secure payment via Stripe. By subscribing, you confirm you are 16+.
+                2 credits are deducted from your AI credit balance. By entering, you confirm you are 16+.
               </p>
             </div>
           </Card>
