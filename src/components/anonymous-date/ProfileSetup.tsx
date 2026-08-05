@@ -362,7 +362,7 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
                 <div className="flex items-center gap-2 mb-1">
                   <UserPlus className="h-5 w-5 text-primary" />
                   <h2 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-                    Create Your Anonymous Profile
+                    {isEditing ? "Edit Your Anonymous Profile" : "Create Your Anonymous Profile"}
                   </h2>
                 </div>
                 <p className="text-sm text-muted-foreground">Your real identity stays completely hidden until you choose to reveal it</p>
