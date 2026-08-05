@@ -136,6 +136,17 @@ Rules:
         Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
         { auth: { persistSession: false } }
       );
+
+      // Deduct 1 credit for the chat message + ledger/usage log
+      await admin.from("ai_credits")
+        .update({ credits_remaining: chatRemaining - CHAT_COST, last_used_at: new Date().toISOString() })
+        .eq("user_id", user.id);
+      await admin.from("ai_usage_history").insert({
+        user_id: user.id,
+        usage_type: "best_friend_chat",
+        credits_used: CHAT_COST,
+        description: "Best Friend AI: chat message" });
+
       if (lastUserMessage) {
         const { error: uErr } = await admin.from("best_friend_conversations")
           .insert({ user_id: user.id, role: "user", content: lastUserMessage });
