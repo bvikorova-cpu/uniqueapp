@@ -42122,6 +42122,33 @@ export type Database = {
         }
         Relationships: []
       }
+      messenger_custom_emojis: {
+        Row: {
+          created_at: string
+          emoji: string
+          id: string
+          name: string
+          style: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          emoji: string
+          id?: string
+          name: string
+          style?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          emoji?: string
+          id?: string
+          name?: string
+          style?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       mock_interview_sessions: {
         Row: {
           created_at: string

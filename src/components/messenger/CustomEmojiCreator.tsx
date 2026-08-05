@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Sparkles, Smile, Palette, Wand2, Copy, Loader2, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useCustomEmojis } from "@/hooks/useCustomEmojis";
 interface CustomEmojiCreatorProps {
   onBack: () => void;
   userId: string;
@@ -38,25 +39,30 @@ export const CustomEmojiCreator = ({ onBack, userId }: CustomEmojiCreatorProps) 
   const [selectedStyle, setSelectedStyle] = useState("pixel");
   const [selectedBase, setSelectedBase] = useState<string | null>(null);
   const [emojiName, setEmojiName] = useState("");
-  const [createdEmojis, setCreatedEmojis] = useState<{ name: string; emoji: string; style: string }[]>([]);
   const [generating, setGenerating] = useState(false);
   const { toast } = useToast();
+  const { emojis: createdEmojis, create } = useCustomEmojis(userId);
 
-  const createEmoji = () => {
+  const createEmoji = async () => {
     if (!selectedBase || !emojiName.trim()) {
       toast({ title: "Missing info", description: "Select a base emoji and give it a name.", variant: "destructive" });
       return;
     }
     setGenerating(true);
-    setTimeout(() => { const styleEmojis: Record<string, string> = {
-        pixel: "⬛", kawaii: "🌸", neon: "✨", sketch: "〰️", "3d": "💫", retro: "🕹️" };
-      const combo = `${selectedBase}${styleEmojis[selectedStyle] || ""}`;
-      setCreatedEmojis(prev => [{ name: emojiName, emoji: combo, style: selectedStyle }, ...prev]);
+    const styleEmojis: Record<string, string> = {
+      pixel: "⬛", kawaii: "🌸", neon: "✨", sketch: "〰️", "3d": "💫", retro: "🕹️" };
+    const combo = `${selectedBase}${styleEmojis[selectedStyle] || ""}`;
+    const name = emojiName.trim();
+    try {
+      await create(name, combo, selectedStyle);
       setEmojiName("");
       setSelectedBase(null);
+      toast({ title: "Emoji Created!", description: `"${name}" is now in your emoji picker under "My Emojis".` });
+    } catch (e: any) {
+      toast({ title: "Could not save emoji", description: e?.message || "Please try again.", variant: "destructive" });
+    } finally {
       setGenerating(false);
-      toast({ title: "Emoji Created!", description: `"${emojiName}" is ready to use in chats.` });
-    }, 1500);
+    }
   };
 
   const copyEmoji = (emoji: string) => {
