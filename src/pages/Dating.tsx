@@ -1349,10 +1349,10 @@ const Dating = () => {
                   <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Delete Profile?</AlertDialogTitle><AlertDialogDescription>This will permanently delete your dating profile, matches, and messages.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction onClick={handleDeleteProfile} className="bg-destructive">Delete</AlertDialogAction></AlertDialogFooter></AlertDialogContent>
                 </AlertDialog>
               </div>
-              <AlertDialog>
-                <AlertDialogTrigger asChild><Button variant="ghost" className="w-full text-muted-foreground text-sm" disabled={cancelingSubscription}>Cancel Subscription</Button></AlertDialogTrigger>
-                <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Cancel Subscription?</AlertDialogTitle><AlertDialogDescription>You will lose access at the end of your current billing period.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Keep Subscription</AlertDialogCancel><AlertDialogAction onClick={handleCancelSubscription}>{cancelingSubscription ? "Canceling..." : "Cancel Subscription"}</AlertDialogAction></AlertDialogFooter></AlertDialogContent>
-              </AlertDialog>
+              <p className="text-center text-xs text-muted-foreground">
+                Access costs {ENTRY_CREDIT_COST} credits per day — no subscription, nothing to cancel.
+              </p>
+
             </div>
           </TabsContent>
         </Tabs>
