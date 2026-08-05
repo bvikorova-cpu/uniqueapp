@@ -138,11 +138,14 @@ export default function WallFriends() {
         return { ...f, profile: profiles?.find((p: any) => p.id === f.user_id) || null, mutual_count: mutualCount };
       }) as FriendRequest[];
     },
-    enabled: !!user });
+    enabled: !!user,
+    staleTime: 60 * 1000,
+    refetchOnWindowFocus: false });
 
   const { data: suggestions = [] } = useQuery({
-    queryKey: ["friend-suggestions", user?.id, friends.map(f => f.id).join(",")],
+    queryKey: ["friend-suggestions", user?.id],
     queryFn: async () => {
+
       if (!user || friends.length === 0) return [];
       const friendIds = friends.map(f => f.id);
 
