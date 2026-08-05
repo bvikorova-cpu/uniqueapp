@@ -1,0 +1,12 @@
+REVOKE EXECUTE ON FUNCTION public.anon_date_request_reveal(uuid) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.anon_date_accept_reveal(uuid) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.anon_date_cancel_reveal(uuid) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.anon_date_request_reveal(uuid) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.anon_date_accept_reveal(uuid) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.anon_date_cancel_reveal(uuid) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.anon_date_request_reveal(uuid) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.anon_date_accept_reveal(uuid) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.anon_date_cancel_reveal(uuid) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.anon_date_request_reveal(uuid) TO service_role;
+GRANT EXECUTE ON FUNCTION public.anon_date_accept_reveal(uuid) TO service_role;
+GRANT EXECUTE ON FUNCTION public.anon_date_cancel_reveal(uuid) TO service_role;
