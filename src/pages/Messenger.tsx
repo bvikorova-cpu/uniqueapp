@@ -1792,27 +1792,11 @@ const Messenger = () => {
 
                   {/* Input row */}
                   <div className="flex items-center gap-2">
-                    <Button
-                      variant={isRecording ? "destructive" : "ghost"}
-                      size="icon"
-                      className="shrink-0"
-                      onClick={isRecording ? stopRecording : startRecording}
-                    >
-                      {isRecording ? <Square className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                    </Button>
-
-                    {isRecording && (
-                      <span className="text-xs text-destructive animate-pulse shrink-0">
-                        {formatDuration(recordingDuration)}
-                      </span>
-                    )}
-
                     <Input
                       placeholder="Write a message..."
                       value={newMessage}
                       onChange={handleInputChange}
                       onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-                      disabled={isRecording}
                       maxLength={MAX_MESSAGE_LEN}
                       onFocus={(e) => {
                         const el = e.currentTarget;
@@ -1823,10 +1807,11 @@ const Messenger = () => {
                       }}
                       className="flex-1 min-w-0"
                     />
-                    <Button onClick={() => sendMessage()} size="icon" className="shrink-0" disabled={isRecording || !newMessage.trim()}>
+                    <Button onClick={() => sendMessage()} size="icon" className="shrink-0" disabled={!newMessage.trim()}>
                       <Send className="h-4 w-4" />
                     </Button>
                   </div>
+
                 </div>
               </>
             ) : (
