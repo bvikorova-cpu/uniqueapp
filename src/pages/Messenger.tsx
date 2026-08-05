@@ -1075,7 +1075,7 @@ const Messenger = () => {
               totalMessages,
               activeChats: conversations.length,
               friendsOnline: friendsOnlineCount,
-              aiCredits: 50 }}
+              aiCredits: aiCreditsBalance }}
           />
 
           <div className="mb-6 flex justify-end">
