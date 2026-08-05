@@ -91,7 +91,9 @@ export const MyCapsules = ({ onBack }: { onBack: () => void }) => {
                   <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{capsule.message}</p>
                   <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
                     <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{formatDate(capsule.delivery_date)}</span>
-                    {capsule.recipient_name && <span className="flex items-center gap-1"><Mail className="h-3 w-3" />To: {capsule.recipient_name}</span>}
+                    {capsule.received
+                      ? <span className="flex items-center gap-1 text-primary font-bold"><Mail className="h-3 w-3" />Received</span>
+                      : capsule.recipient_name && <span className="flex items-center gap-1"><Mail className="h-3 w-3" />To: {capsule.recipient_name}</span>}
                   </div>
 
                   {selectedCapsule?.id === capsule.id && (
