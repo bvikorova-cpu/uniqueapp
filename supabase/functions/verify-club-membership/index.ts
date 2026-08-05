@@ -57,11 +57,12 @@ serve(async (req) => {
     type CustomField = { key: string; text?: { value?: string | null } };
     type SessionExtras = {
       shipping_details?: ShippingDetails | null;
+      collected_information?: { shipping_details?: ShippingDetails | null } | null;
       customer_details?: CustomerDetails | null;
       custom_fields?: CustomField[] | null;
     };
     const extras = session as unknown as SessionExtras;
-    const shipping = extras.shipping_details ?? null;
+    const shipping = extras.collected_information?.shipping_details ?? extras.shipping_details ?? null;
     const customerDetails = extras.customer_details ?? {};
     const customFields: CustomField[] = extras.custom_fields ?? [];
     const recipientField = customFields.find((f) => f.key === "recipient_name");
