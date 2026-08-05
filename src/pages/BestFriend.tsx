@@ -67,22 +67,36 @@ const BestFriend = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showCreditsDialog, setShowCreditsDialog] = useState(false);
   const [loadingHistory, setLoadingHistory] = useState(true);
+  const [messageCount, setMessageCount] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { credits, loading: creditsLoading, canSendMessage, refresh: refreshCredits } = useBestFriendChatCredits();
 
   useEffect(() => { loadHistory(); }, []);
 
+  // Keep credits + message count in sync with reality when the tab regains focus
+  useEffect(() => {
+    const onFocus = () => { refreshCredits(); loadHistory(); };
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onFocus);
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onFocus);
+    };
+  }, [refreshCredits]);
+
   const loadHistory = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         setMessages([{ role: "assistant", content: "Hi! I'm here for you. How are you? 😊" }]);
+        setMessageCount(0);
         setLoadingHistory(false);
         return;
       }
       const { data } = await supabase.from('best_friend_conversations').select('*')
         .eq('user_id', user.id).order('created_at', { ascending: true });
+      setMessageCount(data?.length ?? 0);
       if (data && data.length > 0) {
         setMessages(data.map(msg => ({ role: msg.role as "user" | "assistant", content: msg.content })));
       } else {
@@ -142,7 +156,16 @@ const BestFriend = () => {
         }
       }
     } catch (e: any) { toast.error("Error communicating"); setMessages(p => p.slice(0, -1)); }
-    finally { setIsLoading(false); refreshCredits(); }
+    finally { setIsLoading(false); refreshCredits(); refreshMessageCount(); }
+  };
+
+  // Real persisted message count from the database
+  const refreshMessageCount = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setMessageCount(0); return; }
+    const { count } = await supabase.from('best_friend_conversations')
+      .select('id', { count: 'exact', head: true }).eq('user_id', user.id);
+    setMessageCount(count ?? 0);
   };
 
   const handleSend = async () => {
@@ -298,21 +321,21 @@ const BestFriend = () => {
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
                 <Card className="bg-card/80 backdrop-blur-xl border-purple-500/20 text-center p-4">
                   <Heart className="h-6 w-6 text-pink-400 mx-auto mb-2" />
-                  <div className="text-2xl font-black">{credits}</div>
+                  <div className="text-2xl font-black">{creditsLoading ? "…" : credits}</div>
                   <p className="text-xs text-muted-foreground">AI Credits</p>
                 </Card>
               </motion.div>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
                 <Card className="bg-card/80 backdrop-blur-xl border-purple-500/20 text-center p-4">
                   <MessageCircle className="h-6 w-6 text-purple-400 mx-auto mb-2" />
-                  <div className="text-2xl font-black">{messages.length}</div>
+                  <div className="text-2xl font-black">{loadingHistory ? "…" : messageCount}</div>
                   <p className="text-xs text-muted-foreground">Messages Exchanged</p>
                 </Card>
               </motion.div>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
                 <Card className="bg-card/80 backdrop-blur-xl border-purple-500/20 text-center p-4">
                   <Sparkles className="h-6 w-6 text-blue-400 mx-auto mb-2" />
-                  <div className="text-2xl font-black">16</div>
+                  <div className="text-2xl font-black">{tools.length}</div>
                   <p className="text-xs text-muted-foreground">AI Tools Available</p>
                 </Card>
               </motion.div>
