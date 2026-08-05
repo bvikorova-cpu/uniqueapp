@@ -772,7 +772,8 @@ const Dating = () => {
       toast({ title: "Gift sent 🎁", description: `-${res.credits_spent} credits` });
       window.dispatchEvent(new Event("ai-credits-updated"));
       setShowGiftDialog(false);
-      loadGiftsForMatch(selectedMatch.id);
+      const { data: g } = await supabase.from("dating_sent_gifts").select(`*, gift:gift_id (*)`).eq("match_id", selectedMatch.id).order("created_at", { ascending: true });
+      setSentGifts(g || []);
     } catch { toast({ title: "Error", description: "Failed to process gift", variant: "destructive" }); }
   };
 
