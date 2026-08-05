@@ -365,7 +365,7 @@ const Dating = () => {
     setProfiles(ranked.slice(0, 25));
   };
 
-  useEffect(() => { if (user?.id) loadProfiles(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [discoveryMode]);
+  useEffect(() => { if (user?.id) { setCurrentIndex(0); setActivePhotoIndex(0); loadProfiles(); } /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [discoveryMode]);
 
   const loadMatches = async (userId: string) => {
     const { data } = await supabase.from("dating_matches").select("*").or(`user1_id.eq.${userId},user2_id.eq.${userId}`);
