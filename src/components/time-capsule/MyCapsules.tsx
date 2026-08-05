@@ -18,16 +18,24 @@ export const MyCapsules = ({ onBack }: { onBack: () => void }) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
-      const { data, error } = await supabase
-        .from("time_capsules")
-        .select("*")
-        .eq("user_id", session.user.id)
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      setCapsules(data || []);
+      const email = session.user.email ?? "";
+      const [own, received] = await Promise.all([
+        supabase.from("time_capsules").select("*").eq("user_id", session.user.id),
+        email
+          ? supabase.from("time_capsules").select("*").ilike("recipient_email", email).eq("is_delivered", true)
+          : Promise.resolve({ data: [], error: null } as any),
+      ]);
+      if (own.error) throw own.error;
+      const mine = (own.data || []).map((c: any) => ({ ...c, received: false }));
+      const inbox = (received.data || [])
+        .filter((c: any) => c.user_id !== session.user.id)
+        .map((c: any) => ({ ...c, received: true }));
+      setCapsules([...inbox, ...mine].sort((a: any, b: any) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()));
     } catch (e) { console.error(e); }
     finally { setLoading(false); }
   };
+
 
   const formatDate = (d: string) => new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
@@ -83,7 +91,9 @@ export const MyCapsules = ({ onBack }: { onBack: () => void }) => {
                   <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{capsule.message}</p>
                   <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
                     <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{formatDate(capsule.delivery_date)}</span>
-                    {capsule.recipient_name && <span className="flex items-center gap-1"><Mail className="h-3 w-3" />To: {capsule.recipient_name}</span>}
+                    {capsule.received
+                      ? <span className="flex items-center gap-1 text-primary font-bold"><Mail className="h-3 w-3" />Received</span>
+                      : capsule.recipient_name && <span className="flex items-center gap-1"><Mail className="h-3 w-3" />To: {capsule.recipient_name}</span>}
                   </div>
 
                   {selectedCapsule?.id === capsule.id && (
