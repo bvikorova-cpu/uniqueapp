@@ -151,12 +151,22 @@ export default function AnonymousDate() {
     if (hasAccess) checkProfile();
   }, [hasAccess]);
 
-  // Entry is credit-based: 2 credits per entry (per browsing session).
+  // Entry is credit-based: 2 credits per day (resets at local midnight).
+  const todayKey = () =>
+    new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+
+  const dailyStorageKey = (userId: string) => `anonymous_date_entry_paid:${userId}`;
+
   const checkAccess = async () => {
     try {
       setCheckingAccess(true);
-      const paidThisSession = sessionStorage.getItem("anonymous_date_entry_paid") === "true";
-      setHasAccess(paidThisSession);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setHasAccess(false);
+        return;
+      }
+      const paidDay = localStorage.getItem(dailyStorageKey(user.id));
+      setHasAccess(paidDay === todayKey());
     } finally {
       setCheckingAccess(false);
     }
@@ -172,19 +182,20 @@ export default function AnonymousDate() {
       }
       const { data: ok, error } = await supabase.rpc("deduct_ai_credits", { p_user_id: user.id,
         p_amount: ENTRY_CREDIT_COST,
-        p_reason: "anonymous_date_entry",
+        p_reason: "anonymous_date_daily_entry",
         p_source: "dating" });
       if (error) throw error;
       if (ok === false) {
-        toast({ title: "Not enough credits", description: `Entry costs ${ENTRY_CREDIT_COST} credits. Please top up.`, variant: "destructive" });
+        toast({ title: "Not enough credits", description: `Daily entry costs ${ENTRY_CREDIT_COST} credits. Please top up.`, variant: "destructive" });
         navigate("/ai-credits");
         return;
       }
-      sessionStorage.setItem("anonymous_date_entry_paid", "true");
+      localStorage.setItem(dailyStorageKey(user.id), todayKey());
       setHasAccess(true);
       fetchCredits();
       window.dispatchEvent(new Event("ai-credits-updated"));
-      toast({ title: "Access unlocked", description: `${ENTRY_CREDIT_COST} credits used for this entry` });
+      toast({ title: "Access unlocked for today", description: `${ENTRY_CREDIT_COST} credits used for today's entry` });
+
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "Failed to spend credits", variant: "destructive" });
     } finally {
@@ -355,9 +366,10 @@ export default function AnonymousDate() {
                     <div className="flex items-center gap-3">
                       <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
                       <div>
-                        <p className="font-bold text-sm">Access unlocked for this session</p>
+                        <p className="font-bold text-sm">Access unlocked for today</p>
                         <p className="text-xs text-muted-foreground">
-                          {ENTRY_CREDIT_COST} credits per entry •
+                          {ENTRY_CREDIT_COST} credits per day •
+
                           <span className="font-bold text-primary ml-1">{credits} credits remaining</span>
                         </p>
                       </div>
