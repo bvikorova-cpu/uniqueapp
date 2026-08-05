@@ -159,6 +159,8 @@ const Dating = () => {
   const [filters, setFilters] = useState<DatingFilters | null>(null);
   const [boostActive, setBoostActive] = useState<string | null>(null);
   const [boosting, setBoosting] = useState(false);
+  const [purchasedBoosts, setPurchasedBoosts] = useState(0);
+
   const [blockedIds, setBlockedIds] = useState<string[]>([]);
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const [activeView, setActiveView] = useState<string>("hub");
