@@ -1,8 +1,10 @@
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { Compass } from "lucide-react";
-import { useState } from "react";
+import { Compass, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 const TRAITS = [
   { id: "adventurous", label: "Adventurous", emoji: "🌍", color: "from-orange-500 to-pink-500" },
@@ -17,6 +19,39 @@ const TRAITS = [
 
 export const AnonymousDatePersonalityCompass = () => {
   const [selected, setSelected] = useState<string | null>(null);
+  const [myTraits, setMyTraits] = useState<string[]>([]);
+
+  const { data: counts, isLoading } = useQuery({
+    queryKey: ["anon-date-trait-counts"],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("get_anon_date_trait_counts");
+      if (error) throw error;
+      const map: Record<string, number> = {};
+      (data as { trait: string; user_count: number }[] | null)?.forEach((r) => {
+        map[String(r.trait).toLowerCase()] = Number(r.user_count) || 0;
+      });
+      return map;
+    },
+    staleTime: 60_000,
+  });
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) return;
+      const { data } = await supabase
+        .from("anonymous_dating_profiles")
+        .select("personality_traits")
+        .eq("user_id", auth.user.id)
+        .maybeSingle();
+      if (active) setMyTraits(((data?.personality_traits as string[] | null) ?? []).map((t) => t.toLowerCase()));
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
+
 
   return (
     <Card className="p-5 bg-card/80 backdrop-blur-xl border-border/50">
