@@ -112,8 +112,10 @@ const BestFriend = () => {
             .map(m => ({ role: m.role, content: m.content.slice(0, 4000) })) }) });
       if (!response.ok) {
         if (response.status === 402) {
-          const data = await response.json();
-          if (data.requiresSubscription) { setShowSubscriptionDialog(true); setMessages(p => p.slice(0, -1)); setIsLoading(false); return; }
+          setShowCreditsDialog(true);
+          setMessages(p => p.slice(0, -1));
+          setIsLoading(false);
+          return;
         }
         throw new Error("Failed");
       }
