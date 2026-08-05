@@ -40,7 +40,7 @@ interface FriendSuggestion {
   mutual_count: number;
 }
 
-const publicProfiles = () => (supabase as any).from("profiles_public");
+const publicProfiles = () => (supabase as any).from("public_profiles");
 
 export default function WallFriends() {
   const { toast } = useToast();
@@ -95,20 +95,22 @@ export default function WallFriends() {
     queryKey: ["friends", user?.id],
     queryFn: async () => {
       if (!user) return [];
-      const { data: friendships } = await supabase
+      const { data: friendships, error: friendshipsError } = await supabase
         .from("friendships")
         .select("user_id, friend_id")
         .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`)
         .eq("status", "accepted");
+      if (friendshipsError) throw friendshipsError;
       const friendIds = Array.from(new Set(
         (friendships ?? [])
           .map((f) => (f.user_id === user.id ? f.friend_id : f.user_id))
           .filter(Boolean)
       ));
       if (friendIds.length === 0) return [];
-      const { data: profiles } = await publicProfiles()
+      const { data: profiles, error: profilesError } = await publicProfiles()
         .select("id, full_name, avatar_url")
         .in("id", friendIds);
+      if (profilesError) throw profilesError;
       const seen = new Set<string>();
       return (profiles ?? []).filter((p: any) => {
         if (!p?.id || seen.has(p.id)) return false;

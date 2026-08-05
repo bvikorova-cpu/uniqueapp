@@ -49,7 +49,7 @@ export function WallRightbar() {
       if (friendIds.length === 0) return [];
 
       const { data: profiles } = await (supabase as any)
-        .from("profiles_public")
+        .from("public_profiles")
         .select("id, full_name, avatar_url")
         .in("id", friendIds)
         .limit(10);
@@ -77,7 +77,7 @@ export function WallRightbar() {
       if (friendIds.length === 0) return [];
 
       const { data: profiles } = await (supabase as any)
-        .from("profiles_public")
+        .from("public_profiles")
         .select("id, full_name, avatar_url")
         .in("id", friendIds)
         .limit(5);
