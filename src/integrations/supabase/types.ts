@@ -2394,6 +2394,8 @@ export type Database = {
           expires_at: string | null
           id: string
           match_interests: Json | null
+          photo_reveal_days: number
+          photo_unlocked_at: string | null
           reveal_request_at: string | null
           reveal_request_by: string | null
           revealed_at: string | null
@@ -2409,6 +2411,8 @@ export type Database = {
           expires_at?: string | null
           id?: string
           match_interests?: Json | null
+          photo_reveal_days?: number
+          photo_unlocked_at?: string | null
           reveal_request_at?: string | null
           reveal_request_by?: string | null
           revealed_at?: string | null
@@ -2424,6 +2428,8 @@ export type Database = {
           expires_at?: string | null
           id?: string
           match_interests?: Json | null
+          photo_reveal_days?: number
+          photo_unlocked_at?: string | null
           reveal_request_at?: string | null
           reveal_request_by?: string | null
           revealed_at?: string | null
@@ -2522,6 +2528,7 @@ export type Database = {
           location: string | null
           looking_for: string | null
           personality_traits: string[] | null
+          photo_path: string | null
           preferred_gender: string | null
           relationship_goal: string | null
           updated_at: string | null
@@ -2539,6 +2546,7 @@ export type Database = {
           location?: string | null
           looking_for?: string | null
           personality_traits?: string[] | null
+          photo_path?: string | null
           preferred_gender?: string | null
           relationship_goal?: string | null
           updated_at?: string | null
@@ -2556,6 +2564,7 @@ export type Database = {
           location?: string | null
           looking_for?: string | null
           personality_traits?: string[] | null
+          photo_path?: string | null
           preferred_gender?: string | null
           relationship_goal?: string | null
           updated_at?: string | null
@@ -2631,6 +2640,30 @@ export type Database = {
           subscription_status?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      anonymous_dating_swipes: {
+        Row: {
+          created_at: string
+          direction: string
+          id: string
+          swiper_id: string
+          target_id: string
+        }
+        Insert: {
+          created_at?: string
+          direction: string
+          id?: string
+          swiper_id: string
+          target_id: string
+        }
+        Update: {
+          created_at?: string
+          direction?: string
+          id?: string
+          swiper_id?: string
+          target_id?: string
         }
         Relationships: []
       }
@@ -68538,6 +68571,12 @@ export type Database = {
         Args: { _amount: number; _reason?: string }
         Returns: number
       }
+      anon_date_photo_state: { Args: { _match_id: string }; Returns: Json }
+      anon_date_swipe: {
+        Args: { _direction: string; _target: string }
+        Returns: Json
+      }
+      anon_date_unlock_photo: { Args: { _match_id: string }; Returns: Json }
       apply_chat_timeout: {
         Args: {
           _base_minutes: number
@@ -69137,6 +69176,21 @@ export type Database = {
       generate_referral_code: { Args: never; Returns: string }
       generate_story_share_code: { Args: never; Returns: string }
       get_affiliate_reward_eur: { Args: { _user_id: string }; Returns: number }
+      get_anon_date_deck: {
+        Args: { _limit?: number }
+        Returns: {
+          age_range: string
+          anonymous_name: string
+          gender: string
+          has_photo: boolean
+          interests: string[]
+          location: string
+          looking_for: string
+          personality_traits: string[]
+          relationship_goal: string
+          user_id: string
+        }[]
+      }
       get_anon_date_trait_counts: {
         Args: never
         Returns: {

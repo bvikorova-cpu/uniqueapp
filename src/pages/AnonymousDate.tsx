@@ -34,7 +34,9 @@ import { MatchCelebrationModal } from "@/components/dating/MatchCelebrationModal
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-type ViewType = "hub" | "matches" | "find" | "find-results" | "credits" | "profile";
+import { AnonymousSwipeDeck } from "@/components/anonymous-date/AnonymousSwipeDeck";
+import { PrivatePhotoUpload } from "@/components/anonymous-date/PrivatePhotoUpload";
+type ViewType = "hub" | "matches" | "find" | "find-results" | "credits" | "profile" | "swipe";
 
 type MatchFilters = {
   location?: string;
@@ -510,6 +512,14 @@ export default function AnonymousDate() {
                     </h3>
                     <div className="space-y-2">
                       <Button
+                        onClick={() => setActiveView("swipe")}
+                        className="w-full justify-start gap-2 bg-anon-date-gradient"
+                        size="sm"
+                      >
+                        <Heart className="h-4 w-4" />
+                        Anonymous Swiping (free)
+                      </Button>
+                      <Button
                         onClick={() => setActiveView("find")}
                         disabled={loading}
                         className="w-full justify-start gap-2"
@@ -598,6 +608,17 @@ export default function AnonymousDate() {
                   </div>
                 );
               })()}
+              {activeView === "swipe" && (
+                <div className="space-y-4">
+                  <PrivatePhotoUpload />
+                  <AnonymousSwipeDeck
+                    onMatched={(matchId, partnerName) => {
+                      fetchActiveMatches();
+                      setMatchCelebration({ matchId, partnerName });
+                    }}
+                  />
+                </div>
+              )}
               {activeView === "find" && (
                 <CompatibilityMatchFinder
                   credits={credits}
