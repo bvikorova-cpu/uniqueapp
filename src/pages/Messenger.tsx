@@ -26,14 +26,10 @@ import { MessengerHero } from "@/components/messenger/MessengerHero";
 import PushOptInButton from "@/components/notifications/PushOptInButton";
 import { ChatAnalyticsDashboard } from "@/components/messenger/ChatAnalyticsDashboard";
 import { AIChatThemes } from "@/components/messenger/AIChatThemes";
-import { VoiceRoom } from "@/components/messenger/VoiceRoom";
-import { MessageScheduler } from "@/components/messenger/MessageScheduler";
-import { ReadReceiptsAnalytics } from "@/components/messenger/ReadReceiptsAnalytics";
-import { ChatBackupExport } from "@/components/messenger/ChatBackupExport";
 import { AIMoodDetection } from "@/components/messenger/AIMoodDetection";
 import { CustomEmojiCreator } from "@/components/messenger/CustomEmojiCreator";
 import { ChatGames } from "@/components/messenger/ChatGames";
-import { SmartNotifications } from "@/components/messenger/SmartNotifications";
+
 import { motion } from "framer-motion";
 import { playMessageChime } from "@/lib/messageChime";
 import { requestNotificationPermission,
