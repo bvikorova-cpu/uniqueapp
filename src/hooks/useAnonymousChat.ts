@@ -155,13 +155,16 @@ export function useAnonymousChat(matchId: string | null, currentUserId: string |
     // Bell notification for the partner — throttled to 1 per 2 minutes per match.
     if (partnerId && Date.now() - lastNotifiedRef.current > 120_000) {
       lastNotifiedRef.current = Date.now();
-      await supabase.from("notifications").insert({
-        user_id: partnerId,
-        title: "New anonymous message",
-        message: messageType === "voice" ? "You received a voice message." : "Your anonymous match sent you a message.",
-        type: "anonymous_date_message",
-        related_id: matchId }).then(({ error: nErr }) => { if (nErr) console.warn("notify failed", nErr.message); });
+      const { error: nErr } = await supabase.rpc("send_user_notification", {
+        _user_id: partnerId,
+        _type: "anonymous_date_message",
+        _title: "New anonymous message",
+        _message: messageType === "voice" ? "You received a voice message." : "Your anonymous match sent you a message.",
+        _related_id: matchId,
+        _action_url: "/anonymous-date" });
+      if (nErr) console.warn("notify failed", nErr.message);
     }
+
   }, [matchId, currentUserId, partnerId, toast]);
 
 
