@@ -4,7 +4,18 @@ import { callOpenAI, callOpenAIJSON } from "../_shared/openai.ts";
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
-const CREDIT_COST = 1;
+// Unified AI credit costs per Messenger action (matches the UI labels).
+const ACTION_COSTS: Record<string, number> = {
+  translate: 2,
+  "smart-reply": 2,
+  summarize: 5,
+  "time-capsule": 5,
+  "emotional-weather": 3,
+  "quantum-message": 10,
+  "anonymous-compliment": 2,
+  "what-if": 15,
+};
+const DEFAULT_COST = 2;
 
 const styles: Record<string, string> = { heartfelt: "Write with genuine warmth and emotional depth.",
   poetic: "Use poetic language and metaphors.",
@@ -31,14 +42,22 @@ Deno.serve(async (req) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("Unauthorized");
 
-    const { data: credits } = await supabase
-      .from("messenger_ai_credits")
+    const admin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    );
+
+    const cost = ACTION_COSTS[String(action)] ?? DEFAULT_COST;
+
+    // Unified balance — real credits for every user (ai_credits + ledger).
+    const { data: balanceRow } = await admin
+      .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
 
-    if (!credits || credits.credits_remaining < CREDIT_COST) {
-      return new Response(JSON.stringify({ error: "Insufficient credits" }), {
+    if (!balanceRow || (balanceRow.credits_remaining ?? 0) < cost) {
+      return new Response(JSON.stringify({ error: "Insufficient credits", required: cost, balance: balanceRow?.credits_remaining ?? 0 }), {
         status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" }
       });
     }
@@ -114,12 +133,29 @@ Deno.serve(async (req) => {
       default: throw new Error(`Unknown action: ${action}`);
     }
 
-    await supabase
-      .from("messenger_ai_credits")
-      .update({ credits_remaining: credits.credits_remaining - CREDIT_COST })
-      .eq("user_id", user.id);
+    const { error: deductErr } = await admin.rpc("deduct_ai_credits", {
+      p_user_id: user.id,
+      p_amount: cost,
+      p_reason: `messenger_${String(action).replace(/-/g, "_")}`,
+      p_source: "messenger",
+    });
+    if (deductErr) {
+      const msg = deductErr.message || "";
+      if (/insufficient|no credit/i.test(msg)) {
+        return new Response(JSON.stringify({ error: "Insufficient credits", required: cost }), {
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      }
+      console.error("messenger-ai deduct failed", msg);
+    }
 
-    return new Response(JSON.stringify({ result }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const { data: after } = await admin
+      .from("ai_credits")
+      .select("credits_remaining")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    return new Response(JSON.stringify({ result, creditsUsed: cost, creditsRemaining: after?.credits_remaining ?? 0 }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     const status = e.message === "Unauthorized" ? 401 : e.message?.includes("credits") ? 402 : 500;
     return new Response(JSON.stringify({ error: e.message }), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });

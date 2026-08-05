@@ -27,7 +27,7 @@ const CREDIT_TABLE_CONFIG: Record<string, CreditTableConfig> = {
   past_life_credits: { tableName: "past_life_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
   lie_detector_credits: { tableName: "lie_detector_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
   creative_forge_credits: { tableName: "creative_forge_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  messenger_ai_credits: { tableName: "messenger_ai_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
+  messenger_ai_credits: { tableName: "ai_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
   brand_battle_credits: { tableName: "brand_battle_credits", creditsColumn: "credits", totalColumn: "credits" },
   iq_credits: { tableName: "iq_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
   cooking_credits: { tableName: "cooking_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
