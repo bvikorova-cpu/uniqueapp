@@ -42,14 +42,22 @@ Deno.serve(async (req) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("Unauthorized");
 
-    const { data: credits } = await supabase
-      .from("messenger_ai_credits")
+    const admin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    );
+
+    const cost = ACTION_COSTS[String(action)] ?? DEFAULT_COST;
+
+    // Unified balance — real credits for every user (ai_credits + ledger).
+    const { data: balanceRow } = await admin
+      .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
 
-    if (!credits || credits.credits_remaining < CREDIT_COST) {
-      return new Response(JSON.stringify({ error: "Insufficient credits" }), {
+    if (!balanceRow || (balanceRow.credits_remaining ?? 0) < cost) {
+      return new Response(JSON.stringify({ error: "Insufficient credits", required: cost, balance: balanceRow?.credits_remaining ?? 0 }), {
         status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" }
       });
     }
