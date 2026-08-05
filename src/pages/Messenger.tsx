@@ -160,6 +160,7 @@ const Messenger = () => {
   const [selectedMessageText, setSelectedMessageText] = useState<string>("");
   const [totalMessages, setTotalMessages] = useState(0);
   const [friendsOnlineCount, setFriendsOnlineCount] = useState(0);
+  const [aiCreditsBalance, setAiCreditsBalance] = useState(0);
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [messagesError, setMessagesError] = useState(false);
   const [isOnline, setIsOnline] = useState(typeof navigator !== "undefined" ? navigator.onLine : true);
