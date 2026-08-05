@@ -165,8 +165,14 @@ export default function AnonymousDate() {
         setHasAccess(false);
         return;
       }
-      const paidDay = localStorage.getItem(dailyStorageKey(user.id));
-      setHasAccess(paidDay === todayKey());
+      const { data: paidToday, error } = await supabase.rpc("has_paid_daily_entry", { p_reason: "anonymous_date_daily_entry" });
+      if (error) {
+        // Fallback to local marker if the check fails
+        setHasAccess(localStorage.getItem(dailyStorageKey(user.id)) === todayKey());
+        return;
+      }
+      if (paidToday) localStorage.setItem(dailyStorageKey(user.id), todayKey());
+      setHasAccess(!!paidToday);
     } finally {
       setCheckingAccess(false);
     }
