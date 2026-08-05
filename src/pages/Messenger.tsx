@@ -175,10 +175,8 @@ const Messenger = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const otherTypingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
-  const recordingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const recordingStartedAtRef = useRef<number>(0);
+
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const audioRefs = useRef<Map<string, HTMLAudioElement>>(new Map());
