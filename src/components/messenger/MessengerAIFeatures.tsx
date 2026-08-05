@@ -278,8 +278,12 @@ export const MessengerAIFeatures = ({ userId,
   };
 
   const handleTimeCapsule = async () => {
-    if (!timeCapsuleMessage || !deliveryDate || !recipientId) {
-      toast({ title: "Fill all fields", variant: "destructive" });
+    if (!timeCapsuleMessage.trim() || !deliveryDate) {
+      toast({ title: "Fill message and delivery date", variant: "destructive" });
+      return;
+    }
+    if (!recipientId) {
+      toast({ title: "Open a conversation first", description: "Time Capsule needs a recipient.", variant: "destructive" });
       return;
     }
 
