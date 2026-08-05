@@ -27,7 +27,7 @@ import { finishMeTrace,
 import MePerfOverlay from "@/components/debug/MePerfOverlay";
 
 const PostCard = lazy(() => import("@/components/feed/PostCard"));
-const FreeTierHistory = lazy(() => import("@/components/credits/FreeTierHistory").then((m) => ({ default: m.FreeTierHistory })));
+
 const StreakMultiplierCard = lazy(() => import("@/components/gamification/StreakMultiplierCard").then((m) => ({ default: m.StreakMultiplierCard })));
 const VictoryCardGenerator = lazy(() => import("@/components/social/VictoryCardGenerator").then((m) => ({ default: m.VictoryCardGenerator })));
 const ProfileMilestones = lazy(() => import("@/components/profile/ProfileMilestones").then((m) => ({ default: m.ProfileMilestones })));
