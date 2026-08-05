@@ -234,7 +234,12 @@ const Dating = () => {
 
   // Entry is credit-based: 2 credits per day (resets at local midnight).
   const checkSubscription = async (userId: string) => {
-    const hasAccess = localStorage.getItem(dailyStorageKey(userId)) === todayKey();
+    let hasAccess = localStorage.getItem(dailyStorageKey(userId)) === todayKey();
+    const { data: paidToday, error } = await supabase.rpc("has_paid_daily_entry", { p_reason: "dating_daily_entry" });
+    if (!error) {
+      hasAccess = !!paidToday;
+      if (hasAccess) localStorage.setItem(dailyStorageKey(userId), todayKey());
+    }
     setIsSubscribed(hasAccess);
     if (hasAccess) {
       await loadUserProfile(userId);
