@@ -31,11 +31,8 @@ import { MessageActions } from "@/components/dating/MessageActions";
 import { EmojiPicker } from "@/components/dating/EmojiPicker";
 import { CompatibilityQuiz, computeCompatibility } from "@/components/dating/CompatibilityQuiz";
 import { OpeningMoveEditor } from "@/components/dating/OpeningMoveEditor";
-import { PassportDialog } from "@/components/dating/PassportDialog";
-import { SnoozeButton } from "@/components/dating/SnoozeButton";
 import { MatchExpiryBadge } from "@/components/dating/MatchExpiryBadge";
 import { DiscoveryTabs, type DiscoveryMode } from "@/components/dating/DiscoveryTabs";
-import { VideoPromptRecorder, type VideoPrompt } from "@/components/dating/VideoPromptRecorder";
 import { VoiceNoteRecorder } from "@/components/dating/VoiceNoteRecorder";
 import { DatePlanCard } from "@/components/dating/DatePlanCard";
 import { MatchPollCard } from "@/components/dating/MatchPollCard";
@@ -44,7 +41,6 @@ import { DatingNotificationsCenter } from "@/components/dating/DatingNotificatio
 import { DatingAnalyticsPanel } from "@/components/dating/DatingAnalyticsPanel";
 import { MatchCelebrationModal } from "@/components/dating/MatchCelebrationModal";
 import { AIStarterButton } from "@/components/dating/AIStarterButton";
-import { AIBioCoach } from "@/components/dating/AIBioCoach";
 import { Dating16Gate } from "@/components/dating/Dating16Gate";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -163,7 +159,6 @@ const Dating = () => {
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const [activeView, setActiveView] = useState<string>("hub");
   const [showSafety, setShowSafety] = useState(false);
-  const [showPassport, setShowPassport] = useState(false);
   const [discoveryMode, setDiscoveryMode] = useState<DiscoveryMode>("deck");
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [pendingStarterExperiment, setPendingStarterExperiment] = useState<string | null>(null);
