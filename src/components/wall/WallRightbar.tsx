@@ -32,25 +32,11 @@ export function WallRightbar() {
       return user;
     } });
 
-  // Get online friends (real data via server-side RPC)
-  const { data: onlineFriends = [] } = useQuery({
-    queryKey: ["online-friends", user?.id],
-    queryFn: async () => {
-      if (!user) return [];
-      const { data } = await (supabase as any).rpc("get_my_friends");
-      return ((data as any[]) || []).slice(0, 10);
-    },
-    enabled: !!user });
+  // Shared cached friend list (one request for the whole Wall)
+  const { data: myFriends = [] } = useMyFriends(user?.id);
+  const onlineFriends = myFriends.slice(0, 10);
+  const birthdays = myFriends.slice(0, 5);
 
-  // Get upcoming birthdays
-  const { data: birthdays = [] } = useQuery({
-    queryKey: ["upcoming-birthdays", user?.id],
-    queryFn: async () => {
-      if (!user) return [];
-      const { data } = await (supabase as any).rpc("get_my_friends");
-      return ((data as any[]) || []).slice(0, 5);
-    },
-    enabled: !!user });
 
 
   return (
