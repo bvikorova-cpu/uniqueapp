@@ -82,6 +82,8 @@ const HOW_IT_WORKS = [
   { step: "4", title: "Reveal", desc: "Discover each other after building a real connection", icon: "👀" },
 ];
 
+const ENTRY_CREDIT_COST = 2;
+
 export default function AnonymousDate() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -93,7 +95,7 @@ export default function AnonymousDate() {
   const [checkingAccess, setCheckingAccess] = useState(true);
   const [payingAccess, setPayingAccess] = useState(false);
   const [activeView, setActiveView] = useState<ViewType>("hub");
-  const [subscriptionEnd, setSubscriptionEnd] = useState<string | null>(null);
+  
   const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [candidates, setCandidates] = useState<MatchCandidate[]>([]);
@@ -147,39 +149,41 @@ export default function AnonymousDate() {
     if (hasAccess) checkProfile();
   }, [hasAccess]);
 
+  // Entry is credit-based: 2 credits per entry (per browsing session).
   const checkAccess = async () => {
     try {
       setCheckingAccess(true);
-      const { data, error } = await supabase.functions.invoke("check-anonymous-date-access");
-      if (error) throw error;
-      setHasAccess(data.hasAccess);
-      setSubscriptionEnd(data.subscriptionEnd);
-    } catch (error) {
-      console.error("Error checking access:", error);
-      toast({ title: "Error", description: "Failed to verify subscription", variant: "destructive" });
+      const paidThisSession = sessionStorage.getItem("anonymous_date_entry_paid") === "true";
+      setHasAccess(paidThisSession);
     } finally {
       setCheckingAccess(false);
-    }
-  };
-
-  const handleManageSubscription = async () => {
-    try {
-      const { data, error } = await supabase.functions.invoke("customer-portal-anonymous-date");
-      if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
-    } catch (error: any) {
-      toast({ title: "Error", description: error.message || "Failed to open portal", variant: "destructive" });
     }
   };
 
   const handlePayAccess = async () => {
     try {
       setPayingAccess(true);
-      const { data, error } = await supabase.functions.invoke("pay-anonymous-date-access");
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({ title: "Sign in required", description: "Please log in to continue", variant: "destructive" });
+        return;
+      }
+      const { data: ok, error } = await supabase.rpc("deduct_ai_credits", { p_user_id: user.id,
+        p_amount: ENTRY_CREDIT_COST,
+        p_reason: "anonymous_date_entry",
+        p_source: "dating" });
       if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
+      if (ok === false) {
+        toast({ title: "Not enough credits", description: `Entry costs ${ENTRY_CREDIT_COST} credits. Please top up.`, variant: "destructive" });
+        navigate("/ai-credits");
+        return;
+      }
+      sessionStorage.setItem("anonymous_date_entry_paid", "true");
+      setHasAccess(true);
+      fetchCredits();
+      toast({ title: "Access unlocked", description: `${ENTRY_CREDIT_COST} credits used for this entry` });
     } catch (error: any) {
-      toast({ title: "Error", description: error.message || "Failed to process payment", variant: "destructive" });
+      toast({ title: "Error", description: error.message || "Failed to spend credits", variant: "destructive" });
     } finally {
       setPayingAccess(false);
     }
@@ -337,32 +341,31 @@ export default function AnonymousDate() {
 
               <HeroRewardedAd sectionKey="page_anonymousdate" />
 
-              {/* Subscription Status */}
-              {subscriptionEnd && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <Card className="p-4 bg-card/60 backdrop-blur-sm border border-border/50">
-                    <div className="flex items-center justify-between flex-wrap gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                        <div>
-                          <p className="font-bold text-sm">Active Subscription</p>
-                          <p className="text-xs text-muted-foreground">
-                            Renews {new Date(subscriptionEnd).toLocaleDateString()} •
-                            <span className="font-bold text-primary ml-1">{credits} credits remaining</span>
-                          </p>
-                        </div>
+              {/* Access status */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                <Card className="p-4 bg-card/60 backdrop-blur-sm border border-border/50">
+                  <div className="flex items-center justify-between flex-wrap gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <div>
+                        <p className="font-bold text-sm">Access unlocked for this session</p>
+                        <p className="text-xs text-muted-foreground">
+                          {ENTRY_CREDIT_COST} credits per entry •
+                          <span className="font-bold text-primary ml-1">{credits} credits remaining</span>
+                        </p>
                       </div>
-                      <Button variant="outline" size="sm" onClick={handleManageSubscription} className="text-xs">
-                        Manage Subscription
-                      </Button>
                     </div>
-                  </Card>
-                </motion.div>
-              )}
+                    <Button variant="outline" size="sm" onClick={() => navigate("/ai-credits")} className="text-xs">
+                      Top up credits
+                    </Button>
+                  </div>
+                </Card>
+              </motion.div>
+
 
               {/* Engagement Row */}
               <motion.div
