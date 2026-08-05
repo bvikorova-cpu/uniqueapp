@@ -55,16 +55,17 @@ serve(async (req) => {
     const { mode, targetUserId, filters } = parsedBody.data;
 
 
-    // Credit check is only required when actually creating a match
+    // Credit check is only required when actually creating a match (unified ai_credits)
     const { data: creditsData } = await supabaseClient
-      .from("anonymous_dating_credits")
-      .select("*")
+      .from("ai_credits")
+      .select("credits_remaining")
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
 
     if (mode === "match" && (!creditsData || creditsData.credits_remaining < MATCH_COST)) {
       return errorResponse("INSUFFICIENT_CREDITS", "Not enough credits to start a match.", 402, { required: MATCH_COST });
     }
+
 
     // Get user profile
     const { data: userProfile } = await supabaseClient
