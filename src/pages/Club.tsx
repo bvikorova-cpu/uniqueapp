@@ -233,8 +233,9 @@ export default function Club() {
           </div>
 
           <p className="text-center text-xs text-muted-foreground mt-6">
-            Cancel any time from your billing portal. 10% of every payment goes to the Unique Good Fund.
+            Cancel any time by contacting support. 10% of every payment goes to the Unique Good Fund.
           </p>
+
 
           {/* Card preview */}
           <div className="mt-12 flex flex-col items-center">
