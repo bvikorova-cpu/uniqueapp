@@ -199,25 +199,8 @@ const Dating = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('payment') === 'success') {
-      toast({ title: "Payment received 🎉", description: "Activating your subscription..." });
-      // Webhook activates async — poll briefly
-      const poll = async () => {
-        for (let i = 0; i < 6; i++) {
-          await new Promise(r => setTimeout(r, 1500));
-          const { data: { user: u } } = await supabase.auth.getUser();
-          if (u) { await checkSubscription(u.id); }
-        }
-        window.history.replaceState({}, '', '/dating');
-      };
-      poll();
-    } else if (params.get('payment') === 'canceled') {
-      toast({ title: "Payment canceled", variant: "destructive" });
-      window.history.replaceState({}, '', '/dating');
-    }
-  }, []);
+
+
 
   const checkAuth = async () => {
     const { data: { user } } = await supabase.auth.getUser();
