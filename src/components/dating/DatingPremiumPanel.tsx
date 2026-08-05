@@ -113,29 +113,28 @@ export const DatingPremiumPanel = ({ userId, isSubscribed, likesYouCount, onSubs
         </div>
       </section>
 
-      {/* Subscription tiers */}
+      {/* Daily credit access */}
       {!isSubscribed && (
         <section>
-          <h2 className="text-xl font-bold mb-3 flex items-center gap-2"><Crown className="h-5 w-5 text-yellow-500" /> Unique+ Membership</h2>
-          <div className="grid sm:grid-cols-2 gap-3">
-            <TierCard
-              name="Unique+ Monthly"
-              price="€2"
-              gradient="from-primary to-pink-500"
-              features={["See who likes you", "Unlimited likes", "5 Super Likes / day", "Rewind last swipe", "AI Tools (3 credits each)"]}
-              onClick={onSubscribe}
-            />
-            <TierCard
-              name="Unique+ Yearly"
-              price="€20"
-              gradient="from-yellow-500 to-orange-500"
-              highlight
-              features={["Everything in Monthly", "Priority in discovery", "10 Super Likes / day", "Advanced filters", "Read receipts", "Weekly boost", "Premium badge", "2× AI credits"]}
-              onClick={onSubscribe}
-            />
-          </div>
+          <h2 className="text-xl font-bold mb-3 flex items-center gap-2"><Crown className="h-5 w-5 text-yellow-500" /> Daily access</h2>
+          <Card className="border-2 border-primary/50 shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-2xl bg-gradient-to-r from-primary to-pink-500 bg-clip-text text-transparent">Dating access</CardTitle>
+              <p className="text-3xl font-bold">2<span className="text-sm font-normal text-muted-foreground"> credits / day</span></p>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {["See who likes you", "Unlimited likes", "Super Likes", "Rewind last swipe", "AI Tools (3 credits each)"].map(f => (
+                <div key={f} className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
+                  <span>{f}</span>
+                </div>
+              ))}
+              <Button className="w-full mt-3 bg-gradient-to-r from-primary to-pink-500" onClick={onSubscribe}>Unlock today · 2 credits</Button>
+            </CardContent>
+          </Card>
         </section>
       )}
+
 
       {/* Gift store */}
       {gifts.length > 0 && (
