@@ -545,8 +545,17 @@ const Dating = () => {
         .from("dating_super_likes")
         .upsert([{ swiper_id: user.id, swiped_id: currentCard.user_id }], { onConflict: "swiper_id,swiped_id", ignoreDuplicates: true });
       if (superError) { toast({ title: "Super Like failed", description: superError.message, variant: "destructive" }); setSwipeDirection(null); return; }
+      await supabase.rpc("send_user_notification", {
+        _user_id: currentCard.user_id,
+        _type: "dating_super_like",
+        _title: "⭐ Someone Super Liked you!",
+        _message: `${currentProfile?.display_name || "Someone"} sent you a Super Like`,
+        _related_id: null,
+        _action_url: "/dating",
+      });
       toast({ title: "⭐ Super Like!", description: `${currentCard.display_name} will be notified!` });
       setSuperLikesRemaining(Math.max(0, superLikesRemaining - 1));
+
 
     }
     const { rateLimit } = await import("@/lib/scaleGuards");
