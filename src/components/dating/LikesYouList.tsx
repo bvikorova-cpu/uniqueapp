@@ -44,41 +44,34 @@ export const LikesYouList = ({ userId, currentProfile, onMatch, onLikesSeen }: P
   const loadLikers = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from("dating_likes_you")
-        .select("liker_id")
-        .eq("liked_id", userId)
-        .eq("seen", false)
-        .order("created_at", { ascending: false });
-
+      // Server-side function: returns everyone who liked me and whom I haven't
+      // answered yet (RLS prevents reading other people's swipes directly).
+      const { data, error } = await supabase.rpc("get_dating_likes_you" as any);
       if (error) throw error;
 
-      const likerIds = (data || []).map((row) => row.liker_id).filter(Boolean);
-      let profiles: DatingProfile[] = [];
-
-      if (likerIds.length > 0) {
-        const { data: profileData, error: profileError } = await supabase
-          .from("dating_profiles")
-          .select("*")
-          .in("user_id", likerIds)
-          .eq("is_active", true);
-
-        if (profileError) throw profileError;
-        profiles = (profileData || []) as DatingProfile[];
-      }
+      const profiles = ((data || []) as any[]).map((row) => ({
+        id: row.user_id,
+        user_id: row.user_id,
+        display_name: row.display_name,
+        bio: row.bio,
+        age: row.age,
+        gender: row.gender,
+        looking_for: row.looking_for,
+        location: row.location,
+        profile_photo_url: row.profile_photo_url,
+        additional_photos: row.additional_photos,
+        interests: row.interests,
+      })) as DatingProfile[];
 
       setLikes(profiles);
       onLikesSeen?.(profiles.length);
-
-      if (data && data.length > 0) {
-        await supabase.from("dating_likes_you").update({ seen: true }).eq("liked_id", userId);
-      }
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
     } finally {
       setLoading(false);
     }
   };
+
 
   const handleLikeBack = async (profile: DatingProfile) => {
     setProcessing(profile.user_id);
