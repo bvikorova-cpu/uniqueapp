@@ -156,7 +156,16 @@ const BestFriend = () => {
         }
       }
     } catch (e: any) { toast.error("Error communicating"); setMessages(p => p.slice(0, -1)); }
-    finally { setIsLoading(false); refreshCredits(); }
+    finally { setIsLoading(false); refreshCredits(); refreshMessageCount(); }
+  };
+
+  // Real persisted message count from the database
+  const refreshMessageCount = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setMessageCount(0); return; }
+    const { count } = await supabase.from('best_friend_conversations')
+      .select('id', { count: 'exact', head: true }).eq('user_id', user.id);
+    setMessageCount(count ?? 0);
   };
 
   const handleSend = async () => {
