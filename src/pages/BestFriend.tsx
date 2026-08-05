@@ -65,10 +65,11 @@ const BestFriend = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showSubscriptionDialog, setShowSubscriptionDialog] = useState(false);
+  const [showCreditsDialog, setShowCreditsDialog] = useState(false);
   const [loadingHistory, setLoadingHistory] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { subscription, refresh: refreshSubscription, createCheckout, manageSubscription, purchaseMessages } = useBestFriendSubscription();
+  const navigate = useNavigate();
+  const { credits, loading: creditsLoading, canSendMessage, refresh: refreshCredits } = useBestFriendChatCredits();
 
   useEffect(() => { loadHistory(); }, []);
 
