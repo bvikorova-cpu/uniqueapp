@@ -435,3 +435,6 @@ verify_jwt = true
 verify_jwt = true
 
 
+
+[functions.best-friend-chat]
+verify_jwt = true
