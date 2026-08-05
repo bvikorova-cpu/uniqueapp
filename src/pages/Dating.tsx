@@ -33,9 +33,6 @@ import { CompatibilityQuiz, computeCompatibility } from "@/components/dating/Com
 import { OpeningMoveEditor } from "@/components/dating/OpeningMoveEditor";
 import { MatchExpiryBadge } from "@/components/dating/MatchExpiryBadge";
 import { DiscoveryTabs, type DiscoveryMode } from "@/components/dating/DiscoveryTabs";
-import { VoiceNoteRecorder } from "@/components/dating/VoiceNoteRecorder";
-import { DatePlanCard } from "@/components/dating/DatePlanCard";
-import { MatchPollCard } from "@/components/dating/MatchPollCard";
 import { DatingPremiumPanel } from "@/components/dating/DatingPremiumPanel";
 import { DatingNotificationsCenter } from "@/components/dating/DatingNotificationsCenter";
 import { DatingAnalyticsPanel } from "@/components/dating/DatingAnalyticsPanel";
