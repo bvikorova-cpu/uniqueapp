@@ -443,7 +443,28 @@ export const MessengerAIFeatures = ({ userId,
 
       if (handleAIError(error, data)) return;
 
-      setWhatIfStory(data);
+      // The edge function returns { result: "<json string>" }
+      let parsed: any = data?.story || data?.title ? data : (data?.result ?? null);
+      if (typeof parsed === "string") {
+        try {
+          parsed = JSON.parse(parsed.replace(/^```json\s*|```$/g, "").trim());
+        } catch {
+          parsed = { story: parsed };
+        }
+      }
+      const story = parsed?.story || parsed?.text || parsed?.message || "";
+      if (!story) {
+        toast({ title: "No story returned", description: "Please try again.", variant: "destructive" });
+        return;
+      }
+
+      setWhatIfStory({
+        title: parsed?.title || "What If...",
+        story,
+        keyMoments: Array.isArray(parsed?.keyMoments) ? parsed.keyMoments : [],
+        lifeLesson: parsed?.lifeLesson || "",
+        imageUrl: parsed?.imageUrl || null,
+      });
       await fetchCredits();
       toast({ title: "Story ready!", description: `${data.creditsUsed} credits used` });
     } catch (error: any) {
