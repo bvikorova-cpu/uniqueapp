@@ -45,6 +45,8 @@ import { Dating16Gate } from "@/components/dating/Dating16Gate";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { DatingProfileDetailsCard, DatingDetailsGrid } from "@/components/dating/DatingProfileDetails";
+
 interface DatingProfile {
   id: string;
   user_id: string;
