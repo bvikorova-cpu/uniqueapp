@@ -150,10 +150,10 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
           preferred_gender: v.preferred_gender || null,
           relationship_goal: v.relationship_goal || null,
           languages: v.languages.length ? v.languages : null,
-          is_active: true });
+          is_active: true }, { onConflict: "user_id" });
 
       if (error) throw error;
-      toast({ title: "Profile Created!", description: "You can now start finding matches" });
+      toast({ title: isEditing ? "Profile Updated!" : "Profile Created!", description: isEditing ? "Your changes were saved" : "You can now start finding matches" });
       onComplete();
     } catch (error: any) {
       console.error("Error creating profile:", error);
