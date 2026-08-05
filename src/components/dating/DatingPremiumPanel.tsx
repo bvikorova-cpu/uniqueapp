@@ -39,19 +39,58 @@ interface Props {
 
 export const DatingPremiumPanel = ({ userId, isSubscribed, likesYouCount, onSubscribe }: Props) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [credits, setCredits] = useState<number>(0);
   const [gifts, setGifts] = useState<any[]>([]);
+  const [perks, setPerks] = useState<{ boosts: number; super_likes: number }>({ boosts: 0, super_likes: 0 });
+  const [buying, setBuying] = useState<string | null>(null);
+
+  const refresh = async () => {
+    const [{ data }, { data: p }] = await Promise.all([
+      supabase.from("ai_credits").select("credits_remaining").eq("user_id", userId).maybeSingle(),
+      supabase.from("dating_perk_balances").select("boosts, super_likes").eq("user_id", userId).maybeSingle(),
+    ]);
+    setCredits(data?.credits_remaining ?? 0);
+    setPerks({ boosts: p?.boosts ?? 0, super_likes: p?.super_likes ?? 0 });
+  };
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", userId).maybeSingle();
-      setCredits(data?.credits_remaining ?? 0);
+      await refresh();
       const { data: g } = await supabase.from("dating_gifts").select("*").order("price", { ascending: true });
       setGifts(g || []);
     })();
   }, [userId]);
 
   const goTopUp = () => navigate("/ai-credits");
+
+  const buyPack = async (pack: Pack, kind: "boost" | "super_like") => {
+    if (buying) return;
+    if (credits < pack.credits) {
+      toast({ title: "Not enough credits", description: `${pack.label} costs ${pack.credits} credits. You have ${credits}.`, variant: "destructive" });
+      return;
+    }
+    setBuying(pack.key);
+    try {
+      const { data, error } = await supabase.rpc("purchase_dating_perk", { p_kind: kind, p_count: pack.count, p_credits: pack.credits });
+      const res = data as any;
+      if (error || !res?.success) {
+        toast({
+          title: res?.error === "insufficient_credits" ? "Not enough credits" : "Purchase failed",
+          description: res?.error === "insufficient_credits" ? `${pack.label} costs ${pack.credits} credits.` : (error?.message || "Please try again."),
+          variant: "destructive",
+        });
+        return;
+      }
+      setPerks({ boosts: res.boosts ?? 0, super_likes: res.super_likes ?? 0 });
+      setCredits(c => Math.max(0, c - pack.credits));
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      toast({ title: "Purchased!", description: `${pack.label} added to your account (−${pack.credits} credits).` });
+    } finally {
+      setBuying(null);
+    }
+  };
+
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
