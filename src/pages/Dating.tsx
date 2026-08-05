@@ -1489,7 +1489,7 @@ const Dating = () => {
           <div className="grid grid-cols-3 gap-3">
             {availableGifts.map((gift) => (
               <button key={gift.id} onClick={() => handleSendGift(gift.id)} className="p-4 rounded-xl border border-border hover:border-primary/50 hover:bg-primary/5 transition-all text-center">
-                <div className="text-3xl mb-1">{gift.icon}</div><p className="text-xs font-medium truncate">{gift.name}</p><p className="text-[10px] text-muted-foreground">{gift.price} €</p>
+                <div className="text-3xl mb-1">{gift.icon}</div><p className="text-xs font-medium truncate">{gift.name}</p><p className="text-[10px] text-muted-foreground">{gift.credit_cost} credits</p>
               </button>
             ))}
           </div>
