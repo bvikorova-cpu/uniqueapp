@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Send, Check, CheckCheck, Settings2, Download, AlertOctagon, ShieldX, Timer, Wand2 } from "lucide-react";
+import { Send, Check, CheckCheck, Settings2, Download, AlertOctagon, ShieldX, Timer, Wand2, Camera } from "lucide-react";
 import { ChatSafetyMenu } from "./ChatSafetyMenu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -278,7 +278,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
       <Card className={`flex flex-col h-anon-chat overflow-hidden bg-gradient-to-br ${themeGradient(theme)} backdrop-blur-xl border-primary/20 shadow-2xl`}>
         {/* Header */}
         <div className="p-3 border-b border-white/10 bg-black/25 backdrop-blur-md space-y-2">
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
             <div className="flex items-center gap-2 min-w-0 flex-1">
               <AnonymousAvatar seed={partnerName} size={36} online={partnerOnline} />
               <div className="min-w-0">
@@ -289,16 +289,29 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
                 </p>
               </div>
             </div>
-          <div className="flex items-center justify-end gap-1.5 shrink-0">
-
-            <button onClick={downloadPDF} className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white" title="Export PDF">
+          </div>
+          <div className="grid grid-cols-5 gap-1.5 w-full">
+            <Button type="button" variant="ghost" size="icon" onClick={downloadPDF} className="h-9 w-full rounded-md bg-white/10 hover:bg-white/20 text-white" title="Export PDF" aria-label="Export chat as PDF">
               <Download className="h-3.5 w-3.5" />
-            </button>
+            </Button>
             <Sheet>
               <SheetTrigger asChild>
-                <button className="p-1.5 rounded-full bg-anon-date-gradient text-white hover:opacity-90" title="AI Toolbox">
+                <Button type="button" variant="ghost" size="icon" className="h-9 w-full rounded-md bg-white/10 hover:bg-white/20 text-white" title="Upload reveal photo" aria-label="Upload reveal photo">
+                  <Camera className="h-3.5 w-3.5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto">
+                <SheetHeader>
+                  <SheetTitle>Your hidden reveal photo</SheetTitle>
+                </SheetHeader>
+                <div className="mt-4"><PrivatePhotoUpload /></div>
+              </SheetContent>
+            </Sheet>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button type="button" variant="ghost" size="icon" className="h-9 w-full rounded-md bg-anon-date-gradient text-white hover:opacity-90" title="AI Toolbox" aria-label="Open AI toolbox">
                   <Wand2 className="h-3.5 w-3.5" />
-                </button>
+                </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-full sm:max-w-2xl overflow-y-auto">
                 <SheetHeader>
@@ -309,9 +322,9 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
                 </div>
               </SheetContent>
             </Sheet>
-            <button onClick={() => setShowSettings(s => !s)} className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white" title="Settings">
+            <Button type="button" variant="ghost" size="icon" onClick={() => setShowSettings(s => !s)} className="h-9 w-full rounded-md bg-white/10 hover:bg-white/20 text-white" title="Settings" aria-label="Open chat settings">
               <Settings2 className="h-3.5 w-3.5" />
-            </button>
+            </Button>
             <ChatSafetyMenu
               blockedByMe={safety.blockedByMe}
               submitting={safety.submitting}
@@ -320,8 +333,8 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
               }
               onBlock={safety.block}
               onUnblock={safety.unblock}
+              className="h-9 w-full justify-center rounded-md px-0"
             />
-            </div>
           </div>
           <div className="flex flex-wrap items-center gap-1.5">
             <Badge
@@ -525,12 +538,6 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
 
       {/* Timed photo reveal — free after 7 days, or earlier for credits */}
       <PhotoReveal matchId={match.id} partnerName={partnerName} />
-
-      {/* Upload / replace your own hidden reveal photo */}
-      <PrivatePhotoUpload />
-
-
-
 
       {/* Daily AI question */}
       <DailyQuestion
