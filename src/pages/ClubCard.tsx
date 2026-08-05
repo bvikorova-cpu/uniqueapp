@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Crown, Download, FileDown, RotateCw, Trophy } from "lucide-react";
+import { ArrowLeft, Crown, Download, FileDown, RotateCw } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import clubCardPreview from "@/assets/club-card-preview.png.asset.json";
