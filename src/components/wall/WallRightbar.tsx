@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { Gift, Calendar, TrendingUp } from "lucide-react";
 import { TrendingSidebar } from "./TrendingSidebar";
 import { FriendsHubWidget } from "./FriendsHubWidget";
+import { FriendRequestsSection } from "./FriendRequestsSection";
+
 import { MemoriesWidget } from "./MemoriesWidget";
 import { BirthdaysWidget } from "./BirthdaysWidget";
 import { ActivityFeedCard } from "./ActivityFeedCard";
@@ -68,7 +70,12 @@ export function WallRightbar() {
       <BirthdaysWidget />
 
       {/* Friend Requests + People You May Know */}
+      {/* Friend Requests (received + sent) */}
+      <FriendRequestsSection />
+
+      {/* Friend Requests + People You May Know */}
       <FriendsHubWidget />
+
 
       {/* Streaks & Challenges */}
       <StreaksAndChallenges />
