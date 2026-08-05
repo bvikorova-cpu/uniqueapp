@@ -502,10 +502,6 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
               placeholder={safeWord ? `Type… (safe word active)` : "Type anonymously…"}
               className="flex-1 bg-background/70 border-border/50"
             />
-            <VoiceRecorderButton
-              userId={currentUserId}
-              onUploaded={(url) => { sendMessage("🎤 Voice message", "voice", url); bumpStreak(); }}
-            />
             <GiftPicker matchId={match.id} />
 
             <Button type="submit" size="icon" disabled={!input.trim() || moderating} className="rounded-full bg-anon-date-gradient">
