@@ -93,9 +93,5 @@ export function MemberBadge({ userId,
     </TooltipProvider>
   );
 }
-      </Tooltip>
-    </TooltipProvider>
-  );
-}
 
 export default MemberBadge;
