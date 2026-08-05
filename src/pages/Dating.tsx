@@ -478,6 +478,25 @@ const Dating = () => {
     }
   };
 
+  // Open a specific conversation inside the app (Matches tab) and load its messages
+  const openMatchChat = async (match: Match, partner?: DatingProfile | null) => {
+    if (!match?.id) return;
+    let resolved: Match = match.profile ? match : ({ ...match, profile: partner || undefined } as Match);
+    if (!resolved.profile && user) {
+      const otherId = match.user1_id === user.id ? match.user2_id : match.user1_id;
+      const { data: p } = await supabase.from("dating_profiles_browse").select("*").eq("user_id", otherId).maybeSingle();
+      if (p) resolved = { ...match, profile: p as any } as Match;
+    }
+    setMessages([]);
+    setSentGifts([]);
+    setSelectedMatch(resolved);
+    setActiveTab("matches");
+    await loadMessages(match.id);
+    if (user) await loadMatches(user.id);
+    setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 80);
+  };
+
+
   const handleTogglePrivacy = async (patch: { incognito?: boolean; read_receipts_enabled?: boolean }) => {
     if (!currentProfile) return;
     const { error } = await supabase.from("dating_profiles").update(patch).eq("id", currentProfile.id);
@@ -1253,7 +1272,7 @@ const Dating = () => {
                 {matches.length > 0 ? (
                   <div className="space-y-3">
                     {matches.map((match) => (
-                      <Card key={match.id} className="cursor-pointer hover:bg-muted/30 transition-colors border-border/50" onClick={() => { setSelectedMatch(match); loadMessages(match.id); }}>
+                      <Card key={match.id} className="cursor-pointer hover:bg-muted/30 transition-colors border-border/50" onClick={() => { void openMatchChat(match); }}>
                         <CardContent className="p-4 flex items-center gap-4">
                           <div className="h-14 w-14 rounded-full overflow-hidden bg-gradient-to-br from-primary to-accent flex-shrink-0">
                             {match.profile?.profile_photo_url ? <img src={match.profile.profile_photo_url} alt="" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-white font-bold text-lg">{match.profile?.display_name?.charAt(0) || "?"}</div>}
@@ -1482,12 +1501,11 @@ const Dating = () => {
         theirName={matchCelebration?.partner.display_name}
         location={matchCelebration?.partner.location}
         onStartChat={() => {
-          if (matchCelebration) {
-            setSelectedMatch(matchCelebration.match);
-            setActiveTab("matches");
-          }
+          const c = matchCelebration;
           setMatchCelebration(null);
+          if (c) void openMatchChat(c.match, c.partner);
         }}
+
         onFindAnother={() => setMatchCelebration(null)}
         onViewMatches={() => {
           setMatchCelebration(null);
