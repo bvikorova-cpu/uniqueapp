@@ -381,6 +381,36 @@ export default function AnonymousDate() {
                 </Card>
               </motion.div>
 
+              {/* Mobile Quick Actions (sidebar is far below on small screens) */}
+              <Card className="lg:hidden p-4 bg-card/60 backdrop-blur-sm border border-border/50">
+                <h3 className="font-bold text-sm mb-3 flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-primary" />
+                  Quick Actions
+                </h3>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button onClick={() => setActiveView("swipe")} size="sm" className="justify-start gap-2 bg-anon-date-gradient">
+                    <Heart className="h-4 w-4" />
+                    Swiping
+                  </Button>
+                  <Button onClick={() => setActiveView("find")} disabled={loading} size="sm" className="justify-start gap-2">
+                    <Search className="h-4 w-4" />
+                    Find Match
+                  </Button>
+                  <Button onClick={() => setActiveView("matches")} variant="outline" size="sm" className="justify-start gap-2">
+                    <MessageCircle className="h-4 w-4" />
+                    Matches ({activeMatches.length})
+                  </Button>
+                  <Button onClick={() => setActiveView("credits")} variant="outline" size="sm" className="justify-start gap-2">
+                    <CreditCard className="h-4 w-4" />
+                    Buy Credits
+                  </Button>
+                  <Button onClick={() => setActiveView("profile")} variant="secondary" size="sm" className="col-span-2 justify-start gap-2">
+                    <UserPlus className="h-4 w-4" />
+                    Edit Profile
+                  </Button>
+                </div>
+              </Card>
+
 
               {/* Engagement Row */}
               <motion.div
