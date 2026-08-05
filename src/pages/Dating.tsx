@@ -1072,15 +1072,8 @@ const Dating = () => {
                         <PhotoLikeButton fromUserId={user.id} toUserId={currentCard.user_id} photoUrl={cardPhotos[activePhotoIndex]} />
                       )}
                     </div>
-                    <ProfileExtrasDisplay
-                      prompts={(currentCard.prompts as Prompt[] | null) || null}
-                      voiceUrl={currentCard.voice_intro_url}
-                      voiceDuration={currentCard.voice_intro_duration}
-                      spotifyUrl={currentCard.spotify_url}
-                      instagramUrl={currentCard.instagram_url}
-                      verified={!!currentCard.photo_verified}
-                      videoPrompts={(currentCard.video_prompts as VideoPrompt[] | null) || null}
-                    />
+
+
                     {currentCard.bio && <div className="px-5 py-3 border-b border-border/50"><p className="text-sm text-muted-foreground line-clamp-2">{currentCard.bio}</p></div>}
                     {currentCard.interests && currentCard.interests.length > 0 && (
                       <div className="px-5 py-3 border-b border-border/50">
