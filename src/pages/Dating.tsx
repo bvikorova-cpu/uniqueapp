@@ -1095,7 +1095,9 @@ const Dating = () => {
 
           {/* ==================== DISCOVER TAB ==================== */}
           <TabsContent value="swipe" className="flex flex-col items-center gap-3">
-            <div className="w-full max-w-sm"><DiscoveryTabs mode={discoveryMode} onChange={setDiscoveryMode} /></div>
+            <div className="w-full max-w-sm">
+              <DatingSearch value={searchQuery} onChange={setSearchQuery} onOpenFilters={() => setShowFilters(true)} resultCount={profiles.length} />
+            </div>
             <div className="w-full flex justify-center">
             <AnimatePresence mode="wait">
               {currentCard ? (
