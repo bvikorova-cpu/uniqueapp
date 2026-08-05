@@ -26,6 +26,92 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
+    const body = await req.json().catch(() => ({}));
+    if (["admin_list_members", "admin_mark_shipped", "admin_mark_delivered"].includes(body?.action)) {
+      const { data: roleRow } = await admin
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+      if (!roleRow) throw new Error("Admin only");
+
+      if (body.action === "admin_mark_shipped" || body.action === "admin_mark_delivered") {
+        if (!body?.membershipId) throw new Error("membershipId required");
+        const shipped = body.action === "admin_mark_shipped";
+        const changes = shipped
+          ? {
+              shipping_status: "shipped",
+              tracking_number: body?.trackingNumber ?? null,
+              shipped_at: new Date().toISOString(),
+            }
+          : { shipping_status: "delivered", delivered_at: new Date().toISOString() };
+        const { data: membership, error } = await admin
+          .from("club_memberships")
+          .update(changes)
+          .eq("id", body.membershipId)
+          .select("user_id")
+          .maybeSingle();
+        if (error) throw error;
+        if (membership) {
+          await admin.from("notifications").insert({
+            user_id: membership.user_id,
+            type: shipped ? "club_card_shipped" : "club_card_delivered",
+            title: shipped ? "📮 Your Unique VIP card is on the way!" : "🎉 Your VIP card was delivered",
+            message: shipped
+              ? body?.trackingNumber
+                ? `Tracking: ${body.trackingNumber}`
+                : "Your card should arrive within 5–21 business days."
+              : "Tap it to any NFC phone to open your Unique profile.",
+          });
+        }
+        return new Response(JSON.stringify({ ok: true }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const columns =
+        "id, user_id, member_number, tier, status, is_founding, recipient_name, phone, shipping_address, shipping_note, shipping_status, tracking_number, shipped_at, delivered_at, started_at, current_period_end";
+      let query = admin.from("club_memberships").select(columns);
+      if (body?.tier === "digital" || body?.tier === "physical") query = query.eq("tier", body.tier);
+      if (Array.isArray(body?.shippingStatus) && body.shippingStatus.length) {
+        query = query.in("shipping_status", body.shippingStatus);
+      }
+      const { data, error } = await query.order("started_at", { ascending: false });
+      if (error) throw error;
+
+      const userIds = (data ?? []).map((membership) => membership.user_id);
+      let profileByUser: Record<string, { email: string | null; name: string | null }> = {};
+      if (userIds.length) {
+        const { data: profiles } = await admin
+          .from("profiles")
+          .select("id, email, display_name, username")
+          .in("id", userIds);
+        profileByUser = Object.fromEntries(
+          (profiles ?? []).map((profile) => [
+            profile.id,
+            { email: profile.email ?? null, name: profile.display_name ?? profile.username ?? null },
+          ]),
+        );
+      }
+      const items = (data ?? []).map((membership) => ({
+        ...membership,
+        user_email: profileByUser[membership.user_id]?.email ?? null,
+        user_name: profileByUser[membership.user_id]?.name ?? null,
+      }));
+      const counts = {
+        total: items.length,
+        digital: items.filter((membership) => membership.tier === "digital").length,
+        physical: items.filter((membership) => membership.tier === "physical").length,
+        pending_shipping: items.filter(
+          (membership) => membership.tier === "physical" && membership.shipping_status === "pending",
+        ).length,
+      };
+      return new Response(JSON.stringify({ items, counts }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { data: m } = await admin
       .from("club_memberships")
       .select("*")

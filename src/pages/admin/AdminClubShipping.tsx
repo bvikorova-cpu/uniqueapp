@@ -64,13 +64,13 @@ export default function AdminClubShipping() {
   const load = async (nextFilter: Filter = filter) => {
     setLoading(true);
     try {
-      const body: Record<string, unknown> = { action: "list_members" };
+      const body: Record<string, unknown> = { action: "admin_list_members" };
       if (nextFilter === "digital" || nextFilter === "physical") body.tier = nextFilter;
       if (nextFilter === "to_ship") {
         body.tier = "physical";
         body.shippingStatus = ["pending"];
       }
-      const { data, error } = await supabase.functions.invoke("admin-club-shipping", { body });
+      const { data, error } = await supabase.functions.invoke("check-club-status", { body });
       if (error) throw error;
       setRows(((data as any)?.items ?? []) as MemberRow[]);
       setCounts(((data as any)?.counts ?? null) as Counts | null);
@@ -86,8 +86,8 @@ export default function AdminClubShipping() {
   const markShipped = async (row: MemberRow) => {
     try {
       const t = (tracking[row.id] ?? "").trim();
-      const { error } = await supabase.functions.invoke("admin-club-shipping", {
-        body: { action: "mark_shipped", membershipId: row.id, trackingNumber: t || null } });
+      const { error } = await supabase.functions.invoke("check-club-status", {
+        body: { action: "admin_mark_shipped", membershipId: row.id, trackingNumber: t || null } });
       if (error) throw error;
       toast({ title: "Marked as shipped" });
       load();
@@ -98,8 +98,8 @@ export default function AdminClubShipping() {
 
   const markDelivered = async (row: MemberRow) => {
     try {
-      const { error } = await supabase.functions.invoke("admin-club-shipping", {
-        body: { action: "mark_delivered", membershipId: row.id } });
+      const { error } = await supabase.functions.invoke("check-club-status", {
+        body: { action: "admin_mark_delivered", membershipId: row.id } });
       if (error) throw error;
       toast({ title: "Marked as delivered" });
       load();
