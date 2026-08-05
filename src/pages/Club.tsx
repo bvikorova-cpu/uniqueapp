@@ -37,8 +37,9 @@ export default function Club() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  const { membership, isMember, openBillingPortal, refresh } =
+  const { membership, isMember, refresh } =
     useClubMembership();
+
   
   const [verifying, setVerifying] = useState(false);
 
