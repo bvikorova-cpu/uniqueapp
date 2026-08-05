@@ -250,6 +250,12 @@ export default function Club() {
                 className="relative w-full rounded-2xl shadow-2xl ring-1 ring-amber-500/30"
                 loading="lazy"
               />
+              {/* Sample watermark */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden rounded-2xl">
+                <span className="text-4xl sm:text-5xl font-black uppercase tracking-widest text-white/40 dark:text-white/25 rotate-[-20deg] select-none drop-shadow-lg border-4 border-white/30 dark:border-white/20 px-6 py-2 rounded-lg">
+                  Sample
+                </span>
+              </div>
             </div>
             <p className="text-center text-base md:text-lg font-semibold mt-6 max-w-md bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
               A unique card for unique people.
