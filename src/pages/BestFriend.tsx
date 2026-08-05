@@ -298,8 +298,8 @@ const BestFriend = () => {
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
                 <Card className="bg-card/80 backdrop-blur-xl border-purple-500/20 text-center p-4">
                   <Heart className="h-6 w-6 text-pink-400 mx-auto mb-2" />
-                  <div className="text-2xl font-black">{subscription.subscribed ? "Active" : "Free"}</div>
-                  <p className="text-xs text-muted-foreground">Subscription Status</p>
+                  <div className="text-2xl font-black">{credits}</div>
+                  <p className="text-xs text-muted-foreground">AI Credits</p>
                 </Card>
               </motion.div>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
