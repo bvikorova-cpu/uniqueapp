@@ -212,6 +212,33 @@ const Messenger = () => {
     setFriendsOnlineCount(online);
   }, [conversations, isUserOnline]);
 
+  // Real AI credit balance (unified ai_credits pool) — live for every user.
+  useEffect(() => {
+    if (!user?.id) { setAiCreditsBalance(0); return; }
+    let cancelled = false;
+    const load = async () => {
+      const { data } = await supabase
+        .from("ai_credits")
+        .select("credits_remaining")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!cancelled) setAiCreditsBalance(data?.credits_remaining ?? 0);
+    };
+    load();
+    const onUpdated = () => { void load(); };
+    window.addEventListener("ai-credits-updated", onUpdated);
+    const channel = supabase
+      .channel(`ai-credits-messenger-${user.id}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "ai_credits", filter: `user_id=eq.${user.id}` }, () => { void load(); })
+      .subscribe();
+    return () => {
+      cancelled = true;
+      window.removeEventListener("ai-credits-updated", onUpdated);
+      void supabase.removeChannel(channel);
+    };
+  }, [user?.id]);
+
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
