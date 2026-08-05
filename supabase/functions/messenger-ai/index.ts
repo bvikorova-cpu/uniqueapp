@@ -122,14 +122,36 @@ Deno.serve(async (req) => {
         break;
       }
       case "what-if": {
-        const json = await callOpenAIJSON({
-          system: `You are a creative "What If" life story generator. Create an engaging alternative life story (300-400 words). Return a JSON object with: "title", "story", "keyMoments" (array of 3).`,
-          user: params.scenario || text || context || "",
-          model: "gpt-4o-mini",
-        });
-        result = JSON.stringify(json);
+        const scenario = params.scenario || text || context || "";
+        const system = `You are a creative "What If" life story generator. Create an engaging alternative life story of about 180-220 words. Return ONLY a JSON object with: "title" (string), "story" (string), "keyMoments" (array of exactly 3 short strings), "lifeLesson" (string).`;
+        try {
+          const json = await callOpenAIJSON({
+            system,
+            user: scenario,
+            model: "gpt-4o-mini",
+            max_completion_tokens: 6000,
+          });
+          result = JSON.stringify(json);
+        } catch (err) {
+          console.error("what-if JSON attempt failed, falling back to text", (err as Error)?.message);
+          const plain = await callOpenAI({
+            system: `You are a creative "What If" life story generator. Write an engaging alternative life story of about 180 words. Plain text only, start with a short title line.`,
+            user: scenario,
+            model: "gpt-4o-mini",
+            max_completion_tokens: 6000,
+          });
+          if (!plain) throw err;
+          const [firstLine, ...rest] = plain.split("\n").filter(Boolean);
+          result = JSON.stringify({
+            title: firstLine.replace(/^#+\s*/, "").slice(0, 120),
+            story: rest.join("\n\n") || plain,
+            keyMoments: [],
+            lifeLesson: "",
+          });
+        }
         break;
       }
+
       default: throw new Error(`Unknown action: ${action}`);
     }
 
