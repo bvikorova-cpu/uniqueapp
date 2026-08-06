@@ -39,7 +39,7 @@ interface WallPostProps {
 
 /**
  * Single feed row: renders a PostCard or RepostCard and an
- * interstitial Monetag ad every 20 items.
+ * interstitial Monetag ad every 10 items.
  */
 const WallPost = ({ item, index, onDelete }: WallPostProps) => {
   return (
@@ -49,14 +49,15 @@ const WallPost = ({ item, index, onDelete }: WallPostProps) => {
       ) : (
         <RepostCard repost={item.data} onDelete={onDelete} />
       )}
-      {(index + 1) % 20 === 0 && (
+      {(index + 1) % 10 === 0 && (
         <div className="mt-3 sm:mt-4">
-          <MonetagInFeedAd slotIndex={Math.floor((index + 1) / 20)} />
+          <MonetagInFeedAd slotIndex={Math.floor((index + 1) / 10)} />
         </div>
       )}
     </div>
   );
 };
+
 
 export default memo(
   WallPost,
