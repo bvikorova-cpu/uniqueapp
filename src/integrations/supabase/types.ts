@@ -69608,6 +69608,31 @@ export type Database = {
       get_featured_campaign: { Args: never; Returns: Json }
       get_follower_count: { Args: { user_id: string }; Returns: number }
       get_following_count: { Args: { user_id: string }; Returns: number }
+      get_forum_leaderboard: {
+        Args: { _limit?: number }
+        Returns: {
+          avatar_url: string
+          comments_count: number
+          full_name: string
+          likes_received: number
+          points: number
+          posts_count: number
+          user_id: string
+        }[]
+      }
+      get_forum_reputation: {
+        Args: { _user_id?: string }
+        Returns: {
+          badges: string[]
+          comments_count: number
+          helpful_count: number
+          likes_received: number
+          points: number
+          posts_count: number
+          streak_days: number
+          user_id: string
+        }[]
+      }
       get_fundraising_stats: { Args: never; Returns: Json }
       get_healthy_leaderboard: {
         Args: { _limit?: number; _month_key: string }
