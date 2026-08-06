@@ -4,6 +4,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
 import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 import { callOpenAI } from "../_shared/openai.ts";
+import { spendAiCredits } from "../_shared/spendCredits.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
@@ -174,33 +175,45 @@ serve(async (req) => {
 
     if (!charCheck) throw new Error("Character not found");
 
-    if (charCheck.is_premium) {
-      const { data: access } = await supabaseClient
-        .from("user_character_access")
-        .select("id")
+    // ===== Credit-based access (no subscriptions) =====
+    const adminClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { persistSession: false } }
+    );
+
+    const messageCost = charCheck.is_premium ? 4 : 2;
+    const spend = await spendAiCredits(
+      adminClient,
+      user.id,
+      messageCost,
+      `Companion chat message (${charCheck.name})`,
+      "character-chat",
+    );
+
+    if (!spend.ok) {
+      return new Response(
+        JSON.stringify({
+          error: `Not enough AI credits. This message costs ${messageCost} credits.`,
+          credits_required: messageCost,
+          credits_remaining: spend.remaining,
+        }),
+        { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const refundMessageCredits = async () => {
+      const { data: row } = await adminClient
+        .from("ai_credits")
+        .select("credits_remaining")
         .eq("user_id", user.id)
-        .eq("character_id", characterId)
         .maybeSingle();
-      if (!access) {
-        return new Response(JSON.stringify({ error: "Premium character access required" }), {
-          status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-    }
+      await adminClient
+        .from("ai_credits")
+        .update({ credits_remaining: (row?.credits_remaining ?? 0) + messageCost })
+        .eq("user_id", user.id);
+    };
 
-    const { data: companionsSub } = await supabaseClient
-      .from("companions_subscriptions")
-      .select("subscription_status, free_messages_used")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    if (!charCheck.is_premium) {
-      const isSubscribed = companionsSub?.subscription_status === "active";
-      const freeUsed = companionsSub?.free_messages_used || 0;
-      if (!isSubscribed && freeUsed >= 5) {
-        return new Response(JSON.stringify({ error: "Free message limit reached. Subscribe for unlimited." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-    }
 
     const { data: history } = await supabaseClient
       .from("character_messages")
@@ -214,34 +227,38 @@ serve(async (req) => {
       : "";
     const sumStr = conv.summary ? `\n\nSummary: ${conv.summary}` : "";
 
-    const aiMsg = await callOpenAI({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: charCheck.system_prompt + memStr + sumStr + KIDS_SAFETY_PROMPT },
-        ...(history || []),
-        { role: "user", content: userMessage },
-      ],
-    });
-    if (!aiMsg) throw new Error("No response generated");
+    let aiMsg: string | null = null;
+    try {
+      aiMsg = await callOpenAI({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: charCheck.system_prompt + memStr + sumStr + KIDS_SAFETY_PROMPT },
+          ...(history || []),
+          { role: "user", content: userMessage },
+        ],
+      });
+    } catch (e) {
+      await refundMessageCredits();
+      throw e;
+    }
+    if (!aiMsg) {
+      await refundMessageCredits();
+      throw new Error("No response generated");
+    }
 
     await supabaseClient.from("character_messages").insert([
       { conversation_id: conversationId, role: "user", content: userMessage },
       { conversation_id: conversationId, role: "assistant", content: aiMsg },
     ]);
 
-    if (!charCheck.is_premium && companionsSub && companionsSub.subscription_status !== "active") {
-      await supabaseClient
-        .from("companions_subscriptions")
-        .update({ free_messages_used: (companionsSub.free_messages_used || 0) + 1 })
-        .eq("user_id", user.id);
-    }
+
 
     await supabaseClient
       .from("character_conversations")
       .update({ updated_at: new Date().toISOString() })
       .eq("id", conversationId);
 
-    return new Response(JSON.stringify({ response: aiMsg }), {
+    return new Response(JSON.stringify({ response: aiMsg, credits_remaining: spend.remaining, credits_used: messageCost }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
