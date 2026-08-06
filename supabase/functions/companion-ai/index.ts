@@ -10,19 +10,64 @@ async function callAI(messages: any[]) {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
-    const { action, character, otherCompanions, historyFormatted, message, characterList, mood, context, ...params } = await req.json();
+    const { action, character, otherCompanions, historyFormatted, message, characterList, mood, context, characterIds, conversationHistory, ...params } = await req.json();
     let result: any;
     switch (action) {
-      case "group-chat":
-        result = await callAI([
-          {
-            role: "system",
-            content: `${character?.system_prompt || "You are an AI companion."}\n\nYou are in a GROUP CHAT with ${otherCompanions || "other companions"}. Keep responses short (1-3 sentences). Stay in character. You may reference or respond to what other companions said. Be natural and conversational.`
-          },
-          ...(historyFormatted || []),
-          { role: "user", content: message || "" },
-        ]);
-        break;
+      case "group-chat": {
+        // Load the selected companions from the DB
+        let chars: any[] = [];
+        if (Array.isArray(characterIds) && characterIds.length) {
+          const supaUrl = Deno.env.get("SUPABASE_URL")!;
+          const supaKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+          const res = await fetch(
+            `${supaUrl}/rest/v1/ai_characters?id=in.(${characterIds.join(",")})&select=id,name,personality_type,system_prompt`,
+            { headers: { apikey: supaKey, Authorization: `Bearer ${supaKey}` } },
+          );
+          chars = await res.json();
+          if (!Array.isArray(chars)) chars = [];
+          // keep the selection order
+          chars = characterIds.map((id: string) => chars.find((c: any) => c.id === id)).filter(Boolean);
+        } else if (character) {
+          chars = [character];
+        }
+
+        if (!chars.length) {
+          return new Response(JSON.stringify({ error: "No companions selected" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
+
+        const history = (conversationHistory || historyFormatted || [])
+          .filter((m: any) => m?.content)
+          .slice(-12)
+          .map((m: any) => ({
+            role: m.role === "assistant" ? "assistant" : "user",
+            content: m.role === "assistant" && m.name ? `${m.name}: ${m.content}` : m.content,
+          }));
+
+        const responses: { companion_name: string; response: string }[] = [];
+        for (const c of chars) {
+          const others = chars.filter((o: any) => o.id !== c.id).map((o: any) => o.name).join(", ");
+          const said = responses.map((r) => `${r.companion_name}: ${r.response}`).join("\n");
+          try {
+            const text = await callAI([
+              {
+                role: "system",
+                content: `${c.system_prompt || `You are ${c.name}, an AI companion (${c.personality_type || "friendly"}).`}\n\nYou are ${c.name} in a GROUP CHAT with ${others || "other companions"}. Keep responses short (1-3 sentences). Stay in character. Reply only with your own message, no name prefix.${said ? `\n\nAlready said in this turn:\n${said}` : ""}`,
+              },
+              ...history,
+              { role: "user", content: message || "Hi" },
+            ]);
+            if (text) responses.push({ companion_name: c.name, response: text });
+          } catch (_e) {
+            // skip a failing companion rather than breaking the whole group turn
+          }
+        }
+
+        if (!responses.length) {
+          return new Response(JSON.stringify({ error: "AI is busy, please try again" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
+        return new Response(JSON.stringify({ responses }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
       case "memory-analyze":
         result = await callAI([
           {
