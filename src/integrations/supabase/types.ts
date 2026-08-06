@@ -22420,6 +22420,75 @@ export type Database = {
         }
         Relationships: []
       }
+      emotion_exchange_matches: {
+        Row: {
+          amount_a: number
+          amount_b: number
+          created_at: string
+          emotion_a: string
+          emotion_b: string
+          id: string
+          user_a: string
+          user_b: string
+        }
+        Insert: {
+          amount_a: number
+          amount_b: number
+          created_at?: string
+          emotion_a: string
+          emotion_b: string
+          id?: string
+          user_a: string
+          user_b: string
+        }
+        Update: {
+          amount_a?: number
+          amount_b?: number
+          created_at?: string
+          emotion_a?: string
+          emotion_b?: string
+          id?: string
+          user_a?: string
+          user_b?: string
+        }
+        Relationships: []
+      }
+      emotion_exchange_queue: {
+        Row: {
+          created_at: string
+          id: string
+          matched_at: string | null
+          matched_with: string | null
+          offer_amount: number
+          offer_emotion: string
+          status: string
+          user_id: string
+          want_emotion: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          matched_at?: string | null
+          matched_with?: string | null
+          offer_amount?: number
+          offer_emotion: string
+          status?: string
+          user_id: string
+          want_emotion: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          matched_at?: string | null
+          matched_with?: string | null
+          offer_amount?: number
+          offer_emotion?: string
+          status?: string
+          user_id?: string
+          want_emotion?: string
+        }
+        Relationships: []
+      }
       emotion_futures_bets: {
         Row: {
           amount: number
@@ -22567,6 +22636,39 @@ export type Database = {
           miner_id?: string
           mining_method?: string | null
           recipient_id?: string | null
+        }
+        Relationships: []
+      }
+      emotion_mood_generations: {
+        Row: {
+          breakdown: Json
+          created_at: string
+          credits_spent: number
+          dominant_emotion: string
+          id: string
+          insight: string | null
+          mood_text: string
+          user_id: string
+        }
+        Insert: {
+          breakdown?: Json
+          created_at?: string
+          credits_spent?: number
+          dominant_emotion: string
+          id?: string
+          insight?: string | null
+          mood_text: string
+          user_id: string
+        }
+        Update: {
+          breakdown?: Json
+          created_at?: string
+          credits_spent?: number
+          dominant_emotion?: string
+          id?: string
+          insight?: string | null
+          mood_text?: string
+          user_id?: string
         }
         Relationships: []
       }
