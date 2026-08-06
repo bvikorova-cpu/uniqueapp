@@ -324,7 +324,21 @@ supabase.functions.invoke = async function patchedInvoke(
   }
 
   try {
-    const result = await originalInvoke(targetFunction, mergedOptions);
+    let result = await originalInvoke(targetFunction, mergedOptions);
+
+    // Transient transport failures ("Failed to send a request to the Edge Function")
+    // happen on cold starts / flaky mobile networks — retry once before surfacing.
+    const isTransport = (e: any) =>
+      !!e && typeof e?.message === "string" &&
+      (e.name === "FunctionsFetchError" ||
+        e.message.includes("Failed to send a request") ||
+        e.message.includes("Failed to fetch"));
+
+    if (result.error && isTransport(result.error)) {
+      await new Promise((r) => setTimeout(r, 900));
+      result = await originalInvoke(targetFunction, mergedOptions);
+    }
+
 
     if (result.error) {
       let message = "Service temporarily unavailable. Please try again.";
@@ -341,7 +355,9 @@ supabase.functions.invoke = async function patchedInvoke(
             else if (body?.message) message = body.message;
           }
         } else if (err instanceof Error) {
-          if (
+          if (isTransport(err)) {
+            message = "Connection issue reaching the service. Please try again.";
+          } else if (
             !err.message.includes("non-2xx") &&
             !err.message.includes("FunctionsHttpError") &&
             !err.message.includes("FunctionsRelayError")
@@ -349,6 +365,7 @@ supabase.functions.invoke = async function patchedInvoke(
             message = err.message;
           }
         }
+
       } catch {
         // Context stream already consumed or unavailable – keep default
       }
