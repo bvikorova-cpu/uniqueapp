@@ -52,7 +52,7 @@ Deno.serve(async (req) => {
     const action = String(body.action ?? "");
 
     const charge = async (amount: number, reason: string) => {
-      const res = await spendAiCredits(admin, userId, amount, reason, "emotion-economy");
+      const res = await spendAiCredits(admin as any, userId, amount, reason, "emotion-economy");
       if (!res.ok) {
         return json(
           { error: "Insufficient credits", code: "INSUFFICIENT_CREDITS", required: amount, remaining: res.remaining },

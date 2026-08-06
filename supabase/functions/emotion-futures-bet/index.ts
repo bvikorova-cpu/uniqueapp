@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
     const admin = createClient(supabaseUrl, serviceKey);
 
     // Spend unified AI credits
-    const spend = await spendAiCredits(admin, userId, BET_COST, `Emotion Futures bet — ${emotionType} ${direction}`, "emotion-futures");
+    const spend = await spendAiCredits(admin as any, userId, BET_COST, `Emotion Futures bet — ${emotionType} ${direction}`, "emotion-futures");
     if (!spend.ok) {
       return new Response(JSON.stringify({ error: "Insufficient credits", code: "INSUFFICIENT_CREDITS", required: BET_COST, remaining: spend.remaining }), {
         status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
