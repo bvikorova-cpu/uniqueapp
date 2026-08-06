@@ -1,26 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { safeInvoke } from "@/utils/safeInvoke";
 import { Zap, TrendingUp, Award, ArrowLeft } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const COOLDOWN_SECONDS = 30;
 
 export function EmotionMining({ onBack }: { onBack?: () => void }) {
   const { toast } = useToast();
   const [isMining, setIsMining] = useState(false);
   const [miningProgress, setMiningProgress] = useState(0);
+  const [cooldown, setCooldown] = useState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setInterval(() => setCooldown((c) => (c <= 1 ? 0 : c - 1)), 1000);
+    return () => clearInterval(t);
+  }, [cooldown]);
+
+  useEffect(() => () => { if (intervalRef.current) clearInterval(intervalRef.current); }, []);
 
   const startMining = async () => {
+    if (isMining || cooldown > 0) return;
     setIsMining(true);
     setMiningProgress(0);
 
-    const interval = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       setMiningProgress(prev => {
         if (prev >= 100) {
-          clearInterval(interval);
+          if (intervalRef.current) clearInterval(intervalRef.current);
           completeMining();
           return 100;
         }
@@ -30,28 +43,42 @@ export function EmotionMining({ onBack }: { onBack?: () => void }) {
   };
 
   const completeMining = async () => {
-    try {
-      const { data, error } = await supabase.functions.invoke("emotion-mine", {
-        body: { emotion_type: "joy", mining_method: "content_creation" } });
-      if (error) throw error;
-      if ((data as any)?.error) throw new Error((data as any).error);
+    const { data, error } = await safeInvoke<any>("emotion-mine", {
+      body: { emotion_type: "joy", mining_method: "content_creation" },
+    });
 
-      const amount = (data as any)?.amount_mined ?? 0;
-      const commission = (data as any)?.commission_earned ?? 0;
+    setIsMining(false);
+    setMiningProgress(0);
 
-      toast({
-        title: "Mining Complete! ⚡",
-        description: `You mined ${amount} emotions (+${Number(commission).toFixed(0)} bonus units)` });
-    } catch (error: any) { console.error("Error completing mining:", error);
+    if (error) {
+      const isCooldown = /cooldown/i.test(error);
+      if (isCooldown) {
+        const secs = parseInt(error.match(/(\d+)\s*s/)?.[1] ?? String(COOLDOWN_SECONDS), 10);
+        setCooldown(secs);
+        toast({
+          title: "Mining cooldown ⏳",
+          description: `Please wait ${secs}s before mining again.`,
+        });
+        return;
+      }
       toast({
         title: "Mining failed",
-        description: error?.message || "Try again in a moment",
-        variant: "destructive" });
-    } finally {
-      setIsMining(false);
-      setMiningProgress(0);
+        description: error,
+        variant: "destructive",
+      });
+      return;
     }
+
+    const amount = data?.amount_mined ?? 0;
+    const commission = data?.commission_earned ?? 0;
+    setCooldown(COOLDOWN_SECONDS);
+
+    toast({
+      title: "Mining Complete! ⚡",
+      description: `You mined ${amount} emotions (+${Number(commission).toFixed(0)} bonus units)`,
+    });
   };
+
 
   return (
     <div className="space-y-6">
