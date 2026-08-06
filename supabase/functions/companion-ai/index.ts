@@ -150,7 +150,15 @@ Deno.serve(async (req) => {
       await refund();
       return new Response(JSON.stringify({ error: inner?.message || "AI request failed" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-    try { result = JSON.parse(result); } catch {}
+    if (typeof result === "string") {
+      let raw = result.trim();
+      // strip ```json ... ``` fences
+      raw = raw.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
+      const first = raw.indexOf("{");
+      const last = raw.lastIndexOf("}");
+      const candidate = first !== -1 && last > first ? raw.slice(first, last + 1) : raw;
+      try { result = JSON.parse(candidate); } catch { result = raw; }
+    }
     return new Response(JSON.stringify({ ...(typeof result === "string" ? { result } : result), credits_remaining: spend.remaining, credits_used: cost }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
