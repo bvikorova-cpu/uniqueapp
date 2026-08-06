@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { savePendingAction, consumePendingAction } from "@/lib/pendingAction";
 import { useToast } from "@/hooks/use-toast";
@@ -11,7 +10,7 @@ import { useAICredits } from "@/hooks/useAICredits";
 import { motion } from "framer-motion";
 import {
   MessageCircle, Lock, Crown, Heart, Lightbulb, Smile, Brain, Star,
-  Users, Sparkles, Settings, ArrowLeft, Mic, Database, UserPlus, Zap,
+  Users, Sparkles, ArrowLeft, Mic, Database, UserPlus, Zap,
   TrendingUp, Clock, Award
 } from "lucide-react";
 import heroVideo from "@/assets/companions-hero.mp4.asset.json";
@@ -33,7 +32,6 @@ const AICompanions = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [characters, setCharacters] = useState<any[]>([]);
-  const [userAccess, setUserAccess] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState<ActiveView>('dashboard');
   const [stats, setStats] = useState({ totalChats: 0, totalMessages: 0, companions: 0, streak: 0 });
@@ -83,10 +81,7 @@ const AICompanions = () => {
       if (!user) { savePendingAction({ key: "ai-companions:open", returnTo: "/companions" }); navigate("/auth"); return; }
 
       const { data: chars } = await supabase.from("ai_characters").select("*").order("is_premium", { ascending: true });
-      const { data: access } = await supabase.from("user_character_access").select("character_id").eq("user_id", user.id);
-
       setCharacters(chars || []);
-      setUserAccess(new Set(access?.map(a => a.character_id) || []));
     } catch (error) {
       console.error("Error loading characters:", error);
       toast({ title: "Error", description: "Failed to load characters", variant: "destructive" });
