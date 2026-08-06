@@ -228,9 +228,9 @@ export default function WallFeed({
                     ) : (
                       <RepostCard repost={item.data} onDelete={fetchPosts} />
                     )}
-                    {(index + 1) % 20 === 0 && (
+                    {(index + 1) % 10 === 0 && (
                       <div className="mt-5">
-                        <MonetagInFeedAd slotIndex={Math.floor((index + 1) / 20)} />
+                        <MonetagInFeedAd slotIndex={Math.floor((index + 1) / 10)} />
                       </div>
                     )}
                   </div>
