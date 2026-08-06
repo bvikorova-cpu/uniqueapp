@@ -63,7 +63,7 @@ export function EmotionInsurance({ onBack }: { onBack?: () => void }) {
         toast({ title: "Sign in required", description: "Please sign in to activate protection", variant: "destructive" });
         return;
       }
-      const { data, error } = await supabase.functions.invoke("emotion-economy", {
+      const { data, error } = await supabase.functions.invoke("verify-emotion-insurance", {
         body: { action: "insurance", level } });
       if (error || (data as any)?.error) {
         const msg = String((data as any)?.error || error?.message || "");
