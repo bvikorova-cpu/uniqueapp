@@ -175,13 +175,14 @@ export const ReputationSystem = ({ onBack }: ReputationSystemProps) => {
                     {i + 1}
                   </span>
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={profile?.avatar_url} />
-                    <AvatarFallback>{profile?.full_name?.[0] || "?"}</AvatarFallback>
+                    <AvatarImage src={entry.avatar_url || undefined} />
+                    <AvatarFallback>{entry.full_name?.[0] || "?"}</AvatarFallback>
                   </Avatar>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold">{profile?.full_name || "Anonymous"}</p>
-                    <p className="text-xs text-muted-foreground">{lvl.icon} {lvl.name}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold truncate">{entry.full_name || "Member"}</p>
+                    <p className="text-xs text-muted-foreground">{lvl.icon} {lvl.name} • {entry.posts_count} posts</p>
                   </div>
+
                   <span className="font-bold text-sm">{entry.points} pts</span>
                 </motion.div>
               );
