@@ -69705,6 +69705,15 @@ export type Database = {
           total_calls: number
         }[]
       }
+      get_emotion_leaderboard: {
+        Args: { _limit?: number; _metric?: string }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          score: number
+          user_id: string
+        }[]
+      }
       get_engagement_metrics: { Args: { p_days?: number }; Returns: Json }
       get_escape_room_hint: { Args: { _puzzle_id: string }; Returns: string }
       get_featured_campaign: { Args: never; Returns: Json }

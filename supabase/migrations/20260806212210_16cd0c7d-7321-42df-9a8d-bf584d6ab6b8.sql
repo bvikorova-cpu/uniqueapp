@@ -1,0 +1,1 @@
+revoke execute on function public.get_emotion_leaderboard(text, int) from anon;
