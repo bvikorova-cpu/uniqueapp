@@ -12,6 +12,8 @@ import { Send, ArrowLeft, Loader2, Sparkles, Clock } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
+import { useAICredits } from "@/hooks/useAICredits";
+import { Zap } from "lucide-react";
 
 const CompanionChat = () => {
   const { conversationId } = useParams();
@@ -22,7 +24,7 @@ const CompanionChat = () => {
   const [character, setCharacter] = useState<any>(null);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [messagesLimit, setMessagesLimit] = useState<any>(null);
+  const { totalBalance, loadCredits } = useAICredits();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -34,7 +36,6 @@ const CompanionChat = () => {
     }
     loadConversation();
     loadMessages();
-    loadMessageLimits();
   }, [conversationId]);
 
   useEffect(() => {
@@ -70,15 +71,6 @@ const CompanionChat = () => {
     } catch (error) { console.error("Error:", error); }
   };
 
-  const loadMessageLimits = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      const { data } = await supabase.from("user_message_limits").select("*").eq("user_id", user.id).maybeSingle();
-      setMessagesLimit(data);
-    } catch (error) { console.error("Error:", error); }
-  };
-
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
     const messageText = input.trim();
@@ -89,16 +81,18 @@ const CompanionChat = () => {
       const { data, error } = await supabase.functions.invoke("character-chat", {
         body: { conversationId, message: messageText, characterId: character.id } });
 
-      if (error) {
-        if (error.message?.includes("Daily message limit")) {
-          toast({ title: "Daily Limit Reached", description: "Upgrade to premium for unlimited messages", variant: "destructive" });
-        } else if (error.message?.includes("Premium character")) {
-          toast({ title: "Premium Required", description: "This character requires premium access", variant: "destructive" });
-        } else throw error;
+      if (error || (data as any)?.error) {
+        const msg = (data as any)?.error || error?.message || "";
+        if (msg.includes("credits")) {
+          toast({ title: "Not enough credits", description: msg, variant: "destructive" });
+          navigate("/ai-credits");
+        } else {
+          toast({ title: "Error", description: "Failed to send message", variant: "destructive" });
+        }
         return;
       }
       await loadMessages();
-      await loadMessageLimits();
+      await loadCredits();
     } catch (error) {
       console.error("Error:", error);
       toast({ title: "Error", description: "Failed to send message", variant: "destructive" });
@@ -116,16 +110,14 @@ const CompanionChat = () => {
     );
   }
 
-  const remainingMessages = !hasGoldPass && messagesLimit && !messagesLimit.is_premium ? 20 - messagesLimit.messages_used_today : null;
-
   return (
     <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
       <FloatingHowItWorks
         title={'Companion Chat'}
-        intro={'Chat with an AI character — each reply spends AI credits.'}
+        intro={'Chat with an AI character — each message costs 2 credits (4 for premium).'}
         steps={[
           { title: 'Say hi', desc: 'Type a message and press Send. The companion replies in-character.' },
-        { title: 'Credits per reply', desc: 'See the credit badge above the input; each response costs 3–5 credits.' },
+        { title: 'Credits per reply', desc: 'Each message costs 2 credits (4 for premium companions).' },
         { title: 'Customize the vibe', desc: 'Adjust tone, memory, and voice in the companion settings.' },
         { title: 'Buy more credits', desc: 'Open the Credit Store when you run low.' }
         ]}
@@ -138,9 +130,13 @@ const CompanionChat = () => {
             </Button>
             {hasGoldPass ? (
               <KidsGoldPassBanner compact />
-            ) : remainingMessages !== null && (
-              <Badge variant="outline" className="animate-fade-in">
-                {remainingMessages} messages left today
+            ) : (
+              <Badge
+                variant="outline"
+                className="animate-fade-in cursor-pointer"
+                onClick={() => navigate("/ai-credits")}
+              >
+                <Zap className="h-3 w-3 mr-1" /> {totalBalance} credits
               </Badge>
             )}
           </div>
