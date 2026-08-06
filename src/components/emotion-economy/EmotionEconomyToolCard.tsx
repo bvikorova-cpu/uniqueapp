@@ -66,7 +66,7 @@ export function EmotionEconomyToolCard({ icon: Icon,
             )}
             {credits !== undefined && (
               <Badge className="text-xs bg-pink-500/20 text-pink-300 border-pink-500/30">
-                {credits} cr
+                {credits === 0 ? "Free" : `${credits} cr`}
               </Badge>
             )}
           </div>
