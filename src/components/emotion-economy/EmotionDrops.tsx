@@ -6,35 +6,38 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Heart, Zap, Users, Clock, TrendingUp, ArrowLeft } from "lucide-react";
-import { toast } from "sonner";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export function EmotionDrops({ onBack }: { onBack?: () => void }) {
   const { toast } = useToast();
 
-  const handleJoinDrop = async (dropId: string, price: number) => {
+  const handleJoinDrop = async (dropKey: string, emotionType: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast({
-          title: "Authentication Required",
-          description: "Please sign in to join emotion drops",
-          variant: "destructive"
-        });
+        toast({ title: "Authentication Required", description: "Please sign in to join emotion drops", variant: "destructive" });
         return;
       }
 
+      const { data, error } = await supabase.functions.invoke("emotion-economy", {
+        body: { action: "drop_join", drop_key: dropKey, emotion_type: emotionType } });
+
+      if (error || (data as any)?.error) {
+        const msg = String((data as any)?.error || error?.message || "");
+        toast({
+          title: msg.toLowerCase().includes("credit") ? "Not enough credits" : "Error",
+          description: msg.toLowerCase().includes("credit") ? "Joining a drop costs 3 AI credits." : (msg || "Failed to join drop"),
+          variant: "destructive" });
+        return;
+      }
+
+      window.dispatchEvent(new Event("ai-credits-updated"));
       toast({
         title: "Joined Drop! 🎉",
-        description: `Payment of €${price.toFixed(2)} processed. You'll receive emotions when the drop activates!`
-      });
+        description: `3 credits used. You received ${data.gained} ${data.emotion_type} into your emotion wallet.` });
     } catch (error) {
       console.error('Error joining drop:', error);
-      toast({
-        title: "Error",
-        description: "Failed to join drop",
-        variant: "destructive"
-      });
+      toast({ title: "Error", description: "Failed to join drop", variant: "destructive" });
     }
   };
 
@@ -70,7 +73,7 @@ export function EmotionDrops({ onBack }: { onBack?: () => void }) {
           <div className="bg-white/50 dark:bg-black/20 p-4 rounded-lg">
             <p className="text-sm text-muted-foreground mb-2">
               Emotion Drops are special events where large amounts of positive emotions are released to participants. 
-              Join a drop, pay a small fee, and receive a share of powerful positive emotions!
+              Join a drop for 3 AI credits and receive a share of powerful positive emotions!
             </p>
           </div>
         </CardContent>
@@ -103,7 +106,7 @@ export function EmotionDrops({ onBack }: { onBack?: () => void }) {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Price</p>
-                <p className="text-2xl font-bold">€4.99</p>
+                <p className="text-2xl font-bold">3 credits</p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Drops In</p>
@@ -120,10 +123,10 @@ export function EmotionDrops({ onBack }: { onBack?: () => void }) {
             <Button 
               className="w-full"
               size="lg"
-              onClick={() => handleJoinDrop('1', 4.99)}
+              onClick={() => handleJoinDrop('motivation_surge', 'motivation')}
             >
               <Heart className="mr-2 h-5 w-5" />
-              Join Motivation Surge (€4.99)
+              Join Motivation Surge (3 credits)
             </Button>
           </CardContent>
         </Card>
@@ -149,7 +152,7 @@ export function EmotionDrops({ onBack }: { onBack?: () => void }) {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Price</p>
-                <p className="text-2xl font-bold">€9.99</p>
+                <p className="text-2xl font-bold">3 credits</p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Starts In</p>
@@ -198,7 +201,7 @@ export function EmotionDrops({ onBack }: { onBack?: () => void }) {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Price</p>
-                <p className="text-2xl font-bold">€2.99</p>
+                <p className="text-2xl font-bold">3 credits</p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Starts In</p>
@@ -232,24 +235,28 @@ export function EmotionDrops({ onBack }: { onBack?: () => void }) {
         <CardHeader>
           <CardTitle>Create Your Own Mega Drop</CardTitle>
           <CardDescription>
-            Host a massive emotion event and share positivity with the community
+            Host a massive emotion event and share positivity with the community — 5 AI credits
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Button className="w-full" size="lg" onClick={async () => {
             const name = window.prompt("Name your Emotion Drop (e.g. 'Sunday Gratitude'):");
             if (!name?.trim()) return;
-            try {
-              const { data, error } = await supabase.functions.invoke("create-checkout", { body: { product_type: "emotion_drop_create", plan_name: name } });
-              if (error) throw error;
-              if (data?.url) { window.location.href = data.url; return; }
-              else toast({ description: `Drop "${name}" queued for review` });
-            } catch (e: any) {
-              toast({ description: `Drop "${name}" saved as draft` });
+            const { data, error } = await supabase.functions.invoke("emotion-economy", {
+              body: { action: "drop_create", drop_name: name.trim(), emotion_type: "joy" } });
+            if (error || (data as any)?.error) {
+              const msg = String((data as any)?.error || error?.message || "");
+              toast({
+                title: msg.toLowerCase().includes("credit") ? "Not enough credits" : "Error",
+                description: msg.toLowerCase().includes("credit") ? "Creating a drop costs 5 AI credits." : (msg || "Failed to create drop"),
+                variant: "destructive" });
+              return;
             }
+            window.dispatchEvent(new Event("ai-credits-updated"));
+            toast({ title: "Drop created 🎉", description: `"${name.trim()}" is scheduled. 5 credits used.` });
           }}>
             <TrendingUp className="mr-2 h-5 w-5" />
-            Create Emotion Drop
+            Create Emotion Drop (5 credits)
           </Button>
         </CardContent>
       </Card>

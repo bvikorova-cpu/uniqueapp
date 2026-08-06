@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +10,7 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const insurancePlans = [
   {
     name: "Basic Protection",
-    price: "9.99",
+    credits: 10,
     level: "basic",
     color: "text-blue-500",
     features: [
@@ -22,7 +22,7 @@ const insurancePlans = [
   },
   {
     name: "Standard Protection",
-    price: "14.99",
+    credits: 20,
     level: "standard",
     color: "text-purple-500",
     popular: true,
@@ -36,7 +36,7 @@ const insurancePlans = [
   },
   {
     name: "Premium Protection",
-    price: "24.99",
+    credits: 40,
     level: "premium",
     color: "text-yellow-500",
     features: [
@@ -55,50 +55,28 @@ export function EmotionInsurance({ onBack }: { onBack?: () => void }) {
   const { toast } = useToast();
   const [loading, setLoading] = useState<string | null>(null);
 
-  // Verify Stripe checkout return
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("insurance") !== "success") return;
-    const sessionId = params.get("session_id");
-    if (!sessionId) return;
-    (async () => {
-      try {
-        const { data, error } = await supabase.functions.invoke("verify-emotion-insurance", {
-          body: { sessionId } });
-        if (error) throw error;
-        if (data?.success) {
-          toast({ title: "Insurance activated", description: `Plan: ${data.level}` });
-        }
-      } catch (e: any) {
-        toast({ title: "Verification failed", description: e?.message ?? "", variant: "destructive" });
-      } finally {
-        const url = new URL(window.location.href);
-        url.searchParams.delete("insurance");
-        url.searchParams.delete("level");
-        url.searchParams.delete("session_id");
-        window.history.replaceState({}, "", url.pathname + url.search);
-      }
-    })();
-  }, [toast]);
-
   const handleGetProtected = async (level: string, planName: string) => {
     setLoading(level);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        toast({ title: "Sign in required", description: "Please sign in to subscribe", variant: "destructive" });
+        toast({ title: "Sign in required", description: "Please sign in to activate protection", variant: "destructive" });
         return;
       }
-      const { data, error } = await supabase.functions.invoke("create-emotion-insurance-checkout", {
-        body: { level } });
-      if (error) throw error;
-      if (data?.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error("No checkout URL returned");
+      const { data, error } = await supabase.functions.invoke("emotion-economy", {
+        body: { action: "insurance", level } });
+      if (error || (data as any)?.error) {
+        const msg = String((data as any)?.error || error?.message || "");
+        toast({
+          title: msg.toLowerCase().includes("credit") ? "Not enough credits" : "Activation failed",
+          description: msg.toLowerCase().includes("credit") ? "Top up your AI credits to activate this plan." : (msg || "Try again"),
+          variant: "destructive" });
+        return;
       }
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      toast({ title: "Insurance activated", description: `${planName} — ${data.credits_charged} credits used, valid 30 days.` });
     } catch (e: any) {
-      toast({ title: "Checkout failed", description: e?.message ?? "Try again", variant: "destructive" });
+      toast({ title: "Activation failed", description: e?.message ?? "Try again", variant: "destructive" });
     } finally {
       setLoading(null);
     }
@@ -163,8 +141,8 @@ export function EmotionInsurance({ onBack }: { onBack?: () => void }) {
                 <CardTitle className="text-xl">{plan.name}</CardTitle>
               </div>
               <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-bold">€{plan.price}</span>
-                <span className="text-muted-foreground">/month</span>
+                <span className="text-3xl font-bold">{plan.credits} credits</span>
+                <span className="text-muted-foreground">/30 days</span>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -183,9 +161,9 @@ export function EmotionInsurance({ onBack }: { onBack?: () => void }) {
                 onClick={() => handleGetProtected(plan.level, plan.name)}
               >
                 {loading === plan.level ? (
-                  <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Redirecting…</>
+                  <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Activating…</>
                 ) : (
-                  "Get Protected"
+                  `Get Protected (${plan.credits} credits)`
                 )}
               </Button>
             </CardContent>

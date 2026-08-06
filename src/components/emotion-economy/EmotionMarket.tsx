@@ -46,41 +46,33 @@ export function EmotionMarket({ onBack }: { onBack?: () => void }) {
     });
   };
 
-  const handleBuyEmotion = async (emotionType: string, amount: number, pricePerUnit: number, listingId?: string) => {
+  const handleBuyEmotion = async (emotionType: string, amount: number, credits: number, listingId?: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast({
-          title: "Authentication Required",
-          description: "Please sign in to buy emotions",
-          variant: "destructive"
-        });
+        toast({ title: "Authentication Required", description: "Please sign in to buy emotions", variant: "destructive" });
         return;
       }
 
-      toast({
-        title: "Redirecting to payment...",
-        description: "Please wait while we prepare your checkout"
+      const { data, error } = await supabase.functions.invoke('emotion-economy', {
+        body: { action: 'market_buy', emotion_type: emotionType, amount, credits, listing_id: listingId }
       });
 
-      const { data, error } = await supabase.functions.invoke('create-emotion-market-checkout', {
-        body: { emotionType, amount, pricePerUnit, listingId }
-      });
-
-      if (error) throw error;
-
-      if (data?.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error('No checkout URL returned');
+      if (error || (data as any)?.error) {
+        const msg = String((data as any)?.error || error?.message || '');
+        toast({
+          title: msg.toLowerCase().includes('credit') ? 'Not enough credits' : 'Error',
+          description: msg.toLowerCase().includes('credit') ? `This purchase costs ${credits} AI credits.` : (msg || 'Failed to buy emotions'),
+          variant: "destructive" });
+        return;
       }
+
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      toast({ title: "Purchase complete", description: `${amount} ${emotionType} added to your wallet — ${credits} credits used.` });
+      await fetchListings();
     } catch (error) {
       console.error('Error buying emotion:', error);
-      toast({
-        title: "Error",
-        description: "Failed to initiate purchase",
-        variant: "destructive"
-      });
+      toast({ title: "Error", description: "Failed to complete purchase", variant: "destructive" });
     }
   };
 
@@ -107,7 +99,7 @@ export function EmotionMarket({ onBack }: { onBack?: () => void }) {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Emotion Market</CardTitle>
-              <CardDescription>Buy and sell emotions with other users</CardDescription>
+              <CardDescription>Buy and sell emotions with other users — priced in AI credits</CardDescription>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="icon" onClick={handleRefresh} disabled={isRefreshing}>
@@ -144,13 +136,13 @@ export function EmotionMarket({ onBack }: { onBack?: () => void }) {
           <CardContent className="space-y-4">
             <div className="flex items-baseline justify-between">
               <span className="text-2xl font-bold">50 units</span>
-              <span className="text-lg font-semibold text-primary">€0.50/unit</span>
+              <span className="text-lg font-semibold text-primary">5 credits</span>
             </div>
             <div className="text-sm text-muted-foreground">
-              <p>Total: €25.00</p>
+              <p>Total: 5 AI credits</p>
               <p>Seller: @happyuser</p>
             </div>
-            <Button className="w-full" onClick={() => handleBuyEmotion('joy', 50, 0.50)}>
+            <Button className="w-full" onClick={() => handleBuyEmotion('joy', 50, 5)}>
               <ShoppingCart className="h-4 w-4 mr-2" />
               Buy Joy
             </Button>
@@ -170,13 +162,13 @@ export function EmotionMarket({ onBack }: { onBack?: () => void }) {
           <CardContent className="space-y-4">
             <div className="flex items-baseline justify-between">
               <span className="text-2xl font-bold">100 units</span>
-              <span className="text-lg font-semibold text-primary">€0.35/unit</span>
+              <span className="text-lg font-semibold text-primary">8 credits</span>
             </div>
             <div className="text-sm text-muted-foreground">
-              <p>Total: €35.00</p>
+              <p>Total: 8 AI credits</p>
               <p>Seller: @motivated123</p>
             </div>
-            <Button className="w-full" onClick={() => handleBuyEmotion('motivation', 100, 0.35)}>
+            <Button className="w-full" onClick={() => handleBuyEmotion('motivation', 100, 8)}>
               <ShoppingCart className="h-4 w-4 mr-2" />
               Buy Motivation
             </Button>
@@ -196,13 +188,13 @@ export function EmotionMarket({ onBack }: { onBack?: () => void }) {
           <CardContent className="space-y-4">
             <div className="flex items-baseline justify-between">
               <span className="text-2xl font-bold">30 units</span>
-              <span className="text-lg font-semibold text-primary">€0.75/unit</span>
+              <span className="text-lg font-semibold text-primary">6 credits</span>
             </div>
             <div className="text-sm text-muted-foreground">
-              <p>Total: €22.50</p>
+              <p>Total: 6 AI credits</p>
               <p>Seller: @lovemaker</p>
             </div>
-            <Button className="w-full" onClick={() => handleBuyEmotion('love', 30, 0.75)}>
+            <Button className="w-full" onClick={() => handleBuyEmotion('love', 30, 6)}>
               <ShoppingCart className="h-4 w-4 mr-2" />
               Buy Love
             </Button>
@@ -218,11 +210,11 @@ function CreateListingForm({ onSuccess }: { onSuccess: () => void }) {
   const [formData, setFormData] = useState({
     emotionType: "",
     amount: "",
-    pricePerUnit: ""
+    totalCredits: ""
   });
 
   const handleSubmit = async () => {
-    if (!formData.emotionType || !formData.amount || !formData.pricePerUnit) {
+    if (!formData.emotionType || !formData.amount || !formData.totalCredits) {
       toast({
         title: "Missing Information",
         description: "Please fill in all fields",
@@ -235,15 +227,16 @@ function CreateListingForm({ onSuccess }: { onSuccess: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const totalPrice = parseFloat(formData.amount) * parseFloat(formData.pricePerUnit);
+      const amount = parseInt(formData.amount, 10);
+      const totalPrice = Math.max(1, Math.min(500, parseInt(formData.totalCredits, 10)));
 
       const { error } = await supabase
         .from('emotion_market_listings')
         .insert({
           seller_id: user.id,
           emotion_type: formData.emotionType,
-          amount: parseInt(formData.amount),
-          price_per_unit: parseFloat(formData.pricePerUnit),
+          amount,
+          price_per_unit: Number((totalPrice / Math.max(amount, 1)).toFixed(4)),
           total_price: totalPrice
         });
 
@@ -294,13 +287,14 @@ function CreateListingForm({ onSuccess }: { onSuccess: () => void }) {
       </div>
 
       <div className="space-y-2">
-        <Label>Price per Unit (€)</Label>
+        <Label>Total price (AI credits, max 500)</Label>
         <Input
           type="number"
-          step="0.01"
-          placeholder="Price per unit"
-          value={formData.pricePerUnit}
-          onChange={(e) => setFormData({ ...formData, pricePerUnit: e.target.value })}
+          min="1"
+          max="500"
+          placeholder="e.g. 10"
+          value={formData.totalCredits}
+          onChange={(e) => setFormData({ ...formData, totalCredits: e.target.value })}
         />
       </div>
 
