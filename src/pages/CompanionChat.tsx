@@ -128,17 +128,14 @@ const CompanionChat = () => {
             <Button variant="ghost" onClick={() => navigate("/companions")}>
               <ArrowLeft className="h-4 w-4 mr-2" /> Back
             </Button>
-            {hasGoldPass ? (
-              <KidsGoldPassBanner compact />
-            ) : (
-              <Badge
-                variant="outline"
-                className="animate-fade-in cursor-pointer"
-                onClick={() => navigate("/ai-credits")}
-              >
-                <Zap className="h-3 w-3 mr-1" /> {totalBalance} credits
-              </Badge>
-            )}
+            <Badge
+              variant="outline"
+              className="animate-fade-in cursor-pointer"
+              onClick={() => navigate("/ai-credits")}
+            >
+              <Zap className="h-3 w-3 mr-1" /> {totalBalance} credits
+            </Badge>
+
           </div>
 
           <Card className="h-[calc(100vh-180px)] sm:h-[600px] flex flex-col bg-card/80 backdrop-blur-xl overflow-hidden">
