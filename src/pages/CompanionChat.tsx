@@ -10,8 +10,6 @@ import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { Send, ArrowLeft, Loader2, Sparkles, Clock } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
-import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
 import { useAICredits } from "@/hooks/useAICredits";
 import { Zap } from "lucide-react";
 
@@ -19,7 +17,7 @@ const CompanionChat = () => {
   const { conversationId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { hasGoldPass } = useKidsGoldPass();
+
   const [messages, setMessages] = useState<any[]>([]);
   const [character, setCharacter] = useState<any>(null);
   const [input, setInput] = useState("");
