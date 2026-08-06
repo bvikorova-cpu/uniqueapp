@@ -21,11 +21,8 @@ import { User as SupabaseUser } from "@supabase/supabase-js";
 import { MegaforumHero } from "@/components/megaforum/MegaforumHero";
 import { HowItWorksCard } from "@/components/megaforum/HowItWorksCard";
 import { PaywallModal } from "@/components/megaforum/PaywallModal";
-import { ForumPolls } from "@/components/megaforum/ForumPolls";
 import { ReputationSystem } from "@/components/megaforum/ReputationSystem";
-import { LiveDebateRooms } from "@/components/megaforum/LiveDebateRooms";
 import { HotTopicsAI } from "@/components/megaforum/HotTopicsAI";
-import { WeeklyChallenges } from "@/components/megaforum/WeeklyChallenges";
 import { TagInput } from "@/components/megaforum/TagInput";
 import { ThreadSubscription } from "@/components/megaforum/ThreadSubscription";
 import { ForumNotifications } from "@/components/megaforum/ForumNotifications";
@@ -305,7 +302,7 @@ const Megaforum = () => {
       />
       <SEO
         title="Megaforum - Open community discussions"
-        description="Join premium, member-only discussions across 9 categories. Live debates, polls, hot topics and weekly challenges on Unique Megaforum."
+        description="Join premium, member-only discussions across 9 categories. Member-only threads, karma reputation and AI hot topics on Unique Megaforum."
         canonical="/megaforum"
       />
     <div className="min-h-screen bg-background pt-20 pb-12">
@@ -408,7 +405,7 @@ const Megaforum = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-xs text-muted-foreground">
-                  Megaforum is a premium, members-only community. Create posts, start polls, debate topics, and earn karma.
+                  Megaforum is a premium, members-only community. Create posts, reply in threads, and earn karma.
                   AI features cost credits. Use Markdown for rich formatting!
                 </p>
               </CardContent>
