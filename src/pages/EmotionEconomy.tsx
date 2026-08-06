@@ -16,8 +16,8 @@ type ViewType = "hub" | "roulette" | "therapist" | "mood-generator" | "exchange"
 const tools = [
   { id: "therapist" as ViewType, icon: MessageSquare, title: "AI Mood Therapist", description: "AI-powered mood & portfolio advice", badge: "AI", credits: 1, gradient: "from-cyan-500/10 to-violet-500/5", iconColor: "text-cyan-400" },
   { id: "roulette" as ViewType, icon: RotateCw, title: "Emotion Roulette", description: "Spin the wheel, win 2x!", badge: "Game", credits: 1, gradient: "from-pink-500/10 to-yellow-500/5", iconColor: "text-pink-400" },
-  { id: "mood-generator" as ViewType, icon: Wand2, title: "Mood Emotion Generator", description: "Turn your current mood into emotion units", badge: "AI", credits: 2, gradient: "from-violet-500/10 to-pink-500/5", iconColor: "text-violet-400" },
-  { id: "exchange" as ViewType, icon: Shuffle, title: "Emotion Exchange", description: "Random swap with another user", badge: "Match", credits: 1, gradient: "from-cyan-500/10 to-emerald-500/5", iconColor: "text-cyan-400" },
+  { id: "mood-generator" as ViewType, icon: Wand2, title: "Mood Emotion Generator", description: "AI reads your current mood", badge: "AI", credits: 2, gradient: "from-violet-500/10 to-pink-500/5", iconColor: "text-violet-400" },
+  { id: "exchange" as ViewType, icon: Shuffle, title: "Emotion Exchange", description: "Swipe ✓ or ✕ to swap emotions", badge: "Match", credits: 1, gradient: "from-cyan-500/10 to-emerald-500/5", iconColor: "text-cyan-400" },
 ];
 
 export default function EmotionEconomy() {
@@ -58,8 +58,8 @@ export default function EmotionEconomy() {
         steps={[
           { title: 'AI Mood Therapist (1 credit)', desc: 'Chat with AI about your mood and emotion portfolio.' },
           { title: 'Emotion Roulette (1 credit)', desc: 'Bet on an emotion and spin — a match pays out 2x.' },
-          { title: 'Mood Emotion Generator (2 credits)', desc: 'Describe your mood; AI credits emotion units to your wallet.' },
-          { title: 'Emotion Exchange (1 credit)', desc: 'Get matched randomly and swap 10 emotion units with another user.' },
+          { title: 'Mood Emotion Generator (2 credits)', desc: 'Describe your mood; AI shows your emotional mix.' },
+          { title: 'Emotion Exchange (1 credit)', desc: 'Pick what to trade away, then swipe ✓ or ✕ on AI-matched people.' },
         ]}
       />
       <div className="container mx-auto px-4 pt-20 pb-8 space-y-8">
