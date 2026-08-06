@@ -68,12 +68,11 @@ export function EmotionLeaderboard({ onBack }: Props) {
     <div className="space-y-6">
       <FloatingHowItWorks
         title="Live Leaderboard"
-        intro="Ranks update in real time as people use the Emotion Economy tools."
+        intro="Ranks update in real time as people collect emotion units across the Emotion Economy."
         steps={[
-          { title: "Roulette", desc: "Ranked by total emotion payout won on the wheel." },
-          { title: "Mood readings", desc: "Ranked by how many AI mood readings were generated." },
-          { title: "Swaps", desc: "Ranked by completed one-for-one emotion exchanges." },
-          { title: "Climb the board", desc: "Every spin, reading and swap you make updates your rank instantly." },
+          { title: "Collect emotions", desc: "Earn emotion units from the roulette, mood generator, and exchanges." },
+          { title: "Total count", desc: "This board ranks by the total number of emotion units in your collection." },
+          { title: "Climb the board", desc: "Every spin, reading, and swap updates your rank instantly." },
         ]}
       />
 
@@ -90,21 +89,6 @@ export function EmotionLeaderboard({ onBack }: Props) {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex flex-wrap gap-2">
-            {TABS.map((t) => (
-              <Button
-                key={t.key}
-                variant={metric === t.key ? "default" : "outline"}
-                size="sm"
-                onClick={() => setMetric(t.key)}
-                className="gap-1.5"
-              >
-                <t.icon className="h-4 w-4" />
-                <span className="text-xs">{t.label}</span>
-              </Button>
-            ))}
-          </div>
-
           {loading ? (
             <div className="flex items-center justify-center gap-2 py-10 text-muted-foreground text-sm">
               <Loader2 className="h-4 w-4 animate-spin" /> Loading ranks...
@@ -117,7 +101,7 @@ export function EmotionLeaderboard({ onBack }: Props) {
             <div className="space-y-2">
               {rows.map((r, i) => (
                 <motion.div
-                  key={`${metric}-${r.user_id}`}
+                  key={r.user_id}
                   initial={{ opacity: 0, x: -12 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: Math.min(i * 0.04, 0.4) }}
@@ -141,7 +125,7 @@ export function EmotionLeaderboard({ onBack }: Props) {
                     {r.user_id === me && <span className="ml-1 text-xs text-primary">(you)</span>}
                   </p>
                   <Badge variant="outline" className="font-mono text-xs shrink-0">
-                    {r.score.toLocaleString()} {unit}
+                    {r.score.toLocaleString()} emotions
                   </Badge>
                 </motion.div>
               ))}
@@ -152,3 +136,4 @@ export function EmotionLeaderboard({ onBack }: Props) {
     </div>
   );
 }
+
