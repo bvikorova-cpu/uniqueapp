@@ -67,16 +67,8 @@ export function EmotionRoulette({ onBack }: Props) {
     setIsSpinning(true);
     setResult(null);
 
-    // Visual spin animation (server decides outcome)
-    const spins = 5 + Math.random() * 3;
-    const visualIndex = Math.floor(Math.random() * EMOTIONS.length);
-    const targetRotation = rotation + spins * 360 + (visualIndex * (360 / EMOTIONS.length));
-    setRotation(targetRotation);
-
-    const spinPromise = supabase.functions.invoke("emotion-roulette-spin", {
+    const { data, error } = await supabase.functions.invoke("emotion-roulette-spin", {
       body: { bet_emotion: selectedEmotion.toLowerCase() } });
-    await new Promise((r) => setTimeout(r, 3000));
-    const { data, error } = await spinPromise;
 
     if (error || (data as any)?.error) { setIsSpinning(false);
       toast({
@@ -89,8 +81,19 @@ export function EmotionRoulette({ onBack }: Props) {
     const resultEmotionName = String((data as any)?.result_emotion ?? "");
     const won = !!(data as any)?.won;
     const payout = Number((data as any)?.payout ?? 0);
-    const displayName =
-      EMOTIONS.find((e) => e.name.toLowerCase() === resultEmotionName)?.name ?? resultEmotionName;
+    const idx = Math.max(0, EMOTIONS.findIndex((e) => e.name.toLowerCase() === resultEmotionName));
+    const displayName = EMOTIONS[idx]?.name ?? resultEmotionName;
+
+    // Spin the wheel so the winning slice ends under the top pointer
+    const seg = 360 / EMOTIONS.length;
+    const current = rotation;
+    const fullSpins = 6 * 360;
+    const targetAngle = 360 - (idx * seg + seg / 2);
+    const base = current + fullSpins;
+    const final = base + ((targetAngle - (base % 360)) + 360) % 360;
+    setRotation(final);
+
+    await new Promise((r) => setTimeout(r, 4200));
 
     setResult({ emotion: displayName, won, payout });
     window.dispatchEvent(new Event("ai-credits-updated"));
@@ -103,6 +106,7 @@ export function EmotionRoulette({ onBack }: Props) {
         ? `The wheel landed on ${displayName}! You won ${payout} credits!`
         : `The wheel landed on ${displayName}. You bet on ${selectedEmotion}.` });
   };
+
 
   return (
     <div className="space-y-6">
