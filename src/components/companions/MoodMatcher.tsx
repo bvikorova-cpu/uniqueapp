@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
+import { safeInvoke } from "@/utils/safeInvoke";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -38,9 +39,15 @@ export const MoodMatcher = () => {
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("companion-ai", {
-        body: { action: "mood-matcher", mood: moodText } });
-      if (error) throw error;
+      const { data: chars } = await supabase
+        .from("ai_characters")
+        .select("name, personality_type, description")
+        .limit(40);
+      const { data, error } = await safeInvoke("companion-ai", {
+        body: { action: "mood-matcher", mood: moodText, characterList: JSON.stringify(chars || []) } });
+
+      if (error) throw new Error(error);
+      window.dispatchEvent(new Event("ai-credits-updated"));
       setResult(data);
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "Failed to analyze mood", variant: "destructive" });

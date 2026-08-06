@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
+import { safeInvoke } from "@/utils/safeInvoke";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { Mic, Loader2, Play, Pause, Volume2, Sparkles } from "lucide-react";
@@ -51,9 +52,10 @@ export const VoiceMessages = () => {
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("companion-ai", {
+      const { data, error } = await safeInvoke("companion-ai", {
         body: { action: "voice-message", characterId: selectedCompanion, message: message.trim() } });
-      if (error) throw error;
+      if (error) throw new Error(error);
+      window.dispatchEvent(new Event("ai-credits-updated"));
 
       if (data?.response_text) {
         toast({ title: "Voice Generated", description: `${data.companion_name} responded!` });
