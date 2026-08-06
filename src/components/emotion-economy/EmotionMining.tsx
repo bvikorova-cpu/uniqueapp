@@ -127,10 +127,11 @@ export function EmotionMining({ onBack }: { onBack?: () => void }) {
                   Create positive emotions through content, interactions, and engagement. 
                   Earn 50% commission when others consume your emotions.
                 </p>
-                <Button onClick={startMining} size="lg" className="mt-4">
+                <Button onClick={startMining} size="lg" className="mt-4" disabled={cooldown > 0}>
                   <Zap className="mr-2 h-5 w-5" />
-                  Start Mining
+                  {cooldown > 0 ? `Cooldown ${cooldown}s` : "Start Mining"}
                 </Button>
+
               </div>
             )}
           </div>
