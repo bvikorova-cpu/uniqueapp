@@ -535,7 +535,7 @@ const Megaforum = () => {
                           <Avatar className="h-10 w-10">
                             <AvatarImage src={profile?.avatar_url || undefined} />
                             <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-white text-xs">
-                              {(profile?.full_name || profile?.username)?.[0]?.toUpperCase() || "U"}
+                              {isAnon ? "🕵️" : ((profile?.full_name || profile?.username)?.[0]?.toUpperCase() || "U")}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1 min-w-0 space-y-2">
