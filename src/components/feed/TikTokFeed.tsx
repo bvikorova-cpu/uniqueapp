@@ -589,16 +589,24 @@ export default function TikTokFeed({ topOverlay, fabOverlay, filter = "all" }: {
             {fabOverlay}
           </div>
         )}
-        {shorts.map((s, i) => (
-          <div key={`${s.kind}-${s.id}`} data-idx={i}>
-            <VideoCard short={s} active={i === activeIdx} muted={muted} onToggleMute={toggleMute} />
+        {displayItems.map((item, i) => (
+          <div
+            key={item.type === "short" ? `${item.short.kind}-${item.short.id}` : `ad-${item.slotIndex}`}
+            data-idx={i}
+          >
+            {item.type === "short" ? (
+              <VideoCard short={item.short} active={i === activeIdx} muted={muted} onToggleMute={toggleMute} />
+            ) : (
+              <TikTokAdSlot slotIndex={item.slotIndex} />
+            )}
           </div>
         ))}
       </div>
 
-      {fabOverlay && shorts.length > 0 && (
+      {fabOverlay && displayItems.length > 0 && (
         <div className="absolute bottom-24 right-4 z-30">{fabOverlay}</div>
       )}
+
     </div>
   );
 }
