@@ -139,10 +139,19 @@ Deno.serve(async (req) => {
         ]);
         break;
       default:
+        await refund();
         return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
+    if (!result) {
+      await refund();
+      throw new Error("No response generated");
+    }
+    } catch (inner: any) {
+      await refund();
+      return new Response(JSON.stringify({ error: inner?.message || "AI request failed" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
     try { result = JSON.parse(result); } catch {}
-    return new Response(JSON.stringify(typeof result === "string" ? { result } : result), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ ...(typeof result === "string" ? { result } : result), credits_remaining: spend.remaining, credits_used: cost }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
