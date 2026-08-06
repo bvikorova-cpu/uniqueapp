@@ -629,9 +629,24 @@ const Megaforum = () => {
                                 {post.likes_count}
                               </Button>
 
-                              <Sheet>
+                              <Sheet
+                                open={selectedPost === post.id}
+                                onOpenChange={(o) => {
+                                  if (o) {
+                                    if (!requireAuth("view & comment")) return;
+                                    setSelectedPost(post.id);
+                                  } else {
+                                    setSelectedPost(null);
+                                    if (searchParams.get("post")) {
+                                      const next = new URLSearchParams(searchParams);
+                                      next.delete("post");
+                                      setSearchParams(next, { replace: true });
+                                    }
+                                  }
+                                }}
+                              >
                                 <SheetTrigger asChild>
-                                  <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => { if (!requireAuth("view & comment")) return; setSelectedPost(post.id); }}>
+                                  <Button variant="ghost" size="sm" className="h-7 text-xs">
                                     <Reply className="h-3.5 w-3.5 mr-1" />
                                     {post.replies_count} replies
                                   </Button>
