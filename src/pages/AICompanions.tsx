@@ -10,13 +10,11 @@ import { useAICredits } from "@/hooks/useAICredits";
 import { motion } from "framer-motion";
 import {
   MessageCircle, Lock, Crown, Heart, Lightbulb, Smile, Brain, Star,
-  Users, Sparkles, ArrowLeft, Mic, Database, UserPlus, Zap,
+  Users, Sparkles, ArrowLeft, UserPlus, Zap,
   TrendingUp, Clock, Award
 } from "lucide-react";
 import heroVideo from "@/assets/companions-hero.mp4.asset.json";
 import { MoodMatcher } from "@/components/companions/MoodMatcher";
-import { VoiceMessages } from "@/components/companions/VoiceMessages";
-import { CompanionMemory } from "@/components/companions/CompanionMemory";
 import { GroupConversations } from "@/components/companions/GroupConversations";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
@@ -26,7 +24,8 @@ const personalityIcons: Record<string, any> = { motivator: Lightbulb,
   romance: Heart,
   mentor: Brain };
 
-type ActiveView = 'dashboard' | 'mood-matcher' | 'voice-messages' | 'companion-memory' | 'group-conversations';
+type ActiveView = 'dashboard' | 'mood-matcher' | 'group-conversations';
+
 
 const AICompanions = () => {
   const navigate = useNavigate();
