@@ -226,27 +226,31 @@ serve(async (req) => {
       : "";
     const sumStr = conv.summary ? `\n\nSummary: ${conv.summary}` : "";
 
-    const aiMsg = await callOpenAI({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: charCheck.system_prompt + memStr + sumStr + KIDS_SAFETY_PROMPT },
-        ...(history || []),
-        { role: "user", content: userMessage },
-      ],
-    });
-    if (!aiMsg) throw new Error("No response generated");
+    let aiMsg: string | null = null;
+    try {
+      aiMsg = await callOpenAI({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: charCheck.system_prompt + memStr + sumStr + KIDS_SAFETY_PROMPT },
+          ...(history || []),
+          { role: "user", content: userMessage },
+        ],
+      });
+    } catch (e) {
+      await refundMessageCredits();
+      throw e;
+    }
+    if (!aiMsg) {
+      await refundMessageCredits();
+      throw new Error("No response generated");
+    }
 
     await supabaseClient.from("character_messages").insert([
       { conversation_id: conversationId, role: "user", content: userMessage },
       { conversation_id: conversationId, role: "assistant", content: aiMsg },
     ]);
 
-    if (!charCheck.is_premium && companionsSub && companionsSub.subscription_status !== "active") {
-      await supabaseClient
-        .from("companions_subscriptions")
-        .update({ free_messages_used: (companionsSub.free_messages_used || 0) + 1 })
-        .eq("user_id", user.id);
-    }
+
 
     await supabaseClient
       .from("character_conversations")
