@@ -456,6 +456,19 @@ const Megaforum = () => {
                     {useMarkdown ? "Use **bold**, *italic*, # headers, - lists" : "Plain text mode"}
                   </span>
                 </div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Button
+                    variant={postAnonymously ? "default" : "outline"}
+                    size="sm"
+                    className="text-[10px] h-6"
+                    onClick={() => setPostAnonymously(!postAnonymously)}
+                  >
+                    🕵️ Anonymous {postAnonymously ? "ON" : "OFF"}
+                  </Button>
+                  <span className="text-[10px] text-muted-foreground">
+                    {postAnonymously ? "Your name & avatar stay hidden" : "Posting with your profile name"}
+                  </span>
+                </div>
                 <Textarea
                   placeholder={useMarkdown ? "Write in Markdown... **bold**, *italic*, # heading" : "Share something with the community..."}
                   className="min-h-20 text-sm font-mono"
