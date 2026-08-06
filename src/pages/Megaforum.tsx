@@ -519,17 +519,17 @@ const Megaforum = () => {
                               {profile?.full_name?.[0]?.toUpperCase() || "U"}
                             </AvatarFallback>
                           </Avatar>
-                          <div className="flex-1 space-y-2">
-                            <div className="flex items-start justify-between">
-                              <div>
+                          <div className="flex-1 min-w-0 space-y-2">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-2 mb-0.5 flex-wrap">
                                   {post.is_pinned && (
                                     <Pin className="h-3.5 w-3.5 text-primary fill-current" />
                                   )}
-                                  <h3 className="font-bold text-sm">{post.title}</h3>
+                                  <h3 className="font-bold text-sm break-words min-w-0">{post.title}</h3>
                                   <Badge variant="outline" className="text-[10px]">{post.category}</Badge>
                                 </div>
-                                <p className="text-xs text-muted-foreground">
+                                <p className="text-xs text-muted-foreground break-words">
                                   {profile?.full_name || "User"} • {getTimeSince(post.created_at)}
                                 </p>
                                 {(post.tags || []).length > 0 && (
@@ -547,7 +547,7 @@ const Megaforum = () => {
                                   </div>
                                 )}
                               </div>
-                              <div className="flex items-center gap-1">
+                              <div className="flex items-center gap-1 flex-shrink-0">
                                 {user?.id === post.user_id && (
                                   <>
                                     <Button
@@ -582,14 +582,14 @@ const Megaforum = () => {
                             </div>
 
                             {post.is_markdown ? (
-                              <div className="text-sm text-foreground prose prose-sm prose-invert max-w-none">
+                              <div className="text-sm text-foreground prose prose-sm prose-invert max-w-none break-words [overflow-wrap:anywhere]">
                                 <ReactMarkdown>{post.content}</ReactMarkdown>
                               </div>
                             ) : (
-                              <p className="text-sm text-foreground">{post.content}</p>
+                              <p className="text-sm text-foreground break-words [overflow-wrap:anywhere]">{post.content}</p>
                             )}
 
-                            <div className="flex items-center gap-3 pt-2 border-t border-border/30">
+                            <div className="flex items-center gap-1 sm:gap-3 flex-wrap pt-2 border-t border-border/30">
                               <Button
                                 variant="ghost" size="sm"
                                 onClick={() => { if (!requireAuth("like this post")) return; likeMutation.mutate(post.id); }}
