@@ -48,7 +48,15 @@ export const MoodMatcher = () => {
 
       if (error) throw new Error(error);
       window.dispatchEvent(new Event("ai-credits-updated"));
-      setResult(data);
+      // normalize: some responses arrive as { result: "```json ... ```" }
+      let parsed: any = data;
+      if (data && typeof data.result === "string") {
+        const raw = data.result.trim().replace(/^```(?:json)?/i, "").replace(/```$/i, "").trim();
+        const s = raw.indexOf("{"), e = raw.lastIndexOf("}");
+        try { parsed = JSON.parse(s !== -1 && e > s ? raw.slice(s, e + 1) : raw); } catch { parsed = { mood_insight: raw }; }
+      }
+      if (!parsed?.recommended_companion) throw new Error("AI did not return a companion. Please try again.");
+      setResult(parsed);
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "Failed to analyze mood", variant: "destructive" });
     } finally {
