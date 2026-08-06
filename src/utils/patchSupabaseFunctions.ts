@@ -87,6 +87,7 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   "create-credits-payment":                  { target: "create-checkout", bodyExtras: { product: "credits" } },
   "create-decor-checkout":                   { target: "create-checkout", bodyExtras: { product: "decor" } },
   "create-dna-memory-checkout":              { target: "create-checkout", bodyExtras: { product: "dna_memory" } },
+  "emotion-economy":                         { target: "verify-emotion-insurance" },
   "create-emotion-credits-payment":          { target: "create-checkout", bodyExtras: { product: "emotion_credits" } },
   "create-emotion-market-checkout":          { target: "create-checkout", bodyExtras: { product: "emotion_market" } },
   "create-employer-subscription-checkout":   { target: "create-checkout", bodyExtras: { product: "employer_subscription" } },
