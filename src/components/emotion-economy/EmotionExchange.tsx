@@ -128,7 +128,13 @@ export function EmotionExchange({ onBack }: Props) {
         ? `You traded ${meta(give).label} for ${meta(current.emotion).label}.`
         : `Waiting for someone who wants your ${meta(give).label}.`,
     });
-    setTimeout(next, 260);
+    // One swap at a time — send the user back to pick what to trade next.
+    setTimeout(() => {
+      setSwipe(null);
+      setGive(null);
+      setDeck([]);
+      setIndex(0);
+    }, 420);
     void refresh();
   };
 
