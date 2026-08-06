@@ -318,6 +318,31 @@ Each breakdown value is between 0 and 20 units; the total should be between 20 a
       return json({ success: true, dominant_emotion: dominant, breakdown, insight, total_units: mined, record });
     }
 
+    // ----------------------------------------------- collection: buy units
+    if (action === "collection_buy") {
+      const WALLET_EMOTIONS = ["joy", "love", "motivation", "peace", "excitement", "sadness", "anger", "fear"];
+      const BUY_COST = 2;
+      const BUY_AMOUNT = 10;
+      const emotion = String(body.emotion ?? "").toLowerCase();
+      if (!WALLET_EMOTIONS.includes(emotion)) return json({ error: "Pick a valid emotion." }, 400);
+
+      const buyErr = await charge(BUY_COST, `Emotion Collection top-up (${emotion})`);
+      if (buyErr) return buyErr;
+
+      const col = `${emotion}_balance`;
+      const { data: wallet } = await admin.from("emotion_wallets").select("*").eq("user_id", userId).maybeSingle();
+      if (wallet) {
+        await admin.from("emotion_wallets").update({
+          [col]: (Number((wallet as any)[col]) || 0) + BUY_AMOUNT,
+          total_mined: (Number((wallet as any).total_mined) || 0) + BUY_AMOUNT,
+        }).eq("user_id", userId);
+      } else {
+        await admin.from("emotion_wallets").insert({ user_id: userId, [col]: BUY_AMOUNT, total_mined: BUY_AMOUNT });
+      }
+
+      return json({ success: true, emotion, added: BUY_AMOUNT, credits_spent: BUY_COST });
+    }
+
     // ------------------------------------------------------- emotion exchange
     if (action === "exchange_cancel") {
       await admin.from("emotion_exchange_queue")
