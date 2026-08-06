@@ -4,11 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
-import { ArrowLeft, Trophy, RotateCw, Wand2, Shuffle, Crown, Medal, Loader2 } from "lucide-react";
+import { ArrowLeft, Trophy, Crown, Medal, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-
-type Metric = "roulette" | "readings" | "swaps";
 
 interface Row {
   user_id: string;
@@ -19,25 +17,19 @@ interface Row {
 
 interface Props { onBack: () => void; }
 
-const TABS: { key: Metric; label: string; icon: typeof RotateCw; unit: string }[] = [
-  { key: "roulette", label: "Roulette", icon: RotateCw, unit: "payout" },
-  { key: "readings", label: "Mood readings", icon: Wand2, unit: "readings" },
-  { key: "swaps", label: "Swaps", icon: Shuffle, unit: "swaps" },
-];
 
 export function EmotionLeaderboard({ onBack }: Props) {
-  const [metric, setMetric] = useState<Metric>("roulette");
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [me, setMe] = useState<string | null>(null);
 
-  const fetchBoard = useCallback(async (m: Metric) => {
+  const fetchBoard = useCallback(async () => {
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       setMe(user?.id ?? null);
       const { data, error } = await supabase.rpc("get_emotion_leaderboard", {
-        _metric: m,
+        _metric: "total",
         _limit: 20,
       });
       if (error) throw error;
@@ -50,18 +42,19 @@ export function EmotionLeaderboard({ onBack }: Props) {
     }
   }, []);
 
-  useEffect(() => { fetchBoard(metric); }, [metric, fetchBoard]);
+  useEffect(() => { fetchBoard(); }, [fetchBoard]);
 
-  // Live refresh whenever a tool records new activity
+  // Live refresh whenever any wallet or source table changes
   useEffect(() => {
     const channel = supabase
       .channel("emotion-leaderboard")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "emotion_roulette_spins" }, () => fetchBoard(metric))
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "emotion_mood_generations" }, () => fetchBoard(metric))
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "emotion_exchange_matches" }, () => fetchBoard(metric))
+      .on("postgres_changes", { event: "*", schema: "public", table: "emotion_wallets" }, fetchBoard)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "emotion_roulette_spins" }, fetchBoard)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "emotion_mood_generations" }, fetchBoard)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "emotion_exchange_matches" }, fetchBoard)
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, [metric, fetchBoard]);
+  }, [fetchBoard]);
 
   const rankIcon = (i: number) => {
     if (i === 0) return <Crown className="h-5 w-5 text-yellow-500 shrink-0" />;
@@ -70,18 +63,16 @@ export function EmotionLeaderboard({ onBack }: Props) {
     return <span className="text-sm font-bold text-muted-foreground w-5 text-center shrink-0">#{i + 1}</span>;
   };
 
-  const unit = TABS.find((t) => t.key === metric)!.unit;
 
   return (
     <div className="space-y-6">
       <FloatingHowItWorks
         title="Live Leaderboard"
-        intro="Ranks update in real time as people use the Emotion Economy tools."
+        intro="Ranks update in real time as people collect emotion units across the Emotion Economy."
         steps={[
-          { title: "Roulette", desc: "Ranked by total emotion payout won on the wheel." },
-          { title: "Mood readings", desc: "Ranked by how many AI mood readings were generated." },
-          { title: "Swaps", desc: "Ranked by completed one-for-one emotion exchanges." },
-          { title: "Climb the board", desc: "Every spin, reading and swap you make updates your rank instantly." },
+          { title: "Collect emotions", desc: "Earn emotion units from the roulette, mood generator, and exchanges." },
+          { title: "Total count", desc: "This board ranks by the total number of emotion units in your collection." },
+          { title: "Climb the board", desc: "Every spin, reading, and swap updates your rank instantly." },
         ]}
       />
 
@@ -98,21 +89,6 @@ export function EmotionLeaderboard({ onBack }: Props) {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex flex-wrap gap-2">
-            {TABS.map((t) => (
-              <Button
-                key={t.key}
-                variant={metric === t.key ? "default" : "outline"}
-                size="sm"
-                onClick={() => setMetric(t.key)}
-                className="gap-1.5"
-              >
-                <t.icon className="h-4 w-4" />
-                <span className="text-xs">{t.label}</span>
-              </Button>
-            ))}
-          </div>
-
           {loading ? (
             <div className="flex items-center justify-center gap-2 py-10 text-muted-foreground text-sm">
               <Loader2 className="h-4 w-4 animate-spin" /> Loading ranks...
@@ -125,7 +101,7 @@ export function EmotionLeaderboard({ onBack }: Props) {
             <div className="space-y-2">
               {rows.map((r, i) => (
                 <motion.div
-                  key={`${metric}-${r.user_id}`}
+                  key={r.user_id}
                   initial={{ opacity: 0, x: -12 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: Math.min(i * 0.04, 0.4) }}
@@ -149,7 +125,7 @@ export function EmotionLeaderboard({ onBack }: Props) {
                     {r.user_id === me && <span className="ml-1 text-xs text-primary">(you)</span>}
                   </p>
                   <Badge variant="outline" className="font-mono text-xs shrink-0">
-                    {r.score.toLocaleString()} {unit}
+                    {r.score.toLocaleString()} emotions
                   </Badge>
                 </motion.div>
               ))}
@@ -160,3 +136,4 @@ export function EmotionLeaderboard({ onBack }: Props) {
     </div>
   );
 }
+
