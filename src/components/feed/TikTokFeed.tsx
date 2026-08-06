@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useEffect, useRef, useState, useCallback, ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback, ReactNode } from "react";
 import { Heart, MessageCircle, Share2, Volume2, VolumeX, Loader2, Music2, Play, Send, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,8 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
+import { TikTokAdSlot } from "./TikTokAdSlot";
+
 
 
 export interface ShortItem {
@@ -521,9 +523,21 @@ export default function TikTokFeed({ topOverlay, fabOverlay, filter = "all" }: {
       });
     } });
 
+  // Inject a full-screen sponsored slot after every 10th short video.
+  const displayItems = useMemo(() => {
+    const items: ({ type: "short"; short: ShortItem } | { type: "ad"; slotIndex: number })[] = [];
+    shorts.forEach((short, i) => {
+      items.push({ type: "short", short });
+      if ((i + 1) % 10 === 0) {
+        items.push({ type: "ad", slotIndex: Math.floor((i + 1) / 10) });
+      }
+    });
+    return items;
+  }, [shorts]);
+
   useEffect(() => {
     const el = containerRef.current;
-    if (!el || shorts.length === 0) return;
+    if (!el || displayItems.length === 0) return;
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -537,9 +551,10 @@ export default function TikTokFeed({ topOverlay, fabOverlay, filter = "all" }: {
     );
     el.querySelectorAll("[data-idx]").forEach((c) => observer.observe(c));
     return () => observer.disconnect();
-  }, [shorts.length]);
+  }, [displayItems.length]);
 
   const toggleMute = useCallback(() => setMuted((m) => !m), []);
+
 
   return (
     <div className="fixed inset-0 bg-black">
@@ -574,16 +589,24 @@ export default function TikTokFeed({ topOverlay, fabOverlay, filter = "all" }: {
             {fabOverlay}
           </div>
         )}
-        {shorts.map((s, i) => (
-          <div key={`${s.kind}-${s.id}`} data-idx={i}>
-            <VideoCard short={s} active={i === activeIdx} muted={muted} onToggleMute={toggleMute} />
+        {displayItems.map((item, i) => (
+          <div
+            key={item.type === "short" ? `${item.short.kind}-${item.short.id}` : `ad-${item.slotIndex}`}
+            data-idx={i}
+          >
+            {item.type === "short" ? (
+              <VideoCard short={item.short} active={i === activeIdx} muted={muted} onToggleMute={toggleMute} />
+            ) : (
+              <TikTokAdSlot slotIndex={item.slotIndex} />
+            )}
           </div>
         ))}
       </div>
 
-      {fabOverlay && shorts.length > 0 && (
+      {fabOverlay && displayItems.length > 0 && (
         <div className="absolute bottom-24 right-4 z-30">{fabOverlay}</div>
       )}
+
     </div>
   );
 }
