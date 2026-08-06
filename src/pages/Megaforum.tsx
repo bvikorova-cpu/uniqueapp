@@ -174,7 +174,8 @@ const Megaforum = () => {
         content: newPostContent,
         category: selectedCategory,
         tags: newPostTags,
-        is_markdown: useMarkdown }]);
+        is_markdown: useMarkdown,
+        is_anonymous: postAnonymously }]);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -182,6 +183,7 @@ const Megaforum = () => {
       setNewPostTitle("");
       setNewPostContent("");
       setNewPostTags([]);
+      setPostAnonymously(false);
       toast({ title: "Post Created!", description: "Your post has been successfully added." });
     },
     onError: (error: any) => {
