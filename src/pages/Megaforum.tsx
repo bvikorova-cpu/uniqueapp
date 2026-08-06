@@ -33,6 +33,7 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Profile {
   id: string;
   full_name: string | null;
+  username?: string | null;
   avatar_url: string | null;
 }
 
@@ -110,7 +111,7 @@ const Megaforum = () => {
     queryFn: async () => {
       const userIds = [...new Set(posts.map(p => p.user_id))];
       if (userIds.length === 0) return {};
-      const { data, error } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", userIds);
+      const { data, error } = await (supabase as any).from("profiles_public").select("id, full_name, username, avatar_url").in("id", userIds);
       if (error) throw error;
       const map: Record<string, Profile> = {};
       data?.forEach(p => { map[p.id] = p; });
@@ -135,7 +136,7 @@ const Megaforum = () => {
     queryFn: async () => {
       const userIds = [...new Set(comments.map((c: any) => c.user_id))];
       if (userIds.length === 0) return {};
-      const { data, error } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", userIds);
+      const { data, error } = await (supabase as any).from("profiles_public").select("id, full_name, username, avatar_url").in("id", userIds);
       if (error) throw error;
       const map: Record<string, Profile> = {};
       data?.forEach(p => { map[p.id] = p; });
@@ -516,7 +517,7 @@ const Megaforum = () => {
                           <Avatar className="h-10 w-10">
                             <AvatarImage src={profile?.avatar_url || undefined} />
                             <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-white text-xs">
-                              {profile?.full_name?.[0]?.toUpperCase() || "U"}
+                              {(profile?.full_name || profile?.username)?.[0]?.toUpperCase() || "U"}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1 min-w-0 space-y-2">
@@ -530,7 +531,7 @@ const Megaforum = () => {
                                   <Badge variant="outline" className="text-[10px]">{post.category}</Badge>
                                 </div>
                                 <p className="text-xs text-muted-foreground break-words">
-                                  {profile?.full_name || "User"} • {getTimeSince(post.created_at)}
+                                  {profile?.full_name || profile?.username || "User"} • {getTimeSince(post.created_at)}
                                 </p>
                                 {(post.tags || []).length > 0 && (
                                   <div className="flex gap-1 mt-1 flex-wrap">
@@ -619,10 +620,10 @@ const Megaforum = () => {
                                           <div key={comment.id} className="flex gap-2">
                                             <Avatar className="h-7 w-7">
                                               <AvatarImage src={cp?.avatar_url || undefined} />
-                                              <AvatarFallback className="text-[10px]">{cp?.full_name?.[0] || "U"}</AvatarFallback>
+                                              <AvatarFallback className="text-[10px]">{(cp?.full_name || cp?.username)?.[0]?.toUpperCase() || "U"}</AvatarFallback>
                                             </Avatar>
                                             <div className="flex-1">
-                                              <p className="text-xs font-semibold">{cp?.full_name || "User"}</p>
+                                              <p className="text-xs font-semibold">{cp?.full_name || cp?.username || "User"}</p>
                                               <p className="text-xs text-muted-foreground">{comment.content}</p>
                                               <div className="flex items-center gap-2 mt-1">
                                                 <p className="text-[10px] text-muted-foreground">{getTimeSince(comment.created_at)}</p>
