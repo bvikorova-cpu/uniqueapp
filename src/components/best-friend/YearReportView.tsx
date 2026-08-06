@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import { safeInvoke } from "@/utils/safeInvoke";
 import { toast } from "sonner";
 import { Loader2, FileText, Download } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -14,9 +15,10 @@ export const YearReportView = () => {
   const generate = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("best-friend-year-report");
-      if (error) throw error;
+      const { data, error } = await safeInvoke("best-friend-year-report");
+      if (error) throw new Error(error);
       setReport(data);
+      window.dispatchEvent(new Event("ai-credits-updated"));
     } catch (e: any) { toast.error(e.message); }
     finally { setLoading(false); }
   };

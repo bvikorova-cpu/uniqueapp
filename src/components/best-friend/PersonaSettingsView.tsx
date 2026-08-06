@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
+import { safeInvoke } from "@/utils/safeInvoke";
 import { toast } from "sonner";
 import { Loader2, Save, User, Sparkles } from "lucide-react";
 import { toast as sonner } from "sonner";
@@ -86,14 +87,14 @@ export const PersonaSettingsView = () => { const [loading, setLoading] = useStat
         <Button disabled={genAvatar} className="w-full bg-gradient-to-r from-fuchsia-600 to-purple-600" onClick={async () => {
           setGenAvatar(true);
           try {
-            const { data, error } = await supabase.functions.invoke("best-friend-avatar", { body: { description: avatarDesc } });
-            if (error) throw error;
-            if (data?.avatar_url) { setAvatarUrl(data.avatar_url); sonner.success("Avatar generated!"); }
+            const { data, error } = await safeInvoke<{ avatar_url: string }>("best-friend-avatar", { body: { description: avatarDesc } });
+            if (error) throw new Error(error);
+            if (data?.avatar_url) { setAvatarUrl(data.avatar_url); sonner.success("Avatar generated!"); window.dispatchEvent(new Event("ai-credits-updated")); }
           } catch (e: any) { sonner.error(e.message || "Failed"); }
           finally { setGenAvatar(false); }
         }}>
           {genAvatar ? <Loader2 className="h-4 w-4 mr-2 animate-spin"/> : <Sparkles className="h-4 w-4 mr-2"/>}
-          {avatarUrl ? "Regenerate avatar" : "Generate AI avatar"}
+          {avatarUrl ? "Regenerate avatar (3 credits)" : "Generate AI avatar (3 credits)"}
         </Button>
       </CardContent></Card>
 

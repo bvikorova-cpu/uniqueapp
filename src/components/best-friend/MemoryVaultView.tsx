@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import { safeInvoke } from "@/utils/safeInvoke";
 import { toast } from "sonner";
 import { Loader2, Brain, Trash2, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -27,9 +28,10 @@ export const MemoryVaultView = () => {
   const extract = async () => {
     setExtracting(true);
     try {
-      const { data, error } = await supabase.functions.invoke("best-friend-extract-memories");
-      if (error) throw error;
-      toast.success(`Extracted ${data.extracted} new memories`);
+      const { data, error } = await safeInvoke<{ extracted: number }>("best-friend-extract-memories");
+      if (error) throw new Error(error);
+      toast.success(`Extracted ${data?.extracted ?? 0} new memories`);
+      window.dispatchEvent(new Event("ai-credits-updated"));
       await load();
     } catch (e: any) { toast.error(e.message); }
     finally { setExtracting(false); }
