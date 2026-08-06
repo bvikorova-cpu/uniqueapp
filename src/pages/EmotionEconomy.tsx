@@ -54,11 +54,12 @@ export default function EmotionEconomy() {
     <div className="min-h-screen bg-background">
       <FloatingHowItWorks
         title={'Emotion Economy'}
-        intro={"Two focused tools: get AI mood guidance or spin the emotion roulette."}
+        intro={"Four focused tools, all paid in AI credits."}
         steps={[
-          { title: 'Pick a tool', desc: 'Choose AI Mood Therapist or Emotion Roulette.' },
-          { title: 'Spend credits', desc: 'Each action costs 1 credit, deducted server-side.' },
-          { title: 'Get results', desc: 'Therapist replies with advice; roulette can pay out 2x.' },
+          { title: 'AI Mood Therapist (1 credit)', desc: 'Chat with AI about your mood and emotion portfolio.' },
+          { title: 'Emotion Roulette (1 credit)', desc: 'Bet on an emotion and spin — a match pays out 2x.' },
+          { title: 'Mood Emotion Generator (2 credits)', desc: 'Describe your mood; AI credits emotion units to your wallet.' },
+          { title: 'Emotion Exchange (1 credit)', desc: 'Get matched randomly and swap 10 emotion units with another user.' },
         ]}
       />
       <div className="container mx-auto px-4 pt-20 pb-8 space-y-8">

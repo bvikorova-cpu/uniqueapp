@@ -6,10 +6,10 @@ import heroVideo from "@/assets/emotion-economy-hero.mp4.asset.json";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const statQueries = [
-  { key: "traders", table: "emotion_wallets" },
-  { key: "mined", table: "emotion_mining_activities" },
-  { key: "listings", table: "emotion_market_listings" },
-  { key: "posts", table: "emotion_posts" },
+  { key: "wallets", table: "emotion_wallets" },
+  { key: "spins", table: "emotion_roulette_spins" },
+  { key: "readings", table: "emotion_mood_generations" },
+  { key: "swaps", table: "emotion_exchange_matches" },
 ];
 
 export function EmotionEconomyHero() {
@@ -27,22 +27,22 @@ export function EmotionEconomyHero() {
   }, []);
 
   const heroStats = [
-    { label: "Active Traders", value: stats.traders || 0, icon: Users, color: "text-pink-400" },
-    { label: "Emotions Mined", value: stats.mined || 0, icon: Zap, color: "text-violet-400" },
-    { label: "Market Listings", value: stats.listings || 0, icon: TrendingUp, color: "text-cyan-400" },
-    { label: "Posts Created", value: stats.posts || 0, icon: Heart, color: "text-emerald-400" },
+    { label: "Emotion Wallets", value: stats.wallets || 0, icon: Users, color: "text-pink-400" },
+    { label: "Roulette Spins", value: stats.spins || 0, icon: TrendingUp, color: "text-violet-400" },
+    { label: "Mood Readings", value: stats.readings || 0, icon: Zap, color: "text-cyan-400" },
+    { label: "Emotion Swaps", value: stats.swaps || 0, icon: Heart, color: "text-emerald-400" },
   ];
 
   return (
     <div className="relative w-full overflow-hidden rounded-2xl" style={{ minHeight: 420 }}>
       <FloatingHowItWorks
-        title={"Emotion Economy Hero"}
-        intro={"Here's how to use this feature."}
+        title={"Emotion Economy"}
+        intro={"Four credit-based tools: AI Mood Therapist, Emotion Roulette, Mood Emotion Generator and Emotion Exchange."}
         steps={[
-          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
-          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
-          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
-          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+          { title: "AI Mood Therapist", desc: "1 credit — AI advice on your mood and emotion portfolio." },
+          { title: "Emotion Roulette", desc: "1 credit — bet on an emotion, match the wheel to win 2x." },
+          { title: "Mood Emotion Generator", desc: "2 credits — describe your mood, AI credits emotion units to your wallet." },
+          { title: "Emotion Exchange", desc: "1 credit — get randomly matched and swap 10 units with another user." },
         ]}
       />
 
@@ -106,9 +106,9 @@ export function EmotionEconomyHero() {
           className="text-3xl md:text-5xl lg:text-6xl font-bold mb-3 inline-block px-6 py-2 rounded-2xl border-2 border-white/40 bg-white/10 backdrop-blur-sm"
           style={{ textShadow: "0 2px 20px rgba(0,0,0,0.5)", color: "white" }}
         >
-          Trade Emotions.{" "}
+          Your Mood.{" "}
           <span className="bg-gradient-to-r from-pink-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
-            Earn Real Value.
+            Turned Into Emotions.
           </span>
         </motion.h1>
 
@@ -119,7 +119,7 @@ export function EmotionEconomyHero() {
           className="text-base md:text-lg font-semibold text-white/90 max-w-2xl mb-8"
           style={{ textShadow: "0 1px 8px rgba(0,0,0,0.4)" }}
         >
-          Buy joy, sell sadness, mine motivation — the world's first emotional marketplace powered by AI
+AI mood guidance, an emotion roulette, mood-to-emotion generation and random emotion swaps — all paid in AI credits
         </motion.p>
 
         {/* Stats Grid */}
