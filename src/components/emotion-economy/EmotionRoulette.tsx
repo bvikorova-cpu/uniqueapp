@@ -163,38 +163,56 @@ export function EmotionRoulette({ onBack }: Props) {
           <div className="flex flex-col items-center gap-4">
             <div className="relative w-64 h-64">
               {/* Pointer */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 z-20 text-2xl">▼</div>
-              
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-3 z-20 text-3xl drop-shadow">▼</div>
+
               <motion.div
-                className="w-full h-full rounded-full border-4 border-white/20 overflow-hidden relative"
-                style={{ rotate: rotation }}
+                className="w-full h-full rounded-full border-4 border-white/20 shadow-[0_0_40px_rgba(236,72,153,0.25)] relative"
                 animate={{ rotate: rotation }}
-                transition={{ duration: 3, ease: [0.17, 0.67, 0.12, 0.99] }}
+                transition={{ duration: 4, ease: [0.13, 0.79, 0.09, 0.99] }}
               >
-                {EMOTIONS.map((e, i) => {
-                  const angle = (360 / EMOTIONS.length) * i;
-                  return (
-                    <div
-                      key={e.name}
-                      className="absolute inset-0 flex items-center justify-center"
-                      style={{
-                        transform: `rotate(${angle}deg)`,
-                        clipPath: `polygon(50% 50%, 50% 0%, ${50 + 50 * Math.tan(Math.PI / EMOTIONS.length)}% 0%)` }}
-                    >
-                      <div
-                        className="w-full h-full"
-                        style={{ backgroundColor: e.color + "40" }}
-                      />
-                    </div>
-                  );
-                })}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-12 h-12 rounded-full bg-background/80 border border-white/20 flex items-center justify-center">
-                    <Sparkles className="h-5 w-5 text-pink-400" />
+                <svg viewBox="0 0 100 100" className="w-full h-full rounded-full">
+                  {EMOTIONS.map((e, i) => {
+                    const seg = 360 / EMOTIONS.length;
+                    const a0 = (i * seg * Math.PI) / 180;
+                    const a1 = ((i + 1) * seg * Math.PI) / 180;
+                    const r = 50;
+                    const x0 = 50 + r * Math.sin(a0);
+                    const y0 = 50 - r * Math.cos(a0);
+                    const x1 = 50 + r * Math.sin(a1);
+                    const y1 = 50 - r * Math.cos(a1);
+                    const mid = ((i + 0.5) * seg * Math.PI) / 180;
+                    const lx = 50 + 32 * Math.sin(mid);
+                    const ly = 50 - 32 * Math.cos(mid);
+                    return (
+                      <g key={e.name}>
+                        <path
+                          d={`M50 50 L ${x0} ${y0} A ${r} ${r} 0 0 1 ${x1} ${y1} Z`}
+                          fill={e.color}
+                          fillOpacity={0.85}
+                          stroke="rgba(255,255,255,0.4)"
+                          strokeWidth={0.5}
+                        />
+                        <text
+                          x={lx}
+                          y={ly}
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                          fontSize="10"
+                        >
+                          {e.emoji}
+                        </text>
+                      </g>
+                    );
+                  })}
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-12 h-12 rounded-full bg-background/90 border border-white/20 flex items-center justify-center">
+                    <Sparkles className={`h-5 w-5 text-pink-400 ${isSpinning ? "animate-pulse" : ""}`} />
                   </div>
                 </div>
               </motion.div>
             </div>
+
 
             <Button
               size="lg"
