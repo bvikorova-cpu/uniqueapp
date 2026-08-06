@@ -387,13 +387,14 @@ const BestFriend = () => {
                     </ul>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-sm mb-2">💰 Pricing:</h3>
+                    <h3 className="font-semibold text-sm mb-2">💰 Credits:</h3>
                     <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• <strong>Chat:</strong> €15/month for 1000 messages</li>
-                      <li>• <strong>AI Tools:</strong> 2-4 credits per use</li>
-                      <li>• <strong>Extra:</strong> +100 messages for €2</li>
-                      <li>• Cancel anytime</li>
+                      <li>• <strong>Chat:</strong> 1 credit per message</li>
+                      <li>• <strong>AI Tools:</strong> 3 credits per use</li>
+                      <li>• No subscription — pay only for what you use</li>
+                      <li>• Credits never expire</li>
                     </ul>
+
                   </div>
                 </div>
               </CardContent>
