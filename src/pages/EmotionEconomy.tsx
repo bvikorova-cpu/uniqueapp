@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { RotateCw, MessageSquare, Wand2, Shuffle, Library, Coins } from "lucide-react";
+import { RotateCw, MessageSquare, Wand2, Shuffle, Library, Coins, Trophy } from "lucide-react";
 import { EmotionEconomyHero } from "@/components/emotion-economy/EmotionEconomyHero";
 import { EmotionEconomyToolCard } from "@/components/emotion-economy/EmotionEconomyToolCard";
 import { EmotionRoulette } from "@/components/emotion-economy/EmotionRoulette";
@@ -8,12 +8,13 @@ import { AIMoodTherapist } from "@/components/emotion-economy/AIMoodTherapist";
 import { MoodEmotionGenerator } from "@/components/emotion-economy/MoodEmotionGenerator";
 import { EmotionExchange } from "@/components/emotion-economy/EmotionExchange";
 import { EmotionCollection } from "@/components/emotion-economy/EmotionCollection";
+import { EmotionLeaderboard } from "@/components/emotion-economy/EmotionLeaderboard";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useLiveAiCredits } from "@/hooks/useLiveAiCredits";
 
-type ViewType = "hub" | "roulette" | "therapist" | "mood-generator" | "exchange" | "collection";
+type ViewType = "hub" | "roulette" | "therapist" | "mood-generator" | "exchange" | "collection" | "leaderboard";
 
 const tools = [
   { id: "therapist" as ViewType, icon: MessageSquare, title: "AI Mood Therapist", description: "AI-powered mood & portfolio advice", badge: "AI", credits: 1, gradient: "from-cyan-500/10 to-violet-500/5", iconColor: "text-cyan-400" },
@@ -21,6 +22,7 @@ const tools = [
   { id: "mood-generator" as ViewType, icon: Wand2, title: "Mood Emotion Generator", description: "AI reads your current mood", badge: "AI", credits: 2, gradient: "from-violet-500/10 to-pink-500/5", iconColor: "text-violet-400" },
   { id: "exchange" as ViewType, icon: Shuffle, title: "Emotion Exchange", description: "Swipe ✓ or ✕ to swap emotions", badge: "Match", credits: 1, gradient: "from-cyan-500/10 to-emerald-500/5", iconColor: "text-cyan-400" },
   { id: "collection" as ViewType, icon: Library, title: "My Collection", description: "See what you have — add more for 2 credits", badge: "Collection", credits: 2, gradient: "from-emerald-500/10 to-cyan-500/5", iconColor: "text-emerald-400" },
+  { id: "leaderboard" as ViewType, icon: Trophy, title: "Live Leaderboard", description: "Real-time ranks for spins, readings & swaps", badge: "Live", credits: 0, gradient: "from-yellow-500/10 to-pink-500/5", iconColor: "text-yellow-500" },
 ];
 
 export default function EmotionEconomy() {
@@ -34,6 +36,7 @@ export default function EmotionEconomy() {
       case "mood-generator": return <MoodEmotionGenerator onBack={() => setActiveView("hub")} />;
       case "exchange": return <EmotionExchange onBack={() => setActiveView("hub")} />;
       case "collection": return <EmotionCollection onBack={() => setActiveView("hub")} />;
+      case "leaderboard": return <EmotionLeaderboard onBack={() => setActiveView("hub")} />;
       default: return null;
     }
   };
