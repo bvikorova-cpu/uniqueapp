@@ -520,7 +520,8 @@ const Megaforum = () => {
             ) : (
               filteredPosts.map((post, idx) => {
                 const isLiked = likedPosts.includes(post.id);
-                const profile = profiles[post.user_id];
+                const isAnon = !!post.is_anonymous;
+                const profile = isAnon ? undefined : profiles[post.user_id];
                 return (
                   <motion.div
                     key={post.id}
