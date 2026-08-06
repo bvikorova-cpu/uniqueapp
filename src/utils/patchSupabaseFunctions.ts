@@ -355,7 +355,9 @@ supabase.functions.invoke = async function patchedInvoke(
             else if (body?.message) message = body.message;
           }
         } else if (err instanceof Error) {
-          if (
+          if (isTransport(err)) {
+            message = "Connection issue reaching the service. Please try again.";
+          } else if (
             !err.message.includes("non-2xx") &&
             !err.message.includes("FunctionsHttpError") &&
             !err.message.includes("FunctionsRelayError")
@@ -363,6 +365,7 @@ supabase.functions.invoke = async function patchedInvoke(
             message = err.message;
           }
         }
+
       } catch {
         // Context stream already consumed or unavailable – keep default
       }
