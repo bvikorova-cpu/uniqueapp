@@ -22429,7 +22429,7 @@ export type Database = {
           emotion_b: string
           id: string
           user_a: string
-          user_b: string
+          user_b: string | null
         }
         Insert: {
           amount_a: number
@@ -22439,7 +22439,7 @@ export type Database = {
           emotion_b: string
           id?: string
           user_a: string
-          user_b: string
+          user_b?: string | null
         }
         Update: {
           amount_a?: number
@@ -22449,7 +22449,7 @@ export type Database = {
           emotion_b?: string
           id?: string
           user_a?: string
-          user_b?: string
+          user_b?: string | null
         }
         Relationships: []
       }

@@ -100,11 +100,13 @@ export function EmotionRoulette({ onBack }: Props) {
     setIsSpinning(false);
     fetchHistory();
 
+    const unitsGained = Number((data as any)?.units_gained ?? 0);
+    const unitEmotion = String((data as any)?.unit_emotion ?? "").replace(/^./, (c) => c.toUpperCase());
     toast({
       title: won ? "🎉 You Won!" : "Better luck next time!",
       description: won
-        ? `The wheel landed on ${displayName}! You won ${payout} credits!`
-        : `The wheel landed on ${displayName}. You bet on ${selectedEmotion}.` });
+        ? `The wheel landed on ${displayName}! You won ${payout} credits + ${unitsGained} ${unitEmotion} for your collection.`
+        : `The wheel landed on ${displayName}. You bet on ${selectedEmotion} — ${unitsGained} ${unitEmotion} added to your collection.` });
   };
 
 

@@ -1,0 +1,1 @@
+alter table public.emotion_exchange_matches alter column user_b drop not null;
