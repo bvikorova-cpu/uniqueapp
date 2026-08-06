@@ -53,6 +53,7 @@ Deno.serve(async (req) => {
 
     let result: any;
 
+    try {
     switch (action) {
       case "group-chat": {
         // Load the selected companions from the DB
