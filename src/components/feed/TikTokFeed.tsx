@@ -523,9 +523,21 @@ export default function TikTokFeed({ topOverlay, fabOverlay, filter = "all" }: {
       });
     } });
 
+  // Inject a full-screen sponsored slot after every 10th short video.
+  const displayItems = useMemo(() => {
+    const items: ({ type: "short"; short: ShortItem } | { type: "ad"; slotIndex: number })[] = [];
+    shorts.forEach((short, i) => {
+      items.push({ type: "short", short });
+      if ((i + 1) % 10 === 0) {
+        items.push({ type: "ad", slotIndex: Math.floor((i + 1) / 10) });
+      }
+    });
+    return items;
+  }, [shorts]);
+
   useEffect(() => {
     const el = containerRef.current;
-    if (!el || shorts.length === 0) return;
+    if (!el || displayItems.length === 0) return;
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -539,9 +551,10 @@ export default function TikTokFeed({ topOverlay, fabOverlay, filter = "all" }: {
     );
     el.querySelectorAll("[data-idx]").forEach((c) => observer.observe(c));
     return () => observer.disconnect();
-  }, [shorts.length]);
+  }, [displayItems.length]);
 
   const toggleMute = useCallback(() => setMuted((m) => !m), []);
+
 
   return (
     <div className="fixed inset-0 bg-black">
