@@ -438,3 +438,9 @@ verify_jwt = true
 verify_jwt = false
 
 
+[functions.emotion-mood-generate]
+verify_jwt = true
+
+[functions.emotion-exchange-match]
+verify_jwt = true
+
