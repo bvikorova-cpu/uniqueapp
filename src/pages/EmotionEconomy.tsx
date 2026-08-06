@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { RotateCw, MessageSquare, Wand2, Shuffle, Library } from "lucide-react";
+import { RotateCw, MessageSquare, Wand2, Shuffle, Library, Coins } from "lucide-react";
 import { EmotionEconomyHero } from "@/components/emotion-economy/EmotionEconomyHero";
 import { EmotionEconomyToolCard } from "@/components/emotion-economy/EmotionEconomyToolCard";
 import { EmotionRoulette } from "@/components/emotion-economy/EmotionRoulette";
@@ -11,6 +11,7 @@ import { EmotionCollection } from "@/components/emotion-economy/EmotionCollectio
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { useLiveAiCredits } from "@/hooks/useLiveAiCredits";
 
 type ViewType = "hub" | "roulette" | "therapist" | "mood-generator" | "exchange" | "collection";
 
@@ -24,6 +25,7 @@ const tools = [
 
 export default function EmotionEconomy() {
   const [activeView, setActiveView] = useState<ViewType>("hub");
+  const { credits: liveCredits } = useLiveAiCredits();
 
   const renderView = () => {
     switch (activeView) {
@@ -72,7 +74,13 @@ export default function EmotionEconomy() {
         <HeroRewardedAd sectionKey="page_emotioneconomy" />
 
         <div>
-          <h2 className="text-xl font-bold mb-4">Explore Tools</h2>
+          <div className="flex items-center justify-between gap-3 mb-4">
+            <h2 className="text-xl font-bold">Explore Tools</h2>
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-sm font-semibold text-primary">
+              <Coins className="h-4 w-4" />
+              {liveCredits} credits
+            </div>
+          </div>
           <div className="grid grid-cols-2 gap-4 max-w-xl">
             {tools.map((tool, i) => (
               <EmotionEconomyToolCard
