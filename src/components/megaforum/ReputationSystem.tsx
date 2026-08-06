@@ -25,69 +25,51 @@ const LEVELS = [
 
 const BADGES_LIST = [
   { id: "first_post", name: "First Post", icon: "📝", desc: "Create your first forum post" },
-  { id: "helpful_10", name: "Helpful Hero", icon: "🤝", desc: "Get 10 helpful votes" },
+  { id: "helpful_10", name: "Helpful Hero", icon: "🤝", desc: "Get 10 likes on your replies" },
   { id: "posts_25", name: "Chatterbox", icon: "💬", desc: "Create 25 posts" },
   { id: "streak_7", name: "Weekly Warrior", icon: "🔥", desc: "Post 7 days in a row" },
   { id: "likes_50", name: "Crowd Favorite", icon: "❤️", desc: "Receive 50 likes" },
-  { id: "debate_winner", name: "Debate Champion", icon: "🏅", desc: "Win a debate room" },
 ];
 
+interface RepStats {
+  posts_count: number;
+  comments_count: number;
+  likes_received: number;
+  helpful_count: number;
+  streak_days: number;
+  points: number;
+  badges: string[];
+}
+
 export const ReputationSystem = ({ onBack }: ReputationSystemProps) => {
-  const { data: myRep } = useQuery({
-    queryKey: ["my-forum-reputation"],
+  const { data: myRep } = useQuery<RepStats | null>({
+    queryKey: ["my-forum-reputation-live"],
+    refetchOnWindowFocus: true,
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return null;
-      
-      const { data, error } = await supabase
-        .from("forum_reputation")
-        .select("*")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      
+      const { data, error } = await (supabase as any).rpc("get_forum_reputation", { _user_id: user.id });
       if (error) throw error;
-      
-      if (!data) {
-        const { data: newRep, error: insertError } = await supabase
-          .from("forum_reputation")
-          .insert({ user_id: user.id, points: 0, level: 1, badges: [], posts_count: 0, helpful_count: 0 })
-          .select()
-          .single();
-        if (insertError) throw insertError;
-        return newRep;
-      }
-      return data;
+      const row = Array.isArray(data) ? data[0] : data;
+      if (!row) return null;
+      return { ...row, badges: row.badges || [] } as RepStats;
     } });
 
-  const { data: leaderboard = [] } = useQuery({
-    queryKey: ["forum-leaderboard"],
+  const { data: leaderboard = [] } = useQuery<any[]>({
+    queryKey: ["forum-leaderboard-live"],
+    refetchOnWindowFocus: true,
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("forum_reputation")
-        .select("*")
-        .order("points", { ascending: false })
-        .limit(20);
+      const { data, error } = await (supabase as any).rpc("get_forum_leaderboard", { _limit: 20 });
       if (error) throw error;
-      return data;
+      return (data || []).filter((e: any) => (e.points || 0) > 0);
     } });
-
-  const { data: leaderProfiles = {} } = useQuery({
-    queryKey: ["leaderboard-profiles", leaderboard.map((l: any) => l.user_id)],
-    queryFn: async () => {
-      const ids = leaderboard.map((l: any) => l.user_id);
-      if (ids.length === 0) return {};
-      const { data } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", ids);
-      const map: Record<string, any> = {};
-      data?.forEach(p => { map[p.id] = p; });
-      return map;
-    },
-    enabled: leaderboard.length > 0 });
 
   const currentLevel = [...LEVELS].reverse().find(l => (myRep?.points || 0) >= l.minPoints) || LEVELS[0];
   const nextLevel = LEVELS.find(l => l.minPoints > (myRep?.points || 0));
   const progress = nextLevel
     ? ((myRep?.points || 0) - currentLevel.minPoints) / (nextLevel.minPoints - currentLevel.minPoints) * 100
     : 100;
+
 
   return (
     <div className="space-y-6">
