@@ -74,7 +74,8 @@ Deno.serve(async (req) => {
     // 2 consolation units of whatever landed on a loss.
     const unitEmotion = won ? betEmotion : resultEmotion;
     const unitGain = won ? 10 : 2;
-    const unitCol = `${unitEmotion}_balance`;
+    const WALLET_EMOTIONS = ["joy", "love", "motivation", "peace", "excitement", "sadness", "anger", "fear"];
+    const unitCol = `${WALLET_EMOTIONS.includes(unitEmotion) ? unitEmotion : "joy"}_balance`;
     const { data: wallet } = await admin
       .from("emotion_wallets").select("*").eq("user_id", userId).maybeSingle();
     if (wallet) {
