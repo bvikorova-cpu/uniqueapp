@@ -158,10 +158,9 @@ const AICompanions = () => {
 
   const toolCards = [
     { id: 'mood-matcher', icon: Zap, title: 'AI Mood Matcher', desc: 'AI suggests the perfect companion based on your mood', badge: '3 Credits', color: 'from-yellow-500 to-orange-500' },
-    { id: 'voice-messages', icon: Mic, title: 'Voice Messages', desc: 'Send and receive voice messages with companions', badge: '2 Credits', color: 'from-pink-500 to-rose-500' },
-    { id: 'companion-memory', icon: Database, title: 'Companion Memory', desc: 'Companions remember past conversations & preferences', badge: '5 Credits', color: 'from-blue-500 to-cyan-500' },
-    { id: 'group-conversations', icon: Users, title: 'Group Conversations', desc: 'Chat with multiple AI companions at once', badge: '4 Credits', color: 'from-purple-500 to-violet-500' },
+    { id: 'group-conversations', icon: Users, title: 'Group Conversations', desc: 'Chat with multiple AI companions at once', badge: '2 Credits', color: 'from-purple-500 to-violet-500' },
   ];
+
 
   const statItems = [
     { icon: MessageCircle, label: 'Total Chats', value: stats.totalChats },
