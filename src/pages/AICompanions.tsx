@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { supabase } from "@/integrations/supabase/client";
 import { savePendingAction, consumePendingAction } from "@/lib/pendingAction";
 import { useToast } from "@/hooks/use-toast";
-import { useCompanionsSubscription } from "@/hooks/useCompanionsSubscription";
+import { useAICredits } from "@/hooks/useAICredits";
 import { motion } from "framer-motion";
 import {
   MessageCircle, Lock, Crown, Heart, Lightbulb, Smile, Brain, Star,
@@ -35,11 +35,12 @@ const AICompanions = () => {
   const [characters, setCharacters] = useState<any[]>([]);
   const [userAccess, setUserAccess] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
-  const [showSubscribeDialog, setShowSubscribeDialog] = useState(false);
   const [activeView, setActiveView] = useState<ActiveView>('dashboard');
   const [stats, setStats] = useState({ totalChats: 0, totalMessages: 0, companions: 0, streak: 0 });
 
-  const { subscription, createCheckout, manageSubscription, refresh } = useCompanionsSubscription();
+  const { totalBalance, loading: creditsLoading, loadCredits } = useAICredits();
+  const MSG_COST = 2;
+  const PREMIUM_MSG_COST = 4;
 
   useEffect(() => {
     loadCharacters();
@@ -53,8 +54,8 @@ const AICompanions = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("success") === "true") {
-      toast({ title: "Subscription successful!", description: "You now have unlimited conversations." });
-      refresh();
+      toast({ title: "Credits added!", description: "Your AI credits are ready to use." });
+      loadCredits();
       window.history.replaceState({}, "", "/companions");
     }
   }, []);
@@ -103,13 +104,14 @@ const AICompanions = () => {
         return;
       }
 
-      if (!isPremium) {
-        const freeRemaining = subscription.freeMessagesLimit - subscription.freeMessagesUsed;
-        if (!subscription.subscribed && freeRemaining <= 0) { setShowSubscribeDialog(true); return; }
-      }
-
-      if (isPremium && !userAccess.has(characterId)) {
-        toast({ title: "Premium Character", description: "This character requires premium access", variant: "destructive" });
+      const cost = isPremium ? PREMIUM_MSG_COST : MSG_COST;
+      if (totalBalance < cost) {
+        toast({
+          title: "Not enough credits",
+          description: `Each message with this companion costs ${cost} credits.`,
+          variant: "destructive",
+        });
+        navigate("/ai-credits");
         return;
       }
 
@@ -125,10 +127,6 @@ const AICompanions = () => {
       console.error("Error:", error);
       toast({ title: "Error", description: "Failed to start conversation", variant: "destructive" });
     }
-  };
-
-  const handleSubscribe = async () => {
-    try { await createCheckout(); } catch { toast({ title: "Error", description: "Failed to create checkout session", variant: "destructive" }); }
   };
 
   if (activeView !== 'dashboard') {
@@ -150,7 +148,7 @@ const AICompanions = () => {
     );
   }
 
-  if (loading || subscription.loading) {
+  if (loading || creditsLoading) {
     return (
       <div className="min-h-screen bg-background pt-20 pb-12">
         <div className="container mx-auto px-4">
@@ -162,8 +160,6 @@ const AICompanions = () => {
       </div>
     );
   }
-
-  const freeMessagesRemaining = subscription.freeMessagesLimit - subscription.freeMessagesUsed;
 
   const toolCards = [
     { id: 'mood-matcher', icon: Zap, title: 'AI Mood Matcher', desc: 'AI suggests the perfect companion based on your mood', badge: '3 Credits', color: 'from-yellow-500 to-orange-500' },
@@ -186,8 +182,8 @@ const AICompanions = () => {
         intro={'Chat with AI-powered characters — casual, roleplay, coaching, or fun.'}
         steps={[
           { title: 'Pick a companion', desc: 'Browse characters by mood, style, or use-case.' },
-        { title: 'Start chatting', desc: 'Each message spends AI credits (see credit badge).' },
-        { title: 'Customize', desc: 'Set tone, memory, and voice. Premium unlocks longer memory and voice chat.' },
+        { title: 'Start chatting', desc: 'Each message costs 2 credits (4 for premium companions).' },
+        { title: 'Customize', desc: 'Set tone, memory, and voice with the AI companion tools.' },
         { title: 'Buy more credits', desc: 'Top up in the Credit Store whenever you run out.' }
         ]}
       />
@@ -218,29 +214,15 @@ const AICompanions = () => {
               AI-powered personalities designed for meaningful conversations
             </p>
 
-            {/* Subscription Badge */}
+            {/* Credit Balance */}
             <div className="flex flex-wrap items-center justify-center gap-3">
-              {subscription.subscribed ? (
-                <>
-                  <Badge className="bg-white/20 backdrop-blur-md text-white border-white/30 text-sm px-3 py-1">
-                    <Crown className="h-4 w-4 mr-1" /> Unlimited Access
-                  </Badge>
-                  <Button variant="outline" size="sm" onClick={manageSubscription}
-                    className="bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20">
-                    <Settings className="h-4 w-4 mr-2" /> Manage
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Badge className="bg-white/20 backdrop-blur-md text-white border-white/30 text-sm px-3 py-1">
-                    {freeMessagesRemaining} / {subscription.freeMessagesLimit} free messages
-                  </Badge>
-                  <Button size="sm" onClick={handleSubscribe}
-                    className="bg-gradient-to-r from-primary to-accent text-white border-0 shadow-lg">
-                    Subscribe €5/month
-                  </Button>
-                </>
-              )}
+              <Badge className="bg-white/20 backdrop-blur-md text-white border-white/30 text-sm px-3 py-1">
+                <Zap className="h-4 w-4 mr-1" /> {totalBalance} credits
+              </Badge>
+              <Button size="sm" onClick={() => navigate("/ai-credits")}
+                className="bg-gradient-to-r from-primary to-accent text-white border-0 shadow-lg">
+                Buy Credits
+              </Button>
             </div>
           </motion.div>
         </div>
@@ -308,8 +290,8 @@ const AICompanions = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {characters.map((character, i) => {
             const Icon = personalityIcons[character.personality_type] || MessageCircle;
-            const hasAccess = !character.is_premium || userAccess.has(character.id);
-            const canChat = character.is_premium ? hasAccess : (subscription.subscribed || freeMessagesRemaining > 0);
+            const cost = character.is_premium ? PREMIUM_MSG_COST : MSG_COST;
+            const canChat = totalBalance >= cost;
 
             return (
               <motion.div
@@ -331,27 +313,24 @@ const AICompanions = () => {
                           <CardDescription className="text-xs capitalize">{character.personality_type}</CardDescription>
                         </div>
                       </div>
-                      {character.is_premium && (
-                        <Badge variant={hasAccess ? "default" : "secondary"}>
-                          <Crown className="h-3 w-3 mr-1" /> Premium
-                        </Badge>
-                      )}
+                      <Badge variant={character.is_premium ? "default" : "secondary"}>
+                        {character.is_premium && <Crown className="h-3 w-3 mr-1" />}
+                        {cost} credits / message
+                      </Badge>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-muted-foreground mb-4">{character.description}</p>
                     <Button
                       onClick={() => {
-                        if (character.is_premium && !hasAccess) navigate("/subscription");
-                        else if (!character.is_premium && !subscription.subscribed && freeMessagesRemaining <= 0) setShowSubscribeDialog(true);
+                        if (!canChat) navigate("/ai-credits");
                         else startConversation(character.id, character.is_premium);
                       }}
                       className="w-full"
                       variant={canChat ? "default" : "outline"}
                     >
-                      {canChat ? (<><MessageCircle className="h-4 w-4 mr-2" /> Start Chat</>)
-                        : character.is_premium ? (<><Lock className="h-4 w-4 mr-2" /> Unlock Premium</>)
-                        : (<><Lock className="h-4 w-4 mr-2" /> Subscribe to Chat</>)}
+                      {canChat ? (<><MessageCircle className="h-4 w-4 mr-2" /> Start Chat · {cost} credits</>)
+                        : (<><Lock className="h-4 w-4 mr-2" /> Buy Credits</>)}
                     </Button>
                   </CardContent>
                 </Card>
@@ -387,10 +366,10 @@ const AICompanions = () => {
                 <div className="space-y-2">
                   <h4 className="font-semibold text-foreground">Pricing:</h4>
                   <ul className="list-disc list-inside space-y-1">
-                    <li>5 free messages to try</li>
-                    <li>€5/month for unlimited access</li>
+                    <li>2 credits per message</li>
+                    <li>4 credits per message with premium companions</li>
                     <li>AI tools use credits (2-5 per use)</li>
-                    <li>Premium companions via subscription</li>
+                    <li>No subscription — pay only for what you use</li>
                   </ul>
                 </div>
               </div>
@@ -399,31 +378,6 @@ const AICompanions = () => {
         </motion.div>
       </div>
 
-      {/* Subscribe Dialog */}
-      <Dialog open={showSubscribeDialog} onOpenChange={setShowSubscribeDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Free Messages Used</DialogTitle>
-            <DialogDescription>
-              You have used all your free messages. Subscribe for €5/month to get unlimited conversations with all AI Companions.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="bg-muted p-4 rounded-lg">
-              <h4 className="font-semibold mb-2">Subscription Benefits:</h4>
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• Unlimited conversations with all companions</li>
-                <li>• No daily message limits</li>
-                <li>• Cancel anytime</li>
-              </ul>
-            </div>
-            <div className="flex gap-3">
-              <Button variant="outline" onClick={() => setShowSubscribeDialog(false)} className="flex-1">Maybe Later</Button>
-              <Button onClick={handleSubscribe} className="flex-1">Subscribe €5/month</Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
