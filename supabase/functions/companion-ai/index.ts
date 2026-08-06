@@ -74,8 +74,10 @@ Deno.serve(async (req) => {
         }
 
         if (!chars.length) {
+          await refund();
           return new Response(JSON.stringify({ error: "No companions selected" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
         }
+
 
         const history = (conversationHistory || historyFormatted || [])
           .filter((m: any) => m?.content)
