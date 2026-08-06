@@ -4,11 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
-import { ArrowLeft, Trophy, RotateCw, Wand2, Shuffle, Crown, Medal, Loader2 } from "lucide-react";
+import { ArrowLeft, Trophy, Crown, Medal, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-
-type Metric = "roulette" | "readings" | "swaps";
 
 interface Row {
   user_id: string;
@@ -19,11 +17,6 @@ interface Row {
 
 interface Props { onBack: () => void; }
 
-const TABS: { key: Metric; label: string; icon: typeof RotateCw; unit: string }[] = [
-  { key: "roulette", label: "Roulette", icon: RotateCw, unit: "payout" },
-  { key: "readings", label: "Mood readings", icon: Wand2, unit: "readings" },
-  { key: "swaps", label: "Swaps", icon: Shuffle, unit: "swaps" },
-];
 
 export function EmotionLeaderboard({ onBack }: Props) {
   const [metric, setMetric] = useState<Metric>("roulette");
