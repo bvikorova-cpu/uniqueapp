@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { RotateCw, MessageSquare, Wand2, Shuffle, Library } from "lucide-react";
+import { RotateCw, MessageSquare, Wand2, Shuffle, Library, Coins } from "lucide-react";
 import { EmotionEconomyHero } from "@/components/emotion-economy/EmotionEconomyHero";
 import { EmotionEconomyToolCard } from "@/components/emotion-economy/EmotionEconomyToolCard";
 import { EmotionRoulette } from "@/components/emotion-economy/EmotionRoulette";
@@ -11,6 +11,7 @@ import { EmotionCollection } from "@/components/emotion-economy/EmotionCollectio
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { useLiveAiCredits } from "@/hooks/useLiveAiCredits";
 
 type ViewType = "hub" | "roulette" | "therapist" | "mood-generator" | "exchange" | "collection";
 
@@ -24,6 +25,7 @@ const tools = [
 
 export default function EmotionEconomy() {
   const [activeView, setActiveView] = useState<ViewType>("hub");
+  const { credits: liveCredits } = useLiveAiCredits();
 
   const renderView = () => {
     switch (activeView) {
