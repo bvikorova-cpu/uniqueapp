@@ -10,8 +10,6 @@ import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { Send, ArrowLeft, Loader2, Sparkles, Clock } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
-import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
 import { useAICredits } from "@/hooks/useAICredits";
 import { Zap } from "lucide-react";
 
@@ -19,7 +17,7 @@ const CompanionChat = () => {
   const { conversationId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { hasGoldPass } = useKidsGoldPass();
+
   const [messages, setMessages] = useState<any[]>([]);
   const [character, setCharacter] = useState<any>(null);
   const [input, setInput] = useState("");
@@ -128,17 +126,14 @@ const CompanionChat = () => {
             <Button variant="ghost" onClick={() => navigate("/companions")}>
               <ArrowLeft className="h-4 w-4 mr-2" /> Back
             </Button>
-            {hasGoldPass ? (
-              <KidsGoldPassBanner compact />
-            ) : (
-              <Badge
-                variant="outline"
-                className="animate-fade-in cursor-pointer"
-                onClick={() => navigate("/ai-credits")}
-              >
-                <Zap className="h-3 w-3 mr-1" /> {totalBalance} credits
-              </Badge>
-            )}
+            <Badge
+              variant="outline"
+              className="animate-fade-in cursor-pointer"
+              onClick={() => navigate("/ai-credits")}
+            >
+              <Zap className="h-3 w-3 mr-1" /> {totalBalance} credits
+            </Badge>
+
           </div>
 
           <Card className="h-[calc(100vh-180px)] sm:h-[600px] flex flex-col bg-card/80 backdrop-blur-xl overflow-hidden">
