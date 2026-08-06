@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
+import { safeInvoke } from "@/utils/safeInvoke";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { Users, Loader2, Send, Sparkles, CheckCircle } from "lucide-react";
@@ -52,11 +53,12 @@ export const GroupConversations = () => {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke("companion-ai", { body: { action: "group-chat",
+      const { data, error } = await safeInvoke("companion-ai", { body: { action: "group-chat",
           characterIds: selectedCompanions,
           message: userMsg,
           conversationHistory: messages.filter(m => m.role !== "system") } });
-      if (error) throw error;
+      if (error) throw new Error(error);
+      window.dispatchEvent(new Event("ai-credits-updated"));
 
       if (data?.responses) { const newMsgs = data.responses.map((r: any) => ({
           role: "assistant",

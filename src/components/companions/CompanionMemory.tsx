@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import { safeInvoke } from "@/utils/safeInvoke";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { Database, Loader2, Brain, RefreshCw, Sparkles, Clock } from "lucide-react";
@@ -59,9 +60,10 @@ export const CompanionMemory = () => {
   const analyzeMemory = async (conversationId: string) => {
     setAnalyzing(conversationId);
     try {
-      const { data, error } = await supabase.functions.invoke("companion-ai", {
+      const { data, error } = await safeInvoke("companion-ai", {
         body: { action: "memory-analyze", conversationId } });
-      if (error) throw error;
+      if (error) throw new Error(error);
+      window.dispatchEvent(new Event("ai-credits-updated"));
       toast({ title: "Memory Updated", description: "Companion memory has been analyzed and updated" });
       loadConversations();
     } catch (error: any) {
