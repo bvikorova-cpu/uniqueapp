@@ -1,4 +1,6 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { callOpenAI } from "../_shared/openai.ts";
+import { spendAiCredits } from "../_shared/spendCredits.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
@@ -7,11 +9,50 @@ async function callAI(messages: any[]) {
   return callOpenAI({ messages, model: "gpt-4o-mini", max_completion_tokens: 600 });
 }
 
+// Credit cost per action (unified ai_credits pool)
+const ACTION_COST: Record<string, number> = { "group-chat": 2,
+  "memory-analyze": 3,
+  "mood-matcher": 3,
+  "voice-message": 2 };
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
     const { action, character, otherCompanions, historyFormatted, message, characterList, mood, context, characterIds, conversationHistory, ...params } = await req.json();
+
+    // ===== Auth + credit deduction =====
+    const cost = ACTION_COST[action];
+    if (cost === undefined) {
+      return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const supaUrl = Deno.env.get("SUPABASE_URL")!;
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+    const userClient = createClient(supaUrl, anonKey, { global: { headers: { Authorization: authHeader } }, auth: { persistSession: false } });
+    const { data: userData } = await userClient.auth.getUser();
+    const user = userData?.user;
+    if (!user) {
+      return new Response(JSON.stringify({ error: "Authentication required" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    const admin = createClient(supaUrl, serviceKey, { auth: { persistSession: false } });
+    const spend = await spendAiCredits(admin, user.id, cost, `AI Companions: ${action}`, "companion-ai");
+    if (!spend.ok) {
+      return new Response(
+        JSON.stringify({ error: `Not enough AI credits. This action costs ${cost} credits.`, credits_required: cost, credits_remaining: spend.remaining }),
+        { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    const refund = async () => {
+      const { data: row } = await admin.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
+      await admin.from("ai_credits").update({ credits_remaining: (row?.credits_remaining ?? 0) + cost }).eq("user_id", user.id);
+    };
+
     let result: any;
+
     switch (action) {
       case "group-chat": {
         // Load the selected companions from the DB
