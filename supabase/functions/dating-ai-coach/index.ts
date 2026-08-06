@@ -1,6 +1,7 @@
 // Dating AI Coach: conversation_starter (A/B), bio_coach, rerank_discovery
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 import { callOpenAIJSON } from "../_shared/openai.ts";
+import { requireAiCredits } from "../_shared/credit-check.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
@@ -27,6 +28,14 @@ Deno.serve(async (req) => {
 
     const payload = await req.json();
     const action = payload.action;
+
+    // Paid AI actions cost 3 credits each (unified ai_credits pool).
+    // mark_experiment / rerank_discovery are internal, non-billable.
+    const __billable = action === "conversation_starter" || action === "bio_coach";
+    const __credits = __billable
+      ? await requireAiCredits(req, corsHeaders, { credits: 3, usageType: `dating_${action}` })
+      : null;
+    if (__credits?.errorResponse) return __credits.errorResponse;
 
     // ============ CONVERSATION STARTER (A/B) ============
     if (action === "conversation_starter") {
@@ -60,6 +69,7 @@ Deno.serve(async (req) => {
         match_id: matchId || null,
         metadata: { starters } }).select("id").maybeSingle();
 
+      await __credits!.deduct!();
       return new Response(JSON.stringify({ starters, variant_key: chosen.variant_key, experiment_id: exp?.id }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
@@ -90,6 +100,7 @@ Deno.serve(async (req) => {
         user: `${ctx}\n\nBIO:\n"${bio}"`,
         model: "gpt-4o-mini",
       });
+      await __credits!.deduct!();
       return new Response(JSON.stringify({
         score: parsed?.score ?? 50,
         strengths: Array.isArray(parsed?.strengths) ? parsed.strengths : [],
