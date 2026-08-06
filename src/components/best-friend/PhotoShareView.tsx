@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
+import { safeInvoke } from "@/utils/safeInvoke";
 import { toast } from "sonner";
 import { Loader2, Camera, Upload } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -24,10 +25,11 @@ export const PhotoShareView = () => {
       if (upErr) throw upErr;
       const { data: { publicUrl } } = supabase.storage.from("best-friend-media").getPublicUrl(path);
 
-      const { data, error } = await supabase.functions.invoke("best-friend-photo-react", {
+      const { data, error } = await safeInvoke<{ reaction: string }>("best-friend-photo-react", {
         body: { image_url: publicUrl, caption: caption.trim() || undefined } });
-      if (error) throw error;
-      setReaction({ url: publicUrl, reaction: data.reaction });
+      if (error) throw new Error(error);
+      setReaction({ url: publicUrl, reaction: data!.reaction });
+      window.dispatchEvent(new Event("ai-credits-updated"));
       setCaption("");
     } catch (e: any) { toast.error(e.message); }
     finally { setUploading(false); }

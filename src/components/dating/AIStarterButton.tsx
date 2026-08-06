@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, Loader2 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { supabase } from "@/integrations/supabase/client";
+import { safeInvoke } from "@/utils/safeInvoke";
 import { useToast } from "@/hooks/use-toast";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
@@ -23,10 +24,10 @@ export const AIStarterButton = ({ matchId, matchProfile, recentMessages, onPick 
   const generate = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("dating-ai-coach", {
+      const { data, error } = await safeInvoke<any>("dating-ai-coach", {
         body: { action: "conversation_starter", matchId, matchProfile, recentMessages } });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
+      if (error) throw new Error(error);
+      window.dispatchEvent(new Event("ai-credits-updated"));
       setStarters(data.starters || []);
       setExperimentId(data.experiment_id || null);
       setOpen(true);

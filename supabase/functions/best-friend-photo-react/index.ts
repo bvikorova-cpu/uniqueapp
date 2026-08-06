@@ -2,6 +2,7 @@ import "../_shared/aiRedirect.ts";
 // Vision: user uploads photo URL, AI reacts emotionally as best friend
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { requireAiCredits } from "../_shared/credit-check.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -19,6 +20,8 @@ serve(async (req) => {
       { global: { headers: { Authorization: authHeader } }, auth: { persistSession: false } });
     const { data: u } = await anon.auth.getUser();
     if (!u.user) return j({ error: "Unauthorized" }, 401);
+    const __credits = await requireAiCredits(req, corsHeaders, { credits: 3, usageType: "best_friend_photo_react" });
+    if (__credits.errorResponse) return __credits.errorResponse;
 
     const { image_url, caption } = await req.json();
     if (!image_url || typeof image_url !== "string") return j({ error: "image_url required" }, 400);
@@ -54,6 +57,7 @@ serve(async (req) => {
 
     await admin.from("best_friend_photos").insert({ user_id: u.user.id, image_url, caption: caption || null, ai_reaction: reaction });
 
+    await __credits.deduct!();
     return j({ reaction });
   } catch (e) {
     return j({ error: String(e) }, 500);
