@@ -41,7 +41,7 @@ export function EmotionMining({ onBack }: { onBack?: () => void }) {
 
       toast({
         title: "Mining Complete! ⚡",
-        description: `You mined ${amount} emotions and earned €${Number(commission).toFixed(2)} commission` });
+        description: `You mined ${amount} emotions (+${Number(commission).toFixed(0)} bonus units)` });
     } catch (error: any) { console.error("Error completing mining:", error);
       toast({
         title: "Mining failed",
@@ -133,7 +133,7 @@ export function EmotionMining({ onBack }: { onBack?: () => void }) {
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">@emotionking</p>
-            <p className="text-sm text-muted-foreground">€524.50 earned</p>
+            <p className="text-sm text-muted-foreground">top miner this week</p>
           </CardContent>
         </Card>
 
@@ -142,7 +142,7 @@ export function EmotionMining({ onBack }: { onBack?: () => void }) {
             <CardTitle className="text-lg">Your Earnings</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold">€0.00</p>
+            <p className="text-3xl font-bold">0</p>
             <p className="text-sm text-muted-foreground">total commission</p>
           </CardContent>
         </Card>

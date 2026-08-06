@@ -11,8 +11,6 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface EmotionCredits {
   credits_remaining: number;
-  total_credits_purchased: number;
-  total_credits_used: number;
 }
 
 export function EmotionFeed({ onBack }: { onBack?: () => void }) {
@@ -28,58 +26,23 @@ export function EmotionFeed({ onBack }: { onBack?: () => void }) {
   useEffect(() => {
     fetchPosts();
     fetchCredits();
-    
-    // Handle payment callback
-    const payment = searchParams.get('payment');
-    const creditsParam = searchParams.get('credits');
-    
-    if (payment === 'success' && creditsParam) {
-      handlePaymentSuccess(parseInt(creditsParam, 10));
-    }
+    const onUpdate = () => fetchCredits();
+    window.addEventListener("ai-credits-updated", onUpdate);
+    return () => window.removeEventListener("ai-credits-updated", onUpdate);
   }, [searchParams]);
-
-  const handlePaymentSuccess = async (creditsToAdd: number) => {
-    try {
-      const { error } = await supabase.functions.invoke('verify-emotion-credits-payment', {
-        body: { credits: creditsToAdd }
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Credits Added! 🎉",
-        description: `${creditsToAdd} AI analysis credits have been added to your account`
-      });
-
-      await fetchCredits();
-      
-      // Clear URL params
-      window.history.replaceState({}, '', '/emotion-economy');
-    } catch (error) {
-      console.error('Error verifying payment:', error);
-    }
-  };
 
   const fetchCredits = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setIsLoadingCredits(false);
-        return;
-      }
+      if (!user) { setIsLoadingCredits(false); return; }
 
-      const { data, error } = await supabase
-        .from('emotion_credits')
-        .select('*')
+      const { data } = await supabase
+        .from('ai_credits')
+        .select('credits_remaining')
         .eq('user_id', user.id)
         .maybeSingle();
 
-      if (data) {
-        setCredits(data);
-      } else {
-        // No free credits - users must purchase
-        setCredits({ credits_remaining: 0, total_credits_purchased: 0, total_credits_used: 0 });
-      }
+      setCredits({ credits_remaining: data?.credits_remaining ?? 0 });
     } catch (error) {
       console.error('Error fetching credits:', error);
     } finally {
@@ -111,37 +74,6 @@ export function EmotionFeed({ onBack }: { onBack?: () => void }) {
       title: "Feed Refreshed",
       description: "Latest posts loaded"
     });
-  };
-
-  const handleBuyCredits = async (packageId: string) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
-          title: "Authentication Required",
-          description: "Please sign in to purchase credits",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke('create-emotion-credits-payment', {
-        body: { packageId }
-      });
-
-      if (error) throw error;
-
-      if (data?.url) {
-        window.location.href = data.url;
-      }
-    } catch (error) {
-      console.error('Error creating payment:', error);
-      toast({
-        title: "Error",
-        description: "Failed to initiate payment",
-        variant: "destructive"
-      });
-    }
   };
 
   const handleLike = async (postId: string) => {
@@ -203,20 +135,21 @@ export function EmotionFeed({ onBack }: { onBack?: () => void }) {
       }
 
       // Call AI emotion analysis
-      const { data: analysisData, error: analysisError } = await supabase.functions.invoke('analyze-emotion', {
-        body: { content }
+      const { data: analysisData, error: analysisError } = await supabase.functions.invoke('emotion-economy', {
+        body: { action: 'analyze_post', content }
       });
 
-      if (analysisError) {
-        if (analysisData?.needs_purchase) {
+      if (analysisError || (analysisData as any)?.error) {
+        const msg = String((analysisData as any)?.error || analysisError?.message || '');
+        if (msg.toLowerCase().includes('credit')) {
           toast({
-            title: "No Credits Remaining",
-            description: "Please purchase more AI analysis credits to continue",
+            title: "Not enough credits",
+            description: "Posting costs 1 AI credit. Top up in the AI Credits store.",
             variant: "destructive"
           });
           return;
         }
-        throw analysisError;
+        throw analysisError || new Error(msg);
       }
 
       // Create post with AI-detected emotions
@@ -233,12 +166,13 @@ export function EmotionFeed({ onBack }: { onBack?: () => void }) {
 
       // Update local credits
       if (analysisData.credits_remaining !== undefined) {
-        setCredits(prev => prev ? { ...prev, credits_remaining: analysisData.credits_remaining } : null);
+        setCredits({ credits_remaining: analysisData.credits_remaining });
       }
+      window.dispatchEvent(new Event("ai-credits-updated"));
 
       toast({
         title: "Post Created! 💚",
-        description: `AI detected: ${analysisData.emotions.dominant_emotion}. 1 credit used.`
+        description: `AI detected: ${analysisData.emotions?.dominant_emotion ?? "emotion"}. 1 credit used.`
       });
 
       setContent("");
@@ -279,7 +213,7 @@ export function EmotionFeed({ onBack }: { onBack?: () => void }) {
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg flex items-center gap-2">
               <Coins className="h-5 w-5 text-primary" />
-              AI Analysis Credits
+              AI Credits
             </CardTitle>
             <Badge variant={credits && credits.credits_remaining > 0 ? "default" : "destructive"}>
               {isLoadingCredits ? "..." : credits?.credits_remaining ?? 0} credits
@@ -290,20 +224,12 @@ export function EmotionFeed({ onBack }: { onBack?: () => void }) {
           {credits && credits.credits_remaining < 5 && (
             <div className="flex items-center gap-2 text-sm text-amber-600 dark:text-amber-400 mb-3">
               <AlertCircle className="h-4 w-4" />
-              Low credits! Buy more to continue AI emotion analysis.
+              Low credits! Top up to keep using AI emotion analysis.
             </div>
           )}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button variant="outline" size="sm" className="flex-1" onClick={() => handleBuyCredits('10')}>
-              10 Credits - €2.99
-            </Button>
-            <Button variant="default" size="sm" className="flex-1" onClick={() => handleBuyCredits('50')}>
-              50 Credits - €9.99
-            </Button>
-            <Button variant="outline" size="sm" className="flex-1" onClick={() => handleBuyCredits('100')}>
-              100 Credits - €14.99
-            </Button>
-          </div>
+          <Button variant="outline" size="sm" asChild>
+            <a href="/ai-credits">Top up AI credits</a>
+          </Button>
         </CardContent>
       </Card>
 

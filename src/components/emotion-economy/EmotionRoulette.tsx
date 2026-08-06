@@ -52,15 +52,15 @@ export function EmotionRoulette({ onBack }: Props) {
       return;
     }
 
-    // Check credits
+    // Check unified AI credits
     const { data: credits } = await supabase
-      .from("emotion_credits")
+      .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
 
     if (!credits || credits.credits_remaining < 1) {
-      toast({ title: "Insufficient Credits", description: "You need 1 credit to spin. Purchase more credits first.", variant: "destructive" });
+      toast({ title: "Insufficient Credits", description: "You need 1 AI credit to spin. Top up your AI credits first.", variant: "destructive" });
       return;
     }
 
@@ -93,6 +93,7 @@ export function EmotionRoulette({ onBack }: Props) {
       EMOTIONS.find((e) => e.name.toLowerCase() === resultEmotionName)?.name ?? resultEmotionName;
 
     setResult({ emotion: displayName, won, payout });
+    window.dispatchEvent(new Event("ai-credits-updated"));
     setIsSpinning(false);
     fetchHistory();
 

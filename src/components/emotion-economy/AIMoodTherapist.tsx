@@ -36,22 +36,20 @@ export function AIMoodTherapist({ onBack }: Props) {
       return;
     }
 
-    // Check credits
+    // Unified AI credits check (1 credit per message, charged server-side)
     const { data: credits } = await supabase
-      .from("emotion_credits")
+      .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
 
-    if (!credits || credits.credits_remaining < 3) { toast({
+    if (!credits || credits.credits_remaining < 1) {
+      toast({
         title: "Insufficient Credits",
-        description: "AI Mood Therapist requires 3 credits per session. Purchase more credits first.",
+        description: "AI Mood Therapist costs 1 credit per message. Top up your AI credits first.",
         variant: "destructive" });
       return;
     }
-
-    // Deduct credits
-    await supabase.rpc("deduct_emotion_credits" as any, { p_user_id: user.id, p_amount: 3 });
 
     // Fetch wallet data for context
     const { data: wallet } = await supabase
@@ -85,7 +83,15 @@ export function AIMoodTherapist({ onBack }: Props) {
         body: {
           messages: [...messages, { role: "user", content: userMessage }] } });
 
-      if (error) throw error;
+      if (error || (data as any)?.error) {
+        const msg = String((data as any)?.error || error?.message || "");
+        if (msg.toLowerCase().includes("credit")) {
+          toast({ title: "Insufficient credits", description: "Top up your AI credits to continue.", variant: "destructive" });
+          return;
+        }
+        throw error || new Error(msg);
+      }
+      window.dispatchEvent(new Event("ai-credits-updated"));
 
       setMessages((prev) => [
         ...prev,
@@ -131,7 +137,7 @@ export function AIMoodTherapist({ onBack }: Props) {
           <CardContent className="text-center space-y-4">
             <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
               <Coins className="h-4 w-4 text-pink-400" />
-              <span>3 credits per session</span>
+              <span>1 credit per message</span>
             </div>
             <Button
               size="lg"
@@ -139,7 +145,7 @@ export function AIMoodTherapist({ onBack }: Props) {
               className="bg-gradient-to-r from-cyan-500 to-violet-500 hover:from-cyan-600 hover:to-violet-600 text-white shadow-[0_4px_20px_rgba(6,182,212,0.4)]"
             >
               <Sparkles className="h-5 w-5 mr-2" />
-              Start Session (3 Credits)
+              Start Session
             </Button>
           </CardContent>
         </Card>
