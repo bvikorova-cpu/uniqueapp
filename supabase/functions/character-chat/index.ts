@@ -4,6 +4,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
 import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 import { callOpenAI } from "../_shared/openai.ts";
+import { spendAiCredits } from "../_shared/spendCredits.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
@@ -257,7 +258,7 @@ serve(async (req) => {
       .update({ updated_at: new Date().toISOString() })
       .eq("id", conversationId);
 
-    return new Response(JSON.stringify({ response: aiMsg }), {
+    return new Response(JSON.stringify({ response: aiMsg, credits_remaining: spend.remaining, credits_used: messageCost }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
