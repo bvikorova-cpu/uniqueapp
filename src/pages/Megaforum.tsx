@@ -55,7 +55,11 @@ interface ForumPost {
 
 type ActiveView = "main" | "reputation" | "hot-topics";
 
+const TOOLS = [
+  { id: "reputation" as ActiveView, label: "Reputation & Karma", icon: Trophy, emoji: "🏆", desc: "Levels, badges & leaderboard", gradient: "from-amber-600 to-orange-600" },
+  { id: "hot-topics" as ActiveView, label: "Hot Topics AI", icon: Sparkles, emoji: "🤖", desc: "AI trend suggestions & summaries", gradient: "from-purple-600 to-violet-600", premium: true },
 ];
+
 
 const categories = ["General", "Technology", "Sports", "Culture", "Music", "Film & TV", "Games", "Health", "Other"];
 
