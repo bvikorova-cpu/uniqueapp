@@ -25974,6 +25974,7 @@ export type Database = {
           created_at: string
           id: string
           is_active: boolean | null
+          is_anonymous: boolean
           is_markdown: boolean | null
           is_pinned: boolean | null
           likes_count: number | null
@@ -25989,6 +25990,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_active?: boolean | null
+          is_anonymous?: boolean
           is_markdown?: boolean | null
           is_pinned?: boolean | null
           likes_count?: number | null
@@ -26004,6 +26006,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_active?: boolean | null
+          is_anonymous?: boolean
           is_markdown?: boolean | null
           is_pinned?: boolean | null
           likes_count?: number | null

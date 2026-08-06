@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
@@ -70,7 +71,8 @@ const Megaforum = () => {
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostContent, setNewPostContent] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("General");
-  const [selectedPost, setSelectedPost] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedPost, setSelectedPost] = useState<string | null>(searchParams.get("post"));
   const [newComment, setNewComment] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [newPostTags, setNewPostTags] = useState<string[]>([]);
@@ -87,6 +89,15 @@ const Megaforum = () => {
     }
     return true;
   };
+
+  useEffect(() => {
+    const p = searchParams.get("post");
+    if (p && p !== selectedPost) {
+      setSelectedPost(p);
+      setActiveView("main");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -618,9 +629,24 @@ const Megaforum = () => {
                                 {post.likes_count}
                               </Button>
 
-                              <Sheet>
+                              <Sheet
+                                open={selectedPost === post.id}
+                                onOpenChange={(o) => {
+                                  if (o) {
+                                    if (!requireAuth("view & comment")) return;
+                                    setSelectedPost(post.id);
+                                  } else {
+                                    setSelectedPost(null);
+                                    if (searchParams.get("post")) {
+                                      const next = new URLSearchParams(searchParams);
+                                      next.delete("post");
+                                      setSearchParams(next, { replace: true });
+                                    }
+                                  }
+                                }}
+                              >
                                 <SheetTrigger asChild>
-                                  <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => { if (!requireAuth("view & comment")) return; setSelectedPost(post.id); }}>
+                                  <Button variant="ghost" size="sm" className="h-7 text-xs">
                                     <Reply className="h-3.5 w-3.5 mr-1" />
                                     {post.replies_count} replies
                                   </Button>
