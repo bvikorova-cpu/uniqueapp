@@ -281,19 +281,9 @@ const Megaforum = () => {
     });
 
   // Render sub-views
-  if (activeView === "polls") return (
-    <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="container mx-auto px-4 max-w-5xl"><ForumPolls onBack={() => setActiveView("main")} /></div>
-    </div>
-  );
   if (activeView === "reputation") return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-5xl"><ReputationSystem onBack={() => setActiveView("main")} /></div>
-    </div>
-  );
-  if (activeView === "debates") return (
-    <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="container mx-auto px-4 max-w-5xl"><LiveDebateRooms onBack={() => setActiveView("main")} /></div>
     </div>
   );
   if (activeView === "hot-topics") return (
@@ -301,11 +291,7 @@ const Megaforum = () => {
       <div className="container mx-auto px-4 max-w-5xl"><HotTopicsAI onBack={() => setActiveView("main")} /></div>
     </div>
   );
-  if (activeView === "challenges") return (
-    <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="container mx-auto px-4 max-w-5xl"><WeeklyChallenges onBack={() => setActiveView("main")} /></div>
-    </div>
-  );
+
 
   return (
     <>
