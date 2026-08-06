@@ -25,14 +25,14 @@ type ViewType = "hub" | "feed" | "wallet" | "market" | "mining" | "insurance" | 
 const tools = [
   { id: "feed" as ViewType, icon: Users, title: "Emotion Feed", description: "Share feelings, AI detects emotions", badge: "AI", credits: 1, gradient: "from-pink-500/10 to-pink-500/5", iconColor: "text-pink-400" },
   { id: "wallet" as ViewType, icon: Wallet, title: "Emotion Wallet", description: "Track your emotional portfolio", gradient: "from-violet-500/10 to-violet-500/5", iconColor: "text-violet-400" },
-  { id: "market" as ViewType, icon: TrendingUp, title: "Emotion Market", description: "Buy and sell emotions", gradient: "from-cyan-500/10 to-cyan-500/5", iconColor: "text-cyan-400" },
-  { id: "mining" as ViewType, icon: Zap, title: "Emotion Mining", description: "Create content, earn 50% commission", gradient: "from-emerald-500/10 to-emerald-500/5", iconColor: "text-emerald-400" },
-  { id: "therapist" as ViewType, icon: MessageSquare, title: "AI Mood Therapist", description: "AI-powered portfolio advice", badge: "AI", credits: 3, gradient: "from-cyan-500/10 to-violet-500/5", iconColor: "text-cyan-400" },
+  { id: "market" as ViewType, icon: TrendingUp, title: "Emotion Market", description: "Buy and sell emotions for credits", gradient: "from-cyan-500/10 to-cyan-500/5", iconColor: "text-cyan-400" },
+  { id: "mining" as ViewType, icon: Zap, title: "Emotion Mining", description: "Create content, mine emotion units", gradient: "from-emerald-500/10 to-emerald-500/5", iconColor: "text-emerald-400" },
+  { id: "therapist" as ViewType, icon: MessageSquare, title: "AI Mood Therapist", description: "AI-powered portfolio advice", badge: "AI", credits: 1, gradient: "from-cyan-500/10 to-violet-500/5", iconColor: "text-cyan-400" },
   { id: "roulette" as ViewType, icon: RotateCw, title: "Emotion Roulette", description: "Spin the wheel, win 2x!", badge: "Game", credits: 1, gradient: "from-pink-500/10 to-yellow-500/5", iconColor: "text-pink-400" },
   { id: "futures" as ViewType, icon: BarChart3, title: "Emotion Futures", description: "Predict next week's trends", badge: "Market", credits: 2, gradient: "from-emerald-500/10 to-cyan-500/5", iconColor: "text-emerald-400" },
   { id: "leaderboard" as ViewType, icon: Trophy, title: "Leaderboard", description: "Global rankings & top traders", badge: "Free", gradient: "from-yellow-500/10 to-orange-500/5", iconColor: "text-yellow-400" },
-  { id: "insurance" as ViewType, icon: Shield, title: "Emotion Insurance", description: "Protect from negativity", gradient: "from-violet-500/10 to-pink-500/5", iconColor: "text-violet-400" },
-  { id: "drops" as ViewType, icon: Heart, title: "Emotion Drops", description: "Join massive emotion events", gradient: "from-pink-500/10 to-red-500/5", iconColor: "text-pink-400" },
+  { id: "insurance" as ViewType, icon: Shield, title: "Emotion Insurance", description: "Protect from negativity", credits: 10, gradient: "from-violet-500/10 to-pink-500/5", iconColor: "text-violet-400" },
+  { id: "drops" as ViewType, icon: Heart, title: "Emotion Drops", description: "Join massive emotion events", credits: 3, gradient: "from-pink-500/10 to-red-500/5", iconColor: "text-pink-400" },
 ];
 
 export default function EmotionEconomy() {
