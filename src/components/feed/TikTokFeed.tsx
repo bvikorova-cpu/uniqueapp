@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useEffect, useRef, useState, useCallback, ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback, ReactNode } from "react";
 import { Heart, MessageCircle, Share2, Volume2, VolumeX, Loader2, Music2, Play, Send, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,8 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
+import { TikTokAdSlot } from "./TikTokAdSlot";
+
 
 
 export interface ShortItem {
