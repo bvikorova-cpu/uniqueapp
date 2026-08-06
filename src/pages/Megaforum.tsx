@@ -49,6 +49,7 @@ interface ForumPost {
   tags?: string[];
   is_pinned?: boolean;
   is_markdown?: boolean;
+  is_anonymous?: boolean;
 }
 
 type ActiveView = "main" | "reputation" | "hot-topics";
@@ -74,6 +75,7 @@ const Megaforum = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [newPostTags, setNewPostTags] = useState<string[]>([]);
   const [useMarkdown, setUseMarkdown] = useState(false);
+  const [postAnonymously, setPostAnonymously] = useState(false);
   const [filterTag, setFilterTag] = useState<string | null>(null);
   const [paywallOpen, setPaywallOpen] = useState(false);
   const [paywallAction, setPaywallAction] = useState<string>("interact");
@@ -172,7 +174,8 @@ const Megaforum = () => {
         content: newPostContent,
         category: selectedCategory,
         tags: newPostTags,
-        is_markdown: useMarkdown }]);
+        is_markdown: useMarkdown,
+        is_anonymous: postAnonymously }]);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -180,6 +183,7 @@ const Megaforum = () => {
       setNewPostTitle("");
       setNewPostContent("");
       setNewPostTags([]);
+      setPostAnonymously(false);
       toast({ title: "Post Created!", description: "Your post has been successfully added." });
     },
     onError: (error: any) => {
@@ -452,6 +456,19 @@ const Megaforum = () => {
                     {useMarkdown ? "Use **bold**, *italic*, # headers, - lists" : "Plain text mode"}
                   </span>
                 </div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Button
+                    variant={postAnonymously ? "default" : "outline"}
+                    size="sm"
+                    className="text-[10px] h-6"
+                    onClick={() => setPostAnonymously(!postAnonymously)}
+                  >
+                    🕵️ Anonymous {postAnonymously ? "ON" : "OFF"}
+                  </Button>
+                  <span className="text-[10px] text-muted-foreground">
+                    {postAnonymously ? "Your name & avatar stay hidden" : "Posting with your profile name"}
+                  </span>
+                </div>
                 <Textarea
                   placeholder={useMarkdown ? "Write in Markdown... **bold**, *italic*, # heading" : "Share something with the community..."}
                   className="min-h-20 text-sm font-mono"
@@ -503,7 +520,8 @@ const Megaforum = () => {
             ) : (
               filteredPosts.map((post, idx) => {
                 const isLiked = likedPosts.includes(post.id);
-                const profile = profiles[post.user_id];
+                const isAnon = !!post.is_anonymous;
+                const profile = isAnon ? undefined : profiles[post.user_id];
                 return (
                   <motion.div
                     key={post.id}
@@ -517,7 +535,7 @@ const Megaforum = () => {
                           <Avatar className="h-10 w-10">
                             <AvatarImage src={profile?.avatar_url || undefined} />
                             <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-white text-xs">
-                              {(profile?.full_name || profile?.username)?.[0]?.toUpperCase() || "U"}
+                              {isAnon ? "🕵️" : ((profile?.full_name || profile?.username)?.[0]?.toUpperCase() || "U")}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1 min-w-0 space-y-2">
@@ -531,7 +549,7 @@ const Megaforum = () => {
                                   <Badge variant="outline" className="text-[10px]">{post.category}</Badge>
                                 </div>
                                 <p className="text-xs text-muted-foreground break-words">
-                                  {profile?.full_name || profile?.username || "User"} • {getTimeSince(post.created_at)}
+                                  {isAnon ? "Anonymous" : (profile?.full_name || profile?.username || "User")} • {getTimeSince(post.created_at)}
                                 </p>
                                 {(post.tags || []).length > 0 && (
                                   <div className="flex gap-1 mt-1 flex-wrap">
