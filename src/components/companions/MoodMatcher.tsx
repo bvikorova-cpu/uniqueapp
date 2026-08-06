@@ -48,7 +48,15 @@ export const MoodMatcher = () => {
 
       if (error) throw new Error(error);
       window.dispatchEvent(new Event("ai-credits-updated"));
-      setResult(data);
+      // normalize: some responses arrive as { result: "```json ... ```" }
+      let parsed: any = data;
+      if (data && typeof data.result === "string") {
+        const raw = data.result.trim().replace(/^```(?:json)?/i, "").replace(/```$/i, "").trim();
+        const s = raw.indexOf("{"), e = raw.lastIndexOf("}");
+        try { parsed = JSON.parse(s !== -1 && e > s ? raw.slice(s, e + 1) : raw); } catch { parsed = { mood_insight: raw }; }
+      }
+      if (!parsed?.recommended_companion) throw new Error("AI did not return a companion. Please try again.");
+      setResult(parsed);
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "Failed to analyze mood", variant: "destructive" });
     } finally {
@@ -56,17 +64,27 @@ export const MoodMatcher = () => {
     }
   };
 
-  const startChatWithRecommended = async (characterName: string) => {
+  const startChatWithRecommended = async (characterName?: string) => {
     try {
+      if (!characterName) { toast({ title: "No companion selected", variant: "destructive" }); return; }
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { navigate("/auth"); return; }
 
-      const { data: chars } = await supabase.from("ai_characters").select("id").eq("name", characterName).single();
-      if (!chars) { toast({ title: "Character not found", variant: "destructive" }); return; }
+      // exact match first, then fuzzy (AI may return a shortened name)
+      let charId: string | null = null;
+      const { data: exact } = await supabase.from("ai_characters").select("id").eq("name", characterName).maybeSingle();
+      if (exact) charId = exact.id;
+      if (!charId) {
+        const shortName = characterName.split("-")[0].trim();
+        const { data: fuzzy } = await supabase
+          .from("ai_characters").select("id,name").ilike("name", `%${shortName}%`).limit(1);
+        if (fuzzy && fuzzy.length) charId = fuzzy[0].id;
+      }
+      if (!charId) { toast({ title: "Character not found", description: characterName, variant: "destructive" }); return; }
 
       const { data: convo, error } = await supabase
         .from("character_conversations")
-        .insert({ user_id: user.id, character_id: chars.id })
+        .insert({ user_id: user.id, character_id: charId })
         .select().single();
 
       if (error) throw error;
