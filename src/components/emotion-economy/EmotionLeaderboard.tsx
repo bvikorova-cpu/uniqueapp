@@ -19,18 +19,17 @@ interface Props { onBack: () => void; }
 
 
 export function EmotionLeaderboard({ onBack }: Props) {
-  const [metric, setMetric] = useState<Metric>("roulette");
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [me, setMe] = useState<string | null>(null);
 
-  const fetchBoard = useCallback(async (m: Metric) => {
+  const fetchBoard = useCallback(async () => {
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       setMe(user?.id ?? null);
       const { data, error } = await supabase.rpc("get_emotion_leaderboard", {
-        _metric: m,
+        _metric: "total",
         _limit: 20,
       });
       if (error) throw error;
@@ -43,18 +42,19 @@ export function EmotionLeaderboard({ onBack }: Props) {
     }
   }, []);
 
-  useEffect(() => { fetchBoard(metric); }, [metric, fetchBoard]);
+  useEffect(() => { fetchBoard(); }, [fetchBoard]);
 
-  // Live refresh whenever a tool records new activity
+  // Live refresh whenever any wallet or source table changes
   useEffect(() => {
     const channel = supabase
       .channel("emotion-leaderboard")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "emotion_roulette_spins" }, () => fetchBoard(metric))
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "emotion_mood_generations" }, () => fetchBoard(metric))
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "emotion_exchange_matches" }, () => fetchBoard(metric))
+      .on("postgres_changes", { event: "*", schema: "public", table: "emotion_wallets" }, fetchBoard)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "emotion_roulette_spins" }, fetchBoard)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "emotion_mood_generations" }, fetchBoard)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "emotion_exchange_matches" }, fetchBoard)
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, [metric, fetchBoard]);
+  }, [fetchBoard]);
 
   const rankIcon = (i: number) => {
     if (i === 0) return <Crown className="h-5 w-5 text-yellow-500 shrink-0" />;
@@ -63,7 +63,6 @@ export function EmotionLeaderboard({ onBack }: Props) {
     return <span className="text-sm font-bold text-muted-foreground w-5 text-center shrink-0">#{i + 1}</span>;
   };
 
-  const unit = TABS.find((t) => t.key === metric)!.unit;
 
   return (
     <div className="space-y-6">
