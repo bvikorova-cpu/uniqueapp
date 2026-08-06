@@ -49,6 +49,7 @@ interface ForumPost {
   tags?: string[];
   is_pinned?: boolean;
   is_markdown?: boolean;
+  is_anonymous?: boolean;
 }
 
 type ActiveView = "main" | "reputation" | "hot-topics";
@@ -74,6 +75,7 @@ const Megaforum = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [newPostTags, setNewPostTags] = useState<string[]>([]);
   const [useMarkdown, setUseMarkdown] = useState(false);
+  const [postAnonymously, setPostAnonymously] = useState(false);
   const [filterTag, setFilterTag] = useState<string | null>(null);
   const [paywallOpen, setPaywallOpen] = useState(false);
   const [paywallAction, setPaywallAction] = useState<string>("interact");
