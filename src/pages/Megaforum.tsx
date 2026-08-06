@@ -547,7 +547,7 @@ const Megaforum = () => {
                                   </div>
                                 )}
                               </div>
-                              <div className="flex items-center gap-1">
+                              <div className="flex items-center gap-1 flex-shrink-0">
                                 {user?.id === post.user_id && (
                                   <>
                                     <Button
