@@ -1,5 +1,6 @@
 import "../_shared/aiRedirect.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { requireAiCredits } from "../_shared/credit-check.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
@@ -22,6 +23,8 @@ Deno.serve(async (req) => {
     );
     const { data: { user } } = await userClient.auth.getUser();
     if (!user) return json({ error: "unauthorized" }, 401);
+    const __credits = await requireAiCredits(req, corsHeaders, { credits: 3, usageType: "dating_weekly_insights" });
+    if (__credits.errorResponse) return __credits.errorResponse;
 
     const now = new Date();
     const dow = now.getUTCDay(); // 0=Sun
@@ -103,6 +106,7 @@ Return JSON: { "summary": "1-2 sentences, warm, specific, mention biggest change
       .select().single();
     if (error) throw error;
 
+    await __credits.deduct!();
     return json(inserted);
   } catch (e) {
     console.error(e);

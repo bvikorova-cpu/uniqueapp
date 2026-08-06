@@ -3,6 +3,7 @@ import "../_shared/aiRedirect.ts";
 // Frontend renders it as printable HTML / PDF.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { requireAiCredits } from "../_shared/credit-check.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -20,6 +21,8 @@ serve(async (req) => {
       { global: { headers: { Authorization: authHeader } }, auth: { persistSession: false } });
     const { data: u } = await anon.auth.getUser();
     if (!u.user) return j({ error: "Unauthorized" }, 401);
+    const __credits = await requireAiCredits(req, corsHeaders, { credits: 3, usageType: "best_friend_year_report" });
+    if (__credits.errorResponse) return __credits.errorResponse;
 
     const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
       { auth: { persistSession: false } });
@@ -53,6 +56,7 @@ serve(async (req) => {
     let parsed: any = {};
     try { parsed = JSON.parse(data.choices?.[0]?.message?.content || "{}"); } catch {}
 
+    await __credits.deduct!();
     return j({ ...parsed,
       stats: {
         total_messages: progress?.total_messages || 0,

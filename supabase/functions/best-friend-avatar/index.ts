@@ -1,6 +1,7 @@
 import "../_shared/aiRedirect.ts";
 // Generate AI Best Friend avatar (Pixar-style portrait) and save URL on persona row.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { requireAiCredits } from "../_shared/credit-check.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
@@ -20,6 +21,8 @@ Deno.serve(async (req) => {
     const sb = createClient(SUPABASE_URL, ANON, { global: { headers: { Authorization: auth } } });
     const { data: { user } } = await sb.auth.getUser();
     if (!user) return j({ error: "Unauthorized" }, 401);
+    const __credits = await requireAiCredits(req, corsHeaders, { credits: 3, usageType: "best_friend_avatar" });
+    if (__credits.errorResponse) return __credits.errorResponse;
     const admin = createClient(SUPABASE_URL, SERVICE);
 
     const body = await req.json().catch(() => ({}));
@@ -55,6 +58,7 @@ Deno.serve(async (req) => {
     await admin.from("best_friend_persona")
       .upsert({ user_id: user.id, avatar_url: pub.publicUrl }, { onConflict: "user_id" });
 
+    await __credits.deduct!();
     return j({ avatar_url: pub.publicUrl }, 200);
   } catch (e) {
     return j({ error: e instanceof Error ? e.message : String(e) }, 500);
