@@ -35,3 +35,4 @@
 - [Doctor Booking (Phase 4)](mem://features/doctor-booking) — Healthcare 85/15 split, 24h refund window, availability slot generation rules.
 - [Healthcare Advanced (Phase 5)](mem://features/health-advanced) — Video calls, e-prescriptions, medical records with time-boxed doctor access, insurance claims.
 - [Anonymous Dating swipe & reveal](mem://features/anonymous-dating-swipe-reveal) — Free anonymous swiping deck; photo unlocks after 7 days or for 5 credits.
+- [SECURITY DEFINER views & linter warnings](mem://architecture/security-definer-views) — Which definer views must stay, and why the recurring WARN classes are accepted.
