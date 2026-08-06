@@ -1,19 +1,23 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { RotateCw, MessageSquare } from "lucide-react";
+import { RotateCw, MessageSquare, Wand2, Shuffle } from "lucide-react";
 import { EmotionEconomyHero } from "@/components/emotion-economy/EmotionEconomyHero";
 import { EmotionEconomyToolCard } from "@/components/emotion-economy/EmotionEconomyToolCard";
 import { EmotionRoulette } from "@/components/emotion-economy/EmotionRoulette";
 import { AIMoodTherapist } from "@/components/emotion-economy/AIMoodTherapist";
+import { MoodEmotionGenerator } from "@/components/emotion-economy/MoodEmotionGenerator";
+import { EmotionExchange } from "@/components/emotion-economy/EmotionExchange";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-type ViewType = "hub" | "roulette" | "therapist";
+type ViewType = "hub" | "roulette" | "therapist" | "mood-generator" | "exchange";
 
 const tools = [
   { id: "therapist" as ViewType, icon: MessageSquare, title: "AI Mood Therapist", description: "AI-powered mood & portfolio advice", badge: "AI", credits: 1, gradient: "from-cyan-500/10 to-violet-500/5", iconColor: "text-cyan-400" },
   { id: "roulette" as ViewType, icon: RotateCw, title: "Emotion Roulette", description: "Spin the wheel, win 2x!", badge: "Game", credits: 1, gradient: "from-pink-500/10 to-yellow-500/5", iconColor: "text-pink-400" },
+  { id: "mood-generator" as ViewType, icon: Wand2, title: "Mood Emotion Generator", description: "Turn your current mood into emotion units", badge: "AI", credits: 2, gradient: "from-violet-500/10 to-pink-500/5", iconColor: "text-violet-400" },
+  { id: "exchange" as ViewType, icon: Shuffle, title: "Emotion Exchange", description: "Random swap with another user", badge: "Match", credits: 1, gradient: "from-cyan-500/10 to-emerald-500/5", iconColor: "text-cyan-400" },
 ];
 
 export default function EmotionEconomy() {
@@ -23,9 +27,12 @@ export default function EmotionEconomy() {
     switch (activeView) {
       case "roulette": return <EmotionRoulette onBack={() => setActiveView("hub")} />;
       case "therapist": return <AIMoodTherapist onBack={() => setActiveView("hub")} />;
+      case "mood-generator": return <MoodEmotionGenerator onBack={() => setActiveView("hub")} />;
+      case "exchange": return <EmotionExchange onBack={() => setActiveView("hub")} />;
       default: return null;
     }
   };
+
 
   if (activeView !== "hub") {
     return (
