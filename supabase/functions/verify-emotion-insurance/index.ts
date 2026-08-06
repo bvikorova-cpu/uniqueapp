@@ -246,6 +246,175 @@ Deno.serve(async (req) => {
       return json({ success: true, drop, credits_charged: DROP_CREATE_COST, credits_remaining: credits?.credits_remaining ?? 0 });
     }
 
+    // ------------------------------------------------- mood emotion generator
+    if (action === "mood_generate") {
+      const WALLET_EMOTIONS = ["joy", "love", "motivation", "peace", "excitement", "sadness", "anger", "fear"];
+      const MOOD_COST = 2;
+      const moodText = String(body.mood_text ?? "").trim().slice(0, 800);
+      if (moodText.length < 3) return json({ error: "Describe your mood first (at least 3 characters)." }, 400);
+
+      const err = await charge(MOOD_COST, "Mood Emotion Generator");
+      if (err) return err;
+
+      let parsed: any = null;
+      try {
+        parsed = await askAIJSON(
+          `You analyze a person's current mood and convert it into emotion units for a playful emotion economy.
+Return strict JSON: {"dominant_emotion":"one of joy|love|motivation|peace|excitement|sadness|anger|fear",
+"breakdown":{"joy":0,"love":0,"motivation":0,"peace":0,"excitement":0,"sadness":0,"anger":0,"fear":0},
+"insight":"2 short supportive sentences in English"}.
+Each breakdown value is between 0 and 20 units; the total should be between 20 and 45.`,
+          `Current mood description: ${moodText}`,
+        );
+      } catch (_aiErr) {
+        parsed = null;
+      }
+
+      const clampUnit = (n: unknown) => Math.max(0, Math.min(20, Math.round(Number(n) || 0)));
+      const breakdown: Record<string, number> = {};
+      let total = 0;
+      for (const e of WALLET_EMOTIONS) {
+        const v = parsed?.breakdown ? clampUnit(parsed.breakdown[e]) : 0;
+        breakdown[e] = v;
+        total += v;
+      }
+      if (total === 0) {
+        for (const e of WALLET_EMOTIONS) breakdown[e] = Math.floor(Math.random() * 6) + 1;
+      }
+
+      let dominant = String(parsed?.dominant_emotion ?? "").toLowerCase();
+      if (!WALLET_EMOTIONS.includes(dominant)) {
+        dominant = Object.entries(breakdown).sort((a, b) => b[1] - a[1])[0][0];
+      }
+      const insight = typeof parsed?.insight === "string" && parsed.insight.trim()
+        ? parsed.insight.trim().slice(0, 500)
+        : "Your mood has been converted into emotion units. Trade them in the exchange or keep them in your wallet.";
+
+      const { data: wallet } = await admin.from("emotion_wallets").select("*").eq("user_id", userId).maybeSingle();
+      const walletPatch: Record<string, number> = {};
+      for (const e of WALLET_EMOTIONS) {
+        const col = `${e}_balance`;
+        walletPatch[col] = (Number((wallet as any)?.[col]) || 0) + breakdown[e];
+      }
+      const mined = Object.values(breakdown).reduce((a, b) => a + b, 0);
+
+      if (wallet) {
+        await admin.from("emotion_wallets")
+          .update({ ...walletPatch, total_mined: (Number((wallet as any).total_mined) || 0) + mined })
+          .eq("user_id", userId);
+      } else {
+        await admin.from("emotion_wallets").insert({ user_id: userId, ...walletPatch, total_mined: mined });
+      }
+
+      const { data: record } = await admin.from("emotion_mood_generations").insert({
+        user_id: userId,
+        mood_text: moodText,
+        dominant_emotion: dominant,
+        breakdown,
+        insight,
+        credits_spent: MOOD_COST,
+      }).select().maybeSingle();
+
+      return json({ success: true, dominant_emotion: dominant, breakdown, insight, total_units: mined, record });
+    }
+
+    // ------------------------------------------------------- emotion exchange
+    if (action === "exchange_cancel") {
+      await admin.from("emotion_exchange_queue")
+        .update({ status: "cancelled" })
+        .eq("user_id", userId)
+        .eq("status", "pending");
+      return json({ success: true, cancelled: true });
+    }
+
+    if (action === "exchange_match") {
+      const WALLET_EMOTIONS = ["joy", "love", "motivation", "peace", "excitement", "sadness", "anger", "fear"];
+      const EX_COST = 1;
+      const AMOUNT = 10;
+      const offerEmotion = String(body.offer_emotion ?? "").toLowerCase();
+      const wantEmotion = String(body.want_emotion ?? "").toLowerCase();
+      if (!WALLET_EMOTIONS.includes(offerEmotion) || !WALLET_EMOTIONS.includes(wantEmotion) || offerEmotion === wantEmotion) {
+        return json({ error: "Pick two different emotions." }, 400);
+      }
+      const offerCol = `${offerEmotion}_balance`;
+      const wantCol = `${wantEmotion}_balance`;
+
+      const { data: myWallet } = await admin.from("emotion_wallets").select("*").eq("user_id", userId).maybeSingle();
+      if (!myWallet || (Number((myWallet as any)[offerCol]) || 0) < AMOUNT) {
+        return json({ error: `You need at least ${AMOUNT} ${offerEmotion} units to enter the exchange.` }, 400);
+      }
+
+      const { data: existing } = await admin.from("emotion_exchange_queue")
+        .select("id").eq("user_id", userId).eq("status", "pending").maybeSingle();
+      if (existing) return json({ success: true, status: "waiting", already_queued: true });
+
+      const { data: candidates } = await admin.from("emotion_exchange_queue")
+        .select("*")
+        .eq("status", "pending")
+        .eq("offer_emotion", wantEmotion)
+        .eq("want_emotion", offerEmotion)
+        .neq("user_id", userId)
+        .limit(25);
+      const pool = candidates ?? [];
+      let opponent: any = pool.length ? pool[Math.floor(Math.random() * pool.length)] : null;
+
+      const exErr = await charge(EX_COST, "Emotion Exchange entry");
+      if (exErr) return exErr;
+
+      const enqueue = async () => {
+        const { data: queued } = await admin.from("emotion_exchange_queue").insert({
+          user_id: userId,
+          offer_emotion: offerEmotion,
+          offer_amount: AMOUNT,
+          want_emotion: wantEmotion,
+        }).select().maybeSingle();
+        return json({ success: true, status: "waiting", queued });
+      };
+
+      if (!opponent) return await enqueue();
+
+      const { data: oppWallet } = await admin.from("emotion_wallets")
+        .select("*").eq("user_id", opponent.user_id).maybeSingle();
+      if (!oppWallet || (Number((oppWallet as any)[wantCol]) || 0) < AMOUNT) {
+        await admin.from("emotion_exchange_queue").update({ status: "cancelled" }).eq("id", opponent.id);
+        return await enqueue();
+      }
+
+      await admin.from("emotion_wallets").update({
+        [offerCol]: (Number((myWallet as any)[offerCol]) || 0) - AMOUNT,
+        [wantCol]: (Number((myWallet as any)[wantCol]) || 0) + AMOUNT,
+        total_traded: (Number((myWallet as any).total_traded) || 0) + AMOUNT,
+      }).eq("user_id", userId);
+
+      await admin.from("emotion_wallets").update({
+        [wantCol]: (Number((oppWallet as any)[wantCol]) || 0) - AMOUNT,
+        [offerCol]: (Number((oppWallet as any)[offerCol]) || 0) + AMOUNT,
+        total_traded: (Number((oppWallet as any).total_traded) || 0) + AMOUNT,
+      }).eq("user_id", opponent.user_id);
+
+      await admin.from("emotion_exchange_queue")
+        .update({ status: "matched", matched_with: userId, matched_at: new Date().toISOString() })
+        .eq("id", opponent.id);
+
+      const { data: match } = await admin.from("emotion_exchange_matches").insert({
+        user_a: userId,
+        emotion_a: offerEmotion,
+        amount_a: AMOUNT,
+        user_b: opponent.user_id,
+        emotion_b: wantEmotion,
+        amount_b: AMOUNT,
+      }).select().maybeSingle();
+
+      return json({
+        success: true,
+        status: "matched",
+        gave: { emotion: offerEmotion, amount: AMOUNT },
+        received: { emotion: wantEmotion, amount: AMOUNT },
+        opponent_short: String(opponent.user_id).substring(0, 8),
+        match,
+      });
+    }
+
     return json({ error: "Unknown action" }, 400);
   } catch (e) {
     console.error("emotion-economy error", e);
