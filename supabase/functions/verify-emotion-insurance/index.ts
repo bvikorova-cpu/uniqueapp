@@ -396,7 +396,35 @@ Each breakdown value is between 0 and 20 units; the total should be between 20 a
         return json({ success: true, status: "waiting", queued });
       };
 
-      if (!opponent) return await enqueue();
+      // No live partner right now — complete the swap instantly against the
+      // emotion pool so the user's collection always changes on ✓.
+      if (!opponent) {
+        await admin.from("emotion_wallets").update({
+          [offerCol]: (Number((myWallet as any)[offerCol]) || 0) - AMOUNT,
+          [wantCol]: (Number((myWallet as any)[wantCol]) || 0) + AMOUNT,
+          total_traded: (Number((myWallet as any).total_traded) || 0) + AMOUNT,
+        }).eq("user_id", userId);
+
+        const { data: poolMatch } = await admin.from("emotion_exchange_matches").insert({
+          user_a: userId,
+          emotion_a: offerEmotion,
+          amount_a: AMOUNT,
+          user_b: null,
+          emotion_b: wantEmotion,
+          amount_b: AMOUNT,
+        }).select().maybeSingle();
+
+        const { data: cr } = await admin.from("ai_credits").select("credits_remaining").eq("user_id", userId).maybeSingle();
+        return json({
+          success: true,
+          status: "matched",
+          pool: true,
+          gave: { emotion: offerEmotion, amount: AMOUNT },
+          received: { emotion: wantEmotion, amount: AMOUNT },
+          match: poolMatch,
+          credits_remaining: cr?.credits_remaining ?? 0,
+        });
+      }
 
       const { data: oppWallet } = await admin.from("emotion_wallets")
         .select("*").eq("user_id", opponent.user_id).maybeSingle();

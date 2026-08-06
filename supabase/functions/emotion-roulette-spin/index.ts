@@ -70,6 +70,24 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Emotion units always change on a spin: 10 units of the winning emotion,
+    // 2 consolation units of whatever landed on a loss.
+    const unitEmotion = won ? betEmotion : resultEmotion;
+    const unitGain = won ? 10 : 2;
+    const unitCol = `${unitEmotion}_balance`;
+    const { data: wallet } = await admin
+      .from("emotion_wallets").select("*").eq("user_id", userId).maybeSingle();
+    if (wallet) {
+      await admin.from("emotion_wallets").update({
+        [unitCol]: (Number((wallet as any)[unitCol]) || 0) + unitGain,
+        total_mined: (Number((wallet as any).total_mined) || 0) + unitGain,
+      }).eq("user_id", userId);
+    } else {
+      await admin.from("emotion_wallets").insert({
+        user_id: userId, [unitCol]: unitGain, total_mined: unitGain,
+      });
+    }
+
     const { data: spin, error: insErr } = await admin
       .from("emotion_roulette_spins")
       .insert({ user_id: userId,
@@ -83,7 +101,7 @@ Deno.serve(async (req) => {
     if (insErr) throw insErr;
 
     return new Response(
-      JSON.stringify({ success: true, result_emotion: resultEmotion, won, payout, spin }),
+      JSON.stringify({ success: true, result_emotion: resultEmotion, won, payout, spin, units_gained: unitGain, unit_emotion: unitEmotion }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {
