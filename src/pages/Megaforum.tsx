@@ -53,14 +53,8 @@ interface ForumPost {
   is_markdown?: boolean;
 }
 
-type ActiveView = "main" | "polls" | "reputation" | "debates" | "hot-topics" | "challenges";
+type ActiveView = "main" | "reputation" | "hot-topics";
 
-const TOOLS = [
-  { id: "polls" as ActiveView, label: "Polls & Surveys", icon: BarChart3, emoji: "📊", desc: "Create & vote on community polls", gradient: "from-blue-600 to-cyan-600" },
-  { id: "reputation" as ActiveView, label: "Reputation & Karma", icon: Trophy, emoji: "🏆", desc: "Levels, badges & leaderboard", gradient: "from-amber-600 to-orange-600" },
-  { id: "debates" as ActiveView, label: "Live Debate Rooms", icon: Swords, emoji: "⚔️", desc: "Real-time debates with voting", gradient: "from-rose-600 to-pink-600" },
-  { id: "hot-topics" as ActiveView, label: "Hot Topics AI", icon: Sparkles, emoji: "🤖", desc: "AI trend suggestions & summaries", gradient: "from-purple-600 to-violet-600", premium: true },
-  { id: "challenges" as ActiveView, label: "Weekly Challenges", icon: Flame, emoji: "🔥", desc: "Community challenges with karma", gradient: "from-orange-600 to-red-600" },
 ];
 
 const categories = ["General", "Technology", "Sports", "Culture", "Music", "Film & TV", "Games", "Health", "Other"];
