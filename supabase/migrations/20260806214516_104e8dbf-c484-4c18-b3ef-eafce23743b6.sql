@@ -1,0 +1,1 @@
+ALTER TABLE public.emotion_wallets REPLICA IDENTITY FULL;
