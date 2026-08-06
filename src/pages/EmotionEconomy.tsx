@@ -72,7 +72,13 @@ export default function EmotionEconomy() {
         <HeroRewardedAd sectionKey="page_emotioneconomy" />
 
         <div>
-          <h2 className="text-xl font-bold mb-4">Explore Tools</h2>
+          <div className="flex items-center justify-between gap-3 mb-4">
+            <h2 className="text-xl font-bold">Explore Tools</h2>
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-sm font-semibold text-primary">
+              <Coins className="h-4 w-4" />
+              {liveCredits} credits
+            </div>
+          </div>
           <div className="grid grid-cols-2 gap-4 max-w-xl">
             {tools.map((tool, i) => (
               <EmotionEconomyToolCard
