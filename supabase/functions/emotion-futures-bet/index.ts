@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { spendAiCredits } from "../_shared/spendCredits.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -41,24 +42,12 @@ Deno.serve(async (req) => {
 
     const admin = createClient(supabaseUrl, serviceKey);
 
-    // Manual atomic deduct
-    const { data: credits } = await admin
-      .from("emotion_credits")
-      .select("credits_remaining,total_credits_used")
-      .eq("user_id", userId)
-      .maybeSingle();
-    if (!credits || credits.credits_remaining < BET_COST) {
-      return new Response(JSON.stringify({ error: "Insufficient credits" }), {
+    // Spend unified AI credits
+    const spend = await spendAiCredits(admin, userId, BET_COST, `Emotion Futures bet — ${emotionType} ${direction}`, "emotion-futures");
+    if (!spend.ok) {
+      return new Response(JSON.stringify({ error: "Insufficient credits", code: "INSUFFICIENT_CREDITS", required: BET_COST, remaining: spend.remaining }), {
         status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-    const { error: updErr } = await admin
-      .from("emotion_credits")
-      .update({ credits_remaining: credits.credits_remaining - BET_COST,
-        total_credits_used: (credits.total_credits_used ?? 0) + BET_COST,
-        updated_at: new Date().toISOString() })
-      .eq("user_id", userId)
-      .gte("credits_remaining", BET_COST);
-    if (updErr) throw updErr;
 
     const resolutionDate = new Date(Date.now() + RESOLUTION_DAYS * 86400_000)
       .toISOString().slice(0, 10);

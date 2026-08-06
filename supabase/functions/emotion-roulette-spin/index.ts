@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { spendAiCredits } from "../_shared/spendCredits.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -40,30 +41,10 @@ Deno.serve(async (req) => {
 
     const admin = createClient(supabaseUrl, serviceKey);
 
-    // Atomically deduct credits
-    const { data: deducted, error: deductErr } = await admin.rpc(
-      "deduct_emotion_credits_for_user" as unknown as never,
-      { p_user_id: userId, p_amount: SPIN_COST },
-    );
-    if (deductErr) {
-      // Fallback: manual deduct
-      const { data: credits } = await admin
-        .from("emotion_credits")
-        .select("credits_remaining,total_credits_used")
-        .eq("user_id", userId)
-        .maybeSingle();
-      if (!credits || credits.credits_remaining < SPIN_COST) {
-        return new Response(JSON.stringify({ error: "Insufficient credits" }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-      await admin
-        .from("emotion_credits")
-        .update({ credits_remaining: credits.credits_remaining - SPIN_COST,
-          total_credits_used: (credits.total_credits_used ?? 0) + SPIN_COST,
-          updated_at: new Date().toISOString() })
-        .eq("user_id", userId);
-    } else if (deducted === false) {
-      return new Response(JSON.stringify({ error: "Insufficient credits" }), {
+    // Spend unified AI credits
+    const spend = await spendAiCredits(admin, userId, SPIN_COST, "Emotion Roulette spin", "emotion-roulette");
+    if (!spend.ok) {
+      return new Response(JSON.stringify({ error: "Insufficient credits", code: "INSUFFICIENT_CREDITS", required: SPIN_COST, remaining: spend.remaining }), {
         status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
@@ -72,19 +53,20 @@ Deno.serve(async (req) => {
     const won = resultEmotion === betEmotion;
     const payout = won ? WIN_PAYOUT : 0;
 
-    // Credit winnings back as credits
+    // Credit winnings back as unified AI credits
     if (won && payout > 0) {
       const { data: credits } = await admin
-        .from("emotion_credits")
-        .select("credits_remaining,total_credits_purchased")
+        .from("ai_credits")
+        .select("credits_remaining")
         .eq("user_id", userId)
         .maybeSingle();
-      if (credits) { await admin
-          .from("emotion_credits")
-          .update({
-            credits_remaining: credits.credits_remaining + payout,
-            updated_at: new Date().toISOString() })
+      if (credits) {
+        await admin
+          .from("ai_credits")
+          .update({ credits_remaining: (credits.credits_remaining ?? 0) + payout })
           .eq("user_id", userId);
+      } else {
+        await admin.from("ai_credits").insert({ user_id: userId, credits_remaining: payout });
       }
     }
 
