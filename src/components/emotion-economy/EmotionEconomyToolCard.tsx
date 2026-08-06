@@ -54,27 +54,28 @@ export function EmotionEconomyToolCard({ icon: Icon,
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
       <div className="relative z-10">
-        <div className="flex items-start justify-between mb-3">
-          <div className={`p-2.5 rounded-xl bg-background/60 ${iconColor} shadow-lg`}>
+        <div className="flex items-start justify-between gap-2 mb-3">
+          <div className={`p-2.5 rounded-xl bg-background/60 ${iconColor} shadow-lg shrink-0`}>
             <Icon className="h-6 w-6" />
           </div>
-          <div className="flex gap-1.5">
+          <div className="flex flex-wrap justify-end gap-1.5 min-w-0">
             {badge && (
-              <Badge variant="outline" className="text-xs border-white/20 bg-white/5">
+              <Badge variant="outline" className="text-[10px] border-white/20 bg-white/5 shrink-0">
                 {badge}
               </Badge>
             )}
             {credits !== undefined && (
-              <Badge className="text-xs bg-pink-500/20 text-pink-300 border-pink-500/30">
+              <Badge className="text-[10px] bg-pink-500/20 text-pink-300 border-pink-500/30 shrink-0">
                 {credits === 0 ? "Free" : `${credits} cr`}
               </Badge>
             )}
           </div>
         </div>
 
-        <h3 className="font-semibold text-sm mb-1">{title}</h3>
+        <h3 className="font-semibold text-sm mb-1 pr-1">{title}</h3>
         <p className="text-xs text-muted-foreground leading-relaxed">{description}</p>
       </div>
+
     </motion.div>
   );
 }
