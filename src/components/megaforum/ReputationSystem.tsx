@@ -161,11 +161,11 @@ export const ReputationSystem = ({ onBack }: ReputationSystemProps) => {
         <CardContent>
           <div className="space-y-2">
             {leaderboard.map((entry: any, i: number) => {
-              const profile = leaderProfiles[entry.user_id];
               const lvl = [...LEVELS].reverse().find(l => entry.points >= l.minPoints) || LEVELS[0];
               return (
                 <motion.div
-                  key={entry.id}
+                  key={entry.user_id}
+
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.03 }}
