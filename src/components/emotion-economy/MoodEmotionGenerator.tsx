@@ -107,8 +107,7 @@ export function MoodEmotionGenerator({ onBack }: Props) {
             Mood Emotion Generator
           </CardTitle>
           <CardDescription>
-            Describe how you feel right now — AI converts your mood into emotion units credited to your wallet.
-            Costs {COST} credits.
+            Describe how you feel right now — AI reads your mood and shows your emotional mix. Costs {COST} credits.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
