@@ -107,8 +107,10 @@ Deno.serve(async (req) => {
         }
 
         if (!responses.length) {
+          await refund();
           return new Response(JSON.stringify({ error: "AI is busy, please try again" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
         }
+
         return new Response(JSON.stringify({ responses }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
 
