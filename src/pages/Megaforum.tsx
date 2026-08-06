@@ -21,11 +21,8 @@ import { User as SupabaseUser } from "@supabase/supabase-js";
 import { MegaforumHero } from "@/components/megaforum/MegaforumHero";
 import { HowItWorksCard } from "@/components/megaforum/HowItWorksCard";
 import { PaywallModal } from "@/components/megaforum/PaywallModal";
-import { ForumPolls } from "@/components/megaforum/ForumPolls";
 import { ReputationSystem } from "@/components/megaforum/ReputationSystem";
-import { LiveDebateRooms } from "@/components/megaforum/LiveDebateRooms";
 import { HotTopicsAI } from "@/components/megaforum/HotTopicsAI";
-import { WeeklyChallenges } from "@/components/megaforum/WeeklyChallenges";
 import { TagInput } from "@/components/megaforum/TagInput";
 import { ThreadSubscription } from "@/components/megaforum/ThreadSubscription";
 import { ForumNotifications } from "@/components/megaforum/ForumNotifications";
@@ -53,15 +50,13 @@ interface ForumPost {
   is_markdown?: boolean;
 }
 
-type ActiveView = "main" | "polls" | "reputation" | "debates" | "hot-topics" | "challenges";
+type ActiveView = "main" | "reputation" | "hot-topics";
 
 const TOOLS = [
-  { id: "polls" as ActiveView, label: "Polls & Surveys", icon: BarChart3, emoji: "📊", desc: "Create & vote on community polls", gradient: "from-blue-600 to-cyan-600" },
   { id: "reputation" as ActiveView, label: "Reputation & Karma", icon: Trophy, emoji: "🏆", desc: "Levels, badges & leaderboard", gradient: "from-amber-600 to-orange-600" },
-  { id: "debates" as ActiveView, label: "Live Debate Rooms", icon: Swords, emoji: "⚔️", desc: "Real-time debates with voting", gradient: "from-rose-600 to-pink-600" },
   { id: "hot-topics" as ActiveView, label: "Hot Topics AI", icon: Sparkles, emoji: "🤖", desc: "AI trend suggestions & summaries", gradient: "from-purple-600 to-violet-600", premium: true },
-  { id: "challenges" as ActiveView, label: "Weekly Challenges", icon: Flame, emoji: "🔥", desc: "Community challenges with karma", gradient: "from-orange-600 to-red-600" },
 ];
+
 
 const categories = ["General", "Technology", "Sports", "Culture", "Music", "Film & TV", "Games", "Health", "Other"];
 
@@ -281,19 +276,9 @@ const Megaforum = () => {
     });
 
   // Render sub-views
-  if (activeView === "polls") return (
-    <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="container mx-auto px-4 max-w-5xl"><ForumPolls onBack={() => setActiveView("main")} /></div>
-    </div>
-  );
   if (activeView === "reputation") return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-5xl"><ReputationSystem onBack={() => setActiveView("main")} /></div>
-    </div>
-  );
-  if (activeView === "debates") return (
-    <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="container mx-auto px-4 max-w-5xl"><LiveDebateRooms onBack={() => setActiveView("main")} /></div>
     </div>
   );
   if (activeView === "hot-topics") return (
@@ -301,11 +286,7 @@ const Megaforum = () => {
       <div className="container mx-auto px-4 max-w-5xl"><HotTopicsAI onBack={() => setActiveView("main")} /></div>
     </div>
   );
-  if (activeView === "challenges") return (
-    <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="container mx-auto px-4 max-w-5xl"><WeeklyChallenges onBack={() => setActiveView("main")} /></div>
-    </div>
-  );
+
 
   return (
     <>
@@ -321,7 +302,7 @@ const Megaforum = () => {
       />
       <SEO
         title="Megaforum - Open community discussions"
-        description="Join premium, member-only discussions across 9 categories. Live debates, polls, hot topics and weekly challenges on Unique Megaforum."
+        description="Join premium, member-only discussions across 9 categories. Member-only threads, karma reputation and AI hot topics on Unique Megaforum."
         canonical="/megaforum"
       />
     <div className="min-h-screen bg-background pt-20 pb-12">
@@ -424,7 +405,7 @@ const Megaforum = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-xs text-muted-foreground">
-                  Megaforum is a premium, members-only community. Create posts, start polls, debate topics, and earn karma.
+                  Megaforum is a premium, members-only community. Create posts, reply in threads, and earn karma.
                   AI features cost credits. Use Markdown for rich formatting!
                 </p>
               </CardContent>
