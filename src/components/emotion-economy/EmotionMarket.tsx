@@ -54,7 +54,7 @@ export function EmotionMarket({ onBack }: { onBack?: () => void }) {
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke('emotion-economy', {
+      const { data, error } = await supabase.functions.invoke('verify-emotion-insurance', {
         body: { action: 'market_buy', emotion_type: emotionType, amount, credits, listing_id: listingId }
       });
 

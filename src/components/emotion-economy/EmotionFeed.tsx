@@ -135,7 +135,7 @@ export function EmotionFeed({ onBack }: { onBack?: () => void }) {
       }
 
       // Call AI emotion analysis
-      const { data: analysisData, error: analysisError } = await supabase.functions.invoke('emotion-economy', {
+      const { data: analysisData, error: analysisError } = await supabase.functions.invoke('verify-emotion-insurance', {
         body: { action: 'analyze_post', content }
       });
 

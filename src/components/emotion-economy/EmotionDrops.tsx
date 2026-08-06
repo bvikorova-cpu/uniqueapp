@@ -19,7 +19,7 @@ export function EmotionDrops({ onBack }: { onBack?: () => void }) {
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke("emotion-economy", {
+      const { data, error } = await supabase.functions.invoke("verify-emotion-insurance", {
         body: { action: "drop_join", drop_key: dropKey, emotion_type: emotionType } });
 
       if (error || (data as any)?.error) {
@@ -242,7 +242,7 @@ export function EmotionDrops({ onBack }: { onBack?: () => void }) {
           <Button className="w-full" size="lg" onClick={async () => {
             const name = window.prompt("Name your Emotion Drop (e.g. 'Sunday Gratitude'):");
             if (!name?.trim()) return;
-            const { data, error } = await supabase.functions.invoke("emotion-economy", {
+            const { data, error } = await supabase.functions.invoke("verify-emotion-insurance", {
               body: { action: "drop_create", drop_name: name.trim(), emotion_type: "joy" } });
             if (error || (data as any)?.error) {
               const msg = String((data as any)?.error || error?.message || "");
