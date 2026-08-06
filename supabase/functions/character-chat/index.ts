@@ -174,33 +174,45 @@ serve(async (req) => {
 
     if (!charCheck) throw new Error("Character not found");
 
-    if (charCheck.is_premium) {
-      const { data: access } = await supabaseClient
-        .from("user_character_access")
-        .select("id")
+    // ===== Credit-based access (no subscriptions) =====
+    const adminClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { persistSession: false } }
+    );
+
+    const messageCost = charCheck.is_premium ? 4 : 2;
+    const spend = await spendAiCredits(
+      adminClient,
+      user.id,
+      messageCost,
+      `Companion chat message (${charCheck.name})`,
+      "character-chat",
+    );
+
+    if (!spend.ok) {
+      return new Response(
+        JSON.stringify({
+          error: `Not enough AI credits. This message costs ${messageCost} credits.`,
+          credits_required: messageCost,
+          credits_remaining: spend.remaining,
+        }),
+        { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const refundMessageCredits = async () => {
+      const { data: row } = await adminClient
+        .from("ai_credits")
+        .select("credits_remaining")
         .eq("user_id", user.id)
-        .eq("character_id", characterId)
         .maybeSingle();
-      if (!access) {
-        return new Response(JSON.stringify({ error: "Premium character access required" }), {
-          status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-    }
+      await adminClient
+        .from("ai_credits")
+        .update({ credits_remaining: (row?.credits_remaining ?? 0) + messageCost })
+        .eq("user_id", user.id);
+    };
 
-    const { data: companionsSub } = await supabaseClient
-      .from("companions_subscriptions")
-      .select("subscription_status, free_messages_used")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    if (!charCheck.is_premium) {
-      const isSubscribed = companionsSub?.subscription_status === "active";
-      const freeUsed = companionsSub?.free_messages_used || 0;
-      if (!isSubscribed && freeUsed >= 5) {
-        return new Response(JSON.stringify({ error: "Free message limit reached. Subscribe for unlimited." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-    }
 
     const { data: history } = await supabaseClient
       .from("character_messages")
