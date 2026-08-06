@@ -127,9 +127,8 @@ const AICompanions = () => {
   if (activeView !== 'dashboard') {
     const viewMap: Record<string, { component: JSX.Element; title: string }> = {
       'mood-matcher': { component: <MoodMatcher />, title: 'AI Mood Matcher' },
-      'voice-messages': { component: <VoiceMessages />, title: 'Voice Messages' },
-      'companion-memory': { component: <CompanionMemory />, title: 'Companion Memory' },
       'group-conversations': { component: <GroupConversations />, title: 'Group Conversations' } };
+
     const view = viewMap[activeView];
     return (
       <div className="min-h-screen bg-background pt-16 pb-12">
