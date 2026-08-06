@@ -549,7 +549,7 @@ const Megaforum = () => {
                                   <Badge variant="outline" className="text-[10px]">{post.category}</Badge>
                                 </div>
                                 <p className="text-xs text-muted-foreground break-words">
-                                  {profile?.full_name || profile?.username || "User"} • {getTimeSince(post.created_at)}
+                                  {isAnon ? "Anonymous" : (profile?.full_name || profile?.username || "User")} • {getTimeSince(post.created_at)}
                                 </p>
                                 {(post.tags || []).length > 0 && (
                                   <div className="flex gap-1 mt-1 flex-wrap">
