@@ -100,7 +100,7 @@ export const GroupConversations = () => {
               Group Conversations
             </h1>
             <p className="text-muted-foreground mt-2">Chat with 2-3 AI companions at once — watch them interact!</p>
-            <Badge variant="outline" className="mt-2">4 Credits per group message</Badge>
+            <Badge variant="outline" className="mt-2">2 Credits per group message</Badge>
           </div>
         </motion.div>
 
