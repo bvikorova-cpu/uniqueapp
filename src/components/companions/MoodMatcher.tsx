@@ -39,8 +39,13 @@ export const MoodMatcher = () => {
 
     setLoading(true);
     try {
+      const { data: chars } = await supabase
+        .from("ai_characters")
+        .select("name, personality_type, description")
+        .limit(40);
       const { data, error } = await safeInvoke("companion-ai", {
-        body: { action: "mood-matcher", mood: moodText } });
+        body: { action: "mood-matcher", mood: moodText, characterList: JSON.stringify(chars || []) } });
+
       if (error) throw new Error(error);
       window.dispatchEvent(new Event("ai-credits-updated"));
       setResult(data);
