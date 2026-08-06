@@ -65,7 +65,7 @@ export function MoodEmotionGenerator({ onBack }: Props) {
 
     setLoading(true);
     setResult(null);
-    const { data, error } = await safeInvoke<GenResult & { error?: string }>("emotion-mood-generate", {
+    const { data, error } = await safeInvoke<GenResult & { error?: string }>("verify-emotion-insurance", {
       body: { mood_text: moodText.trim() },
     });
     setLoading(false);

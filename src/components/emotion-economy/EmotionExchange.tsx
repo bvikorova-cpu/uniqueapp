@@ -57,8 +57,8 @@ export function EmotionExchange({ onBack }: Props) {
     if (!offer || !want || offer === want || loading) return;
     setLoading(true);
     setLastResult(null);
-    const { data, error } = await safeInvoke<any>("emotion-exchange-match", {
-      body: { action: "join", offer_emotion: offer, want_emotion: want },
+    const { data, error } = await safeInvoke<any>("verify-emotion-insurance", {
+      body: { action: "exchange_match", offer_emotion: offer, want_emotion: want },
     });
     setLoading(false);
 
@@ -93,7 +93,7 @@ export function EmotionExchange({ onBack }: Props) {
 
   const handleCancel = async () => {
     setLoading(true);
-    await safeInvoke("emotion-exchange-match", { body: { action: "cancel" } });
+    await safeInvoke("verify-emotion-insurance", { body: { action: "exchange_cancel" } });
     setLoading(false);
     await refresh();
     toast({ title: "Offer cancelled" });
