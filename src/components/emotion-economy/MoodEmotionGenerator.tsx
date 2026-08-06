@@ -87,8 +87,8 @@ export function MoodEmotionGenerator({ onBack }: Props) {
     window.dispatchEvent(new Event("ai-credits-updated"));
     void fetchHistory();
     toast({
-      title: "Emotions generated!",
-      description: `${data.total_units} emotion units added to your wallet.`,
+      title: "Mood reading ready!",
+      description: `Dominant emotion: ${EMOTION_META[data.dominant_emotion]?.label ?? data.dominant_emotion}.`,
     });
   };
 
@@ -135,7 +135,7 @@ export function MoodEmotionGenerator({ onBack }: Props) {
                   Dominant: {EMOTION_META[result.dominant_emotion]?.emoji}{" "}
                   {EMOTION_META[result.dominant_emotion]?.label ?? result.dominant_emotion}
                 </p>
-                <Badge variant="outline">+{result.total_units} units</Badge>
+                <Badge variant="outline">Mood reading</Badge>
               </div>
 
               <div className="space-y-2">
@@ -147,7 +147,9 @@ export function MoodEmotionGenerator({ onBack }: Props) {
                         <span>
                           {EMOTION_META[key]?.emoji} {EMOTION_META[key]?.label ?? key}
                         </span>
-                        <span className="font-mono text-muted-foreground">+{value}</span>
+                        <span className="font-mono text-muted-foreground">
+                          {Math.round((value / maxValue) * 100)}%
+                        </span>
                       </div>
                       <Progress value={(value / maxValue) * 100} className="h-1.5" />
                     </div>

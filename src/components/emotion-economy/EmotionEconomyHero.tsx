@@ -27,7 +27,7 @@ export function EmotionEconomyHero() {
   }, []);
 
   const heroStats = [
-    { label: "Emotion Wallets", value: stats.wallets || 0, icon: Users, color: "text-pink-400" },
+    { label: "Active Users", value: stats.wallets || 0, icon: Users, color: "text-pink-400" },
     { label: "Roulette Spins", value: stats.spins || 0, icon: TrendingUp, color: "text-violet-400" },
     { label: "Mood Readings", value: stats.readings || 0, icon: Zap, color: "text-cyan-400" },
     { label: "Emotion Swaps", value: stats.swaps || 0, icon: Heart, color: "text-emerald-400" },
@@ -41,8 +41,8 @@ export function EmotionEconomyHero() {
         steps={[
           { title: "AI Mood Therapist", desc: "1 credit — AI advice on your mood and emotion portfolio." },
           { title: "Emotion Roulette", desc: "1 credit — bet on an emotion, match the wheel to win 2x." },
-          { title: "Mood Emotion Generator", desc: "2 credits — describe your mood, AI credits emotion units to your wallet." },
-          { title: "Emotion Exchange", desc: "1 credit — get randomly matched and swap 10 units with another user." },
+          { title: "Mood Emotion Generator", desc: "2 credits — describe your mood, AI shows your emotional mix." },
+          { title: "Emotion Exchange", desc: "1 credit — pick an emotion to trade, then swipe ✓ or ✕ on AI-matched people." },
         ]}
       />
 
