@@ -71,7 +71,8 @@ const Megaforum = () => {
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostContent, setNewPostContent] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("General");
-  const [selectedPost, setSelectedPost] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedPost, setSelectedPost] = useState<string | null>(searchParams.get("post"));
   const [newComment, setNewComment] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [newPostTags, setNewPostTags] = useState<string[]>([]);
