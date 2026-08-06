@@ -35,8 +35,6 @@ interface Wallet {
 
 interface Credits {
   credits_remaining: number;
-  total_credits_purchased: number;
-  total_credits_used: number;
 }
 
 export function EmotionWallet({ onBack }: { onBack?: () => void }) {
@@ -56,14 +54,12 @@ export function EmotionWallet({ onBack }: { onBack?: () => void }) {
       if (!user) return;
 
       const { data } = await supabase
-        .from('emotion_credits')
-        .select('*')
+        .from('ai_credits')
+        .select('credits_remaining')
         .eq('user_id', user.id)
         .maybeSingle();
 
-      if (data) {
-        setCredits(data);
-      }
+      setCredits({ credits_remaining: data?.credits_remaining ?? 0 });
     } catch (error) {
       console.error('Error fetching credits:', error);
     }
@@ -97,37 +93,6 @@ export function EmotionWallet({ onBack }: { onBack?: () => void }) {
       console.error('Error fetching wallet:', error);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleBuyCredits = async (packageId: string) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
-          title: "Authentication Required",
-          description: "Please sign in to purchase credits",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke('create-emotion-credits-payment', {
-        body: { packageId }
-      });
-
-      if (error) throw error;
-
-      if (data?.url) {
-        window.location.href = data.url;
-      }
-    } catch (error) {
-      console.error('Error creating payment:', error);
-      toast({
-        title: "Error",
-        description: "Failed to initiate payment",
-        variant: "destructive"
-      });
     }
   };
 
@@ -170,43 +135,20 @@ export function EmotionWallet({ onBack }: { onBack?: () => void }) {
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <Coins className="h-5 w-5 text-primary" />
-              AI Analysis Credits
+              AI Credits
             </CardTitle>
             <Badge variant="default" className="text-lg px-3 py-1">
-              {credits?.credits_remaining ?? 10} credits
+              {credits?.credits_remaining ?? 0} credits
             </Badge>
           </div>
           <CardDescription>
-            Used for AI emotion detection when posting. Each post uses 1 credit.
+            All Emotion Economy actions run on your unified AI credits — no subscription needed.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <Card className="border-dashed cursor-pointer hover:border-primary transition-colors" onClick={() => handleBuyCredits('10')}>
-              <CardContent className="pt-4 text-center">
-                <p className="text-2xl font-bold">10</p>
-                <p className="text-sm text-muted-foreground">credits</p>
-                <p className="text-lg font-semibold text-primary mt-2">€2.99</p>
-              </CardContent>
-            </Card>
-            <Card className="border-primary border-2 cursor-pointer hover:bg-primary/5 transition-colors" onClick={() => handleBuyCredits('50')}>
-              <CardContent className="pt-4 text-center relative">
-                <Badge className="absolute -top-2 left-1/2 -translate-x-1/2">Popular</Badge>
-                <p className="text-2xl font-bold">50</p>
-                <p className="text-sm text-muted-foreground">credits</p>
-                <p className="text-lg font-semibold text-primary mt-2">€9.99</p>
-                <p className="text-xs text-green-600">Save 33%</p>
-              </CardContent>
-            </Card>
-            <Card className="border-dashed cursor-pointer hover:border-primary transition-colors" onClick={() => handleBuyCredits('100')}>
-              <CardContent className="pt-4 text-center">
-                <p className="text-2xl font-bold">100</p>
-                <p className="text-sm text-muted-foreground">credits</p>
-                <p className="text-lg font-semibold text-primary mt-2">€14.99</p>
-                <p className="text-xs text-green-600">Best Value - Save 50%</p>
-              </CardContent>
-            </Card>
-          </div>
+          <Button variant="outline" size="sm" asChild>
+            <a href="/ai-credits">Top up AI credits</a>
+          </Button>
         </CardContent>
       </Card>
 
@@ -217,9 +159,6 @@ export function EmotionWallet({ onBack }: { onBack?: () => void }) {
               <CardTitle>Your Emotion Wallet</CardTitle>
               <CardDescription>Manage your emotional currency</CardDescription>
             </div>
-            {wallet.is_premium && (
-              <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500">Premium</Badge>
-            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -268,11 +207,11 @@ export function EmotionWallet({ onBack }: { onBack?: () => void }) {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Credits Used</CardTitle>
+            <CardTitle className="text-lg">AI Credits</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold">{credits?.total_credits_used ?? 0}</p>
-            <p className="text-sm text-muted-foreground">AI analyses performed</p>
+            <p className="text-3xl font-bold">{credits?.credits_remaining ?? 0}</p>
+            <p className="text-sm text-muted-foreground">available for Emotion Economy</p>
           </CardContent>
         </Card>
       </div>
