@@ -91,6 +91,15 @@ const Megaforum = () => {
   };
 
   useEffect(() => {
+    const p = searchParams.get("post");
+    if (p && p !== selectedPost) {
+      setSelectedPost(p);
+      setActiveView("main");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
     });
