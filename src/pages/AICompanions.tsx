@@ -36,7 +36,7 @@ const AICompanions = () => {
   const [activeView, setActiveView] = useState<ActiveView>('dashboard');
   const [stats, setStats] = useState({ totalChats: 0, totalMessages: 0, companions: 0, streak: 0 });
 
-  const { totalBalance, loading: creditsLoading, loadCredits } = useAICredits();
+  const { totalBalance, loading: creditsLoading, refresh: loadCredits } = useAICredits();
   const MSG_COST = 2;
   const PREMIUM_MSG_COST = 4;
 

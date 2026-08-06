@@ -24,7 +24,7 @@ const CompanionChat = () => {
   const [character, setCharacter] = useState<any>(null);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const { totalBalance, loadCredits } = useAICredits();
+  const { totalBalance, refresh: loadCredits } = useAICredits();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
