@@ -21,6 +21,9 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const LISTING_CREDIT_COST = 25;
 
+const HERO_VIDEO_URL = "/__l5e/assets-v1/876c9b9b-6ab6-49e9-82ea-b3995239c475/property-homepage-hero.mp4";
+const HERO_VIDEO_SECONDS = 5;
+
 const TRUST_POINTS = [
   { icon: Globe2, title: "Worldwide reach", desc: "One listing, buyers on every continent — no borders, no agencies." },
   { icon: Coins, title: "One flat fee", desc: `${LISTING_CREDIT_COST} credits (€10) per listing. No commission on your sale.` },
