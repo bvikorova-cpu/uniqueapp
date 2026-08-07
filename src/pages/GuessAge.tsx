@@ -383,7 +383,7 @@ const GuessAge = () => {
                   ref={fileRef}
                   type="file"
                   accept="image/*"
-                  capture="user"
+
                   className="hidden"
                   onChange={(e) => {
                     void pickFile(e.target.files?.[0]);
@@ -407,7 +407,7 @@ const GuessAge = () => {
                     onChange={(e) => setNickname(e.target.value)}
                     maxLength={30}
                   />
-                  <Button onClick={() => joinGame(null)} disabled={uploading} className="w-full sm:w-auto">
+                  <Button onClick={() => joinGame()} disabled={uploading} className="w-full sm:w-auto">
                     {uploading ? (
                       <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Saving…</>
                     ) : state?.profile ? "Save changes" : "Join the game"}
