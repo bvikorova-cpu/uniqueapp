@@ -93,7 +93,7 @@ const services = [
   { title: "Food Scanner", icon: Camera, path: "/food-scanner", badge: "Nutrition", gradient: "from-lime-500 to-green-500", category: "wellness" },
   { title: "Fundraising", icon: Heart, path: "/fundraising", badge: "Charity", gradient: "from-blue-500 to-indigo-500", category: "social" },
   { title: "Future Face", icon: Sparkles, path: "/future-face", badge: "Age AI", gradient: "from-cyan-500 to-blue-500", category: "creative" },
-  { title: "Skill Swap", icon: Users, path: "/skill-swap", badge: "Exchange", gradient: "from-teal-500 to-emerald-500", category: "social" },
+  
   { title: "Megatalent", icon: Star, path: "/megatalent", badge: "Talent", gradient: "from-yellow-500 to-amber-500", category: "entertainment" },
   { title: "Virtual Pet", icon: Heart, path: "/virtual-pet", badge: "Pet", gradient: "from-green-400 to-emerald-500", category: "entertainment" },
   { title: "Virtual Escape Room", icon: Ghost, path: "/virtual-escape-room", badge: "Puzzle", gradient: "from-purple-600 to-violet-500", category: "entertainment" },
