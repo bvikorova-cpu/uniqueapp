@@ -46,6 +46,8 @@ const FairytaleBook = () => {
   const [cover, setCover] = useState<string | null>(null);
   const [pages, setPages] = useState<Page[]>([]);
   const [bookId, setBookId] = useState<string | null>(null);
+  const [exporting, setExporting] = useState(false);
+
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setAuthed(!!data.session));
