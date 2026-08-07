@@ -127,6 +127,7 @@ const Navbar = () => {
     { path: "/kids-science-lab", label: "Science Lab (6-12y)", icon: FlaskConical },
     { path: "/kids-drawing-buddy", label: "Drawing Buddy (6-12y)", icon: Palette },
     { path: "/kids-reading-companion", label: "Reading Companion (6-12y)", icon: BookOpen },
+    { path: "/fairytale-book", label: "Fairytale Book Generator", icon: BookOpen },
     { path: "/teen-career-counselor", label: "Career Counselor (13-18y)", icon: Briefcase },
   ];
 
@@ -161,7 +162,6 @@ const Navbar = () => {
         { path: "/home-designer", label: "Home Designer", icon: Home },
         { path: "/beauty-studio", label: "Beauty Studio", icon: Sparkles },
         { path: "/fashion-studio", label: "Fashion Studio", icon: Palette },
-        { path: "/fairytale-book", label: "Fairytale Book Generator", icon: BookOpen },
         { path: "/guess-age", label: "Guess My Age", icon: Cake },
       ] },
     {
