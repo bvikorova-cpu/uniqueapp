@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader2, DollarSign, CheckCircle, XCircle, Clock } from "lucide-react";
+import { Loader2, DollarSign, CheckCircle, XCircle, Clock, Save } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { Select,
   SelectContent,
@@ -23,8 +24,10 @@ export const ReferralWithdrawalRequest = () => {
   const [bankName, setBankName] = useState("");
   const [swiftCode, setSwiftCode] = useState("");
   const [paypalEmail, setPaypalEmail] = useState("");
+  const [saveDetails, setSaveDetails] = useState(true);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
 
   const { data: user } = useQuery({
     queryKey: ["user"],
@@ -76,6 +79,68 @@ export const ReferralWithdrawalRequest = () => {
     },
     enabled: !!user?.id });
 
+  // Saved payout details (bank / PayPal) for this user
+  const { data: savedMethods } = useQuery({
+    queryKey: ["referral-payout-methods", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [];
+      const { data } = await supabase
+        .from("payout_methods")
+        .select("*")
+        .eq("user_id", user.id)
+        .in("method_type", ["iban", "paypal"])
+        .order("is_default", { ascending: false });
+      return data || [];
+    },
+    enabled: !!user?.id });
+
+  // Prefill the form from saved details whenever method changes
+  useEffect(() => {
+    if (!savedMethods?.length) return;
+    const wanted = paymentMethod === "paypal" ? "paypal" : "iban";
+    const m: any = savedMethods.find((x: any) => x.method_type === wanted);
+    if (!m) return;
+    const d = (m.account_details || {}) as Record<string, string>;
+    if (wanted === "paypal") {
+      setPaypalEmail((prev) => prev || d.email || "");
+    } else {
+      setAccountName((prev) => prev || m.account_holder || d.account_name || "");
+      setBankName((prev) => prev || d.bank_name || "");
+      setAccountNumber((prev) => prev || d.iban || d.account_number || "");
+      setSwiftCode((prev) => prev || d.swift || d.swift_code || "");
+    }
+  }, [savedMethods, paymentMethod]);
+
+  const persistPayoutDetails = async () => {
+    if (!user?.id) return;
+    const isPaypal = paymentMethod === "paypal";
+    const method_type = isPaypal ? "paypal" : "iban";
+    const payload = {
+      user_id: user.id,
+      method_type: method_type as "paypal" | "iban",
+      label: isPaypal ? "PayPal" : bankName || "Bank account",
+      account_holder: isPaypal ? profile?.full_name || null : accountName,
+      account_details: isPaypal
+        ? { email: paypalEmail }
+        : { iban: accountNumber, bank_name: bankName, swift: swiftCode, account_name: accountName },
+      currency: "EUR",
+      is_default: true };
+
+    const existing: any = savedMethods?.find((x: any) => x.method_type === method_type);
+    if (existing) {
+      await supabase.from("payout_methods").update(payload).eq("id", existing.id);
+    } else {
+      await supabase.from("payout_methods").insert(payload);
+    }
+    queryClient.invalidateQueries({ queryKey: ["referral-payout-methods"] });
+  };
+
+  const saveOnly = useMutation({
+    mutationFn: persistPayoutDetails,
+    onSuccess: () => toast({ title: "Saved", description: "Payout details saved for future withdrawals." }),
+    onError: (e: Error) => toast({ title: "Error", description: e.message, variant: "destructive" }) });
+
+
   const createRequest = useMutation({
     mutationFn: async () => {
       if (!user?.id) throw new Error("Not authenticated");
@@ -106,6 +171,12 @@ export const ReferralWithdrawalRequest = () => {
         .single();
 
       if (error) throw error;
+
+      if (saveDetails) {
+        try { await persistPayoutDetails(); } catch { /* non-blocking */ }
+      }
+
+
 
       // Notify admins
       await supabase.functions.invoke("notify-admin-referral-withdrawal", { body: {
@@ -258,6 +329,36 @@ export const ReferralWithdrawalRequest = () => {
               />
             </div>
           )}
+
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="save-payout"
+              checked={saveDetails}
+              onCheckedChange={(v) => setSaveDetails(!!v)}
+            />
+            <Label htmlFor="save-payout" className="text-sm font-normal cursor-pointer">
+              Save these payout details for future withdrawals
+            </Label>
+          </div>
+
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => saveOnly.mutate()}
+            disabled={
+              saveOnly.isPending ||
+              (paymentMethod === "bank_transfer" && (!accountNumber || !accountName || !bankName || !swiftCode)) ||
+              (paymentMethod === "paypal" && !paypalEmail)
+            }
+          >
+            {saveOnly.isPending ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="mr-2 h-4 w-4" />
+            )}
+            Save payout details only
+          </Button>
+
 
           <Button
             onClick={() => createRequest.mutate()}
