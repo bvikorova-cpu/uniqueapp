@@ -330,6 +330,36 @@ export const ReferralWithdrawalRequest = () => {
             </div>
           )}
 
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="save-payout"
+              checked={saveDetails}
+              onCheckedChange={(v) => setSaveDetails(!!v)}
+            />
+            <Label htmlFor="save-payout" className="text-sm font-normal cursor-pointer">
+              Save these payout details for future withdrawals
+            </Label>
+          </div>
+
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => saveOnly.mutate()}
+            disabled={
+              saveOnly.isPending ||
+              (paymentMethod === "bank_transfer" && (!accountNumber || !accountName || !bankName || !swiftCode)) ||
+              (paymentMethod === "paypal" && !paypalEmail)
+            }
+          >
+            {saveOnly.isPending ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="mr-2 h-4 w-4" />
+            )}
+            Save payout details only
+          </Button>
+
+
           <Button
             onClick={() => createRequest.mutate()}
             disabled={
