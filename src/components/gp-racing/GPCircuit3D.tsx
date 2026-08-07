@@ -150,10 +150,10 @@ function Circuit({ curve }: { curve: THREE.CatmullRomCurve3 }) {
 
 function Car3D({ color }: { color: string }) {
   return (
-    <group>
+    <group scale={1.5}>
       <mesh position={[0, 0.32, 0]} castShadow>
         <boxGeometry args={[1, 0.34, 2.6]} />
-        <meshStandardMaterial color={color} metalness={0.85} roughness={0.18} />
+        <meshStandardMaterial color={color} metalness={0.85} roughness={0.18} emissive={color} emissiveIntensity={0.35} />
       </mesh>
       <mesh position={[0, 0.56, -0.15]}>
         <boxGeometry args={[0.6, 0.3, 0.8]} />
