@@ -94,31 +94,30 @@ function Circuit({ curve }: { curve: THREE.CatmullRomCurve3 }) {
     <group>
       {/* ground */}
       <mesh position={[0, -0.12, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-        <planeGeometry args={[320, 320]} />
-        <meshStandardMaterial color="#050b18" />
+        <planeGeometry args={[420, 420]} />
+        <meshStandardMaterial color="#4fb04a" roughness={1} />
       </mesh>
 
       {/* run-off / grass apron */}
       <mesh geometry={runoff} receiveShadow>
-        <meshStandardMaterial color="#0c1c30" roughness={0.95} />
+        <meshStandardMaterial color="#7cc95f" roughness={1} />
       </mesh>
 
       {/* asphalt */}
       <mesh geometry={asphalt} receiveShadow>
-        <meshStandardMaterial color="#1b2130" roughness={0.75} metalness={0.15} />
+        <meshStandardMaterial color="#4a5160" roughness={0.6} metalness={0.05} />
       </mesh>
 
       {/* glowing racing line */}
-      <primitive object={new THREE.Line(centerLine, new THREE.LineDashedMaterial({ color: "#22d3ee", dashSize: 2.2, gapSize: 2.6, transparent: true, opacity: 0.55 }))} />
+      <primitive object={new THREE.Line(centerLine, new THREE.LineDashedMaterial({ color: "#ffffff", dashSize: 2.4, gapSize: 2.8, transparent: true, opacity: 0.9 }))} />
 
       {/* kerbs */}
       {kerbs.map((k, i) => (
         <mesh key={i} position={k.pos} rotation={[0, k.rot, 0]}>
           <boxGeometry args={[1.1, 0.12, 1.5]} />
           <meshStandardMaterial
-            color={k.alt ? "#ef4444" : "#f8fafc"}
-            emissive={k.alt ? "#7f1d1d" : "#334155"}
-            emissiveIntensity={0.4}
+            color={k.alt ? "#e63946" : "#ffffff"}
+            roughness={0.55}
           />
         </mesh>
       ))}
@@ -126,18 +125,18 @@ function Circuit({ curve }: { curve: THREE.CatmullRomCurve3 }) {
       {/* start / finish */}
       <mesh position={[start.x, 0.07, start.z]} rotation={[-Math.PI / 2, 0, -Math.atan2(startTan.x, startTan.z)]}>
         <planeGeometry args={[TRACK_WIDTH, 2.2]} />
-        <meshStandardMaterial color="#e2e8f0" emissive="#94a3b8" emissiveIntensity={0.3} />
+        <meshStandardMaterial color="#f8fafc" roughness={0.5} />
       </mesh>
       <group position={[start.x, 0, start.z]} rotation={[0, -Math.atan2(startTan.x, startTan.z), 0]}>
         {[-1, 1].map((s) => (
           <mesh key={s} position={[s * (TRACK_WIDTH / 2 + 0.8), 3, 0]}>
             <boxGeometry args={[0.5, 6, 0.5]} />
-            <meshStandardMaterial color="#0e7490" emissive="#06b6d4" emissiveIntensity={0.6} />
+            <meshStandardMaterial color="#e11d48" roughness={0.4} metalness={0.3} />
           </mesh>
         ))}
         <mesh position={[0, 6, 0]}>
           <boxGeometry args={[TRACK_WIDTH + 2, 1.4, 0.4]} />
-          <meshStandardMaterial color="#0f172a" emissive="#0891b2" emissiveIntensity={0.5} />
+          <meshStandardMaterial color="#1d4ed8" roughness={0.4} metalness={0.3} />
         </mesh>
       </group>
     </group>
@@ -186,6 +185,34 @@ function Car3D({ color }: { color: string }) {
   );
 }
 
+function Skyline() {
+  const blocks = useMemo(
+    () =>
+      Array.from({ length: 54 }).map((_, i) => {
+        const a = (i / 54) * Math.PI * 2;
+        const r = 120 + ((i * 31) % 40);
+        const h = 14 + ((i * 17) % 46);
+        const w = 8 + ((i * 7) % 9);
+        return {
+          pos: [Math.cos(a) * r, h / 2, Math.sin(a) * r] as [number, number, number],
+          size: [w, h, w] as [number, number, number],
+          color: ["#5b8ec9", "#7aa7d8", "#4a7ab5", "#93b9e0"][i % 4],
+        };
+      }),
+    [],
+  );
+  return (
+    <group>
+      {blocks.map((b, i) => (
+        <mesh key={i} position={b.pos}>
+          <boxGeometry args={b.size} />
+          <meshStandardMaterial color={b.color} roughness={0.8} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 type Racer = { id: string; name: string; color: string; pace: number; lane: number };
 
 function RacingPack({
@@ -207,6 +234,7 @@ function RacingPack({
   const tick = useRef(0);
   const done = useRef(false);
   const up = useMemo(() => new THREE.Vector3(0, 1, 0), []);
+  const lookTarget = useRef(new THREE.Vector3());
 
   useEffect(() => {
     progress.current = racers.map((_, i) => -i * 0.012);
@@ -240,12 +268,25 @@ function RacingPack({
       g.rotation.z = THREE.MathUtils.lerp(g.rotation.z, isRacing ? -curvature(curve, u) * 1.4 : 0, 0.08);
     });
 
-    // broadcast camera chases the leader
-    if (camRig.current) {
-      const leader = progress.current.reduce((a, b, i) => (b > progress.current[a] ? i : a), 0);
-      const u = ((Math.max(progress.current[leader], 0) % 1) + 1) % 1;
-      const p = curve.getPointAt(u);
-      camRig.current.position.lerp(new THREE.Vector3(p.x, 0, p.z), 0.05);
+    // broadcast camera chases the leader from just behind the rear wing
+    const leader = progress.current.reduce((a, b, i) => (b > progress.current[a] ? i : a), 0);
+    const lu = ((Math.max(progress.current[leader], 0) % 1) + 1) % 1;
+    const lp = curve.getPointAt(lu);
+    const ltan = curve.getTangentAt(lu);
+    if (camRig.current) camRig.current.position.lerp(new THREE.Vector3(lp.x, 0, lp.z), 0.06);
+
+    if (isRacing) {
+      const lane = racers[leader]?.lane ?? 0;
+      const lside = new THREE.Vector3().crossVectors(ltan, up).normalize();
+      const behind = new THREE.Vector3(
+        lp.x + lside.x * lane - ltan.x * 11,
+        3.4,
+        lp.z + lside.z * lane - ltan.z * 11,
+      );
+      state.camera.position.lerp(behind, 0.09);
+      const look = curve.getPointAt((lu + 0.02) % 1);
+      lookTarget.current.lerp(new THREE.Vector3(look.x, 1.2, look.z), 0.12);
+      state.camera.lookAt(lookTarget.current);
     }
 
     tick.current += delta;
@@ -321,13 +362,16 @@ export function GPCircuit3D({ participants, isRacing, trackName = "Circuit", lap
     <div className="relative h-full w-full">
       <Canvas shadows dpr={[1, 1.8]}>
         <Suspense fallback={null}>
-          <PerspectiveCamera makeDefault position={[0, 62, 78]} fov={42} />
-          <OrbitControls enablePan={false} maxPolarAngle={Math.PI / 2.15} minDistance={30} maxDistance={150} autoRotate={!isRacing} autoRotateSpeed={0.35} />
-          <ambientLight intensity={0.45} color="#7dd3fc" />
-          <directionalLight position={[40, 60, 20]} intensity={1.3} color="#e0f2fe" castShadow />
-          <pointLight position={[-40, 20, -30]} intensity={0.6} color="#0ea5e9" />
-          <hemisphereLight args={["#0ea5e9", "#020617", 0.5]} />
-          <fog attach="fog" args={["#050b18", 90, 260]} />
+          <PerspectiveCamera makeDefault position={[0, 62, 78]} fov={isRacing ? 58 : 42} />
+          {!isRacing && (
+            <OrbitControls enablePan={false} maxPolarAngle={Math.PI / 2.15} minDistance={30} maxDistance={150} autoRotate autoRotateSpeed={0.35} />
+          )}
+          <color attach="background" args={["#8fd3f7"]} />
+          <ambientLight intensity={0.85} color="#ffffff" />
+          <directionalLight position={[60, 90, 40]} intensity={1.8} color="#fffaf0" castShadow />
+          <hemisphereLight args={["#bfe9ff", "#4fb04a", 0.85]} />
+          <fog attach="fog" args={["#a8dcf5", 180, 400]} />
+          <Skyline />
           <Circuit curve={curve} />
           <RacingPack curve={curve} racers={racers} isRacing={isRacing} laps={laps} onStandings={(s) => setStandings(s)} />
         </Suspense>
