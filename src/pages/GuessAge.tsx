@@ -120,16 +120,24 @@ const GuessAge = () => {
     }
     setBusy(true);
     try {
-      const res = await call<{ correct: boolean; realAge: number; guessedAge: number; points: number }>({
+      const res = await call<{ correct: boolean; realAge: number; guessedAge: number; points: number; creditsRemaining?: number }>({
         action: "guessage.guess",
         profileUserId: card.userId,
         guessedAge: value,
       });
       setResult(res);
       setGuess("");
+      toast({
+        title: "1 credit used",
+        description:
+          typeof res.creditsRemaining === "number"
+            ? `${res.creditsRemaining} credits left.`
+            : "Your guess was submitted.",
+      });
       loadState();
       loadLeaders();
       window.dispatchEvent(new Event("ai-credits-updated"));
+
     } catch (e) {
       handleError(e);
     } finally {
