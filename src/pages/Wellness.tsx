@@ -92,6 +92,7 @@ export default function Wellness() {
   const handleSelectTool = async (toolId: string, cost: number) => {
     if (cost === 0 || unlocked.includes(toolId)) {
       setActiveTool(toolId);
+      window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
       return;
     }
     setUnlocking(toolId);
@@ -102,6 +103,7 @@ export default function Wellness() {
     window.dispatchEvent(new Event("ai-credits-updated"));
     setUnlocked((prev) => [...prev, toolId]);
     setActiveTool(toolId);
+    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
     toast({ title: "Unlocked", description: `${cost} credits spent` });
   };
 
