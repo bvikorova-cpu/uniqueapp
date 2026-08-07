@@ -21,6 +21,9 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const LISTING_CREDIT_COST = 25;
 
+const HERO_VIDEO_URL = "/__l5e/assets-v1/876c9b9b-6ab6-49e9-82ea-b3995239c475/property-homepage-hero.mp4";
+const HERO_VIDEO_SECONDS = 5;
+
 const TRUST_POINTS = [
   { icon: Globe2, title: "Worldwide reach", desc: "One listing, buyers on every continent — no borders, no agencies." },
   { icon: Coins, title: "One flat fee", desc: `${LISTING_CREDIT_COST} credits (€10) per listing. No commission on your sale.` },
@@ -136,7 +139,21 @@ export default function PropertyMarketplace() {
       <div className="min-h-screen bg-background">
         {/* Luxury hero */}
         <section className="relative overflow-hidden border-b border-border/40">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-background to-accent/10" />
+          <video
+            src={HERO_VIDEO_URL}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-hidden="true"
+            onTimeUpdate={(e) => {
+              const v = e.currentTarget;
+              if (v.currentTime >= HERO_VIDEO_SECONDS) v.currentTime = 0;
+            }}
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-background/90 via-background/75 to-accent/20" />
           <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary/20 blur-3xl" />
           <div className="absolute -bottom-32 -left-20 w-96 h-96 rounded-full bg-accent/20 blur-3xl" />
           <div className="container relative mx-auto px-4 pt-28 pb-14 text-center">
