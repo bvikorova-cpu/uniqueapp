@@ -140,13 +140,30 @@ const GuessAge = () => {
     else setIndex((i) => i + 1);
   };
 
-  const joinGame = async (file?: File | null) => {
+  const pickFile = async (f?: File | null) => {
+    if (!f) return;
+    if (!f.type?.startsWith("image/")) {
+      toast({ title: "Unsupported file", description: "Please choose an image.", variant: "destructive" });
+      return;
+    }
+    if (f.size > 20 * 1024 * 1024) {
+      toast({ title: "Photo too large", description: "Max 20 MB.", variant: "destructive" });
+      return;
+    }
+    const normalized = await normalizeImageForUpload(f);
+    setSelectedFile(normalized);
+    setPreviewUrl(URL.createObjectURL(normalized));
+  };
+
+  const joinGame = async () => {
     const age = Number(myAge);
     if (!Number.isInteger(age) || age < 13 || age > 120) {
       toast({ title: "Enter your real age", description: "Must be 13 or older.", variant: "destructive" });
       return;
     }
+    const file = selectedFile;
     if (!file && !state?.profile) {
+      toast({ title: "Add a selfie", description: "Tap the photo box to choose a selfie.", variant: "destructive" });
       fileRef.current?.click();
       return;
     }
@@ -185,6 +202,7 @@ const GuessAge = () => {
 
 
       toast({ title: "You're in the game!", description: "Other players can now guess your age." });
+      setSelectedFile(null);
       loadState();
     } catch (e) {
       handleError(e);
@@ -192,6 +210,7 @@ const GuessAge = () => {
       setUploading(false);
     }
   };
+
 
   if (authed === null) return null;
 
