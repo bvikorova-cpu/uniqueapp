@@ -136,7 +136,21 @@ export default function PropertyMarketplace() {
       <div className="min-h-screen bg-background">
         {/* Luxury hero */}
         <section className="relative overflow-hidden border-b border-border/40">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-background to-accent/10" />
+          <video
+            src={HERO_VIDEO_URL}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-hidden="true"
+            onTimeUpdate={(e) => {
+              const v = e.currentTarget;
+              if (v.currentTime >= HERO_VIDEO_SECONDS) v.currentTime = 0;
+            }}
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-background/90 via-background/75 to-accent/20" />
           <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary/20 blur-3xl" />
           <div className="absolute -bottom-32 -left-20 w-96 h-96 rounded-full bg-accent/20 blur-3xl" />
           <div className="container relative mx-auto px-4 pt-28 pb-14 text-center">
