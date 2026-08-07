@@ -24159,6 +24159,45 @@ export type Database = {
         }
         Relationships: []
       }
+      fairytale_books: {
+        Row: {
+          child_name: string
+          cover_url: string | null
+          created_at: string
+          id: string
+          pages: Json
+          style: string | null
+          theme: string | null
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          child_name: string
+          cover_url?: string | null
+          created_at?: string
+          id?: string
+          pages?: Json
+          style?: string | null
+          theme?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          child_name?: string
+          cover_url?: string | null
+          created_at?: string
+          id?: string
+          pages?: Json
+          style?: string | null
+          theme?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       family_relationships: {
         Row: {
           created_at: string
@@ -27239,6 +27278,93 @@ export type Database = {
           name?: string
           posts_count?: number | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      guess_age_guesses: {
+        Row: {
+          created_at: string
+          guessed_age: number
+          guesser_id: string
+          id: string
+          is_correct: boolean
+          points: number
+          profile_user_id: string
+          real_age: number
+        }
+        Insert: {
+          created_at?: string
+          guessed_age: number
+          guesser_id: string
+          id?: string
+          is_correct: boolean
+          points?: number
+          profile_user_id: string
+          real_age: number
+        }
+        Update: {
+          created_at?: string
+          guessed_age?: number
+          guesser_id?: string
+          id?: string
+          is_correct?: boolean
+          points?: number
+          profile_user_id?: string
+          real_age?: number
+        }
+        Relationships: []
+      }
+      guess_age_profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          is_active: boolean
+          photo_path: string
+          real_age: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          is_active?: boolean
+          photo_path: string
+          real_age: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          is_active?: boolean
+          photo_path?: string
+          real_age?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      guess_age_scores: {
+        Row: {
+          correct_guesses: number
+          points: number
+          total_guesses: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          correct_guesses?: number
+          points?: number
+          total_guesses?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          correct_guesses?: number
+          points?: number
+          total_guesses?: number
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -69745,6 +69871,17 @@ export type Database = {
         }[]
       }
       get_fundraising_stats: { Args: never; Returns: Json }
+      get_guess_age_leaderboard: {
+        Args: { _limit?: number }
+        Returns: {
+          avatar_url: string
+          correct_guesses: number
+          display_name: string
+          points: number
+          total_guesses: number
+          user_id: string
+        }[]
+      }
       get_healthy_leaderboard: {
         Args: { _limit?: number; _month_key: string }
         Returns: {
