@@ -33,18 +33,33 @@ export async function handleGuessAge(
 
     const { data: guessed } = await admin
       .from("guess_age_guesses")
-      .select("profile_user_id")
+      .select("photo_id")
       .eq("guesser_id", userId);
-    const excluded = new Set((guessed ?? []).map((g: any) => g.profile_user_id as string));
-    excluded.add(userId);
+    const guessedPhotos = new Set(
+      (guessed ?? []).map((g: any) => g.photo_id as string).filter(Boolean),
+    );
 
-    const { data: profiles } = await admin
-      .from("guess_age_profiles")
-      .select("user_id, photo_path, display_name")
+    const { data: photos } = await admin
+      .from("guess_age_photos")
+      .select("id, user_id, photo_path, label")
       .eq("is_active", true)
-      .limit(200);
+      .neq("user_id", userId)
+      .limit(300);
 
-    const candidates = (profiles ?? []).filter((p: any) => !excluded.has(p.user_id as string));
+    // Nicknames come from the player profile row.
+    const ownerIds = [...new Set((photos ?? []).map((p: any) => p.user_id as string))];
+    const nameByUser = new Map<string, string>();
+    if (ownerIds.length) {
+      const { data: profs } = await admin
+        .from("guess_age_profiles")
+        .select("user_id, display_name")
+        .in("user_id", ownerIds);
+      for (const p of profs ?? []) {
+        nameByUser.set(p.user_id as string, (p.display_name as string) || "Anonymous");
+      }
+    }
+
+    const candidates = (photos ?? []).filter((p: any) => !guessedPhotos.has(p.id as string));
     for (let i = candidates.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
@@ -57,11 +72,13 @@ export async function handleGuessAge(
       const { count } = await admin
         .from("guess_age_guesses")
         .select("id", { count: "exact", head: true })
-        .eq("profile_user_id", p.user_id as string);
+        .eq("photo_id", p.id as string);
       deck.push({
+        photoId: p.id,
         userId: p.user_id,
         photoUrl,
-        displayName: (p.display_name as string) || "Anonymous",
+        label: p.label ?? null,
+        displayName: nameByUser.get(p.user_id as string) || "Anonymous",
         guessesCount: count ?? 0,
       });
     }
@@ -70,28 +87,28 @@ export async function handleGuessAge(
   }
 
   if (sub === "guess") {
-    const profileUserId = String(body.profileUserId ?? "");
+    const photoId = String(body.photoId ?? "");
     const guessedAge = Number(body.guessedAge);
-    if (!profileUserId) return json({ error: "Profile required" }, 400);
+    if (!photoId) return json({ error: "Photo required" }, 400);
     if (!Number.isInteger(guessedAge) || guessedAge < 1 || guessedAge > 120) {
       return json({ error: "Guess must be between 1 and 120" }, 400);
     }
-    if (profileUserId === userId) return json({ error: "You cannot guess your own age" }, 400);
 
-    const { data: target } = await admin
-      .from("guess_age_profiles")
-      .select("real_age, is_active")
-      .eq("user_id", profileUserId)
+    const { data: photo } = await admin
+      .from("guess_age_photos")
+      .select("id, user_id, age_in_photo, is_active")
+      .eq("id", photoId)
       .maybeSingle();
-    if (!target || !target.is_active) return json({ error: "Profile not available" }, 404);
+    if (!photo || !photo.is_active) return json({ error: "Photo not available" }, 404);
+    if (photo.user_id === userId) return json({ error: "You cannot guess your own photo" }, 400);
 
     const { data: existing } = await admin
       .from("guess_age_guesses")
       .select("id")
-      .eq("profile_user_id", profileUserId)
+      .eq("photo_id", photoId)
       .eq("guesser_id", userId)
       .maybeSingle();
-    if (existing) return json({ error: "You already guessed this player" }, 409);
+    if (existing) return json({ error: "You already guessed this photo" }, 409);
 
     const spend = await spendAiCredits(admin, userId, GUESS_COST, "Guess My Age — guess", "guess-my-age");
     if (!spend.ok) {
@@ -101,12 +118,13 @@ export async function handleGuessAge(
       );
     }
 
-    const realAge = Number(target.real_age);
+    const realAge = Number(photo.age_in_photo);
     const isCorrect = Math.abs(realAge - guessedAge) <= TOLERANCE;
     const points = isCorrect ? POINTS_CORRECT : POINTS_WRONG;
 
     await admin.from("guess_age_guesses").insert({
-      profile_user_id: profileUserId,
+      profile_user_id: photo.user_id,
+      photo_id: photoId,
       guesser_id: userId,
       guessed_age: guessedAge,
       real_age: realAge,
@@ -145,6 +163,84 @@ export async function handleGuessAge(
       creditsSpent: GUESS_COST,
       creditsRemaining: spend.remaining,
     });
+  }
+
+  if (sub === "my_photos") {
+    const { data: photos } = await admin
+      .from("guess_age_photos")
+      .select("id, photo_path, age_in_photo, label, is_active, created_at")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+
+    const list = [];
+    for (const p of photos ?? []) {
+      const { count } = await admin
+        .from("guess_age_guesses")
+        .select("id", { count: "exact", head: true })
+        .eq("photo_id", p.id as string);
+      const { count: correct } = await admin
+        .from("guess_age_guesses")
+        .select("id", { count: "exact", head: true })
+        .eq("photo_id", p.id as string)
+        .eq("is_correct", true);
+      list.push({
+        id: p.id,
+        ageInPhoto: p.age_in_photo,
+        label: p.label,
+        isActive: p.is_active,
+        photoUrl: await signPhoto(p.photo_path as string),
+        guesses: count ?? 0,
+        correct: correct ?? 0,
+      });
+    }
+    return json({ photos: list });
+  }
+
+  if (sub === "add_photo") {
+    const photoPath = String(body.photoPath ?? "");
+    const ageInPhoto = Number(body.ageInPhoto);
+    const label = body.label ? String(body.label).slice(0, 60) : null;
+    if (!photoPath.startsWith(`${userId}/`)) return json({ error: "Invalid photo path" }, 400);
+    if (!Number.isInteger(ageInPhoto) || ageInPhoto < 1 || ageInPhoto > 120) {
+      return json({ error: "Age on the photo must be between 1 and 120" }, 400);
+    }
+
+    const { data: inserted, error } = await admin
+      .from("guess_age_photos")
+      .insert({ user_id: userId, photo_path: photoPath, age_in_photo: ageInPhoto, label, is_active: true })
+      .select("id")
+      .single();
+    if (error) return json({ error: error.message }, 400);
+    return json({ ok: true, id: inserted?.id });
+  }
+
+  if (sub === "delete_photo") {
+    const photoId = String(body.photoId ?? "");
+    if (!photoId) return json({ error: "Photo required" }, 400);
+    const { data: photo } = await admin
+      .from("guess_age_photos")
+      .select("id, user_id, photo_path")
+      .eq("id", photoId)
+      .maybeSingle();
+    if (!photo || photo.user_id !== userId) return json({ error: "Photo not found" }, 404);
+    await admin.from("guess_age_photos").delete().eq("id", photoId);
+    try {
+      await admin.storage.from(BUCKET).remove([photo.photo_path as string]);
+    } catch { /* ignore storage cleanup errors */ }
+    return json({ ok: true });
+  }
+
+  if (sub === "toggle_photo") {
+    const photoId = String(body.photoId ?? "");
+    const isActive = !!body.isActive;
+    if (!photoId) return json({ error: "Photo required" }, 400);
+    const { error } = await admin
+      .from("guess_age_photos")
+      .update({ is_active: isActive })
+      .eq("id", photoId)
+      .eq("user_id", userId);
+    if (error) return json({ error: error.message }, 400);
+    return json({ ok: true, isActive });
   }
 
   if (sub === "my_state") {

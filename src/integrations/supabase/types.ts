@@ -27288,6 +27288,7 @@ export type Database = {
           guesser_id: string
           id: string
           is_correct: boolean
+          photo_id: string | null
           points: number
           profile_user_id: string
           real_age: number
@@ -27298,6 +27299,7 @@ export type Database = {
           guesser_id: string
           id?: string
           is_correct: boolean
+          photo_id?: string | null
           points?: number
           profile_user_id: string
           real_age: number
@@ -27308,9 +27310,51 @@ export type Database = {
           guesser_id?: string
           id?: string
           is_correct?: boolean
+          photo_id?: string | null
           points?: number
           profile_user_id?: string
           real_age?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guess_age_guesses_photo_id_fkey"
+            columns: ["photo_id"]
+            isOneToOne: false
+            referencedRelation: "guess_age_photos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      guess_age_photos: {
+        Row: {
+          age_in_photo: number
+          created_at: string
+          id: string
+          is_active: boolean
+          label: string | null
+          photo_path: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          age_in_photo: number
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          photo_path: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          age_in_photo?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          photo_path?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
