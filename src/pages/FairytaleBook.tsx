@@ -161,15 +161,8 @@ const FairytaleBook = () => {
       </Helmet>
 
       <div className="container mx-auto px-3 sm:px-4 max-w-5xl">
-        <div className="text-center mb-6">
-          <Badge className="bg-gradient-to-r from-primary to-accent text-white mb-3">
-            <Sparkles className="w-3 h-3 mr-1" /> AI storybook
-          </Badge>
-          <h1 className="text-2xl sm:text-4xl font-black">Fairytale Book Generator</h1>
-          <p className="text-sm sm:text-base text-muted-foreground mt-2">
-            Upload a photo, choose a theme and your child becomes the hero of their own illustrated fairytale.
-          </p>
-        </div>
+        <FairytaleHero />
+
 
         <Card className="p-4 sm:p-6 border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-accent/5">
           <div className="flex items-center gap-2 mb-4">

@@ -219,15 +219,8 @@ const GuessAge = () => {
       </Helmet>
 
       <div className="container mx-auto px-3 sm:px-4 max-w-4xl">
-        <div className="text-center mb-6">
-          <Badge className="bg-gradient-to-r from-primary to-accent text-white mb-3">
-            <Cake className="w-3 h-3 mr-1" /> 1 credit per guess
-          </Badge>
-          <h1 className="text-2xl sm:text-4xl font-black">Guess My Age</h1>
-          <p className="text-sm sm:text-base text-muted-foreground mt-2">
-            Real players, real ages. Guess within ±2 years to score 10 points — a miss still gives you 2.
-          </p>
-        </div>
+        <GuessAgeHero />
+
 
         <Tabs defaultValue="play" className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-6">
