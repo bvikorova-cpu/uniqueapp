@@ -39,15 +39,56 @@ export function SleepStories() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState([70]);
   const [sleepTimer, setSleepTimer] = useState<number | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Keep element volume in sync with the slider
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.volume = volume[0] / 100;
+  }, [volume]);
+
+  // Sleep timer: stop playback after the selected number of minutes
+  useEffect(() => {
+    if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
+    if (sleepTimer && isPlaying) {
+      timerRef.current = setTimeout(() => {
+        audioRef.current?.pause();
+        setIsPlaying(false);
+      }, sleepTimer * 60 * 1000);
+    }
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, [sleepTimer, isPlaying, activeStory]);
+
+  // Cleanup on unmount
+  useEffect(() => () => {
+    audioRef.current?.pause();
+    audioRef.current = null;
+  }, []);
 
   const togglePlay = (storyId: string) => {
-    if (activeStory === storyId) {
-      setIsPlaying(!isPlaying);
-    } else {
-      setActiveStory(storyId);
-      setIsPlaying(true);
+    const story = STORIES.find((s) => s.id === storyId);
+    if (!story) return;
+
+    if (activeStory === storyId && audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+      }
+      return;
     }
+
+    // Switch to a new story
+    if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+    const audio = new Audio(story.src);
+    audio.loop = true;
+    audio.volume = volume[0] / 100;
+    audioRef.current = audio;
+    setActiveStory(storyId);
+    audio.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
   };
+
 
   return (
     <Card className="mt-4 relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
