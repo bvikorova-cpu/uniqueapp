@@ -365,22 +365,32 @@ const GuessAge = () => {
                   onClick={() => fileRef.current?.click()}
                   className="relative aspect-square w-full rounded-xl border-2 border-dashed border-primary/40 overflow-hidden flex flex-col items-center justify-center gap-1 text-xs text-muted-foreground hover:border-primary transition"
                 >
-                  {state?.profile?.photoUrl ? (
-                    <img src={state.profile.photoUrl} alt="Your selfie" className="absolute inset-0 w-full h-full object-cover" />
+                  {previewUrl || state?.profile?.photoUrl ? (
+                    <img src={previewUrl ?? state?.profile?.photoUrl ?? ""} alt="Your selfie" className="absolute inset-0 w-full h-full object-cover" />
                   ) : (
                     <>
                       <Upload className="w-6 h-6" />
                       <span>Upload selfie</span>
                     </>
                   )}
+                  {previewUrl && (
+                    <span className="absolute bottom-0 inset-x-0 bg-primary/80 text-primary-foreground text-[10px] py-0.5 text-center">
+                      Tap Save to confirm
+                    </span>
+                  )}
                 </button>
                 <input
                   ref={fileRef}
                   type="file"
                   accept="image/*"
+                  capture="user"
                   className="hidden"
-                  onChange={(e) => joinGame(e.target.files?.[0])}
+                  onChange={(e) => {
+                    void pickFile(e.target.files?.[0]);
+                    e.target.value = "";
+                  }}
                 />
+
 
                 <div className="space-y-3">
                   <Input
