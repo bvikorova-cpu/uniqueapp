@@ -379,6 +379,9 @@ import { ResetPassword,
   DiscoverCreators,
   CreatorsLanding,
   FutureFace,
+  FairytaleBook,
+  GuessAge,
+
   TimeReversalSubscription,
   TimeReversalSocial,
   TimeReversalDashboard,
@@ -925,6 +928,9 @@ const App = () => {
                        <Route path="/pets" element={<PetsHub />} />
                        <Route path="/pets/achievements" element={<ProtectedRoute><PetsAchievements /></ProtectedRoute>} />
                         <Route path="/future-face" element={<FutureFace />} />
+                        <Route path="/fairytale-book" element={<FairytaleBook />} />
+                        <Route path="/guess-age" element={<GuessAge />} />
+
                         <Route path="/skill-swap" element={<SkillSwap />} />
                         <Route path="/skill-swap/dashboard" element={<ProtectedRoute><SkillSwapDashboard /></ProtectedRoute>} />
                         <Route path="/skill-swap/profile/:userId" element={<ProtectedRoute><SkillSwapProfile /></ProtectedRoute>} />
