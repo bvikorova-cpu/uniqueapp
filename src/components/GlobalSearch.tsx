@@ -178,7 +178,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   // Community
   { id: "137", title: "Plant Care", category: "Community", path: "/plant-care" },
   { id: "138", title: "Coffee", category: "Community", path: "/coffee" },
-  { id: "139", title: "Skill Swap", category: "Community", path: "/skill-swap" },
+  
   
   // Rewards & Account
   { id: "140", title: "Referral", category: "Rewards", path: "/referral" },
