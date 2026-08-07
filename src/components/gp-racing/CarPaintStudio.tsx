@@ -69,30 +69,113 @@ export function CarPaintStudio({ onBack }: { onBack: () => void }) {
         <Card className="lg:col-span-1 relative overflow-hidden bg-slate-900/60 border-cyan-500/20 aspect-square flex items-center justify-center">
           <div className="absolute inset-0 pointer-events-none" style={ {
             background: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,229,255,0.02) 3px, rgba(0,229,255,0.02) 6px)' }} />
-          <div className="text-center">
-            {/* Car preview shape */}
+          <div className="text-center px-4">
+            {/* F1 car preview (side view) */}
             <div className="relative inline-block">
-              <div className="w-40 h-20 rounded-lg transition-colors duration-300" style={{ backgroundColor: selectedColor }}>
-                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-10 rounded-md bg-slate-950/80" />
-                {/* Pattern overlay */}
-                {selectedPattern === "stripes" && (
-                  <div className="absolute inset-0 rounded-lg overflow-hidden">
-                    <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-6 bg-white/30" />
-                  </div>
+              <div
+                className="absolute -inset-6 rounded-[40%] blur-2xl opacity-30 transition-colors duration-300"
+                style={{ backgroundColor: selectedColor }}
+              />
+              <svg viewBox="0 0 320 120" className="relative w-56 sm:w-64 h-auto drop-shadow-2xl">
+                <defs>
+                  <linearGradient id="cps-body" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#ffffff" stopOpacity="0.35" />
+                    <stop offset="45%" stopColor="#ffffff" stopOpacity="0" />
+                    <stop offset="100%" stopColor="#000000" stopOpacity="0.45" />
+                  </linearGradient>
+                  <pattern id="cps-carbon" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                    <rect width="8" height="8" fill="transparent" />
+                    <rect width="4" height="8" fill="rgba(0,0,0,0.35)" />
+                  </pattern>
+                  <clipPath id="cps-clip">
+                    <path d="M8 82 L60 78 L96 62 L128 58 L150 44 L196 42 L214 58 L262 62 L286 60 L300 66 L302 78 L292 84 L60 88 Z" />
+                  </clipPath>
+                </defs>
+
+                {/* Front wing */}
+                <rect x="2" y="84" width="52" height="7" rx="3" fill={selectedColor} />
+                <rect x="4" y="76" width="10" height="16" rx="2" fill={selectedColor} opacity="0.85" />
+                {/* Rear wing */}
+                <rect x="272" y="30" width="44" height="8" rx="3" fill={selectedColor} />
+                <rect x="290" y="36" width="7" height="30" fill={selectedColor} opacity="0.9" />
+                <rect x="310" y="26" width="6" height="42" rx="2" fill={selectedColor} opacity="0.8" />
+
+                {/* Main body / chassis */}
+                <path
+                  d="M8 82 L60 78 L96 62 L128 58 L150 44 L196 42 L214 58 L262 62 L286 60 L300 66 L302 78 L292 84 L60 88 Z"
+                  fill={selectedColor}
+                />
+                <g clipPath="url(#cps-clip)">
+                  <path
+                    d="M8 82 L60 78 L96 62 L128 58 L150 44 L196 42 L214 58 L262 62 L286 60 L300 66 L302 78 L292 84 L60 88 Z"
+                    fill="url(#cps-body)"
+                  />
+                  {selectedPattern === "carbon" && <rect x="0" y="0" width="320" height="120" fill="url(#cps-carbon)" />}
+                  {selectedPattern === "stripes" && (
+                    <>
+                      <rect x="0" y="60" width="320" height="6" fill="rgba(255,255,255,0.55)" />
+                      <rect x="0" y="70" width="320" height="3" fill="rgba(255,255,255,0.35)" />
+                    </>
+                  )}
+                  {selectedPattern === "flames" && (
+                    <path d="M60 90 q20 -20 34 -4 q14 -18 30 -2 q16 -16 30 0 l0 20 Z" fill="rgba(255,120,0,0.6)" />
+                  )}
+                  {selectedPattern === "camo" && (
+                    <>
+                      <rect x="70" y="60" width="26" height="12" fill="rgba(0,0,0,0.3)" />
+                      <rect x="120" y="52" width="22" height="14" fill="rgba(255,255,255,0.2)" />
+                      <rect x="180" y="58" width="30" height="12" fill="rgba(0,0,0,0.25)" />
+                    </>
+                  )}
+                  {(selectedPattern === "galaxy" || selectedPattern === "circuit" || selectedPattern === "lightning") && (
+                    <path d="M110 80 l20 -18 l-8 18 l22 -14" stroke="rgba(255,255,255,0.7)" strokeWidth="3" fill="none" />
+                  )}
+                </g>
+
+                {/* Sidepod shading */}
+                <path d="M150 60 L214 58 L214 76 L150 78 Z" fill="rgba(0,0,0,0.18)" />
+                {/* Airbox */}
+                <path d="M196 42 q12 -16 22 2 Z" fill={selectedColor} />
+                {/* Halo + cockpit */}
+                <path d="M152 44 q22 -22 44 -2" stroke="rgba(220,235,255,0.85)" strokeWidth="4" fill="none" />
+                <path d="M158 48 q16 -8 32 -2 l0 10 l-32 0 Z" fill="#0b1220" />
+                <circle cx="174" cy="44" r="7" fill="#0f172a" stroke="rgba(0,229,255,0.5)" strokeWidth="1.5" />
+
+                {/* Wheels */}
+                <g>
+                  <circle cx="82" cy="86" r="24" fill="#0a0f18" stroke="rgba(0,229,255,0.25)" strokeWidth="2" />
+                  <circle cx="82" cy="86" r="10" fill="#1e293b" stroke="rgba(203,213,225,0.6)" strokeWidth="2" />
+                  <circle cx="248" cy="86" r="27" fill="#0a0f18" stroke="rgba(0,229,255,0.25)" strokeWidth="2" />
+                  <circle cx="248" cy="86" r="11" fill="#1e293b" stroke="rgba(203,213,225,0.6)" strokeWidth="2" />
+                </g>
+
+                {/* Decals */}
+                {selectedDecal === "number" && (
+                  <text x="176" y="74" textAnchor="middle" fontSize="16" fontFamily="monospace" fontWeight="bold" fill="rgba(255,255,255,0.9)">7</text>
                 )}
-                { selectedPattern === "carbon" && (
-                  <div className="absolute inset-0 rounded-lg opacity-30" style={{
-                    backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(0,0,0,0.3) 5px, rgba(0,0,0,0.3) 10px)' }} />
+                {selectedDecal === "speed" && (
+                  <g stroke="rgba(255,255,255,0.6)" strokeWidth="2">
+                    <line x1="100" y1="68" x2="140" y2="68" />
+                    <line x1="106" y1="74" x2="146" y2="74" />
+                  </g>
                 )}
-              </div>
-              {/* Wheels */}
-              <div className="absolute -bottom-3 left-4 w-8 h-8 rounded-full bg-slate-950 border-2 border-cyan-500/30" />
-              <div className="absolute -bottom-3 right-4 w-8 h-8 rounded-full bg-slate-950 border-2 border-cyan-500/30" />
-              {/* Glow */}
-              <div className="absolute -inset-4 rounded-2xl blur-xl opacity-30 transition-colors duration-300" style={{ backgroundColor: selectedColor }} />
+                {selectedDecal === "crown" && (
+                  <path d="M166 34 l6 -10 l6 8 l6 -8 l6 10 Z" fill="#fbbf24" />
+                )}
+                {selectedDecal === "wings" && (
+                  <path d="M214 56 q22 -14 40 -2 M214 60 q22 -8 40 2" stroke="rgba(0,229,255,0.8)" strokeWidth="2" fill="none" />
+                )}
+                {selectedDecal === "skull" && (
+                  <circle cx="230" cy="66" r="6" fill="rgba(255,255,255,0.85)" />
+                )}
+                {selectedDecal === "logo" && (
+                  <rect x="120" y="62" width="18" height="10" rx="2" fill="rgba(255,255,255,0.8)" />
+                )}
+              </svg>
             </div>
-            <p className="mt-6 text-xs font-mono text-cyan-400/40 uppercase tracking-wider">Live Preview</p>
+            <p className="mt-4 text-xs font-mono text-cyan-400/40 uppercase tracking-wider">Live Preview</p>
           </div>
+
         </Card>
 
         {/* Controls */}
