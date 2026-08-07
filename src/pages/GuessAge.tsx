@@ -49,7 +49,7 @@ const GuessAge = () => {
   }, []);
 
   const call = useCallback(async <T,>(body: Record<string, unknown>): Promise<T> => {
-    const { data, error } = await supabase.functions.invoke("guess-my-age", { body });
+    const { data, error } = await supabase.functions.invoke("kids-router", { body });
     if (error) throw new Error((data as { error?: string })?.error || error.message);
     if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
     return data as T;
@@ -58,7 +58,7 @@ const GuessAge = () => {
   const loadDeck = useCallback(async () => {
     setLoadingDeck(true);
     try {
-      const res = await call<{ deck: DeckCard[] }>({ action: "deck", limit: 15 });
+      const res = await call<{ deck: DeckCard[] }>({ action: "guessage.deck", limit: 15 });
       setDeck(res.deck ?? []);
       setIndex(0);
       setResult(null);
@@ -71,7 +71,7 @@ const GuessAge = () => {
 
   const loadState = useCallback(async () => {
     try {
-      const res = await call<MyState>({ action: "my_state" });
+      const res = await call<MyState>({ action: "guessage.my_state" });
       setState(res);
       if (res.profile) {
         setMyAge(String(res.profile.realAge));
@@ -115,7 +115,7 @@ const GuessAge = () => {
     setBusy(true);
     try {
       const res = await call<{ correct: boolean; realAge: number; guessedAge: number; points: number }>({
-        action: "guess",
+        action: "guessage.guess",
         profileUserId: card.userId,
         guessedAge: value,
       });
