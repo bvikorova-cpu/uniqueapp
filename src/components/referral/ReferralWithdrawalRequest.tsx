@@ -172,6 +172,12 @@ export const ReferralWithdrawalRequest = () => {
 
       if (error) throw error;
 
+      if (saveDetails) {
+        try { await persistPayoutDetails(); } catch { /* non-blocking */ }
+      }
+
+
+
       // Notify admins
       await supabase.functions.invoke("notify-admin-referral-withdrawal", { body: {
           requestId: data.id,
