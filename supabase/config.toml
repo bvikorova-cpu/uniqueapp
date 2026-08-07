@@ -444,3 +444,8 @@ verify_jwt = true
 [functions.emotion-exchange-match]
 verify_jwt = true
 
+[functions.fairytale-book]
+verify_jwt = true
+
+[functions.guess-my-age]
+verify_jwt = true
