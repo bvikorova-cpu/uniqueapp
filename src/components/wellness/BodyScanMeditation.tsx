@@ -150,17 +150,40 @@ export function BodyScanMeditation() {
                   />
                 )}
                 <svg viewBox="0 0 200 300" className="w-full h-full drop-shadow-lg" xmlns="http://www.w3.org/2000/svg">
-                  <ellipse cx="100" cy="30" rx="20" ry="25" className={`transition-all duration-700 ${getBodyPartClass("head")}`} strokeWidth="2" />
-                  <rect x="90" y="50" width="20" height="15" rx="4" className={`transition-all duration-700 ${getBodyPartClass("neck")}`} strokeWidth="2" />
-                  <ellipse cx="100" cy="95" rx="35" ry="40" className={`transition-all duration-700 ${getBodyPartClass("chest")}`} strokeWidth="2" />
-                  <ellipse cx="60" cy="95" rx="12" ry="50" className={`transition-all duration-700 ${getBodyPartClass("arms")}`} strokeWidth="2" />
-                  <ellipse cx="140" cy="95" rx="12" ry="50" className={`transition-all duration-700 ${getBodyPartClass("arms")}`} strokeWidth="2" />
-                  <ellipse cx="100" cy="110" rx="30" ry="35" className={`transition-all duration-700 ${currentPart.nameEn === "back" ? "fill-primary/40 stroke-primary" : "fill-transparent stroke-muted-foreground/10"}`} strokeWidth="2" strokeDasharray="5,5" />
-                  <ellipse cx="80" cy="190" rx="15" ry="70" className={`transition-all duration-700 ${getBodyPartClass("legs")}`} strokeWidth="2" />
-                  <ellipse cx="120" cy="190" rx="15" ry="70" className={`transition-all duration-700 ${getBodyPartClass("legs")}`} strokeWidth="2" />
-                  <ellipse cx="75" cy="270" rx="18" ry="12" className={`transition-all duration-700 ${getBodyPartClass("feet")}`} strokeWidth="2" />
-                  <ellipse cx="125" cy="270" rx="18" ry="12" className={`transition-all duration-700 ${getBodyPartClass("feet")}`} strokeWidth="2" />
+                  {/* Head */}
+                  <path
+                    d="M100 8c-11 0-18 8.5-18 20 0 5 .8 9.4 2.4 12.9 1.9 4.2 6 7.6 8.6 9.1v4h14v-4c2.6-1.5 6.7-4.9 8.6-9.1 1.6-3.5 2.4-7.9 2.4-12.9 0-11.5-7-20-18-20z"
+                    className={`transition-all duration-700 ${getBodyPartClass("head")}`} strokeWidth="2" strokeLinejoin="round"
+                  />
+                  {/* Neck */}
+                  <path d="M92 50h16c0 6 1 9 4 11H88c3-2 4-5 4-11z"
+                    className={`transition-all duration-700 ${getBodyPartClass("neck")}`} strokeWidth="2" strokeLinejoin="round" />
+                  {/* Torso: shoulders, chest, waist, hips */}
+                  <path
+                    d="M88 61c-9 1.5-17 4.5-22 8.5-3.5 2.8-5 6-5 9.5 0 3 1 5 2 6.5 3-1 5.5-1.5 7.5-1.5 1.5 8 2 20 1.5 30-.5 9 1 18 3.5 25 1.5 4.2 3 8.4 4 12.5h40c1-4.1 2.5-8.3 4-12.5 2.5-7 4-16 3.5-25-.5-10 0-22 1.5-30 2 0 4.5.5 7.5 1.5 1-1.5 2-3.5 2-6.5 0-3.5-1.5-6.7-5-9.5-5-4-13-7-22-8.5z"
+                    className={`transition-all duration-700 ${getBodyPartClass("chest")}`} strokeWidth="2" strokeLinejoin="round"
+                  />
+                  {/* Back indicator */}
+                  <path d="M100 72v66M86 86h28M84 106h32"
+                    className={`transition-all duration-700 fill-none ${currentPart.nameEn === "back" ? "stroke-primary" : "stroke-muted-foreground/15"}`}
+                    strokeWidth="2" strokeLinecap="round" strokeDasharray="5,5" />
+                  {/* Arms */}
+                  <path
+                    d="M66 70c-5 2-8.5 5-10 9.5-2.5 7.5-4.5 20-6 32.5-1 8.5-2.5 17-4.5 24.5-.8 3 .5 5.5 3.5 6.2 3 .7 5.5-.8 6.3-3.8 2.2-8 3.8-17 5-26 1.2-9 3-19 5-26.5M134 70c5 2 8.5 5 10 9.5 2.5 7.5 4.5 20 6 32.5 1 8.5 2.5 17 4.5 24.5.8 3-.5 5.5-3.5 6.2-3 .7-5.5-.8-6.3-3.8-2.2-8-3.8-17-5-26-1.2-9-3-19-5-26.5"
+                    className={`transition-all duration-700 fill-none ${getBodyPartClass("arms").replace(/fill-\S+/g, "")}`}
+                    strokeWidth="9" strokeLinecap="round"
+                  />
+                  {/* Legs */}
+                  <path
+                    d="M86 152c-1.5 12-3 24-4 36-1 12-1.5 26-1.5 38 0 3 2.5 5 5.5 5s5.5-2 5.5-5c0-12 .5-26 1.5-38 .8-9.5 2-19.5 3.5-30M114 152c1.5 12 3 24 4 36 1 12 1.5 26 1.5 38 0 3-2.5 5-5.5 5s-5.5-2-5.5-5c0-12-.5-26-1.5-38-.8-9.5-2-19.5-3.5-30"
+                    className={`transition-all duration-700 fill-none ${getBodyPartClass("legs").replace(/fill-\S+/g, "")}`}
+                    strokeWidth="13" strokeLinecap="round"
+                  />
+                  {/* Feet */}
+                  <path d="M80 262c-6 1-11 3.5-11 7.5 0 3 2.5 4.5 7 4.5h14c3 0 4.5-1.5 4.5-4.5 0-3.5-1.5-6-4.5-7.5zM120 262c6 1 11 3.5 11 7.5 0 3-2.5 4.5-7 4.5h-14c-3 0-4.5-1.5-4.5-4.5 0-3.5 1.5-6 4.5-7.5z"
+                    className={`transition-all duration-700 ${getBodyPartClass("feet")}`} strokeWidth="2" strokeLinejoin="round" />
                 </svg>
+
               </div>
             </div>
 
