@@ -12,6 +12,7 @@ import {
   Cake, Loader2, Upload, Trophy, Target, Gem, CheckCircle2, XCircle, RefreshCw,
 } from "lucide-react";
 import { GuessAgeHero } from "@/components/guess-age/GuessAgeHero";
+import { normalizeImageForUpload } from "@/utils/imageUploadPrep";
 
 
 type DeckCard = { userId: string; photoUrl: string; displayName: string; guessesCount: number };
