@@ -11,6 +11,8 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Cake, Loader2, Upload, Trophy, Target, Gem, CheckCircle2, XCircle, RefreshCw,
 } from "lucide-react";
+import { GuessAgeHero } from "@/components/guess-age/GuessAgeHero";
+
 
 type DeckCard = { userId: string; photoUrl: string; displayName: string; guessesCount: number };
 type MyState = {

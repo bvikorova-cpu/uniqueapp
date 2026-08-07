@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { BookOpen, Upload, Loader2, Sparkles, Gem, ImagePlus, Download } from "lucide-react";
+import { FairytaleHero } from "@/components/fairytale/FairytaleHero";
+
 
 type Page = { text: string; scene: string; image?: string };
 
