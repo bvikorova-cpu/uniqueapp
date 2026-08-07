@@ -45,10 +45,10 @@ export const WellnessToolCard = ({ tool, hasAccess, isPremium, cost = 0, onSelec
         <div className={`h-1.5 bg-gradient-to-r ${tool.color}`} />
 
         {/* Glow effect on hover */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
+        <div className={`absolute inset-0 pointer-events-none bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
 
         {/* Status badges */}
-        <div className="absolute top-4 right-4 flex items-center gap-2">
+        <div className="absolute top-4 right-4 flex items-center gap-2 pointer-events-none">
           {cost > 0 ? (
             <Badge className="bg-primary text-primary-foreground text-[10px]">
               <Sparkles className="w-3 h-3 mr-1" />
