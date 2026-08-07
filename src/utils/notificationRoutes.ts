@@ -118,7 +118,7 @@ export function getNotificationRoute(n: NotifLike): string {
     gift_credits: "/ai-credits",
     monthly_credits: "/ai-credits",
     xp_bet_lost: "/rewards",
-    admin_withdrawal: "/admin/withdrawals",
+    admin_withdrawal: "/admin/platform-withdrawals",
     job_listing_activated: "/employer-dashboard",
     job_listing_renewed: "/employer-dashboard",
     job_listing_payment_failed: "/employer-dashboard",
