@@ -215,10 +215,11 @@ const GuessAge = () => {
       const uid = session.user?.id;
       if (!uid) throw new Error("Login required");
       const displayName = nickname.trim().slice(0, 30) || null;
-      const { error } = await (supabase.from("guess_age_profiles") as any).upsert(
-        { user_id: uid, real_age: age, display_name: displayName, photo_path: "", is_active: true },
-        { onConflict: "user_id" },
-      );
+      const table = supabase.from("guess_age_profiles") as any;
+      const { error } = state?.profile
+        ? await table.update({ real_age: age, display_name: displayName, is_active: true }).eq("user_id", uid)
+        : await table.insert({ user_id: uid, real_age: age, display_name: displayName, photo_path: "", is_active: true });
+
 
       if (error) throw new Error(error.message);
       toast({ title: "Saved", description: "Your player details are up to date." });
