@@ -12,6 +12,7 @@ import {
   Cake, Loader2, Upload, Trophy, Target, Gem, CheckCircle2, XCircle, RefreshCw,
 } from "lucide-react";
 import { GuessAgeHero } from "@/components/guess-age/GuessAgeHero";
+import { normalizeImageForUpload } from "@/utils/imageUploadPrep";
 
 
 type DeckCard = { userId: string; photoUrl: string; displayName: string; guessesCount: number };
@@ -42,6 +43,9 @@ const GuessAge = () => {
   const [myAge, setMyAge] = useState("");
   const [nickname, setNickname] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -140,13 +144,30 @@ const GuessAge = () => {
     else setIndex((i) => i + 1);
   };
 
-  const joinGame = async (file?: File | null) => {
+  const pickFile = async (f?: File | null) => {
+    if (!f) return;
+    if (!f.type?.startsWith("image/")) {
+      toast({ title: "Unsupported file", description: "Please choose an image.", variant: "destructive" });
+      return;
+    }
+    if (f.size > 20 * 1024 * 1024) {
+      toast({ title: "Photo too large", description: "Max 20 MB.", variant: "destructive" });
+      return;
+    }
+    const normalized = await normalizeImageForUpload(f);
+    setSelectedFile(normalized);
+    setPreviewUrl(URL.createObjectURL(normalized));
+  };
+
+  const joinGame = async () => {
     const age = Number(myAge);
     if (!Number.isInteger(age) || age < 13 || age > 120) {
       toast({ title: "Enter your real age", description: "Must be 13 or older.", variant: "destructive" });
       return;
     }
+    const file = selectedFile;
     if (!file && !state?.profile) {
+      toast({ title: "Add a selfie", description: "Tap the photo box to choose a selfie.", variant: "destructive" });
       fileRef.current?.click();
       return;
     }
@@ -185,6 +206,7 @@ const GuessAge = () => {
 
 
       toast({ title: "You're in the game!", description: "Other players can now guess your age." });
+      setSelectedFile(null);
       loadState();
     } catch (e) {
       handleError(e);
@@ -192,6 +214,7 @@ const GuessAge = () => {
       setUploading(false);
     }
   };
+
 
   if (authed === null) return null;
 
@@ -342,22 +365,32 @@ const GuessAge = () => {
                   onClick={() => fileRef.current?.click()}
                   className="relative aspect-square w-full rounded-xl border-2 border-dashed border-primary/40 overflow-hidden flex flex-col items-center justify-center gap-1 text-xs text-muted-foreground hover:border-primary transition"
                 >
-                  {state?.profile?.photoUrl ? (
-                    <img src={state.profile.photoUrl} alt="Your selfie" className="absolute inset-0 w-full h-full object-cover" />
+                  {previewUrl || state?.profile?.photoUrl ? (
+                    <img src={previewUrl ?? state?.profile?.photoUrl ?? ""} alt="Your selfie" className="absolute inset-0 w-full h-full object-cover" />
                   ) : (
                     <>
                       <Upload className="w-6 h-6" />
                       <span>Upload selfie</span>
                     </>
                   )}
+                  {previewUrl && (
+                    <span className="absolute bottom-0 inset-x-0 bg-primary/80 text-primary-foreground text-[10px] py-0.5 text-center">
+                      Tap Save to confirm
+                    </span>
+                  )}
                 </button>
                 <input
                   ref={fileRef}
                   type="file"
                   accept="image/*"
+
                   className="hidden"
-                  onChange={(e) => joinGame(e.target.files?.[0])}
+                  onChange={(e) => {
+                    void pickFile(e.target.files?.[0]);
+                    e.target.value = "";
+                  }}
                 />
+
 
                 <div className="space-y-3">
                   <Input
@@ -374,7 +407,7 @@ const GuessAge = () => {
                     onChange={(e) => setNickname(e.target.value)}
                     maxLength={30}
                   />
-                  <Button onClick={() => joinGame(null)} disabled={uploading} className="w-full sm:w-auto">
+                  <Button onClick={() => joinGame()} disabled={uploading} className="w-full sm:w-auto">
                     {uploading ? (
                       <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Saving…</>
                     ) : state?.profile ? "Save changes" : "Join the game"}
