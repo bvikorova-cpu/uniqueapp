@@ -268,16 +268,15 @@ const GuessAge = () => {
 
       // Make sure the player row exists so other players see a nickname.
       if (!state?.profile) {
-        await supabase.from("guess_age_profiles").upsert(
-          {
-            user_id: uid,
-            real_age: Number(myAge) || age,
-            display_name: nickname.trim().slice(0, 30) || null,
-            is_active: true,
-          },
-          { onConflict: "user_id" },
-        );
+        await (supabase.from("guess_age_profiles") as any).insert({
+          user_id: uid,
+          real_age: Number(myAge) || age,
+          display_name: nickname.trim().slice(0, 30) || null,
+          photo_path: path,
+          is_active: true,
+        });
       }
+
 
       toast({ title: "Photo added", description: "Other players can now guess the age on it." });
       setSelectedFile(null);
