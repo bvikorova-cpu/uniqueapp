@@ -22,6 +22,7 @@ import { Telemetry } from "@/components/gp-racing/Telemetry";
 import { BettingSystem } from "@/components/gp-racing/BettingSystem";
 import { AchievementSystem } from "@/components/gp-racing/AchievementSystem";
 import { TrackEditor } from "@/components/gp-racing/TrackEditor";
+import { GPCircuit3D } from "@/components/gp-racing/GPCircuit3D";
 import { useUserCars, useGPRaces, useJoinGPRace, useUpgradeCar, usePurchaseCarColor, useGPCurrency } from "@/hooks/useGPRacing";
 import { Trophy, Wrench, Sparkles, Zap, TrendingUp, Car, LogIn, Info, Gauge, Wind, CircleDot, Compass, ShoppingCart, Box, Rocket, Shield, Target, Cpu, Flame, Play, Palette, Cloud, Timer as TimerIcon, Users, Award, Coins, Map, Activity, Crown } from "lucide-react";
 import { toast } from "sonner";
@@ -143,6 +144,7 @@ export default function GPRacingArena() {
   const [showBuyCar, setShowBuyCar] = useState(false);
   const [showJoinRace, setShowJoinRace] = useState(false);
   const [selectedRace, setSelectedRace] = useState<string | null>(null);
+  const [raceRunning, setRaceRunning] = useState(false);
   const [selectedCarForRace, setSelectedCarForRace] = useState("");
   const [raceStrategy, setRaceStrategy] = useState("balanced");
   const [carName, setCarName] = useState("");
@@ -424,29 +426,42 @@ export default function GPRacingArena() {
                 <Button variant="outline" onClick={() => setSelectedRace(null)} className="border-cyan-500/30 text-cyan-300 hover:bg-cyan-950/30 font-mono text-xs uppercase tracking-wider">
                   ← Back to Races
                 </Button>
-                <div className="h-[400px] rounded-xl overflow-hidden border-2 border-cyan-500/30 shadow-lg shadow-cyan-500/10">
-                  <RaceTrack3D participants={activeRace.f1_race_participants || []} isRacing={activeRace.status === "running"} />
+                <div className="h-[420px] sm:h-[520px] rounded-xl overflow-hidden border-2 border-cyan-500/30 shadow-lg shadow-cyan-500/10 bg-slate-950">
+                  <GPCircuit3D
+                    participants={activeRace.f1_race_participants || []}
+                    isRacing={raceRunning || activeRace.status === "running"}
+                    trackName={activeRace.track_name}
+                    laps={3}
+                    seed={(activeRace.track_name || "").length}
+                  />
                 </div>
                 <Button
-                  className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/30 shadow-lg shadow-cyan-500/20 font-mono uppercase tracking-wider py-6 text-base"
+                  disabled={raceRunning}
+                  className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/30 shadow-lg shadow-cyan-500/20 font-mono uppercase tracking-wider py-6 text-base disabled:opacity-60"
                   onClick={() => requireAuth(async () => {
+                    setRaceRunning(true);
+                    toast.info("Lights out — cars are on track!");
                     try {
                       const { data, error } = await supabase.functions.invoke("calculate-f1-race-results", { body: { raceId: selectedRace } });
                       if (error) throw error;
                       if (data?.results) {
                         const winner = data.results[0];
-                        toast.success(`Race complete! Victor: ${winner.carName}${winner.prize > 0 ? ` — Reward: ${winner.prize} coins` : ""} 🏆`);
+                        setTimeout(() => {
+                          toast.success(`Race complete! Victor: ${winner.carName}${winner.prize > 0 ? ` — Reward: ${winner.prize} coins` : ""} 🏆`);
+                        }, 12000);
                       }
                     } catch (error) {
                       console.error("Error calculating results:", error);
                       toast.error("Error calculating race results");
                     }
-                    queryClient.invalidateQueries({ queryKey: ["active-f1-races"] });
-                    queryClient.invalidateQueries({ queryKey: ["user-f1-cars"] });
-                    queryClient.invalidateQueries({ queryKey: ["f1-currency"] });
-                    setSelectedRace(null);
+                    setTimeout(() => {
+                      setRaceRunning(false);
+                      queryClient.invalidateQueries({ queryKey: ["active-f1-races"] });
+                      queryClient.invalidateQueries({ queryKey: ["user-f1-cars"] });
+                      queryClient.invalidateQueries({ queryKey: ["f1-currency"] });
+                    }, 13000);
                   })}>
-                  <Flame className="mr-2 h-5 w-5" /> Start Race
+                  <Flame className="mr-2 h-5 w-5" /> {raceRunning ? "Race in progress…" : "Start Race"}
                 </Button>
               </div>
             ) : (
