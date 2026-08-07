@@ -103,7 +103,7 @@ function RaceTrack3D({ participants, isRacing }: { participants: any[]; isRacing
 }
 
 const demoRaces = [
-  { id: "demo-race-1", track_name: "Nebula Drift Circuit", distance: 5410, entry_fee_coins: 24, max_participants: 8, weather: "solar_storm", track_condition: "ion_charged", status: "open", f1_race_participants: [] },
+  { id: "demo-race-1", track_name: "Nebula Drift Circuit", distance: 5410, entry_fee_coins: 24, max_participants: 8, weather: "solar_storm", track_condition: "ion_charged", status: "running", f1_race_participants: [] },
   { id: "demo-race-2", track_name: "Quantum Horizon Ring", distance: 3340, entry_fee_coins: 50, max_participants: 6, weather: "cosmic_clear", track_condition: "plasma_smooth", status: "open", f1_race_participants: [] },
   { id: "demo-race-3", track_name: "Asteroid Belt Gauntlet", distance: 4200, entry_fee_coins: 35, max_participants: 10, weather: "meteor_shower", track_condition: "debris_field", status: "open", f1_race_participants: [] },
 ];
