@@ -29,21 +29,22 @@ export const FairytaleHero = () => {
       <video ref={videoRef} className="absolute inset-0 h-full w-full object-cover" autoPlay muted loop playsInline>
         <source src={fairytaleHeroVideo.url} type="video/mp4" />
       </video>
-      <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/80" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/75 via-background/25 to-background/80" />
 
-      <div className="relative z-10 h-full flex flex-col items-center justify-center px-5 text-center">
+      <div className="relative z-10 h-full flex flex-col items-center justify-start pt-5 sm:pt-8 px-5 text-center">
         <motion.span
           initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-background/50 backdrop-blur-md text-foreground text-xs sm:text-sm font-semibold border border-primary/40 mb-3"
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-background/70 backdrop-blur-md text-foreground text-xs sm:text-sm font-semibold border border-primary/40 mb-2"
         >
           <BookOpen className="w-4 h-4 text-primary" /> AI storybook <Sparkles className="w-4 h-4 text-accent" />
         </motion.span>
         <motion.h1
           initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-          className="text-3xl sm:text-5xl font-black bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)]"
+          className="text-2xl sm:text-5xl font-black bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)]"
         >
           Fairytale Book Generator
         </motion.h1>
+
         <motion.p
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
           className="mt-2 max-w-2xl text-sm sm:text-base text-foreground/90 font-medium"
