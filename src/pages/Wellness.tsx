@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Sparkles, Heart, Brain, Wind, Palette, BookOpen, Check, Volume2, Crown, Zap, Shield, Moon, Target } from "lucide-react";
+import { Sparkles, Heart, Brain, Wind, Palette, BookOpen, Volume2, Crown, Moon, Target } from "lucide-react";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 import { WellnessHero } from "@/components/wellness/WellnessHero";
 import { WellnessAISanctuary } from "@/components/wellness/WellnessAISanctuary";
@@ -26,135 +26,89 @@ import { WellnessProgressDashboard } from "@/components/wellness/WellnessProgres
 import { DailyWellnessChallenges } from "@/components/wellness/DailyWellnessChallenges";
 import { SleepStories } from "@/components/wellness/SleepStories";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSpendCredits, CREDIT_COSTS } from "@/hooks/useSpendCredits";
+import { useAICredits } from "@/hooks/useAICredits";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-const WELLNESS_PLANS = {
-  basicMonthly: { name: "Basic Monthly", price: "€4.99", period: "/month", priceId: "price_1SQQ0zGaXSfGtYFtXRewT2s9", tier: "basic", isLifetime: false, icon: Wind, gradient: "from-sky-500/15 to-cyan-500/5", accentColor: "text-sky-400", features: ["Breathing Exercises", "5-4-3-2-1 Grounding", "Nature Sounds", "Body Scan Meditation", "Sleep Stories", "Daily Challenges"] },
-  premiumMonthly: { name: "Premium Monthly", price: "€9.99", period: "/month", priceId: "price_1SQQ1zGaXSfGtYFt773EG7rN", tier: "premium", isLifetime: false, icon: Crown, gradient: "from-violet-500/15 to-purple-500/5", accentColor: "text-violet-400", popular: true, features: ["All Basic features", "AI Mindfulness Coach", "Gratitude Journal with AI", "Digital Mandala Drawing", "Progress Dashboard"] },
-  basicLifetime: { name: "Basic Lifetime", price: "€29.99", period: " once", priceId: "price_1SQQ2OGaXSfGtYFtSFCDoDRg", tier: "basic", isLifetime: true, icon: Shield, gradient: "from-emerald-500/15 to-green-500/5", accentColor: "text-emerald-400", savings: "Save 50%+", features: ["Lifetime Access", "Breathing Exercises", "5-4-3-2-1 Grounding", "Nature Sounds", "Body Scan Meditation", "Sleep Stories"] },
-  premiumLifetime: { name: "Premium Lifetime", price: "€49.99", period: " once", priceId: "price_1SQQ2gGaXSfGtYFtpMEdnEfw", tier: "premium", isLifetime: true, icon: Zap, gradient: "from-amber-500/15 to-orange-500/5", accentColor: "text-amber-400", savings: "Best Value", features: ["Lifetime Access", "All Premium features", "AI Mindfulness Coach", "Gratitude Journal with AI", "Digital Mandala Drawing"] } };
+const WELLNESS_AI_COST = CREDIT_COSTS.wellness_ai_tool;
 
 const WELLNESS_TOOLS = [
   { id: "breathing", name: "Breathing Exercises", icon: Wind,
     description: "Guided breathing techniques for stress relief and relaxation",
     color: "from-sky-500 to-cyan-600",
     features: ["4-7-8 Breathing", "Box Breathing", "Visual guidance", "Session tracking", "Multiple techniques"],
-    premium: false },
+    cost: 0 },
   { id: "grounding", name: "5-4-3-2-1 Grounding", icon: Brain,
     description: "Sensory grounding exercise to reduce anxiety and panic",
     color: "from-violet-500 to-purple-600",
     features: ["Step-by-step guidance", "Anxiety relief", "Panic attack support", "Progress tracking", "Audio cues"],
-    premium: false },
+    cost: 0 },
   { id: "sounds", name: "Nature Sounds", icon: Volume2,
     description: "Ambient soundscapes for relaxation, focus, and sleep",
     color: "from-emerald-500 to-green-600",
     features: ["Rain & thunder", "Ocean waves", "Forest ambience", "Volume control", "Sleep timer"],
-    premium: false },
+    cost: 0 },
   { id: "bodyscan", name: "Body Scan Meditation", icon: Heart,
     description: "Progressive relaxation from head to toe with audio guidance",
     color: "from-rose-500 to-pink-600",
     features: ["Interactive body map", "Audio guidance", "Progressive relaxation", "Session completion", "Tension release"],
-    premium: false },
+    cost: 0 },
   { id: "sleep", name: "Sleep Stories", icon: Moon,
     description: "Calming narratives and ambient sounds to help you drift off",
     color: "from-indigo-500 to-blue-600",
     features: ["Multiple stories", "Ambient themes", "Sleep timer", "Volume control", "New stories weekly"],
-    premium: false },
+    cost: 0 },
   { id: "challenges", name: "Daily Challenges", icon: Target,
     description: "Gamified daily wellness tasks with XP and streak tracking",
     color: "from-amber-500 to-orange-600",
     features: ["Daily tasks", "XP rewards", "Streak tracking", "Multiple categories", "Progress gamification"],
-    premium: false },
+    cost: 0 },
   { id: "chat", name: "AI Mindfulness Coach", icon: Brain,
     description: "24/7 AI coach trained in CBT, mindfulness, and therapeutic techniques",
     color: "from-purple-500 to-violet-600",
     features: ["24/7 availability", "CBT techniques", "Empathetic responses", "Quick prompts", "Session history"],
-    premium: true },
+    cost: WELLNESS_AI_COST },
   { id: "journal", name: "Gratitude Journal", icon: BookOpen,
     description: "Write gratitude entries and receive AI-powered insights",
     color: "from-amber-500 to-yellow-600",
     features: ["AI insights", "Mood tracking", "Writing prompts", "Entry history", "Emotional analysis"],
-    premium: true },
+    cost: WELLNESS_AI_COST },
   { id: "mandala", name: "Digital Mandala", icon: Palette,
     description: "Creative mindfulness through symmetrical drawing",
     color: "from-pink-500 to-rose-600",
     features: ["Symmetry modes", "Color palettes", "Export to image", "Creative expression", "Meditative drawing"],
-    premium: true },
+    cost: WELLNESS_AI_COST },
 ];
 
 export default function Wellness() {
-  const [subscriptionStatus, setSubscriptionStatus] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [activeTool, setActiveTool] = useState<string | null>(null);
+  const [unlocked, setUnlocked] = useState<string[]>([]);
+  const [unlocking, setUnlocking] = useState<string | null>(null);
   const { toast } = useToast();
+  const { spend } = useSpendCredits();
+  const { paidBalance, loading, refresh } = useAICredits();
 
-  const checkSubscription = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { setSubscriptionStatus({ subscribed: false }); setLoading(false); return; }
-      const { data, error } = await supabase.functions.invoke('check-wellness-subscription', {
-        headers: { Authorization: `Bearer ${session.access_token}` } });
-      if (error) throw error;
-      setSubscriptionStatus(data);
-    } catch (error) {
-      console.error('Error checking subscription:', error);
-      toast({ title: "Error", description: "Failed to check subscription status", variant: "destructive" });
-    } finally { setLoading(false); }
-  };
-
-  useEffect(() => { checkSubscription(); }, []);
-
-  const handleCheckout = async (planKey: keyof typeof WELLNESS_PLANS) => {
-    // Pre-open a window synchronously to keep user gesture → avoids popup blocker
-    const checkoutWindow = window.open('', '_blank');
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        checkoutWindow?.close();
-        toast({ title: "Authentication Required", description: "Please sign in to subscribe", variant: "destructive" });
-        return;
-      }
-      setCheckoutLoading(planKey);
-      const plan = WELLNESS_PLANS[planKey];
-      const { data, error } = await supabase.functions.invoke('create-wellness-checkout', {
-        body: { priceId: plan.priceId, tier: plan.tier, isLifetime: plan.isLifetime },
-        headers: { Authorization: `Bearer ${session.access_token}` } });
-      if (error) throw error;
-      if (data?.url && checkoutWindow) {
-        checkoutWindow.location.href = data.url;
-      } else if (data?.url) {
-        window.location.href = data.url;
-      } else {
-        checkoutWindow?.close();
-      }
-    } catch (error) {
-      checkoutWindow?.close();
-      console.error('Checkout error:', error);
-      toast({ title: "Error", description: "Failed to start checkout", variant: "destructive" });
-    } finally { setCheckoutLoading(null); }
-  };
-
-  const hasBasicAccess = subscriptionStatus?.subscribed && subscriptionStatus?.tier;
-  const hasPremiumAccess = subscriptionStatus?.subscribed && subscriptionStatus?.tier === "premium";
-
-  const handleSelectTool = (toolId: string, isPremium: boolean) => {
-    if (isPremium && !hasPremiumAccess) {
-      toast({ title: "Premium Required", description: "Upgrade to Premium to access this tool" });
+  const handleSelectTool = async (toolId: string, cost: number) => {
+    if (cost === 0 || unlocked.includes(toolId)) {
+      setActiveTool(toolId);
       return;
     }
-    if (!isPremium && !hasBasicAccess) {
-      toast({ title: "Subscription Required", description: "Subscribe to access wellness tools" });
-      return;
-    }
+    setUnlocking(toolId);
+    const ok = await spend("wellness_ai_tool", { description: `Wellness tool: ${toolId}` });
+    setUnlocking(null);
+    if (!ok) return;
+    await refresh();
+    window.dispatchEvent(new Event("ai-credits-updated"));
+    setUnlocked((prev) => [...prev, toolId]);
     setActiveTool(toolId);
+    toast({ title: "Unlocked", description: `${cost} credits spent` });
   };
 
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-3">
-      <FloatingHowItWorks title="Wellness — How it works" steps={[{title:"Open the tool",desc:"Launch Wellness from the menu to access its features."},{title:"Explore options",desc:"Browse available cards, filters and personalized recommendations."},{title:"Interact & track",desc:"Log entries, start sessions or run AI scans. Some AI actions cost 3–5 credits."},{title:"Review progress",desc:"Check your dashboard for streaks, achievements and history."}]} />
+      <FloatingHowItWorks title="Wellness — How it works" steps={[{title:"Open the tool",desc:"Launch Wellness from the menu to access its features."},{title:"Explore options",desc:"Browse available cards, filters and personalized recommendations."},{title:"Interact & track",desc:"Log entries, start sessions or run AI scans. AI tools cost 3 credits."},{title:"Review progress",desc:"Check your dashboard for streaks, achievements and history."}]} />
         <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }}>
           <Heart className="w-8 h-8 text-primary" />
         </motion.div>
@@ -221,28 +175,25 @@ export default function Wellness() {
           <WellnessAchievements />
         </div>
 
-        {/* Active Plan Badge */}
-        {hasBasicAccess && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-            <Card className="relative overflow-hidden border-primary/30 backdrop-blur-xl bg-card/80">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-emerald-500/5" />
-              <CardContent className="relative py-4 flex items-center gap-4">
-                <div className="p-2 rounded-xl bg-primary/10">
-                  <Sparkles className="w-5 h-5 text-primary" />
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="font-semibold">Active Plan:</span>
-                  <Badge variant="default" className="text-sm px-3 shadow-lg">
-                    {subscriptionStatus.tier.toUpperCase()}
-                  </Badge>
-                  {subscriptionStatus.is_lifetime && (
-                    <span className="text-sm flex items-center gap-1"><Sparkles className="w-4 h-4 text-amber-400" /> Lifetime</span>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
+        {/* Credit balance */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+          <Card className="relative overflow-hidden border-primary/30 backdrop-blur-xl bg-card/80">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-emerald-500/5" />
+            <CardContent className="relative py-4 flex flex-wrap items-center gap-4">
+              <div className="p-2 rounded-xl bg-primary/10">
+                <Sparkles className="w-5 h-5 text-primary" />
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="font-semibold">Your credits:</span>
+                <Badge variant="default" className="text-sm px-3 shadow-lg">{paidBalance}</Badge>
+                <span className="text-sm text-muted-foreground">AI tools cost {WELLNESS_AI_COST} credits</span>
+              </div>
+              <Button size="sm" variant="outline" className="ml-auto" onClick={() => window.location.assign("/ai-credits")}>
+                Top up credits
+              </Button>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Main content: Tool cards + sidebar (like AI Mentor) */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -252,9 +203,10 @@ export default function Wellness() {
               <WellnessToolCard
                 key={tool.id}
                 tool={tool}
-                hasAccess={tool.premium ? hasPremiumAccess : hasBasicAccess}
-                isPremium={tool.premium}
-                onSelect={() => handleSelectTool(tool.id, tool.premium)}
+                hasAccess={tool.cost === 0 || unlocked.includes(tool.id)}
+                isPremium={tool.cost > 0}
+                cost={tool.cost}
+                onSelect={() => handleSelectTool(tool.id, tool.cost)}
                 index={i}
               />
             ))}
@@ -272,82 +224,24 @@ export default function Wellness() {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-4">
             <h2 className="text-2xl font-black flex items-center gap-2">
               <Crown className="w-6 h-6 text-amber-400" />
-              Premium Tools
+              AI Tools · {WELLNESS_AI_COST} credits
             </h2>
-            <p className="text-sm text-muted-foreground">Advanced AI-powered wellness features</p>
+            <p className="text-sm text-muted-foreground">Advanced AI-powered wellness features — {WELLNESS_AI_COST} credits per unlock</p>
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {WELLNESS_TOOLS.filter(t => t.premium).map((tool, i) => (
+            {WELLNESS_TOOLS.filter(t => t.cost > 0).map((tool, i) => (
               <WellnessToolCard
                 key={tool.id}
                 tool={tool}
-                hasAccess={hasPremiumAccess}
+                hasAccess={unlocked.includes(tool.id)}
                 isPremium={true}
-                onSelect={() => handleSelectTool(tool.id, true)}
+                cost={WELLNESS_AI_COST}
+                onSelect={() => handleSelectTool(tool.id, WELLNESS_AI_COST)}
                 index={i}
               />
             ))}
           </div>
         </div>
-
-        {/* Pricing */}
-        {!hasBasicAccess && (
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
-            <Card className="mb-8 relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-violet-500/5 to-transparent" />
-              <CardHeader className="relative">
-                <CardTitle className="flex items-center gap-2 text-2xl">
-                  <div className="p-2 rounded-xl bg-primary/10"><Sparkles className="w-5 h-5 text-primary" /></div>
-                  Choose Your Wellness Plan
-                </CardTitle>
-                <CardDescription>Select a plan to unlock comprehensive relaxation and mindfulness tools</CardDescription>
-              </CardHeader>
-              <CardContent className="relative">
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {Object.entries(WELLNESS_PLANS).map(([key, plan], index) => {
-                    const Icon = plan.icon;
-                    return (
-                      <motion.div key={key} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.08 }}>
-                        <Card className={`relative overflow-hidden border-border/50 backdrop-blur-xl bg-card/60 hover:border-primary/30 transition-all group h-full ${(plan as any).popular ? 'ring-2 ring-primary/30 border-primary/40' : ''}`}>
-                          <div className={`absolute inset-0 bg-gradient-to-br ${plan.gradient} opacity-0 group-hover:opacity-100 transition-opacity`} />
-                          {(plan as any).popular && <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-[10px] font-bold px-3 py-1 rounded-bl-xl">POPULAR</div>}
-                          {(plan as any).savings && <div className="absolute top-0 right-0 bg-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl">{(plan as any).savings}</div>}
-                          <CardHeader className="relative pb-2">
-                            <div className="p-2 rounded-xl bg-card/60 w-fit mb-2"><Icon className={`w-5 h-5 ${plan.accentColor}`} /></div>
-                            <CardTitle className="text-base">{plan.name}</CardTitle>
-                            <div className="flex items-baseline gap-0.5">
-                              <span className="text-3xl font-black text-foreground">{plan.price}</span>
-                              <span className="text-sm text-muted-foreground">{plan.period}</span>
-                            </div>
-                          </CardHeader>
-                          <CardContent className="relative">
-                            <ul className="space-y-2 mb-5">
-                              {plan.features.map((feature, idx) => (
-                                <li key={idx} className="flex items-start gap-2 text-sm">
-                                  <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                                  <span className="text-muted-foreground">{feature}</span>
-                                </li>
-                              ))}
-                            </ul>
-                            <Button
-                              onClick={() => handleCheckout(key as keyof typeof WELLNESS_PLANS)}
-                              disabled={!!checkoutLoading}
-                              aria-label={`Subscribe to ${plan.name} – ${plan.price}${plan.period}`}
-                              className={`w-full min-h-[44px] active:scale-[0.97] transition-transform ${(plan as any).popular ? 'shadow-lg shadow-primary/20' : ''}`}
-                              variant={(plan as any).popular ? "default" : "outline"}
-                            >
-                              {checkoutLoading === key ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Loading...</> : 'Subscribe'}
-                            </Button>
-                          </CardContent>
-                        </Card>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
 
         {/* How it works */}
         <div className="max-w-3xl mx-auto">
@@ -356,7 +250,7 @@ export default function Wellness() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { step: "1", title: "Choose a Plan", desc: "Subscribe to Basic or Premium wellness" },
+              { step: "1", title: "Get credits", desc: `Relaxation tools are included; AI tools cost ${WELLNESS_AI_COST} credits` },
               { step: "2", title: "Pick Your Tools", desc: "Open any available wellness tool" },
               { step: "3", title: "Build Your Routine", desc: "Complete daily challenges and track progress" },
             ].map((item, i) => (
