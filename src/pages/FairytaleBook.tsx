@@ -257,7 +257,29 @@ const FairytaleBook = () => {
             <div className="text-center">
               <h2 className="text-2xl sm:text-3xl font-black">{title}</h2>
               <p className="text-sm text-muted-foreground">A fairytale for {childName}</p>
+              <Button
+                className="mt-3"
+                disabled={exporting}
+                onClick={async () => {
+                  setExporting(true);
+                  try {
+                    const { exportFairytaleToPDF } = await import("@/lib/exportFairytalePDF");
+                    await exportFairytaleToPDF({ title, childName, cover, pages });
+                  } catch {
+                    toast({ title: "PDF failed", description: "Could not build the PDF. Please try again.", variant: "destructive" });
+                  } finally {
+                    setExporting(false);
+                  }
+                }}
+              >
+                {exporting ? (
+                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Building PDF…</>
+                ) : (
+                  <><FileDown className="w-4 h-4 mr-2" />Download whole book (PDF)</>
+                )}
+              </Button>
             </div>
+
 
             {cover && (
               <Card className="overflow-hidden">
