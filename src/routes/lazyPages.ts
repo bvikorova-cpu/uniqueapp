@@ -169,7 +169,6 @@ export const MyLearning = lazy(() => import("@/pages/MyLearning"));
 export const GenericLearning = lazy(() => import("@/pages/GenericLearning"));
 
 // Subject-specific learning
-export const FitnessWellness = lazy(() => import("@/pages/FitnessWellness"));
 
 // Health & Wellness
 export const FirstAid = lazy(() => import("@/pages/FirstAid"));
