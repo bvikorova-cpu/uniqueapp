@@ -429,7 +429,7 @@ export default function GPRacingArena() {
                 <div className="h-[420px] sm:h-[520px] rounded-xl overflow-hidden border-2 border-cyan-500/30 shadow-lg shadow-cyan-500/10 bg-slate-950">
                   <GPCircuit3D
                     participants={activeRace.f1_race_participants || []}
-                    isRacing={raceRunning || activeRace.status === "running"}
+                    isRacing={true /*__TMP__*/ || raceRunning || activeRace.status === "running"}
                     trackName={activeRace.track_name}
                     laps={3}
                     seed={(activeRace.track_name || "").length}
