@@ -261,15 +261,42 @@ const GuessAge = () => {
                 <Loader2 className="w-6 h-6 animate-spin text-primary" />
               </Card>
             ) : !card ? (
-              <Card className="p-8 text-center space-y-3">
-                <p className="font-semibold">No new players right now</p>
+              <Card className="p-6 text-center space-y-4">
+                <p className="font-semibold">No other players to guess right now</p>
                 <p className="text-sm text-muted-foreground">
-                  You've guessed everyone available. Check back later or add your own photo to attract players.
+                  Your own photo never shows up in your own deck — you can only guess other people.
+                  As soon as someone else joins, their selfie appears here.
                 </p>
+
+                {state?.profile?.photoUrl && (
+                  <div className="space-y-2">
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                      Your card — this is what other players see
+                    </p>
+                    <div className="relative rounded-xl overflow-hidden border-2 border-primary/30 max-w-xs mx-auto">
+                      <img
+                        src={state.profile.photoUrl}
+                        alt="Your selfie in the Guess My Age game"
+                        className="w-full max-h-[320px] object-cover"
+                      />
+                      <Badge className="absolute top-2 left-2 bg-black/60 text-white border-0">
+                        {state.profile.displayName || "Anonymous"}
+                      </Badge>
+                      {state.profile.isActive && (
+                        <Badge variant="secondary" className="absolute top-2 right-2">In game</Badge>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {state.received.total} guesses received · {state.received.correct} correct
+                    </p>
+                  </div>
+                )}
+
                 <Button variant="outline" onClick={loadDeck}>
                   <RefreshCw className="w-4 h-4 mr-2" />Refresh
                 </Button>
               </Card>
+
             ) : (
               <Card className="overflow-hidden border-2 border-primary/30">
                 <div className="relative bg-muted">
