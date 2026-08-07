@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader2, DollarSign, CheckCircle, XCircle, Clock } from "lucide-react";
+import { Loader2, DollarSign, CheckCircle, XCircle, Clock, Save } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { Select,
   SelectContent,
@@ -23,8 +24,10 @@ export const ReferralWithdrawalRequest = () => {
   const [bankName, setBankName] = useState("");
   const [swiftCode, setSwiftCode] = useState("");
   const [paypalEmail, setPaypalEmail] = useState("");
+  const [saveDetails, setSaveDetails] = useState(true);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
 
   const { data: user } = useQuery({
     queryKey: ["user"],
