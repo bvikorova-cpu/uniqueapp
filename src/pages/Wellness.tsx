@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Sparkles, Heart, Brain, Wind, Palette, BookOpen, Check, Volume2, Crown, Zap, Shield, Moon, Target } from "lucide-react";
+import { Sparkles, Heart, Brain, Wind, Palette, BookOpen, Volume2, Crown, Moon, Target } from "lucide-react";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 import { WellnessHero } from "@/components/wellness/WellnessHero";
 import { WellnessAISanctuary } from "@/components/wellness/WellnessAISanctuary";
