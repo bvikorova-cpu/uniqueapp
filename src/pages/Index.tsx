@@ -90,7 +90,6 @@ const services = [
   { title: "Brain Duel", icon: Brain, path: "/brain-duel", badge: "Challenge", gradient: "from-orange-500 to-red-500", category: "entertainment" },
   { title: "Cooking AI", icon: ChefHat, path: "/cooking-ai", badge: "Recipes", gradient: "from-orange-500 to-amber-500", category: "creative" },
   
-  { title: "Fitness & Wellness", icon: Heart, path: "/fitness-wellness", badge: "Health", gradient: "from-green-500 to-teal-500", category: "wellness" },
   { title: "Food Scanner", icon: Camera, path: "/food-scanner", badge: "Nutrition", gradient: "from-lime-500 to-green-500", category: "wellness" },
   { title: "Fundraising", icon: Heart, path: "/fundraising", badge: "Charity", gradient: "from-blue-500 to-indigo-500", category: "social" },
   { title: "Future Face", icon: Sparkles, path: "/future-face", badge: "Age AI", gradient: "from-cyan-500 to-blue-500", category: "creative" },

@@ -269,7 +269,6 @@ import { ResetPassword,
   InteractiveWorkshops,
   CertificationPrograms,
   CourseLearning,
-  FitnessWellness,
   Collectibles,
   GenericLearning,
   CoursesHub,
@@ -1022,7 +1021,6 @@ const App = () => {
                         <Route path="/certification-learn/:certificationId" element={<CourseLearning />} />
                         <Route path="/language-learning" element={<Navigate to="/courses-hub" replace />} />
                         <Route path="/language/:contentId" element={<GenericLearning />} />
-                        <Route path="/fitness-wellness" element={<FitnessWellness />} />
                         <Route path="/fitness/:contentId" element={<GenericLearning />} />
                         <Route path="/digital-marketing" element={<Navigate to="/courses-hub" replace />} />
                         <Route path="/marketing/:contentId" element={<GenericLearning />} />
