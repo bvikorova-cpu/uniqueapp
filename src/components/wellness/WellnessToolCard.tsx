@@ -19,11 +19,12 @@ interface WellnessToolCardProps {
   tool: WellnessTool;
   hasAccess: boolean;
   isPremium: boolean;
+  cost?: number;
   onSelect: () => void;
   index: number;
 }
 
-export const WellnessToolCard = ({ tool, hasAccess, isPremium, onSelect, index }: WellnessToolCardProps) => {
+export const WellnessToolCard = ({ tool, hasAccess, isPremium, cost = 0, onSelect, index }: WellnessToolCardProps) => {
   const Icon = tool.icon;
 
   return (
@@ -36,7 +37,7 @@ export const WellnessToolCard = ({ tool, hasAccess, isPremium, onSelect, index }
     >
       <Card
         className={`relative overflow-hidden group transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/5
-          ${hasAccess ? "ring-2 ring-primary/50" : "hover:border-primary/30"}
+          ${hasAccess || cost === 0 ? "ring-2 ring-primary/50" : "hover:border-primary/30"}
           bg-card/60 backdrop-blur-sm h-full
         `}
       >
@@ -48,17 +49,18 @@ export const WellnessToolCard = ({ tool, hasAccess, isPremium, onSelect, index }
 
         {/* Status badges */}
         <div className="absolute top-4 right-4 flex items-center gap-2">
-          {hasAccess && (
-            <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/30 text-[10px]">
-              <span className="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5 animate-pulse" />
-              Online
-            </Badge>
-          )}
-          {hasAccess && (
+          {cost > 0 ? (
             <Badge className="bg-primary text-primary-foreground text-[10px]">
               <Sparkles className="w-3 h-3 mr-1" />
-              Active
+              {cost} credits
             </Badge>
+          ) : (
+            <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/30 text-[10px]">
+              Included
+            </Badge>
+          )}
+          {hasAccess && cost > 0 && (
+            <Badge variant="outline" className="border-primary/40 text-[10px]">Unlocked</Badge>
           )}
         </div>
 
@@ -100,20 +102,20 @@ export const WellnessToolCard = ({ tool, hasAccess, isPremium, onSelect, index }
 
           <Button
             className={`w-full group/btn transition-all ${
-              hasAccess
+              hasAccess || cost === 0
                 ? `bg-gradient-to-r ${tool.color} hover:opacity-90 text-white`
                 : ""
             }`}
-            variant={hasAccess ? "default" : "outline"}
+            variant={hasAccess || cost === 0 ? "default" : "outline"}
             onClick={onSelect}
           >
-            {hasAccess ? (
+            {hasAccess || cost === 0 ? (
               <>
                 Open Tool
                 <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
               </>
             ) : (
-              "Subscribe to Access"
+              `Unlock for ${cost} credits`
             )}
           </Button>
         </CardContent>
