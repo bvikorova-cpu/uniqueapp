@@ -148,38 +148,188 @@ function Circuit({ curve }: { curve: THREE.CatmullRomCurve3 }) {
 /* ------------------------------------------------------------------ */
 
 function Car3D({ color }: { color: string }) {
+  const dark = "#0d1117";
+  const carbon = "#1a1a2e";
+  const tire = "#161616";
+  const rim = "#6b7280";
+
+  const bodyMat = <meshStandardMaterial color={color} metalness={0.75} roughness={0.22} emissive={color} emissiveIntensity={0.12} />;
+  const darkMat = <meshStandardMaterial color={dark} metalness={0.6} roughness={0.4} />;
+  const carbonMat = <meshStandardMaterial color={carbon} metalness={0.5} roughness={0.5} />;
+
   return (
-    <group scale={1.5}>
-      <mesh position={[0, 0.32, 0]} castShadow>
-        <boxGeometry args={[1, 0.34, 2.6]} />
-        <meshStandardMaterial color={color} metalness={0.85} roughness={0.18} emissive={color} emissiveIntensity={0.35} />
+    <group scale={1.45}>
+      {/* ===== NOSE CONE ===== */}
+      <mesh position={[0, 0.2, 1.7]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+        <coneGeometry args={[0.14, 0.8, 16]} />
+        {darkMat}
       </mesh>
-      <mesh position={[0, 0.56, -0.15]}>
-        <boxGeometry args={[0.6, 0.3, 0.8]} />
-        <meshStandardMaterial color="#0b1220" metalness={0.9} roughness={0.1} />
+      <mesh position={[0, 0.24, 1.2]}>
+        <boxGeometry args={[0.22, 0.16, 0.4]} />
+        {darkMat}
       </mesh>
-      {/* front wing */}
-      <mesh position={[0, 0.16, 1.45]}>
-        <boxGeometry args={[1.5, 0.08, 0.5]} />
-        <meshStandardMaterial color={color} metalness={0.7} roughness={0.3} />
+
+      {/* ===== FRONT WING ===== */}
+      {/* Main element */}
+      <mesh position={[0, 0.05, 1.92]} castShadow>
+        <boxGeometry args={[1.85, 0.05, 0.42]} />
+        {bodyMat}
       </mesh>
-      {/* rear wing */}
-      <mesh position={[0, 0.78, -1.3]}>
-        <boxGeometry args={[1.3, 0.4, 0.12]} />
-        <meshStandardMaterial color={color} metalness={0.7} roughness={0.3} />
+      {/* Upper flap */}
+      <mesh position={[0, 0.13, 1.9]}>
+        <boxGeometry args={[1.75, 0.04, 0.3]} />
+        {bodyMat}
       </mesh>
-      {/* wheels */}
-      {[[0.66, 0.28, 0.95], [-0.66, 0.28, 0.95], [0.7, 0.3, -1], [-0.7, 0.3, -1]].map((p, i) => (
-        <mesh key={i} position={p as [number, number, number]} rotation={[0, 0, Math.PI / 2]}>
-          <cylinderGeometry args={[0.3, 0.3, 0.28, 20]} />
-          <meshStandardMaterial color="#111827" roughness={0.9} />
+      {/* Endplates */}
+      {[0.93, -0.93].map((x) => (
+        <mesh key={x} position={[x, 0.1, 1.92]}>
+          <boxGeometry args={[0.04, 0.26, 0.42]} />
+          {darkMat}
         </mesh>
       ))}
-      {/* engine glow */}
-      <pointLight position={[0, 0.4, -1.6]} distance={5} intensity={2} color={color} />
-      <mesh position={[0, 0.35, -1.45]}>
-        <sphereGeometry args={[0.15, 12, 12]} />
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={2.2} />
+
+      {/* ===== MONOCOQUE ===== */}
+      <mesh position={[0, 0.32, 0.25]} castShadow>
+        <boxGeometry args={[0.42, 0.26, 1.6]} />
+        {bodyMat}
+      </mesh>
+      {/* Tapered nose-to-body transition */}
+      <mesh position={[0, 0.3, 0.9]} rotation={[0.12, 0, 0]}>
+        <boxGeometry args={[0.32, 0.18, 0.45]} />
+        {darkMat}
+      </mesh>
+
+      {/* ===== SIDE PODS ===== */}
+      {[0.42, -0.42].map((x) => (
+        <group key={x}>
+          <mesh position={[x, 0.2, 0.05]} castShadow>
+            <boxGeometry args={[0.26, 0.24, 1.15]} />
+            {bodyMat}
+          </mesh>
+          {/* Front inlet */}
+          <mesh position={[x, 0.15, 0.58]} rotation={[0.2, 0, 0]}>
+            <boxGeometry args={[0.22, 0.18, 0.18]} />
+            {darkMat}
+          </mesh>
+          {/* Top aero fin */}
+          <mesh position={[x, 0.34, -0.15]}>
+            <boxGeometry args={[0.06, 0.1, 0.7]} />
+            {carbonMat}
+          </mesh>
+        </group>
+      ))}
+
+      {/* ===== COCKPIT & DRIVER ===== */}
+      <mesh position={[0, 0.46, -0.05]}>
+        <boxGeometry args={[0.32, 0.1, 0.5]} />
+        {darkMat}
+      </mesh>
+      {/* Driver helmet */}
+      <mesh position={[0, 0.52, -0.02]} castShadow>
+        <sphereGeometry args={[0.11, 16, 16]} />
+        <meshStandardMaterial color="#e63946" metalness={0.3} roughness={0.6} />
+      </mesh>
+      {/* Visor */}
+      <mesh position={[0, 0.54, 0.07]}>
+        <boxGeometry args={[0.13, 0.045, 0.05]} />
+        <meshStandardMaterial color="#0a0a1a" metalness={0.7} roughness={0.2} />
+      </mesh>
+
+      {/* ===== HALO ===== */}
+      {/* Front pillar */}
+      <mesh position={[0, 0.6, 0.22]}>
+        <cylinderGeometry args={[0.025, 0.025, 0.35, 8]} />
+        {darkMat}
+      </mesh>
+      {/* Arch tube (approximated with a thin curved bar) */}
+      <mesh position={[0, 0.72, -0.02]} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.2, 0.025, 8, 12, Math.PI]} />
+        {darkMat}
+      </mesh>
+      {/* Rear supports */}
+      {[0.2, -0.2].map((x) => (
+        <mesh key={x} position={[x, 0.56, -0.22]}>
+          <cylinderGeometry args={[0.025, 0.025, 0.22, 8]} />
+          {darkMat}
+        </mesh>
+      ))}
+
+      {/* ===== ENGINE COVER / AIRBOX ===== */}
+      <mesh position={[0, 0.5, -0.5]} castShadow>
+        <boxGeometry args={[0.28, 0.22, 0.45]} />
+        {bodyMat}
+      </mesh>
+      {/* Airbox intake */}
+      <mesh position={[0, 0.63, -0.5]}>
+        <boxGeometry args={[0.14, 0.1, 0.16]} />
+        {darkMat}
+      </mesh>
+
+      {/* ===== REAR WING ===== */}
+      {/* Main plane */}
+      <mesh position={[0, 0.72, -1.25]} castShadow>
+        <boxGeometry args={[1.35, 0.3, 0.08]} />
+        {bodyMat}
+      </mesh>
+      {/* Lower flap */}
+      <mesh position={[0, 0.58, -1.2]}>
+        <boxGeometry args={[1.3, 0.1, 0.06]} />
+        {bodyMat}
+      </mesh>
+      {/* Endplates */}
+      {[0.69, -0.69].map((x) => (
+        <mesh key={x} position={[x, 0.66, -1.25]}>
+          <boxGeometry args={[0.04, 0.46, 0.1]} />
+          {darkMat}
+        </mesh>
+      ))}
+      {/* Supports */}
+      {[0.22, -0.22].map((x) => (
+        <mesh key={x} position={[x, 0.46, -1.15]} rotation={[0.25, 0, 0]}>
+          <boxGeometry args={[0.04, 0.28, 0.08]} />
+          {darkMat}
+        </mesh>
+      ))}
+
+      {/* ===== FLOOR & DIFFUSER ===== */}
+      <mesh position={[0, 0.06, 0.15]}>
+        <boxGeometry args={[0.86, 0.03, 1.9]} />
+        {carbonMat}
+      </mesh>
+      {/* Diffuser strakes */}
+      {[-0.28, -0.14, 0, 0.14, 0.28].map((x) => (
+        <mesh key={x} position={[x, 0.1, -0.95]} rotation={[0.35, 0, 0]}>
+          <boxGeometry args={[0.03, 0.08, 0.22]} />
+          {darkMat}
+        </mesh>
+      ))}
+
+      {/* ===== WHEELS (exposed on suspension arms) ===== */}
+      {[[0.68, 0.26, 0.82], [-0.68, 0.26, 0.82], [0.7, 0.28, -0.82], [-0.7, 0.28, -0.82]].map((p, i) => (
+        <group key={i} position={p as [number, number, number]}>
+          {/* Tire */}
+          <mesh rotation={[0, 0, Math.PI / 2]} castShadow>
+            <cylinderGeometry args={[0.27, 0.27, 0.2, 24]} />
+            <meshStandardMaterial color={tire} roughness={0.85} />
+          </mesh>
+          {/* Rim */}
+          <mesh rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.15, 0.15, 0.22, 16]} />
+            <meshStandardMaterial color={rim} metalness={0.85} roughness={0.25} />
+          </mesh>
+          {/* Suspension arm connecting to body */}
+          <mesh position={[i % 2 === 0 ? -0.34 : 0.34, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+            <boxGeometry args={[0.26, 0.03, 0.03]} />
+            {carbonMat}
+          </mesh>
+        </group>
+      ))}
+
+      {/* ===== ENGINE GLOW ===== */}
+      <pointLight position={[0, 0.35, -1.55]} distance={4} intensity={1.5} color={color} />
+      <mesh position={[0, 0.3, -1.5]}>
+        <sphereGeometry args={[0.07, 12, 12]} />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={2} />
       </mesh>
     </group>
   );
