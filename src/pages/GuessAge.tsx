@@ -42,7 +42,9 @@ const GuessAge = () => {
   // Join form
   const [myAge, setMyAge] = useState("");
   const [nickname, setNickname] = useState("");
-  const [uploading, setUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
