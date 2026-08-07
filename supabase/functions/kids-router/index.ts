@@ -1,6 +1,9 @@
 import "../_shared/aiRedirect.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
+import { handleFairytale } from "./fairytale.ts";
+import { handleGuessAge } from "./guessAge.ts";
+
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -32,10 +35,21 @@ serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const action: string = body.action || "";
 
+    // --- Hosted sub-features (isolated modules) ---
+    if (action.startsWith("fairytale.")) {
+      const res = await handleFairytale(action, body, { admin, userId: user.id, json });
+      if (res) return res;
+    }
+    if (action.startsWith("guessage.")) {
+      const res = await handleGuessAge(action, body, { admin, userId: user.id, json });
+      if (res) return res;
+    }
+
     const ensureChild = async (childId: string) => {
       const { data } = await admin.from("kids_child_profiles").select("id,parent_id").eq("id", childId).maybeSingle();
       if (!data || data.parent_id !== user.id) throw new Error("forbidden");
     };
+
 
     switch (action) {
       // --- Children ---

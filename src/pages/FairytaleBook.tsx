@@ -84,8 +84,8 @@ const FairytaleBook = () => {
     setCover(null);
     setTitle(null);
     try {
-      const { data, error } = await supabase.functions.invoke("fairytale-book", {
-        body: { action: "generate", childName: childName.trim(), theme, style, photo },
+      const { data, error } = await supabase.functions.invoke("kids-router", {
+        body: { action: "fairytale.generate", childName: childName.trim(), theme, style, photo },
       });
       if (error) throw new Error((data as { error?: string })?.error || error.message);
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
@@ -105,9 +105,9 @@ const FairytaleBook = () => {
   const illustrate = async (index: number) => {
     setIllustrating(index);
     try {
-      const { data, error } = await supabase.functions.invoke("fairytale-book", {
+      const { data, error } = await supabase.functions.invoke("kids-router", {
         body: {
-          action: "illustrate",
+          action: "fairytale.illustrate",
           bookId,
           pageIndex: index,
           scene: pages[index]?.scene,
