@@ -27,22 +27,38 @@ function mapModel(m: any): string {
   return m;
 }
 
+const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
 async function callAI(LOVABLE_API_KEY: string, body: any) {
   // Image generation requests are routed differently — caller should use callImage().
-  const payload = { ...body, model: mapModel(body?.model) };
-  const r = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify(payload) });
-  if (!r.ok) {
-    const t = await r.text();
-    console.error("OpenAI error:", r.status, t);
-    if (r.status === 429) throw new Error("AI rate limit exceeded, please try again shortly.");
-    if (r.status === 401) throw new Error("OpenAI API key invalid.");
-    if (r.status === 402) throw new Error("OpenAI credits exhausted, please top up.");
-    throw new Error("AI request failed");
+  // Requests are transparently rerouted to the Lovable AI Gateway by _shared/aiRedirect.ts.
+  // 429 (rate limit) and 5xx are transient — retry with backoff, then fall back to a lighter model.
+  const models = [mapModel(body?.model), "gpt-4.1-nano"];
+  let lastStatus = 0;
+  let lastText = "";
+
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const model = models[Math.min(attempt >= 2 ? 1 : 0, models.length - 1)];
+    const r = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ ...body, model }) });
+
+    if (r.ok) return r.json();
+
+    lastStatus = r.status;
+    lastText = await r.text();
+    console.error("AI gateway error:", r.status, model, lastText);
+
+    if (r.status === 401) throw new Error("AI key invalid.");
+    if (r.status === 402) throw new Error("AI credits exhausted, please top up.");
+    if (r.status !== 429 && r.status < 500) throw new Error("AI request failed");
+
+    if (attempt < 3) await sleep(600 * Math.pow(2, attempt)); // 0.6s, 1.2s, 2.4s
   }
-  return r.json();
+
+  if (lastStatus === 429) throw new Error("AI is busy right now — please try again in a few seconds.");
+  throw new Error("AI request failed");
 }
 
 async function callImage(LOVABLE_API_KEY: string, prompt: string): Promise<string | null> {
