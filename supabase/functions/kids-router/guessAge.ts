@@ -142,6 +142,8 @@ export async function handleGuessAge(
       totalPoints: next.points,
       correctGuesses: next.correct_guesses,
       totalGuesses: next.total_guesses,
+      creditsSpent: GUESS_COST,
+      creditsRemaining: spend.remaining,
     });
   }
 
