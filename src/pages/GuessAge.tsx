@@ -154,7 +154,7 @@ const GuessAge = () => {
       const uid = session.user?.id;
       if (!uid) throw new Error("Login required");
 
-      let path = state?.profile ? undefined : `${uid}/selfie.jpg`;
+      let path: string | null = null;
       if (file) {
         path = `${uid}/selfie-${Date.now()}.jpg`;
         const { error: upErr } = await supabase.storage
@@ -163,16 +163,24 @@ const GuessAge = () => {
         if (upErr) throw new Error(upErr.message);
       }
 
-      const payload: Record<string, unknown> = {
-        user_id: uid,
-        real_age: age,
-        display_name: nickname.trim().slice(0, 30) || null,
-        is_active: true,
-      };
-      if (path) payload.photo_path = path;
+      const displayName = nickname.trim().slice(0, 30) || null;
 
-      const { error } = await supabase.from("guess_age_profiles").upsert(payload, { onConflict: "user_id" });
-      if (error) throw new Error(error.message);
+      if (path) {
+        const { error } = await supabase
+          .from("guess_age_profiles")
+          .upsert(
+            { user_id: uid, real_age: age, display_name: displayName, photo_path: path, is_active: true },
+            { onConflict: "user_id" },
+          );
+        if (error) throw new Error(error.message);
+      } else {
+        const { error } = await supabase
+          .from("guess_age_profiles")
+          .update({ real_age: age, display_name: displayName, is_active: true })
+          .eq("user_id", uid);
+        if (error) throw new Error(error.message);
+      }
+
 
       toast({ title: "You're in the game!", description: "Other players can now guess your age." });
       loadState();
