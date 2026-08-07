@@ -161,6 +161,8 @@ const Navbar = () => {
         { path: "/home-designer", label: "Home Designer", icon: Home },
         { path: "/beauty-studio", label: "Beauty Studio", icon: Sparkles },
         { path: "/fashion-studio", label: "Fashion Studio", icon: Palette },
+        { path: "/fairytale-book", label: "Fairytale Book Generator", icon: BookOpen },
+        { path: "/guess-age", label: "Guess My Age", icon: Cake },
       ] },
     {
       category: "Mystical & Spiritual",
