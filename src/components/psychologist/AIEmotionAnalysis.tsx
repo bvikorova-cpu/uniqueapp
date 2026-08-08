@@ -41,9 +41,23 @@ export const AIEmotionAnalysis = ({ onBack }: Props) => {
       const { data, error } = await supabase.functions.invoke("psychology-ai", {
         body: { action: "emotion-analysis", text: text.trim() } });
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
       setResult(data);
+
+      // Deduct unified AI credits (3) and persist the analysis.
+      const { error: spendErr } = await supabase.rpc("deduct_ai_credits" as any, {
+        p_user_id: user.id, p_amount: ANALYSIS_COST, p_reason: "psychology_emotion_analysis", p_source: "psychology" } as any);
+      if (spendErr) throw new Error(spendErr.message);
+      window.dispatchEvent(new Event("ai-credits-updated"));
+
+      await (supabase as any).from("psychology_emotion_analyses").insert({
+        user_id: user.id,
+        input_text: text.trim().slice(0, 2000),
+        analysis_result: data,
+        credits_used: ANALYSIS_COST });
+
       loadHistory();
-      toast.success("Analysis complete! 5 credits used.");
+      toast.success(`Analysis complete! ${ANALYSIS_COST} credits used.`);
     } catch (e: any) {
       if (e.message?.includes("credits") || e.message?.includes("Insufficient")) {
         toast.error("Insufficient credits. Please purchase more.");
@@ -52,6 +66,7 @@ export const AIEmotionAnalysis = ({ onBack }: Props) => {
       }
     } finally { setAnalyzing(false); }
   };
+
 
   const getEmotionColor = (emotion: string) => { const map: Record<string, string> = {
       joy: "bg-yellow-500/20 text-yellow-600", sadness: "bg-blue-500/20 text-blue-600",
