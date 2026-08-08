@@ -276,8 +276,6 @@ IMPORTANT: Generate EXACTLY ${cycleDays} days (a repeatable rotation) in BOTH "w
     await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify({ plan: updatedPlan, details }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
-
-      headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     console.error("Error:", error);
     return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
