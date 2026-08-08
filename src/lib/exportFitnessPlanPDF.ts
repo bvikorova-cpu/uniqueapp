@@ -59,7 +59,7 @@ export function exportFitnessPlanPDF(plan: any, details?: any) {
     y += 6;
   }
 
-  const d = details || plan?.plan_details || {};
+  const d = details || plan?.plan_details || plan?.workout_plan?.details || plan?.meal_plan?.details || {};
   if (d.daily_calories || d.daily_protein_g) {
     heading("Daily Targets");
     body(
