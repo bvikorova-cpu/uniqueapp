@@ -2,31 +2,31 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Award, Lock } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-
-const badges = [
-  { name: "First Breath", icon: "🌬️", description: "Complete your first breathing exercise", unlocked: false },
-  { name: "3-Day Streak", icon: "🔥", description: "Maintain a 3-day wellness streak", unlocked: false },
-  { name: "Zen Master", icon: "🧘", description: "Complete 10 meditation sessions", unlocked: false },
-  { name: "Gratitude Pro", icon: "📝", description: "Write 7 journal entries", unlocked: false },
-  { name: "Sound Healer", icon: "🎵", description: "Listen to 5 hours of nature sounds", unlocked: false },
-  { name: "Full Spectrum", icon: "🌈", description: "Try all wellness tools", unlocked: false },
-];
+import { useWellnessStats } from "@/hooks/useWellnessStats";
 
 export const WellnessAchievements = () => {
+  const { achievements, isLoading } = useWellnessStats();
+  const unlockedCount = achievements.filter((b) => b.unlocked).length;
+
   return (
     <>
-      <FloatingHowItWorks title="WellnessAchievements — How it works" steps={[{title:"Open this tool",desc:"Access WellnessAchievements within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
+      <FloatingHowItWorks title="Achievements — How it works" steps={[{title:"Use the tools",desc:"Each badge tracks a real milestone from your own wellness activity."},{title:"Watch the bar",desc:"Locked badges show live progress toward their goal."},{title:"Unlock automatically",desc:"When you hit the goal the badge unlocks instantly — no claiming needed."},{title:"Collect all six",desc:"Trying different tools unlocks the Full Spectrum badge."}]} />
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
       <Card className="backdrop-blur-xl bg-card/80 border-primary/20 h-full">
         <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Award className="w-4 h-4 text-yellow-500" />
-            Achievements
+          <CardTitle className="flex items-center justify-between text-base">
+            <span className="flex items-center gap-2">
+              <Award className="w-4 h-4 text-yellow-500" />
+              Achievements
+            </span>
+            <span className="text-xs font-normal text-muted-foreground">
+              {isLoading ? "–" : `${unlockedCount}/${achievements.length}`}
+            </span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-3 gap-2">
-            {badges.map((badge, i) => (
+            {achievements.map((badge, i) => (
               <motion.div
                 key={badge.name}
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -48,6 +48,14 @@ export const WellnessAchievements = () => {
                 </div>
                 <p className="text-[10px] font-semibold line-clamp-1">{badge.name}</p>
                 <p className="text-[9px] text-muted-foreground line-clamp-2 mt-0.5">{badge.description}</p>
+                {!badge.unlocked && (
+                  <div className="w-full h-1 rounded-full bg-muted/60 mt-1.5 overflow-hidden">
+                    <div
+                      className="h-full bg-primary/60 rounded-full transition-all"
+                      style={{ width: `${Math.round(badge.progress * 100)}%` }}
+                    />
+                  </div>
+                )}
               </motion.div>
             ))}
           </div>
