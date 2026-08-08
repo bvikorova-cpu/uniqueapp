@@ -230,19 +230,35 @@ IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include res
       throw new Error("Failed to parse AI response");
     }
 
+    // Expand a generated cycle into the full requested day count so nothing is missing.
+    const expandDays = (src: any[], total: number) => {
+      const base = (Array.isArray(src) ? src : []).filter(Boolean);
+      if (!base.length) return [];
+      const out: any[] = [];
+      for (let d = 1; d <= total; d++) {
+        const tpl = base[(d - 1) % base.length];
+        const week = Math.ceil(d / 7);
+        out.push({ ...JSON.parse(JSON.stringify(tpl)), day: d, week });
+      }
+      return out;
+    };
+
+    const workoutDays = expandDays(planData?.workout_plan?.days, days);
+    const mealDays = expandDays(planData?.meal_plan?.days, days);
 
     // Update plan with generated content
     const { data: updatedPlan, error: updateError } = await serviceClient
       .from("fitness_plans")
       .update({
-        workout_plan: planData.workout_plan || {},
-        meal_plan: planData.meal_plan || {},
+        workout_plan: { ...(planData.workout_plan || {}), days: workoutDays, total_days: days },
+        meal_plan: { ...(planData.meal_plan || {}), days: mealDays, total_days: days },
         summary: planData.summary || "",
         status: "completed",
         updated_at: new Date().toISOString() })
       .eq("id", plan_row_id)
       .select()
       .single();
+
 
     if (updateError) throw updateError;
 
