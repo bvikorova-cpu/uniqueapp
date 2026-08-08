@@ -5,6 +5,30 @@ import { deductAICredits } from "../_shared/credits.ts";
 
 const SYSTEM = `Identify food. Return JSON: {food_name, portion_g, calories, macros:{p,c,f}, micronutrients[], health_tags[]}.`;
 
+const MODELS = ["google/gemini-2.5-flash", "google/gemini-2.5-flash-lite"];
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+async function generateWithFallback(userInput: string): Promise<string> {
+  let lastErr: any = null;
+  for (const model of MODELS) {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        return await callOpenAI({ system: SYSTEM, user: userInput, json: true, temperature: 0.75, model });
+      } catch (e: any) {
+        lastErr = e;
+        const status = e?.status ?? 500;
+        if (status === 429 || status >= 500) {
+          await sleep(700 * (attempt + 1));
+          continue;
+        }
+        throw e;
+      }
+    }
+  }
+  throw lastErr ?? new Error("AI request failed");
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
@@ -17,11 +41,24 @@ serve(async (req) => {
     );
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return errorResponse("Not authenticated", 401);
-    const creditDenied = await deductAICredits(user.id, 1, "scan-food");
-    if (creditDenied) return creditDenied;
+
     const body = await req.json();
     const userInput = JSON.stringify(body).slice(0, 4000);
-    const result = await callOpenAI({ system: SYSTEM, user: userInput, json: true, temperature: 0.75 });
+
+    let result: string;
+    try {
+      result = await generateWithFallback(userInput);
+    } catch (e: any) {
+      const status = e?.status ?? 500;
+      if (status === 429) return errorResponse("AI is busy right now. Please try again in a moment.", 429);
+      if (status === 402) return errorResponse("AI credits exhausted. Please try again later.", 402);
+      return errorResponse(e?.message || "AI request failed", 500);
+    }
+
+    // Charge only after a successful AI response.
+    const creditDenied = await deductAICredits(user.id, 1, "scan-food");
+    if (creditDenied) return creditDenied;
+
     let parsed = null;
     try { parsed = JSON.parse(result); } catch {}
     return jsonResponse({ success: true, result: parsed ?? result, data: parsed, text: result, reply: result });
