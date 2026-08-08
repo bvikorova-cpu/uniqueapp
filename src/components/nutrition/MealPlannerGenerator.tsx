@@ -198,13 +198,35 @@ export default function MealPlannerGenerator() {
                   {generatedPlan.plan_data.map((day: any, idx: number) => (
                     <div key={idx} className="p-3 bg-muted/50 rounded-xl border border-border/40">
                       <h4 className="font-semibold mb-2 text-sm">Day {day.day}</h4>
-                      <div className="space-y-1 text-sm">
-                        {day.meals.breakfast && <p>🌅 <strong>Breakfast:</strong> {day.meals.breakfast.name} ({day.meals.breakfast.calories} cal)</p>}
-                        {day.meals.lunch && <p>☀️ <strong>Lunch:</strong> {day.meals.lunch.name} ({day.meals.lunch.calories} cal)</p>}
-                        {day.meals.dinner && <p>🌙 <strong>Dinner:</strong> {day.meals.dinner.name} ({day.meals.dinner.calories} cal)</p>}
+                      <div className="space-y-2 text-sm">
+                        {(day.meals ?? []).map((m: any, mi: number) => (
+                          <div key={mi} className="break-words">
+                            <p>
+                              <strong className="capitalize">{String(m.type || "Meal").replace(/_/g, " ")}:</strong>{" "}
+                              {m.name}
+                              {m.calories ? ` (${m.calories} cal)` : ""}
+                            </p>
+                            {m.macros && (
+                              <p className="text-xs text-muted-foreground">
+                                P {m.macros.p ?? "-"}g · C {m.macros.c ?? "-"}g · F {m.macros.f ?? "-"}g
+                                {m.prep_minutes ? ` · ${m.prep_minutes} min` : ""}
+                              </p>
+                            )}
+                            {Array.isArray(m.ingredients) && m.ingredients.length > 0 && (
+                              <p className="text-xs text-muted-foreground">{m.ingredients.join(", ")}</p>
+                            )}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   ))}
+                </div>
+              )}
+
+              {Array.isArray(generatedPlan.shopping_list) && generatedPlan.shopping_list.length > 0 && (
+                <div className="p-3 rounded-xl border border-border/40 bg-muted/30">
+                  <h4 className="font-semibold text-sm mb-1">Shopping list</h4>
+                  <p className="text-xs text-muted-foreground break-words">{generatedPlan.shopping_list.join(", ")}</p>
                 </div>
               )}
 
