@@ -12,6 +12,73 @@ async function callAI(apiKey: string, messages: any[]) {
   return data.choices?.[0]?.message?.content || "";
 }
 
+const CHAT_SYSTEM_PROMPT = `You are a warm, empathetic AI psychologist offering supportive, non-judgmental conversation.
+- Listen actively, validate feelings, and ask gentle open questions.
+- Offer practical coping tools (breathing, grounding, CBT reframing) when useful.
+- Never diagnose or prescribe medication.
+- If the user mentions self-harm, suicide or immediate danger, respond with care and urge them to contact local emergency services or a crisis hotline.
+Keep answers concise, warm and human. Use light markdown.`;
+
+const CHAT_MESSAGE_COST = 1;
+
+async function handleChat(apiKey: string, authHeader: string, params: any) {
+  const json = (body: unknown, status = 200) =>
+    new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+  const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2.57.2");
+  const url = Deno.env.get("SUPABASE_URL") ?? "";
+  const anonClient = createClient(url, Deno.env.get("SUPABASE_ANON_KEY") ?? "", { auth: { persistSession: false } });
+  const token = authHeader.replace("Bearer ", "");
+  const { data: userData, error: userErr } = await anonClient.auth.getUser(token);
+  if (userErr || !userData?.user) return json({ error: "Unauthorized" }, 401);
+  const userId = userData.user.id;
+
+  const messages = Array.isArray(params.messages) ? params.messages : [];
+  if (messages.length === 0) return json({ error: "messages required" }, 400);
+
+  const admin = createClient(url, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "", { auth: { persistSession: false } });
+  const { data: creditsRow } = await admin.from("ai_credits").select("credits_remaining").eq("user_id", userId).maybeSingle();
+  const remaining = creditsRow?.credits_remaining ?? 0;
+  if (remaining < CHAT_MESSAGE_COST) {
+    return json({ error: "Insufficient credits", required: CHAT_MESSAGE_COST, remaining, requiresCredits: true }, 402);
+  }
+
+  const chatMessages = [
+    { role: "system", content: CHAT_SYSTEM_PROMPT },
+    ...messages
+      .filter((m: any) => m?.role === "user" || m?.role === "assistant")
+      .slice(-20)
+      .map((m: any) => ({ role: m.role, content: String(m.content ?? "") })),
+  ];
+
+  let upstream: Response | null = null;
+  let lastStatus = 0;
+  for (const model of ["google/gemini-3.6-flash", "google/gemini-3.1-flash-lite"]) {
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Lovable-API-Key": apiKey },
+      body: JSON.stringify({ model, messages: chatMessages, stream: true }),
+    });
+    if (res.ok && res.body) { upstream = res; break; }
+    lastStatus = res.status;
+    console.error("psychology chat gateway error", model, res.status, await res.text().catch(() => ""));
+    if (res.status === 402) return json({ error: "AI credits exhausted on the platform" }, 402);
+  }
+  if (!upstream) {
+    return json({ error: lastStatus === 429 ? "Rate limit exceeded. Please try again in a moment." : "AI service temporarily unavailable" }, lastStatus === 429 ? 429 : 500);
+  }
+
+  const { error: deductErr } = await admin.rpc("deduct_ai_credits_atomic", { _user_id: userId, _amount: CHAT_MESSAGE_COST });
+  if (deductErr) {
+    const msg = deductErr.message || "";
+    return json({ error: msg }, msg.includes("INSUFFICIENT_CREDITS") ? 402 : 500);
+  }
+
+  return new Response(upstream.body, {
+    headers: { ...corsHeaders, "Content-Type": "text/event-stream", "Cache-Control": "no-cache", "Connection": "keep-alive", "X-Credits-Used": String(CHAT_MESSAGE_COST) },
+  });
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
@@ -22,6 +89,11 @@ Deno.serve(async (req) => {
     const { action, ...params } = await req.json();
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!apiKey) throw new Error("API key not configured");
+
+    // Credit-based streaming psychologist chat (1 credit per message)
+    if (action === "chat") {
+      return await handleChat(apiKey, authHeader, params);
+    }
     let result: any;
     switch (action) {
       case "dream-analysis":
