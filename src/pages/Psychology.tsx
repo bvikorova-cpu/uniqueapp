@@ -119,7 +119,7 @@ const Psychology = () => {
       console.error("Error:", error);
       toast.error("Error communicating with psychologist");
       setMessages(prev => prev.slice(0, -1));
-    } finally { setIsLoading(false); refreshSubscription(); }
+    } finally { setIsLoading(false); refreshCredits(); window.dispatchEvent(new Event('ai-credits-updated')); }
   };
 
   const handleSend = async () => {
