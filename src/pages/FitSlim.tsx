@@ -102,14 +102,8 @@ const AI_TOOLS = [
   { id: "meal-analyzer" as ActiveView, icon: Utensils, label: "AI Meal Analyzer", desc: "Nutritional breakdown of any meal", color: "from-orange-500 to-amber-600", cost: "3 Credits" },
   { id: "body-scanner" as ActiveView, icon: ScanLine, label: "AI Body Scanner", desc: "Full body composition analysis", color: "from-violet-500 to-purple-600", cost: "3 Credits" },
   { id: "motivation" as ActiveView, icon: Flame, label: "AI Motivation Coach", desc: "Personalized motivation & mindset", color: "from-red-500 to-orange-600", cost: "3 Credits" },
-  { id: "progress" as ActiveView, icon: TrendingUp, label: "AI Progress Tracker", desc: "Analyze trends & predict timeline", color: "from-cyan-500 to-blue-600", cost: "3 Credits" },
   { id: "recovery" as ActiveView, icon: HeartPulse, label: "AI Recovery Advisor", desc: "Post-workout recovery protocols", color: "from-pink-500 to-rose-600", cost: "3 Credits" },
-  { id: "posture" as ActiveView, icon: ScanEye, label: "AI Posture Analyzer", desc: "Analyze form & corrective exercises", color: "from-indigo-500 to-purple-600", cost: "3 Credits", isNew: true },
-  { id: "streaks" as ActiveView, icon: Trophy, label: "Workout Streaks & XP", desc: "Gamified daily challenges & leveling", color: "from-yellow-500 to-orange-600", cost: "Free", isNew: true },
-  { id: "sleep" as ActiveView, icon: Moon, label: "AI Sleep Optimizer", desc: "Optimize sleep for peak recovery", color: "from-indigo-500 to-blue-600", cost: "3 Credits", isNew: true },
-  { id: "challenges" as ActiveView, icon: Swords, label: "Social Challenges", desc: "Competitive fitness challenges & XP", color: "from-pink-500 to-rose-600", cost: "Free", isNew: true },
-  { id: "supplements" as ActiveView, icon: Pill, label: "AI Supplement Stack", desc: "Personalized supplement recommendations", color: "from-green-500 to-teal-600", cost: "3 Credits", isNew: true },
-  { id: "gallery" as ActiveView, icon: ImagePlus, label: "Before & After Gallery", desc: "Community transformations & stories", color: "from-amber-500 to-orange-600", cost: "Free", isNew: true },
+
 ];
 
 const FitSlim = () => {
