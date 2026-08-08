@@ -249,12 +249,20 @@ IMPORTANT: Generate EXACTLY ${cycleDays} days (a repeatable rotation) in BOTH "w
     const workoutDays = expandDays(planData?.workout_plan?.days, days);
     const mealDays = expandDays(planData?.meal_plan?.days, days);
 
+    const details = {
+      daily_calories: planData.daily_calories,
+      daily_protein_g: planData.daily_protein_g,
+      daily_carbs_g: planData.daily_carbs_g,
+      daily_fats_g: planData.daily_fats_g,
+      tips: planData.tips };
+
     // Update plan with generated content
     const { data: updatedPlan, error: updateError } = await serviceClient
       .from("fitness_plans")
       .update({
-        workout_plan: { ...(planData.workout_plan || {}), days: workoutDays, total_days: days },
-        meal_plan: { ...(planData.meal_plan || {}), days: mealDays, total_days: days },
+        workout_plan: { ...(planData.workout_plan || {}), days: workoutDays, total_days: days, details },
+        meal_plan: { ...(planData.meal_plan || {}), days: mealDays, total_days: days, details },
+
         summary: planData.summary || "",
         status: "completed",
         updated_at: new Date().toISOString() })
