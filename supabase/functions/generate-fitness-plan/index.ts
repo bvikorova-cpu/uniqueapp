@@ -156,7 +156,7 @@ Generate a JSON response with this EXACT structure:
   "tips": ["Drink 2-3L water daily", "Sleep 7-8 hours", "Track progress weekly"]
 }
 
-IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include rest days (1-2 per week). For plans longer than 30 days you may repeat a clearly labelled 4-week rotation to cover every day, but every day entry must be present. Keep exercise notes and ingredient lists short. Make meals realistic and diverse. All measurements in grams/ml.`;
+IMPORTANT: Generate EXACTLY ${cycleDays} days (a repeatable rotation) in BOTH "workout_plan.days" AND "meal_plan.days" — both arrays must have ${cycleDays} entries numbered 1..${cycleDays}. This rotation will be repeated to cover the full ${days}-day program. Include 1-2 rest days per week (rest day = title "Active Recovery / Rest", empty or light exercises). Keep exercise notes and ingredient lists short. Make meals realistic and diverse. All measurements in grams/ml.`;
 
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
