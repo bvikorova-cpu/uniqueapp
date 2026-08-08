@@ -165,19 +165,33 @@ const FitSlim = () => {
     } finally { setIsGenerating(false); }
   };
 
-  const handleCheckout = async () => {
+  const handleGenerateWithCredits = async () => {
     if (!profileData.age || !profileData.gender || !profileData.height_cm || !profileData.weight_kg || !profileData.activity_level || !profileData.fitness_goal) {
       toast({ title: "Fill all required fields", variant: "destructive" }); return;
     }
+    const cost = FITSLIM_PLANS[selectedPlanType].credits;
+    if ((credits?.credits_remaining ?? 0) < cost) {
+      toast({ title: `Insufficient credits (${cost} required)`, description: "Top up your AI credits to generate this plan.", variant: "destructive" });
+      return;
+    }
     setIsCheckingOut(true);
+    setIsGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("create-fitslim-checkout", {
-        body: { planType: selectedPlanType, profileData: { ...profileData, age: parseInt(profileData.age), height_cm: parseInt(profileData.height_cm), weight_kg: parseFloat(profileData.weight_kg), target_weight_kg: profileData.target_weight_kg ? parseFloat(profileData.target_weight_kg) : null } } });
+      const { data, error } = await supabase.functions.invoke("generate-fitness-plan", {
+        body: {
+          plan_type: selectedPlanType,
+          profileData: { ...profileData, age: parseInt(profileData.age), height_cm: parseInt(profileData.height_cm), weight_kg: parseFloat(profileData.weight_kg), target_weight_kg: profileData.target_weight_kg ? parseFloat(profileData.target_weight_kg) : null } } });
       if (error) throw error;
-      if (data?.url) window.location.href = data.url;
+      if (data?.error) throw new Error(data.error);
+      toast({ title: "Plan generated! 🎉", description: `${cost} credits used.` });
+      setViewingPlan(data.plan);
+      setViewingPlanDetails(data.details);
+      setShowPlanForm(false);
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      loadMyPlans();
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
-    } finally { setIsCheckingOut(false); }
+    } finally { setIsCheckingOut(false); setIsGenerating(false); }
   };
 
   const openExistingPlan = async (plan: any) => {
@@ -186,13 +200,11 @@ const FitSlim = () => {
       setViewingPlanDetails(null);
     } else if (plan.status === "generating") {
       toast({ title: "Plan is being generated...", description: "Please check back in a moment." });
-    } else if (plan.payment_status === "paid" && plan.status !== "completed") {
-      // Paid but not yet generated – try to regenerate
-      verifyAndGenerate(plan.id);
     } else {
-      toast({ title: "Payment incomplete", description: "Finish checkout to receive this plan.", variant: "destructive" });
+      toast({ title: "Plan not ready", description: "Create a new plan with credits to continue.", variant: "destructive" });
     }
   };
+
 
   // ===== DATA =====
   const weightLossVideos = [
