@@ -574,8 +574,8 @@ const FitSlim = () => {
                       ))}
                     </div>
                   </div>
-                  <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-6 text-lg" onClick={handleCheckout} disabled={isCheckingOut}>
-                    {isCheckingOut ? <><Loader2 className="h-5 w-5 mr-2 animate-spin" /> Processing...</> : <><Crown className="h-5 w-5 mr-2" /> Get My {FITSLIM_PLANS[selectedPlanType].label} — {FITSLIM_PLANS[selectedPlanType].price}</>}
+                  <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-6 text-lg" onClick={handleGenerateWithCredits} disabled={isCheckingOut}>
+                    {isCheckingOut ? <><Loader2 className="h-5 w-5 mr-2 animate-spin" /> Generating...</> : <><Crown className="h-5 w-5 mr-2" /> Get My {FITSLIM_PLANS[selectedPlanType].label} — {FITSLIM_PLANS[selectedPlanType].credits} Credits</>}
                   </Button>
                 </CardContent>
               </Card>
