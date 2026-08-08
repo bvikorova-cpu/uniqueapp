@@ -697,7 +697,7 @@ Only call the navigate tool when the user clearly asks to open/go to/show one of
         userPrompt = customPrompt || `Generate the ${type} as requested.`;
       }
     } else if (type === "first_aid_quiz") {
-      systemPrompt = 'You are a certified first aid instructor. Reply with ONLY a raw JSON array, no markdown fences, no prose: [{"question":"...","options":["A","B","C","D"],"correct":0,"explanation":"..."}]. Exactly 5 questions, 4 options each, "correct" is the 0-based index of the right option.';
+      systemPrompt = 'You are a certified first aid instructor. Reply with ONLY a raw JSON array, no markdown fences, no prose: [{"question":"...","options":["A","B","C","D"],"correct":0,"explanation":"..."}]. Produce exactly the number of questions the user asks for (default 5), 4 options each, "correct" is the 0-based index of the right option. Keep every question, option and explanation short (explanation max 20 words) so the JSON is always complete.';
       userPrompt = customPrompt || "Create 5 multiple-choice first aid quiz questions about general first aid.";
     } else if (type === "travel_planner") {
       systemPrompt = "You are an expert travel advisor and trip planner. Provide detailed, practical, and well-organized travel advice. Use clear headings, bullet points, and specific recommendations. Be thorough but concise.";
@@ -739,6 +739,7 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
     const maxTokens = (() => {
       const longTypes = new Set(["travel_planner", "cultural_guide", "weekly_meal_plan", "fitness_plan", "nutrition_plan", "course_content", "educational", "monetization_ideas", "mystery_box_ai", "first_aid_quiz"]);
       const isSport = type && /(_analysis|_tactics|_match|_training|_scout|_chemistry|_prediction)$/.test(type);
+      if (type === "first_aid_quiz") return 4000;
       if (longTypes.has(type)) return 1500;
       if (isSport) return 1200;
       return 600;
