@@ -328,17 +328,17 @@ const FitSlim = () => {
             <DialogDescription>{plan.summary || "Your AI-generated personalized fitness and nutrition plan"}</DialogDescription>
           </DialogHeader>
           <div className="flex justify-end">
-            <Button size="sm" variant="outline" className="gap-2 border-green-500/30 text-green-500 hover:bg-green-500/10" onClick={() => exportFitnessPlanPDF(plan, viewingPlanDetails)}>
+            <Button size="sm" variant="outline" className="gap-2 border-green-500/30 text-green-500 hover:bg-green-500/10" onClick={() => exportFitnessPlanPDF(plan, details)}>
               <Download className="h-4 w-4" /> Download PDF
             </Button>
           </div>
-          {viewingPlanDetails && (
+          {details && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
               {[
-                { v: viewingPlanDetails.daily_calories, l: "kcal/day", c: "text-green-400 bg-green-500/10 border-green-500/30" },
-                { v: `${viewingPlanDetails.daily_protein_g}g`, l: "Protein", c: "text-blue-400 bg-blue-500/10 border-blue-500/30" },
-                { v: `${viewingPlanDetails.daily_carbs_g}g`, l: "Carbs", c: "text-yellow-400 bg-yellow-500/10 border-yellow-500/30" },
-                { v: `${viewingPlanDetails.daily_fats_g}g`, l: "Fats", c: "text-purple-400 bg-purple-500/10 border-purple-500/30" },
+                { v: details.daily_calories, l: "kcal/day", c: "text-green-400 bg-green-500/10 border-green-500/30" },
+                { v: `${details.daily_protein_g}g`, l: "Protein", c: "text-blue-400 bg-blue-500/10 border-blue-500/30" },
+                { v: `${details.daily_carbs_g}g`, l: "Carbs", c: "text-yellow-400 bg-yellow-500/10 border-yellow-500/30" },
+                { v: `${details.daily_fats_g}g`, l: "Fats", c: "text-purple-400 bg-purple-500/10 border-purple-500/30" },
               ].map((s, i) => (
                 <Card key={i} className={s.c}><CardContent className="p-3 text-center"><div className="text-lg font-bold">{s.v}</div><div className="text-xs text-muted-foreground">{s.l}</div></CardContent></Card>
               ))}
@@ -346,11 +346,12 @@ const FitSlim = () => {
           )}
           <Tabs defaultValue="workouts" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="workouts"><Dumbbell className="h-4 w-4 mr-2" /> Workouts</TabsTrigger>
-              <TabsTrigger value="meals"><Utensils className="h-4 w-4 mr-2" /> Meal Plan</TabsTrigger>
+              <TabsTrigger value="workouts"><Dumbbell className="h-4 w-4 mr-2" /> Workouts ({workoutDays.length})</TabsTrigger>
+              <TabsTrigger value="meals"><Utensils className="h-4 w-4 mr-2" /> Meal Plan ({mealDays.length})</TabsTrigger>
             </TabsList>
             <TabsContent value="workouts" className="space-y-4 mt-4">
-              {workout?.days?.slice(0, 7).map((day: any, i: number) => (
+              {workoutDays.map((day: any, i: number) => (
+
                 <Card key={i} className="bg-card/50 border-border/50">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg flex items-center justify-between">
