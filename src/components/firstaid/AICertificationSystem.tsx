@@ -61,12 +61,19 @@ Where "correct" is the 0-based index of the right answer.` } });
       if (error) throw error;
       const text = data?.message || data?.analysis || data?.content || "";
       const cleaned = String(text).replace(/```json/gi, "").replace(/```/g, "").trim();
+      // Tolerant parse: full array first, then salvage complete objects from a truncated array.
+      let parsed: any = null;
       const jsonMatch = cleaned.match(/\[[\s\S]*\]/);
-      const parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
+      if (jsonMatch) { try { parsed = JSON.parse(jsonMatch[0]); } catch { parsed = null; } }
+      if (!Array.isArray(parsed)) {
+        const objects = cleaned.match(/\{[^{}]*"question"[\s\S]*?\}(?=\s*[,\]]|\s*$)/g) || [];
+        parsed = objects.map((o) => { try { return JSON.parse(o); } catch { return null; } }).filter(Boolean);
+      }
       const valid = Array.isArray(parsed)
         ? parsed.filter((q: any) => q?.question && Array.isArray(q?.options) && q.options.length >= 2 && typeof q?.correct === "number")
         : [];
       if (valid.length === 0) throw new Error("empty");
+
       setQuestions(valid.slice(0, track?.questions || 10));
     } catch (e) {
       console.error(e);
