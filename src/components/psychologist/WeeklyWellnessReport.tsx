@@ -55,7 +55,19 @@ export const WeeklyWellnessReport = ({ onBack }: Props) => {
   const generateReport = async () => {
     setGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("psychology-ai");
+      const { data, error } = await supabase.functions.invoke("psychology-ai", {
+        body: {
+          action: "weekly-report",
+          moods: new Array(weeklyData?.moodEntries || 0).fill(0),
+          moodSummary: weeklyData?.moodEntries
+            ? `${weeklyData.moodEntries} entries, average mood ${weeklyData.avgMood}/10. Top tags: ${(weeklyData.topTags || []).join(", ") || "none"}.`
+            : "No mood entries this week.",
+          medSummary: weeklyData?.meditations
+            ? `${weeklyData.meditations} sessions, ${weeklyData.totalMedMin} minutes total.`
+            : "No meditation sessions this week.",
+          dreamSummary: "No dream logs provided.",
+        },
+      });
       if (error) throw error;
       toast.success("Weekly report generated! 10 credits used.");
       setSelectedReport(data);
