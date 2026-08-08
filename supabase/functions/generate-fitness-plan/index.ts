@@ -94,6 +94,9 @@ serve(async (req) => {
     await serviceClient.from("fitness_plans").update({ status: "generating" }).eq("id", plan_row_id);
 
     const days = PLAN_DAYS[resolvedType];
+    // Ask the model for a compact repeatable rotation, then expand it to the full day count
+    const cycleDays = Math.min(days, 14);
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
