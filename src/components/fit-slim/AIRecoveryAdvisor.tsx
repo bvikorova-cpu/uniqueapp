@@ -105,7 +105,7 @@ Be specific with numbers, times and doses. 500-800 words.` } });
           </Button>
           {result && (
             <Card className="bg-pink-500/5 border-pink-500/20 mt-4">
-              <CardContent className="p-4 whitespace-pre-line text-sm">{result}</CardContent>
+              <CardContent className="p-4"><AiMarkdown content={result} /></CardContent>
             </Card>
           )}
         </CardContent>
