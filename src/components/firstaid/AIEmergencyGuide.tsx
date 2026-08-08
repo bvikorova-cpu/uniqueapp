@@ -27,7 +27,7 @@ export function AIEmergencyGuide({ onBack }: Props) {
     try {
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          type: "travel_planner",
+          type: "travel_planner", module: "first_aid",
           prompt: `You are an emergency first aid expert. Generate a STEP-BY-STEP emergency response guide for: "${scenario}". Include: 1) Immediate actions (first 60 seconds), 2) Detailed procedure, 3) What NOT to do, 4) When professional help is critical, 5) Recovery position if applicable. Be concise and actionable.`
         }
       });

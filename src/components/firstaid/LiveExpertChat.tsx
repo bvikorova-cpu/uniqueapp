@@ -7,7 +7,6 @@ import { ArrowLeft, MessageSquare, Send, Loader2, Shield } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useAICredits } from "@/hooks/useAICredits";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
@@ -31,15 +30,12 @@ export const LiveExpertChat = ({ onBack }: Props) => {
   const [selectedTopic, setSelectedTopic] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-  const { spendCredit } = useAICredits();
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const startChat = async (topic: string) => {
-    const ok = await spendCredit("custom_generation", "Live Expert Chat");
-    if (!ok) { toast({ title: "Insufficient Credits", description: "You need 3 credits per session.", variant: "destructive" }); return; }
     
     setSelectedTopic(topic);
     setStarted(true);
@@ -61,7 +57,7 @@ export const LiveExpertChat = ({ onBack }: Props) => {
       
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          type: "travel_planner",
+          type: "travel_planner", module: "first_aid",
           recipientName: selectedTopic,
           senderName: "expert_chat",
           message: `You are Dr. AI, a certified emergency medicine specialist and first aid expert. You provide detailed, accurate, and compassionate medical guidance. Topic: ${selectedTopic}.

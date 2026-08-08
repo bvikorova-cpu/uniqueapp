@@ -6,7 +6,6 @@ import { ArrowLeft, MapPin, Loader2, Navigation, Phone, Clock, Search } from "lu
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useAICredits } from "@/hooks/useAICredits";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
@@ -27,12 +26,9 @@ export const FirstAidMap = ({ onBack }: Props) => {
   const [loading, setLoading] = useState(false);
   const [searchType, setSearchType] = useState<"all" | "aed" | "pharmacy" | "hospital">("all");
   const { toast } = useToast();
-  const { spendCredit } = useAICredits();
 
   const searchNearby = async () => {
     if (!location.trim()) { toast({ title: "Enter a location", variant: "destructive" }); return; }
-    const ok = await spendCredit("custom_generation", "First Aid Map Search");
-    if (!ok) { toast({ title: "Insufficient Credits", variant: "destructive" }); return; }
 
     setLoading(true);
     try {
@@ -42,7 +38,7 @@ export const FirstAidMap = ({ onBack }: Props) => {
 
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          type: "first_aid_map",
+          type: "first_aid_map", module: "first_aid",
           customPrompt: `List 8 ${filterText} near "${location}". Return ONLY the JSON array.` } });
       if (error) throw error;
       const text = data?.message || data?.analysis || "";

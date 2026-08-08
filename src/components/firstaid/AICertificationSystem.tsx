@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Award, Loader2, CheckCircle, XCircle, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useAICredits } from "@/hooks/useAICredits";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
@@ -35,11 +34,8 @@ export const AICertificationSystem = ({ onBack }: Props) => {
   const [loading, setLoading] = useState(false);
   const [certified, setCertified] = useState(false);
   const { toast } = useToast();
-  const { spendCredit } = useAICredits();
 
   const startExam = async (trackId: string) => {
-    const ok = await spendCredit("custom_generation", "First Aid Certification Exam");
-    if (!ok) { toast({ title: "Insufficient Credits", description: "You need 3 credits.", variant: "destructive" }); return; }
 
     setSelectedTrack(trackId);
     setCurrentQ(0);
@@ -52,7 +48,7 @@ export const AICertificationSystem = ({ onBack }: Props) => {
       const track = CERT_TRACKS.find(t => t.id === trackId);
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          type: "first_aid_quiz",
+          type: "first_aid_quiz", module: "first_aid",
           recipientName: track?.label || trackId,
           senderName: "exam",
           message: `Generate a ${track?.questions || 10}-question multiple choice certification exam for "${track?.label}". Topic: ${track?.desc}. Test practical first aid knowledge with real medical scenarios. Return ONLY a raw JSON array:

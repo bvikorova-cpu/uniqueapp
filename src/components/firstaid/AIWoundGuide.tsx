@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Eye, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useAICredits } from "@/hooks/useAICredits";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
@@ -31,11 +30,8 @@ export const AIWoundGuide = ({ onBack }: Props) => {
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const { spendCredit } = useAICredits();
 
   const analyzeWound = async (woundId: string) => {
-    const ok = await spendCredit("custom_generation", "Wound Guide Analysis");
-    if (!ok) { toast({ title: "Insufficient Credits", variant: "destructive" }); return; }
 
     setSelectedWound(woundId);
     setLoading(true);
@@ -44,7 +40,7 @@ export const AIWoundGuide = ({ onBack }: Props) => {
       const wound = WOUND_TYPES.find(w => w.id === woundId);
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          type: "travel_planner",
+          type: "travel_planner", module: "first_aid",
           recipientName: wound?.label || woundId,
           senderName: "wound_guide",
           message: `You are an expert first aid wound care specialist. Provide a comprehensive visual identification and treatment guide for: "${wound?.label} - ${wound?.desc}"

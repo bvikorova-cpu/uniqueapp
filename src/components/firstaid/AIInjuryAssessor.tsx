@@ -24,7 +24,7 @@ export function AIInjuryAssessor({ onBack }: Props) {
     try {
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          type: "travel_planner",
+          type: "travel_planner", module: "first_aid",
           prompt: `You are a first aid injury assessment expert. Assess this injury: "${description}" on body part: ${bodyPart}. Provide: 1) Severity assessment (Minor/Moderate/Severe), 2) Immediate first aid steps, 3) Bandaging/immobilization technique, 4) Pain management, 5) Signs requiring emergency care, 6) Expected healing timeline. DISCLAIMER: This is not medical advice.`
         }
       });
