@@ -734,16 +734,11 @@ const FitSlim = () => {
               {[
                 { icon: "🏋️", tip: "Use AI Workout Coach to get plans tailored to your exact level" },
                 { icon: "🍽️", tip: "Scan every meal with AI Meal Analyzer to stay on track" },
-                { icon: "📊", tip: "Track progress weekly with AI Progress Tracker" },
                 { icon: "💪", tip: "Combine AI plans with video workouts for best results" },
                 { icon: "🧘", tip: "Don't skip recovery — use AI Recovery Advisor after tough sessions" },
                 { icon: "🔥", tip: "Stay motivated with daily AI Motivation Coach sessions" },
-                { icon: "🧍", tip: "Fix your posture with AI Posture Analyzer for injury prevention" },
-                { icon: "😴", tip: "Optimize sleep with AI Sleep Optimizer for faster recovery" },
-                { icon: "💊", tip: "Get personalized supplement recommendations with AI Stack Builder" },
-                { icon: "🏆", tip: "Complete daily challenges in Streaks & XP to level up" },
-                { icon: "⚔️", tip: "Challenge friends in Social Challenges for accountability" },
-                { icon: "📸", tip: "Share your transformation in Before & After Gallery" },
+                { icon: "📈", tip: "Re-scan your body monthly to see real composition changes" },
+
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-2 p-2 rounded-lg bg-card/50">
                   <span className="text-lg">{item.icon}</span>
