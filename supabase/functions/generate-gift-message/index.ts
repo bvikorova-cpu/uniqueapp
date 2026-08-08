@@ -245,7 +245,7 @@ serve(async (req) => {
     const type = __type;
     const customPrompt = reqBody.customPrompt || reqBody.prompt || reqBody.input || reqBody.message || reqBody.query;
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+
 
     // Auth (credit check already performed above via requireAiCredits)
     const supabase = createClient(
