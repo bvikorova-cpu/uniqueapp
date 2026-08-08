@@ -160,8 +160,12 @@ ${params.moodSummary || "No mood entries this week."}
         break;
       default: return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-    try { result = JSON.parse(result); } catch {}
-    return new Response(JSON.stringify(typeof result === "string" ? { result } : result), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    if (typeof result === "string") {
+      const cleaned = result.trim().replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
+      try { result = JSON.parse(cleaned); } catch { /* keep as text */ }
+    }
+    return new Response(JSON.stringify(typeof result === "string" ? { result, analysis: result } : result), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
   } catch (e: any) {
     return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
