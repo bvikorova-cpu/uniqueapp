@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useWellnessProgress } from "@/hooks/useWellnessProgress";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -46,6 +48,8 @@ export function BreathingExercises() {
   const [timeLeft, setTimeLeft] = useState(0);
   const [cycleCount, setCycleCount] = useState(0);
   const [scale, setScale] = useState(1);
+  const { logSession, updateStats } = useWellnessProgress();
+  const loggedRef = useRef(false);
 
   const exercise = EXERCISES[selectedExercise];
 
@@ -55,11 +59,29 @@ export function BreathingExercises() {
       return () => clearTimeout(timer);
     } else if (isActive && timeLeft === 0) {
       const nextPhase = (currentPhase + 1) % exercise.phases.length;
-      if (nextPhase === 0) setCycleCount(c => c + 1);
+      if (nextPhase === 0) {
+        setCycleCount(c => {
+          const next = c + 1;
+          // Log the completed breathing session once per run (after first full cycle)
+          if (!loggedRef.current) {
+            loggedRef.current = true;
+            const cycleSeconds = exercise.phases.reduce((s, p) => s + p.duration, 0);
+            logSession({
+              sessionType: "breathing",
+              durationSeconds: cycleSeconds * next,
+              completed: true,
+              notes: selectedExercise,
+            }).catch(console.error);
+            updateStats({ activityType: "breathing", durationSeconds: cycleSeconds }).catch(console.error);
+          }
+          return next;
+        });
+      }
       setCurrentPhase(nextPhase);
       setTimeLeft(exercise.phases[nextPhase].duration);
     }
-  }, [isActive, timeLeft, currentPhase, exercise.phases]);
+  }, [isActive, timeLeft, currentPhase, exercise.phases, logSession, updateStats, selectedExercise]);
+
 
   useEffect(() => {
     const phase = exercise.phases[currentPhase];
@@ -73,7 +95,9 @@ export function BreathingExercises() {
     setTimeLeft(exercise.phases[0].duration);
     setCurrentPhase(0);
     setCycleCount(0);
+    loggedRef.current = false;
   };
+
 
   const handlePause = () => setIsActive(false);
   const handleReset = () => {

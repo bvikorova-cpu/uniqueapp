@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Cloud, Waves, Trees, Play, Pause, Volume2, VolumeX, Zap, Flame, Droplets, Clock, X, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { useWellnessProgress } from "@/hooks/useWellnessProgress";
+
 
 const NATURE_SOUNDS = [
   { id: "rain", name: "Rain", icon: Cloud, description: "Gentle rain for calming the mind", src: "/sounds/rain.mp3", color: "text-blue-400", bg: "from-blue-500/10 to-cyan-500/5" },
@@ -32,10 +34,29 @@ export function NatureSounds() {
   const [remainingSeconds, setRemainingSeconds] = useState<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const playStartRef = useRef<number | null>(null);
+  const { updateStats } = useWellnessProgress();
+
+  // Flush actual listening time to wellness_usage_stats (real data for progress/achievements)
+  const flushListeningTime = useRef((_?: unknown) => {});
+  flushListeningTime.current = () => {
+    if (playStartRef.current === null) return;
+    const seconds = Math.round((Date.now() - playStartRef.current) / 1000);
+    playStartRef.current = null;
+    if (seconds >= 10) {
+      updateStats({ activityType: "nature_sounds", durationSeconds: seconds }).catch(console.error);
+    }
+  };
+
+  useEffect(() => {
+    if (isPlaying) playStartRef.current = playStartRef.current ?? Date.now();
+    else flushListeningTime.current();
+  }, [isPlaying]);
 
   useEffect(() => {
     if (audioRef.current) audioRef.current.volume = isMuted ? 0 : volume / 100;
   }, [volume, isMuted]);
+
 
   useEffect(() => {
     if (remainingSeconds !== null && remainingSeconds > 0 && isPlaying) {
@@ -83,8 +104,9 @@ export function NatureSounds() {
   };
 
   useEffect(() => {
-    return () => { audioRef.current?.pause(); audioRef.current = null; if (timerRef.current) clearInterval(timerRef.current); };
+    return () => { flushListeningTime.current(); audioRef.current?.pause(); audioRef.current = null; if (timerRef.current) clearInterval(timerRef.current); };
   }, []);
+
 
   const activeSound = NATURE_SOUNDS.find(s => s.id === selectedSound);
 
