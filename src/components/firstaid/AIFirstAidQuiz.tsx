@@ -55,21 +55,23 @@ export function AIFirstAidQuiz({ onBack }: Props) {
       for (let attempt = 0; attempt < 2 && !parsed; attempt++) {
         const { data, error } = await supabase.functions.invoke("generate-gift-message", {
           body: {
-            type: "travel_planner",
-            prompt: `Generate exactly 5 multiple-choice first aid quiz questions about "${topic}". Respond with ONLY a raw JSON array, no prose, no markdown fences: [{"question":"...","options":["A","B","C","D"],"correct":0,"explanation":"..."}]. "correct" is the 0-based index of the right option.`
+            type: "first_aid_quiz",
+            prompt: `Create exactly 5 multiple-choice first aid quiz questions about "${topic}".`
           }
         });
         if (error) {
-          const msg = (error as any)?.message || "";
-          if (/429|rate limit/i.test(msg)) { lastError = "AI is busy right now. Please try again in a moment."; continue; }
+          const msg = (data as any)?.error || (error as any)?.message || "";
+          if (/429|rate limit|busy/i.test(msg)) { lastError = "AI is busy right now. Please try again in a moment."; continue; }
           if (/402|credit/i.test(msg)) { lastError = "Not enough credits. This quiz costs 3 credits."; break; }
           lastError = msg || "Quiz generation failed";
           continue;
         }
         if ((data as any)?.error) { lastError = String((data as any).error); continue; }
         parsed = parseQuestions((data as any)?.message || (data as any)?.text || (data as any)?.result || "");
+
         if (!parsed) lastError = "Could not read the generated quiz. Please try again.";
       }
+
 
       if (parsed) {
         setQuestions(parsed);
