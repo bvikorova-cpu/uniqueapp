@@ -238,23 +238,24 @@ const Psychology = () => {
           </Card>
         </div>
 
-        <Dialog open={showSubscriptionDialog} onOpenChange={setShowSubscriptionDialog}>
+        <Dialog open={showCreditsDialog} onOpenChange={setShowCreditsDialog}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2"><Crown className="w-5 h-5 text-primary" /> Subscribe to Continue</DialogTitle>
-              <DialogDescription>You've used all free messages. Subscribe for €15/month for 1000 conversations.</DialogDescription>
+              <DialogTitle className="flex items-center gap-2"><Coins className="w-5 h-5 text-primary" /> Not enough credits</DialogTitle>
+              <DialogDescription>AI Psychologist chat costs 1 credit per message. Top up your credits to continue.</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
-              <div className="flex items-start gap-3"><Heart className="w-5 h-5 text-destructive mt-0.5" /><div><p className="font-medium">1000 Messages/Month</p><p className="text-sm text-muted-foreground">Reset every billing period</p></div></div>
+              <div className="flex items-start gap-3"><Coins className="w-5 h-5 text-primary mt-0.5" /><div><p className="font-medium">1 credit per message</p><p className="text-sm text-muted-foreground">Pay only for what you use — no subscription</p></div></div>
               <div className="flex items-start gap-3"><Lock className="w-5 h-5 text-primary mt-0.5" /><div><p className="font-medium">100% Anonymous</p><p className="text-sm text-muted-foreground">Private and secure</p></div></div>
-              <div className="flex items-start gap-3"><CreditCard className="w-5 h-5 text-primary mt-0.5" /><div><p className="font-medium">€15/month + €2/100 extra</p><p className="text-sm text-muted-foreground">Cancel anytime</p></div></div>
+              <div className="flex items-start gap-3"><Heart className="w-5 h-5 text-destructive mt-0.5" /><div><p className="font-medium">AI tools 5–10 credits</p><p className="text-sm text-muted-foreground">Dream analysis, emotion analysis, weekly report</p></div></div>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={() => setShowSubscriptionDialog(false)} className="flex-1">Maybe Later</Button>
-              <Button onClick={handleSubscribe} className="flex-1"><Crown className="w-4 h-4 mr-2" /> Subscribe Now</Button>
+              <Button variant="outline" onClick={() => setShowCreditsDialog(false)} className="flex-1">Maybe Later</Button>
+              <Button onClick={handleBuyCredits} className="flex-1"><Coins className="w-4 h-4 mr-2" /> Buy credits</Button>
             </div>
           </DialogContent>
         </Dialog>
+
       </div>
     );
   }
