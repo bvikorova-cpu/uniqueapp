@@ -79,8 +79,11 @@ const Psychology = () => {
         body: JSON.stringify({ messages: [...messages, { role: "user", content: userMessage }] }) });
       if (!response.ok) {
         if (response.status === 402) {
-          const data = await response.json();
-          if (data.requiresSubscription) { setShowSubscriptionDialog(true); setMessages(prev => prev.slice(0, -1)); setIsLoading(false); return; }
+          setShowCreditsDialog(true); setMessages(prev => prev.slice(0, -1)); setIsLoading(false); return;
+        }
+        if (response.status === 429) {
+          toast.error("AI is busy right now. Please try again in a moment.");
+          setMessages(prev => prev.slice(0, -1)); setIsLoading(false); return;
         }
         throw new Error("Failed to start stream");
       }
