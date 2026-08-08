@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useWellnessActivity } from "@/hooks/useWellnessActivity";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -14,6 +15,7 @@ const COLOR_PALETTES = { "Cosmic": ["#8B5CF6", "#EC4899", "#3B82F6", "#6366F1", 
   "Ocean": ["#0EA5E9", "#06B6D4", "#0284C7", "#0369A1", "#38BDF8", "#67E8F9"] };
 
 export function DigitalMandala() {
+  const { logActivity } = useWellnessActivity();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [color, setColor] = useState("#8B5CF6");
@@ -123,6 +125,7 @@ export function DigitalMandala() {
     link.download = `mandala-${Date.now()}.png`;
     link.href = canvas.toDataURL();
     link.click();
+    void logActivity("mandala");
     toast({ title: "Mandala saved!", description: "Your creation has been downloaded" });
   };
 

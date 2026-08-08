@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useWellnessActivity } from "@/hooks/useWellnessActivity";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,7 @@ export function GroundingExercise() {
   const [answers, setAnswers] = useState<string[][]>(STEPS.map(() => []));
   const [currentInput, setCurrentInput] = useState("");
   const [isComplete, setIsComplete] = useState(false);
+  const { logActivity } = useWellnessActivity();
 
   const step = STEPS[currentStep];
   const currentAnswers = answers[currentStep];
@@ -37,6 +39,7 @@ export function GroundingExercise() {
         setTimeout(() => setCurrentStep(currentStep + 1), 600);
       } else {
         setIsComplete(true);
+        void logActivity("grounding");
       }
     }
   };
