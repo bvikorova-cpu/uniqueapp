@@ -134,12 +134,8 @@ const Psychology = () => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
   };
 
-  const handleSubscribe = async () => {
-    try { await createCheckout(); toast.success("Opening checkout..."); }
-    catch { toast.error("Failed to create checkout"); }
-  };
+  const handleBuyCredits = () => navigate('/ai-credits');
 
-  const messagesLeft = !subscription.subscribed ? Math.max(0, subscription.freeMessagesLimit - subscription.freeMessagesUsed) : null;
 
   // Render sub-views
   const viewMap: Record<string, JSX.Element> = {
