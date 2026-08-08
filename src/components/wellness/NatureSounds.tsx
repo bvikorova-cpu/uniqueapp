@@ -32,10 +32,29 @@ export function NatureSounds() {
   const [remainingSeconds, setRemainingSeconds] = useState<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const playStartRef = useRef<number | null>(null);
+  const { updateStats } = useWellnessProgress();
+
+  // Flush actual listening time to wellness_usage_stats (real data for progress/achievements)
+  const flushListeningTime = useRef((_?: unknown) => {});
+  flushListeningTime.current = () => {
+    if (playStartRef.current === null) return;
+    const seconds = Math.round((Date.now() - playStartRef.current) / 1000);
+    playStartRef.current = null;
+    if (seconds >= 10) {
+      updateStats({ activityType: "nature_sounds", durationSeconds: seconds }).catch(console.error);
+    }
+  };
+
+  useEffect(() => {
+    if (isPlaying) playStartRef.current = playStartRef.current ?? Date.now();
+    else flushListeningTime.current();
+  }, [isPlaying]);
 
   useEffect(() => {
     if (audioRef.current) audioRef.current.volume = isMuted ? 0 : volume / 100;
   }, [volume, isMuted]);
+
 
   useEffect(() => {
     if (remainingSeconds !== null && remainingSeconds > 0 && isPlaying) {
