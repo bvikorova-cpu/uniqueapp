@@ -98,7 +98,7 @@ const OnlinePsychologist = () => {
     }
 
     try {
-      const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/psychology-chat`;
+      const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/psychology-ai`;
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) {
         throw new Error("Authentication required");
@@ -110,7 +110,7 @@ const OnlinePsychologist = () => {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${session.access_token}`,
           "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? import.meta.env.VITE_SUPABASE_ANON_KEY },
-        body: JSON.stringify({ messages: [...messages, userMessage],
+        body: JSON.stringify({ action: "chat", messages: [...messages, userMessage],
           sessionId }) });
 
       if (response.status === 402) {

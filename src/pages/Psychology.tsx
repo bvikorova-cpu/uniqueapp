@@ -72,11 +72,11 @@ const Psychology = () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in to continue"); setIsLoading(false); return; }
-      const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/psychology-chat`;
+      const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/psychology-ai`;
       const response = await fetch(CHAT_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-        body: JSON.stringify({ messages: [...messages, { role: "user", content: userMessage }] }) });
+        body: JSON.stringify({ action: "chat", messages: [...messages, { role: "user", content: userMessage }] }) });
       if (!response.ok) {
         if (response.status === 402) {
           setShowCreditsDialog(true); setMessages(prev => prev.slice(0, -1)); setIsLoading(false); return;
