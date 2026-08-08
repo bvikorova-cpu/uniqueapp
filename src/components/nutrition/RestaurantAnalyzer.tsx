@@ -25,6 +25,7 @@ export default function RestaurantAnalyzer() {
         body: { restaurantName, menuImageBase64: menuImage }
       });
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
       return data;
     },
     onSuccess: (data) => { setAnalysis(data.analysis); toast.success("Menu analyzed!"); },
@@ -34,9 +35,26 @@ export default function RestaurantAnalyzer() {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onloadend = () => setMenuImage(reader.result as string);
+    reader.onloadend = () => {
+      // Downscale before sending so the edge request stays small enough to succeed.
+      const img = new Image();
+      img.onload = () => {
+        const max = 1024;
+        const scale = Math.min(1, max / Math.max(img.width, img.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        const ctx = canvas.getContext("2d");
+        if (!ctx) { setMenuImage(reader.result as string); return; }
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        setMenuImage(canvas.toDataURL("image/jpeg", 0.8));
+      };
+      img.onerror = () => setMenuImage(reader.result as string);
+      img.src = reader.result as string;
+    };
     reader.readAsDataURL(file);
   };
+
 
   return (
     <>
