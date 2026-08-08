@@ -42,31 +42,26 @@ export const FirstAidMap = ({ onBack }: Props) => {
 
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          type: "travel_planner",
-          recipientName: location,
-          senderName: "firstaid_map",
-          message: `You are a local emergency services directory assistant. The user is looking for ${filterText} near "${location}".
-
-Generate a realistic list of 8-10 nearby emergency/medical facilities. For each, provide:
-
-Format as JSON array:
-[{
-  "name": "facility name",
-  "type": "AED|Pharmacy|Hospital|Urgent Care|Fire Station",
-  "address": "realistic street address",
-  "distance": "0.3 km",
-  "hours": "24/7 or Mon-Fri 8:00-20:00",
-  "phone": "+421 XXX XXX XXX",
-  "hasAED": true/false
-}]
-
-Make the results realistic for the given location. Include a mix of facility types. Sort by distance.` } });
+          type: "first_aid_map",
+          customPrompt: `List 8 ${filterText} near "${location}". Return ONLY the JSON array.` } });
       if (error) throw error;
       const text = data?.message || data?.analysis || "";
       const jsonMatch = text.match(/\[[\s\S]*\]/);
+      let parsed: NearbyResult[] = [];
       if (jsonMatch) {
-        setResults(JSON.parse(jsonMatch[0]));
+        try { parsed = JSON.parse(jsonMatch[0]); } catch { /* tolerant fallback below */ }
       }
+      if (!parsed.length) {
+        // Tolerant salvage: extract individual objects even if the array is truncated
+        const objs = text.match(/\{[^{}]*\}/g) || [];
+        parsed = objs.map((o: string) => { try { return JSON.parse(o); } catch { return null; } })
+          .filter((o: any) => o && o.name);
+      }
+      if (!parsed.length) {
+        toast({ title: "No results", description: "Try a different or more specific location.", variant: "destructive" });
+      }
+      setResults(parsed);
+
     } catch (e) {
       console.error(e);
       toast({ title: "Error", variant: "destructive" });
