@@ -72,7 +72,7 @@ export const WellnessHero = () => {
 
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
           className="text-white/85 text-sm sm:text-lg max-w-2xl mx-auto mb-8 drop-shadow-[0_1px_8px_rgba(0,0,0,0.4)]">
-          Cinematic breathwork, AI-personalized meditations, dream interpretation, mood mirror & narrated sleep stories — all in one peaceful sanctuary
+          Cinematic breathwork, AI-personalized meditations, dream interpretation, mood mirror & narrated bedtime audio — all in one peaceful sanctuary
         </motion.p>
 
         <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.25, duration: 0.6 }} className="mb-10">

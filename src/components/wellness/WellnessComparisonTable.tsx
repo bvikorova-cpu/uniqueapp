@@ -8,7 +8,7 @@ const features = [
   { name: "5-4-3-2-1 Grounding", basic: true, premium: true },
   { name: "Nature Sounds", basic: true, premium: true },
   { name: "Body Scan Meditation", basic: true, premium: true },
-  { name: "Sleep Stories", basic: true, premium: true },
+  
   { name: "Daily Challenges", basic: true, premium: true },
   { name: "AI Mindfulness Coach", basic: false, premium: true },
   { name: "Gratitude Journal + AI", basic: false, premium: true },

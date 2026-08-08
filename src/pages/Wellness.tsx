@@ -24,7 +24,7 @@ import { NatureSounds } from "@/components/wellness/NatureSounds";
 import { BodyScanMeditation } from "@/components/wellness/BodyScanMeditation";
 import { WellnessProgressDashboard } from "@/components/wellness/WellnessProgressDashboard";
 import { DailyWellnessChallenges } from "@/components/wellness/DailyWellnessChallenges";
-import { SleepStories } from "@/components/wellness/SleepStories";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { useSpendCredits, CREDIT_COSTS } from "@/hooks/useSpendCredits";
 import { useAICredits } from "@/hooks/useAICredits";
@@ -53,11 +53,6 @@ const WELLNESS_TOOLS = [
     description: "Progressive relaxation from head to toe with audio guidance",
     color: "from-rose-500 to-pink-600",
     features: ["Interactive body map", "Audio guidance", "Progressive relaxation", "Session completion", "Tension release"],
-    cost: 0 },
-  { id: "sleep", name: "Sleep Stories", icon: Moon,
-    description: "Calming narratives and ambient sounds to help you drift off",
-    color: "from-indigo-500 to-blue-600",
-    features: ["Multiple stories", "Ambient themes", "Sleep timer", "Volume control", "New stories weekly"],
     cost: 0 },
   { id: "challenges", name: "Daily Challenges", icon: Target,
     description: "Gamified daily wellness tasks with XP and streak tracking",
@@ -125,7 +120,7 @@ export default function Wellness() {
       grounding: <GroundingExercise />,
       sounds: <NatureSounds />,
       bodyscan: <BodyScanMeditation />,
-      sleep: <SleepStories />,
+      
       challenges: <DailyWellnessChallenges />,
       chat: <MindfulnessChat />,
       journal: <GratitudeJournal />,
