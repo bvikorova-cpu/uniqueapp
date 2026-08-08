@@ -18,6 +18,9 @@ interface FoodScanResult {
   };
 }
 
+const displayValue = (value: unknown): number | string =>
+  typeof value === 'number' || typeof value === 'string' ? value : '—';
+
 const normalizeScanResult = (payload: unknown): FoodScanResult | null => {
   if (!payload || typeof payload !== 'object') return null;
 
@@ -33,19 +36,11 @@ const normalizeScanResult = (payload: unknown): FoodScanResult | null => {
 
   return {
     name: String(result.food_name ?? result.name ?? 'Identified food'),
-    calories: typeof result.calories === 'number' || typeof result.calories === 'string'
-      ? result.calories
-      : '—',
+    calories: displayValue(result.calories),
     macros: {
-      protein: typeof (macros.protein ?? macros.p) === 'number' || typeof (macros.protein ?? macros.p) === 'string'
-        ? macros.protein ?? macros.p as number | string
-        : '—',
-      carbs: typeof (macros.carbs ?? macros.c) === 'number' || typeof (macros.carbs ?? macros.c) === 'string'
-        ? macros.carbs ?? macros.c as number | string
-        : '—',
-      fats: typeof (macros.fats ?? macros.f) === 'number' || typeof (macros.fats ?? macros.f) === 'string'
-        ? macros.fats ?? macros.f as number | string
-        : '—',
+      protein: displayValue(macros.protein ?? macros.p),
+      carbs: displayValue(macros.carbs ?? macros.c),
+      fats: displayValue(macros.fats ?? macros.f),
     },
   };
 };
