@@ -5,13 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
-  Send, Brain, Lock, Heart, Sparkles, Crown, CreditCard,
+  Send, Brain, Lock, Heart, Sparkles, Coins,
   SmilePlus, Wind, Zap, Phone, MessageCircle, TrendingUp,
   Moon, Target, Volume2, FileText
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { usePsychologySubscription } from "@/hooks/usePsychologySubscription";
+import { useAICredits } from "@/hooks/useAICredits";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -35,7 +36,7 @@ interface Message {
 type ActiveView = 'main' | 'chat' | 'mood' | 'breathing' | 'emotion' | 'crisis' | 'charts' | 'dreams' | 'cbt' | 'sounds' | 'report';
 
 const TOOLS = [
-  { id: "chat" as const, icon: MessageCircle, title: "AI Chat Session", desc: "Talk to your AI psychologist in a safe, anonymous space", color: "from-purple-500 to-pink-500", badge: "Core" },
+  { id: "chat" as const, icon: MessageCircle, title: "AI Chat Session", desc: "Talk to your AI psychologist in a safe, anonymous space", color: "from-purple-500 to-pink-500", badge: "1 Credit / msg" },
   { id: "mood" as const, icon: SmilePlus, title: "Mood Tracker & Journal", desc: "Log daily moods, track patterns, and journal your feelings", color: "from-yellow-500 to-orange-500", badge: "Free" },
   { id: "charts" as const, icon: TrendingUp, title: "Mood Trends & Charts", desc: "Visualize emotional patterns with interactive charts over time", color: "from-indigo-500 to-blue-500", badge: "Free" },
   { id: "breathing" as const, icon: Wind, title: "Breathing & Meditation", desc: "Guided breathing exercises and meditation timer", color: "from-blue-500 to-cyan-500", badge: "Free" },
@@ -53,9 +54,10 @@ const Psychology = () => {
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [loadingHistory, setLoadingHistory] = useState(true);
-  const [showSubscriptionDialog, setShowSubscriptionDialog] = useState(false);
+  const [showCreditsDialog, setShowCreditsDialog] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { subscription, refresh: refreshSubscription, createCheckout, manageSubscription, purchaseMessages } = usePsychologySubscription();
+  const navigate = useNavigate();
+  const { paidBalance, loading: creditsLoading, refresh: refreshCredits } = useAICredits();
 
   const scrollToBottom = () => { messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }); };
   useEffect(() => { scrollToBottom(); }, [messages]);
@@ -77,8 +79,11 @@ const Psychology = () => {
         body: JSON.stringify({ messages: [...messages, { role: "user", content: userMessage }] }) });
       if (!response.ok) {
         if (response.status === 402) {
-          const data = await response.json();
-          if (data.requiresSubscription) { setShowSubscriptionDialog(true); setMessages(prev => prev.slice(0, -1)); setIsLoading(false); return; }
+          setShowCreditsDialog(true); setMessages(prev => prev.slice(0, -1)); setIsLoading(false); return;
+        }
+        if (response.status === 429) {
+          toast.error("AI is busy right now. Please try again in a moment.");
+          setMessages(prev => prev.slice(0, -1)); setIsLoading(false); return;
         }
         throw new Error("Failed to start stream");
       }
@@ -114,7 +119,7 @@ const Psychology = () => {
       console.error("Error:", error);
       toast.error("Error communicating with psychologist");
       setMessages(prev => prev.slice(0, -1));
-    } finally { setIsLoading(false); refreshSubscription(); }
+    } finally { setIsLoading(false); refreshCredits(); window.dispatchEvent(new Event('ai-credits-updated')); }
   };
 
   const handleSend = async () => {
@@ -129,12 +134,8 @@ const Psychology = () => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
   };
 
-  const handleSubscribe = async () => {
-    try { await createCheckout(); toast.success("Opening checkout..."); }
-    catch { toast.error("Failed to create checkout"); }
-  };
+  const handleBuyCredits = () => navigate('/ai-credits');
 
-  const messagesLeft = !subscription.subscribed ? Math.max(0, subscription.freeMessagesLimit - subscription.freeMessagesUsed) : null;
 
   // Render sub-views
   const viewMap: Record<string, JSX.Element> = {
@@ -157,7 +158,7 @@ const Psychology = () => {
   }
 
   if (activeView === 'chat') {
-    if (loadingHistory || subscription.loading) {
+    if (loadingHistory || creditsLoading) {
       return (
         <div className="min-h-screen bg-background pt-20 pb-8 flex items-center justify-center">
           <div className="text-center"><Brain className="w-12 h-12 text-primary animate-pulse mx-auto mb-4" /><p className="text-muted-foreground">Loading...</p></div>
@@ -170,28 +171,16 @@ const Psychology = () => {
         <div className="container mx-auto px-4 max-w-4xl">
           <Button variant="ghost" onClick={() => setActiveView('main')} className="gap-2 mb-4">← Back to Dashboard</Button>
 
-          {subscription.subscribed ? (
-            <div className="mb-4 space-y-2">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-lg">
-                <Crown className="w-4 h-4 text-primary" />
-                <span className="text-sm">Premium Active • {subscription.monthlyMessagesUsed}/{subscription.monthlyMessagesLimit} messages
-                  {subscription.bonusMessages > 0 && ` (+${subscription.bonusMessages} bonus)`}</span>
-                <Button variant="ghost" size="sm" onClick={manageSubscription} className="ml-2">Manage</Button>
-              </div>
-              <div><Button variant="outline" size="sm" onClick={() => purchaseMessages()} className="gap-2"><CreditCard className="w-4 h-4" /> +100 messages for €2</Button></div>
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-lg">
+              <Coins className="w-4 h-4 text-primary" />
+              <span className="text-sm">{paidBalance} credit{paidBalance === 1 ? '' : 's'} available • 1 credit per message</span>
             </div>
-          ) : (
-            <div className="mb-4 flex flex-col items-start gap-2">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 border border-accent/30 rounded-lg">
-                <Sparkles className="w-4 h-4 text-accent" />
-                <span className="text-sm">{messagesLeft} free {messagesLeft === 1 ? 'message' : 'messages'} remaining</span>
-              </div>
-              <div className="flex gap-2">
-                <Button onClick={handleSubscribe} size="sm" className="gap-2"><Crown className="w-4 h-4" /> €15/month</Button>
-                <Button variant="outline" size="sm" onClick={() => purchaseMessages()} className="gap-2"><CreditCard className="w-4 h-4" /> +100 for €2</Button>
-              </div>
-            </div>
-          )}
+            <Button variant="outline" size="sm" onClick={handleBuyCredits} className="gap-2">
+              <Sparkles className="w-4 h-4" /> Buy credits
+            </Button>
+          </div>
+
 
           <Card className="shadow-lg">
             <CardHeader className="border-b">
@@ -249,23 +238,24 @@ const Psychology = () => {
           </Card>
         </div>
 
-        <Dialog open={showSubscriptionDialog} onOpenChange={setShowSubscriptionDialog}>
+        <Dialog open={showCreditsDialog} onOpenChange={setShowCreditsDialog}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2"><Crown className="w-5 h-5 text-primary" /> Subscribe to Continue</DialogTitle>
-              <DialogDescription>You've used all free messages. Subscribe for €15/month for 1000 conversations.</DialogDescription>
+              <DialogTitle className="flex items-center gap-2"><Coins className="w-5 h-5 text-primary" /> Not enough credits</DialogTitle>
+              <DialogDescription>AI Psychologist chat costs 1 credit per message. Top up your credits to continue.</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
-              <div className="flex items-start gap-3"><Heart className="w-5 h-5 text-destructive mt-0.5" /><div><p className="font-medium">1000 Messages/Month</p><p className="text-sm text-muted-foreground">Reset every billing period</p></div></div>
+              <div className="flex items-start gap-3"><Coins className="w-5 h-5 text-primary mt-0.5" /><div><p className="font-medium">1 credit per message</p><p className="text-sm text-muted-foreground">Pay only for what you use — no subscription</p></div></div>
               <div className="flex items-start gap-3"><Lock className="w-5 h-5 text-primary mt-0.5" /><div><p className="font-medium">100% Anonymous</p><p className="text-sm text-muted-foreground">Private and secure</p></div></div>
-              <div className="flex items-start gap-3"><CreditCard className="w-5 h-5 text-primary mt-0.5" /><div><p className="font-medium">€15/month + €2/100 extra</p><p className="text-sm text-muted-foreground">Cancel anytime</p></div></div>
+              <div className="flex items-start gap-3"><Heart className="w-5 h-5 text-destructive mt-0.5" /><div><p className="font-medium">AI tools 5–10 credits</p><p className="text-sm text-muted-foreground">Dream analysis, emotion analysis, weekly report</p></div></div>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={() => setShowSubscriptionDialog(false)} className="flex-1">Maybe Later</Button>
-              <Button onClick={handleSubscribe} className="flex-1"><Crown className="w-4 h-4 mr-2" /> Subscribe Now</Button>
+              <Button variant="outline" onClick={() => setShowCreditsDialog(false)} className="flex-1">Maybe Later</Button>
+              <Button onClick={handleBuyCredits} className="flex-1"><Coins className="w-4 h-4 mr-2" /> Buy credits</Button>
             </div>
           </DialogContent>
         </Dialog>
+
       </div>
     );
   }
@@ -341,24 +331,26 @@ const Psychology = () => {
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}>
           <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50 mt-8">
-            <h3 className="text-xl font-black mb-4">Pricing</h3>
+            <h3 className="text-xl font-black mb-4">Credit Costs</h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="p-4 bg-muted/30 rounded-xl text-center">
-                <p className="text-sm font-bold mb-1">Free Trial</p>
-                <p className="text-2xl font-black text-primary">5</p>
-                <p className="text-xs text-muted-foreground">Free chat messages</p>
-              </div>
               <div className="p-4 bg-primary/10 rounded-xl text-center ring-2 ring-primary">
-                <p className="text-sm font-bold mb-1">Premium Chat</p>
-                <p className="text-2xl font-black text-primary">€15</p>
-                <p className="text-xs text-muted-foreground">1000 messages/month</p>
+                <p className="text-sm font-bold mb-1">AI Chat Session</p>
+                <p className="text-2xl font-black text-primary">1</p>
+                <p className="text-xs text-muted-foreground">Credit per message</p>
               </div>
               <div className="p-4 bg-muted/30 rounded-xl text-center">
-                <p className="text-sm font-bold mb-1">AI Credits</p>
-                <p className="text-2xl font-black text-primary">5-10</p>
-                <p className="text-xs text-muted-foreground">Per AI analysis/report</p>
+                <p className="text-sm font-bold mb-1">AI Analyses</p>
+                <p className="text-2xl font-black text-primary">5</p>
+                <p className="text-xs text-muted-foreground">Dream journal & emotion analysis</p>
+              </div>
+              <div className="p-4 bg-muted/30 rounded-xl text-center">
+                <p className="text-sm font-bold mb-1">Weekly Report</p>
+                <p className="text-2xl font-black text-primary">10</p>
+                <p className="text-xs text-muted-foreground">AI wellness summary</p>
               </div>
             </div>
+            <p className="text-xs text-muted-foreground mt-4">No subscription — everything runs on AI credits. Mood tracker, charts, breathing, ambient sounds, CBT and crisis resources stay free.</p>
+
           </Card>
         </motion.div>
       </div>

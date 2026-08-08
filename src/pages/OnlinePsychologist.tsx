@@ -113,9 +113,22 @@ const OnlinePsychologist = () => {
         body: JSON.stringify({ messages: [...messages, userMessage],
           sessionId }) });
 
+      if (response.status === 402) {
+        toast({ title: "Not enough credits", description: "AI Psychologist chat costs 1 credit per message. Top up your credits to continue.", variant: "destructive" });
+        setMessages(prev => prev.slice(0, -1));
+        setIsLoading(false);
+        return;
+      }
+      if (response.status === 429) {
+        toast({ title: "AI is busy", description: "Please try again in a moment.", variant: "destructive" });
+        setMessages(prev => prev.slice(0, -1));
+        setIsLoading(false);
+        return;
+      }
       if (!response.ok || !response.body) {
         throw new Error("Error communicating with server");
       }
+
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
