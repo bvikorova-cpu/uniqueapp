@@ -31,15 +31,12 @@ export const LiveExpertChat = ({ onBack }: Props) => {
   const [selectedTopic, setSelectedTopic] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-  const { spendCredit } = useAICredits();
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const startChat = async (topic: string) => {
-    const ok = await spendCredit("custom_generation", "Live Expert Chat");
-    if (!ok) { toast({ title: "Insufficient Credits", description: "You need 3 credits per session.", variant: "destructive" }); return; }
     
     setSelectedTopic(topic);
     setStarted(true);

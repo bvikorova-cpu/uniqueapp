@@ -27,12 +27,9 @@ export const FirstAidMap = ({ onBack }: Props) => {
   const [loading, setLoading] = useState(false);
   const [searchType, setSearchType] = useState<"all" | "aed" | "pharmacy" | "hospital">("all");
   const { toast } = useToast();
-  const { spendCredit } = useAICredits();
 
   const searchNearby = async () => {
     if (!location.trim()) { toast({ title: "Enter a location", variant: "destructive" }); return; }
-    const ok = await spendCredit("custom_generation", "First Aid Map Search");
-    if (!ok) { toast({ title: "Insufficient Credits", variant: "destructive" }); return; }
 
     setLoading(true);
     try {

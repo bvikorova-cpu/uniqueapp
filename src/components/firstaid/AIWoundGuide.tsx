@@ -31,11 +31,8 @@ export const AIWoundGuide = ({ onBack }: Props) => {
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const { spendCredit } = useAICredits();
 
   const analyzeWound = async (woundId: string) => {
-    const ok = await spendCredit("custom_generation", "Wound Guide Analysis");
-    if (!ok) { toast({ title: "Insufficient Credits", variant: "destructive" }); return; }
 
     setSelectedWound(woundId);
     setLoading(true);
