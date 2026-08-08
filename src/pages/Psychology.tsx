@@ -331,24 +331,26 @@ const Psychology = () => {
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}>
           <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50 mt-8">
-            <h3 className="text-xl font-black mb-4">Pricing</h3>
+            <h3 className="text-xl font-black mb-4">Credit Costs</h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="p-4 bg-muted/30 rounded-xl text-center">
-                <p className="text-sm font-bold mb-1">Free Trial</p>
-                <p className="text-2xl font-black text-primary">5</p>
-                <p className="text-xs text-muted-foreground">Free chat messages</p>
-              </div>
               <div className="p-4 bg-primary/10 rounded-xl text-center ring-2 ring-primary">
-                <p className="text-sm font-bold mb-1">Premium Chat</p>
-                <p className="text-2xl font-black text-primary">€15</p>
-                <p className="text-xs text-muted-foreground">1000 messages/month</p>
+                <p className="text-sm font-bold mb-1">AI Chat Session</p>
+                <p className="text-2xl font-black text-primary">1</p>
+                <p className="text-xs text-muted-foreground">Credit per message</p>
               </div>
               <div className="p-4 bg-muted/30 rounded-xl text-center">
-                <p className="text-sm font-bold mb-1">AI Credits</p>
-                <p className="text-2xl font-black text-primary">5-10</p>
-                <p className="text-xs text-muted-foreground">Per AI analysis/report</p>
+                <p className="text-sm font-bold mb-1">AI Analyses</p>
+                <p className="text-2xl font-black text-primary">5</p>
+                <p className="text-xs text-muted-foreground">Dream journal & emotion analysis</p>
+              </div>
+              <div className="p-4 bg-muted/30 rounded-xl text-center">
+                <p className="text-sm font-bold mb-1">Weekly Report</p>
+                <p className="text-2xl font-black text-primary">10</p>
+                <p className="text-xs text-muted-foreground">AI wellness summary</p>
               </div>
             </div>
+            <p className="text-xs text-muted-foreground mt-4">No subscription — everything runs on AI credits. Mood tracker, charts, breathing, ambient sounds, CBT and crisis resources stay free.</p>
+
           </Card>
         </motion.div>
       </div>
