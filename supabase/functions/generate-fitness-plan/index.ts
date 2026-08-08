@@ -71,7 +71,7 @@ serve(async (req) => {
         .insert({
           user_id: userData.user.id,
           plan_type: resolvedType,
-          payment_status: "credits",
+          payment_status: "paid",
           status: "generating",
           age: profileData.age,
           gender: profileData.gender,
