@@ -22,7 +22,7 @@ export function AIFirstAidKit({ onBack }: Props) {
     try {
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          type: "travel_planner",
+          type: "travel_planner", module: "first_aid",
           prompt: `You are a first aid kit planning expert. Create a comprehensive, personalized first aid kit checklist for: Context: ${context}, Number of people: ${people}. Include: 1) Essential items with quantities, 2) Medications, 3) Specialized items for the context, 4) Maintenance schedule, 5) Estimated cost range in EUR. Format with clear categories and checkboxes (☐).`
         }
       });

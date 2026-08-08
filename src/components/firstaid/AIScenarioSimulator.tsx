@@ -44,7 +44,7 @@ export const AIScenarioSimulator = ({ onBack }: Props) => {
       const scenario = SCENARIOS.find(s => s.id === scenarioId);
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          type: "travel_planner",
+          type: "travel_planner", module: "first_aid",
           recipientName: scenario?.label || scenarioId,
           senderName: "interactive",
           message: `You are a first aid emergency scenario simulator. Create an interactive "choose your own adventure" scenario for: ${scenario?.desc}.
@@ -78,7 +78,7 @@ CHOICE_C: [third option]` } });
       
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          type: "travel_planner",
+          type: "travel_planner", module: "first_aid_followup",
           recipientName: selectedScenario || "",
           senderName: "continue",
           message: `You are a first aid emergency scenario simulator. Continue this scenario.

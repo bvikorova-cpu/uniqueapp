@@ -55,7 +55,7 @@ export function AIFirstAidQuiz({ onBack }: Props) {
       for (let attempt = 0; attempt < 2 && !parsed; attempt++) {
         const { data, error } = await supabase.functions.invoke("generate-gift-message", {
           body: {
-            type: "first_aid_quiz",
+            type: "first_aid_quiz", module: "first_aid",
             prompt: `Create exactly 5 multiple-choice first aid quiz questions about "${topic}".`
           }
         });

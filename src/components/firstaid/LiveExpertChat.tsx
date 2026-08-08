@@ -61,7 +61,7 @@ export const LiveExpertChat = ({ onBack }: Props) => {
       
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          type: "travel_planner",
+          type: "travel_planner", module: "first_aid",
           recipientName: selectedTopic,
           senderName: "expert_chat",
           message: `You are Dr. AI, a certified emergency medicine specialist and first aid expert. You provide detailed, accurate, and compassionate medical guidance. Topic: ${selectedTopic}.

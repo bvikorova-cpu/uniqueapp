@@ -24,7 +24,7 @@ export function AISymptomChecker({ onBack }: Props) {
     try {
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          type: "travel_planner",
+          type: "travel_planner", module: "first_aid",
           prompt: `You are an AI first aid symptom checker. A user describes: "${symptoms}". Severity: ${severity}. Provide: 1) Possible conditions (NOT a diagnosis), 2) Immediate first aid steps, 3) When to call emergency services, 4) Self-care tips. Add DISCLAIMER: This is NOT medical advice.`
         }
       });

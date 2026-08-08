@@ -42,7 +42,7 @@ export const FirstAidMap = ({ onBack }: Props) => {
 
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          type: "first_aid_map",
+          type: "first_aid_map", module: "first_aid",
           customPrompt: `List 8 ${filterText} near "${location}". Return ONLY the JSON array.` } });
       if (error) throw error;
       const text = data?.message || data?.analysis || "";

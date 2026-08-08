@@ -52,7 +52,7 @@ export const AICertificationSystem = ({ onBack }: Props) => {
       const track = CERT_TRACKS.find(t => t.id === trackId);
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          type: "first_aid_quiz",
+          type: "first_aid_quiz", module: "first_aid",
           recipientName: track?.label || trackId,
           senderName: "exam",
           message: `Generate a ${track?.questions || 10}-question multiple choice certification exam for "${track?.label}". Topic: ${track?.desc}. Test practical first aid knowledge with real medical scenarios. Return ONLY a raw JSON array:

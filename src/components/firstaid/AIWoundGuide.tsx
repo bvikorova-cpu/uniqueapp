@@ -44,7 +44,7 @@ export const AIWoundGuide = ({ onBack }: Props) => {
       const wound = WOUND_TYPES.find(w => w.id === woundId);
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          type: "travel_planner",
+          type: "travel_planner", module: "first_aid",
           recipientName: wound?.label || woundId,
           senderName: "wound_guide",
           message: `You are an expert first aid wound care specialist. Provide a comprehensive visual identification and treatment guide for: "${wound?.label} - ${wound?.desc}"
