@@ -592,7 +592,12 @@ const FitSlim = () => {
                         </div>
                         <p className="text-sm text-muted-foreground">{plan.fitness_goal?.replace(/_/g, " ")} • {plan.activity_level}</p>
                         <p className="text-xs text-muted-foreground">{new Date(plan.created_at).toLocaleDateString()}</p>
-                        {plan.status === "completed" && <Button variant="outline" size="sm" className="w-full mt-2 border-green-500/30 text-green-400 hover:bg-green-500/10" onClick={(e) => { e.stopPropagation(); openExistingPlan(plan); }}>View Plan</Button>}
+                        {plan.status === "completed" && (
+                          <div className="grid grid-cols-2 gap-2 mt-2">
+                            <Button variant="outline" size="sm" className="border-green-500/30 text-green-400 hover:bg-green-500/10" onClick={(e) => { e.stopPropagation(); openExistingPlan(plan); }}>View Plan</Button>
+                            <Button variant="outline" size="sm" className="gap-1 border-primary/30 text-primary hover:bg-primary/10" onClick={(e) => { e.stopPropagation(); exportFitnessPlanPDF(plan); }}><Download className="h-4 w-4" /> PDF</Button>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
                   ))}
