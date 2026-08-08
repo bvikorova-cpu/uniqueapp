@@ -156,7 +156,7 @@ Generate a JSON response with this EXACT structure:
   "tips": ["Drink 2-3L water daily", "Sleep 7-8 hours", "Track progress weekly"]
 }
 
-IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include rest days (1-2 per week). Make meals realistic and diverse. All measurements in grams/ml.`;
+IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include rest days (1-2 per week). For plans longer than 30 days you may repeat a clearly labelled 4-week rotation to cover every day, but every day entry must be present. Keep exercise notes and ingredient lists short. Make meals realistic and diverse. All measurements in grams/ml.`;
 
     const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -174,7 +174,7 @@ IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include res
     if (!aiResponse.ok) {
       const errText = await aiResponse.text();
       console.error("OpenAI API error:", aiResponse.status, errText);
-      await serviceClient.from("fitness_plans").update({ status: "failed" }).eq("id", plan_id);
+      await serviceClient.from("fitness_plans").update({ status: "failed" }).eq("id", plan_row_id);
       throw new Error("AI generation failed");
     }
 
@@ -194,7 +194,7 @@ IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include res
       if (match) {
         planData = JSON.parse(match[0]);
       } else {
-        await serviceClient.from("fitness_plans").update({ status: "failed" }).eq("id", plan_id);
+        await serviceClient.from("fitness_plans").update({ status: "failed" }).eq("id", plan_row_id);
         throw new Error("Failed to parse AI response");
       }
     }
@@ -208,7 +208,7 @@ IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include res
         summary: planData.summary || "",
         status: "completed",
         updated_at: new Date().toISOString() })
-      .eq("id", plan_id)
+      .eq("id", plan_row_id)
       .select()
       .single();
 
