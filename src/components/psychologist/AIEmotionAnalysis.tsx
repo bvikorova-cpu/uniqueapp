@@ -12,6 +12,9 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
+const ANALYSIS_COST = 3;
+
+
 export const AIEmotionAnalysis = ({ onBack }: Props) => {
   const [text, setText] = useState("");
   const [analyzing, setAnalyzing] = useState(false);
@@ -41,9 +44,23 @@ export const AIEmotionAnalysis = ({ onBack }: Props) => {
       const { data, error } = await supabase.functions.invoke("psychology-ai", {
         body: { action: "emotion-analysis", text: text.trim() } });
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
       setResult(data);
+
+      // Deduct unified AI credits (3) and persist the analysis.
+      const { error: spendErr } = await supabase.rpc("deduct_ai_credits" as any, {
+        p_user_id: user.id, p_amount: ANALYSIS_COST, p_reason: "psychology_emotion_analysis", p_source: "psychology" } as any);
+      if (spendErr) throw new Error(spendErr.message);
+      window.dispatchEvent(new Event("ai-credits-updated"));
+
+      await (supabase as any).from("psychology_emotion_analyses").insert({
+        user_id: user.id,
+        input_text: text.trim().slice(0, 2000),
+        analysis_result: data,
+        credits_used: ANALYSIS_COST });
+
       loadHistory();
-      toast.success("Analysis complete! 5 credits used.");
+      toast.success(`Analysis complete! ${ANALYSIS_COST} credits used.`);
     } catch (e: any) {
       if (e.message?.includes("credits") || e.message?.includes("Insufficient")) {
         toast.error("Insufficient credits. Please purchase more.");
@@ -52,6 +69,7 @@ export const AIEmotionAnalysis = ({ onBack }: Props) => {
       }
     } finally { setAnalyzing(false); }
   };
+
 
   const getEmotionColor = (emotion: string) => { const map: Record<string, string> = {
       joy: "bg-yellow-500/20 text-yellow-600", sadness: "bg-blue-500/20 text-blue-600",
@@ -75,12 +93,12 @@ export const AIEmotionAnalysis = ({ onBack }: Props) => {
         </h2>
         <p className="text-muted-foreground">Analyze text for emotional patterns, sentiment, and psychological insights.</p>
         <Badge variant="outline" className="mt-2 gap-1">
-          <Zap className="h-3 w-3" /> 5 Credits per Analysis
+          <Zap className="h-3 w-3" /> {ANALYSIS_COST} Credits per Analysis
         </Badge>
       </motion.div>
 
       {/* Input */}
-      <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50">
+      <Card className="p-4 sm:p-6 bg-card/50 backdrop-blur-sm border-border/50">
         <h3 className="font-bold mb-3 flex items-center gap-2">
           <Brain className="h-5 w-5 text-primary" />
           Enter Text to Analyze
@@ -92,16 +110,17 @@ export const AIEmotionAnalysis = ({ onBack }: Props) => {
           rows={6}
           className="mb-4"
         />
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <span className="text-xs text-muted-foreground">{text.length} characters (min 20)</span>
-          <Button onClick={analyze} disabled={analyzing || text.length < 20} className="gap-2">
+          <Button onClick={analyze} disabled={analyzing || text.length < 20} className="gap-2 w-full sm:w-auto">
             {analyzing ? (
               <><Sparkles className="h-4 w-4 animate-spin" /> Analyzing...</>
             ) : (
-              <><Sparkles className="h-4 w-4" /> Analyze Emotions (5 credits)</>
+              <><Sparkles className="h-4 w-4" /> Analyze Emotions ({ANALYSIS_COST} credits)</>
             )}
           </Button>
         </div>
+
       </Card>
 
       {/* Result */}

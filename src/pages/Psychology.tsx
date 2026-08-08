@@ -42,7 +42,7 @@ const TOOLS = [
   { id: "breathing" as const, icon: Wind, title: "Breathing & Meditation", desc: "Guided breathing exercises and meditation timer", color: "from-blue-500 to-cyan-500", badge: "Free" },
   { id: "sounds" as const, icon: Volume2, title: "Ambient Sound Mixer", desc: "Nature sounds and white noise for relaxation and focus", color: "from-teal-500 to-green-500", badge: "Free" },
   { id: "dreams" as const, icon: Moon, title: "AI Dream Journal", desc: "Log dreams and unlock AI psychological interpretations", color: "from-violet-500 to-purple-500", badge: "5 Credits" },
-  { id: "emotion" as const, icon: Zap, title: "AI Emotion Analysis", desc: "Analyze text for emotional patterns and psychological insights", color: "from-emerald-500 to-green-500", badge: "5 Credits" },
+  { id: "emotion" as const, icon: Zap, title: "AI Emotion Analysis", desc: "Analyze text for emotional patterns and psychological insights", color: "from-emerald-500 to-green-500", badge: "3 Credits" },
   { id: "cbt" as const, icon: Target, title: "Guided CBT Exercises", desc: "Interactive cognitive behavioral therapy tools for thought management", color: "from-amber-500 to-yellow-500", badge: "Free" },
   { id: "report" as const, icon: FileText, title: "Weekly Wellness Report", desc: "AI-generated weekly summary of your emotional health", color: "from-rose-500 to-pink-500", badge: "10 Credits" },
   { id: "crisis" as const, icon: Phone, title: "Crisis Resources", desc: "Emergency hotlines and professional referral directory", color: "from-red-500 to-rose-500", badge: "Free" },
