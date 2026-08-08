@@ -116,17 +116,19 @@ Be empathetic, insightful, and avoid being overly clinical. Use markdown formatt
         result = await callAI(apiKey, [
           {
             role: "system",
-            content: `You are an expert emotion and sentiment analyst. Analyze the provided text for:
-1. Primary and secondary emotions detected (joy, sadness, anger, fear, surprise, disgust, trust, anticipation)
-2. Overall sentiment (positive, negative, neutral, mixed)
-3. Emotional patterns and underlying psychological themes
-4. Practical suggestions for emotional wellbeing
-
-Respond using the suggest_emotions tool.`
+            content: `You are an expert emotion and sentiment analyst.
+Return ONLY a valid JSON object (no markdown fences) with exactly these keys:
+{
+  "emotions": [{ "emotion": "joy|sadness|anger|fear|surprise|disgust|trust|anticipation", "score": 0.0 }],
+  "sentiment": "positive|negative|neutral|mixed",
+  "analysis": "markdown text describing emotional patterns and underlying psychological themes",
+  "suggestions": "markdown bullet list of practical suggestions for emotional wellbeing"
+}`
           },
-          { role: "user", content: params.text },
+          { role: "user", content: `Analyze this text:\n\n${params.text}` },
         ]);
         break;
+
       case "weekly-report":
         result = await callAI(apiKey, [
           {
