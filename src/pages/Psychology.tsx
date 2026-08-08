@@ -171,28 +171,16 @@ const Psychology = () => {
         <div className="container mx-auto px-4 max-w-4xl">
           <Button variant="ghost" onClick={() => setActiveView('main')} className="gap-2 mb-4">← Back to Dashboard</Button>
 
-          {subscription.subscribed ? (
-            <div className="mb-4 space-y-2">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-lg">
-                <Crown className="w-4 h-4 text-primary" />
-                <span className="text-sm">Premium Active • {subscription.monthlyMessagesUsed}/{subscription.monthlyMessagesLimit} messages
-                  {subscription.bonusMessages > 0 && ` (+${subscription.bonusMessages} bonus)`}</span>
-                <Button variant="ghost" size="sm" onClick={manageSubscription} className="ml-2">Manage</Button>
-              </div>
-              <div><Button variant="outline" size="sm" onClick={() => purchaseMessages()} className="gap-2"><CreditCard className="w-4 h-4" /> +100 messages for €2</Button></div>
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-lg">
+              <Coins className="w-4 h-4 text-primary" />
+              <span className="text-sm">{paidBalance} credit{paidBalance === 1 ? '' : 's'} available • 1 credit per message</span>
             </div>
-          ) : (
-            <div className="mb-4 flex flex-col items-start gap-2">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 border border-accent/30 rounded-lg">
-                <Sparkles className="w-4 h-4 text-accent" />
-                <span className="text-sm">{messagesLeft} free {messagesLeft === 1 ? 'message' : 'messages'} remaining</span>
-              </div>
-              <div className="flex gap-2">
-                <Button onClick={handleSubscribe} size="sm" className="gap-2"><Crown className="w-4 h-4" /> €15/month</Button>
-                <Button variant="outline" size="sm" onClick={() => purchaseMessages()} className="gap-2"><CreditCard className="w-4 h-4" /> +100 for €2</Button>
-              </div>
-            </div>
-          )}
+            <Button variant="outline" size="sm" onClick={handleBuyCredits} className="gap-2">
+              <Sparkles className="w-4 h-4" /> Buy credits
+            </Button>
+          </div>
+
 
           <Card className="shadow-lg">
             <CardHeader className="border-b">
