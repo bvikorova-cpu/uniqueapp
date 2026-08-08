@@ -12,6 +12,9 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
+const ANALYSIS_COST = 3;
+
+
 export const AIEmotionAnalysis = ({ onBack }: Props) => {
   const [text, setText] = useState("");
   const [analyzing, setAnalyzing] = useState(false);
