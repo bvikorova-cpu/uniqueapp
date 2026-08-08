@@ -24,20 +24,45 @@ export default function AIRecoveryAdvisor({ onBack }: { onBack: () => void }) {
     try {
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          message: `Create a personalized post-workout recovery plan:
-Recent workout: ${form.workout}
-${form.soreness ? `Soreness level: ${form.soreness}/10` : ""}
-${form.sleep ? `Sleep quality: ${form.sleep}` : ""}
-${form.area ? `Problem areas: ${form.area}` : ""}
-Include:
-1. Immediate recovery protocol (first 30 min)
-2. Nutrition recovery plan (what to eat and when)
-3. Stretching/mobility routine for affected muscles
-4. Sleep optimization tips
-5. Active recovery suggestions for off days
-6. Supplement recommendations
-7. When to work out next (recovery timeline)
-Format with sections, emojis, and specific timing.` } });
+          type: "fitness_plan",
+          message: `You are an elite sports recovery & physiotherapy specialist. Create a DETAILED, comprehensive post-workout recovery protocol in clean markdown (## headings, tables, bullet lists, bold key numbers). Do NOT write a motivational letter.
+
+ATHLETE DATA
+- Recent workout: ${form.workout}
+${form.soreness ? `- Soreness level: ${form.soreness}/10` : ""}
+${form.sleep ? `- Sleep quality: ${form.sleep}` : ""}
+${form.area ? `- Problem areas: ${form.area}` : ""}
+
+REQUIRED SECTIONS
+## 🔎 Recovery Assessment
+Estimated muscle damage, fatigue level, expected DOMS peak (hours), recovery status score /100.
+
+## ⏱️ Immediate Protocol (first 30-60 min)
+Markdown table: Time | Action | Why it matters.
+
+## 🍽️ Nutrition Recovery
+Table with meals/timing (post-workout, +2h, dinner, before bed), grams of protein/carbs, hydration & electrolytes in ml.
+
+## 🧘 Mobility & Stretching Routine
+Table: Exercise | Target muscle | Sets/Duration | Cues. 6-8 items focused on the trained and problem areas.
+
+## 😴 Sleep Optimization
+Concrete steps, target hours, evening routine timeline.
+
+## 🚶 Active Recovery (off days)
+2-3 options with intensity, duration, heart-rate zone.
+
+## 💊 Supplements
+Table: Supplement | Dose | Timing | Evidence level. Note that this is general info, not medical advice.
+
+## 📅 Next Workout Timeline
+Day-by-day table for the next 4-5 days (rest / light / full training) with readiness checkpoints.
+
+## ⚠️ Red Flags
+When soreness/pain means stop and see a professional.
+
+Be specific with numbers, times and doses. 500-800 words.` } });
+
       if (error) throw error;
       setResult(data?.message || data?.text || "No response");
     } catch (e: any) {
