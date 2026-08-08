@@ -314,6 +314,10 @@ const FitSlim = () => {
   const renderPlanViewer = (plan: any) => {
     const workout = plan.workout_plan;
     const meal = plan.meal_plan;
+    const details = viewingPlanDetails || workout?.details || meal?.details || null;
+    const workoutDays: any[] = workout?.days ?? [];
+    const mealDays: any[] = meal?.days ?? [];
+
     return (
       <Dialog open={!!viewingPlan} onOpenChange={() => { setViewingPlan(null); setViewingPlanDetails(null); }}>
         <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
