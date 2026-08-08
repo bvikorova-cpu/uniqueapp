@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Send, Brain, Lock, Heart, Sparkles, Coins,
   SmilePlus, Wind, Zap, Phone, MessageCircle, TrendingUp,
-  Moon, Target, Volume2, FileText
+  Moon, Volume2, FileText
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
