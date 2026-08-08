@@ -53,8 +53,11 @@ export function AIFirstAidQuiz({ onBack }: Props) {
       let lastError: string | null = null;
 
       for (let attempt = 0; attempt < 2 && !parsed; attempt++) {
-        const { data, error } = await supabase.functions.invoke("first-aid-quiz", {
-          body: { topic }
+        const { data, error } = await supabase.functions.invoke("generate-gift-message", {
+          body: {
+            type: "first_aid_quiz",
+            prompt: `Create exactly 5 multiple-choice first aid quiz questions about "${topic}".`
+          }
         });
         if (error) {
           const msg = (data as any)?.error || (error as any)?.message || "";
@@ -64,8 +67,8 @@ export function AIFirstAidQuiz({ onBack }: Props) {
           continue;
         }
         if ((data as any)?.error) { lastError = String((data as any).error); continue; }
-        const list = (data as any)?.questions;
-        parsed = Array.isArray(list) && list.length > 0 ? (list as Question[]) : parseQuestions(JSON.stringify(list ?? ""));
+        parsed = parseQuestions((data as any)?.message || (data as any)?.text || (data as any)?.result || "");
+
         if (!parsed) lastError = "Could not read the generated quiz. Please try again.";
       }
 
