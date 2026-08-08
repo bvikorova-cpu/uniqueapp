@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { AiMarkdown } from "../common/AiMarkdown";
 
 export default function AIBodyScanner({ onBack }: { onBack: () => void }) {
   const { credits } = useAICredits();
@@ -23,14 +24,34 @@ export default function AIBodyScanner({ onBack }: { onBack: () => void }) {
     try {
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          message: `Perform a comprehensive body composition analysis:
-Age: ${form.age}, Gender: ${form.gender}, Height: ${form.height}cm, Weight: ${form.weight}kg
-${form.waist ? `Waist: ${form.waist}cm` : ""} ${form.hip ? `Hip: ${form.hip}cm` : ""}
-Calculate: BMI, estimated body fat %, lean mass, BMR, TDEE.
-Provide: body type classification, health risk assessment, ideal weight range.
-Give 5 specific recommendations for improvement. Use clear sections with emojis.` } });
+          type: "nutrition_plan",
+          message: `Perform a comprehensive body composition analysis.
+Age: ${form.age}, Gender: ${form.gender}, Height: ${form.height}cm, Weight: ${form.weight}kg${form.waist ? `, Waist: ${form.waist}cm` : ""}${form.hip ? `, Hip: ${form.hip}cm` : ""}
+
+Answer in markdown with these sections:
+## Key Metrics
+A markdown table: Metric | Value | Healthy Range — include BMI, estimated body fat %, lean body mass, BMR, TDEE (sedentary/moderate/active), waist-to-height ratio and waist-to-hip ratio when data allows.
+
+## Body Type & Composition
+Somatotype classification and what the numbers mean in plain language.
+
+## Health Risk Assessment
+Risk level with the reasoning behind it (cardiometabolic, visceral fat indicators).
+
+## Ideal Weight & Targets
+Ideal weight range, realistic weekly rate of change, target body fat %.
+
+## Calorie & Macro Targets
+A table: Goal | Calories | Protein | Carbs | Fat (cutting, maintenance, lean bulk).
+
+## 5 Recommendations
+Five specific, actionable steps with the expected result of each.
+
+## Next 4 Weeks
+A simple week-by-week progression plan.` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No response");
+
     } catch (e: any) {
       toast.error(e.message || "Error scanning");
     } finally {
@@ -69,7 +90,7 @@ Give 5 specific recommendations for improvement. Use clear sections with emojis.
           </Button>
           {result && (
             <Card className="bg-violet-500/5 border-violet-500/20 mt-4">
-              <CardContent className="p-4 whitespace-pre-line text-sm">{result}</CardContent>
+              <CardContent className="p-4"><AiMarkdown content={result} /></CardContent>
             </Card>
           )}
         </CardContent>
