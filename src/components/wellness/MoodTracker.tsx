@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useWellnessActivity } from "@/hooks/useWellnessActivity";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -34,12 +35,14 @@ export const MoodTracker = ({ onSaveMood }: MoodTrackerProps) => {
   const [note, setNote] = useState("");
   const [saved, setSaved] = useState(false);
   const [recentMoods, setRecentMoods] = useState<MoodEntry[]>([]);
+  const { logActivity } = useWellnessActivity();
 
   const handleSave = () => {
     if (selectedMood === null) return;
     const entry: MoodEntry = { mood: selectedMood, note, timestamp: new Date() };
     setRecentMoods((prev) => [entry, ...prev.slice(0, 6)]);
     onSaveMood?.(entry);
+    void logActivity("mood_tracker");
     setSaved(true);
     setTimeout(() => { setSaved(false); setSelectedMood(null); setNote(""); }, 2000);
   };

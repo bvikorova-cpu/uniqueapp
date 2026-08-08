@@ -123,6 +123,7 @@ export function DigitalMandala() {
     link.download = `mandala-${Date.now()}.png`;
     link.href = canvas.toDataURL();
     link.click();
+    void logActivity("mandala");
     toast({ title: "Mandala saved!", description: "Your creation has been downloaded" });
   };
 
