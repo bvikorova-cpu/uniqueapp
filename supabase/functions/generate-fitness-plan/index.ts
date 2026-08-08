@@ -158,22 +158,23 @@ Generate a JSON response with this EXACT structure:
 
 IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include rest days (1-2 per week). For plans longer than 30 days you may repeat a clearly labelled 4-week rotation to cover every day, but every day entry must be present. Keep exercise notes and ingredient lists short. Make meals realistic and diverse. All measurements in grams/ml.`;
 
-    const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: "You are a professional fitness coach and nutritionist. Always respond with valid JSON only." },
           { role: "user", content: prompt },
         ],
-        max_completion_tokens: 16000 }) });
+        response_format: { type: "json_object" },
+        max_tokens: 16000 }) });
 
     if (!aiResponse.ok) {
       const errText = await aiResponse.text();
-      console.error("OpenAI API error:", aiResponse.status, errText);
+      console.error("AI gateway error:", aiResponse.status, errText);
       await serviceClient.from("fitness_plans").update({ status: "failed" }).eq("id", plan_row_id);
       throw new Error("AI generation failed");
     }
@@ -181,23 +182,54 @@ IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include res
     const aiData = await aiResponse.json();
     const content = aiData.choices[0].message.content;
 
+    // Tolerant JSON extraction: handles fenced blocks and truncated output
+    const repairJson = (raw: string): any => {
+      const fenced = raw.match(/```json\n?([\s\S]*?)\n?```/);
+      let s = (fenced ? fenced[1] : raw).trim();
+      const start = s.indexOf("{");
+      if (start < 0) throw new Error("no json");
+      s = s.slice(start);
+      try { return JSON.parse(s); } catch { /* fall through to repair */ }
+      // Close unterminated string / trim trailing partial token, then balance braces
+      let inStr = false, esc = false;
+      const stack: string[] = [];
+      let lastSafe = -1;
+      for (let i = 0; i < s.length; i++) {
+        const c = s[i];
+        if (esc) { esc = false; continue; }
+        if (c === "\\") { esc = true; continue; }
+        if (c === '"') { inStr = !inStr; continue; }
+        if (inStr) continue;
+        if (c === "{" || c === "[") stack.push(c === "{" ? "}" : "]");
+        else if (c === "}" || c === "]") stack.pop();
+        if (c === "}" || c === "]") lastSafe = i;
+      }
+      let candidate = s.slice(0, lastSafe + 1);
+      // recompute stack for candidate
+      inStr = false; esc = false;
+      const st2: string[] = [];
+      for (let i = 0; i < candidate.length; i++) {
+        const c = candidate[i];
+        if (esc) { esc = false; continue; }
+        if (c === "\\") { esc = true; continue; }
+        if (c === '"') { inStr = !inStr; continue; }
+        if (inStr) continue;
+        if (c === "{" || c === "[") st2.push(c === "{" ? "}" : "]");
+        else if (c === "}" || c === "]") st2.pop();
+      }
+      candidate = candidate.replace(/,\s*$/, "") + st2.reverse().join("");
+      return JSON.parse(candidate);
+    };
+
     let planData;
     try {
-      const jsonMatch = content.match(/```json\n?([\s\S]*?)\n?```/);
-      const jsonStr = jsonMatch ? jsonMatch[1] : content;
-      const cleanJson = jsonStr.replace(/^[^{]*/, "").replace(/[^}]*$/, "");
-      planData = JSON.parse(cleanJson.includes("{") ? cleanJson : jsonStr);
+      planData = repairJson(content);
     } catch (e) {
-      console.error("Parse error:", e, "Content:", content.substring(0, 500));
-      // Try to find JSON object in content
-      const match = content.match(/\{[\s\S]*\}/);
-      if (match) {
-        planData = JSON.parse(match[0]);
-      } else {
-        await serviceClient.from("fitness_plans").update({ status: "failed" }).eq("id", plan_row_id);
-        throw new Error("Failed to parse AI response");
-      }
+      console.error("Parse error:", e, "Content tail:", String(content).slice(-500));
+      await serviceClient.from("fitness_plans").update({ status: "failed" }).eq("id", plan_row_id);
+      throw new Error("Failed to parse AI response");
     }
+
 
     // Update plan with generated content
     const { data: updatedPlan, error: updateError } = await serviceClient
