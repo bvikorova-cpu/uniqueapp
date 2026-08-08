@@ -737,7 +737,7 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
     console.log("Generating with OpenAI, type:", type || "message", "style:", style);
 
     const maxTokens = (() => {
-      const longTypes = new Set(["travel_planner", "cultural_guide", "weekly_meal_plan", "fitness_plan", "nutrition_plan", "course_content", "educational", "monetization_ideas", "mystery_box_ai"]);
+      const longTypes = new Set(["travel_planner", "cultural_guide", "weekly_meal_plan", "fitness_plan", "nutrition_plan", "course_content", "educational", "monetization_ideas", "mystery_box_ai", "first_aid_quiz"]);
       const isSport = type && /(_analysis|_tactics|_match|_training|_scout|_chemistry|_prediction)$/.test(type);
       if (longTypes.has(type)) return 1500;
       if (isSport) return 1200;
