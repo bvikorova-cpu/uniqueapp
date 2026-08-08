@@ -104,8 +104,9 @@ export function NatureSounds() {
   };
 
   useEffect(() => {
-    return () => { audioRef.current?.pause(); audioRef.current = null; if (timerRef.current) clearInterval(timerRef.current); };
+    return () => { flushListeningTime.current(); audioRef.current?.pause(); audioRef.current = null; if (timerRef.current) clearInterval(timerRef.current); };
   }, []);
+
 
   const activeSound = NATURE_SOUNDS.find(s => s.id === selectedSound);
 
