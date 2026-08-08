@@ -3,14 +3,32 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 async function callAI(apiKey: string, messages: any[]) {
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: "gpt-4o-mini", messages }) });
-  if (!response.ok) throw new Error(`AI error: ${response.status}`);
-  const data = await response.json();
-  return data.choices?.[0]?.message?.content || "";
+  let lastStatus = 0;
+  let lastText = "";
+  for (const model of ["google/gemini-3.6-flash", "google/gemini-3.1-flash-lite"]) {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { "Lovable-API-Key": apiKey, "Content-Type": "application/json" },
+      body: JSON.stringify({ model, messages }) });
+    if (response.ok) {
+      const raw = await response.text();
+      if (!raw.trim()) { lastStatus = 502; lastText = "empty response"; continue; }
+      try {
+        const data = JSON.parse(raw);
+        const content = data.choices?.[0]?.message?.content ?? "";
+        if (content) return content;
+        lastStatus = 502; lastText = "no content";
+      } catch { lastStatus = 502; lastText = "invalid JSON from AI"; }
+      continue;
+    }
+    lastStatus = response.status;
+    lastText = await response.text().catch(() => "");
+    console.error("psychology-ai gateway error", model, lastStatus, lastText);
+    if (lastStatus === 402) throw new Error("AI credits exhausted on the platform");
+  }
+  throw new Error(lastStatus === 429 ? "Rate limit exceeded. Please try again in a moment." : `AI service temporarily unavailable (${lastStatus}) ${lastText}`.trim());
 }
+
 
 const CHAT_SYSTEM_PROMPT = `You are a warm, empathetic AI psychologist offering supportive, non-judgmental conversation.
 - Listen actively, validate feelings, and ask gentle open questions.
@@ -86,7 +104,15 @@ Deno.serve(async (req) => {
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-    const { action, ...params } = await req.json();
+    const rawBody = await req.text();
+    let parsedBody: any = {};
+    if (rawBody.trim()) {
+      try { parsedBody = JSON.parse(rawBody); } catch {
+        return new Response(JSON.stringify({ error: "Invalid JSON body" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+    }
+    const { action, ...params } = parsedBody;
+
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!apiKey) throw new Error("API key not configured");
 
