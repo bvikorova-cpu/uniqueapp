@@ -104,7 +104,7 @@ export default function MealPlannerGenerator() {
                 </div>
                 AI Meal Planner Pro
               </CardTitle>
-              <CardDescription>Generate personalized meal plans based on your goals (50 credits)</CardDescription>
+              <CardDescription>Generate personalized meal plans based on your goals (5 credits)</CardDescription>
             </div>
             <Badge variant="outline" className="gap-1">
               <ChefHat className="h-3 w-3 text-primary" />
