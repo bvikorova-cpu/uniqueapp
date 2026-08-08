@@ -223,17 +223,24 @@ serve(async (req) => {
     // helpers both now deduct from `ai_credits` (3 credits) so users don't hit a 402
     // while having plenty of AI credits. Kids modules keep their own per-hub ledger below.
     let __deduct: () => Promise<void> = async () => {};
-    if (!__hasKidsLedger) {
+    // First Aid module: single 3-credit charge per generation; follow-up steps
+    // inside an already-paid session are free (module = "first_aid_followup").
+    const __firstAid = reqBody.module === "first_aid";
+    const __firstAidFollowup = reqBody.module === "first_aid_followup";
+    if (!__hasKidsLedger && !__firstAidFollowup) {
       const __isLegacyGift = !!__style || !!__giftType;
       const __mysteryBoxCost = __type === "mystery_box_ai"
         ? ((__style === "box_strategy" || reqBody.analysisType === "box_strategy") ? 8 : 10)
         : null;
       const __uniCost = __type === "uni_assistant" ? 5 : null;
       const __roomDesignCost = __type === "generate_ai_room_design" ? 30 : null;
-      const __cost = __roomDesignCost ?? __uniCost ?? __mysteryBoxCost ?? (__isLegacyGift ? 3 : 1);
-      const __usage = __type === "mystery_box_ai"
-        ? "mystery_box_ai"
-        : (__type === "generate_ai_room_design" ? "ai_room_design" : (__isLegacyGift ? "gift_message" : "ai_generic"));
+      const __firstAidCost = __firstAid ? 3 : null;
+      const __cost = __firstAidCost ?? __roomDesignCost ?? __uniCost ?? __mysteryBoxCost ?? (__isLegacyGift ? 3 : 1);
+      const __usage = __firstAid
+        ? "first_aid"
+        : (__type === "mystery_box_ai"
+          ? "mystery_box_ai"
+          : (__type === "generate_ai_room_design" ? "ai_room_design" : (__isLegacyGift ? "gift_message" : "ai_generic")));
       const __auth = await requireAiCredits(req, corsHeaders, { credits: __cost, usageType: __usage });
       if (__auth.errorResponse) return __auth.errorResponse;
       __deduct = __auth.deduct!;
