@@ -54,9 +54,10 @@ const Psychology = () => {
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [loadingHistory, setLoadingHistory] = useState(true);
-  const [showSubscriptionDialog, setShowSubscriptionDialog] = useState(false);
+  const [showCreditsDialog, setShowCreditsDialog] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { subscription, refresh: refreshSubscription, createCheckout, manageSubscription, purchaseMessages } = usePsychologySubscription();
+  const navigate = useNavigate();
+  const { paidBalance, loading: creditsLoading, refresh: refreshCredits } = useAICredits();
 
   const scrollToBottom = () => { messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }); };
   useEffect(() => { scrollToBottom(); }, [messages]);
