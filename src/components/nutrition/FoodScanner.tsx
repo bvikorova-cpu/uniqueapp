@@ -58,7 +58,7 @@ export default function FoodScanner() {
                 </div>
                 Smart Food Scanner
               </CardTitle>
-              <CardDescription>AI-powered nutritional analysis from photos (1 credit)</CardDescription>
+              <CardDescription>AI-powered nutritional analysis from photos (10 credits)</CardDescription>
             </div>
             <Badge variant="outline" className="gap-1">
               <ChefHat className="h-3 w-3 text-primary" />
@@ -86,7 +86,7 @@ export default function FoodScanner() {
           <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
 
           <Button onClick={handleScan} disabled={scanMutation.isPending || !image || !credits || credits.credits_remaining < 1} className="w-full gap-2" size="lg">
-            {scanMutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Scanning...</> : <><Sparkles className="h-5 w-5" /> Scan Food (1 credit)</>}
+            {scanMutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Scanning...</> : <><Sparkles className="h-5 w-5" /> Scan Food (10 credits)</>}
           </Button>
         </CardContent>
       </Card>
