@@ -95,7 +95,9 @@ export function BreathingExercises() {
     setTimeLeft(exercise.phases[0].duration);
     setCurrentPhase(0);
     setCycleCount(0);
+    loggedRef.current = false;
   };
+
 
   const handlePause = () => setIsActive(false);
   const handleReset = () => {
