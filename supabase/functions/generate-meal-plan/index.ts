@@ -59,7 +59,7 @@ serve(async (req) => {
       );
     }
 
-    const creditDenied = await deductAICredits(user.id, 5, "generate-meal-plan");
+    const creditDenied = await deductAICredits(user.id, 50, "generate-meal-plan");
     if (creditDenied) return creditDenied;
 
     const plan = safeJson(result);
