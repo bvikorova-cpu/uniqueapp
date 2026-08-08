@@ -3,6 +3,29 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { callOpenAI, corsHeaders, errorResponse, jsonResponse } from "../_shared/openai.ts";
 import { deductAICredits } from "../_shared/credits.ts";
 
+const MODELS = ["google/gemini-2.5-flash", "google/gemini-2.5-flash-lite"];
+
+function isRetryable(msg: string) {
+  return /rate limit|429|5\d\d|overload|timeout|temporarily/i.test(msg);
+}
+
+async function generateWithFallback(system: string, user: string): Promise<string> {
+  let lastErr: unknown = null;
+  for (const model of MODELS) {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        return await callOpenAI({ system, user, model, json: true, temperature: 0.7 });
+      } catch (e) {
+        lastErr = e;
+        const msg = e instanceof Error ? e.message : String(e);
+        if (!isRetryable(msg)) break;
+        await new Promise((r) => setTimeout(r, 800 * (attempt + 1)));
+      }
+    }
+  }
+  throw lastErr instanceof Error ? lastErr : new Error("Meal plan failed");
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
@@ -15,17 +38,30 @@ serve(async (req) => {
     );
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return errorResponse("Not authenticated", 401);
-    const creditDenied = await deductAICredits(user.id, 5, "generate-meal-plan");
-    if (creditDenied) return creditDenied;
 
     const body = await req.json();
     const { goal = "balanced", calories = 2000, days = 7, diet = "standard", allergies = [], preferences = "" } = body;
 
-    const result = await callOpenAI({
-      system: "You are a nutritionist. Create a structured meal plan. Return JSON: {plan:[{day, meals:[{type, name, calories, macros:{p,c,f}, ingredients[], prep_minutes}]}], shopping_list[], total_daily_calories}.",
-      user: `Goal: ${goal}. Daily calories: ${calories}. Days: ${days}. Diet: ${diet}. Allergies: ${allergies.join(", ") || "none"}. Notes: ${preferences}`,
-      json: true,
-      temperature: 0.7 });
+    const system = "You are a nutritionist. Create a structured meal plan. Return JSON: {plan:[{day, meals:[{type, name, calories, macros:{p,c,f}, ingredients[], prep_minutes}]}], shopping_list[], total_daily_calories}.";
+    const userPrompt = `Goal: ${goal}. Daily calories: ${calories}. Days: ${days}. Diet: ${diet}. Allergies: ${allergies.join(", ") || "none"}. Notes: ${preferences}`;
+
+    // Charge only after we know the AI can respond, so rate limits don't burn credits.
+    let result: string;
+    try {
+      result = await generateWithFallback(system, userPrompt);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "AI unavailable";
+      return errorResponse(
+        isRetryable(msg)
+          ? "AI is busy right now. No credits were charged — please try again in a few seconds."
+          : msg,
+        503,
+      );
+    }
+
+    const creditDenied = await deductAICredits(user.id, 5, "generate-meal-plan");
+    if (creditDenied) return creditDenied;
+
     const plan = safeJson(result);
     return jsonResponse({ success: true, plan, result: plan, text: result });
   } catch (e: any) {
