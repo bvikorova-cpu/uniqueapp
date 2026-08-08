@@ -93,12 +93,12 @@ export const AIEmotionAnalysis = ({ onBack }: Props) => {
         </h2>
         <p className="text-muted-foreground">Analyze text for emotional patterns, sentiment, and psychological insights.</p>
         <Badge variant="outline" className="mt-2 gap-1">
-          <Zap className="h-3 w-3" /> 5 Credits per Analysis
+          <Zap className="h-3 w-3" /> {ANALYSIS_COST} Credits per Analysis
         </Badge>
       </motion.div>
 
       {/* Input */}
-      <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50">
+      <Card className="p-4 sm:p-6 bg-card/50 backdrop-blur-sm border-border/50">
         <h3 className="font-bold mb-3 flex items-center gap-2">
           <Brain className="h-5 w-5 text-primary" />
           Enter Text to Analyze
@@ -110,16 +110,17 @@ export const AIEmotionAnalysis = ({ onBack }: Props) => {
           rows={6}
           className="mb-4"
         />
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <span className="text-xs text-muted-foreground">{text.length} characters (min 20)</span>
-          <Button onClick={analyze} disabled={analyzing || text.length < 20} className="gap-2">
+          <Button onClick={analyze} disabled={analyzing || text.length < 20} className="gap-2 w-full sm:w-auto">
             {analyzing ? (
               <><Sparkles className="h-4 w-4 animate-spin" /> Analyzing...</>
             ) : (
-              <><Sparkles className="h-4 w-4" /> Analyze Emotions (5 credits)</>
+              <><Sparkles className="h-4 w-4" /> Analyze Emotions ({ANALYSIS_COST} credits)</>
             )}
           </Button>
         </div>
+
       </Card>
 
       {/* Result */}
