@@ -696,9 +696,13 @@ Only call the navigate tool when the user clearly asks to open/go to/show one of
       } else {
         userPrompt = customPrompt || `Generate the ${type} as requested.`;
       }
+    } else if (type === "first_aid_quiz") {
+      systemPrompt = 'You are a certified first aid instructor. Reply with ONLY a raw JSON array, no markdown fences, no prose: [{"question":"...","options":["A","B","C","D"],"correct":0,"explanation":"..."}]. Exactly 5 questions, 4 options each, "correct" is the 0-based index of the right option.';
+      userPrompt = customPrompt || "Create 5 multiple-choice first aid quiz questions about general first aid.";
     } else if (type === "travel_planner") {
       systemPrompt = "You are an expert travel advisor and trip planner. Provide detailed, practical, and well-organized travel advice. Use clear headings, bullet points, and specific recommendations. Be thorough but concise.";
       userPrompt = customPrompt || "Suggest a great travel destination";
+
     } else if (type === "gift_designer") {
       systemPrompt = `You are a creative gift designer AI. Create a unique personalized digital gift concept. Return ONLY valid JSON: {"name": "...", "description": "...", "emoji": "...", "value": number, "theme": "..."}. The value should be between 10-500. Be creative and unique.`;
       userPrompt = customPrompt || "Create a unique surprise gift";
