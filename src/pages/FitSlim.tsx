@@ -90,8 +90,12 @@ interface ProfileData {
 type ActiveView = "hub" | "workout-coach" | "meal-analyzer" | "body-scanner" | "motivation" | "progress" | "recovery" | "posture" | "streaks" | "sleep" | "challenges" | "supplements" | "gallery";
 
 const FITSLIM_PLANS = {
-  weekly: { price: "€10", days: 7, label: "7-Day Plan", description: "Perfect for a quick start" },
-  monthly: { price: "€35", days: 30, label: "30-Day Plan", description: "Complete transformation program", popular: true } };
+  weekly: { credits: 25, days: 7, label: "7-Day Plan", description: "Perfect for a quick start" },
+  monthly: { credits: 85, days: 30, label: "30-Day Plan", description: "Complete transformation program", popular: true },
+  day60: { credits: 150, days: 60, label: "60-Day Plan", description: "Serious long-term progress" },
+  day90: { credits: 210, days: 90, label: "90-Day Plan", description: "Full body recomposition journey" } };
+
+type PlanTypeKey = keyof typeof FITSLIM_PLANS;
 
 const AI_TOOLS = [
   { id: "workout-coach" as ActiveView, icon: Dumbbell, label: "AI Workout Coach", desc: "Custom workout plans for any goal", color: "from-emerald-500 to-green-600", cost: "3 Credits" },
@@ -115,7 +119,7 @@ const FitSlim = () => {
   const [activeTab, setActiveTab] = useState("personalized-plans");
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [selectedRecipe, setSelectedRecipe] = useState<FitRecipe | null>(null);
-  const [selectedPlanType, setSelectedPlanType] = useState<"weekly" | "monthly">("monthly");
+  const [selectedPlanType, setSelectedPlanType] = useState<PlanTypeKey>("monthly");
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showPlanForm, setShowPlanForm] = useState(false);
@@ -161,19 +165,33 @@ const FitSlim = () => {
     } finally { setIsGenerating(false); }
   };
 
-  const handleCheckout = async () => {
+  const handleGenerateWithCredits = async () => {
     if (!profileData.age || !profileData.gender || !profileData.height_cm || !profileData.weight_kg || !profileData.activity_level || !profileData.fitness_goal) {
       toast({ title: "Fill all required fields", variant: "destructive" }); return;
     }
+    const cost = FITSLIM_PLANS[selectedPlanType].credits;
+    if ((credits?.credits_remaining ?? 0) < cost) {
+      toast({ title: `Insufficient credits (${cost} required)`, description: "Top up your AI credits to generate this plan.", variant: "destructive" });
+      return;
+    }
     setIsCheckingOut(true);
+    setIsGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("create-fitslim-checkout", {
-        body: { planType: selectedPlanType, profileData: { ...profileData, age: parseInt(profileData.age), height_cm: parseInt(profileData.height_cm), weight_kg: parseFloat(profileData.weight_kg), target_weight_kg: profileData.target_weight_kg ? parseFloat(profileData.target_weight_kg) : null } } });
+      const { data, error } = await supabase.functions.invoke("generate-fitness-plan", {
+        body: {
+          plan_type: selectedPlanType,
+          profileData: { ...profileData, age: parseInt(profileData.age), height_cm: parseInt(profileData.height_cm), weight_kg: parseFloat(profileData.weight_kg), target_weight_kg: profileData.target_weight_kg ? parseFloat(profileData.target_weight_kg) : null } } });
       if (error) throw error;
-      if (data?.url) window.location.href = data.url;
+      if (data?.error) throw new Error(data.error);
+      toast({ title: "Plan generated! 🎉", description: `${cost} credits used.` });
+      setViewingPlan(data.plan);
+      setViewingPlanDetails(data.details);
+      setShowPlanForm(false);
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      loadMyPlans();
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
-    } finally { setIsCheckingOut(false); }
+    } finally { setIsCheckingOut(false); setIsGenerating(false); }
   };
 
   const openExistingPlan = async (plan: any) => {
@@ -182,13 +200,11 @@ const FitSlim = () => {
       setViewingPlanDetails(null);
     } else if (plan.status === "generating") {
       toast({ title: "Plan is being generated...", description: "Please check back in a moment." });
-    } else if (plan.payment_status === "paid" && plan.status !== "completed") {
-      // Paid but not yet generated – try to regenerate
-      verifyAndGenerate(plan.id);
     } else {
-      toast({ title: "Payment incomplete", description: "Finish checkout to receive this plan.", variant: "destructive" });
+      toast({ title: "Plan not ready", description: "Create a new plan with credits to continue.", variant: "destructive" });
     }
   };
+
 
   // ===== DATA =====
   const weightLossVideos = [
@@ -272,7 +288,7 @@ const FitSlim = () => {
         <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl flex items-center gap-2">
-              <Crown className="h-6 w-6 text-yellow-400" /> Your Personalized {plan.plan_type === "weekly" ? "7-Day" : "30-Day"} Plan
+              <Crown className="h-6 w-6 text-yellow-400" /> Your Personalized {(FITSLIM_PLANS as any)[plan.plan_type]?.days ?? 30}-Day Plan
             </DialogTitle>
             <DialogDescription>{plan.summary || "Your AI-generated personalized fitness and nutrition plan"}</DialogDescription>
           </DialogHeader>
@@ -473,23 +489,23 @@ const FitSlim = () => {
               </motion.div>
               <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base">Get a custom workout routine and meal plan tailored to your body, goals, and lifestyle.</p>
             </div>
-            <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-              {(Object.entries(FITSLIM_PLANS) as [string, typeof FITSLIM_PLANS.weekly][]).map(([key, plan]) => (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+              {(Object.entries(FITSLIM_PLANS) as [PlanTypeKey, typeof FITSLIM_PLANS.weekly][]).map(([key, plan]) => (
                 <motion.div key={key} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-                  <Card className={`cursor-pointer transition-all duration-300 relative overflow-hidden rounded-2xl ${selectedPlanType === key ? "border-2 border-emerald-500 shadow-2xl shadow-emerald-500/20 bg-gradient-to-br from-emerald-500/10 to-green-500/5" : "border-border/50 hover:border-emerald-500/50 bg-card/80 backdrop-blur-xl"}`} onClick={() => setSelectedPlanType(key as "weekly" | "monthly")}>
+                  <Card className={`cursor-pointer transition-all duration-300 relative overflow-hidden rounded-2xl h-full ${selectedPlanType === key ? "border-2 border-emerald-500 shadow-2xl shadow-emerald-500/20 bg-gradient-to-br from-emerald-500/10 to-green-500/5" : "border-border/50 hover:border-emerald-500/50 bg-card/80 backdrop-blur-xl"}`} onClick={() => setSelectedPlanType(key)}>
                     {(plan as any).popular && (
                       <div className="absolute top-0 right-0 bg-gradient-to-l from-yellow-500 to-orange-500 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl shadow-lg">
                         ⭐ MOST POPULAR
                       </div>
                     )}
-                    <CardContent className="p-8 text-center space-y-4">
-                      <div className={`w-16 h-16 mx-auto rounded-2xl flex items-center justify-center ${selectedPlanType === key ? "bg-gradient-to-br from-emerald-500 to-green-600 shadow-lg shadow-emerald-500/30" : "bg-gradient-to-br from-emerald-500/20 to-green-500/20"}`}>
-                        <Calendar className={`h-8 w-8 ${selectedPlanType === key ? "text-white" : "text-emerald-400"}`} />
+                    <CardContent className="p-6 text-center space-y-4">
+                      <div className={`w-14 h-14 mx-auto rounded-2xl flex items-center justify-center ${selectedPlanType === key ? "bg-gradient-to-br from-emerald-500 to-green-600 shadow-lg shadow-emerald-500/30" : "bg-gradient-to-br from-emerald-500/20 to-green-500/20"}`}>
+                        <Calendar className={`h-7 w-7 ${selectedPlanType === key ? "text-white" : "text-emerald-400"}`} />
                       </div>
-                      <h3 className="text-xl font-black">{plan.label}</h3>
+                      <h3 className="text-lg font-black">{plan.label}</h3>
                       <p className="text-muted-foreground text-sm">{plan.description}</p>
-                      <div className="text-5xl font-black bg-gradient-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent">{plan.price}</div>
-                      <p className="text-xs text-muted-foreground">One-time payment</p>
+                      <div className="text-4xl font-black bg-gradient-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent">{plan.credits}</div>
+                      <p className="text-xs text-muted-foreground">credits — one-time</p>
                      <ul className="text-sm space-y-2 text-left">
                        {[`${plan.days}-day workout plan`, `${plan.days}-day meal plan`, "Personalized to your body", "Macro & calorie targets", "Pro tips & guidance"].map((t, i) => (
                          <li key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400" /> {t}</li>
@@ -558,8 +574,8 @@ const FitSlim = () => {
                       ))}
                     </div>
                   </div>
-                  <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-6 text-lg" onClick={handleCheckout} disabled={isCheckingOut}>
-                    {isCheckingOut ? <><Loader2 className="h-5 w-5 mr-2 animate-spin" /> Processing...</> : <><Crown className="h-5 w-5 mr-2" /> Get My {FITSLIM_PLANS[selectedPlanType].label} — {FITSLIM_PLANS[selectedPlanType].price}</>}
+                  <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-6 text-lg" onClick={handleGenerateWithCredits} disabled={isCheckingOut}>
+                    {isCheckingOut ? <><Loader2 className="h-5 w-5 mr-2 animate-spin" /> Generating...</> : <><Crown className="h-5 w-5 mr-2" /> Get My {FITSLIM_PLANS[selectedPlanType].label} — {FITSLIM_PLANS[selectedPlanType].credits} Credits</>}
                   </Button>
                 </CardContent>
               </Card>
@@ -581,7 +597,7 @@ const FitSlim = () => {
                     <Card key={plan.id} className="bg-card/50 border-border/50 hover:border-green-500/50 cursor-pointer transition-all" onClick={() => openExistingPlan(plan)}>
                       <CardContent className="p-4 space-y-2">
                         <div className="flex items-center justify-between">
-                          <Badge variant="outline" className={plan.plan_type === "monthly" ? "bg-yellow-500/10 text-yellow-400" : "bg-blue-500/10 text-blue-400"}>{plan.plan_type === "monthly" ? "30-Day" : "7-Day"}</Badge>
+                          <Badge variant="outline" className={plan.plan_type === "weekly" ? "bg-blue-500/10 text-blue-400" : "bg-yellow-500/10 text-yellow-400"}>{(FITSLIM_PLANS as any)[plan.plan_type]?.label ?? "Custom Plan"}</Badge>
                           <Badge variant="outline" className={plan.status === "completed" ? "bg-green-500/10 text-green-400" : plan.status === "generating" ? "bg-yellow-500/10 text-yellow-400" : plan.status === "failed" ? "bg-red-500/10 text-red-400" : "bg-muted text-muted-foreground"}>
                             {plan.status === "completed" ? "✅ Ready" : plan.status === "generating" ? "⏳ Generating" : plan.status === "failed" ? "❌ Failed" : plan.payment_status === "paid" ? "Paid" : "Pending"}
                           </Badge>

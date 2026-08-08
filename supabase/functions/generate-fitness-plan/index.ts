@@ -9,15 +9,37 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  const PLAN_DAYS: Record<string, number> = { weekly: 7, monthly: 30, day60: 60, day90: 90 };
+  const PLAN_CREDITS: Record<string, number> = { weekly: 25, monthly: 85, day60: 150, day90: 210 };
+
   try {
-    const __auth = await requireAiCredits(req, corsHeaders, { credits: 1, usageType: "fitness_plan" });
-    if (__auth.errorResponse) return __auth.errorResponse;
-    const __deduct = __auth.deduct!;
+    const body = await req.json().catch(() => ({}));
+    const { plan_id, plan_type, profileData } = body ?? {};
+
     const serviceClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
       { auth: { persistSession: false } }
     );
+
+    // Resolve the plan type up front so we can charge the matching credit cost
+    let resolvedType: string | null = plan_type ?? null;
+    if (!resolvedType && plan_id) {
+      const { data: existing } = await serviceClient
+        .from("fitness_plans").select("plan_type").eq("id", plan_id).maybeSingle();
+      resolvedType = existing?.plan_type ?? null;
+    }
+    if (!resolvedType || !PLAN_DAYS[resolvedType]) {
+      return new Response(JSON.stringify({ error: "Invalid plan type" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    const __auth = await requireAiCredits(req, corsHeaders, {
+      credits: PLAN_CREDITS[resolvedType],
+      usageType: "fitness_plan",
+      description: `Personalized ${PLAN_DAYS[resolvedType]}-day plan` });
+    if (__auth.errorResponse) return __auth.errorResponse;
+    const __deduct = __auth.deduct!;
 
     // Authenticate user
     const authHeader = req.headers.get("Authorization")!;
@@ -28,28 +50,50 @@ serve(async (req) => {
         status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const { plan_id } = await req.json();
-    if (!plan_id) throw new Error("plan_id required");
-
-    // Get plan details
-    const { data: plan, error: planError } = await serviceClient
-      .from("fitness_plans")
-      .select("*")
-      .eq("id", plan_id)
-      .eq("user_id", userData.user.id)
-      .single();
-
-    if (planError || !plan) throw new Error("Plan not found");
-    if (plan.payment_status !== "paid") throw new Error("Plan not paid");
-    if (plan.status === "completed") {
-      return new Response(JSON.stringify({ plan }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    let plan: any = null;
+    if (plan_id) {
+      const { data: existing, error: planError } = await serviceClient
+        .from("fitness_plans")
+        .select("*")
+        .eq("id", plan_id)
+        .eq("user_id", userData.user.id)
+        .single();
+      if (planError || !existing) throw new Error("Plan not found");
+      if (existing.status === "completed") {
+        return new Response(JSON.stringify({ plan: existing }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      plan = existing;
+    } else {
+      if (!profileData) throw new Error("profileData required");
+      const { data: created, error: createErr } = await serviceClient
+        .from("fitness_plans")
+        .insert({
+          user_id: userData.user.id,
+          plan_type: resolvedType,
+          payment_status: "credits",
+          status: "generating",
+          age: profileData.age,
+          gender: profileData.gender,
+          height_cm: profileData.height_cm,
+          weight_kg: profileData.weight_kg,
+          target_weight_kg: profileData.target_weight_kg,
+          activity_level: profileData.activity_level,
+          fitness_goal: profileData.fitness_goal,
+          dietary_restrictions: profileData.dietary_restrictions ?? [],
+          health_conditions: profileData.health_conditions ?? [] })
+        .select()
+        .single();
+      if (createErr || !created) throw new Error(createErr?.message || "Failed to create plan");
+      plan = created;
     }
 
-    // Mark generating
-    await serviceClient.from("fitness_plans").update({ status: "generating" }).eq("id", plan_id);
+    const plan_row_id = plan.id;
 
-    const days = plan.plan_type === "weekly" ? 7 : 30;
+    // Mark generating
+    await serviceClient.from("fitness_plans").update({ status: "generating" }).eq("id", plan_row_id);
+
+    const days = PLAN_DAYS[resolvedType];
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
@@ -112,7 +156,7 @@ Generate a JSON response with this EXACT structure:
   "tips": ["Drink 2-3L water daily", "Sleep 7-8 hours", "Track progress weekly"]
 }
 
-IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include rest days (1-2 per week). Make meals realistic and diverse. All measurements in grams/ml.`;
+IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include rest days (1-2 per week). For plans longer than 30 days you may repeat a clearly labelled 4-week rotation to cover every day, but every day entry must be present. Keep exercise notes and ingredient lists short. Make meals realistic and diverse. All measurements in grams/ml.`;
 
     const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -130,7 +174,7 @@ IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include res
     if (!aiResponse.ok) {
       const errText = await aiResponse.text();
       console.error("OpenAI API error:", aiResponse.status, errText);
-      await serviceClient.from("fitness_plans").update({ status: "failed" }).eq("id", plan_id);
+      await serviceClient.from("fitness_plans").update({ status: "failed" }).eq("id", plan_row_id);
       throw new Error("AI generation failed");
     }
 
@@ -150,7 +194,7 @@ IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include res
       if (match) {
         planData = JSON.parse(match[0]);
       } else {
-        await serviceClient.from("fitness_plans").update({ status: "failed" }).eq("id", plan_id);
+        await serviceClient.from("fitness_plans").update({ status: "failed" }).eq("id", plan_row_id);
         throw new Error("Failed to parse AI response");
       }
     }
@@ -164,7 +208,7 @@ IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include res
         summary: planData.summary || "",
         status: "completed",
         updated_at: new Date().toISOString() })
-      .eq("id", plan_id)
+      .eq("id", plan_row_id)
       .select()
       .single();
 
