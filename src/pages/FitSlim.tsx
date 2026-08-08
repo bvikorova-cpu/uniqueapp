@@ -14,8 +14,9 @@ import {
   Play, Clock, ChefHat, Heart, Dumbbell, Target, Loader2, Crown, Check, Utensils,
   Calendar, ArrowRight, Scale, Ruler, User, Activity, ArrowLeft, Flame, Sparkles,
   ScanLine, TrendingUp, HeartPulse, ShoppingBag, Trophy, Zap, ScanEye, Moon,
-  Swords, Pill, ImagePlus
+  Swords, Pill, ImagePlus, Download
 } from "lucide-react";
+import { exportFitnessPlanPDF } from "@/lib/exportFitnessPlanPDF";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { useAICredits } from "@/hooks/useAICredits";
