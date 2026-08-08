@@ -14,8 +14,9 @@ import {
   Play, Clock, ChefHat, Heart, Dumbbell, Target, Loader2, Crown, Check, Utensils,
   Calendar, ArrowRight, Scale, Ruler, User, Activity, ArrowLeft, Flame, Sparkles,
   ScanLine, TrendingUp, HeartPulse, ShoppingBag, Trophy, Zap, ScanEye, Moon,
-  Swords, Pill, ImagePlus
+  Swords, Pill, ImagePlus, Download
 } from "lucide-react";
+import { exportFitnessPlanPDF } from "@/lib/exportFitnessPlanPDF";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { useAICredits } from "@/hooks/useAICredits";
@@ -274,6 +275,11 @@ const FitSlim = () => {
             </DialogTitle>
             <DialogDescription>{plan.summary || "Your AI-generated personalized fitness and nutrition plan"}</DialogDescription>
           </DialogHeader>
+          <div className="flex justify-end">
+            <Button size="sm" variant="outline" className="gap-2 border-green-500/30 text-green-500 hover:bg-green-500/10" onClick={() => exportFitnessPlanPDF(plan, viewingPlanDetails)}>
+              <Download className="h-4 w-4" /> Download PDF
+            </Button>
+          </div>
           {viewingPlanDetails && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
               {[
@@ -586,7 +592,12 @@ const FitSlim = () => {
                         </div>
                         <p className="text-sm text-muted-foreground">{plan.fitness_goal?.replace(/_/g, " ")} • {plan.activity_level}</p>
                         <p className="text-xs text-muted-foreground">{new Date(plan.created_at).toLocaleDateString()}</p>
-                        {plan.status === "completed" && <Button variant="outline" size="sm" className="w-full mt-2 border-green-500/30 text-green-400 hover:bg-green-500/10" onClick={(e) => { e.stopPropagation(); openExistingPlan(plan); }}>View Plan</Button>}
+                        {plan.status === "completed" && (
+                          <div className="grid grid-cols-2 gap-2 mt-2">
+                            <Button variant="outline" size="sm" className="border-green-500/30 text-green-400 hover:bg-green-500/10" onClick={(e) => { e.stopPropagation(); openExistingPlan(plan); }}>View Plan</Button>
+                            <Button variant="outline" size="sm" className="gap-1 border-primary/30 text-primary hover:bg-primary/10" onClick={(e) => { e.stopPropagation(); exportFitnessPlanPDF(plan); }}><Download className="h-4 w-4" /> PDF</Button>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
                   ))}
