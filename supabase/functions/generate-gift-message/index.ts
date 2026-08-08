@@ -745,6 +745,7 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
       const isSport = type && /(_analysis|_tactics|_match|_training|_scout|_chemistry|_prediction)$/.test(type);
       if (type === "first_aid_quiz") return 4000;
       if (type === "first_aid_map") return 2000;
+      if (type === "fitness_plan") return 3000;
 
       if (longTypes.has(type)) return 1500;
       if (isSport) return 1200;

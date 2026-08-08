@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { AiMarkdown } from "../common/AiMarkdown";
 
 export default function AIWorkoutCoach({ onBack }: { onBack: () => void }) {
   const { credits } = useAICredits();
@@ -23,9 +24,21 @@ export default function AIWorkoutCoach({ onBack }: { onBack: () => void }) {
     try {
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          message: `Create a detailed ${form.duration}-minute workout plan for someone with ${form.level} fitness level.
-Goal: ${form.goal}. Equipment: ${form.equipment || "None (bodyweight only)"}.
-Include warmup, main exercises (with sets, reps, rest), and cooldown. Format with clear sections.` } });
+          type: "fitness_plan",
+          customPrompt: `Create a COMPLETE, detailed ${form.duration}-minute workout plan.
+Fitness level: ${form.level}. Goal: ${form.goal}. Equipment: ${form.equipment || "None (bodyweight only)"}.
+
+Structure the answer with markdown headings and include ALL of the following:
+## Overview — goal, intensity, estimated calories burned, weekly frequency
+## Warm-up (5 min) — exercises with duration
+## Main Workout — a markdown table with columns: Exercise | Sets | Reps/Time | Rest | Target muscles
+## Technique & Form Tips — 1-2 key cues per main exercise, common mistakes to avoid
+## Cool-down & Stretching — exercises with duration
+## Progression Plan — how to advance over weeks 1-4
+## Nutrition & Hydration — practical tips supporting this goal
+## Recovery & Safety — rest days, warning signs, when to stop
+## Weekly Schedule — a simple 7-day split
+Be specific and practical. No motivational fluff, no intro sentence.` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No response");
     } catch (e: any) {
@@ -80,7 +93,7 @@ Include warmup, main exercises (with sets, reps, rest), and cooldown. Format wit
           </Button>
           {result && (
             <Card className="bg-emerald-500/5 border-emerald-500/20 mt-4">
-              <CardContent className="p-4 whitespace-pre-line text-sm">{result}</CardContent>
+              <CardContent className="p-4"><AiMarkdown content={result} /></CardContent>
             </Card>
           )}
         </CardContent>
