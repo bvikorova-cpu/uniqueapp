@@ -158,7 +158,7 @@ const Psychology = () => {
   }
 
   if (activeView === 'chat') {
-    if (loadingHistory || subscription.loading) {
+    if (loadingHistory || creditsLoading) {
       return (
         <div className="min-h-screen bg-background pt-20 pb-8 flex items-center justify-center">
           <div className="text-center"><Brain className="w-12 h-12 text-primary animate-pulse mx-auto mb-4" /><p className="text-muted-foreground">Loading...</p></div>
