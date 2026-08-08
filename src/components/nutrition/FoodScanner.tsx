@@ -23,8 +23,8 @@ export default function FoodScanner() {
       if (error) throw error;
       return data;
     },
-    onSuccess: (data) => {
-      setScanResult(data.scan);
+    onSuccess: (data: any) => {
+      setScanResult(data?.scan ?? data?.result ?? data?.data ?? null);
       queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
       toast.success("Food scanned successfully!");
     },
@@ -40,7 +40,7 @@ export default function FoodScanner() {
 
   const handleScan = () => {
     if (!image) { toast.error("Please upload an image first"); return; }
-    if (!credits || credits.credits_remaining < 10) { toast.error('You need 10 AI credits. Please purchase credits.'); return; }
+    if (!credits || credits.credits_remaining < 1) { toast.error('You need 1 AI credit. Please purchase credits.'); return; }
     scanMutation.mutate(image);
   };
 
@@ -58,7 +58,7 @@ export default function FoodScanner() {
                 </div>
                 Smart Food Scanner
               </CardTitle>
-              <CardDescription>AI-powered nutritional analysis from photos (10 credits)</CardDescription>
+              <CardDescription>AI-powered nutritional analysis from photos (1 credit)</CardDescription>
             </div>
             <Badge variant="outline" className="gap-1">
               <ChefHat className="h-3 w-3 text-primary" />
@@ -85,8 +85,8 @@ export default function FoodScanner() {
 
           <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
 
-          <Button onClick={handleScan} disabled={scanMutation.isPending || !image || !credits || credits.credits_remaining < 10} className="w-full gap-2" size="lg">
-            {scanMutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Scanning...</> : <><Sparkles className="h-5 w-5" /> Scan Food (10 credits)</>}
+          <Button onClick={handleScan} disabled={scanMutation.isPending || !image || !credits || credits.credits_remaining < 1} className="w-full gap-2" size="lg">
+            {scanMutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Scanning...</> : <><Sparkles className="h-5 w-5" /> Scan Food (1 credit)</>}
           </Button>
         </CardContent>
       </Card>
