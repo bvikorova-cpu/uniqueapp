@@ -52,29 +52,32 @@ export const AICertificationSystem = ({ onBack }: Props) => {
       const track = CERT_TRACKS.find(t => t.id === trackId);
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          type: "travel_planner",
+          type: "first_aid_quiz",
           recipientName: track?.label || trackId,
           senderName: "exam",
-          message: `Generate a ${track?.questions || 10}-question multiple choice certification exam for "${track?.label}". Topic: ${track?.desc}.
-
-Each question should test practical first aid knowledge. Format EXACTLY as JSON array:
+          message: `Generate a ${track?.questions || 10}-question multiple choice certification exam for "${track?.label}". Topic: ${track?.desc}. Test practical first aid knowledge with real medical scenarios. Return ONLY a raw JSON array:
 [{"question":"...","options":["A","B","C","D"],"correct":0,"explanation":"..."}]
-
-Where "correct" is the 0-based index of the right answer. Make questions challenging but fair. Include real medical scenarios.` } });
+Where "correct" is the 0-based index of the right answer.` } });
       if (error) throw error;
-      const text = data?.message || data?.analysis || "";
-      const jsonMatch = text.match(/\[[\s\S]*\]/);
-      if (jsonMatch) {
-        const parsed = JSON.parse(jsonMatch[0]);
-        setQuestions(parsed.slice(0, track?.questions || 10));
-      }
+      const text = data?.message || data?.analysis || data?.content || "";
+      const cleaned = String(text).replace(/```json/gi, "").replace(/```/g, "").trim();
+      const jsonMatch = cleaned.match(/\[[\s\S]*\]/);
+      const parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
+      const valid = Array.isArray(parsed)
+        ? parsed.filter((q: any) => q?.question && Array.isArray(q?.options) && q.options.length >= 2 && typeof q?.correct === "number")
+        : [];
+      if (valid.length === 0) throw new Error("empty");
+      setQuestions(valid.slice(0, track?.questions || 10));
     } catch (e) {
       console.error(e);
-      toast({ title: "Error", description: "Failed to generate exam", variant: "destructive" });
+      setSelectedTrack(null);
+      setQuestions([]);
+      toast({ title: "Error", description: "Failed to generate exam. Please try again.", variant: "destructive" });
     } finally {
       setLoading(false);
     }
   };
+
 
   const answerQuestion = (optionIndex: number) => {
     const newAnswers = [...answers, optionIndex];
