@@ -400,12 +400,13 @@ const FitSlim = () => {
               ))}
             </TabsContent>
           </Tabs>
-          {viewingPlanDetails?.tips && (
+          {details?.tips && (
             <Card className="bg-yellow-500/10 border-yellow-500/30 mt-4">
               <CardHeader className="pb-2"><CardTitle className="text-lg">💡 Tips for Success</CardTitle></CardHeader>
               <CardContent>
                 <ul className="space-y-1">
-                  {viewingPlanDetails.tips.map((tip: string, i: number) => (
+                  {details.tips.map((tip: string, i: number) => (
+
                     <li key={i} className="text-sm flex items-start gap-2"><Check className="h-4 w-4 text-green-400 mt-0.5 shrink-0" /><span>{tip}</span></li>
                   ))}
                 </ul>
