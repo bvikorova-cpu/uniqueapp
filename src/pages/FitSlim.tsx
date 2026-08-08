@@ -260,14 +260,8 @@ const FitSlim = () => {
           {activeView === "meal-analyzer" && <AIMealAnalyzer onBack={back} />}
           {activeView === "body-scanner" && <AIBodyScanner onBack={back} />}
           {activeView === "motivation" && <AIMotivationCoach onBack={back} />}
-          {activeView === "progress" && <AIProgressTracker onBack={back} />}
           {activeView === "recovery" && <AIRecoveryAdvisor onBack={back} />}
-          {activeView === "posture" && <AIPostureAnalyzer onBack={back} />}
-          {activeView === "streaks" && <AIWorkoutStreaks onBack={back} />}
-          {activeView === "sleep" && <AISleepOptimizer onBack={back} />}
-          {activeView === "challenges" && <AISocialChallenges onBack={back} />}
-          {activeView === "supplements" && <AISupplementStack onBack={back} />}
-          {activeView === "gallery" && <BeforeAfterGallery onBack={back} />}
+
         </main>
       </div>
     );
