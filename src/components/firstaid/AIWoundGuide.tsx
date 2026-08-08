@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AiMarkdown } from "@/components/common/AiMarkdown";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -125,7 +126,7 @@ Include ALL of these sections:
           <Card className="border-cyan-200">
             <CardHeader><CardTitle>{WOUND_TYPES.find(w => w.id === selectedWound)?.label}</CardTitle></CardHeader>
             <CardContent>
-              <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap text-sm">{analysis}</div>
+              <AiMarkdown content={analysis} />
             </CardContent>
           </Card>
           <Button variant="outline" className="w-full" onClick={() => { setSelectedWound(null); setAnalysis(null); }}>Analyze Another Wound Type</Button>

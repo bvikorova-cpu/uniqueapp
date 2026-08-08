@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AiMarkdown } from "@/components/common/AiMarkdown";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -61,7 +62,7 @@ export function AISymptomChecker({ onBack }: Props) {
           <Button onClick={analyze} disabled={loading} className="w-full bg-red-600 hover:bg-red-700">
             {loading ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Analyzing...</> : "Analyze Symptoms (3 Credits)"}
           </Button>
-          {result && <div className="bg-muted rounded-lg p-4 whitespace-pre-wrap text-sm">{result}</div>}
+          {result && <div className="bg-muted rounded-lg p-4"><AiMarkdown content={result} /></div>}
         </CardContent>
       </Card>
     </div>

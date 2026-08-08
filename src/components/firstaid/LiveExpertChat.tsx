@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { AiMarkdown } from "@/components/common/AiMarkdown";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -129,7 +130,7 @@ Provide a thorough, professional response. Use bullet points for clarity. Includ
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                   <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm ${msg.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
-                    <p className="whitespace-pre-wrap">{msg.content}</p>
+                    <AiMarkdown content={msg.content} />
                     <p className="text-[10px] opacity-60 mt-1">{msg.timestamp.toLocaleTimeString()}</p>
                   </div>
                 </div>
