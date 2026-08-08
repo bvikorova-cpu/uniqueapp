@@ -104,7 +104,15 @@ Deno.serve(async (req) => {
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-    const { action, ...params } = await req.json();
+    const rawBody = await req.text();
+    let parsedBody: any = {};
+    if (rawBody.trim()) {
+      try { parsedBody = JSON.parse(rawBody); } catch {
+        return new Response(JSON.stringify({ error: "Invalid JSON body" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+    }
+    const { action, ...params } = parsedBody;
+
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!apiKey) throw new Error("API key not configured");
 
