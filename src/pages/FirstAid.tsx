@@ -19,12 +19,11 @@ import { AIInjuryAssessor } from "@/components/firstaid/AIInjuryAssessor";
 import { AIScenarioSimulator } from "@/components/firstaid/AIScenarioSimulator";
 import { AICertificationSystem } from "@/components/firstaid/AICertificationSystem";
 import { AIWoundGuide } from "@/components/firstaid/AIWoundGuide";
-import { CommunityStories } from "@/components/firstaid/CommunityStories";
 import { LiveExpertChat } from "@/components/firstaid/LiveExpertChat";
 import { FirstAidMap } from "@/components/firstaid/FirstAidMap";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
-type ViewType = "hub" | "symptoms" | "emergency" | "quiz" | "kit" | "cpr" | "injury" | "simulator" | "certification" | "wound" | "stories" | "expert" | "map";
+type ViewType = "hub" | "symptoms" | "emergency" | "quiz" | "kit" | "cpr" | "injury" | "simulator" | "certification" | "wound" | "expert" | "map";
 
 const AI_TOOLS = [
   { id: "symptoms" as ViewType, icon: Stethoscope, label: "AI Symptom Checker", desc: "Analyze symptoms & get first aid steps", color: "from-red-500 to-rose-600" },
@@ -36,7 +35,6 @@ const AI_TOOLS = [
   { id: "simulator" as ViewType, icon: Gamepad2, label: "AI Scenario Simulator", desc: "Interactive emergency scenarios", color: "from-amber-500 to-orange-600" },
   { id: "certification" as ViewType, icon: Award, label: "Certification System", desc: "Earn digital certificates", color: "from-yellow-500 to-amber-600" },
   { id: "wound" as ViewType, icon: Eye, label: "AI Wound Guide", desc: "Visual wound identification", color: "from-cyan-500 to-blue-600" },
-  { id: "stories" as ViewType, icon: BookOpen, label: "Community Stories", desc: "Real first aid success stories", color: "from-rose-500 to-pink-600" },
   { id: "expert" as ViewType, icon: MessageSquare, label: "AI Expert Chat", desc: "Chat with AI specialist", color: "from-teal-500 to-emerald-600" },
   { id: "map" as ViewType, icon: MapPin, label: "First Aid Map", desc: "Find AEDs & pharmacies nearby", color: "from-indigo-500 to-blue-600" },
 ];
@@ -104,7 +102,6 @@ const FirstAid = () => {
   if (activeView === "simulator") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AIScenarioSimulator onBack={() => setActiveView("hub")} /></div></div>;
   if (activeView === "certification") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AICertificationSystem onBack={() => setActiveView("hub")} /></div></div>;
   if (activeView === "wound") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AIWoundGuide onBack={() => setActiveView("hub")} /></div></div>;
-  if (activeView === "stories") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><CommunityStories onBack={() => setActiveView("hub")} /></div></div>;
   if (activeView === "expert") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><LiveExpertChat onBack={() => setActiveView("hub")} /></div></div>;
   if (activeView === "map") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><FirstAidMap onBack={() => setActiveView("hub")} /></div></div>;
   if (activeView === "injury") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AIInjuryAssessor onBack={() => setActiveView("hub")} /></div></div>;
@@ -172,7 +169,7 @@ const FirstAid = () => {
                   </div>
                   <p className="font-semibold text-sm">{tool.label}</p>
                   <p className="text-xs text-muted-foreground mt-1">{tool.desc}</p>
-                  <Badge className="mt-2 bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300 text-[10px]">{tool.id === "stories" ? "Free" : "3 Credits"}</Badge>
+                  <Badge className="mt-2 bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300 text-[10px]">{"3 Credits"}</Badge>
                 </CardContent>
               </Card>
             );
