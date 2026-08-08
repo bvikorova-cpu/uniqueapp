@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { AiMarkdown } from "../common/AiMarkdown";
 
 export default function AIMotivationCoach({ onBack }: { onBack: () => void }) {
   const { credits } = useAICredits();
@@ -84,7 +85,7 @@ One short line to repeat.` } });
           </Button>
           {result && (
             <Card className="bg-red-500/5 border-red-500/20 mt-4">
-              <CardContent className="p-4 whitespace-pre-line text-sm">{result}</CardContent>
+              <CardContent className="p-4"><AiMarkdown content={result} /></CardContent>
             </Card>
           )}
         </CardContent>
