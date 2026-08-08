@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AiMarkdown } from "@/components/common/AiMarkdown";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -200,7 +201,7 @@ CHOICE_C: [third option]`}` } });
         <Card className="border-emerald-300 bg-emerald-50/50 dark:bg-emerald-950/30">
           <CardHeader><CardTitle className="flex items-center gap-2">🏁 Scenario Complete</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap text-sm">{outcome}</div>
+            <AiMarkdown content={outcome} />
             <Button onClick={reset} className="w-full"><RotateCcw className="mr-2 h-4 w-4" /> Try Another Scenario</Button>
           </CardContent>
         </Card>
