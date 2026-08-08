@@ -744,6 +744,8 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
       const longTypes = new Set(["travel_planner", "cultural_guide", "weekly_meal_plan", "fitness_plan", "nutrition_plan", "course_content", "educational", "monetization_ideas", "mystery_box_ai", "first_aid_quiz"]);
       const isSport = type && /(_analysis|_tactics|_match|_training|_scout|_chemistry|_prediction)$/.test(type);
       if (type === "first_aid_quiz") return 4000;
+      if (type === "first_aid_map") return 2000;
+
       if (longTypes.has(type)) return 1500;
       if (isSport) return 1200;
       return 600;
