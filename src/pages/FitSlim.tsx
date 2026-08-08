@@ -275,6 +275,11 @@ const FitSlim = () => {
             </DialogTitle>
             <DialogDescription>{plan.summary || "Your AI-generated personalized fitness and nutrition plan"}</DialogDescription>
           </DialogHeader>
+          <div className="flex justify-end">
+            <Button size="sm" variant="outline" className="gap-2 border-green-500/30 text-green-500 hover:bg-green-500/10" onClick={() => exportFitnessPlanPDF(plan, viewingPlanDetails)}>
+              <Download className="h-4 w-4" /> Download PDF
+            </Button>
+          </div>
           {viewingPlanDetails && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
               {[
