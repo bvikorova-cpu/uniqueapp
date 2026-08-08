@@ -1,6 +1,7 @@
 # Project Memory
 
 ## Core
+- AI text output: NEVER raw markdown (###, **, ---). Always render via `AiMarkdown` component.
 - Language: 12-language support (SK, EN, HU, etc.) with auto-detection.
 - Currency: EUR (€) exclusively.
 - Access: 100% paid credits. NO free credits (no signup grant, no monthly top-up) — cancelled due to multi-account abuse. AI tools cost 2-5 credits per use.
