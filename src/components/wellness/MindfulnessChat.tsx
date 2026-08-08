@@ -89,6 +89,7 @@ export function MindfulnessChat() {
           } catch { buffer = line + "\n" + buffer; break; }
         }
       }
+      if (assistantMessage.trim()) void logActivity("mindfulness_chat");
     } catch (error) {
       console.error("Chat error:", error);
       toast({ title: "Error", description: "Failed to send message. Please try again.", variant: "destructive" });
