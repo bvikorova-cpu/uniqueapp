@@ -20,26 +20,67 @@ export function AIFirstAidQuiz({ onBack }: Props) {
   const [finished, setFinished] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const parseQuestions = (raw: string): Question[] | null => {
+    const text = String(raw || "").replace(/```(?:json)?/gi, "").trim();
+    const candidates: string[] = [];
+    const arr = text.match(/\[[\s\S]*\]/);
+    if (arr) candidates.push(arr[0]);
+    const obj = text.match(/\{[\s\S]*\}/);
+    if (obj) candidates.push(obj[0]);
+    for (const c of candidates) {
+      try {
+        const parsed = JSON.parse(c);
+        const list = Array.isArray(parsed) ? parsed : parsed?.questions;
+        if (Array.isArray(list)) {
+          const clean = list
+            .filter((x: any) => x && typeof x.question === "string" && Array.isArray(x.options) && x.options.length >= 2)
+            .map((x: any) => ({
+              question: String(x.question),
+              options: x.options.map((o: any) => String(o)),
+              correct: Number.isInteger(x.correct) ? x.correct : Number(x.correct) || 0,
+              explanation: String(x.explanation ?? "") }));
+          if (clean.length > 0) return clean;
+        }
+      } catch { /* try next candidate */ }
+    }
+    return null;
+  };
+
   const generate = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("generate-gift-message", {
-        body: {
-          type: "travel_planner",
-          prompt: `Generate exactly 5 first aid quiz questions about "${topic}". Return ONLY valid JSON array: [{"question":"...","options":["A","B","C","D"],"correct":0,"explanation":"..."}]. correct is 0-based index. No markdown, no extra text.`
+      let parsed: Question[] | null = null;
+      let lastError: string | null = null;
+
+      for (let attempt = 0; attempt < 2 && !parsed; attempt++) {
+        const { data, error } = await supabase.functions.invoke("generate-gift-message", {
+          body: {
+            type: "travel_planner",
+            prompt: `Generate exactly 5 multiple-choice first aid quiz questions about "${topic}". Respond with ONLY a raw JSON array, no prose, no markdown fences: [{"question":"...","options":["A","B","C","D"],"correct":0,"explanation":"..."}]. "correct" is the 0-based index of the right option.`
+          }
+        });
+        if (error) {
+          const msg = (error as any)?.message || "";
+          if (/429|rate limit/i.test(msg)) { lastError = "AI is busy right now. Please try again in a moment."; continue; }
+          if (/402|credit/i.test(msg)) { lastError = "Not enough credits. This quiz costs 3 credits."; break; }
+          lastError = msg || "Quiz generation failed";
+          continue;
         }
-      });
-      if (error) throw error;
-      const text = data?.message || "";
-      const jsonMatch = text.match(/\[[\s\S]*\]/);
-      if (jsonMatch) {
-        const parsed = JSON.parse(jsonMatch[0]);
+        if ((data as any)?.error) { lastError = String((data as any).error); continue; }
+        parsed = parseQuestions((data as any)?.message || (data as any)?.text || (data as any)?.result || "");
+        if (!parsed) lastError = "Could not read the generated quiz. Please try again.";
+      }
+
+      if (parsed) {
         setQuestions(parsed);
         setCurrentQ(0); setScore(0); setSelected(null); setFinished(false);
-      } else { toast.error("Could not parse quiz"); }
-    } catch { toast.error("Quiz generation failed"); }
+      } else {
+        toast.error(lastError || "Quiz generation failed");
+      }
+    } catch (e: any) { toast.error(e?.message || "Quiz generation failed"); }
     finally { setLoading(false); }
   };
+
 
   const answer = (idx: number) => {
     if (selected !== null) return;
