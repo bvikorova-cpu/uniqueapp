@@ -24,14 +24,8 @@ import AIWorkoutCoach from "@/components/fit-slim/AIWorkoutCoach";
 import AIMealAnalyzer from "@/components/fit-slim/AIMealAnalyzer";
 import AIBodyScanner from "@/components/fit-slim/AIBodyScanner";
 import AIMotivationCoach from "@/components/fit-slim/AIMotivationCoach";
-import AIProgressTracker from "@/components/fit-slim/AIProgressTracker";
 import AIRecoveryAdvisor from "@/components/fit-slim/AIRecoveryAdvisor";
-import AIPostureAnalyzer from "@/components/fit-slim/AIPostureAnalyzer";
-import AIWorkoutStreaks from "@/components/fit-slim/AIWorkoutStreaks";
-import AISleepOptimizer from "@/components/fit-slim/AISleepOptimizer";
-import AISocialChallenges from "@/components/fit-slim/AISocialChallenges";
-import AISupplementStack from "@/components/fit-slim/AISupplementStack";
-import BeforeAfterGallery from "@/components/fit-slim/BeforeAfterGallery";
+
 
 // Video thumbnails - weight loss
 import hiitWorkout from "@/assets/videos/hiit-workout.jpg";
@@ -87,7 +81,7 @@ interface ProfileData {
   dietary_restrictions: string[]; health_conditions: string[];
 }
 
-type ActiveView = "hub" | "workout-coach" | "meal-analyzer" | "body-scanner" | "motivation" | "progress" | "recovery" | "posture" | "streaks" | "sleep" | "challenges" | "supplements" | "gallery";
+type ActiveView = "hub" | "workout-coach" | "meal-analyzer" | "body-scanner" | "motivation" | "recovery";
 
 const FITSLIM_PLANS = {
   weekly: { credits: 25, days: 7, label: "7-Day Plan", description: "Perfect for a quick start" },
@@ -102,14 +96,8 @@ const AI_TOOLS = [
   { id: "meal-analyzer" as ActiveView, icon: Utensils, label: "AI Meal Analyzer", desc: "Nutritional breakdown of any meal", color: "from-orange-500 to-amber-600", cost: "3 Credits" },
   { id: "body-scanner" as ActiveView, icon: ScanLine, label: "AI Body Scanner", desc: "Full body composition analysis", color: "from-violet-500 to-purple-600", cost: "3 Credits" },
   { id: "motivation" as ActiveView, icon: Flame, label: "AI Motivation Coach", desc: "Personalized motivation & mindset", color: "from-red-500 to-orange-600", cost: "3 Credits" },
-  { id: "progress" as ActiveView, icon: TrendingUp, label: "AI Progress Tracker", desc: "Analyze trends & predict timeline", color: "from-cyan-500 to-blue-600", cost: "3 Credits" },
   { id: "recovery" as ActiveView, icon: HeartPulse, label: "AI Recovery Advisor", desc: "Post-workout recovery protocols", color: "from-pink-500 to-rose-600", cost: "3 Credits" },
-  { id: "posture" as ActiveView, icon: ScanEye, label: "AI Posture Analyzer", desc: "Analyze form & corrective exercises", color: "from-indigo-500 to-purple-600", cost: "3 Credits", isNew: true },
-  { id: "streaks" as ActiveView, icon: Trophy, label: "Workout Streaks & XP", desc: "Gamified daily challenges & leveling", color: "from-yellow-500 to-orange-600", cost: "Free", isNew: true },
-  { id: "sleep" as ActiveView, icon: Moon, label: "AI Sleep Optimizer", desc: "Optimize sleep for peak recovery", color: "from-indigo-500 to-blue-600", cost: "3 Credits", isNew: true },
-  { id: "challenges" as ActiveView, icon: Swords, label: "Social Challenges", desc: "Competitive fitness challenges & XP", color: "from-pink-500 to-rose-600", cost: "Free", isNew: true },
-  { id: "supplements" as ActiveView, icon: Pill, label: "AI Supplement Stack", desc: "Personalized supplement recommendations", color: "from-green-500 to-teal-600", cost: "3 Credits", isNew: true },
-  { id: "gallery" as ActiveView, icon: ImagePlus, label: "Before & After Gallery", desc: "Community transformations & stories", color: "from-amber-500 to-orange-600", cost: "Free", isNew: true },
+
 ];
 
 const FitSlim = () => {
@@ -266,14 +254,8 @@ const FitSlim = () => {
           {activeView === "meal-analyzer" && <AIMealAnalyzer onBack={back} />}
           {activeView === "body-scanner" && <AIBodyScanner onBack={back} />}
           {activeView === "motivation" && <AIMotivationCoach onBack={back} />}
-          {activeView === "progress" && <AIProgressTracker onBack={back} />}
           {activeView === "recovery" && <AIRecoveryAdvisor onBack={back} />}
-          {activeView === "posture" && <AIPostureAnalyzer onBack={back} />}
-          {activeView === "streaks" && <AIWorkoutStreaks onBack={back} />}
-          {activeView === "sleep" && <AISleepOptimizer onBack={back} />}
-          {activeView === "challenges" && <AISocialChallenges onBack={back} />}
-          {activeView === "supplements" && <AISupplementStack onBack={back} />}
-          {activeView === "gallery" && <BeforeAfterGallery onBack={back} />}
+
         </main>
       </div>
     );
@@ -734,16 +716,11 @@ const FitSlim = () => {
               {[
                 { icon: "🏋️", tip: "Use AI Workout Coach to get plans tailored to your exact level" },
                 { icon: "🍽️", tip: "Scan every meal with AI Meal Analyzer to stay on track" },
-                { icon: "📊", tip: "Track progress weekly with AI Progress Tracker" },
                 { icon: "💪", tip: "Combine AI plans with video workouts for best results" },
                 { icon: "🧘", tip: "Don't skip recovery — use AI Recovery Advisor after tough sessions" },
                 { icon: "🔥", tip: "Stay motivated with daily AI Motivation Coach sessions" },
-                { icon: "🧍", tip: "Fix your posture with AI Posture Analyzer for injury prevention" },
-                { icon: "😴", tip: "Optimize sleep with AI Sleep Optimizer for faster recovery" },
-                { icon: "💊", tip: "Get personalized supplement recommendations with AI Stack Builder" },
-                { icon: "🏆", tip: "Complete daily challenges in Streaks & XP to level up" },
-                { icon: "⚔️", tip: "Challenge friends in Social Challenges for accountability" },
-                { icon: "📸", tip: "Share your transformation in Before & After Gallery" },
+                { icon: "📈", tip: "Re-scan your body monthly to see real composition changes" },
+
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-2 p-2 rounded-lg bg-card/50">
                   <span className="text-lg">{item.icon}</span>
