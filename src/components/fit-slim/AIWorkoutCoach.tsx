@@ -92,7 +92,7 @@ Be specific and practical. No motivational fluff, no intro sentence.` } });
           </Button>
           {result && (
             <Card className="bg-emerald-500/5 border-emerald-500/20 mt-4">
-              <CardContent className="p-4 whitespace-pre-line text-sm">{result}</CardContent>
+              <CardContent className="p-4"><AiMarkdown content={result} /></CardContent>
             </Card>
           )}
         </CardContent>
