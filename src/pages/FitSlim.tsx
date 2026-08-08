@@ -81,7 +81,7 @@ interface ProfileData {
   dietary_restrictions: string[]; health_conditions: string[];
 }
 
-type ActiveView = "hub" | "workout-coach" | "meal-analyzer" | "body-scanner" | "motivation" | "progress" | "recovery" | "posture" | "streaks" | "sleep" | "challenges" | "supplements" | "gallery";
+type ActiveView = "hub" | "workout-coach" | "meal-analyzer" | "body-scanner" | "motivation" | "recovery";
 
 const FITSLIM_PLANS = {
   weekly: { credits: 25, days: 7, label: "7-Day Plan", description: "Perfect for a quick start" },
