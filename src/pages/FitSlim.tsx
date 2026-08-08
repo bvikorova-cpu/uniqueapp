@@ -90,8 +90,12 @@ interface ProfileData {
 type ActiveView = "hub" | "workout-coach" | "meal-analyzer" | "body-scanner" | "motivation" | "progress" | "recovery" | "posture" | "streaks" | "sleep" | "challenges" | "supplements" | "gallery";
 
 const FITSLIM_PLANS = {
-  weekly: { price: "€10", days: 7, label: "7-Day Plan", description: "Perfect for a quick start" },
-  monthly: { price: "€35", days: 30, label: "30-Day Plan", description: "Complete transformation program", popular: true } };
+  weekly: { credits: 25, days: 7, label: "7-Day Plan", description: "Perfect for a quick start" },
+  monthly: { credits: 85, days: 30, label: "30-Day Plan", description: "Complete transformation program", popular: true },
+  day60: { credits: 150, days: 60, label: "60-Day Plan", description: "Serious long-term progress" },
+  day90: { credits: 210, days: 90, label: "90-Day Plan", description: "Full body recomposition journey" } };
+
+type PlanTypeKey = keyof typeof FITSLIM_PLANS;
 
 const AI_TOOLS = [
   { id: "workout-coach" as ActiveView, icon: Dumbbell, label: "AI Workout Coach", desc: "Custom workout plans for any goal", color: "from-emerald-500 to-green-600", cost: "3 Credits" },
