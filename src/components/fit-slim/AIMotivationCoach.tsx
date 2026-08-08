@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { AiMarkdown } from "../common/AiMarkdown";
 
 export default function AIMotivationCoach({ onBack }: { onBack: () => void }) {
   const { credits } = useAICredits();
@@ -23,19 +24,42 @@ export default function AIMotivationCoach({ onBack }: { onBack: () => void }) {
     try {
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          message: `Act as an elite fitness motivation coach. Create a powerful, personalized motivation package:
+          type: "fitness_plan",
+          message: `Act as an elite fitness motivation coach. Create a rich, personalized motivation package.
 Goal: ${form.goal}
 ${form.obstacle ? `Current obstacle: ${form.obstacle}` : ""}
 ${form.streak ? `Current streak: ${form.streak} days` : ""}
-Include:
-1. A powerful motivational speech (3-4 paragraphs)
-2. 5 daily affirmations
-3. A practical action plan for today
-4. A mindset shift technique
-5. A celebration milestone plan
-Use energetic, empowering language with emojis. Make it personal and actionable.` } });
+
+Answer in markdown with these sections:
+## Your Mission
+A powerful 3-4 paragraph motivational speech that directly addresses the goal and obstacle.
+
+## Reality Check
+Realistic timeline and what the goal actually requires week by week (short table: Week | Focus | Expected progress).
+
+## Daily Affirmations
+5 affirmations tailored to the obstacle.
+
+## Today's Action Plan
+A checklist of 5-7 concrete tasks for today (movement, food, mindset, recovery).
+
+## Mindset Shifts
+3 reframing techniques with a one-line script for each.
+
+## Obstacle Playbook
+For the stated obstacle: triggers, early warning signs, and 3 counter-moves.
+
+## Habit Stack
+How to attach the new habits to existing routines.
+
+## Milestones & Rewards
+Milestone table: Milestone | When | Reward.
+
+## Mantra
+One short line to repeat.` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No response");
+
     } catch (e: any) {
       toast.error(e.message || "Error generating motivation");
     } finally {
@@ -61,7 +85,7 @@ Use energetic, empowering language with emojis. Make it personal and actionable.
           </Button>
           {result && (
             <Card className="bg-red-500/5 border-red-500/20 mt-4">
-              <CardContent className="p-4 whitespace-pre-line text-sm">{result}</CardContent>
+              <CardContent className="p-4"><AiMarkdown content={result} /></CardContent>
             </Card>
           )}
         </CardContent>
