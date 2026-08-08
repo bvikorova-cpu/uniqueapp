@@ -119,7 +119,7 @@ const FitSlim = () => {
   const [activeTab, setActiveTab] = useState("personalized-plans");
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [selectedRecipe, setSelectedRecipe] = useState<FitRecipe | null>(null);
-  const [selectedPlanType, setSelectedPlanType] = useState<"weekly" | "monthly">("monthly");
+  const [selectedPlanType, setSelectedPlanType] = useState<PlanTypeKey>("monthly");
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showPlanForm, setShowPlanForm] = useState(false);
@@ -288,7 +288,7 @@ const FitSlim = () => {
         <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl flex items-center gap-2">
-              <Crown className="h-6 w-6 text-yellow-400" /> Your Personalized {plan.plan_type === "weekly" ? "7-Day" : "30-Day"} Plan
+              <Crown className="h-6 w-6 text-yellow-400" /> Your Personalized {(FITSLIM_PLANS as any)[plan.plan_type]?.label ?? "Custom"} Plan
             </DialogTitle>
             <DialogDescription>{plan.summary || "Your AI-generated personalized fitness and nutrition plan"}</DialogDescription>
           </DialogHeader>
