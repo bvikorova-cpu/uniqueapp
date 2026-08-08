@@ -445,6 +445,3 @@ verify_jwt = true
 verify_jwt = true
 
 
-
-[functions.first-aid-quiz]
-verify_jwt = true
