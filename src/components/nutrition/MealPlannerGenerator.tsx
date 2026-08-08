@@ -31,22 +31,48 @@ export default function MealPlannerGenerator() {
   const generateMutation = useMutation({
     mutationFn: async () => {
       const { data, error } = await supabase.functions.invoke('generate-meal-plan', {
-        body: { title, days, targetCalories, targetProtein, targetCarbs, targetFats, dietaryPreferences, allergens, isPremium: false }
+        body: {
+          goal: dietaryPreferences.join(", ") || "balanced",
+          calories: targetCalories,
+          days,
+          diet: dietaryPreferences.join(", ") || "standard",
+          allergies: allergens,
+          preferences: `Plan title: ${title}. Macro targets: ${targetProtein}g protein, ${targetCarbs}g carbs, ${targetFats}g fats.`,
+        }
       });
       if (error) throw error;
       return data;
     },
     onSuccess: (data) => {
-      setGeneratedPlan(data.mealPlan);
+      // Edge function returns { plan: { plan: [{ day, meals: [...] }], shopping_list, total_daily_calories } }
+      const raw = data?.plan ?? data?.result ?? null;
+      const rawDays: any[] = Array.isArray(raw?.plan) ? raw.plan : Array.isArray(raw?.days) ? raw.days : [];
+      if (!rawDays.length) {
+        toast.error("The AI returned an unreadable plan. Please try again.");
+        return;
+      }
+      setGeneratedPlan({
+        title: title || "My Meal Plan",
+        days: rawDays.length,
+        target_calories: raw?.total_daily_calories ?? targetCalories,
+        shopping_list: raw?.shopping_list ?? [],
+        plan_data: rawDays.map((d: any, i: number) => ({
+          day: d?.day ?? i + 1,
+          meals: Array.isArray(d?.meals)
+            ? d.meals
+            : Object.entries(d?.meals ?? {}).map(([type, m]: [string, any]) => ({ type, ...(m || {}) })),
+        })),
+      });
       queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
       queryClient.invalidateQueries({ queryKey: ['meal-plans'] });
+      window.dispatchEvent(new Event('ai-credits-updated'));
       toast.success("Meal plan generated successfully!");
     },
     onError: (error: any) => toast.error(error.message || "Error generating meal plan") });
 
   const handleGenerate = () => {
     if (!title || targetCalories < 500) { toast.error("Please fill in all required fields"); return; }
-    if (!credits || credits.credits_remaining < 50) { toast.error('You need 50 AI credits. Please purchase credits.'); return; }
+    if (!credits || credits.credits_remaining < 5) { toast.error('You need 5 AI credits. Please purchase credits.'); return; }
     generateMutation.mutate();
   };
 
