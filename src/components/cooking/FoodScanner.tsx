@@ -121,10 +121,10 @@ export const FoodScanner = () => {
 
           <Button
             onClick={() => scanMutation.mutate()}
-            disabled={!image || scanMutation.isPending || !credits || credits.credits < 1}
+            disabled={!image || scanMutation.isPending || !credits || credits.credits < 10}
             className="w-full"
           >
-            {scanMutation.isPending ? 'Scanning...' : 'Scan Food (1 credit)'}
+            {scanMutation.isPending ? 'Scanning...' : 'Scan Food (10 credits)'}
           </Button>
         </div>
       </Card>
