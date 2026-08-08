@@ -376,7 +376,7 @@ const FitSlim = () => {
               ))}
             </TabsContent>
             <TabsContent value="meals" className="space-y-4 mt-4">
-              {meal?.days?.slice(0, 7).map((day: any, i: number) => (
+              {mealDays.map((day: any, i: number) => (
                 <Card key={i} className="bg-card/50 border-border/50">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg flex items-center justify-between">
