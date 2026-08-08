@@ -5,13 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
-  Send, Brain, Lock, Heart, Sparkles, Crown, CreditCard,
+  Send, Brain, Lock, Heart, Sparkles, Coins,
   SmilePlus, Wind, Zap, Phone, MessageCircle, TrendingUp,
   Moon, Target, Volume2, FileText
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { usePsychologySubscription } from "@/hooks/usePsychologySubscription";
+import { useAICredits } from "@/hooks/useAICredits";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
