@@ -8,22 +8,66 @@ import { Camera, Upload } from 'lucide-react';
 import { useCookingCredits } from '@/hooks/useCookingCredits';
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
+interface FoodScanResult {
+  name: string;
+  calories: number | string;
+  macros: {
+    protein: number | string;
+    carbs: number | string;
+    fats: number | string;
+  };
+}
+
+const normalizeScanResult = (payload: unknown): FoodScanResult | null => {
+  if (!payload || typeof payload !== 'object') return null;
+
+  const response = payload as Record<string, unknown>;
+  const candidate = response.result ?? response.data ?? response.analysis;
+  if (!candidate || typeof candidate !== 'object') return null;
+
+  const result = candidate as Record<string, unknown>;
+  const rawMacros = result.macros;
+  const macros = rawMacros && typeof rawMacros === 'object'
+    ? rawMacros as Record<string, unknown>
+    : {};
+
+  return {
+    name: String(result.food_name ?? result.name ?? 'Identified food'),
+    calories: typeof result.calories === 'number' || typeof result.calories === 'string'
+      ? result.calories
+      : '—',
+    macros: {
+      protein: typeof (macros.protein ?? macros.p) === 'number' || typeof (macros.protein ?? macros.p) === 'string'
+        ? macros.protein ?? macros.p as number | string
+        : '—',
+      carbs: typeof (macros.carbs ?? macros.c) === 'number' || typeof (macros.carbs ?? macros.c) === 'string'
+        ? macros.carbs ?? macros.c as number | string
+        : '—',
+      fats: typeof (macros.fats ?? macros.f) === 'number' || typeof (macros.fats ?? macros.f) === 'string'
+        ? macros.fats ?? macros.f as number | string
+        : '—',
+    },
+  };
+};
+
 export const FoodScanner = () => {
   const [image, setImage] = useState<string | null>(null);
-  const [scanResult, setScanResult] = useState<any>(null);
+  const [scanResult, setScanResult] = useState<FoodScanResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { data: credits } = useCookingCredits();
 
   const scanMutation = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('scan-food-ai', {
+      const { data, error } = await supabase.functions.invoke('scan-food', {
         body: { image }
       });
       if (error) throw error;
-      return data;
+      const normalized = normalizeScanResult(data);
+      if (!normalized) throw new Error('The scanner returned an unreadable result. Please try again.');
+      return normalized;
     },
     onSuccess: (data) => {
-      setScanResult(data.analysis);
+      setScanResult(data);
       toast.success('Food scanned successfully!');
     },
     onError: (error: any) => {
