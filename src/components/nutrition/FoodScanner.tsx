@@ -40,7 +40,7 @@ export default function FoodScanner() {
 
   const handleScan = () => {
     if (!image) { toast.error("Please upload an image first"); return; }
-    if (!credits || credits.credits_remaining < 1) { toast.error('You need 1 AI credit. Please purchase credits.'); return; }
+    if (!credits || credits.credits_remaining < 10) { toast.error('You need 10 AI credits. Please purchase credits.'); return; }
     scanMutation.mutate(image);
   };
 
@@ -85,7 +85,7 @@ export default function FoodScanner() {
 
           <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
 
-          <Button onClick={handleScan} disabled={scanMutation.isPending || !image || !credits || credits.credits_remaining < 1} className="w-full gap-2" size="lg">
+          <Button onClick={handleScan} disabled={scanMutation.isPending || !image || !credits || credits.credits_remaining < 10} className="w-full gap-2" size="lg">
             {scanMutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Scanning...</> : <><Sparkles className="h-5 w-5" /> Scan Food (10 credits)</>}
           </Button>
         </CardContent>
