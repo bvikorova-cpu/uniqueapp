@@ -94,6 +94,9 @@ serve(async (req) => {
     await serviceClient.from("fitness_plans").update({ status: "generating" }).eq("id", plan_row_id);
 
     const days = PLAN_DAYS[resolvedType];
+    // Ask the model for a compact repeatable rotation, then expand it to the full day count
+    const cycleDays = Math.min(days, 14);
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
@@ -156,7 +159,7 @@ Generate a JSON response with this EXACT structure:
   "tips": ["Drink 2-3L water daily", "Sleep 7-8 hours", "Track progress weekly"]
 }
 
-IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include rest days (1-2 per week). For plans longer than 30 days you may repeat a clearly labelled 4-week rotation to cover every day, but every day entry must be present. Keep exercise notes and ingredient lists short. Make meals realistic and diverse. All measurements in grams/ml.`;
+IMPORTANT: Generate EXACTLY ${cycleDays} days (a repeatable rotation) in BOTH "workout_plan.days" AND "meal_plan.days" — both arrays must have ${cycleDays} entries numbered 1..${cycleDays}. This rotation will be repeated to cover the full ${days}-day program. Include 1-2 rest days per week (rest day = title "Active Recovery / Rest", empty or light exercises). Keep exercise notes and ingredient lists short. Make meals realistic and diverse. All measurements in grams/ml.`;
 
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -230,13 +233,36 @@ IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include res
       throw new Error("Failed to parse AI response");
     }
 
+    // Expand a generated cycle into the full requested day count so nothing is missing.
+    const expandDays = (src: any[], total: number) => {
+      const base = (Array.isArray(src) ? src : []).filter(Boolean);
+      if (!base.length) return [];
+      const out: any[] = [];
+      for (let d = 1; d <= total; d++) {
+        const tpl = base[(d - 1) % base.length];
+        const week = Math.ceil(d / 7);
+        out.push({ ...JSON.parse(JSON.stringify(tpl)), day: d, week });
+      }
+      return out;
+    };
+
+    const workoutDays = expandDays(planData?.workout_plan?.days, days);
+    const mealDays = expandDays(planData?.meal_plan?.days, days);
+
+    const details = {
+      daily_calories: planData.daily_calories,
+      daily_protein_g: planData.daily_protein_g,
+      daily_carbs_g: planData.daily_carbs_g,
+      daily_fats_g: planData.daily_fats_g,
+      tips: planData.tips };
 
     // Update plan with generated content
     const { data: updatedPlan, error: updateError } = await serviceClient
       .from("fitness_plans")
       .update({
-        workout_plan: planData.workout_plan || {},
-        meal_plan: planData.meal_plan || {},
+        workout_plan: { ...(planData.workout_plan || {}), days: workoutDays, total_days: days, details },
+        meal_plan: { ...(planData.meal_plan || {}), days: mealDays, total_days: days, details },
+
         summary: planData.summary || "",
         status: "completed",
         updated_at: new Date().toISOString() })
@@ -244,16 +270,11 @@ IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include res
       .select()
       .single();
 
+
     if (updateError) throw updateError;
 
     await __deduct().catch((e) => console.error("deduct failed:", e));
-    return new Response(JSON.stringify({ plan: updatedPlan,
-      details: {
-        daily_calories: planData.daily_calories,
-        daily_protein_g: planData.daily_protein_g,
-        daily_carbs_g: planData.daily_carbs_g,
-        daily_fats_g: planData.daily_fats_g,
-        tips: planData.tips } }), {
+    return new Response(JSON.stringify({ plan: updatedPlan, details }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     console.error("Error:", error);
