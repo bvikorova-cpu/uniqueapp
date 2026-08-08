@@ -154,6 +154,23 @@ const FitSlim = () => {
     } finally { setIsGenerating(false); }
   };
 
+  // Poll a plan row until it's completed (no page reload), then open it
+  const waitForPlanReady = async (planId: string, tries = 40): Promise<any | null> => {
+    for (let i = 0; i < tries; i++) {
+      const { data } = await supabase.from("fitness_plans").select("*").eq("id", planId).maybeSingle();
+      if (data && (data as any).status === "completed") return data;
+      if (data && (data as any).status === "failed") return null;
+      await new Promise((r) => setTimeout(r, 3000));
+    }
+    return null;
+  };
+
+  const openPlanNow = (plan: any, details?: any) => {
+    setShowPlanForm(false);
+    setViewingPlan(plan);
+    setViewingPlanDetails(details ?? null);
+  };
+
   const handleGenerateWithCredits = async () => {
     if (!profileData.age || !profileData.gender || !profileData.height_cm || !profileData.weight_kg || !profileData.activity_level || !profileData.fitness_goal) {
       toast({ title: "Fill all required fields", variant: "destructive" }); return;
@@ -172,11 +189,28 @@ const FitSlim = () => {
           profileData: { ...profileData, age: parseInt(profileData.age), height_cm: parseInt(profileData.height_cm), weight_kg: parseFloat(profileData.weight_kg), target_weight_kg: profileData.target_weight_kg ? parseFloat(profileData.target_weight_kg) : null } } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      toast({ title: "Plan generated! 🎉", description: `${cost} credits used.` });
-      setViewingPlan(data.plan);
-      setViewingPlanDetails(data.details);
-      setShowPlanForm(false);
       window.dispatchEvent(new Event("ai-credits-updated"));
+
+      if (data?.plan && (data.plan.status === "completed" || data.details)) {
+        toast({ title: "Plan generated! 🎉", description: `${cost} credits used.` });
+        openPlanNow(data.plan, data.details);
+        loadMyPlans();
+        return;
+      }
+
+      // Still generating on the server: poll silently and open the plan when ready
+      const planId = data?.plan?.id ?? data?.plan_id;
+      if (planId) {
+        const ready = await waitForPlanReady(planId);
+        loadMyPlans();
+        if (ready) {
+          toast({ title: "Plan generated! 🎉", description: `${cost} credits used.` });
+          openPlanNow(ready);
+        } else {
+          toast({ title: "Generation failed", description: "Please try again.", variant: "destructive" });
+        }
+        return;
+      }
       loadMyPlans();
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -188,11 +222,16 @@ const FitSlim = () => {
       setViewingPlan(plan);
       setViewingPlanDetails(null);
     } else if (plan.status === "generating") {
-      toast({ title: "Plan is being generated...", description: "Please check back in a moment." });
+      toast({ title: "Plan is being generated...", description: "It will open automatically when ready." });
+      const ready = await waitForPlanReady(plan.id);
+      loadMyPlans();
+      if (ready) openPlanNow(ready);
+      else toast({ title: "Plan not ready", description: "Please try again later.", variant: "destructive" });
     } else {
       toast({ title: "Plan not ready", description: "Create a new plan with credits to continue.", variant: "destructive" });
     }
   };
+
 
 
   // ===== DATA =====
