@@ -196,7 +196,7 @@ export default function Wellness() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Tool Cards Grid */}
           <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-            {WELLNESS_TOOLS.slice(0, 6).map((tool, i) => (
+            {WELLNESS_TOOLS.filter(t => t.cost === 0).map((tool, i) => (
               <WellnessToolCard
                 key={tool.id}
                 tool={tool}
