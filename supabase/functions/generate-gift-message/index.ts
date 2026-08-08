@@ -699,7 +699,11 @@ Only call the navigate tool when the user clearly asks to open/go to/show one of
     } else if (type === "first_aid_quiz") {
       systemPrompt = 'You are a certified first aid instructor. Reply with ONLY a raw JSON array, no markdown fences, no prose: [{"question":"...","options":["A","B","C","D"],"correct":0,"explanation":"..."}]. Produce exactly the number of questions the user asks for (default 5), 4 options each, "correct" is the 0-based index of the right option. Keep every question, option and explanation short (explanation max 20 words) so the JSON is always complete.';
       userPrompt = customPrompt || "Create 5 multiple-choice first aid quiz questions about general first aid.";
+    } else if (type === "first_aid_map") {
+      systemPrompt = 'You are a local emergency services directory. Reply with ONLY a raw JSON array, no markdown fences, no prose: [{"name":"...","type":"AED|Pharmacy|Hospital|Urgent Care|Fire Station","address":"...","distance":"0.3 km","hours":"24/7","phone":"+421 900 000 000","hasAED":true}]. Return 8 entries sorted by distance, realistic for the requested location, mixing facility types. Keep strings short.';
+      userPrompt = customPrompt || "List emergency facilities near the given location.";
     } else if (type === "travel_planner") {
+
       systemPrompt = "You are an expert travel advisor and trip planner. Provide detailed, practical, and well-organized travel advice. Use clear headings, bullet points, and specific recommendations. Be thorough but concise.";
       userPrompt = customPrompt || "Suggest a great travel destination";
 
