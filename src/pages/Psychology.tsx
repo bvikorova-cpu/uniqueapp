@@ -23,7 +23,7 @@ import { AIEmotionAnalysis } from "@/components/psychologist/AIEmotionAnalysis";
 import { CrisisResources } from "@/components/psychologist/CrisisResources";
 import { MoodCharts } from "@/components/psychologist/MoodCharts";
 import { AIDreamJournal } from "@/components/psychologist/AIDreamJournal";
-import { GuidedCBT } from "@/components/psychologist/GuidedCBT";
+
 import { AmbientSounds } from "@/components/psychologist/AmbientSounds";
 import { WeeklyWellnessReport } from "@/components/psychologist/WeeklyWellnessReport";
 
@@ -33,7 +33,7 @@ interface Message {
   content: string;
 }
 
-type ActiveView = 'main' | 'chat' | 'mood' | 'breathing' | 'emotion' | 'crisis' | 'charts' | 'dreams' | 'cbt' | 'sounds' | 'report';
+type ActiveView = 'main' | 'chat' | 'mood' | 'breathing' | 'emotion' | 'crisis' | 'charts' | 'dreams' | 'sounds' | 'report';
 
 const TOOLS = [
   { id: "chat" as const, icon: MessageCircle, title: "AI Chat Session", desc: "Talk to your AI psychologist in a safe, anonymous space", color: "from-purple-500 to-pink-500", badge: "1 Credit / msg" },
@@ -43,7 +43,7 @@ const TOOLS = [
   { id: "sounds" as const, icon: Volume2, title: "Ambient Sound Mixer", desc: "Nature sounds and white noise for relaxation and focus", color: "from-teal-500 to-green-500", badge: "Free" },
   { id: "dreams" as const, icon: Moon, title: "AI Dream Journal", desc: "Log dreams and unlock AI psychological interpretations", color: "from-violet-500 to-purple-500", badge: "5 Credits" },
   { id: "emotion" as const, icon: Zap, title: "AI Emotion Analysis", desc: "Analyze text for emotional patterns and psychological insights", color: "from-emerald-500 to-green-500", badge: "3 Credits" },
-  { id: "cbt" as const, icon: Target, title: "Guided CBT Exercises", desc: "Interactive cognitive behavioral therapy tools for thought management", color: "from-amber-500 to-yellow-500", badge: "Free" },
+  
   { id: "report" as const, icon: FileText, title: "Weekly Wellness Report", desc: "AI-generated weekly summary of your emotional health", color: "from-rose-500 to-pink-500", badge: "10 Credits" },
   { id: "crisis" as const, icon: Phone, title: "Crisis Resources", desc: "Emergency hotlines and professional referral directory", color: "from-red-500 to-rose-500", badge: "Free" },
 ];
@@ -145,7 +145,7 @@ const Psychology = () => {
     crisis: <CrisisResources onBack={() => setActiveView('main')} />,
     charts: <MoodCharts onBack={() => setActiveView('main')} />,
     dreams: <AIDreamJournal onBack={() => setActiveView('main')} />,
-    cbt: <GuidedCBT onBack={() => setActiveView('main')} />,
+    
     sounds: <AmbientSounds onBack={() => setActiveView('main')} />,
     report: <WeeklyWellnessReport onBack={() => setActiveView('main')} /> };
 
@@ -274,7 +274,7 @@ const Psychology = () => {
             <p className="text-sm text-muted-foreground leading-relaxed mb-4">
               AI Psychologist is your personal mental wellness companion powered by advanced AI technology.
               This intelligent platform provides empathetic support, mood tracking, breathing exercises, dream analysis,
-              CBT tools, ambient sounds, and emotional analysis in a completely safe and anonymous environment. Available 24/7.
+              ambient sounds, and emotional analysis in a completely safe and anonymous environment. Available 24/7.
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
@@ -349,7 +349,7 @@ const Psychology = () => {
                 <p className="text-xs text-muted-foreground">AI wellness summary</p>
               </div>
             </div>
-            <p className="text-xs text-muted-foreground mt-4">No subscription — everything runs on AI credits. Mood tracker, charts, breathing, ambient sounds, CBT and crisis resources stay free.</p>
+            <p className="text-xs text-muted-foreground mt-4">No subscription — everything runs on AI credits. Mood tracker, charts, breathing, ambient sounds and crisis resources stay free.</p>
 
           </Card>
         </motion.div>
