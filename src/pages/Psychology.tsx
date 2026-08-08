@@ -36,7 +36,7 @@ interface Message {
 type ActiveView = 'main' | 'chat' | 'mood' | 'breathing' | 'emotion' | 'crisis' | 'charts' | 'dreams' | 'cbt' | 'sounds' | 'report';
 
 const TOOLS = [
-  { id: "chat" as const, icon: MessageCircle, title: "AI Chat Session", desc: "Talk to your AI psychologist in a safe, anonymous space", color: "from-purple-500 to-pink-500", badge: "Core" },
+  { id: "chat" as const, icon: MessageCircle, title: "AI Chat Session", desc: "Talk to your AI psychologist in a safe, anonymous space", color: "from-purple-500 to-pink-500", badge: "1 Credit / msg" },
   { id: "mood" as const, icon: SmilePlus, title: "Mood Tracker & Journal", desc: "Log daily moods, track patterns, and journal your feelings", color: "from-yellow-500 to-orange-500", badge: "Free" },
   { id: "charts" as const, icon: TrendingUp, title: "Mood Trends & Charts", desc: "Visualize emotional patterns with interactive charts over time", color: "from-indigo-500 to-blue-500", badge: "Free" },
   { id: "breathing" as const, icon: Wind, title: "Breathing & Meditation", desc: "Guided breathing exercises and meditation timer", color: "from-blue-500 to-cyan-500", badge: "Free" },
