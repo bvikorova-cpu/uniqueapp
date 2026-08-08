@@ -172,9 +172,18 @@ const FitSlim = () => {
   };
 
   const handleGenerateWithCredits = async () => {
-    if (!profileData.age || !profileData.gender || !profileData.height_cm || !profileData.weight_kg || !profileData.activity_level || !profileData.fitness_goal) {
-      toast({ title: "Fill all required fields", variant: "destructive" }); return;
+    const missing: string[] = [];
+    if (!profileData.age) missing.push("Age");
+    if (!profileData.gender) missing.push("Gender");
+    if (!profileData.height_cm) missing.push("Height (cm)");
+    if (!profileData.weight_kg) missing.push("Weight (kg)");
+    if (!profileData.activity_level) missing.push("Activity Level");
+    if (!profileData.fitness_goal) missing.push("Fitness Goal");
+    if (missing.length) {
+      toast({ title: "Fill all required fields", description: `Missing: ${missing.join(", ")}`, variant: "destructive" });
+      return;
     }
+
     const cost = FITSLIM_PLANS[selectedPlanType].credits;
     if ((credits?.credits_remaining ?? 0) < cost) {
       toast({ title: `Insufficient credits (${cost} required)`, description: "Top up your AI credits to generate this plan.", variant: "destructive" });
