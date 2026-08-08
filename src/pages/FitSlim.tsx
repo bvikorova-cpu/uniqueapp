@@ -288,7 +288,7 @@ const FitSlim = () => {
         <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl flex items-center gap-2">
-              <Crown className="h-6 w-6 text-yellow-400" /> Your Personalized {(FITSLIM_PLANS as any)[plan.plan_type]?.label ?? "Custom"} Plan
+              <Crown className="h-6 w-6 text-yellow-400" /> Your Personalized {(FITSLIM_PLANS as any)[plan.plan_type]?.days ?? 30}-Day Plan
             </DialogTitle>
             <DialogDescription>{plan.summary || "Your AI-generated personalized fitness and nutrition plan"}</DialogDescription>
           </DialogHeader>
@@ -597,7 +597,7 @@ const FitSlim = () => {
                     <Card key={plan.id} className="bg-card/50 border-border/50 hover:border-green-500/50 cursor-pointer transition-all" onClick={() => openExistingPlan(plan)}>
                       <CardContent className="p-4 space-y-2">
                         <div className="flex items-center justify-between">
-                          <Badge variant="outline" className={plan.plan_type === "monthly" ? "bg-yellow-500/10 text-yellow-400" : "bg-blue-500/10 text-blue-400"}>{plan.plan_type === "monthly" ? "30-Day" : "7-Day"}</Badge>
+                          <Badge variant="outline" className={plan.plan_type === "weekly" ? "bg-blue-500/10 text-blue-400" : "bg-yellow-500/10 text-yellow-400"}>{(FITSLIM_PLANS as any)[plan.plan_type]?.label ?? "Custom Plan"}</Badge>
                           <Badge variant="outline" className={plan.status === "completed" ? "bg-green-500/10 text-green-400" : plan.status === "generating" ? "bg-yellow-500/10 text-yellow-400" : plan.status === "failed" ? "bg-red-500/10 text-red-400" : "bg-muted text-muted-foreground"}>
                             {plan.status === "completed" ? "✅ Ready" : plan.status === "generating" ? "⏳ Generating" : plan.status === "failed" ? "❌ Failed" : plan.payment_status === "paid" ? "Paid" : "Pending"}
                           </Badge>
