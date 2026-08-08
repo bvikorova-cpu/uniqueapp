@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Cloud, Waves, Trees, Play, Pause, Volume2, VolumeX, Zap, Flame, Droplets, Clock, X, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { useWellnessProgress } from "@/hooks/useWellnessProgress";
+
 
 const NATURE_SOUNDS = [
   { id: "rain", name: "Rain", icon: Cloud, description: "Gentle rain for calming the mind", src: "/sounds/rain.mp3", color: "text-blue-400", bg: "from-blue-500/10 to-cyan-500/5" },
