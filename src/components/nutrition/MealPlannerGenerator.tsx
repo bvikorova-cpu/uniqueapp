@@ -174,8 +174,8 @@ export default function MealPlannerGenerator() {
             )}
           </div>
 
-          <Button onClick={handleGenerate} disabled={generateMutation.isPending || !title || !credits || credits.credits_remaining < 50} className="w-full gap-2" size="lg">
-            {generateMutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Generating...</> : <><Sparkles className="h-5 w-5" /> Generate Meal Plan (50 credits)</>}
+          <Button onClick={handleGenerate} disabled={generateMutation.isPending || !title || !credits || credits.credits_remaining < 5} className="w-full gap-2" size="lg">
+            {generateMutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Generating...</> : <><Sparkles className="h-5 w-5" /> Generate Meal Plan (5 credits)</>}
           </Button>
         </CardContent>
       </Card>
