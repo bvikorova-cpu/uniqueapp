@@ -72,7 +72,7 @@ export default function MealPlannerGenerator() {
 
   const handleGenerate = () => {
     if (!title || targetCalories < 500) { toast.error("Please fill in all required fields"); return; }
-    if (!credits || credits.credits_remaining < 5) { toast.error('You need 5 AI credits. Please purchase credits.'); return; }
+    if (!credits || credits.credits_remaining < 50) { toast.error('You need 50 AI credits. Please purchase credits.'); return; }
     generateMutation.mutate();
   };
 
