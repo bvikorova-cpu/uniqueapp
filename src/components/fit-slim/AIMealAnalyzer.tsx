@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { AiMarkdown } from "../common/AiMarkdown";
 
 export default function AIMealAnalyzer({ onBack }: { onBack: () => void }) {
   const { credits } = useAICredits();
@@ -21,12 +22,33 @@ export default function AIMealAnalyzer({ onBack }: { onBack: () => void }) {
     try {
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
-          message: `Analyze this meal nutritionally: "${meal}".
-Provide: estimated calories, protein, carbs, fats, fiber, vitamins/minerals highlights.
-Rate it 1-10 for weight loss suitability. Suggest improvements to make it healthier.
-Include a "Verdict" section with emoji rating.` } });
+          type: "nutrition_plan",
+          message: `Analyze this meal in detail: "${meal}".
+
+Use markdown with these sections:
+## Overview
+Short summary of the meal quality.
+
+## Nutrition Breakdown
+A markdown table with columns: Nutrient | Amount | % Daily Value — include calories, protein, carbs, sugar, fat, saturated fat, fiber, sodium.
+
+## Micronutrients
+Key vitamins & minerals with what they do.
+
+## Weight-Loss Score
+Rating X/10 with reasoning (satiety, calorie density, protein ratio, glycemic impact).
+
+## Improvements
+4-6 concrete swaps or additions with the expected effect.
+
+## Portion & Timing Tips
+Best time to eat it, portion adjustments for cutting vs maintenance.
+
+## Verdict
+One-line verdict with an emoji rating.` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No response");
+
     } catch (e: any) {
       toast.error(e.message || "Error analyzing meal");
     } finally {
@@ -50,7 +72,7 @@ Include a "Verdict" section with emoji rating.` } });
           </Button>
           {result && (
             <Card className="bg-orange-500/5 border-orange-500/20 mt-4">
-              <CardContent className="p-4 whitespace-pre-line text-sm">{result}</CardContent>
+              <CardContent className="p-4"><AiMarkdown content={result} /></CardContent>
             </Card>
           )}
         </CardContent>
