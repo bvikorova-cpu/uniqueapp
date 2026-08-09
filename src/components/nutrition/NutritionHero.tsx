@@ -1,8 +1,7 @@
 import { motion } from "framer-motion";
-import { Apple, TrendingUp, Users, Target, Sparkles, Play, Pause, Volume2, VolumeX, Flame } from "lucide-react";
+import { Apple, Sparkles, Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useLiveStats } from "@/hooks/useLiveStats";
 import heroVideo from "@/assets/nutrition-hub-hero.mp4.asset.json";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
@@ -25,19 +24,6 @@ export const NutritionHero = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
-
-  const { stats, loading } = useLiveStats([
-    { key: "plans", table: "meal_plans" },
-    { key: "scans", table: "food_scans" },
-    { key: "tracking", table: "macro_tracking" },
-  ]);
-
-  const heroStats = [
-    { icon: Apple, label: "Meal Plans", value: stats.plans || 0, suffix: "+" },
-    { icon: Target, label: "Food Scans", value: stats.scans || 0, suffix: "+" },
-    { icon: TrendingUp, label: "Meals Tracked", value: stats.tracking || 0, suffix: "+" },
-    { icon: Flame, label: "AI Tools", value: 0, suffix: "", staticLabel: "10+" },
-  ];
 
   useEffect(() => {
     if (videoRef.current) { videoRef.current.play().catch(() => setIsPlaying(false)); }
