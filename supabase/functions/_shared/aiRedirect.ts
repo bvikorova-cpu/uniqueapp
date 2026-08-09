@@ -10,7 +10,10 @@
  * with a clear error instead of reaching OpenAI.
  */
 
+import { tryDirectGeminiChatResponse } from "./geminiDirect.ts";
+
 const GATEWAY_BASE = "https://ai.gateway.lovable.dev/v1";
+
 
 /** Legacy OpenAI ids -> supported gateway ids (cheap-first). */
 const MODEL_MAP: Record<string, string> = {
