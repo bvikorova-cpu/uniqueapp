@@ -23,8 +23,8 @@ export default function AIBarcodeScanner({ onBack }: Props) {
     mutationFn: async () => {
       const credited = await spendCredit('custom_generation', 'Barcode Scanner');
       if (!credited) throw new Error('Not enough credits (3 required)');
-      const { data, error } = await supabase.functions.invoke('nutrition-barcode-scanner', {
-        body: { barcode: barcode || undefined, product_name: productName || undefined }
+      const { data, error } = await supabase.functions.invoke('nutrition-router', {
+        body: { action: 'barcode_scanner', barcode: barcode || undefined, product_name: productName || undefined }
       });
       if (error) throw error;
       return data;

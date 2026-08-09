@@ -25,8 +25,8 @@ export default function SocialMealChallenges({ onBack }: Props) {
     mutationFn: async () => {
       const credited = await spendCredit('custom_generation', 'Meal Challenge');
       if (!credited) throw new Error('Not enough credits (8 required)');
-      const { data, error } = await supabase.functions.invoke('nutrition-meal-challenge', {
-        body: { goal, duration_days: Number(duration), max_participants: Number(participants) }
+      const { data, error } = await supabase.functions.invoke('nutrition-router', {
+        body: { action: 'meal_challenge', goal, duration_days: Number(duration), max_participants: Number(participants) }
       });
       if (error) throw error;
       return data;

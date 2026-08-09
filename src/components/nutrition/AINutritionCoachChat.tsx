@@ -37,8 +37,8 @@ export default function AINutritionCoachChat({ onBack }: Props) {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('nutrition-coach-chat', {
-        body: { messages: [...messages, userMsg].slice(-10) }
+      const { data, error } = await supabase.functions.invoke('nutrition-router', {
+        body: { action: 'coach_chat', messages: [...messages, userMsg].slice(-10) }
       });
       if (error) throw error;
       setMessages(prev => [...prev, { role: "assistant", content: data.reply }]);

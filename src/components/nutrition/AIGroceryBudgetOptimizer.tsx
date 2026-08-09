@@ -24,8 +24,8 @@ export default function AIGroceryBudgetOptimizer({ onBack }: Props) {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('nutrition-grocery-optimizer', {
-        body: { weekly_budget: Number(budget), people: Number(people), days: Number(days), diet_type: dietType }
+      const { data, error } = await supabase.functions.invoke('nutrition-router', {
+        body: { action: 'grocery_optimizer', weekly_budget: Number(budget), people: Number(people), days: Number(days), diet_type: dietType }
       });
       if (error) throw error;
       return data;

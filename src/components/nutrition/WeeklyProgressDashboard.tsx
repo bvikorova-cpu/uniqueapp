@@ -28,8 +28,8 @@ export default function WeeklyProgressDashboard({ onBack }: Props) {
     mutationFn: async () => {
       const credited = await spendCredit('custom_generation', 'Weekly Progress');
       if (!credited) throw new Error('Not enough credits (6 required)');
-      const { data, error } = await supabase.functions.invoke('nutrition-weekly-progress', {
-        body: { avg_daily_calories: Number(avgCalories), avg_daily_protein: Number(avgProtein), workouts_per_week: Number(workoutsPerWeek), current_weight: Number(currentWeight) }
+      const { data, error } = await supabase.functions.invoke('nutrition-router', {
+        body: { action: 'weekly_progress', avg_daily_calories: Number(avgCalories), avg_daily_protein: Number(avgProtein), workouts_per_week: Number(workoutsPerWeek), current_weight: Number(currentWeight) }
       });
       if (error) throw error;
       return data;

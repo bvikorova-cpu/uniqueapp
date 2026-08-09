@@ -26,8 +26,8 @@ export default function AIBodyCompositionPredictor({ onBack }: Props) {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('nutrition-body-predictor', {
-        body: { weight: Number(weight), height: Number(height), body_fat_percent: Number(bodyFat), activity_level: activity, daily_calories: Number(calories), timeframe_days: Number(timeframe) }
+      const { data, error } = await supabase.functions.invoke('nutrition-router', {
+        body: { action: 'body_predictor', weight: Number(weight), height: Number(height), body_fat_percent: Number(bodyFat), activity_level: activity, daily_calories: Number(calories), timeframe_days: Number(timeframe) }
       });
       if (error) throw error;
       return data;
