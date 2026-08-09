@@ -37,11 +37,12 @@ const PhobiaDetector = ({ onPhobiaDetected }: PhobiaDetectorProps) => {
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke('detect-phobia', {
-        body: { description }
+      const { data, error } = await supabase.functions.invoke('phobia-router', {
+        body: { action: 'detect', description }
       });
 
-      if (error) throw error;
+      if (error) throw new Error(data?.error || error.message);
+      if (data?.error) throw new Error(data.error);
 
       setResult(data.phobia);
       onPhobiaDetected();

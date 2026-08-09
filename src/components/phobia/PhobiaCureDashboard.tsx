@@ -62,9 +62,11 @@ const PhobiaCureDashboard = ({ onOpenPricing }: PhobiaCureDashboardProps) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
 
-      const { data, error } = await supabase.functions.invoke('get-user-phobias');
+      const { data, error } = await supabase.functions.invoke('phobia-router', {
+        body: { action: 'list' }
+      });
 
-      if (error) throw error;
+      if (error) throw new Error(data?.error || error.message);
 
       setPhobias(data.phobias || []);
       setTreatments(data.treatments || []);
@@ -95,11 +97,12 @@ const PhobiaCureDashboard = ({ onOpenPricing }: PhobiaCureDashboardProps) => {
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke('generate-phobia-cure', {
-        body: { phobiaId: selectedPhobia }
+      const { data, error } = await supabase.functions.invoke('phobia-router', {
+        body: { action: 'generate_cure', phobiaId: selectedPhobia }
       });
 
-      if (error) throw error;
+      if (error) throw new Error(data?.error || error.message);
+      if (data?.error) throw new Error(data.error);
 
       toast({ title: "Cure Plan Generated",
         description: "Your personalized treatment plan is ready" });
