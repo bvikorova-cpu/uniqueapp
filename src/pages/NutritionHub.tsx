@@ -5,11 +5,10 @@ import Navbar from "@/components/Navbar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAICredits } from "@/hooks/useAICredits";
-import { useNutritionStats } from "@/hooks/useNutritionStats";
 import { NutritionHero } from "@/components/nutrition/NutritionHero";
 import {
-  Utensils, Camera, Trophy, Store, Dumbbell, Target,
-  Sparkles, ShoppingBag, ArrowLeft, Flame, Droplets,
+  Utensils, Camera, Store, Dumbbell, Target,
+  Sparkles, ShoppingBag, ArrowLeft, Droplets,
   Pill, ShoppingCart, Activity, Zap, ShieldAlert,
   MessageCircle, BarChart3
 } from "lucide-react";
@@ -52,7 +51,6 @@ const tools = [
 export default function NutritionHub() {
   const navigate = useNavigate();
   const { credits, loading: creditsLoading } = useAICredits();
-  const { dailyStreak, achievements, loading: statsLoading } = useNutritionStats();
   const [activeView, setActiveView] = useState<ActiveView>("dashboard");
 
   const viewsWithBackButton = ["hydration", "supplements", "grocery", "body-predictor", "allergy-scanner", "nutrition-coach", "weekly-progress"];
@@ -103,21 +101,7 @@ export default function NutritionHub() {
         <HeroRewardedAd sectionKey="page_nutritionhub" />
 
         {/* Engagement Row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-            <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/60 hover:scale-[1.02] transition-transform group">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 group-hover:from-orange-500/30 group-hover:to-red-500/30 transition-colors">
-                  <Flame className="h-6 w-6 text-orange-500" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground font-medium">Daily Streak</p>
-                  <p className="text-2xl font-black bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">{statsLoading ? "…" : `${dailyStreak} Day${dailyStreak === 1 ? "" : "s"}`}</p>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-
+        <div className="grid grid-cols-1 gap-4 mb-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
             <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/60 hover:scale-[1.02] transition-transform group">
               <div className="flex items-center gap-3">
@@ -139,19 +123,6 @@ export default function NutritionHub() {
             </Card>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-            <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/60 hover:scale-[1.02] transition-transform group">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 group-hover:from-green-500/30 group-hover:to-emerald-500/30 transition-colors">
-                  <Trophy className="h-6 w-6 text-green-500" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground font-medium">Days Logged</p>
-                  <p className="text-2xl font-black bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">{statsLoading ? "…" : achievements}</p>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
         </div>
 
         {/* Tool Cards Grid */}
