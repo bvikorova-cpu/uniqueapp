@@ -260,24 +260,6 @@ const PhobiaTrading = () => {
               </div>
             </div>
 
-            <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50">
-              <h2 className="text-xl font-black mb-4 text-primary">💡 Tips for Future Enhancements</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[
-                  { title: "🎮 VR Fear Worlds", desc: "Immersive 3D environments for exposure therapy using WebXR — walk through virtual scenarios that gradually increase in intensity." },
-                  { title: "🧬 Fear DNA Analysis", desc: "Upload genetic data to discover inherited phobia predispositions and get personalized prevention strategies based on your genetics." },
-                  { title: "📹 Video Fear Diary", desc: "Record video entries during anxiety episodes for AI emotion analysis — track facial expressions, voice tone, and body language over time." },
-                  { title: "🏅 Fear Fighter Tournaments", desc: "Competitive exposure challenges where users earn points for facing fears — monthly leaderboards with rewards for the bravest participants." },
-                  { title: "🤖 AI Dream Analyzer", desc: "Log your nightmares and recurring dreams for AI analysis — discover hidden fear patterns and subconscious anxiety triggers." },
-                  { title: "👥 Live Group Therapy", desc: "Real-time video group sessions with AI moderation — connect with others facing similar phobias for mutual support and accountability." },
-                ].map(tip => (
-                  <div key={tip.title} className="p-4 rounded-lg bg-muted/10 border border-border/30">
-                    <h4 className="font-bold text-sm mb-1">{tip.title}</h4>
-                    <p className="text-xs text-muted-foreground">{tip.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </Card>
           </div>
         )}
       </div>
