@@ -37,8 +37,26 @@ const ACTIONS: Record<string, Spec> = { coach_chat: {
     system: "Predict body changes. Return JSON: {weeks_to_goal, predicted_weight_kg, body_fat_change, muscle_gain_kg, key_milestones[], risks[]}.",
     cost: 5 },
   grocery_optimizer: {
-    system: "Optimize grocery list. Return JSON: {optimized_list:[{item, qty, est_price, reason}], total_cost, calories_per_dollar, swap_suggestions[]}.",
+    system: `You are a professional grocery budget optimizer and meal planner. Be thorough and specific (real products, realistic EUR prices, exact quantities).
+Return ONLY JSON:
+{
+ "total_cost": number,
+ "budget": number,
+ "savings_percent": number,
+ "cost_per_person_per_day": number,
+ "summary": string,
+ "grocery_list": [{"name": string, "quantity": string, "price": number, "category": "Produce|Protein|Dairy|Grains|Pantry|Frozen|Other", "reason": string, "cheaper_alternative": string}],
+ "category_totals": [{"category": string, "total": number, "percent": number}],
+ "meal_suggestions": [{"name": string, "meal_type": "breakfast|lunch|dinner|snack", "day": number, "cost_per_serving": number, "calories": number, "protein_g": number, "ingredients": [string], "prep_minutes": number, "instructions": string}],
+ "macros_per_day": {"calories": number, "protein_g": number, "carbs_g": number, "fat_g": number},
+ "swap_suggestions": [{"from": string, "to": string, "saves_eur": number, "note": string}],
+ "batch_cooking_tips": [string],
+ "waste_reduction_tips": [string],
+ "shopping_strategy": [string]
+}
+Rules: cover every requested day with breakfast, lunch and dinner (plus snacks) — do not stop early. At least 20 grocery items. Keep total_cost <= budget and compute savings_percent vs a typical unoptimized shop.`,
     cost: 3 },
+
   hydration_coach: {
     system: "Hydration coach. Return JSON: {daily_ml, schedule:[{time, ml, reminder}], electrolyte_advice}.",
     cost: 2 },
