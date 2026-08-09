@@ -184,6 +184,9 @@ const PhobiaCureDashboard = ({ onOpenPricing }: PhobiaCureDashboardProps) => {
               {generating && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               <Plus className="w-4 h-4 mr-2" />
               Generate Cure Plan
+              <Badge className="ml-2 bg-primary/20 text-primary border border-primary/40 text-[10px] gap-1">
+                <Zap className="h-2.5 w-2.5" /> 3 cr
+              </Badge>
             </Button>
           </div>
         </CardContent>
