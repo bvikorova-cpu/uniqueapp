@@ -56,9 +56,51 @@ export default function MacroTracker() {
     },
     onError: (error: any) => toast.error(error.message || "Error logging meal") });
 
-  const goals = { calories: 2000, protein: 150, carbs: 200, fats: 65 };
+  // Real, per-user macro goals derived from the user's own fitness profile
+  const { data: profile } = useQuery({
+    queryKey: ['macro-goal-profile'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+      const { data } = await supabase
+        .from('fitness_plans')
+        .select('age, gender, height_cm, weight_kg, target_weight_kg, activity_level, fitness_goal, created_at')
+        .eq('user_id', user.id)
+        .not('weight_kg', 'is', null)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      return data;
+    }
+  });
+
+  const goals = (() => {
+    const w = Number(profile?.weight_kg) || 0;
+    const h = Number(profile?.height_cm) || 0;
+    const a = Number(profile?.age) || 0;
+    if (!w || !h || !a) return null;
+    const isFemale = (profile?.gender || '').toLowerCase().startsWith('f');
+    const bmr = 10 * w + 6.25 * h - 5 * a + (isFemale ? -161 : 5);
+    const activityMap: Record<string, number> = {
+      sedentary: 1.2, light: 1.375, lightly_active: 1.375, moderate: 1.55,
+      moderately_active: 1.55, active: 1.725, very_active: 1.9, athlete: 1.9,
+    };
+    const factor = activityMap[(profile?.activity_level || '').toLowerCase()] ?? 1.375;
+    const goalKey = (profile?.fitness_goal || '').toLowerCase();
+    const target = Number(profile?.target_weight_kg) || 0;
+    let adjust = 0;
+    if (goalKey.includes('loss') || goalKey.includes('slim') || (target && target < w)) adjust = -0.18;
+    else if (goalKey.includes('gain') || goalKey.includes('muscle') || goalKey.includes('bulk') || (target && target > w)) adjust = 0.12;
+    const calories = Math.round((bmr * factor) * (1 + adjust));
+    const protein = Math.round(w * (adjust > 0 ? 2 : adjust < 0 ? 2.2 : 1.8));
+    const fats = Math.round((calories * 0.27) / 9);
+    const carbs = Math.max(0, Math.round((calories - protein * 4 - fats * 9) / 4));
+    return { calories, protein, carbs, fats };
+  })();
+
   const current = { calories: tracking?.calories || 0, protein: tracking?.protein || 0, carbs: tracking?.carbs || 0, fats: tracking?.fats || 0 };
-  const pct = (v: number, g: number) => Math.min((v / g) * 100, 100);
+  const pct = (v: number, g: number) => (g > 0 ? Math.min((v / g) * 100, 100) : 0);
+
 
   const macroItems = [
     { label: "Calories", current: current.calories, goal: goals.calories, unit: "", color: "from-orange-500 to-red-500", bgColor: "from-orange-500/10 to-red-500/10" },
