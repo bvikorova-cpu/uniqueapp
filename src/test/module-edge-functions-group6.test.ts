@@ -30,8 +30,7 @@ const GROUPS: Record<string, string[]> = { "video-ad": ["video-ad-tools"],
     "coupon-digest-cron",
     "coupon-price-alerts-cron",
     "coupon-public-api",
-  ],
-  multiverse: ["multiverse-ai-tool"] };
+  ] };
 
 describe("Group 6 edge functions present", () => {
   for (const [group, fns] of Object.entries(GROUPS)) {

@@ -46,7 +46,6 @@ const NAMES = [
   "create-megatalent-checkout",
   "create-megatalent-tip",
   "create-merch-checkout",
-  "create-multiverse-checkout",
   "create-paid-message-checkout",
   "create-phobia-subscription",
   "create-photo-credits-payment",

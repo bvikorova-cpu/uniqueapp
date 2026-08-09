@@ -146,7 +146,6 @@ export const CHECKOUT_PROXY_MAP: Record<string, { product: string; module: strin
   "create-learning-payment": { product: "learning", module: "learning" },
   "create-lie-detector-payment": { product: "lie_detector", module: "lie_detector" },
   "create-marketplace-item-checkout": { product: "marketplace_item", module: "marketplace_item" },
-  "create-multiverse-checkout": { product: "multiverse", module: "multiverse" },
   "create-pet-checkout": { product: "pet", module: "pet" },
   "create-photo-credits-payment": { product: "photo_credits", module: "photo_credits" },
   "create-property-listing-checkout": { product: "property_listing", module: "property_listing" },
@@ -187,7 +186,6 @@ export const VERIFY_PROXY_MAP: Record<string, string> = { // "verify-bazaar-orde
   "verify-emotion-credits-payment": "emotion_credits",
   "verify-lead-boost-payment": "lead_boost",
   "verify-learning-payment": "learning",
-  "verify-multiverse-payment": "multiverse",
   "verify-shadow-battle-payment": "shadow_battle",
   "verify-tip-purchase": "tip",
   // Batch 15 — final verify consolidation
