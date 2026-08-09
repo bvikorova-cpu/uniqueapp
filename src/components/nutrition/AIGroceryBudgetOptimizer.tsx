@@ -11,6 +11,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { AiMarkdown } from "@/components/common/AiMarkdown";
+
 
 interface Props { onBack: () => void; }
 
