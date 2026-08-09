@@ -40,7 +40,7 @@ const tools = [
   { id: "analytics" as ToolView, title: "Fear Analytics", description: "Visualize your fear patterns and trends", icon: BarChart3, badge: "Insights", gradient: "bg-gradient-to-r from-indigo-500 to-blue-500", features: ["Trend charts", "Phobia distribution", "Activity stats"] },
   { id: "community" as ToolView, title: "Support Community", description: "Connect with others facing similar fears", icon: Users, badge: "Social", gradient: "bg-gradient-to-r from-amber-500 to-orange-500", features: ["Share stories", "Ask questions", "Offer support"] },
   { id: "anxiety" as ToolView, title: "Anxiety Tracker", description: "Log anxiety episodes and grounding exercises", icon: Activity, badge: "Wellness", gradient: "bg-gradient-to-r from-red-500 to-pink-500", features: ["Symptom logging", "5-4-3-2-1 grounding", "Episode history"] },
-  { id: "pricing" as ToolView, title: "Credits & Premium", description: "Purchase credits or subscribe for unlimited access", icon: CreditCard, badge: "Pricing", gradient: "bg-gradient-to-r from-emerald-500 to-teal-500", features: ["Credit packages", "Monthly subscription", "Unlimited tools"] },
+  { id: "pricing" as ToolView, title: "AI Credits", description: "Pay per action with platform AI credits — no subscription", icon: CreditCard, badge: "Credits", gradient: "bg-gradient-to-r from-emerald-500 to-teal-500", features: ["Detection 3 credits", "Cure plan 3 credits", "Top up anytime"] },
 ];
 
 const PhobiaTrading = () => {
