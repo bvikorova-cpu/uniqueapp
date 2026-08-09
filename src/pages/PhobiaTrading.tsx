@@ -268,13 +268,13 @@ const PhobiaTrading = () => {
                 Using advanced machine learning algorithms and evidence-based therapeutic techniques, we help you identify your phobias,
                 connect with others facing similar challenges, and provide personalized paths to recovery through AI therapy, exposure simulation, and community support.
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+              <div className="grid grid-cols-3 gap-3 mb-4">
                 {[
                   { step: "1", title: "Detect", desc: "AI identifies your fears" },
-                  { step: "2", title: "Understand", desc: "Analyze patterns & triggers" },
-                  { step: "3", title: "Trade & Connect", desc: "Exchange in the marketplace" },
-                  { step: "4", title: "Overcome", desc: "AI therapy & exposure" },
+                  { step: "2", title: "Talk", desc: "AI fear therapist sessions" },
+                  { step: "3", title: "Overcome", desc: "Guided exposure simulator" },
                 ].map(s => (
+
                   <div key={s.step} className="text-center p-3 rounded-lg bg-muted/20 border border-border/30">
                     <div className="w-8 h-8 rounded-full bg-primary/20 text-primary font-black text-sm flex items-center justify-center mx-auto mb-2">{s.step}</div>
                     <p className="text-xs font-bold">{s.title}</p>
