@@ -109,7 +109,8 @@ const MyPhobias = ({ onPhobiaListed, onOpenPricing }: MyPhobiasProps) => {
         }
       });
 
-      if (error) throw error;
+      if (error) throw new Error(listData?.error || error.message);
+      if (listData?.error) throw new Error(listData.error);
 
       toast({
         title: "Listed for Trade",

@@ -36,7 +36,6 @@ export const AI_PROXY_MAP: Record<string, string> = { "activate-job-listing": "a
   "chat-with-chef": "chat_with_chef",
   // "chat-with-offspring": real edge function, not proxied
   "coupon-marketplace-access": "coupon_marketplace_access",
-  "detect-phobia": "detect_phobia",
   "diagnose-plant": "diagnose_plant",
   "enhance-shadow-story": "enhance_shadow_story",
   "enroll-premium-course": "enroll_premium_course",
@@ -53,7 +52,6 @@ export const AI_PROXY_MAP: Record<string, string> = { "activate-job-listing": "a
   "generate-music": "generate_music",
   "generate-paint-by-numbers": "generate_paint_by_numbers",
   "generate-paint-image": "generate_paint_image",
-  "generate-phobia-cure": "generate_phobia_cure",
   "generate-recipe-from-ingredients": "generate_recipe_from_ingredients",
   "generate-sports-prediction": "generate_sports_prediction",
   "generate-story-video": "generate_story_video",
@@ -64,7 +62,6 @@ export const AI_PROXY_MAP: Record<string, string> = { "activate-job-listing": "a
   "generate-virtual-tour": "generate_virtual_tour",
   "generate-weekly-meal-plan": "generate_weekly_meal_plan",
   "get-my-stock-purchases": "get_my_stock_purchases",
-  "get-user-phobias": "get_user_phobias",
   // "get-user-universes": real edge function, not proxied
   "home-color-palette": "home_color_palette",
   "home-furniture-recommender": "home_furniture_recommender",
@@ -105,7 +102,6 @@ export const AI_PROXY_MAP: Record<string, string> = { "activate-job-listing": "a
   "stop-stream": "stop_stream",
   "submit-fashion-challenge": "submit_fashion_challenge",
   "teen-career-counselor": "teen_career_counselor",
-  "trade-phobia": "trade_phobia",
   // "translate-and-generate-audio": real edge function, not proxied
   "virtual-tryon": "virtual_tryon",
   "vote-fashion-challenge": "vote_fashion_challenge" };
@@ -612,6 +608,20 @@ export function resolveProxy(
   const horse = HORSE_ROUTER_MAP[functionName];
   if (horse) {
     return { target: "horse-router", body: { ...b, action: horse } };
+  }
+
+  // Phobia trading — legacy names now route to the real phobia-router.
+  const PHOBIA_ROUTER_MAP: Record<string, string> = { "detect-phobia": "detect",
+    "get-user-phobias": "list",
+    "generate-phobia-cure": "generate_cure" };
+  const ph = PHOBIA_ROUTER_MAP[functionName];
+  if (ph) {
+    return { target: "phobia-router", body: { ...b, action: ph } };
+  }
+  if (functionName === "trade-phobia") {
+    const legacy = String((b as any).action ?? "");
+    const mapped = legacy === "list" ? "list_for_trade" : legacy || "get_marketplace";
+    return { target: "phobia-router", body: { ...b, action: mapped } };
   }
 
   // Video-ad router consolidation (4 media functions merged into video-ad-tools).
