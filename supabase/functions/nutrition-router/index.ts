@@ -166,11 +166,9 @@ serve(async (req) => {
     const value = parsed ?? result;
     const legacyKey: Record<string, string> = {
       allergy_scanner: "analysis",
-      barcode_scanner: "product",
       body_predictor: "prediction",
       grocery_optimizer: "plan",
       hydration_coach: "plan",
-      meal_challenge: "challenge",
       supplement_advisor: "recommendations",
       weekly_progress: "report",
     };
