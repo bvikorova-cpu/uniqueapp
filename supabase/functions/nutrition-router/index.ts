@@ -54,6 +54,9 @@ const ACTIONS: Record<string, Spec> = { coach_chat: {
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  let userId: string | null = null;
+  let cost = 0;
+  let charged = false;
   try {
     // Health probe: no auth, no credits. Used by health-check function + CI.
     const url = new URL(req.url);
