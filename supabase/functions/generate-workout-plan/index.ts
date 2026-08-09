@@ -5,7 +5,7 @@ import { deductAICredits, refundAICredits } from "../_shared/credits.ts";
 
 const SYSTEM = `Workout plan. Return JSON: {plan_name, weeks, days_per_week, schedule:[{day, focus, exercises:[{name, sets, reps, rest_sec}]}], progression_notes}.`;
 
-const COST = 4;
+const COST = 30;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });

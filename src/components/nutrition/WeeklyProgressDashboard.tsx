@@ -51,7 +51,7 @@ export default function WeeklyProgressDashboard({ onBack }: Props) {
             </div>
             Weekly Progress Dashboard
           </CardTitle>
-          <CardDescription>AI-powered weekly analysis with visual charts (5 credits)</CardDescription>
+          <CardDescription>AI-powered weekly analysis with visual charts (6 credits)</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid sm:grid-cols-4 gap-4 mb-6">
@@ -72,8 +72,8 @@ export default function WeeklyProgressDashboard({ onBack }: Props) {
               <Input type="number" value={currentWeight} onChange={(e) => setCurrentWeight(e.target.value)} className="bg-background/50" />
             </div>
           </div>
-          <Button onClick={() => mutation.mutate()} disabled={mutation.isPending || !credits || credits.credits_remaining < 5} className="w-full gap-2" size="lg">
-            {mutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Analyzing...</> : <><Sparkles className="h-5 w-5" /> Generate Weekly Report (5 credits)</>}
+          <Button onClick={() => mutation.mutate()} disabled={mutation.isPending || !credits || credits.credits_remaining < 6} className="w-full gap-2" size="lg">
+            {mutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Analyzing...</> : <><Sparkles className="h-5 w-5" /> Generate Weekly Report (6 credits)</>}
           </Button>
         </CardContent>
       </Card>

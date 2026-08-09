@@ -53,7 +53,7 @@ Rules: check every listed allergy explicitly (even if not found). Include at lea
     cost: 3},
   body_predictor: {
     system: "Predict body changes. Return JSON: {weeks_to_goal, predicted_weight_kg, body_fat_change, muscle_gain_kg, key_milestones[], risks[]}.",
-    cost: 5},
+    cost: 10},
   grocery_optimizer: {
     system: `You are a professional grocery budget optimizer and meal planner. Be thorough and specific (real products, realistic EUR prices, exact quantities).
 Return ONLY JSON:
@@ -73,20 +73,20 @@ Return ONLY JSON:
  "shopping_strategy": [string]
 }
 Rules: cover every requested day with breakfast, lunch and dinner (plus snacks) — do not stop early. At least 20 grocery items. Keep total_cost <= budget and compute savings_percent vs a typical unoptimized shop.`,
-    cost: 5},
+    cost: 6},
 
   hydration_coach: {
     system: "Hydration coach. Return JSON: {daily_ml, schedule:[{time, ml, reminder}], electrolyte_advice}.",
     cost: 3},
   meal_challenge: {
     system: "Create nutrition challenge. Return JSON: {challenge_name, duration_days, daily_tasks[], rewards[], difficulty}.",
-    cost: 5},
+    cost: 8},
   supplement_advisor: {
     system: "Recommend supplements. Return JSON: {supplements:[{name, dose, timing, benefit, evidence_level}], avoid[], disclaimer}.",
-    cost: 5},
+    cost: 8},
   weekly_progress: {
     system: "Analyze weekly nutrition. Return JSON: {summary, wins[], improvements[], next_week_focus[], score_0_100}.",
-    cost: 5} };
+    cost: 6} };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
