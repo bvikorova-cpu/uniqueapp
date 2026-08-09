@@ -262,11 +262,11 @@ const PhobiaTrading = () => {
             </div>
 
             <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50">
-              <h2 className="text-xl font-black mb-3 text-primary">What is Phobia Trading Network?</h2>
+              <h2 className="text-xl font-black mb-3 text-primary">What is Phobia Network?</h2>
               <p className="text-sm text-muted-foreground mb-4">
-                Phobia Trading Network is the world's first AI-powered platform for detecting, understanding, trading, and overcoming your fears.
-                Using advanced machine learning algorithms and evidence-based therapeutic techniques, we help you identify your phobias,
-                connect with others facing similar challenges, and provide personalized paths to recovery through AI therapy, exposure simulation, and community support.
+                Phobia Network is an AI-powered platform for detecting, understanding and overcoming your fears.
+                Using advanced AI analysis and evidence-based therapeutic techniques, we help you identify your phobias,
+                talk them through with an AI fear therapist, and face them step by step in a safe guided exposure simulator.
               </p>
               <div className="grid grid-cols-3 gap-3 mb-4">
                 {[
