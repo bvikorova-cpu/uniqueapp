@@ -5,11 +5,10 @@ import Navbar from "@/components/Navbar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAICredits } from "@/hooks/useAICredits";
-import { useNutritionStats } from "@/hooks/useNutritionStats";
 import { NutritionHero } from "@/components/nutrition/NutritionHero";
 import {
-  Utensils, Camera, Trophy, Store, Dumbbell, Target,
-  Sparkles, ShoppingBag, ArrowLeft, Flame, Droplets,
+  Utensils, Camera, Store, Dumbbell, Target,
+  Sparkles, ShoppingBag, ArrowLeft, Droplets,
   Pill, ShoppingCart, Activity, Zap, ShieldAlert,
   MessageCircle, BarChart3
 } from "lucide-react";
