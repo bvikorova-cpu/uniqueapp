@@ -52,7 +52,7 @@ export default function AIGroceryBudgetOptimizer({ onBack }: Props) {
               </div>
               AI Grocery Budget Optimizer
             </CardTitle>
-            <CardDescription>Meal plans within your budget with cheapest alternatives (6 credits)</CardDescription>
+            <CardDescription>Meal plans within your budget with cheapest alternatives (5 credits)</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -84,8 +84,8 @@ export default function AIGroceryBudgetOptimizer({ onBack }: Props) {
                 </Select>
               </div>
             </div>
-            <Button onClick={() => mutation.mutate()} disabled={mutation.isPending || !credits || credits.credits_remaining < 6} className="w-full gap-2" size="lg">
-              {mutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Optimizing...</> : <><Sparkles className="h-5 w-5" /> Optimize Grocery List (6 credits)</>}
+            <Button onClick={() => mutation.mutate()} disabled={mutation.isPending || !credits || credits.credits_remaining < 5} className="w-full gap-2" size="lg">
+              {mutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Optimizing...</> : <><Sparkles className="h-5 w-5" /> Optimize Grocery List (5 credits)</>}
             </Button>
           </CardContent>
         </Card>

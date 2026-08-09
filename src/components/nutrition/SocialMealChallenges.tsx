@@ -49,7 +49,7 @@ export default function SocialMealChallenges({ onBack }: Props) {
               </div>
               Social Meal Challenges
             </CardTitle>
-            <CardDescription>AI-generated competitive healthy eating leagues (8 credits)</CardDescription>
+            <CardDescription>AI-generated competitive healthy eating leagues (5 credits)</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -84,8 +84,8 @@ export default function SocialMealChallenges({ onBack }: Props) {
                 <Input type="number" value={participants} onChange={(e) => setParticipants(e.target.value)} min="2" max="20" className="bg-background/50" />
               </div>
             </div>
-            <Button onClick={() => mutation.mutate()} disabled={mutation.isPending || !credits || credits.credits_remaining < 8} className="w-full gap-2" size="lg">
-              {mutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Creating Challenge...</> : <><Sparkles className="h-5 w-5" /> Generate Challenge (8 credits)</>}
+            <Button onClick={() => mutation.mutate()} disabled={mutation.isPending || !credits || credits.credits_remaining < 5} className="w-full gap-2" size="lg">
+              {mutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Creating Challenge...</> : <><Sparkles className="h-5 w-5" /> Generate Challenge (5 credits)</>}
             </Button>
           </CardContent>
         </Card>
