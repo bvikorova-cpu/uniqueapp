@@ -184,6 +184,68 @@ Deno.serve(async (req) => {
         return json({ treatment, plan, credits_remaining: spend.remaining });
       }
 
+      // ─────────── Personalised exposure scenario ladder (2 credits) ───────────
+      case "exposure_scenario": {
+        if (!b.fear) return json({ error: "fear is required" }, 400);
+
+        const spend = await spendAiCredits(admin, userId, COST_EXPOSURE, "phobia_exposure_scenario", "phobia-router");
+        if (!spend.ok) return json({ error: spend.error ?? "Insufficient credits", requiresPayment: true }, 402);
+
+        const stepCount = b.steps ?? 6;
+        let sc: any;
+        try {
+          sc = await askAIJSON(
+            "You are a CBT exposure-therapy specialist building an imaginal exposure ladder (systematic desensitisation). " +
+              "Design a personalised, gradual ladder where each step is meaningfully harder than the previous one. " +
+              "Return STRICT JSON: { title: string, fear_summary: string, safety_note: string, steps: [{ number: integer, title: string, suds_target: integer 5-95, duration_seconds: integer 30-300, scene: string (2-4 vivid second-person sentences describing exactly what the user imagines/does, using their environment and senses), body_cues: string[] (2-4 short physical sensations to expect), coping_script: string (1-2 sentences of grounding/breathing instruction matched to their coping style), success_criteria: string, if_too_much: string }], aftercare: string[] (3-4 short items), progress_markers: string[] (3 short signs of real improvement) }. " +
+              `Produce exactly ${stepCount} steps. No markdown, no extra keys.`,
+            [
+              `Fear: ${b.fear}`,
+              `Current subjective intensity: ${b.intensity ?? 5}/10`,
+              `Typical environment where it happens: ${b.environment || "unspecified"}`,
+              `Sensory triggers to weave in: ${(b.sensory ?? []).join(", ") || "unspecified"}`,
+              `Preferred coping style: ${b.copingStyle || "slow breathing"}`,
+              `Tone of guidance: ${b.tone || "calm and encouraging"}`,
+            ].join("\n"),
+            { max_tokens: 4000 },
+          );
+        } catch (_e) {
+          await admin.rpc("add_ai_credits", { p_user_id: userId, p_amount: COST_EXPOSURE } as any).catch(() => {});
+          return json({ error: "AI is busy right now. Please try again in a moment." }, 503);
+        }
+
+        const steps = (Array.isArray(sc?.steps) ? sc.steps : []).slice(0, 10).map((s: any, i: number) => ({
+          number: i + 1,
+          title: String(s?.title ?? `Step ${i + 1}`),
+          suds_target: Math.min(95, Math.max(5, Math.round(Number(s?.suds_target) || 20 + i * 12))),
+          duration_seconds: Math.min(300, Math.max(30, Math.round(Number(s?.duration_seconds) || 60))),
+          scene: String(s?.scene ?? ""),
+          body_cues: Array.isArray(s?.body_cues) ? s.body_cues.slice(0, 4).map(String) : [],
+          coping_script: String(s?.coping_script ?? ""),
+          success_criteria: String(s?.success_criteria ?? ""),
+          if_too_much: String(s?.if_too_much ?? "Pause, breathe out slowly, and repeat the previous step."),
+        }));
+
+        if (!steps.length) {
+          await admin.rpc("add_ai_credits", { p_user_id: userId, p_amount: COST_EXPOSURE } as any).catch(() => {});
+          return json({ error: "Could not build a scenario. Please try again." }, 503);
+        }
+
+        return json({
+          scenario: {
+            title: String(sc?.title ?? b.fear),
+            fear_summary: String(sc?.fear_summary ?? ""),
+            safety_note: String(sc?.safety_note ?? "Stop any time. This is imaginal practice, not a medical treatment."),
+            steps,
+            aftercare: Array.isArray(sc?.aftercare) ? sc.aftercare.slice(0, 4).map(String) : [],
+            progress_markers: Array.isArray(sc?.progress_markers) ? sc.progress_markers.slice(0, 3).map(String) : [],
+          },
+          credits_remaining: spend.remaining,
+        });
+      }
+
+
+
       // ─────────── List own phobia for trade ───────────
       case "list_for_trade": {
         if (!b.phobiaId || !b.price) return json({ error: "phobiaId and price are required" }, 400);
