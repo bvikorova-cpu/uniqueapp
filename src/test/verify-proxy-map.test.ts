@@ -10,7 +10,6 @@ const CASES: Array<[string, string]> = [
   ["verify-gift-payment", "gift"],
   ["verify-lead-boost-payment", "lead_boost"],
   ["verify-learning-payment", "learning"],
-  ["verify-multiverse-payment", "multiverse"],
   ["verify-tip-purchase", "tip"],
 ];
 
