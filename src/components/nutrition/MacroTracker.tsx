@@ -103,11 +103,12 @@ export default function MacroTracker() {
 
 
   const macroItems = [
-    { label: "Calories", current: current.calories, goal: goals.calories, unit: "", color: "from-orange-500 to-red-500", bgColor: "from-orange-500/10 to-red-500/10" },
-    { label: "Protein", current: current.protein, goal: goals.protein, unit: "g", color: "from-red-500 to-rose-500", bgColor: "from-red-500/10 to-rose-500/10" },
-    { label: "Carbs", current: current.carbs, goal: goals.carbs, unit: "g", color: "from-amber-500 to-yellow-500", bgColor: "from-amber-500/10 to-yellow-500/10" },
-    { label: "Fats", current: current.fats, goal: goals.fats, unit: "g", color: "from-blue-500 to-indigo-500", bgColor: "from-blue-500/10 to-indigo-500/10" },
+    { label: "Calories", current: current.calories, goal: goals?.calories ?? 0, unit: "", color: "from-orange-500 to-red-500", bgColor: "from-orange-500/10 to-red-500/10" },
+    { label: "Protein", current: current.protein, goal: goals?.protein ?? 0, unit: "g", color: "from-red-500 to-rose-500", bgColor: "from-red-500/10 to-rose-500/10" },
+    { label: "Carbs", current: current.carbs, goal: goals?.carbs ?? 0, unit: "g", color: "from-amber-500 to-yellow-500", bgColor: "from-amber-500/10 to-yellow-500/10" },
+    { label: "Fats", current: current.fats, goal: goals?.fats ?? 0, unit: "g", color: "from-blue-500 to-indigo-500", bgColor: "from-blue-500/10 to-indigo-500/10" },
   ];
+
 
   return (
     <>
