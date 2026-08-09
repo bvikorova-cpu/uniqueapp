@@ -50,10 +50,14 @@ export async function tryDirectGeminiChat(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        // Works with any key format (legacy AIzaSy… and the new AQ.… keys).
+        // No prefix validation — the key is passed through as-is.
         Authorization: `Bearer ${key}`,
+        "x-goog-api-key": key,
       },
       body: JSON.stringify(payload),
     });
+
 
     if (!res.ok) {
       const text = await res.text().catch(() => "");
