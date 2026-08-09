@@ -11,6 +11,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { AiMarkdown } from "@/components/common/AiMarkdown";
+import { aiPlanToMarkdown } from "@/lib/aiPlanToMarkdown";
+
 
 export default function WorkoutMatcher() {
   const queryClient = useQueryClient();
@@ -176,7 +179,8 @@ export default function WorkoutMatcher() {
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
               className="p-4 bg-muted/50 rounded-xl border border-border/40 space-y-3 max-h-96 overflow-y-auto">
               <h4 className="font-bold">Your Workout Plan</h4>
-              <pre className="text-sm whitespace-pre-wrap text-muted-foreground">{typeof generatedPlan === 'string' ? generatedPlan : JSON.stringify(generatedPlan, null, 2)}</pre>
+              <AiMarkdown content={aiPlanToMarkdown(generatedPlan)} />
+
             </motion.div>
           )}
         </CardContent>
