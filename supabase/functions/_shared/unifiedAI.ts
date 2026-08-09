@@ -1,4 +1,6 @@
 import "./aiRedirect.ts";
+import { hasDirectGemini, tryDirectGeminiChat } from "./geminiDirect.ts";
+
 /**
  * Unified AI provider for all Supabase Edge Functions.
  *
