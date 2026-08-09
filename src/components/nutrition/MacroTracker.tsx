@@ -125,15 +125,23 @@ export default function MacroTracker() {
           <CardDescription>{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {!goals && (
+            <div className="p-3 rounded-xl bg-muted/50 border border-border/40 text-sm text-muted-foreground">
+              No personal targets yet — generate a fitness plan (age, height, weight, activity, goal) and your macro targets will be calculated from your own data.
+            </div>
+          )}
           {macroItems.map((item) => (
             <div key={item.label} className={`p-3 rounded-xl bg-gradient-to-br ${item.bgColor} border border-border/40`}>
               <div className="flex justify-between text-sm mb-2">
                 <span className="font-semibold">{item.label}</span>
-                <span className="text-muted-foreground">{Math.round(item.current)}{item.unit} / {item.goal}{item.unit}</span>
+                <span className="text-muted-foreground">
+                  {Math.round(item.current)}{item.unit} / {item.goal > 0 ? `${item.goal}${item.unit}` : "—"}
+                </span>
               </div>
               <Progress value={pct(item.current, item.goal)} className="h-2" />
             </div>
           ))}
+
 
           {tracking?.meals && Array.isArray(tracking.meals) && tracking.meals.length > 0 && (
             <div className="space-y-2 mt-4">
