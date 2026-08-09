@@ -287,6 +287,7 @@ export const EDGE_FUNCTIONS: string[] = [
   "pet-purchase-item",
   "pet-translator-ai",
   "pet-translator-stats",
+  "phobia-router",
   "phobia-trading-action",
   "post-confession",
   "priority-support-sla-check",
