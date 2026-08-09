@@ -66,6 +66,9 @@ export const AITherapistChat = () => {
         <div className="p-4 border-b border-border/50 flex items-center gap-2">
           <Bot className="h-5 w-5 text-cyan-400" />
           <h3 className="font-bold text-sm">AI Fear Therapist</h3>
+          <Badge className="bg-primary/15 text-primary border border-primary/30 text-[10px] font-bold gap-1">
+            <Zap className="h-2.5 w-2.5" /> 3 cr / msg
+          </Badge>
           <span className="ml-auto text-[10px] text-green-500 flex items-center gap-1">
             <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" /> Online
           </span>
