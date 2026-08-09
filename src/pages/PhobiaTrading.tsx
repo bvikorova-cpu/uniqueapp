@@ -154,7 +154,7 @@ const PhobiaTrading = () => {
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
               className="text-sm sm:text-lg text-cyan-100/80 max-w-2xl mx-auto mb-6"
               style={{ textShadow: "0 1px 4px rgba(0,0,0,0.7)" }}>
-              The world's first AI-powered phobia detection and trading platform. Exchange fears, discover cures, and connect with others.
+              AI-powered fear management: detect your phobia, talk it through with an AI fear therapist, and face it safely in guided exposure.
             </motion.p>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
