@@ -193,14 +193,12 @@ export const VERIFY_PROXY_MAP: Record<string, string> = { // "verify-bazaar-orde
   "verify-gift-payment": "gift" };
 
 
-// Nutrition router consolidation: 9 nutrition-* functions merged into nutrition-router.
+// Nutrition router consolidation: nutrition-* functions merged into nutrition-router.
 export const NUTRITION_ROUTER_MAP: Record<string, string> = { "nutrition-coach-chat": "coach_chat",
   "nutrition-allergy-scanner": "allergy_scanner",
-  "nutrition-barcode-scanner": "barcode_scanner",
   "nutrition-body-predictor": "body_predictor",
   "nutrition-grocery-optimizer": "grocery_optimizer",
   "nutrition-hydration-coach": "hydration_coach",
-  "nutrition-meal-challenge": "meal_challenge",
   "nutrition-supplement-advisor": "supplement_advisor",
   "nutrition-weekly-progress": "weekly_progress" };
 

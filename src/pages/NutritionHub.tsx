@@ -10,8 +10,8 @@ import { NutritionHero } from "@/components/nutrition/NutritionHero";
 import {
   Utensils, Camera, Trophy, Store, Dumbbell, Target,
   Sparkles, ShoppingBag, ArrowLeft, Flame, Droplets,
-  Pill, ShoppingCart, Activity, Zap, ShieldAlert, Swords,
-  MessageCircle, ScanBarcode, BarChart3
+  Pill, ShoppingCart, Activity, Zap, ShieldAlert,
+  MessageCircle, BarChart3
 } from "lucide-react";
 
 // Sub-views
@@ -19,39 +19,33 @@ import MealPlannerGenerator from "@/components/nutrition/MealPlannerGenerator";
 import FoodScanner from "@/components/nutrition/FoodScanner";
 import MacroTracker from "@/components/nutrition/MacroTracker";
 import RestaurantAnalyzer from "@/components/nutrition/RestaurantAnalyzer";
-import CalorieQuests from "@/components/nutrition/CalorieQuests";
 import WorkoutMatcher from "@/components/nutrition/WorkoutMatcher";
 import AIHydrationCoach from "@/components/nutrition/AIHydrationCoach";
 import AISupplementAdvisor from "@/components/nutrition/AISupplementAdvisor";
 import AIGroceryBudgetOptimizer from "@/components/nutrition/AIGroceryBudgetOptimizer";
 import AIBodyCompositionPredictor from "@/components/nutrition/AIBodyCompositionPredictor";
 import AIAllergyScanner from "@/components/nutrition/AIAllergyScanner";
-import SocialMealChallenges from "@/components/nutrition/SocialMealChallenges";
 import AINutritionCoachChat from "@/components/nutrition/AINutritionCoachChat";
-import AIBarcodeScanner from "@/components/nutrition/AIBarcodeScanner";
 import WeeklyProgressDashboard from "@/components/nutrition/WeeklyProgressDashboard";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ActiveView = "dashboard" | "meal-planner" | "food-scanner" | "macro-tracker" |
-  "restaurant" | "quests" | "workout" | "hydration" | "supplements" | "grocery" | "body-predictor" |
-  "allergy-scanner" | "meal-challenges" | "nutrition-coach" | "barcode-scanner" | "weekly-progress";
+  "restaurant" | "workout" | "hydration" | "supplements" | "grocery" | "body-predictor" |
+  "allergy-scanner" | "nutrition-coach" | "weekly-progress";
 
 const tools = [
   { id: "meal-planner" as ActiveView, title: "AI Meal Planner", description: "Generate personalized meal plans with macros", icon: Utensils, cost: "50 Credits", gradient: "from-orange-500/20 to-amber-500/20", iconColor: "text-orange-500" },
   { id: "food-scanner" as ActiveView, title: "Smart Food Scanner", description: "Scan food photos for nutritional info", icon: Camera, cost: "10 Credits", gradient: "from-blue-500/20 to-cyan-500/20", iconColor: "text-blue-500" },
   { id: "macro-tracker" as ActiveView, title: "Macro Tracker", description: "Track daily calories & macros with goals", icon: Target, cost: "Free", gradient: "from-emerald-500/20 to-green-500/20", iconColor: "text-emerald-500" },
   { id: "restaurant" as ActiveView, title: "Restaurant Intelligence", description: "AI menu analysis & healthy recommendations", icon: Store, cost: "25 Credits", gradient: "from-yellow-500/20 to-orange-500/20", iconColor: "text-yellow-500" },
-  { id: "quests" as ActiveView, title: "Calorie Quests", description: "Gamified fitness challenges & XP leveling", icon: Trophy, cost: "Free", gradient: "from-purple-500/20 to-pink-500/20", iconColor: "text-purple-500" },
   { id: "workout" as ActiveView, title: "AI Workout Planner", description: "Personalized workout + nutrition match", icon: Dumbbell, cost: "30 Credits", gradient: "from-red-500/20 to-rose-500/20", iconColor: "text-red-500" },
   { id: "hydration" as ActiveView, title: "AI Hydration Coach", description: "Smart water intake based on your body", icon: Droplets, cost: "3 Credits", gradient: "from-cyan-500/20 to-blue-500/20", iconColor: "text-cyan-500" },
   { id: "supplements" as ActiveView, title: "AI Supplement Advisor", description: "Personalized vitamin recommendations", icon: Pill, cost: "8 Credits", gradient: "from-green-500/20 to-emerald-500/20", iconColor: "text-green-500" },
   { id: "grocery" as ActiveView, title: "Grocery Budget Optimizer", description: "Meal plans within your budget", icon: ShoppingCart, cost: "6 Credits", gradient: "from-teal-500/20 to-cyan-500/20", iconColor: "text-teal-500" },
   { id: "body-predictor" as ActiveView, title: "Body Composition Predictor", description: "Predict body changes 30/60/90 days", icon: Activity, cost: "10 Credits", gradient: "from-violet-500/20 to-purple-500/20", iconColor: "text-violet-500" },
   { id: "allergy-scanner" as ActiveView, title: "AI Allergy Scanner", description: "Detect allergens in any dish or ingredients", icon: ShieldAlert, cost: "5 Credits", gradient: "from-red-500/20 to-orange-500/20", iconColor: "text-red-500", isNew: true },
-  { id: "meal-challenges" as ActiveView, title: "Social Meal Challenges", description: "Competitive healthy eating leagues & XP", icon: Swords, cost: "8 Credits", gradient: "from-pink-500/20 to-rose-500/20", iconColor: "text-pink-500", isNew: true },
   { id: "nutrition-coach" as ActiveView, title: "AI Nutrition Coach", description: "Real-time expert nutrition chat advisor", icon: MessageCircle, cost: "2 Credits/msg", gradient: "from-indigo-500/20 to-blue-500/20", iconColor: "text-indigo-500", isNew: true },
-  { id: "barcode-scanner" as ActiveView, title: "AI Barcode Scanner", description: "Instant product nutrition mapping", icon: ScanBarcode, cost: "3 Credits", gradient: "from-amber-500/20 to-yellow-500/20", iconColor: "text-amber-500", isNew: true },
   { id: "weekly-progress" as ActiveView, title: "Weekly Progress Dashboard", description: "Charts & AI insights for your week", icon: BarChart3, cost: "6 Credits", gradient: "from-violet-500/20 to-indigo-500/20", iconColor: "text-violet-500", isNew: true },
 ];
 
@@ -61,7 +55,7 @@ export default function NutritionHub() {
   const { dailyStreak, achievements, loading: statsLoading } = useNutritionStats();
   const [activeView, setActiveView] = useState<ActiveView>("dashboard");
 
-  const viewsWithBackButton = ["hydration", "supplements", "grocery", "body-predictor", "allergy-scanner", "meal-challenges", "nutrition-coach", "barcode-scanner", "weekly-progress"];
+  const viewsWithBackButton = ["hydration", "supplements", "grocery", "body-predictor", "allergy-scanner", "nutrition-coach", "weekly-progress"];
 
   const renderActiveView = () => {
     const back = () => setActiveView("dashboard");
@@ -70,16 +64,13 @@ export default function NutritionHub() {
       case "food-scanner": return <FoodScanner />;
       case "macro-tracker": return <MacroTracker />;
       case "restaurant": return <RestaurantAnalyzer />;
-      case "quests": return <CalorieQuests />;
       case "workout": return <WorkoutMatcher />;
       case "hydration": return <AIHydrationCoach onBack={back} />;
       case "supplements": return <AISupplementAdvisor onBack={back} />;
       case "grocery": return <AIGroceryBudgetOptimizer onBack={back} />;
       case "body-predictor": return <AIBodyCompositionPredictor onBack={back} />;
       case "allergy-scanner": return <AIAllergyScanner onBack={back} />;
-      case "meal-challenges": return <SocialMealChallenges onBack={back} />;
       case "nutrition-coach": return <AINutritionCoachChat onBack={back} />;
-      case "barcode-scanner": return <AIBarcodeScanner onBack={back} />;
       case "weekly-progress": return <WeeklyProgressDashboard onBack={back} />;
       default: return null;
     }

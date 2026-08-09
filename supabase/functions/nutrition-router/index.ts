@@ -48,9 +48,6 @@ Return ONLY JSON:
 Rules: check every listed allergy explicitly (even if not found). Include at least 4 cross-contamination risks, 4 safe alternatives, 4 label-reading tips and 3 restaurant questions. Mention EU's 14 major allergens where relevant. No markdown, JSON only.`,
     cost: 5},
 
-  barcode_scanner: {
-    system: "You are a nutrition database. Return JSON: {product_name, brand, calories_per_serving, macros:{p,c,f}, ingredients[], health_score_0_10, alternatives[]}.",
-    cost: 3},
   body_predictor: {
     system: "Predict body changes. Return JSON: {weeks_to_goal, predicted_weight_kg, body_fat_change, muscle_gain_kg, key_milestones[], risks[]}.",
     cost: 10},
@@ -78,9 +75,6 @@ Rules: cover every requested day with breakfast, lunch and dinner (plus snacks) 
   hydration_coach: {
     system: "Hydration coach. Return JSON: {daily_ml, schedule:[{time, ml, reminder}], electrolyte_advice}.",
     cost: 3},
-  meal_challenge: {
-    system: "Create nutrition challenge. Return JSON: {challenge_name, duration_days, daily_tasks[], rewards[], difficulty}.",
-    cost: 8},
   supplement_advisor: {
     system: "Recommend supplements. Return JSON: {supplements:[{name, dose, timing, benefit, evidence_level}], avoid[], disclaimer}.",
     cost: 8},

@@ -10,11 +10,9 @@ import { resolveProxy } from "@/integrations/supabase/proxyMap";
 
 const NUTRITION_EXPECTED: Record<string, string> = { "nutrition-coach-chat": "coach_chat",
   "nutrition-allergy-scanner": "allergy_scanner",
-  "nutrition-barcode-scanner": "barcode_scanner",
   "nutrition-body-predictor": "body_predictor",
   "nutrition-grocery-optimizer": "grocery_optimizer",
   "nutrition-hydration-coach": "hydration_coach",
-  "nutrition-meal-challenge": "meal_challenge",
   "nutrition-supplement-advisor": "supplement_advisor",
   "nutrition-weekly-progress": "weekly_progress" };
 
