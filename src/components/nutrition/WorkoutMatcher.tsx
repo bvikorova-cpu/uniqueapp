@@ -170,7 +170,7 @@ export default function WorkoutMatcher() {
             </motion.div>
           )}
 
-          <Button onClick={() => { if (!selectedWorkoutType) { toast.error("Select a workout type"); return; } if (!credits || credits.credits_remaining < 30) { toast.error('Need 30 credits'); return; } generateMutation.mutate(); }}
+          <Button onClick={() => { if (!selectedWorkoutType) { toast.error("Select a workout type"); return; } if (!credits || credits.credits_remaining < 4) { toast.error('Need 4 credits'); return; } generateMutation.mutate(); }}
             disabled={generateMutation.isPending || !selectedWorkoutType} className="w-full gap-2" size="lg">
             {generateMutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Generating...</> : <><Sparkles className="h-5 w-5" /> Generate Plan (4 credits)</>}
           </Button>
