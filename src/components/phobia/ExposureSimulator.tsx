@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Eye, Play, Pause, ChevronRight, Shield, Heart, Timer } from "lucide-react";
+import { Eye, Play, Pause, ChevronRight, Shield, Heart, Timer, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -145,6 +145,9 @@ export const ExposureSimulator = () => {
         <div className="flex items-center gap-2 mb-1">
           <Eye className="h-5 w-5 text-cyan-400" />
           <h3 className="font-bold">Guided Exposure Therapy</h3>
+          <Badge className="bg-primary/15 text-primary border border-primary/30 text-[10px] font-bold gap-1">
+            <Zap className="h-2.5 w-2.5" /> 2 cr
+          </Badge>
         </div>
         <p className="text-xs text-muted-foreground">
           Gradually face your fears in a safe, controlled environment. Each scenario has 5 levels of increasing intensity.

@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { HeartPulse, Loader2, Plus, TrendingUp, AlertCircle } from "lucide-react";
+import { HeartPulse, Loader2, Plus, TrendingUp, AlertCircle, Zap } from "lucide-react";
 import { Select,
   SelectContent,
   SelectItem,
@@ -134,15 +135,15 @@ const PhobiaCureDashboard = ({ onOpenPricing }: PhobiaCureDashboardProps) => {
       <Card className="border-yellow-500/20 bg-gradient-to-br from-yellow-950/10 to-background">
         <CardContent className="py-12 text-center space-y-4">
           <HeartPulse className="w-16 h-16 text-yellow-400 mx-auto" />
-          <h3 className="text-xl font-semibold text-foreground">Access Required</h3>
+          <h3 className="text-xl font-semibold text-foreground">3 credits per cure plan</h3>
           <p className="text-muted-foreground max-w-md mx-auto">
-            You need to purchase "Phobia Cure Premium" to generate AI-powered treatment plans.
+            Generating an AI-powered treatment plan costs 3 AI credits — deducted only after a successful result. No subscription needed.
           </p>
-          <Button 
+          <Button
             onClick={onOpenPricing}
             className="bg-gradient-to-r from-cyan-500 to-blue-500"
           >
-            View Pricing Plans
+            <Zap className="w-4 h-4 mr-2" /> View Credit Costs & Top Up
           </Button>
         </CardContent>
       </Card>
@@ -183,6 +184,9 @@ const PhobiaCureDashboard = ({ onOpenPricing }: PhobiaCureDashboardProps) => {
               {generating && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               <Plus className="w-4 h-4 mr-2" />
               Generate Cure Plan
+              <Badge className="ml-2 bg-primary/20 text-primary border border-primary/40 text-[10px] gap-1">
+                <Zap className="h-2.5 w-2.5" /> 3 cr
+              </Badge>
             </Button>
           </div>
         </CardContent>
