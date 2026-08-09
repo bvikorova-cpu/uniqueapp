@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from "recharts";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { AiMarkdown } from "@/components/common/AiMarkdown";
+
 
 interface Props { onBack: () => void; }
 
