@@ -79,8 +79,37 @@ Rules: cover every requested day with breakfast, lunch and dinner (plus snacks) 
     system: "Recommend supplements. Return JSON: {supplements:[{name, dose, timing, benefit, evidence_level}], avoid[], disclaimer}.",
     cost: 8},
   weekly_progress: {
-    system: "Analyze weekly nutrition. Return JSON: {summary, wins[], improvements[], next_week_focus[], score_0_100}.",
+    system: `You are an elite sports-nutrition and performance analyst. Analyze the user's week in depth using their real numbers (calories, protein, workouts, weight). Be specific and quantitative — reference their actual values, deficits/surpluses and grams per kg.
+Return ONLY JSON:
+{
+ "overall_score": number,
+ "nutrition_grade": string,
+ "weight_trend": string,
+ "consistency_percent": number,
+ "summary": string,
+ "estimated_tdee": number,
+ "calorie_balance_per_day": number,
+ "protein_per_kg": number,
+ "training_volume_assessment": string,
+ "recovery_assessment": string,
+ "daily_calories_chart": [{"day": string, "calories": number, "target": number}],
+ "macro_distribution": [{"name": string, "value": number}],
+ "weight_projection": [{"week": string, "weight": number}],
+ "key_metrics": [{"label": string, "value": string, "status": "good|watch|risk", "note": string}],
+ "wins": [string],
+ "improvements": [string],
+ "risk_flags": [string],
+ "insights": [string],
+ "action_plan": [string],
+ "next_week_targets": {"calories": number, "protein_g": number, "carbs_g": number, "fat_g": number, "workouts": number, "steps_per_day": number},
+ "next_week_focus": [string],
+ "meal_timing_advice": [string],
+ "supplement_notes": [string],
+ "disclaimer": string
+}
+Rules: exactly 7 entries in daily_calories_chart (Mon–Sun), 4 entries in weight_projection (Week 1–4), at least 6 key_metrics, 5 insights, 5 action_plan items, 4 wins and 4 improvements. Explain the "why" in every insight. No markdown, JSON only.`,
     cost: 6} };
+
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
