@@ -135,15 +135,15 @@ const PhobiaCureDashboard = ({ onOpenPricing }: PhobiaCureDashboardProps) => {
       <Card className="border-yellow-500/20 bg-gradient-to-br from-yellow-950/10 to-background">
         <CardContent className="py-12 text-center space-y-4">
           <HeartPulse className="w-16 h-16 text-yellow-400 mx-auto" />
-          <h3 className="text-xl font-semibold text-foreground">Access Required</h3>
+          <h3 className="text-xl font-semibold text-foreground">3 credits per cure plan</h3>
           <p className="text-muted-foreground max-w-md mx-auto">
-            You need to purchase "Phobia Cure Premium" to generate AI-powered treatment plans.
+            Generating an AI-powered treatment plan costs 3 AI credits — deducted only after a successful result. No subscription needed.
           </p>
-          <Button 
+          <Button
             onClick={onOpenPricing}
             className="bg-gradient-to-r from-cyan-500 to-blue-500"
           >
-            View Pricing Plans
+            <Zap className="w-4 h-4 mr-2" /> View Credit Costs & Top Up
           </Button>
         </CardContent>
       </Card>
