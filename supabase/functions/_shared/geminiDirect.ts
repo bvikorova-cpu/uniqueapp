@@ -10,6 +10,8 @@
  * callers fall back to the Lovable AI Gateway — nothing breaks.
  */
 
+import { tryVertexChat, hasVertex } from "./vertexDirect.ts";
+
 const GEMINI_OPENAI_BASE = "https://generativelanguage.googleapis.com/v1beta/openai";
 
 /** Map gateway / legacy OpenAI model ids onto real direct-API Gemini model names. */
@@ -21,7 +23,7 @@ export function directGeminiModel(model: unknown): string {
 }
 
 export function hasDirectGemini(): boolean {
-  return !!Deno.env.get("GEMINI_API_KEY");
+  return !!Deno.env.get("GEMINI_API_KEY") || hasVertex();
 }
 
 /**
@@ -32,6 +34,11 @@ export function hasDirectGemini(): boolean {
 export async function tryDirectGeminiChat(
   body: Record<string, unknown>,
 ): Promise<any | null> {
+  // 1) Vertex AI (postpay, service account) has priority when configured.
+  const vertex = await tryVertexChat(body);
+  if (vertex) return vertex;
+
+  // 2) Google AI Studio API key.
   const key = Deno.env.get("GEMINI_API_KEY");
   if (!key) return null;
 
