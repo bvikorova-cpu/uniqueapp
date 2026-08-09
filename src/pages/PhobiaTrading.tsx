@@ -169,7 +169,6 @@ const PhobiaTrading = () => {
               className="flex flex-wrap justify-center gap-4">
               {[
                 { icon: Brain, label: "Phobias Tracked", value: stats.phobias },
-                { icon: ArrowRightLeft, label: "Trades Made", value: stats.trades },
                 { icon: Users, label: "Members", value: stats.members },
               ].map(s => (
                 <div key={s.label} className="flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/40 backdrop-blur-sm border border-cyan-500/20">
