@@ -152,11 +152,16 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
         if (/gpt-5/i.test(model)) delete body.temperature;
         if (/gpt-5\.6/i.test(model)) body.reasoning_effort = "none";
 
+        // Hybrid: prefer the project's own Gemini API key, fall back to gateway.
+        const direct = await tryDirectGeminiChatResponse(body);
+        if (direct) return direct;
+
         return await postWithRetry(`${GATEWAY_BASE}/chat/completions`, body, [
           "google/gemini-3.1-flash-lite",
           "google/gemini-3.5-flash",
         ]);
       }
+
 
       if (url.includes("/images/generations") || url.includes("/images/edits")) {
         const gwBody = {
