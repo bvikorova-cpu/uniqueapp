@@ -23,8 +23,8 @@ export default function AIHydrationCoach({ onBack }: Props) {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('nutrition-hydration-coach', {
-        body: { weight: Number(weight), activity_level: activity, climate }
+      const { data, error } = await supabase.functions.invoke('nutrition-router', {
+        body: { action: 'hydration_coach', weight: Number(weight), activity_level: activity, climate }
       });
       if (error) throw error;
       return data;

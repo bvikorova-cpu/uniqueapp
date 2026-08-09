@@ -13,7 +13,7 @@ interface Props { onBack: () => void; }
 interface Message { role: "user" | "assistant"; content: string; }
 
 export default function AINutritionCoachChat({ onBack }: Props) {
-  const { credits, spendCredit } = useAICredits();
+  const { credits } = useAICredits();
   const [messages, setMessages] = useState<Message[]>([
     { role: "assistant", content: "Hi! I'm your AI Nutrition Coach 🥗 Ask me anything about diet, macros, meal timing, supplements, or your fitness nutrition. Each message costs 2 credits." }
   ]);
@@ -28,17 +28,14 @@ export default function AINutritionCoachChat({ onBack }: Props) {
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
     
-    const credited = await spendCredit('custom_generation', 'Nutrition Coach Chat');
-    if (!credited) { toast.error("Not enough credits (2 required)"); return; }
-
     const userMsg: Message = { role: "user", content: input.trim() };
     setMessages(prev => [...prev, userMsg]);
     setInput("");
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('nutrition-coach-chat', {
-        body: { messages: [...messages, userMsg].slice(-10) }
+      const { data, error } = await supabase.functions.invoke('nutrition-router', {
+        body: { action: 'coach_chat', messages: [...messages, userMsg].slice(-10) }
       });
       if (error) throw error;
       setMessages(prev => [...prev, { role: "assistant", content: data.reply }]);

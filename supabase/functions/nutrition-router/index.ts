@@ -133,7 +133,26 @@ serve(async (req) => {
       max_tokens: 4096,
       temperature: spec.temperature ?? 0.75 }));
     const parsed = safeJson(result);
-    return jsonResponse({ success: true, result: parsed ?? result, data: parsed, text: result, reply: result });
+    const value = parsed ?? result;
+    const legacyKey: Record<string, string> = {
+      allergy_scanner: "analysis",
+      barcode_scanner: "product",
+      body_predictor: "prediction",
+      grocery_optimizer: "plan",
+      hydration_coach: "plan",
+      meal_challenge: "challenge",
+      supplement_advisor: "recommendations",
+      weekly_progress: "report",
+    };
+    const alias = legacyKey[action];
+    return jsonResponse({
+      success: true,
+      result: value,
+      data: parsed,
+      text: result,
+      reply: result,
+      ...(alias ? { [alias]: value } : {}),
+    });
   } catch (e: any) {
     if (charged && userId && cost) await refundAICredits(userId, cost, "nutrition-router");
     const status = Number(e?.status ?? 500);

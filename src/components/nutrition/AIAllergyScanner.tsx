@@ -15,17 +15,15 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props { onBack: () => void; }
 
 export default function AIAllergyScanner({ onBack }: Props) {
-  const { credits, spendCredit } = useAICredits();
+  const { credits } = useAICredits();
   const [ingredients, setIngredients] = useState("");
   const [allergies, setAllergies] = useState("peanuts, gluten, lactose");
   const [result, setResult] = useState<any>(null);
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const credited = await spendCredit('custom_generation', 'Allergy Scanner');
-      if (!credited) throw new Error('Not enough credits (5 required)');
-      const { data, error } = await supabase.functions.invoke('nutrition-allergy-scanner', {
-        body: { ingredients, known_allergies: allergies.split(',').map(a => a.trim()) }
+      const { data, error } = await supabase.functions.invoke('nutrition-router', {
+        body: { action: 'allergy_scanner', ingredients, known_allergies: allergies.split(',').map(a => a.trim()) }
       });
       if (error) throw error;
       return data;

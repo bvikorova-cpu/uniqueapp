@@ -25,8 +25,8 @@ export default function AISupplementAdvisor({ onBack }: Props) {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('nutrition-supplement-advisor', {
-        body: { age: Number(age), gender, current_diet: diet, health_goals: goals }
+      const { data, error } = await supabase.functions.invoke('nutrition-router', {
+        body: { action: 'supplement_advisor', age: Number(age), gender, current_diet: diet, health_goals: goals }
       });
       if (error) throw error;
       return data;
