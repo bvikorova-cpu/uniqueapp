@@ -44,3 +44,24 @@ export async function deductAICredits(userId: string, cost: number, action: stri
 
   return null;
 }
+
+/** Gives credits back when the AI call fails after a deduction. */
+export async function refundAICredits(userId: string, cost: number, action: string): Promise<void> {
+  if (!cost || cost <= 0) return;
+  const admin = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    { auth: { persistSession: false } }
+  );
+  const { data: row } = await admin
+    .from("ai_credits")
+    .select("credits_remaining")
+    .eq("user_id", userId)
+    .maybeSingle();
+  const remaining = row?.credits_remaining ?? 0;
+  const { error } = await admin
+    .from("ai_credits")
+    .update({ credits_remaining: remaining + cost })
+    .eq("user_id", userId);
+  if (error) console.error(`[credits] refund failed for ${action}`, error);
+}
