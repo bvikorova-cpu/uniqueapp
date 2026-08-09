@@ -52,7 +52,7 @@ export default function AIBodyCompositionPredictor({ onBack }: Props) {
               </div>
               AI Body Composition Predictor
             </CardTitle>
-            <CardDescription>Predict your body changes over 30/60/90 days (10 credits)</CardDescription>
+            <CardDescription>Predict your body changes over 30/60/90 days (5 credits)</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -100,8 +100,8 @@ export default function AIBodyCompositionPredictor({ onBack }: Props) {
                 </Select>
               </div>
             </div>
-            <Button onClick={() => mutation.mutate()} disabled={mutation.isPending || !credits || credits.credits_remaining < 10} className="w-full gap-2" size="lg">
-              {mutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Predicting...</> : <><Sparkles className="h-5 w-5" /> Predict Changes (10 credits)</>}
+            <Button onClick={() => mutation.mutate()} disabled={mutation.isPending || !credits || credits.credits_remaining < 5} className="w-full gap-2" size="lg">
+              {mutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Predicting...</> : <><Sparkles className="h-5 w-5" /> Predict Changes (5 credits)</>}
             </Button>
           </CardContent>
         </Card>

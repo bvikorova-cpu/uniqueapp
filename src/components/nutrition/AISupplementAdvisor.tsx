@@ -51,7 +51,7 @@ export default function AISupplementAdvisor({ onBack }: Props) {
               </div>
               AI Supplement Advisor
             </CardTitle>
-            <CardDescription>Personalized vitamin & supplement recommendations (8 credits)</CardDescription>
+            <CardDescription>Personalized vitamin & supplement recommendations (5 credits)</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -79,8 +79,8 @@ export default function AISupplementAdvisor({ onBack }: Props) {
               <Label>Health Goals</Label>
               <Input value={goals} onChange={(e) => setGoals(e.target.value)} placeholder="e.g. energy boost, muscle recovery, immunity" className="bg-background/50" />
             </div>
-            <Button onClick={() => mutation.mutate()} disabled={mutation.isPending || !credits || credits.credits_remaining < 8} className="w-full gap-2" size="lg">
-              {mutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Analyzing...</> : <><Sparkles className="h-5 w-5" /> Get Recommendations (8 credits)</>}
+            <Button onClick={() => mutation.mutate()} disabled={mutation.isPending || !credits || credits.credits_remaining < 5} className="w-full gap-2" size="lg">
+              {mutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Analyzing...</> : <><Sparkles className="h-5 w-5" /> Get Recommendations (5 credits)</>}
             </Button>
           </CardContent>
         </Card>
