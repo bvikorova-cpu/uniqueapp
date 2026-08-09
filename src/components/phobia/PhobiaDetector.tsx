@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Brain, Loader2 } from "lucide-react";
+import { Brain, Loader2, Zap } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface PhobiaDetectorProps {
