@@ -193,73 +193,8 @@ const PhobiaTrading = () => {
           </div>
         ) : (
           <div className="space-y-8">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
-                <div className="flex items-center gap-2 mb-3">
-                  <Flame className="h-5 w-5 text-orange-500" />
-                  <h3 className="font-bold text-sm">Fear Fighting Streak</h3>
-                  <span className="ml-auto text-lg font-black text-primary">{currentStreak}</span>
-                </div>
-                <div className="grid grid-cols-7 gap-1.5">
-                  {days.map((day, i) => (
-                    <div key={i} className="text-center">
-                      <span className="text-[10px] text-muted-foreground">{day}</span>
-                      <div className={`w-7 h-7 rounded-full flex items-center justify-center mt-1 text-xs font-medium ${
-                        activeDays[i] ? "bg-primary/20 text-primary border border-primary/30" : "bg-muted/30 text-muted-foreground"
-                      }`}>
-                        {activeDays[i] ? "✓" : "·"}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
+          <div className="space-y-8">
 
-              <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
-                <div className="flex items-center gap-2 mb-3">
-                  <TrendingUp className="h-5 w-5 text-primary" />
-                  <h3 className="font-bold text-sm">Recovery Progress</h3>
-                </div>
-                <div className="space-y-3">
-                  {[
-                    { label: "Fears Faced", current: 8, max: 20, color: "bg-primary" },
-                    { label: "Sessions Done", current: 12, max: 30, color: "bg-accent" },
-                    { label: "Coping Skills", current: 5, max: 15, color: "bg-chart-3" },
-                  ].map(m => (
-                    <div key={m.label}>
-                      <div className="flex justify-between text-xs mb-1">
-                        <span className="text-muted-foreground">{m.label}</span>
-                        <span className="font-medium">{m.current}/{m.max}</span>
-                      </div>
-                      <div className="h-1.5 bg-muted/30 rounded-full overflow-hidden">
-                        <div className={`h-full ${m.color} rounded-full transition-all duration-1000`}
-                          style={{ width: `${(m.current / m.max) * 100}%` }} />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-
-              <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
-                <div className="flex items-center gap-2 mb-3">
-                  <Trophy className="h-5 w-5 text-yellow-500" />
-                  <h3 className="font-bold text-sm">Achievements</h3>
-                  <span className="ml-auto text-xs text-muted-foreground">
-                    {badges.filter(b => b.unlocked).length}/{badges.length}
-                  </span>
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                  {badges.map(badge => (
-                    <motion.div key={badge.label} whileHover={{ scale: 1.1 }}
-                      className={`flex flex-col items-center p-2 rounded-lg text-center ${
-                        badge.unlocked ? "bg-primary/10 border border-primary/20" : "bg-muted/20 opacity-40"
-                      }`}>
-                      <span className="text-lg">{badge.icon}</span>
-                      <span className="text-[9px] mt-1 text-muted-foreground leading-tight">{badge.label}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              </Card>
-            </div>
 
             <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50">
               <h2 className="text-xl font-black mb-3 text-primary">What is Phobia Network?</h2>
