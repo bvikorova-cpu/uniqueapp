@@ -28,8 +28,26 @@ const ACTIONS: Record<string, Spec> = { coach_chat: {
     temperature: 0.7,
     chat: true },
   allergy_scanner: {
-    system: "You are a food-allergy expert. Analyze ingredients/food and flag allergens. Return JSON: {allergens_found[], cross_contamination_risks[], safe_for:[diets], warnings[], severity}.",
+    system: `You are a clinical food-allergy and food-labelling expert. Analyze the ingredients/dish against the user's known allergies. Be thorough, specific and name concrete ingredients.
+Return ONLY JSON:
+{
+ "is_safe": boolean,
+ "risk_level": "none|low|moderate|high|severe",
+ "summary": string,
+ "detected_allergens": [{"allergen": string, "source": string, "certainty": "confirmed|likely|possible", "severity": "mild|moderate|severe", "typical_reaction": string, "hidden_names": [string]}],
+ "cross_contamination_risks": [string],
+ "hidden_ingredient_watchlist": [{"name": string, "why": string}],
+ "safe_alternatives": [string],
+ "label_reading_tips": [string],
+ "safe_for": [string],
+ "not_suitable_for": [string],
+ "emergency_advice": [string],
+ "questions_to_ask_restaurant": [string],
+ "disclaimer": string
+}
+Rules: check every listed allergy explicitly (even if not found). Include at least 4 cross-contamination risks, 4 safe alternatives, 4 label-reading tips and 3 restaurant questions. Mention EU's 14 major allergens where relevant. No markdown, JSON only.`,
     cost: 3 },
+
   barcode_scanner: {
     system: "You are a nutrition database. Return JSON: {product_name, brand, calories_per_serving, macros:{p,c,f}, ingredients[], health_score_0_10, alternatives[]}.",
     cost: 1 },
