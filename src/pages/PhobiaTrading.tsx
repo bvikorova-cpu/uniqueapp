@@ -193,7 +193,6 @@ const PhobiaTrading = () => {
           </div>
         ) : (
           <div className="space-y-8">
-          <div className="space-y-8">
 
 
             <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50">
