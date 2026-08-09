@@ -108,7 +108,7 @@ const PhobiaTrading = () => {
 
   return (
     <>
-      <FloatingHowItWorks title="How Phobia Trading works" steps={[
+      <FloatingHowItWorks title="How Phobia Network works" steps={[
           { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
           { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
           { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
@@ -149,7 +149,7 @@ const PhobiaTrading = () => {
                 WebkitTextStroke: "1px rgba(6, 182, 212, 0.6)",
                 textShadow: "0 0 30px rgba(6, 182, 212, 0.5), 0 0 60px rgba(6, 182, 212, 0.3), 0 2px 4px rgba(0,0,0,0.8)" }}
             >
-              Phobia Trading Network
+              Phobia Network
             </motion.h1>
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
               className="text-sm sm:text-lg text-cyan-100/80 max-w-2xl mx-auto mb-6"
