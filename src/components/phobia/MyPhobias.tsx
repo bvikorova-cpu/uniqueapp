@@ -64,9 +64,11 @@ const MyPhobias = ({ onPhobiaListed, onOpenPricing }: MyPhobiasProps) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
 
-      const { data, error } = await supabase.functions.invoke('get-user-phobias');
+      const { data, error } = await supabase.functions.invoke('phobia-router', {
+        body: { action: 'list' }
+      });
 
-      if (error) throw error;
+      if (error) throw new Error(data?.error || error.message);
 
       setPhobias(data.phobias || []);
     } catch (error) {
@@ -99,15 +101,16 @@ const MyPhobias = ({ onPhobiaListed, onOpenPricing }: MyPhobiasProps) => {
         return;
       }
 
-      const { error } = await supabase.functions.invoke('trade-phobia', {
+      const { data: listData, error } = await supabase.functions.invoke('phobia-router', {
         body: { 
-          action: 'list',
+          action: 'list_for_trade',
           phobiaId: selectedPhobia.id,
           price: price
         }
       });
 
-      if (error) throw error;
+      if (error) throw new Error(listData?.error || error.message);
+      if (listData?.error) throw new Error(listData.error);
 
       toast({
         title: "Listed for Trade",

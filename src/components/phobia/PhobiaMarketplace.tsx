@@ -54,11 +54,11 @@ const PhobiaMarketplace = ({ onOpenPricing }: PhobiaMarketplaceProps) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
 
-      const { data, error } = await supabase.functions.invoke('trade-phobia', {
+      const { data, error } = await supabase.functions.invoke('phobia-router', {
         body: { action: 'get_marketplace' }
       });
 
-      if (error) throw error;
+      if (error) throw new Error(data?.error || error.message);
 
       setTrades(data.trades || []);
     } catch (error) {
@@ -83,11 +83,12 @@ const PhobiaMarketplace = ({ onOpenPricing }: PhobiaMarketplaceProps) => {
       const charge = await chargePhobiaAction("place-trade", { metadata: { tradeId, side: "buy" } });
       if (!charge.ok) return;
 
-      const { error } = await supabase.functions.invoke('trade-phobia', {
+      const { data: buyData, error } = await supabase.functions.invoke('phobia-router', {
         body: { action: 'buy', tradeId }
       });
 
-      if (error) throw error;
+      if (error) throw new Error(buyData?.error || error.message);
+      if (buyData?.error) throw new Error(buyData.error);
 
       toast({ title: "Purchase Successful",
         description: "Phobia has been transferred to your collection" });
