@@ -171,7 +171,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "129", title: "Crystal Energy Network", category: "Mystical", path: "/crystal-energy-network" },
   { id: "130", title: "Holographic Avatars", category: "Mystical", path: "/holographic-avatars" },
   { id: "132", title: "Emotion Economy", category: "Mystical", path: "/emotion-economy" },
-  { id: "133", title: "Phobia Trading", category: "Mystical", path: "/phobia-trading" },
+  { id: "133", title: "Phobia Network", category: "Mystical", path: "/phobia-trading" },
   { id: "135", title: "Time Capsule", category: "Mystical", path: "/time-capsule" },
   { id: "136", title: "Time Reversal", category: "Mystical", path: "/time-reversal" },
   

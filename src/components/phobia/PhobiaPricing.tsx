@@ -89,7 +89,7 @@ export function PhobiaPricing() {
             <div className="space-y-1">
               <h3 className="text-xl font-black">Need more credits?</h3>
               <p className="text-sm text-muted-foreground">
-                Phobia Trading uses the same AI credits as the rest of the platform — buy once, use anywhere.
+                Phobia Network uses the same AI credits as the rest of the platform — buy once, use anywhere.
               </p>
             </div>
             <Button onClick={() => navigate("/ai-credits")} className="gap-1.5 shrink-0">

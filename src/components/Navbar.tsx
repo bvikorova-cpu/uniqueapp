@@ -197,7 +197,7 @@ const Navbar = () => {
         { path: "/first-aid", label: "First Aid", icon: Activity },
         { path: "/fit-slim", label: "Fit & Slim", icon: Apple },
         { path: "/nutrition-hub", label: "Nutrition Hub", icon: Apple },
-        { path: "/phobia-trading", label: "Phobia Trading Network", icon: Brain },
+        { path: "/phobia-trading", label: "Phobia Network", icon: Brain },
         { path: "/safety-prevention", label: "Safety & Bullying Prevention", icon: Shield },
         { path: "/lie-detector", label: "Lie Detector Chat", icon: Shield },
       ] },

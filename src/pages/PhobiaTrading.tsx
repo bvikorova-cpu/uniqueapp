@@ -4,44 +4,27 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import { Brain, ShoppingCart, HeartPulse, TrendingUp, Shield, Zap, ArrowLeft,
-  Flame, Trophy, Check, BarChart3, BookOpen, Users, Eye, Activity,
-  Bot, MessageCircle, Star, Play, Pause, Volume2, VolumeX, ArrowRightLeft, CreditCard } from "lucide-react";
+import { Brain, Shield, Zap, ArrowLeft, Check, Users, Eye,
+  Bot, Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
 import PhobiaDetector from "@/components/phobia/PhobiaDetector";
-import PhobiaMarketplace from "@/components/phobia/PhobiaMarketplace";
-import PhobiaCureDashboard from "@/components/phobia/PhobiaCureDashboard";
-import MyPhobias from "@/components/phobia/MyPhobias";
 
-import { FearJournal } from "@/components/phobia/FearJournal";
-import { FearAnalytics } from "@/components/phobia/FearAnalytics";
 import { AITherapistChat } from "@/components/phobia/AITherapistChat";
 import { ExposureSimulator } from "@/components/phobia/ExposureSimulator";
-import { PhobiaCommunity } from "@/components/phobia/PhobiaCommunity";
-import { AnxietyTracker } from "@/components/phobia/AnxietyTracker";
-import { PhobiaPricing } from "@/components/phobia/PhobiaPricing";
 
 import phobiaPoster from "@/assets/phobia-hero-poster.jpg";
-import { toast } from "sonner";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-type ToolView = "hub" | "detect" | "my-phobias" | "marketplace" | "cure" | "journal" | "analytics" | "therapist" | "exposure" | "community" | "anxiety" | "pricing";
+type ToolView = "hub" | "detect" | "therapist" | "exposure";
 
 const tools = [
   { id: "detect" as ToolView, title: "AI Phobia Detector", description: "Identify your specific fears with AI analysis", icon: Brain, badge: "AI", credits: 3, gradient: "bg-gradient-to-r from-cyan-500 to-blue-500", features: ["Behavioral analysis", "Clinical accuracy", "Trigger identification"] },
-  { id: "my-phobias" as ToolView, title: "My Phobias", description: "View and manage your fear collection", icon: Star, badge: "Collection", credits: 0, gradient: "bg-gradient-to-r from-blue-500 to-purple-500", features: ["Track severity", "List for trade", "Progress insights"] },
-  { id: "marketplace" as ToolView, title: "Fear Marketplace", description: "Trade phobias with the global community", icon: ShoppingCart, badge: "Trading", credits: 0, gradient: "bg-gradient-to-r from-purple-500 to-pink-500", features: ["Buy & sell fears", "AI pricing", "Secure transactions"] },
-  { id: "cure" as ToolView, title: "Cure Dashboard", description: "AI-powered personalized treatment plans", icon: HeartPulse, badge: "Premium", credits: 3, gradient: "bg-gradient-to-r from-pink-500 to-red-500", features: ["Personalized plans", "Session tracking", "Evidence-based"] },
   { id: "therapist" as ToolView, title: "AI Fear Therapist", description: "Chat with an AI specialized in phobias", icon: Bot, badge: "AI Chat", credits: 3, gradient: "bg-gradient-to-r from-cyan-500 to-teal-500", features: ["CBT techniques", "24/7 support", "Coping strategies"] },
   { id: "exposure" as ToolView, title: "Exposure Simulator", description: "Guided exposure therapy sessions", icon: Eye, badge: "Therapy", credits: 2, gradient: "bg-gradient-to-r from-teal-500 to-green-500", features: ["5-level system", "6 scenarios", "Safe environment"] },
-  { id: "journal" as ToolView, title: "Fear Journal", description: "Track your fear encounters and progress", icon: BookOpen, badge: "Tracking", credits: 0, gradient: "bg-gradient-to-r from-green-500 to-cyan-500", features: ["Log triggers", "Track intensity", "Coping review"] },
-  { id: "analytics" as ToolView, title: "Fear Analytics", description: "Visualize your fear patterns and trends", icon: BarChart3, badge: "Insights", credits: 0, gradient: "bg-gradient-to-r from-indigo-500 to-blue-500", features: ["Trend charts", "Phobia distribution", "Activity stats"] },
-  { id: "community" as ToolView, title: "Support Community", description: "Connect with others facing similar fears", icon: Users, badge: "Social", credits: 0, gradient: "bg-gradient-to-r from-amber-500 to-orange-500", features: ["Share stories", "Ask questions", "Offer support"] },
-  { id: "anxiety" as ToolView, title: "Anxiety Tracker", description: "Log anxiety episodes and grounding exercises", icon: Activity, badge: "Wellness", credits: 0, gradient: "bg-gradient-to-r from-red-500 to-pink-500", features: ["Symptom logging", "5-4-3-2-1 grounding", "Episode history"] },
-  { id: "pricing" as ToolView, title: "AI Credits", description: "Pay per action with platform AI credits — no subscription", icon: CreditCard, badge: "Credits", credits: -1, gradient: "bg-gradient-to-r from-emerald-500 to-teal-500", features: ["Detection 3 credits", "Cure plan 3 credits", "Top up anytime"] },
 ];
+
 
 const PhobiaTrading = () => {
   const { toast: showToast } = useToast();
@@ -100,16 +83,8 @@ const PhobiaTrading = () => {
   const renderToolView = () => {
     switch (activeView) {
       case "detect": return <PhobiaDetector onPhobiaDetected={() => showToast({ title: "Phobia Detected", description: "Saved to your profile" })} />;
-      case "my-phobias": return <MyPhobias onPhobiaListed={() => showToast({ title: "Phobia Listed", description: "Check the Marketplace" })} onOpenPricing={() => setActiveView("pricing")} />;
-      case "marketplace": return <PhobiaMarketplace onOpenPricing={() => setActiveView("pricing")} />;
-      case "cure": return <PhobiaCureDashboard onOpenPricing={() => setActiveView("pricing")} />;
-      case "journal": return <FearJournal />;
-      case "analytics": return <FearAnalytics />;
       case "therapist": return <AITherapistChat />;
       case "exposure": return <ExposureSimulator />;
-      case "community": return <PhobiaCommunity />;
-      case "anxiety": return <AnxietyTracker />;
-      case "pricing": return <PhobiaPricing />;
       default: return null;
     }
   };
@@ -133,7 +108,7 @@ const PhobiaTrading = () => {
 
   return (
     <>
-      <FloatingHowItWorks title="How Phobia Trading works" steps={[
+      <FloatingHowItWorks title="How Phobia Network works" steps={[
           { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
           { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
           { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
@@ -174,19 +149,18 @@ const PhobiaTrading = () => {
                 WebkitTextStroke: "1px rgba(6, 182, 212, 0.6)",
                 textShadow: "0 0 30px rgba(6, 182, 212, 0.5), 0 0 60px rgba(6, 182, 212, 0.3), 0 2px 4px rgba(0,0,0,0.8)" }}
             >
-              Phobia Trading Network
+              Phobia Network
             </motion.h1>
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
               className="text-sm sm:text-lg text-cyan-100/80 max-w-2xl mx-auto mb-6"
               style={{ textShadow: "0 1px 4px rgba(0,0,0,0.7)" }}>
-              The world's first AI-powered phobia detection and trading platform. Exchange fears, discover cures, and connect with others.
+              AI-powered fear management: detect your phobia, talk it through with an AI fear therapist, and face it safely in guided exposure.
             </motion.p>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
               className="flex flex-wrap justify-center gap-4">
               {[
                 { icon: Brain, label: "Phobias Tracked", value: stats.phobias },
-                { icon: ArrowRightLeft, label: "Trades Made", value: stats.trades },
                 { icon: Users, label: "Members", value: stats.members },
               ].map(s => (
                 <div key={s.label} className="flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/40 backdrop-blur-sm border border-cyan-500/20">
@@ -210,88 +184,22 @@ const PhobiaTrading = () => {
           </div>
         ) : (
           <div className="space-y-8">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
-                <div className="flex items-center gap-2 mb-3">
-                  <Flame className="h-5 w-5 text-orange-500" />
-                  <h3 className="font-bold text-sm">Fear Fighting Streak</h3>
-                  <span className="ml-auto text-lg font-black text-primary">{currentStreak}</span>
-                </div>
-                <div className="grid grid-cols-7 gap-1.5">
-                  {days.map((day, i) => (
-                    <div key={i} className="text-center">
-                      <span className="text-[10px] text-muted-foreground">{day}</span>
-                      <div className={`w-7 h-7 rounded-full flex items-center justify-center mt-1 text-xs font-medium ${
-                        activeDays[i] ? "bg-primary/20 text-primary border border-primary/30" : "bg-muted/30 text-muted-foreground"
-                      }`}>
-                        {activeDays[i] ? "✓" : "·"}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
 
-              <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
-                <div className="flex items-center gap-2 mb-3">
-                  <TrendingUp className="h-5 w-5 text-primary" />
-                  <h3 className="font-bold text-sm">Recovery Progress</h3>
-                </div>
-                <div className="space-y-3">
-                  {[
-                    { label: "Fears Faced", current: 8, max: 20, color: "bg-primary" },
-                    { label: "Sessions Done", current: 12, max: 30, color: "bg-accent" },
-                    { label: "Coping Skills", current: 5, max: 15, color: "bg-chart-3" },
-                  ].map(m => (
-                    <div key={m.label}>
-                      <div className="flex justify-between text-xs mb-1">
-                        <span className="text-muted-foreground">{m.label}</span>
-                        <span className="font-medium">{m.current}/{m.max}</span>
-                      </div>
-                      <div className="h-1.5 bg-muted/30 rounded-full overflow-hidden">
-                        <div className={`h-full ${m.color} rounded-full transition-all duration-1000`}
-                          style={{ width: `${(m.current / m.max) * 100}%` }} />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-
-              <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
-                <div className="flex items-center gap-2 mb-3">
-                  <Trophy className="h-5 w-5 text-yellow-500" />
-                  <h3 className="font-bold text-sm">Achievements</h3>
-                  <span className="ml-auto text-xs text-muted-foreground">
-                    {badges.filter(b => b.unlocked).length}/{badges.length}
-                  </span>
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                  {badges.map(badge => (
-                    <motion.div key={badge.label} whileHover={{ scale: 1.1 }}
-                      className={`flex flex-col items-center p-2 rounded-lg text-center ${
-                        badge.unlocked ? "bg-primary/10 border border-primary/20" : "bg-muted/20 opacity-40"
-                      }`}>
-                      <span className="text-lg">{badge.icon}</span>
-                      <span className="text-[9px] mt-1 text-muted-foreground leading-tight">{badge.label}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              </Card>
-            </div>
 
             <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50">
-              <h2 className="text-xl font-black mb-3 text-primary">What is Phobia Trading Network?</h2>
+              <h2 className="text-xl font-black mb-3 text-primary">What is Phobia Network?</h2>
               <p className="text-sm text-muted-foreground mb-4">
-                Phobia Trading Network is the world's first AI-powered platform for detecting, understanding, trading, and overcoming your fears.
-                Using advanced machine learning algorithms and evidence-based therapeutic techniques, we help you identify your phobias,
-                connect with others facing similar challenges, and provide personalized paths to recovery through AI therapy, exposure simulation, and community support.
+                Phobia Network is an AI-powered platform for detecting, understanding and overcoming your fears.
+                Using advanced AI analysis and evidence-based therapeutic techniques, we help you identify your phobias,
+                talk them through with an AI fear therapist, and face them step by step in a safe guided exposure simulator.
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+              <div className="grid grid-cols-3 gap-3 mb-4">
                 {[
                   { step: "1", title: "Detect", desc: "AI identifies your fears" },
-                  { step: "2", title: "Understand", desc: "Analyze patterns & triggers" },
-                  { step: "3", title: "Trade & Connect", desc: "Exchange in the marketplace" },
-                  { step: "4", title: "Overcome", desc: "AI therapy & exposure" },
+                  { step: "2", title: "Talk", desc: "AI fear therapist sessions" },
+                  { step: "3", title: "Overcome", desc: "Guided exposure simulator" },
                 ].map(s => (
+
                   <div key={s.step} className="text-center p-3 rounded-lg bg-muted/20 border border-border/30">
                     <div className="w-8 h-8 rounded-full bg-primary/20 text-primary font-black text-sm flex items-center justify-center mx-auto mb-2">{s.step}</div>
                     <p className="text-xs font-bold">{s.title}</p>
@@ -352,24 +260,6 @@ const PhobiaTrading = () => {
               </div>
             </div>
 
-            <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50">
-              <h2 className="text-xl font-black mb-4 text-primary">💡 Tips for Future Enhancements</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[
-                  { title: "🎮 VR Fear Worlds", desc: "Immersive 3D environments for exposure therapy using WebXR — walk through virtual scenarios that gradually increase in intensity." },
-                  { title: "🧬 Fear DNA Analysis", desc: "Upload genetic data to discover inherited phobia predispositions and get personalized prevention strategies based on your genetics." },
-                  { title: "📹 Video Fear Diary", desc: "Record video entries during anxiety episodes for AI emotion analysis — track facial expressions, voice tone, and body language over time." },
-                  { title: "🏅 Fear Fighter Tournaments", desc: "Competitive exposure challenges where users earn points for facing fears — monthly leaderboards with rewards for the bravest participants." },
-                  { title: "🤖 AI Dream Analyzer", desc: "Log your nightmares and recurring dreams for AI analysis — discover hidden fear patterns and subconscious anxiety triggers." },
-                  { title: "👥 Live Group Therapy", desc: "Real-time video group sessions with AI moderation — connect with others facing similar phobias for mutual support and accountability." },
-                ].map(tip => (
-                  <div key={tip.title} className="p-4 rounded-lg bg-muted/10 border border-border/30">
-                    <h4 className="font-bold text-sm mb-1">{tip.title}</h4>
-                    <p className="text-xs text-muted-foreground">{tip.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </Card>
           </div>
         )}
       </div>
