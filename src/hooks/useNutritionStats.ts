@@ -10,7 +10,7 @@ interface NutritionStats {
 /**
  * Real-time nutrition dashboard stats for NutritionHub.
  * - dailyStreak: consecutive days (up to today or yesterday) with at least one food_scans row
- * - achievements: count of completed calorie_quests
+ * - achievements: number of days the user logged macros (real data)
  */
 export function useNutritionStats(): NutritionStats {
   const [dailyStreak, setDailyStreak] = useState(0);
@@ -32,7 +32,7 @@ export function useNutritionStats(): NutritionStats {
       const sixtyDaysAgo = new Date();
       sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
 
-      const [{ data: scans }, { count: questCount }] = await Promise.all([
+      const [{ data: scans }, { count: loggedDays }] = await Promise.all([
         supabase
           .from("food_scans")
           .select("scan_date")
@@ -41,10 +41,10 @@ export function useNutritionStats(): NutritionStats {
           .order("scan_date", { ascending: false })
           .limit(200),
         supabase
-          .from("calorie_quests")
+          .from("macro_tracking")
           .select("id", { count: "exact", head: true })
           .eq("user_id", uid)
-          .eq("status", "completed"),
+          .gt("calories", 0),
       ]);
 
       // Compute consecutive-day streak ending today or yesterday.
@@ -73,7 +73,7 @@ export function useNutritionStats(): NutritionStats {
 
       if (!cancelled) {
         setDailyStreak(streak);
-        setAchievements(questCount ?? 0);
+        setAchievements(loggedDays ?? 0);
         setLoading(false);
       }
     })();

@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from "recharts";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { AiMarkdown } from "@/components/common/AiMarkdown";
+
 
 interface Props { onBack: () => void; }
 
@@ -145,6 +147,97 @@ export default function WeeklyProgressDashboard({ onBack }: Props) {
             )}
           </div>
 
+          {/* Summary */}
+          {result.summary && (
+            <Card className="p-4 border-border/60 bg-card/80 backdrop-blur-xl">
+              <h4 className="font-bold text-sm mb-2">📝 Week Summary</h4>
+              <AiMarkdown content={String(result.summary)} />
+            </Card>
+          )}
+
+          {/* Energy balance */}
+          {(result.estimated_tdee || result.calorie_balance_per_day || result.protein_per_kg) && (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {[
+                { label: "Estimated TDEE", value: result.estimated_tdee ? `${Math.round(result.estimated_tdee)} kcal` : "—" },
+                { label: "Daily Balance", value: result.calorie_balance_per_day != null ? `${result.calorie_balance_per_day > 0 ? "+" : ""}${Math.round(result.calorie_balance_per_day)} kcal` : "—" },
+                { label: "Protein / kg", value: result.protein_per_kg ? `${Number(result.protein_per_kg).toFixed(1)} g/kg` : "—" },
+              ].map((m) => (
+                <Card key={m.label} className="p-4 border-border/60 bg-card/80 backdrop-blur-xl text-center">
+                  <p className="text-xs text-muted-foreground">{m.label}</p>
+                  <p className="text-xl font-black">{m.value}</p>
+                </Card>
+              ))}
+            </div>
+          )}
+
+          {/* Key metrics */}
+          {Array.isArray(result.key_metrics) && result.key_metrics.length > 0 && (
+            <Card className="p-4 border-border/60 bg-card/80 backdrop-blur-xl">
+              <h4 className="font-bold text-sm mb-3">📌 Key Metrics</h4>
+              <div className="grid sm:grid-cols-2 gap-2">
+                {result.key_metrics.map((m: any, i: number) => (
+                  <div key={i} className={`p-2.5 rounded-xl border text-sm ${
+                    m.status === "risk" ? "bg-destructive/5 border-destructive/20"
+                      : m.status === "watch" ? "bg-amber-500/5 border-amber-500/20"
+                      : "bg-emerald-500/5 border-emerald-500/20"}`}>
+                    <div className="flex justify-between gap-2 font-medium">
+                      <span>{m.label}</span><span>{m.value}</span>
+                    </div>
+                    {m.note && <p className="text-xs text-muted-foreground mt-1">{m.note}</p>}
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
+
+          {/* Training & recovery */}
+          {(result.training_volume_assessment || result.recovery_assessment) && (
+            <div className="grid sm:grid-cols-2 gap-4">
+              {result.training_volume_assessment && (
+                <Card className="p-4 border-border/60 bg-card/80 backdrop-blur-xl">
+                  <h4 className="font-bold text-sm mb-2">🏋️ Training Volume</h4>
+                  <AiMarkdown content={String(result.training_volume_assessment)} />
+                </Card>
+              )}
+              {result.recovery_assessment && (
+                <Card className="p-4 border-border/60 bg-card/80 backdrop-blur-xl">
+                  <h4 className="font-bold text-sm mb-2">😴 Recovery</h4>
+                  <AiMarkdown content={String(result.recovery_assessment)} />
+                </Card>
+              )}
+            </div>
+          )}
+
+          {/* Wins / improvements / risks */}
+          <div className="grid sm:grid-cols-2 gap-4">
+            {Array.isArray(result.wins) && result.wins.length > 0 && (
+              <Card className="p-4 border-emerald-500/20 bg-emerald-500/5 backdrop-blur-xl">
+                <h4 className="font-bold text-sm mb-2">✅ Wins This Week</h4>
+                <ul className="space-y-1.5 text-sm text-muted-foreground">
+                  {result.wins.map((w: string, i: number) => <li key={i}>• {w}</li>)}
+                </ul>
+              </Card>
+            )}
+            {Array.isArray(result.improvements) && result.improvements.length > 0 && (
+              <Card className="p-4 border-amber-500/20 bg-amber-500/5 backdrop-blur-xl">
+                <h4 className="font-bold text-sm mb-2">🔧 To Improve</h4>
+                <ul className="space-y-1.5 text-sm text-muted-foreground">
+                  {result.improvements.map((w: string, i: number) => <li key={i}>• {w}</li>)}
+                </ul>
+              </Card>
+            )}
+          </div>
+
+          {Array.isArray(result.risk_flags) && result.risk_flags.length > 0 && (
+            <Card className="p-4 border-destructive/20 bg-destructive/5 backdrop-blur-xl">
+              <h4 className="font-bold text-sm mb-2">⚠️ Risk Flags</h4>
+              <ul className="space-y-1.5 text-sm text-muted-foreground">
+                {result.risk_flags.map((w: string, i: number) => <li key={i}>• {w}</li>)}
+              </ul>
+            </Card>
+          )}
+
           {/* AI Insights */}
           {result.insights && Array.isArray(result.insights) && (
             <Card className="p-4 border-border/60 bg-card/80 backdrop-blur-xl">
@@ -152,6 +245,28 @@ export default function WeeklyProgressDashboard({ onBack }: Props) {
               <div className="space-y-2">
                 {result.insights.map((insight: string, i: number) => (
                   <p key={i} className="text-sm text-muted-foreground p-2.5 bg-muted/50 rounded-xl border border-border/30">💡 {insight}</p>
+                ))}
+              </div>
+            </Card>
+          )}
+
+          {/* Next week targets */}
+          {result.next_week_targets && typeof result.next_week_targets === "object" && (
+            <Card className="p-4 border-border/60 bg-card/80 backdrop-blur-xl">
+              <h4 className="font-bold text-sm mb-3">🎯 Next Week Targets</h4>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+                {[
+                  { label: "Calories", value: result.next_week_targets.calories, unit: "kcal" },
+                  { label: "Protein", value: result.next_week_targets.protein_g, unit: "g" },
+                  { label: "Carbs", value: result.next_week_targets.carbs_g, unit: "g" },
+                  { label: "Fat", value: result.next_week_targets.fat_g, unit: "g" },
+                  { label: "Workouts", value: result.next_week_targets.workouts, unit: "" },
+                  { label: "Steps/day", value: result.next_week_targets.steps_per_day, unit: "" },
+                ].map((t) => (
+                  <div key={t.label} className="p-2.5 bg-muted/50 rounded-xl border border-border/30 text-center">
+                    <p className="text-xs text-muted-foreground">{t.label}</p>
+                    <p className="text-sm font-bold">{t.value != null ? `${Math.round(Number(t.value))}${t.unit}` : "—"}</p>
+                  </div>
                 ))}
               </div>
             </Card>
@@ -170,8 +285,42 @@ export default function WeeklyProgressDashboard({ onBack }: Props) {
               </div>
             </Card>
           )}
+
+          {/* Focus, timing, supplements */}
+          <div className="grid sm:grid-cols-2 gap-4">
+            {Array.isArray(result.next_week_focus) && result.next_week_focus.length > 0 && (
+              <Card className="p-4 border-border/60 bg-card/80 backdrop-blur-xl">
+                <h4 className="font-bold text-sm mb-2">🔭 Focus Areas</h4>
+                <ul className="space-y-1.5 text-sm text-muted-foreground">
+                  {result.next_week_focus.map((w: string, i: number) => <li key={i}>• {w}</li>)}
+                </ul>
+              </Card>
+            )}
+            {Array.isArray(result.meal_timing_advice) && result.meal_timing_advice.length > 0 && (
+              <Card className="p-4 border-border/60 bg-card/80 backdrop-blur-xl">
+                <h4 className="font-bold text-sm mb-2">⏰ Meal Timing</h4>
+                <ul className="space-y-1.5 text-sm text-muted-foreground">
+                  {result.meal_timing_advice.map((w: string, i: number) => <li key={i}>• {w}</li>)}
+                </ul>
+              </Card>
+            )}
+          </div>
+
+          {Array.isArray(result.supplement_notes) && result.supplement_notes.length > 0 && (
+            <Card className="p-4 border-border/60 bg-card/80 backdrop-blur-xl">
+              <h4 className="font-bold text-sm mb-2">💊 Supplement Notes</h4>
+              <ul className="space-y-1.5 text-sm text-muted-foreground">
+                {result.supplement_notes.map((w: string, i: number) => <li key={i}>• {w}</li>)}
+              </ul>
+            </Card>
+          )}
+
+          {result.disclaimer && (
+            <p className="text-xs text-muted-foreground text-center">{result.disclaimer}</p>
+          )}
         </motion.div>
       )}
     </motion.div>
     </>);
 }
+

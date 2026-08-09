@@ -16,8 +16,8 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
 const ROUTERS = ["nutrition-router", "horse-router", "video-ad-tools", "job-redirect"];
 
 const EXPECTED = { "nutrition-router": [
-    "coach_chat", "allergy_scanner", "barcode_scanner", "body_predictor",
-    "grocery_optimizer", "hydration_coach", "meal_challenge",
+    "coach_chat", "allergy_scanner", "body_predictor",
+    "grocery_optimizer", "hydration_coach",
     "supplement_advisor", "weekly_progress",
   ],
   "horse-router": [
