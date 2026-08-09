@@ -83,14 +83,22 @@ const PhobiaDetector = ({ onPhobiaDetected }: PhobiaDetectorProps) => {
             rows={6}
             className="resize-none"
           />
-          <Button 
-            onClick={handleDetect} 
-            disabled={loading}
-            className="w-full bg-gradient-to-r from-cyan-500 to-blue-500"
-          >
-            {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            {loading ? 'Analyzing...' : 'Detect Phobia'}
-          </Button>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+              <Badge variant="outline" className="border-primary/30 text-primary font-bold gap-1">
+                <Zap className="h-3 w-3" /> 3 credits
+              </Badge>
+              <span>· deducted only after a successful result</span>
+            </div>
+            <Button
+              onClick={handleDetect}
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-cyan-500 to-blue-500"
+            >
+              {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              {loading ? 'Analyzing...' : 'Detect Phobia'}
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
