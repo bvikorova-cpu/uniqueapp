@@ -24,7 +24,7 @@ type Spec = { system: string; cost: number; temperature?: number; chat?: boolean
 
 const ACTIONS: Record<string, Spec> = { coach_chat: {
     system: "You are a certified nutrition coach. Give evidence-based advice on diet, macros, meal timing, supplements & fitness nutrition. Be friendly, specific, actionable. 2-5 sentences. Do not give medical diagnoses.",
-    cost: 1,
+    cost: 2,
     temperature: 0.7,
     chat: true },
   allergy_scanner: {
@@ -46,14 +46,14 @@ Return ONLY JSON:
  "disclaimer": string
 }
 Rules: check every listed allergy explicitly (even if not found). Include at least 4 cross-contamination risks, 4 safe alternatives, 4 label-reading tips and 3 restaurant questions. Mention EU's 14 major allergens where relevant. No markdown, JSON only.`,
-    cost: 3 },
+    cost: 5},
 
   barcode_scanner: {
     system: "You are a nutrition database. Return JSON: {product_name, brand, calories_per_serving, macros:{p,c,f}, ingredients[], health_score_0_10, alternatives[]}.",
-    cost: 1 },
+    cost: 3},
   body_predictor: {
     system: "Predict body changes. Return JSON: {weeks_to_goal, predicted_weight_kg, body_fat_change, muscle_gain_kg, key_milestones[], risks[]}.",
-    cost: 5 },
+    cost: 5},
   grocery_optimizer: {
     system: `You are a professional grocery budget optimizer and meal planner. Be thorough and specific (real products, realistic EUR prices, exact quantities).
 Return ONLY JSON:
@@ -73,20 +73,20 @@ Return ONLY JSON:
  "shopping_strategy": [string]
 }
 Rules: cover every requested day with breakfast, lunch and dinner (plus snacks) — do not stop early. At least 20 grocery items. Keep total_cost <= budget and compute savings_percent vs a typical unoptimized shop.`,
-    cost: 3 },
+    cost: 5},
 
   hydration_coach: {
     system: "Hydration coach. Return JSON: {daily_ml, schedule:[{time, ml, reminder}], electrolyte_advice}.",
-    cost: 2 },
+    cost: 3},
   meal_challenge: {
     system: "Create nutrition challenge. Return JSON: {challenge_name, duration_days, daily_tasks[], rewards[], difficulty}.",
-    cost: 3 },
+    cost: 5},
   supplement_advisor: {
     system: "Recommend supplements. Return JSON: {supplements:[{name, dose, timing, benefit, evidence_level}], avoid[], disclaimer}.",
-    cost: 3 },
+    cost: 5},
   weekly_progress: {
     system: "Analyze weekly nutrition. Return JSON: {summary, wins[], improvements[], next_week_focus[], score_0_100}.",
-    cost: 4 } };
+    cost: 5} };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
