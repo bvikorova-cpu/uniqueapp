@@ -151,7 +151,6 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   "identify-antique":                   { target: "universal-vision-analyzer", bodyExtras: { task: "antique_identify" } },
   "identify-plant":                     { target: "universal-vision-analyzer", bodyExtras: { task: "plant_identify" } },
   "diagnose-plant":                     { target: "universal-vision-analyzer", bodyExtras: { task: "plant_diagnose" } },
-  "detect-phobia":                      { target: "universal-vision-analyzer", bodyExtras: { task: "phobia_detect" } },
   "scan-food-ai":                       { target: "universal-vision-analyzer", bodyExtras: { task: "food_scan" } },
   "beauty-skin-analysis":               { target: "universal-vision-analyzer", bodyExtras: { task: "beauty_skin" } },
   "antique-forgery-detection":          { target: "universal-vision-analyzer", bodyExtras: { task: "antique_forgery" } },
@@ -223,7 +222,6 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   "generate-music":                     { target: "generate-gift-message", bodyExtras: { type: "music" } },
   "generate-paint-by-numbers":          { target: "generate-gift-message", bodyExtras: { type: "paint_by_numbers" } },
   "generate-paint-image":               { target: "generate-gift-message", bodyExtras: { type: "paint_image" } },
-  "generate-phobia-cure":               { target: "generate-gift-message", bodyExtras: { type: "phobia_cure" } },
   "generate-recipe-from-ingredients":   { target: "generate-gift-message", bodyExtras: { type: "recipe_from_ingredients" } },
   "generate-sports-prediction":         { target: "generate-gift-message", bodyExtras: { type: "sports_prediction" } },
   "generate-story-video":               { target: "generate-gift-message", bodyExtras: { type: "story_video" } },
@@ -257,7 +255,6 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   "submit-fashion-challenge":           { target: "create-checkout", bodyExtras: { product: "fashion_challenge_submit" } },
   "vote-fashion-challenge":             { target: "create-checkout", bodyExtras: { product: "fashion_challenge_vote" } },
   
-  "trade-phobia":                       { target: "create-checkout", bodyExtras: { product: "phobia_trade" } },
   "enroll-premium-course":              { target: "create-checkout", bodyExtras: { product: "course_enroll" } },
   "coupon-marketplace-access":          { target: "create-checkout", bodyExtras: { product: "coupon_marketplace" } },
 
@@ -265,7 +262,6 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   // DATA QUERIES → check-subscription (read-only helpers via tier)
   // ─────────────────────────────────────────────────────────────────────
   "get-my-stock-purchases":             { target: "check-subscription", bodyExtras: { tier: "stock_purchases", action: "list" } },
-  "get-user-phobias":                   { target: "check-subscription", bodyExtras: { tier: "phobias", action: "list" } },
   // "get-user-universes": real edge function (Mystical audit fix)
   "check-expired-listings":             { target: "check-subscription", bodyExtras: { tier: "expired_listings", action: "list" } },
 
