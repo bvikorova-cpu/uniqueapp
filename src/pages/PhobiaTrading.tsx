@@ -324,7 +324,16 @@ const PhobiaTrading = () => {
                           <div className="p-2 rounded-lg bg-primary/10">
                             <tool.icon className="h-5 w-5 text-primary" />
                           </div>
-                          <Badge variant="secondary" className="text-[10px]">{tool.badge}</Badge>
+                          <div className="flex flex-col items-end gap-1">
+                            <Badge variant="secondary" className="text-[10px]">{tool.badge}</Badge>
+                            {tool.credits > 0 ? (
+                              <Badge className="bg-primary/15 text-primary border border-primary/30 text-[10px] font-bold gap-1">
+                                <Zap className="h-2.5 w-2.5" />{tool.credits} cr
+                              </Badge>
+                            ) : tool.credits === 0 ? (
+                              <Badge variant="outline" className="text-[10px] font-bold border-green-500/40 text-green-600">Free</Badge>
+                            ) : null}
+                          </div>
                         </div>
                         <h3 className="font-bold text-sm mb-1">{tool.title}</h3>
                         <p className="text-xs text-muted-foreground mb-3">{tool.description}</p>
