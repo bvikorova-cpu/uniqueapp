@@ -4,8 +4,21 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { callOpenAI, corsHeaders, errorResponse, jsonResponse } from "../_shared/openai.ts";
-import { deductAICredits } from "../_shared/credits.ts";
+import { deductAICredits, refundAICredits } from "../_shared/credits.ts";
 import { checkTestMode } from "../_shared/testMode.ts";
+
+/** Tolerant JSON parser: strips fences, extracts the object, repairs truncation. */
+function safeJson(raw: string): any | null {
+  let text = String(raw ?? "").trim().replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
+  const start = text.indexOf("{");
+  if (start > 0) text = text.slice(start);
+  try { return JSON.parse(text); } catch {}
+  let repaired = text.replace(/,\s*$/, "");
+  const braces = (repaired.match(/\{/g) || []).length - (repaired.match(/\}/g) || []).length;
+  const brackets = (repaired.match(/\[/g) || []).length - (repaired.match(/\]/g) || []).length;
+  repaired += "]".repeat(Math.max(0, brackets)) + "}".repeat(Math.max(0, braces));
+  try { return JSON.parse(repaired); } catch { return null; }
+}
 
 type Spec = { system: string; cost: number; temperature?: number; chat?: boolean };
 
