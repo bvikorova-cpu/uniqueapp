@@ -56,16 +56,59 @@ export default function MacroTracker() {
     },
     onError: (error: any) => toast.error(error.message || "Error logging meal") });
 
-  const goals = { calories: 2000, protein: 150, carbs: 200, fats: 65 };
+  // Real, per-user macro goals derived from the user's own fitness profile
+  const { data: profile } = useQuery({
+    queryKey: ['macro-goal-profile'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+      const { data } = await supabase
+        .from('fitness_plans')
+        .select('age, gender, height_cm, weight_kg, target_weight_kg, activity_level, fitness_goal, created_at')
+        .eq('user_id', user.id)
+        .not('weight_kg', 'is', null)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      return data;
+    }
+  });
+
+  const goals = (() => {
+    const w = Number(profile?.weight_kg) || 0;
+    const h = Number(profile?.height_cm) || 0;
+    const a = Number(profile?.age) || 0;
+    if (!w || !h || !a) return null;
+    const isFemale = (profile?.gender || '').toLowerCase().startsWith('f');
+    const bmr = 10 * w + 6.25 * h - 5 * a + (isFemale ? -161 : 5);
+    const activityMap: Record<string, number> = {
+      sedentary: 1.2, light: 1.375, lightly_active: 1.375, moderate: 1.55,
+      moderately_active: 1.55, active: 1.725, very_active: 1.9, athlete: 1.9,
+    };
+    const factor = activityMap[(profile?.activity_level || '').toLowerCase()] ?? 1.375;
+    const goalKey = (profile?.fitness_goal || '').toLowerCase();
+    const target = Number(profile?.target_weight_kg) || 0;
+    let adjust = 0;
+    if (goalKey.includes('loss') || goalKey.includes('slim') || (target && target < w)) adjust = -0.18;
+    else if (goalKey.includes('gain') || goalKey.includes('muscle') || goalKey.includes('bulk') || (target && target > w)) adjust = 0.12;
+    const calories = Math.round((bmr * factor) * (1 + adjust));
+    const protein = Math.round(w * (adjust > 0 ? 2 : adjust < 0 ? 2.2 : 1.8));
+    const fats = Math.round((calories * 0.27) / 9);
+    const carbs = Math.max(0, Math.round((calories - protein * 4 - fats * 9) / 4));
+    return { calories, protein, carbs, fats };
+  })();
+
   const current = { calories: tracking?.calories || 0, protein: tracking?.protein || 0, carbs: tracking?.carbs || 0, fats: tracking?.fats || 0 };
-  const pct = (v: number, g: number) => Math.min((v / g) * 100, 100);
+  const pct = (v: number, g: number) => (g > 0 ? Math.min((v / g) * 100, 100) : 0);
+
 
   const macroItems = [
-    { label: "Calories", current: current.calories, goal: goals.calories, unit: "", color: "from-orange-500 to-red-500", bgColor: "from-orange-500/10 to-red-500/10" },
-    { label: "Protein", current: current.protein, goal: goals.protein, unit: "g", color: "from-red-500 to-rose-500", bgColor: "from-red-500/10 to-rose-500/10" },
-    { label: "Carbs", current: current.carbs, goal: goals.carbs, unit: "g", color: "from-amber-500 to-yellow-500", bgColor: "from-amber-500/10 to-yellow-500/10" },
-    { label: "Fats", current: current.fats, goal: goals.fats, unit: "g", color: "from-blue-500 to-indigo-500", bgColor: "from-blue-500/10 to-indigo-500/10" },
+    { label: "Calories", current: current.calories, goal: goals?.calories ?? 0, unit: "", color: "from-orange-500 to-red-500", bgColor: "from-orange-500/10 to-red-500/10" },
+    { label: "Protein", current: current.protein, goal: goals?.protein ?? 0, unit: "g", color: "from-red-500 to-rose-500", bgColor: "from-red-500/10 to-rose-500/10" },
+    { label: "Carbs", current: current.carbs, goal: goals?.carbs ?? 0, unit: "g", color: "from-amber-500 to-yellow-500", bgColor: "from-amber-500/10 to-yellow-500/10" },
+    { label: "Fats", current: current.fats, goal: goals?.fats ?? 0, unit: "g", color: "from-blue-500 to-indigo-500", bgColor: "from-blue-500/10 to-indigo-500/10" },
   ];
+
 
   return (
     <>
@@ -82,15 +125,23 @@ export default function MacroTracker() {
           <CardDescription>{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {!goals && (
+            <div className="p-3 rounded-xl bg-muted/50 border border-border/40 text-sm text-muted-foreground">
+              No personal targets yet — generate a fitness plan (age, height, weight, activity, goal) and your macro targets will be calculated from your own data.
+            </div>
+          )}
           {macroItems.map((item) => (
             <div key={item.label} className={`p-3 rounded-xl bg-gradient-to-br ${item.bgColor} border border-border/40`}>
               <div className="flex justify-between text-sm mb-2">
                 <span className="font-semibold">{item.label}</span>
-                <span className="text-muted-foreground">{Math.round(item.current)}{item.unit} / {item.goal}{item.unit}</span>
+                <span className="text-muted-foreground">
+                  {Math.round(item.current)}{item.unit} / {item.goal > 0 ? `${item.goal}${item.unit}` : "—"}
+                </span>
               </div>
               <Progress value={pct(item.current, item.goal)} className="h-2" />
             </div>
           ))}
+
 
           {tracking?.meals && Array.isArray(tracking.meals) && tracking.meals.length > 0 && (
             <div className="space-y-2 mt-4">
