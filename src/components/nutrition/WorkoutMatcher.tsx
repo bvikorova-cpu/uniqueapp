@@ -39,7 +39,8 @@ export default function WorkoutMatcher() {
       return data;
     },
     onSuccess: (data) => {
-      setGeneratedPlan(data.plan);
+      setGeneratedPlan(data?.plan ?? data?.result ?? data?.data ?? null);
+
       queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
       toast.success("Workout plan generated!");
     },
