@@ -12,6 +12,7 @@ const Body = z.object({
     "detect",
     "list",
     "generate_cure",
+    "exposure_scenario",
     "list_for_trade",
     "get_marketplace",
     "buy",
@@ -21,10 +22,20 @@ const Body = z.object({
   phobiaId: z.string().uuid().optional(),
   tradeId: z.string().uuid().optional(),
   price: z.number().positive().max(100000).optional(),
+  // exposure_scenario inputs
+  fear: z.string().min(2).max(300).optional(),
+  intensity: z.number().int().min(1).max(10).optional(),
+  environment: z.string().max(120).optional(),
+  sensory: z.array(z.string().max(40)).max(8).optional(),
+  copingStyle: z.string().max(120).optional(),
+  steps: z.number().int().min(4).max(10).optional(),
+  tone: z.string().max(60).optional(),
 });
 
 const COST_DETECT = 3;
 const COST_CURE = 3;
+const COST_EXPOSURE = 2;
+
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
