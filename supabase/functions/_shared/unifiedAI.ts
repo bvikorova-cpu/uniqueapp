@@ -1,4 +1,6 @@
 import "./aiRedirect.ts";
+import { hasDirectGemini, tryDirectGeminiChat } from "./geminiDirect.ts";
+
 /**
  * Unified AI provider for all Supabase Edge Functions.
  *
@@ -152,7 +154,15 @@ async function callProviderRaw(
 
   const key = Deno.env.get("LOVABLE_API_KEY");
   const providerName = "Lovable AI Gateway";
+  const body = buildBody(messages, opts, true, cheap);
 
+  // 1) Try the project's own Gemini API key first (cheapest, highest limits).
+  if (hasDirectGemini()) {
+    const direct = await tryDirectGeminiChat(body);
+    if (direct) return direct;
+  }
+
+  // 2) Fall back to the Lovable AI Gateway.
   if (!key) {
     throw new UnifiedAIError(500, `${providerName} key is not configured`, providerName);
   }
@@ -162,8 +172,9 @@ async function callProviderRaw(
   const res = await fetch(GATEWAY_URL, {
     method: "POST",
     headers,
-    body: JSON.stringify(buildBody(messages, opts, true, cheap)),
+    body: JSON.stringify(body),
   });
+
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");
