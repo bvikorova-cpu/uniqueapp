@@ -146,7 +146,7 @@ export default function NutritionHub() {
                   <Trophy className="h-6 w-6 text-green-500" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground font-medium">Achievements</p>
+                  <p className="text-xs text-muted-foreground font-medium">Days Logged</p>
                   <p className="text-2xl font-black bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">{statsLoading ? "…" : achievements}</p>
                 </div>
               </div>
