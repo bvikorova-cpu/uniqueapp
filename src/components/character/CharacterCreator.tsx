@@ -29,6 +29,9 @@ export const CharacterCreator = () => {
   const [description, setDescription] = useState("");
   const [isPremium, setIsPremium] = useState(false);
   const [lastCharacter, setLastCharacter] = useState<{ id: string; name: string; imageUrl: string | null; description: string } | null>(null);
+  const [variants, setVariants] = useState<string[]>([]);
+  const [variantCount, setVariantCount] = useState(3);
+
   const queryClient = useQueryClient();
 
   const createCharacter = useMutation({
