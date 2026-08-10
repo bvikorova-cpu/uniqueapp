@@ -42,14 +42,13 @@ const CharacterArena = () => {
   const { data: stats } = useQuery({
     queryKey: ["character-arena-stats"],
     queryFn: async () => {
-      const [chars, battles, tournaments] = await Promise.all([
+      const [chars, battles] = await Promise.all([
         supabase.from("characters").select("id", { count: "exact", head: true }),
         supabase.from("character_battles").select("id", { count: "exact", head: true }),
-        supabase.from("tournaments").select("id", { count: "exact", head: true }).eq("status", "registration"),
       ]);
       return { totalCharacters: chars.count || 0,
         totalBattles: battles.count || 0,
-        activeTournaments: tournaments.count || 0,
+        activeTournaments: 0,
         onlineWarriors: 0 };
     } });
 
@@ -69,7 +68,7 @@ const CharacterArena = () => {
   };
 
   return (
-    <><FloatingHowItWorks title="CharacterArena — How it works" steps={[{title:"Open this section",desc:"Access CharacterArena from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+    <><FloatingHowItWorks title="CharacterArena — How it works" steps={[{title:"Open this section",desc:"Access CharacterArena from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items and gear (some actions cost credits)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
 <div className="min-h-screen bg-background p-2 sm:p-4">
       <div className="container mx-auto max-w-7xl pt-20 pb-28 md:pb-8">
         {activeView !== "dashboard" && (

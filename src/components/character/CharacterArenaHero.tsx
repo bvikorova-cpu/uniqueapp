@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Swords, Users, Trophy, Flame } from "lucide-react";
+import { Swords, Users, Flame } from "lucide-react";
 import heroVideo from "@/assets/character-arena-hero-v3.mp4.asset.json";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
