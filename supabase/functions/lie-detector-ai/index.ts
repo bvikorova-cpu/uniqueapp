@@ -162,20 +162,15 @@ async function actionVoice(supabase: any, user: any, body: any) {
     audioBlob = dl; audioUrl = audio_path;
   }
 
-  const fd = new FormData();
-  fd.append("file", audioBlob, "audio.webm");
-  fd.append("model", "whisper-1");
-  fd.append("response_format", "verbose_json");
-  const wresp = await fetch("https://api.openai.com/v1/audio/transcriptions", {
-    method: "POST", headers: { Authorization: `Bearer ${key}` }, body: fd });
-  if (!wresp.ok) return json({ error: "Transcription failed", details: await wresp.text() }, 500);
-  const wjson = await wresp.json();
-  const transcript = wjson.text || "";
-  const duration = wjson.duration || 0;
+  const tr = await transcribeAudio(audioBlob, mime);
+  if (tr.err) return tr.err;
+  const transcript = tr.transcript!;
+  const duration = 0;
 
   const ai = await callOpenAI([
     { role: "system", content: "You are a forensic linguistics + voice deception expert. Analyze the transcript and the implicit speech patterns (hesitations, fillers, repetitions, contradictions, hedging). Score 0-100. Output strict JSON." },
-    { role: "user", content: `Audio duration: ${duration}s\nTranscript: """${transcript}"""\n\nReturn JSON with keys: truthfulness_score (0-100), stress_score (0-100), hesitation_score (0-100), confidence_level (low/medium/high), deception_indicators (string[]), micro_pause_signals (string[]), filler_words_count (number), recommended_followup_questions (string[]), summary (string).` },
+    { role: "user", content: `Transcript: """${transcript}"""\n\nReturn JSON with keys: truthfulness_score (0-100), stress_score (0-100), hesitation_score (0-100), confidence_level (low/medium/high), deception_indicators (string[]), micro_pause_signals (string[]), filler_words_count (number), recommended_followup_questions (string[]), summary (string).` },
+
   ]);
   if (ai.err) return ai.err;
   const results = ai.result;
