@@ -205,6 +205,7 @@ const Navbar = () => {
       category: "Sports Arenas",
       items: [
         { path: "/character-arena", label: "Character Arena", icon: Trophy },
+        { path: "/card-collections", label: "Collectible Cards", icon: Library },
         { path: "/horse-racing", label: "Horse Racing Arena", icon: Trophy },
         { path: "/football-arena", label: "Football Arena", icon: Trophy },
         { path: "/basketball-arena", label: "Basketball Arena", icon: Trophy },
