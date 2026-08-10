@@ -209,8 +209,8 @@ visualIdentity (object with typography, imagery, tone).`;
   if (activeView === "name-generator") return (
     <>
       <FloatingHowItWorks title="Brand Builder" intro="AI-powered brand creation \u2014 names, logos, competitor analysis and social kits." steps={[
-    { title: "Generate a name", desc: "Describe your idea and let AI suggest available brand names (3 credits)." },
-    { title: "Analyze competitors", desc: "Enter competitor URLs to get positioning insights (4 credits)." },
+    { title: "Generate a name", desc: "Describe your idea and let AI suggest available brand names (8 credits)." },
+    { title: "Analyze competitors", desc: "Enter competitor URLs to get positioning insights (12 credits)." },
     { title: "Design a social kit", desc: "Auto-generate profile images, banners and post templates." },
     { title: "Export a style guide", desc: "Download a complete brand PDF ready to share with designers." },
     { title: "Save to a kit", desc: "Store everything in a Brand Kit so you can reuse it across the platform." }

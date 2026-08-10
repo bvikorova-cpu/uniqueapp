@@ -41,13 +41,13 @@ interface TattooDesign {
 
 const TOOLS: { id: ActiveView; icon: any; label: string; desc: string; cost: string; gradient: string }[] = [
   { id: "generate", icon: Sparkles, label: "AI Design Generator", desc: "Create bespoke tattoo artwork with AI", cost: "8 credits", gradient: "from-amber-500 to-yellow-600" },
-  { id: "style_mixer", icon: Blend, label: "Style Mixer", desc: "Blend two styles into a unique fusion", cost: "12 credits", gradient: "from-purple-500 to-pink-500" },
-  { id: "cover_up", icon: RefreshCw, label: "Cover-Up Generator", desc: "AI designs to overlay your old tattoo", cost: "15 credits", gradient: "from-teal-500 to-emerald-500" },
+  { id: "style_mixer", icon: Blend, label: "Style Mixer", desc: "Blend two styles into a unique fusion", cost: "8 credits", gradient: "from-purple-500 to-pink-500" },
+  { id: "cover_up", icon: RefreshCw, label: "Cover-Up Generator", desc: "AI designs to overlay your old tattoo", cost: "10 credits", gradient: "from-teal-500 to-emerald-500" },
   { id: "ar_preview", icon: Eye, label: "AR Body Preview", desc: "See the design on your body in real-time", cost: "Free", gradient: "from-emerald-500 to-teal-500" },
-  { id: "aging_sim", icon: Clock, label: "Aging Simulator", desc: "How your tattoo evolves over decades", cost: "10 credits", gradient: "from-blue-500 to-cyan-500" },
+  { id: "aging_sim", icon: Clock, label: "Aging Simulator", desc: "How your tattoo evolves over decades", cost: "5 credits", gradient: "from-blue-500 to-cyan-500" },
   { id: "color_palette", icon: Palette, label: "Color Palette AI", desc: "Perfect ink colors for your skin tone", cost: "6 credits", gradient: "from-pink-500 to-rose-500" },
   { id: "meaning", icon: BookOpen, label: "Meaning Encyclopedia", desc: "Symbolism & history of any motif", cost: "5 credits", gradient: "from-orange-500 to-red-500" },
-  { id: "pain_map", icon: MapPin, label: "Pain Map", desc: "Detailed pain levels for every body part", cost: "3 credits", gradient: "from-red-500 to-orange-500" },
+  { id: "pain_map", icon: MapPin, label: "Pain Map", desc: "Detailed pain levels for every body part", cost: "4 credits", gradient: "from-red-500 to-orange-500" },
   { id: "care", icon: ShieldCheck, label: "Care Assistant", desc: "AI healing guide & aftercare checklist", cost: "5 credits", gradient: "from-green-500 to-lime-500" },
   { id: "gallery", icon: Grid3X3, label: "My Collection", desc: "Browse your personal design gallery", cost: "Free", gradient: "from-rose-500 to-orange-500" },
 ];

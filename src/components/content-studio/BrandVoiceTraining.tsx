@@ -214,7 +214,7 @@ const BrandVoiceTraining = ({ onBack }: Props) => { const [voices, setVoices] = 
               <CardTitle className="flex items-center gap-2">
                 <Wand2 className="h-5 w-5 text-primary" />
                 Generate with Brand Voice
-                <Badge variant="outline">5 credits</Badge>
+                <Badge variant="outline">3 credits</Badge>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">

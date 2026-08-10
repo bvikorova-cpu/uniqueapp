@@ -34,7 +34,7 @@ export const TattooStyleMixer = ({ onBack }: Props) => {
       return;
     }
     if (credits.credits_remaining < 12) {
-      toast.error("You need 12 credits. Redirecting...");
+      toast.error("You need 8 credits. Redirecting...");
       setTimeout(() => navigate("/ai-credits"), 1500);
       return;
     }
@@ -81,7 +81,7 @@ export const TattooStyleMixer = ({ onBack }: Props) => {
             <h2 className="text-2xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Style Mixer</h2>
             <p className="text-muted-foreground text-sm">Blend two tattoo styles into one masterpiece</p>
           </div>
-          <span className="ml-auto text-xs font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">12 Credits</span>
+          <span className="ml-auto text-xs font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">8 Credits</span>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -125,7 +125,7 @@ export const TattooStyleMixer = ({ onBack }: Props) => {
         </motion.div>
 
         <Button onClick={mix} disabled={loading} className="w-full gap-2 h-12 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-bold text-base shadow-lg shadow-amber-500/20">
-          {loading ? <><Loader2 className="h-5 w-5 animate-spin" /> Mixing Styles...</> : <><Sparkles className="h-5 w-5" /> Mix Styles — 12 Credits</>}
+          {loading ? <><Loader2 className="h-5 w-5 animate-spin" /> Mixing Styles...</> : <><Sparkles className="h-5 w-5" /> Mix Styles — 8 Credits</>}
         </Button>
 
         {result && (

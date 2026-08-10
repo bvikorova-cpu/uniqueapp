@@ -60,7 +60,7 @@ export default function Numerology() {
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-3">Decode the numbers that shape your life</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            AI-powered numerology readings — life path, compatibility, career, and personal year forecasts. From 3 credits per reading.
+            AI-powered numerology readings — life path, compatibility, career, and personal year forecasts. 1 credit per reading.
           </p>
         </header>
 

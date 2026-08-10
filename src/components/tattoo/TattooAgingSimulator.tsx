@@ -37,7 +37,7 @@ export const TattooAgingSimulator = ({ onBack }: Props) => {
       return;
     }
     if (credits.credits_remaining < 10) {
-      toast.error("You need 10 credits. Redirecting...");
+      toast.error("You need 5 credits. Redirecting...");
       setTimeout(() => navigate("/ai-credits"), 1500);
       return;
     }
@@ -86,7 +86,7 @@ export const TattooAgingSimulator = ({ onBack }: Props) => {
             <h2 className="text-2xl font-black bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">Aging Simulator</h2>
             <p className="text-muted-foreground text-sm">See how your tattoo evolves over decades</p>
           </div>
-          <span className="ml-auto text-xs font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">10 Credits</span>
+          <span className="ml-auto text-xs font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">5 Credits</span>
         </motion.div>
 
         <div className="space-y-5">
@@ -140,7 +140,7 @@ export const TattooAgingSimulator = ({ onBack }: Props) => {
             disabled={loading || !tattooImage}
             className="w-full gap-2 h-12 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-bold text-base shadow-lg shadow-amber-500/20"
           >
-            {loading ? <><Loader2 className="h-5 w-5 animate-spin" /> Simulating...</> : <><Sparkles className="h-5 w-5" /> Simulate Aging — 10 Credits</>}
+            {loading ? <><Loader2 className="h-5 w-5 animate-spin" /> Simulating...</> : <><Sparkles className="h-5 w-5" /> Simulate Aging — 5 Credits</>}
           </Button>
 
           {result && (

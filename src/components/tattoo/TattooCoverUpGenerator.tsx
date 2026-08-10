@@ -33,7 +33,7 @@ export const TattooCoverUpGenerator = ({ onBack }: Props) => {
   const generate = async () => {
     if (!oldTattooImg) { toast.error("Upload your existing tattoo photo"); return; }
     if (credits.credits_remaining < 15) {
-      toast.error("You need 15 credits. Redirecting...");
+      toast.error("You need 10 credits. Redirecting...");
       setTimeout(() => navigate("/ai-credits"), 1500);
       return;
     }
@@ -82,7 +82,7 @@ export const TattooCoverUpGenerator = ({ onBack }: Props) => {
             <h2 className="text-2xl font-black bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">Cover-Up Generator</h2>
             <p className="text-muted-foreground text-sm">AI designs to perfectly overlay your old tattoo</p>
           </div>
-          <span className="ml-auto text-xs font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">15 Credits</span>
+          <span className="ml-auto text-xs font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">10 Credits</span>
         </motion.div>
 
         <div className="space-y-4">
@@ -108,7 +108,7 @@ export const TattooCoverUpGenerator = ({ onBack }: Props) => {
           </div>
 
           <Button onClick={generate} disabled={loading || !oldTattooImg} className="w-full gap-2 h-12 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-bold text-base shadow-lg shadow-amber-500/20">
-            {loading ? <><Loader2 className="h-5 w-5 animate-spin" /> Generating Cover-Up...</> : <><Sparkles className="h-5 w-5" /> Generate Cover-Up — 15 Credits</>}
+            {loading ? <><Loader2 className="h-5 w-5 animate-spin" /> Generating Cover-Up...</> : <><Sparkles className="h-5 w-5" /> Generate Cover-Up — 10 Credits</>}
           </Button>
 
           {result && (

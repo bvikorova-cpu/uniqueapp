@@ -227,23 +227,44 @@ serve(async (req) => {
     // inside an already-paid session are free (module = "first_aid_followup").
     const __firstAid = reqBody.module === "first_aid";
     const __firstAidFollowup = reqBody.module === "first_aid_followup";
+    // Per-type credit costs must match exactly what the UI advertises.
+    // 0 = the caller already charged the credits client-side (do not double-charge).
+    const __TYPE_COST: Record<string, number> = {
+      cooking_ai: 2,          // + 1 charged client-side = 3 advertised
+      cooking_video: 4,       // + 1 charged client-side = 5 advertised
+      brain_duel_pack: 0,     // 50 credits already charged client-side
+      travel_planner: 3,
+      nutrition_plan: 3,
+      fitness_plan: 3,
+      football_analysis: 3,
+      football_match: 3,
+      football_player_creation: 3,
+      football_scout: 3,
+      football_tactics: 2,
+      football_training: 2,
+      football_youth: 2,
+      story_video: 5,
+      uni_assistant: 5,
+      generate_ai_room_design: 30,
+    };
     if (!__hasKidsLedger && !__firstAidFollowup) {
       const __isLegacyGift = !!__style || !!__giftType;
       const __mysteryBoxCost = __type === "mystery_box_ai"
         ? ((__style === "box_strategy" || reqBody.analysisType === "box_strategy") ? 8 : 10)
         : null;
-      const __uniCost = __type === "uni_assistant" ? 5 : null;
-      const __roomDesignCost = __type === "generate_ai_room_design" ? 30 : null;
+      const __mappedCost = __type && __type in __TYPE_COST ? __TYPE_COST[__type] : null;
       const __firstAidCost = __firstAid ? 3 : null;
-      const __cost = __firstAidCost ?? __roomDesignCost ?? __uniCost ?? __mysteryBoxCost ?? (__isLegacyGift ? 3 : 1);
+      const __cost = __firstAidCost ?? __mappedCost ?? __mysteryBoxCost ?? (__isLegacyGift ? 3 : 1);
       const __usage = __firstAid
         ? "first_aid"
         : (__type === "mystery_box_ai"
           ? "mystery_box_ai"
-          : (__type === "generate_ai_room_design" ? "ai_room_design" : (__isLegacyGift ? "gift_message" : "ai_generic")));
-      const __auth = await requireAiCredits(req, corsHeaders, { credits: __cost, usageType: __usage });
-      if (__auth.errorResponse) return __auth.errorResponse;
-      __deduct = __auth.deduct!;
+          : (__type === "generate_ai_room_design" ? "ai_room_design" : (__isLegacyGift ? "gift_message" : (__type || "ai_generic"))));
+      if (__cost > 0) {
+        const __auth = await requireAiCredits(req, corsHeaders, { credits: __cost, usageType: __usage });
+        if (__auth.errorResponse) return __auth.errorResponse;
+        __deduct = __auth.deduct!;
+      }
     }
     // Accept many naming conventions used across the frontend
     const style = __style;

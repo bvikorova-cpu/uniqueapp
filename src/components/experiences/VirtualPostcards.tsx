@@ -42,7 +42,7 @@ export const VirtualPostcards = () => {
       setLoading(true);
       const currentCredits = typeof credits === "number" ? credits : credits.credits_remaining;
       if (currentCredits < 8) {
-        toast({ title: "Insufficient Credits", description: "You need 8 credits.", variant: "destructive" });
+        toast({ title: "Insufficient Credits", description: "You need 3 credits.", variant: "destructive" });
         setTimeout(() => navigate("/ai-credits-store"), 2000);
         return;
       }
@@ -98,7 +98,7 @@ export const VirtualPostcards = () => {
             </Select>
           </div>
           <Button onClick={handleGenerate} disabled={loading || !destination.trim()} className="w-full">
-            {loading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Creating Postcard...</> : <>Generate Postcard (8 credits)</>}
+            {loading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Creating Postcard...</> : <>Generate Postcard (3 credits)</>}
           </Button>
         </CardContent>
       </Card>
