@@ -1,5 +1,7 @@
 import "../_shared/aiRedirect.ts";
 import { tryVertexTranscribe } from "../_shared/vertexDirect.ts";
+import { callUnifiedAIJSON, UnifiedAIError } from "../_shared/unifiedAI.ts";
+import { deductAICredits, refundAICredits } from "../_shared/credits.ts";
 // Lie Detector AI Router — consolidates 18 lie-detector-* functions into one
 // Routes via { action: "polygraph" | "cross-exam" | "voice" | ... } in body
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
@@ -762,6 +764,81 @@ async function actionTacticClassify(supabase: any, user: any, body: any) {
   return json({ ...r, credits_charged: PARITY_COST });
 }
 
+
+// ---- Core analyses (unified ai_credits pool) ----
+const ANALYSIS_COSTS = { message: 3, thread: 15, profile: 50 } as const;
+
+async function runCoreAnalysis(
+  supabase: any,
+  user: any,
+  kind: "message" | "thread" | "profile",
+  sys: string,
+  userMsg: string,
+) {
+  const cost = ANALYSIS_COSTS[kind];
+  const creditErr = await deductAICredits(user.id, cost, `lie_detector_${kind}`);
+  if (creditErr) return creditErr;
+  let results: any;
+  try {
+    results = await callUnifiedAIJSON([
+      { role: "system", content: sys },
+      { role: "user", content: userMsg },
+    ], { max_tokens: 2600 });
+  } catch (e) {
+    await refundAICredits(user.id, cost, `lie_detector_${kind}`);
+    const status = e instanceof UnifiedAIError ? e.status : 502;
+    return json({ error: e instanceof Error ? e.message : "AI analysis failed. Please try again." }, status >= 400 ? status : 502);
+  }
+  const score = Number(results?.truthfulness_score ?? results?.overall_truthfulness_score ?? results?.credibility_score) || null;
+  const analysis = { results,
+    truthfulness_score: score,
+    analysis_type: kind,
+    created_at: new Date().toISOString() };
+  try {
+    await supabase.from("lie_detector_analyses").insert({ user_id: user.id,
+      analysis_type: kind,
+      results,
+      truthfulness_score: score,
+      credits_used: cost });
+  } catch { /* history is non-fatal */ }
+  await awardXp(supabase, user.id, kind === "message" ? 10 : kind === "thread" ? 25 : 50);
+  return json({ analysis, credits_charged: cost });
+}
+
+async function actionMessage(supabase: any, user: any, body: any) {
+  const message = typeof body.message === "string" ? body.message.trim() : "";
+  if (message.length < 5) return json({ error: "message required (min 5 chars)" }, 400);
+  return await runCoreAnalysis(supabase, user, "message", 
+    "You are a forensic linguistics and deception-detection expert. Analyze a single message for credibility using linguistic markers, hedging, distancing language, over-specification and emotional inconsistency. Be careful, balanced and educational. Never state certainty.",
+    `Message:\n"""${message.slice(0, 4000)}"""\n\nReturn JSON: { truthfulness_score:number (0-100), verdict:string, confidence:number (0-100), summary:string, key_indicators:string[], red_flags:string[], truth_signals:string[], emotional_tone:string, suggested_questions:string[], recommendation:string }`);
+}
+
+function formatMessages(messages: any): string {
+  if (!Array.isArray(messages)) return "";
+  return messages
+    .map((m: any, i: number) => `${i + 1}. ${typeof m === "string" ? m : (m?.text ?? "")}`)
+    .filter((l) => l.trim().length > 3)
+    .join("\n")
+    .slice(0, 12000);
+}
+
+async function actionThread(supabase: any, user: any, body: any) {
+  const transcript = formatMessages(body.messages);
+  if (transcript.length < 10) return json({ error: "messages required" }, 400);
+  return await runCoreAnalysis(supabase, user, "thread",
+    "You are a forensic conversation analyst. Analyze a message thread for consistency, contradictions, escalating deception patterns and manipulation tactics across time.",
+    `Thread:\n"""${transcript}"""\n\nReturn JSON: { overall_truthfulness_score:number (0-100), verdict:string, summary:string, contradictions:string[], deception_patterns:string[], truth_signals:string[], manipulation_tactics:string[], timeline_insights:string[], most_suspicious_messages:string[], recommendation:string }`);
+}
+
+async function actionProfile(supabase: any, user: any, body: any) {
+  const transcript = formatMessages(body.messages);
+  if (transcript.length < 10) return json({ error: "messages required" }, 400);
+  const context = typeof body.context === "string" ? body.context.slice(0, 1500) : "";
+  return await runCoreAnalysis(supabase, user, "profile",
+    "You are a psychology-informed communication analyst. Build a careful, non-clinical psychological communication profile from written messages. Avoid diagnoses; describe observable patterns only.",
+    `${context ? `Context: ${context}\n\n` : ""}Messages:\n"""${transcript}"""\n\nReturn JSON: { credibility_score:number (0-100), summary:string, communication_style:string, personality_traits:string[], emotional_patterns:string[], attachment_indicators:string[], deception_tendencies:string[], strengths:string[], risk_factors:string[], how_to_communicate:string[], recommendation:string }`);
+}
+
 // ============ ROUTER ============
 const HANDLERS: Record<string, (s: any, u: any, b: any) => Promise<Response>> = { "polygraph": actionPolygraph,
   "cross-exam": actionCrossExam,
@@ -789,7 +866,11 @@ const HANDLERS: Record<string, (s: any, u: any, b: any) => Promise<Response>> = 
   "red-flag": actionRedFlagLookup,
   "truth-chat": actionTruthChat,
   "trust-score": actionTrustScore,
-  "tactic-classify": actionTacticClassify };
+  "tactic-classify": actionTacticClassify,
+  // Core analyses
+  "message": actionMessage,
+  "thread": actionThread,
+  "profile": actionProfile };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });

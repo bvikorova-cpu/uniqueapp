@@ -37,8 +37,8 @@ export const useLieDetectorCredits = () => {
 
   const analyzeMessage = useMutation({
     mutationFn: async (message: string) => {
-      const { data, error } = await supabase.functions.invoke('analyze-message', {
-        body: { message }
+      const { data, error } = await supabase.functions.invoke('lie-detector-ai', {
+        body: { action: 'message', message }
       });
       
       if (error) throw error;
@@ -61,8 +61,8 @@ export const useLieDetectorCredits = () => {
 
   const analyzeThread = useMutation({
     mutationFn: async (messages: Array<{ text: string }>) => {
-      const { data, error } = await supabase.functions.invoke('analyze-thread', {
-        body: { messages }
+      const { data, error } = await supabase.functions.invoke('lie-detector-ai', {
+        body: { action: 'thread', messages }
       });
       
       if (error) throw error;
@@ -83,8 +83,8 @@ export const useLieDetectorCredits = () => {
 
   const analyzeProfile = useMutation({
     mutationFn: async ({ messages, context }: { messages: Array<{ text: string }>; context?: string }) => {
-      const { data, error } = await supabase.functions.invoke('analyze-profile', {
-        body: { messages, context }
+      const { data, error } = await supabase.functions.invoke('lie-detector-ai', {
+        body: { action: 'profile', messages, context }
       });
       
       if (error) throw error;
