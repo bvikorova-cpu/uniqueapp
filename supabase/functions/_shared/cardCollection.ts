@@ -247,6 +247,16 @@ export async function handleCardCollection(req: Request, preparsed?: any): Promi
     const cat = await getCategory(category);
     if (!cat) return j({ error: "Category not found" }, 404);
 
+    // Seasonal / event collections can only be drawn inside their window.
+    const nowMs = Date.now();
+    if (cat.available_from && nowMs < new Date(cat.available_from).getTime()) {
+      return j({ error: "This limited-time collection has not opened yet." }, 400);
+    }
+    if (cat.available_until && nowMs > new Date(cat.available_until).getTime()) {
+      return j({ error: "This limited-time collection has closed — keep the cards you already own." }, 400);
+    }
+
+
     const { data: pool } = await db
       .from("card_collectibles")
       .select("*")

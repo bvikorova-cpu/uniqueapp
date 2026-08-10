@@ -8,6 +8,13 @@ import elementalTitans from "@/assets/cards/elemental-titans.jpg";
 import shadowOrder from "@/assets/cards/shadow-order.jpg";
 import cosmicExplorers from "@/assets/cards/cosmic-explorers.jpg";
 import enchantedForest from "@/assets/cards/enchanted-forest.jpg";
+import duelStats from "@/assets/cards/duel-stats.jpg";
+import personalityTypes from "@/assets/cards/personality-types.jpg";
+import memeCulture from "@/assets/cards/meme-culture.jpg";
+import dailyQuests from "@/assets/cards/daily-quests.jpg";
+import lifehacks from "@/assets/cards/lifehacks.jpg";
+import worldFacts from "@/assets/cards/world-facts.jpg";
+import seasonalVault from "@/assets/cards/seasonal-vault.jpg";
 
 /** Illustrated cover artwork per collectible-card category (replaces emoji icons). */
 export const CATEGORY_COVERS: Record<string, string> = {
@@ -21,6 +28,13 @@ export const CATEGORY_COVERS: Record<string, string> = {
   "shadow-order": shadowOrder,
   "cosmic-explorers": cosmicExplorers,
   "enchanted-forest": enchantedForest,
+  "duel-stats": duelStats,
+  "personality-types": personalityTypes,
+  "meme-culture": memeCulture,
+  "daily-quests": dailyQuests,
+  "lifehacks": lifehacks,
+  "world-facts": worldFacts,
+  "seasonal-vault": seasonalVault,
 };
 
 export const getCategoryCover = (slug?: string | null): string | undefined =>
