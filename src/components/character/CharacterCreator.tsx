@@ -72,6 +72,43 @@ export const CharacterCreator = () => {
     },
     onError: (error: Error) => toast.error(error.message || "Failed to regenerate portrait") });
 
+  const genVariants = useMutation({
+    mutationFn: async () => {
+      if (!lastCharacter) return null;
+      const { data: result, error } = await supabase.functions.invoke('create-character', { body: {
+        action: 'portrait_variants', characterId: lastCharacter.id, name: lastCharacter.name,
+        existingDescription: lastCharacter.description, variantCount } });
+      if (error) throw error;
+      if ((result as any)?.error) throw new Error((result as any).error);
+      return result as { imageUrls: string[] };
+    },
+    onSuccess: (result) => {
+      if (result?.imageUrls?.length) {
+        setVariants(result.imageUrls);
+        queryClient.invalidateQueries({ queryKey: ["character-credits"] });
+        toast.success(`${result.imageUrls.length} variants ready — pick your favourite.`);
+      }
+    },
+    onError: (error: Error) => toast.error(error.message || "Failed to generate variants") });
+
+  const setMainPortrait = useMutation({
+    mutationFn: async (imageUrl: string) => {
+      if (!lastCharacter) return null;
+      const { data: result, error } = await supabase.functions.invoke('create-character', { body: {
+        action: 'set_portrait', characterId: lastCharacter.id, imageUrl } });
+      if (error) throw error;
+      return result as { imageUrl: string };
+    },
+    onSuccess: (result) => {
+      if (result?.imageUrl) {
+        setLastCharacter((prev) => prev ? { ...prev, imageUrl: result.imageUrl } : prev);
+        queryClient.invalidateQueries({ queryKey: ["characters"] });
+        toast.success("Main portrait updated!");
+      }
+    },
+    onError: (error: Error) => toast.error(error.message || "Failed to set portrait") });
+
+
   return (
     <>
       <FloatingHowItWorks title={"Character Creator - How it works"} steps={[{ title: 'Open', desc: 'Access the Character Creator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Character Creator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
