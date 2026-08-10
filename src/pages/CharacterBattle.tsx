@@ -9,6 +9,7 @@ import Navbar from "@/components/Navbar";
 import { BattleArena } from "@/components/battle/BattleArena";
 import { CharacterSelector } from "@/components/battle/CharacterSelector";
 import { CharacterLeaderboard } from "@/components/battle/CharacterLeaderboard";
+import { OpponentMatchmaker } from "@/components/battle/OpponentMatchmaker";
 
 interface Character {
   id: string;
