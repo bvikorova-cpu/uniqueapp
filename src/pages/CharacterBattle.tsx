@@ -9,6 +9,7 @@ import Navbar from "@/components/Navbar";
 import { BattleArena } from "@/components/battle/BattleArena";
 import { CharacterSelector } from "@/components/battle/CharacterSelector";
 import { CharacterLeaderboard } from "@/components/battle/CharacterLeaderboard";
+import { OpponentMatchmaker } from "@/components/battle/OpponentMatchmaker";
 
 interface Character {
   id: string;
@@ -61,17 +62,8 @@ export default function CharacterBattle() {
     }
   };
 
-  const handleStartBattle = () => {
-    if (!selectedChar1 || !selectedChar2) {
-      toast.error("Please select two characters to battle!");
-      return;
-    }
-    if (selectedChar1.id === selectedChar2.id) {
-      toast.error("Please select two different characters!");
-      return;
-    }
-    setBattleStarted(true);
-  };
+
+
 
   const handleBattleEnd = () => {
     setBattleStarted(false);
@@ -126,11 +118,11 @@ export default function CharacterBattle() {
           </div>
         </Card>
 
-        {characters.length < 2 ? (
+        {characters.length < 1 ? (
           <Card className="bg-black/40 backdrop-blur-lg border-purple-500/50 p-12 text-center">
-            <h2 className="text-2xl font-bold text-white mb-4">Not Enough Characters</h2>
+            <h2 className="text-2xl font-bold text-white mb-4">No Fighters Yet</h2>
             <p className="text-gray-300 mb-6">
-              You need at least 2 characters to start a battle. Create more characters first!
+              Create at least one character to enter the arena and challenge other players.
             </p>
             <Button
               onClick={() => navigate("/kids-channel")}
@@ -141,39 +133,25 @@ export default function CharacterBattle() {
             </Button>
           </Card>
         ) : (
-          <>
-            <div className="grid lg:grid-cols-3 gap-8 mb-8">
-              <CharacterSelector
-                characters={characters}
-                selectedCharacter={selectedChar1}
-                onSelect={setSelectedChar1}
-                label="Fighter 1"
-                position="left"
-              />
-              <CharacterSelector
-                characters={characters}
-                selectedCharacter={selectedChar2}
-                onSelect={setSelectedChar2}
-                label="Fighter 2"
-                position="right"
-              />
-              <CharacterLeaderboard />
-            </div>
-
-            <div className="flex justify-center">
-              <Button
-                onClick={handleStartBattle}
-                disabled={!selectedChar1 || !selectedChar2}
-                size="lg"
-                className="text-2xl px-12 py-8 bg-gradient-to-r from-red-600 via-yellow-500 to-red-600 hover:from-red-700 hover:via-yellow-600 hover:to-red-700 text-white font-bold shadow-2xl transform hover:scale-105 transition-all"
-              >
-                <Swords className="mr-3 h-8 w-8" />
-                START BATTLE!
-                <Swords className="ml-3 h-8 w-8" />
-              </Button>
-            </div>
-          </>
+          <div className="grid lg:grid-cols-3 gap-8 mb-8">
+            <CharacterSelector
+              characters={characters}
+              selectedCharacter={selectedChar1}
+              onSelect={setSelectedChar1}
+              label="Your Fighter"
+              position="left"
+            />
+            <OpponentMatchmaker
+              myFighter={selectedChar1}
+              onFight={(opponent) => {
+                setSelectedChar2(opponent as Character);
+                setBattleStarted(true);
+              }}
+            />
+            <CharacterLeaderboard />
+          </div>
         )}
+
       </div>
     </div>
   );
