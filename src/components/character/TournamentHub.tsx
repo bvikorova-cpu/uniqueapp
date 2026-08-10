@@ -14,10 +14,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { useCharacterCredits } from "@/hooks/useCharacterCredits";
 
 export const TournamentHub = () => {
   const { user } = useAuth();
   const qc = useQueryClient();
+  const { spendCredits } = useCharacterCredits();
   const [joinFor, setJoinFor] = useState<any | null>(null);
   const [selectedCharId, setSelectedCharId] = useState<string>("");
   const [joining, setJoining] = useState(false);
@@ -27,7 +29,7 @@ export const TournamentHub = () => {
 
   const [form, setForm] = useState({ name: "",
     description: "",
-    entry_fee: 100,
+    entry_fee: 5,
     prize_pool: 1000,
     max_participants: 16,
     starts_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 16) });
@@ -106,12 +108,17 @@ export const TournamentHub = () => {
         setJoining(false);
         return;
       }
+      const fee = Number(joinFor.entry_fee) || 0;
+      if (fee > 0) {
+        const paid = await spendCredits(fee, `Tournament entry: ${joinFor.name}`);
+        if (!paid) { setJoining(false); return; }
+      }
       const { error } = await supabase.from("tournament_participants").insert({ tournament_id: joinFor.id,
         user_id: user.id,
         character_id: selectedCharId,
         eliminated: false });
       if (error) throw error;
-      toast.success(`Joined ${joinFor.name}! Entry fee: ${joinFor.entry_fee} credits`);
+      toast.success(`Joined ${joinFor.name}! ${joinFor.entry_fee} AI credits deducted.`);
       setJoinFor(null);
       qc.invalidateQueries({ queryKey: ["tournaments"] });
     } catch (err: any) {
@@ -260,7 +267,7 @@ export const TournamentHub = () => {
             <DialogTitle>Join {joinFor?.name}</DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
-            <p className="text-sm text-muted-foreground">Pick a character to compete with. Entry fee: <strong className="text-amber-400">{joinFor?.entry_fee} credits</strong></p>
+            <p className="text-sm text-muted-foreground">Pick a character to compete with. Entry fee: <strong className="text-amber-400">{joinFor?.entry_fee} AI credits</strong></p>
             <div className="space-y-2 max-h-72 overflow-y-auto">
               {myCharacters?.map((c) => (
                 <button
