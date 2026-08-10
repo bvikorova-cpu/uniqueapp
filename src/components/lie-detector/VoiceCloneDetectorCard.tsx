@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Mic, Square, Bot, ShieldCheck, AlertOctagon } from "lucide-react";
 import { useDeepfakeCheck } from "@/hooks/useLieDetectorTuning";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { requestMicStream } from "@/lib/micErrors";
+
 
 export const VoiceCloneDetectorCard = () => {
   const [recording, setRecording] = useState(false);
@@ -18,7 +20,7 @@ export const VoiceCloneDetectorCard = () => {
 
   const start = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await requestMicStream({ audio: true });
       const mr = new MediaRecorder(stream);
       chunksRef.current = [];
       mr.ondataavailable = (e) => e.data.size > 0 && chunksRef.current.push(e.data);
@@ -34,9 +36,10 @@ export const VoiceCloneDetectorCard = () => {
       recRef.current = mr;
       setRecording(true);
     } catch {
-      alert("Microphone access denied");
+      /* toast already shown by requestMicStream */
     }
   };
+
   const stop = () => { recRef.current?.stop(); setRecording(false); };
 
   const onFile = async (f: File) => {

@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Mic, MicOff, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
+import { toastMicError } from "@/lib/micErrors";
+
 
 interface VoiceInputWaveformProps {
   onTranscript: (text: string) => void;
@@ -58,9 +60,10 @@ export function VoiceInputWaveform({ onTranscript, disabled }: VoiceInputWavefor
 
       setIsRecording(true);
       animationRef.current = requestAnimationFrame(updateWaveform);
-    } catch {
-      console.error("Microphone access denied");
+    } catch (err) {
+      toastMicError(err);
     }
+
   };
 
   const stopRecording = () => {

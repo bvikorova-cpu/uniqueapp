@@ -5,6 +5,8 @@ import { Mic, Square, Loader2, AlertTriangle } from "lucide-react";
 import { useVoiceLieDetection } from "@/hooks/useLieDetectorAdvanced";
 import { Badge } from "@/components/ui/badge";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { requestMicStream } from "@/lib/micErrors";
+
 
 export const VoiceLieDetectionCard = () => {
   const [recording, setRecording] = useState(false);
@@ -17,7 +19,7 @@ export const VoiceLieDetectionCard = () => {
 
   const startRec = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await requestMicStream({ audio: true });
       const mr = new MediaRecorder(stream, { mimeType: "audio/webm" });
       chunksRef.current = [];
       mr.ondataavailable = (e) => e.data.size > 0 && chunksRef.current.push(e.data);
@@ -31,9 +33,10 @@ export const VoiceLieDetectionCard = () => {
       mediaRef.current = mr;
       setRecording(true);
     } catch {
-      alert("Microphone access denied");
+      /* toast already shown by requestMicStream */
     }
   };
+
 
   const stopRec = () => {
     mediaRef.current?.stop();

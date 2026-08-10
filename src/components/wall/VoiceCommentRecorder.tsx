@@ -4,6 +4,8 @@ import { Mic, Square, Play, Pause, Trash2, Loader2, Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { micErrorMessage } from "@/lib/micErrors";
+
 
 interface VoiceCommentRecorderProps {
   postId?: string;
@@ -73,10 +75,11 @@ export const VoiceCommentRecorder = ({
         setDuration(prev => prev + 1);
       }, 1000);
     } catch (error) { toast({
-        title: "Microphone access denied",
-        description: "Please allow microphone access to record voice comments",
+        title: "Microphone unavailable",
+        description: micErrorMessage(error),
         variant: "destructive" });
     }
+
   };
 
   const stopRecording = () => {

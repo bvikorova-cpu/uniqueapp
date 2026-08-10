@@ -6,6 +6,8 @@ import { Mic, Square, CheckCircle2 } from "lucide-react";
 import { useVoiceClone } from "@/hooks/useShadowArenaFeatures";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { requestMicStream } from "@/lib/micErrors";
+
 
 export function VoiceCloneCard() {
   const { clone, cloneVoice } = useVoiceClone();
@@ -17,7 +19,7 @@ export function VoiceCloneCard() {
 
   const start = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await requestMicStream({ audio: true });
       const recorder = new MediaRecorder(stream);
       chunksRef.current = [];
       recorder.ondataavailable = (e) => chunksRef.current.push(e.data);
@@ -33,9 +35,10 @@ export function VoiceCloneCard() {
       setRecording(true);
       setTimeout(() => recorder.state === "recording" && stop(), 30000);
     } catch {
-      toast.error("Microphone access denied");
+      /* toast already shown by requestMicStream */
     }
   };
+
   const stop = () => { recorderRef.current?.stop(); setRecording(false); };
 
   if (clone) {
