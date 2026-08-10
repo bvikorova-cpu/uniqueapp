@@ -266,9 +266,25 @@ export const CharacterEquipmentShop = () => {
             </div>
           </div>
 
+          {/* Category switch */}
+          <div className="flex gap-2 mb-4">
+            {(["gear", "abilities"] as const).map((c) => (
+              <Button
+                key={c}
+                size="sm"
+                variant={category === c ? "default" : "outline"}
+                onClick={() => setCategory(c)}
+                className="capitalize"
+              >
+                {c === "gear" ? "⚔️ Gear" : "🔮 Abilities & Powers"}
+              </Button>
+            ))}
+          </div>
+
           {/* Shop grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {SHOP_ITEMS.map((item) => {
+            {(category === "gear" ? SHOP_ITEMS : ABILITY_ITEMS).map((item) => {
+
               const StatIcon = statIcons[item.boost_stat];
               const tier = item.tier ?? item.rarity;
               const isOmega = item.tier === "omega";
