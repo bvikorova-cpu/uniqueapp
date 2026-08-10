@@ -10,6 +10,19 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
 const json = (b: any, s = 200) =>
   new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
+function parseAIJson(raw: unknown): Record<string, any> | null {
+  if (typeof raw !== "string" || !raw.trim()) return null;
+  let value = raw.replace(/^\s*```(?:json)?\s*/i, "").replace(/\s*```\s*$/i, "").trim();
+  const start = value.indexOf("{");
+  const end = value.lastIndexOf("}");
+  if (start >= 0 && end > start) value = value.slice(start, end + 1);
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+}
+
 const OPENAI = () => Deno.env.get("LOVABLE_API_KEY");
 const SUPA_URL = () => Deno.env.get("SUPABASE_URL")!;
 const SUPA_KEY = () => Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -401,7 +414,11 @@ async function actionScreenshot(supabase: any, user: any, body: any) {
       response_format: { type: "json_object" } }) });
   if (!resp.ok) return json({ error: "AI failed", details: await resp.text() }, 500);
   const aj = await resp.json();
-  const r = JSON.parse(aj.choices[0].message.content);
+  const r = parseAIJson(aj?.choices?.[0]?.message?.content);
+  if (!r) {
+    console.error("[lie-detector-ai] screenshot analysis returned invalid JSON");
+    return json({ error: "The screenshot result could not be read. Please run the scan again." }, 502);
+  }
   await supabase.from("lie_detector_screenshot_analyses").insert({ user_id: user.id, is_authentic: r.is_authentic, confidence: r.confidence,
     manipulation_signals: r.manipulation_signals || [], extracted_text: r.extracted_text, summary: r.summary, credits_used: COST });
   await deductCredits(supabase, user.id, cc.cr, COST);

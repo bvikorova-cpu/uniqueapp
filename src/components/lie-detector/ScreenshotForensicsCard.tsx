@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Camera, Loader2, AlertTriangle, MessageCircle } from "lucide-react";
+import { Camera, Loader2, AlertTriangle, FileText, ShieldCheck } from "lucide-react";
 import { useScreenshotForensics } from "@/hooks/useLieDetectorAdvanced";
 import { Badge } from "@/components/ui/badge";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -79,28 +79,32 @@ export const ScreenshotForensicsCard = () => {
             {detect.isPending ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Scanning…</> : "Run Forensic Scan"}
           </Button>
         )}
-        {result?.results && (
+        {result && (
           <div className="p-3 rounded-lg bg-black/40 border border-amber-500/30 space-y-2 text-xs">
             <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Truthfulness</span>
-              <span className="text-xl font-black text-amber-300">{result.results.truthfulness_score}%</span>
+              <span className="flex items-center gap-1 font-bold">
+                <ShieldCheck className="h-4 w-4 text-amber-400" />
+                {result.is_authentic ? "Likely authentic" : "Possible manipulation"}
+              </span>
+              <span className="text-xl font-black text-amber-300">{Math.round(Number(result.confidence) || 0)}%</span>
             </div>
-            {result.results.red_flags?.length > 0 && (
+            {result.summary && <p className="text-foreground/85 leading-relaxed">{result.summary}</p>}
+            {result.manipulation_signals?.length > 0 && (
               <div>
                 <div className="flex items-center gap-1 text-red-300 mb-1 font-bold text-[11px]">
-                  <AlertTriangle className="h-3 w-3" /> Red flags
+                  <AlertTriangle className="h-3 w-3" /> Manipulation signals
                 </div>
                 <ul className="list-disc list-inside space-y-0.5 text-[11px]">
-                  {result.results.red_flags.slice(0, 5).map((s: string, i: number) => <li key={i}>{s}</li>)}
+                  {result.manipulation_signals.slice(0, 5).map((s: string, i: number) => <li key={i}>{s}</li>)}
                 </ul>
               </div>
             )}
-            {result.results.suggested_response && (
-              <div className="p-2 rounded bg-emerald-500/10 border border-emerald-500/30">
-                <div className="flex items-center gap-1 text-emerald-300 mb-1 font-bold text-[11px]">
-                  <MessageCircle className="h-3 w-3" /> Suggested reply
+            {result.extracted_text && (
+              <div className="p-2 rounded bg-muted/40 border border-border/60">
+                <div className="flex items-center gap-1 text-amber-300 mb-1 font-bold text-[11px]">
+                  <FileText className="h-3 w-3" /> Extracted text
                 </div>
-                <p className="text-[11px] italic text-foreground/85">"{result.results.suggested_response}"</p>
+                <p className="text-[11px] whitespace-pre-wrap text-foreground/85">{result.extracted_text}</p>
               </div>
             )}
           </div>
