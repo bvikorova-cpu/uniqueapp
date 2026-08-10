@@ -64,17 +64,21 @@ export const HeroCardCollection = () => {
   const [current, setCurrent] = useState<HeroCard | null>(null);
   const [exitDir, setExitDir] = useState<"left" | "right" | null>(null);
 
+  const [visibleCount, setVisibleCount] = useState(24);
+
   const { data: catalogue = [], isLoading: loadingCatalogue } = useQuery({
     queryKey: ["hero-collectibles-catalogue"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("hero_collectibles")
-        .select("*")
+        .select("id, code, name, archetype, rarity, emoji, gradient, image_url, hp, attack, defense, speed")
         .order("code", { ascending: true });
       if (error) throw error;
       return (data ?? []) as unknown as HeroCard[];
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 
   const { data: ownedCounts = {}, isLoading } = useQuery({
@@ -93,26 +97,36 @@ export const HeroCardCollection = () => {
       }
       return counts;
     },
+    staleTime: 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 
   // Free background artwork backfill so the album shows real hero images.
+  // Runs in larger batches and only refreshes the catalogue occasionally so the
+  // album stays responsive instead of re-fetching 200 rows after every batch.
   const [artMissing, setArtMissing] = useState(0);
   useEffect(() => {
     let stop = false;
     const run = async () => {
+      let batches = 0;
       while (!stop) {
         const { data, error } = await supabase.functions.invoke("hero-card-draw", {
-          body: { action: "backfill_art", limit: 3 },
+          body: { action: "backfill_art", limit: 8 },
         });
-        if (error || !data || data.error) return;
+        if (stop || error || !data || data.error) return;
         setArtMissing(data.missing ?? 0);
-        queryClient.invalidateQueries({ queryKey: ["hero-collectibles-catalogue"] });
+        batches += 1;
+        if (batches % 3 === 0 || !data.missing) {
+          queryClient.invalidateQueries({ queryKey: ["hero-collectibles-catalogue"] });
+        }
         if (!data.missing || !data.generated) return;
+        await new Promise((r) => setTimeout(r, 1200));
       }
     };
-    run();
-    return () => { stop = true; };
+    const idle = window.setTimeout(run, 800);
+    return () => { stop = true; window.clearTimeout(idle); };
   }, [queryClient]);
+
 
 
 
