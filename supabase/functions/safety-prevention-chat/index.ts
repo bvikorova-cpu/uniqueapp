@@ -34,11 +34,6 @@ serve(async (req) => {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY is not configured');
-    }
-
     const systemPrompt = `You are a compassionate and supportive AI assistant specializing in bullying prevention and emotional support. Your role is to:
 
 1. LISTEN with empathy and validate feelings
@@ -75,43 +70,28 @@ Topics you can help with:
 
 Remember: You are NOT a replacement for professional mental health services. Always encourage seeking professional help for serious issues.`;
 
-    const callAI = async (): Promise<Response> => {
-      let last: Response | null = null;
-      for (let attempt = 0; attempt < 3; attempt++) {
-        const r = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-            'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: 'google/gemini-2.5-flash',
-            messages: [
-              { role: 'system', content: systemPrompt },
-              ...messages
-            ] }) });
-        if (r.ok || (r.status !== 429 && r.status < 500)) return r;
-        last = r;
-        await new Promise((res) => setTimeout(res, 800 * Math.pow(2, attempt)));
-      }
-      return last!;
-    };
-
-    const response = await callAI();
-
-    if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ error: 'Rate limit exceeded. Please try again in a moment.' }),
-          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-      const errorText = await response.text();
-      console.error('OpenAI API error:', response.status, errorText);
-      throw new Error('AI service error');
+    let assistantMessage: string;
+    try {
+      assistantMessage = await callUnifiedAI(
+        [
+          { role: 'system', content: systemPrompt },
+          ...messages,
+        ],
+        { model: 'google/gemini-2.5-flash' },
+      );
+    } catch (aiError) {
+      const msg = aiError instanceof Error ? aiError.message : String(aiError);
+      const status = (aiError as any)?.status ?? 502;
+      console.error('safety-prevention-chat AI error:', msg);
+      return new Response(
+        JSON.stringify({ error: status === 429 ? 'Rate limit exceeded. Please try again in a moment.' : msg }),
+        { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
     }
 
-    const data = await response.json();
-    const assistantMessage = data.choices?.[0]?.message?.content || "I'm here to help. Could you tell me more about what you're going through?";
+    if (!assistantMessage || !assistantMessage.trim()) {
+      assistantMessage = "I'm here to help. Could you tell me more about what you're going through?";
+    }
 
     return new Response(
       JSON.stringify({ message: assistantMessage }),
