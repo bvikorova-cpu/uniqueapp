@@ -10,6 +10,26 @@ function j(b: unknown, s = 200) {
   return new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
+/** Comic-book style categories get a modern superhero-comic art prompt. */
+const COMIC_CATEGORIES = ["superhero", "comic hero", "comic villain", "mutant", "cosmic", "villain", "vigilante", "armored hero"];
+
+function isComic(category: string) {
+  return COMIC_CATEGORIES.includes(String(category ?? "").toLowerCase());
+}
+
+/**
+ * Builds the portrait prompt. Comic categories render in the modern
+ * American superhero-comic / cinematic style. The characters are always
+ * ORIGINAL — no trademarked names, logos, emblems or copyrighted likenesses.
+ */
+function portraitPrompt(name: string, category: string, visual: string, mood: string) {
+  if (isComic(category)) {
+    return `Original superhero character portrait of "${name}", a ${category}. ${visual}. ${mood}. Modern American superhero comic-book style: bold inked linework, dynamic anatomy, glossy skin-tight costume with cape or armor plating, energy aura, comic-cinematic key lighting, halftone-free clean render, full upper body, saturated primary colors, splash-page composition. Completely original character design — do NOT copy or resemble any existing Marvel, DC or other trademarked hero, no known logos, emblems, symbols, masks or celebrity likeness. No text, no watermark, no logos.`;
+  }
+  return `Epic fantasy battle character portrait of "${name}", a ${category} warrior. ${visual}. ${mood}. Highly detailed digital painting, full upper body, vivid colors, game character art. No text, no watermark, no logos.`;
+}
+
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
