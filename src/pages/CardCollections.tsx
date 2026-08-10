@@ -53,8 +53,34 @@ const CardCollections = () => {
   const totalUnique = Object.values(progress).reduce((a, b) => a + b.unique, 0);
 
   return (
-    <div className="min-h-screen bg-background p-2 sm:p-4">
-      <div className="container mx-auto max-w-6xl pt-20 pb-28 md:pb-8 space-y-6">
+    <div className="min-h-screen bg-background">
+      <section className="relative h-[45vh] sm:h-[60vh] overflow-hidden">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster={cardsHeroPoster}
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src={cardsHeroVideo.url} type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-background" />
+        <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4 pt-16">
+          <Badge className="mb-3 bg-white/15 text-white border-white/25 backdrop-blur-md gap-1">
+            <Coins className="h-3 w-3" /> {DRAW_COST} credit / draw
+          </Badge>
+          <h1 className="text-3xl sm:text-5xl font-black text-white drop-shadow-lg">
+            Collectible Cards
+          </h1>
+          <p className="mt-2 text-sm sm:text-base text-white/85 max-w-xl">
+            10 themed collections · {CARDS_PER_CATEGORY} cards each · 1,500 cards to hunt down
+          </p>
+        </div>
+      </section>
+
+      <div className="container mx-auto max-w-6xl px-2 sm:px-4 pt-6 pb-28 md:pb-8 space-y-6">
+
         <FloatingHowItWorks
           title="Collectible Cards — How it works"
           steps={[
