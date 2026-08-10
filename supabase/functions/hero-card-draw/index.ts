@@ -7,6 +7,14 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
 const DRAW_COST = 5;
+const UNITAS_COST = 10000;
+const UNITAS_NAME = "Unitas";
+const UNITAS_PROMPT =
+  `Golden legendary collectible trading-card portrait of "Unitas", the ultimate mega hero. Radiant living-gold armour ` +
+  `with glowing engraved sigils, flowing golden cape, halo of golden light, majestic heroic upper-body pose, ` +
+  `cinematic god-rays, deep dark background with golden particles, painterly comic-cinematic digital art, ultra premium ` +
+  `gold-foil card aesthetic. Completely original character design — must not copy or resemble any existing Marvel, DC or ` +
+  `other trademarked hero, no known logos, emblems or celebrity likeness. No text, no watermark.`;
 
 function j(b: unknown, s = 200) {
   return new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
