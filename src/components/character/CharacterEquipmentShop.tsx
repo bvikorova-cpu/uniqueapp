@@ -124,6 +124,8 @@ export const CharacterEquipmentShop = () => {
   const queryClient = useQueryClient();
   const [selectedChar, setSelectedChar] = useState<string | null>(null);
   const [buying, setBuying] = useState<string | null>(null);
+  const [category, setCategory] = useState<"gear" | "abilities">("gear");
+
 
   const { data: characters } = useQuery({
     queryKey: ["user-characters"],
