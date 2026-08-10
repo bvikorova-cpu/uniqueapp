@@ -1,6 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
-import { deductAICredits, refundAICredits } from "../_shared/credits.ts";
-import { generateOpenAIImage } from "../_shared/unifiedAI.ts";
+import { deductAICredits, refundAICredits } from "./credits.ts";
+import { generateOpenAIImage } from "./unifiedAI.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
