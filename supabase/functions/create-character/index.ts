@@ -10,6 +10,26 @@ function j(b: unknown, s = 200) {
   return new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
+/** Comic-book style categories get a modern superhero-comic art prompt. */
+const COMIC_CATEGORIES = ["superhero", "comic hero", "comic villain", "mutant", "cosmic", "villain", "vigilante", "armored hero"];
+
+function isComic(category: string) {
+  return COMIC_CATEGORIES.includes(String(category ?? "").toLowerCase());
+}
+
+/**
+ * Builds the portrait prompt. Comic categories render in the modern
+ * American superhero-comic / cinematic style. The characters are always
+ * ORIGINAL — no trademarked names, logos, emblems or copyrighted likenesses.
+ */
+function portraitPrompt(name: string, category: string, visual: string, mood: string) {
+  if (isComic(category)) {
+    return `Original superhero character portrait of "${name}", a ${category}. ${visual}. ${mood}. Modern American superhero comic-book style: bold inked linework, dynamic anatomy, glossy skin-tight costume with cape or armor plating, energy aura, comic-cinematic key lighting, halftone-free clean render, full upper body, saturated primary colors, splash-page composition. Completely original character design — do NOT copy or resemble any existing Marvel, DC or other trademarked hero, no known logos, emblems, symbols, masks or celebrity likeness. No text, no watermark, no logos.`;
+  }
+  return `Epic fantasy battle character portrait of "${name}", a ${category} warrior. ${visual}. ${mood}. Highly detailed digital painting, full upper body, vivid colors, game character art. No text, no watermark, no logos.`;
+}
+
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
@@ -68,7 +88,7 @@ serve(async (req) => {
       for (let i = 0; i < variantCount; i++) {
         try {
           const img = await generateOpenAIImage(
-            `Epic fantasy battle character portrait of "${name}", a ${charRow.category ?? category} warrior. ${visual}. ${moods[i % moods.length]}. Highly detailed digital painting, full upper body, vivid colors, game character art. No text, no watermark, no logos.`,
+            portraitPrompt(name, String(charRow.category ?? category), visual, moods[i % moods.length]),
             "1024x1024",
           );
           const b64 = img.b64_json;
@@ -111,7 +131,7 @@ serve(async (req) => {
       try {
         const visual = existingDescription || String(charRow.description ?? "").slice(0, 400);
         const img = await generateOpenAIImage(
-          `Epic fantasy battle character portrait of "${name}", a ${charRow.category ?? category} warrior. ${visual}. Dramatic cinematic lighting, highly detailed digital painting, dynamic heroic pose, full upper body, vivid colors, game character art. No text, no watermark, no logos.`,
+          portraitPrompt(name, String(charRow.category ?? category), visual, "Dramatic cinematic lighting, dynamic heroic pose"),
           "1024x1024",
         );
         let imageUrl: string | null = null;
@@ -146,7 +166,7 @@ serve(async (req) => {
     try {
       const raw = await callUnifiedAI(
         [
-          { role: "system", content: "You are a game designer creating battle characters. Reply with strict JSON only." },
+          { role: "system", content: "You are a comic-book and game designer creating original battle characters. When the category is a superhero/comic type, design in the spirit of modern American superhero comics (powers, code name, costume, nemesis) but keep every character 100% original — never reuse trademarked Marvel/DC names, logos, emblems or origin stories. Reply with strict JSON only." },
           { role: "user", content: `Create a ${isPremium ? "legendary premium" : "solid"} ${category} warrior named "${name}". ${description ? `Concept: ${description}.` : ""}
 Return JSON: {"backstory": "4-6 vivid sentences", "appearance": "one vivid sentence describing looks, armor, weapon, colors", "stats": {"hp": number 80-200, "attack": number 40-120, "defense": number 30-110, "speed": number 30-110}}` },
         ],
@@ -176,7 +196,7 @@ Return JSON: {"backstory": "4-6 vivid sentences", "appearance": "one vivid sente
       try {
         const visual = String(parsed?.appearance ?? description ?? "").slice(0, 400);
         const img = await generateOpenAIImage(
-          `Epic fantasy battle character portrait of "${name}", a ${category} warrior. ${visual}. Dramatic cinematic lighting, highly detailed digital painting, dynamic heroic pose, full upper body, vivid colors, game character art. No text, no watermark, no logos.`,
+          portraitPrompt(name, category, visual, "Dramatic cinematic lighting, dynamic heroic pose"),
           "1024x1024",
         );
         const b64 = img.b64_json;

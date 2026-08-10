@@ -16,12 +16,36 @@ import { GenerationProgress } from "./GenerationProgress";
 
 const CATEGORIES = [
   { name: "Superhero", icon: "🦸", color: "from-blue-500 to-cyan-500" },
+  { name: "Comic Hero", icon: "💥", color: "from-red-500 to-amber-500" },
+  { name: "Armored Hero", icon: "🤖", color: "from-amber-500 to-red-600" },
+  { name: "Mutant", icon: "🧬", color: "from-emerald-500 to-teal-500" },
+  { name: "Cosmic", icon: "🌌", color: "from-indigo-500 to-purple-600" },
+  { name: "Vigilante", icon: "🦇", color: "from-slate-600 to-slate-900" },
+  { name: "Comic Villain", icon: "😈", color: "from-fuchsia-600 to-red-700" },
   { name: "Anime", icon: "⚡", color: "from-pink-500 to-rose-500" },
   { name: "Fantasy", icon: "🧙", color: "from-purple-500 to-violet-500" },
   { name: "Sci-Fi", icon: "🚀", color: "from-cyan-500 to-blue-500" },
   { name: "Cartoon", icon: "🎨", color: "from-yellow-500 to-orange-500" },
   { name: "Villain", icon: "💀", color: "from-red-500 to-rose-600" },
 ];
+
+/**
+ * Comic-book archetypes in the spirit of the big superhero universes.
+ * All designs stay 100% original — no trademarked names, logos or likenesses.
+ */
+const COMIC_ARCHETYPES = [
+  { label: "Thunder Deity", category: "Cosmic", emoji: "⚡", desc: "A storm-forged demigod wielding an enchanted war hammer, glowing crackling lightning around a red cape and silver-plated armor." },
+  { label: "Armored Genius", category: "Armored Hero", emoji: "🤖", desc: "A billionaire inventor in a sleek crimson-and-gold powered exosuit with glowing chest reactor, repulsor gauntlets and jet boots." },
+  { label: "Night Vigilante", category: "Vigilante", emoji: "🦇", desc: "A shadow-cloaked detective in matte black armor with a long tattered cape, stealth gadgets and a grim white-eyed cowl." },
+  { label: "Solar Sentinel", category: "Superhero", emoji: "☀️", desc: "An invulnerable flying protector in a blue-and-gold suit radiating solar energy from the eyes and chest." },
+  { label: "Arachnid Acrobat", category: "Comic Hero", emoji: "🕸️", desc: "An agile teenage acrobat in a crimson-and-navy webbed bodysuit, swinging on silk lines with large reflective lenses." },
+  { label: "Speed Runner", category: "Comic Hero", emoji: "💨", desc: "A hyper-fast racer in a streamlined gold-and-orange suit leaving trails of blazing kinetic energy." },
+  { label: "Emerald Ranger", category: "Cosmic", emoji: "💚", desc: "A cosmic patrol officer whose willpower ring forges glowing green energy constructs in deep space." },
+  { label: "Gamma Titan", category: "Mutant", emoji: "🟢", desc: "A colossal gamma-mutated brawler with jade skin, torn purple trousers and earth-cracking fists." },
+  { label: "Feline Shadow", category: "Mutant", emoji: "🐆", desc: "A regal warrior in a matte black vibration-absorbing nanosuit with silver claws and glowing tribal patterns." },
+  { label: "Chaos Trickster", category: "Comic Villain", emoji: "😈", desc: "A grinning anarchic villain in a violet tailcoat with acid-green hair and an unsettling painted smile." },
+];
+
 
 export const CharacterCreator = () => {
   const [name, setName] = useState("");
@@ -155,6 +179,33 @@ export const CharacterCreator = () => {
             ))}
           </div>
         </div>
+
+        <div>
+          <label className="text-sm font-bold mb-1 block text-foreground">💥 Comic-Book Archetypes</label>
+          <p className="text-[11px] text-muted-foreground mb-3">
+            Superhero-comic style presets. Every hero is an original creation — no trademarked names or logos.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {COMIC_ARCHETYPES.map((a) => (
+              <motion.button
+                key={a.label}
+                type="button"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                disabled={createCharacter.isPending}
+                onClick={() => { setCategory(a.category); setDescription(a.desc); }}
+                className={`px-3 py-2 rounded-xl border text-xs font-bold transition-all ${
+                  description === a.desc
+                    ? "border-primary bg-primary/10 shadow-lg shadow-primary/20"
+                    : "border-border/30 bg-card/50 hover:border-primary/40"
+                }`}
+              >
+                <span className="mr-1">{a.emoji}</span>{a.label}
+              </motion.button>
+            ))}
+          </div>
+        </div>
+
 
         <div>
           <label className="text-sm font-bold mb-2 block text-foreground">📜 Description</label>
