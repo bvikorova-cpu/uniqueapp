@@ -5,11 +5,11 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
-const COSTS = { dream: 10, meditation: 15, mood: 8, sleep: 20,
-  decoder: 10, evidence: 15, coach: 8, riskscan: 12,
-  weekly_insight: 5, roleplay_score: 6, wall_filter: 2,
-  cbt: 6, mh_assess: 6, walking: 6,
-  toxicity: 6, platreport: 6, restorative: 6, pulse: 6, affirmation: 6, bystander: 6 } as const;
+const COSTS = { dream: 3, meditation: 3, mood: 3, sleep: 3,
+  decoder: 3, evidence: 3, coach: 3, riskscan: 3,
+  weekly_insight: 3, roleplay_score: 3, wall_filter: 2,
+  cbt: 3, mh_assess: 3, walking: 3,
+  toxicity: 3, platreport: 3, restorative: 3, pulse: 3, affirmation: 3, bystander: 3 } as const;
 const SAFETY_ACTIONS = new Set(["decoder","evidence","coach","riskscan","weekly_insight","roleplay_score","wall_filter","toxicity","platreport","restorative","pulse","affirmation","bystander"]);
 
 function parseJSON(s: string): any {

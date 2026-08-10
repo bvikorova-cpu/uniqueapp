@@ -35,7 +35,7 @@ export function ResponseCoachCard() {
               <div className="flex flex-wrap items-center gap-2 mb-1">
                 <h3 className="font-bold text-foreground">Safe Response Coach</h3>
                 <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-cyan-600 text-white shadow-md ring-1 ring-cyan-300/40 inline-flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" /> 8 credits
+                  <Sparkles className="w-3 h-3" /> 3 credits
                 </span>
               </div>
               <p className="text-xs text-muted-foreground">Roleplay & get scored on assertiveness/safety</p>
@@ -72,7 +72,7 @@ export function ResponseCoachCard() {
           className="w-full bg-gradient-to-r from-cyan-600 to-sky-600 hover:from-cyan-500 hover:to-sky-500 text-white font-bold"
         >
           <Sparkles className="w-4 h-4 mr-2" />
-          {score.isPending ? "Coaching..." : "Score My Response (8 credits)"}
+          {score.isPending ? "Coaching..." : "Score My Response (3 credits)"}
         </Button>
 
         {last && (

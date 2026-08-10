@@ -34,7 +34,7 @@ export function MoodMirrorCard() {
               <div className="flex flex-wrap items-center gap-2 mb-1">
                 <h3 className="font-bold text-foreground">Mood Mirror</h3>
                 <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-rose-600 text-white shadow-md ring-1 ring-rose-300/40 inline-flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" /> 8 credits
+                  <Sparkles className="w-3 h-3" /> 3 credits
                 </span>
               </div>
               <p className="text-xs text-muted-foreground">Selfie analysis: stress, mood, recommendations</p>
@@ -62,7 +62,7 @@ export function MoodMirrorCard() {
           disabled={!preview || analyze.isPending}
           className="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-bold">
           <Sparkles className="w-4 h-4 mr-2" />
-          {analyze.isPending ? "Analyzing..." : "Analyze Mood (8 credits)"}
+          {analyze.isPending ? "Analyzing..." : "Analyze Mood (3 credits)"}
         </Button>
 
         {last && (

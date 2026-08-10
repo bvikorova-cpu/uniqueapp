@@ -32,7 +32,7 @@ export function CyberRiskScanCard() {
               <div className="flex flex-wrap items-center gap-2 mb-1">
                 <h3 className="font-bold text-foreground">Cyberbullying Risk Scan</h3>
                 <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-violet-600 text-white shadow-md ring-1 ring-violet-300/40 inline-flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" /> 12 credits
+                  <Sparkles className="w-3 h-3" /> 3 credits
                 </span>
               </div>
               <p className="text-xs text-muted-foreground">Scan messages/comments for threat patterns</p>
@@ -59,7 +59,7 @@ export function CyberRiskScanCard() {
           className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white font-bold"
         >
           <Sparkles className="w-4 h-4 mr-2" />
-          {scan.isPending ? "Scanning..." : "Run Risk Scan (12 credits)"}
+          {scan.isPending ? "Scanning..." : "Run Risk Scan (3 credits)"}
         </Button>
 
         {last && (

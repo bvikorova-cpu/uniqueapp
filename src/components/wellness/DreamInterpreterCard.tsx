@@ -28,7 +28,7 @@ export function DreamInterpreterCard() {
               <div className="flex flex-wrap items-center gap-2 mb-1">
                 <h3 className="font-bold text-foreground">Dream Interpreter</h3>
                 <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-indigo-600 text-white shadow-md ring-1 ring-indigo-300/40 inline-flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" /> 10 credits
+                  <Sparkles className="w-3 h-3" /> 3 credits
                 </span>
               </div>
               <p className="text-xs text-muted-foreground">AI decodes your dream + creates an illustration</p>
@@ -45,7 +45,7 @@ export function DreamInterpreterCard() {
         <Button onClick={() => interpret.mutate(text, { onSuccess: () => setText("") })} disabled={text.length < 10 || interpret.isPending}
           className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold">
           <Sparkles className="w-4 h-4 mr-2" />
-          {interpret.isPending ? "Interpreting..." : "Interpret Dream (10 credits)"}
+          {interpret.isPending ? "Interpreting..." : "Interpret Dream (3 credits)"}
         </Button>
 
         {last && last.status === "completed" && (
