@@ -116,6 +116,7 @@ serve(async (req) => {
 
     // ---- AI narrative -----------------------------------------------------
     let narrative = "";
+    let bossQuote = "";
     let mvp = members.slice().sort((a, b) => b.power - a.power)[0]?.name ?? "";
     try {
       const ai = await askAIJSON<{ narrative: string; mvp?: string; bossQuote?: string }>(
@@ -129,7 +130,7 @@ Return JSON: { "narrative": "4-6 sentence battle report naming the heroes and th
       );
       narrative = ai?.narrative ?? "";
       if (ai?.mvp && members.some((m) => m.name === ai.mvp)) mvp = ai.mvp!;
-      var bossQuote = ai?.bossQuote ?? "";
+      bossQuote = ai?.bossQuote ?? "";
     } catch {
       narrative = victory
         ? `${mvp} led the party through ${dungeon.name}, breaking every ambush until ${dungeon.boss} fell.`
@@ -159,7 +160,7 @@ Return JSON: { "narrative": "4-6 sentence battle report naming the heroes and th
       victory,
       dungeon: dungeon.name,
       boss: dungeon.boss,
-      bossQuote: typeof bossQuote === "string" ? bossQuote : "",
+      bossQuote,
       narrative,
       mvp,
       partyPower,
