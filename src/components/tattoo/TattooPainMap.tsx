@@ -62,7 +62,7 @@ export const TattooPainMap = ({ onBack }: Props) => {
   const getDetails = async (part: typeof BODY_PARTS[0]) => {
     setSelectedPart(part.id);
     if (credits.credits_remaining < 3) {
-      toast.error("You need 3 credits. Redirecting...");
+      toast.error("You need 4 credits. Redirecting...");
       setTimeout(() => navigate("/ai-credits"), 1500);
       return;
     }
@@ -99,7 +99,7 @@ export const TattooPainMap = ({ onBack }: Props) => {
             <h2 className="text-2xl font-black bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">Pain Map</h2>
             <p className="text-muted-foreground text-sm">Detailed pain levels for every body part</p>
           </div>
-          <span className="ml-auto text-xs font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">3 Credits/lookup</span>
+          <span className="ml-auto text-xs font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">4 Credits/lookup</span>
         </motion.div>
 
         {/* Legend */}

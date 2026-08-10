@@ -95,7 +95,7 @@ const ContentRepurposer = ({ onBack }: Props) => {
           <h2 className="text-2xl font-black">AI Content Repurposer</h2>
           <p className="text-muted-foreground">Transform one piece of content into multiple formats instantly</p>
         </div>
-        <Badge variant="outline" className="w-fit whitespace-normal text-left">3 credits per format</Badge>
+        <Badge variant="outline" className="w-fit whitespace-normal text-left">4 credits per run</Badge>
       </div>
 
       <Card>

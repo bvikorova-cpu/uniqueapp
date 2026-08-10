@@ -101,7 +101,7 @@ const BulkContentGenerator = ({ onBack }: Props) => {
           <h2 className="text-2xl font-black">Bulk Content Generator</h2>
           <p className="text-muted-foreground">Generate multiple posts from a single prompt — save hours of work</p>
         </div>
-        <Badge variant="outline" className="w-fit">2 credits per post</Badge>
+        <Badge variant="outline" className="w-fit">5 credits per batch</Badge>
       </div>
 
       <Card className="overflow-hidden">
