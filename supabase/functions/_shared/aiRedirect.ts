@@ -72,8 +72,10 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
       ? input.toString()
       : (input as Request).url;
 
-    // Anything that is not OpenAI passes straight through.
-    if (!url.includes("api.openai.com")) {
+    // Only intercept OpenAI and Lovable-gateway URLs; everything else passes through.
+    const isOpenAI = url.includes("api.openai.com");
+    const isGateway = url.includes("ai.gateway.lovable.dev");
+    if (!isOpenAI && !isGateway) {
       return await originalFetch(input as any, init);
     }
 
