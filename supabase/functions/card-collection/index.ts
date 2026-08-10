@@ -199,7 +199,15 @@ serve(async (req) => {
         }
       }
 
-      await db.rpc("increment_card_times_collected" as never, { _id: collectibleId } as never).catch?.(() => {});
+      const { data: counter } = await db
+        .from("card_collectibles")
+        .select("times_collected")
+        .eq("id", collectibleId)
+        .maybeSingle();
+      await db
+        .from("card_collectibles")
+        .update({ times_collected: (counter?.times_collected ?? 0) + 1 })
+        .eq("id", collectibleId);
       return j({ ok: true, name: card.name });
     }
 
