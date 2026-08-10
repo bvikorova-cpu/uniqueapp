@@ -10,6 +10,8 @@ import { Check, X, Loader2, Sparkles, Library, Coins, Crown, Lock, Trophy } from
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { CardCollectionLeaderboard } from "./CardCollectionLeaderboard";
+import { CardDetailModal } from "./CardDetailModal";
+
 import { warmCollectionCardImages, readCachedCategory, writeCachedCategory } from "@/lib/collectionCardCache";
 
 export const DRAW_COST = 1;
@@ -62,6 +64,8 @@ export const CardCategoryCollection = ({ category }: Props) => {
   const [exitDir, setExitDir] = useState<"left" | "right" | null>(null);
   const [visibleCount, setVisibleCount] = useState(24);
   const [artMissing, setArtMissing] = useState(0);
+  const [detailCard, setDetailCard] = useState<CollectibleCard | null>(null);
+
 
   const { data: catalogue = [], isLoading: loadingCatalogue } = useQuery({
     queryKey: ["card-catalogue", slug],
@@ -423,7 +427,14 @@ export const CardCategoryCollection = ({ category }: Props) => {
                   const count = ownedCounts[c.id] ?? 0;
                   const owned = count > 0;
                   return (
-                    <Card key={c.id} className="overflow-hidden border-border/30 bg-card/90">
+                    <Card
+                      key={c.id}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => setDetailCard(c)}
+                      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setDetailCard(c); } }}
+                      className="overflow-hidden border-border/30 bg-card/90 cursor-pointer transition-transform hover:scale-[1.02] hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    >
                       <div className={`relative aspect-[4/5] bg-gradient-to-br ${c.gradient}`}>
                         {c.image_url ? (
                           <img
@@ -453,6 +464,7 @@ export const CardCategoryCollection = ({ category }: Props) => {
                     </Card>
                   );
                 })}
+
               </div>
               {visibleCount < catalogue.length && (
                 <div className="mt-4 flex justify-center">
@@ -469,7 +481,15 @@ export const CardCategoryCollection = ({ category }: Props) => {
           <CardCollectionLeaderboard category={slug} totalCards={CARDS_PER_CATEGORY} />
         </TabsContent>
       </Tabs>
+
+      <CardDetailModal
+        card={detailCard}
+        category={category}
+        totalCards={CARDS_PER_CATEGORY}
+        onClose={() => setDetailCard(null)}
+      />
     </div>
+
   );
 };
 
