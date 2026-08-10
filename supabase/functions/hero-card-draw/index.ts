@@ -106,9 +106,26 @@ serve(async (req) => {
       source: "character_arena" });
 
     try {
-      const card = pool[Math.floor(Math.random() * pool.length)];
+      // Weighting layer: when a collector is one card away from completing the
+      // album, the very last missing card stays extremely scarce.
+      let eligible = pool;
+      const { data: owned } = await db.from("hero_collection_cards")
+        .select("collectible_id").eq("user_id", user.id).limit(50000);
+      const ownedIds = new Set((owned ?? []).map((r: any) => r.collectible_id));
+      const missing = pool.filter((c: any) => !ownedIds.has(c.id));
+      if (missing.length === 1 && pool.length > 1) {
+        const draws = (owned ?? []).length + 1; // this draw included
+        const FINAL_TARGET = 20000;
+        let reveal = false;
+        if (draws >= FINAL_TARGET) reveal = true;
+        else if (draws > FINAL_TARGET - 1000) reveal = Math.random() < 1 / (FINAL_TARGET - draws + 1);
+        if (!reveal) eligible = pool.filter((c: any) => c.id !== missing[0].id);
+      }
+
+      const card = eligible[Math.floor(Math.random() * eligible.length)];
       const imageUrl = await ensureArtwork(card);
       return j({ card: { ...card, image_url: imageUrl }, creditsUsed: DRAW_COST, remaining: after, poolLeft: pool.length });
+
     } catch (e) {
       await refundAICredits(user.id, DRAW_COST, "hero_card_draw");
       console.error("[hero-card-draw] draw failed", e);
