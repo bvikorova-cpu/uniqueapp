@@ -9539,6 +9539,101 @@ export type Database = {
         }
         Relationships: []
       }
+      card_categories: {
+        Row: {
+          art_style: string
+          created_at: string
+          description: string
+          emoji: string
+          gradient: string
+          name: string
+          slug: string
+          sort_order: number
+        }
+        Insert: {
+          art_style?: string
+          created_at?: string
+          description?: string
+          emoji?: string
+          gradient?: string
+          name: string
+          slug: string
+          sort_order?: number
+        }
+        Update: {
+          art_style?: string
+          created_at?: string
+          description?: string
+          emoji?: string
+          gradient?: string
+          name?: string
+          slug?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      card_collectibles: {
+        Row: {
+          card_index: number
+          category_slug: string
+          code: string
+          created_at: string
+          emoji: string
+          gradient: string
+          id: string
+          image_url: string | null
+          is_prime: boolean
+          lore: string
+          name: string
+          rarity: string
+          subject: string
+          times_collected: number
+          updated_at: string
+        }
+        Insert: {
+          card_index: number
+          category_slug: string
+          code: string
+          created_at?: string
+          emoji?: string
+          gradient?: string
+          id?: string
+          image_url?: string | null
+          is_prime?: boolean
+          lore?: string
+          name: string
+          rarity?: string
+          subject?: string
+          times_collected?: number
+          updated_at?: string
+        }
+        Update: {
+          card_index?: number
+          category_slug?: string
+          code?: string
+          created_at?: string
+          emoji?: string
+          gradient?: string
+          id?: string
+          image_url?: string | null
+          is_prime?: boolean
+          lore?: string
+          name?: string
+          rarity?: string
+          subject?: string
+          times_collected?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "card_collectibles_category_slug_fkey"
+            columns: ["category_slug"]
+            isOneToOne: false
+            referencedRelation: "card_categories"
+            referencedColumns: ["slug"]
+          },
+        ]
+      }
       career_path_nodes: {
         Row: {
           completed: boolean | null
@@ -63277,6 +63372,47 @@ export type Database = {
         }
         Relationships: []
       }
+      user_card_collection: {
+        Row: {
+          category_slug: string
+          collectible_id: string
+          copies: number
+          created_at: string
+          credits_spent: number
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category_slug: string
+          collectible_id: string
+          copies?: number
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category_slug?: string
+          collectible_id?: string
+          copies?: number
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_card_collection_collectible_id_fkey"
+            columns: ["collectible_id"]
+            isOneToOne: false
+            referencedRelation: "card_collectibles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_castle_certificates: {
         Row: {
           castle_id: string
@@ -69373,6 +69509,16 @@ export type Database = {
       can_watch_concert: {
         Args: { _concert_id: string; _user_id: string }
         Returns: boolean
+      }
+      card_collection_leaderboard: {
+        Args: { _category?: string; _limit?: number }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          total_cards: number
+          unique_cards: number
+          user_id: string
+        }[]
       }
       challenge_monthly_prize_pool_cents: { Args: never; Returns: number }
       challenge_period_key: { Args: { _type: string }; Returns: string }
