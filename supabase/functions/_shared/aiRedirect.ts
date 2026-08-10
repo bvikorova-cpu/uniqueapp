@@ -134,7 +134,9 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
         out.append("model", gatewayAudioModel(form.get("model"), DEFAULT_STT_MODEL));
         return await originalFetch(`${GATEWAY_BASE}/audio/transcriptions`, {
           method: "POST",
-          headers: { "Lovable-API-Key": lovableKey },
+          // Audio transcription uses the OpenAI-compatible bearer-auth contract.
+          // Do not reuse the chat gateway's Lovable-API-Key header here.
+          headers: { Authorization: `Bearer ${lovableKey}` },
           body: out,
         });
       }

@@ -67,11 +67,15 @@ async function transcribeAudio(blob: Blob, mime?: string): Promise<{ transcript?
   const fd = new FormData();
   fd.append("file", blob, `recording.${ext}`);
   fd.append("model", "openai/gpt-4o-mini-transcribe");
+  // This action needs one buffered JSON result before the forensic analysis.
+  fd.append("stream", "false");
   const resp = await fetch("https://ai.gateway.lovable.dev/v1/audio/transcriptions", {
     method: "POST", headers: { Authorization: `Bearer ${key}` }, body: fd });
   if (!resp.ok) {
     const details = await resp.text().catch(() => "");
-    return { err: json({ error: "Transcription failed", details: details.slice(0, 500) }, resp.status === 402 ? 402 : 500) };
+    console.error("[lie-detector-ai] transcription failed", resp.status, details.slice(0, 500));
+    const status = [400, 402, 403, 404, 413, 429].includes(resp.status) ? resp.status : 500;
+    return { err: json({ error: "Voice transcription failed. Please try recording again.", details: details.slice(0, 500) }, status) };
   }
   const j = await resp.json().catch(() => ({} as any));
   const transcript = (j.text || "").trim();

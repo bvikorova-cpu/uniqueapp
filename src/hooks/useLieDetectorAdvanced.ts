@@ -1,16 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { safeInvoke } from "@/utils/safeInvoke";
 
 // All lie-detector-* are routed through the consolidated `lie-detector-ai` function.
 async function invoke<T = any>(action: string, body: Record<string, any>): Promise<T> {
   // Router action MUST win over body.action. Sub-actions become `sub_action`.
   const { action: subAction, ...rest } = body;
   const payload = { ...rest, action, ...(subAction !== undefined ? { sub_action: subAction } : {}) };
-  const { data, error } = await supabase.functions.invoke("lie-detector-ai", { body: payload });
-  if (error) throw new Error(error.message);
-  if (data?.error) throw new Error(data.error);
-  return data as T;
+  const { data, error } = await safeInvoke<T>("lie-detector-ai", { body: payload });
+  if (error) throw new Error(error);
+  if (data && typeof data === "object" && "error" in data) {
+    throw new Error(String((data as Record<string, unknown>).error));
+  }
+  return data;
 }
 
 // ============== VOICE ==============
