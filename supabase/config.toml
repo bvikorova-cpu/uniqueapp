@@ -448,3 +448,6 @@ verify_jwt = true
 
 [functions.card-collection]
 verify_jwt = true
+
+[functions.collection-cards]
+verify_jwt = true
