@@ -55,15 +55,34 @@ const EXT_BY_MIME: Record<string, string> = {
   "audio/mpeg": "mp3", "audio/mp3": "mp3", "audio/wav": "wav", "audio/x-wav": "wav", "audio/flac": "flac",
 };
 
-/** Transcribe audio via Lovable AI Gateway (OpenAI-compatible STT). Returns plain transcript. */
+/**
+ * Transcribe audio. Vertex AI (postpay, Gemini native audio) is the PRIMARY
+ * path; the Lovable AI Gateway is only used when Vertex is unavailable/fails.
+ */
 async function transcribeAudio(blob: Blob, mime?: string): Promise<{ transcript?: string; err?: Response }> {
-  const key = OPENAI();
-  if (!key) return { err: json({ error: "LOVABLE_API_KEY not configured" }, 500) };
   const base = (mime || blob.type || "audio/webm").split(";")[0];
   const ext = EXT_BY_MIME[base] || "webm";
   if (blob.size < 1024) {
     return { err: json({ error: "Recording is too short or empty. Please record again." }, 400) };
   }
+
+  // ---- 1) Vertex AI (primary) ----
+  try {
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    let binary = "";
+    const CHUNK = 0x8000;
+    for (let i = 0; i < bytes.length; i += CHUNK) {
+      binary += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
+    }
+    const vertex = await tryVertexTranscribe(btoa(binary), base);
+    if (vertex) return { transcript: vertex.trim() };
+  } catch (e) {
+    console.warn("[lie-detector-ai] vertex transcribe skipped", e instanceof Error ? e.message : String(e));
+  }
+
+  // ---- 2) Lovable AI Gateway (fallback only) ----
+  const key = OPENAI();
+  if (!key) return { err: json({ error: "Voice transcription is not configured." }, 500) };
   const fd = new FormData();
   fd.append("file", blob, `recording.${ext}`);
   fd.append("model", "openai/gpt-4o-mini-transcribe");
