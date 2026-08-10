@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 import { HeroCardLeaderboard } from "./HeroCardLeaderboard";
+import { warmHeroCardImages, readCachedCatalogue, writeCachedCatalogue } from "@/lib/heroCardImageCache";
+
 
 
 const DRAW_COST = 1;
