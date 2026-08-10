@@ -53,20 +53,37 @@ export const HeroCardCollection = () => {
   const [current, setCurrent] = useState<HeroCard | null>(null);
   const [exitDir, setExitDir] = useState<"left" | "right" | null>(null);
 
-  const { data: collection = [], isLoading } = useQuery({
+  const { data: catalogue = [], isLoading: loadingCatalogue } = useQuery({
+    queryKey: ["hero-collectibles-catalogue"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("hero_collectibles")
+        .select("*")
+        .order("code", { ascending: true });
+      if (error) throw error;
+      return (data ?? []) as unknown as HeroCard[];
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const { data: ownedCounts = {}, isLoading } = useQuery({
     queryKey: ["hero-collection"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return [];
+      if (!user) return {} as Record<string, number>;
       const { data, error } = await supabase
         .from("hero_collection_cards")
-        .select("id, created_at, hero_collectibles(*)")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
+        .select("collectible_id")
+        .eq("user_id", user.id);
       if (error) throw error;
-      return (data ?? []).map((r: any) => r.hero_collectibles as HeroCard).filter(Boolean);
+      const counts: Record<string, number> = {};
+      for (const r of (data ?? []) as { collectible_id: string }[]) {
+        counts[r.collectible_id] = (counts[r.collectible_id] ?? 0) + 1;
+      }
+      return counts;
     },
   });
+
 
   const draw = async () => {
     setDrawing(true);
@@ -118,17 +135,19 @@ export const HeroCardCollection = () => {
     }
   };
 
-  const progress = Math.round((collection.length / TOTAL_CARDS) * 100);
+  const uniqueOwned = Object.keys(ownedCounts).length;
+  const totalOwned = Object.values(ownedCounts).reduce((a, b) => a + b, 0);
+  const progress = Math.round((uniqueOwned / TOTAL_CARDS) * 100);
 
   return (
     <div className="space-y-6">
       <FloatingHowItWorks
         title="Hero Card Collection — How it works"
         steps={[
-          { title: "Draw a card", desc: `Each draw costs ${DRAW_COST} AI credits and reveals one of 200 fixed hero cards you don't own yet.` },
-          { title: "Decide ✓ or ✗", desc: "Tap ✓ to add the hero to your collection, or ✗ to release it back into the pool." },
+          { title: "Draw a card", desc: `Each draw costs ${DRAW_COST} AI credits and reveals one of the 200 fixed hero cards — you can also draw heroes you already own.` },
+          { title: "Decide ✓ or ✗", desc: "Tap ✓ to add the hero to your collection (duplicates stack up), or ✗ to release it back into the pool." },
           { title: "Chase rarities", desc: "Cards come as Common, Rare, Epic and Legendary — legendary heroes have the strongest stats." },
-          { title: "Complete the set", desc: "Collect all 200 unique hero cards to finish the collection." },
+          { title: "Light up the album", desc: "All 200 cards are visible from the start. They stay pale until you own at least one copy, then they light up in full colour with your copy count." },
         ]}
       />
 
@@ -139,7 +158,7 @@ export const HeroCardCollection = () => {
           </div>
           <div className="min-w-0">
             <h2 className="text-lg sm:text-xl font-black">Hero Card Collection</h2>
-            <p className="text-xs text-muted-foreground">200 fixed hero cards — draw, keep or release.</p>
+            <p className="text-xs text-muted-foreground">200 fixed hero cards — draw, keep or release. Duplicates allowed.</p>
           </div>
           <Badge variant="outline" className="ml-auto gap-1 border-border/40">
             <Coins className="h-3 w-3" /> {DRAW_COST} cr / draw
@@ -147,9 +166,11 @@ export const HeroCardCollection = () => {
         </div>
         <div className="flex items-center gap-3">
           <Progress value={progress} className="h-2 flex-1" />
-          <span className="text-xs font-bold whitespace-nowrap">{collection.length}/{TOTAL_CARDS}</span>
+          <span className="text-xs font-bold whitespace-nowrap">{uniqueOwned}/{TOTAL_CARDS}</span>
         </div>
+        <p className="text-[11px] text-muted-foreground mt-2">{totalOwned} card{totalOwned === 1 ? "" : "s"} collected in total (including duplicates)</p>
       </Card>
+
 
       <Tabs defaultValue="draw">
         <TabsList className="grid grid-cols-2 w-full">
@@ -195,7 +216,13 @@ export const HeroCardCollection = () => {
                       <div>
                         <h3 className="text-lg font-black leading-tight">{current.name}</h3>
                         <p className="text-xs text-muted-foreground capitalize">{current.archetype} · {current.faction}</p>
+                        <p className="text-[11px] font-bold mt-1 text-emerald-500">
+                          {(ownedCounts[current.id] ?? 0) > 0
+                            ? `Already in your collection ×${ownedCounts[current.id]} — keep it to stack a duplicate`
+                            : "New hero — not in your collection yet!"}
+                        </p>
                       </div>
+
                       <p className="text-xs text-muted-foreground">{current.lore}</p>
                       <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
                         <StatRow icon={Heart} label="HP" value={current.hp} />
@@ -239,7 +266,7 @@ export const HeroCardCollection = () => {
                     </div>
                     <h3 className="font-black mb-1">Draw a hero card</h3>
                     <p className="text-xs text-muted-foreground mb-5">
-                      {DRAW_COST} AI credits per draw. You'll always get a hero you don't own yet.
+                      {DRAW_COST} AI credits per draw — any of the 200 heroes can appear, including ones you already own.
                     </p>
                     <Button onClick={draw} disabled={drawing} className="gap-2">
                       {drawing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
@@ -260,40 +287,47 @@ export const HeroCardCollection = () => {
         </TabsContent>
 
         <TabsContent value="mine" className="pt-4">
-          {isLoading ? (
+          {isLoading || loadingCatalogue ? (
             <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
-          ) : collection.length === 0 ? (
-            <Card className="p-8 text-center border-dashed border-border/40">
-              <p className="text-sm text-muted-foreground">No cards yet — draw your first hero!</p>
-            </Card>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              {collection.map((c, i) => (
-                <motion.div key={c.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}>
-                  <Card className="overflow-hidden border-border/30 bg-card/90">
-                    <div className={`relative aspect-[4/5] bg-gradient-to-br ${c.gradient}`}>
-                      {c.image_url ? (
-                        <img src={c.image_url} alt={`${c.name} hero card`} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center text-4xl">{c.emoji}</div>
-                      )}
-                      <Badge className="absolute top-2 left-2 text-[9px] bg-background/80 text-foreground backdrop-blur">
-                        {RARITY_LABEL[c.rarity] ?? c.rarity}
-                      </Badge>
-                    </div>
-                    <div className="p-2.5">
-                      <p className="text-xs font-bold truncate">{c.name}</p>
-                      <p className="text-[10px] text-muted-foreground truncate capitalize">{c.archetype}</p>
-                      <p className="text-[10px] text-muted-foreground mt-1">
-                        {c.hp} HP · {c.attack} ATK · {c.defense} DEF
-                      </p>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
+              {catalogue.map((c, i) => {
+                const count = ownedCounts[c.id] ?? 0;
+                const owned = count > 0;
+                return (
+                  <motion.div key={c.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i, 40) * 0.015 }}>
+                    <Card className={`overflow-hidden border-border/30 bg-card/90 transition-all ${owned ? "" : "opacity-40 saturate-0"}`}>
+                      <div className={`relative aspect-[4/5] bg-gradient-to-br ${c.gradient}`}>
+                        {c.image_url ? (
+                          <img src={c.image_url} alt={`${c.name} hero card`} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center text-4xl">{c.emoji}</div>
+                        )}
+                        <Badge className="absolute top-2 left-2 text-[9px] bg-background/80 text-foreground backdrop-blur">
+                          {RARITY_LABEL[c.rarity] ?? c.rarity}
+                        </Badge>
+                        {owned && (
+                          <Badge className="absolute top-2 right-2 text-[9px] bg-emerald-500 text-white">×{count}</Badge>
+                        )}
+                      </div>
+                      <div className="p-2.5">
+                        <p className="text-xs font-bold truncate">{c.name}</p>
+                        <p className="text-[10px] text-muted-foreground truncate capitalize">{c.archetype}</p>
+                        <p className="text-[10px] text-muted-foreground mt-1">
+                          {c.hp} HP · {c.attack} ATK · {c.defense} DEF
+                        </p>
+                        <p className={`text-[10px] font-bold mt-1 ${owned ? "text-emerald-500" : "text-muted-foreground"}`}>
+                          {owned ? `Collected ×${count}` : "Not collected yet"}
+                        </p>
+                      </div>
+                    </Card>
+                  </motion.div>
+                );
+              })}
             </div>
           )}
         </TabsContent>
+
       </Tabs>
     </div>
   );
