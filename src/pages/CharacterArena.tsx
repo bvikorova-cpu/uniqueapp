@@ -15,7 +15,7 @@ import { CharacterTrainingCenter } from "@/components/character/CharacterTrainin
 import { CharacterInventory } from "@/components/character/CharacterInventory";
 import { AIDungeonRaids } from "@/components/character/AIDungeonRaids";
 import { HeroCardCollection } from "@/components/character/HeroCardCollection";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import { usePaymentVerification } from "@/hooks/usePaymentVerification";
