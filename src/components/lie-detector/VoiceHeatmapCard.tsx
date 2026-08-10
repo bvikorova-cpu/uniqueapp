@@ -16,7 +16,7 @@ export function VoiceHeatmapCard() {
 
   const start = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await requestMicStream({ audio: true });
       const r = new MediaRecorder(stream);
       chunksRef.current = [];
       r.ondataavailable = (e) => chunksRef.current.push(e.data);
@@ -24,7 +24,8 @@ export function VoiceHeatmapCard() {
       r.start();
       recorderRef.current = r;
       setRecording(true);
-    } catch { toast.error("Microphone access denied"); }
+    } catch { /* toast already shown by requestMicStream */ }
+
   };
   const stop = () => { recorderRef.current?.stop(); setRecording(false); };
 
