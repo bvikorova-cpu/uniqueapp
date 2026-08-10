@@ -60,6 +60,7 @@ export const HeroCardCollection = () => {
   const queryClient = useQueryClient();
   const [drawing, setDrawing] = useState(false);
   const [deciding, setDeciding] = useState(false);
+  const [claiming, setClaiming] = useState(false);
   const [current, setCurrent] = useState<HeroCard | null>(null);
   const [exitDir, setExitDir] = useState<"left" | "right" | null>(null);
 
