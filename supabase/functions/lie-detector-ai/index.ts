@@ -38,16 +38,31 @@ async function getUserClient(req: Request) {
   return { supabase, user };
 }
 
-async function checkCredits(supabase: any, userId: string, cost: number) {
-  const { data: cr } = await supabase.from("lie_detector_credits").select("credits_remaining").eq("user_id", userId).maybeSingle();
-  if (!cr || (cr.credits_remaining ?? 0) < cost) {
-    return { err: json({ error: "Insufficient credits", required: cost, have: cr?.credits_remaining ?? 0 }, 402) };
-  }
-  return { cr };
+// Unified platform credit pool: public.ai_credits (never the legacy lie_detector_credits table).
+function adminClient() {
+  return createClient(SUPA_URL(), SUPA_KEY(), { auth: { persistSession: false } });
 }
 
-async function deductCredits(supabase: any, userId: string, cr: any, cost: number) {
-  await supabase.from("lie_detector_credits").update({ credits_remaining: (cr.credits_remaining ?? 0) - cost }).eq("user_id", userId);
+async function checkCredits(_supabase: any, userId: string, cost: number) {
+  const admin = adminClient();
+  const { data: cr } = await admin.from("ai_credits").select("credits_remaining").eq("user_id", userId).maybeSingle();
+  const have = cr?.credits_remaining ?? 0;
+  if (have < cost) {
+    return { err: json({ error: `Insufficient credits. Need ${cost}, have ${have}.`, code: "INSUFFICIENT_CREDITS", required: cost, remaining: have }, 402) };
+  }
+  return { cr: cr ?? { credits_remaining: have } };
+}
+
+async function deductCredits(_supabase: any, userId: string, cr: any, cost: number) {
+  if (!cost || cost <= 0) return;
+  const admin = adminClient();
+  const remaining = cr?.credits_remaining ?? 0;
+  const { error } = await admin
+    .from("ai_credits")
+    .update({ credits_remaining: Math.max(0, remaining - cost), last_used_at: new Date().toISOString() })
+    .eq("user_id", userId)
+    .eq("credits_remaining", remaining); // optimistic lock
+  if (error) console.error("[lie-detector-ai] credit deduction failed", error);
 }
 
 async function callOpenAI(messages: any[], json_mode = true) {

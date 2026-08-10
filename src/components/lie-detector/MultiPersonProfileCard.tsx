@@ -40,7 +40,7 @@ export const MultiPersonProfileCard = () => {
         <CardTitle className="text-base flex items-center gap-2">
           <Users className="w-4 h-4 text-purple-300" />
           Multi-Person Profile
-          <Badge className="bg-purple-500/20 text-purple-200 border-purple-500/40 text-[10px]">20 cr</Badge>
+          <Badge className="bg-purple-500/20 text-purple-200 border-purple-500/40 text-[10px]">10 cr</Badge>
         </CardTitle>
         <p className="text-xs text-muted-foreground">Compare deception across 2-3 people. Get a relationship map.</p>
       </CardHeader>
