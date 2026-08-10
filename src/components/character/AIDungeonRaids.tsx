@@ -68,9 +68,17 @@ export const AIDungeonRaids = () => {
           </div>
           <div>
             <h2 className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">AI Dungeon Raids</h2>
-            <p className="text-muted-foreground text-sm">Send your party to battle AI bosses for epic rewards</p>
+            <p className="text-muted-foreground text-sm">Send a party of up to 4 of your heroes into an AI dungeon and fight its boss</p>
           </div>
         </div>
+
+        {/* What this is */}
+        <div className="mb-6 rounded-xl border border-border/40 bg-muted/30 p-4 text-sm space-y-1.5">
+          <p className="font-bold">What is a raid?</p>
+          <p className="text-muted-foreground">A raid is a co-op PvE mission: you pick a dungeon, send 1–4 of your own heroes, and pay the raid fee in AI credits. The outcome is decided by your <span className="font-semibold text-foreground">party power</span> (attack, defense, HP, speed, level + bought equipment and abilities) against the dungeon's power.</p>
+          <p className="text-muted-foreground">You get a round-by-round battle log, an AI battle report, an MVP, loot on victory, and <span className="font-semibold text-foreground">XP that is added to your real heroes</span> — so raiding levels them up for Battle Arena.</p>
+        </div>
+
 
         {/* Dungeon Selection */}
         <h3 className="font-bold text-sm mb-3 text-amber-400">🏰 Select Dungeon</h3>
