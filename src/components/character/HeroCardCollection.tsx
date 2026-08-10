@@ -171,6 +171,65 @@ export const HeroCardCollection = () => {
         <p className="text-[11px] text-muted-foreground mt-2">{totalOwned} card{totalOwned === 1 ? "" : "s"} collected in total (including duplicates)</p>
       </Card>
 
+      {/* ── Golden completion reward: Unitas ─────────────────────────────── */}
+      <Card className={`relative overflow-hidden p-4 sm:p-6 border-2 ${unitasUnlocked ? "border-amber-400/70 bg-gradient-to-br from-amber-500/15 via-yellow-400/10 to-amber-600/15" : "border-border/30 bg-card/70"}`}>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${unitasUnlocked ? "bg-gradient-to-br from-amber-400 to-yellow-600" : "bg-muted"}`}>
+            {unitasUnlocked ? <Crown className="h-6 w-6 text-white" /> : <Lock className="h-5 w-5 text-muted-foreground" />}
+          </div>
+          <div className="min-w-0">
+            <h3 className="text-base sm:text-lg font-black bg-gradient-to-r from-amber-400 to-yellow-600 bg-clip-text text-transparent">
+              Unitas — the golden mega hero
+            </h3>
+            <p className="text-xs text-muted-foreground">
+              Collect all {TOTAL_CARDS} cards (at least one copy each) to unlock the golden card.
+            </p>
+          </div>
+          <Badge variant="outline" className="ml-auto gap-1 border-amber-400/50 text-amber-500">
+            <Coins className="h-3 w-3" /> {UNITAS_COST.toLocaleString("en-US")} cr
+          </Badge>
+        </div>
+
+        {unitasClaimed ? (
+          <div className="mt-4 flex flex-col sm:flex-row gap-4 items-center">
+            {unitas?.character?.image_url && (
+              <img
+                src={unitas.character.image_url}
+                alt="Unitas — the golden mega hero card"
+                className="w-32 rounded-xl border-2 border-amber-400/60 shadow-[0_0_30px_rgba(251,191,36,0.35)]"
+                loading="lazy"
+              />
+            )}
+            <div className="text-center sm:text-left">
+              <p className="font-black text-amber-500">Unitas has joined your warriors!</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                500 HP · 250 ATK · 240 DEF · 220 SPD — find him among your characters and take him into battle.
+              </p>
+            </div>
+          </div>
+        ) : unitasUnlocked ? (
+          <div className="mt-4">
+            <p className="text-xs text-muted-foreground mb-3">
+              Your album is complete. Forge Unitas for {UNITAS_COST.toLocaleString("en-US")} credits — he is generated as a
+              unique golden hero and added to your warriors.
+            </p>
+            <Button
+              onClick={claimUnitas}
+              disabled={claiming}
+              className="gap-2 bg-gradient-to-r from-amber-400 to-yellow-600 text-white"
+            >
+              {claiming ? <Loader2 className="h-4 w-4 animate-spin" /> : <Crown className="h-4 w-4" />}
+              {claiming ? "Forging Unitas…" : `Unlock Unitas (${UNITAS_COST.toLocaleString("en-US")} cr)`}
+            </Button>
+          </div>
+        ) : (
+          <div className="mt-4 flex items-center gap-3">
+            <Progress value={progress} className="h-2 flex-1" />
+            <span className="text-xs font-bold whitespace-nowrap">{uniqueOwned}/{TOTAL_CARDS}</span>
+          </div>
+        )}
+      </Card>
+
 
       <Tabs defaultValue="draw">
         <TabsList className="grid grid-cols-2 w-full">
