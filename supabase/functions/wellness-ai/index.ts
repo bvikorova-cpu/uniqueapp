@@ -265,7 +265,7 @@ serve(async (req) => {
                 emotional_themes: { type: "array", items: { type: "string", description: "Each theme with a brief 1-2 sentence exploration" } },
                 waking_life_connection: { type: "string", description: "3-4 sentence reflection on how this dream might connect to the dreamer's waking concerns or emotional state" },
                 illustration_prompt: { type: "string" } },
-              required: ["interpretation", "symbols", "emotional_themes", "illustration_prompt"] } } }],
+              required: ["interpretation", "symbols", "emotional_themes", "waking_life_connection", "illustration_prompt"] } } }],
         tool_choice: { type: "function", function: { name: "interpret_dream" } } });
       const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
       const parsed = toolCall ? JSON.parse(toolCall.function.arguments) : {};
@@ -346,11 +346,12 @@ serve(async (req) => {
                     happiness: { type: "integer" }, calm: { type: "integer" },
                     energy: { type: "integer" }, tension: { type: "integer" } },
                   required: ["happiness", "calm", "energy", "tension"] },
-                ai_insight: { type: "string" },
+                ai_insight: { type: "string", description: "A detailed 5-6 sentence insight explaining the analysis, offering context, and suggesting how the user might feel supported" },
                 recommendations: {
                   type: "array",
-                  items: { type: "object", properties: { tool: { type: "string" }, reason: { type: "string" } }, required: ["tool", "reason"] } } },
-              required: ["detected_mood", "stress_level", "fatigue_level", "emotion_breakdown", "ai_insight", "recommendations"] } } }],
+                  items: { type: "object", properties: { tool: { type: "string" }, reason: { type: "string", description: "2-3 sentence explanation of why this tool is recommended" } }, required: ["tool", "reason"] } },
+                daily_practices: { type: "array", items: { type: "string", description: "Specific daily practices tailored to the detected mood" } } },
+              required: ["detected_mood", "stress_level", "fatigue_level", "emotion_breakdown", "ai_insight", "recommendations", "daily_practices"] } } }],
         tool_choice: { type: "function", function: { name: "analyze_mood" } } });
       const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
       if (!toolCall) throw new Error("No analysis returned");
