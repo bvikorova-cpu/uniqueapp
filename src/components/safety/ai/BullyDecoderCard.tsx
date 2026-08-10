@@ -16,7 +16,7 @@ export function BullyDecoderCard() {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const { items, decode } = useBullyDecoder();
-  const last = items[0];
+  const last = items[0] as any;
 
   return (
     <>
@@ -63,7 +63,7 @@ export function BullyDecoderCard() {
         </Button>
 
         {last && (
-          <div className="space-y-3 mt-3 max-h-96 overflow-auto">
+          <div className="space-y-3 mt-3 max-h-[28rem] overflow-auto">
             <div className="p-3 rounded-xl bg-orange-500/10 border border-orange-500/20">
               <div className="flex items-center gap-2 mb-2">
                 <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full text-white ${SEVERITY_COLORS[last.severity] || "bg-gray-500"}`}>
@@ -71,29 +71,46 @@ export function BullyDecoderCard() {
                 </span>
                 <span className="text-[11px] text-orange-200 capitalize">{last.bully_type?.replace("-", " ")}</span>
               </div>
-              <p className="text-xs text-orange-100/90 mb-2">{last.emotional_impact}</p>
+              <p className="text-xs text-orange-100/90 mb-3 leading-relaxed">{last.emotional_impact}</p>
               <div className="text-xs">
                 <p className="font-bold text-orange-200 mb-1">Suggested response:</p>
-                <p className="italic text-orange-50/90">"{last.suggested_response}"</p>
+                <p className="italic text-orange-50/90 leading-relaxed">"{last.suggested_response}"</p>
               </div>
             </div>
-            {Array.isArray(last.action_steps) && (
-              <div className="space-y-1">
+            {Array.isArray(last.action_steps) && last.action_steps.length > 0 && (
+              <div className="space-y-1.5">
+                <p className="text-xs font-bold text-orange-200">Action Steps</p>
                 {(last.action_steps as any[]).map((s, i) => (
-                  <div key={i} className="p-2 rounded-lg bg-orange-500/5 border border-orange-500/10 text-xs text-orange-100">
-                    <span className="font-bold">[{s.priority}]</span> {s.step}
+                  <div key={i} className="p-2.5 rounded-lg bg-orange-500/5 border border-orange-500/10 text-xs text-orange-100">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-orange-600/40 text-orange-200">{s.priority}</span>
+                      <span className="font-semibold">{s.step}</span>
+                    </div>
+                    {s.why && <p className="text-[11px] text-orange-200/60 mt-1">{s.why}</p>}
                   </div>
                 ))}
               </div>
             )}
             {Array.isArray(last.red_flags) && last.red_flags.length > 0 && (
-              <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/30">
+              <div className="p-2.5 rounded-lg bg-red-500/10 border border-red-500/30">
                 <p className="text-xs font-bold text-red-300 flex items-center gap-1 mb-1">
                   <AlertTriangle className="w-3 h-3" /> Red flags
                 </p>
-                <ul className="text-[11px] text-red-100 list-disc list-inside">
+                <ul className="text-[11px] text-red-100 list-disc list-inside space-y-0.5">
                   {(last.red_flags as string[]).map((f, i) => <li key={i}>{f}</li>)}
                 </ul>
+              </div>
+            )}
+            {last.long_term_strategy && (
+              <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
+                <p className="text-xs font-bold text-amber-300 mb-1">Long-term strategy</p>
+                <p className="text-[11px] text-amber-100/80 leading-relaxed">{last.long_term_strategy}</p>
+              </div>
+            )}
+            {last.support_resources && (
+              <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                <p className="text-xs font-bold text-emerald-300 mb-1">Support resources</p>
+                <p className="text-[11px] text-emerald-100/80 leading-relaxed">{last.support_resources}</p>
               </div>
             )}
           </div>

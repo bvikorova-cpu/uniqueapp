@@ -66,14 +66,32 @@ function ToxicityCard() {
           {scan.isPending ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Sparkles className="w-3 h-3 mr-1" />} Scan (6 cr)
         </Button>
         {latest && (
-          <div className="mt-2 p-2 rounded-md bg-background/50 border border-border/40 text-xs space-y-1">
+          <div className="mt-2 p-2 rounded-md bg-background/50 border border-border/40 text-xs space-y-2">
             <div className="flex items-center justify-between">
-              <span className="font-bold">Toxicity: {latest.toxicity_score}/100</span>
-              <Badge variant={latest.toxicity_score > 70 ? "destructive" : latest.toxicity_score > 40 ? "secondary" : "outline"}>
-                {latest.toxicity_score > 70 ? "Severe" : latest.toxicity_score > 40 ? "Moderate" : "Low"}
+              <span className="font-bold">Toxicity: {(latest as any).toxicity_score}/100</span>
+              <Badge variant={(latest as any).toxicity_score > 70 ? "destructive" : (latest as any).toxicity_score > 40 ? "secondary" : "outline"}>
+                {(latest as any).toxicity_score > 70 ? "Severe" : (latest as any).toxicity_score > 40 ? "Moderate" : "Low"}
               </Badge>
             </div>
-            <p className="text-muted-foreground">{latest.ai_analysis}</p>
+            <p className="text-muted-foreground leading-relaxed">{(latest as any).ai_analysis}</p>
+            {Array.isArray((latest as any).hardest_hitting_phrases) && (latest as any).hardest_hitting_phrases.length > 0 && (
+              <div className="space-y-1">
+                <p className="font-semibold text-red-400">Hardest-hitting phrases</p>
+                {((latest as any).hardest_hitting_phrases as any[]).map((p, i) => (
+                  <div key={i} className="p-1.5 rounded bg-red-500/10 border border-red-500/15">
+                    <span className="font-medium text-red-200">"{p.phrase}"</span>
+                    <span className="text-[10px] text-red-300/50 ml-2">{p.category}</span>
+                    {p.why && <p className="text-[10px] text-red-100/60 mt-0.5">{p.why}</p>}
+                  </div>
+                ))}
+              </div>
+            )}
+            {(latest as any).de_escalation_advice && (
+              <div className="p-1.5 rounded bg-emerald-500/10 border border-emerald-500/15">
+                <p className="font-semibold text-emerald-400 mb-0.5">De-escalation advice</p>
+                <p className="text-[11px] text-emerald-100/70 leading-relaxed">{(latest as any).de_escalation_advice}</p>
+              </div>
+            )}
           </div>
         )}
       </CardContent>
@@ -187,9 +205,28 @@ function WellbeingPulseCard() {
           {submit.isPending ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Sparkles className="w-3 h-3 mr-1" />} Check in (6 cr)
         </Button>
         {latest && (
-          <div className="p-2 rounded-md bg-background/50 border border-border/40 text-xs">
-            <Badge variant={latest.ai_risk_level === "severe" ? "destructive" : "outline"} className="mb-1">{latest.ai_risk_level}</Badge>
-            <p className="text-muted-foreground">{latest.ai_advice}</p>
+          <div className="p-2 rounded-md bg-background/50 border border-border/40 text-xs space-y-2">
+            <Badge variant={(latest as any).ai_risk_level === "severe" ? "destructive" : "outline"} className="mb-1">{(latest as any).ai_risk_level}</Badge>
+            <p className="text-muted-foreground leading-relaxed">{(latest as any).ai_advice}</p>
+            {Array.isArray((latest as any).daily_practices) && (latest as any).daily_practices.length > 0 && (
+              <div>
+                <p className="font-semibold text-emerald-400 mb-1">Daily practices</p>
+                <ul className="list-disc list-inside text-[11px] text-emerald-100/70 space-y-0.5">
+                  {((latest as any).daily_practices as string[]).map((p, i) => <li key={i}>{p}</li>)}
+                </ul>
+              </div>
+            )}
+            {(latest as any).professional_help_note && (
+              <div className="p-1.5 rounded bg-blue-500/10 border border-blue-500/15">
+                <p className="font-semibold text-blue-400 mb-0.5">Professional support</p>
+                <p className="text-[11px] text-blue-100/70 leading-relaxed">{(latest as any).professional_help_note}</p>
+              </div>
+            )}
+            {(latest as any).encouragement && (
+              <div className="p-1.5 rounded bg-pink-500/10 border border-pink-500/15">
+                <p className="text-[11px] text-pink-100/80 italic leading-relaxed">{(latest as any).encouragement}</p>
+              </div>
+            )}
           </div>
         )}
       </CardContent>
@@ -230,8 +267,33 @@ function DailyAffirmationCard() {
           {generate.isPending ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Sparkles className="w-3 h-3 mr-1" />} {today ? "Refresh" : "Generate"} (6 cr)
         </Button>
         {today && (
-          <div className="p-3 rounded-md bg-background/50 border border-border/40 text-sm italic text-foreground">
-            "{today.affirmation}"
+          <div className="space-y-2">
+            <div className="p-3 rounded-md bg-background/50 border border-border/40 text-sm italic text-foreground font-semibold">
+              "{(today as any).main_affirmation || (today as any).affirmation}"
+            </div>
+            {(today as any).expanded_reflection && (
+              <div className="p-2.5 rounded-md bg-pink-500/10 border border-pink-500/15">
+                <p className="text-[11px] text-pink-100/80 leading-relaxed">{(today as any).expanded_reflection}</p>
+              </div>
+            )}
+            {(today as any).morning_mantra && (
+              <div className="p-2 rounded-md bg-amber-500/10 border border-amber-500/15">
+                <p className="text-[10px] font-semibold text-amber-400 mb-0.5">Morning mantra</p>
+                <p className="text-[11px] text-amber-100/80 italic">{(today as any).morning_mantra}</p>
+              </div>
+            )}
+            {(today as any).evening_reflection && (
+              <div className="p-2 rounded-md bg-indigo-500/10 border border-indigo-500/15">
+                <p className="text-[10px] font-semibold text-indigo-400 mb-0.5">Evening reflection</p>
+                <p className="text-[11px] text-indigo-100/80 italic">{(today as any).evening_reflection}</p>
+              </div>
+            )}
+            {(today as any).why_it_matters && (
+              <div className="p-2 rounded-md bg-emerald-500/10 border border-emerald-500/15">
+                <p className="text-[10px] font-semibold text-emerald-400 mb-0.5">Why it matters</p>
+                <p className="text-[11px] text-emerald-100/70 leading-relaxed">{(today as any).why_it_matters}</p>
+              </div>
+            )}
           </div>
         )}
       </CardContent>
@@ -263,9 +325,33 @@ function BystanderTrainerCard() {
           {score.isPending ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Sparkles className="w-3 h-3 mr-1" />} Score (6 cr)
         </Button>
         {latest && (
-          <div className="p-2 rounded-md bg-background/50 border border-border/40 text-xs">
-            <span className="font-bold">Score: {latest.score}/100</span>
-            <p className="text-muted-foreground mt-1">{latest.feedback}</p>
+          <div className="p-2 rounded-md bg-background/50 border border-border/40 text-xs space-y-2">
+            <span className="font-bold">Score: {(latest as any).score}/100</span>
+            <p className="text-muted-foreground leading-relaxed">{(latest as any).feedback}</p>
+            {(latest as any).what_went_well && (
+              <div className="p-1.5 rounded bg-emerald-500/10 border border-emerald-500/15">
+                <p className="font-semibold text-emerald-400 mb-0.5">What went well</p>
+                <p className="text-[11px] text-emerald-100/70 leading-relaxed">{(latest as any).what_went_well}</p>
+              </div>
+            )}
+            {(latest as any).what_to_improve && (
+              <div className="p-1.5 rounded bg-amber-500/10 border border-amber-500/15">
+                <p className="font-semibold text-amber-400 mb-0.5">What to improve</p>
+                <p className="text-[11px] text-amber-100/70 leading-relaxed">{(latest as any).what_to_improve}</p>
+              </div>
+            )}
+            {(latest as any).real_world_application && (
+              <div className="p-1.5 rounded bg-blue-500/10 border border-blue-500/15">
+                <p className="font-semibold text-blue-400 mb-0.5">Real-world application</p>
+                <p className="text-[11px] text-blue-100/70 leading-relaxed">{(latest as any).real_world_application}</p>
+              </div>
+            )}
+            {(latest as any).confidence_builder && (
+              <div className="p-1.5 rounded bg-pink-500/10 border border-pink-500/15">
+                <p className="font-semibold text-pink-400 mb-0.5">Confidence builder</p>
+                <p className="text-[11px] text-pink-100/70 leading-relaxed">{(latest as any).confidence_builder}</p>
+              </div>
+            )}
           </div>
         )}
       </CardContent>
