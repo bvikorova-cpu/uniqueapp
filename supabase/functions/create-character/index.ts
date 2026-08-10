@@ -1,0 +1,75 @@
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { deductAICredits, refundAICredits } from "../_shared/credits.ts";
+import { callUnifiedAI } from "../_shared/unifiedAI.ts";
+
+const corsHeaders = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
+
+function j(b: unknown, s = 200) {
+  return new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+}
+
+serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+
+  try {
+    const auth = req.headers.get("Authorization");
+    if (!auth) return j({ error: "Unauthorized" }, 401);
+
+    const anon = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!);
+    const { data: { user } } = await anon.auth.getUser(auth.replace("Bearer ", ""));
+    if (!user) return j({ error: "Unauthorized" }, 401);
+
+    const body = await req.json().catch(() => ({}));
+    const name = String(body?.name ?? "").trim().slice(0, 80);
+    const category = String(body?.category ?? "").trim().slice(0, 40);
+    const description = String(body?.description ?? "").trim().slice(0, 1000);
+    const isPremium = !!body?.isPremium;
+    if (!name || !category) return j({ error: "Name and category are required" }, 400);
+
+    // Unified AI credits: 5 for a basic warrior, 15 for a premium one.
+    const cost = isPremium ? 15 : 5;
+    const denied = await deductAICredits(user.id, cost, "character_creation");
+    if (denied) return denied;
+
+    try {
+      const raw = await callUnifiedAI({
+        max_tokens: 1200,
+        messages: [
+          { role: "system", content: "You are a game designer creating battle characters. Reply with strict JSON only." },
+          { role: "user", content: `Create a ${isPremium ? "legendary premium" : "solid"} ${category} warrior named "${name}". ${description ? `Concept: ${description}.` : ""}
+Return JSON: {"backstory": "4-6 vivid sentences", "stats": {"hp": number 80-200, "attack": number 40-120, "defense": number 30-110, "speed": number 30-110}}` },
+        ] });
+
+      const text = typeof raw === "string" ? raw : (raw?.content ?? raw?.text ?? "");
+      let parsed: any = {};
+      try {
+        parsed = JSON.parse(String(text).replace(/```json|```/g, "").trim());
+      } catch {
+        const m = String(text).match(/\{[\s\S]*\}/);
+        if (m) { try { parsed = JSON.parse(m[0]); } catch { /* ignore */ } }
+      }
+
+      const rand = (min: number, max: number) => Math.floor(min + Math.random() * (max - min));
+      const bonus = isPremium ? 20 : 0;
+      const stats = {
+        hp: Number(parsed?.stats?.hp) || rand(90, 160) + bonus,
+        attack: Number(parsed?.stats?.attack) || rand(45, 100) + bonus,
+        defense: Number(parsed?.stats?.defense) || rand(35, 95) + bonus,
+        speed: Number(parsed?.stats?.speed) || rand(35, 95) + bonus };
+
+      return j({
+        backstory: parsed?.backstory || `${name} is a ${category.toLowerCase()} warrior forged in the heat of countless battles.`,
+        imageUrl: null,
+        stats,
+        creditsUsed: cost });
+    } catch (aiErr) {
+      await refundAICredits(user.id, cost, "character_creation");
+      console.error("[create-character] AI failed", aiErr);
+      return j({ error: "The AI could not forge this warrior. Your credits were refunded — please try again." }, 502);
+    }
+  } catch (e) {
+    return j({ error: e instanceof Error ? e.message : String(e) }, 500);
+  }
+});

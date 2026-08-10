@@ -32,7 +32,7 @@ serve(async (req) => {
     const dungeon = dungeons[dungeonId] || dungeons["crystal-caves"];
 
     const { data: row } = await admin
-      .from("character_credits")
+      .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
@@ -48,7 +48,7 @@ serve(async (req) => {
       survived: i < dungeon.difficulty || victory }));
 
     await admin
-      .from("character_credits")
+      .from("ai_credits")
       .update({ credits_remaining: balance - dungeon.cost })
       .eq("user_id", user.id)
       .eq("credits_remaining", balance);
