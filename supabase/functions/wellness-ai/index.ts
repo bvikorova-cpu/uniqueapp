@@ -116,20 +116,22 @@ serve(async (req) => {
 
     const COST = COSTS[action];
     const isSafety = SAFETY_ACTIONS.has(action);
-    const creditTable = isSafety ? "safety_ai_credits" : "ai_credits";
+    // Unified credit pool for the whole platform (ai_credits + ledger).
+    const creditTable = "ai_credits";
 
     let credRow: any = null;
     {
-      const { data } = await supabase.from(creditTable).select("credits_remaining").eq("user_id", user.id).maybeSingle();
+      const { data } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
       credRow = data;
-      if (!credRow && isSafety) {
-        const { data: created } = await supabase.from("safety_ai_credits")
-          .insert({ user_id: user.id, credits_remaining: 20, total_credits_purchased: 20 }).select().single();
-        credRow = created;
-      }
     }
     const remaining = credRow?.credits_remaining || 0;
-    if (remaining < COST) throw new Error(`Insufficient credits. Need ${COST}, have ${remaining}.`);
+    if (remaining < COST) {
+      return new Response(JSON.stringify({
+        error: `Insufficient credits. Need ${COST}, have ${remaining}.`,
+        code: "INSUFFICIENT_CREDITS", need: COST, have: remaining }), {
+        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
 
     let result: any = {};
 
