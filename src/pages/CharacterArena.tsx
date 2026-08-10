@@ -2,16 +2,13 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Swords, Sparkles, Flame, Users, Trophy, TreeDeciduous, Skull, Crown, Zap, Shield, ShoppingBag, Dumbbell, Backpack } from "lucide-react";
+import { ArrowLeft, Swords, Sparkles, Flame, Trophy, TreeDeciduous, Skull, Crown, Zap, Shield, ShoppingBag, Dumbbell, Backpack } from "lucide-react";
 import { CharacterArenaHero } from "@/components/character/CharacterArenaHero";
 import { CharacterCreditsDisplay } from "@/components/character/CharacterCreditsDisplay";
 import { CharacterCreator } from "@/components/character/CharacterCreator";
 import { CharacterArenaBattle } from "@/components/character/CharacterArenaBattle";
-import { CharacterSocialFeed } from "@/components/character/CharacterSocialFeed";
 import { CharacterGallery } from "@/components/character/CharacterGallery";
-import { TournamentHub } from "@/components/character/TournamentHub";
 import { CharacterFusionLab } from "@/components/character/CharacterFusionLab";
-import { BattleRoyaleMode } from "@/components/character/BattleRoyaleMode";
 import { CharacterEvolutionTree } from "@/components/character/CharacterEvolutionTree";
 import { CharacterEquipmentShop } from "@/components/character/CharacterEquipmentShop";
 import { CharacterTrainingCenter } from "@/components/character/CharacterTrainingCenter";
@@ -24,21 +21,18 @@ import { usePaymentVerification } from "@/hooks/usePaymentVerification";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-type ActiveView = "dashboard" | "creator" | "battle" | "royale" | "social" | "gallery" | "tournament" | "fusion" | "evolution" | "dungeon" | "shop" | "training" | "inventory";
+type ActiveView = "dashboard" | "creator" | "battle" | "gallery" | "fusion" | "evolution" | "dungeon" | "shop" | "training" | "inventory";
 
 const TOOLS = [
   { id: "creator" as const, title: "Forge Warrior", desc: "Create AI-powered characters", icon: Sparkles, color: "from-amber-500 to-orange-600", cost: "5-15 cr" },
   { id: "battle" as const, title: "1v1 Battle", desc: "Duel between two warriors", icon: Swords, color: "from-red-500 to-rose-600", cost: "2 cr" },
-  { id: "royale" as const, title: "Battle Royale", desc: "8 warriors, 1 survivor", icon: Flame, color: "from-orange-500 to-red-600", cost: "10 cr" },
   { id: "shop" as const, title: "Equipment Shop", desc: "Buy weapons & armor", icon: ShoppingBag, color: "from-amber-500 to-orange-600", cost: "5-35 cr" },
   { id: "training" as const, title: "Training Center", desc: "Boost warrior stats", icon: Dumbbell, color: "from-emerald-500 to-green-600", cost: "10 cr" },
   { id: "inventory" as const, title: "My Inventory", desc: "See gear your heroes own", icon: Backpack, color: "from-emerald-500 to-teal-600", cost: "Free" },
   { id: "fusion" as const, title: "Fusion Lab", desc: "Merge two warriors into one", icon: Zap, color: "from-purple-500 to-pink-600", cost: "30 cr" },
   { id: "dungeon" as const, title: "Dungeon Raids", desc: "Fight AI bosses for XP", icon: Skull, color: "from-violet-500 to-purple-600", cost: "5-25 cr" },
   { id: "evolution" as const, title: "Evolution Tree", desc: "Track warrior progression", icon: TreeDeciduous, color: "from-green-500 to-emerald-600", cost: "Free" },
-  { id: "tournament" as const, title: "Tournaments", desc: "Compete for glory", icon: Trophy, color: "from-yellow-500 to-amber-600", cost: "5 cr" },
   { id: "gallery" as const, title: "Hall of Legends", desc: "Browse top warriors", icon: Crown, color: "from-amber-500 to-yellow-600", cost: "Free" },
-  { id: "social" as const, title: "War Council", desc: "Community & social feed", icon: Users, color: "from-blue-500 to-cyan-600", cost: "Free" },
 ];
 
 const CharacterArena = () => {
@@ -48,14 +42,13 @@ const CharacterArena = () => {
   const { data: stats } = useQuery({
     queryKey: ["character-arena-stats"],
     queryFn: async () => {
-      const [chars, battles, tournaments] = await Promise.all([
+      const [chars, battles] = await Promise.all([
         supabase.from("characters").select("id", { count: "exact", head: true }),
         supabase.from("character_battles").select("id", { count: "exact", head: true }),
-        supabase.from("tournaments").select("id", { count: "exact", head: true }).eq("status", "registration"),
       ]);
       return { totalCharacters: chars.count || 0,
         totalBattles: battles.count || 0,
-        activeTournaments: tournaments.count || 0,
+        activeTournaments: 0,
         onlineWarriors: 0 };
     } });
 
@@ -63,22 +56,19 @@ const CharacterArena = () => {
     switch (activeView) {
       case "creator": return <CharacterCreator />;
       case "battle": return <CharacterArenaBattle />;
-      case "royale": return <BattleRoyaleMode />;
       case "shop": return <CharacterEquipmentShop />;
       case "training": return <CharacterTrainingCenter />;
       case "inventory": return <CharacterInventory />;
       case "fusion": return <CharacterFusionLab />;
       case "dungeon": return <AIDungeonRaids />;
       case "evolution": return <CharacterEvolutionTree />;
-      case "tournament": return <TournamentHub />;
       case "gallery": return <CharacterGallery />;
-      case "social": return <CharacterSocialFeed />;
       default: return null;
     }
   };
 
   return (
-    <><FloatingHowItWorks title="CharacterArena — How it works" steps={[{title:"Open this section",desc:"Access CharacterArena from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+    <><FloatingHowItWorks title="CharacterArena — How it works" steps={[{title:"Open this section",desc:"Access CharacterArena from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items and gear (some actions cost credits)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
 <div className="min-h-screen bg-background p-2 sm:p-4">
       <div className="container mx-auto max-w-7xl pt-20 pb-28 md:pb-8">
         {activeView !== "dashboard" && (

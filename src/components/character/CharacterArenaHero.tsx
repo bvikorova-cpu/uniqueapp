@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Swords, Users, Trophy, Flame } from "lucide-react";
+import { Swords, Users, Flame } from "lucide-react";
 import heroVideo from "@/assets/character-arena-hero-v3.mp4.asset.json";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
@@ -61,11 +61,10 @@ export const CharacterArenaHero = ({ stats }: CharacterArenaHeroProps) => {
       </div>
 
       {/* Stats Row - BELOW the video */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 px-1">
+      <div className="grid grid-cols-3 gap-2.5 px-1">
         {[
           { icon: Swords, label: "Characters", value: stats.totalCharacters, gradient: "from-amber-500 to-orange-600", glow: "shadow-amber-500/20" },
           { icon: Flame, label: "Battles", value: stats.totalBattles, gradient: "from-red-500 to-rose-600", glow: "shadow-red-500/20" },
-          { icon: Trophy, label: "Tournaments", value: stats.activeTournaments, gradient: "from-yellow-500 to-amber-600", glow: "shadow-yellow-500/20" },
           { icon: Users, label: "Warriors", value: stats.onlineWarriors, gradient: "from-emerald-500 to-green-600", glow: "shadow-emerald-500/20" },
         ].map((stat, i) => (
           <motion.div
