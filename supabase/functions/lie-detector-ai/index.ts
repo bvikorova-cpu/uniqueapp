@@ -783,7 +783,7 @@ async function runCoreAnalysis(
     results = await callUnifiedAIJSON([
       { role: "system", content: sys },
       { role: "user", content: userMsg },
-    ], { max_tokens: 2600 });
+    ], { max_tokens: 8000 });
   } catch (e) {
     await refundAICredits(user.id, cost, `lie_detector_${kind}`);
     const status = e instanceof UnifiedAIError ? e.status : 502;
@@ -809,8 +809,8 @@ async function actionMessage(supabase: any, user: any, body: any) {
   const message = typeof body.message === "string" ? body.message.trim() : "";
   if (message.length < 5) return json({ error: "message required (min 5 chars)" }, 400);
   return await runCoreAnalysis(supabase, user, "message", 
-    "You are a forensic linguistics and deception-detection expert. Analyze a single message for credibility using linguistic markers, hedging, distancing language, over-specification and emotional inconsistency. Be careful, balanced and educational. Never state certainty.",
-    `Message:\n"""${message.slice(0, 4000)}"""\n\nReturn JSON: { truthfulness_score:number (0-100), verdict:string, confidence:number (0-100), summary:string, key_indicators:string[], red_flags:string[], truth_signals:string[], emotional_tone:string, suggested_questions:string[], recommendation:string }`);
+    "You are a forensic linguistics and deception-detection expert. Analyze a single message for credibility using linguistic markers, hedging, distancing language, over-specification and emotional inconsistency. Be careful, balanced and educational. Never state certainty. Write in-depth, expansive analysis: every string field must be several full sentences (summary 5-8 sentences), and every list must contain 5-8 rich entries where each entry explains WHAT was observed, the exact quoted wording, and WHY it matters.",
+    `Message:\n"""${message.slice(0, 4000)}"""\n\nReturn a detailed JSON object: { truthfulness_score:number (0-100), verdict:string (2-3 sentences), confidence:number (0-100), summary:string (5-8 sentences of substantive forensic reasoning), key_indicators:string[] (5-8 detailed items with quotes), red_flags:string[] (3-8 detailed items), truth_signals:string[] (3-8 detailed items), emotional_tone:string (3-5 sentences), linguistic_breakdown:string[] (4-6 items on pronoun use, tense shifts, hedging, over-specification), alternative_explanations:string[] (3-5 innocent explanations), suggested_questions:string[] (5-8 specific follow-up questions), recommendation:string (4-6 sentences of practical next steps) }`);
 }
 
 function formatMessages(messages: any): string {
@@ -826,8 +826,8 @@ async function actionThread(supabase: any, user: any, body: any) {
   const transcript = formatMessages(body.messages);
   if (transcript.length < 10) return json({ error: "messages required" }, 400);
   return await runCoreAnalysis(supabase, user, "thread",
-    "You are a forensic conversation analyst. Analyze a message thread for consistency, contradictions, escalating deception patterns and manipulation tactics across time.",
-    `Thread:\n"""${transcript}"""\n\nReturn JSON: { overall_truthfulness_score:number (0-100), verdict:string, summary:string, contradictions:string[], deception_patterns:string[], truth_signals:string[], manipulation_tactics:string[], timeline_insights:string[], most_suspicious_messages:string[], recommendation:string }`);
+    "You are a forensic conversation analyst. Analyze a message thread for consistency, contradictions, escalating deception patterns and manipulation tactics across time. Produce an expansive, report-grade analysis: string fields are multi-sentence paragraphs and every list holds 5-8 detailed entries that quote the message, name the mechanism and explain the implication.",
+    `Thread:\n"""${transcript}"""\n\nReturn a detailed JSON object: { overall_truthfulness_score:number (0-100), verdict:string (2-3 sentences), summary:string (6-10 sentences), contradictions:string[] (each citing both conflicting statements), deception_patterns:string[] (5-8 detailed items), truth_signals:string[] (3-8 items), manipulation_tactics:string[] (each naming the tactic + example + effect), timeline_insights:string[] (5-8 items describing how behaviour evolved), most_suspicious_messages:string[] (quote + reason), alternative_explanations:string[] (3-5 items), suggested_questions:string[] (5-8 items), recommendation:string (5-8 sentences) }`);
 }
 
 async function actionProfile(supabase: any, user: any, body: any) {
@@ -835,8 +835,8 @@ async function actionProfile(supabase: any, user: any, body: any) {
   if (transcript.length < 10) return json({ error: "messages required" }, 400);
   const context = typeof body.context === "string" ? body.context.slice(0, 1500) : "";
   return await runCoreAnalysis(supabase, user, "profile",
-    "You are a psychology-informed communication analyst. Build a careful, non-clinical psychological communication profile from written messages. Avoid diagnoses; describe observable patterns only.",
-    `${context ? `Context: ${context}\n\n` : ""}Messages:\n"""${transcript}"""\n\nReturn JSON: { credibility_score:number (0-100), summary:string, communication_style:string, personality_traits:string[], emotional_patterns:string[], attachment_indicators:string[], deception_tendencies:string[], strengths:string[], risk_factors:string[], how_to_communicate:string[], recommendation:string }`);
+    "You are a psychology-informed communication analyst. Build a careful, non-clinical psychological communication profile from written messages. Avoid diagnoses; describe observable patterns only. Deliver a deep, long-form profile: each string field is a multi-sentence paragraph and each list contains 5-8 substantive entries with evidence from the messages and practical interpretation.",
+    `${context ? `Context: ${context}\n\n` : ""}Messages:\n"""${transcript}"""\n\nReturn JSON: { credibility_score:number (0-100), summary:string (6-10 sentences), communication_style:string (4-6 sentences), personality_traits:string[], emotional_patterns:string[], attachment_indicators:string[], deception_tendencies:string[], strengths:string[], risk_factors:string[], how_to_communicate:string[] (5-8 concrete tactics), motivations:string[] (3-6 likely drivers), blind_spots:string[] (3-6 items), recommendation:string (5-8 sentences) }`);
 }
 
 // ============ ROUTER ============
