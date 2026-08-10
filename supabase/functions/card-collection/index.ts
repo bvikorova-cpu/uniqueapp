@@ -105,9 +105,11 @@ serve(async (req) => {
     const auth = req.headers.get("Authorization");
     if (!auth) return j({ error: "Unauthorized" }, 401);
 
+    const token = auth.replace("Bearer ", "").trim();
+    const isServiceCall = token === Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     const anon = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!);
-    const { data: { user } } = await anon.auth.getUser(auth.replace("Bearer ", ""));
-    if (!user) return j({ error: "Unauthorized" }, 401);
+    const { data: { user } } = isServiceCall ? { data: { user: null } } : await anon.auth.getUser(token);
+    if (!user && !isServiceCall) return j({ error: "Unauthorized" }, 401);
 
     const body = await req.json().catch(() => ({}));
     const action = String(body?.action ?? "draw");
