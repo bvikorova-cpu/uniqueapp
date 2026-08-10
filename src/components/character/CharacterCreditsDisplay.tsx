@@ -3,16 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Coins, Plus, Sparkles, Zap } from "lucide-react";
 import { useCharacterCredits } from "@/hooks/useCharacterCredits";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const CharacterCreditsDisplay = () => {
-  const { credits, isLoading, purchaseCredits } = useCharacterCredits();
-
-  const handlePurchase = async (amount: number) => {
-    const url = await purchaseCredits(amount);
-    if (url) { const __w = window.open(url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = url; }
-  };
+  const { credits, isLoading } = useCharacterCredits();
 
   if (isLoading) return <div className="animate-pulse h-24 bg-card/50 rounded-xl" />;
 
@@ -31,7 +27,7 @@ export const CharacterCreditsDisplay = () => {
             <Coins className="h-6 w-6 text-white" />
           </motion.div>
           <div>
-            <p className="text-muted-foreground text-xs font-medium">Battle Credits</p>
+            <p className="text-muted-foreground text-xs font-medium">AI Credits</p>
             <p className="text-3xl font-black bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent">
               {credits?.credits_remaining || 0}
             </p>
@@ -39,11 +35,10 @@ export const CharacterCreditsDisplay = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-2">
-          <Button onClick={() => handlePurchase(50)} variant="outline" className="border-amber-500/30 hover:bg-amber-500/10 text-foreground text-sm gap-2">
-            <Sparkles className="h-4 w-4 text-amber-400" /> 50 Credits — €9.99
-          </Button>
-          <Button onClick={() => handlePurchase(200)} variant="outline" className="border-purple-500/30 hover:bg-purple-500/10 text-foreground text-sm gap-2">
-            <Zap className="h-4 w-4 text-purple-400" /> 200 Credits — €29.99
+          <Button asChild variant="outline" className="border-amber-500/30 hover:bg-amber-500/10 text-foreground text-sm gap-2">
+            <Link to="/ai-credits">
+              <Sparkles className="h-4 w-4 text-amber-400" /> Top up AI credits
+            </Link>
           </Button>
         </div>
       </div>
@@ -54,6 +49,8 @@ export const CharacterCreditsDisplay = () => {
         <Badge variant="outline" className="text-[10px] border-border/30">Battle: 2cr</Badge>
         <Badge variant="outline" className="text-[10px] border-border/30">Fusion: 30cr</Badge>
         <Badge variant="outline" className="text-[10px] border-border/30">Raid: 5-25cr</Badge>
+        <Badge variant="outline" className="text-[10px] border-border/30">Tournament: 5cr</Badge>
+        <span>Everything in the arena is paid with platform AI credits.</span>
       </div>
     </Card>
     </>
