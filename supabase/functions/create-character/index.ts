@@ -34,13 +34,15 @@ serve(async (req) => {
     if (denied) return denied;
 
     try {
-      const raw = await callUnifiedAI({
-        max_tokens: 1200,
-        messages: [
+      const raw = await callUnifiedAI(
+        [
           { role: "system", content: "You are a game designer creating battle characters. Reply with strict JSON only." },
           { role: "user", content: `Create a ${isPremium ? "legendary premium" : "solid"} ${category} warrior named "${name}". ${description ? `Concept: ${description}.` : ""}
 Return JSON: {"backstory": "4-6 vivid sentences", "appearance": "one vivid sentence describing looks, armor, weapon, colors", "stats": {"hp": number 80-200, "attack": number 40-120, "defense": number 30-110, "speed": number 30-110}}` },
-        ] });
+        ],
+        { max_tokens: 1200, json: true },
+      );
+
 
       const text = typeof raw === "string" ? raw : (raw?.content ?? raw?.text ?? "");
       let parsed: any = {};
