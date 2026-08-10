@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Mic, MicOff, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
+import { toastMicError } from "@/lib/micErrors";
+
 
 interface VoiceInputWaveformProps {
   onTranscript: (text: string) => void;
