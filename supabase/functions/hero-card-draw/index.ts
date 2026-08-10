@@ -72,6 +72,24 @@ serve(async (req) => {
     const action = String(body?.action ?? "draw");
     const db = admin();
 
+    // ── Album artwork backfill (free) ─────────────────────────────────────
+    // Generates the fixed collection artwork for cards that don't have it yet
+    // so the album shows real hero images instead of placeholders.
+    if (action === "backfill_art") {
+      const limit = Math.min(Math.max(Number(body?.limit ?? 3), 1), 4);
+      const { data: missing } = await db.from("hero_collectibles")
+        .select("*").is("image_url", null).order("code", { ascending: true }).limit(limit);
+      let generated = 0;
+      for (const card of missing ?? []) {
+        const url = await ensureArtwork(card);
+        if (url) generated++;
+      }
+      const { count: remainingMissing } = await db.from("hero_collectibles")
+        .select("id", { count: "exact", head: true }).is("image_url", null);
+      return j({ generated, missing: remainingMissing ?? 0 });
+    }
+
+
     // ── Unitas: golden completion reward ──────────────────────────────────
     // Unlocks only when the collector owns at least 1 copy of every card.
     if (action === "unitas_status" || action === "claim_unitas") {
