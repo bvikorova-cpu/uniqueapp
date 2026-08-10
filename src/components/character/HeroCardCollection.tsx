@@ -425,20 +425,24 @@ export const HeroCardCollection = () => {
           {isLoading || loadingCatalogue ? (
             <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
           ) : (
+            <>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              {catalogue.map((c, i) => {
+              {catalogue.slice(0, visibleCount).map((c) => {
                 const count = ownedCounts[c.id] ?? 0;
                 const owned = count > 0;
                 return (
-                  <motion.div key={c.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i, 40) * 0.015 }}>
-                    <Card className="overflow-hidden border-border/30 bg-card/90 transition-all">
+                  <div key={c.id}>
+                    <Card className="overflow-hidden border-border/30 bg-card/90">
                       <div className={`relative aspect-[4/5] bg-gradient-to-br ${c.gradient}`}>
                         {c.image_url ? (
                           <img
                             src={c.image_url}
                             alt={`${c.name} hero card`}
-                            className={`absolute inset-0 w-full h-full object-cover transition-all ${owned ? "" : "opacity-70 saturate-[0.6]"}`}
+                            className={`absolute inset-0 w-full h-full object-cover ${owned ? "" : "opacity-70 saturate-[0.6]"}`}
                             loading="lazy"
+                            decoding="async"
+                            width={320}
+                            height={400}
                           />
                         ) : (
                           <div className={`absolute inset-0 flex items-center justify-center text-4xl ${owned ? "" : "opacity-70"}`}>{c.emoji}</div>
@@ -462,11 +466,20 @@ export const HeroCardCollection = () => {
                         </p>
                       </div>
                     </Card>
-                  </motion.div>
+                  </div>
                 );
               })}
             </div>
+            {visibleCount < catalogue.length && (
+              <div className="mt-4 flex justify-center">
+                <Button variant="outline" onClick={() => setVisibleCount((n) => n + 24)}>
+                  Show more cards ({catalogue.length - visibleCount} left)
+                </Button>
+              </div>
+            )}
+            </>
           )}
+
         </TabsContent>
 
       </Tabs>
