@@ -23,7 +23,7 @@ const CardCollections = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("card_categories")
-        .select("slug, name, description, emoji, gradient, sort_order")
+        .select("slug, name, description, emoji, gradient, sort_order, card_kind, available_from, available_until")
         .order("sort_order", { ascending: true });
       if (error) throw error;
       return (data ?? []) as unknown as (CardCategory & { sort_order: number })[];
