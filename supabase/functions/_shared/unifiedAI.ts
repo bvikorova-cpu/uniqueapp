@@ -244,7 +244,7 @@ export async function callUnifiedAIEx(
     throw new UnifiedAIError(500, "AI is not configured. Please add an API key.");
   }
 
-  // PLATFORM-WIDE RULE: Lovable AI ONLY. OpenAI is never used.
+  // PLATFORM-WIDE RULE: Vertex AI (postpay) is primary. Lovable gateway is fallback. OpenAI is never used.
   const order: boolean[] = [true];
   let lastError: UnifiedAIError | undefined;
 
