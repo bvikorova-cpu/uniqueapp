@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { Check, X, Loader2, Sparkles, Library, Coins, Heart, Swords, Shield, Zap } from "lucide-react";
+import { Check, X, Loader2, Sparkles, Library, Coins, Heart, Swords, Shield, Zap, Crown, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -13,6 +13,16 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const DRAW_COST = 5;
 const TOTAL_CARDS = 200;
+const UNITAS_COST = 10000;
+
+interface UnitasStatus {
+  complete: boolean;
+  uniqueOwned: number;
+  total: number;
+  cost: number;
+  claimed: boolean;
+  character: { id: string; name: string; image_url: string | null } | null;
+}
 
 interface HeroCard {
   id: string;
@@ -50,6 +60,7 @@ export const HeroCardCollection = () => {
   const queryClient = useQueryClient();
   const [drawing, setDrawing] = useState(false);
   const [deciding, setDeciding] = useState(false);
+  const [claiming, setClaiming] = useState(false);
   const [current, setCurrent] = useState<HeroCard | null>(null);
   const [exitDir, setExitDir] = useState<"left" | "right" | null>(null);
 
@@ -139,6 +150,36 @@ export const HeroCardCollection = () => {
   const totalOwned = Object.values(ownedCounts).reduce((a, b) => a + b, 0);
   const progress = Math.round((uniqueOwned / TOTAL_CARDS) * 100);
 
+  const { data: unitas } = useQuery({
+    queryKey: ["hero-unitas-status", uniqueOwned],
+    queryFn: async () => {
+      const { data, error } = await supabase.functions.invoke("hero-card-draw", { body: { action: "unitas_status" } });
+      if (error) throw error;
+      return data as UnitasStatus;
+    },
+  });
+  const unitasClaimed = !!unitas?.claimed;
+  const unitasUnlocked = !!unitas?.complete;
+
+  const claimUnitas = async () => {
+    setClaiming(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("hero-card-draw", { body: { action: "claim_unitas" } });
+      if (error) throw error;
+      if (data?.error) { toast.error(data.error); return; }
+      toast.success("Unitas has been forged and joined your warriors!");
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      queryClient.invalidateQueries({ queryKey: ["hero-unitas-status"] });
+      queryClient.invalidateQueries({ queryKey: ["character-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["characters"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Unitas could not be forged, please try again.");
+    } finally {
+      setClaiming(false);
+    }
+  };
+
+
   return (
     <div className="space-y-6">
       <FloatingHowItWorks
@@ -148,6 +189,7 @@ export const HeroCardCollection = () => {
           { title: "Decide ✓ or ✗", desc: "Tap ✓ to add the hero to your collection (duplicates stack up), or ✗ to release it back into the pool." },
           { title: "Chase rarities", desc: "Cards come as Common, Rare, Epic and Legendary — legendary heroes have the strongest stats." },
           { title: "Light up the album", desc: "All 200 cards are visible from the start. They stay pale until you own at least one copy, then they light up in full colour with your copy count." },
+          { title: "Complete it for Unitas", desc: `Own at least one copy of every card to unlock the golden card — Unitas, the mega hero, costs ${UNITAS_COST.toLocaleString("en-US")} credits and joins your warriors with 500 HP and 250 attack.` },
         ]}
       />
 
@@ -169,6 +211,65 @@ export const HeroCardCollection = () => {
           <span className="text-xs font-bold whitespace-nowrap">{uniqueOwned}/{TOTAL_CARDS}</span>
         </div>
         <p className="text-[11px] text-muted-foreground mt-2">{totalOwned} card{totalOwned === 1 ? "" : "s"} collected in total (including duplicates)</p>
+      </Card>
+
+      {/* ── Golden completion reward: Unitas ─────────────────────────────── */}
+      <Card className={`relative overflow-hidden p-4 sm:p-6 border-2 ${unitasUnlocked ? "border-amber-400/70 bg-gradient-to-br from-amber-500/15 via-yellow-400/10 to-amber-600/15" : "border-border/30 bg-card/70"}`}>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${unitasUnlocked ? "bg-gradient-to-br from-amber-400 to-yellow-600" : "bg-muted"}`}>
+            {unitasUnlocked ? <Crown className="h-6 w-6 text-white" /> : <Lock className="h-5 w-5 text-muted-foreground" />}
+          </div>
+          <div className="min-w-0">
+            <h3 className="text-base sm:text-lg font-black bg-gradient-to-r from-amber-400 to-yellow-600 bg-clip-text text-transparent">
+              Unitas — the golden mega hero
+            </h3>
+            <p className="text-xs text-muted-foreground">
+              Collect all {TOTAL_CARDS} cards (at least one copy each) to unlock the golden card.
+            </p>
+          </div>
+          <Badge variant="outline" className="ml-auto gap-1 border-amber-400/50 text-amber-500">
+            <Coins className="h-3 w-3" /> {UNITAS_COST.toLocaleString("en-US")} cr
+          </Badge>
+        </div>
+
+        {unitasClaimed ? (
+          <div className="mt-4 flex flex-col sm:flex-row gap-4 items-center">
+            {unitas?.character?.image_url && (
+              <img
+                src={unitas.character.image_url}
+                alt="Unitas — the golden mega hero card"
+                className="w-32 rounded-xl border-2 border-amber-400/60 shadow-[0_0_30px_rgba(251,191,36,0.35)]"
+                loading="lazy"
+              />
+            )}
+            <div className="text-center sm:text-left">
+              <p className="font-black text-amber-500">Unitas has joined your warriors!</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                500 HP · 250 ATK · 240 DEF · 220 SPD — find him among your characters and take him into battle.
+              </p>
+            </div>
+          </div>
+        ) : unitasUnlocked ? (
+          <div className="mt-4">
+            <p className="text-xs text-muted-foreground mb-3">
+              Your album is complete. Forge Unitas for {UNITAS_COST.toLocaleString("en-US")} credits — he is generated as a
+              unique golden hero and added to your warriors.
+            </p>
+            <Button
+              onClick={claimUnitas}
+              disabled={claiming}
+              className="gap-2 bg-gradient-to-r from-amber-400 to-yellow-600 text-white"
+            >
+              {claiming ? <Loader2 className="h-4 w-4 animate-spin" /> : <Crown className="h-4 w-4" />}
+              {claiming ? "Forging Unitas…" : `Unlock Unitas (${UNITAS_COST.toLocaleString("en-US")} cr)`}
+            </Button>
+          </div>
+        ) : (
+          <div className="mt-4 flex items-center gap-3">
+            <Progress value={progress} className="h-2 flex-1" />
+            <span className="text-xs font-bold whitespace-nowrap">{uniqueOwned}/{TOTAL_CARDS}</span>
+          </div>
+        )}
       </Card>
 
 
