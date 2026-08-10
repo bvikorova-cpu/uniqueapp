@@ -216,7 +216,13 @@ export const HeroCardCollection = () => {
                       <div>
                         <h3 className="text-lg font-black leading-tight">{current.name}</h3>
                         <p className="text-xs text-muted-foreground capitalize">{current.archetype} · {current.faction}</p>
+                        <p className="text-[11px] font-bold mt-1 text-emerald-500">
+                          {(ownedCounts[current.id] ?? 0) > 0
+                            ? `Already in your collection ×${ownedCounts[current.id]} — keep it to stack a duplicate`
+                            : "New hero — not in your collection yet!"}
+                        </p>
                       </div>
+
                       <p className="text-xs text-muted-foreground">{current.lore}</p>
                       <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
                         <StatRow icon={Heart} label="HP" value={current.hp} />
