@@ -11,28 +11,16 @@ export const useLieDetectorCredits = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
+      // Unified platform credit pool
       const { data, error } = await supabase
-        .from("lie_detector_credits")
-        .select("*")
+        .from("ai_credits")
+        .select("credits_remaining, total_credits_purchased")
         .eq("user_id", user.id)
         .maybeSingle();
 
       if (error) throw error;
-      
-      if (!data) {
-        const { data: newData, error: insertError } = await supabase
-          .from("lie_detector_credits")
-          .insert({ user_id: user.id,
-            credits_remaining: 0,
-            total_credits_purchased: 0 })
-          .select()
-          .single();
 
-        if (insertError) throw insertError;
-        return newData;
-      }
-
-      return data;
+      return data ?? { credits_remaining: 0, total_credits_purchased: 0 };
     } });
 
   const analyzeMessage = useMutation({

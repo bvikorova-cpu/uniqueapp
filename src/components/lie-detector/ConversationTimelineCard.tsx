@@ -42,7 +42,7 @@ export const ConversationTimelineCard = () => {
           <CardTitle className="flex items-center gap-2 text-base">
             <TrendingUp className="h-4 w-4 text-purple-400" /> Conversation Timeline
           </CardTitle>
-          <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/40 text-[10px]">10 cr</Badge>
+          <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/40 text-[10px]">6 cr</Badge>
         </div>
         <CardDescription className="text-xs">
           Add 2-30 messages in chronological order. AI plots a trust curve & flags spikes.
