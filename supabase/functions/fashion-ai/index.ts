@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { getUnifiedAiCreditBalance, isInsufficientCreditsError, spendUnifiedAiCredits } from "../_shared/creativeAI.ts";
 

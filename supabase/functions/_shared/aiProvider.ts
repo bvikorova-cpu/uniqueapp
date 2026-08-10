@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 import "./aiRedirect.ts";
 /**
  * Centralized AI Provider Module (legacy compatibility wrapper)

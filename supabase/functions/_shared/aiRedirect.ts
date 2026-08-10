@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 /**
  * PLATFORM-WIDE RULE: Vertex AI (postpay) is the PRIMARY AI provider.
  * The Lovable AI Gateway is only a fallback when Vertex is unavailable.

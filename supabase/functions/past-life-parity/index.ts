@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Past Life Explorer parity pack router. build: gateway-only v4-marker
 // 8 actions, fixed cost 6 credits each, deducted from past_life_credits.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";

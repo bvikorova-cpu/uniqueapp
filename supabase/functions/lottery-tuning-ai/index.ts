@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Lottery AI tuning features: dream decoder, numerology, heatmap analysis
 // Self-contained: Lovable AI Gateway only, no shared imports (avoids boot errors).
 // v2026-08-03-gateway
