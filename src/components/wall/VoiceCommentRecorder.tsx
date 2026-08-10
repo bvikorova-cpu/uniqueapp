@@ -73,10 +73,11 @@ export const VoiceCommentRecorder = ({
         setDuration(prev => prev + 1);
       }, 1000);
     } catch (error) { toast({
-        title: "Microphone access denied",
-        description: "Please allow microphone access to record voice comments",
+        title: "Microphone unavailable",
+        description: micErrorMessage(error),
         variant: "destructive" });
     }
+
   };
 
   const stopRecording = () => {
