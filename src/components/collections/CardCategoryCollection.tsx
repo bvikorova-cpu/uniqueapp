@@ -10,6 +10,8 @@ import { Check, X, Loader2, Sparkles, Library, Coins, Crown, Lock, Trophy } from
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { CardCollectionLeaderboard } from "./CardCollectionLeaderboard";
+import { CardDetailModal } from "./CardDetailModal";
+
 import { warmCollectionCardImages, readCachedCategory, writeCachedCategory } from "@/lib/collectionCardCache";
 
 export const DRAW_COST = 1;
