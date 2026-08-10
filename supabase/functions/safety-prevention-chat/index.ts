@@ -75,17 +75,28 @@ Topics you can help with:
 
 Remember: You are NOT a replacement for professional mental health services. Always encourage seeking professional help for serious issues.`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          ...messages
-        ] }) });
+    const callAI = async (): Promise<Response> => {
+      let last: Response | null = null;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const r = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+            'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'google/gemini-2.5-flash',
+            messages: [
+              { role: 'system', content: systemPrompt },
+              ...messages
+            ] }) });
+        if (r.ok || (r.status !== 429 && r.status < 500)) return r;
+        last = r;
+        await new Promise((res) => setTimeout(res, 800 * Math.pow(2, attempt)));
+      }
+      return last!;
+    };
+
+    const response = await callAI();
 
     if (!response.ok) {
       if (response.status === 429) {
