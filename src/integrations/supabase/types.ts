@@ -69282,6 +69282,29 @@ export type Database = {
       challenge_monthly_prize_pool_cents: { Args: never; Returns: number }
       challenge_period_key: { Args: { _type: string }; Returns: string }
       challenge_tier: { Args: { _user_id: string }; Returns: string }
+      character_power_leaderboard: {
+        Args: { _limit?: number }
+        Returns: {
+          attack: number
+          category: string
+          defense: number
+          description: string
+          gear_bonus: number
+          gear_count: number
+          hp: number
+          id: string
+          image_url: string
+          is_premium: boolean
+          level: number
+          losses: number
+          name: string
+          special_power: string
+          speed: number
+          total_power: number
+          user_id: string
+          wins: number
+        }[]
+      }
       check_and_award_badges: {
         Args: { p_user_id: string }
         Returns: undefined
