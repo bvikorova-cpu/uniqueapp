@@ -184,17 +184,27 @@ export const CharacterCreator = () => {
         {lastCharacter && (
           <Card className="border-border/30 bg-card/60 p-4">
             <div className="flex flex-col sm:flex-row items-center gap-4">
-              {lastCharacter.imageUrl ? (
-                <img src={lastCharacter.imageUrl} alt={lastCharacter.name}
-                  className={`w-24 h-24 rounded-xl object-cover border border-border/40 ${regenPortrait.isPending ? "opacity-50" : ""}`} />
-              ) : (
-                <div className="w-24 h-24 rounded-xl bg-muted flex items-center justify-center border border-border/40">
-                  <Wand2 className="h-8 w-8 text-muted-foreground" />
-                </div>
-              )}
-              <div className="flex-1 text-center sm:text-left">
+              <div className="relative w-24 h-24 shrink-0">
+                {lastCharacter.imageUrl ? (
+                  <img src={lastCharacter.imageUrl} alt={lastCharacter.name}
+                    className={`w-24 h-24 rounded-xl object-cover border border-border/40 transition-opacity ${regenPortrait.isPending ? "opacity-40" : ""}`} />
+                ) : (
+                  <div className="w-24 h-24 rounded-xl bg-muted flex items-center justify-center border border-border/40">
+                    <Wand2 className="h-8 w-8 text-muted-foreground" />
+                  </div>
+                )}
+                {regenPortrait.isPending && (
+                  <div className="absolute inset-0 rounded-xl bg-background/40 backdrop-blur-[1px] flex items-center justify-center overflow-hidden">
+                    <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+                    <Loader2 className="h-7 w-7 animate-spin text-primary relative" />
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 w-full text-center sm:text-left">
                 <p className="font-bold text-foreground">{lastCharacter.name}</p>
-                <p className="text-xs text-muted-foreground mb-2">Portrait {lastCharacter.imageUrl ? "ready" : "missing"}</p>
+                <p className="text-xs text-muted-foreground mb-2">
+                  {regenPortrait.isPending ? "Painting a new portrait..." : `Portrait ${lastCharacter.imageUrl ? "ready" : "missing"}`}
+                </p>
                 <Button
                   onClick={() => regenPortrait.mutate()}
                   disabled={regenPortrait.isPending}
@@ -210,7 +220,18 @@ export const CharacterCreator = () => {
                 </Button>
               </div>
             </div>
+            <GenerationProgress
+              active={regenPortrait.isPending}
+              title="Regenerating portrait..."
+              stepSeconds={5}
+              steps={[
+                "Reading character details",
+                "Composing the new portrait",
+                "Uploading & updating gallery",
+              ]}
+            />
           </Card>
+
         )}
       </div>
     </Card>
