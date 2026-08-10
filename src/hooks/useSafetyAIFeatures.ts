@@ -1,24 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeWellnessAI } from "@/lib/invokeWellnessAI";
 import { toast } from "sonner";
 
-async function invokeAction<T = any>(action: string, body: Record<string, any>): Promise<T> {
-  const { data, error } = await supabase.functions.invoke("wellness-ai", { body: { action, ...body } });
-  if (error) {
-    // supabase-js hides the response body behind a generic "non-2xx" message — read it.
-    let message = error.message;
-    try {
-      const res = (error as any).context;
-      if (res && typeof res.json === "function") {
-        const parsed = await res.clone().json();
-        if (parsed?.error) message = parsed.error;
-      }
-    } catch { /* keep original message */ }
-    throw new Error(message);
-  }
-  if (data?.error) throw new Error(data.error);
-  return data as T;
-}
+const invokeAction = invokeWellnessAI;
 
 export function useSafetyCredits() {
   return useQuery({
