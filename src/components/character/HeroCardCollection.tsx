@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-const DRAW_COST = 5;
+const DRAW_COST = 1;
 const TOTAL_CARDS = 200;
 const UNITAS_COST = 10000;
 

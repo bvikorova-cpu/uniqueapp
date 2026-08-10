@@ -6,7 +6,7 @@ import { generateOpenAIImage } from "../_shared/unifiedAI.ts";
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
-const DRAW_COST = 5;
+const DRAW_COST = 1;
 const UNITAS_COST = 10000;
 const UNITAS_NAME = "Unitas";
 const UNITAS_PROMPT =
@@ -169,7 +169,7 @@ serve(async (req) => {
       return j({ kept: true, name: card.name });
     }
 
-    // ── Draw a random card (5 credits) — duplicates are allowed ────────────
+    // ── Draw a random card (1 credit) — duplicates are allowed ────────────
     const { data: pool, error: poolErr } = await db.from("hero_collectibles").select("*").limit(500);
     if (poolErr) return j({ error: "Could not load the card pool" }, 500);
     if (!pool || pool.length === 0) return j({ error: "The card pool is empty" }, 400);
