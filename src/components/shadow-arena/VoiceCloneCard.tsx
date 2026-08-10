@@ -6,6 +6,8 @@ import { Mic, Square, CheckCircle2 } from "lucide-react";
 import { useVoiceClone } from "@/hooks/useShadowArenaFeatures";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { requestMicStream } from "@/lib/micErrors";
+
 
 export function VoiceCloneCard() {
   const { clone, cloneVoice } = useVoiceClone();
