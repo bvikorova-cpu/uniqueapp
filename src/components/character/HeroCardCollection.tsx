@@ -95,6 +95,27 @@ export const HeroCardCollection = () => {
     },
   });
 
+  // Free background artwork backfill so the album shows real hero images.
+  const [artMissing, setArtMissing] = useState(0);
+  useEffect(() => {
+    let stop = false;
+    const run = async () => {
+      while (!stop) {
+        const { data, error } = await supabase.functions.invoke("hero-card-draw", {
+          body: { action: "backfill_art", limit: 3 },
+        });
+        if (error || !data || data.error) return;
+        setArtMissing(data.missing ?? 0);
+        queryClient.invalidateQueries({ queryKey: ["hero-collectibles-catalogue"] });
+        if (!data.missing || !data.generated) return;
+      }
+    };
+    run();
+    return () => { stop = true; };
+  }, [queryClient]);
+
+
+
 
   const draw = async () => {
     setDrawing(true);
