@@ -479,7 +479,15 @@ export const CardCategoryCollection = ({ category }: Props) => {
           <CardCollectionLeaderboard category={slug} totalCards={CARDS_PER_CATEGORY} />
         </TabsContent>
       </Tabs>
+
+      <CardDetailModal
+        card={detailCard}
+        category={category}
+        totalCards={CARDS_PER_CATEGORY}
+        onClose={() => setDetailCard(null)}
+      />
     </div>
+
   );
 };
 
