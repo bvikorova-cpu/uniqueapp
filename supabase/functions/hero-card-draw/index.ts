@@ -64,11 +64,16 @@ serve(async (req) => {
     const auth = req.headers.get("Authorization");
     if (!auth) return j({ error: "Unauthorized" }, 401);
 
+    const body = await req.json().catch(() => ({}));
+
+    // Collectible-card categories share this endpoint (function-slot limit).
+    if (body?.scope === "collection") return await handleCardCollection(req, body);
+
     const anon = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!);
     const { data: { user } } = await anon.auth.getUser(auth.replace("Bearer ", ""));
     if (!user) return j({ error: "Unauthorized" }, 401);
 
-    const body = await req.json().catch(() => ({}));
+
     const action = String(body?.action ?? "draw");
     const db = admin();
 
