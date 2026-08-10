@@ -53,20 +53,37 @@ export const HeroCardCollection = () => {
   const [current, setCurrent] = useState<HeroCard | null>(null);
   const [exitDir, setExitDir] = useState<"left" | "right" | null>(null);
 
-  const { data: collection = [], isLoading } = useQuery({
+  const { data: catalogue = [], isLoading: loadingCatalogue } = useQuery({
+    queryKey: ["hero-collectibles-catalogue"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("hero_collectibles")
+        .select("*")
+        .order("code", { ascending: true });
+      if (error) throw error;
+      return (data ?? []) as unknown as HeroCard[];
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const { data: ownedCounts = {}, isLoading } = useQuery({
     queryKey: ["hero-collection"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return [];
+      if (!user) return {} as Record<string, number>;
       const { data, error } = await supabase
         .from("hero_collection_cards")
-        .select("id, created_at, hero_collectibles(*)")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
+        .select("collectible_id")
+        .eq("user_id", user.id);
       if (error) throw error;
-      return (data ?? []).map((r: any) => r.hero_collectibles as HeroCard).filter(Boolean);
+      const counts: Record<string, number> = {};
+      for (const r of (data ?? []) as { collectible_id: string }[]) {
+        counts[r.collectible_id] = (counts[r.collectible_id] ?? 0) + 1;
+      }
+      return counts;
     },
   });
+
 
   const draw = async () => {
     setDrawing(true);
