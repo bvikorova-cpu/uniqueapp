@@ -24,7 +24,7 @@ serve(async (req) => {
     );
 
     const { data: row } = await admin
-      .from("character_credits")
+      .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
@@ -41,7 +41,7 @@ serve(async (req) => {
       charisma: Math.floor(60 + Math.random() * 40) };
 
     await admin
-      .from("character_credits")
+      .from("ai_credits")
       .update({ credits_remaining: balance - COST })
       .eq("user_id", user.id)
       .eq("credits_remaining", balance);

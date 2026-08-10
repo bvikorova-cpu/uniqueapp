@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Coins, Plus, Sparkles, Zap } from "lucide-react";
+import { Coins, Sparkles } from "lucide-react";
 import { useCharacterCredits } from "@/hooks/useCharacterCredits";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
