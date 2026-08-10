@@ -6,7 +6,7 @@ import { ArrowLeft, Swords, Sparkles, Flame, Users, Trophy, TreeDeciduous, Skull
 import { CharacterArenaHero } from "@/components/character/CharacterArenaHero";
 import { CharacterCreditsDisplay } from "@/components/character/CharacterCreditsDisplay";
 import { CharacterCreator } from "@/components/character/CharacterCreator";
-import { CharacterBattleArena } from "@/components/character/CharacterBattleArena";
+import { CharacterArenaBattle } from "@/components/character/CharacterArenaBattle";
 import { CharacterSocialFeed } from "@/components/character/CharacterSocialFeed";
 import { CharacterGallery } from "@/components/character/CharacterGallery";
 import { TournamentHub } from "@/components/character/TournamentHub";
@@ -60,7 +60,7 @@ const CharacterArena = () => {
   const renderView = () => {
     switch (activeView) {
       case "creator": return <CharacterCreator />;
-      case "battle": return <CharacterBattleArena />;
+      case "battle": return <CharacterArenaBattle />;
       case "royale": return <BattleRoyaleMode />;
       case "shop": return <CharacterEquipmentShop />;
       case "training": return <CharacterTrainingCenter />;
