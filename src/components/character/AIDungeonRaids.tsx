@@ -56,6 +56,11 @@ export const AIDungeonRaids = () => {
 
   const dungeon = DUNGEONS.find((d) => d.id === selectedDungeon);
 
+  const estimatedPower = (characters ?? [])
+    .filter((c: any) => selectedParty.includes(c.id))
+    .reduce((s: number, c: any) => s + Math.round((c.attack ?? 0) * 1.4 + (c.defense ?? 0) * 1.1 + (c.hp ?? 0) * 0.35 + (c.speed ?? 0) * 0.8 + (c.level ?? 1) * 10), 0);
+
+
   return (
     <>
       <FloatingHowItWorks title={"A I Dungeon Raids - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Dungeon Raids section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Dungeon Raids.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
