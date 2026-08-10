@@ -189,6 +189,7 @@ export const HeroCardCollection = () => {
           { title: "Decide ✓ or ✗", desc: "Tap ✓ to add the hero to your collection (duplicates stack up), or ✗ to release it back into the pool." },
           { title: "Chase rarities", desc: "Cards come as Common, Rare, Epic and Legendary — legendary heroes have the strongest stats." },
           { title: "Light up the album", desc: "All 200 cards are visible from the start. They stay pale until you own at least one copy, then they light up in full colour with your copy count." },
+          { title: "Complete it for Unitas", desc: `Own at least one copy of every card to unlock the golden card — Unitas, the mega hero, costs ${UNITAS_COST.toLocaleString("en-US")} credits and joins your warriors with 500 HP and 250 attack.` },
         ]}
       />
 
