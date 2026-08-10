@@ -49,6 +49,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "13", title: "Virtual Pet", category: "Entertainment", path: "/virtual-pet" },
   { id: "14", title: "Pet Translator", category: "Entertainment", path: "/pet-translator" },
   { id: "15", title: "Character Arena", category: "Games", path: "/character-arena" },
+  { id: "15b", title: "Collectible Cards", category: "Games", path: "/card-collections" },
   { id: "16", title: "Virtual Escape Room", category: "Games", path: "/virtual-escape-room" },
   { id: "17", title: "Horse Racing", category: "Games", path: "/horse-racing" },
   { id: "18", title: "GP Racing", category: "Games", path: "/gp-racing" },

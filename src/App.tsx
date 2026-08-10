@@ -290,6 +290,8 @@ import { ResetPassword,
   LiveStreamList,
   CharacterArena,
   CharacterInventoryPage,
+  CardCollections,
+  CardCollectionCategory,
 
   BrainDuel,
   VirtualEscapeRoom,
@@ -923,6 +925,8 @@ const App = () => {
                         <Route path="/astrology" element={<Astrology />} />
                         <Route path="/character-arena" element={<CharacterArena />} />
                         <Route path="/character-inventory" element={<CharacterInventoryPage />} />
+                        <Route path="/card-collections" element={<CardCollections />} />
+                        <Route path="/card-collections/:slug" element={<CardCollectionCategory />} />
 
                         <Route path="/arena-hub" element={<Navigate to="/character-arena" replace />} />
                         <Route path="/mystery-box" element={<MysteryBox />} />
