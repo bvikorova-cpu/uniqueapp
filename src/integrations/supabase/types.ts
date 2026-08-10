@@ -29386,6 +29386,101 @@ export type Database = {
         }
         Relationships: []
       }
+      hero_collectibles: {
+        Row: {
+          archetype: string
+          attack: number
+          code: string
+          created_at: string
+          defense: number
+          emoji: string
+          faction: string
+          gradient: string
+          hp: number
+          id: string
+          image_url: string | null
+          lore: string
+          name: string
+          rarity: string
+          speed: number
+          times_collected: number
+          updated_at: string
+        }
+        Insert: {
+          archetype: string
+          attack?: number
+          code: string
+          created_at?: string
+          defense?: number
+          emoji?: string
+          faction: string
+          gradient?: string
+          hp?: number
+          id?: string
+          image_url?: string | null
+          lore?: string
+          name: string
+          rarity?: string
+          speed?: number
+          times_collected?: number
+          updated_at?: string
+        }
+        Update: {
+          archetype?: string
+          attack?: number
+          code?: string
+          created_at?: string
+          defense?: number
+          emoji?: string
+          faction?: string
+          gradient?: string
+          hp?: number
+          id?: string
+          image_url?: string | null
+          lore?: string
+          name?: string
+          rarity?: string
+          speed?: number
+          times_collected?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      hero_collection_cards: {
+        Row: {
+          collectible_id: string
+          created_at: string
+          credits_spent: number
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          collectible_id: string
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          collectible_id?: string
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hero_collection_cards_collectible_id_fkey"
+            columns: ["collectible_id"]
+            isOneToOne: false
+            referencedRelation: "hero_collectibles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       hero_thank_you_messages: {
         Row: {
           author_name: string
