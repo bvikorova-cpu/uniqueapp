@@ -35,7 +35,10 @@ export const LieDetectorToolCard = ({ tool, onSelect, index }: LieDetectorToolCa
     >
       <Card className="relative overflow-hidden group transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30 bg-card/60 backdrop-blur-sm h-full">
         <div className={`h-1.5 bg-gradient-to-r ${tool.color}`} />
-        <div className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
+        <div
+          aria-hidden="true"
+          className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}
+        />
 
         <div className="absolute top-4 right-4">
           <Badge variant="secondary" className="text-[10px]">{tool.credits} cr</Badge>
