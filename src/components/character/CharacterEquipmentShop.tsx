@@ -184,8 +184,8 @@ export const CharacterEquipmentShop = () => {
     <>
       <FloatingHowItWorks title="Equipment Shop — How it works" steps={[
         { title: "Select warrior", desc: "Choose which character will receive the gear." },
-        { title: "Browse items", desc: "Pick from weapons, armor, vitality and boots across 4 rarity tiers." },
-        { title: "Buy with credits", desc: "Each item costs AI credits — the boost is applied permanently." },
+        { title: "Browse items", desc: "Weapons, armor, vitality and boots from Common up to Mythic, Divine, Cosmic and the single Omega relic." },
+        { title: "Buy with credits", desc: "Cheap starter gear costs 5 credits; end-game relics cost thousands — the boost is applied permanently." },
         { title: "Battle stronger", desc: "Your warrior's stats are immediately increased for battles." },
       ]} />
       <div className="space-y-6">
@@ -197,9 +197,10 @@ export const CharacterEquipmentShop = () => {
             </div>
             <div>
               <h2 className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Equipment Shop</h2>
-              <p className="text-muted-foreground text-sm">Buy gear to make your warriors stronger • 5–35 credits per item</p>
+              <p className="text-muted-foreground text-sm">Gear from 5 credits up to the 4,800-credit Omega relic — the strongest item in the arena</p>
             </div>
           </div>
+
 
           {/* Character selector */}
           <div className="mb-5">
