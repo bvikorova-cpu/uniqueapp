@@ -118,6 +118,7 @@ const services = [
   { title: "First Aid Guide", icon: Heart, path: "/first-aid", badge: "Health", gradient: "from-red-500 to-rose-500", category: "wellness" },
   { title: "Restaurant Analyzer", icon: ChefHat, path: "/restaurant-analyzer", badge: "Food", gradient: "from-orange-500 to-red-500", category: "creative" },
   { title: "Character Arena", icon: Trophy, path: "/character-arena", badge: "Battle", gradient: "from-red-600 to-orange-600", category: "entertainment" },
+  { title: "Collectible Cards", icon: Library, path: "/card-collections", badge: "New", gradient: "from-fuchsia-600 to-violet-600", category: "entertainment" },
   { title: "Games Hub", icon: Trophy, path: "/games", badge: "Games", gradient: "from-purple-500 to-pink-500", category: "games entertainment" },
   { title: "Mini Games", icon: Trophy, path: "/games-hub", badge: "Games", gradient: "from-indigo-500 to-purple-500", category: "games entertainment" },
 ];
