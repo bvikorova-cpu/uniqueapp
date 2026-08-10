@@ -446,6 +446,4 @@ verify_jwt = true
 
 
 
-[functions.card-collection]
-verify_jwt = true
 

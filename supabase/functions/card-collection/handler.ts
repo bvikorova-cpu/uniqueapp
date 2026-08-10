@@ -1,4 +1,3 @@
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { deductAICredits, refundAICredits } from "../_shared/credits.ts";
 import { generateOpenAIImage } from "../_shared/unifiedAI.ts";
@@ -98,7 +97,7 @@ async function getCategory(slug: string) {
   return data;
 }
 
-serve(async (req) => {
+export async function handleCardCollection(req: Request, preparsed?: any): Promise<Response> {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
@@ -111,7 +110,7 @@ serve(async (req) => {
     const { data: { user } } = isServiceCall ? { data: { user: null } } : await anon.auth.getUser(token);
     if (!user && !isServiceCall) return j({ error: "Unauthorized" }, 401);
 
-    const body = await req.json().catch(() => ({}));
+    const body = preparsed ?? (await req.json().catch(() => ({})));
     const action = String(body?.action ?? "draw");
     const category = String(body?.category ?? "");
     const db = admin();
@@ -314,4 +313,4 @@ serve(async (req) => {
   } catch (e) {
     return j({ error: e instanceof Error ? e.message : String(e) }, 500);
   }
-});
+}
