@@ -519,14 +519,13 @@ serve(async (req) => {
       result = saved;
     }
 
-    // Deduct credits from correct table
+    // Deduct from the unified pool + always write usage history (ledger trigger records reason/source)
     await supabase.from(creditTable).update({ credits_remaining: remaining - COST, last_used_at: new Date().toISOString() }).eq("user_id", user.id);
 
-    if (!isSafety) {
-      await supabase.from("ai_usage_history").insert({
-        user_id: user.id, usage_type: `wellness_${action}`, credits_used: COST,
-        description: `Wellness AI: ${action}` });
-    }
+    await supabase.from("ai_usage_history").insert({
+      user_id: user.id, usage_type: `wellness_${action}`, credits_used: COST,
+      description: `${isSafety ? "Safety AI" : "Wellness AI"}: ${action}` });
+
 
     return new Response(JSON.stringify({ ...result, creditsRemaining: remaining - COST }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
