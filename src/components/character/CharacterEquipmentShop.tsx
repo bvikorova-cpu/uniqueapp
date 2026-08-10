@@ -246,32 +246,34 @@ export const CharacterEquipmentShop = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {SHOP_ITEMS.map((item) => {
               const StatIcon = statIcons[item.boost_stat];
+              const tier = item.tier ?? item.rarity;
+              const isOmega = item.tier === "omega";
               return (
                 <motion.div
                   key={item.name}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   className={`relative rounded-xl border bg-card/60 backdrop-blur-sm overflow-hidden ${
+                    isOmega ? "sm:col-span-2 lg:col-span-3 ring-2 ring-amber-400/40" : ""
+                  } ${
                     selectedChar ? "border-border/30 hover:border-amber-500/40 cursor-pointer" : "border-border/20 opacity-60"
                   }`}
                   onClick={() => selectedChar && handleBuy(item)}
                 >
-                  <div className={`h-0.5 bg-gradient-to-r ${
-                    item.rarity === "common" ? "from-gray-500 to-gray-400" :
-                    item.rarity === "rare" ? "from-blue-500 to-blue-400" :
-                    item.rarity === "epic" ? "from-purple-500 to-pink-400" :
-                    "from-amber-500 to-yellow-400"
-                  }`} />
+                  <div className={`h-0.5 bg-gradient-to-r ${tierBar[tier]}`} />
                   <div className="p-3 sm:p-4">
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <span className="text-2xl">{item.icon}</span>
+                        <span className={isOmega ? "text-4xl" : "text-2xl"}>{item.icon}</span>
                         <div>
-                          <p className="font-black text-sm">{item.name}</p>
-                          <Badge className={`text-[9px] border ${rarityColors[item.rarity]}`}>{item.rarity}</Badge>
+                          <p className={`font-black ${isOmega ? "text-base sm:text-lg" : "text-sm"}`}>{item.name}</p>
+                          <Badge className={`text-[9px] border ${rarityColors[tier]}`}>{tier}</Badge>
                         </div>
                       </div>
                     </div>
+                    {item.desc && (
+                      <p className="text-[11px] text-muted-foreground mb-2 leading-snug">{item.desc}</p>
+                    )}
                     <div className="flex items-center gap-1.5 mb-3">
                       <StatIcon className="h-4 w-4 text-primary" />
                       <span className="text-sm font-bold text-primary">+{item.boost_value}</span>
@@ -280,20 +282,25 @@ export const CharacterEquipmentShop = () => {
                     <Button
                       size="sm"
                       disabled={!selectedChar || buying === item.name}
-                      className="w-full gap-1.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
+                      className={`w-full gap-1.5 ${
+                        isOmega
+                          ? "bg-gradient-to-r from-amber-500 via-fuchsia-600 to-cyan-500 hover:opacity-90"
+                          : "bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
+                      }`}
                     >
                       {buying === item.name ? (
                         <Loader2 className="h-3.5 w-3.5 animate-spin" />
                       ) : (
                         <Coins className="h-3.5 w-3.5" />
                       )}
-                      {item.cost} cr
+                      {item.cost.toLocaleString()} cr
                     </Button>
                   </div>
                 </motion.div>
               );
             })}
           </div>
+
 
           {selectedChar && ownedItems && ownedItems.length > 0 && (
             <div className="mt-5 pt-4 border-t border-border/20">
