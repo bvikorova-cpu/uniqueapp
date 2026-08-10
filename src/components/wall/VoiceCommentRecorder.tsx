@@ -4,6 +4,8 @@ import { Mic, Square, Play, Pause, Trash2, Loader2, Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { micErrorMessage } from "@/lib/micErrors";
+
 
 interface VoiceCommentRecorderProps {
   postId?: string;
