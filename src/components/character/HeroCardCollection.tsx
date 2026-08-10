@@ -381,6 +381,12 @@ export const HeroCardCollection = () => {
         </TabsContent>
 
         <TabsContent value="mine" className="pt-4">
+          {artMissing > 0 && (
+            <div className="mb-3 flex items-center gap-2 rounded-lg border border-border/40 bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              Painting hero artwork… {TOTAL_CARDS - artMissing}/{TOTAL_CARDS} cards ready (free, keeps running while you browse)
+            </div>
+          )}
           {isLoading || loadingCatalogue ? (
             <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
           ) : (
@@ -390,13 +396,19 @@ export const HeroCardCollection = () => {
                 const owned = count > 0;
                 return (
                   <motion.div key={c.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i, 40) * 0.015 }}>
-                    <Card className={`overflow-hidden border-border/30 bg-card/90 transition-all ${owned ? "" : "opacity-40 saturate-0"}`}>
+                    <Card className="overflow-hidden border-border/30 bg-card/90 transition-all">
                       <div className={`relative aspect-[4/5] bg-gradient-to-br ${c.gradient}`}>
                         {c.image_url ? (
-                          <img src={c.image_url} alt={`${c.name} hero card`} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+                          <img
+                            src={c.image_url}
+                            alt={`${c.name} hero card`}
+                            className={`absolute inset-0 w-full h-full object-cover transition-all ${owned ? "" : "opacity-70 saturate-[0.6]"}`}
+                            loading="lazy"
+                          />
                         ) : (
-                          <div className="absolute inset-0 flex items-center justify-center text-4xl">{c.emoji}</div>
+                          <div className={`absolute inset-0 flex items-center justify-center text-4xl ${owned ? "" : "opacity-70"}`}>{c.emoji}</div>
                         )}
+
                         <Badge className="absolute top-2 left-2 text-[9px] bg-background/80 text-foreground backdrop-blur">
                           {RARITY_LABEL[c.rarity] ?? c.rarity}
                         </Badge>
