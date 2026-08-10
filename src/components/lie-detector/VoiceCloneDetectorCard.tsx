@@ -7,6 +7,7 @@ import { Mic, Square, Bot, ShieldCheck, AlertOctagon } from "lucide-react";
 import { useDeepfakeCheck } from "@/hooks/useLieDetectorTuning";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 import { requestMicStream } from "@/lib/micErrors";
+import { blobToBase64 } from "@/lib/audioBase64";
 
 
 export const VoiceCloneDetectorCard = () => {
@@ -27,8 +28,7 @@ export const VoiceCloneDetectorCard = () => {
       mr.onstop = async () => {
         const blob = new Blob(chunksRef.current, { type: mr.mimeType });
         setMime(mr.mimeType);
-        const buf = await blob.arrayBuffer();
-        const b64 = btoa(String.fromCharCode(...new Uint8Array(buf)));
+        const b64 = await blobToBase64(blob);
         setAudioBase64(b64);
         stream.getTracks().forEach((t) => t.stop());
       };
@@ -44,8 +44,7 @@ export const VoiceCloneDetectorCard = () => {
 
   const onFile = async (f: File) => {
     setMime(f.type || "audio/mpeg");
-    const buf = await f.arrayBuffer();
-    setAudioBase64(btoa(String.fromCharCode(...new Uint8Array(buf))));
+    setAudioBase64(await blobToBase64(f));
   };
 
   return (

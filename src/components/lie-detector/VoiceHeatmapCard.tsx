@@ -7,6 +7,7 @@ import { useVoiceHeatmap } from "@/hooks/useLieDetectorPro";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 import { requestMicStream } from "@/lib/micErrors";
+import { blobToBase64 } from "@/lib/audioBase64";
 
 
 export function VoiceHeatmapCard() {
@@ -33,8 +34,7 @@ export function VoiceHeatmapCard() {
 
   const analyze = async () => {
     if (!audioBlob) return;
-    const buf = await audioBlob.arrayBuffer();
-    const b64 = btoa(String.fromCharCode(...new Uint8Array(buf)));
+    const b64 = await blobToBase64(audioBlob);
     m.mutate({ audio_base64: b64, mime: "audio/webm" });
   };
 

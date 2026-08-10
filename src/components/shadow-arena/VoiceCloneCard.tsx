@@ -7,6 +7,7 @@ import { useVoiceClone } from "@/hooks/useShadowArenaFeatures";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { requestMicStream } from "@/lib/micErrors";
+import { blobToBase64 } from "@/lib/audioBase64";
 
 
 export function VoiceCloneCard() {
@@ -25,8 +26,7 @@ export function VoiceCloneCard() {
       recorder.ondataavailable = (e) => chunksRef.current.push(e.data);
       recorder.onstop = async () => {
         const blob = new Blob(chunksRef.current, { type: "audio/webm" });
-        const buf = await blob.arrayBuffer();
-        const b64 = btoa(String.fromCharCode(...new Uint8Array(buf)));
+        const b64 = await blobToBase64(blob);
         setAudioBase64(b64);
         stream.getTracks().forEach((t) => t.stop());
       };
