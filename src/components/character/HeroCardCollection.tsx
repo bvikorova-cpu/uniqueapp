@@ -377,8 +377,6 @@ export const HeroCardCollection = () => {
                 </motion.div>
               )}
             </AnimatePresence>
-
-            )}
           </div>
         </TabsContent>
 
