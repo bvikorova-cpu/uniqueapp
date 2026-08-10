@@ -108,15 +108,18 @@ export async function handleCardCollection(req: Request, preparsed?: any): Promi
     const isServiceCall = token === Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     const anon = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!);
     const { data: { user } } = isServiceCall ? { data: { user: null } } : await anon.auth.getUser(token);
-    if (!user && !isServiceCall) return j({ error: "Unauthorized" }, 401);
 
     const body = preparsed ?? (await req.json().catch(() => ({})));
     const action = String(body?.action ?? "draw");
     const category = String(body?.category ?? "");
     const db = admin();
 
+    // Artwork backfill is free, idempotent and shared by everyone, so it does not
+    // require a signed-in user; every other action does.
+    if (!user && action !== "backfill_art") return j({ error: "Unauthorized" }, 401);
+
     if (action !== "keep" && !category) return j({ error: "Category is required" }, 400);
-    if (isServiceCall && action !== "backfill_art") return j({ error: "Unauthorized" }, 401);
+
 
     // ── Free artwork backfill so albums show real illustrations ────────────
     if (action === "backfill_art") {
