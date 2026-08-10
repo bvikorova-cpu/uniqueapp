@@ -125,7 +125,7 @@ export const CharacterEquipmentShop = () => {
       const newStat = char[item.boost_stat] + item.boost_value;
       const { error: charError } = await supabase
         .from("characters")
-        .update({ [item.boost_stat]: newStat, updated_at: new Date().toISOString() } as Record<string, any>)
+        .update({ [item.boost_stat]: newStat, updated_at: new Date().toISOString() } as any)
         .eq("id", selectedChar);
       if (charError) throw charError;
 
