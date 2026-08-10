@@ -101,9 +101,7 @@ export async function handleCardCollection(req: Request, preparsed?: any): Promi
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    const auth = req.headers.get("Authorization");
-    if (!auth) return j({ error: "Unauthorized" }, 401);
-
+    const auth = req.headers.get("Authorization") ?? "";
     const token = auth.replace("Bearer ", "").trim();
     const isServiceCall = token === Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     const anon = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!);
