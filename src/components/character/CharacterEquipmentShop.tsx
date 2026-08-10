@@ -16,8 +16,12 @@ interface ShopItem {
   boost_stat: "hp" | "attack" | "defense" | "speed";
   boost_value: number;
   cost: number;
+  /** DB-safe rarity value */
   rarity: "common" | "rare" | "epic" | "legendary";
+  /** Display tier (visual only) */
+  tier?: "mythic" | "divine" | "cosmic" | "omega";
   icon: string;
+  desc?: string;
 }
 
 const SHOP_ITEMS: ShopItem[] = [
@@ -41,6 +45,25 @@ const SHOP_ITEMS: ShopItem[] = [
   { name: "Wind Walker Boots", slot: "boots", boost_stat: "speed", boost_value: 10, cost: 10, rarity: "rare", icon: "💨" },
   { name: "Lightning Greaves", slot: "boots", boost_stat: "speed", boost_value: 20, cost: 20, rarity: "epic", icon: "⚡" },
   { name: "Hermes' Sandals", slot: "boots", boost_stat: "speed", boost_value: 35, cost: 35, rarity: "legendary", icon: "👟" },
+
+  // ===== MYTHIC TIER (~€30–60 in credits) =====
+  { name: "Voidfang Greatsword", slot: "weapon", boost_stat: "attack", boost_value: 90, cost: 150, rarity: "legendary", tier: "mythic", icon: "🗡️", desc: "Forged in a collapsing star." },
+  { name: "Bulwark of the Titan", slot: "armor", boost_stat: "defense", boost_value: 90, cost: 150, rarity: "legendary", tier: "mythic", icon: "🛡️", desc: "Titan bone plating." },
+  { name: "Heart of the Hydra", slot: "vitality", boost_stat: "hp", boost_value: 300, cost: 200, rarity: "legendary", tier: "mythic", icon: "💚", desc: "Regenerates endlessly." },
+  { name: "Stormstep Talaria", slot: "boots", boost_stat: "speed", boost_value: 90, cost: 150, rarity: "legendary", tier: "mythic", icon: "🌪️", desc: "Outrun the thunder." },
+
+  // ===== DIVINE TIER (~€100–200 in credits) =====
+  { name: "Sunforge Warhammer", slot: "weapon", boost_stat: "attack", boost_value: 220, cost: 600, rarity: "legendary", tier: "divine", icon: "🔨", desc: "Each swing detonates like a solar flare." },
+  { name: "Celestial Aegis Plate", slot: "armor", boost_stat: "defense", boost_value: 220, cost: 600, rarity: "legendary", tier: "divine", icon: "🕊️", desc: "Blessed by an unknown pantheon." },
+  { name: "Immortal Core", slot: "vitality", boost_stat: "hp", boost_value: 750, cost: 750, rarity: "legendary", tier: "divine", icon: "❤️‍🔥", desc: "A heart that refuses to stop." },
+
+  // ===== COSMIC TIER (~€300–500 in credits) =====
+  { name: "Singularity Lance", slot: "weapon", boost_stat: "attack", boost_value: 500, cost: 1500, rarity: "legendary", tier: "cosmic", icon: "🌌", desc: "Pierces reality itself." },
+  { name: "Eventide Bastion", slot: "armor", boost_stat: "defense", boost_value: 500, cost: 1500, rarity: "legendary", tier: "cosmic", icon: "🌑", desc: "Absorbs the end of worlds." },
+  { name: "Quantum Slipstream Boots", slot: "boots", boost_stat: "speed", boost_value: 500, cost: 2500, rarity: "legendary", tier: "cosmic", icon: "🛸", desc: "Moves before time notices." },
+
+  // ===== OMEGA — the single strongest item on the platform (~€950 in credits) =====
+  { name: "Omega Crown of Infinity", slot: "artifact", boost_stat: "attack", boost_value: 2000, cost: 4800, rarity: "legendary", tier: "omega", icon: "👑", desc: "THE ULTIMATE RELIC — +2000 Attack. Only true legends wear it." },
 ];
 
 const rarityColors: Record<string, string> = {
@@ -48,7 +71,23 @@ const rarityColors: Record<string, string> = {
   rare: "bg-blue-500/20 text-blue-400 border-blue-500/30",
   epic: "bg-purple-500/20 text-purple-400 border-purple-500/30",
   legendary: "bg-amber-500/20 text-amber-400 border-amber-500/30",
+  mythic: "bg-rose-500/20 text-rose-400 border-rose-500/40",
+  divine: "bg-sky-500/20 text-sky-300 border-sky-400/40",
+  cosmic: "bg-indigo-500/20 text-indigo-300 border-indigo-400/40",
+  omega: "bg-gradient-to-r from-amber-500/30 to-fuchsia-500/30 text-amber-200 border-amber-400/50",
 };
+
+const tierBar: Record<string, string> = {
+  common: "from-gray-500 to-gray-400",
+  rare: "from-blue-500 to-blue-400",
+  epic: "from-purple-500 to-pink-400",
+  legendary: "from-amber-500 to-yellow-400",
+  mythic: "from-rose-500 to-orange-400",
+  divine: "from-sky-400 to-cyan-300",
+  cosmic: "from-indigo-500 to-fuchsia-400",
+  omega: "from-amber-400 via-fuchsia-500 to-cyan-400",
+};
+
 
 const statIcons: Record<string, typeof Heart> = {
   hp: Heart,
