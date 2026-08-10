@@ -4,7 +4,18 @@ import { toast } from "sonner";
 
 async function invokeAction<T = any>(action: string, body: Record<string, any>): Promise<T> {
   const { data, error } = await supabase.functions.invoke("wellness-ai", { body: { action, ...body } });
-  if (error) throw new Error(error.message);
+  if (error) {
+    // supabase-js hides the response body behind a generic "non-2xx" message — read it.
+    let message = error.message;
+    try {
+      const res = (error as any).context;
+      if (res && typeof res.json === "function") {
+        const parsed = await res.clone().json();
+        if (parsed?.error) message = parsed.error;
+      }
+    } catch { /* keep original message */ }
+    throw new Error(message);
+  }
   if (data?.error) throw new Error(data.error);
   return data as T;
 }
@@ -15,10 +26,11 @@ export function useSafetyCredits() {
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return null;
-      const { data } = await supabase.from("safety_ai_credits").select("*").eq("user_id", user.id).maybeSingle();
+      const { data } = await supabase.from("ai_credits").select("*").eq("user_id", user.id).maybeSingle();
       return data;
     } });
 }
+
 
 export function useBullyDecoder() {
   const qc = useQueryClient();
