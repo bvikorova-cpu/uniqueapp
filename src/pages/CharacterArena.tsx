@@ -40,6 +40,7 @@ const TOOLS = [
 const CharacterArena = () => {
   usePaymentVerification();
   const [activeView, setActiveView] = useState<ActiveView>("dashboard");
+  const queryClient = useQueryClient();
 
   const { data: stats } = useQuery({
     queryKey: ["character-arena-stats"],
