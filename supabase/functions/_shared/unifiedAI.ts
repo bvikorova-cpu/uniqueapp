@@ -1,4 +1,3 @@
-import "../_shared/aiRedirect.ts";
 import "./aiRedirect.ts";
 import { hasDirectGemini, tryDirectGeminiChat } from "./geminiDirect.ts";
 
