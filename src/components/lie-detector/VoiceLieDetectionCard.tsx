@@ -5,6 +5,8 @@ import { Mic, Square, Loader2, AlertTriangle } from "lucide-react";
 import { useVoiceLieDetection } from "@/hooks/useLieDetectorAdvanced";
 import { Badge } from "@/components/ui/badge";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { requestMicStream } from "@/lib/micErrors";
+
 
 export const VoiceLieDetectionCard = () => {
   const [recording, setRecording] = useState(false);
