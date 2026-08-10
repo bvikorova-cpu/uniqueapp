@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Mic, Square, Bot, ShieldCheck, AlertOctagon } from "lucide-react";
 import { useDeepfakeCheck } from "@/hooks/useLieDetectorTuning";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { requestMicStream } from "@/lib/micErrors";
+
 
 export const VoiceCloneDetectorCard = () => {
   const [recording, setRecording] = useState(false);
