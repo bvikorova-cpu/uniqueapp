@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-const DRAW_COST = 5;
+const DRAW_COST = 1;
 const TOTAL_CARDS = 200;
 const UNITAS_COST = 10000;
 
@@ -185,7 +185,7 @@ export const HeroCardCollection = () => {
       <FloatingHowItWorks
         title="Hero Card Collection — How it works"
         steps={[
-          { title: "Draw a card", desc: `Each draw costs ${DRAW_COST} AI credits and reveals one of the 200 fixed hero cards — you can also draw heroes you already own.` },
+          { title: "Draw a card", desc: `Each draw costs ${DRAW_COST} AI credit${DRAW_COST === 1 ? "" : "s"} and reveals one of the 200 fixed hero cards — you can also draw heroes you already own.` },
           { title: "Decide ✓ or ✗", desc: "Tap ✓ to add the hero to your collection (duplicates stack up), or ✗ to release it back into the pool." },
           { title: "Chase rarities", desc: "Cards come as Common, Rare, Epic and Legendary — legendary heroes have the strongest stats." },
           { title: "Light up the album", desc: "All 200 cards are visible from the start. They stay pale until you own at least one copy, then they light up in full colour with your copy count." },
@@ -367,11 +367,11 @@ export const HeroCardCollection = () => {
                     </div>
                     <h3 className="font-black mb-1">Draw a hero card</h3>
                     <p className="text-xs text-muted-foreground mb-5">
-                      {DRAW_COST} AI credits per draw — any of the 200 heroes can appear, including ones you already own.
+                      {DRAW_COST} AI credit{DRAW_COST === 1 ? "" : "s"} per draw — any of the 200 heroes can appear, including ones you already own.
                     </p>
                     <Button onClick={draw} disabled={drawing} className="gap-2">
                       {drawing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                      {drawing ? "Drawing…" : `Draw for ${DRAW_COST} credits`}
+                      {drawing ? "Drawing…" : `Draw for ${DRAW_COST} credit${DRAW_COST === 1 ? "" : "s"}`}
                     </Button>
                   </Card>
                 </motion.div>
