@@ -309,10 +309,12 @@ export const HeroCardCollection = () => {
 
 
       <Tabs defaultValue="draw">
-        <TabsList className="grid grid-cols-2 w-full">
+        <TabsList className="grid grid-cols-3 w-full">
           <TabsTrigger value="draw" className="gap-2"><Sparkles className="h-4 w-4" /> Draw</TabsTrigger>
           <TabsTrigger value="mine" className="gap-2"><Library className="h-4 w-4" /> My Cards</TabsTrigger>
+          <TabsTrigger value="ranking" className="gap-2"><Trophy className="h-4 w-4" /> Ranking</TabsTrigger>
         </TabsList>
+
 
         <TabsContent value="draw" className="pt-4">
           <div className="max-w-md mx-auto">
