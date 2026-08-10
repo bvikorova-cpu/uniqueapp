@@ -64,17 +64,21 @@ export const HeroCardCollection = () => {
   const [current, setCurrent] = useState<HeroCard | null>(null);
   const [exitDir, setExitDir] = useState<"left" | "right" | null>(null);
 
+  const [visibleCount, setVisibleCount] = useState(24);
+
   const { data: catalogue = [], isLoading: loadingCatalogue } = useQuery({
     queryKey: ["hero-collectibles-catalogue"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("hero_collectibles")
-        .select("*")
+        .select("id, code, name, archetype, rarity, emoji, gradient, image_url, hp, attack, defense, speed")
         .order("code", { ascending: true });
       if (error) throw error;
       return (data ?? []) as unknown as HeroCard[];
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 
   const { data: ownedCounts = {}, isLoading } = useQuery({
@@ -93,26 +97,36 @@ export const HeroCardCollection = () => {
       }
       return counts;
     },
+    staleTime: 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 
   // Free background artwork backfill so the album shows real hero images.
+  // Runs in larger batches and only refreshes the catalogue occasionally so the
+  // album stays responsive instead of re-fetching 200 rows after every batch.
   const [artMissing, setArtMissing] = useState(0);
   useEffect(() => {
     let stop = false;
     const run = async () => {
+      let batches = 0;
       while (!stop) {
         const { data, error } = await supabase.functions.invoke("hero-card-draw", {
-          body: { action: "backfill_art", limit: 3 },
+          body: { action: "backfill_art", limit: 8 },
         });
-        if (error || !data || data.error) return;
+        if (stop || error || !data || data.error) return;
         setArtMissing(data.missing ?? 0);
-        queryClient.invalidateQueries({ queryKey: ["hero-collectibles-catalogue"] });
+        batches += 1;
+        if (batches % 3 === 0 || !data.missing) {
+          queryClient.invalidateQueries({ queryKey: ["hero-collectibles-catalogue"] });
+        }
         if (!data.missing || !data.generated) return;
+        await new Promise((r) => setTimeout(r, 1200));
       }
     };
-    run();
-    return () => { stop = true; };
+    const idle = window.setTimeout(run, 800);
+    return () => { stop = true; window.clearTimeout(idle); };
   }, [queryClient]);
+
 
 
 
@@ -411,20 +425,24 @@ export const HeroCardCollection = () => {
           {isLoading || loadingCatalogue ? (
             <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
           ) : (
+            <>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              {catalogue.map((c, i) => {
+              {catalogue.slice(0, visibleCount).map((c) => {
                 const count = ownedCounts[c.id] ?? 0;
                 const owned = count > 0;
                 return (
-                  <motion.div key={c.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i, 40) * 0.015 }}>
-                    <Card className="overflow-hidden border-border/30 bg-card/90 transition-all">
+                  <div key={c.id}>
+                    <Card className="overflow-hidden border-border/30 bg-card/90">
                       <div className={`relative aspect-[4/5] bg-gradient-to-br ${c.gradient}`}>
                         {c.image_url ? (
                           <img
                             src={c.image_url}
                             alt={`${c.name} hero card`}
-                            className={`absolute inset-0 w-full h-full object-cover transition-all ${owned ? "" : "opacity-70 saturate-[0.6]"}`}
+                            className={`absolute inset-0 w-full h-full object-cover ${owned ? "" : "opacity-70 saturate-[0.6]"}`}
                             loading="lazy"
+                            decoding="async"
+                            width={320}
+                            height={400}
                           />
                         ) : (
                           <div className={`absolute inset-0 flex items-center justify-center text-4xl ${owned ? "" : "opacity-70"}`}>{c.emoji}</div>
@@ -448,11 +466,20 @@ export const HeroCardCollection = () => {
                         </p>
                       </div>
                     </Card>
-                  </motion.div>
+                  </div>
                 );
               })}
             </div>
+            {visibleCount < catalogue.length && (
+              <div className="mt-4 flex justify-center">
+                <Button variant="outline" onClick={() => setVisibleCount((n) => n + 24)}>
+                  Show more cards ({catalogue.length - visibleCount} left)
+                </Button>
+              </div>
+            )}
+            </>
           )}
+
         </TabsContent>
 
       </Tabs>
