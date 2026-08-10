@@ -34,11 +34,14 @@ export const CharacterFusionLab = () => {
     },
     onSuccess: (result) => {
       setFusionResult(result);
-      toast.success("Fusion complete! A new warrior has been born!");
+      toast.success(`Fusion complete — ${result?.name ?? "a new warrior"} was born!`);
       queryClient.invalidateQueries({ queryKey: ["characters"] });
+      queryClient.invalidateQueries({ queryKey: ["user-characters"] });
       queryClient.invalidateQueries({ queryKey: ["character-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
     },
     onError: (error: Error) => toast.error(error.message || "Fusion failed") });
+
 
   const selectedChar1 = characters?.find((c) => c.id === char1);
   const selectedChar2 = characters?.find((c) => c.id === char2);
