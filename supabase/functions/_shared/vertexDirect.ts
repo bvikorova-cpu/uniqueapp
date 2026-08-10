@@ -152,3 +152,63 @@ export async function tryVertexChat(body: Record<string, unknown>): Promise<any 
     return null;
   }
 }
+
+/**
+ * Speech-to-text on Vertex AI (postpay) using Gemini's native audio input.
+ * Returns the transcript, or null when Vertex is unavailable / failed so the
+ * caller can fall back to the Lovable AI Gateway.
+ */
+export async function tryVertexTranscribe(
+  audioBase64: string,
+  mime: string,
+): Promise<string | null> {
+  const sa = getServiceAccount();
+  if (!sa) return null;
+
+  const projectId = Deno.env.get("GCP_PROJECT_ID") || sa.project_id;
+  const location = Deno.env.get("GCP_LOCATION") || "us-central1";
+  if (!projectId) return null;
+
+  const token = await getAccessToken(sa);
+  if (!token) return null;
+
+  const model = "gemini-2.5-flash";
+  const url = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`;
+
+  try {
+    const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
+    const res = await rawFetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({
+        contents: [{
+          role: "user",
+          parts: [
+            { inlineData: { mimeType: mime, data: audioBase64 } },
+            {
+              text:
+                "Transcribe the spoken words in this audio verbatim. " +
+                "Return ONLY the transcript text, with no commentary, labels or timestamps. " +
+                "If there is no intelligible speech, return an empty response.",
+            },
+          ],
+        }],
+        generationConfig: { temperature: 0, maxOutputTokens: 4096 },
+      }),
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      console.warn(`[vertexDirect] transcribe ${res.status}, falling back:`, text.slice(0, 300));
+      return null;
+    }
+    const data = await res.json();
+    const parts = data?.candidates?.[0]?.content?.parts;
+    const transcript = Array.isArray(parts)
+      ? parts.map((p: any) => (typeof p?.text === "string" ? p.text : "")).join(" ").trim()
+      : "";
+    return transcript || null;
+  } catch (e) {
+    console.warn("[vertexDirect] transcribe error, falling back:", e instanceof Error ? e.message : String(e));
+    return null;
+  }
+}
