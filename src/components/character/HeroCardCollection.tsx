@@ -76,12 +76,16 @@ export const HeroCardCollection = () => {
         .select("id, code, name, archetype, rarity, emoji, gradient, image_url, hp, attack, defense, speed")
         .order("code", { ascending: true });
       if (error) throw error;
-      return (data ?? []) as unknown as HeroCard[];
+      const rows = (data ?? []) as unknown as HeroCard[];
+      writeCachedCatalogue(rows);
+      return rows;
     },
+    initialData: () => readCachedCatalogue<HeroCard[]>(),
     staleTime: 10 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
+
 
   const { data: ownedCounts = {}, isLoading } = useQuery({
     queryKey: ["hero-collection"],
