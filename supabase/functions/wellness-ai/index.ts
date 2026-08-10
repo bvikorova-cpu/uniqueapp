@@ -149,7 +149,7 @@ serve(async (req) => {
       const { data: saved } = await supabase.from("safety_bully_decoder").insert({ user_id: user.id, input_text, severity: parsed.severity, bully_type: parsed.bully_type,
         emotional_impact: parsed.emotional_impact, suggested_response: parsed.suggested_response,
         action_steps: parsed.action_steps || [], red_flags: parsed.red_flags || [], credits_used: COST }).select().single();
-      result = saved;
+      result = { ...saved, ...parsed };
     } else if (action === "evidence") {
       const { title, incidents } = body;
       if (!title || !Array.isArray(incidents) || incidents.length === 0) throw new Error("Title + incidents required");
@@ -163,7 +163,7 @@ serve(async (req) => {
       const { data: saved } = await supabase.from("safety_evidence_packs").insert({ user_id: user.id, title, incident_summary: parsed.incident_summary,
         timeline: parsed.timeline || [], recommended_recipients: parsed.recommended_recipients || [],
         formal_report: parsed.formal_report, credits_used: COST }).select().single();
-      result = saved;
+      result = { ...saved, ...parsed };
     } else if (action === "coach") {
       const { scenario, user_response } = body;
       if (!scenario || !user_response) throw new Error("Scenario + response required");
@@ -178,7 +178,7 @@ serve(async (req) => {
         assertiveness_score: parsed.assertiveness_score, empathy_score: parsed.empathy_score,
         safety_score: parsed.safety_score, feedback: parsed.feedback,
         improved_response: parsed.improved_response, next_steps: parsed.next_steps || [], credits_used: COST }).select().single();
-      result = saved;
+      result = { ...saved, ...parsed };
     } else if (action === "riskscan") {
       const { scan_input } = body;
       if (!scan_input || scan_input.length < 10) throw new Error("Input too short");
@@ -193,7 +193,7 @@ serve(async (req) => {
         overall_score: parsed.overall_score, threat_patterns: parsed.threat_patterns || [],
         flagged_phrases: parsed.flagged_phrases || [], safety_recommendations: parsed.safety_recommendations || [],
         credits_used: COST }).select().single();
-      result = saved;
+      result = { ...saved, ...parsed };
     } else if (action === "weekly_insight") {
       const { entries, mood_logs } = body;
       if (!Array.isArray(entries)) throw new Error("entries[] required");
@@ -209,7 +209,7 @@ serve(async (req) => {
       const wsStr = weekStart.toISOString().slice(0, 10);
       const { data: saved } = await supabase.from("safety_journal_insights").upsert({ user_id: user.id, week_start: wsStr, insight_text: parsed.insight_text || "Stay strong.",
         trend: parsed.trend, recommendations: parsed.recommendations || [], credits_used: COST }, { onConflict: "user_id,week_start" }).select().single();
-      result = saved;
+      result = { ...saved, ...parsed };
     } else if (action === "roleplay_score") {
       const { scenario_id, scenario, user_response, difficulty = "easy", mode = "text" } = body;
       if (!scenario || !user_response) throw new Error("Scenario + response required");
@@ -404,7 +404,7 @@ serve(async (req) => {
       const { data: saved } = await supabase.from("wellness_cbt_reframes").insert({ user_id: user.id, situation, negative_thought, emotion, intensity_before,
         distortions: parsed.distortions || [], reframe: parsed.reframe,
         balanced_thought: parsed.balanced_thought, action_step: parsed.action_step, credits_used: COST }).select().single();
-      result = saved;
+      result = { ...saved, ...parsed };
     } else if (action === "mh_assess") {
       const { assessment_type, answers, total_score } = body;
       if (!assessment_type || !Array.isArray(answers)) throw new Error("assessment_type + answers[] required");
@@ -418,7 +418,7 @@ serve(async (req) => {
       const { data: saved } = await supabase.from("wellness_mh_assessments").insert({ user_id: user.id, assessment_type, answers, total_score,
         severity: parsed.severity, ai_insight: parsed.insight,
         recommended_actions: parsed.actions || [], credits_used: COST }).select().single();
-      result = saved;
+      result = { ...saved, ...parsed };
     } else if (action === "walking") {
       const { intention, environment, duration_minutes = 10, voice_id = "EXAVITQu4vr4xnSDxMaL" } = body;
       if (!intention) throw new Error("Intention required");
@@ -453,7 +453,7 @@ serve(async (req) => {
         toxicity_score: parsed.toxicity_score, categories: parsed.categories || {},
         ai_analysis: parsed.ai_analysis, recommended_actions: parsed.recommended_actions || [],
         credits_used: COST }).select().single();
-      result = saved;
+      result = { ...saved, ...parsed };
     } else if (action === "platreport") {
       const { platform, incident_summary, evidence_urls } = body;
       if (!platform || !incident_summary) throw new Error("Platform + summary required");
@@ -467,7 +467,7 @@ serve(async (req) => {
       const { data: saved } = await supabase.from("safety_platform_reports").insert({ user_id: user.id, platform, incident_summary,
         evidence_urls: evidence_urls || [], generated_letter: letter,
         status: "draft", credits_used: COST }).select().single();
-      result = saved;
+      result = { ...saved, ...parsed };
     } else if (action === "restorative") {
       const { recipient_type, context, tone = "firm" } = body;
       if (!recipient_type || !context) throw new Error("Recipient + context required");
@@ -480,7 +480,7 @@ serve(async (req) => {
       const letter = aiData.choices?.[0]?.message?.content || "";
       const { data: saved } = await supabase.from("safety_restorative_letters").insert({ user_id: user.id, recipient_type, context, tone,
         generated_letter: letter, credits_used: COST }).select().single();
-      result = saved;
+      result = { ...saved, ...parsed };
     } else if (action === "pulse") {
       const { mood_score, anxiety_score, safety_score } = body;
       if ([mood_score, anxiety_score, safety_score].some(v => typeof v !== "number")) throw new Error("Scores required");
@@ -493,7 +493,7 @@ serve(async (req) => {
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
       const { data: saved } = await supabase.from("safety_wellbeing_pulse").insert({ user_id: user.id, mood_score, anxiety_score, safety_score,
         ai_risk_level: parsed.risk_level, ai_advice: parsed.advice, credits_used: COST }).select().single();
-      result = saved;
+      result = { ...saved, ...parsed };
     } else if (action === "affirmation") {
       const { theme = "resilience" } = body;
       const aiData = await callAI(LOVABLE_API_KEY, {
@@ -505,7 +505,7 @@ serve(async (req) => {
       const affirmation = (aiData.choices?.[0]?.message?.content || "").trim();
       const today = new Date().toISOString().slice(0, 10);
       const { data: saved } = await supabase.from("safety_daily_affirmations").upsert({ user_id: user.id, affirmation, theme, for_date: today, credits_used: COST }, { onConflict: "user_id,for_date" }).select().single();
-      result = saved;
+      result = { ...saved, ...parsed };
     } else if (action === "bystander") {
       const { scenario_key, choice } = body;
       if (!scenario_key || !choice) throw new Error("Scenario + choice required");
@@ -518,7 +518,7 @@ serve(async (req) => {
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
       const { data: saved } = await supabase.from("safety_bystander_scores").insert({ user_id: user.id, scenario_key, choice,
         score: parsed.score || 0, feedback: parsed.feedback }).select().single();
-      result = saved;
+      result = { ...saved, ...parsed };
     }
 
     // Deduct from the unified pool + always write usage history (ledger trigger records reason/source)
