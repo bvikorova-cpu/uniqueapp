@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { CardCollectionLeaderboard } from "./CardCollectionLeaderboard";
 import { CardDetailModal } from "./CardDetailModal";
+import { getCategoryCover } from "./categoryCovers";
+
 
 import { warmCollectionCardImages, readCachedCategory, writeCachedCategory } from "@/lib/collectionCardCache";
 
@@ -413,9 +415,14 @@ export const CardCategoryCollection = ({ category }: Props) => {
               ) : (
                 <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                   <Card className="p-8 text-center border-dashed border-border/40 bg-card/70">
-                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${category.gradient} flex items-center justify-center mx-auto mb-4 text-3xl`}>
-                      {category.emoji}
+                    <div className={`w-24 h-24 rounded-2xl overflow-hidden bg-gradient-to-br ${category.gradient} flex items-center justify-center mx-auto mb-4 text-3xl`}>
+                      {getCategoryCover(category.slug) ? (
+                        <img src={getCategoryCover(category.slug)} alt="" loading="lazy" className="w-full h-full object-cover" />
+                      ) : (
+                        category.emoji
+                      )}
                     </div>
+
                     <h3 className="font-black mb-1">Draw a {category.name} card</h3>
                     <p className="text-xs text-muted-foreground mb-5">
                       {DRAW_COST} AI credit per draw — any of the {CARDS_PER_CATEGORY} cards can appear, including ones you already own.
