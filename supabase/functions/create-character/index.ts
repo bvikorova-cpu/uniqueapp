@@ -26,6 +26,49 @@ serve(async (req) => {
     const category = String(body?.category ?? "").trim().slice(0, 40);
     const description = String(body?.description ?? "").trim().slice(0, 1000);
     const isPremium = !!body?.isPremium;
+    const action = String(body?.action ?? "create");
+    const characterId = String(body?.characterId ?? "").trim();
+    const existingDescription = String(body?.existingDescription ?? "").trim().slice(0, 400);
+
+    // ── Regenerate portrait only (3 credits) ──────────────────────────────
+    if (action === "regenerate_portrait") {
+      if (!characterId || !name) return j({ error: "Character id and name are required" }, 400);
+      const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+      const { data: charRow } = await admin.from("characters")
+        .select("description, category").eq("id", characterId).eq("user_id", user.id).maybeSingle();
+      if (!charRow) return j({ error: "Character not found" }, 404);
+
+      const cost2 = 3;
+      const denied2 = await deductAICredits(user.id, cost2, "character_portrait_regen");
+      if (denied2) return denied2;
+      try {
+        const visual = existingDescription || String(charRow.description ?? "").slice(0, 400);
+        const img = await generateOpenAIImage(
+          `Epic fantasy battle character portrait of "${name}", a ${charRow.category ?? category} warrior. ${visual}. Dramatic cinematic lighting, highly detailed digital painting, dynamic heroic pose, full upper body, vivid colors, game character art. No text, no watermark, no logos.`,
+          "1024x1024",
+        );
+        let imageUrl: string | null = null;
+        const b64 = img.b64_json;
+        if (b64) {
+          const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+          const path = `characters/${user.id}/${Date.now()}.png`;
+          const { error: upErr } = await admin.storage.from("ai-studio")
+            .upload(path, bytes, { contentType: "image/png", upsert: true });
+          if (upErr) throw upErr;
+          imageUrl = admin.storage.from("ai-studio").getPublicUrl(path).data.publicUrl;
+          await admin.from("characters").update({ image_url: imageUrl }).eq("id", characterId);
+        } else if (img.url) {
+          imageUrl = img.url;
+          await admin.from("characters").update({ image_url: imageUrl }).eq("id", characterId);
+        }
+        return j({ imageUrl, creditsUsed: cost2 });
+      } catch (err) {
+        await refundAICredits(user.id, cost2, "character_portrait_regen");
+        console.error("[create-character] portrait regen failed", err);
+        return j({ error: "Portrait regeneration failed — credits refunded." }, 502);
+      }
+    }
+
     if (!name || !category) return j({ error: "Name and category are required" }, 400);
 
     // Unified AI credits: 5 for a basic warrior, 15 for a premium one.
