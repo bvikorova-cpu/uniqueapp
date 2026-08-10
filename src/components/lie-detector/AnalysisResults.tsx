@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, CheckCircle, XCircle, TrendingUp, Brain, MessageSquare, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { AiMarkdown } from "../common/AiMarkdown";
 
 interface AnalysisResultsProps {
   analysis: {
@@ -114,7 +115,25 @@ export const AnalysisResults = ({ analysis }: AnalysisResultsProps) => {
         </Card>
       )}
 
+      {(results.verdict || results.summary) && (
+        <Card className="bg-card/60 backdrop-blur-sm border-border/50">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <MessageSquare className="h-4 w-4 text-primary" />
+              Detailed Assessment
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {results.verdict && (
+              <p className="text-sm font-semibold text-foreground leading-relaxed">{String(results.verdict)}</p>
+            )}
+            {results.summary && <AiMarkdown content={String(results.summary)} className="text-xs sm:text-sm" />}
+          </CardContent>
+        </Card>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
         {results.deception_indicators && (
           <Card className="bg-card/60 backdrop-blur-sm border-border/50">
             <CardHeader className="pb-3">
@@ -175,6 +194,36 @@ export const AnalysisResults = ({ analysis }: AnalysisResultsProps) => {
           </CardContent>
         </Card>
       )}
+
+
+      {(() => {
+        const shown = new Set([
+          "truthfulness_score","overall_truthfulness_score","credibility_score","confidence","confidence_level",
+          "verdict","summary","deception_indicators","manipulation_tactics","emotional_analysis","recommendations","raw_analysis",
+        ]);
+        const label = (k: string) => k.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+        const entries = Object.entries(results || {}).filter(
+          ([k, v]) => !shown.has(k) && v != null && (Array.isArray(v) ? v.length > 0 : typeof v === "string" ? v.trim().length > 0 : false),
+        );
+        if (entries.length === 0) return null;
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {entries.map(([k, v]) => (
+              <Card key={k} className="bg-card/60 backdrop-blur-sm border-border/50">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <Brain className="h-4 w-4 text-primary" />
+                    {label(k)}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {Array.isArray(v) ? renderArray(v as any[]) : <AiMarkdown content={String(v)} className="text-xs sm:text-sm" />}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        );
+      })()}
 
       {results.raw_analysis && !score && (
         <Card className="bg-card/60 backdrop-blur-sm border-border/50">
