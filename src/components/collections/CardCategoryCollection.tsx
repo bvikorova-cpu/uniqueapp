@@ -423,7 +423,14 @@ export const CardCategoryCollection = ({ category }: Props) => {
                   const count = ownedCounts[c.id] ?? 0;
                   const owned = count > 0;
                   return (
-                    <Card key={c.id} className="overflow-hidden border-border/30 bg-card/90">
+                    <Card
+                      key={c.id}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => setDetailCard(c)}
+                      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setDetailCard(c); } }}
+                      className="overflow-hidden border-border/30 bg-card/90 cursor-pointer transition-transform hover:scale-[1.02] hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    >
                       <div className={`relative aspect-[4/5] bg-gradient-to-br ${c.gradient}`}>
                         {c.image_url ? (
                           <img
@@ -453,6 +460,7 @@ export const CardCategoryCollection = ({ category }: Props) => {
                     </Card>
                   );
                 })}
+
               </div>
               {visibleCount < catalogue.length && (
                 <div className="mt-4 flex justify-center">
