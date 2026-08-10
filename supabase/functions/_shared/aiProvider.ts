@@ -2,8 +2,8 @@ import "./aiRedirect.ts";
 /**
  * Centralized AI Provider Module (legacy compatibility wrapper)
  *
- * Single point of entry for all AI API calls. Now backed by unifiedAI.ts.
- * Lovable AI only. OpenAI is never called.
+ * Vertex AI (postpay) is primary. Lovable AI Gateway is fallback only.
+ * OpenAI is never called directly.
  */
 
 import { callUnifiedAI, callUnifiedAIJSON, UnifiedMessage } from "./unifiedAI.ts";
