@@ -163,7 +163,7 @@ export const BattleArena = ({ character1, character2, onBattleEnd }: BattleArena
       const mult = move === "heavy" ? 1.75 : move === "special" ? 2.6 : 1;
       const comboBonus = 1 + Math.min(0.4, combo * 0.08) * (side === 1 ? 1 : 0.6);
       const critChance = 0.12 + attacker.speed / 600 + (move === "heavy" ? 0.1 : 0);
-      const isCrit = move !== "guard" && Math.random() < critChance;
+      const isCrit = Math.random() < critChance;
       const reduction = defender.defense * 0.5 * (move === "special" ? 0.4 : 1);
       let dmg = Math.max(
         1,
