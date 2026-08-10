@@ -1,39 +1,13 @@
 import { useState } from "react";
-import { Shield, MessageSquare, Users, Brain, History, AlertTriangle, ArrowLeft, Coins, Sparkles, Crosshair, Zap, Trophy, Briefcase } from "lucide-react";
+import { MessageSquare, Users, Brain, History, AlertTriangle, ArrowLeft, Coins, Sparkles } from "lucide-react";
 import { LieDetectorCinematicHero } from "@/components/lie-detector/LieDetectorCinematicHero";
-import { VoiceLieDetectionCard } from "@/components/lie-detector/VoiceLieDetectionCard";
 import { ScreenshotForensicsCard } from "@/components/lie-detector/ScreenshotForensicsCard";
-import { ConversationTimelineCard } from "@/components/lie-detector/ConversationTimelineCard";
-import { TruthReportCard } from "@/components/lie-detector/TruthReportCard";
-import { LiveLieCoachCard } from "@/components/lie-detector/LiveLieCoachCard";
-import { MultiPersonProfileCard } from "@/components/lie-detector/MultiPersonProfileCard";
-import { VoiceCloneDetectorCard } from "@/components/lie-detector/VoiceCloneDetectorCard";
-import { DailySpotTheLieCard } from "@/components/lie-detector/DailySpotTheLieCard";
-import { WatermarkedPdfReportCard } from "@/components/lie-detector/WatermarkedPdfReportCard";
-import { InterrogationModeToggle } from "@/components/lie-detector/InterrogationModeToggle";
 import { LieDetectorCredits } from "@/components/lie-detector/LieDetectorCredits";
-import { LieDetectorStreak } from "@/components/lie-detector/LieDetectorStreak";
-import { LieDetectorProgressPreview } from "@/components/lie-detector/LieDetectorProgressPreview";
-import { LieDetectorAchievements } from "@/components/lie-detector/LieDetectorAchievements";
 import { LieDetectorToolCard } from "@/components/lie-detector/LieDetectorToolCard";
-import { LieDetectorTestimonials } from "@/components/lie-detector/LieDetectorTestimonials";
-import { LieDetectorComparisonTable } from "@/components/lie-detector/LieDetectorComparisonTable";
 import { SingleMessageAnalysis } from "@/components/lie-detector/SingleMessageAnalysis";
 import { ThreadAnalysis } from "@/components/lie-detector/ThreadAnalysis";
 import { PsychologicalProfile } from "@/components/lie-detector/PsychologicalProfile";
 import { AnalysisHistory } from "@/components/lie-detector/AnalysisHistory";
-import { PolygraphCard } from "@/components/lie-detector/PolygraphCard";
-import { CrossExaminationCard } from "@/components/lie-detector/CrossExaminationCard";
-import { VoiceHeatmapCard } from "@/components/lie-detector/VoiceHeatmapCard";
-import { BodyLanguageScanCard } from "@/components/lie-detector/BodyLanguageScanCard";
-import { ComparisonModeCard } from "@/components/lie-detector/ComparisonModeCard";
-import { BulkUploadCard } from "@/components/lie-detector/BulkUploadCard";
-import { ApiKeysCard } from "@/components/lie-detector/ApiKeysCard";
-import { MonitoringJobsCard } from "@/components/lie-detector/MonitoringJobsCard";
-import { CaseFilesCard } from "@/components/lie-detector/CaseFilesCard";
-import { DetectiveRankCard } from "@/components/lie-detector/DetectiveRankCard";
-import { SocialCardGenerator } from "@/components/lie-detector/SocialCardGenerator";
-import { LieDetectorParityPack } from "@/components/lie-detector/LieDetectorParityPack";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -114,10 +88,7 @@ const LieDetector = () => {
 
               <HeroRewardedAd sectionKey="page_liedetector" />
 
-              {/* Interrogation Mode Toggle */}
-              <InterrogationModeToggle />
-
-              {/* Forensic AI Suite (original 4) */}
+              {/* Screenshot Forensics */}
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <div className="h-px flex-1 bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
@@ -125,70 +96,7 @@ const LieDetector = () => {
                   <div className="h-px flex-1 bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <VoiceLieDetectionCard />
                   <ScreenshotForensicsCard />
-                  <ConversationTimelineCard />
-                  <TruthReportCard />
-                </div>
-              </div>
-
-              {/* Advanced Forensics */}
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-500/40 to-transparent" />
-                  <span className="text-xs font-mono uppercase tracking-widest text-amber-400 flex items-center gap-1">
-                    <Crosshair className="w-3 h-3" /> Advanced Forensics
-                  </span>
-                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-500/40 to-transparent" />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <LiveLieCoachCard />
-                  <MultiPersonProfileCard />
-                  <VoiceCloneDetectorCard />
-                  <WatermarkedPdfReportCard />
-                </div>
-              </div>
-
-              {/* PRO SUITE — Premium AI Tools */}
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/40 to-transparent" />
-                  <span className="text-xs font-mono uppercase tracking-widest text-purple-400 flex items-center gap-1">
-                    <Zap className="w-3 h-3" /> Pro Suite — Elite Forensics
-                  </span>
-                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/40 to-transparent" />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <PolygraphCard />
-                  <CrossExaminationCard />
-                  <VoiceHeatmapCard />
-                  <BodyLanguageScanCard />
-                  <ComparisonModeCard />
-                  <BulkUploadCard />
-                </div>
-              </div>
-
-              {/* Parity Pack — Conversational Forensics (8 new AI tools) */}
-              <LieDetectorParityPack />
-
-              {/* Daily Challenge + Leaderboard */}
-              <DailySpotTheLieCard />
-
-              {/* Detective Workspace */}
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-yellow-500/40 to-transparent" />
-                  <span className="text-xs font-mono uppercase tracking-widest text-yellow-400 flex items-center gap-1">
-                    <Briefcase className="w-3 h-3" /> Detective Workspace
-                  </span>
-                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-yellow-500/40 to-transparent" />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <DetectiveRankCard />
-                  <CaseFilesCard />
-                  <MonitoringJobsCard />
-                  <SocialCardGenerator />
-                  <ApiKeysCard />
                 </div>
               </div>
 
@@ -217,32 +125,16 @@ const LieDetector = () => {
                 </Button>
               </motion.div>
 
-              {/* 3-Column Engagement Row */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <LieDetectorStreak />
-                <LieDetectorProgressPreview />
-                <LieDetectorAchievements />
-              </div>
-
-              {/* Main Content: Tools + Sidebar */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {DETECTOR_TOOLS.map((tool, i) => (
-                      <LieDetectorToolCard
-                        key={tool.id}
-                        tool={tool}
-                        onSelect={() => openTool(tool.id)}
-                        index={i}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <LieDetectorTestimonials />
-                  <LieDetectorComparisonTable />
-                </div>
+              {/* Core Analysis Tools */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {DETECTOR_TOOLS.map((tool, i) => (
+                  <LieDetectorToolCard
+                    key={tool.id}
+                    tool={tool}
+                    onSelect={() => openTool(tool.id)}
+                    index={i}
+                  />
+                ))}
               </div>
 
               {/* How It Works */}
