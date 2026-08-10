@@ -19,7 +19,7 @@ export function ResponseCoachCard() {
   const [scenario, setScenario] = useState(SCENARIOS[0]);
   const [response, setResponse] = useState("");
   const { items, score } = useResponseCoach();
-  const last = items[0];
+  const last = items[0] as any;
 
   return (
     <>

@@ -16,7 +16,7 @@ export function BullyDecoderCard() {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const { items, decode } = useBullyDecoder();
-  const last = items[0];
+  const last = items[0] as any;
 
   return (
     <>

@@ -15,7 +15,7 @@ export function EvidenceBuilderCard() {
     { date: "", description: "" },
   ]);
   const { items, build } = useEvidenceBuilder();
-  const last = items[0];
+  const last = items[0] as any;
 
   const updateIncident = (i: number, key: "date" | "description", v: string) => {
     setIncidents((prev) => prev.map((inc, idx) => (idx === i ? { ...inc, [key]: v } : inc)));
