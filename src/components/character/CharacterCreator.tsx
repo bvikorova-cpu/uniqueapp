@@ -166,6 +166,38 @@ export const CharacterCreator = () => {
             <><Sparkles className="mr-2 h-5 w-5" /> Forge Warrior ({isPremium ? 15 : 5} Credits)</>
           )}
         </Button>
+
+        {lastCharacter && (
+          <Card className="border-border/30 bg-card/60 p-4">
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              {lastCharacter.imageUrl ? (
+                <img src={lastCharacter.imageUrl} alt={lastCharacter.name}
+                  className={`w-24 h-24 rounded-xl object-cover border border-border/40 ${regenPortrait.isPending ? "opacity-50" : ""}`} />
+              ) : (
+                <div className="w-24 h-24 rounded-xl bg-muted flex items-center justify-center border border-border/40">
+                  <Wand2 className="h-8 w-8 text-muted-foreground" />
+                </div>
+              )}
+              <div className="flex-1 text-center sm:text-left">
+                <p className="font-bold text-foreground">{lastCharacter.name}</p>
+                <p className="text-xs text-muted-foreground mb-2">Portrait {lastCharacter.imageUrl ? "ready" : "missing"}</p>
+                <Button
+                  onClick={() => regenPortrait.mutate()}
+                  disabled={regenPortrait.isPending}
+                  variant="outline"
+                  size="sm"
+                  className="border-amber-500/40 text-amber-600 hover:bg-amber-500/10"
+                >
+                  {regenPortrait.isPending ? (
+                    <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Regenerating...</>
+                  ) : (
+                    <><Wand2 className="mr-2 h-4 w-4" /> Regenerate Portrait (3 Credits)</>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </Card>
+        )}
       </div>
     </Card>
     </>
