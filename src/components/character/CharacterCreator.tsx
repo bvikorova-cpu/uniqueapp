@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { GenerationProgress } from "./GenerationProgress";
+
 
 const CATEGORIES = [
   { name: "Superhero", icon: "🦸", color: "from-blue-500 to-cyan-500" },
