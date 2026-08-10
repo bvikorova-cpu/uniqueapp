@@ -62,6 +62,8 @@ export const CardCategoryCollection = ({ category }: Props) => {
   const [exitDir, setExitDir] = useState<"left" | "right" | null>(null);
   const [visibleCount, setVisibleCount] = useState(24);
   const [artMissing, setArtMissing] = useState(0);
+  const [detailCard, setDetailCard] = useState<CollectibleCard | null>(null);
+
 
   const { data: catalogue = [], isLoading: loadingCatalogue } = useQuery({
     queryKey: ["card-catalogue", slug],
