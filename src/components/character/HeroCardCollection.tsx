@@ -377,13 +377,6 @@ export const HeroCardCollection = () => {
                 </motion.div>
               )}
             </AnimatePresence>
-
-            {current && (
-              <Button variant="ghost" onClick={draw} disabled={drawing || deciding} className="w-full mt-4 gap-2">
-                {drawing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                Draw another ({DRAW_COST} cr)
-              </Button>
-            )}
           </div>
         </TabsContent>
 
