@@ -27,7 +27,7 @@ export function PersonalizedMeditationCard() {
               <div className="flex flex-wrap items-center gap-2 mb-1">
                 <h3 className="font-bold text-foreground">Personalized Meditation</h3>
                 <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-teal-600 text-white shadow-md ring-1 ring-teal-300/40 inline-flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" /> 15 credits
+                  <Sparkles className="w-3 h-3" /> 3 credits
                 </span>
               </div>
               <p className="text-xs text-muted-foreground">AI script + voiceover for your exact need</p>
@@ -53,7 +53,7 @@ export function PersonalizedMeditationCard() {
           disabled={topic.length < 3 || generate.isPending}
           className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 text-white font-bold">
           <Sparkles className="w-4 h-4 mr-2" />
-          {generate.isPending ? "Generating..." : "Generate Meditation (15 credits)"}
+          {generate.isPending ? "Generating..." : "Generate Meditation (3 credits)"}
         </Button>
 
         {meditations.length > 0 && (

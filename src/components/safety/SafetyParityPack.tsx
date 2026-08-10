@@ -31,7 +31,7 @@ export function SafetyParityPack() {
         <ShieldAlert className="w-5 h-5 text-orange-400" />
         <h2 className="text-xl sm:text-2xl font-black text-foreground">Safety Parity Pack</h2>
         <Badge variant="outline" className="border-orange-500/40 text-orange-300">8 new tools</Badge>
-        <Badge variant="outline" className="border-teal-500/40 text-teal-300">6 credits / AI action</Badge>
+        <Badge variant="outline" className="border-teal-500/40 text-teal-300">3 credits / AI action</Badge>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

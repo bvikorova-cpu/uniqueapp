@@ -46,7 +46,7 @@ export function EvidenceBuilderCard() {
               <div className="flex flex-wrap items-center gap-2 mb-1">
                 <h3 className="font-bold text-foreground">Evidence Builder</h3>
                 <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-amber-600 text-white shadow-md ring-1 ring-amber-300/40 inline-flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" /> 15 credits
+                  <Sparkles className="w-3 h-3" /> 3 credits
                 </span>
               </div>
               <p className="text-xs text-muted-foreground">Formal report + timeline for school/police</p>
@@ -109,7 +109,7 @@ export function EvidenceBuilderCard() {
           className="w-full bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white font-bold"
         >
           <Sparkles className="w-4 h-4 mr-2" />
-          {build.isPending ? "Building report..." : "Build Evidence Pack (15 credits)"}
+          {build.isPending ? "Building report..." : "Build Evidence Pack (3 credits)"}
         </Button>
 
         {last && (

@@ -32,7 +32,7 @@ export function BullyDecoderCard() {
               <div className="flex flex-wrap items-center gap-2 mb-1">
                 <h3 className="font-bold text-foreground">Bully Message Decoder</h3>
                 <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-orange-600 text-white shadow-md ring-1 ring-orange-300/40 inline-flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" /> 10 credits
+                  <Sparkles className="w-3 h-3" /> 3 credits
                 </span>
               </div>
               <p className="text-xs text-muted-foreground">AI decodes severity, type, red flags + safe reply</p>
@@ -59,7 +59,7 @@ export function BullyDecoderCard() {
           className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold"
         >
           <Sparkles className="w-4 h-4 mr-2" />
-          {decode.isPending ? "Decoding..." : "Decode Message (10 credits)"}
+          {decode.isPending ? "Decoding..." : "Decode Message (3 credits)"}
         </Button>
 
         {last && (
