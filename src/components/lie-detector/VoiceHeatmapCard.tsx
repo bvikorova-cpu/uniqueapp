@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { useVoiceHeatmap } from "@/hooks/useLieDetectorPro";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { requestMicStream } from "@/lib/micErrors";
+
 
 export function VoiceHeatmapCard() {
   const [recording, setRecording] = useState(false);
