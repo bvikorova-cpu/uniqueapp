@@ -181,6 +181,33 @@ export const CharacterCreator = () => {
         </div>
 
         <div>
+          <label className="text-sm font-bold mb-1 block text-foreground">💥 Comic-Book Archetypes</label>
+          <p className="text-[11px] text-muted-foreground mb-3">
+            Superhero-comic style presets. Every hero is an original creation — no trademarked names or logos.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {COMIC_ARCHETYPES.map((a) => (
+              <motion.button
+                key={a.label}
+                type="button"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                disabled={createCharacter.isPending}
+                onClick={() => { setCategory(a.category); setDescription(a.desc); }}
+                className={`px-3 py-2 rounded-xl border text-xs font-bold transition-all ${
+                  description === a.desc
+                    ? "border-primary bg-primary/10 shadow-lg shadow-primary/20"
+                    : "border-border/30 bg-card/50 hover:border-primary/40"
+                }`}
+              >
+                <span className="mr-1">{a.emoji}</span>{a.label}
+              </motion.button>
+            ))}
+          </div>
+        </div>
+
+
+        <div>
           <label className="text-sm font-bold mb-2 block text-foreground">📜 Description</label>
           <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Describe your warrior's appearance, powers, and personality..." className="min-h-[100px] bg-card/50 border-border/30" disabled={createCharacter.isPending} />
         </div>
