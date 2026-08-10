@@ -146,7 +146,18 @@ const CardCollections = () => {
                           <div className="absolute inset-0 flex items-center justify-center text-5xl">{c.emoji}</div>
                         )}
                         <div className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/60 to-transparent" />
+                        {c.available_until && (
+                          <Badge className="absolute top-2 right-2 gap-1 bg-orange-500 text-white border-0">
+                            <Clock className="h-3 w-3" /> Limited ·{" "}
+                            {Math.max(
+                              0,
+                              Math.ceil((new Date(c.available_until).getTime() - Date.now()) / 86400000),
+                            )}
+                            d left
+                          </Badge>
+                        )}
                       </div>
+
 
                       <div className="p-4 space-y-3">
                         <div>
