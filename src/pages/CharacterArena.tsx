@@ -29,6 +29,8 @@ const TOOLS = [
   { id: "creator" as const, title: "Forge Warrior", desc: "Create AI-powered characters", icon: Sparkles, color: "from-amber-500 to-orange-600", cost: "5-15 cr" },
   { id: "battle" as const, title: "1v1 Battle", desc: "Duel between two warriors", icon: Swords, color: "from-red-500 to-rose-600", cost: "2 cr" },
   { id: "royale" as const, title: "Battle Royale", desc: "8 warriors, 1 survivor", icon: Flame, color: "from-orange-500 to-red-600", cost: "10 cr" },
+  { id: "shop" as const, title: "Equipment Shop", desc: "Buy weapons & armor", icon: ShoppingBag, color: "from-amber-500 to-orange-600", cost: "5-35 cr" },
+  { id: "training" as const, title: "Training Center", desc: "Boost warrior stats", icon: Dumbbell, color: "from-emerald-500 to-green-600", cost: "10 cr" },
   { id: "fusion" as const, title: "Fusion Lab", desc: "Merge two warriors into one", icon: Zap, color: "from-purple-500 to-pink-600", cost: "30 cr" },
   { id: "dungeon" as const, title: "Dungeon Raids", desc: "Fight AI bosses for XP", icon: Skull, color: "from-violet-500 to-purple-600", cost: "5-25 cr" },
   { id: "evolution" as const, title: "Evolution Tree", desc: "Track warrior progression", icon: TreeDeciduous, color: "from-green-500 to-emerald-600", cost: "Free" },
@@ -60,6 +62,8 @@ const CharacterArena = () => {
       case "creator": return <CharacterCreator />;
       case "battle": return <CharacterBattleArena />;
       case "royale": return <BattleRoyaleMode />;
+      case "shop": return <CharacterEquipmentShop />;
+      case "training": return <CharacterTrainingCenter />;
       case "fusion": return <CharacterFusionLab />;
       case "dungeon": return <AIDungeonRaids />;
       case "evolution": return <CharacterEvolutionTree />;
