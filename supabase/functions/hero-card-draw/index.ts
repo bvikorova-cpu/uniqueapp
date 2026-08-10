@@ -87,18 +87,11 @@ serve(async (req) => {
       return j({ kept: true, name: card.name });
     }
 
-    // ── Draw a new random card (5 credits) ─────────────────────────────────
-    const { data: owned } = await db.from("hero_collection_cards")
-      .select("collectible_id").eq("user_id", user.id);
-    const ownedIds = (owned ?? []).map((o: { collectible_id: string }) => o.collectible_id);
-
-    let q = db.from("hero_collectibles").select("*");
-    if (ownedIds.length) q = q.not("id", "in", `(${ownedIds.join(",")})`);
-    const { data: pool, error: poolErr } = await q.limit(500);
+    // ── Draw a random card (5 credits) — duplicates are allowed ────────────
+    const { data: pool, error: poolErr } = await db.from("hero_collectibles").select("*").limit(500);
     if (poolErr) return j({ error: "Could not load the card pool" }, 500);
-    if (!pool || pool.length === 0) {
-      return j({ error: "You already own all 200 hero cards — the collection is complete!", code: "COLLECTION_COMPLETE" }, 400);
-    }
+    if (!pool || pool.length === 0) return j({ error: "The card pool is empty" }, 400);
+
 
     const denied = await deductAICredits(user.id, DRAW_COST, "hero_card_draw");
     if (denied) return denied;
