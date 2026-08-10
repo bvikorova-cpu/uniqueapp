@@ -26,6 +26,7 @@ export const CharacterCreator = () => {
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [isPremium, setIsPremium] = useState(false);
+  const [lastCharacter, setLastCharacter] = useState<{ id: string; name: string; imageUrl: string | null; description: string } | null>(null);
   const queryClient = useQueryClient();
 
   const createCharacter = useMutation({
@@ -37,18 +38,37 @@ export const CharacterCreator = () => {
     onSuccess: async (aiResult) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      const { error } = await supabase.from('characters').insert({ user_id: user.id, name, category, description,
+      const { data: inserted, error } = await supabase.from('characters').insert({ user_id: user.id, name, category, description,
         backstory: aiResult.backstory, image_url: aiResult.imageUrl,
         hp: aiResult.stats.hp, attack: aiResult.stats.attack,
         defense: aiResult.stats.defense, speed: aiResult.stats.speed,
-        is_premium: isPremium });
+        is_premium: isPremium }).select().single();
       if (error) throw error;
+      setLastCharacter({ id: inserted.id, name: inserted.name, imageUrl: aiResult.imageUrl, description });
       toast.success("Warrior forged successfully!");
       queryClient.invalidateQueries({ queryKey: ["character-credits"] });
       queryClient.invalidateQueries({ queryKey: ["characters"] });
       setName(""); setCategory(""); setDescription(""); setIsPremium(false);
     },
     onError: (error: Error) => toast.error(error.message || "Failed to forge warrior") });
+
+  const regenPortrait = useMutation({
+    mutationFn: async () => {
+      if (!lastCharacter) return null;
+      const { data: result, error } = await supabase.functions.invoke('create-character', { body: {
+        action: 'regenerate_portrait', characterId: lastCharacter.id, name: lastCharacter.name, existingDescription: lastCharacter.description } });
+      if (error) throw error;
+      return result as { imageUrl: string | null };
+    },
+    onSuccess: (result) => {
+      if (result?.imageUrl) {
+        setLastCharacter((prev) => prev ? { ...prev, imageUrl: result.imageUrl } : prev);
+        queryClient.invalidateQueries({ queryKey: ["characters"] });
+        queryClient.invalidateQueries({ queryKey: ["character-credits"] });
+        toast.success("Portrait regenerated!");
+      }
+    },
+    onError: (error: Error) => toast.error(error.message || "Failed to regenerate portrait") });
 
   return (
     <>
@@ -146,6 +166,38 @@ export const CharacterCreator = () => {
             <><Sparkles className="mr-2 h-5 w-5" /> Forge Warrior ({isPremium ? 15 : 5} Credits)</>
           )}
         </Button>
+
+        {lastCharacter && (
+          <Card className="border-border/30 bg-card/60 p-4">
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              {lastCharacter.imageUrl ? (
+                <img src={lastCharacter.imageUrl} alt={lastCharacter.name}
+                  className={`w-24 h-24 rounded-xl object-cover border border-border/40 ${regenPortrait.isPending ? "opacity-50" : ""}`} />
+              ) : (
+                <div className="w-24 h-24 rounded-xl bg-muted flex items-center justify-center border border-border/40">
+                  <Wand2 className="h-8 w-8 text-muted-foreground" />
+                </div>
+              )}
+              <div className="flex-1 text-center sm:text-left">
+                <p className="font-bold text-foreground">{lastCharacter.name}</p>
+                <p className="text-xs text-muted-foreground mb-2">Portrait {lastCharacter.imageUrl ? "ready" : "missing"}</p>
+                <Button
+                  onClick={() => regenPortrait.mutate()}
+                  disabled={regenPortrait.isPending}
+                  variant="outline"
+                  size="sm"
+                  className="border-amber-500/40 text-amber-600 hover:bg-amber-500/10"
+                >
+                  {regenPortrait.isPending ? (
+                    <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Regenerating...</>
+                  ) : (
+                    <><Wand2 className="mr-2 h-4 w-4" /> Regenerate Portrait (3 Credits)</>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </Card>
+        )}
       </div>
     </Card>
     </>
