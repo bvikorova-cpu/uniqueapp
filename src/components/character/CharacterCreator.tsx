@@ -169,6 +169,18 @@ export const CharacterCreator = () => {
           )}
         </Button>
 
+        <GenerationProgress
+          active={createCharacter.isPending}
+          title="Forging your warrior..."
+          steps={[
+            "Interpreting your description",
+            "Rolling combat stats & backstory",
+            "Painting the character portrait",
+            "Saving to your roster",
+          ]}
+        />
+
+
         {lastCharacter && (
           <Card className="border-border/30 bg-card/60 p-4">
             <div className="flex flex-col sm:flex-row items-center gap-4">
