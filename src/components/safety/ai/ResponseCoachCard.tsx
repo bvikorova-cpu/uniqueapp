@@ -76,7 +76,7 @@ export function ResponseCoachCard() {
         </Button>
 
         {last && (
-          <div className="space-y-3 mt-3 max-h-80 overflow-auto">
+          <div className="space-y-3 mt-3 max-h-[28rem] overflow-auto">
             <div className="grid grid-cols-3 gap-2">
               {[
                 { label: "Assertive", val: last.assertiveness_score },
@@ -89,14 +89,42 @@ export function ResponseCoachCard() {
                 </div>
               ))}
             </div>
+            {last.overall_assessment && (
+              <div className="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/15">
+                <p className="text-xs font-bold text-cyan-200 mb-1">Overall assessment</p>
+                <p className="text-xs text-cyan-100/90 leading-relaxed">{last.overall_assessment}</p>
+              </div>
+            )}
             <div className="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
               <p className="text-xs font-bold text-cyan-200 mb-1">Coach feedback:</p>
-              <p className="text-xs text-cyan-100/90">{last.feedback}</p>
+              <p className="text-xs text-cyan-100/90 leading-relaxed">{last.feedback}</p>
             </div>
+            {Array.isArray(last.strengths) && last.strengths.length > 0 && (
+              <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/15">
+                <p className="text-xs font-bold text-emerald-300 mb-1">Strengths</p>
+                <ul className="text-[11px] text-emerald-100/80 list-disc list-inside space-y-0.5">
+                  {(last.strengths as string[]).map((s, i) => <li key={i}>{s}</li>)}
+                </ul>
+              </div>
+            )}
+            {Array.isArray(last.areas_to_improve) && last.areas_to_improve.length > 0 && (
+              <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/15">
+                <p className="text-xs font-bold text-amber-300 mb-1">Areas to improve</p>
+                <ul className="text-[11px] text-amber-100/80 list-disc list-inside space-y-0.5">
+                  {(last.areas_to_improve as string[]).map((s, i) => <li key={i}>{s}</li>)}
+                </ul>
+              </div>
+            )}
             <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
               <p className="text-xs font-bold text-emerald-200 mb-1">Improved response:</p>
-              <p className="text-xs italic text-emerald-100/90">"{last.improved_response}"</p>
+              <p className="text-xs italic text-emerald-100/90 leading-relaxed">"{last.improved_response}"</p>
             </div>
+            {last.confidence_tip && (
+              <div className="p-2.5 rounded-lg bg-sky-500/10 border border-sky-500/20">
+                <p className="text-xs font-bold text-sky-300 mb-1">Confidence tip</p>
+                <p className="text-[11px] text-sky-100/80 leading-relaxed">{last.confidence_tip}</p>
+              </div>
+            )}
           </div>
         )}
       </DialogContent>

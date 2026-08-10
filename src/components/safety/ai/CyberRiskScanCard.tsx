@@ -63,7 +63,7 @@ export function CyberRiskScanCard() {
         </Button>
 
         {last && (
-          <div className="space-y-3 mt-3 max-h-80 overflow-auto">
+          <div className="space-y-3 mt-3 max-h-[28rem] overflow-auto">
             <div className="p-3 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-between">
               <div>
                 <p className="text-xs text-violet-300">Risk level</p>
@@ -76,25 +76,56 @@ export function CyberRiskScanCard() {
                 <p className="text-3xl font-black text-violet-100">{last.overall_score}<span className="text-sm text-violet-400">/100</span></p>
               </div>
             </div>
+            {last.analysis_summary && (
+              <div className="p-2.5 rounded-lg bg-violet-500/10 border border-violet-500/15">
+                <p className="text-[11px] text-violet-100/80 leading-relaxed">{last.analysis_summary}</p>
+              </div>
+            )}
             {Array.isArray(last.threat_patterns) && (last.threat_patterns as any[]).length > 0 && (
-              <div className="space-y-1">
+              <div className="space-y-1.5">
+                <p className="text-xs font-bold text-violet-200">Threat Patterns</p>
                 {(last.threat_patterns as any[]).map((t, i) => (
-                  <div key={i} className="p-2 rounded-lg bg-violet-500/5 border border-violet-500/10 text-xs">
-                    <span className="font-bold text-violet-200">{t.pattern}</span>{" "}
-                    <span className="text-violet-300">[{t.frequency}]</span>
+                  <div key={i} className="p-2.5 rounded-lg bg-violet-500/5 border border-violet-500/10 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-violet-200">{t.pattern}</span>
+                      <span className="text-[10px] text-violet-300 bg-violet-600/30 px-1.5 py-0.5 rounded">{t.frequency}</span>
+                    </div>
                     {t.example && <p className="text-[11px] text-violet-100/70 italic mt-1">"{t.example}"</p>}
+                    {t.impact && <p className="text-[11px] text-violet-200/60 mt-1">{t.impact}</p>}
                   </div>
                 ))}
               </div>
             )}
-            {Array.isArray(last.safety_recommendations) && (
+            {Array.isArray(last.flagged_phrases) && (last.flagged_phrases as any[]).length > 0 && (
               <div className="space-y-1">
-                {(last.safety_recommendations as any[]).map((r, i) => (
-                  <div key={i} className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                    <p className="text-xs font-bold text-emerald-200">{r.action}</p>
-                    <p className="text-[11px] text-emerald-100/70">{r.why}</p>
+                <p className="text-xs font-bold text-red-300">Flagged phrases</p>
+                {(last.flagged_phrases as any[]).map((f, i) => (
+                  <div key={i} className="p-2 rounded-lg bg-red-500/10 border border-red-500/20 text-xs">
+                    <span className="font-semibold text-red-200">"{f.phrase}"</span>
+                    <span className="text-[10px] text-red-300/60 ml-2">{f.category}</span>
+                    {f.concern && <p className="text-[11px] text-red-100/60 mt-0.5">{f.concern}</p>}
                   </div>
                 ))}
+              </div>
+            )}
+            {Array.isArray(last.safety_recommendations) && last.safety_recommendations.length > 0 && (
+              <div className="space-y-1.5">
+                <p className="text-xs font-bold text-emerald-200">Safety recommendations</p>
+                {(last.safety_recommendations as any[]).map((r, i) => (
+                  <div key={i} className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="text-xs font-bold text-emerald-200">{r.action}</p>
+                      {r.urgency && <span className="text-[10px] text-emerald-300 bg-emerald-600/30 px-1.5 py-0.5 rounded">{r.urgency}</span>}
+                    </div>
+                    <p className="text-[11px] text-emerald-100/70 leading-relaxed">{r.why}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+            {last.digital_safety_tips && (
+              <div className="p-2.5 rounded-lg bg-sky-500/10 border border-sky-500/20">
+                <p className="text-xs font-bold text-sky-300 mb-1">Digital safety tips</p>
+                <p className="text-[11px] text-sky-100/80 leading-relaxed">{last.digital_safety_tips}</p>
               </div>
             )}
           </div>

@@ -113,23 +113,38 @@ export function EvidenceBuilderCard() {
         </Button>
 
         {last && (
-          <div className="space-y-3 mt-3 max-h-72 overflow-auto">
+          <div className="space-y-3 mt-3 max-h-[28rem] overflow-auto">
             <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
               <p className="text-sm font-bold text-amber-100 mb-1">{last.title}</p>
-              <p className="text-xs text-amber-100/80 whitespace-pre-wrap">{last.incident_summary}</p>
-              {Array.isArray(last.recommended_recipients) && (
-                <div className="mt-2 flex flex-wrap gap-1">
-                  {(last.recommended_recipients as any[]).map((r, i) => (
-                    <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-200">
-                      {r.name}
-                    </span>
-                  ))}
-                </div>
-              )}
-              <Button onClick={downloadReport} size="sm" className="w-full mt-3 bg-amber-600 hover:bg-amber-500 text-white">
-                <Download className="w-3 h-3 mr-1" /> Download Report
-              </Button>
+              <p className="text-xs text-amber-100/80 whitespace-pre-wrap leading-relaxed">{last.incident_summary}</p>
             </div>
+            {last.emotional_impact_summary && (
+              <div className="p-2.5 rounded-lg bg-rose-500/10 border border-rose-500/20">
+                <p className="text-xs font-bold text-rose-300 mb-1">Emotional impact</p>
+                <p className="text-[11px] text-rose-100/80 leading-relaxed">{last.emotional_impact_summary}</p>
+              </div>
+            )}
+            {Array.isArray(last.recommended_recipients) && last.recommended_recipients.length > 0 && (
+              <div className="space-y-1.5">
+                <p className="text-xs font-bold text-amber-200">Recommended recipients</p>
+                {(last.recommended_recipients as any[]).map((r, i) => (
+                  <div key={i} className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/15">
+                    <p className="text-xs font-semibold text-amber-200">{r.name}</p>
+                    <p className="text-[11px] text-amber-100/70 mt-0.5">{r.reason}</p>
+                    {r.suggested_action && <p className="text-[11px] text-amber-300/60 mt-0.5">→ {r.suggested_action}</p>}
+                  </div>
+                ))}
+              </div>
+            )}
+            {last.legal_considerations && (
+              <div className="p-2.5 rounded-lg bg-slate-500/10 border border-slate-500/20">
+                <p className="text-xs font-bold text-slate-300 mb-1">Legal considerations</p>
+                <p className="text-[11px] text-slate-100/80 leading-relaxed">{last.legal_considerations}</p>
+              </div>
+            )}
+            <Button onClick={downloadReport} size="sm" className="w-full bg-amber-600 hover:bg-amber-500 text-white">
+              <Download className="w-3 h-3 mr-1" /> Download Full Report
+            </Button>
           </div>
         )}
       </DialogContent>
