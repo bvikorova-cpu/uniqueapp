@@ -250,8 +250,8 @@ serve(async (req) => {
       const aiData = await callAI(LOVABLE_API_KEY, {
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: "You are a compassionate dream analyst combining Jungian psychology, modern neuroscience, and gentle spiritual insight." },
-          { role: "user", content: `Interpret this dream: ${dream_text}` },
+          { role: "system", content: `You are a compassionate dream analyst combining Jungian psychology, modern neuroscience, and gentle spiritual insight. Provide a rich, multi-layered interpretation. Use the interpret_dream function.` },
+          { role: "user", content: `Interpret this dream in depth, exploring symbolism, emotional themes, and how it might connect to the dreamer's waking life. Be thorough and insightful: ${dream_text}` },
         ],
         tools: [{
           type: "function",
@@ -260,9 +260,10 @@ serve(async (req) => {
             parameters: {
               type: "object",
               properties: {
-                interpretation: { type: "string" },
-                symbols: { type: "array", items: { type: "object", properties: { symbol: { type: "string" }, meaning: { type: "string" } }, required: ["symbol", "meaning"] } },
-                emotional_themes: { type: "array", items: { type: "string" } },
+                interpretation: { type: "string", description: "A rich, multi-paragraph interpretation (at least 150 words) exploring the dream's symbolism, emotional resonance, and possible waking-life connections" },
+                symbols: { type: "array", items: { type: "object", properties: { symbol: { type: "string" }, meaning: { type: "string", description: "2-3 sentence explanation of the symbol's significance" } }, required: ["symbol", "meaning"] } },
+                emotional_themes: { type: "array", items: { type: "string", description: "Each theme with a brief 1-2 sentence exploration" } },
+                waking_life_connection: { type: "string", description: "3-4 sentence reflection on how this dream might connect to the dreamer's waking concerns or emotional state" },
                 illustration_prompt: { type: "string" } },
               required: ["interpretation", "symbols", "emotional_themes", "illustration_prompt"] } } }],
         tool_choice: { type: "function", function: { name: "interpret_dream" } } });
@@ -326,7 +327,7 @@ serve(async (req) => {
         messages: [{
           role: "user",
           content: [
-            { type: "text", text: "Analyze this person's facial expression and visible signs of stress, fatigue, mood. Be supportive, never diagnostic." },
+            { type: "text", text: "Analyze this person's facial expression and visible signs of stress, fatigue, and mood in depth. Be supportive, never diagnostic. Provide a rich, detailed analysis with actionable, personalized recommendations." },
             { type: "image_url", image_url: { url: selfie_data_url } },
           ] }],
         tools: [{
@@ -395,7 +396,7 @@ serve(async (req) => {
       const aiData = await callAI(LOVABLE_API_KEY, {
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: `You are a CBT therapist. Output ONLY JSON: {"distortions":["catastrophizing","mind-reading",...],"reframe":"<gentle reframe>","balanced_thought":"<balanced thought>","action_step":"<one small action>"}` },
+          { role: "system", content: `You are a skilled CBT therapist. Provide a thorough, compassionate cognitive restructuring. Output ONLY JSON: {"distortions":["<each with brief label>","<e.g. catastrophizing, mind-reading, all-or-nothing thinking>"],"distortion_explanations":[{"distortion":"<name>","how_it_appears":"<2-3 sentence explanation of how this distortion shows in their thinking>"}],"reframe":"<detailed 4-5 sentence gentle reframe that challenges the distortion with evidence and perspective>","balanced_thought":"<a nuanced, realistic 2-3 sentence balanced thought that acknowledges the difficulty while offering clarity>","action_step":"<specific, achievable action with a 2-3 sentence explanation of how it helps>","self_compassion_note":"<2-3 sentence warm reminder that thoughts are not facts and growth takes time>"}` },
           { role: "user", content: `Situation: ${situation}\nThought: ${negative_thought}\nEmotion: ${emotion || "n/a"}` },
         ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
@@ -409,7 +410,7 @@ serve(async (req) => {
       const aiData = await callAI(LOVABLE_API_KEY, {
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: `Mental health screening interpreter (${assessment_type}). Be supportive, never diagnostic. Output ONLY JSON: {"severity":"minimal|mild|moderate|moderately-severe|severe","insight":"<2-3 supportive sentences>","actions":[{"title":"...","why":"..."}]}` },
+          { role: "system", content: `Mental health screening interpreter (${assessment_type}). Be supportive, thorough, and never diagnostic — always recommend professional consultation. Output ONLY JSON: {"severity":"minimal|mild|moderate|moderately-severe|severe","insight":"<5-6 supportive, detailed sentences that contextualize the score, validate their experience, and explain what the severity level typically means without alarming>","score_context":"<2-3 sentence explanation of what the score range indicates in plain language>","actions":[{"title":"<clear action title>","why":"<3-4 sentence detailed explanation of why this action helps and how to start>","how_to_start":"<specific first step>","priority":"high|medium|low"}],"lifestyle_suggestions":["<3-4 specific, evidence-based lifestyle adjustments>"],"professional_guidance":"<3-4 sentence guidance on when to seek professional help and what kind of support to look for>"}` },
           { role: "user", content: `Score: ${total_score}\nAnswers: ${JSON.stringify(answers)}` },
         ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
@@ -458,7 +459,7 @@ serve(async (req) => {
       const aiData = await callAI(LOVABLE_API_KEY, {
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: `Draft a formal report letter to a social platform's trust & safety team. Be neutral, factual, cite their community guidelines. Output ONLY plain text letter (200-350 words).` },
+          { role: "system", content: `Draft a formal report letter to a social platform's trust & safety team. Be neutral, factual, cite their community guidelines where applicable, and make a clear, well-structured case for action. Include: opening identifying the reporter, detailed incident description with dates, reference to specific community guidelines violated, request for specific action, and a professional closing. Output ONLY plain text letter (400-600 words).` },
           { role: "user", content: `Platform: ${platform}\nIncident: ${incident_summary}\nEvidence URLs: ${(evidence_urls||[]).join(", ")}` },
         ] });
       const letter = aiData.choices?.[0]?.message?.content || "";
@@ -472,7 +473,7 @@ serve(async (req) => {
       const aiData = await callAI(LOVABLE_API_KEY, {
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: `Draft a restorative-justice letter from a bullying victim to a ${recipient_type}. Tone: ${tone}. Express impact, ask for specific action, keep dignified. 200-300 words, plain text only.` },
+          { role: "system", content: `Draft a restorative-justice letter from a bullying victim to a ${recipient_type}. Tone: ${tone}. Express the full impact of the behaviour with specific examples, explain the emotional and practical consequences, ask for specific actions or accountability, and keep the language dignified and constructive. Structure: opening, impact description, specific requests, and a forward-looking closing. 350-500 words, plain text only.` },
           { role: "user", content: context.slice(0, 2000) },
         ] });
       const letter = aiData.choices?.[0]?.message?.content || "";
