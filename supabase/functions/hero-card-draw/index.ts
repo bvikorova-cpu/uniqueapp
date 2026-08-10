@@ -64,7 +64,81 @@ serve(async (req) => {
     const action = String(body?.action ?? "draw");
     const db = admin();
 
+    // ── Unitas: golden completion reward ──────────────────────────────────
+    // Unlocks only when the collector owns at least 1 copy of every card.
+    if (action === "unitas_status" || action === "claim_unitas") {
+      const { count: totalCards } = await db.from("hero_collectibles")
+        .select("id", { count: "exact", head: true });
+      const { data: ownedRows } = await db.from("hero_collection_cards")
+        .select("collectible_id").eq("user_id", user.id).limit(50000);
+      const uniqueOwned = new Set((ownedRows ?? []).map((r: any) => r.collectible_id)).size;
+      const total = totalCards ?? 200;
+      const complete = total > 0 && uniqueOwned >= total;
+
+      const { data: existing } = await db.from("characters")
+        .select("id, name, image_url, hp, attack, defense, speed, backstory")
+        .eq("user_id", user.id).eq("name", UNITAS_NAME).maybeSingle();
+
+      if (action === "unitas_status") {
+        return j({ complete, uniqueOwned, total, cost: UNITAS_COST, claimed: !!existing, character: existing ?? null });
+      }
+
+      if (existing) return j({ error: "You have already claimed Unitas.", character: existing }, 400);
+      if (!complete) return j({ error: "Complete the whole collection first — every card needs at least one copy." }, 400);
+
+      const deniedU = await deductAICredits(user.id, UNITAS_COST, "unitas_mega_hero");
+      if (deniedU) return deniedU;
+
+      const { data: balU } = await db.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
+      const afterU = balU?.credits_remaining ?? 0;
+      await db.from("ai_credits_ledger").insert({ user_id: user.id,
+        delta: -UNITAS_COST,
+        balance_before: afterU + UNITAS_COST,
+        balance_after: afterU,
+        reason: "unitas_mega_hero",
+        source: "character_arena" });
+
+      try {
+        let imageUrl: string | null = null;
+        const img = await generateOpenAIImage(UNITAS_PROMPT, "1024x1024");
+        if (img.b64_json) {
+          const bytes = Uint8Array.from(atob(img.b64_json), (ch) => ch.charCodeAt(0));
+          const path = `characters/${user.id}/unitas-${Date.now()}.png`;
+          const { error: upErr } = await db.storage.from("ai-studio")
+            .upload(path, bytes, { contentType: "image/png", upsert: true });
+          if (upErr) throw upErr;
+          imageUrl = db.storage.from("ai-studio").getPublicUrl(path).data.publicUrl;
+        } else if (img.url) {
+          imageUrl = img.url;
+        }
+
+        const { data: hero, error: heroErr } = await db.from("characters").insert({
+          user_id: user.id,
+          name: UNITAS_NAME,
+          category: "cosmic",
+          description: "The golden mega hero, forged from all 200 collected hero cards.",
+          backstory: "Unitas was never born — he was assembled. When a single collector finally gathered every one of the 200 legendary hero cards, their combined willpower fused into one radiant golden being. Unitas carries a fragment of every hero who came before him: their courage, their scars, their impossible strength. His armour is living gold that reshapes itself into any weapon the moment is asking for. No arena has ever contained him for long, and no opponent has ever seen the same Unitas twice. He fights not for glory, but to prove that everything gathered together is stronger than anything standing alone.",
+          image_url: imageUrl,
+          hp: 500,
+          attack: 250,
+          defense: 240,
+          speed: 220,
+          special_power: "Unity Cascade — channels the power of all 200 heroes at once",
+          level: 20,
+          is_premium: true,
+        }).select().single();
+        if (heroErr) throw heroErr;
+
+        return j({ character: hero, creditsUsed: UNITAS_COST, remaining: afterU });
+      } catch (e) {
+        await refundAICredits(user.id, UNITAS_COST, "unitas_mega_hero");
+        console.error("[hero-card-draw] unitas claim failed", e);
+        return j({ error: "Unitas could not be forged — your credits were refunded. Please try again." }, 502);
+      }
+    }
+
     // ── Keep a drawn card (already paid at draw time) ──────────────────────
+
     if (action === "keep") {
       const collectibleId = String(body?.collectibleId ?? "");
       if (!collectibleId) return j({ error: "Card is required" }, 400);
