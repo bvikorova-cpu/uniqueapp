@@ -383,7 +383,7 @@ export async function generateOpenAIImage(prompt: string, size: "1024x1024" | "1
   if (!key) throw new UnifiedAIError(500, "AI image generation is not configured");
   const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
     method: "POST",
-    headers: { "Lovable-API-Key": key, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
     body: JSON.stringify({ model: "openai/gpt-image-1-mini", prompt, n: 1, size, quality: "low" }),
   });
   if (!res.ok) {
