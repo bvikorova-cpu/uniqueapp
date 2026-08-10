@@ -50,6 +50,36 @@ async function callOpenAI(messages: any[], json_mode = true) {
   return { result: json_mode ? JSON.parse(content) : content };
 }
 
+const EXT_BY_MIME: Record<string, string> = {
+  "audio/webm": "webm", "audio/ogg": "ogg", "audio/mp4": "mp4", "audio/m4a": "m4a",
+  "audio/mpeg": "mp3", "audio/mp3": "mp3", "audio/wav": "wav", "audio/x-wav": "wav", "audio/flac": "flac",
+};
+
+/** Transcribe audio via Lovable AI Gateway (OpenAI-compatible STT). Returns plain transcript. */
+async function transcribeAudio(blob: Blob, mime?: string): Promise<{ transcript?: string; err?: Response }> {
+  const key = OPENAI();
+  if (!key) return { err: json({ error: "LOVABLE_API_KEY not configured" }, 500) };
+  const base = (mime || blob.type || "audio/webm").split(";")[0];
+  const ext = EXT_BY_MIME[base] || "webm";
+  if (blob.size < 1024) {
+    return { err: json({ error: "Recording is too short or empty. Please record again." }, 400) };
+  }
+  const fd = new FormData();
+  fd.append("file", blob, `recording.${ext}`);
+  fd.append("model", "openai/gpt-4o-mini-transcribe");
+  const resp = await fetch("https://ai.gateway.lovable.dev/v1/audio/transcriptions", {
+    method: "POST", headers: { Authorization: `Bearer ${key}` }, body: fd });
+  if (!resp.ok) {
+    const details = await resp.text().catch(() => "");
+    return { err: json({ error: "Transcription failed", details: details.slice(0, 500) }, resp.status === 402 ? 402 : 500) };
+  }
+  const j = await resp.json().catch(() => ({} as any));
+  const transcript = (j.text || "").trim();
+  if (!transcript) return { err: json({ error: "No speech detected in the recording. Please try again." }, 400) };
+  return { transcript };
+}
+
+
 async function awardXp(supabase: any, uid: string, xp: number) {
   const { data: r } = await supabase.from("lie_detective_ranks").select("xp,total_analyses").eq("user_id", uid).maybeSingle();
   const newXp = (r?.xp ?? 0) + xp;
@@ -132,20 +162,15 @@ async function actionVoice(supabase: any, user: any, body: any) {
     audioBlob = dl; audioUrl = audio_path;
   }
 
-  const fd = new FormData();
-  fd.append("file", audioBlob, "audio.webm");
-  fd.append("model", "whisper-1");
-  fd.append("response_format", "verbose_json");
-  const wresp = await fetch("https://api.openai.com/v1/audio/transcriptions", {
-    method: "POST", headers: { Authorization: `Bearer ${key}` }, body: fd });
-  if (!wresp.ok) return json({ error: "Transcription failed", details: await wresp.text() }, 500);
-  const wjson = await wresp.json();
-  const transcript = wjson.text || "";
-  const duration = wjson.duration || 0;
+  const tr = await transcribeAudio(audioBlob, mime);
+  if (tr.err) return tr.err;
+  const transcript = tr.transcript!;
+  const duration = 0;
 
   const ai = await callOpenAI([
     { role: "system", content: "You are a forensic linguistics + voice deception expert. Analyze the transcript and the implicit speech patterns (hesitations, fillers, repetitions, contradictions, hedging). Score 0-100. Output strict JSON." },
-    { role: "user", content: `Audio duration: ${duration}s\nTranscript: """${transcript}"""\n\nReturn JSON with keys: truthfulness_score (0-100), stress_score (0-100), hesitation_score (0-100), confidence_level (low/medium/high), deception_indicators (string[]), micro_pause_signals (string[]), filler_words_count (number), recommended_followup_questions (string[]), summary (string).` },
+    { role: "user", content: `Transcript: """${transcript}"""\n\nReturn JSON with keys: truthfulness_score (0-100), stress_score (0-100), hesitation_score (0-100), confidence_level (low/medium/high), deception_indicators (string[]), micro_pause_signals (string[]), filler_words_count (number), recommended_followup_questions (string[]), summary (string).` },
+
   ]);
   if (ai.err) return ai.err;
   const results = ai.result;
@@ -166,25 +191,19 @@ async function actionVoiceHeatmap(supabase: any, user: any, body: any) {
   const key = OPENAI(); if (!key) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
 
   const bin = Uint8Array.from(atob(audio_base64), (c) => c.charCodeAt(0));
-  const fd = new FormData();
-  fd.append("file", new Blob([bin], { type: mime }), `a.${mime.split("/")[1] || "webm"}`);
-  fd.append("model", "whisper-1");
-  fd.append("response_format", "verbose_json");
-  fd.append("timestamp_granularities[]", "segment");
-  const wResp = await fetch("https://api.openai.com/v1/audio/transcriptions", {
-    method: "POST", headers: { Authorization: `Bearer ${key}` }, body: fd });
-  if (!wResp.ok) return json({ error: "Whisper failed", details: await wResp.text() }, 500);
-  const wj = await wResp.json();
-  const transcript = wj.text || "";
-  const segs = (wj.segments || []).slice(0, 40).map((s: any) => ({ start: s.start, end: s.end, text: s.text }));
+  const tr = await transcribeAudio(new Blob([bin], { type: mime }), mime);
+  if (tr.err) return tr.err;
+  const transcript = tr.transcript!;
 
   const ai = await callOpenAI([
-    { role: "system", content: "You are a voice stress analyst. Score each transcribed segment for stress/deception 0-100 based on linguistic markers and disfluencies." },
-    { role: "user", content: `Segments JSON:\n${JSON.stringify(segs)}\n\nReturn JSON: { segments: [{start, end, text, stress_score, color: "green"|"yellow"|"orange"|"red", marker: string}], overall_score: number, summary: string }` },
+    { role: "system", content: "You are a voice stress analyst. Split the transcript into short sequential segments (max 20) and score each for stress/deception 0-100 based on linguistic markers and disfluencies. Estimate start/end seconds assuming ~2.7 words per second of natural speech." },
+    { role: "user", content: `Transcript:\n"""${transcript}"""\n\nReturn JSON: { segments: [{start, end, text, stress_score, color: "green"|"yellow"|"orange"|"red", marker: string}], overall_score: number, summary: string }` },
   ]);
   if (ai.err) return ai.err;
   const r = ai.result;
-  await supabase.from("lie_voice_heatmaps").insert({ user_id: user.id, audio_duration_sec: wj.duration || null,
+  const lastSeg = (r.segments || []).slice(-1)[0];
+  await supabase.from("lie_voice_heatmaps").insert({ user_id: user.id, audio_duration_sec: lastSeg?.end ? Math.round(lastSeg.end) : null,
+
     segments: r.segments || [], transcript, overall_score: r.overall_score, credits_used: COST });
   await deductCredits(supabase, user.id, cc.cr, COST);
   return json({ ...r, transcript, credits_charged: COST });
