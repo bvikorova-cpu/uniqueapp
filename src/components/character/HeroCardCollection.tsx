@@ -135,17 +135,19 @@ export const HeroCardCollection = () => {
     }
   };
 
-  const progress = Math.round((collection.length / TOTAL_CARDS) * 100);
+  const uniqueOwned = Object.keys(ownedCounts).length;
+  const totalOwned = Object.values(ownedCounts).reduce((a, b) => a + b, 0);
+  const progress = Math.round((uniqueOwned / TOTAL_CARDS) * 100);
 
   return (
     <div className="space-y-6">
       <FloatingHowItWorks
         title="Hero Card Collection — How it works"
         steps={[
-          { title: "Draw a card", desc: `Each draw costs ${DRAW_COST} AI credits and reveals one of 200 fixed hero cards you don't own yet.` },
-          { title: "Decide ✓ or ✗", desc: "Tap ✓ to add the hero to your collection, or ✗ to release it back into the pool." },
+          { title: "Draw a card", desc: `Each draw costs ${DRAW_COST} AI credits and reveals one of the 200 fixed hero cards — you can also draw heroes you already own.` },
+          { title: "Decide ✓ or ✗", desc: "Tap ✓ to add the hero to your collection (duplicates stack up), or ✗ to release it back into the pool." },
           { title: "Chase rarities", desc: "Cards come as Common, Rare, Epic and Legendary — legendary heroes have the strongest stats." },
-          { title: "Complete the set", desc: "Collect all 200 unique hero cards to finish the collection." },
+          { title: "Light up the album", desc: "All 200 cards are visible from the start. They stay pale until you own at least one copy, then they light up in full colour with your copy count." },
         ]}
       />
 
@@ -156,7 +158,7 @@ export const HeroCardCollection = () => {
           </div>
           <div className="min-w-0">
             <h2 className="text-lg sm:text-xl font-black">Hero Card Collection</h2>
-            <p className="text-xs text-muted-foreground">200 fixed hero cards — draw, keep or release.</p>
+            <p className="text-xs text-muted-foreground">200 fixed hero cards — draw, keep or release. Duplicates allowed.</p>
           </div>
           <Badge variant="outline" className="ml-auto gap-1 border-border/40">
             <Coins className="h-3 w-3" /> {DRAW_COST} cr / draw
@@ -164,9 +166,11 @@ export const HeroCardCollection = () => {
         </div>
         <div className="flex items-center gap-3">
           <Progress value={progress} className="h-2 flex-1" />
-          <span className="text-xs font-bold whitespace-nowrap">{collection.length}/{TOTAL_CARDS}</span>
+          <span className="text-xs font-bold whitespace-nowrap">{uniqueOwned}/{TOTAL_CARDS}</span>
         </div>
+        <p className="text-[11px] text-muted-foreground mt-2">{totalOwned} card{totalOwned === 1 ? "" : "s"} collected in total (including duplicates)</p>
       </Card>
+
 
       <Tabs defaultValue="draw">
         <TabsList className="grid grid-cols-2 w-full">
