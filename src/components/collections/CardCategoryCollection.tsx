@@ -19,6 +19,14 @@ import { warmCollectionCardImages, readCachedCategory, writeCachedCategory } fro
 export const DRAW_COST = 1;
 export const CARDS_PER_CATEGORY = 150;
 
+export interface CardStats {
+  strength?: number;
+  speed?: number;
+  magic?: number;
+  defense?: number;
+  luck?: number;
+}
+
 export interface CollectibleCard {
   id: string;
   code: string;
@@ -31,6 +39,7 @@ export interface CollectibleCard {
   gradient: string;
   image_url: string | null;
   is_prime: boolean;
+  stats?: CardStats | null;
 }
 
 export interface CardCategory {
@@ -39,7 +48,11 @@ export interface CardCategory {
   description: string;
   emoji: string;
   gradient: string;
+  card_kind?: string | null;
+  available_from?: string | null;
+  available_until?: string | null;
 }
+
 
 const RARITY_LABEL: Record<string, string> = {
   common: "Common",
