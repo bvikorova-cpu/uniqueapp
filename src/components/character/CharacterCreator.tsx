@@ -302,7 +302,7 @@ export const CharacterCreator = () => {
                     )}
                   </Button>
                   <Select value={String(variantCount)} onValueChange={(v) => setVariantCount(Number(v))}>
-                    <SelectTrigger className="h-9 w-[110px] bg-card/50 border-border/30 text-xs">
+                    <SelectTrigger className="h-9 w-full sm:w-[110px] bg-card/50 border-border/30 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
