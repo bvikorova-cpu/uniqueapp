@@ -96,9 +96,12 @@ export const AIDungeonRaids = () => {
               <div className="text-3xl mb-2">{d.icon}</div>
               <p className="font-bold text-sm">{d.name}</p>
               <Badge className={`bg-gradient-to-r ${d.color} text-white text-[10px] mt-1`}>{d.difficulty}</Badge>
-              <p className="text-[10px] text-muted-foreground mt-1">{d.cost} credits</p>
-              <p className="text-[10px] text-amber-400">{d.reward}</p>
+              <p className="text-[10px] text-muted-foreground mt-1 truncate">Boss: {d.boss}</p>
+              <p className="text-[10px] text-muted-foreground">Needs ~{d.power} power</p>
+              <p className="text-[10px] text-muted-foreground">{d.cost} credits</p>
+              <p className="text-[10px] text-amber-500">{d.reward}</p>
             </motion.div>
+
           ))}
         </div>
 
