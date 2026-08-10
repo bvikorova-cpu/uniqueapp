@@ -62,17 +62,8 @@ export default function CharacterBattle() {
     }
   };
 
-  const handleStartBattle = () => {
-    if (!selectedChar1 || !selectedChar2) {
-      toast.error("Please select two characters to battle!");
-      return;
-    }
-    if (selectedChar1.id === selectedChar2.id) {
-      toast.error("Please select two different characters!");
-      return;
-    }
-    setBattleStarted(true);
-  };
+
+
 
   const handleBattleEnd = () => {
     setBattleStarted(false);
