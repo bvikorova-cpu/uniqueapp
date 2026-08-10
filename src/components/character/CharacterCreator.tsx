@@ -247,7 +247,7 @@ export const CharacterCreator = () => {
                 <p className="text-xs text-muted-foreground mb-2">
                   {regenPortrait.isPending ? "Painting a new portrait..." : `Portrait ${lastCharacter.imageUrl ? "ready" : "missing"}`}
                 </p>
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-start gap-2 w-full [&>button]:w-full sm:[&>button]:w-auto [&>button]:justify-center [&>button]:whitespace-normal [&>button]:h-auto [&>button]:py-2 [&>button]:text-xs sm:[&>button]:text-sm">
                   <Button
                     onClick={() => regenPortrait.mutate()}
                     disabled={regenPortrait.isPending}
@@ -302,7 +302,7 @@ export const CharacterCreator = () => {
                     )}
                   </Button>
                   <Select value={String(variantCount)} onValueChange={(v) => setVariantCount(Number(v))}>
-                    <SelectTrigger className="h-9 w-[110px] bg-card/50 border-border/30 text-xs">
+                    <SelectTrigger className="h-9 w-full sm:w-[110px] bg-card/50 border-border/30 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
