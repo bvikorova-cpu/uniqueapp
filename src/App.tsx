@@ -289,6 +289,8 @@ import { ResetPassword,
   LiveStream,
   LiveStreamList,
   CharacterArena,
+  CharacterInventoryPage,
+
   BrainDuel,
   VirtualEscapeRoom,
   HorseRacing,
