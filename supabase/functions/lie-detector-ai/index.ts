@@ -1,7 +1,7 @@
 import "../_shared/aiRedirect.ts";
 import { tryVertexTranscribe } from "../_shared/vertexDirect.ts";
 import { callUnifiedAIJSON, UnifiedAIError } from "../_shared/unifiedAI.ts";
-import { spendAiCredits } from "../_shared/spendCredits.ts";
+import { deductAICredits, refundAICredits } from "../_shared/credits.ts";
 // Lie Detector AI Router — consolidates 18 lie-detector-* functions into one
 // Routes via { action: "polygraph" | "cross-exam" | "voice" | ... } in body
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
@@ -776,12 +776,8 @@ async function runCoreAnalysis(
   userMsg: string,
 ) {
   const cost = ANALYSIS_COSTS[kind];
-  const spend = await spendAiCredits(supabase, user.id, cost, `lie_detector_${kind}`, "lie-detector-ai");
-  if (!spend.ok) {
-    return json({ error: spend.error === "Insufficient credits"
-      ? `Insufficient credits. Need ${cost}, have ${spend.remaining}.`
-      : (spend.error || "Could not charge credits") }, spend.error === "Insufficient credits" ? 402 : 500);
-  }
+  const creditErr = await deductAICredits(user.id, cost, `lie_detector_${kind}`);
+  if (creditErr) return creditErr;
   let results: any;
   try {
     results = await callUnifiedAIJSON([
@@ -789,7 +785,7 @@ async function runCoreAnalysis(
       { role: "user", content: userMsg },
     ], { max_tokens: 2600 });
   } catch (e) {
-    await refundAiCredits(supabase, user.id, cost, `refund_lie_detector_${kind}`, "lie-detector-ai");
+    await refundAICredits(user.id, cost, `lie_detector_${kind}`);
     const status = e instanceof UnifiedAIError ? e.status : 502;
     return json({ error: e instanceof Error ? e.message : "AI analysis failed. Please try again." }, status >= 400 ? status : 502);
   }
@@ -806,7 +802,7 @@ async function runCoreAnalysis(
       credits_used: cost });
   } catch { /* history is non-fatal */ }
   await awardXp(supabase, user.id, kind === "message" ? 10 : kind === "thread" ? 25 : 50);
-  return json({ analysis, credits_charged: cost, credits_remaining: spend.remaining });
+  return json({ analysis, credits_charged: cost });
 }
 
 async function actionMessage(supabase: any, user: any, body: any) {
