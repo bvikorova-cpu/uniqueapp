@@ -8,6 +8,8 @@ import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import AiMarkdown from "../common/AiMarkdown";
+
 
 const DUNGEONS = [
   { id: "goblin_cave", name: "Goblin Cave", boss: "Grimtooth the Goblin King", difficulty: "Easy", icon: "🏚️", cost: 5, power: 260, reward: "50-100 XP", color: "from-green-500 to-emerald-600" },
