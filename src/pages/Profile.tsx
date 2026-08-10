@@ -42,6 +42,8 @@ const MyBazaarListings = lazy(() => import("@/components/profile/MyBazaarListing
 const MySkillsHub = lazy(() => import("@/components/profile/MySkillsHub").then((m) => ({ default: m.MySkillsHub })));
 const MyJobApplications = lazy(() => import("@/components/profile/MyJobApplications").then((m) => ({ default: m.MyJobApplications })));
 const AchievementsWall = lazy(() => import("@/components/profile/AchievementsWall").then((m) => ({ default: m.AchievementsWall })));
+const CardCategoryBadges = lazy(() => import("@/components/profile/CardCategoryBadges").then((m) => ({ default: m.CardCategoryBadges })));
+
 const ActivityHeatmap = lazy(() => import("@/components/profile/ActivityHeatmap").then((m) => ({ default: m.ActivityHeatmap })));
 const FounderStory = lazy(() => import("@/components/profile/FounderStory").then((m) => ({ default: m.FounderStory })));
 const StoryHighlights = lazy(() => import("@/components/profile/StoryHighlights").then((m) => ({ default: m.StoryHighlights })));
@@ -764,8 +766,14 @@ const Profile = () => {
             followers: followCounts?.followers || 0 }}
         />
 
+        {/* Collectible-card category badges */}
+        <div className="mb-6">
+          <CardCategoryBadges userId={userId!} isOwnProfile={currentUserId === userId} />
+        </div>
+
         {/* Activity Heatmap */}
         <ActivityHeatmap userId={userId!} />
+
 
         {/* Public Goals */}
         <PublicGoals userId={userId!} isOwnProfile={currentUserId === userId} />

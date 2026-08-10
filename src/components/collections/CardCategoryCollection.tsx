@@ -157,6 +157,21 @@ export const CardCategoryCollection = ({ category }: Props) => {
   const totalOwned = useMemo(() => Object.values(ownedCounts).reduce((a, b) => a + b, 0), [ownedCounts]);
   const progress = Math.min(Math.round((uniqueOwned / CARDS_PER_CATEGORY) * 100), 100);
 
+  // Award the shareable profile badge as soon as the set is complete.
+  useEffect(() => {
+    if (uniqueOwned < CARDS_PER_CATEGORY) return;
+    let done = false;
+    (async () => {
+      const { error } = await (supabase as any).rpc("award_card_category_badge", { _category_slug: slug });
+      if (!done && !error) {
+        queryClient.invalidateQueries({ queryKey: ["card-category-badges"] });
+      }
+    })();
+    return () => { done = true; };
+  }, [uniqueOwned, slug, queryClient]);
+
+
+
   const { data: prime } = useQuery({
     queryKey: ["card-prime-status", slug, uniqueOwned],
     queryFn: async () => {

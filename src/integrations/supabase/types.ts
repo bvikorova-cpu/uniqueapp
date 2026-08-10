@@ -9572,6 +9572,33 @@ export type Database = {
         }
         Relationships: []
       }
+      card_category_badges: {
+        Row: {
+          cards_total: number
+          category_slug: string
+          earned_at: string
+          id: string
+          share_code: string
+          user_id: string
+        }
+        Insert: {
+          cards_total?: number
+          category_slug: string
+          earned_at?: string
+          id?: string
+          share_code?: string
+          user_id: string
+        }
+        Update: {
+          cards_total?: number
+          category_slug?: string
+          earned_at?: string
+          id?: string
+          share_code?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       card_collectibles: {
         Row: {
           card_index: number
@@ -69371,6 +69398,16 @@ export type Database = {
       award_brain_duel_rp: {
         Args: { _reason?: string; _rp: number; _user_id: string }
         Returns: number
+      }
+      award_card_category_badge: {
+        Args: { _category_slug: string }
+        Returns: {
+          cards_total: number
+          category_slug: string
+          earned_at: string
+          id: string
+          share_code: string
+        }[]
       }
       award_eco_monthly_winner: { Args: never; Returns: Json }
       award_healthy_monthly_winner: {
