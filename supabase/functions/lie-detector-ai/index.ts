@@ -191,25 +191,19 @@ async function actionVoiceHeatmap(supabase: any, user: any, body: any) {
   const key = OPENAI(); if (!key) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
 
   const bin = Uint8Array.from(atob(audio_base64), (c) => c.charCodeAt(0));
-  const fd = new FormData();
-  fd.append("file", new Blob([bin], { type: mime }), `a.${mime.split("/")[1] || "webm"}`);
-  fd.append("model", "whisper-1");
-  fd.append("response_format", "verbose_json");
-  fd.append("timestamp_granularities[]", "segment");
-  const wResp = await fetch("https://api.openai.com/v1/audio/transcriptions", {
-    method: "POST", headers: { Authorization: `Bearer ${key}` }, body: fd });
-  if (!wResp.ok) return json({ error: "Whisper failed", details: await wResp.text() }, 500);
-  const wj = await wResp.json();
-  const transcript = wj.text || "";
-  const segs = (wj.segments || []).slice(0, 40).map((s: any) => ({ start: s.start, end: s.end, text: s.text }));
+  const tr = await transcribeAudio(new Blob([bin], { type: mime }), mime);
+  if (tr.err) return tr.err;
+  const transcript = tr.transcript!;
 
   const ai = await callOpenAI([
-    { role: "system", content: "You are a voice stress analyst. Score each transcribed segment for stress/deception 0-100 based on linguistic markers and disfluencies." },
-    { role: "user", content: `Segments JSON:\n${JSON.stringify(segs)}\n\nReturn JSON: { segments: [{start, end, text, stress_score, color: "green"|"yellow"|"orange"|"red", marker: string}], overall_score: number, summary: string }` },
+    { role: "system", content: "You are a voice stress analyst. Split the transcript into short sequential segments (max 20) and score each for stress/deception 0-100 based on linguistic markers and disfluencies. Estimate start/end seconds assuming ~2.7 words per second of natural speech." },
+    { role: "user", content: `Transcript:\n"""${transcript}"""\n\nReturn JSON: { segments: [{start, end, text, stress_score, color: "green"|"yellow"|"orange"|"red", marker: string}], overall_score: number, summary: string }` },
   ]);
   if (ai.err) return ai.err;
   const r = ai.result;
-  await supabase.from("lie_voice_heatmaps").insert({ user_id: user.id, audio_duration_sec: wj.duration || null,
+  const lastSeg = (r.segments || []).slice(-1)[0];
+  await supabase.from("lie_voice_heatmaps").insert({ user_id: user.id, audio_duration_sec: lastSeg?.end ? Math.round(lastSeg.end) : null,
+
     segments: r.segments || [], transcript, overall_score: r.overall_score, credits_used: COST });
   await deductCredits(supabase, user.id, cc.cr, COST);
   return json({ ...r, transcript, credits_charged: COST });
