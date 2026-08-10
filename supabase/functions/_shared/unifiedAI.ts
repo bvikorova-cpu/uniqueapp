@@ -5,10 +5,11 @@ import { hasDirectGemini, tryDirectGeminiChat } from "./geminiDirect.ts";
  * Unified AI provider for all Supabase Edge Functions.
  *
  * Behavior:
- *  - Lovable AI Gateway is the only provider (OpenAI is never called).
- *  - If OpenAI fails with 429, 402, or >=500, we immediately switch to Lovable AI Gateway.
- *  - If Lovable fails with 429, 402, or >=500, we retry the other provider with backoff.
- *  - All provider errors are normalized to a small set of friendly statuses.
+ *  - Vertex AI (postpay service account) is the PRIMARY provider for all calls.
+ *  - The Lovable AI Gateway is only used as a fallback when Vertex is unavailable.
+ *  - If Vertex fails with a retryable status (429, 402, >=500), we fall back to
+ *    the Lovable AI Gateway with backoff.
+ *  - OpenAI is never called directly.
  *
  * No provider-specific errors are exposed to the user.
  */
