@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { deductAICredits, refundAICredits } from "../_shared/credits.ts";
-import { callUnifiedAI } from "../_shared/unifiedAI.ts";
+import { callUnifiedAI, generateOpenAIImage } from "../_shared/unifiedAI.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
@@ -39,7 +39,7 @@ serve(async (req) => {
         messages: [
           { role: "system", content: "You are a game designer creating battle characters. Reply with strict JSON only." },
           { role: "user", content: `Create a ${isPremium ? "legendary premium" : "solid"} ${category} warrior named "${name}". ${description ? `Concept: ${description}.` : ""}
-Return JSON: {"backstory": "4-6 vivid sentences", "stats": {"hp": number 80-200, "attack": number 40-120, "defense": number 30-110, "speed": number 30-110}}` },
+Return JSON: {"backstory": "4-6 vivid sentences", "appearance": "one vivid sentence describing looks, armor, weapon, colors", "stats": {"hp": number 80-200, "attack": number 40-120, "defense": number 30-110, "speed": number 30-110}}` },
         ] });
 
       const text = typeof raw === "string" ? raw : (raw?.content ?? raw?.text ?? "");
