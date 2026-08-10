@@ -88,6 +88,26 @@ const CharacterArena = () => {
     staleTime: 60 * 1000,
   });
 
+  // Live updates: refresh stats whenever duels, characters or cards change.
+  useEffect(() => {
+    const invalidate = () => {
+      queryClient.invalidateQueries({ queryKey: ["character-arena-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["character-arena-my-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["hero-card-leaderboard"] });
+    };
+
+    const channel = supabase
+      .channel("character-arena-live-stats")
+      .on("postgres_changes", { event: "*", schema: "public", table: "character_battles" }, invalidate)
+      .on("postgres_changes", { event: "*", schema: "public", table: "characters" }, invalidate)
+      .on("postgres_changes", { event: "*", schema: "public", table: "hero_collection_cards" }, invalidate)
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
 
   const renderView = () => {
     switch (activeView) {
