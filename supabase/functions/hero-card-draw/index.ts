@@ -222,7 +222,17 @@ serve(async (req) => {
         if (!reveal) eligible = pool.filter((c: any) => c.id !== missing[0].id);
       }
 
-      const card = eligible[Math.floor(Math.random() * eligible.length)];
+      // Duplicate bias: cards the collector already owns come up far more often,
+      // so repeats are common and new cards feel rare.
+      const DUPLICATE_WEIGHT = 6;
+      const weights = eligible.map((c: any) => (ownedIds.has(c.id) ? DUPLICATE_WEIGHT : 1));
+      const totalWeight = weights.reduce((a: number, b: number) => a + b, 0);
+      let roll = Math.random() * totalWeight;
+      let card = eligible[eligible.length - 1];
+      for (let i = 0; i < eligible.length; i++) {
+        roll -= weights[i];
+        if (roll <= 0) { card = eligible[i]; break; }
+      }
       const imageUrl = await ensureArtwork(card);
       return j({ card: { ...card, image_url: imageUrl }, creditsUsed: DRAW_COST, remaining: after, poolLeft: pool.length });
 
