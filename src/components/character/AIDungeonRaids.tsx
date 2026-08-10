@@ -131,7 +131,15 @@ export const AIDungeonRaids = () => {
           })}
         </div>
 
+        {selectedParty.length > 0 && (
+          <div className="mb-4 flex items-center justify-between gap-3 rounded-lg border border-border/40 bg-muted/30 p-3 text-xs">
+            <span className="text-muted-foreground">Estimated party power</span>
+            <span className="font-bold text-primary">{estimatedPower}{dungeon ? ` / ${dungeon.power} needed` : ""}</span>
+          </div>
+        )}
+
         <Button
+
           onClick={() => selectedDungeon && selectedParty.length > 0 && raidMutation.mutate({ dungeonId: selectedDungeon, partyIds: selectedParty })}
           disabled={!selectedDungeon || selectedParty.length === 0 || raidMutation.isPending}
           className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-bold"
