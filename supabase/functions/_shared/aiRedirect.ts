@@ -1,9 +1,15 @@
 /**
- * PLATFORM-WIDE RULE: Lovable AI ONLY. OpenAI is never called.
+ * PLATFORM-WIDE RULE: Vertex AI (postpay) is the PRIMARY AI provider.
+ * The Lovable AI Gateway is only a fallback when Vertex is unavailable.
+ * OpenAI is never called directly.
  *
- * Importing this module patches `globalThis.fetch` so that ANY call to
- * `api.openai.com` made by an edge function is rerouted to the Lovable AI
- * Gateway (chat completions, image generation, embeddings, TTS, transcriptions).
+ * Importing this module patches `globalThis.fetch` so that:
+ *  - Any call to `api.openai.com` is rerouted to Vertex AI first, then the
+ *    Lovable AI Gateway (chat completions, image generation, embeddings, TTS).
+ *  - Any direct call to `ai.gateway.lovable.dev/v1/chat/completions` is also
+ *    intercepted and sent to Vertex AI first; the gateway is used only as a
+ *    fallback. This ensures every chat completion — no matter which URL the
+ *    edge function called — goes through Vertex AI first.
  *
  * The gateway is OpenAI-compatible, so response shapes stay identical and no
  * other function code has to change. If a request cannot be rerouted, it fails
