@@ -10,11 +10,12 @@ import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const DUNGEONS = [
-  { id: "goblin_cave", name: "Goblin Cave", difficulty: "Easy", icon: "🏚️", cost: 5, reward: "50-100 XP", color: "from-green-500 to-emerald-600" },
-  { id: "dragon_lair", name: "Dragon's Lair", difficulty: "Hard", icon: "🐉", cost: 10, reward: "200-500 XP", color: "from-red-500 to-orange-600" },
-  { id: "shadow_realm", name: "Shadow Realm", difficulty: "Nightmare", icon: "👻", cost: 15, reward: "500-1500 XP", color: "from-purple-500 to-violet-600" },
-  { id: "titans_forge", name: "Titan's Forge", difficulty: "Legendary", icon: "⚡", cost: 25, reward: "1000-5000 XP", color: "from-amber-500 to-yellow-600" },
+  { id: "goblin_cave", name: "Goblin Cave", boss: "Grimtooth the Goblin King", difficulty: "Easy", icon: "🏚️", cost: 5, power: 260, reward: "50-100 XP", color: "from-green-500 to-emerald-600" },
+  { id: "dragon_lair", name: "Dragon's Lair", boss: "Vaerothys the Emberwyrm", difficulty: "Hard", icon: "🐉", cost: 10, power: 900, reward: "200-500 XP", color: "from-red-500 to-orange-600" },
+  { id: "shadow_realm", name: "Shadow Realm", boss: "Nyxaros, Warden of Shadows", difficulty: "Nightmare", icon: "👻", cost: 15, power: 1800, reward: "500-1500 XP", color: "from-purple-500 to-violet-600" },
+  { id: "titans_forge", name: "Titan's Forge", boss: "Ordrakh, the Molten Titan", difficulty: "Legendary", icon: "⚡", cost: 25, power: 3200, reward: "1000-5000 XP", color: "from-amber-500 to-yellow-600" },
 ];
+
 
 export const AIDungeonRaids = () => {
   const [selectedDungeon, setSelectedDungeon] = useState<string | null>(null);
