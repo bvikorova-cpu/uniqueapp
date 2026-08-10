@@ -101,9 +101,22 @@ const CardCollections = () => {
                   const pct = Math.min(Math.round((p.unique / CARDS_PER_CATEGORY) * 100), 100);
                   return (
                     <Card key={c.slug} className="overflow-hidden border-border/30 bg-card/90">
-                      <div className={`h-24 bg-gradient-to-br ${c.gradient} flex items-center justify-center text-5xl`}>
-                        {c.emoji}
+                      <div className={`relative h-32 bg-gradient-to-br ${c.gradient} overflow-hidden`}>
+                        {getCategoryCover(c.slug) ? (
+                          <img
+                            src={getCategoryCover(c.slug)}
+                            alt={`${c.name} collection artwork`}
+                            loading="lazy"
+                            width={1024}
+                            height={576}
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center text-5xl">{c.emoji}</div>
+                        )}
+                        <div className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/60 to-transparent" />
                       </div>
+
                       <div className="p-4 space-y-3">
                         <div>
                           <h2 className="font-black leading-tight">{c.name}</h2>
