@@ -502,10 +502,11 @@ serve(async (req) => {
           { role: "system", content: `Write a warm, empowering affirmation set for a young person facing bullying. Theme: ${theme}. Output ONLY JSON: {"main_affirmation":"<one powerful sentence, under 25 words>","expanded_reflection":"<3-4 sentence deeper reflection that explains the affirmation and connects it to their inner strength>","morning_mantra":"<short 1-2 sentence mantra to repeat each morning>","evening_reflection":"<2-3 sentence reflection question to close the day with self-compassion>","why_it_matters":"<2-3 sentence explanation of why this theme matters and how it builds resilience>"}` },
           { role: "user", content: "Generate." },
         ] });
-      const affirmation = (aiData.choices?.[0]?.message?.content || "").trim();
+      const parsedAffirm = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
+      const affirmation = parsedAffirm.main_affirmation || (aiData.choices?.[0]?.message?.content || "").trim();
       const today = new Date().toISOString().slice(0, 10);
       const { data: saved } = await supabase.from("safety_daily_affirmations").upsert({ user_id: user.id, affirmation, theme, for_date: today, credits_used: COST }, { onConflict: "user_id,for_date" }).select().single();
-      result = { ...saved, ...parsed };
+      result = { ...saved, ...parsedAffirm };
     } else if (action === "bystander") {
       const { scenario_key, choice } = body;
       if (!scenario_key || !choice) throw new Error("Scenario + choice required");
