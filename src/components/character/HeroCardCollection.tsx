@@ -109,6 +109,19 @@ export const HeroCardCollection = () => {
     refetchOnWindowFocus: false,
   });
 
+  // Warm the persistent image cache for rendered cards (+ a look-ahead batch)
+  // so scrolling back and repeat visits paint instantly.
+  useEffect(() => {
+    if (!catalogue.length) return;
+    warmHeroCardImages(catalogue.slice(0, visibleCount + 24).map((c) => c.image_url));
+  }, [catalogue, visibleCount]);
+
+  useEffect(() => {
+    if (current?.image_url) warmHeroCardImages([current.image_url]);
+  }, [current]);
+
+
+
   // Free background artwork backfill so the album shows real hero images.
   // Runs in larger batches and only refreshes the catalogue occasionally so the
   // album stays responsive instead of re-fetching 200 rows after every batch.
