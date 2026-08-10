@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Swords, Sparkles, Flame, Users, Trophy, TreeDeciduous, Skull, Crown, Zap, Shield } from "lucide-react";
+import { ArrowLeft, Swords, Sparkles, Flame, Users, Trophy, TreeDeciduous, Skull, Crown, Zap, Shield, ShoppingBag, Dumbbell } from "lucide-react";
 import { CharacterArenaHero } from "@/components/character/CharacterArenaHero";
 import { CharacterCreditsDisplay } from "@/components/character/CharacterCreditsDisplay";
 import { CharacterCreator } from "@/components/character/CharacterCreator";
@@ -13,6 +13,8 @@ import { TournamentHub } from "@/components/character/TournamentHub";
 import { CharacterFusionLab } from "@/components/character/CharacterFusionLab";
 import { BattleRoyaleMode } from "@/components/character/BattleRoyaleMode";
 import { CharacterEvolutionTree } from "@/components/character/CharacterEvolutionTree";
+import { CharacterEquipmentShop } from "@/components/character/CharacterEquipmentShop";
+import { CharacterTrainingCenter } from "@/components/character/CharacterTrainingCenter";
 import { AIDungeonRaids } from "@/components/character/AIDungeonRaids";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,7 +23,7 @@ import { usePaymentVerification } from "@/hooks/usePaymentVerification";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-type ActiveView = "dashboard" | "creator" | "battle" | "royale" | "social" | "gallery" | "tournament" | "fusion" | "evolution" | "dungeon";
+type ActiveView = "dashboard" | "creator" | "battle" | "royale" | "social" | "gallery" | "tournament" | "fusion" | "evolution" | "dungeon" | "shop" | "training";
 
 const TOOLS = [
   { id: "creator" as const, title: "Forge Warrior", desc: "Create AI-powered characters", icon: Sparkles, color: "from-amber-500 to-orange-600", cost: "5-15 cr" },
