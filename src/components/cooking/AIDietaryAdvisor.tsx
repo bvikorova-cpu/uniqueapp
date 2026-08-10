@@ -26,7 +26,7 @@ export default function AIDietaryAdvisor({ onBack }: Props) {
       const ok = await spendCredit("custom_generation", "AI Dietary Advisor");
       if (!ok) throw new Error("Failed to use credit");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
-        body: { prompt: `You are a certified nutritionist and allergen specialist. Analyze the following food/recipe for dietary compatibility. Diet type: ${dietType}. Provide:
+        body: { type: "cooking_ai", prompt: `You are a certified nutritionist and allergen specialist. Analyze the following food/recipe for dietary compatibility. Diet type: ${dietType}. Provide:
 1) ALLERGEN ANALYSIS: List all common allergens present (gluten, dairy, nuts, soy, eggs, shellfish, etc.)
 2) DIETARY COMPATIBILITY: Is this suitable for ${dietType}? If not, what needs to change?
 3) NUTRIENT PROFILE: Key macros and micros, potential deficiencies

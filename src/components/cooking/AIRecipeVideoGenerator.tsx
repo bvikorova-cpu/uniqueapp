@@ -24,7 +24,7 @@ export default function AIRecipeVideoGenerator({ onBack }: Props) {
       const ok = await spendCredit("custom_generation", "AI Recipe Video Generator");
       if (!ok) throw new Error("Failed to use credit");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
-        body: { prompt: `You are a professional food videographer and content creator. Create a detailed recipe video script and production plan for the following recipe. Include:
+        body: { type: "cooking_video", prompt: `You are a professional food videographer and content creator. Create a detailed recipe video script and production plan for the following recipe. Include:
 1) VIDEO TITLE & THUMBNAIL CONCEPT (clickbait-worthy but honest)
 2) INTRO SEQUENCE (5-10 seconds hook, what makes this recipe special)
 3) SHOT-BY-SHOT BREAKDOWN (camera angles, close-ups, overhead shots for each step)

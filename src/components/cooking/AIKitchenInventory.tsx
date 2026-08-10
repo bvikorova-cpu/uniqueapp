@@ -45,7 +45,7 @@ export default function AIKitchenInventory({ onBack }: Props) {
       if (!ok) throw new Error("Failed to use credit");
       const itemList = items.map(i => `${i.name} (${i.quantity})`).join(', ');
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
-        body: { prompt: `You are a professional kitchen manager and meal prep expert. Based on the user's current kitchen inventory, provide:
+        body: { type: "cooking_ai", prompt: `You are a professional kitchen manager and meal prep expert. Based on the user's current kitchen inventory, provide:
 
 1) INVENTORY ASSESSMENT: What's well-stocked, what's running low, what's missing for a balanced kitchen
 2) EXPIRY PRIORITY: Which items should be used first (estimate typical shelf life)
