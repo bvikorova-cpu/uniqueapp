@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +15,7 @@ import { CharacterTrainingCenter } from "@/components/character/CharacterTrainin
 import { CharacterInventory } from "@/components/character/CharacterInventory";
 import { AIDungeonRaids } from "@/components/character/AIDungeonRaids";
 import { HeroCardCollection } from "@/components/character/HeroCardCollection";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import { usePaymentVerification } from "@/hooks/usePaymentVerification";
@@ -40,6 +40,7 @@ const TOOLS = [
 const CharacterArena = () => {
   usePaymentVerification();
   const [activeView, setActiveView] = useState<ActiveView>("dashboard");
+  const queryClient = useQueryClient();
 
   const { data: stats } = useQuery({
     queryKey: ["character-arena-stats"],
@@ -86,6 +87,26 @@ const CharacterArena = () => {
     },
     staleTime: 60 * 1000,
   });
+
+  // Live updates: refresh stats whenever duels, characters or cards change.
+  useEffect(() => {
+    const invalidate = () => {
+      queryClient.invalidateQueries({ queryKey: ["character-arena-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["character-arena-my-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["hero-card-leaderboard"] });
+    };
+
+    const channel = supabase
+      .channel("character-arena-live-stats")
+      .on("postgres_changes", { event: "*", schema: "public", table: "character_battles" }, invalidate)
+      .on("postgres_changes", { event: "*", schema: "public", table: "characters" }, invalidate)
+      .on("postgres_changes", { event: "*", schema: "public", table: "hero_collection_cards" }, invalidate)
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
 
   const renderView = () => {
