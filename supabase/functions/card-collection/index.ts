@@ -117,6 +117,7 @@ serve(async (req) => {
     const db = admin();
 
     if (action !== "keep" && !category) return j({ error: "Category is required" }, 400);
+    if (isServiceCall && action !== "backfill_art") return j({ error: "Unauthorized" }, 401);
 
     // ── Free artwork backfill so albums show real illustrations ────────────
     if (action === "backfill_art") {
