@@ -9542,6 +9542,9 @@ export type Database = {
       card_categories: {
         Row: {
           art_style: string
+          available_from: string | null
+          available_until: string | null
+          card_kind: string
           created_at: string
           description: string
           emoji: string
@@ -9552,6 +9555,9 @@ export type Database = {
         }
         Insert: {
           art_style?: string
+          available_from?: string | null
+          available_until?: string | null
+          card_kind?: string
           created_at?: string
           description?: string
           emoji?: string
@@ -9562,6 +9568,9 @@ export type Database = {
         }
         Update: {
           art_style?: string
+          available_from?: string | null
+          available_until?: string | null
+          card_kind?: string
           created_at?: string
           description?: string
           emoji?: string
@@ -9613,6 +9622,7 @@ export type Database = {
           lore: string
           name: string
           rarity: string
+          stats: Json | null
           subject: string
           times_collected: number
           updated_at: string
@@ -9630,6 +9640,7 @@ export type Database = {
           lore?: string
           name: string
           rarity?: string
+          stats?: Json | null
           subject?: string
           times_collected?: number
           updated_at?: string
@@ -9647,6 +9658,7 @@ export type Database = {
           lore?: string
           name?: string
           rarity?: string
+          stats?: Json | null
           subject?: string
           times_collected?: number
           updated_at?: string
