@@ -54,6 +54,40 @@ const CharacterArena = () => {
         onlineWarriors: 0 };
     } });
 
+  // Real per-user engagement stats
+  const { data: myStats } = useQuery({
+    queryKey: ["character-arena-my-stats"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return { warriors: 0, wins: 0, uniqueCards: 0 };
+
+      const { data: myChars } = await supabase
+        .from("characters")
+        .select("id")
+        .eq("user_id", user.id);
+      const myIds = (myChars ?? []).map((c: { id: string }) => c.id);
+
+      let wins = 0;
+      if (myIds.length > 0) {
+        const { count } = await supabase
+          .from("character_battles")
+          .select("id", { count: "exact", head: true })
+          .in("winner_id", myIds);
+        wins = count || 0;
+      }
+
+      const { data: cards } = await supabase
+        .from("hero_collection_cards")
+        .select("collectible_id")
+        .eq("user_id", user.id);
+      const uniqueCards = new Set((cards ?? []).map((c: { collectible_id: string }) => c.collectible_id)).size;
+
+      return { warriors: myIds.length, wins, uniqueCards };
+    },
+    staleTime: 60 * 1000,
+  });
+
+
   const renderView = () => {
     switch (activeView) {
       case "creator": return <CharacterCreator />;
@@ -91,9 +125,10 @@ const CharacterArena = () => {
             {/* Engagement Row */}
             <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
               {[
-                { icon: Flame, label: "Battle Streak", value: "0 Days", sub: "Win battles daily!", color: "from-red-500 to-orange-600" },
-                { icon: Shield, label: "Army Size", value: stats?.totalCharacters?.toString() || "0", sub: "Warriors forged", color: "from-blue-500 to-cyan-600" },
-                { icon: Trophy, label: "Achievements", value: "0/20", sub: "Unlock more!", color: "from-amber-500 to-yellow-600" },
+                { icon: Flame, label: "Battle Wins", value: (myStats?.wins ?? 0).toString(), sub: "Duels won by your heroes", color: "from-red-500 to-orange-600" },
+                { icon: Shield, label: "My Warriors", value: (myStats?.warriors ?? 0).toString(), sub: "Heroes you forged", color: "from-blue-500 to-cyan-600" },
+                { icon: Trophy, label: "Cards Collected", value: `${myStats?.uniqueCards ?? 0}/200`, sub: "Unique hero cards", color: "from-amber-500 to-yellow-600" },
+
               ].map((item, i) => (
                 <motion.div key={item.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + i * 0.1, type: "spring" }}>
                   <Card className="p-3 sm:p-4 border-border/30 bg-card/90 backdrop-blur-xl text-center">
