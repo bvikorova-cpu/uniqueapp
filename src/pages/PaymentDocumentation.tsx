@@ -124,7 +124,7 @@ const PaymentDocumentation = () => {
                     { name: "Antique Credits", table: "antique_credits", func: "create-checkout", prices: ["5, 15, 30"] },
                     { name: "Astrology Credits", table: "astrology_credits", func: "create-astrology-credits-payment", prices: ["10, 25, 50"] },
                     { name: "Brain Duel Credits", table: "brain_duel_credits", func: "create-brain-duel-payment", prices: ["50, 100, 200"] },
-                    { name: "Character Credits", table: "character_credits", func: "create-character-credits-payment", prices: ["10, 25, 50"] },
+                    { name: "Character Arena (unified AI credits)", table: "ai_credits", func: "create-credits-payment", prices: ["8, 18, 32, 75"] },
                     { name: "Coloring Credits", table: "coloring_credits", func: "create-coloring-payment", prices: ["5, 15, 30"] },
                     { name: "Cooking Credits", table: "cooking_credits", func: "create-cooking-credits-payment", prices: ["10, 25, 50"] },
                     { name: "IQ Credits", table: "iq_credits", func: "create-iq-payment", prices: ["10, 25, 50"] },
