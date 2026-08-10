@@ -126,8 +126,8 @@ export const CardCategoryCollection = ({ category }: Props) => {
     const run = async () => {
       let batches = 0;
       while (!stop) {
-        const { data, error } = await supabase.functions.invoke("card-collection", {
-          body: { action: "backfill_art", category: slug, limit: 6 },
+        const { data, error } = await supabase.functions.invoke("hero-card-draw", {
+          body: { scope: "collection", action: "backfill_art", category: slug, limit: 12 },
         });
         if (stop || error || !data || data.error) return;
         setArtMissing(data.missing ?? 0);
