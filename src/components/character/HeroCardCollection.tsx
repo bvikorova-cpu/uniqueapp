@@ -10,6 +10,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { HeroCardLeaderboard } from "./HeroCardLeaderboard";
+
 
 const DRAW_COST = 1;
 const TOTAL_CARDS = 200;
