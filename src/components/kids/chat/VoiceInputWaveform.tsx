@@ -60,9 +60,10 @@ export function VoiceInputWaveform({ onTranscript, disabled }: VoiceInputWavefor
 
       setIsRecording(true);
       animationRef.current = requestAnimationFrame(updateWaveform);
-    } catch {
-      console.error("Microphone access denied");
+    } catch (err) {
+      toastMicError(err);
     }
+
   };
 
   const stopRecording = () => {
