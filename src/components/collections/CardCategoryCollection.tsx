@@ -256,9 +256,14 @@ export const CardCategoryCollection = ({ category }: Props) => {
     <div className="space-y-6">
       <Card className="p-4 sm:p-6 border-border/30 bg-card/90 backdrop-blur-xl">
         <div className="flex flex-wrap items-center gap-3 mb-3">
-          <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${category.gradient} flex items-center justify-center text-2xl`}>
-            {category.emoji}
+          <div className={`w-11 h-11 rounded-xl overflow-hidden bg-gradient-to-br ${category.gradient} flex items-center justify-center text-2xl`}>
+            {getCategoryCover(category.slug) ? (
+              <img src={getCategoryCover(category.slug)} alt="" loading="lazy" className="w-full h-full object-cover" />
+            ) : (
+              category.emoji
+            )}
           </div>
+
           <div className="min-w-0">
             <h2 className="text-lg sm:text-xl font-black">{category.name}</h2>
             <p className="text-xs text-muted-foreground">{category.description}</p>
