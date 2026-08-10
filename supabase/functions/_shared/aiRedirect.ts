@@ -144,7 +144,23 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
       } else if (input instanceof Request) {
         body = await input.clone().json().catch(() => null);
       }
-      if (!body) return blocked("unsupported OpenAI request payload");
+      if (!body) return blocked("unsupported request payload");
+
+      // ---- Direct Lovable Gateway calls: Vertex AI is primary, gateway is fallback ----
+      if (isGateway) {
+        if (url.includes("/chat/completions")) {
+          // Vertex AI (postpay) gets the first attempt for every gateway chat call.
+          const direct = await tryDirectGeminiChatResponse(body);
+          if (direct) return direct;
+          // Vertex unavailable/failed — fall back to the Lovable gateway with retry.
+          return await postWithRetry(GATEWAY_BASE + "/chat/completions", body, [
+            "google/gemini-3.1-flash-lite",
+            "google/gemini-3.5-flash",
+          ]);
+        }
+        // Non-chat gateway endpoints (images, audio, embeddings): pass through unchanged.
+        return await originalFetch(input as any, init);
+      }
 
       if (url.includes("/chat/completions")) {
         const model = mapChatModel(body.model);
