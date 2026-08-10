@@ -1,13 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeWellnessAI } from "@/lib/invokeWellnessAI";
 import { toast } from "sonner";
 
-async function invokeAction<T = any>(action: string, body: Record<string, any>): Promise<T> {
-  const { data, error } = await supabase.functions.invoke("wellness-ai", { body: { action, ...body } });
-  if (error) throw new Error(error.message);
-  if (data?.error) throw new Error(data.error);
-  return data as T;
-}
+const invokeAction = invokeWellnessAI;
 
 export function useSafetyCredits() {
   return useQuery({
@@ -15,10 +11,11 @@ export function useSafetyCredits() {
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return null;
-      const { data } = await supabase.from("safety_ai_credits").select("*").eq("user_id", user.id).maybeSingle();
+      const { data } = await supabase.from("ai_credits").select("*").eq("user_id", user.id).maybeSingle();
       return data;
     } });
 }
+
 
 export function useBullyDecoder() {
   const qc = useQueryClient();

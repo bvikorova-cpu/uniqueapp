@@ -1,13 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeWellnessAI } from "@/lib/invokeWellnessAI";
 import { toast } from "sonner";
 
-async function invokeAction<T = any>(action: string, body: Record<string, any>): Promise<T> {
-  const { data, error } = await supabase.functions.invoke("wellness-ai", { body: { action, ...body } });
-  if (error) throw new Error(error.message);
-  if (data?.error) throw new Error(data.error);
-  return data as T;
-}
+const invokeAction = invokeWellnessAI;
 
 // 1. Dream Interpreter
 export function useDreamInterpreter() {
