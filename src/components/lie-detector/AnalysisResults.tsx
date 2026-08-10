@@ -114,7 +114,25 @@ export const AnalysisResults = ({ analysis }: AnalysisResultsProps) => {
         </Card>
       )}
 
+      {(results.verdict || results.summary) && (
+        <Card className="bg-card/60 backdrop-blur-sm border-border/50">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <MessageSquare className="h-4 w-4 text-primary" />
+              Detailed Assessment
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {results.verdict && (
+              <p className="text-sm font-semibold text-foreground leading-relaxed">{String(results.verdict)}</p>
+            )}
+            {results.summary && <AiMarkdown content={String(results.summary)} className="text-xs sm:text-sm" />}
+          </CardContent>
+        </Card>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
         {results.deception_indicators && (
           <Card className="bg-card/60 backdrop-blur-sm border-border/50">
             <CardHeader className="pb-3">
