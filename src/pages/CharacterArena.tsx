@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Swords, Sparkles, Flame, Trophy, TreeDeciduous, Skull, Crown, Zap, Shield, ShoppingBag, Dumbbell, Backpack } from "lucide-react";
+import { ArrowLeft, Swords, Sparkles, Flame, Trophy, TreeDeciduous, Skull, Crown, Zap, Shield, ShoppingBag, Dumbbell, Backpack, Library } from "lucide-react";
 import { CharacterArenaHero } from "@/components/character/CharacterArenaHero";
 import { CharacterCreditsDisplay } from "@/components/character/CharacterCreditsDisplay";
 import { CharacterCreator } from "@/components/character/CharacterCreator";
@@ -14,6 +14,7 @@ import { CharacterEquipmentShop } from "@/components/character/CharacterEquipmen
 import { CharacterTrainingCenter } from "@/components/character/CharacterTrainingCenter";
 import { CharacterInventory } from "@/components/character/CharacterInventory";
 import { AIDungeonRaids } from "@/components/character/AIDungeonRaids";
+import { HeroCardCollection } from "@/components/character/HeroCardCollection";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
@@ -21,7 +22,7 @@ import { usePaymentVerification } from "@/hooks/usePaymentVerification";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-type ActiveView = "dashboard" | "creator" | "battle" | "gallery" | "fusion" | "evolution" | "dungeon" | "shop" | "training" | "inventory";
+type ActiveView = "dashboard" | "creator" | "battle" | "gallery" | "fusion" | "evolution" | "dungeon" | "shop" | "training" | "inventory" | "collection";
 
 const TOOLS = [
   { id: "creator" as const, title: "Forge Warrior", desc: "Create AI-powered characters", icon: Sparkles, color: "from-amber-500 to-orange-600", cost: "5-15 cr" },
@@ -29,6 +30,7 @@ const TOOLS = [
   { id: "shop" as const, title: "Equipment Shop", desc: "Buy weapons & armor", icon: ShoppingBag, color: "from-amber-500 to-orange-600", cost: "5-35 cr" },
   { id: "training" as const, title: "Training Center", desc: "Boost warrior stats", icon: Dumbbell, color: "from-emerald-500 to-green-600", cost: "10 cr" },
   { id: "inventory" as const, title: "My Inventory", desc: "See gear your heroes own", icon: Backpack, color: "from-emerald-500 to-teal-600", cost: "Free" },
+  { id: "collection" as const, title: "Hero Card Collection", desc: "Draw & collect 200 hero cards", icon: Library, color: "from-cyan-500 to-blue-600", cost: "5 cr" },
   { id: "fusion" as const, title: "Fusion Lab", desc: "Merge two warriors into one", icon: Zap, color: "from-purple-500 to-pink-600", cost: "30 cr" },
   { id: "dungeon" as const, title: "Dungeon Raids", desc: "Fight AI bosses for XP", icon: Skull, color: "from-violet-500 to-purple-600", cost: "5-25 cr" },
   { id: "evolution" as const, title: "Evolution Tree", desc: "Track warrior progression", icon: TreeDeciduous, color: "from-green-500 to-emerald-600", cost: "Free" },
@@ -59,6 +61,7 @@ const CharacterArena = () => {
       case "shop": return <CharacterEquipmentShop />;
       case "training": return <CharacterTrainingCenter />;
       case "inventory": return <CharacterInventory />;
+      case "collection": return <HeroCardCollection />;
       case "fusion": return <CharacterFusionLab />;
       case "dungeon": return <AIDungeonRaids />;
       case "evolution": return <CharacterEvolutionTree />;
