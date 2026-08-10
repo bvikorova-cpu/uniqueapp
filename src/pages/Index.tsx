@@ -27,6 +27,7 @@ import {
   Camera, Gem, Shirt, ArrowRight, Zap, Search, X,
   PenTool, Globe, ChevronRight, Layers, Coins,
   Pin, PinOff, BookOpen
+  Library,
 } from "lucide-react";
 
 // ── Data ──────────────────────────────────────────────
