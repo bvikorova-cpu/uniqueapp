@@ -77,7 +77,7 @@ const CardCollections = () => {
             Collectible Cards
           </h1>
           <p className="mt-2 text-sm sm:text-base text-white/85 max-w-xl">
-            10 themed collections · {CARDS_PER_CATEGORY} cards each · 1,500 cards to hunt down
+            17 themed collections · {CARDS_PER_CATEGORY} cards each · 2,550 cards to hunt down
           </p>
         </div>
       </section>
@@ -87,7 +87,7 @@ const CardCollections = () => {
         <FloatingHowItWorks
           title="Collectible Cards — How it works"
           steps={[
-            { title: "Pick a collection", desc: "Ten themed collections, each with 150 fixed cards — mythic beasts, celestial spirits, cyber guardians and more." },
+            { title: "Pick a collection", desc: "Seventeen themed collections, each with 150 fixed cards — mythic beasts, duel stats, personality archetypes, memes, daily quests, lifehacks, world facts, seasonal series and more." },
             { title: "Draw a card", desc: `Every draw costs ${DRAW_COST} AI credit and reveals one card from that collection — cards you already own can appear again.` },
             { title: "Decide ✓ or ✗", desc: "Tap ✓ to add the card to your album (duplicates stack up), or ✗ to release it back into the pool." },
             { title: "Chase rarities", desc: "Cards come as Common, Rare, Epic, Legendary and one single Mythic card per collection — the Mythic is the hardest to ever see." },
@@ -104,7 +104,7 @@ const CardCollections = () => {
             <div className="min-w-0">
               <h1 className="text-xl sm:text-2xl font-black">Collectible Cards</h1>
               <p className="text-xs text-muted-foreground">
-                10 collections · 150 cards each · 1,500 cards to hunt down
+                17 collections · 150 cards each · 2,550 cards to hunt down
               </p>
             </div>
             <Badge variant="outline" className="ml-auto gap-1 border-border/40">
