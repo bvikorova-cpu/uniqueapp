@@ -49,7 +49,12 @@ export function readCachedCategory<T>(slug: string): T | undefined {
     if (!raw) return undefined;
     const parsed = JSON.parse(raw) as { rows: T; savedAt: number };
     if (!parsed?.rows) return undefined;
-    if (Date.now() - parsed.savedAt > 7 * 24 * 60 * 60 * 1000) return undefined;
+    const rows = parsed.rows as unknown;
+    // Catalogues that are still missing artwork are only cached briefly so new
+    // illustrations appear as soon as they are generated.
+    const incomplete = Array.isArray(rows) && rows.some((r: any) => !r?.image_url);
+    const ttl = incomplete ? 5 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000;
+    if (Date.now() - parsed.savedAt > ttl) return undefined;
     return parsed.rows;
   } catch {
     return undefined;

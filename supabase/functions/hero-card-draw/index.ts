@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { deductAICredits, refundAICredits } from "../_shared/credits.ts";
 import { generateOpenAIImage } from "../_shared/unifiedAI.ts";
+import { handleCardCollection } from "../_shared/cardCollection.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
@@ -61,6 +62,11 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
+    const body = await req.json().catch(() => ({}));
+
+    // Collectible-card categories share this endpoint (function-slot limit).
+    if (body?.scope === "collection") return await handleCardCollection(req, body);
+
     const auth = req.headers.get("Authorization");
     if (!auth) return j({ error: "Unauthorized" }, 401);
 
@@ -68,7 +74,7 @@ serve(async (req) => {
     const { data: { user } } = await anon.auth.getUser(auth.replace("Bearer ", ""));
     if (!user) return j({ error: "Unauthorized" }, 401);
 
-    const body = await req.json().catch(() => ({}));
+
     const action = String(body?.action ?? "draw");
     const db = admin();
 

@@ -1,7 +1,6 @@
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
-import { deductAICredits, refundAICredits } from "../_shared/credits.ts";
-import { generateOpenAIImage } from "../_shared/unifiedAI.ts";
+import { deductAICredits, refundAICredits } from "./credits.ts";
+import { generateOpenAIImage } from "./unifiedAI.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -38,15 +37,45 @@ function cardPrompt(card: Record<string, any>, cat: Record<string, any>) {
     `rich saturated colours, centred portrait composition, epic detailed background. ${ORIGINALITY}`;
 }
 
+/** Fast + cheap card artwork via Gemini image, with an OpenAI image fallback. */
+async function renderCardImage(prompt: string): Promise<{ b64_json?: string; url?: string }> {
+  const key = Deno.env.get("LOVABLE_API_KEY");
+  if (key) {
+    try {
+      const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "google/gemini-3.1-flash-lite-image",
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          generationConfig: { responseModalities: ["TEXT", "IMAGE"] },
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const b64 = data?.data?.[0]?.b64_json;
+        if (b64) return { b64_json: b64 };
+      } else {
+        console.error("[card-collection] gemini image failed", res.status, await res.text().catch(() => ""));
+      }
+    } catch (e) {
+      console.error("[card-collection] gemini image error", e);
+    }
+  }
+  return await generateOpenAIImage(prompt, "1024x1024");
+}
+
 /** Generates the fixed card artwork once and caches it on the card row forever. */
 async function ensureArtwork(card: Record<string, any>, cat: Record<string, any>): Promise<string | null> {
   if (card.image_url) return card.image_url as string;
   try {
-    const img = await generateOpenAIImage(cardPrompt(card, cat), "1024x1024");
+    const img = await renderCardImage(cardPrompt(card, cat));
     let url: string | null = img.url ?? null;
     const db = admin();
     if (img.b64_json) {
-      const bytes = Uint8Array.from(atob(img.b64_json), (ch) => ch.charCodeAt(0));
+      const bin = atob(img.b64_json);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
       const path = `collection-cards/${card.code}.png`;
       const { error: upErr } = await db.storage
         .from("ai-studio")
@@ -62,34 +91,39 @@ async function ensureArtwork(card: Record<string, any>, cat: Record<string, any>
   }
 }
 
+
 async function getCategory(slug: string) {
   const { data } = await admin().from("card_categories").select("*").eq("slug", slug).maybeSingle();
   return data;
 }
 
-serve(async (req) => {
+export async function handleCardCollection(req: Request, preparsed?: any): Promise<Response> {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    const auth = req.headers.get("Authorization");
-    if (!auth) return j({ error: "Unauthorized" }, 401);
-
+    const auth = req.headers.get("Authorization") ?? "";
+    const token = auth.replace("Bearer ", "").trim();
+    const isServiceCall = token === Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     const anon = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!);
-    const { data: { user } } = await anon.auth.getUser(auth.replace("Bearer ", ""));
-    if (!user) return j({ error: "Unauthorized" }, 401);
+    const { data: { user } } = isServiceCall ? { data: { user: null } } : await anon.auth.getUser(token);
 
-    const body = await req.json().catch(() => ({}));
+    const body = preparsed ?? (await req.json().catch(() => ({})));
     const action = String(body?.action ?? "draw");
     const category = String(body?.category ?? "");
     const db = admin();
 
+    // Artwork backfill is free, idempotent and shared by everyone, so it does not
+    // require a signed-in user; every other action does.
+    if (!user && action !== "backfill_art") return j({ error: "Unauthorized" }, 401);
+
     if (action !== "keep" && !category) return j({ error: "Category is required" }, 400);
+
 
     // ── Free artwork backfill so albums show real illustrations ────────────
     if (action === "backfill_art") {
       const cat = await getCategory(category);
       if (!cat) return j({ error: "Category not found" }, 404);
-      const limit = Math.min(Math.max(Number(body?.limit ?? 4), 1), 6);
+      const limit = Math.min(Math.max(Number(body?.limit ?? 8), 1), 12);
       const { data: missing } = await db
         .from("card_collectibles")
         .select("*")
@@ -97,10 +131,8 @@ serve(async (req) => {
         .is("image_url", null)
         .order("card_index", { ascending: true })
         .limit(limit);
-      let generated = 0;
-      for (const card of missing ?? []) {
-        if (await ensureArtwork(card, cat)) generated++;
-      }
+      const results = await Promise.all((missing ?? []).map((card) => ensureArtwork(card, cat)));
+      const generated = results.filter(Boolean).length;
       const { count } = await db
         .from("card_collectibles")
         .select("id", { count: "exact", head: true })
@@ -282,4 +314,4 @@ serve(async (req) => {
   } catch (e) {
     return j({ error: e instanceof Error ? e.message : String(e) }, 500);
   }
-});
+}

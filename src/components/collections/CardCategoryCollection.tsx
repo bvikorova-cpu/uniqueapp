@@ -126,8 +126,8 @@ export const CardCategoryCollection = ({ category }: Props) => {
     const run = async () => {
       let batches = 0;
       while (!stop) {
-        const { data, error } = await supabase.functions.invoke("card-collection", {
-          body: { action: "backfill_art", category: slug, limit: 6 },
+        const { data, error } = await supabase.functions.invoke("hero-card-draw", {
+          body: { scope: "collection", action: "backfill_art", category: slug, limit: 12 },
         });
         if (stop || error || !data || data.error) return;
         setArtMissing(data.missing ?? 0);
@@ -177,8 +177,8 @@ export const CardCategoryCollection = ({ category }: Props) => {
   const { data: prime } = useQuery({
     queryKey: ["card-prime-status", slug, uniqueOwned],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke("card-collection", {
-        body: { action: "prime_status", category: slug },
+      const { data, error } = await supabase.functions.invoke("hero-card-draw", {
+        body: { scope: "collection", action: "prime_status", category: slug },
       });
       if (error) throw error;
       return data as {
@@ -195,8 +195,8 @@ export const CardCategoryCollection = ({ category }: Props) => {
     setDrawing(true);
     setCurrent(null);
     try {
-      const { data, error } = await supabase.functions.invoke("card-collection", {
-        body: { action: "draw", category: slug },
+      const { data, error } = await supabase.functions.invoke("hero-card-draw", {
+        body: { scope: "collection", action: "draw", category: slug },
       });
       if (error) throw error;
       if (data?.error) { toast.error(data.error); return; }
@@ -220,8 +220,8 @@ export const CardCategoryCollection = ({ category }: Props) => {
     }
     setDeciding(true);
     try {
-      const { data, error } = await supabase.functions.invoke("card-collection", {
-        body: { action: "keep", collectibleId: current.id },
+      const { data, error } = await supabase.functions.invoke("hero-card-draw", {
+        body: { scope: "collection", action: "keep", collectibleId: current.id },
       });
       if (error) throw error;
       if (data?.error) { toast.error(data.error); setExitDir(null); return; }
@@ -239,8 +239,8 @@ export const CardCategoryCollection = ({ category }: Props) => {
   const claimPrime = async () => {
     setClaiming(true);
     try {
-      const { data, error } = await supabase.functions.invoke("card-collection", {
-        body: { action: "claim_prime", category: slug },
+      const { data, error } = await supabase.functions.invoke("hero-card-draw", {
+        body: { scope: "collection", action: "claim_prime", category: slug },
       });
       if (error) throw error;
       if (data?.error) { toast.error(data.error); return; }
