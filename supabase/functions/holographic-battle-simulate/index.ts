@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Deterministic PvP battle simulation for Holographic Avatars.
 // Server-side outcome is unlocked ONLY after a verified purchase
 // (holographic_purchases row with matching stripe_session_id OR an active

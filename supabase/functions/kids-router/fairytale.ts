@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // Fairytale Book Generator — hosted inside kids-router (new standalone functions
 // cannot be created on this project, so the feature rides an existing router).
 import { spendAiCredits } from "../_shared/spendCredits.ts";

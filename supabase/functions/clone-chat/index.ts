@@ -1,3 +1,4 @@
+import "../_shared/aiRedirect.ts";
 // AI-powered chat with personality clones via OpenAI (gpt-4o).
 // Enforces 20 AI responses/day per user limit.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
