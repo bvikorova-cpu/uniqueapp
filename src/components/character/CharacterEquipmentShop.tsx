@@ -66,6 +66,29 @@ const SHOP_ITEMS: ShopItem[] = [
   { name: "Omega Crown of Infinity", slot: "artifact", boost_stat: "attack", boost_value: 2000, cost: 4800, rarity: "legendary", tier: "omega", icon: "👑", desc: "THE ULTIMATE RELIC — +2000 Attack. Only true legends wear it." },
 ];
 
+/** Special abilities / powers — permanent stat powers with a unique effect flavour */
+const ABILITY_ITEMS: ShopItem[] = [
+  { name: "Foresight", slot: "ability", boost_stat: "speed", boost_value: 25, cost: 25, rarity: "rare", icon: "🔮", desc: "Reads the enemy's next move — always acts first." },
+  { name: "Future Vision", slot: "ability", boost_stat: "speed", boost_value: 60, cost: 60, rarity: "epic", icon: "👁️", desc: "Sees several seconds ahead and dodges before the strike lands." },
+  { name: "Precognitive Reflex", slot: "ability", boost_stat: "defense", boost_value: 45, cost: 45, rarity: "epic", icon: "🧠", desc: "Body reacts to danger before the mind registers it." },
+  { name: "Battle Instinct", slot: "ability", boost_stat: "attack", boost_value: 30, cost: 30, rarity: "rare", icon: "🎯", desc: "Finds the weak point in any defence." },
+  { name: "Iron Will", slot: "ability", boost_stat: "hp", boost_value: 80, cost: 30, rarity: "rare", icon: "🪨", desc: "Refuses to fall while the fight goes on." },
+  { name: "Regeneration", slot: "ability", boost_stat: "hp", boost_value: 150, cost: 55, rarity: "epic", icon: "🌿", desc: "Wounds close in seconds." },
+  { name: "Berserker Rage", slot: "ability", boost_stat: "attack", boost_value: 70, cost: 70, rarity: "epic", icon: "😤", desc: "The more damage taken, the harder the blows." },
+  { name: "Shadow Step", slot: "ability", boost_stat: "speed", boost_value: 40, cost: 40, rarity: "epic", icon: "🌑", desc: "Slips through shadows between attacks." },
+  { name: "Telekinesis", slot: "ability", boost_stat: "attack", boost_value: 90, cost: 95, rarity: "legendary", icon: "🌀", desc: "Crushes enemies without touching them." },
+  { name: "Elemental Mastery", slot: "ability", boost_stat: "attack", boost_value: 120, cost: 130, rarity: "legendary", icon: "🔥", desc: "Commands fire, ice, storm and stone." },
+  { name: "Mind Shield", slot: "ability", boost_stat: "defense", boost_value: 110, cost: 120, rarity: "legendary", icon: "🛡️", desc: "Immune to fear, illusions and mental attacks." },
+  { name: "Phase Shift", slot: "ability", boost_stat: "defense", boost_value: 150, cost: 170, rarity: "legendary", tier: "mythic", icon: "💫", desc: "Turns intangible — attacks pass straight through." },
+  { name: "Time Slow", slot: "ability", boost_stat: "speed", boost_value: 180, cost: 220, rarity: "legendary", tier: "mythic", icon: "⏳", desc: "The world crawls while the hero moves freely." },
+  { name: "Healing Aura", slot: "ability", boost_stat: "hp", boost_value: 400, cost: 240, rarity: "legendary", tier: "mythic", icon: "✨", desc: "Restores vitality every single round." },
+  { name: "Storm Command", slot: "ability", boost_stat: "attack", boost_value: 260, cost: 650, rarity: "legendary", tier: "divine", icon: "⛈️", desc: "Calls down lightning on the whole arena." },
+  { name: "Absolute Prophecy", slot: "ability", boost_stat: "speed", boost_value: 300, cost: 700, rarity: "legendary", tier: "divine", icon: "📖", desc: "Knows the outcome of the fight before it begins." },
+  { name: "Reality Rewrite", slot: "ability", boost_stat: "attack", boost_value: 550, cost: 1800, rarity: "legendary", tier: "cosmic", icon: "🌌", desc: "Edits the rules of the battle itself." },
+  { name: "Immortality", slot: "ability", boost_stat: "hp", boost_value: 1200, cost: 2600, rarity: "legendary", tier: "cosmic", icon: "♾️", desc: "Death simply does not apply." },
+];
+
+
 const rarityColors: Record<string, string> = {
   common: "bg-gray-500/20 text-gray-400 border-gray-500/30",
   rare: "bg-blue-500/20 text-blue-400 border-blue-500/30",
