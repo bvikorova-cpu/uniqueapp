@@ -200,6 +200,8 @@ export const BrandBuilder = lazy(() => import("@/pages/BrandBuilder"));
 export const HomeDesigner = lazy(() => import("@/pages/HomeDesigner"));
 export const CharacterArena = lazy(() => import("@/pages/CharacterArena"));
 export const CharacterInventoryPage = lazy(() => import("@/pages/CharacterInventory"));
+export const CardCollections = lazy(() => import("@/pages/CardCollections"));
+export const CardCollectionCategory = lazy(() => import("@/pages/CardCollectionCategory"));
 
 export const FashionStudio = lazy(() => import("@/pages/FashionStudio"));
 export const VideoAdGenerator = lazy(() => import("@/pages/VideoAdGenerator"));
