@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { Check, X, Loader2, Sparkles, Library, Coins, Heart, Swords, Shield, Zap } from "lucide-react";
+import { Check, X, Loader2, Sparkles, Library, Coins, Heart, Swords, Shield, Zap, Crown, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -13,6 +13,16 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const DRAW_COST = 5;
 const TOTAL_CARDS = 200;
+const UNITAS_COST = 10000;
+
+interface UnitasStatus {
+  complete: boolean;
+  uniqueOwned: number;
+  total: number;
+  cost: number;
+  claimed: boolean;
+  character: { id: string; name: string; image_url: string | null } | null;
+}
 
 interface HeroCard {
   id: string;
