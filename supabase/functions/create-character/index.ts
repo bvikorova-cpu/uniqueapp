@@ -30,7 +30,74 @@ serve(async (req) => {
     const characterId = String(body?.characterId ?? "").trim();
     const existingDescription = String(body?.existingDescription ?? "").trim().slice(0, 400);
 
+    const variantCount = Math.min(4, Math.max(2, Number(body?.variantCount ?? 3)));
+    const chosenImageUrl = String(body?.imageUrl ?? "").trim();
+
+    const admin0 = () => createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+
+    // ── Set an already generated variant as the main portrait (free) ───────
+    if (action === "set_portrait") {
+      if (!characterId || !chosenImageUrl) return j({ error: "Character id and image are required" }, 400);
+      const admin = admin0();
+      const { error: updErr } = await admin.from("characters")
+        .update({ image_url: chosenImageUrl }).eq("id", characterId).eq("user_id", user.id);
+      if (updErr) return j({ error: "Could not update the portrait" }, 400);
+      return j({ imageUrl: chosenImageUrl, creditsUsed: 0 });
+    }
+
+    // ── Generate multiple portrait variants (3 credits each) ───────────────
+    if (action === "portrait_variants") {
+      if (!characterId || !name) return j({ error: "Character id and name are required" }, 400);
+      const admin = admin0();
+      const { data: charRow } = await admin.from("characters")
+        .select("description, category").eq("id", characterId).eq("user_id", user.id).maybeSingle();
+      if (!charRow) return j({ error: "Character not found" }, 404);
+
+      const costV = 3 * variantCount;
+      const deniedV = await deductAICredits(user.id, costV, "character_portrait_variants");
+      if (deniedV) return deniedV;
+
+      const visual = existingDescription || String(charRow.description ?? "").slice(0, 400);
+      const moods = [
+        "heroic frontal pose, warm rim lighting",
+        "dramatic three-quarter view, cold moody lighting",
+        "low-angle power stance, glowing energy effects",
+        "close-up intense portrait, cinematic shadows",
+      ];
+      const urls: string[] = [];
+      for (let i = 0; i < variantCount; i++) {
+        try {
+          const img = await generateOpenAIImage(
+            `Epic fantasy battle character portrait of "${name}", a ${charRow.category ?? category} warrior. ${visual}. ${moods[i % moods.length]}. Highly detailed digital painting, full upper body, vivid colors, game character art. No text, no watermark, no logos.`,
+            "1024x1024",
+          );
+          const b64 = img.b64_json;
+          if (b64) {
+            const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+            const path = `characters/${user.id}/${Date.now()}-v${i}.png`;
+            const { error: upErr } = await admin.storage.from("ai-studio")
+              .upload(path, bytes, { contentType: "image/png", upsert: true });
+            if (upErr) throw upErr;
+            urls.push(admin.storage.from("ai-studio").getPublicUrl(path).data.publicUrl);
+          } else if (img.url) {
+            urls.push(img.url);
+          }
+        } catch (err) {
+          console.error("[create-character] variant failed", i, err);
+        }
+      }
+
+      if (urls.length === 0) {
+        await refundAICredits(user.id, costV, "character_portrait_variants");
+        return j({ error: "Portrait variants could not be generated — credits refunded." }, 502);
+      }
+      const missing = variantCount - urls.length;
+      if (missing > 0) await refundAICredits(user.id, missing * 3, "character_portrait_variants");
+      return j({ imageUrls: urls, creditsUsed: urls.length * 3 });
+    }
+
     // ── Regenerate portrait only (3 credits) ──────────────────────────────
+
     if (action === "regenerate_portrait") {
       if (!characterId || !name) return j({ error: "Character id and name are required" }, 400);
       const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Sparkles, Loader2, Wand2, Shield, Zap, Heart, Crown, Download } from "lucide-react";
+import { Sparkles, Loader2, Wand2, Shield, Zap, Heart, Crown, Download, Images, Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -29,6 +29,9 @@ export const CharacterCreator = () => {
   const [description, setDescription] = useState("");
   const [isPremium, setIsPremium] = useState(false);
   const [lastCharacter, setLastCharacter] = useState<{ id: string; name: string; imageUrl: string | null; description: string } | null>(null);
+  const [variants, setVariants] = useState<string[]>([]);
+  const [variantCount, setVariantCount] = useState(3);
+
   const queryClient = useQueryClient();
 
   const createCharacter = useMutation({
@@ -46,7 +49,9 @@ export const CharacterCreator = () => {
         defense: aiResult.stats.defense, speed: aiResult.stats.speed,
         is_premium: isPremium }).select().single();
       if (error) throw error;
+      setVariants([]);
       setLastCharacter({ id: inserted.id, name: inserted.name, imageUrl: aiResult.imageUrl, description });
+
       toast.success("Warrior forged successfully!");
       queryClient.invalidateQueries({ queryKey: ["character-credits"] });
       queryClient.invalidateQueries({ queryKey: ["characters"] });
@@ -71,6 +76,43 @@ export const CharacterCreator = () => {
       }
     },
     onError: (error: Error) => toast.error(error.message || "Failed to regenerate portrait") });
+
+  const genVariants = useMutation({
+    mutationFn: async () => {
+      if (!lastCharacter) return null;
+      const { data: result, error } = await supabase.functions.invoke('create-character', { body: {
+        action: 'portrait_variants', characterId: lastCharacter.id, name: lastCharacter.name,
+        existingDescription: lastCharacter.description, variantCount } });
+      if (error) throw error;
+      if ((result as any)?.error) throw new Error((result as any).error);
+      return result as { imageUrls: string[] };
+    },
+    onSuccess: (result) => {
+      if (result?.imageUrls?.length) {
+        setVariants(result.imageUrls);
+        queryClient.invalidateQueries({ queryKey: ["character-credits"] });
+        toast.success(`${result.imageUrls.length} variants ready — pick your favourite.`);
+      }
+    },
+    onError: (error: Error) => toast.error(error.message || "Failed to generate variants") });
+
+  const setMainPortrait = useMutation({
+    mutationFn: async (imageUrl: string) => {
+      if (!lastCharacter) return null;
+      const { data: result, error } = await supabase.functions.invoke('create-character', { body: {
+        action: 'set_portrait', characterId: lastCharacter.id, imageUrl } });
+      if (error) throw error;
+      return result as { imageUrl: string };
+    },
+    onSuccess: (result) => {
+      if (result?.imageUrl) {
+        setLastCharacter((prev) => prev ? { ...prev, imageUrl: result.imageUrl } : prev);
+        queryClient.invalidateQueries({ queryKey: ["characters"] });
+        toast.success("Main portrait updated!");
+      }
+    },
+    onError: (error: Error) => toast.error(error.message || "Failed to set portrait") });
+
 
   return (
     <>
@@ -246,6 +288,29 @@ export const CharacterCreator = () => {
                       <Download className="mr-2 h-4 w-4" /> Download Portrait
                     </Button>
                   )}
+                  <Button
+                    onClick={() => genVariants.mutate()}
+                    disabled={genVariants.isPending || regenPortrait.isPending}
+                    variant="outline"
+                    size="sm"
+                    className="border-purple-500/40 text-purple-600 hover:bg-purple-500/10"
+                  >
+                    {genVariants.isPending ? (
+                      <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating variants...</>
+                    ) : (
+                      <><Images className="mr-2 h-4 w-4" /> Generate {variantCount} Variants ({variantCount * 3} Credits)</>
+                    )}
+                  </Button>
+                  <Select value={String(variantCount)} onValueChange={(v) => setVariantCount(Number(v))}>
+                    <SelectTrigger className="h-9 w-[110px] bg-card/50 border-border/30 text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[2, 3, 4].map((n) => (
+                        <SelectItem key={n} value={String(n)}>{n} variants</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>
@@ -259,6 +324,54 @@ export const CharacterCreator = () => {
                 "Uploading & updating gallery",
               ]}
             />
+            <GenerationProgress
+              active={genVariants.isPending}
+              title={`Painting ${variantCount} portrait variants...`}
+              stepSeconds={8}
+              steps={[
+                "Reading character details",
+                "Composing variant compositions",
+                "Rendering each portrait",
+                "Uploading your gallery",
+              ]}
+            />
+
+            {variants.length > 0 && (
+              <div className="mt-4">
+                <p className="text-sm font-bold mb-2">🎨 Pick the portrait to save as main</p>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {variants.map((url) => {
+                    const isMain = lastCharacter.imageUrl === url;
+                    return (
+                      <div key={url} className="space-y-2">
+                        <button
+                          type="button"
+                          onClick={() => setMainPortrait.mutate(url)}
+                          disabled={setMainPortrait.isPending}
+                          className={`relative block w-full aspect-square rounded-xl overflow-hidden border-2 transition-all ${
+                            isMain ? "border-primary shadow-lg shadow-primary/20" : "border-border/30 hover:border-primary/50"
+                          }`}
+                        >
+                          <img src={url} alt={`${lastCharacter.name} portrait variant`} className="w-full h-full object-cover" loading="lazy" />
+                          {isMain && (
+                            <span className="absolute bottom-1 left-1 right-1 rounded-md bg-primary/90 text-primary-foreground text-[10px] font-bold py-0.5 flex items-center justify-center gap-1">
+                              <Check className="h-3 w-3" /> Main
+                            </span>
+                          )}
+                        </button>
+                        {!isMain && (
+                          <Button variant="outline" size="sm" className="w-full text-xs"
+                            onClick={() => setMainPortrait.mutate(url)} disabled={setMainPortrait.isPending}>
+                            Use this
+                          </Button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
           </Card>
 
         )}
