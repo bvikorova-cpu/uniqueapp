@@ -38,15 +38,45 @@ function cardPrompt(card: Record<string, any>, cat: Record<string, any>) {
     `rich saturated colours, centred portrait composition, epic detailed background. ${ORIGINALITY}`;
 }
 
+/** Fast + cheap card artwork via Gemini image, with an OpenAI image fallback. */
+async function renderCardImage(prompt: string): Promise<{ b64_json?: string; url?: string }> {
+  const key = Deno.env.get("LOVABLE_API_KEY");
+  if (key) {
+    try {
+      const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "google/gemini-3.1-flash-lite-image",
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          generationConfig: { responseModalities: ["TEXT", "IMAGE"] },
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const b64 = data?.data?.[0]?.b64_json;
+        if (b64) return { b64_json: b64 };
+      } else {
+        console.error("[card-collection] gemini image failed", res.status, await res.text().catch(() => ""));
+      }
+    } catch (e) {
+      console.error("[card-collection] gemini image error", e);
+    }
+  }
+  return await generateOpenAIImage(prompt, "1024x1024");
+}
+
 /** Generates the fixed card artwork once and caches it on the card row forever. */
 async function ensureArtwork(card: Record<string, any>, cat: Record<string, any>): Promise<string | null> {
   if (card.image_url) return card.image_url as string;
   try {
-    const img = await generateOpenAIImage(cardPrompt(card, cat), "1024x1024");
+    const img = await renderCardImage(cardPrompt(card, cat));
     let url: string | null = img.url ?? null;
     const db = admin();
     if (img.b64_json) {
-      const bytes = Uint8Array.from(atob(img.b64_json), (ch) => ch.charCodeAt(0));
+      const bin = atob(img.b64_json);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
       const path = `collection-cards/${card.code}.png`;
       const { error: upErr } = await db.storage
         .from("ai-studio")
@@ -61,6 +91,7 @@ async function ensureArtwork(card: Record<string, any>, cat: Record<string, any>
     return null;
   }
 }
+
 
 async function getCategory(slug: string) {
   const { data } = await admin().from("card_categories").select("*").eq("slug", slug).maybeSingle();
