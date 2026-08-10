@@ -260,7 +260,7 @@ export const HeroCardCollection = () => {
                     </div>
                     <h3 className="font-black mb-1">Draw a hero card</h3>
                     <p className="text-xs text-muted-foreground mb-5">
-                      {DRAW_COST} AI credits per draw. You'll always get a hero you don't own yet.
+                      {DRAW_COST} AI credits per draw — any of the 200 heroes can appear, including ones you already own.
                     </p>
                     <Button onClick={draw} disabled={drawing} className="gap-2">
                       {drawing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
@@ -281,40 +281,47 @@ export const HeroCardCollection = () => {
         </TabsContent>
 
         <TabsContent value="mine" className="pt-4">
-          {isLoading ? (
+          {isLoading || loadingCatalogue ? (
             <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
-          ) : collection.length === 0 ? (
-            <Card className="p-8 text-center border-dashed border-border/40">
-              <p className="text-sm text-muted-foreground">No cards yet — draw your first hero!</p>
-            </Card>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              {collection.map((c, i) => (
-                <motion.div key={c.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}>
-                  <Card className="overflow-hidden border-border/30 bg-card/90">
-                    <div className={`relative aspect-[4/5] bg-gradient-to-br ${c.gradient}`}>
-                      {c.image_url ? (
-                        <img src={c.image_url} alt={`${c.name} hero card`} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center text-4xl">{c.emoji}</div>
-                      )}
-                      <Badge className="absolute top-2 left-2 text-[9px] bg-background/80 text-foreground backdrop-blur">
-                        {RARITY_LABEL[c.rarity] ?? c.rarity}
-                      </Badge>
-                    </div>
-                    <div className="p-2.5">
-                      <p className="text-xs font-bold truncate">{c.name}</p>
-                      <p className="text-[10px] text-muted-foreground truncate capitalize">{c.archetype}</p>
-                      <p className="text-[10px] text-muted-foreground mt-1">
-                        {c.hp} HP · {c.attack} ATK · {c.defense} DEF
-                      </p>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
+              {catalogue.map((c, i) => {
+                const count = ownedCounts[c.id] ?? 0;
+                const owned = count > 0;
+                return (
+                  <motion.div key={c.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i, 40) * 0.015 }}>
+                    <Card className={`overflow-hidden border-border/30 bg-card/90 transition-all ${owned ? "" : "opacity-40 saturate-0"}`}>
+                      <div className={`relative aspect-[4/5] bg-gradient-to-br ${c.gradient}`}>
+                        {c.image_url ? (
+                          <img src={c.image_url} alt={`${c.name} hero card`} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center text-4xl">{c.emoji}</div>
+                        )}
+                        <Badge className="absolute top-2 left-2 text-[9px] bg-background/80 text-foreground backdrop-blur">
+                          {RARITY_LABEL[c.rarity] ?? c.rarity}
+                        </Badge>
+                        {owned && (
+                          <Badge className="absolute top-2 right-2 text-[9px] bg-emerald-500 text-white">×{count}</Badge>
+                        )}
+                      </div>
+                      <div className="p-2.5">
+                        <p className="text-xs font-bold truncate">{c.name}</p>
+                        <p className="text-[10px] text-muted-foreground truncate capitalize">{c.archetype}</p>
+                        <p className="text-[10px] text-muted-foreground mt-1">
+                          {c.hp} HP · {c.attack} ATK · {c.defense} DEF
+                        </p>
+                        <p className={`text-[10px] font-bold mt-1 ${owned ? "text-emerald-500" : "text-muted-foreground"}`}>
+                          {owned ? `Collected ×${count}` : "Not collected yet"}
+                        </p>
+                      </div>
+                    </Card>
+                  </motion.div>
+                );
+              })}
             </div>
           )}
         </TabsContent>
+
       </Tabs>
     </div>
   );
