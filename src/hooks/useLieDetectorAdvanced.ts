@@ -10,7 +10,9 @@ async function invoke<T = any>(action: string, body: Record<string, any>): Promi
   const payload = { ...rest, action, ...(subAction !== undefined ? { sub_action: subAction } : {}) };
   const { data, error } = await safeInvoke<T>("lie-detector-ai", { body: payload });
   if (error) throw new Error(error);
-  if (data?.error) throw new Error(data.error);
+  if (data && typeof data === "object" && "error" in data) {
+    throw new Error(String((data as Record<string, unknown>).error));
+  }
   return data;
 }
 
