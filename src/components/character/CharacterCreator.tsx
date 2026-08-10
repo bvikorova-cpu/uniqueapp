@@ -286,6 +286,29 @@ export const CharacterCreator = () => {
                       <Download className="mr-2 h-4 w-4" /> Download Portrait
                     </Button>
                   )}
+                  <Button
+                    onClick={() => genVariants.mutate()}
+                    disabled={genVariants.isPending || regenPortrait.isPending}
+                    variant="outline"
+                    size="sm"
+                    className="border-purple-500/40 text-purple-600 hover:bg-purple-500/10"
+                  >
+                    {genVariants.isPending ? (
+                      <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating variants...</>
+                    ) : (
+                      <><Images className="mr-2 h-4 w-4" /> Generate {variantCount} Variants ({variantCount * 3} Credits)</>
+                    )}
+                  </Button>
+                  <Select value={String(variantCount)} onValueChange={(v) => setVariantCount(Number(v))}>
+                    <SelectTrigger className="h-9 w-[110px] bg-card/50 border-border/30 text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[2, 3, 4].map((n) => (
+                        <SelectItem key={n} value={String(n)}>{n} variants</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>
@@ -299,6 +322,54 @@ export const CharacterCreator = () => {
                 "Uploading & updating gallery",
               ]}
             />
+            <GenerationProgress
+              active={genVariants.isPending}
+              title={`Painting ${variantCount} portrait variants...`}
+              stepSeconds={8}
+              steps={[
+                "Reading character details",
+                "Composing variant compositions",
+                "Rendering each portrait",
+                "Uploading your gallery",
+              ]}
+            />
+
+            {variants.length > 0 && (
+              <div className="mt-4">
+                <p className="text-sm font-bold mb-2">🎨 Pick the portrait to save as main</p>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {variants.map((url) => {
+                    const isMain = lastCharacter.imageUrl === url;
+                    return (
+                      <div key={url} className="space-y-2">
+                        <button
+                          type="button"
+                          onClick={() => setMainPortrait.mutate(url)}
+                          disabled={setMainPortrait.isPending}
+                          className={`relative block w-full aspect-square rounded-xl overflow-hidden border-2 transition-all ${
+                            isMain ? "border-primary shadow-lg shadow-primary/20" : "border-border/30 hover:border-primary/50"
+                          }`}
+                        >
+                          <img src={url} alt={`${lastCharacter.name} portrait variant`} className="w-full h-full object-cover" loading="lazy" />
+                          {isMain && (
+                            <span className="absolute bottom-1 left-1 right-1 rounded-md bg-primary/90 text-primary-foreground text-[10px] font-bold py-0.5 flex items-center justify-center gap-1">
+                              <Check className="h-3 w-3" /> Main
+                            </span>
+                          )}
+                        </button>
+                        {!isMain && (
+                          <Button variant="outline" size="sm" className="w-full text-xs"
+                            onClick={() => setMainPortrait.mutate(url)} disabled={setMainPortrait.isPending}>
+                            Use this
+                          </Button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
           </Card>
 
         )}
