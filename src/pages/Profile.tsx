@@ -764,8 +764,14 @@ const Profile = () => {
             followers: followCounts?.followers || 0 }}
         />
 
+        {/* Collectible-card category badges */}
+        <div className="mb-6">
+          <CardCategoryBadges userId={userId!} isOwnProfile={currentUserId === userId} />
+        </div>
+
         {/* Activity Heatmap */}
         <ActivityHeatmap userId={userId!} />
+
 
         {/* Public Goals */}
         <PublicGoals userId={userId!} isOwnProfile={currentUserId === userId} />
