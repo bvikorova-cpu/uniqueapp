@@ -10072,6 +10072,59 @@ export type Database = {
         }
         Relationships: []
       }
+      character_equipment: {
+        Row: {
+          boost_stat: string
+          boost_value: number
+          character_id: string
+          created_at: string
+          credits_cost: number
+          equipped: boolean | null
+          icon: string | null
+          id: string
+          name: string
+          rarity: string
+          slot: string
+          user_id: string
+        }
+        Insert: {
+          boost_stat: string
+          boost_value?: number
+          character_id: string
+          created_at?: string
+          credits_cost?: number
+          equipped?: boolean | null
+          icon?: string | null
+          id?: string
+          name: string
+          rarity?: string
+          slot?: string
+          user_id: string
+        }
+        Update: {
+          boost_stat?: string
+          boost_value?: number
+          character_id?: string
+          created_at?: string
+          credits_cost?: number
+          equipped?: boolean | null
+          icon?: string | null
+          id?: string
+          name?: string
+          rarity?: string
+          slot?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "character_equipment_character_id_fkey"
+            columns: ["character_id"]
+            isOneToOne: false
+            referencedRelation: "characters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       character_follows: {
         Row: {
           character_id: string
