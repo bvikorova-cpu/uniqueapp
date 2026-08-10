@@ -87,7 +87,7 @@ export const CardCategoryCollection = ({ category }: Props) => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("card_collectibles")
-        .select("id, code, card_index, name, subject, rarity, lore, emoji, gradient, image_url, is_prime")
+        .select("id, code, card_index, name, subject, rarity, lore, emoji, gradient, image_url, is_prime, stats")
         .eq("category_slug", slug)
         .eq("is_prime", false)
         .order("card_index", { ascending: true });
