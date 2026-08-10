@@ -26,6 +26,8 @@ const rankIcon = (i: number) => {
 
 /** Global ranking of hero card collectors — most unique cards wins. */
 export const HeroCardLeaderboard = () => {
+  const queryClient = useQueryClient();
+
   const { data: me } = useQuery({
     queryKey: ["hero-lb-me"],
     queryFn: async () => (await supabase.auth.getUser()).data.user?.id ?? null,
@@ -39,9 +41,26 @@ export const HeroCardLeaderboard = () => {
       if (error) throw error;
       return (data ?? []) as unknown as Row[];
     },
-    staleTime: 60 * 1000,
+    staleTime: 15 * 1000,
     refetchOnWindowFocus: false,
   });
+
+  // Live ranking: any new card drawn by anyone refreshes the standings.
+  useEffect(() => {
+    const channel = supabase
+      .channel("hero-card-leaderboard-live")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "hero_collection_cards" },
+        () => queryClient.invalidateQueries({ queryKey: ["hero-card-leaderboard"] }),
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
 
   if (isLoading) {
     return (
