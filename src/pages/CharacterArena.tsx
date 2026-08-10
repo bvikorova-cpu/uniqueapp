@@ -54,6 +54,40 @@ const CharacterArena = () => {
         onlineWarriors: 0 };
     } });
 
+  // Real per-user engagement stats
+  const { data: myStats } = useQuery({
+    queryKey: ["character-arena-my-stats"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return { warriors: 0, wins: 0, uniqueCards: 0 };
+
+      const { data: myChars } = await supabase
+        .from("characters")
+        .select("id")
+        .eq("user_id", user.id);
+      const myIds = (myChars ?? []).map((c: { id: string }) => c.id);
+
+      let wins = 0;
+      if (myIds.length > 0) {
+        const { count } = await supabase
+          .from("character_battles")
+          .select("id", { count: "exact", head: true })
+          .in("winner_id", myIds);
+        wins = count || 0;
+      }
+
+      const { data: cards } = await supabase
+        .from("hero_collection_cards")
+        .select("collectible_id")
+        .eq("user_id", user.id);
+      const uniqueCards = new Set((cards ?? []).map((c: { collectible_id: string }) => c.collectible_id)).size;
+
+      return { warriors: myIds.length, wins, uniqueCards };
+    },
+    staleTime: 60 * 1000,
+  });
+
+
   const renderView = () => {
     switch (activeView) {
       case "creator": return <CharacterCreator />;
