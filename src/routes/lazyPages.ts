@@ -199,6 +199,8 @@ export const CoffeeBuddy = lazy(() => import("@/pages/CoffeeBuddy"));
 export const BrandBuilder = lazy(() => import("@/pages/BrandBuilder"));
 export const HomeDesigner = lazy(() => import("@/pages/HomeDesigner"));
 export const CharacterArena = lazy(() => import("@/pages/CharacterArena"));
+export const CharacterInventoryPage = lazy(() => import("@/pages/CharacterInventory"));
+
 export const FashionStudio = lazy(() => import("@/pages/FashionStudio"));
 export const VideoAdGenerator = lazy(() => import("@/pages/VideoAdGenerator"));
 export const CreativeForge = lazy(() => import("@/pages/CreativeForge"));
