@@ -70,7 +70,7 @@ async function transcribeAudio(blob: Blob, mime?: string): Promise<{ transcript?
   // This action needs one buffered JSON result before the forensic analysis.
   fd.append("stream", "false");
   const resp = await fetch("https://ai.gateway.lovable.dev/v1/audio/transcriptions", {
-    method: "POST", headers: { Authorization: `Bearer ${key}` }, body: fd });
+    method: "POST", headers: { "Lovable-API-Key": key }, body: fd });
   if (!resp.ok) {
     const details = await resp.text().catch(() => "");
     console.error("[lie-detector-ai] transcription failed", resp.status, details.slice(0, 500));

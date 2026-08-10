@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Mic, Square, Loader2, AlertTriangle } from "lucide-react";
@@ -18,6 +18,10 @@ export const VoiceLieDetectionCard = () => {
   const chunksRef = useRef<Blob[]>([]);
   const detect = useVoiceLieDetection();
 
+  useEffect(() => () => {
+    if (audioUrl) URL.revokeObjectURL(audioUrl);
+  }, [audioUrl]);
+
   const startRec = async () => {
     try {
       const stream = await requestMicStream({ audio: true });
@@ -27,7 +31,10 @@ export const VoiceLieDetectionCard = () => {
       mr.onstop = () => {
         const blob = new Blob(chunksRef.current, { type: "audio/webm" });
         setAudioBlob(blob);
-        setAudioUrl(URL.createObjectURL(blob));
+        setAudioUrl((current) => {
+          if (current) URL.revokeObjectURL(current);
+          return URL.createObjectURL(blob);
+        });
         stream.getTracks().forEach((t) => t.stop());
       };
       mr.start();
