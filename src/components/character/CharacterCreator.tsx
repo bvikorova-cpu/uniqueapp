@@ -205,19 +205,48 @@ export const CharacterCreator = () => {
                 <p className="text-xs text-muted-foreground mb-2">
                   {regenPortrait.isPending ? "Painting a new portrait..." : `Portrait ${lastCharacter.imageUrl ? "ready" : "missing"}`}
                 </p>
-                <Button
-                  onClick={() => regenPortrait.mutate()}
-                  disabled={regenPortrait.isPending}
-                  variant="outline"
-                  size="sm"
-                  className="border-amber-500/40 text-amber-600 hover:bg-amber-500/10"
-                >
-                  {regenPortrait.isPending ? (
-                    <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Regenerating...</>
-                  ) : (
-                    <><Wand2 className="mr-2 h-4 w-4" /> Regenerate Portrait (3 Credits)</>
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                  <Button
+                    onClick={() => regenPortrait.mutate()}
+                    disabled={regenPortrait.isPending}
+                    variant="outline"
+                    size="sm"
+                    className="border-amber-500/40 text-amber-600 hover:bg-amber-500/10"
+                  >
+                    {regenPortrait.isPending ? (
+                      <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Regenerating...</>
+                    ) : (
+                      <><Wand2 className="mr-2 h-4 w-4" /> Regenerate Portrait (3 Credits)</>
+                    )}
+                  </Button>
+                  {lastCharacter.imageUrl && !regenPortrait.isPending && (
+                    <Button
+                      onClick={async () => {
+                        try {
+                          const res = await fetch(lastCharacter.imageUrl!, { mode: "cors" });
+                          const blob = await res.blob();
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement("a");
+                          a.href = url;
+                          a.download = `${lastCharacter.name.replace(/\s+/g, "-").toLowerCase()}-portrait.png`;
+                          document.body.appendChild(a);
+                          a.click();
+                          a.remove();
+                          URL.revokeObjectURL(url);
+                          toast.success("Portrait downloaded!");
+                        } catch {
+                          window.open(lastCharacter.imageUrl!, "_blank");
+                          toast.success("Portrait opened in a new tab — long-press to save.");
+                        }
+                      }}
+                      variant="outline"
+                      size="sm"
+                      className="border-blue-500/40 text-blue-600 hover:bg-blue-500/10"
+                    >
+                      <Download className="mr-2 h-4 w-4" /> Download Portrait
+                    </Button>
                   )}
-                </Button>
+                </div>
               </div>
             </div>
             <GenerationProgress
