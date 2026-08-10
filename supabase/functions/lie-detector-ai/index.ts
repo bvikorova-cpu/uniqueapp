@@ -50,6 +50,36 @@ async function callOpenAI(messages: any[], json_mode = true) {
   return { result: json_mode ? JSON.parse(content) : content };
 }
 
+const EXT_BY_MIME: Record<string, string> = {
+  "audio/webm": "webm", "audio/ogg": "ogg", "audio/mp4": "mp4", "audio/m4a": "m4a",
+  "audio/mpeg": "mp3", "audio/mp3": "mp3", "audio/wav": "wav", "audio/x-wav": "wav", "audio/flac": "flac",
+};
+
+/** Transcribe audio via Lovable AI Gateway (OpenAI-compatible STT). Returns plain transcript. */
+async function transcribeAudio(blob: Blob, mime?: string): Promise<{ transcript?: string; err?: Response }> {
+  const key = OPENAI();
+  if (!key) return { err: json({ error: "LOVABLE_API_KEY not configured" }, 500) };
+  const base = (mime || blob.type || "audio/webm").split(";")[0];
+  const ext = EXT_BY_MIME[base] || "webm";
+  if (blob.size < 1024) {
+    return { err: json({ error: "Recording is too short or empty. Please record again." }, 400) };
+  }
+  const fd = new FormData();
+  fd.append("file", blob, `recording.${ext}`);
+  fd.append("model", "openai/gpt-4o-mini-transcribe");
+  const resp = await fetch("https://ai.gateway.lovable.dev/v1/audio/transcriptions", {
+    method: "POST", headers: { Authorization: `Bearer ${key}` }, body: fd });
+  if (!resp.ok) {
+    const details = await resp.text().catch(() => "");
+    return { err: json({ error: "Transcription failed", details: details.slice(0, 500) }, resp.status === 402 ? 402 : 500) };
+  }
+  const j = await resp.json().catch(() => ({} as any));
+  const transcript = (j.text || "").trim();
+  if (!transcript) return { err: json({ error: "No speech detected in the recording. Please try again." }, 400) };
+  return { transcript };
+}
+
+
 async function awardXp(supabase: any, uid: string, xp: number) {
   const { data: r } = await supabase.from("lie_detective_ranks").select("xp,total_analyses").eq("user_id", uid).maybeSingle();
   const newXp = (r?.xp ?? 0) + xp;
