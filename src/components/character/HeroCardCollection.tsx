@@ -484,7 +484,12 @@ export const HeroCardCollection = () => {
 
         </TabsContent>
 
+        <TabsContent value="ranking" className="pt-4">
+          <HeroCardLeaderboard />
+        </TabsContent>
+
       </Tabs>
+
     </div>
   );
 };
