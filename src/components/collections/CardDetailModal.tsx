@@ -114,7 +114,31 @@ export const CardDetailModal = ({ card, category, totalCards, onClose }: Props) 
 
                 <p className="text-sm text-muted-foreground leading-relaxed">{card.lore}</p>
 
+                {card.stats && (
+                  <div>
+                    <h4 className="text-sm font-black mb-2">Battle attributes</h4>
+                    <div className="space-y-1.5">
+                      {(["strength", "speed", "magic", "defense", "luck"] as const).map((k) => {
+                        const value = card.stats?.[k] ?? 0;
+                        return (
+                          <div key={k} className="flex items-center gap-2">
+                            <span className="w-20 text-[11px] font-bold capitalize">{k}</span>
+                            <div className="h-2 flex-1 rounded-full bg-muted overflow-hidden">
+                              <div
+                                className={`h-full rounded-full bg-gradient-to-r ${card.gradient}`}
+                                style={{ width: `${Math.min(100, value)}%` }}
+                              />
+                            </div>
+                            <span className="w-8 text-right text-[11px] font-black">{value}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 <Separator />
+
 
                 <div>
                   <h4 className="text-sm font-black mb-2">Acquisition history</h4>
