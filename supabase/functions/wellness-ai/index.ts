@@ -142,8 +142,8 @@ serve(async (req) => {
       const aiData = await callAI(LOVABLE_API_KEY, {
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: `You analyze bullying messages. Output ONLY JSON: {"severity":"low|medium|high|critical","bully_type":"verbal|cyber|social|physical-threat|sexual|discriminatory","emotional_impact":"<2 sentences>","suggested_response":"<safe assertive reply>","action_steps":[{"step":"...","priority":"high|medium|low"}],"red_flags":["..."]}` },
-          { role: "user", content: `Analyze: """${input_text}"""` },
+          { role: "system", content: `You are an expert anti-bullying analyst. Analyze the message in depth. Output ONLY JSON: {"severity":"low|medium|high|critical","bully_type":"verbal|cyber|social|physical-threat|sexual|discriminatory","emotional_impact":"<detailed 4-5 sentence analysis of the psychological and emotional toll on the recipient>","suggested_response":"<a well-crafted 3-4 sentence assertive, safe reply that de-escalates and sets a firm boundary>","action_steps":[{"step":"<specific actionable step>","priority":"high|medium|low","why":"<why this step matters>"}],"red_flags":["<each flag with brief explanation>"],"long_term_strategy":"<2-3 sentence advice on handling this pattern ongoing>","support_resources":"<2-3 relevant support resources or people to contact>"}` },
+          { role: "user", content: `Analyze in detail: """${input_text}"""` },
         ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
       const { data: saved } = await supabase.from("safety_bully_decoder").insert({ user_id: user.id, input_text, severity: parsed.severity, bully_type: parsed.bully_type,
@@ -156,7 +156,7 @@ serve(async (req) => {
       const aiData = await callAI(LOVABLE_API_KEY, {
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: `Build a formal bullying evidence pack. Output ONLY JSON: {"incident_summary":"...","timeline":[{"date":"YYYY-MM-DD","event":"...","severity":"low|medium|high"}],"recommended_recipients":[{"name":"...","reason":"..."}],"formal_report":"<~400 word neutral report>"}` },
+          { role: "system", content: `Build a comprehensive, formal bullying evidence pack suitable for school, HR, or legal proceedings. Output ONLY JSON: {"incident_summary":"<detailed 4-5 sentence overview of the pattern of behaviour>","timeline":[{"date":"YYYY-MM-DD","event":"<detailed event description with context>","severity":"low|medium|high","witnesses":"<if any>"}],"recommended_recipients":[{"name":"<recipient title/role>","reason":"<2-3 sentence explanation of why they should receive this>","suggested_action":"<what to ask them to do>"}],"formal_report":"<600-800 word neutral, professional, fact-based report with clear sections: Background, Pattern of Incidents, Impact on Victim, and Requested Actions>","legal_considerations":"<2-3 sentence note on any legal angle if applicable>","emotional_impact_summary":"<3-4 sentence description of documented emotional/psychological impact>"}` },
           { role: "user", content: `Title: ${title}\nIncidents:\n${incidents.map((i: any, n: number) => `${n + 1}. ${i.date || "unknown"} — ${i.description}`).join("\n")}` },
         ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
@@ -170,7 +170,7 @@ serve(async (req) => {
       const aiData = await callAI(LOVABLE_API_KEY, {
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: `Score a roleplay bullying response. Output ONLY JSON: {"assertiveness_score":0-100,"empathy_score":0-100,"safety_score":0-100,"feedback":"...","improved_response":"...","next_steps":["..."]}` },
+          { role: "system", content: `You are an expert communication coach specializing in bullying response training. Score the response and give detailed, constructive feedback. Output ONLY JSON: {"assertiveness_score":0-100,"empathy_score":0-100,"safety_score":0-100,"overall_assessment":"<3-4 sentence overall summary of how the response handled the situation>","feedback":"<detailed 4-5 sentence breakdown of strengths and areas for improvement, referencing specific words or tone choices>","improved_response":"<a polished 3-4 sentence improved version with clear reasoning for changes>","next_steps":[{"step":"<specific practice step>","goal":"<what it builds>"}],"confidence_tip":"<2 sentence tip on building confidence for similar situations>"}` },
           { role: "user", content: `Scenario: ${scenario}\nResponse: ${user_response}` },
         ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
@@ -185,7 +185,7 @@ serve(async (req) => {
       const aiData = await callAI(LOVABLE_API_KEY, {
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: `Cyberbullying risk analyst. Output ONLY JSON: {"risk_level":"safe|caution|elevated|severe","overall_score":0-100,"threat_patterns":[{"pattern":"...","frequency":"low|medium|high","example":"..."}],"flagged_phrases":["..."],"safety_recommendations":[{"action":"...","why":"..."}]}` },
+          { role: "system", content: `You are a cyberbullying risk analyst with expertise in online safety. Conduct a thorough analysis. Output ONLY JSON: {"risk_level":"safe|caution|elevated|severe","overall_score":0-100,"analysis_summary":"<4-5 sentence detailed explanation of the overall risk landscape in the content>","threat_patterns":[{"pattern":"<named pattern>","frequency":"low|medium|high","example":"<quote from content>","impact":"<1-2 sentence explanation of why this is harmful>"}],"flagged_phrases":[{"phrase":"<exact phrase>","category":"<hate|harassment|threat|insult|other>","concern":"<1 sentence why this is flagged>"}],"safety_recommendations":[{"action":"<specific action>","why":"<2-3 sentence explanation>","urgency":"immediate|short-term|long-term"}],"digital_safety_tips":"<3-4 practical tips for protecting online presence>"}` },
           { role: "user", content: `Scan: """${scan_input.slice(0, 5000)}"""` },
         ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
@@ -200,7 +200,7 @@ serve(async (req) => {
       const aiData = await callAI(LOVABLE_API_KEY, {
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: `You are a compassionate safety coach. Analyze 7 days of journal + mood logs. Output ONLY JSON: {"trend":"improving|stable|declining|critical","insight_text":"<3-4 supportive sentences>","recommendations":[{"title":"...","action":"...","priority":"high|medium|low"}]}` },
+          { role: "system", content: `You are a compassionate safety coach and wellbeing analyst. Analyze 7 days of journal + mood logs with depth and care. Output ONLY JSON: {"trend":"improving|stable|declining|critical","insight_text":"<6-8 supportive, insightful sentences that identify patterns, acknowledge feelings, and connect the week's events meaningfully>","recommendations":[{"title":"<clear title>","action":"<specific, detailed action>","why":"<2-3 sentence explanation>","priority":"high|medium|low"}],"encouragement":"<3-4 sentence warm closing message affirming their strength and progress>","self_care_suggestions":["<3-4 specific self-care activities tailored to the week's pattern>"]}` },
           { role: "user", content: `Journal entries:\n${JSON.stringify(entries).slice(0, 4000)}\n\nMood logs:\n${JSON.stringify(mood_logs || []).slice(0, 2000)}` },
         ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
@@ -216,7 +216,7 @@ serve(async (req) => {
       const aiData = await callAI(LOVABLE_API_KEY, {
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: `Score a bullying-response roleplay. Difficulty: ${difficulty}. Output ONLY JSON: {"total_score":0-100,"assertiveness":0-100,"empathy":0-100,"safety":0-100,"feedback":"...","next_line_from_bully":"<what bully says next, in character>"}` },
+          { role: "system", content: `You are an expert roleplay facilitator for bullying-response training. Difficulty: ${difficulty}. Score the response with nuance. Output ONLY JSON: {"total_score":0-100,"assertiveness":0-100,"empathy":0-100,"safety":0-100,"feedback":"<detailed 5-6 sentence analysis covering tone, word choice, body language cues, and emotional intelligence>","strengths":["<2-3 specific things the user did well>"],"areas_to_improve":["<2-3 specific suggestions with examples>"],"next_line_from_bully":"<what bully says next, in character, 1-2 sentences that escalate appropriately>","coaching_tip":"<2-3 sentence tip for the next round>"}` },
           { role: "user", content: `Scenario: ${scenario}\nUser response: ${user_response}` },
         ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
@@ -442,7 +442,7 @@ serve(async (req) => {
       const aiData = await callAI(LOVABLE_API_KEY, {
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: `Rate text toxicity. Output ONLY JSON: {"toxicity_score":0-100,"categories":{"harassment":0-100,"hate":0-100,"threat":0-100,"sexual":0-100,"self_harm":0-100,"insult":0-100},"ai_analysis":"<2 sentences>","recommended_actions":["..."]}` },
+          { role: "system", content: `You are a toxicity and online harm analyst. Conduct a thorough, nuanced analysis of the text. Output ONLY JSON: {"toxicity_score":0-100,"categories":{"harassment":0-100,"hate":0-100,"threat":0-100,"sexual":0-100,"self_harm":0-100,"insult":0-100},"ai_analysis":"<5-6 sentence detailed analysis explaining the scores, the specific harmful elements identified, and the context in which they appear>","hardest_hitting_phrases":[{"phrase":"<exact phrase>","category":"<which category>","why":"<1-2 sentence explanation>"}],"recommended_actions":[{"action":"<specific action>","why":"<2 sentence explanation>","priority":"immediate|short-term|long-term"}],"de_escalation_advice":"<3-4 sentence advice on responding constructively or choosing not to engage>"}` },
           { role: "user", content: input_text.slice(0, 3000) },
         ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
@@ -485,7 +485,7 @@ serve(async (req) => {
       const aiData = await callAI(LOVABLE_API_KEY, {
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: `Wellbeing pulse analyst. Output ONLY JSON: {"risk_level":"safe|caution|elevated|severe","advice":"<3-4 supportive sentences with one concrete next step>"}` },
+          { role: "system", content: `You are a wellbeing pulse analyst and mental health coach. Give a thorough, caring, actionable assessment. Output ONLY JSON: {"risk_level":"safe|caution|elevated|severe","advice":"<7-8 supportive, detailed sentences acknowledging their feelings, explaining the risk level, and providing concrete, personalized next steps including at least two specific actions they can take today>","daily_practices":["<3-4 specific, practical daily practices tailored to their scores>","<e.g. grounding exercise, journal prompt, movement suggestion>"],"professional_help_note":"<2-3 sentence guidance on when and how to seek professional support if needed>","encouragement":"<3-4 sentence warm, empowering closing message>"}` },
           { role: "user", content: `Mood: ${mood_score}/10, Anxiety: ${anxiety_score}/10, Safety: ${safety_score}/10` },
         ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
@@ -497,7 +497,7 @@ serve(async (req) => {
       const aiData = await callAI(LOVABLE_API_KEY, {
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: `Write ONE short (under 25 words), warm, empowering affirmation for a young person facing bullying. Theme: ${theme}. Plain text only, no quotes.` },
+          { role: "system", content: `Write a warm, empowering affirmation set for a young person facing bullying. Theme: ${theme}. Output ONLY JSON: {"main_affirmation":"<one powerful sentence, under 25 words>","expanded_reflection":"<3-4 sentence deeper reflection that explains the affirmation and connects it to their inner strength>","morning_mantra":"<short 1-2 sentence mantra to repeat each morning>","evening_reflection":"<2-3 sentence reflection question to close the day with self-compassion>","why_it_matters":"<2-3 sentence explanation of why this theme matters and how it builds resilience>"}` },
           { role: "user", content: "Generate." },
         ] });
       const affirmation = (aiData.choices?.[0]?.message?.content || "").trim();
@@ -510,7 +510,7 @@ serve(async (req) => {
       const aiData = await callAI(LOVABLE_API_KEY, {
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: `Score a bystander-intervention choice. Output ONLY JSON: {"score":0-100,"feedback":"<1-2 sentences why, plus one improvement>"}` },
+          { role: "system", content: `You are a bystander-intervention expert and educator. Score the choice with depth and pedagogical care. Output ONLY JSON: {"score":0-100,"feedback":"<5-6 sentence detailed analysis of why the choice was or was not effective, the potential real-world consequences, and what made it impactful or risky>","what_went_well":"<3-4 sentences on the strengths of the choice>","what_to_improve":"<3-4 sentences with specific alternative actions that could have been taken>","real_world_application":"<3-4 sentences on how this scenario maps to real life and what to watch for>","confidence_builder":"<2-3 sentences on building the courage to act as a bystander>"}` },
           { role: "user", content: `Scenario: ${scenario_key}\nBystander chose: ${choice}` },
         ] });
       const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
