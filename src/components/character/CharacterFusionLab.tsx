@@ -48,7 +48,7 @@ export const CharacterFusionLab = () => {
 
   return (
     <>
-      <FloatingHowItWorks title={"Character Fusion Lab - How it works"} steps={[{ title: 'Open', desc: 'Access the Character Fusion Lab section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Character Fusion Lab.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <FloatingHowItWorks title={"Character Fusion Lab - How it works"} steps={[{ title: 'Pick two warriors', desc: 'Choose Warrior 1 and Warrior 2 from your own heroes.' }, { title: 'Fuse for 30 credits', desc: 'The AI merges both heroes into one brand-new hybrid warrior.' }, { title: 'Get the hybrid', desc: 'You receive a new name, AI portrait, backstory, signature ability, inherited traits and boosted stats (best of both parents +15%).' }, { title: 'Use it', desc: 'The hybrid is saved to your warriors automatically — equip gear and send it into battle.' }]} />
       <div className="space-y-6">
       <Card className="relative overflow-hidden border-border/30 bg-card/90 backdrop-blur-xl p-6">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-amber-500" />
