@@ -61,7 +61,7 @@ export const CharacterTrainingCenter = () => {
 
       const { error } = await supabase
         .from("characters")
-        .update({ [t.stat]: newStat, updated_at: new Date().toISOString() })
+        .update({ [t.stat]: newStat, updated_at: new Date().toISOString() } as Record<string, any>)
         .eq("id", selectedChar);
       if (error) throw error;
 

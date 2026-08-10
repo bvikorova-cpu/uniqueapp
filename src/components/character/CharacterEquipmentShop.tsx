@@ -85,7 +85,7 @@ export const CharacterEquipmentShop = () => {
       if (!user) return [];
       const { data, error } = await supabase
         .from("character_equipment")
-        .select("character_id, name")
+        .select("character_id, name, icon, boost_stat, boost_value")
         .eq("user_id", user.id);
       if (error) throw error;
       return data;
@@ -125,7 +125,7 @@ export const CharacterEquipmentShop = () => {
       const newStat = char[item.boost_stat] + item.boost_value;
       const { error: charError } = await supabase
         .from("characters")
-        .update({ [item.boost_stat]: newStat, updated_at: new Date().toISOString() })
+        .update({ [item.boost_stat]: newStat, updated_at: new Date().toISOString() } as Record<string, any>)
         .eq("id", selectedChar);
       if (charError) throw charError;
 
