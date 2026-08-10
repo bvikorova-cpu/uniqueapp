@@ -45,7 +45,7 @@ async function ensureArtwork(card: Record<string, any>): Promise<string | null> 
       const path = `hero-cards/${card.code}.png`;
       const db = admin();
       const { error: upErr } = await db.storage.from("ai-studio")
-        .upload(path, bytes, { contentType: "image/png", upsert: true });
+        .upload(path, bytes, { contentType: "image/png", upsert: true, cacheControl: "31536000" });
       if (upErr) throw upErr;
       url = db.storage.from("ai-studio").getPublicUrl(path).data.publicUrl;
     }
@@ -131,7 +131,7 @@ serve(async (req) => {
           const bytes = Uint8Array.from(atob(img.b64_json), (ch) => ch.charCodeAt(0));
           const path = `characters/${user.id}/unitas-${Date.now()}.png`;
           const { error: upErr } = await db.storage.from("ai-studio")
-            .upload(path, bytes, { contentType: "image/png", upsert: true });
+            .upload(path, bytes, { contentType: "image/png", upsert: true, cacheControl: "31536000" });
           if (upErr) throw upErr;
           imageUrl = db.storage.from("ai-studio").getPublicUrl(path).data.publicUrl;
         } else if (img.url) {
