@@ -149,6 +149,36 @@ export const HeroCardCollection = () => {
   const totalOwned = Object.values(ownedCounts).reduce((a, b) => a + b, 0);
   const progress = Math.round((uniqueOwned / TOTAL_CARDS) * 100);
 
+  const { data: unitas } = useQuery({
+    queryKey: ["hero-unitas-status", uniqueOwned],
+    queryFn: async () => {
+      const { data, error } = await supabase.functions.invoke("hero-card-draw", { body: { action: "unitas_status" } });
+      if (error) throw error;
+      return data as UnitasStatus;
+    },
+  });
+  const unitasClaimed = !!unitas?.claimed;
+  const unitasUnlocked = !!unitas?.complete;
+
+  const claimUnitas = async () => {
+    setClaiming(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("hero-card-draw", { body: { action: "claim_unitas" } });
+      if (error) throw error;
+      if (data?.error) { toast.error(data.error); return; }
+      toast.success("Unitas has been forged and joined your warriors!");
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      queryClient.invalidateQueries({ queryKey: ["hero-unitas-status"] });
+      queryClient.invalidateQueries({ queryKey: ["character-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["characters"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Unitas could not be forged, please try again.");
+    } finally {
+      setClaiming(false);
+    }
+  };
+
+
   return (
     <div className="space-y-6">
       <FloatingHowItWorks
