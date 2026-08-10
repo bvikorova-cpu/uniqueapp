@@ -401,24 +401,45 @@ async function actionScreenshot(supabase: any, user: any, body: any) {
   const cc = await checkCredits(supabase, user.id, COST); if (cc.err) return cc.err;
   const key = OPENAI(); if (!key) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
 
-  const resp = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      messages: [{
-        role: "user", content: [
-          { type: "text", text: "Forensic screenshot analysis. Detect signs of editing, splicing, font inconsistencies, timestamp issues, manipulation. Return JSON: { is_authentic:boolean, confidence:number, manipulation_signals:string[], extracted_text:string, summary:string }" },
-          { type: "image_url", image_url: { url: `data:${mime || "image/png"};base64,${image_base64}`, detail: "high" } },
-        ] }],
-      response_format: { type: "json_object" } }) });
-  if (!resp.ok) return json({ error: "AI failed", details: await resp.text() }, 500);
-  const aj = await resp.json();
-  const r = parseAIJson(aj?.choices?.[0]?.message?.content);
+  const PROMPT = "Forensic screenshot analysis. Detect signs of editing, splicing, font inconsistencies, timestamp issues, manipulation. Reply with ONLY a raw JSON object (no markdown, no prose): { \"is_authentic\":boolean, \"confidence\":number, \"manipulation_signals\":string[], \"extracted_text\":string, \"summary\":string }";
+
+  let r: Record<string, any> | null = null;
+  let lastRaw = "";
+  for (let attempt = 0; attempt < 2 && !r; attempt++) {
+    const resp = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        max_tokens: 2000,
+        messages: [{
+          role: "user", content: [
+            { type: "text", text: PROMPT },
+            { type: "image_url", image_url: { url: `data:${mime || "image/png"};base64,${image_base64}`, detail: "high" } },
+          ] }],
+        // Second attempt drops json mode: some providers reject/ignore it for vision.
+        ...(attempt === 0 ? { response_format: { type: "json_object" } } : {}) }) });
+    if (!resp.ok) {
+      const details = await resp.text().catch(() => "");
+      console.error("[lie-detector-ai] screenshot AI failed", resp.status, details.slice(0, 400));
+      if (attempt === 1) return json({ error: "AI failed", details: details.slice(0, 400) }, 500);
+      continue;
+    }
+    const aj = await resp.json().catch(() => null);
+    lastRaw = typeof aj?.choices?.[0]?.message?.content === "string" ? aj.choices[0].message.content : "";
+    r = parseAIJson(lastRaw);
+  }
+
+  // Last resort: the model answered in prose — surface it instead of failing.
+  if (!r && lastRaw.trim()) {
+    r = { is_authentic: !/manipulat|edited|fake|tamper/i.test(lastRaw), confidence: 50,
+      manipulation_signals: [], extracted_text: "", summary: lastRaw.trim().slice(0, 2000) };
+  }
   if (!r) {
-    console.error("[lie-detector-ai] screenshot analysis returned invalid JSON");
+    console.error("[lie-detector-ai] screenshot analysis returned empty response");
     return json({ error: "The screenshot result could not be read. Please run the scan again." }, 502);
   }
+
   await supabase.from("lie_detector_screenshot_analyses").insert({ user_id: user.id, is_authentic: r.is_authentic, confidence: r.confidence,
     manipulation_signals: r.manipulation_signals || [], extracted_text: r.extracted_text, summary: r.summary, credits_used: COST });
   await deductCredits(supabase, user.id, cc.cr, COST);
