@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 import { HeroCardLeaderboard } from "./HeroCardLeaderboard";
+import { warmHeroCardImages, readCachedCatalogue, writeCachedCatalogue } from "@/lib/heroCardImageCache";
+
 
 
 const DRAW_COST = 1;
@@ -76,12 +78,16 @@ export const HeroCardCollection = () => {
         .select("id, code, name, archetype, rarity, emoji, gradient, image_url, hp, attack, defense, speed")
         .order("code", { ascending: true });
       if (error) throw error;
-      return (data ?? []) as unknown as HeroCard[];
+      const rows = (data ?? []) as unknown as HeroCard[];
+      writeCachedCatalogue(rows);
+      return rows;
     },
+    initialData: () => readCachedCatalogue<HeroCard[]>(),
     staleTime: 10 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
+
 
   const { data: ownedCounts = {}, isLoading } = useQuery({
     queryKey: ["hero-collection"],
@@ -102,6 +108,19 @@ export const HeroCardCollection = () => {
     staleTime: 60 * 1000,
     refetchOnWindowFocus: false,
   });
+
+  // Warm the persistent image cache for rendered cards (+ a look-ahead batch)
+  // so scrolling back and repeat visits paint instantly.
+  useEffect(() => {
+    if (!catalogue.length) return;
+    warmHeroCardImages(catalogue.slice(0, visibleCount + 24).map((c) => c.image_url));
+  }, [catalogue, visibleCount]);
+
+  useEffect(() => {
+    if (current?.image_url) warmHeroCardImages([current.image_url]);
+  }, [current]);
+
+
 
   // Free background artwork backfill so the album shows real hero images.
   // Runs in larger batches and only refreshes the catalogue occasionally so the
