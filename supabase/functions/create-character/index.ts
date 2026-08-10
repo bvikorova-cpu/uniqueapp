@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { deductAICredits, refundAICredits } from "../_shared/credits.ts";
-import { callUnifiedAI } from "../_shared/unifiedAI.ts";
+import { callUnifiedAI, generateOpenAIImage } from "../_shared/unifiedAI.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
@@ -39,7 +39,7 @@ serve(async (req) => {
         messages: [
           { role: "system", content: "You are a game designer creating battle characters. Reply with strict JSON only." },
           { role: "user", content: `Create a ${isPremium ? "legendary premium" : "solid"} ${category} warrior named "${name}". ${description ? `Concept: ${description}.` : ""}
-Return JSON: {"backstory": "4-6 vivid sentences", "stats": {"hp": number 80-200, "attack": number 40-120, "defense": number 30-110, "speed": number 30-110}}` },
+Return JSON: {"backstory": "4-6 vivid sentences", "appearance": "one vivid sentence describing looks, armor, weapon, colors", "stats": {"hp": number 80-200, "attack": number 40-120, "defense": number 30-110, "speed": number 30-110}}` },
         ] });
 
       const text = typeof raw === "string" ? raw : (raw?.content ?? raw?.text ?? "");
@@ -59,11 +59,36 @@ Return JSON: {"backstory": "4-6 vivid sentences", "stats": {"hp": number 80-200,
         defense: Number(parsed?.stats?.defense) || rand(35, 95) + bonus,
         speed: Number(parsed?.stats?.speed) || rand(35, 95) + bonus };
 
+      // Portrait generation (best-effort — never blocks the warrior creation)
+      let imageUrl: string | null = null;
+      try {
+        const visual = String(parsed?.appearance ?? description ?? "").slice(0, 400);
+        const img = await generateOpenAIImage(
+          `Epic fantasy battle character portrait of "${name}", a ${category} warrior. ${visual}. Dramatic cinematic lighting, highly detailed digital painting, dynamic heroic pose, full upper body, vivid colors, game character art. No text, no watermark, no logos.`,
+          "1024x1024",
+        );
+        const b64 = img.b64_json;
+        if (b64) {
+          const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+          const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+          const path = `characters/${user.id}/${Date.now()}.png`;
+          const { error: upErr } = await admin.storage.from("ai-studio")
+            .upload(path, bytes, { contentType: "image/png", upsert: true });
+          if (upErr) throw upErr;
+          imageUrl = admin.storage.from("ai-studio").getPublicUrl(path).data.publicUrl;
+        } else if (img.url) {
+          imageUrl = img.url;
+        }
+      } catch (imgErr) {
+        console.error("[create-character] portrait generation failed", imgErr);
+      }
+
       return j({
         backstory: parsed?.backstory || `${name} is a ${category.toLowerCase()} warrior forged in the heat of countless battles.`,
-        imageUrl: null,
+        imageUrl,
         stats,
         creditsUsed: cost });
+
     } catch (aiErr) {
       await refundAICredits(user.id, cost, "character_creation");
       console.error("[create-character] AI failed", aiErr);
