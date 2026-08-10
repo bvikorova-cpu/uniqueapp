@@ -101,3 +101,53 @@ async function recordMetric(fn: string, startedAt: number, ok: boolean, statusCo
     throw e;
   }
 };
+
+// ---------------------------------------------------------------------------
+// getUser() de-duplication.
+//
+// Hundreds of hooks call `supabase.auth.getUser()` on mount. Each call is a
+// network round-trip to /auth/v1/user, so heavy pages (Safety, Wellness, AI
+// chats) fire dozens of them at once on mobile. Under that burst the auth
+// endpoint can rate-limit / time out, supabase-js treats the reply as an
+// invalid session and emits SIGNED_OUT — the user sees a brief "logged out"
+// flash before the session is restored.
+//
+// Fix: coalesce concurrent calls, cache the result briefly, and short-circuit
+// to the locally stored session when there is none. The cache is invalidated
+// on every auth state change, so sign-in/sign-out stay instant.
+// ---------------------------------------------------------------------------
+const _origGetUser = supabase.auth.getUser.bind(supabase.auth);
+const GET_USER_TTL_MS = 30_000;
+let _userCache: { at: number; res: any } | null = null;
+let _userInflight: Promise<any> | null = null;
+
+(supabase.auth as any).getUser = async (jwt?: string) => {
+  // Explicit-token checks must always hit the server.
+  if (jwt) return _origGetUser(jwt);
+
+  const now = Date.now();
+  if (_userCache && now - _userCache.at < GET_USER_TTL_MS) return _userCache.res;
+  if (_userInflight) return _userInflight;
+
+  _userInflight = (async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        const res = { data: { user: null }, error: null };
+        _userCache = { at: Date.now(), res };
+        return res;
+      }
+      const res = await _origGetUser();
+      if (!res?.error) _userCache = { at: Date.now(), res };
+      return res;
+    } finally {
+      _userInflight = null;
+    }
+  })();
+
+  return _userInflight;
+};
+
+supabase.auth.onAuthStateChange(() => {
+  _userCache = null;
+});
