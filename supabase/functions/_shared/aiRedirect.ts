@@ -1,9 +1,15 @@
 /**
- * PLATFORM-WIDE RULE: Lovable AI ONLY. OpenAI is never called.
+ * PLATFORM-WIDE RULE: Vertex AI (postpay) is the PRIMARY AI provider.
+ * The Lovable AI Gateway is only a fallback when Vertex is unavailable.
+ * OpenAI is never called directly.
  *
- * Importing this module patches `globalThis.fetch` so that ANY call to
- * `api.openai.com` made by an edge function is rerouted to the Lovable AI
- * Gateway (chat completions, image generation, embeddings, TTS, transcriptions).
+ * Importing this module patches `globalThis.fetch` so that:
+ *  - Any call to `api.openai.com` is rerouted to Vertex AI first, then the
+ *    Lovable AI Gateway (chat completions, image generation, embeddings, TTS).
+ *  - Any direct call to `ai.gateway.lovable.dev/v1/chat/completions` is also
+ *    intercepted and sent to Vertex AI first; the gateway is used only as a
+ *    fallback. This ensures every chat completion — no matter which URL the
+ *    edge function called — goes through Vertex AI first.
  *
  * The gateway is OpenAI-compatible, so response shapes stay identical and no
  * other function code has to change. If a request cannot be rerouted, it fails
@@ -72,8 +78,10 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
       ? input.toString()
       : (input as Request).url;
 
-    // Anything that is not OpenAI passes straight through.
-    if (!url.includes("api.openai.com")) {
+    // Only intercept OpenAI and Lovable-gateway URLs; everything else passes through.
+    const isOpenAI = url.includes("api.openai.com");
+    const isGateway = url.includes("ai.gateway.lovable.dev");
+    if (!isOpenAI && !isGateway) {
       return await originalFetch(input as any, init);
     }
 
@@ -142,7 +150,23 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
       } else if (input instanceof Request) {
         body = await input.clone().json().catch(() => null);
       }
-      if (!body) return blocked("unsupported OpenAI request payload");
+      if (!body) return blocked("unsupported request payload");
+
+      // ---- Direct Lovable Gateway calls: Vertex AI is primary, gateway is fallback ----
+      if (isGateway) {
+        if (url.includes("/chat/completions")) {
+          // Vertex AI (postpay) gets the first attempt for every gateway chat call.
+          const direct = await tryDirectGeminiChatResponse(body);
+          if (direct) return direct;
+          // Vertex unavailable/failed — fall back to the Lovable gateway with retry.
+          return await postWithRetry(GATEWAY_BASE + "/chat/completions", body, [
+            "google/gemini-3.1-flash-lite",
+            "google/gemini-3.5-flash",
+          ]);
+        }
+        // Non-chat gateway endpoints (images, audio, embeddings): pass through unchanged.
+        return await originalFetch(input as any, init);
+      }
 
       if (url.includes("/chat/completions")) {
         const model = mapChatModel(body.model);
