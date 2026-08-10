@@ -70886,6 +70886,16 @@ export type Database = {
         Args: { p_service_type: string; p_user_id: string }
         Returns: boolean
       }
+      hero_card_leaderboard: {
+        Args: { _limit?: number }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          total_cards: number
+          unique_cards: number
+          user_id: string
+        }[]
+      }
       increment_ai_credits: {
         Args: { p_amount: number; p_user_id: string }
         Returns: number
