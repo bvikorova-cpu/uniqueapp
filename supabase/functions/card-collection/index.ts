@@ -120,7 +120,7 @@ serve(async (req) => {
     if (action === "backfill_art") {
       const cat = await getCategory(category);
       if (!cat) return j({ error: "Category not found" }, 404);
-      const limit = Math.min(Math.max(Number(body?.limit ?? 4), 1), 6);
+      const limit = Math.min(Math.max(Number(body?.limit ?? 8), 1), 12);
       const { data: missing } = await db
         .from("card_collectibles")
         .select("*")
@@ -128,10 +128,8 @@ serve(async (req) => {
         .is("image_url", null)
         .order("card_index", { ascending: true })
         .limit(limit);
-      let generated = 0;
-      for (const card of missing ?? []) {
-        if (await ensureArtwork(card, cat)) generated++;
-      }
+      const results = await Promise.all((missing ?? []).map((card) => ensureArtwork(card, cat)));
+      const generated = results.filter(Boolean).length;
       const { count } = await db
         .from("card_collectibles")
         .select("id", { count: "exact", head: true })
