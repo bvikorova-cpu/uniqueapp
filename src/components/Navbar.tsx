@@ -9,7 +9,7 @@ import { DropdownMenu,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Sun, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, Calendar, DollarSign, Image, Gem, Building2, Coffee, Bot, Globe, Lock, Mic2, Car, Clock, Dna, Scale, Shield, AlertTriangle, TrendingUp, Ghost, PenTool, Ticket, Info, Megaphone, Scissors, Diamond, RefreshCw, Cake } from "lucide-react";
+import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Sun, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, Calendar, DollarSign, Image, Gem, Building2, Coffee, Bot, Globe, Lock, Mic2, Car, Clock, Dna, Scale, Shield, AlertTriangle, TrendingUp, Ghost, PenTool, Ticket, Info, Megaphone, Scissors, Diamond, RefreshCw, Cake, Library } from "lucide-react";
 import { useTheme } from "next-themes";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import MessagesBell from "@/components/messenger/MessagesBell";
@@ -205,6 +205,7 @@ const Navbar = () => {
       category: "Sports Arenas",
       items: [
         { path: "/character-arena", label: "Character Arena", icon: Trophy },
+        { path: "/card-collections", label: "Collectible Cards", icon: Library },
         { path: "/horse-racing", label: "Horse Racing Arena", icon: Trophy },
         { path: "/football-arena", label: "Football Arena", icon: Trophy },
         { path: "/basketball-arena", label: "Basketball Arena", icon: Trophy },
