@@ -290,6 +290,8 @@ import { ResetPassword,
   LiveStreamList,
   CharacterArena,
   CharacterInventoryPage,
+  CardCollections,
+  CardCollectionCategory,
 
   BrainDuel,
   VirtualEscapeRoom,
