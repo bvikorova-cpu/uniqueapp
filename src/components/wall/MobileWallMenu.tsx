@@ -8,7 +8,7 @@ import {
   Settings, LayoutDashboard, Ticket, Building2, Users, Gem, Dna, RotateCcw, Link2, Bug,
   Sparkles as SparklesIcon, Music, ChevronDown, ChevronUp, Crown, Clock, Timer,
   ChefHat, Car, MessageCircle, Star, MessageSquare, Brain, Palette, Apple,
-  PawPrint, Trophy, Mic2, Image as ImageIcon, Gift, Plane, Heart, Bot, Globe, Atom
+  PawPrint, Trophy, Mic2, Image as ImageIcon, Gift, Plane, Heart, Bot, Globe, Atom, Library
 } from "lucide-react";
 import { Sheet,
   SheetContent,

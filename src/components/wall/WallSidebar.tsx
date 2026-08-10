@@ -38,7 +38,8 @@ import {
   Bot,
   Globe,
   Atom,
-  BarChart3
+  BarChart3,
+  Library
 } from "lucide-react";
 import { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
