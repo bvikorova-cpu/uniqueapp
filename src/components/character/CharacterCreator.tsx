@@ -49,7 +49,9 @@ export const CharacterCreator = () => {
         defense: aiResult.stats.defense, speed: aiResult.stats.speed,
         is_premium: isPremium }).select().single();
       if (error) throw error;
+      setVariants([]);
       setLastCharacter({ id: inserted.id, name: inserted.name, imageUrl: aiResult.imageUrl, description });
+
       toast.success("Warrior forged successfully!");
       queryClient.invalidateQueries({ queryKey: ["character-credits"] });
       queryClient.invalidateQueries({ queryKey: ["characters"] });
