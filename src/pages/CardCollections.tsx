@@ -10,6 +10,8 @@ import { Coins, LayoutGrid, Loader2, Trophy } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { CardCollectionLeaderboard } from "@/components/collections/CardCollectionLeaderboard";
 import { CARDS_PER_CATEGORY, DRAW_COST, type CardCategory } from "@/components/collections/CardCategoryCollection";
+import { getCategoryCover } from "@/components/collections/categoryCovers";
+
 
 /** Hub listing all collectible-card categories with the user's real progress. */
 const CardCollections = () => {
