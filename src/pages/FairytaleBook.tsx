@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { BookOpen, Upload, Loader2, Sparkles, Gem, ImagePlus, Download, FileDown } from "lucide-react";
@@ -41,6 +42,9 @@ const FairytaleBook = () => {
   const [photo, setPhoto] = useState<string | null>(null);
   const [childName, setChildName] = useState("");
   const [theme, setTheme] = useState(THEMES[0]);
+  const [useCustom, setUseCustom] = useState(false);
+  const [customStory, setCustomStory] = useState("");
+  const [traits, setTraits] = useState("");
   const [style, setStyle] = useState("storybook");
   const [quality, setQuality] = useState<"standard" | "premium">("standard");
 
@@ -87,13 +91,26 @@ const FairytaleBook = () => {
       toast({ title: "Photo needed", description: "Upload a clear face photo.", variant: "destructive" });
       return;
     }
+    if (useCustom && customStory.trim().length < 15) {
+      toast({ title: "Story too short", description: "Describe your story idea in a sentence or two.", variant: "destructive" });
+      return;
+    }
     setLoading(true);
     setPages([]);
     setCover(null);
     setTitle(null);
     try {
       const { data, error } = await supabase.functions.invoke("kids-router", {
-        body: { action: "fairytale.generate", childName: childName.trim(), theme, style, quality, photo },
+        body: {
+          action: "fairytale.generate",
+          childName: childName.trim(),
+          theme,
+          customStory: useCustom ? customStory.trim() : "",
+          traits: useCustom ? traits.trim() : "",
+          style,
+          quality,
+          photo,
+        },
       });
       if (error) throw new Error((data as { error?: string })?.error || error.message);
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
@@ -213,21 +230,53 @@ const FairytaleBook = () => {
                 maxLength={40}
               />
               <div>
-                <p className="text-xs font-semibold mb-1.5">Story theme</p>
-                <div className="flex flex-wrap gap-2">
-                  {THEMES.map((t) => (
-                    <button
-                      key={t}
-                      onClick={() => setTheme(t)}
-                      className={`text-xs px-3 py-1.5 rounded-full border transition ${
-                        theme === t ? "bg-primary text-primary-foreground border-primary" : "hover:border-primary"
-                      }`}
-                    >
-                      {t}
-                    </button>
-                  ))}
+                <div className="flex items-center justify-between mb-1.5">
+                  <p className="text-xs font-semibold">Story theme</p>
+                  <button
+                    onClick={() => setUseCustom((v) => !v)}
+                    className="text-xs underline text-muted-foreground hover:text-primary"
+                  >
+                    {useCustom ? "Use a template" : "Write my own story"}
+                  </button>
                 </div>
+
+                {useCustom ? (
+                  <div className="space-y-2">
+                    <Textarea
+                      placeholder="Your own story idea — e.g. Emma finds a tiny dragon in grandma's garden and they build a flying bicycle together..."
+                      value={customStory}
+                      onChange={(e) => setCustomStory(e.target.value)}
+                      maxLength={900}
+                      rows={4}
+                    />
+                    <Textarea
+                      placeholder="Character traits (optional) — e.g. curious, loves dinosaurs, a bit shy, always helps friends"
+                      value={traits}
+                      onChange={(e) => setTraits(e.target.value)}
+                      maxLength={300}
+                      rows={2}
+                    />
+                    <p className="text-[11px] text-muted-foreground">
+                      {customStory.length}/900 characters
+                    </p>
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    {THEMES.map((t) => (
+                      <button
+                        key={t}
+                        onClick={() => setTheme(t)}
+                        className={`text-xs px-3 py-1.5 rounded-full border transition ${
+                          theme === t ? "bg-primary text-primary-foreground border-primary" : "hover:border-primary"
+                        }`}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
+
               <div>
                 <p className="text-xs font-semibold mb-1.5">Art style</p>
                 <div className="flex flex-wrap gap-2">
