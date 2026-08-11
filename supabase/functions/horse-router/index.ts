@@ -181,7 +181,122 @@ Deno.serve(async (req) => {
         return json({ horse: { ...horse, image_url: imageUrl }, creditsSpent: COST_CREATE_HORSE });
       }
 
+      case "breed": {
+        const parent1Id = String(body?.parent1Id ?? "");
+        const parent2Id = String(body?.parent2Id ?? "");
+        if (!parent1Id || !parent2Id || parent1Id === parent2Id) {
+          return json({ error: "Two different parents required" }, 400);
+        }
+        const { data: parents } = await admin.from("horses").select("*").in("id", [parent1Id, parent2Id]);
+        if (!parents || parents.length !== 2) return json({ error: "Parent horses not found" }, 404);
+        if (parents.some((p: any) => p.user_id !== user.id)) return json({ error: "Horse not yours" }, 403);
+
+        const err = await spend(COST_BREEDING, "horse-racing:breeding");
+        if (err) return err;
+
+        const [p1, p2] = parents as any[];
+        const mix = (a: number, b: number) =>
+          Math.max(30, Math.min(100, Math.floor((a + b) / 2 + (Math.floor(Math.random() * 11) - 5))));
+        const stats = {
+          speed_stat: mix(p1.speed_stat, p2.speed_stat),
+          stamina_stat: mix(p1.stamina_stat, p2.stamina_stat),
+          acceleration_stat: mix(p1.acceleration_stat, p2.acceleration_stat),
+          temperament_stat: mix(p1.temperament_stat, p2.temperament_stat) };
+        const foalName = `${p1.name} Jr.`;
+        const foalColor = Math.random() > 0.5 ? p1.color : p2.color;
+        const foalBreed = p1.breed;
+
+        const { data: foal, error: fErr } = await admin.from("horses")
+          .insert({ user_id: user.id, name: foalName, breed: foalBreed, color: foalColor, ...stats })
+          .select().single();
+        if (fErr) {
+          await refund(COST_BREEDING, "horse-racing:breeding");
+          return json({ error: fErr.message }, 400);
+        }
+
+        await admin.from("breeding_records").insert({ user_id: user.id,
+          parent1_id: parent1Id,
+          parent2_id: parent2Id,
+          offspring_id: foal.id,
+          cost_coins: COST_BREEDING,
+          status: "completed" });
+
+        // Foal portrait + short profile (best-effort).
+        let imageUrl: string | null = null;
+        let description: string | null = null;
+        const key = Deno.env.get("LOVABLE_API_KEY");
+        try {
+          if (key) {
+            const prompt =
+              `Adorable photorealistic cinematic portrait of a newborn ${foalColor} ${foalBreed} foal (baby horse) named "${foalName}". ` +
+              `Small fluffy body, long thin legs, soft fuzzy coat, big curious eyes, standing in a sunlit meadow beside straw, ` +
+              `shallow depth of field, warm golden-hour light, ultra detailed, 4k, no text, no watermark.`;
+            const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
+              method: "POST",
+              headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+              body: JSON.stringify({
+                model: "google/gemini-3.1-flash-lite-image",
+                contents: [{ role: "user", parts: [{ text: prompt }] }],
+                generationConfig: { responseModalities: ["TEXT", "IMAGE"] } }),
+            });
+            if (res.ok) {
+              const data = await res.json();
+              const b64 = data?.data?.[0]?.b64_json;
+              if (b64) {
+                const bin = atob(b64);
+                const bytes = new Uint8Array(bin.length);
+                for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                const path = `horses/${foal.id}.png`;
+                const { error: upErr } = await admin.storage.from("ai-studio")
+                  .upload(path, bytes, { contentType: "image/png", upsert: true, cacheControl: "31536000" });
+                if (!upErr) imageUrl = admin.storage.from("ai-studio").getPublicUrl(path).data.publicUrl;
+              }
+            } else {
+              console.error("[horse-router] foal portrait failed", res.status, await res.text().catch(() => ""));
+            }
+          }
+        } catch (e) {
+          console.error("[horse-router] foal portrait error", e);
+        }
+
+        try {
+          if (key) {
+            const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+              method: "POST",
+              headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+              body: JSON.stringify({
+                model: "google/gemini-2.5-flash",
+                messages: [{
+                  role: "user",
+                  content:
+                    `Write a warm 2-3 sentence English profile for a newborn racehorse foal. ` +
+                    `Name: ${foalName}. Breed: ${foalBreed}. Coat: ${foalColor}. ` +
+                    `Parents: ${p1.name} and ${p2.name}. ` +
+                    `Stats — speed ${stats.speed_stat}, stamina ${stats.stamina_stat}, acceleration ${stats.acceleration_stat}, temperament ${stats.temperament_stat}. ` +
+                    `Mention its bloodline and racing potential. Plain text only, no markdown.` }] }),
+            });
+            if (res.ok) {
+              const data = await res.json();
+              description = data?.choices?.[0]?.message?.content?.trim()?.slice(0, 700) ?? null;
+            }
+          }
+        } catch (e) {
+          console.error("[horse-router] foal description error", e);
+        }
+
+        if (imageUrl || description) {
+          await admin.from("horses")
+            .update({ ...(imageUrl ? { image_url: imageUrl } : {}), ...(description ? { description } : {}) })
+            .eq("id", foal.id);
+        }
+
+        return json({
+          foal: { ...foal, image_url: imageUrl, description },
+          creditsSpent: COST_BREEDING });
+      }
+
       case "train": {
+
         const { horseId, statType } = body || {};
         if (!horseId || !VALID_STATS.includes(statType)) return json({ error: "Invalid input" }, 400);
 
