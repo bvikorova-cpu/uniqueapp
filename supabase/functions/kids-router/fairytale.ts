@@ -19,7 +19,9 @@ const STYLES: Record<string, string> = {
   anime: "soft anime / ghibli-inspired illustration, gentle cel shading",
 };
 
-const PREMIUM_HINT = `Premium quality: high-end 3D animated feature-film look, hyper-detailed but child-friendly, semi-realistic facial features that closely resemble the child in the attached photo (same eye colour and shape, hair colour, curl pattern, skin tone, freckles, smile), soft subsurface skin shading, individual hair strands, cinematic depth of field, volumetric golden light, rich painterly background detail, printed-picture-book quality.`;
+const PREMIUM_STYLE = `photorealistic cinematic 3D render (Pixar/Unreal Engine feature-film quality), NOT a drawing, NOT watercolor, NOT flat illustration, NOT cartoon line art: physically based rendering, ray-traced lighting, realistic materials and fabrics, true-to-life skin with subsurface scattering, pores and individual hair strands, realistic eyes with catchlights, shallow depth of field, volumetric golden light, 8k detail`;
+
+const PREMIUM_HINT = `The child character must look like a realistic 3D-rendered version of the child in the attached photo (same face shape, eye colour and shape, hair colour and curl pattern, skin tone, freckles, smile), child-friendly and warm, printed-picture-book quality.`;
 
 async function generateIllustration(
   prompt: string,
@@ -77,7 +79,9 @@ export async function handleFairytale(
   const theme = String(body.theme ?? "magical adventure").trim().slice(0, 120);
   const style = String(body.style ?? "storybook").toLowerCase();
   const premium = body.quality === "premium";
-  const styleHint = `${STYLES[style] ?? STYLES.storybook}${premium ? `\n${PREMIUM_HINT}` : ""}`;
+  const styleHint = premium
+    ? `${PREMIUM_STYLE}\n${PREMIUM_HINT}`
+    : (STYLES[style] ?? STYLES.storybook);
   const photo = typeof body.photo === "string" && body.photo.startsWith("data:image/")
     ? body.photo
     : undefined;
@@ -125,8 +129,8 @@ Exactly 5 pages. No violence, no fear, happy ending. The hero's name must be use
     let cover: string | null = null;
     try {
       cover = await generateIllustration(
-        `Children's picture-book cover illustration titled "${story.title}".
-The hero is the child from the attached photo — keep their face, hair and skin tone recognizable, drawn as an illustrated character (not a photo).
+        `${premium ? "Photorealistic cinematic 3D-rendered children's picture-book cover" : "Children's picture-book cover illustration"} titled "${story.title}".
+The hero is the child from the attached photo — keep their face, hair and skin tone recognizable, rendered as ${premium ? "a realistic 3D character" : "an illustrated character (not a photo)"}.
 Theme: ${theme}. ${story.hero ?? ""}
 Style: ${styleHint}. Full-bleed magical scene, no text or lettering in the image, friendly and safe for children.`,
         photo,
@@ -171,9 +175,9 @@ Style: ${styleHint}. Full-bleed magical scene, no text or lettering in the image
     let image: string;
     try {
       image = await generateIllustration(
-        `Children's picture-book page illustration.
+        `${premium ? "Photorealistic cinematic 3D-rendered children's picture-book page" : "Children's picture-book page illustration"}.
 Scene: ${scene}
-${childName ? `The hero is ${childName} — the child from the attached photo; keep their face, hair and skin tone recognizable, drawn as an illustrated character.` : ""}
+${childName ? `The hero is ${childName} — the child from the attached photo; keep their face, hair and skin tone recognizable, rendered as ${premium ? "a realistic 3D character" : "an illustrated character"}.` : ""}
 Style: ${styleHint}. No text or lettering in the image, friendly, safe and magical for children.`,
         photo,
         premium,
