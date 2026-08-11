@@ -6,7 +6,10 @@ import { askAIJSON } from "../_shared/unifiedAI.ts";
 
 const GENERATE_COST = 10;
 const ILLUSTRATE_COST = 3;
+const PREMIUM_GENERATE_COST = 25;
+const PREMIUM_ILLUSTRATE_COST = 8;
 const IMAGE_MODEL = "google/gemini-3.1-flash-image";
+const PREMIUM_IMAGE_MODEL = "google/gemini-3-pro-image";
 
 const STYLES: Record<string, string> = {
   watercolor: "soft watercolor children's book illustration, pastel palette, dreamy glow",
@@ -16,7 +19,13 @@ const STYLES: Record<string, string> = {
   anime: "soft anime / ghibli-inspired illustration, gentle cel shading",
 };
 
-async function generateIllustration(prompt: string, photoDataUrl?: string): Promise<string> {
+const PREMIUM_HINT = `Premium quality: high-end 3D animated feature-film look, hyper-detailed but child-friendly, semi-realistic facial features that closely resemble the child in the attached photo (same eye colour and shape, hair colour, curl pattern, skin tone, freckles, smile), soft subsurface skin shading, individual hair strands, cinematic depth of field, volumetric golden light, rich painterly background detail, printed-picture-book quality.`;
+
+async function generateIllustration(
+  prompt: string,
+  photoDataUrl?: string,
+  premium = false,
+): Promise<string> {
   const content: unknown[] = [{ type: "text", text: prompt }];
   if (photoDataUrl) content.push({ type: "image_url", image_url: { url: photoDataUrl } });
 
@@ -27,7 +36,7 @@ async function generateIllustration(prompt: string, photoDataUrl?: string): Prom
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: IMAGE_MODEL,
+      model: premium ? PREMIUM_IMAGE_MODEL : IMAGE_MODEL,
       messages: [{ role: "user", content }],
       modalities: ["image", "text"],
     }),
@@ -47,6 +56,7 @@ async function generateIllustration(prompt: string, photoDataUrl?: string): Prom
   }
   return `data:image/png;base64,${b64}`;
 }
+
 
 type Ctx = {
   admin: any;
