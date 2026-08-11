@@ -22,6 +22,7 @@ const __HIW_KIDSACADEMY_STEPS = [
   { title: 'Pick a subject', desc: 'Math, reading, science and more — each level-appropriate.' },
   { title: 'Play a lesson', desc: 'Short, gamified lessons keep attention high.' },
   { title: 'Take the quiz', desc: 'Quizzes reward stars and badges.' },
+  { title: 'Collect cartoon cards', desc: 'Open the Cards tab for 10 kids collectible sets — 150 cartoon cards each, 1 credit per draw.' },
   { title: 'Parents can review', desc: 'Progress shows in the Parental Dashboard.' }
 ];
 const __HIW_KIDSACADEMY = { title: 'Kids Academy', intro: 'Fun mini-lessons and quizzes designed for ages 6–12.', steps: __HIW_KIDSACADEMY_STEPS };
@@ -68,12 +69,13 @@ const KidsAcademy = () => {
           </Card>
 
           <Tabs defaultValue="today" className="w-full">
-            <TabsList className="grid grid-cols-4 sm:grid-cols-7 gap-1 h-auto bg-muted p-1.5">
+            <TabsList className="grid grid-cols-4 sm:grid-cols-8 gap-1 h-auto bg-muted p-1.5">
               <TabsTrigger value="today" className="text-[11px] sm:text-xs px-1">✨ Today</TabsTrigger>
               <TabsTrigger value="explore" className="text-[11px] sm:text-xs px-1">🗺️ Explore</TabsTrigger>
               <TabsTrigger value="progress" className="text-[11px] sm:text-xs px-1">⭐ Progress</TabsTrigger>
               <TabsTrigger value="streaks" className="text-[11px] sm:text-xs px-1">🔥 Streaks</TabsTrigger>
               <TabsTrigger value="quiz" className="text-[11px] sm:text-xs px-1">⚔️ Quiz</TabsTrigger>
+              <TabsTrigger value="cards" className="text-[11px] sm:text-xs px-1">🃏 Cards</TabsTrigger>
               <TabsTrigger value="shop" className="text-[11px] sm:text-xs px-1">🛒 Shop</TabsTrigger>
               <TabsTrigger value="parents" className="text-[11px] sm:text-xs px-1 col-span-2 sm:col-span-1">👨‍👩‍👧 Parents</TabsTrigger>
             </TabsList>
@@ -93,6 +95,9 @@ const KidsAcademy = () => {
               </TabsContent>
               <TabsContent value="quiz">
                 <KidsAcademyQuizArena />
+              </TabsContent>
+              <TabsContent value="cards">
+                <KidsCollectibles />
               </TabsContent>
               <TabsContent value="shop">
                 <KidsAcademyShop />
