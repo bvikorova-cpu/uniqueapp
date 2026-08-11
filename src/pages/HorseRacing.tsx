@@ -33,7 +33,7 @@ import { WeatherRacingBonuses } from "@/components/horse-racing/WeatherRacingBon
 import { HorseCardCollection } from "@/components/horse-racing/HorseCardCollection";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
-type ActiveView = "dashboard" | "stable" | "racing" | "training" | "breeding" | "shop" | "leaderboard" | "auction" | "championships" | "equipment" | "quests" | "bloodline" | "weather" | "marketplace" | "cards";
+type ActiveView = "dashboard" | "stable" | "racing" | "training" | "breeding" | "shop" | "leaderboard" | "auction" | "championships" | "equipment" | "quests" | "bloodline" | "weather" | "cards";
 
 const tools = [
   { id: "stable" as const, icon: Swords, label: "My Stable", desc: "Manage your horses", gradient: "from-amber-500 to-orange-600" },
