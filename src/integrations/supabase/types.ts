@@ -71598,7 +71598,7 @@ export type Database = {
       }
       purchase_horse_from_market: {
         Args: { buyer_id: string; listing_id: string }
-        Returns: undefined
+        Returns: Json
       }
       purchase_mystery_box: { Args: { p_box_id: string }; Returns: string }
       purchase_shop_item: {
