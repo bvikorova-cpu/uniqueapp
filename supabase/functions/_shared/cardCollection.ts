@@ -26,16 +26,116 @@ const ORIGINALITY =
   "Completely original design — must not copy or resemble any existing trademarked character, brand, logo or celebrity " +
   "likeness. No text, no watermark, no signature.";
 
+/** Stable hash so every card code always maps to the same variation set. */
+function codeHash(code: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < code.length; i++) {
+    h ^= code.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return Math.abs(h);
+}
+
+const pick = <T,>(list: T[], seed: number, salt: number): T =>
+  list[(Math.floor(seed / Math.pow(7, salt)) + salt * 31) % list.length];
+
+/** Generic variation axes so no two cards in a set look alike. */
+const COMPOSITIONS = [
+  "tight head-and-shoulders close-up, shallow depth of field",
+  "full-body wide shot, subject small against a vast landscape",
+  "dynamic low-angle hero shot looking upward",
+  "high-angle bird's-eye view",
+  "three-quarter profile portrait, off-centre composition",
+  "side profile silhouette against a bright sky",
+  "extreme close-up on the eye and face detail",
+  "motion-blurred action shot mid-movement",
+  "symmetrical centred emblem-style composition",
+  "diagonal dutch-angle cinematic framing",
+];
+const LIGHT_MOODS = [
+  "golden-hour sunset backlight", "cold blue moonlit night", "harsh midday desert sun",
+  "misty overcast dawn", "stormy sky with lightning", "warm dusty stable lamplight",
+  "neon-tinged twilight", "soft pastel morning haze", "dramatic single spotlight in darkness",
+  "snowy diffused winter light",
+];
+const PALETTES = [
+  "warm amber and rust palette", "cool teal and steel palette", "monochrome charcoal palette",
+  "emerald green and gold palette", "crimson and black palette", "violet and rose palette",
+  "sandy ochre and turquoise palette", "icy white and pale blue palette",
+  "sepia vintage palette", "vivid tropical multicolour palette",
+];
+const RENDER_STYLES = [
+  "oil-painted realism", "clean vector poster art", "gritty ink-and-wash sketch",
+  "airbrushed retro 80s trading-card art", "hyper-detailed photorealistic render",
+  "watercolour with soft bleeding edges", "bold graphic-novel comic inking",
+  "cinematic 3D render with volumetric light", "art-deco stylised illustration",
+  "impressionistic loose brushwork",
+];
+const CARD_FORMATS = [
+  "portrait vertical card layout", "landscape horizontal card layout",
+  "square card layout", "vertical card with a thin decorative border",
+  "borderless full-bleed card art", "framed vignette card layout",
+];
+
+/** Horse-specific axes — coats, breeds, tack and settings that read very differently. */
+const HORSE_COATS = [
+  "jet-black coat with a blue sheen", "snow-white grey coat", "dappled steel-grey coat",
+  "chestnut coat with a flaxen mane", "golden palomino coat", "buckskin coat with black points",
+  "bright copper sorrel coat", "dark liver-chestnut coat", "bay coat with a white blaze",
+  "blue roan coat", "strawberry roan coat", "black-and-white tobiano pinto coat",
+  "chestnut-and-white overo pinto coat", "leopard-spotted appaloosa coat",
+  "blanket appaloosa coat with speckled hindquarters", "cremello near-white coat with pink muzzle",
+  "silver dapple coat", "smoky black coat", "champagne gold coat", "brindle-patterned coat",
+];
+const HORSE_BREEDS = [
+  "lean Thoroughbred racer", "compact muscular Quarter Horse", "elegant dished-faced Arabian",
+  "powerful Standardbred trotter", "tall Hanoverian sport horse", "fine-boned Akhal-Teke with metallic sheen",
+  "stocky Icelandic horse with a thick mane", "spirited Andalusian with a flowing crest",
+  "feather-legged Friesian", "wiry Mustang", "long-maned Gypsy Vanner", "agile Marwari with curved ears",
+];
+const HORSE_SETTINGS = [
+  "thundering down a packed turf racetrack", "galloping through shallow sea surf",
+  "standing in a misty green paddock", "rearing on a rocky mountain ridge",
+  "trotting through a snowy pine forest", "in a sunlit stone stable doorway",
+  "crossing a dusty desert plain", "leaping a hedge on a steeplechase course",
+  "walking through tall golden wheat", "under floodlights at a night race meeting",
+  "splashing across a shallow river", "in a grand parade ring with blurred crowds",
+];
+const HORSE_DETAILS = [
+  "braided mane with silk ribbons", "wind-tangled loose mane", "close-cropped hogged mane",
+  "racing bridle and numbered saddle cloth", "ornate ceremonial harness", "bare with no tack at all",
+  "leather blinkers and racing silks colours", "flowered victory garland around the neck",
+  "sweat-flecked flanks and flaring nostrils", "dust and turf kicked up around the hooves",
+];
+
 function cardPrompt(card: Record<string, any>, cat: Record<string, any>) {
+  const seed = codeHash(String(card.code ?? card.id ?? card.name));
+  const format = pick(CARD_FORMATS, seed, 1);
+  const composition = pick(COMPOSITIONS, seed, 2);
+  const light = pick(LIGHT_MOODS, seed, 3);
+  const palette = pick(PALETTES, seed, 4);
+  const render = pick(RENDER_STYLES, seed, 5);
+
   if (card.is_prime) {
     return `Golden premium collectible trading-card illustration of "${card.name}", the crowning Prime card of the ` +
       `${cat.name} collection (${cat.description}). Radiant gold-foil framing, glowing light rays, majestic centred ` +
       `composition, ${cat.art_style}, ultra premium collectible card aesthetic. ${ORIGINALITY}`;
   }
-  return `Collectible trading-card illustration of "${card.name}", an original ${card.subject} from the ${cat.name} ` +
-    `collection (${cat.description}). ${cat.art_style}, dramatic rim lighting, ${card.rarity} rarity energy aura, ` +
-    `rich saturated colours, centred portrait composition, epic detailed background. ${ORIGINALITY}`;
+
+  // Horse collections get coat/breed/setting variety so no two racehorses look alike.
+  if (String(cat.slug ?? "") === "legendary-racehorses") {
+    return `${format}. Collectible trading-card illustration of "${card.name}", a one-of-a-kind ${pick(HORSE_BREEDS, seed, 6)} ` +
+      `with a ${pick(HORSE_COATS, seed, 7)}, ${pick(HORSE_DETAILS, seed, 8)}, ${pick(HORSE_SETTINGS, seed, 9)}. ` +
+      `${composition}, ${light}, ${palette}, ${render}, ${card.rarity} rarity energy accents. ` +
+      `Make this horse visually unmistakably different from any other racehorse card — unique coat pattern, unique pose, ` +
+      `unique environment and unique colour grading. ${ORIGINALITY}`;
+  }
+
+  return `${format}. Collectible trading-card illustration of "${card.name}", an original ${card.subject} from the ${cat.name} ` +
+    `collection (${cat.description}). ${cat.art_style}, ${composition}, ${light}, ${palette}, ${render}, ` +
+    `${card.rarity} rarity energy aura, epic detailed background. Make it visually distinct from every other card in the set. ${ORIGINALITY}`;
 }
+
 
 /** Fast + cheap card artwork via Gemini image, with an OpenAI image fallback. */
 async function renderCardImage(prompt: string): Promise<{ b64_json?: string; url?: string }> {
