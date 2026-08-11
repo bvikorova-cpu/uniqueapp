@@ -60,16 +60,30 @@ export const HorseAuctionHouse = () => {
     mutationFn: async (listingId: string) => {
       const { data: { user: u } } = await supabase.auth.getUser();
       if (!u) throw new Error("Not authenticated");
-      const { error } = await supabase.rpc("purchase_horse_from_market", { listing_id: listingId, buyer_id: u.id });
-      if (error) throw error;
+      const { data, error } = await supabase.rpc("purchase_horse_from_market", { listing_id: listingId, buyer_id: u.id });
+      if (error) {
+        if (error.message?.includes("INSUFFICIENT_CREDITS")) {
+          throw new Error("Not enough AI credits for this horse.");
+        }
+        throw error;
+      }
+      return data as { horse_name?: string; price?: number; buyer_balance?: number } | null;
     },
-    onSuccess: () => {
-      toast.success("Horse purchased!");
+    onSuccess: (result) => {
+      toast.success(
+        result?.horse_name
+          ? `${result.horse_name} is yours for ${result.price} credits! Balance: ${result.buyer_balance}`
+          : "Horse purchased!"
+      );
       queryClient.invalidateQueries({ queryKey: ["horse-marketplace"] });
       queryClient.invalidateQueries({ queryKey: ["my-horses-auction"] });
       queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
+      queryClient.invalidateQueries({ queryKey: ["horses"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["horse-leaderboard-global"] });
     },
     onError: (e: Error) => toast.error(e.message) });
+
 
   const getPowerScore = (h: any) => (h.speed_stat || 0) + (h.stamina_stat || 0) + (h.acceleration_stat || 0) + (h.temperament_stat || 0);
 
@@ -131,14 +145,19 @@ export const HorseAuctionHouse = () => {
 
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-black text-amber-700">{listing.price_coins} Credits</span>
-                  <Button size="sm" onClick={() => { if (!user) { navigate("/auth"); return; } buyHorse.mutate(listing.id); }}
-                    disabled={buyHorse.isPending}
-                    className="bg-gradient-to-r from-purple-600 to-amber-600 text-white"
-                  >
-                    <ShoppingCart className="h-3.5 w-3.5 mr-1" />
-                    {buyHorse.isPending ? "..." : "Buy Now"}
-                  </Button>
+                  {listing.seller_id === user?.id ? (
+                    <Badge variant="secondary" className="text-[10px]">Your listing</Badge>
+                  ) : (
+                    <Button size="sm" onClick={() => { if (!user) { navigate("/auth"); return; } buyHorse.mutate(listing.id); }}
+                      disabled={buyHorse.isPending}
+                      className="bg-gradient-to-r from-purple-600 to-amber-600 text-white"
+                    >
+                      <ShoppingCart className="h-3.5 w-3.5 mr-1" />
+                      {buyHorse.isPending ? "..." : "Buy Now"}
+                    </Button>
+                  )}
                 </div>
+
               </Card>
             </motion.div>
           ))}
