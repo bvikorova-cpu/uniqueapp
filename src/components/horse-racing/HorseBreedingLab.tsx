@@ -17,6 +17,11 @@ export const HorseBreedingLab = () => {
   const breedHorses = useBreedHorses();
   const [parent1, setParent1] = useState("");
   const [parent2, setParent2] = useState("");
+  const [foal, setFoal] = useState<{
+    name: string; breed: string; color: string;
+    speed_stat: number; stamina_stat: number; acceleration_stat: number; temperament_stat: number;
+    image_url: string | null; description: string | null;
+  } | null>(null);
 
   const horse1 = horses?.find(h => h.id === parent1);
   const horse2 = horses?.find(h => h.id === parent2);
@@ -31,7 +36,7 @@ export const HorseBreedingLab = () => {
     if (!parent1 || !parent2) { toast.error("Select both parents"); return; }
     if (parent1 === parent2) { toast.error("Select different horses"); return; }
     breedHorses.mutate({ parent1Id: parent1, parent2Id: parent2 }, {
-      onSuccess: () => { setParent1(""); setParent2(""); }
+      onSuccess: (newFoal) => { setFoal(newFoal); setParent1(""); setParent2(""); }
     });
   };
 
@@ -144,6 +149,34 @@ export const HorseBreedingLab = () => {
         <Sparkles className="mr-2 h-5 w-5" />
         {breedHorses.isPending ? "Breeding..." : "Breed Horses — 8 Credits"}
       </Button>
+
+      {foal && (
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+          <Card className="p-4 border-amber-300/60 bg-card/80 space-y-3">
+            <h3 className="font-bold text-sm text-amber-700 flex items-center gap-2">
+              <Sparkles className="h-4 w-4" /> New foal: {foal.name}
+            </h3>
+            {foal.image_url ? (
+              <img
+                src={foal.image_url}
+                alt={`AI portrait of the newborn foal ${foal.name}, a ${foal.color} ${foal.breed}`}
+                loading="lazy"
+                className="w-full max-h-72 object-cover rounded-xl border border-amber-300/60"
+              />
+            ) : (
+              <p className="text-xs text-muted-foreground">Portrait is still being generated — refresh your stable in a moment.</p>
+            )}
+            <p className="text-xs text-muted-foreground capitalize">{foal.breed} • {foal.color}</p>
+            {foal.description && <p className="text-sm leading-relaxed">{foal.description}</p>}
+            <div className="grid grid-cols-2 gap-1 text-xs">
+              <span className="flex items-center gap-1"><Zap className="h-3 w-3 text-yellow-500" /> {foal.speed_stat}</span>
+              <span className="flex items-center gap-1"><Shield className="h-3 w-3 text-blue-500" /> {foal.stamina_stat}</span>
+              <span className="flex items-center gap-1"><Flame className="h-3 w-3 text-orange-500" /> {foal.acceleration_stat}</span>
+              <span className="flex items-center gap-1"><Heart className="h-3 w-3 text-pink-500" /> {foal.temperament_stat}</span>
+            </div>
+          </Card>
+        </motion.div>
+      )}
 
       {(!horses || horses.length < 2) && (
         <p className="text-center text-muted-foreground text-sm">You need at least 2 horses to breed.</p>
