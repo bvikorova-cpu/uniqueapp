@@ -13,7 +13,7 @@ import { KidsCollectibles } from "@/components/kids/academy/KidsCollectibles";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Coins, Sparkles } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -27,8 +27,13 @@ const __HIW_KIDSACADEMY_STEPS = [
 ];
 const __HIW_KIDSACADEMY = { title: 'Kids Academy', intro: 'Fun mini-lessons and quizzes designed for ages 6–12.', steps: __HIW_KIDSACADEMY_STEPS };
 
+const TABS = ["today", "explore", "progress", "streaks", "quiz", "cards", "shop", "parents"];
+
 const KidsAcademy = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const activeTab = tabParam && TABS.includes(tabParam) ? tabParam : "today";
   return (
     <div className="min-h-screen bg-background">
       <FloatingHowItWorks title={__HIW_KIDSACADEMY.title} intro={__HIW_KIDSACADEMY.intro} steps={__HIW_KIDSACADEMY.steps} />
@@ -68,7 +73,11 @@ const KidsAcademy = () => {
             </CardContent>
           </Card>
 
-          <Tabs defaultValue="today" className="w-full">
+          <Tabs
+            value={activeTab}
+            onValueChange={(v) => setSearchParams({ tab: v }, { replace: true })}
+            className="w-full"
+          >
             <TabsList className="grid grid-cols-4 sm:grid-cols-8 gap-1 h-auto bg-muted p-1.5">
               <TabsTrigger value="today" className="text-[11px] sm:text-xs px-1">✨ Today</TabsTrigger>
               <TabsTrigger value="explore" className="text-[11px] sm:text-xs px-1">🗺️ Explore</TabsTrigger>
