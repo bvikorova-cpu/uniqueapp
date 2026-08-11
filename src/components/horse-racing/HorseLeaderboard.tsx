@@ -67,7 +67,7 @@ export const HorseLeaderboard = () => {
         </div>
         <div>
           <h2 className="text-xl font-mono font-bold text-slate-900 uppercase tracking-wider">Horse Rankings</h2>
-          <p className="text-[10px] text-emerald-700/80 font-mono uppercase tracking-[0.3em]">Top 10 Champions</p>
+          <p className="text-[10px] text-emerald-700/80 font-mono uppercase tracking-[0.3em]">Global · All Players · Top {topHorses.length}</p>
         </div>
       </div>
 
