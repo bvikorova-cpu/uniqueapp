@@ -152,7 +152,7 @@ Style: ${styleHint}. Full-bleed magical scene, no text or lettering in the image
       .select("id")
       .maybeSingle();
 
-    return json({ bookId: saved?.id ?? null, title: story.title, pages, cover, cost: GENERATE_COST });
+    return json({ bookId: saved?.id ?? null, title: story.title, pages, cover, cost: generateCost, premium });
   }
 
   if (sub === "illustrate") {
