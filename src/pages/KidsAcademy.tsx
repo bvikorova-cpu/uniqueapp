@@ -1,88 +1,26 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navbar from "@/components/Navbar";
-
-import { KidsAcademyHero } from "@/components/kids/academy/KidsAcademyHero";
-import { AdventureWorldMap } from "@/components/kids/academy/AdventureWorldMap";
-import { KidsAcademyProgress } from "@/components/kids/academy/KidsAcademyProgress";
-import { KidsAcademyStreak } from "@/components/kids/academy/KidsAcademyStreak";
-import { KidsAcademyQuizArena } from "@/components/kids/academy/KidsAcademyQuizArena";
-import { KidsAcademyShop } from "@/components/kids/academy/KidsAcademyShop";
-import { KidsAcademyParentPanel } from "@/components/kids/academy/KidsAcademyParentPanel";
-import { KidsAcademyDailyPlan } from "@/components/kids/academy/KidsAcademyDailyPlan";
 import { KidsCollectibles } from "@/components/kids/academy/KidsCollectibles";
-import { useSearchParams } from "react-router-dom";
-
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const __HIW_KIDSACADEMY_STEPS = [
-  { title: 'Pick a subject', desc: 'Math, reading, science and more — each level-appropriate.' },
-  { title: 'Play a lesson', desc: 'Short, gamified lessons keep attention high.' },
-  { title: 'Take the quiz', desc: 'Quizzes reward stars and badges.' },
-  { title: 'Collect cartoon cards', desc: 'Open the Cards tab for 10 kids collectible sets — 150 cartoon cards each, 1 credit per draw.' },
-  { title: 'Parents can review', desc: 'Progress shows in the Parental Dashboard.' }
+  { title: 'Open a card set', desc: 'Choose from 16 magical kids collectible themes.' },
+  { title: 'Watch the hero video', desc: 'A short cinematic intro sets the mood.' },
+  { title: 'Watch & earn', desc: 'Earn rewards while browsing.' },
+  { title: 'Draw a card', desc: 'Spend 1 credit to reveal a random cartoon card.' },
+  { title: 'Collect them all', desc: '2,400 cards across 16 sets — can you complete every album?' }
 ];
-const __HIW_KIDSACADEMY = { title: 'Kids Academy', intro: 'Fun mini-lessons and quizzes designed for ages 6–12.', steps: __HIW_KIDSACADEMY_STEPS };
-
-const TABS = ["today", "explore", "progress", "streaks", "quiz", "cards", "shop", "parents"];
+const __HIW_KIDSACADEMY = { title: 'Kids Collectibles', intro: 'Collectible cartoon cards for young explorers.', steps: __HIW_KIDSACADEMY_STEPS };
 
 const KidsAcademy = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const tabParam = searchParams.get("tab");
-  const activeTab = tabParam && TABS.includes(tabParam) ? tabParam : "today";
   return (
     <div className="min-h-screen bg-background">
       <FloatingHowItWorks title={__HIW_KIDSACADEMY.title} intro={__HIW_KIDSACADEMY.intro} steps={__HIW_KIDSACADEMY.steps} />
       <Navbar />
-      <main className="container mx-auto px-4 py-8 mt-16">
+      <main className="container mx-auto px-4 py-6 mt-16">
         <div className="max-w-6xl mx-auto">
-          {activeTab !== "cards" && <KidsAcademyHero />}
-
-          <Tabs
-            value={activeTab}
-            onValueChange={(v) => setSearchParams({ tab: v }, { replace: true })}
-            className="w-full"
-          >
-            <TabsList className="grid grid-cols-4 sm:grid-cols-8 gap-1 h-auto bg-muted p-1.5">
-              <TabsTrigger value="today" className="text-[11px] sm:text-xs px-1">✨ Today</TabsTrigger>
-              <TabsTrigger value="explore" className="text-[11px] sm:text-xs px-1">🗺️ Explore</TabsTrigger>
-              <TabsTrigger value="progress" className="text-[11px] sm:text-xs px-1">⭐ Progress</TabsTrigger>
-              <TabsTrigger value="streaks" className="text-[11px] sm:text-xs px-1">🔥 Streaks</TabsTrigger>
-              <TabsTrigger value="quiz" className="text-[11px] sm:text-xs px-1">⚔️ Quiz</TabsTrigger>
-              <TabsTrigger value="cards" className="text-[11px] sm:text-xs px-1">🃏 Cards</TabsTrigger>
-              <TabsTrigger value="shop" className="text-[11px] sm:text-xs px-1">🛒 Shop</TabsTrigger>
-              <TabsTrigger value="parents" className="text-[11px] sm:text-xs px-1 col-span-2 sm:col-span-1">👨‍👩‍👧 Parents</TabsTrigger>
-            </TabsList>
-
-            <div className="mt-6">
-              <TabsContent value="today">
-                <KidsAcademyDailyPlan />
-              </TabsContent>
-              <TabsContent value="explore">
-                <AdventureWorldMap />
-              </TabsContent>
-              <TabsContent value="progress">
-                <KidsAcademyProgress />
-              </TabsContent>
-              <TabsContent value="streaks">
-                <KidsAcademyStreak />
-              </TabsContent>
-              <TabsContent value="quiz">
-                <KidsAcademyQuizArena />
-              </TabsContent>
-              <TabsContent value="cards">
-                <KidsCollectibles />
-              </TabsContent>
-              <TabsContent value="shop">
-                <KidsAcademyShop />
-              </TabsContent>
-              <TabsContent value="parents">
-                <KidsAcademyParentPanel />
-              </TabsContent>
-            </div>
-          </Tabs>
+          <KidsCollectibles />
         </div>
       </main>
-      
     </div>
   );
 };
