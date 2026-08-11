@@ -166,6 +166,9 @@ export const LiveRaceSimulator = () => {
           </div>
         </Card>
       )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
+
