@@ -162,9 +162,12 @@ const CardCollections = () => {
 
 
                       <div className="p-4 space-y-3">
-                        <div>
-                          <h2 className="font-black leading-tight">{c.name}</h2>
-                          <p className="text-xs text-muted-foreground">{c.description}</p>
+                        <div className="space-y-1">
+                          <h2 className="font-black leading-tight">{blurb?.title ?? c.name}</h2>
+                          <p className="text-xs text-muted-foreground">{blurb?.tagline ?? c.description}</p>
+                          {blurb?.inside && (
+                            <p className="text-[11px] text-muted-foreground/80">{blurb.inside}</p>
+                          )}
                         </div>
                         <div className="flex items-center gap-2">
                           <Progress value={pct} className="h-2 flex-1" />
