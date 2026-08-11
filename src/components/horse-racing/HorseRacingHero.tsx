@@ -21,7 +21,7 @@ interface HorseRacingHeroProps {
 const statItems = [
   { icon: Swords, label: "Horses", color: "text-amber-700", key: "totalHorses" as const },
   { icon: Flame, label: "Races Run", color: "text-red-400", key: "totalRaces" as const },
-  { icon: Flag, label: "Active Races", color: "text-emerald-400", key: "activeRaces" as const },
+  { icon: Flag, label: "Active Races", color: "text-emerald-700", key: "activeRaces" as const },
   { icon: Users, label: "Trainers Online", color: "text-cyan-400", key: "onlineTrainers" as const },
 ];
 

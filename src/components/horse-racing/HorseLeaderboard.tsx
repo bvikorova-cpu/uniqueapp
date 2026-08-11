@@ -33,7 +33,7 @@ export const HorseLeaderboard = () => {
     if (index === 0) return { border: "border-amber-500/80", bg: "from-amber-950/40 to-amber-900/20", glow: "shadow-amber-500/20", badge: "🥇", color: "text-amber-700" };
     if (index === 1) return { border: "border-gray-300/40", bg: "from-gray-800/40 to-gray-900/20", glow: "shadow-gray-400/10", badge: "🥈", color: "text-gray-300" };
     if (index === 2) return { border: "border-orange-400/40", bg: "from-orange-950/30 to-orange-900/10", glow: "shadow-orange-500/10", badge: "🥉", color: "text-orange-300" };
-    return { border: "border-emerald-500/15", bg: "from-slate-900/50 to-slate-950/50", glow: "", badge: null, color: "text-emerald-300" };
+    return { border: "border-emerald-500/15", bg: "from-slate-900/50 to-slate-950/50", glow: "", badge: null, color: "text-emerald-700" };
   };
 
   if (isLoading) {
@@ -41,7 +41,7 @@ export const HorseLeaderboard = () => {
     <>
       <FloatingHowItWorks title={"Horse Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Horse Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Horse Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="p-8 text-center">
-        <div className="inline-flex items-center gap-2 text-emerald-400/60 font-mono text-sm uppercase tracking-wider">
+        <div className="inline-flex items-center gap-2 text-emerald-700/80 font-mono text-sm uppercase tracking-wider">
           <div className="h-2 w-2 bg-emerald-400 rounded-full animate-pulse" />
           Loading Rankings...
         </div>
@@ -53,9 +53,9 @@ export const HorseLeaderboard = () => {
   if (topHorses.length === 0) {
     return (
       <div className="p-12 text-center">
-        <Trophy className="w-16 h-16 mx-auto mb-4 text-emerald-500/30" />
-        <p className="text-emerald-400/50 font-mono uppercase tracking-wider text-sm">No horses have raced yet</p>
-        <p className="text-emerald-400/30 text-xs mt-2">Be the first to claim the leaderboard</p>
+        <Trophy className="w-16 h-16 mx-auto mb-4 text-emerald-700/80" />
+        <p className="text-emerald-700/80 font-mono uppercase tracking-wider text-sm">No horses have raced yet</p>
+        <p className="text-emerald-700/80 text-xs mt-2">Be the first to claim the leaderboard</p>
       </div>
     );
   }
@@ -70,7 +70,7 @@ export const HorseLeaderboard = () => {
         </div>
         <div>
           <h2 className="text-xl font-mono font-bold text-slate-900 uppercase tracking-wider">Horse Rankings</h2>
-          <p className="text-[10px] text-emerald-400/50 font-mono uppercase tracking-[0.3em]">Top 10 Champions</p>
+          <p className="text-[10px] text-emerald-700/80 font-mono uppercase tracking-[0.3em]">Top 10 Champions</p>
         </div>
       </div>
 
@@ -113,20 +113,20 @@ export const HorseLeaderboard = () => {
               {/* Info */}
               <div className="flex-1 min-w-0">
                 <p className="font-mono font-bold text-slate-900 text-sm sm:text-base truncate">{horse.name}</p>
-                <p className="text-xs text-emerald-400/50 font-mono capitalize truncate">{horse.breed}</p>
+                <p className="text-xs text-emerald-700/80 font-mono capitalize truncate">{horse.breed}</p>
               </div>
               
               {/* Stats */}
               <div className="flex items-center gap-4 shrink-0">
                 <div className="text-right hidden sm:block">
-                  <div className="flex items-center gap-1 text-xs text-emerald-400/40 font-mono">
+                  <div className="flex items-center gap-1 text-xs text-emerald-700/80 font-mono">
                     <Star className="h-3 w-3" />
                     <span>PWR {horse.speed_stat + horse.stamina_stat}</span>
                   </div>
                 </div>
                 <div className="text-right">
                   <p className="font-mono font-bold text-amber-700 text-sm">{horse.race_wins} W</p>
-                  <p className="text-[10px] text-emerald-400/40 font-mono">{winRate}% WR</p>
+                  <p className="text-[10px] text-emerald-700/80 font-mono">{winRate}% WR</p>
                 </div>
               </div>
             </motion.div>

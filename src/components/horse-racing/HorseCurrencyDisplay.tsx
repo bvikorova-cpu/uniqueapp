@@ -35,7 +35,7 @@ export const HorseCurrencyDisplay = () => {
                 <div className="absolute -inset-2 bg-amber-400/10 rounded-full blur-md" />
               </div>
               <div>
-                <p className="text-[10px] font-mono text-emerald-400/40 uppercase tracking-wider">AI Credits</p>
+                <p className="text-[10px] font-mono text-emerald-700/80 uppercase tracking-wider">AI Credits</p>
                 <p className="text-2xl font-bold font-mono text-slate-900">
                   {isLoading ? "…" : (currency?.credits ?? 0)}
                 </p>
@@ -59,13 +59,13 @@ export const HorseCurrencyDisplay = () => {
               { label: "Race entry", value: HORSE_CREDIT_COSTS.raceEntry },
             ].map((c) => (
               <div key={c.label} className="rounded-lg bg-amber-50/70 border border-emerald-500/10 p-2">
-                <p className="text-[10px] font-mono text-emerald-400/40 uppercase">{c.label}</p>
+                <p className="text-[10px] font-mono text-emerald-700/80 uppercase">{c.label}</p>
                 <p className="text-sm font-mono font-bold text-slate-900">{c.value} cr</p>
               </div>
             ))}
           </div>
 
-          <p className="mt-3 text-[10px] text-emerald-400/40 font-mono">
+          <p className="mt-3 text-[10px] text-emerald-700/80 font-mono">
             All arena actions are paid with AI credits. Credits cannot be exchanged for real money.
           </p>
         </Card>

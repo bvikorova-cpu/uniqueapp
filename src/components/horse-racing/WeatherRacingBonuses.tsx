@@ -69,7 +69,7 @@ const WEATHER_CONDITIONS: WeatherCondition[] = [
       { breed: "thoroughbred", bonus: "+5% Stamina", multiplier: 1.05 },
     ],
     trackEffect: "Wind Tunnel — Lighter breeds gain an advantage",
-    color: "text-emerald-400",
+    color: "text-emerald-700",
     bgClass: "from-emerald-950/30 to-green-950/20" },
   {
     id: "foggy",
@@ -176,7 +176,7 @@ export const WeatherRacingBonuses = () => {
                   <span className="text-sm capitalize font-mono font-bold text-slate-900">{effect.breed}</span>
                 </div>
                 <Badge className={`font-mono text-[10px] ${
-                  effect.multiplier >= 1 ? "bg-emerald-500/20 text-emerald-400" : "bg-red-500/20 text-red-400"
+                  effect.multiplier >= 1 ? "bg-emerald-500/20 text-emerald-700" : "bg-red-500/20 text-red-400"
                 }`}>
                   {effect.bonus}
                 </Badge>
@@ -211,7 +211,7 @@ export const WeatherRacingBonuses = () => {
                       </div>
                       {bonus ? (
                         <Badge className={`font-mono text-[10px] ${
-                          bonus.multiplier >= 1 ? "bg-emerald-500/20 text-emerald-400" : "bg-red-500/20 text-red-400"
+                          bonus.multiplier >= 1 ? "bg-emerald-500/20 text-emerald-700" : "bg-red-500/20 text-red-400"
                         }`}>
                           {bonus.bonus}
                         </Badge>

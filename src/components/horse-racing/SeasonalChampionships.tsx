@@ -96,7 +96,7 @@ export const SeasonalChampionships = () => {
                         <span className="text-2xl">{season.icon}</span>
                         <h3 className="font-bold font-mono text-slate-900">{season.name}</h3>
                         {enrolled && (
-                          <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[10px]">
+                          <Badge className="bg-emerald-500/20 text-emerald-700 border-emerald-500/30 text-[10px]">
                             Enrolled
                           </Badge>
                         )}
