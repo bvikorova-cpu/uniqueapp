@@ -100,18 +100,18 @@ export const DailyTrainingQuests = () => {
         <Card className={`p-4 backdrop-blur-sm transition-all ${
           completed 
             ? "bg-emerald-950/30 border-emerald-500/30" 
-            : "bg-slate-900/60 border-amber-500/15 hover:border-amber-400/30"
+            : "bg-white border-amber-300/50 hover:border-amber-400/60"
         }`}>
           <div className="flex items-start gap-3">
             <div className="text-2xl shrink-0">{quest.icon}</div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-bold font-mono text-sm text-white truncate">{quest.title}</h3>
+                <h3 className="font-bold font-mono text-sm text-slate-900 truncate">{quest.title}</h3>
                 {completed && <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />}
               </div>
-              <p className="text-[10px] text-amber-400/40 font-mono mb-2">{quest.description}</p>
+              <p className="text-[10px] text-amber-700/60 font-mono mb-2">{quest.description}</p>
               
-              <div className="relative h-2 bg-slate-800 rounded-full overflow-hidden mb-2">
+              <div className="relative h-2 bg-amber-100 rounded-full overflow-hidden mb-2">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${percentage}%` }}
@@ -121,7 +121,7 @@ export const DailyTrainingQuests = () => {
               </div>
               
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono text-amber-400/50">
+                <span className="text-[10px] font-mono text-amber-700/70">
                   {progress}/{quest.requirement}
                 </span>
                 <div className="flex items-center gap-2">
@@ -154,20 +154,20 @@ export const DailyTrainingQuests = () => {
     <div className="space-y-6">
       <div className="flex items-start justify-between">
         <div>
-          <h2 className="text-2xl font-black font-mono flex items-center gap-2 text-white">
-            <Target className="h-6 w-6 text-amber-400" /> Daily Quests
+          <h2 className="text-2xl font-black font-mono flex items-center gap-2 text-slate-900">
+            <Target className="h-6 w-6 text-amber-700" /> Daily Quests
           </h2>
-          <p className="text-amber-400/50 font-mono text-sm">Complete quests for bonus XP</p>
+          <p className="text-amber-700/70 font-mono text-sm">Complete quests for bonus XP</p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-900/60 rounded-lg border border-amber-500/15">
-          <Clock className="h-4 w-4 text-amber-400" />
-          <span className="text-xs font-mono text-amber-400">{hoursLeft}h {minutesLeft}m</span>
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg border border-amber-300/50">
+          <Clock className="h-4 w-4 text-amber-700" />
+          <span className="text-xs font-mono text-amber-700">{hoursLeft}h {minutesLeft}m</span>
         </div>
       </div>
 
       {/* Daily Quests */}
       <div>
-        <h3 className="font-mono text-sm text-amber-400/60 uppercase tracking-wider mb-3 flex items-center gap-2">
+        <h3 className="font-mono text-sm text-amber-700 uppercase tracking-wider mb-3 flex items-center gap-2">
           <Flame className="h-4 w-4" /> Daily Quests
         </h3>
         <div className="space-y-2">
@@ -177,7 +177,7 @@ export const DailyTrainingQuests = () => {
 
       {/* Weekly Challenges */}
       <div>
-        <h3 className="font-mono text-sm text-amber-400/60 uppercase tracking-wider mb-3 flex items-center gap-2">
+        <h3 className="font-mono text-sm text-amber-700 uppercase tracking-wider mb-3 flex items-center gap-2">
           <Star className="h-4 w-4" /> Weekly Challenges
         </h3>
         <div className="space-y-2">
@@ -185,9 +185,9 @@ export const DailyTrainingQuests = () => {
         </div>
       </div>
 
-      <Card className="p-4 bg-slate-900/40 border-amber-500/10">
-        <h3 className="font-bold font-mono text-sm text-amber-300 mb-2">🎯 Quest Info</h3>
-        <ul className="text-xs text-amber-400/50 font-mono space-y-1">
+      <Card className="p-4 bg-white/70 border-amber-300/50">
+        <h3 className="font-bold font-mono text-sm text-amber-700 mb-2">🎯 Quest Info</h3>
+        <ul className="text-xs text-amber-700/70 font-mono space-y-1">
           <li>• Daily quests reset every day at midnight UTC</li>
           <li>• Weekly challenges reset every Monday</li>
           <li>• Quest progress is tracked automatically from your activities</li>

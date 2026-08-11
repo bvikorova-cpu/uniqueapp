@@ -86,7 +86,7 @@ export const HorseBreedingLab = () => {
             transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
             className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-amber-500 flex items-center justify-center shadow-lg shadow-purple-500/30"
           >
-            <Sparkles className="h-7 w-7 text-white" />
+            <Sparkles className="h-7 w-7 text-slate-900" />
           </motion.div>
           <ArrowRight className="h-5 w-5 text-purple-400 mt-2 rotate-90 md:rotate-0" />
           {predictedStats && (
@@ -103,8 +103,8 @@ export const HorseBreedingLab = () => {
         </div>
 
         {/* Parent 2 */}
-        <Card className="p-4 border-amber-500/20 bg-card/80 backdrop-blur-sm">
-          <h3 className="font-bold text-sm mb-3 text-amber-300 flex items-center gap-2">
+        <Card className="p-4 border-amber-300/60 bg-card/80 backdrop-blur-sm">
+          <h3 className="font-bold text-sm mb-3 text-amber-700 flex items-center gap-2">
             <Heart className="h-4 w-4" /> Parent 2
           </h3>
           <Select value={parent2} onValueChange={setParent2}>

@@ -30910,6 +30910,7 @@ export type Database = {
           created_at: string
           experience: number
           id: string
+          image_url: string | null
           is_retired: boolean
           level: number
           max_breeding: number
@@ -30933,6 +30934,7 @@ export type Database = {
           created_at?: string
           experience?: number
           id?: string
+          image_url?: string | null
           is_retired?: boolean
           level?: number
           max_breeding?: number
@@ -30956,6 +30958,7 @@ export type Database = {
           created_at?: string
           experience?: number
           id?: string
+          image_url?: string | null
           is_retired?: boolean
           level?: number
           max_breeding?: number

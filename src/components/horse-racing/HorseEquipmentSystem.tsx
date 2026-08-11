@@ -49,10 +49,10 @@ const EQUIPMENT: EquipmentItem[] = [
 ];
 
 const RARITY_STYLES = {
-  common: { border: "border-gray-500/30", bg: "bg-gray-500/10", text: "text-gray-300", badge: "bg-gray-600" },
+  common: { border: "border-gray-500/30", bg: "bg-amber-200/40", text: "text-gray-300", badge: "bg-amber-100" },
   rare: { border: "border-blue-500/30", bg: "bg-blue-500/10", text: "text-blue-300", badge: "bg-blue-600" },
   epic: { border: "border-purple-500/30", bg: "bg-purple-500/10", text: "text-purple-300", badge: "bg-purple-600" },
-  legendary: { border: "border-amber-500/30", bg: "bg-amber-500/10", text: "text-amber-300", badge: "bg-amber-600" } };
+  legendary: { border: "border-amber-400/70", bg: "bg-amber-500/10", text: "text-amber-700", badge: "bg-amber-600" } };
 
 const SLOT_LABELS = { saddle: "Saddle", horseshoes: "Horseshoes", bridle: "Bridle", blanket: "Blanket" };
 
@@ -86,18 +86,18 @@ export const HorseEquipmentSystem = () => {
       <FloatingHowItWorks title={"Horse Equipment System - How it works"} steps={[{ title: 'Open', desc: 'Access the Horse Equipment System section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Horse Equipment System.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-black font-mono flex items-center gap-2 text-white">
-          <Wrench className="h-6 w-6 text-amber-400" /> Horse Equipment
+        <h2 className="text-2xl font-black font-mono flex items-center gap-2 text-slate-900">
+          <Wrench className="h-6 w-6 text-amber-700" /> Horse Equipment
         </h2>
-        <p className="text-amber-400/50 font-mono text-sm">Equip saddles, horseshoes, and gear to boost performance</p>
+        <p className="text-amber-700/70 font-mono text-sm">Equip saddles, horseshoes, and gear to boost performance</p>
       </div>
 
       {/* Horse selector */}
-      <Card className="p-4 bg-slate-900/60 border-amber-500/15">
+      <Card className="p-4 bg-white border-amber-300/50">
         <div className="flex items-center gap-4">
-          <label className="text-xs font-mono text-amber-400/60 uppercase tracking-wider">Equip To:</label>
+          <label className="text-xs font-mono text-amber-700 uppercase tracking-wider">Equip To:</label>
           <Select value={selectedHorse} onValueChange={setSelectedHorse}>
-            <SelectTrigger className="flex-1 bg-slate-800/60 border-amber-500/20 font-mono text-sm">
+            <SelectTrigger className="flex-1 bg-amber-50 border-amber-300/60 font-mono text-sm">
               <SelectValue placeholder="Select a horse..." />
             </SelectTrigger>
             <SelectContent>
@@ -116,7 +116,7 @@ export const HorseEquipmentSystem = () => {
             onClick={() => setSelectedSlot(slot)}
             className={selectedSlot === slot
               ? "bg-gradient-to-r from-amber-600 to-red-600 text-white font-mono text-xs"
-              : "bg-slate-800/40 border-amber-500/20 text-amber-400 font-mono text-xs"}
+              : "bg-amber-50/70 border-amber-300/60 text-amber-700 font-mono text-xs"}
           >
             {label}
           </Button>
@@ -142,13 +142,13 @@ export const HorseEquipmentSystem = () => {
                     <span className="text-2xl">{item.icon}</span>
                     <div>
                       <h3 className={`font-bold font-mono text-sm ${style.text}`}>{item.name}</h3>
-                      <Badge className={`${style.badge} text-white text-[10px]`}>{item.rarity}</Badge>
+                      <Badge className={`${style.badge} text-slate-900 text-[10px]`}>{item.rarity}</Badge>
                     </div>
                   </div>
-                  <span className="text-amber-400 font-mono font-bold text-sm">{item.costCredits} credits</span>
+                  <span className="text-amber-700 font-mono font-bold text-sm">{item.costCredits} credits</span>
                 </div>
 
-                <p className="text-xs text-amber-400/40 font-mono mb-3">{item.description}</p>
+                <p className="text-xs text-amber-700/60 font-mono mb-3">{item.description}</p>
 
                 <div className="flex flex-wrap gap-2 mb-3">
                   {item.stats.speed && (

@@ -74,7 +74,7 @@ export const LiveRaceSimulator = () => {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-black flex items-center gap-2">
-          <Flag className="h-6 w-6 text-amber-400" /> Live Race Simulator
+          <Flag className="h-6 w-6 text-amber-700" /> Live Race Simulator
         </h2>
         <p className="text-muted-foreground text-sm">Watch real-time race simulations with multiple camera angles</p>
       </div>
@@ -125,7 +125,7 @@ export const LiveRaceSimulator = () => {
 
       {/* Join race inline */}
       {showJoinDialog && (
-        <Card className="p-4 border-amber-500/20 bg-card/80">
+        <Card className="p-4 border-amber-300/60 bg-card/80">
           <h3 className="font-bold mb-3">Select Horse & Strategy</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
             <Select value={selectedHorse} onValueChange={setSelectedHorse}>
