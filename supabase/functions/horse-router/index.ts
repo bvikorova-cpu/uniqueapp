@@ -40,7 +40,7 @@ const EQUIPMENT_CREDITS: Record<string, number> = {
   blanket_wool: 3, blanket_silk: 7, blanket_champion: 16,
   blanket_imperial: 140, blanket_phoenix: 880, blanket_infinity: 3000 };
 
-const HORSE_ACTIONS = ["ping", "create", "breed", "train", "join_race", "purchase_equipment", "championship_enroll", "claim_quest_reward"];
+const HORSE_ACTIONS = ["ping", "create", "breed", "train", "duel", "join_race", "purchase_equipment", "championship_enroll", "claim_quest_reward"];
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -430,6 +430,96 @@ Deno.serve(async (req) => {
         }
         return json({ success: true, xp: r.xp, questId, message: `Quest reward claimed: +${r.xp} XP!` });
       }
+
+      /**
+       * Head-to-head live race between exactly two horses (1v1 duel).
+       * Server-authoritative: it simulates 4 sectors, records the duel and
+       * pays the winner. Entry costs 1 credit, the winner gets 2 back.
+       */
+      case "duel": {
+        const { myHorseId, opponentHorseId } = body || {};
+        if (!myHorseId || !opponentHorseId) return json({ error: "Two horses required" }, 400);
+        if (myHorseId === opponentHorseId) return json({ error: "Pick a different rival" }, 400);
+
+        const { data: mine } = await admin.from("horses").select("*").eq("id", myHorseId).maybeSingle();
+        if (!mine || mine.user_id !== user.id) return json({ error: "Horse not yours" }, 403);
+        const { data: rival } = await admin.from("horses").select("*").eq("id", opponentHorseId).maybeSingle();
+        if (!rival) return json({ error: "Rival horse not found" }, 404);
+        if (rival.user_id === user.id) return json({ error: "Pick a rival from another player" }, 400);
+
+        const err = await spend(COST_RACE_ENTRY, "horse-racing:duel-entry");
+        if (err) return err;
+
+        const rating = (h: any) =>
+          (h.speed_stat ?? 50) * 1.3 + (h.stamina_stat ?? 50) * 1.1 +
+          (h.acceleration_stat ?? 50) * 1.0 + (h.temperament_stat ?? 50) * 0.6 +
+          (h.level ?? 1) * 4;
+
+        const sectors = ["Start", "Back straight", "Final turn", "Home stretch"];
+        const log: { sector: string; mine: number; theirs: number; note: string }[] = [];
+        let myTime = 0, theirTime = 0;
+        for (const sector of sectors) {
+          const a = rating(mine) * (0.85 + Math.random() * 0.3);
+          const b = rating(rival) * (0.85 + Math.random() * 0.3);
+          const ta = 3000 / Math.max(a, 1);
+          const tb = 3000 / Math.max(b, 1);
+          myTime += ta;
+          theirTime += tb;
+          log.push({
+            sector,
+            mine: Math.round(ta * 100) / 100,
+            theirs: Math.round(tb * 100) / 100,
+            note: ta < tb ? `${mine.name} takes the lead` : `${rival.name} pushes ahead` });
+        }
+        const iWon = myTime <= theirTime;
+        const winnerHorseId = iWon ? mine.id : rival.id;
+        const prize = iWon ? COST_RACE_ENTRY * 2 : 0;
+
+        // Stats for both horses (real data for both owners).
+        await admin.from("horses").update({
+          total_races: (mine.total_races ?? 0) + 1,
+          race_wins: (mine.race_wins ?? 0) + (iWon ? 1 : 0),
+          experience: (mine.experience ?? 0) + (iWon ? 25 : 10),
+          level: Math.floor(((mine.experience ?? 0) + (iWon ? 25 : 10)) / 100) + 1,
+        }).eq("id", mine.id);
+        await admin.from("horses").update({
+          total_races: (rival.total_races ?? 0) + 1,
+          race_wins: (rival.race_wins ?? 0) + (iWon ? 0 : 1),
+          experience: (rival.experience ?? 0) + (iWon ? 10 : 25),
+          level: Math.floor(((rival.experience ?? 0) + (iWon ? 10 : 25)) / 100) + 1,
+        }).eq("id", rival.id);
+
+        if (prize > 0) {
+          await admin.rpc("add_ai_credits", { p_user_id: user.id,
+            p_amount: prize,
+            p_reason: "horse-racing:duel-prize",
+            p_source: "horse_racing" });
+        }
+
+        const { data: duel } = await admin.from("horse_duels").insert({
+          challenger_user_id: user.id,
+          challenger_horse_id: mine.id,
+          opponent_user_id: rival.user_id,
+          opponent_horse_id: rival.id,
+          winner_horse_id: winnerHorseId,
+          challenger_time: Math.round(myTime * 100) / 100,
+          opponent_time: Math.round(theirTime * 100) / 100,
+          credits_spent: COST_RACE_ENTRY,
+          credits_won: prize,
+          log }).select().maybeSingle();
+
+        return json({
+          success: true,
+          duelId: duel?.id ?? null,
+          won: iWon,
+          winnerHorseId,
+          myTime: Math.round(myTime * 100) / 100,
+          opponentTime: Math.round(theirTime * 100) / 100,
+          log,
+          creditsSpent: COST_RACE_ENTRY,
+          creditsWon: prize });
+      }
+
 
       default:
         return json({ error: `Unknown horse action: ${action}` }, 400);

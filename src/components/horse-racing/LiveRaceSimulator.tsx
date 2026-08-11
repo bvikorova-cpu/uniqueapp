@@ -3,7 +3,9 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Trophy, Play, Eye, Zap, Timer, Flag } from "lucide-react";
+import { Trophy, Play, Eye, Zap, Timer, Flag, Swords } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { HorseDuelArena } from "./HorseDuelArena";
 import { useUserHorses, useRaces, useJoinRace } from "@/hooks/useHorseRacing";
 import { RaceTrack3D } from "./RaceTrack3D";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,6 +26,7 @@ export const LiveRaceSimulator = () => {
   const [selectedHorse, setSelectedHorse] = useState("");
   const [strategy, setStrategy] = useState("balanced");
   const [showJoinDialog, setShowJoinDialog] = useState(false);
+  const [mode, setMode] = useState<"duel" | "open">("duel");
 
   const activeRace = races?.find(r => r.id === selectedRace);
 
@@ -76,10 +79,21 @@ export const LiveRaceSimulator = () => {
         <h2 className="text-2xl font-black flex items-center gap-2">
           <Flag className="h-6 w-6 text-amber-700" /> Live Race Simulator
         </h2>
-        <p className="text-muted-foreground text-sm">Watch real-time race simulations with multiple camera angles</p>
+        <p className="text-muted-foreground text-sm">Race 1-vs-1 duels instantly, or join an open multi-horse race</p>
       </div>
 
+      <Tabs value={mode} onValueChange={(v) => setMode(v as "duel" | "open")}>
+        <TabsList className="bg-amber-100/70">
+          <TabsTrigger value="duel" className="gap-1"><Swords className="h-4 w-4" /> Duel (2 horses)</TabsTrigger>
+          <TabsTrigger value="open" className="gap-1"><Flag className="h-4 w-4" /> Open races</TabsTrigger>
+        </TabsList>
+        <TabsContent value="duel" className="mt-4">
+          <HorseDuelArena />
+        </TabsContent>
+        <TabsContent value="open" className="mt-4">
+
       <div className="grid grid-cols-1 gap-3">
+
         {races?.map((race, i) => (
           <motion.div
             key={race.id}
@@ -155,6 +169,9 @@ export const LiveRaceSimulator = () => {
           </div>
         </Card>
       )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
+
