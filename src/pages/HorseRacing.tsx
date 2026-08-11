@@ -57,6 +57,21 @@ export default function HorseRacing() {
   const queryClient = useQueryClient();
   const { horses, createHorse } = useUserHorses();
   const { races } = useRaces();
+
+  // Foals born in the Breeding Lab live in the same `horses` table — flag them
+  // so they show up in My Stable alongside bought horses with a clear badge.
+  const { data: foalIds } = useQuery({
+    queryKey: ["horse-foal-ids", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("breeding_records")
+        .select("foal_id")
+        .eq("user_id", user!.id);
+      return new Set((data ?? []).map((r: any) => r.foal_id).filter(Boolean) as string[]);
+    },
+    staleTime: 60_000,
+  });
   const [activeView, setActiveView] = useState<ActiveView>("dashboard");
   const [showBuyHorse, setShowBuyHorse] = useState(false);
   const [horseName, setHorseName] = useState("");
