@@ -3,7 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Coins, Clock, Layers, Loader2, Users, Sparkles } from "lucide-react";
+import { Coins, Clock, Layers, Loader2, Users, Sparkles, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { downloadCardImage } from "@/lib/downloadCardImage";
 import type { CardCategory, CollectibleCard } from "./CardCategoryCollection";
 
 const RARITY_LABEL: Record<string, string> = {
@@ -78,23 +80,38 @@ export const CardDetailModal = ({ card, category, totalCards, onClose }: Props) 
             </DialogHeader>
 
             <div className="grid gap-5 sm:grid-cols-[minmax(0,300px)_1fr]">
-              <div className={`relative aspect-[4/5] rounded-xl overflow-hidden bg-gradient-to-br ${card.gradient}`}>
-                {card.image_url ? (
-                  <img
-                    src={card.image_url}
-                    alt={`${card.name} — ${category.name} collectible card artwork`}
-                    className={`absolute inset-0 w-full h-full object-cover ${owned ? "" : "opacity-75 saturate-[0.6]"}`}
-                    decoding="async"
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center text-7xl">{card.emoji}</div>
-                )}
-                {!owned && (
-                  <div className="absolute inset-x-0 bottom-0 bg-background/85 py-1.5 text-center text-[11px] font-bold backdrop-blur">
-                    Not collected yet
-                  </div>
+              <div className="space-y-3">
+                <div className={`relative aspect-[4/5] rounded-xl overflow-hidden bg-gradient-to-br ${card.gradient}`}>
+                  {card.image_url ? (
+                    <img
+                      src={card.image_url}
+                      alt={`${card.name} — ${category.name} collectible card artwork`}
+                      className={`absolute inset-0 w-full h-full object-cover ${owned ? "" : "opacity-75 saturate-[0.6]"}`}
+                      decoding="async"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-7xl">{card.emoji}</div>
+                  )}
+                  {!owned && (
+                    <div className="absolute inset-x-0 bottom-0 bg-background/85 py-1.5 text-center text-[11px] font-bold backdrop-blur">
+                      Not collected yet
+                    </div>
+                  )}
+                </div>
+
+                {card.image_url && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full gap-2"
+                    onClick={() => downloadCardImage(card.image_url!, `${category.name}-${card.name}`)}
+                  >
+                    <Download className="h-4 w-4" /> Download card image
+                  </Button>
                 )}
               </div>
+
+
 
               <div className="space-y-4">
                 <div className="flex flex-wrap gap-2">

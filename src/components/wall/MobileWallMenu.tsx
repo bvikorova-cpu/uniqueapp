@@ -74,6 +74,7 @@ const entertainmentModules = [
   { name: "Astrology", path: "/astrology", icon: Star, color: "text-purple-500" },
   { name: "Character Arena", path: "/character-arena", icon: Trophy, color: "text-orange-500" },
   { name: "Collectible Cards", path: "/card-collections", icon: Library, color: "text-fuchsia-500" },
+  { name: "Kids Collectibles", path: "/kids-academy?tab=cards", icon: Library, color: "text-pink-500" },
   { name: "Horse Racing", path: "/horse-racing", icon: Trophy, color: "text-amber-500" },
   { name: "Football Arena", path: "/football-arena", icon: Trophy, color: "text-emerald-500" },
   { name: "Basketball Arena", path: "/basketball-arena", icon: Trophy, color: "text-orange-500" },
