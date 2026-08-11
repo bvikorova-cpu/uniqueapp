@@ -5,12 +5,13 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Coins, Download, Loader2, Sparkles } from "lucide-react";
+import { Download, Loader2, Sparkles } from "lucide-react";
 import { downloadCardImage } from "@/lib/downloadCardImage";
 import { getCategoryCover } from "@/components/collections/categoryCovers";
 import { getCategoryBlurb } from "@/components/collections/categoryBlurbs";
 import heroVideo from "@/assets/kids-collectibles-hero.mp4.asset.json";
 import { useCardArtPrewarm } from "@/hooks/useCardArtPrewarm";
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 
 /** Slugs that belong to the kid-friendly cartoon collectible sets. */
 export const KIDS_CARD_SLUGS = [
@@ -81,8 +82,6 @@ export const KidsCollectibles = () => {
     staleTime: 30 * 1000,
   });
 
-  const ownedUnique = Object.values(progress).reduce((a, b) => a + b.unique, 0);
-
   // Pre-generate + pre-cache all kids card artwork so albums open instantly.
   useCardArtPrewarm(KIDS_CARD_SLUGS as unknown as string[], categories.length > 0);
 
@@ -111,29 +110,7 @@ export const KidsCollectibles = () => {
         </div>
       </div>
 
-      <Card className="p-4 sm:p-5 border-2 border-primary/25 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10">
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-pink-400 to-sky-500 flex items-center justify-center text-2xl">
-            🃏
-          </div>
-          <div className="min-w-0">
-            <h2 className="text-lg sm:text-xl font-black">Kids Collectibles</h2>
-            <p className="text-xs text-muted-foreground">
-              16 card sets · {CARDS_PER_SET} cards each · 2,400 cards to collect
-            </p>
-          </div>
-          <Badge variant="outline" className="ml-auto gap-1 border-border/40">
-            <Coins className="h-3 w-3" /> 1 cr / draw
-          </Badge>
-        </div>
-        <p className="text-[11px] text-muted-foreground mt-3">
-          Ten hand-drawn cartoon sets (dinos, rescue trucks, ponies, jungle babies, space friends,
-          sweets, sea buddies, super kids, farm animals, garden bugs) plus six new cinematic 3D
-          animated-movie sets for girls and boys — magic pets, unicorns, fairies, baby dragons,
-          robots and dino explorers.
-          You own {ownedUnique} unique kids card{ownedUnique === 1 ? "" : "s"}.
-        </p>
-      </Card>
+      <HeroRewardedAd sectionKey="kids_collectibles" />
 
       {isLoading ? (
         <div className="flex justify-center py-10">
