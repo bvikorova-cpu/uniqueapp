@@ -3,7 +3,9 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Trophy, Play, Eye, Zap, Timer, Flag } from "lucide-react";
+import { Trophy, Play, Eye, Zap, Timer, Flag, Swords } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { HorseDuelArena } from "./HorseDuelArena";
 import { useUserHorses, useRaces, useJoinRace } from "@/hooks/useHorseRacing";
 import { RaceTrack3D } from "./RaceTrack3D";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,6 +26,7 @@ export const LiveRaceSimulator = () => {
   const [selectedHorse, setSelectedHorse] = useState("");
   const [strategy, setStrategy] = useState("balanced");
   const [showJoinDialog, setShowJoinDialog] = useState(false);
+  const [mode, setMode] = useState<"duel" | "open">("duel");
 
   const activeRace = races?.find(r => r.id === selectedRace);
 
