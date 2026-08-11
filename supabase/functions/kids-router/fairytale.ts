@@ -76,7 +76,11 @@ export async function handleFairytale(
   const sub = action.slice("fairytale.".length);
 
   const childName = String(body.childName ?? "").trim().slice(0, 40);
-  const theme = String(body.theme ?? "magical adventure").trim().slice(0, 120);
+  const customStory = String(body.customStory ?? "").trim().slice(0, 900);
+  const traits = String(body.traits ?? "").trim().slice(0, 300);
+  const theme = customStory
+    ? customStory
+    : String(body.theme ?? "magical adventure").trim().slice(0, 120);
   const style = String(body.style ?? "storybook").toLowerCase();
   const premium = body.quality === "premium";
   const styleHint = premium
