@@ -174,42 +174,11 @@ const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath
     successPath: "/shadow-arena/dashboard?payment=success&session_id={CHECKOUT_SESSION_ID}",
     cancelPath: "/shadow-arena/dashboard?payment=canceled" } };
 
-const SPORTS_PACKS: Record<string, Record<string, { amount: number; coins: number }>> = {
-  football_coins: {
-    price_football_1000: { amount: 299, coins: 1000 },
-    price_football_5000: { amount: 999, coins: 5000 },
-    price_football_15000: { amount: 2499, coins: 15000 },
-    price_football_50000: { amount: 4999, coins: 50000 } },
-  basketball_coins: {
-    price_basketball_1000: { amount: 499, coins: 1000 },
-    price_basketball_3000: { amount: 999, coins: 3000 },
-    price_basketball_7000: { amount: 1999, coins: 7000 },
-    price_basketball_15000: { amount: 3999, coins: 15000 } },
-  hockey_coins: {
-    price_hockey_1000: { amount: 499, coins: 1000 },
-    price_hockey_3000: { amount: 999, coins: 3000 },
-    price_hockey_7000: { amount: 1999, coins: 7000 },
-    price_hockey_15000: { amount: 3999, coins: 15000 } },
-  tennis_coins: {
-    price_tennis_1000: { amount: 499, coins: 1000 },
-    price_tennis_3000: { amount: 999, coins: 3000 },
-    price_tennis_7000: { amount: 1999, coins: 7000 },
-    price_tennis_15000: { amount: 3999, coins: 15000 } },
-  af_coins: {
-    price_af_1000: { amount: 499, coins: 1000 },
-    price_af_3000: { amount: 999, coins: 3000 },
-    price_af_7000: { amount: 1999, coins: 7000 },
-    price_af_15000: { amount: 3999, coins: 15000 } } };
 
 const DEFAULT_PATHS: Record<string, { success: string; cancel: string }> = {
   antique_credits: { success: "/antique-appraisal?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/antique-appraisal?payment=canceled" },
   best_friend: { success: "/best-friend?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/best-friend?payment=canceled" },
   best_friend_messages: { success: "/best-friend?payment=success&session_id={CHECKOUT_SESSION_ID}&pack=messages", cancel: "/best-friend?payment=canceled" },
-  basketball_coins: { success: "/basketball-arena?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/basketball-arena?payment=canceled" },
-  football_coins: { success: "/football-arena?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/football-arena?payment=canceled" },
-  hockey_coins: { success: "/hockey-arena?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/hockey-arena?payment=canceled" },
-  tennis_coins: { success: "/tennis-arena?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/tennis-arena?payment=canceled" },
-  af_coins: { success: "/american-football-arena?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/american-football-arena?payment=canceled" },
   clone_subscription: { success: "/ai-clone?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/ai-clone?payment=canceled" },
   clone_dating: { success: "/ai-clone?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/ai-clone?payment=canceled" },
   dating_monthly: { success: "/dating?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/dating?payment=canceled" },
@@ -2655,38 +2624,6 @@ async function handler(req: Request): Promise<Response> {
       return successResponse({ url: session.url, session_id: session.id });
     }
 
-    if (productKey && SPORTS_PACKS[productKey]) {
-      // Match by priceId key OR fallback to metadata.coins lookup (frontend may send real Stripe price IDs)
-      const packs = SPORTS_PACKS[productKey];
-      const requestedCoins = Number(requestMetadata.coins) || 0;
-      const selectedPack =
-        (rawPriceId && packs[rawPriceId]) ||
-        Object.values(packs).find((p) => p.coins === requestedCoins);
-      if (!selectedPack) {
-        return errorResponse(`No matching pack for ${productKey} (priceId=${rawPriceId}, coins=${requestedCoins})`, 400);
-      }
-      const { successUrl, cancelUrl } = resolveUrls(origin, body.successUrl, body.cancelUrl, productKey);
-
-      const session = await stripe.checkout.sessions.create({
-        customer: customerId || undefined,
-        customer_email: customerId ? undefined : email,
-        line_items: [{
-          price_data: {
-            currency: "eur",
-            unit_amount: selectedPack.amount,
-            product_data: { name: `${productKey.replace(/_/g, " ")} - ${selectedPack.coins} coins` } },
-          quantity: 1 }],
-        mode: "payment",
-        success_url: successUrl,
-        cancel_url: cancelUrl,
-        metadata: { user_id: userId,
-          type: productKey,
-          credits: String(requestMetadata.coins || selectedPack.coins),
-          coins: String(requestMetadata.coins || selectedPack.coins),
-          ...requestMetadata } });
-
-      return successResponse({ url: session.url, session_id: session.id });
-    }
 
     if (body.productName && body.amount) {
       const paymentType = requestMetadata.type || productKey || "custom_payment";
