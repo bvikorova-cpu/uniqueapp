@@ -114,15 +114,15 @@ export const CardDetailModal = ({ card, category, totalCards, onClose }: Props) 
 
                 <p className="text-sm text-muted-foreground leading-relaxed">{card.lore}</p>
 
-                {card.stats && (
+                {card.stats && Object.keys(card.stats).length > 0 && (
                   <div>
                     <h4 className="text-sm font-black mb-2">Battle attributes</h4>
                     <div className="space-y-1.5">
-                      {(["strength", "speed", "magic", "defense", "luck"] as const).map((k) => {
-                        const value = card.stats?.[k] ?? 0;
+                      {Object.entries(card.stats as Record<string, number>).map(([k, raw]) => {
+                        const value = Number(raw) || 0;
                         return (
                           <div key={k} className="flex items-center gap-2">
-                            <span className="w-20 text-[11px] font-bold capitalize">{k}</span>
+                            <span className="w-24 text-[11px] font-bold capitalize">{k.replace(/_/g, " ")}</span>
                             <div className="h-2 flex-1 rounded-full bg-muted overflow-hidden">
                               <div
                                 className={`h-full rounded-full bg-gradient-to-r ${card.gradient}`}
@@ -136,6 +136,7 @@ export const CardDetailModal = ({ card, category, totalCards, onClose }: Props) 
                     </div>
                   </div>
                 )}
+
 
                 <Separator />
 
