@@ -343,8 +343,6 @@ Projekt má **621 unikátnych routes**. Nižšie je zoznam všetkého, čo treba
 ## 99 Other (ai-tattoo)  (1)
 - [ ] `/ai-tattoo`
 
-## 99 Other (american-football-arena)  (1)
-- [ ] `/american-football-arena`
 
 ## 99 Other (analyzer)  (5)
 - [ ] `/analyzer`
@@ -365,8 +363,6 @@ Projekt má **621 unikátnych routes**. Nižšie je zoznam všetkého, čo treba
 ## 99 Other (astrology)  (1)
 - [ ] `/astrology`
 
-## 99 Other (basketball-arena)  (1)
-- [ ] `/basketball-arena`
 
 ## 99 Other (beauty-studio)  (1)
 - [ ] `/beauty-studio`
@@ -621,8 +617,6 @@ Projekt má **621 unikátnych routes**. Nižšie je zoznam všetkého, čo treba
 ## 99 Other (food-scanner)  (1)
 - [ ] `/food-scanner`
 
-## 99 Other (football-arena)  (1)
-- [ ] `/football-arena`
 
 ## 99 Other (for-business)  (1)
 - [ ] `/for-business`
@@ -685,8 +679,6 @@ Projekt má **621 unikátnych routes**. Nižšie je zoznam všetkého, čo treba
 - [ ] `/healthy-challenge`
 - [ ] `/healthy-challenge/history`
 
-## 99 Other (hockey-arena)  (1)
-- [ ] `/hockey-arena`
 
 ## 99 Other (holographic-avatars)  (1)
 - [ ] `/holographic-avatars`
@@ -1220,8 +1212,6 @@ Projekt má **621 unikátnych routes**. Nižšie je zoznam všetkého, čo treba
 ## 99 Other (teen-study-planner)  (1)
 - [ ] `/teen-study-planner`
 
-## 99 Other (tennis-arena)  (1)
-- [ ] `/tennis-arena`
 
 ## 99 Other (terms)  (1)
 - [ ] `/terms`
