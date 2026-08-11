@@ -353,7 +353,7 @@ const FairytaleBook = () => {
                       {illustrating === i ? (
                         <><Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />Drawing…</>
                       ) : (
-                        <><ImagePlus className="w-3.5 h-3.5 mr-1.5" />{p.image ? "Redraw" : "Illustrate"} (3)</>
+                        <><ImagePlus className="w-3.5 h-3.5 mr-1.5" />{p.image ? "Redraw" : "Illustrate"} ({quality === "premium" ? 8 : 3})</>
                       )}
                     </Button>
                     {p.image && (
