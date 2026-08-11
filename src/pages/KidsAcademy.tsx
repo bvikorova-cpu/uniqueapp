@@ -9,6 +9,7 @@ import { KidsAcademyQuizArena } from "@/components/kids/academy/KidsAcademyQuizA
 import { KidsAcademyShop } from "@/components/kids/academy/KidsAcademyShop";
 import { KidsAcademyParentPanel } from "@/components/kids/academy/KidsAcademyParentPanel";
 import { KidsAcademyDailyPlan } from "@/components/kids/academy/KidsAcademyDailyPlan";
+import { KidsCollectibles } from "@/components/kids/academy/KidsCollectibles";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Coins, Sparkles } from "lucide-react";
