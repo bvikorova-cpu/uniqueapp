@@ -5,12 +5,13 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Coins, Download, Loader2, Sparkles } from "lucide-react";
+import { Download, Loader2, Sparkles } from "lucide-react";
 import { downloadCardImage } from "@/lib/downloadCardImage";
 import { getCategoryCover } from "@/components/collections/categoryCovers";
 import { getCategoryBlurb } from "@/components/collections/categoryBlurbs";
 import heroVideo from "@/assets/kids-collectibles-hero.mp4.asset.json";
 import { useCardArtPrewarm } from "@/hooks/useCardArtPrewarm";
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 
 /** Slugs that belong to the kid-friendly cartoon collectible sets. */
 export const KIDS_CARD_SLUGS = [
