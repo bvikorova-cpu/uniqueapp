@@ -85,9 +85,7 @@ export default function HorseRacing() {
 
   const handleBuyHorse = async () => {
     if (!horseName) { toast.error("Enter horse name"); return; }
-    const { chargeHorseAction } = await import("@/lib/moduleCreditActions");
-    const charge = await chargeHorseAction("buy-horse", { horse_name: horseName, metadata: { breed: horseBreed, color: horseColor } });
-    if (!charge.ok) return;
+    // Single source of truth for the 10-credit charge: horse-router "create".
     createHorse.mutate({ name: horseName, breed: horseBreed, color: horseColor }, {
       onSuccess: () => { setShowBuyHorse(false); setHorseName(""); },
       onError: (e: Error) => toast.error(e.message) });
@@ -193,8 +191,19 @@ export default function HorseRacing() {
                   <p className="text-[10px] font-mono text-amber-400">Level {horse.level}</p>
                 </div>
                 <div className="relative">
-                  <div className="w-12 h-12 rounded-lg border-2 border-amber-400/20" style={{ backgroundColor: horse.color }} />
-                  <div className="absolute -inset-1 rounded-xl blur-md opacity-30" style={{ backgroundColor: horse.color }} />
+                  {(horse as any).image_url ? (
+                    <img
+                      src={(horse as any).image_url}
+                      alt={`${horse.name} — ${horse.breed} racehorse portrait`}
+                      loading="lazy"
+                      className="w-16 h-16 rounded-lg object-cover border-2 border-amber-400/30"
+                    />
+                  ) : (
+                    <>
+                      <div className="w-12 h-12 rounded-lg border-2 border-amber-400/20" style={{ backgroundColor: horse.color }} />
+                      <div className="absolute -inset-1 rounded-xl blur-md opacity-30" style={{ backgroundColor: horse.color }} />
+                    </>
+                  )}
                 </div>
               </div>
               <div className="mt-3 space-y-1.5">
