@@ -40,7 +40,7 @@ const EQUIPMENT_CREDITS: Record<string, number> = {
   blanket_wool: 3, blanket_silk: 7, blanket_champion: 16,
   blanket_imperial: 140, blanket_phoenix: 880, blanket_infinity: 3000 };
 
-const HORSE_ACTIONS = ["ping", "create", "breed", "train", "join_race", "purchase_equipment", "championship_enroll", "claim_quest_reward"];
+const HORSE_ACTIONS = ["ping", "create", "breed", "train", "duel", "join_race", "purchase_equipment", "championship_enroll", "claim_quest_reward"];
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
