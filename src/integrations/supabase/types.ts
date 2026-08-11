@@ -30689,6 +30689,51 @@ export type Database = {
         }
         Relationships: []
       }
+      horse_bloodlines: {
+        Row: {
+          created_at: string
+          generation: number
+          horse_id: string
+          id: string
+          parent_id: string
+          parent_role: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          generation?: number
+          horse_id: string
+          id?: string
+          parent_id: string
+          parent_role?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          generation?: number
+          horse_id?: string
+          id?: string
+          parent_id?: string
+          parent_role?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "horse_bloodlines_horse_id_fkey"
+            columns: ["horse_id"]
+            isOneToOne: false
+            referencedRelation: "horses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "horse_bloodlines_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "horses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       horse_currency: {
         Row: {
           coins: number
