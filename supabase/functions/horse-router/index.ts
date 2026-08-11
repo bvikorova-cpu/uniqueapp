@@ -19,6 +19,7 @@ const VALID_STATS = ["speed", "stamina", "acceleration", "temperament"] as const
 /** Credit costs (unified ai_credits pool). */
 const COST_CREATE_HORSE = 10;
 const COST_TRAINING = 2;
+const COST_BREEDING = 8;
 const COST_RACE_ENTRY = 1;
 const COST_CHAMPIONSHIP = 5;
 const STAT_INCREASE = 5;
@@ -35,7 +36,7 @@ const EQUIPMENT_CREDITS: Record<string, number> = {
   // blankets
   blanket_wool: 3, blanket_silk: 7, blanket_champion: 16 };
 
-const HORSE_ACTIONS = ["ping", "create", "train", "join_race", "purchase_equipment", "championship_enroll", "claim_quest_reward"];
+const HORSE_ACTIONS = ["ping", "create", "breed", "train", "join_race", "purchase_equipment", "championship_enroll", "claim_quest_reward"];
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
