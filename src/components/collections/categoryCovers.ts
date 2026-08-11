@@ -23,7 +23,7 @@ import tennisLegends from "@/assets/cards/tennis-legends.jpg";
 import americanFootballLegends from "@/assets/cards/american-football-legends.jpg";
 import baseballLegends from "@/assets/cards/baseball-legends.jpg";
 import golfLegends from "@/assets/cards/golf-legends.jpg";
-import cricketLegends from "@/assets/cards/cricket-legends.jpg";
+
 
 /** Illustrated cover artwork per collectible-card category (replaces emoji icons). */
 export const CATEGORY_COVERS: Record<string, string> = {
@@ -52,7 +52,7 @@ export const CATEGORY_COVERS: Record<string, string> = {
   "american-football-legends": americanFootballLegends,
   "baseball-legends": baseballLegends,
   "golf-legends": golfLegends,
-  "cricket-legends": cricketLegends,
+  
 };
 
 export const getCategoryCover = (slug?: string | null): string | undefined =>
