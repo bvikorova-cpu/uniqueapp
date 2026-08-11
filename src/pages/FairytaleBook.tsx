@@ -91,7 +91,7 @@ const FairytaleBook = () => {
     setTitle(null);
     try {
       const { data, error } = await supabase.functions.invoke("kids-router", {
-        body: { action: "fairytale.generate", childName: childName.trim(), theme, style, photo },
+        body: { action: "fairytale.generate", childName: childName.trim(), theme, style, quality, photo },
       });
       if (error) throw new Error((data as { error?: string })?.error || error.message);
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
@@ -100,7 +100,8 @@ const FairytaleBook = () => {
       setTitle(res.title);
       setPages(res.pages ?? []);
       setCover(res.cover);
-      toast({ title: "Your book is ready!", description: "10 credits used." });
+      toast({ title: "Your book is ready!", description: `${quality === "premium" ? 25 : 10} credits used.` });
+
     } catch (e) {
       handleError(e);
     } finally {
