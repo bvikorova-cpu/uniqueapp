@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { 
   Trophy, Dumbbell, Sparkles, Zap, ShoppingCart, 
   LogIn, ArrowLeft, Flag, Dna, Gavel, Flame,
-  Swords, Crown, Wrench, Target, GitBranch, Cloud, Calendar
+  Swords, Crown, Wrench, Target, GitBranch, Cloud, Calendar, Layers
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -31,9 +31,10 @@ import { DailyTrainingQuests } from "@/components/horse-racing/DailyTrainingQues
 import { BloodlineGenealogy } from "@/components/horse-racing/BloodlineGenealogy";
 import { WeatherRacingBonuses } from "@/components/horse-racing/WeatherRacingBonuses";
 import { HorseMarketplace } from "@/components/horse-racing/HorseMarketplace";
+import { HorseCardCollection } from "@/components/horse-racing/HorseCardCollection";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
-type ActiveView = "dashboard" | "stable" | "racing" | "training" | "breeding" | "shop" | "leaderboard" | "auction" | "championships" | "equipment" | "quests" | "bloodline" | "weather" | "marketplace";
+type ActiveView = "dashboard" | "stable" | "racing" | "training" | "breeding" | "shop" | "leaderboard" | "auction" | "championships" | "equipment" | "quests" | "bloodline" | "weather" | "marketplace" | "cards";
 
 const tools = [
   { id: "stable" as const, icon: Swords, label: "My Stable", desc: "Manage your horses", gradient: "from-amber-500 to-orange-600" },
@@ -49,6 +50,7 @@ const tools = [
   { id: "leaderboard" as const, icon: Trophy, label: "Rankings", desc: "Top champions", gradient: "from-amber-500 to-yellow-600" },
   { id: "auction" as const, icon: Gavel, label: "Auction House", desc: "Buy & sell horses", gradient: "from-rose-500 to-red-600" },
   { id: "marketplace" as const, icon: ShoppingCart, label: "Marketplace", desc: "Fixed-price horse listings", gradient: "from-purple-500 to-pink-600" },
+  { id: "cards" as const, icon: Layers, label: "Racehorse Cards", desc: "Collect 150 champion cards", gradient: "from-amber-400 to-yellow-600" },
 ];
 
 export default function HorseRacing() {
@@ -237,7 +239,8 @@ export default function HorseRacing() {
     quests: <DailyTrainingQuests />,
     bloodline: <BloodlineGenealogy />,
     weather: <WeatherRacingBonuses />,
-    marketplace: <HorseMarketplace /> };
+    marketplace: <HorseMarketplace />,
+    cards: <HorseCardCollection /> };
 
   return (
     <div className="min-h-screen bg-slate-950">
