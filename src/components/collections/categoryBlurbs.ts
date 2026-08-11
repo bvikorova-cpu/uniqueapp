@@ -207,6 +207,37 @@ export const CATEGORY_BLURBS: Record<string, CategoryBlurb> = {
     tagline: "Ladybirds, bees and snails in the flowers",
     inside: "150 friendly little bugs exploring a bright, flowery garden.",
   },
+  // ── Kids Collectibles — cinematic 3D animated style ───────────────────
+  "kids3d-magic-pets": {
+    title: "Magic Pet Friends",
+    tagline: "Sparkly magic pets with fluffy fur",
+    inside: "150 movie-quality 3D pets — glowing kittens, winged bunnies and rainbow puppies.",
+  },
+  "kids3d-unicorn-kingdom": {
+    title: "Unicorn Kingdom",
+    tagline: "Rainbow unicorns and winged ponies",
+    inside: "150 cinematic 3D unicorns and pegasus foals from a shining pastel kingdom.",
+  },
+  "kids3d-fairy-blossoms": {
+    title: "Fairy Blossoms",
+    tagline: "Flower fairies with shimmering wings",
+    inside: "150 tiny 3D fairies in petal dresses among glowing garden blossoms.",
+  },
+  "kids3d-baby-dragons": {
+    title: "Baby Dragons",
+    tagline: "Chubby baby dragons with shiny scales",
+    inside: "150 friendly 3D dragon hatchlings with glossy scales and tiny wings.",
+  },
+  "kids3d-robot-mates": {
+    title: "Robot Mates",
+    tagline: "Friendly robots with glowing eyes",
+    inside: "150 rounded 3D robot buddies — helpers, rovers, builders and racers.",
+  },
+  "kids3d-dino-explorers": {
+    title: "Dino Explorers",
+    tagline: "Brave baby dinos on jungle adventures",
+    inside: "150 cinematic 3D baby dinosaurs exploring sunlit jungle valleys.",
+  },
 };
 
 

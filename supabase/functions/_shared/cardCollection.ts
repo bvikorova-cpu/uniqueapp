@@ -187,6 +187,30 @@ const KIDS_SLUGS = [
   "kids-farm-friends", "kids-garden-bugs",
 ];
 
+// Cinematic 3D animated-movie kids sets (Pixar-like glossy render).
+const KIDS3D_SLUGS = [
+  "kids3d-magic-pets", "kids3d-unicorn-kingdom", "kids3d-fairy-blossoms",
+  "kids3d-baby-dragons", "kids3d-robot-mates", "kids3d-dino-explorers",
+];
+
+const KIDS3D_POSES = [
+  "sitting happily and tilting its head", "mid-hop with a joyful smile",
+  "peeking out from behind glowing flowers", "looking up in wonder at sparkles",
+  "waving one paw at the viewer", "cuddling a tiny friend", "stretching after a nap",
+  "dancing on tiptoes", "curled up cosily", "running with a big grin",
+];
+const KIDS3D_SETTINGS = [
+  "sunlit fantasy meadow with soft bokeh", "pastel cloud kingdom at golden hour",
+  "glowing blossom garden with dew drops", "bright crystal cave with rainbow light",
+  "cheerful jungle valley with waterfalls", "starry night sky with soft moonlight",
+  "colourful toy workshop with warm lamps", "shallow turquoise lagoon at sunrise",
+];
+const KIDS3D_ACCENTS = [
+  "shimmering pastel rainbow highlights", "tiny floating light sparkles",
+  "iridescent pearly sheen", "soft glowing fur rim light",
+  "candy-bright colour accents", "gentle golden sun flares",
+];
+
 const SPORT_SCENES: Record<string, string[]> = {
   "football-legends": [
     "striking the ball at a floodlit night stadium", "celebrating with arms wide on wet turf",
@@ -275,6 +299,18 @@ function cardPrompt(card: Record<string, any>, cat: Record<string, any>) {
       `rounded shapes, cheerful and gentle, flat storybook cartoon look, absolutely nothing scary, ` +
       `no weapons, no blood, no realistic textures. Make this character clearly different from every other card ` +
       `in the set — different colours, pose, accessory and background. ${ORIGINALITY}`;
+  }
+
+  // Kids 3D Collectibles: glossy cinematic animated-movie look.
+  if (KIDS3D_SLUGS.includes(String(cat.slug ?? ""))) {
+    return `${format}. Glossy cinematic 3D animated-movie collectible card render for children of "${card.name}", ` +
+      `a completely original adorable ${card.subject} from the ${cat.name} collection (${cat.description}), ` +
+      `${pick(KIDS3D_POSES, seed, 6)}, in a ${pick(KIDS3D_SETTINGS, seed, 7)}, with ${pick(KIDS3D_ACCENTS, seed, 8)}. ` +
+      `${cat.art_style}. Pixar-like feature-film quality, subsurface-scattering skin or fluffy fur detail, ` +
+      `big shiny expressive eyes, chunky cute proportions, soft cinematic depth of field, physically based shading, ` +
+      `sweet and gentle mood, absolutely nothing scary, no weapons, no blood, no text or logos. ` +
+      `Make this character clearly different from every other card in the set — different colours, species detail, ` +
+      `pose, accessory and background. ${ORIGINALITY}`;
   }
 
   // Beauty / fashion / princess / fairytale collections get their own look axes.
