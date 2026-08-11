@@ -236,6 +236,7 @@ export const useBreedHorses = () => {
     },
     onSuccess: (foal) => {
       queryClient.invalidateQueries({ queryKey: ["user-horses"] });
+      queryClient.invalidateQueries({ queryKey: ["horse-foal-ids"] });
       queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
       window.dispatchEvent(new Event("ai-credits-updated"));
       toast.success(`New foal ${foal.name} born! \u2212${HORSE_CREDIT_COSTS.breeding} credits`);
