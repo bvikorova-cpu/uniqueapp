@@ -42,6 +42,9 @@ const FairytaleBook = () => {
   const [photo, setPhoto] = useState<string | null>(null);
   const [childName, setChildName] = useState("");
   const [theme, setTheme] = useState(THEMES[0]);
+  const [useCustom, setUseCustom] = useState(false);
+  const [customStory, setCustomStory] = useState("");
+  const [traits, setTraits] = useState("");
   const [style, setStyle] = useState("storybook");
   const [quality, setQuality] = useState<"standard" | "premium">("standard");
 
