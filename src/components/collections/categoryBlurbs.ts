@@ -95,7 +95,13 @@ export const CATEGORY_BLURBS: Record<string, CategoryBlurb> = {
     tagline: "Limited-time series available only for a while",
     inside: "150 seasonal cards — Halloween, Christmas, Summer Camp and more — rotating in and out of the vault.",
   },
+  "legendary-racehorses": {
+    title: "Legendary Racehorses",
+    tagline: "Champion thoroughbreds with speed, stamina and heart",
+    inside: "150 racehorse battle cards rated for Speed, Stamina, Strength, Defense and Luck — compare them head-to-head.",
+  },
 };
+
 
 export const getCategoryBlurb = (slug?: string | null): CategoryBlurb | undefined =>
   slug ? CATEGORY_BLURBS[slug] : undefined;

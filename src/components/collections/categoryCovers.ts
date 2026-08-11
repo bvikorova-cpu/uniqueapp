@@ -15,6 +15,7 @@ import dailyQuests from "@/assets/cards/daily-quests.jpg";
 import lifehacks from "@/assets/cards/lifehacks.jpg";
 import worldFacts from "@/assets/cards/world-facts.jpg";
 import seasonalVault from "@/assets/cards/seasonal-vault.jpg";
+import legendaryRacehorses from "@/assets/cards/legendary-racehorses.jpg";
 
 /** Illustrated cover artwork per collectible-card category (replaces emoji icons). */
 export const CATEGORY_COVERS: Record<string, string> = {
@@ -35,6 +36,7 @@ export const CATEGORY_COVERS: Record<string, string> = {
   "lifehacks": lifehacks,
   "world-facts": worldFacts,
   "seasonal-vault": seasonalVault,
+  "legendary-racehorses": legendaryRacehorses,
 };
 
 export const getCategoryCover = (slug?: string | null): string | undefined =>
