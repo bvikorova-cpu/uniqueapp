@@ -145,14 +145,19 @@ export const HorseAuctionHouse = () => {
 
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-black text-amber-700">{listing.price_coins} Credits</span>
-                  <Button size="sm" onClick={() => { if (!user) { navigate("/auth"); return; } buyHorse.mutate(listing.id); }}
-                    disabled={buyHorse.isPending}
-                    className="bg-gradient-to-r from-purple-600 to-amber-600 text-white"
-                  >
-                    <ShoppingCart className="h-3.5 w-3.5 mr-1" />
-                    {buyHorse.isPending ? "..." : "Buy Now"}
-                  </Button>
+                  {listing.seller_id === user?.id ? (
+                    <Badge variant="secondary" className="text-[10px]">Your listing</Badge>
+                  ) : (
+                    <Button size="sm" onClick={() => { if (!user) { navigate("/auth"); return; } buyHorse.mutate(listing.id); }}
+                      disabled={buyHorse.isPending}
+                      className="bg-gradient-to-r from-purple-600 to-amber-600 text-white"
+                    >
+                      <ShoppingCart className="h-3.5 w-3.5 mr-1" />
+                      {buyHorse.isPending ? "..." : "Buy Now"}
+                    </Button>
+                  )}
                 </div>
+
               </Card>
             </motion.div>
           ))}
