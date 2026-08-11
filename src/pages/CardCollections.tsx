@@ -12,6 +12,7 @@ import { CardCollectionLeaderboard } from "@/components/collections/CardCollecti
 import { CARDS_PER_CATEGORY, DRAW_COST, type CardCategory } from "@/components/collections/CardCategoryCollection";
 import { getCategoryCover } from "@/components/collections/categoryCovers";
 import { getCategoryBlurb } from "@/components/collections/categoryBlurbs";
+import { useCardArtPrewarm } from "@/hooks/useCardArtPrewarm";
 import cardsHeroPoster from "@/assets/collectible-cards-hero-poster.jpg";
 import cardsHeroVideo from "../../public/videos/collectible-cards-hero.mp4.asset.json";
 
@@ -55,6 +56,9 @@ const CardCollections = () => {
   });
 
   const totalUnique = Object.values(progress).reduce((a, b) => a + b.unique, 0);
+
+  // Pre-generate + pre-cache artwork for every set so cards load instantly.
+  useCardArtPrewarm(categories.map((c) => c.slug), categories.length > 0);
 
   return (
     <div className="min-h-screen bg-background">

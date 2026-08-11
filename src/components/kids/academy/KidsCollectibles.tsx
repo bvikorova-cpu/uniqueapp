@@ -10,6 +10,7 @@ import { downloadCardImage } from "@/lib/downloadCardImage";
 import { getCategoryCover } from "@/components/collections/categoryCovers";
 import { getCategoryBlurb } from "@/components/collections/categoryBlurbs";
 import heroVideo from "@/assets/kids-collectibles-hero.mp4.asset.json";
+import { useCardArtPrewarm } from "@/hooks/useCardArtPrewarm";
 
 /** Slugs that belong to the kid-friendly cartoon collectible sets. */
 export const KIDS_CARD_SLUGS = [
@@ -81,6 +82,9 @@ export const KidsCollectibles = () => {
   });
 
   const ownedUnique = Object.values(progress).reduce((a, b) => a + b.unique, 0);
+
+  // Pre-generate + pre-cache all kids card artwork so albums open instantly.
+  useCardArtPrewarm(KIDS_CARD_SLUGS as unknown as string[], categories.length > 0);
 
   return (
     <div className="space-y-5">
