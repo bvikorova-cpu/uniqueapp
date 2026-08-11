@@ -285,7 +285,7 @@ export default function HorseRacing() {
             <div>
               <Label className="font-mono text-amber-400/60">Breed</Label>
               <Select value={horseBreed} onValueChange={setHorseBreed}>
-                <SelectTrigger className="bg-slate-800/60 border-amber-500/20 font-mono"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="bg-slate-800/60 border-amber-500/20 font-mono text-white"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="thoroughbred">Thoroughbred</SelectItem>
                   <SelectItem value="arabian">Arabian</SelectItem>
