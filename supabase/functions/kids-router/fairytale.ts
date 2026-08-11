@@ -76,10 +76,12 @@ export async function handleFairytale(
   const childName = String(body.childName ?? "").trim().slice(0, 40);
   const theme = String(body.theme ?? "magical adventure").trim().slice(0, 120);
   const style = String(body.style ?? "storybook").toLowerCase();
-  const styleHint = STYLES[style] ?? STYLES.storybook;
+  const premium = body.quality === "premium";
+  const styleHint = `${STYLES[style] ?? STYLES.storybook}${premium ? `\n${PREMIUM_HINT}` : ""}`;
   const photo = typeof body.photo === "string" && body.photo.startsWith("data:image/")
     ? body.photo
     : undefined;
+
 
   const charge = async (amount: number, reason: string) => {
     const res = await spendAiCredits(admin, userId, amount, reason, "fairytale-book");
