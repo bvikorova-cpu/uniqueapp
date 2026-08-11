@@ -137,7 +137,48 @@ Deno.serve(async (req) => {
           await refund(COST_CREATE_HORSE, "horse-racing:buy-horse");
           throw hErr;
         }
-        return json({ horse, creditsSpent: COST_CREATE_HORSE });
+
+        // Generate the horse portrait (best-effort: never fails the purchase).
+        let imageUrl: string | null = null;
+        try {
+          const key = Deno.env.get("LOVABLE_API_KEY");
+          if (key) {
+            const prompt =
+              `Photorealistic cinematic portrait of a ${color} ${breed} racehorse named "${name}". ` +
+              `Athletic thoroughbred build, glossy coat, flowing mane, standing on a sunlit racetrack, ` +
+              `shallow depth of field, dramatic golden-hour rim light, ultra detailed, 4k, no text, no watermark.`;
+            const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
+              method: "POST",
+              headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+              body: JSON.stringify({
+                model: "google/gemini-3.1-flash-lite-image",
+                contents: [{ role: "user", parts: [{ text: prompt }] }],
+                generationConfig: { responseModalities: ["TEXT", "IMAGE"] } }),
+            });
+            if (res.ok) {
+              const data = await res.json();
+              const b64 = data?.data?.[0]?.b64_json;
+              if (b64) {
+                const bin = atob(b64);
+                const bytes = new Uint8Array(bin.length);
+                for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                const path = `horses/${horse.id}.png`;
+                const { error: upErr } = await admin.storage.from("ai-studio")
+                  .upload(path, bytes, { contentType: "image/png", upsert: true, cacheControl: "31536000" });
+                if (!upErr) {
+                  imageUrl = admin.storage.from("ai-studio").getPublicUrl(path).data.publicUrl;
+                  await admin.from("horses").update({ image_url: imageUrl }).eq("id", horse.id);
+                }
+              }
+            } else {
+              console.error("[horse-router] portrait failed", res.status, await res.text().catch(() => ""));
+            }
+          }
+        } catch (e) {
+          console.error("[horse-router] portrait error", e);
+        }
+
+        return json({ horse: { ...horse, image_url: imageUrl }, creditsSpent: COST_CREATE_HORSE });
       }
 
       case "train": {
