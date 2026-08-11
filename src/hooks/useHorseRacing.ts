@@ -218,73 +218,33 @@ export const useTrainHorse = () => {
     onError: (error: Error) => toast.error(error.message) });
 };
 
-// Breeding Hook — costs credits from the unified pool.
+// Breeding Hook — server-side (RLS-safe) via horse-router, returns foal art + profile.
 export const useBreedHorses = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ parent1Id, parent2Id }: { parent1Id: string; parent2Id: string }) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
-      const { data: parents } = await supabase
-        .from("horses")
-        .select("*")
-        .in("id", [parent1Id, parent2Id]);
-
-      if (!parents || parents.length !== 2) {
-        throw new Error("Parent horses not found");
-      }
-
-      await spendHorseCredits(HORSE_CREDIT_COSTS.breeding, "horse-racing:breeding");
-
-      const [parent1, parent2] = parents;
-
-      // Calculate offspring stats (average with small random variation)
-      const calculateOffspringStat = (stat1: number, stat2: number) => {
-        const average = (stat1 + stat2) / 2;
-        const variation = Math.floor(Math.random() * 10) - 5;
-        return Math.max(30, Math.min(100, Math.floor(average + variation)));
-      };
-
-      const offspringStats = { speed_stat: calculateOffspringStat(parent1.speed_stat, parent2.speed_stat),
-        stamina_stat: calculateOffspringStat(parent1.stamina_stat, parent2.stamina_stat),
-        acceleration_stat: calculateOffspringStat(parent1.acceleration_stat, parent2.acceleration_stat),
-        temperament_stat: calculateOffspringStat(parent1.temperament_stat, parent2.temperament_stat) };
-
-      const { data: offspring, error } = await supabase
-        .from("horses")
-        .insert({
-          user_id: user.id,
-          name: `${parent1.name} Jr.`,
-          breed: parent1.breed,
-          color: Math.random() > 0.5 ? parent1.color : parent2.color,
-          ...offspringStats })
-        .select()
-        .single();
-
+      const { data, error } = await supabase.functions.invoke("horse-router", {
+        body: { action: "breed", parent1Id, parent2Id } });
       if (error) throw error;
-
-      await supabase
-        .from("breeding_records")
-        .insert({ user_id: user.id,
-          parent1_id: parent1Id,
-          parent2_id: parent2Id,
-          offspring_id: offspring.id,
-          cost_coins: HORSE_CREDIT_COSTS.breeding,
-          status: 'completed' });
-
-      return offspring;
+      if (data?.error) throw new Error(data.error);
+      return data.foal as {
+        id: string; name: string; breed: string; color: string;
+        speed_stat: number; stamina_stat: number; acceleration_stat: number; temperament_stat: number;
+        image_url: string | null; description: string | null;
+      };
     },
-    onSuccess: (offspring) => {
+    onSuccess: (foal) => {
       queryClient.invalidateQueries({ queryKey: ["user-horses"] });
       queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
-      toast.success(`New foal ${offspring.name} born! \u2212${HORSE_CREDIT_COSTS.breeding} credits`);
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      toast.success(`New foal ${foal.name} born! \u2212${HORSE_CREDIT_COSTS.breeding} credits`);
     },
     onError: (error: Error) => {
       toast.error(error.message);
     } });
 };
+
 
 // Shop - Change Horse Color (credits)
 export const usePurchaseHorseColor = () => {
