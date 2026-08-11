@@ -82,8 +82,6 @@ export const KidsCollectibles = () => {
     staleTime: 30 * 1000,
   });
 
-  const ownedUnique = Object.values(progress).reduce((a, b) => a + b.unique, 0);
-
   // Pre-generate + pre-cache all kids card artwork so albums open instantly.
   useCardArtPrewarm(KIDS_CARD_SLUGS as unknown as string[], categories.length > 0);
 
