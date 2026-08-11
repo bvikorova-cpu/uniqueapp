@@ -177,7 +177,7 @@ const FairytaleBook = () => {
           <div className="flex items-center gap-2 mb-4">
             <BookOpen className="w-5 h-5 text-primary" />
             <h2 className="font-black text-lg">Create your book</h2>
-            <Badge variant="secondary" className="ml-auto">10 credits</Badge>
+            <Badge variant="secondary" className="ml-auto">{quality === "premium" ? "25 credits" : "10 credits"}</Badge>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-4">
