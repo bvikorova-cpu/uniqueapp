@@ -209,11 +209,6 @@ const Navbar = () => {
         { path: "/card-collections", label: "Collectible Cards", icon: Library },
         
         { path: "/horse-racing", label: "Horse Racing Arena", icon: Trophy },
-        { path: "/football-arena", label: "Football Arena", icon: Trophy },
-        { path: "/basketball-arena", label: "Basketball Arena", icon: Trophy },
-        { path: "/hockey-arena", label: "Hockey Arena", icon: Trophy },
-        { path: "/tennis-arena", label: "Tennis Arena", icon: Trophy },
-        { path: "/american-football-arena", label: "American Football", icon: Trophy },
         { path: "/gp-racing", label: "GP Fantasy Racing", icon: Car },
       ] },
     {
