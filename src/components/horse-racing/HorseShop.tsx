@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-  Sparkles, Crown, Zap, Shield, Heart, Star, Gem, Coins, 
+  Sparkles, Crown, Zap, Shield, Heart, Star, 
   Palette, Award, Gift, Trophy, Flame, Snowflake, Sun, Moon
 } from "lucide-react";
 import { toast } from "sonner";
@@ -19,8 +19,7 @@ interface ShopItem {
   name: string;
   description: string;
   icon: React.ReactNode;
-  costCoins?: number;
-  costGems?: number;
+  costCredits: number;
   category: 'cosmetics' | 'boosters' | 'equipment' | 'premium' | 'mystery';
   effect?: string;
   rarity?: 'common' | 'rare' | 'epic' | 'legendary';
@@ -34,66 +33,66 @@ interface ShopItem {
 
 const shopItems: ShopItem[] = [
   // Cosmetics - Colors
-  { id: 'color_golden', name: 'Golden Coat', description: 'Transform your horse into a majestic golden stallion', icon: <Sun className="h-5 w-5 text-yellow-500" />, costGems: 100, category: 'cosmetics', rarity: 'rare' },
-  { id: 'color_silver', name: 'Silver Coat', description: 'Elegant silver coating for your champion', icon: <Moon className="h-5 w-5 text-gray-400" />, costGems: 100, category: 'cosmetics', rarity: 'rare' },
-  { id: 'color_midnight', name: 'Midnight Black', description: 'Deep midnight black with a hint of starlight', icon: <Star className="h-5 w-5 text-purple-500" />, costGems: 150, category: 'cosmetics', rarity: 'epic' },
-  { id: 'color_fire', name: 'Fire Coat', description: 'Blazing red-orange coat like living flames', icon: <Flame className="h-5 w-5 text-orange-500" />, costGems: 200, category: 'cosmetics', rarity: 'epic' },
-  { id: 'color_ice', name: 'Ice Coat', description: 'Crystal blue coat shimmering like ice', icon: <Snowflake className="h-5 w-5 text-cyan-400" />, costGems: 200, category: 'cosmetics', rarity: 'epic' },
-  { id: 'color_rainbow', name: 'Rainbow Spectrum', description: 'Legendary rainbow-shifting coat', icon: <Sparkles className="h-5 w-5 text-pink-500" />, costGems: 500, category: 'cosmetics', rarity: 'legendary' },
+  { id: 'color_golden', name: 'Golden Coat', description: 'Transform your horse into a majestic golden stallion', icon: <Sun className="h-5 w-5 text-yellow-500" />, costCredits: 4, category: 'cosmetics', rarity: 'rare' },
+  { id: 'color_silver', name: 'Silver Coat', description: 'Elegant silver coating for your champion', icon: <Moon className="h-5 w-5 text-gray-400" />, costCredits: 4, category: 'cosmetics', rarity: 'rare' },
+  { id: 'color_midnight', name: 'Midnight Black', description: 'Deep midnight black with a hint of starlight', icon: <Star className="h-5 w-5 text-purple-500" />, costCredits: 6, category: 'cosmetics', rarity: 'epic' },
+  { id: 'color_fire', name: 'Fire Coat', description: 'Blazing red-orange coat like living flames', icon: <Flame className="h-5 w-5 text-orange-500" />, costCredits: 8, category: 'cosmetics', rarity: 'epic' },
+  { id: 'color_ice', name: 'Ice Coat', description: 'Crystal blue coat shimmering like ice', icon: <Snowflake className="h-5 w-5 text-cyan-400" />, costCredits: 8, category: 'cosmetics', rarity: 'epic' },
+  { id: 'color_rainbow', name: 'Rainbow Spectrum', description: 'Legendary rainbow-shifting coat', icon: <Sparkles className="h-5 w-5 text-pink-500" />, costCredits: 20, category: 'cosmetics', rarity: 'legendary' },
   
   // Cosmetics - Accessories
-  { id: 'acc_crown', name: 'Royal Crown', description: 'A golden crown for your champion', icon: <Crown className="h-5 w-5 text-yellow-500" />, costGems: 300, category: 'cosmetics', rarity: 'legendary' },
-  { id: 'acc_armor', name: 'Champion Armor', description: 'Decorative racing armor', icon: <Shield className="h-5 w-5 text-blue-500" />, costGems: 250, category: 'cosmetics', rarity: 'epic' },
-  { id: 'acc_wings', name: 'Ethereal Wings', description: 'Glowing ethereal wing effects', icon: <Sparkles className="h-5 w-5 text-purple-400" />, costGems: 400, category: 'cosmetics', rarity: 'legendary' },
+  { id: 'acc_crown', name: 'Royal Crown', description: 'A golden crown for your champion', icon: <Crown className="h-5 w-5 text-yellow-500" />, costCredits: 12, category: 'cosmetics', rarity: 'legendary' },
+  { id: 'acc_armor', name: 'Champion Armor', description: 'Decorative racing armor', icon: <Shield className="h-5 w-5 text-blue-500" />, costCredits: 10, category: 'cosmetics', rarity: 'epic' },
+  { id: 'acc_wings', name: 'Ethereal Wings', description: 'Glowing ethereal wing effects', icon: <Sparkles className="h-5 w-5 text-purple-400" />, costCredits: 16, category: 'cosmetics', rarity: 'legendary' },
   
   // Stat Boosters
-  { id: 'boost_speed_small', name: 'Speed Tonic', description: '+5 permanent speed boost', icon: <Zap className="h-5 w-5 text-yellow-500" />, costCoins: 200, category: 'boosters', rarity: 'common', statBoost: { speed: 5 } },
-  { id: 'boost_speed_medium', name: 'Speed Elixir', description: '+10 permanent speed boost', icon: <Zap className="h-5 w-5 text-yellow-500" />, costCoins: 500, category: 'boosters', rarity: 'rare', statBoost: { speed: 10 } },
-  { id: 'boost_speed_large', name: 'Speed Mastery', description: '+20 permanent speed boost', icon: <Zap className="h-5 w-5 text-yellow-500" />, costGems: 150, category: 'boosters', rarity: 'epic', statBoost: { speed: 20 } },
+  { id: 'boost_speed_small', name: 'Speed Tonic', description: '+5 permanent speed boost', icon: <Zap className="h-5 w-5 text-yellow-500" />, costCredits: 4, category: 'boosters', rarity: 'common', statBoost: { speed: 5 } },
+  { id: 'boost_speed_medium', name: 'Speed Elixir', description: '+10 permanent speed boost', icon: <Zap className="h-5 w-5 text-yellow-500" />, costCredits: 10, category: 'boosters', rarity: 'rare', statBoost: { speed: 10 } },
+  { id: 'boost_speed_large', name: 'Speed Mastery', description: '+20 permanent speed boost', icon: <Zap className="h-5 w-5 text-yellow-500" />, costCredits: 6, category: 'boosters', rarity: 'epic', statBoost: { speed: 20 } },
   
-  { id: 'boost_stamina_small', name: 'Stamina Tonic', description: '+5 permanent stamina boost', icon: <Heart className="h-5 w-5 text-red-500" />, costCoins: 200, category: 'boosters', rarity: 'common', statBoost: { stamina: 5 } },
-  { id: 'boost_stamina_medium', name: 'Stamina Elixir', description: '+10 permanent stamina boost', icon: <Heart className="h-5 w-5 text-red-500" />, costCoins: 500, category: 'boosters', rarity: 'rare', statBoost: { stamina: 10 } },
-  { id: 'boost_stamina_large', name: 'Stamina Mastery', description: '+20 permanent stamina boost', icon: <Heart className="h-5 w-5 text-red-500" />, costGems: 150, category: 'boosters', rarity: 'epic', statBoost: { stamina: 20 } },
+  { id: 'boost_stamina_small', name: 'Stamina Tonic', description: '+5 permanent stamina boost', icon: <Heart className="h-5 w-5 text-red-500" />, costCredits: 4, category: 'boosters', rarity: 'common', statBoost: { stamina: 5 } },
+  { id: 'boost_stamina_medium', name: 'Stamina Elixir', description: '+10 permanent stamina boost', icon: <Heart className="h-5 w-5 text-red-500" />, costCredits: 10, category: 'boosters', rarity: 'rare', statBoost: { stamina: 10 } },
+  { id: 'boost_stamina_large', name: 'Stamina Mastery', description: '+20 permanent stamina boost', icon: <Heart className="h-5 w-5 text-red-500" />, costCredits: 6, category: 'boosters', rarity: 'epic', statBoost: { stamina: 20 } },
   
-  { id: 'boost_accel_small', name: 'Acceleration Tonic', description: '+5 permanent acceleration boost', icon: <Flame className="h-5 w-5 text-orange-500" />, costCoins: 200, category: 'boosters', rarity: 'common', statBoost: { acceleration: 5 } },
-  { id: 'boost_accel_medium', name: 'Acceleration Elixir', description: '+10 permanent acceleration boost', icon: <Flame className="h-5 w-5 text-orange-500" />, costCoins: 500, category: 'boosters', rarity: 'rare', statBoost: { acceleration: 10 } },
-  { id: 'boost_accel_large', name: 'Acceleration Mastery', description: '+20 permanent acceleration boost', icon: <Flame className="h-5 w-5 text-orange-500" />, costGems: 150, category: 'boosters', rarity: 'epic', statBoost: { acceleration: 20 } },
+  { id: 'boost_accel_small', name: 'Acceleration Tonic', description: '+5 permanent acceleration boost', icon: <Flame className="h-5 w-5 text-orange-500" />, costCredits: 4, category: 'boosters', rarity: 'common', statBoost: { acceleration: 5 } },
+  { id: 'boost_accel_medium', name: 'Acceleration Elixir', description: '+10 permanent acceleration boost', icon: <Flame className="h-5 w-5 text-orange-500" />, costCredits: 10, category: 'boosters', rarity: 'rare', statBoost: { acceleration: 10 } },
+  { id: 'boost_accel_large', name: 'Acceleration Mastery', description: '+20 permanent acceleration boost', icon: <Flame className="h-5 w-5 text-orange-500" />, costCredits: 6, category: 'boosters', rarity: 'epic', statBoost: { acceleration: 20 } },
   
-  { id: 'boost_all_small', name: 'Universal Tonic', description: '+3 to all stats', icon: <Star className="h-5 w-5 text-purple-500" />, costCoins: 400, category: 'boosters', rarity: 'rare', statBoost: { speed: 3, stamina: 3, acceleration: 3, temperament: 3 } },
-  { id: 'boost_all_medium', name: 'Universal Elixir', description: '+7 to all stats', icon: <Star className="h-5 w-5 text-purple-500" />, costGems: 200, category: 'boosters', rarity: 'epic', statBoost: { speed: 7, stamina: 7, acceleration: 7, temperament: 7 } },
-  { id: 'boost_all_large', name: 'Universal Mastery', description: '+15 to all stats', icon: <Star className="h-5 w-5 text-purple-500" />, costGems: 500, category: 'boosters', rarity: 'legendary', statBoost: { speed: 15, stamina: 15, acceleration: 15, temperament: 15 } },
+  { id: 'boost_all_small', name: 'Universal Tonic', description: '+3 to all stats', icon: <Star className="h-5 w-5 text-purple-500" />, costCredits: 8, category: 'boosters', rarity: 'rare', statBoost: { speed: 3, stamina: 3, acceleration: 3, temperament: 3 } },
+  { id: 'boost_all_medium', name: 'Universal Elixir', description: '+7 to all stats', icon: <Star className="h-5 w-5 text-purple-500" />, costCredits: 8, category: 'boosters', rarity: 'epic', statBoost: { speed: 7, stamina: 7, acceleration: 7, temperament: 7 } },
+  { id: 'boost_all_large', name: 'Universal Mastery', description: '+15 to all stats', icon: <Star className="h-5 w-5 text-purple-500" />, costCredits: 20, category: 'boosters', rarity: 'legendary', statBoost: { speed: 15, stamina: 15, acceleration: 15, temperament: 15 } },
   
   // Equipment
-  { id: 'equip_saddle_bronze', name: 'Bronze Racing Saddle', description: '+5% race performance', icon: <Award className="h-5 w-5 text-amber-600" />, costCoins: 300, category: 'equipment', rarity: 'common' },
-  { id: 'equip_saddle_silver', name: 'Silver Racing Saddle', description: '+10% race performance', icon: <Award className="h-5 w-5 text-gray-400" />, costCoins: 600, category: 'equipment', rarity: 'rare' },
-  { id: 'equip_saddle_gold', name: 'Gold Racing Saddle', description: '+15% race performance', icon: <Award className="h-5 w-5 text-yellow-500" />, costGems: 250, category: 'equipment', rarity: 'epic' },
-  { id: 'equip_saddle_diamond', name: 'Diamond Racing Saddle', description: '+25% race performance', icon: <Award className="h-5 w-5 text-cyan-400" />, costGems: 600, category: 'equipment', rarity: 'legendary' },
+  { id: 'equip_saddle_bronze', name: 'Bronze Racing Saddle', description: '+5% race performance', icon: <Award className="h-5 w-5 text-amber-600" />, costCredits: 6, category: 'equipment', rarity: 'common' },
+  { id: 'equip_saddle_silver', name: 'Silver Racing Saddle', description: '+10% race performance', icon: <Award className="h-5 w-5 text-gray-400" />, costCredits: 12, category: 'equipment', rarity: 'rare' },
+  { id: 'equip_saddle_gold', name: 'Gold Racing Saddle', description: '+15% race performance', icon: <Award className="h-5 w-5 text-yellow-500" />, costCredits: 10, category: 'equipment', rarity: 'epic' },
+  { id: 'equip_saddle_diamond', name: 'Diamond Racing Saddle', description: '+25% race performance', icon: <Award className="h-5 w-5 text-cyan-400" />, costCredits: 24, category: 'equipment', rarity: 'legendary' },
   
-  { id: 'equip_horseshoe_iron', name: 'Iron Horseshoes', description: '+3 speed during races', icon: <Zap className="h-5 w-5 text-gray-500" />, costCoins: 250, category: 'equipment', rarity: 'common' },
-  { id: 'equip_horseshoe_steel', name: 'Steel Horseshoes', description: '+6 speed during races', icon: <Zap className="h-5 w-5 text-gray-400" />, costCoins: 500, category: 'equipment', rarity: 'rare' },
-  { id: 'equip_horseshoe_titanium', name: 'Titanium Horseshoes', description: '+10 speed during races', icon: <Zap className="h-5 w-5 text-blue-400" />, costGems: 200, category: 'equipment', rarity: 'epic' },
-  { id: 'equip_horseshoe_mythril', name: 'Mythril Horseshoes', description: '+15 speed during races', icon: <Zap className="h-5 w-5 text-purple-400" />, costGems: 450, category: 'equipment', rarity: 'legendary' },
+  { id: 'equip_horseshoe_iron', name: 'Iron Horseshoes', description: '+3 speed during races', icon: <Zap className="h-5 w-5 text-gray-500" />, costCredits: 5, category: 'equipment', rarity: 'common' },
+  { id: 'equip_horseshoe_steel', name: 'Steel Horseshoes', description: '+6 speed during races', icon: <Zap className="h-5 w-5 text-gray-400" />, costCredits: 10, category: 'equipment', rarity: 'rare' },
+  { id: 'equip_horseshoe_titanium', name: 'Titanium Horseshoes', description: '+10 speed during races', icon: <Zap className="h-5 w-5 text-blue-400" />, costCredits: 8, category: 'equipment', rarity: 'epic' },
+  { id: 'equip_horseshoe_mythril', name: 'Mythril Horseshoes', description: '+15 speed during races', icon: <Zap className="h-5 w-5 text-purple-400" />, costCredits: 18, category: 'equipment', rarity: 'legendary' },
   
-  { id: 'equip_bridle_basic', name: 'Racing Bridle', description: '+5 temperament control', icon: <Shield className="h-5 w-5 text-brown-500" />, costCoins: 200, category: 'equipment', rarity: 'common' },
-  { id: 'equip_bridle_elite', name: 'Elite Racing Bridle', description: '+10 temperament control', icon: <Shield className="h-5 w-5 text-blue-500" />, costCoins: 450, category: 'equipment', rarity: 'rare' },
-  { id: 'equip_bridle_champion', name: 'Champion Bridle', description: '+15 temperament control', icon: <Shield className="h-5 w-5 text-purple-500" />, costGems: 180, category: 'equipment', rarity: 'epic' },
+  { id: 'equip_bridle_basic', name: 'Racing Bridle', description: '+5 temperament control', icon: <Shield className="h-5 w-5 text-brown-500" />, costCredits: 4, category: 'equipment', rarity: 'common' },
+  { id: 'equip_bridle_elite', name: 'Elite Racing Bridle', description: '+10 temperament control', icon: <Shield className="h-5 w-5 text-blue-500" />, costCredits: 9, category: 'equipment', rarity: 'rare' },
+  { id: 'equip_bridle_champion', name: 'Champion Bridle', description: '+15 temperament control', icon: <Shield className="h-5 w-5 text-purple-500" />, costCredits: 7, category: 'equipment', rarity: 'epic' },
   
   // Premium Items
-  { id: 'premium_xp_boost', name: 'XP Multiplier (24h)', description: 'Double XP for 24 hours', icon: <Star className="h-5 w-5 text-yellow-500" />, costGems: 100, category: 'premium', rarity: 'rare' },
-  { id: 'premium_xp_boost_week', name: 'XP Multiplier (7 days)', description: 'Double XP for 7 days', icon: <Star className="h-5 w-5 text-yellow-500" />, costGems: 500, category: 'premium', rarity: 'epic' },
-  { id: 'premium_lucky_charm', name: 'Lucky Charm', description: '+10% chance to win races', icon: <Sparkles className="h-5 w-5 text-green-500" />, costGems: 300, category: 'premium', rarity: 'epic' },
-  { id: 'premium_vip_pass', name: 'VIP Racing Pass', description: 'Access to exclusive VIP races for 30 days', icon: <Crown className="h-5 w-5 text-yellow-500" />, costGems: 800, category: 'premium', rarity: 'legendary' },
-  { id: 'premium_breeding_boost', name: 'Breeding Enhancer', description: 'Higher stat offspring chance', icon: <Heart className="h-5 w-5 text-pink-500" />, costGems: 400, category: 'premium', rarity: 'epic' },
-  { id: 'premium_training_master', name: 'Training Master', description: 'Double training stat gains for 7 days', icon: <Trophy className="h-5 w-5 text-amber-500" />, costGems: 350, category: 'premium', rarity: 'epic' },
-  { id: 'premium_stable_expand', name: 'Stable Expansion', description: '+5 horse capacity permanently', icon: <Award className="h-5 w-5 text-blue-500" />, costGems: 600, category: 'premium', rarity: 'legendary' },
+  { id: 'premium_xp_boost', name: 'XP Multiplier (24h)', description: 'Double XP for 24 hours', icon: <Star className="h-5 w-5 text-yellow-500" />, costCredits: 4, category: 'premium', rarity: 'rare' },
+  { id: 'premium_xp_boost_week', name: 'XP Multiplier (7 days)', description: 'Double XP for 7 days', icon: <Star className="h-5 w-5 text-yellow-500" />, costCredits: 20, category: 'premium', rarity: 'epic' },
+  { id: 'premium_lucky_charm', name: 'Lucky Charm', description: '+10% chance to win races', icon: <Sparkles className="h-5 w-5 text-green-500" />, costCredits: 12, category: 'premium', rarity: 'epic' },
+  { id: 'premium_vip_pass', name: 'VIP Racing Pass', description: 'Access to exclusive VIP races for 30 days', icon: <Crown className="h-5 w-5 text-yellow-500" />, costCredits: 32, category: 'premium', rarity: 'legendary' },
+  { id: 'premium_breeding_boost', name: 'Breeding Enhancer', description: 'Higher stat offspring chance', icon: <Heart className="h-5 w-5 text-pink-500" />, costCredits: 16, category: 'premium', rarity: 'epic' },
+  { id: 'premium_training_master', name: 'Training Master', description: 'Double training stat gains for 7 days', icon: <Trophy className="h-5 w-5 text-amber-500" />, costCredits: 14, category: 'premium', rarity: 'epic' },
+  { id: 'premium_stable_expand', name: 'Stable Expansion', description: '+5 horse capacity permanently', icon: <Award className="h-5 w-5 text-blue-500" />, costCredits: 24, category: 'premium', rarity: 'legendary' },
   
   // Mystery Boxes
-  { id: 'mystery_bronze', name: 'Bronze Mystery Box', description: 'Contains random common items', icon: <Gift className="h-5 w-5 text-amber-600" />, costCoins: 150, category: 'mystery', rarity: 'common' },
-  { id: 'mystery_silver', name: 'Silver Mystery Box', description: 'Contains random rare items', icon: <Gift className="h-5 w-5 text-gray-400" />, costCoins: 350, category: 'mystery', rarity: 'rare' },
-  { id: 'mystery_gold', name: 'Gold Mystery Box', description: 'Contains random epic items', icon: <Gift className="h-5 w-5 text-yellow-500" />, costGems: 100, category: 'mystery', rarity: 'epic' },
-  { id: 'mystery_diamond', name: 'Diamond Mystery Box', description: 'Contains random legendary items', icon: <Gift className="h-5 w-5 text-cyan-400" />, costGems: 300, category: 'mystery', rarity: 'legendary' },
-  { id: 'mystery_champion', name: 'Champion Mystery Box', description: 'Guaranteed legendary item!', icon: <Gift className="h-5 w-5 text-purple-500" />, costGems: 750, category: 'mystery', rarity: 'legendary' },
-  { id: 'mystery_ultimate', name: 'Ultimate Mystery Box', description: 'Contains 3 random legendary items!', icon: <Gift className="h-5 w-5 text-pink-500" />, costGems: 1500, category: 'mystery', rarity: 'legendary' },
+  { id: 'mystery_bronze', name: 'Bronze Mystery Box', description: 'Contains random common items', icon: <Gift className="h-5 w-5 text-amber-600" />, costCredits: 3, category: 'mystery', rarity: 'common' },
+  { id: 'mystery_silver', name: 'Silver Mystery Box', description: 'Contains random rare items', icon: <Gift className="h-5 w-5 text-gray-400" />, costCredits: 7, category: 'mystery', rarity: 'rare' },
+  { id: 'mystery_gold', name: 'Gold Mystery Box', description: 'Contains random epic items', icon: <Gift className="h-5 w-5 text-yellow-500" />, costCredits: 4, category: 'mystery', rarity: 'epic' },
+  { id: 'mystery_diamond', name: 'Diamond Mystery Box', description: 'Contains random legendary items', icon: <Gift className="h-5 w-5 text-cyan-400" />, costCredits: 12, category: 'mystery', rarity: 'legendary' },
+  { id: 'mystery_champion', name: 'Champion Mystery Box', description: 'Guaranteed legendary item!', icon: <Gift className="h-5 w-5 text-purple-500" />, costCredits: 30, category: 'mystery', rarity: 'legendary' },
+  { id: 'mystery_ultimate', name: 'Ultimate Mystery Box', description: 'Contains 3 random legendary items!', icon: <Gift className="h-5 w-5 text-pink-500" />, costCredits: 60, category: 'mystery', rarity: 'legendary' },
 ];
 
 const rarityColors = { common: 'bg-gray-500',
@@ -124,20 +123,14 @@ export const HorseShop = () => {
       return;
     }
 
-    if (item.costCoins && currency.coins < item.costCoins) {
-      toast.error("Insufficient coins");
-      return;
-    }
-
-    if (item.costGems && currency.gems < item.costGems) {
-      toast.error("Insufficient gems");
+    if (currency.credits < item.costCredits) {
+      toast.error(`Not enough credits — this costs ${item.costCredits}.`);
       return;
     }
 
     purchaseItem.mutate({ itemId: item.id,
       horseId: horseId || undefined,
-      costCoins: item.costCoins,
-      costGems: item.costGems,
+      costCredits: item.costCredits,
       statBoost: item.statBoost }, {
       onSuccess: () => {
         setShowPurchaseDialog(false);
@@ -164,18 +157,10 @@ export const HorseShop = () => {
         <p className="text-xs text-muted-foreground mb-3 flex-1">{item.description}</p>
         <div className="flex items-center justify-between mt-auto">
           <div className="flex items-center gap-1">
-            {item.costCoins && (
-              <span className="flex items-center text-sm font-medium">
-                <Coins className="h-4 w-4 text-yellow-500 mr-1" />
-                {item.costCoins}
-              </span>
-            )}
-            {item.costGems && (
-              <span className="flex items-center text-sm font-medium">
-                <Gem className="h-4 w-4 text-primary mr-1" />
-                {item.costGems}
-              </span>
-            )}
+            <span className="flex items-center text-sm font-medium">
+              <Sparkles className="h-4 w-4 text-primary mr-1" />
+              {item.costCredits} credits
+            </span>
           </div>
           <Button 
             size="sm" 
@@ -210,12 +195,8 @@ export const HorseShop = () => {
         {currency && (
           <div className="flex gap-4 mb-6 p-3 bg-muted rounded-lg">
             <div className="flex items-center gap-2">
-              <Coins className="h-5 w-5 text-yellow-500" />
-              <span className="font-semibold">{currency.coins} Coins</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Gem className="h-5 w-5 text-primary" />
-              <span className="font-semibold">{currency.gems} Gems</span>
+              <Sparkles className="h-5 w-5 text-primary" />
+              <span className="font-semibold">{currency.credits} AI Credits</span>
             </div>
           </div>
         )}
@@ -295,7 +276,7 @@ export const HorseShop = () => {
             >
               {purchaseItem.isPending ? "Processing..." : (
                 <>
-                  Confirm Purchase - {selectedItem?.costCoins ? `${selectedItem.costCoins} Coins` : `${selectedItem?.costGems} Gems`}
+                  Confirm Purchase - {selectedItem?.costCredits} credits
                 </>
               )}
             </Button>

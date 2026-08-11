@@ -15,10 +15,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const SEASONS = [
-  { id: "spring_cup", name: "Spring Cup Championship", prize: 5000, entryFee: 100, minLevel: 3, maxParticipants: 32, icon: "🌸" },
-  { id: "summer_derby", name: "Summer Grand Derby", prize: 10000, entryFee: 250, minLevel: 5, maxParticipants: 16, icon: "☀️" },
-  { id: "autumn_classic", name: "Autumn Classic Stakes", prize: 15000, entryFee: 500, minLevel: 8, maxParticipants: 8, icon: "🍂" },
-  { id: "winter_crown", name: "Winter Crown Invitational", prize: 25000, entryFee: 1000, minLevel: 10, maxParticipants: 4, icon: "❄️" },
+  { id: "spring_cup", name: "Spring Cup Championship", prize: 120, entryFee: 5, minLevel: 3, maxParticipants: 32, icon: "🌸" },
+  { id: "summer_derby", name: "Summer Grand Derby", prize: 250, entryFee: 5, minLevel: 5, maxParticipants: 16, icon: "☀️" },
+  { id: "autumn_classic", name: "Autumn Classic Stakes", prize: 400, entryFee: 5, minLevel: 8, maxParticipants: 8, icon: "🍂" },
+  { id: "winter_crown", name: "Winter Crown Invitational", prize: 700, entryFee: 5, minLevel: 10, maxParticipants: 4, icon: "❄️" },
 ];
 
 export const SeasonalChampionships = () => {
@@ -104,7 +104,7 @@ export const SeasonalChampionships = () => {
                       
                       <div className="flex flex-wrap gap-3 mt-2 text-xs font-mono">
                         <span className="flex items-center gap-1 text-amber-400">
-                          <Trophy className="h-3 w-3" /> {season.prize.toLocaleString()} Coins Prize
+                          <Trophy className="h-3 w-3" /> {season.prize.toLocaleString()} Credits Prize
                         </span>
                         <span className="flex items-center gap-1 text-amber-400/50">
                           <Zap className="h-3 w-3" /> {season.entryFee} Entry Fee

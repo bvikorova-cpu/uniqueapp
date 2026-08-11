@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Target, Gift, Clock, CheckCircle2, Flame, Zap, Shield, Heart, Star, Coins, RefreshCw } from "lucide-react";
+import { Target, Gift, Clock, CheckCircle2, Flame, Zap, Shield, Heart, Star, RefreshCw } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -18,24 +18,24 @@ interface Quest {
   description: string;
   type: "training" | "racing" | "breeding" | "social";
   requirement: number;
-  reward: { coins: number; xp: number };
+  reward: { xp: number };
   icon: string;
   stat?: string;
 }
 
 const DAILY_QUESTS: Quest[] = [
-  { id: "train_speed_3", title: "Speed Drills", description: "Complete 3 speed training sessions", type: "training", requirement: 3, reward: { coins: 50, xp: 30 }, icon: "⚡", stat: "speed" },
-  { id: "train_stamina_3", title: "Endurance Run", description: "Complete 3 stamina training sessions", type: "training", requirement: 3, reward: { coins: 50, xp: 30 }, icon: "💪", stat: "stamina" },
-  { id: "race_1", title: "Track Time", description: "Enter and complete 1 race", type: "racing", requirement: 1, reward: { coins: 75, xp: 50 }, icon: "🏁" },
-  { id: "race_3", title: "Race Day", description: "Complete 3 races today", type: "racing", requirement: 3, reward: { coins: 150, xp: 100 }, icon: "🏇" },
-  { id: "train_any_5", title: "Training Montage", description: "Complete 5 training sessions of any type", type: "training", requirement: 5, reward: { coins: 100, xp: 75 }, icon: "🎯" },
-  { id: "win_1", title: "Victory Lap", description: "Win 1 race today", type: "racing", requirement: 1, reward: { coins: 200, xp: 150 }, icon: "🏆" },
+  { id: "train_speed_3", title: "Speed Drills", description: "Complete 3 speed training sessions", type: "training", requirement: 3, reward: { xp: 30 }, icon: "⚡", stat: "speed" },
+  { id: "train_stamina_3", title: "Endurance Run", description: "Complete 3 stamina training sessions", type: "training", requirement: 3, reward: { xp: 30 }, icon: "💪", stat: "stamina" },
+  { id: "race_1", title: "Track Time", description: "Enter and complete 1 race", type: "racing", requirement: 1, reward: { xp: 50 }, icon: "🏁" },
+  { id: "race_3", title: "Race Day", description: "Complete 3 races today", type: "racing", requirement: 3, reward: { xp: 100 }, icon: "🏇" },
+  { id: "train_any_5", title: "Training Montage", description: "Complete 5 training sessions of any type", type: "training", requirement: 5, reward: { xp: 75 }, icon: "🎯" },
+  { id: "win_1", title: "Victory Lap", description: "Win 1 race today", type: "racing", requirement: 1, reward: { xp: 150 }, icon: "🏆" },
 ];
 
 const WEEKLY_CHALLENGES: Quest[] = [
-  { id: "weekly_train_20", title: "Training Master", description: "Complete 20 training sessions this week", type: "training", requirement: 20, reward: { coins: 500, xp: 300 }, icon: "🔥" },
-  { id: "weekly_race_10", title: "Track Veteran", description: "Complete 10 races this week", type: "racing", requirement: 10, reward: { coins: 750, xp: 500 }, icon: "🎖️" },
-  { id: "weekly_win_5", title: "Champion's Streak", description: "Win 5 races this week", type: "racing", requirement: 5, reward: { coins: 1000, xp: 750 }, icon: "👑" },
+  { id: "weekly_train_20", title: "Training Master", description: "Complete 20 training sessions this week", type: "training", requirement: 20, reward: { xp: 300 }, icon: "🔥" },
+  { id: "weekly_race_10", title: "Track Veteran", description: "Complete 10 races this week", type: "racing", requirement: 10, reward: { xp: 500 }, icon: "🎖️" },
+  { id: "weekly_win_5", title: "Champion's Streak", description: "Win 5 races this week", type: "racing", requirement: 5, reward: { xp: 750 }, icon: "👑" },
 ];
 
 export const DailyTrainingQuests = () => {
@@ -125,9 +125,6 @@ export const DailyTrainingQuests = () => {
                   {progress}/{quest.requirement}
                 </span>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono text-amber-400">
-                    🪙 {quest.reward.coins}
-                  </span>
                   <span className="text-[10px] font-mono text-cyan-400">
                     ⭐ {quest.reward.xp} XP
                   </span>
@@ -160,7 +157,7 @@ export const DailyTrainingQuests = () => {
           <h2 className="text-2xl font-black font-mono flex items-center gap-2 text-white">
             <Target className="h-6 w-6 text-amber-400" /> Daily Quests
           </h2>
-          <p className="text-amber-400/50 font-mono text-sm">Complete quests for bonus coins and XP</p>
+          <p className="text-amber-400/50 font-mono text-sm">Complete quests for bonus XP</p>
         </div>
         <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-900/60 rounded-lg border border-amber-500/15">
           <Clock className="h-4 w-4 text-amber-400" />

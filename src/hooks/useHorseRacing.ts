@@ -3,6 +3,50 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+/**
+ * Horse Racing runs 100% on the unified `ai_credits` pool.
+ * There are no coins and no gems in this module.
+ */
+export const HORSE_CREDIT_COSTS = {
+  buyHorse: 10,
+  training: 2,
+  breeding: 8,
+  raceEntry: 1,
+  colorChange: 3,
+  championship: 5,
+} as const;
+
+/** Spend credits atomically and write the ledger/usage rows. */
+export async function spendHorseCredits(amount: number, reason: string): Promise<void> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Please sign in to continue");
+
+  const { data: row } = await supabase
+    .from("ai_credits")
+    .select("credits_remaining")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  const have = row?.credits_remaining ?? 0;
+  if (have < amount) {
+    throw new Error(`Not enough credits — this costs ${amount}, you have ${have}.`);
+  }
+
+  const { error } = await supabase.rpc("deduct_ai_credits_atomic", {
+    _user_id: user.id,
+    _amount: amount,
+  });
+  if (error) throw new Error(`Not enough credits — this costs ${amount} credits.`);
+
+  await supabase.from("ai_usage_history").insert({
+    user_id: user.id,
+    usage_type: "custom_generation",
+    credits_used: amount,
+    description: reason,
+  });
+  window.dispatchEvent(new Event("ai-credits-updated"));
+}
+
+/** Live unified credit balance for the Horse Racing arena. */
 export const useHorseCurrency = () => {
   const queryClient = useQueryClient();
 
@@ -10,20 +54,19 @@ export const useHorseCurrency = () => {
     queryKey: ["horse-currency"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) return { credits: 0 };
 
       const { data, error } = await supabase
-        .from("horse_currency")
-        .select("*")
+        .from("ai_credits")
+        .select("credits_remaining")
         .eq("user_id", user.id)
         .maybeSingle();
 
       if (error) throw error;
-      // Row is created server-side; show zero-balance placeholder until webhook fulfills
-      return data ?? { user_id: user.id, coins: 0, gems: 0 };
+      return { credits: data?.credits_remaining ?? 0 };
     } });
 
-  // Realtime: react when webhook fulfills a Stripe purchase
+  // Realtime: keep the balance fresh across purchases and top-ups.
   useEffect(() => {
     let cancelled = false;
     let channel: ReturnType<typeof supabase.channel> | null = null;
@@ -33,39 +76,13 @@ export const useHorseCurrency = () => {
       if (!user || cancelled) return;
 
       channel = supabase
-        .channel(`horse-currency-${user.id}`)
-        .on(
-          "postgres_changes",
-          {
-            event: "UPDATE",
-            schema: "public",
-            table: "horse_currency_purchases",
-            filter: `user_id=eq.${user.id}` },
-          (payload) => {
-            const row = payload.new as {
-              status?: string;
-              coins_added?: number;
-              gems_added?: number;
-              package_type?: string;
-            };
-            if (row?.status === "completed") {
-              const parts: string[] = [];
-              if (row.coins_added) parts.push(`+${row.coins_added} coins`);
-              if (row.gems_added) parts.push(`+${row.gems_added} gems`);
-              toast.success("Payment confirmed!", {
-                description: parts.length
-                  ? `${parts.join(" · ")} added to your balance.`
-                  : "Your balance has been updated." });
-              queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
-            }
-          }
-        )
+        .channel(`horse-credits-${user.id}`)
         .on(
           "postgres_changes",
           {
             event: "*",
             schema: "public",
-            table: "horse_currency",
+            table: "ai_credits",
             filter: `user_id=eq.${user.id}` },
           () => {
             queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
@@ -74,38 +91,17 @@ export const useHorseCurrency = () => {
         .subscribe();
     })();
 
+    const onUpdated = () => queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
+    window.addEventListener("ai-credits-updated", onUpdated);
+
     return () => {
       cancelled = true;
+      window.removeEventListener("ai-credits-updated", onUpdated);
       if (channel) supabase.removeChannel(channel);
     };
   }, [queryClient]);
 
   return { currency, isLoading };
-};
-
-export const usePurchaseCurrency = () => {
-  return useMutation({
-    mutationFn: async (packageType: string) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
-      const { data, error } = await supabase.functions.invoke(
-        "create-horse-currency-checkout",
-        {
-          body: { packageType } }
-      );
-
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: (data) => {
-      if (data.url) {
-        window.open(data.url, "_blank");
-      }
-    },
-    onError: (error: Error) => {
-      toast.error(error.message);
-    } });
 };
 
 export const useUserHorses = () => {
@@ -128,11 +124,11 @@ export const useUserHorses = () => {
     } });
 
   const createHorse = useMutation({
-    mutationFn: async ({ name, breed, color, costCoins }: {
-      name: string; breed: string; color: string; costCoins: number;
+    mutationFn: async ({ name, breed, color }: {
+      name: string; breed: string; color: string;
     }) => {
       const { data, error } = await supabase.functions.invoke("horse-create", {
-        body: { name, breed, color, costCoins } });
+        body: { name, breed, color } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       return data.horse;
@@ -140,12 +136,14 @@ export const useUserHorses = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-horses"] });
       queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
-      toast.success("Horse acquired!");
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      toast.success(`Horse acquired! −${HORSE_CREDIT_COSTS.buyHorse} credits`);
     },
     onError: (error: Error) => toast.error(error.message) });
 
   return { horses, isLoading, createHorse };
 };
+
 
 export const useRaces = () => {
   const { data: races, isLoading } = useQuery({
@@ -220,7 +218,7 @@ export const useTrainHorse = () => {
     onError: (error: Error) => toast.error(error.message) });
 };
 
-// Breeding Hook
+// Breeding Hook — costs credits from the unified pool.
 export const useBreedHorses = () => {
   const queryClient = useQueryClient();
 
@@ -229,20 +227,6 @@ export const useBreedHorses = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const BREEDING_COST = 100;
-
-      // Check coins
-      const { data: currency } = await supabase
-        .from("horse_currency")
-        .select("coins")
-        .eq("user_id", user.id)
-        .single();
-
-      if (!currency || currency.coins < BREEDING_COST) {
-        throw new Error("Insufficient coins for breeding");
-      }
-
-      // Get parent horses
       const { data: parents } = await supabase
         .from("horses")
         .select("*")
@@ -251,6 +235,8 @@ export const useBreedHorses = () => {
       if (!parents || parents.length !== 2) {
         throw new Error("Parent horses not found");
       }
+
+      await spendHorseCredits(HORSE_CREDIT_COSTS.breeding, "horse-racing:breeding");
 
       const [parent1, parent2] = parents;
 
@@ -266,7 +252,6 @@ export const useBreedHorses = () => {
         acceleration_stat: calculateOffspringStat(parent1.acceleration_stat, parent2.acceleration_stat),
         temperament_stat: calculateOffspringStat(parent1.temperament_stat, parent2.temperament_stat) };
 
-      // Create offspring
       const { data: offspring, error } = await supabase
         .from("horses")
         .insert({
@@ -280,67 +265,39 @@ export const useBreedHorses = () => {
 
       if (error) throw error;
 
-      // Record breeding
       await supabase
         .from("breeding_records")
         .insert({ user_id: user.id,
           parent1_id: parent1Id,
           parent2_id: parent2Id,
           offspring_id: offspring.id,
-          cost_coins: BREEDING_COST,
+          cost_coins: HORSE_CREDIT_COSTS.breeding,
           status: 'completed' });
-
-      // Deduct coins
-      await supabase
-        .from("horse_currency")
-        .update({ coins: currency.coins - BREEDING_COST })
-        .eq("user_id", user.id);
 
       return offspring;
     },
     onSuccess: (offspring) => {
       queryClient.invalidateQueries({ queryKey: ["user-horses"] });
       queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
-      toast.success(`New foal ${offspring.name} born!`);
+      toast.success(`New foal ${offspring.name} born! \u2212${HORSE_CREDIT_COSTS.breeding} credits`);
     },
     onError: (error: Error) => {
       toast.error(error.message);
     } });
 };
 
-// Shop - Change Horse Color
+// Shop - Change Horse Color (credits)
 export const usePurchaseHorseColor = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ horseId, newColor }: { horseId: string; newColor: string }) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      await spendHorseCredits(HORSE_CREDIT_COSTS.colorChange, "horse-racing:color-change");
 
-      const COLOR_COST = 50; // Gems
-
-      // Check gems
-      const { data: currency } = await supabase
-        .from("horse_currency")
-        .select("gems")
-        .eq("user_id", user.id)
-        .single();
-
-      if (!currency || currency.gems < COLOR_COST) {
-        throw new Error("Insufficient gems");
-      }
-
-      // Update horse color
       await supabase
         .from("horses")
         .update({ color: newColor })
         .eq("id", horseId);
-
-      // Deduct gems
-      await supabase
-        .from("horse_currency")
-        .update({ gems: currency.gems - COLOR_COST })
-        .eq("user_id", user.id);
 
       return { horseId, newColor };
     },
@@ -354,22 +311,20 @@ export const usePurchaseHorseColor = () => {
     } });
 };
 
-// Shop - Purchase Item
+// Shop - Purchase Item (credits only)
 export const usePurchaseShopItem = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ 
-      itemId, 
-      horseId, 
-      costCoins, 
-      costGems,
-      statBoost 
-    }: { 
-      itemId: string; 
+    mutationFn: async ({
+      itemId,
+      horseId,
+      costCredits,
+      statBoost
+    }: {
+      itemId: string;
       horseId?: string;
-      costCoins?: number;
-      costGems?: number;
+      costCredits: number;
       statBoost?: {
         speed?: number;
         stamina?: number;
@@ -380,22 +335,7 @@ export const usePurchaseShopItem = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      // Check currency
-      const { data: currency } = await supabase
-        .from("horse_currency")
-        .select("*")
-        .eq("user_id", user.id)
-        .single();
-
-      if (!currency) throw new Error("Currency not found");
-
-      if (costCoins && currency.coins < costCoins) {
-        throw new Error("Insufficient coins");
-      }
-
-      if (costGems && currency.gems < costGems) {
-        throw new Error("Insufficient gems");
-      }
+      await spendHorseCredits(costCredits, `horse-racing:shop:${itemId}`);
 
       // Apply stat boost if applicable
       if (statBoost && horseId) {
@@ -421,24 +361,13 @@ export const usePurchaseShopItem = () => {
         }
       }
 
-      // Deduct currency
-      const currencyUpdate: Record<string, number> = {};
-      if (costCoins) currencyUpdate.coins = currency.coins - costCoins;
-      if (costGems) currencyUpdate.gems = currency.gems - costGems;
-
-      await supabase
-        .from("horse_currency")
-        .update(currencyUpdate as any)
-        .eq("user_id", user.id);
-
-      // Record purchase
       await supabase
         .from("horse_shop_purchases")
         .insert({ user_id: user.id,
           item_id: itemId,
           horse_id: horseId || null,
-          cost_coins: costCoins || 0,
-          cost_gems: costGems || 0 });
+          cost_coins: costCredits,
+          cost_gems: 0 });
 
       return { itemId, horseId };
     },

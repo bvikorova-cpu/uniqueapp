@@ -34,7 +34,7 @@ export const TrainingCamp = () => {
         <h2 className="text-2xl font-black flex items-center gap-2">
           <Dumbbell className="h-6 w-6 text-emerald-400" /> Training Camp
         </h2>
-        <p className="text-muted-foreground text-sm">Train your horses to improve stats. Cost: 20 Coins per session</p>
+        <p className="text-muted-foreground text-sm">Train your horses to improve stats. Cost: 2 credits per session</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

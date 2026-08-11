@@ -54,7 +54,7 @@ export const LiveRaceSimulator = () => {
               if (error) throw error;
               if (data?.results) {
                 const winner = data.results[0];
-                toast.success(`Race finished! Winner: ${winner.horseName}${winner.prize > 0 ? ` — Prize: ${winner.prize} coins` : ""}`);
+                toast.success(`Race finished! Winner: ${winner.horseName}${winner.prize > 0 ? ` — Prize: ${winner.prize} credits` : ""}`);
               }
             } catch (error) {
               toast.error("Error calculating race results");
@@ -93,7 +93,7 @@ export const LiveRaceSimulator = () => {
                   <h3 className="font-bold text-base">{race.track_name}</h3>
                   <div className="flex flex-wrap gap-2 mt-1 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1"><Timer className="h-3 w-3" /> {race.distance}m</span>
-                    <span className="flex items-center gap-1"><Zap className="h-3 w-3" /> {race.entry_fee_coins} Coins</span>
+                    <span className="flex items-center gap-1"><Zap className="h-3 w-3" /> 1 Credit</span>
                     <span className="flex items-center gap-1">👥 {race.race_participants?.length || 0}/{race.max_participants}</span>
                   </div>
                   <p className="text-[10px] text-muted-foreground mt-1 capitalize">

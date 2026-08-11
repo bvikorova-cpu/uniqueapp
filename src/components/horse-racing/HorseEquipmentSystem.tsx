@@ -19,33 +19,33 @@ interface EquipmentItem {
   slot: "saddle" | "horseshoes" | "bridle" | "blanket";
   rarity: "common" | "rare" | "epic" | "legendary";
   stats: { speed?: number; stamina?: number; acceleration?: number; temperament?: number };
-  costCoins: number;
+  costCredits: number;
   icon: string;
   description: string;
 }
 
 const EQUIPMENT: EquipmentItem[] = [
   // Saddles
-  { id: "saddle_leather", name: "Leather Racing Saddle", slot: "saddle", rarity: "common", stats: { speed: 3, stamina: 2 }, costCoins: 150, icon: "🪑", description: "Standard racing saddle with good grip" },
-  { id: "saddle_carbon", name: "Carbon Fiber Saddle", slot: "saddle", rarity: "rare", stats: { speed: 6, acceleration: 4 }, costCoins: 400, icon: "🪑", description: "Lightweight carbon frame for maximum speed" },
-  { id: "saddle_champion", name: "Champion's Throne", slot: "saddle", rarity: "epic", stats: { speed: 10, stamina: 5, acceleration: 5 }, costCoins: 900, icon: "🪑", description: "Elite saddle used by champion jockeys" },
-  { id: "saddle_legendary", name: "Pegasus Wing Saddle", slot: "saddle", rarity: "legendary", stats: { speed: 15, stamina: 8, acceleration: 8, temperament: 5 }, costCoins: 2000, icon: "🪑", description: "Legendary saddle that makes horses feel like they're flying" },
+  { id: "saddle_leather", name: "Leather Racing Saddle", slot: "saddle", rarity: "common", stats: { speed: 3, stamina: 2 }, costCredits: 3, icon: "🪑", description: "Standard racing saddle with good grip" },
+  { id: "saddle_carbon", name: "Carbon Fiber Saddle", slot: "saddle", rarity: "rare", stats: { speed: 6, acceleration: 4 }, costCredits: 8, icon: "🪑", description: "Lightweight carbon frame for maximum speed" },
+  { id: "saddle_champion", name: "Champion's Throne", slot: "saddle", rarity: "epic", stats: { speed: 10, stamina: 5, acceleration: 5 }, costCredits: 18, icon: "🪑", description: "Elite saddle used by champion jockeys" },
+  { id: "saddle_legendary", name: "Pegasus Wing Saddle", slot: "saddle", rarity: "legendary", stats: { speed: 15, stamina: 8, acceleration: 8, temperament: 5 }, costCredits: 40, icon: "🪑", description: "Legendary saddle that makes horses feel like they're flying" },
 
   // Horseshoes
-  { id: "shoe_iron", name: "Iron Horseshoes", slot: "horseshoes", rarity: "common", stats: { speed: 2, acceleration: 3 }, costCoins: 100, icon: "🧲", description: "Standard racing horseshoes" },
-  { id: "shoe_titanium", name: "Titanium Horseshoes", slot: "horseshoes", rarity: "rare", stats: { speed: 5, acceleration: 6 }, costCoins: 350, icon: "🧲", description: "Ultra-light titanium for fast tracks" },
-  { id: "shoe_diamond", name: "Diamond-Tipped Shoes", slot: "horseshoes", rarity: "epic", stats: { speed: 8, acceleration: 10 }, costCoins: 800, icon: "🧲", description: "Diamond-reinforced for all track conditions" },
-  { id: "shoe_mythic", name: "Windrunner Shoes", slot: "horseshoes", rarity: "legendary", stats: { speed: 12, acceleration: 15, stamina: 3 }, costCoins: 1800, icon: "🧲", description: "Mythical shoes that harness the wind" },
+  { id: "shoe_iron", name: "Iron Horseshoes", slot: "horseshoes", rarity: "common", stats: { speed: 2, acceleration: 3 }, costCredits: 2, icon: "🧲", description: "Standard racing horseshoes" },
+  { id: "shoe_titanium", name: "Titanium Horseshoes", slot: "horseshoes", rarity: "rare", stats: { speed: 5, acceleration: 6 }, costCredits: 7, icon: "🧲", description: "Ultra-light titanium for fast tracks" },
+  { id: "shoe_diamond", name: "Diamond-Tipped Shoes", slot: "horseshoes", rarity: "epic", stats: { speed: 8, acceleration: 10 }, costCredits: 16, icon: "🧲", description: "Diamond-reinforced for all track conditions" },
+  { id: "shoe_mythic", name: "Windrunner Shoes", slot: "horseshoes", rarity: "legendary", stats: { speed: 12, acceleration: 15, stamina: 3 }, costCredits: 36, icon: "🧲", description: "Mythical shoes that harness the wind" },
 
   // Bridles
-  { id: "bridle_basic", name: "Racing Bridle", slot: "bridle", rarity: "common", stats: { temperament: 5 }, costCoins: 80, icon: "⛓️", description: "Comfortable bridle for better control" },
-  { id: "bridle_pro", name: "Pro Racing Bridle", slot: "bridle", rarity: "rare", stats: { temperament: 10, speed: 2 }, costCoins: 300, icon: "⛓️", description: "Professional-grade with enhanced control" },
-  { id: "bridle_master", name: "Master's Bridle", slot: "bridle", rarity: "epic", stats: { temperament: 15, speed: 5, stamina: 3 }, costCoins: 700, icon: "⛓️", description: "Master crafted for perfect horse-rider sync" },
+  { id: "bridle_basic", name: "Racing Bridle", slot: "bridle", rarity: "common", stats: { temperament: 5 }, costCredits: 2, icon: "⛓️", description: "Comfortable bridle for better control" },
+  { id: "bridle_pro", name: "Pro Racing Bridle", slot: "bridle", rarity: "rare", stats: { temperament: 10, speed: 2 }, costCredits: 6, icon: "⛓️", description: "Professional-grade with enhanced control" },
+  { id: "bridle_master", name: "Master's Bridle", slot: "bridle", rarity: "epic", stats: { temperament: 15, speed: 5, stamina: 3 }, costCredits: 14, icon: "⛓️", description: "Master crafted for perfect horse-rider sync" },
 
   // Blankets
-  { id: "blanket_wool", name: "Wool Racing Blanket", slot: "blanket", rarity: "common", stats: { stamina: 5 }, costCoins: 120, icon: "🛡️", description: "Warm blanket that boosts stamina recovery" },
-  { id: "blanket_silk", name: "Silk Performance Blanket", slot: "blanket", rarity: "rare", stats: { stamina: 8, temperament: 4 }, costCoins: 350, icon: "🛡️", description: "Premium silk keeps horse comfortable" },
-  { id: "blanket_champion", name: "Champion's Cloak", slot: "blanket", rarity: "epic", stats: { stamina: 12, temperament: 8, speed: 3 }, costCoins: 800, icon: "🛡️", description: "The cloak of racing champions" },
+  { id: "blanket_wool", name: "Wool Racing Blanket", slot: "blanket", rarity: "common", stats: { stamina: 5 }, costCredits: 3, icon: "🛡️", description: "Warm blanket that boosts stamina recovery" },
+  { id: "blanket_silk", name: "Silk Performance Blanket", slot: "blanket", rarity: "rare", stats: { stamina: 8, temperament: 4 }, costCredits: 7, icon: "🛡️", description: "Premium silk keeps horse comfortable" },
+  { id: "blanket_champion", name: "Champion's Cloak", slot: "blanket", rarity: "epic", stats: { stamina: 12, temperament: 8, speed: 3 }, costCredits: 16, icon: "🛡️", description: "The cloak of racing champions" },
 ];
 
 const RARITY_STYLES = {
@@ -127,7 +127,7 @@ export const HorseEquipmentSystem = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {filteredItems.map((item, i) => {
           const style = RARITY_STYLES[item.rarity];
-          const canAfford = currency && currency.coins >= item.costCoins;
+          const canAfford = currency && currency.credits >= item.costCredits;
 
           return (
             <motion.div
@@ -145,7 +145,7 @@ export const HorseEquipmentSystem = () => {
                       <Badge className={`${style.badge} text-white text-[10px]`}>{item.rarity}</Badge>
                     </div>
                   </div>
-                  <span className="text-amber-400 font-mono font-bold text-sm">{item.costCoins} 🪙</span>
+                  <span className="text-amber-400 font-mono font-bold text-sm">{item.costCredits} credits</span>
                 </div>
 
                 <p className="text-xs text-amber-400/40 font-mono mb-3">{item.description}</p>
@@ -181,7 +181,7 @@ export const HorseEquipmentSystem = () => {
                     purchaseEquipment.mutate({ itemId: item.id, horseId: selectedHorse });
                   }}
                 >
-                  {!selectedHorse ? "Select Horse First" : !canAfford ? "Not Enough Coins" : purchaseEquipment.isPending ? "..." : "Purchase & Equip"}
+                  {!selectedHorse ? "Select Horse First" : !canAfford ? "Not Enough Credits" : purchaseEquipment.isPending ? "..." : "Purchase & Equip"}
                 </Button>
               </Card>
             </motion.div>
