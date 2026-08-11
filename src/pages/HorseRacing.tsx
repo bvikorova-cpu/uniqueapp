@@ -30,7 +30,6 @@ import { HorseEquipmentSystem } from "@/components/horse-racing/HorseEquipmentSy
 import { DailyTrainingQuests } from "@/components/horse-racing/DailyTrainingQuests";
 import { BloodlineGenealogy } from "@/components/horse-racing/BloodlineGenealogy";
 import { WeatherRacingBonuses } from "@/components/horse-racing/WeatherRacingBonuses";
-import { HorseMarketplace } from "@/components/horse-racing/HorseMarketplace";
 import { HorseCardCollection } from "@/components/horse-racing/HorseCardCollection";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -49,7 +48,6 @@ const tools = [
   { id: "shop" as const, icon: ShoppingCart, label: "Racing Shop", desc: "Items & cosmetics", gradient: "from-orange-500 to-red-600" },
   { id: "leaderboard" as const, icon: Trophy, label: "Rankings", desc: "Top champions", gradient: "from-amber-500 to-yellow-600" },
   { id: "auction" as const, icon: Gavel, label: "Auction House", desc: "Buy & sell horses", gradient: "from-rose-500 to-red-600" },
-  { id: "marketplace" as const, icon: ShoppingCart, label: "Marketplace", desc: "Fixed-price horse listings", gradient: "from-purple-500 to-pink-600" },
   { id: "cards" as const, icon: Layers, label: "Racehorse Cards", desc: "Collect 150 champion cards", gradient: "from-amber-400 to-yellow-600" },
 ];
 
@@ -248,7 +246,6 @@ export default function HorseRacing() {
     quests: <DailyTrainingQuests />,
     bloodline: <BloodlineGenealogy />,
     weather: <WeatherRacingBonuses />,
-    marketplace: <HorseMarketplace />,
     cards: <HorseCardCollection /> };
 
   return (
