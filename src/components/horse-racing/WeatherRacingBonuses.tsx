@@ -30,7 +30,7 @@ const WEATHER_CONDITIONS: WeatherCondition[] = [
       { breed: "quarter", bonus: "+5% Acceleration", multiplier: 1.05 },
     ],
     trackEffect: "Fast Track — All horses gain +3 base speed",
-    color: "text-amber-400",
+    color: "text-amber-700",
     bgClass: "from-amber-950/30 to-orange-950/20" },
   {
     id: "rainy",
@@ -115,10 +115,10 @@ export const WeatherRacingBonuses = () => {
       <FloatingHowItWorks title={"Weather Racing Bonuses - How it works"} steps={[{ title: 'Open', desc: 'Access the Weather Racing Bonuses section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Weather Racing Bonuses.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-black font-mono flex items-center gap-2 text-white">
-          <Cloud className="h-6 w-6 text-amber-400" /> Weather Racing Bonuses
+        <h2 className="text-2xl font-black font-mono flex items-center gap-2 text-slate-900">
+          <Cloud className="h-6 w-6 text-amber-700" /> Weather Racing Bonuses
         </h2>
-        <p className="text-amber-400/50 font-mono text-sm">Different weather conditions affect breeds differently</p>
+        <p className="text-amber-700/70 font-mono text-sm">Different weather conditions affect breeds differently</p>
       </div>
 
       {/* Weather Selector */}
@@ -128,8 +128,8 @@ export const WeatherRacingBonuses = () => {
             onClick={() => setSelectedWeather(w.id)}
             className={`flex-col h-auto py-3 font-mono text-[10px] ${
               selectedWeather === w.id
-                ? "bg-gradient-to-b from-amber-600/20 to-red-600/10 border-amber-400/40 text-amber-300"
-                : "bg-slate-800/40 border-amber-500/10 text-amber-400/50"
+                ? "bg-gradient-to-b from-amber-600/20 to-red-600/10 border-amber-500/60 text-amber-700"
+                : "bg-amber-50/70 border-amber-300/50 text-amber-700/70"
             }`}
           >
             <span className="text-xl mb-1">{w.icon}</span>
@@ -140,25 +140,25 @@ export const WeatherRacingBonuses = () => {
 
       {/* Current Weather Card */}
       <motion.div key={selectedWeather} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-        <Card className={`p-5 bg-gradient-to-br ${currentWeather.bgClass} border-amber-500/15 backdrop-blur-sm`}>
+        <Card className={`p-5 bg-gradient-to-br ${currentWeather.bgClass} border-amber-300/50 backdrop-blur-sm`}>
           <div className="flex items-start gap-4 mb-4">
             <span className="text-5xl">{currentWeather.icon}</span>
             <div>
               <h3 className={`text-xl font-black font-mono ${currentWeather.color}`}>{currentWeather.name}</h3>
-              <p className="text-xs font-mono text-amber-400/40 mt-1">{currentWeather.description}</p>
+              <p className="text-xs font-mono text-amber-700/60 mt-1">{currentWeather.description}</p>
             </div>
           </div>
 
           {/* Track Effect */}
-          <div className="p-3 rounded-lg bg-slate-950/40 border border-amber-500/10 mb-4">
+          <div className="p-3 rounded-lg bg-amber-50/70 border border-amber-300/50 mb-4">
             <div className="flex items-center gap-2">
-              <Info className="h-4 w-4 text-amber-400 shrink-0" />
-              <p className="text-xs font-mono text-amber-300">{currentWeather.trackEffect}</p>
+              <Info className="h-4 w-4 text-amber-700 shrink-0" />
+              <p className="text-xs font-mono text-amber-700">{currentWeather.trackEffect}</p>
             </div>
           </div>
 
           {/* Breed Effects */}
-          <h4 className="text-xs font-mono text-amber-400/60 uppercase tracking-wider mb-2">Breed Modifiers</h4>
+          <h4 className="text-xs font-mono text-amber-700 uppercase tracking-wider mb-2">Breed Modifiers</h4>
           <div className="space-y-2">
             {currentWeather.effects.map((effect, i) => (
               <motion.div
@@ -173,7 +173,7 @@ export const WeatherRacingBonuses = () => {
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-sm capitalize font-mono font-bold text-white">{effect.breed}</span>
+                  <span className="text-sm capitalize font-mono font-bold text-slate-900">{effect.breed}</span>
                 </div>
                 <Badge className={`font-mono text-[10px] ${
                   effect.multiplier >= 1 ? "bg-emerald-500/20 text-emerald-400" : "bg-red-500/20 text-red-400"
@@ -189,7 +189,7 @@ export const WeatherRacingBonuses = () => {
       {/* Your Horses in This Weather */}
       {horses && horses.length > 0 && (
         <div>
-          <h3 className="font-mono text-sm text-amber-400/60 uppercase tracking-wider mb-3">
+          <h3 className="font-mono text-sm text-amber-700 uppercase tracking-wider mb-3">
             Your Horses in {currentWeather.name}
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -202,12 +202,12 @@ export const WeatherRacingBonuses = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
                 >
-                  <Card className="p-3 bg-slate-900/40 border-amber-500/10">
+                  <Card className="p-3 bg-white/70 border-amber-300/50">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg border border-white/10" style={{ backgroundColor: horse.color }} />
+                      <div className="w-8 h-8 rounded-lg border border-amber-200/70" style={{ backgroundColor: horse.color }} />
                       <div className="flex-1 min-w-0">
-                        <p className="font-mono font-bold text-white text-sm truncate">{horse.name}</p>
-                        <p className="text-[10px] font-mono text-amber-400/40 capitalize">{horse.breed}</p>
+                        <p className="font-mono font-bold text-slate-900 text-sm truncate">{horse.name}</p>
+                        <p className="text-[10px] font-mono text-amber-700/60 capitalize">{horse.breed}</p>
                       </div>
                       {bonus ? (
                         <Badge className={`font-mono text-[10px] ${
@@ -216,7 +216,7 @@ export const WeatherRacingBonuses = () => {
                           {bonus.bonus}
                         </Badge>
                       ) : (
-                        <Badge className="bg-gray-500/20 text-gray-400 font-mono text-[10px]">No Effect</Badge>
+                        <Badge className="bg-amber-200/50 text-gray-400 font-mono text-[10px]">No Effect</Badge>
                       )}
                     </div>
                   </Card>
@@ -227,9 +227,9 @@ export const WeatherRacingBonuses = () => {
         </div>
       )}
 
-      <Card className="p-4 bg-slate-900/40 border-amber-500/10">
-        <h3 className="font-bold font-mono text-sm text-amber-300 mb-2">🌤️ Weather System Info</h3>
-        <ul className="text-xs text-amber-400/50 font-mono space-y-1">
+      <Card className="p-4 bg-white/70 border-amber-300/50">
+        <h3 className="font-bold font-mono text-sm text-amber-700 mb-2">🌤️ Weather System Info</h3>
+        <ul className="text-xs text-amber-700/70 font-mono space-y-1">
           <li>• Weather changes randomly for each race event</li>
           <li>• Build a diverse stable to handle all weather conditions</li>
           <li>• Mustangs excel in extreme weather (snow, storms)</li>

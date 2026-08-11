@@ -64,10 +64,10 @@ export const SeasonalChampionships = () => {
       <FloatingHowItWorks title={"Seasonal Championships - How it works"} steps={[{ title: 'Open', desc: 'Access the Seasonal Championships section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Seasonal Championships.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-black font-mono flex items-center gap-2 text-white">
-          <Trophy className="h-6 w-6 text-amber-400" /> Seasonal Championships
+        <h2 className="text-2xl font-black font-mono flex items-center gap-2 text-slate-900">
+          <Trophy className="h-6 w-6 text-amber-700" /> Seasonal Championships
         </h2>
-        <p className="text-amber-400/50 font-mono text-sm">Compete in monthly tournaments for massive prize pools</p>
+        <p className="text-amber-700/70 font-mono text-sm">Compete in monthly tournaments for massive prize pools</p>
       </div>
 
       {/* Season Timeline */}
@@ -86,15 +86,15 @@ export const SeasonalChampionships = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.1 }}
               >
-                <Card className="ml-12 relative p-4 sm:p-5 bg-slate-900/60 border-amber-500/15 backdrop-blur-sm hover:border-amber-400/40 transition-all group">
+                <Card className="ml-12 relative p-4 sm:p-5 bg-white border-amber-300/50 backdrop-blur-sm hover:border-amber-500/60 transition-all group">
                   {/* Timeline dot */}
-                  <div className="absolute -left-[3.25rem] top-5 w-4 h-4 rounded-full border-2 border-amber-400 bg-slate-950 group-hover:bg-amber-400/20 transition-colors" />
+                  <div className="absolute -left-[3.25rem] top-5 w-4 h-4 rounded-full border-2 border-amber-500 bg-amber-50 group-hover:bg-amber-400/20 transition-colors" />
                   
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-2xl">{season.icon}</span>
-                        <h3 className="font-bold font-mono text-white">{season.name}</h3>
+                        <h3 className="font-bold font-mono text-slate-900">{season.name}</h3>
                         {enrolled && (
                           <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[10px]">
                             Enrolled
@@ -103,16 +103,16 @@ export const SeasonalChampionships = () => {
                       </div>
                       
                       <div className="flex flex-wrap gap-3 mt-2 text-xs font-mono">
-                        <span className="flex items-center gap-1 text-amber-400">
+                        <span className="flex items-center gap-1 text-amber-700">
                           <Trophy className="h-3 w-3" /> {season.prize.toLocaleString()} Credits Prize
                         </span>
-                        <span className="flex items-center gap-1 text-amber-400/50">
+                        <span className="flex items-center gap-1 text-amber-700/70">
                           <Zap className="h-3 w-3" /> {season.entryFee} Entry Fee
                         </span>
-                        <span className="flex items-center gap-1 text-amber-400/50">
+                        <span className="flex items-center gap-1 text-amber-700/70">
                           <Star className="h-3 w-3" /> Min Level {season.minLevel}
                         </span>
-                        <span className="flex items-center gap-1 text-amber-400/50">
+                        <span className="flex items-center gap-1 text-amber-700/70">
                           <Users className="h-3 w-3" /> {season.maxParticipants} Max
                         </span>
                       </div>
@@ -123,7 +123,7 @@ export const SeasonalChampionships = () => {
                         {enrollingSeason === season.id ? (
                           <div className="flex gap-2">
                             <Select value={selectedHorse} onValueChange={setSelectedHorse}>
-                              <SelectTrigger className="w-40 bg-slate-800/60 border-amber-500/20 font-mono text-xs">
+                              <SelectTrigger className="w-40 bg-amber-50 border-amber-300/60 font-mono text-xs">
                                 <SelectValue placeholder="Pick horse" />
                               </SelectTrigger>
                               <SelectContent>
@@ -148,7 +148,7 @@ export const SeasonalChampionships = () => {
                             if (eligibleHorses.length === 0) { toast.error(`Need a horse level ${season.minLevel}+`); return; }
                             setEnrollingSeason(season.id);
                           }}
-                            className="bg-slate-800/60 border border-amber-500/20 text-amber-400 hover:bg-amber-950/40 font-mono text-xs"
+                            className="bg-amber-50 border border-amber-300/60 text-amber-700 hover:bg-amber-950/40 font-mono text-xs"
                           >
                             <ChevronRight className="h-3 w-3 mr-1" /> Enter
                           </Button>
@@ -158,7 +158,7 @@ export const SeasonalChampionships = () => {
                   </div>
 
                   {/* Prize Breakdown */}
-                  <div className="mt-3 pt-3 border-t border-amber-500/10 grid grid-cols-3 gap-2 text-center">
+                  <div className="mt-3 pt-3 border-t border-amber-300/50 grid grid-cols-3 gap-2 text-center">
                     {[
                       { label: "1st Place", value: `${Math.round(season.prize * 0.5)}`, icon: "🥇" },
                       { label: "2nd Place", value: `${Math.round(season.prize * 0.3)}`, icon: "🥈" },
@@ -166,8 +166,8 @@ export const SeasonalChampionships = () => {
                     ].map(p => (
                       <div key={p.label} className="text-xs font-mono">
                         <span className="text-lg">{p.icon}</span>
-                        <p className="text-amber-400 font-bold">{p.value}</p>
-                        <p className="text-amber-400/40">{p.label}</p>
+                        <p className="text-amber-700 font-bold">{p.value}</p>
+                        <p className="text-amber-700/60">{p.label}</p>
                       </div>
                     ))}
                   </div>
@@ -179,9 +179,9 @@ export const SeasonalChampionships = () => {
       </div>
 
       {/* Info */}
-      <Card className="p-4 bg-slate-900/40 border-amber-500/10">
-        <h3 className="font-bold font-mono text-sm text-amber-300 mb-2">📜 Championship Rules</h3>
-        <ul className="text-xs text-amber-400/50 font-mono space-y-1">
+      <Card className="p-4 bg-white/70 border-amber-300/50">
+        <h3 className="font-bold font-mono text-sm text-amber-700 mb-2">📜 Championship Rules</h3>
+        <ul className="text-xs text-amber-700/70 font-mono space-y-1">
           <li>• Championships run monthly with bracket-style elimination rounds</li>
           <li>• Horse stats, equipment, and weather conditions affect race outcomes</li>
           <li>• Prize pools are distributed to top 3 finishers</li>

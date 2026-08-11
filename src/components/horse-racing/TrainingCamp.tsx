@@ -47,7 +47,7 @@ export const TrainingCamp = () => {
           >
             <Card className="p-4 border-purple-500/10 bg-card/80 backdrop-blur-sm hover:border-purple-500/30 transition-all">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-lg border-2 border-white/20 relative" style={{ backgroundColor: horse.color }}>
+                <div className="w-10 h-10 rounded-lg border-2 border-amber-300/70 relative" style={{ backgroundColor: horse.color }}>
                   <div className="absolute -inset-1 rounded-xl blur-md opacity-30" style={{ backgroundColor: horse.color }} />
                 </div>
                 <div>

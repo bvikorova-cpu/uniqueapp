@@ -80,7 +80,7 @@ export const HorseAuctionHouse = () => {
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-2xl font-black flex items-center gap-2">
-            <Gavel className="h-6 w-6 text-amber-400" /> Horse Auction House
+            <Gavel className="h-6 w-6 text-amber-700" /> Horse Auction House
           </h2>
           <p className="text-muted-foreground text-sm">Buy & sell champion horses on the open market</p>
         </div>
@@ -107,10 +107,10 @@ export const HorseAuctionHouse = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
             >
-              <Card className="p-4 border-purple-500/10 bg-card/80 backdrop-blur-sm hover:border-amber-500/30 transition-all">
+              <Card className="p-4 border-purple-500/10 bg-card/80 backdrop-blur-sm hover:border-amber-400/70 transition-all">
                 <div className="flex items-start gap-3 mb-3">
                   <div className="relative">
-                    <div className="w-14 h-14 rounded-xl border-2 border-white/20" style={{ backgroundColor: listing.horses?.color }} />
+                    <div className="w-14 h-14 rounded-xl border-2 border-amber-300/70" style={{ backgroundColor: listing.horses?.color }} />
                     <div className="absolute -inset-1 rounded-xl blur-md opacity-30" style={{ backgroundColor: listing.horses?.color }} />
                   </div>
                   <div className="flex-1">
@@ -126,11 +126,11 @@ export const HorseAuctionHouse = () => {
                   <span className="flex items-center gap-0.5"><Zap className="h-3 w-3 text-yellow-400" /> {listing.horses?.speed_stat}</span>
                   <span className="flex items-center gap-0.5"><Heart className="h-3 w-3 text-blue-400" /> {listing.horses?.stamina_stat}</span>
                   <span className="flex items-center gap-0.5"><TrendingUp className="h-3 w-3 text-orange-400" /> {listing.horses?.acceleration_stat}</span>
-                  <span className="text-amber-400">🏆 {listing.horses?.race_wins}W</span>
+                  <span className="text-amber-700">🏆 {listing.horses?.race_wins}W</span>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-lg font-black text-amber-400">{listing.price_coins} Credits</span>
+                  <span className="text-lg font-black text-amber-700">{listing.price_coins} Credits</span>
                   <Button size="sm" onClick={() => { if (!user) { navigate("/auth"); return; } buyHorse.mutate(listing.id); }}
                     disabled={buyHorse.isPending}
                     className="bg-gradient-to-r from-purple-600 to-amber-600 text-white"

@@ -106,7 +106,7 @@ export default function HorseRacing() {
       <div className="grid grid-cols-3 gap-2 md:gap-3 mt-6">
         {[
           { icon: Flame, label: "Win Streak", value: `${horses?.[0]?.total_wins || 0}`, sub: "Best horse", color: "text-red-400", glow: "shadow-red-500/20" },
-          { icon: Crown, label: "Stable Size", value: `${horses?.length || 0}`, sub: "Horses owned", color: "text-amber-400", glow: "shadow-amber-500/20" },
+          { icon: Crown, label: "Stable Size", value: `${horses?.length || 0}`, sub: "Horses owned", color: "text-amber-700", glow: "shadow-amber-500/20" },
           { icon: Trophy, label: "Victories", value: `${horses?.reduce((s, h) => s + (h.total_wins || 0), 0) || 0}`, sub: "Total wins", color: "text-emerald-400", glow: "shadow-emerald-500/20" },
         ].map((s, i) => (
           <motion.div key={s.label}
@@ -114,14 +114,14 @@ export default function HorseRacing() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 + i * 0.1, type: "spring" }}
           >
-            <Card className={`p-3 sm:p-4 text-center bg-slate-900/60 border-amber-500/15 backdrop-blur-sm hover:border-amber-400/30 transition-all shadow-lg ${s.glow}`}>
-              <div className="relative mx-auto w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-slate-800/60 border border-white/5 flex items-center justify-center mb-2">
+            <Card className={`p-3 sm:p-4 text-center bg-white border-amber-300/50 backdrop-blur-sm hover:border-amber-400/60 transition-all shadow-lg ${s.glow}`}>
+              <div className="relative mx-auto w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-amber-50 border border-amber-200/60 flex items-center justify-center mb-2">
                 <s.icon className={`w-5 h-5 sm:w-6 sm:h-6 ${s.color}`} />
                 <div className={`absolute -inset-2 rounded-xl blur-md opacity-20 ${s.color.replace('text-', 'bg-')}`} />
               </div>
-              <p className="text-[10px] font-mono text-amber-400/40 uppercase tracking-wider">{s.label}</p>
-              <p className="text-xl sm:text-2xl font-black font-mono text-white">{s.value}</p>
-              <p className="text-[9px] font-mono text-amber-400/30">{s.sub}</p>
+              <p className="text-[10px] font-mono text-amber-700/60 uppercase tracking-wider">{s.label}</p>
+              <p className="text-xl sm:text-2xl font-black font-mono text-slate-900">{s.value}</p>
+              <p className="text-[9px] font-mono text-amber-700/50">{s.sub}</p>
             </Card>
           </motion.div>
         ))}
@@ -142,26 +142,26 @@ export default function HorseRacing() {
             transition={{ delay: 0.7 + i * 0.03, type: "spring" }}
           >
             <Card
-              className="relative overflow-hidden p-4 cursor-pointer bg-slate-900/60 border-amber-500/10 backdrop-blur-sm hover:border-amber-400/30 hover:scale-[1.03] transition-all group"
+              className="relative overflow-hidden p-4 cursor-pointer bg-white border-amber-300/50 backdrop-blur-sm hover:border-amber-400/60 hover:scale-[1.03] transition-all group"
               onClick={() => setActiveView(tool.id)}
             >
               {/* Top gradient bar */}
               <div className={`absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r ${tool.gradient} opacity-60 group-hover:opacity-100 transition-opacity`} />
               
               <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${tool.gradient} flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 transition-transform`}>
-                <tool.icon className="w-5 h-5 text-white" />
+                <tool.icon className="w-5 h-5 text-slate-900" />
               </div>
-              <h3 className="font-bold font-mono text-sm text-white">{tool.label}</h3>
-              <p className="text-[10px] font-mono text-amber-400/40 mt-0.5">{tool.desc}</p>
+              <h3 className="font-bold font-mono text-sm text-slate-900">{tool.label}</h3>
+              <p className="text-[10px] font-mono text-amber-700/60 mt-0.5">{tool.desc}</p>
             </Card>
           </motion.div>
         ))}
       </div>
 
       {/* Legal */}
-      <Card className="mt-6 p-3 bg-slate-900/40 border-amber-500/10">
-        <p className="text-[10px] font-mono text-amber-400/40">
-          ⚖️ <strong className="text-amber-400/60">Legal Notice:</strong> Skill-based racing • Legal virtual economy • No gambling • Virtual currency cannot be exchanged for real money
+      <Card className="mt-6 p-3 bg-white/70 border-amber-300/50">
+        <p className="text-[10px] font-mono text-amber-700/60">
+          ⚖️ <strong className="text-amber-700">Legal Notice:</strong> Skill-based racing • Legal virtual economy • No gambling • Virtual currency cannot be exchanged for real money
         </p>
       </Card>
     </>
@@ -170,8 +170,8 @@ export default function HorseRacing() {
   const renderStable = () => (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-black font-mono flex items-center gap-2 text-white">
-          <Swords className="h-6 w-6 text-amber-400" /> My Stable
+        <h2 className="text-2xl font-black font-mono flex items-center gap-2 text-slate-900">
+          <Swords className="h-6 w-6 text-amber-700" /> My Stable
         </h2>
         <Button onClick={() => requireAuth(() => setShowBuyHorse(true))}
           className="bg-gradient-to-r from-amber-600 to-red-600 text-white font-mono text-xs uppercase tracking-wider"
@@ -183,12 +183,12 @@ export default function HorseRacing() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {horses?.map((horse, i) => (
           <motion.div key={horse.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-            <Card className="p-4 bg-slate-900/60 border-amber-500/10 backdrop-blur-sm hover:border-amber-400/30 transition-all">
+            <Card className="p-4 bg-white border-amber-300/50 backdrop-blur-sm hover:border-amber-400/60 transition-all">
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="font-bold font-mono text-white">{horse.name}</h3>
-                  <p className="text-xs font-mono text-amber-400/50 capitalize">{horse.breed}</p>
-                  <p className="text-[10px] font-mono text-amber-400">Level {horse.level}</p>
+                  <h3 className="font-bold font-mono text-slate-900">{horse.name}</h3>
+                  <p className="text-xs font-mono text-amber-700/70 capitalize">{horse.breed}</p>
+                  <p className="text-[10px] font-mono text-amber-700">Level {horse.level}</p>
                 </div>
                 <div className="relative">
                   {(horse as any).image_url ? (
@@ -196,11 +196,11 @@ export default function HorseRacing() {
                       src={(horse as any).image_url}
                       alt={`${horse.name} — ${horse.breed} racehorse portrait`}
                       loading="lazy"
-                      className="w-16 h-16 rounded-lg object-cover border-2 border-amber-400/30"
+                      className="w-16 h-16 rounded-lg object-cover border-2 border-amber-400/60"
                     />
                   ) : (
                     <>
-                      <div className="w-12 h-12 rounded-lg border-2 border-amber-400/20" style={{ backgroundColor: horse.color }} />
+                      <div className="w-12 h-12 rounded-lg border-2 border-amber-400/40" style={{ backgroundColor: horse.color }} />
                       <div className="absolute -inset-1 rounded-xl blur-md opacity-30" style={{ backgroundColor: horse.color }} />
                     </>
                   )}
@@ -213,22 +213,22 @@ export default function HorseRacing() {
                   { label: "Acceleration", value: horse.acceleration_stat, color: "text-orange-400" },
                 ].map(s => (
                   <div key={s.label} className="flex justify-between text-xs font-mono">
-                    <span className="text-amber-400/50">{s.label}</span>
+                    <span className="text-amber-700/70">{s.label}</span>
                     <span className={`font-bold ${s.color}`}>{s.value}</span>
                   </div>
                 ))}
               </div>
-              <div className="mt-3 pt-2 border-t border-amber-500/10 flex items-center justify-between">
-                <span className="text-[10px] font-mono text-amber-400/40">Races: {horse.total_races} • Wins: {horse.total_wins}</span>
-                {horse.total_wins > 0 && <Trophy className="h-3.5 w-3.5 text-amber-400" />}
+              <div className="mt-3 pt-2 border-t border-amber-300/50 flex items-center justify-between">
+                <span className="text-[10px] font-mono text-amber-700/60">Races: {horse.total_races} • Wins: {horse.total_wins}</span>
+                {horse.total_wins > 0 && <Trophy className="h-3.5 w-3.5 text-amber-700" />}
               </div>
             </Card>
           </motion.div>
         ))}
         {(!horses || horses.length === 0) && (
           <div className="col-span-full text-center py-12">
-            <Zap className="w-12 h-12 mx-auto mb-3 text-amber-400/20" />
-            <p className="text-amber-400/50 font-mono text-sm">No horses yet — buy your first horse!</p>
+            <Zap className="w-12 h-12 mx-auto mb-3 text-amber-700/40" />
+            <p className="text-amber-700/70 font-mono text-sm">No horses yet — buy your first horse!</p>
           </div>
         )}
       </div>
@@ -252,15 +252,15 @@ export default function HorseRacing() {
     cards: <HorseCardCollection /> };
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-amber-50">
       <div className="max-w-7xl mx-auto px-4 py-6 pt-20 sm:pt-24 pb-28 md:pb-8">
         {activeView !== "dashboard" && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-4 flex items-center gap-3">
-            <Button variant="ghost" onClick={() => setActiveView("dashboard")} className="gap-2 font-mono text-amber-400 hover:text-amber-300 drop-shadow-md">
+            <Button variant="ghost" onClick={() => setActiveView("dashboard")} className="gap-2 font-mono text-amber-700 hover:text-amber-700 drop-shadow-md">
               <ArrowLeft className="h-4 w-4" /> Dashboard
             </Button>
             {!user && (
-              <Button onClick={() => navigate('/auth')} variant="outline" size="sm" className="ml-auto border-amber-500/20 text-amber-400 font-mono">
+              <Button onClick={() => navigate('/auth')} variant="outline" size="sm" className="ml-auto border-amber-300/60 text-amber-700 font-mono">
                 <LogIn className="h-4 w-4 mr-1" /> Sign In
               </Button>
             )}
@@ -282,19 +282,19 @@ export default function HorseRacing() {
 
       {/* Buy Horse Dialog */}
       <Dialog open={showBuyHorse} onOpenChange={setShowBuyHorse}>
-        <DialogContent className="bg-slate-900 border-amber-500/20">
+        <DialogContent className="bg-white border-amber-300/60">
           <DialogHeader>
-            <DialogTitle className="font-mono text-white">Buy New Horse</DialogTitle>
+            <DialogTitle className="font-mono text-slate-900">Buy New Horse</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label className="font-mono text-amber-400/60">Horse Name</Label>
-              <Input value={horseName} onChange={e => setHorseName(e.target.value)} placeholder="Enter name" className="bg-slate-800/60 border-amber-500/20 font-mono text-white placeholder:text-white/50" />
+              <Label className="font-mono text-amber-700">Horse Name</Label>
+              <Input value={horseName} onChange={e => setHorseName(e.target.value)} placeholder="Enter name" className="bg-amber-50 border-amber-300/60 font-mono text-slate-900 placeholder:text-slate-900/50" />
             </div>
             <div>
-              <Label className="font-mono text-amber-400/60">Breed</Label>
+              <Label className="font-mono text-amber-700">Breed</Label>
               <Select value={horseBreed} onValueChange={setHorseBreed}>
-                <SelectTrigger className="bg-slate-800/60 border-amber-500/20 font-mono text-white"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="bg-amber-50 border-amber-300/60 font-mono text-slate-900"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="thoroughbred">Thoroughbred</SelectItem>
                   <SelectItem value="arabian">Arabian</SelectItem>
@@ -304,7 +304,7 @@ export default function HorseRacing() {
               </Select>
             </div>
             <div>
-              <Label className="font-mono text-amber-400/60">Color</Label>
+              <Label className="font-mono text-amber-700">Color</Label>
               <div className="flex gap-2 mt-1">
                 {["#8B4513", "#000000", "#FFFFFF", "#808080", "#D2691E"].map(c => (
                   <button key={c} onClick={() => setHorseColor(c)}

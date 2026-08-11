@@ -25,18 +25,18 @@ export const HorseCurrencyDisplay = () => {
         ]}
       />
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
-        <Card className="relative overflow-hidden bg-slate-900/60 border-emerald-500/20 backdrop-blur-sm p-4 sm:p-6">
+        <Card className="relative overflow-hidden bg-white border-emerald-500/20 backdrop-blur-sm p-4 sm:p-6">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-400/50 to-transparent" />
 
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="relative">
-                <Sparkles className="h-7 w-7 text-amber-400" />
+                <Sparkles className="h-7 w-7 text-amber-700" />
                 <div className="absolute -inset-2 bg-amber-400/10 rounded-full blur-md" />
               </div>
               <div>
                 <p className="text-[10px] font-mono text-emerald-400/40 uppercase tracking-wider">AI Credits</p>
-                <p className="text-2xl font-bold font-mono text-white">
+                <p className="text-2xl font-bold font-mono text-slate-900">
                   {isLoading ? "…" : (currency?.credits ?? 0)}
                 </p>
               </div>
@@ -58,9 +58,9 @@ export const HorseCurrencyDisplay = () => {
               { label: "Breeding", value: HORSE_CREDIT_COSTS.breeding },
               { label: "Race entry", value: HORSE_CREDIT_COSTS.raceEntry },
             ].map((c) => (
-              <div key={c.label} className="rounded-lg bg-slate-800/40 border border-emerald-500/10 p-2">
+              <div key={c.label} className="rounded-lg bg-amber-50/70 border border-emerald-500/10 p-2">
                 <p className="text-[10px] font-mono text-emerald-400/40 uppercase">{c.label}</p>
-                <p className="text-sm font-mono font-bold text-white">{c.value} cr</p>
+                <p className="text-sm font-mono font-bold text-slate-900">{c.value} cr</p>
               </div>
             ))}
           </div>

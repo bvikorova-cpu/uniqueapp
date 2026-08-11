@@ -30,7 +30,7 @@ export const HorseLeaderboard = () => {
     refetchInterval: 10000 });
 
   const getRankStyle = (index: number) => {
-    if (index === 0) return { border: "border-amber-400/60", bg: "from-amber-950/40 to-amber-900/20", glow: "shadow-amber-500/20", badge: "🥇", color: "text-amber-300" };
+    if (index === 0) return { border: "border-amber-500/80", bg: "from-amber-950/40 to-amber-900/20", glow: "shadow-amber-500/20", badge: "🥇", color: "text-amber-700" };
     if (index === 1) return { border: "border-gray-300/40", bg: "from-gray-800/40 to-gray-900/20", glow: "shadow-gray-400/10", badge: "🥈", color: "text-gray-300" };
     if (index === 2) return { border: "border-orange-400/40", bg: "from-orange-950/30 to-orange-900/10", glow: "shadow-orange-500/10", badge: "🥉", color: "text-orange-300" };
     return { border: "border-emerald-500/15", bg: "from-slate-900/50 to-slate-950/50", glow: "", badge: null, color: "text-emerald-300" };
@@ -65,11 +65,11 @@ export const HorseLeaderboard = () => {
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="relative">
-          <Trophy className="h-6 w-6 text-amber-400" />
+          <Trophy className="h-6 w-6 text-amber-700" />
           <div className="absolute -inset-2 bg-amber-400/10 rounded-full blur-md" />
         </div>
         <div>
-          <h2 className="text-xl font-mono font-bold text-white uppercase tracking-wider">Horse Rankings</h2>
+          <h2 className="text-xl font-mono font-bold text-slate-900 uppercase tracking-wider">Horse Rankings</h2>
           <p className="text-[10px] text-emerald-400/50 font-mono uppercase tracking-[0.3em]">Top 10 Champions</p>
         </div>
       </div>
@@ -94,14 +94,14 @@ export const HorseLeaderboard = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-500/5 to-emerald-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
               {/* Rank */}
-              <div className={`flex items-center justify-center w-10 h-10 rounded-lg bg-black/40 border ${rank.border} font-mono font-bold text-lg ${rank.color} shrink-0`}>
+              <div className={`flex items-center justify-center w-10 h-10 rounded-lg bg-amber-900/10 border ${rank.border} font-mono font-bold text-lg ${rank.color} shrink-0`}>
                 {rank.badge || (index + 1)}
               </div>
               
               {/* Horse color */}
               <div className="relative shrink-0">
                 <div
-                  className="w-10 h-10 rounded-lg border-2 border-white/20"
+                  className="w-10 h-10 rounded-lg border-2 border-amber-300/70"
                   style={{ backgroundColor: horse.color }}
                 />
                 <div 
@@ -112,7 +112,7 @@ export const HorseLeaderboard = () => {
               
               {/* Info */}
               <div className="flex-1 min-w-0">
-                <p className="font-mono font-bold text-white text-sm sm:text-base truncate">{horse.name}</p>
+                <p className="font-mono font-bold text-slate-900 text-sm sm:text-base truncate">{horse.name}</p>
                 <p className="text-xs text-emerald-400/50 font-mono capitalize truncate">{horse.breed}</p>
               </div>
               
@@ -125,7 +125,7 @@ export const HorseLeaderboard = () => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-mono font-bold text-amber-400 text-sm">{horse.race_wins} W</p>
+                  <p className="font-mono font-bold text-amber-700 text-sm">{horse.race_wins} W</p>
                   <p className="text-[10px] text-emerald-400/40 font-mono">{winRate}% WR</p>
                 </div>
               </div>

@@ -63,7 +63,7 @@ const shopItems: ShopItem[] = [
   { id: 'boost_all_large', name: 'Universal Mastery', description: '+15 to all stats', icon: <Star className="h-5 w-5 text-purple-500" />, costCredits: 20, category: 'boosters', rarity: 'legendary', statBoost: { speed: 15, stamina: 15, acceleration: 15, temperament: 15 } },
   
   // Equipment
-  { id: 'equip_saddle_bronze', name: 'Bronze Racing Saddle', description: '+5% race performance', icon: <Award className="h-5 w-5 text-amber-600" />, costCredits: 6, category: 'equipment', rarity: 'common' },
+  { id: 'equip_saddle_bronze', name: 'Bronze Racing Saddle', description: '+5% race performance', icon: <Award className="h-5 w-5 text-amber-700" />, costCredits: 6, category: 'equipment', rarity: 'common' },
   { id: 'equip_saddle_silver', name: 'Silver Racing Saddle', description: '+10% race performance', icon: <Award className="h-5 w-5 text-gray-400" />, costCredits: 12, category: 'equipment', rarity: 'rare' },
   { id: 'equip_saddle_gold', name: 'Gold Racing Saddle', description: '+15% race performance', icon: <Award className="h-5 w-5 text-yellow-500" />, costCredits: 10, category: 'equipment', rarity: 'epic' },
   { id: 'equip_saddle_diamond', name: 'Diamond Racing Saddle', description: '+25% race performance', icon: <Award className="h-5 w-5 text-cyan-400" />, costCredits: 24, category: 'equipment', rarity: 'legendary' },
@@ -83,11 +83,11 @@ const shopItems: ShopItem[] = [
   { id: 'premium_lucky_charm', name: 'Lucky Charm', description: '+10% chance to win races', icon: <Sparkles className="h-5 w-5 text-green-500" />, costCredits: 12, category: 'premium', rarity: 'epic' },
   { id: 'premium_vip_pass', name: 'VIP Racing Pass', description: 'Access to exclusive VIP races for 30 days', icon: <Crown className="h-5 w-5 text-yellow-500" />, costCredits: 32, category: 'premium', rarity: 'legendary' },
   { id: 'premium_breeding_boost', name: 'Breeding Enhancer', description: 'Higher stat offspring chance', icon: <Heart className="h-5 w-5 text-pink-500" />, costCredits: 16, category: 'premium', rarity: 'epic' },
-  { id: 'premium_training_master', name: 'Training Master', description: 'Double training stat gains for 7 days', icon: <Trophy className="h-5 w-5 text-amber-500" />, costCredits: 14, category: 'premium', rarity: 'epic' },
+  { id: 'premium_training_master', name: 'Training Master', description: 'Double training stat gains for 7 days', icon: <Trophy className="h-5 w-5 text-amber-700" />, costCredits: 14, category: 'premium', rarity: 'epic' },
   { id: 'premium_stable_expand', name: 'Stable Expansion', description: '+5 horse capacity permanently', icon: <Award className="h-5 w-5 text-blue-500" />, costCredits: 24, category: 'premium', rarity: 'legendary' },
   
   // Mystery Boxes
-  { id: 'mystery_bronze', name: 'Bronze Mystery Box', description: 'Contains random common items', icon: <Gift className="h-5 w-5 text-amber-600" />, costCredits: 3, category: 'mystery', rarity: 'common' },
+  { id: 'mystery_bronze', name: 'Bronze Mystery Box', description: 'Contains random common items', icon: <Gift className="h-5 w-5 text-amber-700" />, costCredits: 3, category: 'mystery', rarity: 'common' },
   { id: 'mystery_silver', name: 'Silver Mystery Box', description: 'Contains random rare items', icon: <Gift className="h-5 w-5 text-gray-400" />, costCredits: 7, category: 'mystery', rarity: 'rare' },
   { id: 'mystery_gold', name: 'Gold Mystery Box', description: 'Contains random epic items', icon: <Gift className="h-5 w-5 text-yellow-500" />, costCredits: 4, category: 'mystery', rarity: 'epic' },
   { id: 'mystery_diamond', name: 'Diamond Mystery Box', description: 'Contains random legendary items', icon: <Gift className="h-5 w-5 text-cyan-400" />, costCredits: 12, category: 'mystery', rarity: 'legendary' },
@@ -95,7 +95,7 @@ const shopItems: ShopItem[] = [
   { id: 'mystery_ultimate', name: 'Ultimate Mystery Box', description: 'Contains 3 random legendary items!', icon: <Gift className="h-5 w-5 text-pink-500" />, costCredits: 60, category: 'mystery', rarity: 'legendary' },
 ];
 
-const rarityColors = { common: 'bg-gray-500',
+const rarityColors = { common: 'bg-amber-200',
   rare: 'bg-blue-500',
   epic: 'bg-purple-500',
   legendary: 'bg-yellow-500' };
@@ -148,7 +148,7 @@ export const HorseShop = () => {
             {item.icon}
           </div>
           {item.rarity && (
-            <Badge className={`${rarityColors[item.rarity]} text-white text-xs`}>
+            <Badge className={`${rarityColors[item.rarity]} text-slate-900 text-xs`}>
               {item.rarity}
             </Badge>
           )}

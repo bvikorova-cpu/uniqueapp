@@ -25,15 +25,15 @@ export const HorseCardCollection = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center py-16">
-        <Loader2 className="h-6 w-6 animate-spin text-amber-400" />
+        <Loader2 className="h-6 w-6 animate-spin text-amber-700" />
       </div>
     );
   }
 
   if (!category) {
     return (
-      <Card className="p-8 text-center bg-slate-900/60 border-amber-500/20">
-        <p className="font-bold mb-1 text-white">Card collection unavailable</p>
+      <Card className="p-8 text-center bg-white border-amber-300/60">
+        <p className="font-bold mb-1 text-slate-900">Card collection unavailable</p>
         <p className="text-sm text-muted-foreground">Please try again in a moment.</p>
       </Card>
     );
