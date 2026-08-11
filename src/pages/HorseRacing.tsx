@@ -43,7 +43,7 @@ const tools = [
   { id: "breeding" as const, icon: Dna, label: "Breeding Lab", desc: "Breed champions", gradient: "from-pink-500 to-rose-600" },
   { id: "championships" as const, icon: Calendar, label: "Championships", desc: "Seasonal tournaments", gradient: "from-violet-500 to-purple-600" },
   { id: "equipment" as const, icon: Wrench, label: "Equipment", desc: "Gear up your horses", gradient: "from-cyan-500 to-blue-600" },
-  { id: "quests" as const, icon: Target, label: "Daily Quests", desc: "Bonus coins & XP", gradient: "from-yellow-500 to-amber-600" },
+  { id: "quests" as const, icon: Target, label: "Daily Quests", desc: "Bonus XP rewards", gradient: "from-yellow-500 to-amber-600" },
   { id: "bloodline" as const, icon: GitBranch, label: "Bloodlines", desc: "Genealogy tree", gradient: "from-indigo-500 to-blue-600" },
   { id: "weather" as const, icon: Cloud, label: "Weather System", desc: "Breed advantages", gradient: "from-teal-500 to-cyan-600" },
   { id: "shop" as const, icon: ShoppingCart, label: "Racing Shop", desc: "Items & cosmetics", gradient: "from-orange-500 to-red-600" },
@@ -88,7 +88,7 @@ export default function HorseRacing() {
     const { chargeHorseAction } = await import("@/lib/moduleCreditActions");
     const charge = await chargeHorseAction("buy-horse", { horse_name: horseName, metadata: { breed: horseBreed, color: horseColor } });
     if (!charge.ok) return;
-    createHorse.mutate({ name: horseName, breed: horseBreed, color: horseColor, costCoins: 50 }, {
+    createHorse.mutate({ name: horseName, breed: horseBreed, color: horseColor }, {
       onSuccess: () => { setShowBuyHorse(false); setHorseName(""); },
       onError: (e: Error) => toast.error(e.message) });
   };
@@ -178,7 +178,7 @@ export default function HorseRacing() {
         <Button onClick={() => requireAuth(() => setShowBuyHorse(true))}
           className="bg-gradient-to-r from-amber-600 to-red-600 text-white font-mono text-xs uppercase tracking-wider"
         >
-          <Zap className="mr-1 h-4 w-4" /> Buy Horse (50 Coins)
+          <Zap className="mr-1 h-4 w-4" /> Buy Horse (10 Credits)
         </Button>
       </div>
 
@@ -306,7 +306,7 @@ export default function HorseRacing() {
               </div>
             </div>
             <Button onClick={handleBuyHorse} className="w-full bg-gradient-to-r from-amber-600 to-red-600 text-white font-mono uppercase tracking-wider">
-              Buy Horse — 50 Coins
+              Buy Horse — 10 Credits
             </Button>
           </div>
         </DialogContent>
