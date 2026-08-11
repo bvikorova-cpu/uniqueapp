@@ -98,8 +98,13 @@ export async function handleFairytale(
     if (!childName) return json({ error: "Child name is required" }, 400);
     if (!photo) return json({ error: "A photo is required" }, 400);
 
-    const err = await charge(GENERATE_COST, "Fairytale book — story + cover");
+    const generateCost = premium ? PREMIUM_GENERATE_COST : GENERATE_COST;
+    const err = await charge(
+      generateCost,
+      premium ? "Fairytale book — premium story + cover" : "Fairytale book — story + cover",
+    );
     if (err) return err;
+
 
     let story: { title: string; hero: string; pages: { text: string; scene: string }[] };
     try {
