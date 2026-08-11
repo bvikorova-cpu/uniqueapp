@@ -79,7 +79,9 @@ export async function handleFairytale(
   const theme = String(body.theme ?? "magical adventure").trim().slice(0, 120);
   const style = String(body.style ?? "storybook").toLowerCase();
   const premium = body.quality === "premium";
-  const styleHint = `${STYLES[style] ?? STYLES.storybook}${premium ? `\n${PREMIUM_HINT}` : ""}`;
+  const styleHint = premium
+    ? `${PREMIUM_STYLE}\n${PREMIUM_HINT}`
+    : (STYLES[style] ?? STYLES.storybook);
   const photo = typeof body.photo === "string" && body.photo.startsWith("data:image/")
     ? body.photo
     : undefined;
