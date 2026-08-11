@@ -161,7 +161,11 @@ Style: ${styleHint}. Full-bleed magical scene, no text or lettering in the image
     const pageIndex = Number(body.pageIndex ?? -1);
     if (!scene) return json({ error: "Scene description required" }, 400);
 
-    const err = await charge(ILLUSTRATE_COST, "Fairytale book — page illustration");
+    const illustrateCost = premium ? PREMIUM_ILLUSTRATE_COST : ILLUSTRATE_COST;
+    const err = await charge(
+      illustrateCost,
+      premium ? "Fairytale book — premium page illustration" : "Fairytale book — page illustration",
+    );
     if (err) return err;
 
     let image: string;
@@ -172,7 +176,9 @@ Scene: ${scene}
 ${childName ? `The hero is ${childName} — the child from the attached photo; keep their face, hair and skin tone recognizable, drawn as an illustrated character.` : ""}
 Style: ${styleHint}. No text or lettering in the image, friendly, safe and magical for children.`,
         photo,
+        premium,
       );
+
     } catch (e) {
       const msg = e instanceof Error ? e.message : "";
       if (msg === "RATE_LIMIT") return json({ error: "AI is busy right now, try again in a moment" }, 429);
