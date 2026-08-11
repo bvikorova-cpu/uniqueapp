@@ -11,6 +11,7 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { CardCollectionLeaderboard } from "@/components/collections/CardCollectionLeaderboard";
 import { CARDS_PER_CATEGORY, DRAW_COST, type CardCategory } from "@/components/collections/CardCategoryCollection";
 import { getCategoryCover } from "@/components/collections/categoryCovers";
+import { getCategoryBlurb } from "@/components/collections/categoryBlurbs";
 import cardsHeroPoster from "@/assets/collectible-cards-hero-poster.jpg";
 import cardsHeroVideo from "../../public/videos/collectible-cards-hero.mp4.asset.json";
 
