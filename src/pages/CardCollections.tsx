@@ -130,6 +130,7 @@ const CardCollections = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {categories.map((c) => {
                   const p = progress[c.slug] ?? { unique: 0, total: 0 };
+                  const blurb = getCategoryBlurb(c.slug);
                   const pct = Math.min(Math.round((p.unique / CARDS_PER_CATEGORY) * 100), 100);
                   return (
                     <Card key={c.slug} className="overflow-hidden border-border/30 bg-card/90">
