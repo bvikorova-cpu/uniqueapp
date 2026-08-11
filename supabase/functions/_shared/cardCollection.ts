@@ -507,7 +507,7 @@ export async function handleCardCollection(req: Request, preparsed?: any): Promi
       if (missing.length === 1 && pool.length > 1) {
         let reveal = false;
         if (drawsSoFar >= FINAL_TARGET_DRAWS) reveal = true;
-        else if (drawsSoFar > FINAL_TARGET_DRAWS - 1000) {
+        else if (drawsSoFar > FINAL_TARGET_DRAWS - 200) {
           reveal = Math.random() < 1 / (FINAL_TARGET_DRAWS - drawsSoFar + 1);
         }
         if (!reveal) eligible = pool.filter((c: any) => c.id !== missing[0].id);
