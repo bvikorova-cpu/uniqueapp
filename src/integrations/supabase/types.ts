@@ -30803,6 +30803,66 @@ export type Database = {
         }
         Relationships: []
       }
+      horse_duels: {
+        Row: {
+          challenger_horse_id: string
+          challenger_time: number | null
+          challenger_user_id: string
+          created_at: string
+          credits_spent: number
+          credits_won: number
+          id: string
+          log: Json
+          opponent_horse_id: string
+          opponent_time: number | null
+          opponent_user_id: string
+          winner_horse_id: string | null
+        }
+        Insert: {
+          challenger_horse_id: string
+          challenger_time?: number | null
+          challenger_user_id: string
+          created_at?: string
+          credits_spent?: number
+          credits_won?: number
+          id?: string
+          log?: Json
+          opponent_horse_id: string
+          opponent_time?: number | null
+          opponent_user_id: string
+          winner_horse_id?: string | null
+        }
+        Update: {
+          challenger_horse_id?: string
+          challenger_time?: number | null
+          challenger_user_id?: string
+          created_at?: string
+          credits_spent?: number
+          credits_won?: number
+          id?: string
+          log?: Json
+          opponent_horse_id?: string
+          opponent_time?: number | null
+          opponent_user_id?: string
+          winner_horse_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "horse_duels_challenger_horse_id_fkey"
+            columns: ["challenger_horse_id"]
+            isOneToOne: false
+            referencedRelation: "horses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "horse_duels_opponent_horse_id_fkey"
+            columns: ["opponent_horse_id"]
+            isOneToOne: false
+            referencedRelation: "horses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       horse_market_listings: {
         Row: {
           buyer_id: string | null
@@ -70402,6 +70462,24 @@ export type Database = {
           rank: number
           total_votes: number
           user_id: string
+        }[]
+      }
+      get_horse_opponents: {
+        Args: { _limit?: number }
+        Returns: {
+          acceleration_stat: number
+          breed: string
+          color: string
+          id: string
+          image_url: string
+          level: number
+          name: string
+          owner_name: string
+          race_wins: number
+          speed_stat: number
+          stamina_stat: number
+          temperament_stat: number
+          total_races: number
         }[]
       }
       get_horse_quest_progress: { Args: never; Returns: Json }
