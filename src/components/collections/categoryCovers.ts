@@ -27,6 +27,16 @@ import beautyIcons from "@/assets/cards/beauty-icons.jpg";
 import fashionCouture from "@/assets/cards/fashion-couture.jpg";
 import royalPrincesses from "@/assets/cards/royal-princesses.jpg";
 import storybookFolk from "@/assets/cards/storybook-folk.jpg";
+import kidsDinoPals from "@/assets/cards/kids-dino-pals.jpg";
+import kidsRescueHeroes from "@/assets/cards/kids-rescue-heroes.jpg";
+import kidsPonySparkles from "@/assets/cards/kids-pony-sparkles.jpg";
+import kidsJungleBabies from "@/assets/cards/kids-jungle-babies.jpg";
+import kidsSpaceKiddos from "@/assets/cards/kids-space-kiddos.jpg";
+import kidsSweetTreats from "@/assets/cards/kids-sweet-treats.jpg";
+import kidsSeaBuddies from "@/assets/cards/kids-sea-buddies.jpg";
+import kidsSuperKiddos from "@/assets/cards/kids-super-kiddos.jpg";
+import kidsFarmFriends from "@/assets/cards/kids-farm-friends.jpg";
+import kidsGardenBugs from "@/assets/cards/kids-garden-bugs.jpg";
 
 
 /** Illustrated cover artwork per collectible-card category (replaces emoji icons). */
@@ -60,6 +70,16 @@ export const CATEGORY_COVERS: Record<string, string> = {
   "fashion-couture": fashionCouture,
   "royal-princesses": royalPrincesses,
   "storybook-folk": storybookFolk,
+  "kids-dino-pals": kidsDinoPals,
+  "kids-rescue-heroes": kidsRescueHeroes,
+  "kids-pony-sparkles": kidsPonySparkles,
+  "kids-jungle-babies": kidsJungleBabies,
+  "kids-space-kiddos": kidsSpaceKiddos,
+  "kids-sweet-treats": kidsSweetTreats,
+  "kids-sea-buddies": kidsSeaBuddies,
+  "kids-super-kiddos": kidsSuperKiddos,
+  "kids-farm-friends": kidsFarmFriends,
+  "kids-garden-bugs": kidsGardenBugs,
   
 };
 

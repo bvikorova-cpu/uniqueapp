@@ -155,6 +155,58 @@ export const CATEGORY_BLURBS: Record<string, CategoryBlurb> = {
     tagline: "Sprites, cobblers, witches and talking beasts",
     inside: "150 original fairytale characters painted in warm storybook illustration style.",
   },
+
+  // ── Kids Collectibles (ages 3–10, cartoon style) ──────────────────────
+  "kids-dino-pals": {
+    title: "Dino Pals",
+    tagline: "Friendly baby dinosaurs with tiny roars",
+    inside: "150 cheerful cartoon dinosaurs drawn in a soft, kid-friendly style.",
+  },
+  "kids-rescue-heroes": {
+    title: "Rescue Heroes",
+    tagline: "Fire trucks, diggers and rescue helpers",
+    inside: "150 smiling cartoon vehicles — trucks, diggers, boats, trains and helicopters.",
+  },
+  "kids-pony-sparkles": {
+    title: "Pony Sparkles",
+    tagline: "Rainbow ponies and glitter unicorns",
+    inside: "150 pastel ponies and unicorns with sparkly manes and kind hearts.",
+  },
+  "kids-jungle-babies": {
+    title: "Jungle Babies",
+    tagline: "Baby elephants, lion cubs and monkeys",
+    inside: "150 cuddly baby jungle animals on gentle, sunny adventures.",
+  },
+  "kids-space-kiddos": {
+    title: "Space Kiddos",
+    tagline: "Little astronauts, rockets and friendly aliens",
+    inside: "150 space friends: astronaut kids, rockets, planets and squishy aliens.",
+  },
+  "kids-sweet-treats": {
+    title: "Sweet Treats",
+    tagline: "Smiling cupcakes, cookies and ice creams",
+    inside: "150 happy cartoon sweets with faces, drawn in pastel candy colours.",
+  },
+  "kids-sea-buddies": {
+    title: "Sea Buddies",
+    tagline: "Bubbly fish, turtles and octopus pals",
+    inside: "150 underwater friends splashing through a bright cartoon ocean.",
+  },
+  "kids-super-kiddos": {
+    title: "Super Kiddos",
+    tagline: "Tiny caped heroes who help their friends",
+    inside: "150 little superhero kids with chunky capes, masks and kind superpowers.",
+  },
+  "kids-farm-friends": {
+    title: "Farm Friends",
+    tagline: "Cows, ducklings and piglets on a sunny farm",
+    inside: "150 happy farm animals in a cheerful meadow storybook style.",
+  },
+  "kids-garden-bugs": {
+    title: "Garden Bugs",
+    tagline: "Ladybirds, bees and snails in the flowers",
+    inside: "150 friendly little bugs exploring a bright, flowery garden.",
+  },
 };
 
 

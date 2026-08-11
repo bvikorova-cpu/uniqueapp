@@ -1,0 +1,159 @@
+import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Coins, Loader2, Sparkles } from "lucide-react";
+import { getCategoryCover } from "@/components/collections/categoryCovers";
+import { getCategoryBlurb } from "@/components/collections/categoryBlurbs";
+
+/** Slugs that belong to the kid-friendly cartoon collectible sets. */
+export const KIDS_CARD_SLUGS = [
+  "kids-dino-pals",
+  "kids-rescue-heroes",
+  "kids-pony-sparkles",
+  "kids-jungle-babies",
+  "kids-space-kiddos",
+  "kids-sweet-treats",
+  "kids-sea-buddies",
+  "kids-super-kiddos",
+  "kids-farm-friends",
+  "kids-garden-bugs",
+] as const;
+
+const CARDS_PER_SET = 150;
+
+interface KidsCategory {
+  slug: string;
+  name: string;
+  description: string | null;
+  emoji: string | null;
+  gradient: string | null;
+}
+
+/** Kids Collectibles — cartoon card sets for little collectors (boys & girls). */
+export const KidsCollectibles = () => {
+  const { data: categories = [], isLoading } = useQuery({
+    queryKey: ["kids-card-categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("card_categories")
+        .select("slug, name, description, emoji, gradient, sort_order")
+        .in("slug", KIDS_CARD_SLUGS as unknown as string[])
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return (data ?? []) as unknown as KidsCategory[];
+    },
+    staleTime: 10 * 60 * 1000,
+  });
+
+  const { data: progress = {} } = useQuery({
+    queryKey: ["kids-card-progress"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return {} as Record<string, { unique: number; total: number }>;
+      const { data, error } = await supabase
+        .from("user_card_collection")
+        .select("category_slug, copies")
+        .eq("user_id", user.id)
+        .in("category_slug", KIDS_CARD_SLUGS as unknown as string[]);
+      if (error) throw error;
+      const map: Record<string, { unique: number; total: number }> = {};
+      for (const r of (data ?? []) as { category_slug: string; copies: number }[]) {
+        const e = map[r.category_slug] ?? { unique: 0, total: 0 };
+        e.unique += 1;
+        e.total += r.copies ?? 1;
+        map[r.category_slug] = e;
+      }
+      return map;
+    },
+    staleTime: 30 * 1000,
+  });
+
+  const ownedUnique = Object.values(progress).reduce((a, b) => a + b.unique, 0);
+
+  return (
+    <div className="space-y-5">
+      <Card className="p-4 sm:p-5 border-2 border-primary/25 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-pink-400 to-sky-500 flex items-center justify-center text-2xl">
+            🃏
+          </div>
+          <div className="min-w-0">
+            <h2 className="text-lg sm:text-xl font-black">Kids Collectibles</h2>
+            <p className="text-xs text-muted-foreground">
+              10 cartoon card sets · {CARDS_PER_SET} cards each · 1,500 cards to collect
+            </p>
+          </div>
+          <Badge variant="outline" className="ml-auto gap-1 border-border/40">
+            <Coins className="h-3 w-3" /> 1 cr / draw
+          </Badge>
+        </div>
+        <p className="text-[11px] text-muted-foreground mt-3">
+          Hand-drawn cartoon characters for younger collectors — dinos, rescue trucks, ponies, jungle
+          babies, space friends, sweets, sea buddies, super kids, farm animals and garden bugs.
+          You own {ownedUnique} unique kids card{ownedUnique === 1 ? "" : "s"}.
+        </p>
+      </Card>
+
+      {isLoading ? (
+        <div className="flex justify-center py-10">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {categories.map((cat) => {
+            const blurb = getCategoryBlurb(cat.slug);
+            const cover = getCategoryCover(cat.slug);
+            const owned = progress[cat.slug] ?? { unique: 0, total: 0 };
+            const pct = Math.round((owned.unique / CARDS_PER_SET) * 100);
+            return (
+              <Card key={cat.slug} className="overflow-hidden border-border/40 bg-card/90">
+                <div className="relative aspect-video bg-muted">
+                  {cover ? (
+                    <img
+                      src={cover}
+                      alt={`${blurb?.title ?? cat.name} kids collectible card cover`}
+                      loading="lazy"
+                      width={1024}
+                      height={1024}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-4xl">
+                      {cat.emoji ?? "🃏"}
+                    </div>
+                  )}
+                  <Badge className="absolute top-2 right-2 bg-white/85 text-foreground border-0">
+                    {owned.unique}/{CARDS_PER_SET}
+                  </Badge>
+                </div>
+                <div className="p-4 space-y-2">
+                  <h3 className="font-extrabold text-base">
+                    {cat.emoji} {blurb?.title ?? cat.name}
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    {blurb?.tagline ?? cat.description}
+                  </p>
+                  <Progress value={pct} className="h-1.5" />
+                  <p className="text-[11px] text-muted-foreground">
+                    {blurb?.inside}
+                  </p>
+                  <Button asChild size="sm" className="w-full gap-2">
+                    <Link to={`/card-collections/${cat.slug}`}>
+                      <Sparkles className="h-4 w-4" /> Open &amp; draw a card
+                    </Link>
+                  </Button>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default KidsCollectibles;

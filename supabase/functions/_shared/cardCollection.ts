@@ -154,6 +154,39 @@ const STYLE_DETAILS = [
   "beaded headpiece", "single dramatic feather", "delicate gold chain veil",
 ];
 
+/** Kids-collectible axes — soft cartoon variety for very young collectors. */
+const KIDS_COLOURS = [
+  "sunny yellow and mint", "bubblegum pink and cream", "sky blue and white",
+  "grass green and lemon", "peach and lavender", "turquoise and coral",
+  "strawberry red and vanilla", "soft purple and butter yellow",
+  "orange and pale blue", "pastel rainbow mix",
+];
+const KIDS_POSES = [
+  "waving happily with one paw up", "jumping in the air with joy",
+  "sitting down giggling", "peeking out from behind a flower",
+  "hugging a tiny plush toy", "napping curled up with a smile",
+  "balancing on one foot", "holding a colourful balloon",
+  "clapping with both hands", "sliding down a tiny rainbow",
+];
+const KIDS_SETTINGS = [
+  "sunny flowery meadow", "cosy bedroom with toys", "friendly little playground",
+  "fluffy cloud in a blue sky", "birthday party with bunting",
+  "shallow puddle after rain", "cheerful picnic blanket",
+  "sandcastle beach", "snowy garden with a tiny snowman",
+  "starry night nursery window",
+];
+const KIDS_EXTRAS = [
+  "wearing a tiny party hat", "with a polka-dot bow", "with a striped scarf",
+  "holding a little flower", "with rosy cheeks and freckles", "with a small backpack",
+  "with a shiny star sticker", "wearing spotty wellies",
+  "with a tiny crown of daisies", "with a chunky knitted jumper",
+];
+const KIDS_SLUGS = [
+  "kids-dino-pals", "kids-rescue-heroes", "kids-pony-sparkles", "kids-jungle-babies",
+  "kids-space-kiddos", "kids-sweet-treats", "kids-sea-buddies", "kids-super-kiddos",
+  "kids-farm-friends", "kids-garden-bugs",
+];
+
 const SPORT_SCENES: Record<string, string[]> = {
   "football-legends": [
     "striking the ball at a floodlit night stadium", "celebrating with arms wide on wet turf",
@@ -231,6 +264,17 @@ function cardPrompt(card: Record<string, any>, cat: Record<string, any>) {
       `${palette}, ${render}, ${card.rarity} rarity energy accents. The athlete must look unmistakably different ` +
       `from every other card in the set — different face, body, skin tone, kit colours, pose and stadium. ` +
       `Fictional player only, never a real athlete, no team crests, no jersey numbers, no sponsor logos. ${ORIGINALITY}`;
+  }
+
+  // Kids Collectibles: gentle cartoon look, always safe and adorable.
+  if (KIDS_SLUGS.includes(String(cat.slug ?? ""))) {
+    return `${format}. Adorable cartoon collectible card illustration for young children of "${card.name}", ` +
+      `a completely original friendly ${card.subject} from the ${cat.name} collection (${cat.description}), ` +
+      `${pick(KIDS_POSES, seed, 6)}, ${pick(KIDS_EXTRAS, seed, 7)}, in a ${pick(KIDS_SETTINGS, seed, 8)}, ` +
+      `${pick(KIDS_COLOURS, seed, 9)} colour scheme. ${cat.art_style}. Thick soft outlines, big friendly eyes, ` +
+      `rounded shapes, cheerful and gentle, flat storybook cartoon look, absolutely nothing scary, ` +
+      `no weapons, no blood, no realistic textures. Make this character clearly different from every other card ` +
+      `in the set — different colours, pose, accessory and background. ${ORIGINALITY}`;
   }
 
   // Beauty / fashion / princess / fairytale collections get their own look axes.
