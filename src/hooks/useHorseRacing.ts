@@ -127,8 +127,8 @@ export const useUserHorses = () => {
     mutationFn: async ({ name, breed, color }: {
       name: string; breed: string; color: string;
     }) => {
-      const { data, error } = await supabase.functions.invoke("horse-create", {
-        body: { name, breed, color } });
+      const { data, error } = await supabase.functions.invoke("horse-router", {
+        body: { action: "create", name, breed, color } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       return data.horse;
@@ -181,8 +181,8 @@ export const useJoinRace = () => {
     mutationFn: async ({ raceId, horseId, strategy }: {
       raceId: string; horseId: string; strategy: string;
     }) => {
-      const { data, error } = await supabase.functions.invoke("horse-join-race", {
-        body: { raceId, horseId, strategy } });
+      const { data, error } = await supabase.functions.invoke("horse-router", {
+        body: { action: "join_race", raceId, horseId, strategy } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       return data.participant;
@@ -204,8 +204,8 @@ export const useTrainHorse = () => {
       horseId: string;
       statType: 'speed' | 'stamina' | 'acceleration' | 'temperament';
     }) => {
-      const { data, error } = await supabase.functions.invoke("horse-train", {
-        body: { horseId, statType } });
+      const { data, error } = await supabase.functions.invoke("horse-router", {
+        body: { action: "train", horseId, statType } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       return { statType: data.statType, newValue: data.newValue };
