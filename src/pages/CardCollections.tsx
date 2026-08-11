@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Clock, Coins, LayoutGrid, Loader2, Trophy } from "lucide-react";
+import { Clock, Coins, Crown, LayoutGrid, Loader2, Trophy } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { CardCollectionLeaderboard } from "@/components/collections/CardCollectionLeaderboard";
 import { CARDS_PER_CATEGORY, DRAW_COST, type CardCategory } from "@/components/collections/CardCategoryCollection";
@@ -115,6 +115,12 @@ const CardCollections = () => {
           <p className="text-[11px] text-muted-foreground mt-3">
             You own {totalUnique} unique card{totalUnique === 1 ? "" : "s"} across all collections.
           </p>
+          <Button asChild variant="outline" size="sm" className="mt-3 gap-2">
+            <Link to="/card-collections/gallery">
+              <Crown className="h-4 w-4" /> Collection details &amp; Prime gallery
+            </Link>
+          </Button>
+
         </Card>
 
         <Tabs defaultValue="collections">

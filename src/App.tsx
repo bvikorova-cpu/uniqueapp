@@ -292,6 +292,7 @@ import { ResetPassword,
   CharacterInventoryPage,
   CardCollections,
   CardCollectionCategory,
+  CardCollectionsGallery,
 
   BrainDuel,
   VirtualEscapeRoom,
@@ -926,7 +927,9 @@ const App = () => {
                         <Route path="/character-arena" element={<CharacterArena />} />
                         <Route path="/character-inventory" element={<CharacterInventoryPage />} />
                         <Route path="/card-collections" element={<CardCollections />} />
+                        <Route path="/card-collections/gallery" element={<CardCollectionsGallery />} />
                         <Route path="/card-collections/:slug" element={<CardCollectionCategory />} />
+
 
                         <Route path="/arena-hub" element={<Navigate to="/character-arena" replace />} />
                         <Route path="/mystery-box" element={<MysteryBox />} />
