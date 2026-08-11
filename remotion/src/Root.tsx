@@ -14,7 +14,7 @@ import { AIToolsFilm, AITOOLS_DURATION } from "./AIToolsFilm";
 import { MysticalFilm, MYSTICAL_DURATION } from "./MysticalFilm";
 import { SocialFilm, SOCIAL_DURATION } from "./SocialFilm";
 import { HealthFilm, HEALTH_DURATION } from "./HealthFilm";
-import { SportsFilm, SPORTS_DURATION } from "./SportsFilm";
+
 import { EntertainmentFilm, ENTERTAINMENT_DURATION } from "./EntertainmentFilm";
 import { InfluKingFilm, INFLUKING_DURATION } from "./InfluKingFilm";
 import { InfluKingCinematic, INFLUKING_CINEMATIC_DURATION } from "./InfluKingCinematic";
@@ -141,14 +141,6 @@ export const RemotionRoot = () => (
       id="health-film"
       component={HealthFilm}
       durationInFrames={HEALTH_DURATION}
-      fps={30}
-      width={1080}
-      height={1920}
-    />
-    <Composition
-      id="sports-film"
-      component={SportsFilm}
-      durationInFrames={SPORTS_DURATION}
       fps={30}
       width={1080}
       height={1920}

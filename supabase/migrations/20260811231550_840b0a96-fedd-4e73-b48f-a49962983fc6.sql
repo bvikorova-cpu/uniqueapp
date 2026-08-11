@@ -1,0 +1,54 @@
+DROP TABLE IF EXISTS public.american_football_league_standings CASCADE;
+DROP TABLE IF EXISTS public.american_football_leagues CASCADE;
+DROP TABLE IF EXISTS public.american_football_transfers CASCADE;
+DROP TABLE IF EXISTS public.american_football_training_sessions CASCADE;
+DROP TABLE IF EXISTS public.american_football_matches CASCADE;
+DROP TABLE IF EXISTS public.american_football_equipment CASCADE;
+DROP TABLE IF EXISTS public.american_football_players CASCADE;
+DROP TABLE IF EXISTS public.american_football_stadiums CASCADE;
+DROP TABLE IF EXISTS public.american_football_teams CASCADE;
+DROP TABLE IF EXISTS public.american_football_coins CASCADE;
+
+DROP TABLE IF EXISTS public.tennis_league_standings CASCADE;
+DROP TABLE IF EXISTS public.tennis_leagues CASCADE;
+DROP TABLE IF EXISTS public.tennis_transfers CASCADE;
+DROP TABLE IF EXISTS public.tennis_training_sessions CASCADE;
+DROP TABLE IF EXISTS public.tennis_matches CASCADE;
+DROP TABLE IF EXISTS public.tennis_equipment CASCADE;
+DROP TABLE IF EXISTS public.tennis_players CASCADE;
+DROP TABLE IF EXISTS public.tennis_stadiums CASCADE;
+DROP TABLE IF EXISTS public.tennis_teams CASCADE;
+DROP TABLE IF EXISTS public.tennis_coins CASCADE;
+
+DROP TABLE IF EXISTS public.basketball_league_standings CASCADE;
+DROP TABLE IF EXISTS public.basketball_leagues CASCADE;
+DROP TABLE IF EXISTS public.basketball_transfers CASCADE;
+DROP TABLE IF EXISTS public.basketball_training_sessions CASCADE;
+DROP TABLE IF EXISTS public.basketball_matches CASCADE;
+DROP TABLE IF EXISTS public.basketball_equipment CASCADE;
+DROP TABLE IF EXISTS public.basketball_players CASCADE;
+DROP TABLE IF EXISTS public.basketball_stadiums CASCADE;
+DROP TABLE IF EXISTS public.basketball_teams CASCADE;
+DROP TABLE IF EXISTS public.basketball_coins CASCADE;
+
+DROP TABLE IF EXISTS public.hockey_league_standings CASCADE;
+DROP TABLE IF EXISTS public.hockey_leagues CASCADE;
+DROP TABLE IF EXISTS public.hockey_transfers CASCADE;
+DROP TABLE IF EXISTS public.hockey_training_sessions CASCADE;
+DROP TABLE IF EXISTS public.hockey_matches CASCADE;
+DROP TABLE IF EXISTS public.hockey_equipment CASCADE;
+DROP TABLE IF EXISTS public.hockey_players CASCADE;
+DROP TABLE IF EXISTS public.hockey_stadiums CASCADE;
+DROP TABLE IF EXISTS public.hockey_teams CASCADE;
+DROP TABLE IF EXISTS public.hockey_coins CASCADE;
+
+DROP TABLE IF EXISTS public.football_league_standings CASCADE;
+DROP TABLE IF EXISTS public.football_leagues CASCADE;
+DROP TABLE IF EXISTS public.football_transfers CASCADE;
+DROP TABLE IF EXISTS public.football_training_sessions CASCADE;
+DROP TABLE IF EXISTS public.football_matches CASCADE;
+DROP TABLE IF EXISTS public.football_equipment CASCADE;
+DROP TABLE IF EXISTS public.football_players CASCADE;
+DROP TABLE IF EXISTS public.football_stadiums CASCADE;
+DROP TABLE IF EXISTS public.football_teams CASCADE;
+DROP TABLE IF EXISTS public.football_coins CASCADE;

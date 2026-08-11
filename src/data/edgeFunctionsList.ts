@@ -333,7 +333,6 @@ export const EDGE_FUNCTIONS: string[] = [
   "shadow-arena-router",
   "skill-swap-ai",
   "skill-swap-parity",
-  "spend-sport-coins",
   "stock-ai-tags",
   "stock-content-ai",
   "stock-similar-search",

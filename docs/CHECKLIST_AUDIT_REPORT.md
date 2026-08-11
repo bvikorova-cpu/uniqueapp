@@ -162,7 +162,7 @@
 - ✅ `/admin/tipsters` nájdená v src/App.tsx:788 → src/pages/AdminTipsters.tsx
 - ✅ `/admin/sports-matches` → src/pages/AdminSportsMatches.tsx
 - ✅ `/tipster-dashboard`, `/my-purchased-tips`, `/lottery-ai`, `/lottery-history` prítomné
-- ✅ `supabase/functions/generate-sports-prediction`, `spend-sport-coins` prítomné
+- ✅ `supabase/functions/generate-sports-prediction` prítomné
 - ❌ rozbité: `/sports` hub route chýba – checklist hovorí „/sports" s match list a live score; routa je `/sports-predictor`
 
 ---
@@ -171,7 +171,7 @@
 
 - ✅ routa `/games` nájdená v src/App.tsx:688 → src/pages/Games.tsx
 - ✅ routa `/games-hub` nájdená v src/App.tsx:689 → src/pages/GamesHub.tsx
-- ✅ `/brain-duel`, `/character-arena`, `/virtual-escape-room`, `/horse-racing`, `/football-arena`, atď. prítomné
+- ✅ `/brain-duel`, `/character-arena`, `/virtual-escape-room`, `/horse-racing`, atď. prítomné
 
 ---
 

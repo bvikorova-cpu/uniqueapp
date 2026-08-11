@@ -314,32 +314,6 @@ async function applyPurchase(
     return;
   }
 
-  // Generic coins handler — sport coins
-  if (productType.endsWith("_coins") && coins > 0) { const sportMap: Record<string, string> = {
-      football_coins: "football_coins",
-      basketball_coins: "basketball_coins",
-      hockey_coins: "hockey_coins",
-      tennis_coins: "tennis_coins",
-      af_coins: "american_football_coins" };
-    const table = sportMap[productType];
-    if (table) {
-      // @ts-ignore
-      const { data: existing } = await db.from(table).select("*").eq("user_id", userId).maybeSingle();
-      if (existing) { // @ts-ignore
-        await db.from(table)
-          .update({
-            balance: (existing.balance ?? 0) + coins,
-            total_purchased: (existing.total_purchased ?? 0) + coins })
-          .eq("user_id", userId);
-      } else { // @ts-ignore
-        await db.from(table).insert({
-          user_id: userId,
-          balance: coins,
-          total_purchased: coins });
-      }
-    }
-    return;
-  }
 
   // AI Personality Clone subscriptions — record in clone_subscriptions
   if (productType === "clone_subscription" && md.tier) {
