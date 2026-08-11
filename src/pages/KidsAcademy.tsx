@@ -40,7 +40,7 @@ const KidsAcademy = () => {
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-6xl mx-auto">
-          <KidsAcademyHero />
+          {activeTab !== "cards" && <KidsAcademyHero />}
 
 
           <HeroRewardedAd sectionKey="page_kidsacademy" />

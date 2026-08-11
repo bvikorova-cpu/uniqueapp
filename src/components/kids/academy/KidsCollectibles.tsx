@@ -9,6 +9,7 @@ import { Coins, Download, Loader2, Sparkles } from "lucide-react";
 import { downloadCardImage } from "@/lib/downloadCardImage";
 import { getCategoryCover } from "@/components/collections/categoryCovers";
 import { getCategoryBlurb } from "@/components/collections/categoryBlurbs";
+import heroVideo from "@/assets/kids-collectibles-hero.mp4.asset.json";
 
 /** Slugs that belong to the kid-friendly cartoon collectible sets. */
 export const KIDS_CARD_SLUGS = [
@@ -83,6 +84,29 @@ export const KidsCollectibles = () => {
 
   return (
     <div className="space-y-5">
+      {/* Hero video */}
+      <div className="relative overflow-hidden rounded-3xl border-2 border-primary/25 shadow-lg">
+        <video
+          src={heroVideo.url}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          className="w-full h-[220px] sm:h-[340px] object-cover"
+          aria-label="Kids Collectibles hero animation"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/25 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7">
+          <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-foreground drop-shadow">
+            Kids Collectibles
+          </h1>
+          <p className="mt-1 text-xs sm:text-sm text-muted-foreground max-w-xl">
+            16 magical card sets · {CARDS_PER_SET} cards each · 2,400 cards to collect
+          </p>
+        </div>
+      </div>
+
       <Card className="p-4 sm:p-5 border-2 border-primary/25 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10">
         <div className="flex flex-wrap items-center gap-3">
           <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-pink-400 to-sky-500 flex items-center justify-center text-2xl">
