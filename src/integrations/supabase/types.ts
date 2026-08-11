@@ -30802,6 +30802,33 @@ export type Database = {
           },
         ]
       }
+      horse_quest_claims: {
+        Row: {
+          created_at: string
+          id: string
+          period_key: string
+          quest_id: string
+          user_id: string
+          xp_awarded: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          period_key: string
+          quest_id: string
+          user_id: string
+          xp_awarded?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          period_key?: string
+          quest_id?: string
+          user_id?: string
+          xp_awarded?: number
+        }
+        Relationships: []
+      }
       horse_race_entries: {
         Row: {
           action_type: string
@@ -30899,6 +30926,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      horse_training_log: {
+        Row: {
+          created_at: string
+          horse_id: string | null
+          id: string
+          stat_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          horse_id?: string | null
+          id?: string
+          stat_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          horse_id?: string | null
+          id?: string
+          stat_type?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       horses: {
         Row: {
@@ -69652,6 +69703,7 @@ export type Database = {
           member_number: number
         }[]
       }
+      claim_horse_quest: { Args: { _quest_id: string }; Returns: Json }
       claim_iq_battle_pass_tier: { Args: { _tier: number }; Returns: Json }
       claim_iq_daily_streak: { Args: never; Returns: Json }
       claim_iq_streak_reward: { Args: { _day: number }; Returns: Json }
@@ -70307,6 +70359,7 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_horse_quest_progress: { Args: never; Returns: Json }
       get_influencer_audience_insights: {
         Args: { _influencer_id: string }
         Returns: Json
