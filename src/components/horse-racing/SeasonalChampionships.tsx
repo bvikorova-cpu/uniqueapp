@@ -43,8 +43,8 @@ export const SeasonalChampionships = () => {
 
   const enrollMutation = useMutation({
     mutationFn: async ({ seasonId, horseId }: { seasonId: string; horseId: string }) => {
-      const { data, error } = await supabase.functions.invoke("horse-championship-enroll", {
-        body: { seasonId, horseId } });
+      const { data, error } = await supabase.functions.invoke("horse-router", {
+        body: { action: "championship_enroll", seasonId, horseId } });
       if (error) throw error;
       return data;
     },

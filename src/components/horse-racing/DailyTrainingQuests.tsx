@@ -60,8 +60,8 @@ export const DailyTrainingQuests = () => {
 
   const claimReward = useMutation({
     mutationFn: async (questId: string) => {
-      const { data, error } = await supabase.functions.invoke("horse-claim-quest-reward", {
-        body: { questId } });
+      const { data, error } = await supabase.functions.invoke("horse-router", {
+        body: { action: "claim_quest_reward", questId } });
       if (error) throw error;
       return data;
     },

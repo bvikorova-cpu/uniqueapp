@@ -67,8 +67,8 @@ export const HorseEquipmentSystem = () => {
 
   const purchaseEquipment = useMutation({
     mutationFn: async ({ itemId, horseId }: { itemId: string; horseId: string }) => {
-      const { data, error } = await supabase.functions.invoke("horse-purchase-equipment", {
-        body: { itemId, horseId } });
+      const { data, error } = await supabase.functions.invoke("horse-router", {
+        body: { action: "purchase_equipment", itemId, horseId } });
       if (error) throw error;
       return data;
     },
