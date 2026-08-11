@@ -29,12 +29,16 @@ const EQUIPMENT_CREDITS: Record<string, number> = {
   "premium-saddle": 10, "golden-horseshoes": 16, "champion-armor": 20,
   // saddles
   saddle_leather: 3, saddle_carbon: 8, saddle_champion: 18, saddle_legendary: 40,
+  saddle_royal: 180, saddle_titan: 900, saddle_eternal: 2600, saddle_aureum: 4800,
   // horseshoes
   shoe_iron: 2, shoe_titanium: 7, shoe_diamond: 16, shoe_mythic: 36,
+  shoe_storm: 150, shoe_void: 850, shoe_solaris: 2400,
   // bridles
   bridle_basic: 2, bridle_pro: 6, bridle_master: 14,
+  bridle_grandmaster: 120, bridle_celestial: 800, bridle_dominion: 2200,
   // blankets
-  blanket_wool: 3, blanket_silk: 7, blanket_champion: 16 };
+  blanket_wool: 3, blanket_silk: 7, blanket_champion: 16,
+  blanket_imperial: 140, blanket_phoenix: 880, blanket_infinity: 3000 };
 
 const HORSE_ACTIONS = ["ping", "create", "breed", "train", "join_race", "purchase_equipment", "championship_enroll", "claim_quest_reward"];
 
