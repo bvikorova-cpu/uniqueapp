@@ -3,7 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Coins, Clock, Layers, Loader2, Users, Sparkles } from "lucide-react";
+import { Coins, Clock, Layers, Loader2, Users, Sparkles, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { downloadCardImage } from "@/lib/downloadCardImage";
 import type { CardCategory, CollectibleCard } from "./CardCategoryCollection";
 
 const RARITY_LABEL: Record<string, string> = {
@@ -94,7 +96,18 @@ export const CardDetailModal = ({ card, category, totalCards, onClose }: Props) 
                     Not collected yet
                   </div>
                 )}
-              </div>
+                </div>
+
+                {card.image_url && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full gap-2 sm:col-start-1"
+                    onClick={() => downloadCardImage(card.image_url!, `${category.name}-${card.name}`)}
+                  >
+                    <Download className="h-4 w-4" /> Download card image
+                  </Button>
+                )}
 
               <div className="space-y-4">
                 <div className="flex flex-wrap gap-2">
