@@ -107,7 +107,7 @@ export const DailyTrainingQuests = () => {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <h3 className="font-bold font-mono text-sm text-slate-900 truncate">{quest.title}</h3>
-                {completed && <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />}
+                {completed && <CheckCircle2 className="h-4 w-4 text-emerald-700 shrink-0" />}
               </div>
               <p className="text-[10px] text-amber-700/60 font-mono mb-2">{quest.description}</p>
               

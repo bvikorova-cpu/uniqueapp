@@ -80,7 +80,7 @@ const shopItems: ShopItem[] = [
   // Premium Items
   { id: 'premium_xp_boost', name: 'XP Multiplier (24h)', description: 'Double XP for 24 hours', icon: <Star className="h-5 w-5 text-yellow-500" />, costCredits: 4, category: 'premium', rarity: 'rare' },
   { id: 'premium_xp_boost_week', name: 'XP Multiplier (7 days)', description: 'Double XP for 7 days', icon: <Star className="h-5 w-5 text-yellow-500" />, costCredits: 20, category: 'premium', rarity: 'epic' },
-  { id: 'premium_lucky_charm', name: 'Lucky Charm', description: '+10% chance to win races', icon: <Sparkles className="h-5 w-5 text-green-500" />, costCredits: 12, category: 'premium', rarity: 'epic' },
+  { id: 'premium_lucky_charm', name: 'Lucky Charm', description: '+10% chance to win races', icon: <Sparkles className="h-5 w-5 text-emerald-700" />, costCredits: 12, category: 'premium', rarity: 'epic' },
   { id: 'premium_vip_pass', name: 'VIP Racing Pass', description: 'Access to exclusive VIP races for 30 days', icon: <Crown className="h-5 w-5 text-yellow-500" />, costCredits: 32, category: 'premium', rarity: 'legendary' },
   { id: 'premium_breeding_boost', name: 'Breeding Enhancer', description: 'Higher stat offspring chance', icon: <Heart className="h-5 w-5 text-pink-500" />, costCredits: 16, category: 'premium', rarity: 'epic' },
   { id: 'premium_training_master', name: 'Training Master', description: 'Double training stat gains for 7 days', icon: <Trophy className="h-5 w-5 text-amber-700" />, costCredits: 14, category: 'premium', rarity: 'epic' },

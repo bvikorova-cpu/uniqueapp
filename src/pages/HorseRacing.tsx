@@ -107,7 +107,7 @@ export default function HorseRacing() {
         {[
           { icon: Flame, label: "Win Streak", value: `${horses?.[0]?.total_wins || 0}`, sub: "Best horse", color: "text-red-400", glow: "shadow-red-500/20" },
           { icon: Crown, label: "Stable Size", value: `${horses?.length || 0}`, sub: "Horses owned", color: "text-amber-700", glow: "shadow-amber-500/20" },
-          { icon: Trophy, label: "Victories", value: `${horses?.reduce((s, h) => s + (h.total_wins || 0), 0) || 0}`, sub: "Total wins", color: "text-emerald-400", glow: "shadow-emerald-500/20" },
+          { icon: Trophy, label: "Victories", value: `${horses?.reduce((s, h) => s + (h.total_wins || 0), 0) || 0}`, sub: "Total wins", color: "text-emerald-700", glow: "shadow-emerald-500/20" },
         ].map((s, i) => (
           <motion.div key={s.label}
             initial={{ opacity: 0, y: 20 }}

@@ -32,7 +32,7 @@ export const TrainingCamp = () => {
       <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-black flex items-center gap-2">
-          <Dumbbell className="h-6 w-6 text-emerald-400" /> Training Camp
+          <Dumbbell className="h-6 w-6 text-emerald-700" /> Training Camp
         </h2>
         <p className="text-muted-foreground text-sm">Train your horses to improve stats. Cost: 2 credits per session</p>
       </div>
