@@ -120,6 +120,7 @@ const FairytaleBook = () => {
           scene: pages[index]?.scene,
           childName: childName.trim(),
           style,
+          quality,
           photo,
         },
       });
@@ -127,7 +128,8 @@ const FairytaleBook = () => {
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
       const image = (data as { image: string }).image;
       setPages((p) => p.map((pg, i) => (i === index ? { ...pg, image } : pg)));
-      toast({ title: "Illustration added", description: "3 credits used." });
+      toast({ title: "Illustration added", description: `${quality === "premium" ? 8 : 3} credits used.` });
+
     } catch (e) {
       handleError(e);
     } finally {
