@@ -130,7 +130,9 @@ The hero is the child from the attached photo — keep their face, hair and skin
 Theme: ${theme}. ${story.hero ?? ""}
 Style: ${styleHint}. Full-bleed magical scene, no text or lettering in the image, friendly and safe for children.`,
         photo,
+        premium,
       );
+
     } catch (e) {
       const msg = e instanceof Error ? e.message : "";
       if (msg === "RATE_LIMIT") return json({ error: "AI is busy right now, try again in a moment" }, 429);
