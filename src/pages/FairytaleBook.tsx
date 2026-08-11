@@ -242,6 +242,42 @@ const FairytaleBook = () => {
                   ))}
                 </div>
               </div>
+
+              <div>
+                <p className="text-xs font-semibold mb-1.5">Illustration quality</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setQuality("standard")}
+                    className={`text-left rounded-xl border p-3 transition ${
+                      quality === "standard" ? "border-primary bg-primary/10" : "hover:border-primary/50"
+                    }`}
+                  >
+                    <span className="block text-xs font-black">Standard</span>
+                    <span className="block text-[11px] text-muted-foreground mt-0.5">
+                      Fast illustrated storybook look. 10 credits + 3 per page.
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setQuality("premium")}
+                    className={`text-left rounded-xl border p-3 transition ${
+                      quality === "premium" ? "border-accent bg-accent/10" : "hover:border-accent/50"
+                    }`}
+                  >
+                    <span className="flex items-center gap-1.5 text-xs font-black">
+                      <Sparkles className="w-3.5 h-3.5 text-accent" />Premium
+                      <Badge className="ml-1 bg-gradient-to-r from-primary to-accent text-white text-[10px] px-1.5 py-0">
+                        Best likeness
+                      </Badge>
+                    </span>
+                    <span className="block text-[11px] text-muted-foreground mt-0.5">
+                      Cinematic 3D film quality, face closely matches the photo. 25 credits + 8 per page.
+                    </span>
+                  </button>
+                </div>
+              </div>
+
             </div>
           </div>
 
