@@ -129,8 +129,8 @@ Exactly 5 pages. No violence, no fear, happy ending. The hero's name must be use
     let cover: string | null = null;
     try {
       cover = await generateIllustration(
-        `Children's picture-book cover illustration titled "${story.title}".
-The hero is the child from the attached photo — keep their face, hair and skin tone recognizable, drawn as an illustrated character (not a photo).
+        `${premium ? "Photorealistic cinematic 3D-rendered children's picture-book cover" : "Children's picture-book cover illustration"} titled "${story.title}".
+The hero is the child from the attached photo — keep their face, hair and skin tone recognizable, rendered as ${premium ? "a realistic 3D character" : "an illustrated character (not a photo)"}.
 Theme: ${theme}. ${story.hero ?? ""}
 Style: ${styleHint}. Full-bleed magical scene, no text or lettering in the image, friendly and safe for children.`,
         photo,
@@ -175,9 +175,9 @@ Style: ${styleHint}. Full-bleed magical scene, no text or lettering in the image
     let image: string;
     try {
       image = await generateIllustration(
-        `Children's picture-book page illustration.
+        `${premium ? "Photorealistic cinematic 3D-rendered children's picture-book page" : "Children's picture-book page illustration"}.
 Scene: ${scene}
-${childName ? `The hero is ${childName} — the child from the attached photo; keep their face, hair and skin tone recognizable, drawn as an illustrated character.` : ""}
+${childName ? `The hero is ${childName} — the child from the attached photo; keep their face, hair and skin tone recognizable, rendered as ${premium ? "a realistic 3D character" : "an illustrated character"}.` : ""}
 Style: ${styleHint}. No text or lettering in the image, friendly, safe and magical for children.`,
         photo,
         premium,
