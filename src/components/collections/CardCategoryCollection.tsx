@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CardCollectionLeaderboard } from "./CardCollectionLeaderboard";
 import { CardDetailModal } from "./CardDetailModal";
 import { getCategoryCover } from "./categoryCovers";
+import { getCategoryBlurb } from "./categoryBlurbs";
 
 
 import { warmCollectionCardImages, readCachedCategory, writeCachedCategory } from "@/lib/collectionCardCache";
