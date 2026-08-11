@@ -169,12 +169,6 @@ const SPORT_SCENES: Record<string, string[]> = {
     "punch shot out of the pines", "raising a putter after holing out",
     "iron shot over water with a mirrored reflection", "misty highland fairway in early light",
   ],
-  "cricket-legends": [
-    "cover drive on a sunbaked pitch", "fast bowler mid-delivery leap",
-    "spin bowler releasing with a twisted wrist", "wicketkeeper diving for a catch",
-    "raising the bat after a century", "boundary fielder sliding on green outfield",
-    "night match under white floodlights", "batting stance in heavy heat haze",
-  ],
 };
 
 function cardPrompt(card: Record<string, any>, cat: Record<string, any>) {

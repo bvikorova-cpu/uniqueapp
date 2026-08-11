@@ -135,11 +135,6 @@ export const CATEGORY_BLURBS: Record<string, CategoryBlurb> = {
     tagline: "Fairway artists in the morning dew",
     inside: "150 invented golfers rated for driving, accuracy, short game, putting and composure.",
   },
-  "cricket-legends": {
-    title: "Cricket Legends",
-    tagline: "Pitch legends of the long game",
-    inside: "150 invented cricketers rated for batting, bowling, fielding, spin and endurance.",
-  },
 };
 
 
