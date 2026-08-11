@@ -40,6 +40,8 @@ const FairytaleBook = () => {
   const [childName, setChildName] = useState("");
   const [theme, setTheme] = useState(THEMES[0]);
   const [style, setStyle] = useState("storybook");
+  const [quality, setQuality] = useState<"standard" | "premium">("standard");
+
   const [loading, setLoading] = useState(false);
   const [illustrating, setIllustrating] = useState<number | null>(null);
   const [title, setTitle] = useState<string | null>(null);
@@ -89,7 +91,7 @@ const FairytaleBook = () => {
     setTitle(null);
     try {
       const { data, error } = await supabase.functions.invoke("kids-router", {
-        body: { action: "fairytale.generate", childName: childName.trim(), theme, style, photo },
+        body: { action: "fairytale.generate", childName: childName.trim(), theme, style, quality, photo },
       });
       if (error) throw new Error((data as { error?: string })?.error || error.message);
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
@@ -98,7 +100,8 @@ const FairytaleBook = () => {
       setTitle(res.title);
       setPages(res.pages ?? []);
       setCover(res.cover);
-      toast({ title: "Your book is ready!", description: "10 credits used." });
+      toast({ title: "Your book is ready!", description: `${quality === "premium" ? 25 : 10} credits used.` });
+
     } catch (e) {
       handleError(e);
     } finally {
@@ -117,6 +120,7 @@ const FairytaleBook = () => {
           scene: pages[index]?.scene,
           childName: childName.trim(),
           style,
+          quality,
           photo,
         },
       });
@@ -124,7 +128,8 @@ const FairytaleBook = () => {
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
       const image = (data as { image: string }).image;
       setPages((p) => p.map((pg, i) => (i === index ? { ...pg, image } : pg)));
-      toast({ title: "Illustration added", description: "3 credits used." });
+      toast({ title: "Illustration added", description: `${quality === "premium" ? 8 : 3} credits used.` });
+
     } catch (e) {
       handleError(e);
     } finally {
@@ -172,7 +177,7 @@ const FairytaleBook = () => {
           <div className="flex items-center gap-2 mb-4">
             <BookOpen className="w-5 h-5 text-primary" />
             <h2 className="font-black text-lg">Create your book</h2>
-            <Badge variant="secondary" className="ml-auto">10 credits</Badge>
+            <Badge variant="secondary" className="ml-auto">{quality === "premium" ? "25 credits" : "10 credits"}</Badge>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-4">
@@ -237,6 +242,42 @@ const FairytaleBook = () => {
                   ))}
                 </div>
               </div>
+
+              <div>
+                <p className="text-xs font-semibold mb-1.5">Illustration quality</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setQuality("standard")}
+                    className={`text-left rounded-xl border p-3 transition ${
+                      quality === "standard" ? "border-primary bg-primary/10" : "hover:border-primary/50"
+                    }`}
+                  >
+                    <span className="block text-xs font-black">Standard</span>
+                    <span className="block text-[11px] text-muted-foreground mt-0.5">
+                      Fast illustrated storybook look. 10 credits + 3 per page.
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setQuality("premium")}
+                    className={`text-left rounded-xl border p-3 transition ${
+                      quality === "premium" ? "border-accent bg-accent/10" : "hover:border-accent/50"
+                    }`}
+                  >
+                    <span className="flex items-center gap-1.5 text-xs font-black">
+                      <Sparkles className="w-3.5 h-3.5 text-accent" />Premium
+                      <Badge className="ml-1 bg-gradient-to-r from-primary to-accent text-white text-[10px] px-1.5 py-0">
+                        Best likeness
+                      </Badge>
+                    </span>
+                    <span className="block text-[11px] text-muted-foreground mt-0.5">
+                      Cinematic 3D film quality, face closely matches the photo. 25 credits + 8 per page.
+                    </span>
+                  </button>
+                </div>
+              </div>
+
             </div>
           </div>
 
@@ -312,7 +353,7 @@ const FairytaleBook = () => {
                       {illustrating === i ? (
                         <><Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />Drawing…</>
                       ) : (
-                        <><ImagePlus className="w-3.5 h-3.5 mr-1.5" />{p.image ? "Redraw" : "Illustrate"} (3)</>
+                        <><ImagePlus className="w-3.5 h-3.5 mr-1.5" />{p.image ? "Redraw" : "Illustrate"} ({quality === "premium" ? 8 : 3})</>
                       )}
                     </Button>
                     {p.image && (

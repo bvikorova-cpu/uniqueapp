@@ -6,7 +6,10 @@ import { askAIJSON } from "../_shared/unifiedAI.ts";
 
 const GENERATE_COST = 10;
 const ILLUSTRATE_COST = 3;
+const PREMIUM_GENERATE_COST = 25;
+const PREMIUM_ILLUSTRATE_COST = 8;
 const IMAGE_MODEL = "google/gemini-3.1-flash-image";
+const PREMIUM_IMAGE_MODEL = "google/gemini-3-pro-image";
 
 const STYLES: Record<string, string> = {
   watercolor: "soft watercolor children's book illustration, pastel palette, dreamy glow",
@@ -16,7 +19,13 @@ const STYLES: Record<string, string> = {
   anime: "soft anime / ghibli-inspired illustration, gentle cel shading",
 };
 
-async function generateIllustration(prompt: string, photoDataUrl?: string): Promise<string> {
+const PREMIUM_HINT = `Premium quality: high-end 3D animated feature-film look, hyper-detailed but child-friendly, semi-realistic facial features that closely resemble the child in the attached photo (same eye colour and shape, hair colour, curl pattern, skin tone, freckles, smile), soft subsurface skin shading, individual hair strands, cinematic depth of field, volumetric golden light, rich painterly background detail, printed-picture-book quality.`;
+
+async function generateIllustration(
+  prompt: string,
+  photoDataUrl?: string,
+  premium = false,
+): Promise<string> {
   const content: unknown[] = [{ type: "text", text: prompt }];
   if (photoDataUrl) content.push({ type: "image_url", image_url: { url: photoDataUrl } });
 
@@ -27,7 +36,7 @@ async function generateIllustration(prompt: string, photoDataUrl?: string): Prom
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: IMAGE_MODEL,
+      model: premium ? PREMIUM_IMAGE_MODEL : IMAGE_MODEL,
       messages: [{ role: "user", content }],
       modalities: ["image", "text"],
     }),
@@ -48,6 +57,7 @@ async function generateIllustration(prompt: string, photoDataUrl?: string): Prom
   return `data:image/png;base64,${b64}`;
 }
 
+
 type Ctx = {
   admin: any;
   userId: string;
@@ -66,10 +76,12 @@ export async function handleFairytale(
   const childName = String(body.childName ?? "").trim().slice(0, 40);
   const theme = String(body.theme ?? "magical adventure").trim().slice(0, 120);
   const style = String(body.style ?? "storybook").toLowerCase();
-  const styleHint = STYLES[style] ?? STYLES.storybook;
+  const premium = body.quality === "premium";
+  const styleHint = `${STYLES[style] ?? STYLES.storybook}${premium ? `\n${PREMIUM_HINT}` : ""}`;
   const photo = typeof body.photo === "string" && body.photo.startsWith("data:image/")
     ? body.photo
     : undefined;
+
 
   const charge = async (amount: number, reason: string) => {
     const res = await spendAiCredits(admin, userId, amount, reason, "fairytale-book");
@@ -86,8 +98,13 @@ export async function handleFairytale(
     if (!childName) return json({ error: "Child name is required" }, 400);
     if (!photo) return json({ error: "A photo is required" }, 400);
 
-    const err = await charge(GENERATE_COST, "Fairytale book — story + cover");
+    const generateCost = premium ? PREMIUM_GENERATE_COST : GENERATE_COST;
+    const err = await charge(
+      generateCost,
+      premium ? "Fairytale book — premium story + cover" : "Fairytale book — story + cover",
+    );
     if (err) return err;
+
 
     let story: { title: string; hero: string; pages: { text: string; scene: string }[] };
     try {
@@ -113,7 +130,9 @@ The hero is the child from the attached photo — keep their face, hair and skin
 Theme: ${theme}. ${story.hero ?? ""}
 Style: ${styleHint}. Full-bleed magical scene, no text or lettering in the image, friendly and safe for children.`,
         photo,
+        premium,
       );
+
     } catch (e) {
       const msg = e instanceof Error ? e.message : "";
       if (msg === "RATE_LIMIT") return json({ error: "AI is busy right now, try again in a moment" }, 429);
@@ -133,7 +152,7 @@ Style: ${styleHint}. Full-bleed magical scene, no text or lettering in the image
       .select("id")
       .maybeSingle();
 
-    return json({ bookId: saved?.id ?? null, title: story.title, pages, cover, cost: GENERATE_COST });
+    return json({ bookId: saved?.id ?? null, title: story.title, pages, cover, cost: generateCost, premium });
   }
 
   if (sub === "illustrate") {
@@ -142,7 +161,11 @@ Style: ${styleHint}. Full-bleed magical scene, no text or lettering in the image
     const pageIndex = Number(body.pageIndex ?? -1);
     if (!scene) return json({ error: "Scene description required" }, 400);
 
-    const err = await charge(ILLUSTRATE_COST, "Fairytale book — page illustration");
+    const illustrateCost = premium ? PREMIUM_ILLUSTRATE_COST : ILLUSTRATE_COST;
+    const err = await charge(
+      illustrateCost,
+      premium ? "Fairytale book — premium page illustration" : "Fairytale book — page illustration",
+    );
     if (err) return err;
 
     let image: string;
@@ -153,7 +176,9 @@ Scene: ${scene}
 ${childName ? `The hero is ${childName} — the child from the attached photo; keep their face, hair and skin tone recognizable, drawn as an illustrated character.` : ""}
 Style: ${styleHint}. No text or lettering in the image, friendly, safe and magical for children.`,
         photo,
+        premium,
       );
+
     } catch (e) {
       const msg = e instanceof Error ? e.message : "";
       if (msg === "RATE_LIMIT") return json({ error: "AI is busy right now, try again in a moment" }, 429);
@@ -174,7 +199,7 @@ Style: ${styleHint}. No text or lettering in the image, friendly, safe and magic
       }
     }
 
-    return json({ image, cost: ILLUSTRATE_COST });
+    return json({ image, cost: illustrateCost, premium });
   }
 
   return json({ error: "Unknown action" }, 400);
