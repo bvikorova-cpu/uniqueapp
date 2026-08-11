@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { BookOpen, Upload, Loader2, Sparkles, Gem, ImagePlus, Download, FileDown } from "lucide-react";
 import { FairytaleHero } from "@/components/fairytale/FairytaleHero";
+import sampleStandard from "@/assets/fairytale-sample-standard.jpg";
+import samplePremium from "@/assets/fairytale-sample-premium.jpg";
 
 
 type Page = { text: string; scene: string; image?: string };
@@ -245,6 +247,7 @@ const FairytaleBook = () => {
 
               <div>
                 <p className="text-xs font-semibold mb-1.5">Illustration quality</p>
+                <p className="text-[11px] text-muted-foreground mb-2">Compare the samples below before you choose.</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <button
                     type="button"
@@ -253,6 +256,14 @@ const FairytaleBook = () => {
                       quality === "standard" ? "border-primary bg-primary/10" : "hover:border-primary/50"
                     }`}
                   >
+                    <img
+                      src={sampleStandard}
+                      alt="Standard quality fairytale illustration sample: hand-drawn storybook style"
+                      loading="lazy"
+                      width={816}
+                      height={816}
+                      className="w-full aspect-square object-cover rounded-lg mb-2"
+                    />
                     <span className="block text-xs font-black">Standard</span>
                     <span className="block text-[11px] text-muted-foreground mt-0.5">
                       Fast illustrated storybook look. 10 credits + 3 per page.
@@ -265,6 +276,14 @@ const FairytaleBook = () => {
                       quality === "premium" ? "border-accent bg-accent/10" : "hover:border-accent/50"
                     }`}
                   >
+                    <img
+                      src={samplePremium}
+                      alt="Premium quality fairytale illustration sample: cinematic 3D film-like render"
+                      loading="lazy"
+                      width={816}
+                      height={816}
+                      className="w-full aspect-square object-cover rounded-lg mb-2"
+                    />
                     <span className="flex items-center gap-1.5 text-xs font-black">
                       <Sparkles className="w-3.5 h-3.5 text-accent" />Premium
                       <Badge className="ml-1 bg-gradient-to-r from-primary to-accent text-white text-[10px] px-1.5 py-0">
@@ -277,6 +296,7 @@ const FairytaleBook = () => {
                   </button>
                 </div>
               </div>
+
 
             </div>
           </div>
