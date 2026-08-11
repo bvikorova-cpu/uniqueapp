@@ -22,6 +22,12 @@ export const KIDS_CARD_SLUGS = [
   "kids-super-kiddos",
   "kids-farm-friends",
   "kids-garden-bugs",
+  "kids3d-magic-pets",
+  "kids3d-unicorn-kingdom",
+  "kids3d-fairy-blossoms",
+  "kids3d-baby-dragons",
+  "kids3d-robot-mates",
+  "kids3d-dino-explorers",
 ] as const;
 
 const CARDS_PER_SET = 150;
@@ -85,7 +91,7 @@ export const KidsCollectibles = () => {
           <div className="min-w-0">
             <h2 className="text-lg sm:text-xl font-black">Kids Collectibles</h2>
             <p className="text-xs text-muted-foreground">
-              10 cartoon card sets · {CARDS_PER_SET} cards each · 1,500 cards to collect
+              16 card sets · {CARDS_PER_SET} cards each · 2,400 cards to collect
             </p>
           </div>
           <Badge variant="outline" className="ml-auto gap-1 border-border/40">
@@ -93,8 +99,10 @@ export const KidsCollectibles = () => {
           </Badge>
         </div>
         <p className="text-[11px] text-muted-foreground mt-3">
-          Hand-drawn cartoon characters for younger collectors — dinos, rescue trucks, ponies, jungle
-          babies, space friends, sweets, sea buddies, super kids, farm animals and garden bugs.
+          Ten hand-drawn cartoon sets (dinos, rescue trucks, ponies, jungle babies, space friends,
+          sweets, sea buddies, super kids, farm animals, garden bugs) plus six new cinematic 3D
+          animated-movie sets for girls and boys — magic pets, unicorns, fairies, baby dragons,
+          robots and dino explorers.
           You own {ownedUnique} unique kids card{ownedUnique === 1 ? "" : "s"}.
         </p>
       </Card>
