@@ -280,12 +280,12 @@ export default function HorseRacing() {
           <div className="space-y-4">
             <div>
               <Label className="font-mono text-amber-400/60">Horse Name</Label>
-              <Input value={horseName} onChange={e => setHorseName(e.target.value)} placeholder="Enter name" className="bg-slate-800/60 border-amber-500/20 font-mono" />
+              <Input value={horseName} onChange={e => setHorseName(e.target.value)} placeholder="Enter name" className="bg-slate-800/60 border-amber-500/20 font-mono text-white placeholder:text-white/50" />
             </div>
             <div>
               <Label className="font-mono text-amber-400/60">Breed</Label>
               <Select value={horseBreed} onValueChange={setHorseBreed}>
-                <SelectTrigger className="bg-slate-800/60 border-amber-500/20 font-mono"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="bg-slate-800/60 border-amber-500/20 font-mono text-white"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="thoroughbred">Thoroughbred</SelectItem>
                   <SelectItem value="arabian">Arabian</SelectItem>
