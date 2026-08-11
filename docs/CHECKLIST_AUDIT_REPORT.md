@@ -171,7 +171,7 @@
 
 - ✅ routa `/games` nájdená v src/App.tsx:688 → src/pages/Games.tsx
 - ✅ routa `/games-hub` nájdená v src/App.tsx:689 → src/pages/GamesHub.tsx
-- ✅ `/brain-duel`, `/character-arena`, `/virtual-escape-room`, `/horse-racing`, `/football-arena`, atď. prítomné
+- ✅ `/brain-duel`, `/character-arena`, `/virtual-escape-room`, `/horse-racing`, atď. prítomné
 
 ---
 

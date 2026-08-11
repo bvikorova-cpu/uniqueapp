@@ -348,10 +348,6 @@
 - [ ] Streak + XP integration
 - [ ] AI coach chat — daily credit limit
 
-## 37. 37. Tennis Arena & Sports
-- [ ] /tennis-arena: match scheduling, leaderboard
-- [ ] Bet/predict (sportCoins.ts) — kontrola limitov
-- [ ] Live score updates real-time
 
 ## 38. 38. Brain Duel & IQ Challenge
 - [ ] /brain-duel: vyzvi friend, real-time quiz
@@ -477,11 +473,6 @@
 - [ ] Refund cez admin – sleduj webhook.
 - [ ] Pridaj event ako organizátor – schvaľovacie workflow.
 
-## 57. 57. Tennis Arena
-- [ ] /tennis – tréningový plán, vyber drill, sleduj progress.
-- [ ] TacticsBoard – drag&drop; hráčov, ulož formáciu.
-- [ ] TransferMarket – kúpa hráča za SportCoins.
-- [ ] Match simulation – over BattlePower výpočet.
 - [ ] Leaderboard týždenný – over reset v pondelok.
 
 ## 58. 58. Brain Duel & IQ Challenge
@@ -1247,9 +1238,6 @@
 - [ ] Over že obsahuje aktívne job postings
 - [ ] Valid XML, < 50MB, < 50k URLs
 
-## 192. 192. Tennis Arena Buttons
-- [ ] Otvor /tennis-arena
-- [ ] Všetky CTA fungujú (Join Tournament, Buy Equipment, Watch Live)
 
 ## 193. 193. Vacationer No Secret Santa
 - [ ] Vytvor vacationer profile

@@ -83,7 +83,7 @@ const ROUTES: { section: string; path: string }[] = [
   { section: "hub", path: "/jobs" },
   { section: "hub", path: "/comedy-club" },
   { section: "hub", path: "/f1-racing" },
-  { section: "hub", path: "/tennis-arena" },
+  
   { section: "hub", path: "/sports" },
   { section: "hub", path: "/live" },
   { section: "hub", path: "/concerts" },
