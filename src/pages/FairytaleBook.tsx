@@ -91,13 +91,26 @@ const FairytaleBook = () => {
       toast({ title: "Photo needed", description: "Upload a clear face photo.", variant: "destructive" });
       return;
     }
+    if (useCustom && customStory.trim().length < 15) {
+      toast({ title: "Story too short", description: "Describe your story idea in a sentence or two.", variant: "destructive" });
+      return;
+    }
     setLoading(true);
     setPages([]);
     setCover(null);
     setTitle(null);
     try {
       const { data, error } = await supabase.functions.invoke("kids-router", {
-        body: { action: "fairytale.generate", childName: childName.trim(), theme, style, quality, photo },
+        body: {
+          action: "fairytale.generate",
+          childName: childName.trim(),
+          theme,
+          customStory: useCustom ? customStory.trim() : "",
+          traits: useCustom ? traits.trim() : "",
+          style,
+          quality,
+          photo,
+        },
       });
       if (error) throw new Error((data as { error?: string })?.error || error.message);
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
