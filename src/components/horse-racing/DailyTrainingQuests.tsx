@@ -43,20 +43,20 @@ export const DailyTrainingQuests = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { data: questProgress = {}, isLoading } = useQuery({
-    queryKey: ["daily-quest-progress"],
+  const { data: questData, isLoading } = useQuery({
+    queryKey: ["horse-quest-progress", user?.id],
+    enabled: !!user,
+    staleTime: 15_000,
     queryFn: async () => {
-      const { data: { user: u } } = await supabase.auth.getUser();
-      if (!u) return {};
-      const { data } = await (supabase as any)
-        .from("horse_daily_quests")
-        .select("*")
-        .eq("user_id", u.id)
-        .gte("created_at", new Date().toISOString().split("T")[0]);
-      const progress: Record<string, number> = {};
-      data?.forEach((q: any) => { progress[q.quest_id] = q.progress || 0; });
-      return progress;
+      const { data, error } = await (supabase as any).rpc("get_horse_quest_progress");
+      if (error) throw error;
+      return {
+        progress: (data?.progress ?? {}) as Record<string, number>,
+        claimed: new Set<string>((data?.claimed ?? []) as string[]) };
     } });
+
+  const questProgress = questData?.progress ?? {};
+  const claimedIds = questData?.claimed ?? new Set<string>();
 
   const claimReward = useMutation({
     mutationFn: async (questId: string) => {
@@ -67,7 +67,7 @@ export const DailyTrainingQuests = () => {
     },
     onSuccess: (_, questId) => {
       toast.success("Quest reward claimed!");
-      queryClient.invalidateQueries({ queryKey: ["daily-quest-progress"] });
+      queryClient.invalidateQueries({ queryKey: ["horse-quest-progress"] });
       queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
     },
     onError: (e: Error) => toast.error(e.message) });
@@ -75,7 +75,8 @@ export const DailyTrainingQuests = () => {
   const getQuestStatus = (quest: Quest) => {
     const progress = (questProgress as Record<string, number>)[quest.id] || 0;
     const completed = progress >= quest.requirement;
-    return { progress, completed, percentage: Math.min((progress / quest.requirement) * 100, 100) };
+    const claimed = claimedIds.has(quest.id);
+    return { progress, completed, claimed, percentage: Math.min((progress / quest.requirement) * 100, 100) };
   };
 
   // Time until daily reset
@@ -86,7 +87,7 @@ export const DailyTrainingQuests = () => {
   const minutesLeft = Math.floor(((resetTime.getTime() - now.getTime()) % (1000 * 60 * 60)) / (1000 * 60));
 
   const renderQuestCard = (quest: Quest, i: number) => {
-    const { progress, completed, percentage } = getQuestStatus(quest);
+    const { progress, completed, claimed, percentage } = getQuestStatus(quest);
     
     return (
     <>
@@ -132,7 +133,11 @@ export const DailyTrainingQuests = () => {
               </div>
             </div>
 
-            {completed && (
+            {completed && claimed && (
+              <Badge variant="secondary" className="font-mono text-[10px] shrink-0">Claimed</Badge>
+            )}
+
+            {completed && !claimed && (
               <Button size="sm" onClick={() => {
                 if (!user) { navigate("/auth"); return; }
                 claimReward.mutate(quest.id);
@@ -164,6 +169,17 @@ export const DailyTrainingQuests = () => {
           <span className="text-xs font-mono text-amber-700">{hoursLeft}h {minutesLeft}m</span>
         </div>
       </div>
+
+      {!user && (
+        <Card className="p-4 bg-white/70 border-amber-300/50">
+          <p className="text-xs font-mono text-amber-700">Sign in to track your quest progress.</p>
+        </Card>
+      )}
+      {user && isLoading && (
+        <p className="text-xs font-mono text-amber-700/70 flex items-center gap-2">
+          <RefreshCw className="h-3 w-3 animate-spin" /> Loading your live quest progress…
+        </p>
+      )}
 
       {/* Daily Quests */}
       <div>

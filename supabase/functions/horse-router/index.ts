@@ -323,6 +323,9 @@ Deno.serve(async (req) => {
           await refund(COST_TRAINING, "horse-racing:train");
           throw uErr;
         }
+        // Real quest tracking: one row per completed training session.
+        await admin.from("horse_training_log")
+          .insert({ user_id: user.id, horse_id: horseId, stat_type: statType });
         return json({ statType, newValue, creditsSpent: COST_TRAINING });
       }
 
@@ -381,9 +384,19 @@ Deno.serve(async (req) => {
       case "claim_quest_reward": {
         const { questId } = body || {};
         if (!questId) return json({ error: "Quest ID required" }, 400);
-        // Quests reward XP only — credits are never minted by gameplay.
-        const xp = 30 + Math.floor(Math.random() * 70);
-        return json({ success: true, xp, questId, message: `Quest reward claimed: +${xp} XP!` });
+        // Server validates real progress; quests reward XP only, never credits.
+        const { data: res, error: qErr } = await userClient.rpc("claim_horse_quest", { _quest_id: questId });
+        if (qErr) return json({ error: qErr.message }, 400);
+        const r = res as any;
+        if (!r?.claimed) {
+          const reason = r?.reason === "already_claimed"
+            ? "Reward already claimed for this period"
+            : r?.reason === "incomplete"
+              ? `Quest not complete yet (${r?.progress ?? 0}/${r?.requirement ?? "?"})`
+              : "Quest reward unavailable";
+          return json({ error: reason }, 400);
+        }
+        return json({ success: true, xp: r.xp, questId, message: `Quest reward claimed: +${r.xp} XP!` });
       }
 
       default:
