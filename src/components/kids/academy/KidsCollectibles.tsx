@@ -5,7 +5,8 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Coins, Loader2, Sparkles } from "lucide-react";
+import { Coins, Download, Loader2, Sparkles } from "lucide-react";
+import { downloadCardImage } from "@/lib/downloadCardImage";
 import { getCategoryCover } from "@/components/collections/categoryCovers";
 import { getCategoryBlurb } from "@/components/collections/categoryBlurbs";
 
@@ -146,6 +147,16 @@ export const KidsCollectibles = () => {
                       <Sparkles className="h-4 w-4" /> Open &amp; draw a card
                     </Link>
                   </Button>
+                  {cover && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full gap-2"
+                      onClick={() => downloadCardImage(cover, `${blurb?.title ?? cat.name}-cover`)}
+                    >
+                      <Download className="h-4 w-4" /> Download cover
+                    </Button>
+                  )}
                 </div>
               </Card>
             );
