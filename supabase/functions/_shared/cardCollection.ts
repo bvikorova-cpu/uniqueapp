@@ -126,6 +126,33 @@ const KIT_COLOURS = [
   "sunflower yellow and navy kit", "purple and silver kit", "orange and charcoal kit",
   "teal and cream kit", "maroon and grey kit", "sky blue and copper kit", "monochrome black kit",
 ];
+/** Beauty / fashion / princess / fairytale axes so every character reads as a different person. */
+const STYLE_FACES = [
+  "deep brown skin and short coiled hair", "pale freckled skin and copper waves",
+  "olive skin and long jet-black braid", "golden-tan skin and platinum bob",
+  "dark skin and locs pinned with gold cuffs", "fair skin and auburn ringlets",
+  "warm beige skin and sleek raven ponytail", "bronze skin and silver-grey pixie cut",
+  "porcelain skin and honey-blonde chignon", "amber skin and voluminous curls",
+  "cool-toned skin and blue-black undercut", "sun-freckled skin and sandy braids",
+];
+const STYLE_OUTFITS = [
+  "sculptural feathered gown", "structured metallic trench", "flowing silk cape dress",
+  "beaded velvet corset gown", "layered tulle ballgown", "tailored pinstripe suit",
+  "embroidered brocade robe", "asymmetric draped jersey dress", "lace-panelled column dress",
+  "quilted patchwork coat", "sequinned mirror-tiled dress", "hand-painted floral kimono",
+];
+const STYLE_SETTINGS = [
+  "marble palace staircase", "misty rose garden at dawn", "glass conservatory full of ferns",
+  "candle-lit ballroom", "seaside cliff terrace", "snowy courtyard with lanterns",
+  "gilded mirrored hall", "moonlit lakeside jetty", "backstage corridor of a theatre",
+  "wildflower meadow at golden hour", "cobbled village square at dusk", "starry balcony above a city",
+];
+const STYLE_DETAILS = [
+  "pearl-drop earrings", "jewelled tiara", "gilded hand fan", "embroidered gloves",
+  "flower crown of wild roses", "long silk ribbon in the hair", "antique locket",
+  "beaded headpiece", "single dramatic feather", "delicate gold chain veil",
+];
+
 const SPORT_SCENES: Record<string, string[]> = {
   "football-legends": [
     "striking the ball at a floodlit night stadium", "celebrating with arms wide on wet turf",
@@ -203,6 +230,17 @@ function cardPrompt(card: Record<string, any>, cat: Record<string, any>) {
       `${palette}, ${render}, ${card.rarity} rarity energy accents. The athlete must look unmistakably different ` +
       `from every other card in the set — different face, body, skin tone, kit colours, pose and stadium. ` +
       `Fictional player only, never a real athlete, no team crests, no jersey numbers, no sponsor logos. ${ORIGINALITY}`;
+  }
+
+  // Beauty / fashion / princess / fairytale collections get their own look axes.
+  if (["beauty-icons", "fashion-couture", "royal-princesses", "storybook-folk"].includes(String(cat.slug ?? ""))) {
+    return `${format}. Collectible trading-card illustration of "${card.name}", a completely invented ` +
+      `${card.subject} from the ${cat.name} collection (${cat.description}), with ` +
+      `${pick(STYLE_FACES, seed, 6)}, wearing a ${pick(STYLE_OUTFITS, seed, 7)} and ` +
+      `${pick(STYLE_DETAILS, seed, 8)}, in a ${pick(STYLE_SETTINGS, seed, 9)}. ` +
+      `${cat.art_style}, ${composition}, ${light}, ${palette}, ${render}, ${card.rarity} rarity energy accents. ` +
+      `Tasteful, fully clothed, elegant and family-friendly. The character must look unmistakably different from ` +
+      `every other card in the set — different face, hair, outfit, pose and setting. ${ORIGINALITY}`;
   }
 
   return `${format}. Collectible trading-card illustration of "${card.name}", an original ${card.subject} from the ${cat.name} ` +
