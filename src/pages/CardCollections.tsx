@@ -11,6 +11,7 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { CardCollectionLeaderboard } from "@/components/collections/CardCollectionLeaderboard";
 import { CARDS_PER_CATEGORY, DRAW_COST, type CardCategory } from "@/components/collections/CardCategoryCollection";
 import { getCategoryCover } from "@/components/collections/categoryCovers";
+import { getCategoryBlurb } from "@/components/collections/categoryBlurbs";
 import cardsHeroPoster from "@/assets/collectible-cards-hero-poster.jpg";
 import cardsHeroVideo from "../../public/videos/collectible-cards-hero.mp4.asset.json";
 
@@ -129,6 +130,7 @@ const CardCollections = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {categories.map((c) => {
                   const p = progress[c.slug] ?? { unique: 0, total: 0 };
+                  const blurb = getCategoryBlurb(c.slug);
                   const pct = Math.min(Math.round((p.unique / CARDS_PER_CATEGORY) * 100), 100);
                   return (
                     <Card key={c.slug} className="overflow-hidden border-border/30 bg-card/90">
@@ -160,9 +162,12 @@ const CardCollections = () => {
 
 
                       <div className="p-4 space-y-3">
-                        <div>
-                          <h2 className="font-black leading-tight">{c.name}</h2>
-                          <p className="text-xs text-muted-foreground">{c.description}</p>
+                        <div className="space-y-1">
+                          <h2 className="font-black leading-tight">{blurb?.title ?? c.name}</h2>
+                          <p className="text-xs text-muted-foreground">{blurb?.tagline ?? c.description}</p>
+                          {blurb?.inside && (
+                            <p className="text-[11px] text-muted-foreground/80">{blurb.inside}</p>
+                          )}
                         </div>
                         <div className="flex items-center gap-2">
                           <Progress value={pct} className="h-2 flex-1" />

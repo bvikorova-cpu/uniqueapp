@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CardCollectionLeaderboard } from "./CardCollectionLeaderboard";
 import { CardDetailModal } from "./CardDetailModal";
 import { getCategoryCover } from "./categoryCovers";
+import { getCategoryBlurb } from "./categoryBlurbs";
 
 
 import { warmCollectionCardImages, readCachedCategory, writeCachedCategory } from "@/lib/collectionCardCache";
@@ -280,8 +281,17 @@ export const CardCategoryCollection = ({ category }: Props) => {
           </div>
 
           <div className="min-w-0">
-            <h2 className="text-lg sm:text-xl font-black">{category.name}</h2>
-            <p className="text-xs text-muted-foreground">{category.description}</p>
+            <h2 className="text-lg sm:text-xl font-black">
+              {getCategoryBlurb(category.slug)?.title ?? category.name}
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              {getCategoryBlurb(category.slug)?.tagline ?? category.description}
+            </p>
+            {getCategoryBlurb(category.slug)?.inside && (
+              <p className="text-[11px] text-muted-foreground/80">
+                {getCategoryBlurb(category.slug)?.inside}
+              </p>
+            )}
           </div>
           <Badge variant="outline" className="ml-auto gap-1 border-border/40">
             <Coins className="h-3 w-3" /> {DRAW_COST} cr / draw
