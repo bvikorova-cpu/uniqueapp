@@ -6,28 +6,25 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const HorseLeaderboard = () => {
   const { data: topHorses = [], isLoading } = useQuery({
-    queryKey: ["horse-leaderboard"],
+    queryKey: ["horse-leaderboard-global"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("horses")
-        .select(`
-          id,
-          name,
-          breed,
-          color,
-          speed_stat,
-          stamina_stat,
-          race_wins,
-          total_races,
-          user_id
-        `)
-        .order("race_wins", { ascending: false })
-        .limit(10);
-
+      const { data, error } = await supabase.rpc("get_horse_rankings", { _limit: 50 });
       if (error) throw error;
-      return data || [];
+      return (data || []) as Array<{
+        id: string;
+        name: string;
+        breed: string;
+        color: string;
+        image_url: string | null;
+        speed_stat: number;
+        stamina_stat: number;
+        race_wins: number;
+        total_races: number;
+        owner_name: string;
+      }>;
     },
     refetchInterval: 10000 });
+
 
   const getRankStyle = (index: number) => {
     if (index === 0) return { border: "border-amber-500/80", bg: "from-amber-950/40 to-amber-900/20", glow: "shadow-amber-500/20", badge: "🥇", color: "text-amber-700" };
