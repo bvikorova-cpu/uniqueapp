@@ -100,6 +100,46 @@ export const CATEGORY_BLURBS: Record<string, CategoryBlurb> = {
     tagline: "Champion thoroughbreds with speed, stamina and heart",
     inside: "150 racehorse battle cards rated for Speed, Stamina, Strength, Defense and Luck — compare them head-to-head.",
   },
+  "football-legends": {
+    title: "Football Legends",
+    tagline: "Original football stars for the floodlights",
+    inside: "150 invented football players — strikers, playmakers, keepers — rated for pace, shooting, passing, defending and stamina.",
+  },
+  "basketball-legends": {
+    title: "Basketball Legends",
+    tagline: "Hardwood icons built for the highlight reel",
+    inside: "150 invented basketball players rated for scoring, speed, handles, defense and vertical leap.",
+  },
+  "hockey-legends": {
+    title: "Ice Hockey Legends",
+    tagline: "Rink warriors carved out of ice",
+    inside: "150 invented hockey players rated for skating, shooting, checking, goaltending and grit.",
+  },
+  "tennis-legends": {
+    title: "Tennis Legends",
+    tagline: "Court masters with nerves of steel",
+    inside: "150 invented tennis players rated for serve, forehand, backhand, movement and mental strength.",
+  },
+  "american-football-legends": {
+    title: "American Football Legends",
+    tagline: "Gridiron giants under night lights",
+    inside: "150 invented gridiron players rated for power, speed, throwing, tackling and awareness.",
+  },
+  "baseball-legends": {
+    title: "Baseball Legends",
+    tagline: "Diamond heroes from sandlot to ninth inning",
+    inside: "150 invented baseball players rated for batting, pitching, fielding, speed and power.",
+  },
+  "golf-legends": {
+    title: "Golf Legends",
+    tagline: "Fairway artists in the morning dew",
+    inside: "150 invented golfers rated for driving, accuracy, short game, putting and composure.",
+  },
+  "cricket-legends": {
+    title: "Cricket Legends",
+    tagline: "Pitch legends of the long game",
+    inside: "150 invented cricketers rated for batting, bowling, fielding, spin and endurance.",
+  },
 };
 
 
