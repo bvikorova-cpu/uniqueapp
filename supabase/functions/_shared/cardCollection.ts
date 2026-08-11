@@ -409,27 +409,49 @@ export async function handleCardCollection(req: Request, preparsed?: any): Promi
     // require a signed-in user; every other action does.
     if (!user && action !== "backfill_art") return j({ error: "Unauthorized" }, 401);
 
-    if (action !== "keep" && !category) return j({ error: "Category is required" }, 400);
+    const bodyCategories: string[] = Array.isArray(body?.categories)
+      ? (body.categories as unknown[]).map((s) => String(s)).filter(Boolean)
+      : [];
+
+    if (action !== "keep" && action !== "backfill_art" && !category) {
+      return j({ error: "Category is required" }, 400);
+    }
 
 
     // ── Free artwork backfill so albums show real illustrations ────────────
+    // Accepts a single `category` or a `categories` array so listing pages can
+    // pre-generate artwork for every set before the user opens it.
     if (action === "backfill_art") {
-      const cat = await getCategory(category);
-      if (!cat) return j({ error: "Category not found" }, 404);
+      const slugs = bodyCategories.length ? bodyCategories : category ? [category] : [];
+      if (!slugs.length) return j({ error: "Category is required" }, 400);
       const limit = Math.min(Math.max(Number(body?.limit ?? 8), 1), 12);
+
+      const { data: cats } = await db
+        .from("card_categories")
+        .select("*")
+        .in("slug", slugs);
+      const catMap = new Map<string, any>((cats ?? []).map((c: any) => [c.slug, c]));
+      if (!catMap.size) return j({ error: "Category not found" }, 404);
+
       const { data: missing } = await db
         .from("card_collectibles")
         .select("*")
-        .eq("category_slug", category)
+        .in("category_slug", slugs)
         .is("image_url", null)
+        .order("category_slug", { ascending: true })
         .order("card_index", { ascending: true })
         .limit(limit);
-      const results = await Promise.all((missing ?? []).map((card) => ensureArtwork(card, cat)));
+
+      const results = await Promise.all(
+        (missing ?? [])
+          .filter((card: any) => catMap.has(card.category_slug))
+          .map((card: any) => ensureArtwork(card, catMap.get(card.category_slug))),
+      );
       const generated = results.filter(Boolean).length;
       const { count } = await db
         .from("card_collectibles")
         .select("id", { count: "exact", head: true })
-        .eq("category_slug", category)
+        .in("category_slug", slugs)
         .is("image_url", null);
       return j({ generated, missing: count ?? 0 });
     }
