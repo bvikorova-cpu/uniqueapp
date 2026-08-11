@@ -130,7 +130,7 @@ export const HorseAuctionHouse = () => {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-lg font-black text-amber-400">{listing.price_coins} Coins</span>
+                  <span className="text-lg font-black text-amber-400">{listing.price_coins} Credits</span>
                   <Button size="sm" onClick={() => { if (!user) { navigate("/auth"); return; } buyHorse.mutate(listing.id); }}
                     disabled={buyHorse.isPending}
                     className="bg-gradient-to-r from-purple-600 to-amber-600 text-white"
@@ -153,7 +153,7 @@ export const HorseAuctionHouse = () => {
               <option value="">Choose a horse...</option>
               {myHorses.map((h: any) => <option key={h.id} value={h.id}>{h.name} ({h.breed})</option>)}
             </select>
-            <Input type="number" value={sellPrice} onChange={e => setSellPrice(e.target.value)} placeholder="Price in Coins" min="1" />
+            <Input type="number" value={sellPrice} onChange={e => setSellPrice(e.target.value)} placeholder="Price in credits" min="1" />
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowSell(false)}>Cancel</Button>

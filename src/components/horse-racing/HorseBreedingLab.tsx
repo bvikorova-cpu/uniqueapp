@@ -43,7 +43,7 @@ export const HorseBreedingLab = () => {
         <h2 className="text-2xl font-black flex items-center gap-2">
           <Dna className="h-6 w-6 text-purple-400" /> Horse Breeding Lab
         </h2>
-        <p className="text-muted-foreground text-sm">Combine bloodlines to create the ultimate champion. Cost: 100 Coins</p>
+        <p className="text-muted-foreground text-sm">Combine bloodlines to create the ultimate champion. Cost: 8 credits</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
@@ -142,7 +142,7 @@ export const HorseBreedingLab = () => {
         size="lg"
       >
         <Sparkles className="mr-2 h-5 w-5" />
-        {breedHorses.isPending ? "Breeding..." : "Breed Horses — 100 Coins"}
+        {breedHorses.isPending ? "Breeding..." : "Breed Horses — 8 Credits"}
       </Button>
 
       {(!horses || horses.length < 2) && (

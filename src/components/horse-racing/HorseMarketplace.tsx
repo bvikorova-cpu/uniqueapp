@@ -189,7 +189,7 @@ export const HorseMarketplace = () => {
                       <div className="flex items-center gap-1">
                         <DollarSign className="h-5 w-5 text-yellow-500" />
                         <span className="text-2xl font-bold">{listing.price_coins}</span>
-                        <span className="text-sm text-muted-foreground">coins</span>
+                        <span className="text-sm text-muted-foreground">credits</span>
                       </div>
                       <Button 
                         onClick={() => buyHorse.mutate(listing.id)}
@@ -228,7 +228,7 @@ export const HorseMarketplace = () => {
               </select>
             </div>
             <div>
-              <Label>Price (Coins)</Label>
+              <Label>Price (Credits)</Label>
               <Input
                 type="number"
                 value={sellPrice}
