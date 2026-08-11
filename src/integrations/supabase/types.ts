@@ -70405,6 +70405,21 @@ export type Database = {
         }[]
       }
       get_horse_quest_progress: { Args: never; Returns: Json }
+      get_horse_rankings: {
+        Args: { _limit?: number }
+        Returns: {
+          breed: string
+          color: string
+          id: string
+          image_url: string
+          name: string
+          owner_name: string
+          race_wins: number
+          speed_stat: number
+          stamina_stat: number
+          total_races: number
+        }[]
+      }
       get_influencer_audience_insights: {
         Args: { _influencer_id: string }
         Returns: Json

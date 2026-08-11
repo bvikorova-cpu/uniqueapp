@@ -6,28 +6,25 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const HorseLeaderboard = () => {
   const { data: topHorses = [], isLoading } = useQuery({
-    queryKey: ["horse-leaderboard"],
+    queryKey: ["horse-leaderboard-global"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("horses")
-        .select(`
-          id,
-          name,
-          breed,
-          color,
-          speed_stat,
-          stamina_stat,
-          race_wins,
-          total_races,
-          user_id
-        `)
-        .order("race_wins", { ascending: false })
-        .limit(10);
-
+      const { data, error } = await supabase.rpc("get_horse_rankings", { _limit: 50 });
       if (error) throw error;
-      return data || [];
+      return (data || []) as Array<{
+        id: string;
+        name: string;
+        breed: string;
+        color: string;
+        image_url: string | null;
+        speed_stat: number;
+        stamina_stat: number;
+        race_wins: number;
+        total_races: number;
+        owner_name: string;
+      }>;
     },
     refetchInterval: 10000 });
+
 
   const getRankStyle = (index: number) => {
     if (index === 0) return { border: "border-amber-500/80", bg: "from-amber-950/40 to-amber-900/20", glow: "shadow-amber-500/20", badge: "🥇", color: "text-amber-700" };
@@ -70,7 +67,7 @@ export const HorseLeaderboard = () => {
         </div>
         <div>
           <h2 className="text-xl font-mono font-bold text-slate-900 uppercase tracking-wider">Horse Rankings</h2>
-          <p className="text-[10px] text-emerald-700/80 font-mono uppercase tracking-[0.3em]">Top 10 Champions</p>
+          <p className="text-[10px] text-emerald-700/80 font-mono uppercase tracking-[0.3em]">Global · All Players · Top {topHorses.length}</p>
         </div>
       </div>
 
@@ -98,23 +95,31 @@ export const HorseLeaderboard = () => {
                 {rank.badge || (index + 1)}
               </div>
               
-              {/* Horse color */}
+              {/* Horse portrait / color */}
               <div className="relative shrink-0">
-                <div
-                  className="w-10 h-10 rounded-lg border-2 border-amber-300/70"
-                  style={{ backgroundColor: horse.color }}
-                />
-                <div 
-                  className="absolute -inset-1 rounded-xl blur-md opacity-40"
-                  style={{ backgroundColor: horse.color }}
-                />
+                {horse.image_url ? (
+                  <img
+                    src={horse.image_url}
+                    alt={`${horse.name} - ${horse.breed} racehorse portrait`}
+                    loading="lazy"
+                    className="w-10 h-10 rounded-lg border-2 border-amber-300/70 object-cover"
+                  />
+                ) : (
+                  <div
+                    className="w-10 h-10 rounded-lg border-2 border-amber-300/70"
+                    style={{ backgroundColor: horse.color }}
+                  />
+                )}
               </div>
               
               {/* Info */}
               <div className="flex-1 min-w-0">
                 <p className="font-mono font-bold text-slate-900 text-sm sm:text-base truncate">{horse.name}</p>
-                <p className="text-xs text-emerald-700/80 font-mono capitalize truncate">{horse.breed}</p>
+                <p className="text-xs text-emerald-700/80 font-mono capitalize truncate">
+                  {horse.breed} · {horse.owner_name}
+                </p>
               </div>
+
               
               {/* Stats */}
               <div className="flex items-center gap-4 shrink-0">
