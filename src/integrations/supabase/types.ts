@@ -30908,6 +30908,7 @@ export type Database = {
           breeding_count: number
           color: string
           created_at: string
+          description: string | null
           experience: number
           id: string
           image_url: string | null
@@ -30932,6 +30933,7 @@ export type Database = {
           breeding_count?: number
           color?: string
           created_at?: string
+          description?: string | null
           experience?: number
           id?: string
           image_url?: string | null
@@ -30956,6 +30958,7 @@ export type Database = {
           breeding_count?: number
           color?: string
           created_at?: string
+          description?: string | null
           experience?: number
           id?: string
           image_url?: string | null

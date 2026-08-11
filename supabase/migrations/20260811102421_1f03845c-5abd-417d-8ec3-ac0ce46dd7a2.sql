@@ -1,0 +1,1 @@
+ALTER TABLE public.horses ADD COLUMN IF NOT EXISTS description text;
