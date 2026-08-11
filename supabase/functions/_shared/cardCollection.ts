@@ -108,6 +108,75 @@ const HORSE_DETAILS = [
   "sweat-flecked flanks and flaring nostrils", "dust and turf kicked up around the hooves",
 ];
 
+/** Sport-specific axes so every athlete card reads as a different person. */
+const ATHLETE_BUILDS = [
+  "tall lean build", "stocky powerhouse build", "wiry athletic build", "broad-shouldered heavy build",
+  "compact explosive build", "long-limbed graceful build", "muscular veteran build", "youthful slender build",
+];
+const ATHLETE_LOOKS = [
+  "short cropped dark hair and a focused stare", "long blond hair tied back in a bun",
+  "shaved head and a thick beard", "curly afro hair and a wide grin",
+  "silver-streaked hair and weathered face", "braided hair with a sweatband",
+  "red hair with freckles", "black ponytail and taped nose",
+  "buzz cut with a scar over one eyebrow", "moustache and squinting sun-lined eyes",
+  "dreadlocks pulled into a knot", "slick wet hair after rain",
+];
+const KIT_COLOURS = [
+  "royal blue and white kit", "scarlet red and black kit", "emerald green and gold kit",
+  "sunflower yellow and navy kit", "purple and silver kit", "orange and charcoal kit",
+  "teal and cream kit", "maroon and grey kit", "sky blue and copper kit", "monochrome black kit",
+];
+const SPORT_SCENES: Record<string, string[]> = {
+  "football-legends": [
+    "striking the ball at a floodlit night stadium", "celebrating with arms wide on wet turf",
+    "sliding tackle with grass flying", "diving save in a packed goalmouth",
+    "heading the ball above defenders", "dribbling past a blurred opponent in the rain",
+    "walking out of the tunnel through smoke", "free-kick stance behind a wall of players",
+  ],
+  "basketball-legends": [
+    "mid-air dunk with the rim shaking", "crossover dribble on a sunlit street court",
+    "fadeaway jumper over a defender", "block at the rim with squeaking hardwood",
+    "free-throw focus in a hushed arena", "fast-break sprint with motion blur",
+    "post-up battle under the basket", "three-point release from the corner",
+  ],
+  "hockey-legends": [
+    "carving a spray of ice at full speed", "slap shot from the blue line",
+    "goaltender butterfly save with the puck frozen mid-air", "check against the glass boards",
+    "face-off crouch at centre ice", "celebrating along the boards in a night arena",
+    "breakaway alone on goal", "outdoor rink under falling snow",
+  ],
+  "tennis-legends": [
+    "mid-serve leap on a blue hardcourt", "sliding forehand on red clay",
+    "backhand down the line on grass", "diving volley at the net",
+    "towel break under a bright sun with a packed crowd", "night match under stadium lights",
+    "racquet raised in victory", "returning serve with knees bent low",
+  ],
+  "american-football-legends": [
+    "quarterback throwing deep under night lights", "running back bursting through a gap",
+    "one-handed sideline catch", "linebacker mid-tackle with dust flying",
+    "helmet-off sideline portrait steaming in cold air", "field-goal kick with the ball spinning",
+    "pre-snap stance in freezing fog", "sprint into the end zone with the crowd blurred",
+  ],
+  "baseball-legends": [
+    "swinging for the fences on a sunny diamond", "pitcher mid-windup with a dust cloud",
+    "sliding into second base", "diving outfield catch on the warning track",
+    "catcher crouched behind the plate", "batter waiting in the on-deck circle",
+    "dugout portrait chewing sunflower seeds", "night game under old floodlights",
+  ],
+  "golf-legends": [
+    "driving off the tee at sunrise", "bunker escape with a spray of sand",
+    "reading a long putt on a dewy green", "walking a windy seaside links",
+    "punch shot out of the pines", "raising a putter after holing out",
+    "iron shot over water with a mirrored reflection", "misty highland fairway in early light",
+  ],
+  "cricket-legends": [
+    "cover drive on a sunbaked pitch", "fast bowler mid-delivery leap",
+    "spin bowler releasing with a twisted wrist", "wicketkeeper diving for a catch",
+    "raising the bat after a century", "boundary fielder sliding on green outfield",
+    "night match under white floodlights", "batting stance in heavy heat haze",
+  ],
+};
+
 function cardPrompt(card: Record<string, any>, cat: Record<string, any>) {
   const seed = codeHash(String(card.code ?? card.id ?? card.name));
   const format = pick(CARD_FORMATS, seed, 1);
@@ -129,6 +198,17 @@ function cardPrompt(card: Record<string, any>, cat: Record<string, any>) {
       `${composition}, ${light}, ${palette}, ${render}, ${card.rarity} rarity energy accents. ` +
       `Make this horse visually unmistakably different from any other racehorse card — unique coat pattern, unique pose, ` +
       `unique environment and unique colour grading. ${ORIGINALITY}`;
+  }
+
+  // Sports collections: give every athlete a different body, face, kit and match moment.
+  const scenes = SPORT_SCENES[String(cat.slug ?? "")];
+  if (scenes) {
+    return `${format}. Collectible sports trading-card illustration of "${card.name}", a completely invented ` +
+      `${card.subject} with a ${pick(ATHLETE_BUILDS, seed, 6)}, ${pick(ATHLETE_LOOKS, seed, 7)}, wearing a ` +
+      `${pick(KIT_COLOURS, seed, 8)}, ${pick(scenes, seed, 9)}. ${cat.art_style}, ${composition}, ${light}, ` +
+      `${palette}, ${render}, ${card.rarity} rarity energy accents. The athlete must look unmistakably different ` +
+      `from every other card in the set — different face, body, skin tone, kit colours, pose and stadium. ` +
+      `Fictional player only, never a real athlete, no team crests, no jersey numbers, no sponsor logos. ${ORIGINALITY}`;
   }
 
   return `${format}. Collectible trading-card illustration of "${card.name}", an original ${card.subject} from the ${cat.name} ` +

@@ -16,6 +16,14 @@ import lifehacks from "@/assets/cards/lifehacks.jpg";
 import worldFacts from "@/assets/cards/world-facts.jpg";
 import seasonalVault from "@/assets/cards/seasonal-vault.jpg";
 import legendaryRacehorses from "@/assets/cards/legendary-racehorses.jpg";
+import footballLegends from "@/assets/cards/football-legends.jpg";
+import basketballLegends from "@/assets/cards/basketball-legends.jpg";
+import hockeyLegends from "@/assets/cards/hockey-legends.jpg";
+import tennisLegends from "@/assets/cards/tennis-legends.jpg";
+import americanFootballLegends from "@/assets/cards/american-football-legends.jpg";
+import baseballLegends from "@/assets/cards/baseball-legends.jpg";
+import golfLegends from "@/assets/cards/golf-legends.jpg";
+import cricketLegends from "@/assets/cards/cricket-legends.jpg";
 
 /** Illustrated cover artwork per collectible-card category (replaces emoji icons). */
 export const CATEGORY_COVERS: Record<string, string> = {
@@ -37,6 +45,14 @@ export const CATEGORY_COVERS: Record<string, string> = {
   "world-facts": worldFacts,
   "seasonal-vault": seasonalVault,
   "legendary-racehorses": legendaryRacehorses,
+  "football-legends": footballLegends,
+  "basketball-legends": basketballLegends,
+  "hockey-legends": hockeyLegends,
+  "tennis-legends": tennisLegends,
+  "american-football-legends": americanFootballLegends,
+  "baseball-legends": baseballLegends,
+  "golf-legends": golfLegends,
+  "cricket-legends": cricketLegends,
 };
 
 export const getCategoryCover = (slug?: string | null): string | undefined =>
