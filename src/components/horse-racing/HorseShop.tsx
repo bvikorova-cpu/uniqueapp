@@ -22,7 +22,7 @@ interface ShopItem {
   costCredits: number;
   category: 'cosmetics' | 'boosters' | 'equipment' | 'premium' | 'mystery';
   effect?: string;
-  rarity?: 'common' | 'rare' | 'epic' | 'legendary';
+  rarity?: 'common' | 'rare' | 'epic' | 'legendary' | 'mythic';
   statBoost?: {
     speed?: number;
     stamina?: number;
