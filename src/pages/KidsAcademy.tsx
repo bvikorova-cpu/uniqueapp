@@ -26,7 +26,6 @@ const __HIW_KIDSACADEMY = { title: 'Kids Academy', intro: 'Fun mini-lessons and 
 const TABS = ["today", "explore", "progress", "streaks", "quiz", "cards", "shop", "parents"];
 
 const KidsAcademy = () => {
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const tabParam = searchParams.get("tab");
   const activeTab = tabParam && TABS.includes(tabParam) ? tabParam : "today";
@@ -37,37 +36,6 @@ const KidsAcademy = () => {
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-6xl mx-auto">
           {activeTab !== "cards" && <KidsAcademyHero />}
-
-
-          <HeroRewardedAd sectionKey="page_kidsacademy" />
-
-          {/* Buy Credits Hub Banner (paid-only model) */}
-          <Card className="mb-6 border-2 border-primary/30 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10">
-            <CardContent className="py-4">
-              <div className="flex items-center justify-between gap-3 flex-wrap">
-                <div className="flex items-center gap-3">
-                  <Coins className="w-6 h-6 text-primary" />
-                  <div>
-                    <p className="font-bold text-sm text-foreground">Pay only for what you use</p>
-                    <p className="text-xs text-muted-foreground">
-                      Credits for AI tools — Science, Homework, Stories, Chat & more
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-2 flex-wrap">
-                  <Button size="sm" variant="outline" onClick={() => navigate("/kids-science-pricing")}>
-                    🧪 Science
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => navigate("/kids-voice-chat-pricing")}>
-                    💬 Chat
-                  </Button>
-                  <Button size="sm" onClick={() => navigate("/kids-story-pricing")}>
-                    <Sparkles className="w-3 h-3 mr-1" /> Stories
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
           <Tabs
             value={activeTab}
