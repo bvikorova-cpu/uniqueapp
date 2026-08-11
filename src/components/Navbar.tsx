@@ -128,6 +128,7 @@ const Navbar = () => {
     { path: "/kids-drawing-buddy", label: "Drawing Buddy (6-12y)", icon: Palette },
     { path: "/kids-reading-companion", label: "Reading Companion (6-12y)", icon: BookOpen },
     { path: "/fairytale-book", label: "Fairytale Book Generator", icon: BookOpen },
+    { path: "/kids-academy?tab=cards", label: "Kids Collectibles (cards)", icon: Library },
     { path: "/teen-career-counselor", label: "Career Counselor (13-18y)", icon: Briefcase },
   ];
 
@@ -206,7 +207,7 @@ const Navbar = () => {
       items: [
         { path: "/character-arena", label: "Character Arena", icon: Trophy },
         { path: "/card-collections", label: "Collectible Cards", icon: Library },
-        { path: "/kids-academy?tab=cards", label: "Kids Collectibles", icon: Library },
+        
         { path: "/horse-racing", label: "Horse Racing Arena", icon: Trophy },
         { path: "/football-arena", label: "Football Arena", icon: Trophy },
         { path: "/basketball-arena", label: "Basketball Arena", icon: Trophy },
