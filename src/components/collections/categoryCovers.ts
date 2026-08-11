@@ -70,6 +70,16 @@ export const CATEGORY_COVERS: Record<string, string> = {
   "fashion-couture": fashionCouture,
   "royal-princesses": royalPrincesses,
   "storybook-folk": storybookFolk,
+  "kids-dino-pals": kidsDinoPals,
+  "kids-rescue-heroes": kidsRescueHeroes,
+  "kids-pony-sparkles": kidsPonySparkles,
+  "kids-jungle-babies": kidsJungleBabies,
+  "kids-space-kiddos": kidsSpaceKiddos,
+  "kids-sweet-treats": kidsSweetTreats,
+  "kids-sea-buddies": kidsSeaBuddies,
+  "kids-super-kiddos": kidsSuperKiddos,
+  "kids-farm-friends": kidsFarmFriends,
+  "kids-garden-bugs": kidsGardenBugs,
   
 };
 
