@@ -78,7 +78,7 @@ const CardCollections = () => {
             Collectible Cards
           </h1>
           <p className="mt-2 text-sm sm:text-base text-white/85 max-w-xl">
-            25 themed collections · {CARDS_PER_CATEGORY} cards each · 3,750 cards to hunt down
+            29 themed collections · {CARDS_PER_CATEGORY} cards each · 4,350 cards to hunt down
           </p>
         </div>
       </section>
@@ -88,7 +88,7 @@ const CardCollections = () => {
         <FloatingHowItWorks
           title="Collectible Cards — How it works"
           steps={[
-            { title: "Pick a collection", desc: "Twenty-five themed collections, each with 150 fixed cards — mythic beasts, duel stats, personality archetypes, memes, daily quests, lifehacks, world facts, seasonal series, racehorses and seven sports sets (football, basketball, ice hockey, tennis, American football, baseball, golf)." },
+            { title: "Pick a collection", desc: "Twenty-nine themed collections, each with 150 fixed cards — mythic beasts, duel stats, personality archetypes, memes, daily quests, lifehacks, world facts, seasonal series, racehorses and seven sports sets (football, basketball, ice hockey, tennis, American football, baseball, golf) plus beauty icons, fashion couture, royal princesses and storybook folk." },
             { title: "Draw a card", desc: `Every draw costs ${DRAW_COST} AI credit and reveals one card from that collection — cards you already own can appear again.` },
             { title: "Decide ✓ or ✗", desc: "Tap ✓ to add the card to your album (duplicates stack up), or ✗ to release it back into the pool." },
             { title: "Chase rarities", desc: "Cards come as Common, Rare, Epic, Legendary and one single Mythic card per collection — the Mythic is the hardest to ever see." },
@@ -105,7 +105,7 @@ const CardCollections = () => {
             <div className="min-w-0">
               <h1 className="text-xl sm:text-2xl font-black">Collectible Cards</h1>
               <p className="text-xs text-muted-foreground">
-                25 collections · 150 cards each · 3,750 cards to hunt down
+                29 collections · 150 cards each · 4,350 cards to hunt down
               </p>
             </div>
             <Badge variant="outline" className="ml-auto gap-1 border-border/40">

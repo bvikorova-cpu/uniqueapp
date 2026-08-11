@@ -135,6 +135,26 @@ export const CATEGORY_BLURBS: Record<string, CategoryBlurb> = {
     tagline: "Fairway artists in the morning dew",
     inside: "150 invented golfers rated for driving, accuracy, short game, putting and composure.",
   },
+  "beauty-icons": {
+    title: "Beauty Icons",
+    tagline: "Glamour muses of hair, makeup and jewellery artistry",
+    inside: "150 invented beauty icons in editorial artwork — every card its own look, palette and styling.",
+  },
+  "fashion-couture": {
+    title: "Fashion Couture",
+    tagline: "Runway visionaries in impossible silhouettes",
+    inside: "150 original couture characters: designers, models and stylists in one-of-a-kind outfits.",
+  },
+  "royal-princesses": {
+    title: "Royal Princesses",
+    tagline: "Princesses of imaginary kingdoms",
+    inside: "150 invented princesses and royal-court figures, each with her own gown, crown and palace.",
+  },
+  "storybook-folk": {
+    title: "Storybook Folk",
+    tagline: "Sprites, cobblers, witches and talking beasts",
+    inside: "150 original fairytale characters painted in warm storybook illustration style.",
+  },
 };
 
 

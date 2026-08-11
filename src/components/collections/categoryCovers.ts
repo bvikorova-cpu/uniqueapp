@@ -23,6 +23,10 @@ import tennisLegends from "@/assets/cards/tennis-legends.jpg";
 import americanFootballLegends from "@/assets/cards/american-football-legends.jpg";
 import baseballLegends from "@/assets/cards/baseball-legends.jpg";
 import golfLegends from "@/assets/cards/golf-legends.jpg";
+import beautyIcons from "@/assets/cards/beauty-icons.jpg";
+import fashionCouture from "@/assets/cards/fashion-couture.jpg";
+import royalPrincesses from "@/assets/cards/royal-princesses.jpg";
+import storybookFolk from "@/assets/cards/storybook-folk.jpg";
 
 
 /** Illustrated cover artwork per collectible-card category (replaces emoji icons). */
@@ -52,6 +56,10 @@ export const CATEGORY_COVERS: Record<string, string> = {
   "american-football-legends": americanFootballLegends,
   "baseball-legends": baseballLegends,
   "golf-legends": golfLegends,
+  "beauty-icons": beautyIcons,
+  "fashion-couture": fashionCouture,
+  "royal-princesses": royalPrincesses,
+  "storybook-folk": storybookFolk,
   
 };
 
