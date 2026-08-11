@@ -226,6 +226,38 @@ Deno.serve(async (req) => {
           cost_coins: COST_BREEDING,
           status: "completed" });
 
+        // Real ancestry tree: direct parents (gen 1) + inherited ancestors (gen n+1).
+        try {
+          const rows: Array<{ horse_id: string; parent_id: string; parent_role: string; generation: number }> = [
+            { horse_id: foal.id, parent_id: parent1Id, parent_role: "sire", generation: 1 },
+            { horse_id: foal.id, parent_id: parent2Id, parent_role: "dam", generation: 1 },
+          ];
+          const { data: ancestors } = await admin
+            .from("horse_bloodlines")
+            .select("parent_id, parent_role, generation")
+            .in("horse_id", [parent1Id, parent2Id])
+            .lte("generation", 4);
+          for (const a of (ancestors ?? []) as any[]) {
+            if (a.parent_id === foal.id) continue;
+            rows.push({
+              horse_id: foal.id,
+              parent_id: a.parent_id,
+              parent_role: a.parent_role ?? "sire",
+              generation: (a.generation ?? 1) + 1 });
+          }
+          const seen = new Set<string>();
+          const unique = rows.filter((r) => {
+            const k = `${r.parent_id}:${r.generation}`;
+            if (seen.has(k)) return false;
+            seen.add(k);
+            return true;
+          });
+          await admin.from("horse_bloodlines").insert(unique);
+        } catch (e) {
+          console.error("[horse-router] bloodline insert error", e);
+        }
+
+
         // Foal portrait + short profile (best-effort).
         let imageUrl: string | null = null;
         let description: string | null = null;
