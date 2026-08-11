@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.get_horse_rankings(int) FROM anon;
