@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { BookOpen, Upload, Loader2, Sparkles, Gem, ImagePlus, Download, FileDown } from "lucide-react";
