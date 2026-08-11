@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserHorses, useRaces } from "@/hooks/useHorseRacing";
@@ -57,6 +57,21 @@ export default function HorseRacing() {
   const queryClient = useQueryClient();
   const { horses, createHorse } = useUserHorses();
   const { races } = useRaces();
+
+  // Foals born in the Breeding Lab live in the same `horses` table — flag them
+  // so they show up in My Stable alongside bought horses with a clear badge.
+  const { data: foalIds } = useQuery({
+    queryKey: ["horse-foal-ids", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("breeding_records")
+        .select("foal_id")
+        .eq("user_id", user!.id);
+      return new Set((data ?? []).map((r: any) => r.foal_id).filter(Boolean) as string[]);
+    },
+    staleTime: 60_000,
+  });
   const [activeView, setActiveView] = useState<ActiveView>("dashboard");
   const [showBuyHorse, setShowBuyHorse] = useState(false);
   const [horseName, setHorseName] = useState("");
@@ -184,9 +199,19 @@ export default function HorseRacing() {
             <Card className="p-4 bg-white border-amber-300/50 backdrop-blur-sm hover:border-amber-400/60 transition-all">
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="font-bold font-mono text-slate-900">{horse.name}</h3>
+                  <h3 className="font-bold font-mono text-slate-900 flex items-center gap-1.5">
+                    {horse.name}
+                    {foalIds?.has(horse.id) && (
+                      <span className="px-1.5 py-0.5 rounded-full bg-pink-100 text-pink-700 border border-pink-300 text-[9px] font-mono uppercase tracking-wide">
+                        Foal
+                      </span>
+                    )}
+                  </h3>
                   <p className="text-xs font-mono text-amber-700/70 capitalize">{horse.breed}</p>
                   <p className="text-[10px] font-mono text-amber-700">Level {horse.level}</p>
+                  {(horse as any).description && (
+                    <p className="text-[10px] font-mono text-slate-600 mt-1 line-clamp-2">{(horse as any).description}</p>
+                  )}
                 </div>
                 <div className="relative">
                   {(horse as any).image_url ? (
