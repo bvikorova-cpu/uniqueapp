@@ -297,11 +297,6 @@ import { ResetPassword,
   BrainDuel,
   VirtualEscapeRoom,
   HorseRacing,
-  FootballArena,
-  BasketballArena,
-  HockeyArena,
-  TennisArena,
-  AmericanFootballArena,
   GlamourWorld,
   E2EAnonymousDateMatches,
   GPRacing,
@@ -1206,11 +1201,6 @@ const App = () => {
                         <Route path="/shadow-arena/story/:storyId" element={<ShadowArenaStoryDetail />} />
                         <Route path="/virtual-escape-room" element={<VirtualEscapeRoom />} />
                         <Route path="/horse-racing" element={<HorseRacing />} />
-                        <Route path="/football-arena" element={<FootballArena />} />
-                        <Route path="/basketball-arena" element={<BasketballArena />} />
-                        <Route path="/hockey-arena" element={<HockeyArena />} />
-                        <Route path="/tennis-arena" element={<TennisArena />} />
-                        <Route path="/american-football-arena" element={<AmericanFootballArena />} />
                         <Route path="/comedy-club" element={<ComedyClub />} />
                         <Route path="/comedian-dashboard" element={<ProtectedRoute><ComedianDashboard /></ProtectedRoute>} />
                         <Route path="/comedy-live/:showId" element={<ComedyLiveShow />} />
