@@ -120,8 +120,14 @@ export async function handleFairytale(
         `You write warm, age-appropriate personalized fairytales for children 3-9 years old.
 Return ONLY JSON:
 {"title":"short magical book title","hero":"one sentence describing the hero (the child)","pages":[{"text":"2-3 short sentences of the story","scene":"visual description of this page for an illustrator"}]}
-Exactly 5 pages. No violence, no fear, happy ending. The hero's name must be used.`,
-        `Hero name: ${childName}. Theme: ${theme}. Art style: ${style}.`,
+Exactly 5 pages. No violence, no fear, happy ending. The hero's name must be used.
+If the user provided their own story idea, follow it closely as the plot. If they provided character traits, reflect them in the hero's personality and actions.`,
+        [
+          `Hero name: ${childName}.`,
+          customStory ? `User's own story idea (follow it): ${customStory}` : `Theme: ${theme}.`,
+          traits ? `Hero traits / characteristics: ${traits}` : "",
+          `Art style: ${style}.`,
+        ].filter(Boolean).join("\n"),
       );
     } catch (_e) {
       return json({ error: "Story generation is busy, please try again" }, 503);
