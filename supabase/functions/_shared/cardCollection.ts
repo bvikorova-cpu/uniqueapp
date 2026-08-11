@@ -9,9 +9,10 @@ const corsHeaders = {
 
 const DRAW_COST = 1;
 const CARDS_PER_CATEGORY = 150;
-/** The very last missing card of a set stays extremely scarce. */
-const FINAL_TARGET_DRAWS = 20000;
-const DUPLICATE_WEIGHT = 6;
+/** The very last missing card of a set stays scarce, but reachable. */
+const FINAL_TARGET_DRAWS = 400;
+/** Owned cards are far LESS likely than missing ones (weight < 1 = rarer). */
+const DUPLICATE_WEIGHT = 0.15;
 
 function j(b: unknown, s = 200) {
   return new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
