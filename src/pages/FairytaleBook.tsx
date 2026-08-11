@@ -213,21 +213,53 @@ const FairytaleBook = () => {
                 maxLength={40}
               />
               <div>
-                <p className="text-xs font-semibold mb-1.5">Story theme</p>
-                <div className="flex flex-wrap gap-2">
-                  {THEMES.map((t) => (
-                    <button
-                      key={t}
-                      onClick={() => setTheme(t)}
-                      className={`text-xs px-3 py-1.5 rounded-full border transition ${
-                        theme === t ? "bg-primary text-primary-foreground border-primary" : "hover:border-primary"
-                      }`}
-                    >
-                      {t}
-                    </button>
-                  ))}
+                <div className="flex items-center justify-between mb-1.5">
+                  <p className="text-xs font-semibold">Story theme</p>
+                  <button
+                    onClick={() => setUseCustom((v) => !v)}
+                    className="text-xs underline text-muted-foreground hover:text-primary"
+                  >
+                    {useCustom ? "Use a template" : "Write my own story"}
+                  </button>
                 </div>
+
+                {useCustom ? (
+                  <div className="space-y-2">
+                    <Textarea
+                      placeholder="Your own story idea — e.g. Emma finds a tiny dragon in grandma's garden and they build a flying bicycle together..."
+                      value={customStory}
+                      onChange={(e) => setCustomStory(e.target.value)}
+                      maxLength={900}
+                      rows={4}
+                    />
+                    <Textarea
+                      placeholder="Character traits (optional) — e.g. curious, loves dinosaurs, a bit shy, always helps friends"
+                      value={traits}
+                      onChange={(e) => setTraits(e.target.value)}
+                      maxLength={300}
+                      rows={2}
+                    />
+                    <p className="text-[11px] text-muted-foreground">
+                      {customStory.length}/900 characters
+                    </p>
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    {THEMES.map((t) => (
+                      <button
+                        key={t}
+                        onClick={() => setTheme(t)}
+                        className={`text-xs px-3 py-1.5 rounded-full border transition ${
+                          theme === t ? "bg-primary text-primary-foreground border-primary" : "hover:border-primary"
+                        }`}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
+
               <div>
                 <p className="text-xs font-semibold mb-1.5">Art style</p>
                 <div className="flex flex-wrap gap-2">
