@@ -93,12 +93,50 @@ const shopItems: ShopItem[] = [
   { id: 'mystery_diamond', name: 'Diamond Mystery Box', description: 'Contains random legendary items', icon: <Gift className="h-5 w-5 text-cyan-400" />, costCredits: 12, category: 'mystery', rarity: 'legendary' },
   { id: 'mystery_champion', name: 'Champion Mystery Box', description: 'Guaranteed legendary item!', icon: <Gift className="h-5 w-5 text-purple-500" />, costCredits: 30, category: 'mystery', rarity: 'legendary' },
   { id: 'mystery_ultimate', name: 'Ultimate Mystery Box', description: 'Contains 3 random legendary items!', icon: <Gift className="h-5 w-5 text-pink-500" />, costCredits: 60, category: 'mystery', rarity: 'legendary' },
+
+  // ===== Extended catalogue: high-end tiers (up to ~1000 EUR in credits) =====
+
+  // Cosmetics
+  { id: 'color_emerald', name: 'Emerald Sheen Coat', description: 'Deep green coat with a metallic emerald sheen', icon: <Sparkles className="h-5 w-5 text-emerald-600" />, costCredits: 14, category: 'cosmetics', rarity: 'epic' },
+  { id: 'color_galaxy', name: 'Galaxy Nebula Coat', description: 'Star-flecked cosmic coat that shifts with the light', icon: <Star className="h-5 w-5 text-indigo-500" />, costCredits: 45, category: 'cosmetics', rarity: 'legendary' },
+  { id: 'acc_mane_aurora', name: 'Aurora Mane', description: 'Flowing mane glowing in aurora colours', icon: <Sparkles className="h-5 w-5 text-cyan-400" />, costCredits: 90, category: 'cosmetics', rarity: 'legendary' },
+  { id: 'acc_solar_halo', name: 'Solar Halo', description: 'Radiant solar halo trailing behind every stride', icon: <Sun className="h-5 w-5 text-amber-500" />, costCredits: 320, category: 'cosmetics', rarity: 'mythic' },
+  { id: 'acc_celestial_regalia', name: 'Celestial Regalia', description: 'Full mythic ceremonial regalia — the rarest look in the stable', icon: <Crown className="h-5 w-5 text-yellow-500" />, costCredits: 1200, category: 'cosmetics', rarity: 'mythic' },
+
+  // Boosters
+  { id: 'boost_temperament_medium', name: 'Composure Elixir', description: '+10 permanent temperament boost', icon: <Heart className="h-5 w-5 text-pink-500" />, costCredits: 10, category: 'boosters', rarity: 'rare', statBoost: { temperament: 10 } },
+  { id: 'boost_temperament_large', name: 'Composure Mastery', description: '+20 permanent temperament boost', icon: <Heart className="h-5 w-5 text-pink-500" />, costCredits: 22, category: 'boosters', rarity: 'epic', statBoost: { temperament: 20 } },
+  { id: 'boost_all_grand', name: 'Grand Universal Serum', description: '+25 to all stats', icon: <Star className="h-5 w-5 text-purple-500" />, costCredits: 150, category: 'boosters', rarity: 'legendary', statBoost: { speed: 25, stamina: 25, acceleration: 25, temperament: 25 } },
+  { id: 'boost_all_titan', name: 'Titan Bloodline Serum', description: '+40 to all stats', icon: <Trophy className="h-5 w-5 text-amber-600" />, costCredits: 600, category: 'boosters', rarity: 'mythic', statBoost: { speed: 40, stamina: 40, acceleration: 40, temperament: 40 } },
+  { id: 'boost_all_apex', name: 'Apex Genome Infusion', description: 'Maxes out every stat (+60 to all)', icon: <Zap className="h-5 w-5 text-yellow-500" />, costCredits: 2400, category: 'boosters', rarity: 'mythic', statBoost: { speed: 60, stamina: 60, acceleration: 60, temperament: 60 } },
+
+  // Equipment
+  { id: 'equip_bridle_royal', name: 'Royal Sovereign Bridle', description: '+20 temperament control', icon: <Shield className="h-5 w-5 text-yellow-500" />, costCredits: 40, category: 'equipment', rarity: 'legendary' },
+  { id: 'equip_saddle_platinum', name: 'Platinum Grand Prix Saddle', description: '+35% race performance', icon: <Award className="h-5 w-5 text-slate-400" />, costCredits: 120, category: 'equipment', rarity: 'legendary' },
+  { id: 'equip_horseshoe_obsidian', name: 'Obsidian Horseshoes', description: '+22 speed during races', icon: <Zap className="h-5 w-5 text-slate-700" />, costCredits: 260, category: 'equipment', rarity: 'mythic' },
+  { id: 'equip_blanket_dragonweave', name: 'Dragonweave Race Blanket', description: '+30% stamina retention on long tracks', icon: <Flame className="h-5 w-5 text-red-600" />, costCredits: 700, category: 'equipment', rarity: 'mythic' },
+  { id: 'equip_saddle_aureum', name: 'Aureum Crown Saddle', description: 'The ultimate mythic saddle — +60% race performance', icon: <Crown className="h-5 w-5 text-amber-500" />, costCredits: 4800, category: 'equipment', rarity: 'mythic' },
+
+  // Premium
+  { id: 'premium_lucky_charm_plus', name: 'Greater Lucky Charm', description: '+20% chance to win races', icon: <Sparkles className="h-5 w-5 text-emerald-700" />, costCredits: 55, category: 'premium', rarity: 'legendary' },
+  { id: 'premium_vip_season', name: 'VIP Season Pass', description: 'Exclusive VIP races for a full season (90 days)', icon: <Crown className="h-5 w-5 text-yellow-500" />, costCredits: 180, category: 'premium', rarity: 'legendary' },
+  { id: 'premium_stable_empire', name: 'Stable Empire License', description: '+25 horse capacity permanently', icon: <Award className="h-5 w-5 text-blue-500" />, costCredits: 450, category: 'premium', rarity: 'mythic' },
+  { id: 'premium_bloodline_vault', name: 'Bloodline Vault', description: 'Guaranteed elite-stat offspring on every breeding for 30 days', icon: <Heart className="h-5 w-5 text-pink-500" />, costCredits: 900, category: 'premium', rarity: 'mythic' },
+  { id: 'premium_dynasty', name: 'Dynasty Ownership', description: 'Lifetime VIP access, doubled XP and priority race entries', icon: <Trophy className="h-5 w-5 text-amber-600" />, costCredits: 4800, category: 'premium', rarity: 'mythic' },
+
+  // Mystery
+  { id: 'mystery_mythic', name: 'Mythic Mystery Vault', description: 'Contains 5 random items with a mythic chance', icon: <Gift className="h-5 w-5 text-fuchsia-500" />, costCredits: 140, category: 'mystery', rarity: 'mythic' },
+  { id: 'mystery_titan', name: 'Titan Mystery Vault', description: 'Guaranteed mythic item plus 3 legendary items', icon: <Gift className="h-5 w-5 text-amber-500" />, costCredits: 480, category: 'mystery', rarity: 'mythic' },
+  { id: 'mystery_dynasty', name: 'Dynasty Mystery Vault', description: 'The grand vault — 10 items, 2 guaranteed mythic', icon: <Gift className="h-5 w-5 text-rose-500" />, costCredits: 1800, category: 'mystery', rarity: 'mythic' },
+  { id: 'mystery_legend_forge', name: 'Legend Forge Vault', description: 'Ultimate vault — a full mythic equipment set for one horse', icon: <Gift className="h-5 w-5 text-yellow-600" />, costCredits: 4800, category: 'mystery', rarity: 'mythic' },
 ];
 
 const rarityColors = { common: 'bg-amber-200',
   rare: 'bg-blue-500',
   epic: 'bg-purple-500',
-  legendary: 'bg-yellow-500' };
+  legendary: 'bg-yellow-500',
+  mythic: 'bg-gradient-to-r from-fuchsia-600 via-rose-500 to-amber-500 text-white' };
+
 
 export const HorseShop = () => {
   const { horses } = useUserHorses();
