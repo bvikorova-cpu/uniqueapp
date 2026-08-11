@@ -95,23 +95,31 @@ export const HorseLeaderboard = () => {
                 {rank.badge || (index + 1)}
               </div>
               
-              {/* Horse color */}
+              {/* Horse portrait / color */}
               <div className="relative shrink-0">
-                <div
-                  className="w-10 h-10 rounded-lg border-2 border-amber-300/70"
-                  style={{ backgroundColor: horse.color }}
-                />
-                <div 
-                  className="absolute -inset-1 rounded-xl blur-md opacity-40"
-                  style={{ backgroundColor: horse.color }}
-                />
+                {horse.image_url ? (
+                  <img
+                    src={horse.image_url}
+                    alt={`${horse.name} - ${horse.breed} racehorse portrait`}
+                    loading="lazy"
+                    className="w-10 h-10 rounded-lg border-2 border-amber-300/70 object-cover"
+                  />
+                ) : (
+                  <div
+                    className="w-10 h-10 rounded-lg border-2 border-amber-300/70"
+                    style={{ backgroundColor: horse.color }}
+                  />
+                )}
               </div>
               
               {/* Info */}
               <div className="flex-1 min-w-0">
                 <p className="font-mono font-bold text-slate-900 text-sm sm:text-base truncate">{horse.name}</p>
-                <p className="text-xs text-emerald-700/80 font-mono capitalize truncate">{horse.breed}</p>
+                <p className="text-xs text-emerald-700/80 font-mono capitalize truncate">
+                  {horse.breed} · {horse.owner_name}
+                </p>
               </div>
+
               
               {/* Stats */}
               <div className="flex items-center gap-4 shrink-0">
