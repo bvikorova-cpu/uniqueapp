@@ -170,6 +170,17 @@ export const DailyTrainingQuests = () => {
         </div>
       </div>
 
+      {!user && (
+        <Card className="p-4 bg-white/70 border-amber-300/50">
+          <p className="text-xs font-mono text-amber-700">Sign in to track your quest progress.</p>
+        </Card>
+      )}
+      {user && isLoading && (
+        <p className="text-xs font-mono text-amber-700/70 flex items-center gap-2">
+          <RefreshCw className="h-3 w-3 animate-spin" /> Loading your live quest progress…
+        </p>
+      )}
+
       {/* Daily Quests */}
       <div>
         <h3 className="font-mono text-sm text-amber-700 uppercase tracking-wider mb-3 flex items-center gap-2">
