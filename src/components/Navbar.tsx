@@ -128,6 +128,7 @@ const Navbar = () => {
     { path: "/kids-drawing-buddy", label: "Drawing Buddy (6-12y)", icon: Palette },
     { path: "/kids-reading-companion", label: "Reading Companion (6-12y)", icon: BookOpen },
     { path: "/fairytale-book", label: "Fairytale Book Generator", icon: BookOpen },
+    { path: "/kids-academy?tab=cards", label: "Kids Collectibles (cards)", icon: Library },
     { path: "/teen-career-counselor", label: "Career Counselor (13-18y)", icon: Briefcase },
   ];
 
