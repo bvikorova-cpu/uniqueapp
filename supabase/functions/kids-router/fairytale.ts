@@ -199,7 +199,7 @@ Style: ${styleHint}. No text or lettering in the image, friendly, safe and magic
       }
     }
 
-    return json({ image, cost: ILLUSTRATE_COST });
+    return json({ image, cost: illustrateCost, premium });
   }
 
   return json({ error: "Unknown action" }, 400);
