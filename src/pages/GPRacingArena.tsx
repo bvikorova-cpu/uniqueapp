@@ -447,17 +447,24 @@ export default function GPRacingArena() {
                   disabled={raceRunning}
                   className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/30 shadow-lg shadow-cyan-500/20 font-mono uppercase tracking-wider py-6 text-base disabled:opacity-60"
                   onClick={() => requireAuth(async () => {
+                    if (!activeRace?.f1_race_participants?.length) {
+                      toast.error("No cars in this race yet", { description: "Join the race with one of your cars first." });
+                      return;
+                    }
                     setRaceRunning(true);
                     toast.info("Lights out — cars are on track!");
                     try {
                       const { data, error } = await supabase.functions.invoke("calculate-f1-race-results", { body: { raceId: selectedRace } });
                       if (error) throw error;
-                      if (data?.results) {
+                      if (data?.message && !data?.results?.length) {
+                        toast.error(data.message);
+                      } else if (data?.results?.length) {
                         const winner = data.results[0];
                         setTimeout(() => {
                           toast.success(`Race complete! Victor: ${winner.carName}${winner.prize > 0 ? ` — Reward: ${winner.prize} credits` : ""} 🏆`);
                         }, 12000);
                       }
+
                     } catch (error) {
                       console.error("Error calculating results:", error);
                       toast.error("Error calculating race results");
