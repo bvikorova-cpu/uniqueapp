@@ -81,7 +81,7 @@ export function ArenaLeaderboard() {
                 </div>
                 <div className="flex items-center gap-4 text-sm">
                   <span className="text-muted-foreground">{entry.wins}W · {entry.matches}M</span>
-                  <span className="font-bold text-yellow-400">€{(entry.earnings_cents / 100).toFixed(0)}</span>
+                  <span className="font-bold text-yellow-400">{entry.points.toLocaleString()} pts</span>
                 </div>
               </motion.div>
             );
