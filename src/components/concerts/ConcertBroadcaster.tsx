@@ -215,7 +215,9 @@ export const ConcertBroadcaster = ({ concertId, title, scheduledAt, status, onSt
           )}
         </div>
         <p className="text-xs text-muted-foreground">
-          Keep this page open while streaming — only fans with a paid ticket can watch.
+          {!live && inIframe
+            ? "Camera & microphone are blocked in the embedded preview — open the studio in a new tab to go live."
+            : "Keep this page open while streaming — only fans with a paid ticket can watch."}
         </p>
       </CardContent>
     </Card>
