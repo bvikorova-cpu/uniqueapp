@@ -443,7 +443,20 @@ export default function GPRacingArena() {
                     seed={(activeRace.track_name || "").length}
                   />
                 </div>
+                <div className="flex items-center justify-between gap-3 rounded-lg border border-cyan-500/20 bg-slate-900/60 px-4 py-3">
+                  <p className="font-mono text-xs uppercase tracking-wider text-cyan-300/80">
+                    Drivers on grid: {activeRace.f1_race_participants?.length || 0}/{activeRace.max_participants}
+                  </p>
+                  <Button
+                    variant="outline"
+                    onClick={() => requireAuth(() => handleJoinRace(activeRace.id))}
+                    className="border-cyan-500/40 text-cyan-300 hover:bg-cyan-950/40 font-mono text-xs uppercase tracking-wider"
+                  >
+                    <Car className="mr-2 h-4 w-4" /> Add participant ({GP_CREDIT_COSTS.joinRace} credits)
+                  </Button>
+                </div>
                 <Button
+
                   disabled={raceRunning}
                   className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/30 shadow-lg shadow-cyan-500/20 font-mono uppercase tracking-wider py-6 text-base disabled:opacity-60"
                   onClick={() => requireAuth(async () => {
