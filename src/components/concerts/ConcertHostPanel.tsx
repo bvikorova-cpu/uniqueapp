@@ -31,6 +31,8 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
   const [gifts, setGifts] = useState<GiftRow[]>([]);
   const [giftNames, setGiftNames] = useState<Record<string, { name: string; icon: string }>>({});
   const [viewerCount, setViewerCount] = useState(0);
+  const [ticketRevenue, setTicketRevenue] = useState(0);
+  const [ticketCount, setTicketCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -41,6 +43,8 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
         { data: giftRows, error: giftsError },
         { data: catalog, error: catalogError },
         { data: concert, error: concertError },
+        { data: ticketRows },
+        { data: ticketTypes },
       ] = await Promise.all([
         supabase
           .from("sent_platform_gifts")
@@ -55,12 +59,21 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
           .select("viewer_count")
           .eq("id", concertId)
           .maybeSingle(),
+        supabase.from("concert_tickets").select("ticket_type").eq("concert_id", concertId),
+        supabase.from("concert_ticket_types").select("name, price").eq("concert_id", concertId),
       ]);
       if (cancelled) return;
       const queryError = giftsError || catalogError || concertError;
       setLoadError(queryError?.message || null);
       setGifts((giftRows as GiftRow[]) || []);
       setViewerCount(Number(concert?.viewer_count || 0));
+      const priceByType: Record<string, number> = {};
+      (ticketTypes || []).forEach((t: any) => { priceByType[String(t.name).toLowerCase()] = Number(t.price || 0); });
+      const tickets = ticketRows || [];
+      setTicketCount(tickets.length);
+      setTicketRevenue(
+        tickets.reduce((s: number, t: any) => s + (priceByType[String(t.ticket_type || "").toLowerCase()] || 0), 0)
+      );
       const map: Record<string, { name: string; icon: string }> = {};
       (catalog || []).forEach((g: any) => { map[g.id] = { name: g.name, icon: g.icon }; });
       setGiftNames(map);
@@ -87,11 +100,12 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
 
   const totals = useMemo(() => {
     const paid = gifts.filter((g) => PAID.includes((g.status || "").toLowerCase()));
-    const gross = paid.reduce((s, g) => s + Number(g.amount || 0), 0);
+    const giftGross = paid.reduce((s, g) => s + Number(g.amount || 0), 0);
+    const gross = giftGross + ticketRevenue;
     const yours = gross * 0.8;
     const fee = gross * 0.2;
-    return { gross, yours, fee, count: paid.length };
-  }, [gifts]);
+    return { gross, giftGross, ticketGross: ticketRevenue, yours, fee, count: paid.length };
+  }, [gifts, ticketRevenue]);
 
   return (
     <Card className="border-primary/20">
@@ -109,8 +123,8 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
             </p>
           </div>
           <div className="rounded-lg border p-3">
-            <p className="text-[11px] text-muted-foreground">Paid gifts</p>
-            <p className="text-lg font-bold">{totals.count}</p>
+            <p className="text-[11px] text-muted-foreground">Tickets / gifts</p>
+            <p className="text-lg font-bold">{ticketCount} / {totals.count}</p>
           </div>
           <div className="rounded-lg border p-3">
             <p className="text-[11px] text-muted-foreground">Your 80% share</p>
@@ -180,16 +194,20 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
 
           <TabsContent value="earnings" className="mt-3 space-y-3">
             <div className="rounded-xl border bg-gradient-to-br from-primary/10 to-accent/10 p-4">
-              <p className="text-xs text-muted-foreground">Your share (80%)</p>
+              <p className="text-xs text-muted-foreground">Your share (80% of tickets + gifts)</p>
               <p className="text-3xl font-black text-primary">€{totals.yours.toFixed(2)}</p>
               <p className="mt-1 text-xs text-muted-foreground">
-                From {totals.count} paid gift{totals.count === 1 ? "" : "s"} in this concert
+                From {ticketCount} ticket{ticketCount === 1 ? "" : "s"} and {totals.count} paid gift{totals.count === 1 ? "" : "s"} in this concert
               </p>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div className="rounded-lg border p-3">
+                <p className="text-[11px] text-muted-foreground">Ticket sales</p>
+                <p className="text-lg font-bold">€{totals.ticketGross.toFixed(2)}</p>
+              </div>
+              <div className="rounded-lg border p-3">
                 <p className="text-[11px] text-muted-foreground">Gross gifts</p>
-                <p className="text-lg font-bold">€{totals.gross.toFixed(2)}</p>
+                <p className="text-lg font-bold">€{totals.giftGross.toFixed(2)}</p>
               </div>
               <div className="rounded-lg border p-3">
                 <p className="text-[11px] text-muted-foreground">Platform fee (20%)</p>
@@ -197,7 +215,7 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
               </div>
             </div>
             <p className="text-[11px] text-muted-foreground">
-              Gift revenue is split 80% artist / 20% platform and paid out to your connected account.
+              Ticket and gift revenue is split 80% artist / 20% platform and paid out to your connected account.
             </p>
           </TabsContent>
         </Tabs>
