@@ -247,18 +247,17 @@ export const ConcertBroadcaster = ({ concertId, title, scheduledAt, status, onSt
             </Button>
           )}
           {live && (
-            <>
-
-              <Button variant="outline" onClick={toggleMic} className="gap-2">
+            <div className="flex flex-col gap-2 w-full">
+              <Button variant="outline" onClick={toggleMic} className="gap-2 w-full justify-start">
                 {micEnabled ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
                 {micEnabled ? "Mute" : "Unmute"}
               </Button>
-              <Button variant="outline" onClick={toggleCam} className="gap-2">
+              <Button variant="outline" onClick={toggleCam} className="gap-2 w-full justify-start">
                 {camEnabled ? <Camera className="h-4 w-4" /> : <CameraOff className="h-4 w-4" />}
                 {camEnabled ? "Hide camera" : "Show camera"}
               </Button>
-              <Button variant="destructive" onClick={endStream}>End stream</Button>
-            </>
+              <Button variant="destructive" onClick={endStream} className="w-full">End stream</Button>
+            </div>
           )}
         </div>
         <p className="text-xs text-muted-foreground">
