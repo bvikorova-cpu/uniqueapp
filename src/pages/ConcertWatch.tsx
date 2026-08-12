@@ -34,6 +34,7 @@ const ConcertWatch = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
+  const rtcStreamRef = useRef<MediaStream | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [concert, setConcert] = useState<Concert | null>(null);
