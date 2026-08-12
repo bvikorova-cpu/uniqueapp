@@ -1,65 +1,40 @@
 /**
- * PLATFORM-WIDE RULE: Vertex AI (postpay) is the PRIMARY AI provider.
- * The Lovable AI Gateway is only a fallback when Vertex is unavailable.
- * OpenAI is never called directly.
+ * PLATFORM-WIDE RULE: Vertex AI (postpay) is the ONLY AI provider.
+ * The Lovable AI Gateway is NOT used anywhere. OpenAI is never called.
  *
  * Importing this module patches `globalThis.fetch` so that:
- *  - Any call to `api.openai.com` is rerouted to Vertex AI first, then the
- *    Lovable AI Gateway (chat completions, image generation, embeddings, TTS).
- *  - Any direct call to `ai.gateway.lovable.dev/v1/chat/completions` is also
- *    intercepted and sent to Vertex AI first; the gateway is used only as a
- *    fallback. This ensures every chat completion — no matter which URL the
- *    edge function called — goes through Vertex AI first.
+ *  - Any call to `api.openai.com` is served by Vertex AI.
+ *  - Any call to `ai.gateway.lovable.dev` is served by Vertex AI.
  *
- * The gateway is OpenAI-compatible, so response shapes stay identical and no
- * other function code has to change. If a request cannot be rerouted, it fails
- * with a clear error instead of reaching OpenAI.
+ * Vertex responses are reshaped into OpenAI-compatible JSON, so every existing
+ * edge function keeps working unchanged. If Vertex cannot serve a request the
+ * call fails with a clear 503 — there is no third-party fallback.
  */
 
-import { tryDirectGeminiChatResponse } from "./geminiDirect.ts";
-import { tryVertexImage } from "./vertexDirect.ts";
-
-const GATEWAY_BASE = "https://ai.gateway.lovable.dev/v1";
-
-
-/** Legacy OpenAI ids -> supported gateway ids (cheap-first). */
-const MODEL_MAP: Record<string, string> = {
-  "gpt-4o-mini": "google/gemini-3.6-flash",
-  "gpt-4.1-mini": "google/gemini-3.6-flash",
-  "gpt-4.1-nano": "google/gemini-3.1-flash-lite",
-  "gpt-3.5-turbo": "google/gemini-3.6-flash",
-  "gpt-4o": "google/gemini-3.6-flash",
-  "gpt-4o-latest": "google/gemini-3.6-flash",
-  "gpt-4": "google/gemini-3.6-flash",
-  "gpt-4-turbo": "google/gemini-3.6-flash",
-  "gpt-4.1": "google/gemini-3.6-flash",
-  "o1-mini": "google/gemini-3.6-flash",
-  "o3-mini": "google/gemini-3.6-flash",
-  "o4-mini": "google/gemini-3.6-flash",
-};
-
-const DEFAULT_CHAT_MODEL = "google/gemini-3.6-flash";
-const DEFAULT_IMAGE_MODEL = "openai/gpt-image-1-mini";
-const DEFAULT_TTS_MODEL = "openai/gpt-4o-mini-tts";
-const DEFAULT_STT_MODEL = "openai/gpt-4o-mini-transcribe";
-
-function mapChatModel(model: unknown): string {
-  if (typeof model !== "string" || !model) return DEFAULT_CHAT_MODEL;
-  if (model.includes("/")) return model;
-  return MODEL_MAP[model] ?? DEFAULT_CHAT_MODEL;
-}
-
-function gatewayAudioModel(model: unknown, fallback: string): string {
-  if (typeof model === "string" && model.includes("/")) return model;
-  return fallback;
-}
+import { tryVertexChat, tryVertexImage, tryVertexTranscribe, tryVertexEmbeddings, tryVertexSpeech } from "./vertexDirect.ts";
 
 function blocked(reason: string): Response {
-  console.error(`[aiRedirect] blocked OpenAI call: ${reason}`);
+  console.error(`[aiRedirect] Vertex AI could not serve the request: ${reason}`);
   return new Response(
     JSON.stringify({ error: { message: "AI service unavailable", type: "ai_unavailable", reason } }),
     { status: 503, headers: { "Content-Type": "application/json" } },
   );
+}
+
+const json = (data: unknown, status = 200) =>
+  new Response(JSON.stringify(data), { status, headers: { "Content-Type": "application/json" } });
+
+/** Retry a Vertex attempt a few times with backoff before giving up. */
+async function withRetry<T>(label: string, fn: () => Promise<T | null>, attempts = 3): Promise<T | null> {
+  for (let i = 0; i < attempts; i++) {
+    const out = await fn();
+    if (out) return out;
+    if (i < attempts - 1) {
+      console.warn(`[aiRedirect] vertex ${label} attempt #${i + 1} failed, retrying`);
+      await new Promise((r) => setTimeout(r, 600 * (i + 1)));
+    }
+  }
+  return null;
 }
 
 // deno-lint-ignore no-explicit-any
@@ -79,67 +54,34 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
       ? input.toString()
       : (input as Request).url;
 
-    // Only intercept OpenAI and Lovable-gateway URLs; everything else passes through.
-    const isOpenAI = url.includes("api.openai.com");
-    const isGateway = url.includes("ai.gateway.lovable.dev");
-    if (!isOpenAI && !isGateway) {
-      return await originalFetch(input as any, init);
-    }
+    // Only intercept AI-provider URLs; everything else passes through.
+    const isAiProvider = url.includes("api.openai.com") || url.includes("ai.gateway.lovable.dev");
+    if (!isAiProvider) return await originalFetch(input as any, init);
 
     try {
-      const lovableKey = Deno.env.get("LOVABLE_API_KEY");
-      if (!lovableKey) return blocked("LOVABLE_API_KEY is not configured");
-
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-        "Lovable-API-Key": lovableKey,
-      };
-
-      // Retry transient gateway failures (429 / 5xx) with backoff before giving up.
-      const postWithRetry = async (
-        endpoint: string,
-        payload: Record<string, unknown>,
-        fallbackModels: string[] = [],
-      ): Promise<Response> => {
-        const models = [payload.model as string, ...fallbackModels].filter(Boolean);
-        let last: Response | null = null;
-        for (let i = 0; i < Math.max(models.length, 1) + 1; i++) {
-          const model = models[Math.min(i, models.length - 1)];
-          const res = await originalFetch(endpoint, {
-            method: "POST",
-            headers,
-            body: JSON.stringify({ ...payload, ...(model ? { model } : {}) }),
-          });
-          if (res.ok) return res;
-          if (res.status !== 429 && res.status < 500) return res;
-          last = res;
-          console.warn(`[aiRedirect] gateway ${res.status} on ${model}, retry #${i + 1}`);
-          await new Promise((r) => setTimeout(r, 600 * (i + 1)));
-        }
-        return last!;
-      };
+      const rawBody = init?.body;
 
       // ---- multipart endpoints (audio transcriptions / translations) ----
-      const rawBody = init?.body;
       if (url.includes("/audio/transcriptions") || url.includes("/audio/translations")) {
         let form: FormData | null = null;
         if (rawBody instanceof FormData) form = rawBody;
         else if (input instanceof Request) form = await input.clone().formData().catch(() => null);
         if (!form) return blocked("unsupported transcription payload");
 
-        const out = new FormData();
-        for (const [k, v] of form.entries()) {
-          if (k === "model") continue;
-          out.append(k, v as any);
+        const file = form.get("file");
+        if (!(file instanceof File) && !(file instanceof Blob)) {
+          return blocked("transcription payload has no audio file");
         }
-        out.append("model", gatewayAudioModel(form.get("model"), DEFAULT_STT_MODEL));
-        return await originalFetch(`${GATEWAY_BASE}/audio/transcriptions`, {
-          method: "POST",
-          // Lovable AI Gateway authenticates every endpoint with this header,
-          // including its OpenAI-compatible multipart transcription route.
-          headers: { "Lovable-API-Key": lovableKey },
-          body: out,
-        });
+        const bytes = new Uint8Array(await (file as Blob).arrayBuffer());
+        let b64 = "";
+        const chunk = 0x8000;
+        for (let i = 0; i < bytes.length; i += chunk) {
+          b64 += String.fromCharCode(...bytes.subarray(i, i + chunk));
+        }
+        const mime = (file as File).type || "audio/webm";
+        const transcript = await withRetry("transcribe", () => tryVertexTranscribe(btoa(b64), mime));
+        if (transcript === null) return blocked("vertex transcription failed");
+        return json({ text: transcript });
       }
 
       // ---- JSON endpoints ----
@@ -155,111 +97,31 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
       }
       if (!body) return blocked("unsupported request payload");
 
-      // ---- Direct Lovable Gateway calls: Vertex AI is primary, gateway is fallback ----
-      if (isGateway) {
-        if (url.includes("/chat/completions")) {
-          // Vertex AI (postpay) gets the first attempt for every gateway chat call.
-          const direct = await tryDirectGeminiChatResponse(body);
-          if (direct) return direct;
-          // Vertex unavailable/failed — fall back to the Lovable gateway with retry.
-          return await postWithRetry(GATEWAY_BASE + "/chat/completions", body, [
-            "google/gemini-3.1-flash-lite",
-            "google/gemini-3.5-flash",
-          ]);
-        }
-        if (url.includes("/images/generations") || url.includes("/images/edits")) {
-          // Vertex AI (postpay Imagen) gets the first attempt for image generation.
-          const vertexImg = await tryVertexImage(body.prompt, body.size, body.n);
-          if (vertexImg) {
-            return new Response(JSON.stringify(vertexImg), {
-              status: 200,
-              headers: { "Content-Type": "application/json" },
-            });
-          }
-          // Vertex unavailable/failed — fall back to the Lovable gateway.
-          const gwBody = {
-            model: DEFAULT_IMAGE_MODEL,
-            prompt: body.prompt,
-            n: 1,
-            ...(body.size ? { size: body.size } : {}),
-            quality: "low",
-          };
-          return await postWithRetry(`${GATEWAY_BASE}/images/generations`, gwBody, [
-            "google/gemini-3-pro-image",
-          ]);
-        }
-        // Non-chat, non-image gateway endpoints (audio, embeddings): pass through unchanged.
-        return await originalFetch(input as any, init);
-      }
-
       if (url.includes("/chat/completions")) {
-        const model = mapChatModel(body.model);
-        body.model = model;
-        // Gemini/gpt-5 style models need headroom and reject some legacy fields.
-        const budget = Number(body.max_completion_tokens ?? body.max_tokens ?? 0);
-        delete body.max_tokens;
-        delete body.max_completion_tokens;
-        body.max_completion_tokens = Math.max(budget || 0, 2048);
-        if (/gpt-5/i.test(model)) delete body.temperature;
-        if (/gpt-5\.6/i.test(model)) body.reasoning_effort = "none";
-
-        // Hybrid: prefer the project's own Gemini API key, fall back to gateway.
-        const direct = await tryDirectGeminiChatResponse(body);
-        if (direct) return direct;
-
-        return await postWithRetry(`${GATEWAY_BASE}/chat/completions`, body, [
-          "google/gemini-3.1-flash-lite",
-          "google/gemini-3.5-flash",
-        ]);
+        const data = await withRetry("chat", () => tryVertexChat(body!));
+        if (!data) return blocked("vertex chat completion failed");
+        return json(data);
       }
-
 
       if (url.includes("/images/generations") || url.includes("/images/edits")) {
-        // Vertex AI (postpay Imagen) gets the first attempt for image generation.
-        const vertexImg = await tryVertexImage(body.prompt, body.size, body.n);
-        if (vertexImg) {
-          return new Response(JSON.stringify(vertexImg), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-          });
-        }
-        // Vertex unavailable/failed — fall back to the Lovable gateway.
-        const gwBody = {
-          model: DEFAULT_IMAGE_MODEL,
-          prompt: body.prompt,
-          n: 1,
-          ...(body.size ? { size: body.size } : {}),
-          quality: "low",
-        };
-        return await postWithRetry(`${GATEWAY_BASE}/images/generations`, gwBody, [
-          "google/gemini-3-pro-image",
-        ]);
+        const img = await withRetry("image", () => tryVertexImage(body!.prompt, body!.size, body!.n));
+        if (!img) return blocked("vertex image generation failed");
+        return json(img);
       }
 
       if (url.includes("/embeddings")) {
-        const gwBody = {
-          ...body,
-          model: typeof body.model === "string" && body.model.includes("/")
-            ? body.model
-            : "openai/text-embedding-3-small",
-        };
-        return await postWithRetry(`${GATEWAY_BASE}/embeddings`, gwBody);
+        const emb = await withRetry("embeddings", () => tryVertexEmbeddings(body!.input));
+        if (!emb) return blocked("vertex embeddings failed");
+        return json(emb);
       }
 
       if (url.includes("/audio/speech")) {
-        const gwBody = {
-          ...body,
-          model: gatewayAudioModel(body.model, DEFAULT_TTS_MODEL),
-        };
-        const res = await originalFetch(`${GATEWAY_BASE}/audio/speech`, {
-          method: "POST",
-          headers,
-          body: JSON.stringify(gwBody),
-        });
-        return res;
+        const audio = await withRetry("tts", () => tryVertexSpeech(String(body!.input ?? ""), body!.voice));
+        if (!audio) return blocked("vertex text-to-speech failed");
+        return new Response(audio, { status: 200, headers: { "Content-Type": "audio/wav" } });
       }
 
-      return blocked(`unsupported OpenAI endpoint: ${url}`);
+      return blocked(`unsupported AI endpoint: ${url}`);
     } catch (e) {
       return blocked(`redirect error: ${e instanceof Error ? e.message : String(e)}`);
     }

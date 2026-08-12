@@ -190,45 +190,54 @@ export async function tryVertexImage(
   const token = await getAccessToken(sa);
   if (!token) return null;
 
-  const model = "gemini-2.5-flash-image";
-  const url = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`;
+  // Vertex image models, tried in order. 429 (RESOURCE_EXHAUSTED) on one model
+  // is retried on the next candidate + a short backoff — there is no
+  // non-Vertex fallback anywhere on the platform.
+  const models = [
+    Deno.env.get("GCP_IMAGE_MODEL") || "gemini-2.5-flash-image",
+    "gemini-2.5-flash-image-preview",
+    "gemini-2.0-flash-preview-image-generation",
+  ].filter((m, i, a) => a.indexOf(m) === i);
 
-  try {
-    const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
-    const res = await rawFetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text: imagePromptWithAspect(prompt, size) }] }],
-        generationConfig: { responseModalities: ["IMAGE", "TEXT"], temperature: 0.9 },
-      }),
-    });
-    if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      console.warn(`[vertexDirect] image ${res.status}, falling back:`, text.slice(0, 300));
-      return null;
+  const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
+
+  for (let attempt = 0; attempt < models.length * 2; attempt++) {
+    const model = models[attempt % models.length];
+    const url =
+      `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`;
+    try {
+      const res = await rawFetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: imagePromptWithAspect(prompt, size) }] }],
+          generationConfig: { responseModalities: ["IMAGE", "TEXT"], temperature: 0.9 },
+        }),
+      });
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        console.warn(`[vertexDirect] image ${model} ${res.status}:`, text.slice(0, 200));
+        if (res.status === 429 || res.status >= 500) await new Promise((r) => setTimeout(r, 800 * (attempt + 1)));
+        continue;
+      }
+      const data = await res.json();
+      const parts = data?.candidates?.[0]?.content?.parts;
+      const images: string[] = [];
+      if (Array.isArray(parts)) {
+        for (const p of parts) {
+          const b64 = p?.inlineData?.data;
+          if (typeof b64 === "string" && b64.length) images.push(b64);
+        }
+      }
+      if (images.length) return { data: images.map((b64) => ({ b64_json: b64 })) };
+      console.warn(`[vertexDirect] image ${model} returned no inlineData`);
+    } catch (e) {
+      console.warn(`[vertexDirect] image ${model} error:`, e instanceof Error ? e.message : String(e));
     }
-    const data = await res.json();
-    const parts = data?.candidates?.[0]?.content?.parts;
-    if (!Array.isArray(parts)) {
-      console.warn("[vertexDirect] image empty response, falling back");
-      return null;
-    }
-    const images: string[] = [];
-    for (const p of parts) {
-      const b64 = p?.inlineData?.data;
-      if (typeof b64 === "string" && b64.length) images.push(b64);
-    }
-    if (!images.length) {
-      console.warn("[vertexDirect] image response had no inlineData, falling back");
-      return null;
-    }
-    return { data: images.map((b64) => ({ b64_json: b64 })) };
-  } catch (e) {
-    console.warn("[vertexDirect] image error, falling back:", e instanceof Error ? e.message : String(e));
-    return null;
   }
+  return null;
 }
+
 
 /**
  * Speech-to-text on Vertex AI (postpay) using Gemini's native audio input.
@@ -288,4 +297,133 @@ export async function tryVertexTranscribe(
     console.warn("[vertexDirect] transcribe error, falling back:", e instanceof Error ? e.message : String(e));
     return null;
   }
+}
+
+/**
+ * Text embeddings on Vertex AI (postpay).
+ * Returns an OpenAI-shaped embeddings response, or null on failure.
+ */
+export async function tryVertexEmbeddings(
+  input: unknown,
+): Promise<any | null> {
+  const sa = getServiceAccount();
+  if (!sa) return null;
+  const projectId = Deno.env.get("GCP_PROJECT_ID") || sa.project_id;
+  const location = Deno.env.get("GCP_LOCATION") || "us-central1";
+  if (!projectId) return null;
+  const token = await getAccessToken(sa);
+  if (!token) return null;
+
+  const texts = Array.isArray(input)
+    ? input.map((t) => String(t))
+    : [String(input ?? "")];
+  if (!texts.length) return null;
+
+  const model = Deno.env.get("GCP_EMBEDDING_MODEL") || "text-embedding-005";
+  const url = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:predict`;
+
+  try {
+    const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
+    const res = await rawFetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ instances: texts.map((content) => ({ content })) }),
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      console.warn(`[vertexDirect] embeddings ${res.status}:`, text.slice(0, 300));
+      return null;
+    }
+    const data = await res.json();
+    const preds = data?.predictions;
+    if (!Array.isArray(preds) || !preds.length) return null;
+    return {
+      object: "list",
+      model,
+      data: preds.map((p: any, i: number) => ({
+        object: "embedding",
+        index: i,
+        embedding: p?.embeddings?.values ?? [],
+      })),
+      usage: { prompt_tokens: 0, total_tokens: 0 },
+    };
+  } catch (e) {
+    console.warn("[vertexDirect] embeddings error:", e instanceof Error ? e.message : String(e));
+    return null;
+  }
+}
+
+/**
+ * Text-to-speech on Vertex AI (postpay) using Gemini TTS.
+ * Returns raw audio bytes (PCM/WAV-wrapped) or null on failure.
+ */
+export async function tryVertexSpeech(
+  text: string,
+  voice?: unknown,
+): Promise<Uint8Array | null> {
+  const sa = getServiceAccount();
+  if (!sa) return null;
+  const projectId = Deno.env.get("GCP_PROJECT_ID") || sa.project_id;
+  const location = Deno.env.get("GCP_LOCATION") || "us-central1";
+  if (!projectId) return null;
+  const token = await getAccessToken(sa);
+  if (!token) return null;
+
+  const model = Deno.env.get("GCP_TTS_MODEL") || "gemini-2.5-flash-preview-tts";
+  const voiceName = typeof voice === "string" && /^[A-Z][a-z]+$/.test(voice) ? voice : "Kore";
+  const url = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`;
+
+  try {
+    const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
+    const res = await rawFetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts: [{ text }] }],
+        generationConfig: {
+          responseModalities: ["AUDIO"],
+          speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName } } },
+        },
+      }),
+    });
+    if (!res.ok) {
+      const t = await res.text().catch(() => "");
+      console.warn(`[vertexDirect] tts ${res.status}:`, t.slice(0, 300));
+      return null;
+    }
+    const data = await res.json();
+    const b64 = data?.candidates?.[0]?.content?.parts?.find((p: any) => p?.inlineData?.data)?.inlineData?.data;
+    if (typeof b64 !== "string" || !b64) return null;
+    const pcm = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+    return wrapPcmAsWav(pcm, 24000);
+  } catch (e) {
+    console.warn("[vertexDirect] tts error:", e instanceof Error ? e.message : String(e));
+    return null;
+  }
+}
+
+/** Wrap raw 16-bit mono PCM in a WAV container so browsers can play it. */
+function wrapPcmAsWav(pcm: Uint8Array, sampleRate: number): Uint8Array {
+  const header = new ArrayBuffer(44);
+  const v = new DataView(header);
+  const write = (off: number, s: string) => {
+    for (let i = 0; i < s.length; i++) v.setUint8(off + i, s.charCodeAt(i));
+  };
+  write(0, "RIFF");
+  v.setUint32(4, 36 + pcm.length, true);
+  write(8, "WAVE");
+  write(12, "fmt ");
+  v.setUint32(16, 16, true);
+  v.setUint16(20, 1, true);
+  v.setUint16(22, 1, true);
+  v.setUint32(24, sampleRate, true);
+  v.setUint32(28, sampleRate * 2, true);
+  v.setUint16(32, 2, true);
+  v.setUint16(34, 16, true);
+  write(36, "data");
+  v.setUint32(40, pcm.length, true);
+  const out = new Uint8Array(44 + pcm.length);
+  out.set(new Uint8Array(header), 0);
+  out.set(pcm, 44);
+  return out;
 }
