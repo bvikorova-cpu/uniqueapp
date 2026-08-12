@@ -145,43 +145,6 @@ export function ShadowAIToolsHub() {
           )}
         </TabsContent>
 
-        {/* AI VOICE NARRATOR */}
-        <TabsContent value="narrator" className="mt-4 space-y-3">
-          <Textarea
-            value={narratorText}
-            onChange={(e) => setNarratorText(e.target.value)}
-            rows={5}
-            placeholder={"Paste the horror text to be narrated by a chilling AI voice..."}
-            className="bg-black/60 border-red-800/50 text-red-50 placeholder:text-red-200/50 font-serif"
-          />
-          <select
-            value={narratorVoice}
-            onChange={(e) => setNarratorVoice(e.target.value)}
-            className="bg-black/60 border border-red-800/50 text-red-50 rounded-md px-3 py-2 text-sm w-full"
-          >
-            {VOICES.map((v) => <option key={v.id} value={v.id} className="bg-black text-red-50">{v.label}</option>)}
-          </select>
-          <Button
-            onClick={() => {
-              if (!narratorText.trim()) { toast.error("Enter text to narrate"); return; }
-              if (narratorText.length > 2500) { toast.error("Max 2500 chars"); return; }
-              if (!requireCredits(SHADOW_AI_COSTS.narrator)) return;
-              narrate.mutate(
-                { text: narratorText, voiceId: narratorVoice, voiceLabel: VOICES.find(v => v.id === narratorVoice)?.label },
-                { onSuccess: (data) => setNarratorAudio(data.audioUrl || data.audio_url) }
-              );
-            }}
-            disabled={narrate.isPending}
-            className="w-full bg-gradient-to-r from-purple-700 to-red-800 hover:from-purple-800 hover:to-red-900"
-          >
-            {narrate.isPending
-              ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {"Summoning voice..."}</>
-              : <><Volume2 className="w-4 h-4 mr-2" /> {"Narrate"} ({SHADOW_AI_COSTS.narrator} {"cr"})</>}
-          </Button>
-          {narratorAudio && (
-            <audio controls src={narratorAudio} className="w-full mt-3" />
-          )}
-        </TabsContent>
 
         {/* NIGHTMARE AVATAR */}
         <TabsContent value="avatar" className="mt-4 space-y-3">
