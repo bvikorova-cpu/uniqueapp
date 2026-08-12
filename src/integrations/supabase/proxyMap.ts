@@ -352,9 +352,6 @@ export function resolveProxy(
   if (functionName === "shadow-curse-wheel-spin") {
     return { target: "shadow-arena-router", body: { ...b, action: "curse_wheel_spin" } };
   }
-  if (functionName === "shadow-horror-reel") {
-    return { target: "shadow-arena-router", body: { ...b, action: "horror_reel" } };
-  }
 
   // Batch 13 — shadow AI tools merged into shadow-arena-router.
   if (functionName === "shadow-ai-narrator") {
