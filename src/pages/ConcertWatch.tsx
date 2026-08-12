@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Hls from "hls.js";
+import { startViewer } from "@/lib/concertWebRTC";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -33,11 +34,14 @@ const ConcertWatch = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
+  const rtcStreamRef = useRef<MediaStream | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [concert, setConcert] = useState<Concert | null>(null);
   const [allowed, setAllowed] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [rtcActive, setRtcActive] = useState(false);
+  const [rtcConnecting, setRtcConnecting] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -129,6 +133,47 @@ const ConcertWatch = () => {
       if (hlsRef.current) { hlsRef.current.destroy(); hlsRef.current = null; }
     };
   }, [concert?.playback_url, concert?.status]);
+
+  // WebRTC camera stream (artist broadcasts from their camera, no HLS URL)
+  useEffect(() => {
+    if (!id || !allowed) return;
+    if (concert?.status !== "live" || concert?.playback_url) return;
+    setRtcConnecting(true);
+    const handle = startViewer(
+      id,
+      (stream) => {
+        rtcStreamRef.current = stream;
+        setRtcConnecting(false);
+        setRtcActive(true);
+      },
+      (state) => {
+        if (state === "failed" || state === "closed" || state === "disconnected") {
+          setRtcActive(false);
+          setRtcConnecting(true);
+        }
+      }
+    );
+    return () => {
+      handle.stop();
+      rtcStreamRef.current = null;
+      setRtcActive(false);
+      setRtcConnecting(false);
+    };
+  }, [id, allowed, concert?.status, concert?.playback_url]);
+
+  // Attach the WebRTC stream once the <video> element is mounted
+  useEffect(() => {
+    if (!rtcActive) return;
+    const video = videoRef.current;
+    const stream = rtcStreamRef.current;
+    if (video && stream) {
+      video.srcObject = stream;
+      video.play().catch(() => {});
+    }
+  }, [rtcActive]);
+
+
+
 
   // Viewer presence + count
   useEffect(() => {
@@ -230,7 +275,7 @@ const ConcertWatch = () => {
         <div className="grid lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2 space-y-3">
             <div className="aspect-video bg-black rounded-xl overflow-hidden relative">
-              {concert?.status === "live" && concert?.playback_url ? (
+              {concert?.status === "live" && (concert?.playback_url || rtcActive) ? (
                 <video
                   ref={videoRef}
                   controls
@@ -240,16 +285,18 @@ const ConcertWatch = () => {
                 />
               ) : (
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 space-y-3">
-                  <Radio className="h-12 w-12 text-muted-foreground" />
+                  {concert?.status === "live" && rtcConnecting
+                    ? <Loader2 className="h-12 w-12 text-primary animate-spin" />
+                    : <Radio className="h-12 w-12 text-muted-foreground" />}
                   <div>
                     <p className="text-lg font-semibold text-foreground">
                       {concert?.status === "scheduled" ? "Concert hasn't started yet" :
                        concert?.status === "ended" ? "Concert ended" :
-                       "Stream is being prepared..."}
+                       "Connecting to the artist's camera..."}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {concert?.status === "scheduled"
-                        ? `Scheduled for ${new Date(concert.scheduled_at).toLocaleString()}`
+                        ? `Scheduled for ${new Date(concert.scheduled_at).toLocaleString()} — the camera turns on automatically`
                         : "Please wait for the artist to start streaming."}
                     </p>
                   </div>

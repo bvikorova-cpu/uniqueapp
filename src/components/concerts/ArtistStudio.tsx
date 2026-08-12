@@ -10,6 +10,7 @@ import { ArrowLeft, BadgeCheck, Loader2, Mic2, Music, Plus, Radio, ShieldCheck, 
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { ConcertBroadcaster } from "@/components/concerts/ConcertBroadcaster";
 
 interface Props { onBack: () => void; }
 
@@ -29,6 +30,7 @@ export const ArtistStudio = ({ onBack }: Props) => {
   const [saving, setSaving] = useState(false);
   const [profile, setProfile] = useState<MusicianProfile | null>(null);
   const [concerts, setConcerts] = useState<any[]>([]);
+  const [studioId, setStudioId] = useState<string | null>(null);
 
   // profile form
   const [stageName, setStageName] = useState("");
@@ -261,24 +263,37 @@ export const ArtistStudio = ({ onBack }: Props) => {
               {concerts.length === 0 ? (
                 <p className="text-sm text-muted-foreground">No concerts yet — schedule your first show above.</p>
               ) : concerts.map((c) => (
-                <div key={c.id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border p-3">
-                  <div className="min-w-0">
-                    <p className="font-semibold truncate">{c.title}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {format(new Date(c.scheduled_at), "d MMM yyyy HH:mm")}
-                      {c.concert_ticket_types?.[0] && ` · €${Number(c.concert_ticket_types[0].price).toFixed(2)}`}
-                      {` · ${c.viewer_count || 0} viewers`}
-                    </p>
+                <div key={c.id} className="space-y-3 rounded-lg border p-3">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-semibold truncate">{c.title}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {format(new Date(c.scheduled_at), "d MMM yyyy HH:mm")}
+                        {c.concert_ticket_types?.[0] && ` · €${Number(c.concert_ticket_types[0].price).toFixed(2)}`}
+                        {` · ${c.viewer_count || 0} viewers`}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant={c.status === "live" ? "default" : "secondary"} className="capitalize">{c.status}</Badge>
+                      {c.status !== "ended" && (
+                        <Button size="sm" variant={studioId === c.id ? "secondary" : "default"} onClick={() => setStudioId(studioId === c.id ? null : c.id)} className="gap-1">
+                          <Radio className="h-3 w-3" /> {studioId === c.id ? "Close studio" : "Open camera studio"}
+                        </Button>
+                      )}
+                      {c.status === "live" && studioId !== c.id && (
+                        <Button size="sm" variant="outline" onClick={() => setStatus(c.id, "ended")}>End</Button>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Badge variant={c.status === "live" ? "default" : "secondary"} className="capitalize">{c.status}</Badge>
-                    {c.status === "scheduled" && (
-                      <Button size="sm" onClick={() => setStatus(c.id, "live")} className="gap-1"><Radio className="h-3 w-3" /> Go live</Button>
-                    )}
-                    {c.status === "live" && (
-                      <Button size="sm" variant="outline" onClick={() => setStatus(c.id, "ended")}>End</Button>
-                    )}
-                  </div>
+                  {studioId === c.id && (
+                    <ConcertBroadcaster
+                      concertId={c.id}
+                      title={c.title}
+                      scheduledAt={c.scheduled_at}
+                      status={c.status}
+                      onStatusChange={async (s) => { await setStatus(c.id, s); if (s === "ended") setStudioId(null); }}
+                    />
+                  )}
                 </div>
               ))}
             </CardContent>
