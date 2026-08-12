@@ -345,7 +345,52 @@ Deno.serve(async (req) => {
       }
 
       // ---- AI Story Generator (Vertex AI + optional image, 4 credits) ----
+      // ---- User-written story submission (3 credits, AI illustrations) ----
+      case "story_submit": {
+        const SUBMIT_COST = 3;
+        const { title, content, isAnonymous = false } = p;
+        if (!title?.trim() || !content?.trim()) return json({ error: "Missing title or story" }, 400);
+        const { data: credits } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
+        if (!credits || credits.credits_remaining < SUBMIT_COST) {
+          return json({ error: "Insufficient credits", required: SUBMIT_COST }, 402);
+        }
+        const images: string[] = [];
+        for (let i = 0; i < 2; i++) {
+          try {
+            const imgData = await tryVertexImage(
+              `Cinematic gothic horror illustration ${i + 1} for the story "${String(title).slice(0, 100)}": ${String(content).slice(0, 400)}. Dark moody atmosphere, deep shadows, crimson accents, painterly oil texture, no text, no watermark.`,
+              "1024x1024",
+              1,
+            );
+            const u = imgData.data?.[0]?.b64_json
+              ? `data:image/png;base64,${imgData.data[0].b64_json}`
+              : imgData.data?.[0]?.url ?? null;
+            if (u) images.push(u);
+          } catch (e) {
+            console.warn("story illustration failed", e);
+          }
+        }
+        const { data: saved, error: saveError } = await supabase.from("shadow_stories").insert({
+          user_id: user.id,
+          title: String(title).slice(0, 200),
+          content: String(content),
+          ai_images: images,
+          is_anonymous: !!isAnonymous,
+        }).select().single();
+        if (saveError || !saved) {
+          console.error("story submit save failed", saveError);
+          return json({ error: "The story could not be saved. Your credits were not charged." }, 500);
+        }
+        const spentSubmit = await spendAiCredits(supabase as any, user.id, SUBMIT_COST, "shadow_story_submit", "shadow-arena-router");
+        if (!spentSubmit.ok) {
+          await supabase.from("shadow_stories").delete().eq("id", saved.id).eq("user_id", user.id);
+          return json({ error: "Insufficient credits", required: SUBMIT_COST }, 402);
+        }
+        return json({ story: saved, images_generated: images.length, creditsRemaining: credits.credits_remaining - SUBMIT_COST });
+      }
+
       case "ai_story_generate": {
+
         const STORY_COST = 4;
         const { prompt, tone = "gothic", length = "medium", generateImage = true } = p;
         if (!prompt) return json({ error: "Missing prompt" }, 400);
