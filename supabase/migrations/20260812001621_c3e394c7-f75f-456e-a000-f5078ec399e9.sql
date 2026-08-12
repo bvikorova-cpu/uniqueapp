@@ -1,0 +1,2 @@
+ALTER TABLE public.gp_race_entries DROP CONSTRAINT IF EXISTS gp_race_entries_action_type_check;
+ALTER TABLE public.gp_race_entries ADD CONSTRAINT gp_race_entries_action_type_check CHECK (action_type = ANY (ARRAY['buy-car','join-race','shop-purchase','upgrade','livery','bet','race-start']));
