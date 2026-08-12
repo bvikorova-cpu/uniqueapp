@@ -31,7 +31,15 @@ export const ConcertGiftsPanel = ({ concertId }: Props) => {
       if (error) throw error;
       const url = (data as any)?.url;
       if (!url) throw new Error("Checkout URL missing");
-      window.location.href = url;
+      // Stripe Checkout refuses to render inside an iframe (preview), which shows
+      // a blank page. Always open it in a new tab, with a top-level fallback.
+      const win = window.open(url, "_blank", "noopener,noreferrer");
+      if (!win) {
+        try { window.top!.location.href = url; } catch { window.location.href = url; }
+      } else {
+        toast.success("Checkout opened in a new tab");
+      }
+
     } catch (e: any) {
       toast.error(e?.message || "Failed to send gift");
     } finally {
