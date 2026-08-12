@@ -162,12 +162,34 @@ export function ShadowAIToolsHub() {
 
         {/* NIGHTMARE AVATAR */}
         <TabsContent value="avatar" className="mt-4 space-y-3">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => { const f = e.target.files?.[0]; if (f) handleUpload(f); e.target.value = ""; }}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            className="w-full border-red-800/50 bg-black/40 text-red-50 hover:bg-red-950/40"
+          >
+            {uploading
+              ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Uploading...</>
+              : <><Upload className="w-4 h-4 mr-2" /> Upload photo from your device</>}
+          </Button>
+          {avatarUrl && (
+            <img src={avatarUrl} alt="Selected source photo" className="w-28 h-28 object-cover rounded-lg border border-red-900/40" />
+          )}
           <Input
             value={avatarUrl}
             onChange={(e) => setAvatarUrl(e.target.value)}
-            placeholder={"Public image URL (selfie or photo)"}
+            placeholder={"...or paste a public image URL"}
             className="bg-black/60 border-red-800/50 text-red-50 placeholder:text-red-200/50"
           />
+
           <select
             value={avatarStyle}
             onChange={(e) => setAvatarStyle(e.target.value)}
