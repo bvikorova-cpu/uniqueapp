@@ -74,7 +74,7 @@ export function ShadowCreditsGate({ children }: ShadowCreditsGateProps) {
             { title: 'Top up credits', desc: 'Buy AI credits once and use them anywhere on the platform.' },
             { title: 'Enter the arena', desc: 'Arena entry costs 5 credits and unlocks everything for 24 hours.' },
             { title: 'Create & compete', desc: 'Battle entry 5 credits, create a battle 3, AI tools 4–25 credits.' },
-            { title: 'Send gifts', desc: 'Gifts cost credits and count as weighted votes for the prize pool.' },
+            { title: 'Send gifts', desc: 'Gifts cost credits, count as weighted votes and add points to the prize pool.' },
           ]}
         />
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${shadowPoster})` }} />
