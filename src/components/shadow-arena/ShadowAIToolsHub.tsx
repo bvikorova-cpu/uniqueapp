@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Skull, Volume2, Sparkles, Wand2, Loader2, Image as ImageIcon, BookOpen, User as UserIcon } from "lucide-react";
+import { Skull, Sparkles, Wand2, Loader2, Image as ImageIcon, BookOpen, User as UserIcon } from "lucide-react";
 import { useShadowAITools, useShadowArenaCredits, SHADOW_AI_COSTS } from "@/hooks/useShadowArenaAI";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -13,16 +13,11 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const TONES = ["Cosmic dread", "Slasher", "Gothic", "Psychological", "Folk horror", "Body horror"];
 const LENGTHS = ["short", "medium", "long"];
-const VOICES = [
-  { id: "kPtEHAvRnjUJFv7SK9WI", label: "Glitch (whispered horror)" },
-  { id: "MDLAMJ0jxkpYkjXbmG4t", label: "Deep narrator" },
-  { id: "EXAVITQu4vr4xnSDxMaL", label: "Sarah (haunted female)" },
-  { id: "iP95p4xoKVk53GoZ742B", label: "Chris (dark male)" },
-];
 const AVATAR_STYLES = ["Demonic", "Vampire", "Zombie", "Possessed", "Wraith", "Cursed doll"];
 
 export function ShadowAIToolsHub() {
-  const { generateStory, narrate, generateAvatar } = useShadowAITools();
+  const { generateStory, generateAvatar } = useShadowAITools();
+
   const { credits } = useShadowArenaCredits();
   const balance = credits?.credits_remaining ?? 0;
 
@@ -33,10 +28,6 @@ export function ShadowAIToolsHub() {
   const [storyImage, setStoryImage] = useState(true);
   const [storyResult, setStoryResult] = useState<any>(null);
 
-  // Narrator state
-  const [narratorText, setNarratorText] = useState("");
-  const [narratorVoice, setNarratorVoice] = useState(VOICES[0].id);
-  const [narratorAudio, setNarratorAudio] = useState<string | null>(null);
 
   // Avatar state
   const [avatarUrl, setAvatarUrl] = useState("");
@@ -71,17 +62,15 @@ export function ShadowAIToolsHub() {
       </div>
 
       <Tabs defaultValue="story">
-        <TabsList className="grid grid-cols-3 w-full bg-black/60 border border-red-800/50">
+        <TabsList className="grid grid-cols-2 w-full bg-black/60 border border-red-800/50">
           <TabsTrigger value="story" className="text-red-100 data-[state=active]:bg-red-800/60 data-[state=active]:text-white">
             <BookOpen className="w-3.5 h-3.5 mr-1" /> {"Story"}
-          </TabsTrigger>
-          <TabsTrigger value="narrator" className="text-red-100 data-[state=active]:bg-red-800/60 data-[state=active]:text-white">
-            <Volume2 className="w-3.5 h-3.5 mr-1" /> {"Voice"}
           </TabsTrigger>
           <TabsTrigger value="avatar" className="text-red-100 data-[state=active]:bg-red-800/60 data-[state=active]:text-white">
             <UserIcon className="w-3.5 h-3.5 mr-1" /> {"Avatar"}
           </TabsTrigger>
         </TabsList>
+
 
         {/* AI HORROR STORY GENERATOR */}
         <TabsContent value="story" className="mt-4 space-y-3">
@@ -145,43 +134,6 @@ export function ShadowAIToolsHub() {
           )}
         </TabsContent>
 
-        {/* AI VOICE NARRATOR */}
-        <TabsContent value="narrator" className="mt-4 space-y-3">
-          <Textarea
-            value={narratorText}
-            onChange={(e) => setNarratorText(e.target.value)}
-            rows={5}
-            placeholder={"Paste the horror text to be narrated by a chilling AI voice..."}
-            className="bg-black/60 border-red-800/50 text-red-50 placeholder:text-red-200/50 font-serif"
-          />
-          <select
-            value={narratorVoice}
-            onChange={(e) => setNarratorVoice(e.target.value)}
-            className="bg-black/60 border border-red-800/50 text-red-50 rounded-md px-3 py-2 text-sm w-full"
-          >
-            {VOICES.map((v) => <option key={v.id} value={v.id} className="bg-black text-red-50">{v.label}</option>)}
-          </select>
-          <Button
-            onClick={() => {
-              if (!narratorText.trim()) { toast.error("Enter text to narrate"); return; }
-              if (narratorText.length > 2500) { toast.error("Max 2500 chars"); return; }
-              if (!requireCredits(SHADOW_AI_COSTS.narrator)) return;
-              narrate.mutate(
-                { text: narratorText, voiceId: narratorVoice, voiceLabel: VOICES.find(v => v.id === narratorVoice)?.label },
-                { onSuccess: (data) => setNarratorAudio(data.audioUrl || data.audio_url) }
-              );
-            }}
-            disabled={narrate.isPending}
-            className="w-full bg-gradient-to-r from-purple-700 to-red-800 hover:from-purple-800 hover:to-red-900"
-          >
-            {narrate.isPending
-              ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {"Summoning voice..."}</>
-              : <><Volume2 className="w-4 h-4 mr-2" /> {"Narrate"} ({SHADOW_AI_COSTS.narrator} {"cr"})</>}
-          </Button>
-          {narratorAudio && (
-            <audio controls src={narratorAudio} className="w-full mt-3" />
-          )}
-        </TabsContent>
 
         {/* NIGHTMARE AVATAR */}
         <TabsContent value="avatar" className="mt-4 space-y-3">
