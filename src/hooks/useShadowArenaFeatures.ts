@@ -156,12 +156,9 @@ export const useHorrorReels = () => {
     } });
 
   const generate = useMutation({
-    mutationFn: async (vars: { prompt: string; storyId?: string; title?: string }) => {
-      const { data, error } = await supabase.functions.invoke("shadow-horror-reel", { body: vars });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      return data;
-    },
+    mutationFn: async (vars: { prompt: string; storyId?: string; title?: string }) =>
+      shadowArenaCall("horror_reel", vars),
+
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["horror-reels"] });
       qc.invalidateQueries({ queryKey: ["shadow-arena-credits"] });
