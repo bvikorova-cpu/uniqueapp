@@ -32,6 +32,7 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
   const [gifts, setGifts] = useState<GiftRow[]>([]);
   const [giftNames, setGiftNames] = useState<Record<string, { name: string; icon: string }>>({});
   const [viewerCount, setViewerCount] = useState(0);
+  const [presenceViewers, setPresenceViewers] = useState(0);
   const [ticketRevenue, setTicketRevenue] = useState(0);
   const [ticketCount, setTicketCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -99,6 +100,21 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
     };
   }, [concertId, musicianId]);
 
+  // Real-time viewer count from the same presence channel fans join.
+  useEffect(() => {
+    const ch = supabase.channel(`concert-presence-${concertId}`, {
+      config: { presence: { key: `host-panel-${concertId}` } },
+    });
+    ch.on("presence", { event: "sync" }, () => {
+      const state = ch.presenceState() as Record<string, unknown[]>;
+      const n = Object.keys(state).filter((k) => !k.startsWith("host")).length;
+      setPresenceViewers(n);
+    }).subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [concertId]);
+
+  const liveViewers = Math.max(presenceViewers, viewerCount);
+
   const totals = useMemo(() => {
     const paid = gifts.filter((g) => PAID.includes((g.status || "").toLowerCase()));
     const giftGross = paid.reduce((s, g) => s + Number(g.amount || 0), 0);
@@ -107,6 +123,7 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
     const fee = gross * 0.2;
     return { gross, giftGross, ticketGross: ticketRevenue, yours, fee, count: paid.length };
   }, [gifts, ticketRevenue]);
+
 
   const StatCard = ({
     icon: Icon,
@@ -164,7 +181,7 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
         {/* Framed stats table */}
         <div className="rounded-xl border bg-card/60 p-1">
           <div className="grid grid-cols-2 gap-1 sm:grid-cols-4">
-            <StatCard icon={Users} label="Viewers" value={viewerCount} sub="watching now" />
+            <StatCard icon={Users} label="Viewers" value={liveViewers} sub="watching now" />
             <StatCard icon={Ticket} label="Tickets" value={ticketCount} sub="paid sales" />
             <StatCard icon={Gift} label="Gifts" value={totals.count} sub="received" accent="accent" />
             <StatCard icon={TrendingUp} label="Gross" value={`€${totals.gross.toFixed(2)}`} sub="tickets + gifts" accent="success" />
