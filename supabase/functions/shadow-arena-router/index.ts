@@ -364,7 +364,7 @@ Deno.serve(async (req) => {
         ].filter(Boolean).join("\n");
 
         const op = await startVertexVideo({ prompt: videoPrompt, durationSeconds: 8, aspectRatio: "9:16" });
-        if (!op) return json({ error: "Vertex AI video generation is unavailable right now. Please try again." }, 503);
+        if (!op) return json({ error: "Video generation (Veo) is not available on this Google project yet — enable the Veo models / top up Google billing, then try again. Your script is saved." }, 503);
         await supabase.from("shadow_horror_reels")
           .update({ status: "rendering", video_op: op }).eq("id", reelId);
         return json({ status: "rendering", op });
