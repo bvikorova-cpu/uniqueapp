@@ -205,9 +205,10 @@ export const ConcertBroadcaster = ({ concertId, title, scheduledAt, status, onSt
           {live && <Badge className="bg-destructive">LIVE</Badge>}
           {live && (
             <Badge variant="outline" className="gap-1">
-              <Users className="h-3 w-3" />{viewers}
+              <Users className="h-3 w-3" />{Math.max(viewers, presenceViewers)} watching
             </Badge>
           )}
+
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
