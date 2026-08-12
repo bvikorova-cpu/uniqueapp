@@ -72,6 +72,47 @@ export default function ComedyLiveViewer() {
     setChatMessages(messages || []);
   };
 
+  const isLive = show?.status === "live";
+
+  // Viewers connect automatically over WebRTC (same engine as Live Concerts)
+  useEffect(() => {
+    if (!showId || !isLive) return;
+    viewerRef.current?.stop();
+    viewerRef.current = startViewer(
+      showId,
+      (remote) => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = remote;
+          void videoRef.current.play().catch(() => {});
+        }
+        setHasStream(true);
+      },
+      (state) => {
+        setConnState(state);
+        if (state === "failed" || state === "closed") setHasStream(false);
+      }
+    );
+    return () => {
+      viewerRef.current?.stop();
+      viewerRef.current = null;
+    };
+  }, [showId, isLive, rtcKey]);
+
+  // Real viewer count via presence
+  useEffect(() => {
+    if (!showId || !isLive) return;
+    const ch = supabase.channel(`comedy-presence-${showId}`, {
+      config: { presence: { key: `viewer-${Math.random().toString(36).slice(2)}` } },
+    });
+    ch.on("presence", { event: "sync" }, () => {
+      const state = ch.presenceState() as Record<string, unknown[]>;
+      setPresenceViewers(Object.keys(state).filter((k) => !k.startsWith("host-")).length);
+    }).subscribe((status) => {
+      if (status === "SUBSCRIBED") void ch.track({ at: Date.now() });
+    });
+    return () => { supabase.removeChannel(ch); };
+  }, [showId, isLive]);
+
   const sendTip = async (tipType: string, amount: number) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
