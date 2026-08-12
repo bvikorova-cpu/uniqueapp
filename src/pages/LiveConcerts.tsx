@@ -54,25 +54,7 @@ const LiveConcerts = () => { const [activeView, setActiveView] = useState<ViewTy
   const renderView = () => {
     switch (activeView) {
       case "browse": return <BrowseConcerts onBack={goBack} />;
-      case "gifts": return <VirtualGiftsShop onBack={goBack} />;
-      case "artists": return <ArtistDiscovery onBack={goBack} />;
       case "artist-studio": return <ArtistStudio onBack={goBack} />;
-      case "leaderboard": return <FanLeaderboard onBack={goBack} />;
-      case "replay": return <ConcertReplay onBack={goBack} />;
-      case "schedule": return <ConcertSchedule onBack={goBack} />;
-      case "chat": return <ConcertChat onBack={goBack} />;
-      case "analytics": return <ConcertAnalytics onBack={goBack} />;
-      case "vip": return <VIPExperience onBack={goBack} />;
-      case "setlist": return <SetlistVoting onBack={goBack} />;
-      case "merch": return <MerchStore onBack={goBack} />;
-      case "notifications": return <ConcertNotifications onBack={goBack} />;
-      case "how-it-works": return <ConcertHowItWorks onBack={goBack} />;
-      case "song-requests": return <SongRequests onBack={goBack} />;
-      case "multi-camera": return <MultiCamera onBack={goBack} />;
-      case "fan-badges": return <FanBadges onBack={goBack} />;
-      case "stories": return <ConcertStories onBack={goBack} />;
-      case "collectibles": return <CollectibleTickets onBack={goBack} />;
-      case "afterparty": return <ConcertAfterparty onBack={goBack} />;
       default: return null;
     }
   };
