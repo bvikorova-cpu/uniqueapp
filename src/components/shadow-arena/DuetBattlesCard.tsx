@@ -32,6 +32,8 @@ interface DuelResult {
   won: boolean;
   myScore: number;
   opponentScore: number;
+  myPower?: number;
+  opponentPower?: number;
   creditsWon: number;
   pointsWon: number;
   rounds: RoundResult[];
