@@ -194,11 +194,13 @@ const ConcertWatch = () => {
   useEffect(() => {
     if (!id || !allowed) return;
     let removed = false;
+    let presenceChannel: ReturnType<typeof supabase.channel> | null = null;
     (async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session || removed) return;
       const ch = supabase.channel(`concert-presence-${id}`, {
         config: { presence: { key: session.user.id } } });
+      presenceChannel = ch;
       ch.on("presence", { event: "sync" }, () => {
         const state = ch.presenceState();
         const n = Object.keys(state).length;
@@ -209,7 +211,10 @@ const ConcertWatch = () => {
       });
       if (removed) supabase.removeChannel(ch);
     })();
-    return () => { removed = true; };
+    return () => {
+      removed = true;
+      if (presenceChannel) supabase.removeChannel(presenceChannel);
+    };
   }, [id, allowed]);
 
   // Verify gift checkout when redirected back from Stripe
