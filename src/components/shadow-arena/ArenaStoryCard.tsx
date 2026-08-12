@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
-import { Clock, ThumbsUp, Eye } from "lucide-react";
+import { Clock, Eye, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { StoryGiftPicker } from "@/components/shadow-arena/StoryGiftPicker";
 
 interface Story {
   id: string;
@@ -11,7 +12,10 @@ interface Story {
   votes_count: number;
   is_top_week: boolean;
   created_at: string;
+  user_id?: string | null;
+  is_anonymous?: boolean | null;
 }
+
 
 const atmosphereTags = ["Psychological", "Supernatural", "Cosmic Horror", "Gothic", "Slasher", "Folk Horror"];
 
