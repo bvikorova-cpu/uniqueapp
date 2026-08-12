@@ -419,21 +419,25 @@ The story must have a strong opening hook, atmospheric build-up, and chilling en
         // Generate the optional illustration at the same time as the story.
         // Running these sequentially could exceed the edge request lifetime on mobile.
         const illustrationRequest: Promise<Response | null> = generateImage
-          ? fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
-              method: "POST",
-              headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
-              signal: AbortSignal.timeout(45_000),
-              body: JSON.stringify({
-                model: "openai/gpt-image-1-mini",
-                prompt: `Cinematic ${tone} horror illustration inspired by: ${prompt.slice(0, 300)}. Dark moody atmosphere, deep shadows, crimson accents, painterly oil texture, no text, no watermark.`,
-                n: 1,
-                size: "1024x1024",
+          ? Promise.race([
+              fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
+                method: "POST",
+                headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  model: "openai/gpt-image-1-mini",
+                  prompt: `Cinematic ${tone} horror illustration inspired by: ${prompt.slice(0, 300)}. Dark moody atmosphere, deep shadows, crimson accents, painterly oil texture, no text, no watermark.`,
+                  n: 1,
+                  size: "1024x1024",
+                }),
+              }).catch((e) => {
+                console.warn("Image gen exception", e);
+                return null;
               }),
-            }).catch((e) => {
-              console.warn("Image gen exception", e);
-              return null;
-            })
+              // Never let the illustration hold the story hostage.
+              new Promise<null>((r) => setTimeout(() => r(null), 80_000)),
+            ])
           : Promise.resolve(null);
+
 
         let aiResponse: Response;
         let imgResp: Response | null;
@@ -584,24 +588,26 @@ Return JSON: {
         if (!credits || credits.credits_remaining < AVATAR_COST) {
           return json({ error: "Insufficient credits", required: AVATAR_COST }, 402);
         }
-        const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
+        const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/images/edits", {
           method: "POST",
           headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
           body: JSON.stringify({
             model: "openai/gpt-image-1-mini",
-            prompt: `${stylePrompt}\n\nReference image: ${sourceImageUrl}`,
+            prompt: stylePrompt,
+            image: sourceImageUrl,
             n: 1,
             size: "1024x1024" }) });
         if (!aiResponse.ok) {
           const t = await aiResponse.text();
-          console.error("OpenAI error:", aiResponse.status, t);
+          console.error("AI image error:", aiResponse.status, t);
           if (aiResponse.status === 429) return json({ error: "AI rate limited" }, 429);
           if (aiResponse.status === 402) return json({ error: "AI credits depleted in workspace" }, 402);
-          throw new Error("AI image error");
+          return json({ error: "The nightmare avatar could not be generated right now. Please try again in a moment — no credits were charged." }, 503);
         }
         const data = await aiResponse.json();
         const nightmareImageDataUrl = data.data?.[0]?.b64_json ? `data:image/png;base64,${data.data[0].b64_json}` : null;
-        if (!nightmareImageDataUrl) throw new Error("No image returned");
+        if (!nightmareImageDataUrl) return json({ error: "The AI returned no image. Please try again — no credits were charged." }, 502);
+
         const base64Data = nightmareImageDataUrl.split(",")[1];
         const binaryData = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
         const fileName = `${user.id}/nightmare-${Date.now()}.png`;
