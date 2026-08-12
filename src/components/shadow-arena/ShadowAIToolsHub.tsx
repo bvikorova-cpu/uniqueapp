@@ -148,13 +148,20 @@ export function ShadowAIToolsHub() {
               animate={{ opacity: 1, y: 0 }}
               className="mt-3 p-4 rounded-xl bg-black/40 border border-red-900/30 space-y-3"
             >
-              {storyResult.title && <h3 className="font-bold text-red-300 text-lg">{storyResult.title}</h3>}
-              {storyResult.imageUrl && (
-                <img src={storyResult.imageUrl} alt="Generated horror" className="w-full rounded-lg border border-red-900/30" />
+              {(storyResult.story?.generated_title || storyResult.title) && (
+                <h3 className="font-bold text-red-300 text-lg">
+                  {storyResult.story?.generated_title || storyResult.title}
+                </h3>
+              )}
+              {(storyResult.story?.illustration_url || storyResult.imageUrl) && (
+                <img src={storyResult.story?.illustration_url || storyResult.imageUrl} alt="Generated horror" className="w-full rounded-lg border border-red-900/30" />
               )}
               <p className="text-sm whitespace-pre-wrap text-foreground/90 font-serif leading-relaxed max-h-80 overflow-y-auto">
-                {storyResult.story || storyResult.content}
+                {storyResult.story?.generated_story ||
+                  (typeof storyResult.story === "string" ? storyResult.story : "") ||
+                  storyResult.content}
               </p>
+
             </motion.div>
           )}
         </TabsContent>
