@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Hls from "hls.js";
-import { startViewer } from "@/lib/concertWebRTC";
+import { startViewer, type ViewerHandle } from "@/lib/concertWebRTC";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -35,6 +35,7 @@ const ConcertWatch = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
   const rtcStreamRef = useRef<MediaStream | null>(null);
+  const viewerHandleRef = useRef<ViewerHandle | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [concert, setConcert] = useState<Concert | null>(null);
@@ -42,6 +43,7 @@ const ConcertWatch = () => {
   const [error, setError] = useState<string | null>(null);
   const [rtcActive, setRtcActive] = useState(false);
   const [rtcConnecting, setRtcConnecting] = useState(false);
+  const [rtcFailed, setRtcFailed] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -143,25 +145,34 @@ const ConcertWatch = () => {
     if (!id || !allowed) return;
     if (concert?.status !== "live" || concert?.playback_url) return;
     setRtcConnecting(true);
+    setRtcFailed(false);
     const handle = startViewer(
       id,
       (stream) => {
         rtcStreamRef.current = stream;
         setRtcConnecting(false);
+        setRtcFailed(false);
         setRtcActive(true);
       },
       (state) => {
         if (state === "failed" || state === "closed" || state === "disconnected") {
           setRtcActive(false);
+          setRtcConnecting(false);
+          setRtcFailed(true);
+        } else if (state === "connecting") {
           setRtcConnecting(true);
+          setRtcFailed(false);
         }
       }
     );
+    viewerHandleRef.current = handle;
     return () => {
       handle.stop();
+      viewerHandleRef.current = null;
       rtcStreamRef.current = null;
       setRtcActive(false);
       setRtcConnecting(false);
+      setRtcFailed(false);
     };
   }, [id, allowed, concert?.status, concert?.playback_url]);
 
@@ -279,19 +290,39 @@ const ConcertWatch = () => {
         <div className="grid lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2 space-y-3">
             <div className="aspect-video bg-black rounded-xl overflow-hidden relative">
-              {concert?.status === "live" && (concert?.playback_url || rtcActive) ? (
+              {concert?.status === "live" ? (
+                <>
                 <video
                   ref={videoRef}
                   controls
                   playsInline
                   autoPlay
-                  className="w-full h-full"
+                  className={`w-full h-full ${concert?.playback_url || rtcActive ? "block" : "invisible"}`}
                 />
+                {!concert?.playback_url && !rtcActive && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 space-y-3">
+                    {rtcConnecting
+                      ? <Loader2 className="h-12 w-12 text-primary animate-spin" />
+                      : <Radio className="h-12 w-12 text-muted-foreground" />}
+                    <div>
+                      <p className="text-lg font-semibold text-foreground">
+                        {rtcFailed ? "The live connection was interrupted" : "Connecting to the artist's camera..."}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {rtcFailed ? "Try connecting again. Keep this page open while the artist is live." : "This can take a few seconds."}
+                      </p>
+                    </div>
+                    {rtcFailed && (
+                      <Button onClick={() => viewerHandleRef.current?.reconnect()} variant="secondary">
+                        Connect again
+                      </Button>
+                    )}
+                  </div>
+                )}
+                </>
               ) : (
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 space-y-3">
-                  {concert?.status === "live" && rtcConnecting
-                    ? <Loader2 className="h-12 w-12 text-primary animate-spin" />
-                    : <Radio className="h-12 w-12 text-muted-foreground" />}
+                  <Radio className="h-12 w-12 text-muted-foreground" />
                   <div>
                     <p className="text-lg font-semibold text-foreground">
                       {concert?.status === "scheduled" ? "Concert hasn't started yet" :
