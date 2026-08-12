@@ -272,7 +272,7 @@ export function DuetBattlesCard() {
 
             <div className="flex items-center justify-center gap-6 pt-1">
               <Button size="icon" variant="outline" onClick={() => next("left")}
-                className="h-13 w-13 h-14 w-14 rounded-full border-rose-800/50 text-rose-400 hover:bg-rose-950/40">
+                className="h-14 w-14 rounded-full border-rose-800/50 text-rose-400 hover:bg-rose-950/40">
                 <X className="h-6 w-6" />
               </Button>
               <Button size="icon" onClick={accept}
