@@ -1,6 +1,7 @@
 import "../_shared/aiRedirect.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { spendAiCredits } from "../_shared/spendCredits.ts";
 import { encode as base64Encode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
 
 Deno.serve(async (req) => {
@@ -47,12 +48,12 @@ Deno.serve(async (req) => {
           .select("*").eq("code", gift_code).eq("is_active", true).single();
         if (!gift) return json({ error: "gift_not_found" }, 404);
         // charge credits
-        const { data: credits } = await supabase.from("shadow_arena_credits")
+        const { data: credits } = await supabase.from("ai_credits")
           .select("*").eq("user_id", user.id).single();
         const balance = credits?.credits_remaining ?? 0;
         if (balance < gift.credit_cost) return json({ error: "insufficient_credits", required: gift.credit_cost, balance }, 402);
         const field = "credits_remaining";
-        await supabase.from("shadow_arena_credits").update({ [field]: balance - gift.credit_cost }).eq("user_id", user.id);
+        await supabase.from("ai_credits").update({ [field]: balance - gift.credit_cost }).eq("user_id", user.id);
         await supabase.from("shadow_gift_sends").insert({ sender_id: user.id, recipient_id, gift_code,
           credits_spent: gift.credit_cost, context_type, context_id });
         // bump active goal if recipient is the creator
@@ -88,11 +89,11 @@ Deno.serve(async (req) => {
           .select("*", { count: "exact", head: true }).eq("tournament_id", tournament_id);
         if ((count || 0) >= t.max_participants) return json({ error: "full" }, 400);
         if (t.entry_credits > 0) {
-          const { data: cr } = await supabase.from("shadow_arena_credits").select("*").eq("user_id", user.id).single();
+          const { data: cr } = await supabase.from("ai_credits").select("*").eq("user_id", user.id).single();
           const bal = cr?.credits_remaining ?? 0;
           if (bal < t.entry_credits) return json({ error: "insufficient_credits" }, 402);
           const field = "credits_remaining";
-          await supabase.from("shadow_arena_credits").update({ [field]: bal - t.entry_credits }).eq("user_id", user.id);
+          await supabase.from("ai_credits").update({ [field]: bal - t.entry_credits }).eq("user_id", user.id);
           await supabase.from("shadow_tournaments").update({ prize_pool_credits: t.prize_pool_credits + t.entry_credits }).eq("id", tournament_id);
         }
         const { error } = await supabase.from("shadow_tournament_entries").insert({ tournament_id, user_id: user.id });
@@ -164,11 +165,8 @@ Deno.serve(async (req) => {
       // ---- Curse Wheel (one free spin/day) ----
       case "curse_wheel_spin": {
         const PRIZES = [
-          { type: "credits", value: 5, label: "+5 Cursed Credits", weight: 30 },
-          { type: "credits", value: 10, label: "+10 Cursed Credits", weight: 20 },
-          { type: "credits", value: 20, label: "+20 Cursed Credits", weight: 10 },
-          { type: "credits", value: 50, label: "+50 Cursed Credits — JACKPOT!", weight: 2 },
-          { type: "multiplier", value: 2, label: "2x Vote Multiplier (24h)", weight: 15 },
+          { type: "multiplier", value: 2, label: "2x Vote Multiplier (24h)", weight: 45 },
+          { type: "multiplier", value: 3, label: "3x Vote Multiplier (24h)", weight: 17 },
           { type: "badge", value: 1, label: "Lucky Spirit Badge", weight: 8 },
           { type: "nothing", value: 0, label: "The shadows took your luck...", weight: 15 },
         ];
@@ -184,12 +182,6 @@ Deno.serve(async (req) => {
           return json({ error: "Already spun today. Come back tomorrow." }, 400);
         }
         await supabase.from("shadow_curse_wheel_spins").insert({ user_id: user.id, prize_type: prize.type, prize_value: prize.value, prize_label: prize.label });
-        if (prize.type === "credits" && prize.value > 0) {
-          const { data: cur } = await supabase.from("shadow_arena_credits")
-            .select("credits_remaining").eq("user_id", user.id).maybeSingle();
-          const newBalance = (cur?.credits_remaining || 0) + prize.value;
-          await supabase.from("shadow_arena_credits").upsert({ user_id: user.id, credits_remaining: newBalance });
-        }
         if (prize.type === "badge") { await supabase.from("shadow_cursed_achievements").insert({
             user_id: user.id, achievement_code: "lucky_spirit",
             achievement_name: "Lucky Spirit", rarity: "rare" }).then(() => {}, () => {});
@@ -202,7 +194,7 @@ Deno.serve(async (req) => {
         const REEL_COST = 15;
         const { prompt, storyId, title } = p;
         if (!prompt) return json({ error: "Missing prompt" }, 400);
-        const { data: cur } = await supabase.from("shadow_arena_credits")
+        const { data: cur } = await supabase.from("ai_credits")
           .select("credits_remaining").eq("user_id", user.id).maybeSingle();
         if (!cur || cur.credits_remaining < REEL_COST) {
           return json({ error: `Need ${REEL_COST} credits.` }, 402);
@@ -225,7 +217,7 @@ Deno.serve(async (req) => {
           prompt, status: "ready", thumbnail_url: null, video_url: null,
           duration_seconds: 30, credits_used: REEL_COST }).select().single();
         if (rErr) throw rErr;
-        await supabase.from("shadow_arena_credits").update({ credits_remaining: cur.credits_remaining - REEL_COST }).eq("user_id", user.id);
+        await supabase.from("ai_credits").update({ credits_remaining: cur.credits_remaining - REEL_COST }).eq("user_id", user.id);
         return json({ reel, script: reelScript });
       }
 
@@ -238,7 +230,7 @@ Deno.serve(async (req) => {
         const { text, voiceId = "kPtEHAvRnjUJFv7SK9WI", voiceLabel = "Glitch", storyId = null } = p;
         if (!text || typeof text !== "string") return json({ error: "Missing text" }, 400);
         if (text.length > MAX_CHARS) return json({ error: `Text too long (max ${MAX_CHARS} chars)` }, 400);
-        const { data: credits } = await supabase.from("shadow_arena_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
+        const { data: credits } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
         if (!credits || credits.credits_remaining < NARRATOR_COST) {
           return json({ error: "Insufficient credits", required: NARRATOR_COST }, 402);
         }
@@ -259,7 +251,7 @@ Deno.serve(async (req) => {
         const audioBase64 = base64Encode(new Uint8Array(audioBuffer));
         const { data: saved } = await supabase.from("shadow_narrations").insert({ user_id: user.id, story_id: storyId, story_text: text, audio_base64: audioBase64,
           voice_id: voiceId, voice_label: voiceLabel, credits_used: NARRATOR_COST }).select("id").single();
-        await supabase.from("shadow_arena_credits").update({ credits_remaining: credits.credits_remaining - NARRATOR_COST,
+        await supabase.from("ai_credits").update({ credits_remaining: credits.credits_remaining - NARRATOR_COST,
           last_used_at: new Date().toISOString() }).eq("user_id", user.id);
         return json({ audioBase64, narrationId: saved?.id, creditsRemaining: credits.credits_remaining - NARRATOR_COST });
       }
@@ -271,7 +263,7 @@ Deno.serve(async (req) => {
         if (!openaiKey) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
         const { prompt, tone = "gothic", length = "medium", generateImage = true } = p;
         if (!prompt) return json({ error: "Missing prompt" }, 400);
-        const { data: credits } = await supabase.from("shadow_arena_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
+        const { data: credits } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
         if (!credits || credits.credits_remaining < STORY_COST) {
           return json({ error: "Insufficient credits", required: STORY_COST }, 402);
         }
@@ -330,7 +322,7 @@ The story must have a strong opening hook, atmospheric build-up, and chilling en
         }
         const { data: saved } = await supabase.from("shadow_ai_stories").insert({ user_id: user.id, prompt, generated_title: generatedTitle, generated_story: generatedStory,
           illustration_url: illustrationUrl, tone, length, credits_used: STORY_COST }).select().single();
-        await supabase.from("shadow_arena_credits").update({ credits_remaining: credits.credits_remaining - STORY_COST,
+        await supabase.from("ai_credits").update({ credits_remaining: credits.credits_remaining - STORY_COST,
           last_used_at: new Date().toISOString() }).eq("user_id", user.id);
         return json({ story: saved, creditsRemaining: credits.credits_remaining - STORY_COST });
       }
@@ -342,7 +334,7 @@ The story must have a strong opening hook, atmospheric build-up, and chilling en
         if (!openaiKey) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
         const { battleId } = p;
         if (!battleId) return json({ error: "Missing battleId" }, 400);
-        const { data: credits } = await supabase.from("shadow_arena_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
+        const { data: credits } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
         if (!credits || credits.credits_remaining < PREDICT_COST) {
           return json({ error: "Insufficient credits", required: PREDICT_COST }, 402);
         }
@@ -396,7 +388,7 @@ Return JSON: {
           confidence_score: parsed.confidence_score,
           reasoning: parsed.reasoning, factors: parsed.factors,
           credits_used: PREDICT_COST }).select().single();
-        await supabase.from("shadow_arena_credits").update({ credits_remaining: credits.credits_remaining - PREDICT_COST,
+        await supabase.from("ai_credits").update({ credits_remaining: credits.credits_remaining - PREDICT_COST,
           last_used_at: new Date().toISOString() }).eq("user_id", user.id);
         return json({ prediction: saved, creditsRemaining: credits.credits_remaining - PREDICT_COST });
       }
@@ -417,7 +409,7 @@ Return JSON: {
         const { sourceImageUrl, style = "vampire" } = p;
         if (!sourceImageUrl) return json({ error: "Missing sourceImageUrl" }, 400);
         const stylePrompt = STYLE_PROMPTS[style] || STYLE_PROMPTS.vampire;
-        const { data: credits } = await supabase.from("shadow_arena_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
+        const { data: credits } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
         if (!credits || credits.credits_remaining < AVATAR_COST) {
           return json({ error: "Insufficient credits", required: AVATAR_COST }, 402);
         }
@@ -452,7 +444,7 @@ Return JSON: {
         const { data: pub } = supabase.storage.from("shadow-nightmare-avatars").getPublicUrl(fileName);
         const { data: saved } = await supabase.from("shadow_nightmare_avatars").insert({ user_id: user.id, source_image_url: sourceImageUrl,
           nightmare_image_url: pub.publicUrl, style, credits_used: AVATAR_COST }).select().single();
-        await supabase.from("shadow_arena_credits").update({ credits_remaining: credits.credits_remaining - AVATAR_COST,
+        await supabase.from("ai_credits").update({ credits_remaining: credits.credits_remaining - AVATAR_COST,
           last_used_at: new Date().toISOString() }).eq("user_id", user.id);
         return json({ avatar: saved, nightmareImageUrl: pub.publicUrl,
           creditsRemaining: credits.credits_remaining - AVATAR_COST });
@@ -460,17 +452,11 @@ Return JSON: {
 
       // ---- Batch 14: shadow-arena-credits-init ----
       case "credits_init": {
+        // Unified ai_credits — read-only, never grants credits.
         const { data: existing } = await supabase
-          .from("shadow_arena_credits")
+          .from("ai_credits")
           .select("*").eq("user_id", user.id).maybeSingle();
-        if (!existing) {
-          const { data: created } = await supabase
-            .from("shadow_arena_credits")
-            .insert({ user_id: user.id, credits_remaining: 5, total_credits_purchased: 5 })
-            .select().single();
-          return json({ credits: created });
-        }
-        return json({ credits: existing });
+        return json({ credits: existing ?? { user_id: user.id, credits_remaining: 0 } });
       }
 
       // ---- Batch 14: shadow-voice-clone ----
@@ -479,7 +465,7 @@ Return JSON: {
         const { audioBase64, voiceName } = p;
         if (!audioBase64 || !voiceName) return json({ error: "missing_audio_or_name" }, 400);
 
-        const { data: cur } = await supabase.from("shadow_arena_credits")
+        const { data: cur } = await supabase.from("ai_credits")
           .select("credits_remaining").eq("user_id", user.id).maybeSingle();
         if (!cur || cur.credits_remaining < CLONE_COST) {
           return json({ error: `Need ${CLONE_COST} credits.` }, 402);
@@ -500,20 +486,12 @@ Return JSON: {
         }
         const cloneJson = await cloneRes.json();
 
-        const { error: dedErr } = await supabase.rpc(
-          "deduct_shadow_arena_credits",
-          { _user_id: user.id, _amount: CLONE_COST },
-        );
-        if (dedErr) {
-          if (dedErr.message?.includes("INSUFFICIENT_CREDITS")) {
-            return json({ error: `Need ${CLONE_COST} credits.` }, 402);
-          }
-          throw dedErr;
-        }
+        const spent = await spendAiCredits(supabase as any, user.id, CLONE_COST, "shadow_voice_clone", "shadow-arena-router");
+        if (!spent.ok) return json({ error: `Need ${CLONE_COST} credits.` }, 402);
         const { error: upsertErr } = await supabase.from("shadow_voice_clones").upsert({ user_id: user.id, voice_id: cloneJson.voice_id, voice_name: voiceName,
           status: "active", credits_spent: CLONE_COST });
         if (upsertErr) {
-          await supabase.rpc("refund_shadow_arena_credits", { _user_id: user.id, _amount: CLONE_COST });
+          await supabase.from("ai_credits").update({ credits_remaining: (cur.credits_remaining as number) }).eq("user_id", user.id);
           throw upsertErr;
         }
         return json({ voice_id: cloneJson.voice_id, voice_name: voiceName });
