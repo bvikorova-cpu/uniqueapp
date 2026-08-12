@@ -265,7 +265,7 @@ const ConcertWatch = () => {
         <div className="grid lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2 space-y-3">
             <div className="aspect-video bg-black rounded-xl overflow-hidden relative">
-              {concert?.status === "live" && concert?.playback_url ? (
+              {concert?.status === "live" && (concert?.playback_url || rtcActive) ? (
                 <video
                   ref={videoRef}
                   controls
@@ -275,16 +275,18 @@ const ConcertWatch = () => {
                 />
               ) : (
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 space-y-3">
-                  <Radio className="h-12 w-12 text-muted-foreground" />
+                  {concert?.status === "live" && rtcConnecting
+                    ? <Loader2 className="h-12 w-12 text-primary animate-spin" />
+                    : <Radio className="h-12 w-12 text-muted-foreground" />}
                   <div>
                     <p className="text-lg font-semibold text-foreground">
                       {concert?.status === "scheduled" ? "Concert hasn't started yet" :
                        concert?.status === "ended" ? "Concert ended" :
-                       "Stream is being prepared..."}
+                       "Connecting to the artist's camera..."}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {concert?.status === "scheduled"
-                        ? `Scheduled for ${new Date(concert.scheduled_at).toLocaleString()}`
+                        ? `Scheduled for ${new Date(concert.scheduled_at).toLocaleString()} — the camera turns on automatically`
                         : "Please wait for the artist to start streaming."}
                     </p>
                   </div>
