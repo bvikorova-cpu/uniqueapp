@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { ShadowCreditsGate } from '@/components/shadow-arena/ShadowCreditsGate';
 import { PatronModeCard } from '@/components/shadow-arena/PatronModeCard';
 import { StoryGiftPicker } from '@/components/shadow-arena/StoryGiftPicker';
+import { StoryComments } from '@/components/shadow-arena/StoryComments';
 import { ThumbsUp, Image as ImageIcon, Volume2, ArrowLeft, Clock, Eye } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -196,6 +197,8 @@ export default function ShadowArenaStoryDetail() {
             </Card>
           </motion.div>
         )}
+
+        <StoryComments storyId={story.id} />
       </div>
     </ShadowCreditsGate>
   );
