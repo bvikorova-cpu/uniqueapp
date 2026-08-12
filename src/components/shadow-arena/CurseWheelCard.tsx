@@ -39,27 +39,52 @@ export function CurseWheelCard() {
       </div>
 
       <div className="relative z-10 flex items-center justify-center my-6">
-        <div className="relative w-48 h-48">
+        <div className="relative w-[16rem] h-[16rem] sm:w-[18rem] sm:h-[18rem] max-w-full">
           <motion.div
-            className="absolute inset-0 rounded-full border-4 border-red-700/50 bg-gradient-conic from-red-900 via-purple-900 to-black shadow-[0_0_40px_rgba(127,29,29,0.6)]"
+            className="absolute inset-0 rounded-full border-4 border-red-800/60 shadow-[0_0_50px_rgba(127,29,29,0.55)]"
             animate={{ rotate: rotation }}
             transition={{ duration: 4, ease: [0.17, 0.67, 0.16, 0.99] }}
-            style={{ backgroundImage: "conic-gradient(from 0deg, hsl(0,60%,20%), hsl(280,40%,15%), hsl(0,80%,25%), hsl(280,50%,20%), hsl(0,60%,20%))" }}
           >
-            {SEGMENTS.map((s, i) => (
-              <div
-                key={i}
-                className="absolute top-1/2 left-1/2 text-[9px] font-bold text-red-100 origin-left"
-                style={{
-                  transform: `rotate(${(360 / SEGMENTS.length) * i}deg) translateX(60px)` }}
-              >
-                {s}
-              </div>
-            ))}
+            <svg viewBox="0 0 200 200" className="w-full h-full rounded-full">
+              {SEGMENTS.map((s, i) => {
+                const step = 360 / SEGMENTS.length;
+                const start = (i * step - 90) * (Math.PI / 180);
+                const end = ((i + 1) * step - 90) * (Math.PI / 180);
+                const x1 = 100 + 100 * Math.cos(start);
+                const y1 = 100 + 100 * Math.sin(start);
+                const x2 = 100 + 100 * Math.cos(end);
+                const y2 = 100 + 100 * Math.sin(end);
+                const fill = i % 2 === 0 ? "hsl(0,60%,18%)" : "hsl(280,45%,16%)";
+                const mid = i * step + step / 2;
+                return (
+                  <g key={i}>
+                    <path
+                      d={`M100 100 L ${x1} ${y1} A 100 100 0 0 1 ${x2} ${y2} Z`}
+                      fill={fill}
+                      stroke="hsl(0,70%,30%)"
+                      strokeWidth="0.8"
+                    />
+                    <text
+                      x="100"
+                      y="100"
+                      fill="hsl(0,25%,92%)"
+                      fontSize="9"
+                      fontWeight="700"
+                      textAnchor="middle"
+                      transform={`rotate(${mid} 100 100) translate(0 -62)`}
+                    >
+                      {s}
+                    </text>
+                  </g>
+                );
+              })}
+              <circle cx="100" cy="100" r="16" fill="hsl(0,0%,6%)" stroke="hsl(45,90%,55%)" strokeWidth="2" />
+            </svg>
           </motion.div>
           <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-[16px] border-l-transparent border-r-transparent border-t-yellow-400 z-10" />
         </div>
       </div>
+
 
       <div className="relative z-10 flex flex-col gap-2">
         <Button
