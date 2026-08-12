@@ -50,7 +50,7 @@ const shuffle = <T,>(arr: T[]) => {
 
 /**
  * Duet Battles — Brain-Duel style 1v1: swipe through real rivals (X / ✓),
- * then play an instant 3-round shadow duel. 1 credit entry, winner takes 2.
+ * then play an instant 3-round shadow duel. 1 credit entry, winner earns 20 points.
  */
 export function DuetBattlesCard() {
   const [pool, setPool] = useState<Rival[]>([]);
@@ -219,7 +219,7 @@ export function DuetBattlesCard() {
           { title: "Pick a theme", desc: "Optionally name the duel theme (e.g. 'Haunted asylum')." },
           { title: "Choose a rival", desc: "Swipe real players: X to skip, ✓ to challenge them." },
           { title: "Duel in 3 rounds", desc: "The duel plays out round by round — 1 credit entry." },
-          { title: "Win the pot", desc: "Winner takes 2 credits and 20 prize-pool points." },
+          { title: "Win the pot", desc: "Winner earns 20 prize-pool points — credits are never a prize." },
         ]}
       />
       <div className="flex items-center gap-2 mb-1">
@@ -227,7 +227,7 @@ export function DuetBattlesCard() {
         <h3 className="font-bold">Duet Battles (1v1 Duel)</h3>
       </div>
       <p className="text-xs text-muted-foreground mb-3">
-        Challenge a random real player — 1 credit entry, winner takes 2 credits (20 pts).
+        Challenge a random real player — 1 credit entry, winner earns 20 points.
       </p>
 
       <Input
