@@ -44,6 +44,96 @@ Deno.serve(async (req) => {
         return json({ ok: true });
       }
 
+      // ---- Duet Duel (Brain-Duel style 1v1) ----
+      case "duet_opponents": {
+        const limit = Math.min(Math.max(Number(p.limit) || 20, 1), 40);
+        const { data: profs } = await supabase
+          .from("profiles")
+          .select("id, username, full_name, avatar_url")
+          .neq("id", user.id)
+          .limit(200);
+        const pool = (profs ?? []).sort(() => Math.random() - 0.5).slice(0, limit);
+        const ids = pool.map((r: any) => r.id);
+        const { data: prevBattles } = await supabase
+          .from("shadow_duet_battles")
+          .select("creator_a, creator_b, winner_id")
+          .or(`creator_a.in.(${ids.join(",") || "00000000-0000-0000-0000-000000000000"}),creator_b.in.(${ids.join(",") || "00000000-0000-0000-0000-000000000000"})`)
+          .limit(2000);
+        const stats: Record<string, { duels: number; wins: number }> = {};
+        for (const b of prevBattles ?? []) {
+          for (const side of [b.creator_a, b.creator_b]) {
+            if (!side) continue;
+            stats[side] = stats[side] || { duels: 0, wins: 0 };
+            stats[side].duels++;
+            if (b.winner_id === side) stats[side].wins++;
+          }
+        }
+        return json({
+          opponents: pool.map((r: any) => ({
+            user_id: r.id,
+            display_name: r.username || r.full_name || "Shadow Rival",
+            avatar_url: r.avatar_url,
+            duels: stats[r.id]?.duels ?? 0,
+            wins: stats[r.id]?.wins ?? 0,
+            power: 40 + ((stats[r.id]?.wins ?? 0) * 6) + Math.floor(Math.random() * 40),
+          })),
+        });
+      }
+      case "duet_duel": {
+        const ENTRY_COST = 1;
+        const PRIZE = 2;
+        const opponentId = String(p.opponent_id || "");
+        const theme = String(p.theme || "Shadow Duel");
+        if (!opponentId || opponentId === user.id) return json({ error: "bad_input" }, 400);
+
+        const spend = await spendAiCredits(supabase as any, user.id, ENTRY_COST, "shadow_duet_duel", "shadow-arena-router");
+        if (!spend.ok) return json({ error: "insufficient_credits", required: ENTRY_COST }, 402);
+
+        const ROUNDS = [
+          { name: "Round 1 — Dread Opening", desc: "Who sets the darker tone" },
+          { name: "Round 2 — Twist of Terror", desc: "Sharpest plot twist wins" },
+          { name: "Round 3 — Final Nightmare", desc: "The last scare decides it" },
+        ];
+        let myScore = 0, oppScore = 0;
+        const rounds = ROUNDS.map((r) => {
+          const mine = 40 + Math.floor(Math.random() * 61);
+          const theirs = 40 + Math.floor(Math.random() * 61);
+          if (mine >= theirs) myScore++; else oppScore++;
+          return { name: r.name, desc: r.desc, mine, theirs, won: mine >= theirs };
+        });
+        const won = myScore > oppScore;
+
+        const { data: duel } = await supabase.from("shadow_duet_battles").insert({
+          creator_a: user.id,
+          creator_b: opponentId,
+          theme,
+          status: "completed",
+          votes_a: myScore,
+          votes_b: oppScore,
+          winner_id: won ? user.id : opponentId,
+          ends_at: new Date().toISOString(),
+        }).select().single();
+
+        let creditsWon = 0;
+        if (won) {
+          try {
+            await supabase.rpc("add_ai_credits", { p_user_id: user.id, p_amount: PRIZE, p_reason: "shadow_duet_duel_win", p_source: "shadow-arena-router" });
+            creditsWon = PRIZE;
+          } catch { /* non-fatal */ }
+        }
+
+        return json({
+          duel_id: duel?.id ?? null,
+          won,
+          myScore,
+          opponentScore: oppScore,
+          creditsWon,
+          pointsWon: won ? PRIZE * POINTS_PER_CREDIT : 0,
+          rounds,
+        });
+      }
+
+
       // ---- Virtual Gifts ----
       case "gift_send": {
         const { gift_code, recipient_id, context_type, context_id } = p;
