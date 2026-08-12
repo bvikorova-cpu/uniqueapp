@@ -131,15 +131,6 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
             <Skull className="mr-2 h-4 w-4" />
             {"Submit Horror Story"}
           </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            onClick={() => navigate("/shadow-arena/battles")}
-            className="bg-black/40 backdrop-blur-md border-purple-700/40 text-purple-100 hover:bg-purple-950/40"
-          >
-            <Flame className="mr-2 h-4 w-4" />
-            {"Enter Live Battles"}
-          </Button>
         </motion.div>
 
         {/* Stats */}
