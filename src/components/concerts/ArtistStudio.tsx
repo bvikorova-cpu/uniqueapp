@@ -378,7 +378,9 @@ export const ArtistStudio = ({ onBack }: Props) => {
                         {c.concert_ticket_types?.[0] && ` · €${Number(c.concert_ticket_types[0].price).toFixed(2)}`}
                         {` · ${c.viewer_count || 0} viewers`}
                       </p>
+                      </div>
                     </div>
+
                     <div className="flex items-center gap-2">
                       <Badge variant={c.status === "live" ? "default" : "secondary"} className="capitalize">{c.status}</Badge>
                       {c.status !== "ended" && (
