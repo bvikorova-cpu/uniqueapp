@@ -393,9 +393,6 @@ import { ResetPassword,
   ShadowArena,
   ShadowArenaDashboard,
   ShadowArenaSubmitStory,
-  ShadowArenaBattles,
-  ShadowArenaBattleDetail,
-  ShadowArenaBattleSubmit,
   ShadowArenaStoryDetail,
   FairyCastles,
   FairyCastleTour,
@@ -1190,9 +1187,6 @@ const App = () => {
                         <Route path="/shadow-arena" element={<ShadowArena />} />
                         <Route path="/shadow-arena/dashboard" element={<ShadowArenaDashboard />} />
                         <Route path="/shadow-arena/submit-story" element={<ShadowArenaSubmitStory />} />
-                        <Route path="/shadow-arena/battles" element={<ShadowArenaBattles />} />
-                        <Route path="/shadow-arena/battle/:battleId" element={<ShadowArenaBattleDetail />} />
-                        <Route path="/shadow-arena/battle/:battleId/submit" element={<ShadowArenaBattleSubmit />} />
                         <Route path="/shadow-arena/story/:storyId" element={<ShadowArenaStoryDetail />} />
                         <Route path="/virtual-escape-room" element={<VirtualEscapeRoom />} />
                         <Route path="/horse-racing" element={<HorseRacing />} />

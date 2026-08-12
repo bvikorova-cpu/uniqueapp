@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Ghost, Skull, Eye, Play, Pause, Volume2, VolumeX, Flame, Sparkles } from "lucide-react";
+import { Ghost, Skull, Eye, Play, Pause, Volume2, VolumeX, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import shadowVideo from "@/assets/shadow-arena-hero.mp4.asset.json";
@@ -9,12 +9,10 @@ import shadowPoster from "@/assets/shadow-arena-poster.jpg";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
-  totalPrizePool?: number;
-  activeBattles?: number;
   topStories?: number;
 }
 
-export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStories = 0 }: Props) {
+export function ShadowArenaHero({ topStories = 0 }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
@@ -36,8 +34,6 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
   };
 
   const stats = [
-    { icon: Flame, label: "Prize Pool", value: `${totalPrizePool} pts` },
-    { icon: Skull, label: "Active Battles", value: activeBattles.toString() },
     { icon: Eye, label: "Top Stories", value: topStories.toString() },
     { icon: Ghost, label: "Platform Cut", value: "20%" },
   ];
@@ -130,15 +126,6 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
           >
             <Skull className="mr-2 h-4 w-4" />
             {"Submit Horror Story"}
-          </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            onClick={() => navigate("/shadow-arena/battles")}
-            className="bg-black/40 backdrop-blur-md border-purple-700/40 text-purple-100 hover:bg-purple-950/40"
-          >
-            <Flame className="mr-2 h-4 w-4" />
-            {"Enter Live Battles"}
           </Button>
         </motion.div>
 
