@@ -23,6 +23,11 @@ import tennisLegends from "@/assets/cards/tennis-legends.jpg";
 import americanFootballLegends from "@/assets/cards/american-football-legends.jpg";
 import baseballLegends from "@/assets/cards/baseball-legends.jpg";
 import golfLegends from "@/assets/cards/golf-legends.jpg";
+import grandPrixMachines from "@/assets/cards/grand-prix-machines.jpg";
+import rallyWarriors from "@/assets/cards/rally-warriors.jpg";
+import enduranceHypercars from "@/assets/cards/endurance-hypercars.jpg";
+import driftStreetKings from "@/assets/cards/drift-street-kings.jpg";
+import superbikeLegends from "@/assets/cards/superbike-legends.jpg";
 import beautyIcons from "@/assets/cards/beauty-icons.jpg";
 import fashionCouture from "@/assets/cards/fashion-couture.jpg";
 import royalPrincesses from "@/assets/cards/royal-princesses.jpg";
@@ -72,6 +77,11 @@ export const CATEGORY_COVERS: Record<string, string> = {
   "american-football-legends": americanFootballLegends,
   "baseball-legends": baseballLegends,
   "golf-legends": golfLegends,
+  "grand-prix-machines": grandPrixMachines,
+  "rally-warriors": rallyWarriors,
+  "endurance-hypercars": enduranceHypercars,
+  "drift-street-kings": driftStreetKings,
+  "superbike-legends": superbikeLegends,
   "beauty-icons": beautyIcons,
   "fashion-couture": fashionCouture,
   "royal-princesses": royalPrincesses,

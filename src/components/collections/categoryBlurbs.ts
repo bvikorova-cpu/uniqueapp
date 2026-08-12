@@ -130,6 +130,31 @@ export const CATEGORY_BLURBS: Record<string, CategoryBlurb> = {
     tagline: "Diamond heroes from sandlot to ninth inning",
     inside: "150 invented baseball players rated for batting, pitching, fielding, speed and power.",
   },
+  "grand-prix-machines": {
+    title: "Grand Prix Machines",
+    tagline: "Open-wheel racers built for the floodlights",
+    inside: "150 invented grand prix cars rated for top speed, acceleration, handling, braking and reliability.",
+  },
+  "rally-warriors": {
+    title: "Rally Warriors",
+    tagline: "Gravel, snow and dust specialists",
+    inside: "150 invented rally cars rated for top speed, acceleration, handling, braking and reliability.",
+  },
+  "endurance-hypercars": {
+    title: "Endurance Hypercars",
+    tagline: "Night-running prototypes bred for 24-hour races",
+    inside: "150 invented endurance prototypes rated for top speed, acceleration, handling, braking and reliability.",
+  },
+  "drift-street-kings": {
+    title: "Drift Street Kings",
+    tagline: "Neon-lit builds trading grip for pure style",
+    inside: "150 invented drift cars rated for top speed, acceleration, handling, braking and reliability.",
+  },
+  "superbike-legends": {
+    title: "Superbike Legends",
+    tagline: "Knee-down riders carving the perfect line",
+    inside: "150 invented racing superbikes rated for top speed, acceleration, handling, braking and reliability.",
+  },
   "golf-legends": {
     title: "Golf Legends",
     tagline: "Fairway artists in the morning dew",
