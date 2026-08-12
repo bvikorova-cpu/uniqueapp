@@ -302,13 +302,33 @@ export const ArtistStudio = ({ onBack }: Props) => {
                 <Label htmlFor="concert-desc">Description</Label>
                 <Textarea id="concert-desc" value={description} onChange={(e) => setDescription(e.target.value)} rows={3} maxLength={1000} placeholder="What can fans expect?" />
               </div>
-              <div className="space-y-2 sm:max-w-[200px]">
-                <Label htmlFor="ticket-price">Ticket price (€)</Label>
-                <Input id="ticket-price" type="number" min="0" step="0.5" value={ticketPrice} onChange={(e) => setTicketPrice(e.target.value)} />
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2 sm:max-w-[200px]">
+                  <Label htmlFor="ticket-price">Ticket price (€)</Label>
+                  <Input id="ticket-price" type="number" min="0" step="0.5" value={ticketPrice} onChange={(e) => setTicketPrice(e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="concert-cover">Concert photo (optional)</Label>
+                  <Input
+                    id="concert-cover"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0] || null;
+                      if (f && f.size > 8 * 1024 * 1024) { toast.error("Image is too large (max 8 MB)"); return; }
+                      setCoverFile(f);
+                      setCoverPreview(f ? URL.createObjectURL(f) : null);
+                    }}
+                  />
+                  {coverPreview && (
+                    <img src={coverPreview} alt="Concert cover preview" className="h-28 w-full rounded-lg border object-cover sm:w-48" />
+                  )}
+                </div>
               </div>
               <Button onClick={createConcert} disabled={saving} className="gap-2">
                 {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Ticket className="h-4 w-4" />} Schedule concert
               </Button>
+
             </CardContent>
           </Card>
         )}
