@@ -8,7 +8,6 @@ import { ShadowAIToolsHub } from '@/components/shadow-arena/ShadowAIToolsHub';
 import { ArenaLeaderboard } from '@/components/shadow-arena/ArenaLeaderboard';
 import { ArenaStoryCard } from '@/components/shadow-arena/ArenaStoryCard';
 import { CurseWheelCard } from '@/components/shadow-arena/CurseWheelCard';
-import { PushNotificationsCard } from '@/components/shadow-arena/PushNotificationsCard';
 import { DuetBattlesCard } from '@/components/shadow-arena/DuetBattlesCard';
 
 import { Plus, BookOpen } from 'lucide-react';
@@ -70,7 +69,6 @@ export default function ShadowArenaDashboard() {
         <ArenaLeaderboard />
 
         <DuetBattlesCard />
-        <PushNotificationsCard />
         <CurseWheelCard />
 
         {/* Top Stories */}
