@@ -242,9 +242,6 @@ verify_jwt = true
 [functions.calculate-race-results]
 verify_jwt = true
 
-[functions.calculate-f1-race-results]
-verify_jwt = true
-
 [functions.send-gift-payment]
 verify_jwt = true
 

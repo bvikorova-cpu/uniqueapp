@@ -12,7 +12,6 @@ import education from "@/assets/section-videos/education.mp4.asset.json";
 import beauty from "@/assets/section-videos/beauty.mp4.asset.json";
 import jobs from "@/assets/section-videos/jobs.mp4.asset.json";
 import aiTools from "@/assets/section-videos/ai-tools.mp4.asset.json";
-import racing from "@/assets/section-videos/racing.mp4.asset.json";
 import livestream from "@/assets/section-videos/livestream.mp4.asset.json";
 import fashion from "@/assets/section-videos/fashion.mp4.asset.json";
 import fitness from "@/assets/section-videos/fitness.mp4.asset.json";
@@ -42,7 +41,6 @@ export const sectionVideos = { hero: hero.url,
   beauty: beauty.url,
   jobs: jobs.url,
   aiTools: aiTools.url,
-  racing: racing.url,
   livestream: livestream.url,
   fashion: fashion.url,
   fitness: fitness.url,

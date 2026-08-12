@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS public.f1_race_participants CASCADE;
+DROP TABLE IF EXISTS public.gp_race_entries CASCADE;
+DROP TABLE IF EXISTS public.f1_car_marketplace CASCADE;
+DROP TABLE IF EXISTS public.f1_races CASCADE;
+DROP TABLE IF EXISTS public.f1_cars CASCADE;
+DROP TABLE IF EXISTS public.f1_fantasy_teams CASCADE;
+DROP TABLE IF EXISTS public.f1_leaderboard CASCADE;
+DROP TABLE IF EXISTS public.f1_subscriptions CASCADE;
+DROP TABLE IF EXISTS public.f1_currency CASCADE;
+DROP TABLE IF EXISTS public.f1_user_credits CASCADE;

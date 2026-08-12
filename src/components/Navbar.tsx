@@ -209,7 +209,6 @@ const Navbar = () => {
         { path: "/card-collections", label: "Collectible Cards", icon: Library },
         
         { path: "/horse-racing", label: "Horse Racing Arena", icon: Trophy },
-        { path: "/gp-racing", label: "GP Fantasy Racing", icon: Car },
       ] },
     {
       category: "Entertainment & Lifestyle",
