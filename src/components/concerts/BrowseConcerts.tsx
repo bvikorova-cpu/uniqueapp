@@ -135,14 +135,16 @@ export const BrowseConcerts = ({ onBack }: Props) => {
           {concerts?.map((concert) => (
             <Card key={concert.id} className="group overflow-hidden hover:shadow-2xl transition-all border hover:border-primary">
               <div className="relative h-48 overflow-hidden">
-                {concert.musician_profiles?.avatar_url ? (
-                  <img src={concert.musician_profiles.avatar_url} alt={concert.musician_profiles.stage_name}
+                {concert.cover_image_url || concert.musician_profiles?.avatar_url ? (
+                  <img src={concert.cover_image_url || concert.musician_profiles.avatar_url} alt={concert.title}
+                    loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-primary/20 via-purple-500/20 to-pink-500/20 flex items-center justify-center">
                     <Music className="h-20 w-20 text-primary" />
                   </div>
                 )}
+
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
                 {concert.status === "live" && (
                   <Badge className="absolute top-4 left-4 bg-destructive animate-pulse shadow-lg">
