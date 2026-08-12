@@ -116,6 +116,8 @@ export const ArtistStudio = ({ onBack }: Props) => {
 
   const createConcert = async () => {
     if (!profile) { toast.error("Create your artist profile first"); return; }
+    if (!profile.verified) { toast.error("Only verified artists can schedule concerts — request verification first"); return; }
+    if (profile.suspended) { toast.error("Your artist account is suspended"); return; }
     if (title.trim().length < 3) { toast.error("Enter a concert title"); return; }
     if (!scheduledAt) { toast.error("Pick a date and time"); return; }
     const price = Number(ticketPrice);
