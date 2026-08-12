@@ -12,6 +12,18 @@ const ICE_SERVERS: RTCConfiguration = {
     { urls: "stun:stun1.l.google.com:19302" },
     { urls: "stun:stun2.l.google.com:19302" },
     { urls: "stun:stun.cloudflare.com:3478" },
+    // Relay fallback is essential when the artist and viewer are behind
+    // different mobile/carrier NATs, where a direct STUN path cannot form.
+    {
+      urls: [
+        "turn:openrelay.metered.ca:80",
+        "turn:openrelay.metered.ca:443",
+        "turn:openrelay.metered.ca:443?transport=tcp",
+        "turns:openrelay.metered.ca:443?transport=tcp",
+      ],
+      username: "openrelayproject",
+      credential: "openrelayproject",
+    },
   ],
   iceCandidatePoolSize: 10,
 };
@@ -145,7 +157,8 @@ export function startViewer(
     const peer = new RTCPeerConnection(ICE_SERVERS);
     pc = peer;
     peer.ontrack = (e) => {
-      if (e.streams[0]) onStream(e.streams[0]);
+      const remoteStream = e.streams[0] ?? new MediaStream([e.track]);
+      onStream(remoteStream);
     };
     peer.onicecandidate = (e) => {
       if (e.candidate) {
