@@ -30,10 +30,10 @@ const standings = [
 ];
 
 const rewards = [
-  { pos: "1st", prize: "5,000 Coins + Legendary Crate + Champion Title", icon: Crown },
-  { pos: "2nd", prize: "3,000 Coins + Diamond Crate", icon: Medal },
-  { pos: "3rd", prize: "1,500 Coins + Gold Crate", icon: Trophy },
-  { pos: "4th-5th", prize: "500 Coins + Silver Crate", icon: Star },
+  { pos: "1st", prize: "100 Credits + Legendary Crate + Champion Title", icon: Crown },
+  { pos: "2nd", prize: "60 Credits + Diamond Crate", icon: Medal },
+  { pos: "3rd", prize: "30 Credits + Gold Crate", icon: Trophy },
+  { pos: "4th-5th", prize: "10 Credits + Silver Crate", icon: Star },
 ];
 
 export function SeasonalChampionship({ onBack }: { onBack: () => void }) {
@@ -177,7 +177,7 @@ export function SeasonalChampionship({ onBack }: { onBack: () => void }) {
           ))}
           <Card className="p-4 bg-gradient-to-r from-violet-950/30 to-slate-900/60 border-violet-500/20 backdrop-blur-sm">
             <p className="text-xs font-mono text-violet-300/60 text-center">
-              All participants receive a Season 1 Participation Badge and 100 bonus Coins
+              All participants receive a Season 1 Participation Badge and 2 bonus credits
             </p>
           </Card>
         </div>

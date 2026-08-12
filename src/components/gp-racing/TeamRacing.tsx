@@ -195,7 +195,7 @@ export function TeamRacing({ onBack }: { onBack: () => void }) {
             </div>
             <Button onClick={handleCreateTeam}
               className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 border border-cyan-400/20 font-mono uppercase tracking-wider">
-              Create Team (200 Coins)
+              Create Team (3 Credits)
             </Button>
           </div>
         </DialogContent>

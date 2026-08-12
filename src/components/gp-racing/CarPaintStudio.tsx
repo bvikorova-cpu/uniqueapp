@@ -261,7 +261,7 @@ export function CarPaintStudio({ onBack }: { onBack: () => void }) {
             }}
             className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/20 font-mono uppercase tracking-wider"
           >
-            Apply Design (50 Gems)
+            Apply Design (1 Credit)
           </Button>
         </div>
       </div>
