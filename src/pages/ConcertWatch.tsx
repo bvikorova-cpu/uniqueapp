@@ -39,6 +39,8 @@ const ConcertWatch = () => {
   const [concert, setConcert] = useState<Concert | null>(null);
   const [allowed, setAllowed] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [rtcActive, setRtcActive] = useState(false);
+  const [rtcConnecting, setRtcConnecting] = useState(false);
 
   useEffect(() => {
     if (!id) return;
