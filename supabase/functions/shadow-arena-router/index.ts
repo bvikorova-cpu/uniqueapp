@@ -281,26 +281,42 @@ Deno.serve(async (req) => {
 Generate a complete, polished horror story (${lengthMap[length] || lengthMap.medium}).
 Return JSON with: { "title": "evocative title", "story": "full story text" }.
 The story must have a strong opening hook, atmospheric build-up, and chilling ending.`;
-        const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: "gpt-4o",
-            messages: [
-              { role: "system", content: systemPrompt },
-              { role: "user", content: prompt },
-            ],
-            response_format: { type: "json_object" } }) });
-        if (!aiResponse.ok) {
-          if (aiResponse.status === 429) return json({ error: "OpenAI rate limited" }, 429);
-          const t = await aiResponse.text();
-          console.error("OpenAI error:", aiResponse.status, t);
-          throw new Error("OpenAI API error");
+        let aiResponse: Response;
+        try {
+          aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
+            signal: AbortSignal.timeout(90_000),
+            body: JSON.stringify({
+              model: "gpt-4o",
+              messages: [
+                { role: "system", content: systemPrompt },
+                { role: "user", content: prompt },
+              ],
+              response_format: { type: "json_object" } }) });
+        } catch (e) {
+          console.error("story ai fetch failed", e);
+          return json({ error: "AI is busy right now. Please try again in a few seconds." }, 503);
         }
-        const data = await aiResponse.json();
-        const parsed = JSON.parse(data.choices[0].message.content);
-        const generatedTitle = parsed.title;
-        const generatedStory = parsed.story;
+        if (!aiResponse.ok) {
+          if (aiResponse.status === 429) return json({ error: "AI rate limited — try again shortly." }, 429);
+          const t = await aiResponse.text();
+          console.error("AI error:", aiResponse.status, t);
+          return json({ error: "AI request failed. Please try again." }, 502);
+        }
+        let generatedTitle = "Untitled Horror";
+        let generatedStory = "";
+        try {
+          const data = await aiResponse.json();
+          const raw = data.choices?.[0]?.message?.content ?? "{}";
+          const parsed = JSON.parse(raw.replace(/^```json\s*|```$/g, "").trim());
+          generatedTitle = parsed.title || generatedTitle;
+          generatedStory = parsed.story || "";
+        } catch (e) {
+          console.error("story parse failed", e);
+          return json({ error: "AI returned an unreadable story. Please try again." }, 502);
+        }
+        if (!generatedStory) return json({ error: "AI returned an empty story. Please try again." }, 502);
         let illustrationUrl: string | null = null;
         if (generateImage) {
           try {
@@ -308,6 +324,7 @@ The story must have a strong opening hook, atmospheric build-up, and chilling en
             const imgResp = await fetch("https://api.openai.com/v1/images/generations", {
               method: "POST",
               headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
+              signal: AbortSignal.timeout(60_000),
               body: JSON.stringify({ model: "gpt-image-1", prompt: imgPrompt, n: 1, size: "1024x1024" }) });
             if (imgResp.ok) {
               const imgData = await imgResp.json();

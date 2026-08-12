@@ -28,17 +28,33 @@ export const useShadowArenaCredits = () => {
   return { credits, isLoading, refetch: () => queryClient.invalidateQueries({ queryKey: ["shadow-arena-credits"] }) };
 };
 
+/** Supabase hides the edge-function body inside FunctionsHttpError — read it for a real message. */
+const invokeShadow = async (fn: string, body: Record<string, unknown>) => {
+  const { data, error } = await supabase.functions.invoke(fn, { body });
+  if (error) {
+    const res = (error as any)?.context;
+    let payload: any = null;
+    let status: number | undefined;
+    if (res && typeof res.json === "function") {
+      status = res.status;
+      try { payload = await res.clone().json(); } catch { payload = null; }
+    }
+    const msg = payload?.error || payload?.message;
+    if (status === 402) throw new Error(msg || "Not enough credits.");
+    if (!status) throw new Error("Connection to the AI service failed. Please try again.");
+    throw new Error(msg || (error as any)?.message || "AI request failed");
+  }
+  if ((data as any)?.error) throw new Error((data as any).error);
+  return data;
+};
+
 export const useShadowAITools = () => {
   const queryClient = useQueryClient();
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["shadow-arena-credits"] });
 
   const generateStory = useMutation({
-    mutationFn: async (vars: { prompt: string; tone?: string; length?: string; generateImage?: boolean }) => {
-      const { data, error } = await supabase.functions.invoke("shadow-ai-story-generator", { body: vars });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      return data;
-    },
+    mutationFn: async (vars: { prompt: string; tone?: string; length?: string; generateImage?: boolean }) =>
+      invokeShadow("shadow-ai-story-generator", vars),
     onSuccess: () => { invalidate(); toast.success("Story ready!"); },
     onError: (e: Error) => toast.error(e.message || "Story generation failed") });
 
