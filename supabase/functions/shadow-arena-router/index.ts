@@ -327,11 +327,11 @@ Deno.serve(async (req) => {
         }
         const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
         if (!LOVABLE_API_KEY) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
-        const scriptRes = await fetch("https://api.openai.com/v1/chat/completions", {
+        const scriptRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${LOVABLE_API_KEY}` },
           body: JSON.stringify({
-            model: "gpt-4o-mini",
+            model: "google/gemini-2.5-flash",
             messages: [
               { role: "system", content: "You write 30-second horror reel scripts: 5 short cinematic scenes with timestamps, visual descriptions, and a chilling voiceover line each. Output JSON: {scenes:[{time, visual, voiceover}], hook}." },
               { role: "user", content: prompt },
@@ -405,12 +405,12 @@ Deno.serve(async (req) => {
 Generate a complete, polished horror story (${lengthMap[length] || lengthMap.medium}).
 Return JSON with: { "title": "evocative title", "story": "full story text" }.
 The story must have a strong opening hook, atmospheric build-up, and chilling ending.`;
-        const storyRequest = fetch("https://api.openai.com/v1/chat/completions", {
+        const storyRequest = fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
             method: "POST",
             headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
             signal: AbortSignal.timeout(55_000),
             body: JSON.stringify({
-              model: "gpt-4o",
+              model: "google/gemini-2.5-flash",
               messages: [
                 { role: "system", content: systemPrompt },
                 { role: "user", content: prompt },
@@ -420,12 +420,12 @@ The story must have a strong opening hook, atmospheric build-up, and chilling en
         // Generate the optional illustration at the same time as the story.
         // Running these sequentially could exceed the edge request lifetime on mobile.
         const illustrationRequest: Promise<Response | null> = generateImage
-          ? fetch("https://api.openai.com/v1/images/generations", {
+          ? fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
               method: "POST",
               headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
               signal: AbortSignal.timeout(45_000),
               body: JSON.stringify({
-                model: "gpt-image-1",
+                model: "openai/gpt-image-1-mini",
                 prompt: `Cinematic ${tone} horror illustration inspired by: ${prompt.slice(0, 300)}. Dark moody atmosphere, deep shadows, crimson accents, painterly oil texture, no text, no watermark.`,
                 n: 1,
                 size: "1024x1024",
@@ -530,11 +530,11 @@ Return JSON: {
   "reasoning": "2-3 sentence analysis with dramatic flair",
   "factors": { "theme_fit": 0-100, "momentum": 0-100, "audience_pull": 0-100, "narrative_skill": 0-100 }
 }`;
-        const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+        const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
           headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: "gpt-4o-mini",
+            model: "google/gemini-2.5-flash",
             messages: [
               { role: "system", content: systemPrompt },
               { role: "user", content: `Battle context: ${JSON.stringify(context)}` },
@@ -575,11 +575,11 @@ Return JSON: {
         if (!credits || credits.credits_remaining < AVATAR_COST) {
           return json({ error: "Insufficient credits", required: AVATAR_COST }, 402);
         }
-        const aiResponse = await fetch("https://api.openai.com/v1/images/generations", {
+        const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
           method: "POST",
           headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: "gpt-image-1",
+            model: "openai/gpt-image-1-mini",
             prompt: `${stylePrompt}\n\nReference image: ${sourceImageUrl}`,
             n: 1,
             size: "1024x1024" }) });
