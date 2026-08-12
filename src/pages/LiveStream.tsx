@@ -26,6 +26,8 @@ import { ChatMuteBanner } from "@/components/live/ChatMuteBanner";
 import { ReportMessageButton } from "@/components/live/ReportMessageButton";
 import { HideMessageButton } from "@/components/live/HideMessageButton";
 import { useStreamViewerSession } from "@/hooks/useStreamViewerSession";
+import { startBroadcast, startViewer, type BroadcastHandle, type ViewerHandle } from "@/lib/concertWebRTC";
+
 
 interface Message {
   id: string;
@@ -60,11 +62,18 @@ export default function LiveStream() {
   const [user, setUser] = useState<any>(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
+  const [streamError, setStreamError] = useState<string | null>(null);
+  const [micEnabled, setMicEnabled] = useState(true);
+  const [camEnabled, setCamEnabled] = useState(true);
+  const [peerViewers, setPeerViewers] = useState(0);
+  const [presenceViewers, setPresenceViewers] = useState(0);
+  const [connState, setConnState] = useState<RTCPeerConnectionState | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
-  const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
-  const channelRef = useRef<any>(null);
+  const broadcastRef = useRef<BroadcastHandle | null>(null);
+  const viewerRef = useRef<ViewerHandle | null>(null);
+
 
   // Fetch available gifts
   const { data: gifts = [] } = useQuery({
@@ -211,234 +220,113 @@ export default function LiveStream() {
       console.error(error);
     } });
 
-  // WebRTC Configuration
-  const rtcConfig = {
-    iceServers: [
-      { urls: 'stun:stun.l.google.com:19302' },
-      { urls: 'stun:stun1.l.google.com:19302' },
-    ] };
+  // ─── Live streaming (same WebRTC engine as Live Concerts) ───────────────
+  const isOwner = !!user && !!stream && user.id === stream.influencer_profiles?.user_id;
+  const inIframe = typeof window !== "undefined" && window.self !== window.top;
+
+  const requestStream = async () => {
+    const withTimeout = (p: Promise<MediaStream>, ms: number) =>
+      Promise.race([
+        p,
+        new Promise<never>((_, reject) =>
+          window.setTimeout(() => reject(new Error("__timeout__")), ms)
+        ),
+      ]);
+    try {
+      return await withTimeout(
+        navigator.mediaDevices.getUserMedia({
+          video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" },
+          audio: { echoCancellation: true, noiseSuppression: true },
+        }),
+        15000
+      );
+    } catch (e: any) {
+      if (e?.name === "NotAllowedError") throw e;
+      return await withTimeout(navigator.mediaDevices.getUserMedia({ video: true }), 15000);
+    }
+  };
 
   // Start broadcasting (influencer)
-  const startBroadcast = async () => {
+  const startBroadcasting = async () => {
+    if (broadcastRef.current || isConnecting) return;
+    setIsConnecting(true);
+    setStreamError(null);
     try {
-      setIsConnecting(true);
-      
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          width: { ideal: 1920 },
-          height: { ideal: 1080 },
-          facingMode: "user"
-        },
-        audio: true
-      });
-
+      if (!window.isSecureContext) throw new Error("Live streaming needs a secure (https) page");
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error(
+          inIframe
+            ? "Camera is blocked in the embedded preview — open the stream in a new tab"
+            : "This browser does not support live camera streaming"
+        );
+      }
+      const mediaStream = await requestStream();
       localStreamRef.current = mediaStream;
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
+        await videoRef.current.play().catch(() => {});
       }
-
-      // Setup Supabase Realtime channel for signaling
-      const channel = supabase.channel(`stream:${streamId}`, {
-        config: {
-          broadcast: { self: true } } });
-
-      channelRef.current = channel;
-
-      // Listen for viewer join requests
-      channel.on('broadcast', { event: 'viewer-join' }, async ({ payload }) => {
-        console.log('Viewer joined:', payload);
-        await createOfferForViewer(payload.viewerId);
-      });
-
-      // Listen for answers from viewers
-      channel.on('broadcast', { event: 'answer' }, async ({ payload }) => {
-        console.log('Received answer:', payload);
-        if (peerConnectionRef.current && payload.answer) {
-          await peerConnectionRef.current.setRemoteDescription(
-            new RTCSessionDescription(payload.answer)
-          );
-        }
-      });
-
-      // Listen for ICE candidates
-      channel.on('broadcast', { event: 'ice-candidate' }, async ({ payload }) => {
-        console.log('Received ICE candidate:', payload);
-        if (peerConnectionRef.current && payload.candidate) {
-          await peerConnectionRef.current.addIceCandidate(
-            new RTCIceCandidate(payload.candidate)
-          );
-        }
-      });
-
-      await channel.subscribe();
+      broadcastRef.current = startBroadcast(streamId!, mediaStream, setPeerViewers);
+      await supabase
+        .from("live_streams")
+        .update({ is_live: true, started_at: new Date().toISOString() })
+        .eq("id", streamId!);
+      queryClient.invalidateQueries({ queryKey: ["stream", streamId] });
       setIsStreaming(true);
-      setIsConnecting(false);
-      toast.success("Stream started!");
-    } catch (error) {
-      console.error("Error starting broadcast:", error);
-      toast.error("Error starting stream");
-      setIsConnecting(false);
-    }
-  };
-
-  // Create offer for viewer (influencer side)
-  const createOfferForViewer = async (viewerId: string) => {
-    if (!localStreamRef.current) return;
-
-    const peerConnection = new RTCPeerConnection(rtcConfig);
-    peerConnectionRef.current = peerConnection;
-
-    // Add local stream tracks
-    localStreamRef.current.getTracks().forEach(track => {
-      peerConnection.addTrack(track, localStreamRef.current!);
-    });
-
-    // Handle ICE candidates
-    peerConnection.onicecandidate = (event) => { if (event.candidate && channelRef.current) {
-        channelRef.current.send({
-          type: 'broadcast',
-          event: 'ice-candidate',
-          payload: {
-            candidate: event.candidate,
-            targetId: viewerId } });
-      }
-    };
-
-    // Create and send offer
-    const offer = await peerConnection.createOffer();
-    await peerConnection.setLocalDescription(offer);
-
-    if (channelRef.current) { channelRef.current.send({
-        type: 'broadcast',
-        event: 'offer',
-        payload: {
-          offer: offer,
-          targetId: viewerId } });
-    }
-  };
-
-  // Join as viewer
-  const joinAsViewer = async () => {
-    try {
-      setIsConnecting(true);
-
-      // Setup Supabase Realtime channel
-      const channel = supabase.channel(`stream:${streamId}`, {
-        config: {
-          broadcast: { self: true } } });
-
-      channelRef.current = channel;
-
-      // Listen for offers from broadcaster
-      channel.on('broadcast', { event: 'offer' }, async ({ payload }) => {
-        console.log('Received offer:', payload);
-        if (payload.targetId === user?.id || !payload.targetId) {
-          await handleOffer(payload.offer);
-        }
-      });
-
-      // Listen for ICE candidates
-      channel.on('broadcast', { event: 'ice-candidate' }, async ({ payload }) => {
-        console.log('Received ICE candidate:', payload);
-        if ((payload.targetId === user?.id || !payload.targetId) && peerConnectionRef.current && payload.candidate) {
-          await peerConnectionRef.current.addIceCandidate(
-            new RTCIceCandidate(payload.candidate)
-          );
-        }
-      });
-
-      await channel.subscribe();
-
-      // Notify broadcaster that viewer joined
-      channel.send({ type: 'broadcast',
-        event: 'viewer-join',
-        payload: {
-          viewerId: user?.id } });
-
-      setIsConnecting(false);
-    } catch (error) {
-      console.error("Error joining as viewer:", error);
-      toast.error("Error connecting to stream");
-      setIsConnecting(false);
-    }
-  };
-
-  // Handle offer (viewer side)
-  const handleOffer = async (offer: RTCSessionDescriptionInit) => {
-    const peerConnection = new RTCPeerConnection(rtcConfig);
-    peerConnectionRef.current = peerConnection;
-
-    // Handle incoming stream
-    peerConnection.ontrack = (event) => {
-      console.log('Received remote track');
-      if (videoRef.current && event.streams[0]) {
-        videoRef.current.srcObject = event.streams[0];
-        setIsStreaming(true);
-      }
-    };
-
-    // Handle ICE candidates
-    peerConnection.onicecandidate = (event) => { if (event.candidate && channelRef.current) {
-        channelRef.current.send({
-          type: 'broadcast',
-          event: 'ice-candidate',
-          payload: {
-            candidate: event.candidate } });
-      }
-    };
-
-    // Set remote description and create answer
-    await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-    const answer = await peerConnection.createAnswer();
-    await peerConnection.setLocalDescription(answer);
-
-    // Send answer back
-    if (channelRef.current) { channelRef.current.send({
-        type: 'broadcast',
-        event: 'answer',
-        payload: {
-          answer: answer } });
-    }
-  };
-
-  // Stop streaming
-  const stopStreaming = async (opts?: { silent?: boolean }) => {
-    if (localStreamRef.current) {
-      localStreamRef.current.getTracks().forEach(track => track.stop());
+      toast.success("You are live!");
+    } catch (e: any) {
+      const msg =
+        e?.name === "NotAllowedError"
+          ? "Camera access denied — allow camera & microphone for this site"
+          : e?.name === "NotFoundError"
+            ? "No camera found on this device"
+            : e?.name === "NotReadableError"
+              ? "Camera is used by another app — close it and try again"
+              : e?.message === "__timeout__"
+                ? inIframe
+                  ? "Camera is blocked in the embedded preview — open the stream in a new tab"
+                  : "No answer from the camera — reload and allow the permission prompt"
+                : e?.message || "Could not start the camera";
+      setStreamError(msg);
+      toast.error(msg);
+      localStreamRef.current?.getTracks().forEach((t) => t.stop());
       localStreamRef.current = null;
+    } finally {
+      setIsConnecting(false);
     }
+  };
 
-    if (peerConnectionRef.current) {
-      peerConnectionRef.current.close();
-      peerConnectionRef.current = null;
-    }
+  const toggleMic = () => {
+    const track = localStreamRef.current?.getAudioTracks()[0];
+    if (!track) return;
+    track.enabled = !track.enabled;
+    setMicEnabled(track.enabled);
+  };
+  const toggleCam = () => {
+    const track = localStreamRef.current?.getVideoTracks()[0];
+    if (!track) return;
+    track.enabled = !track.enabled;
+    setCamEnabled(track.enabled);
+  };
 
-    if (channelRef.current) {
-      supabase.removeChannel(channelRef.current);
-      channelRef.current = null;
-    }
-
-    if (videoRef.current) {
-      videoRef.current.srcObject = null;
-    }
-
+  // Stop streaming / leave
+  const stopStreaming = async (opts?: { silent?: boolean }) => {
+    broadcastRef.current?.stop();
+    broadcastRef.current = null;
+    viewerRef.current?.stop();
+    viewerRef.current = null;
+    localStreamRef.current?.getTracks().forEach((t) => t.stop());
+    localStreamRef.current = null;
+    if (videoRef.current) videoRef.current.srcObject = null;
     setIsStreaming(false);
 
-    // Mark stream as ended in DB (only if current user is the streamer)
     try {
-      if (stream && user && stream.influencer_id && stream.is_live) {
-        const { data: myInf } = await supabase
-          .from("influencer_profiles")
-          .select("id")
-          .eq("user_id", user.id)
-          .maybeSingle();
-        if (myInf?.id === stream.influencer_id) {
-          await supabase
-            .from("live_streams")
-            .update({ is_live: false, ended_at: new Date().toISOString() })
-            .eq("id", stream.id);
-          queryClient.invalidateQueries({ queryKey: ["stream", streamId] });
-        }
+      if (isOwner && stream?.is_live) {
+        await supabase
+          .from("live_streams")
+          .update({ is_live: false, ended_at: new Date().toISOString() })
+          .eq("id", stream.id);
+        queryClient.invalidateQueries({ queryKey: ["stream", streamId] });
       }
     } catch (e) {
       console.error("Failed to mark stream ended:", e);
@@ -447,19 +335,70 @@ export default function LiveStream() {
     if (!opts?.silent) toast.info("Stream ended");
   };
 
-  // Auto-join as viewer if not influencer
+  // Viewers connect automatically over WebRTC (TURN relay fallback included)
   useEffect(() => {
-    if (stream && user && stream.influencer_id !== user.id && stream.is_live && !isStreaming && !isConnecting) {
-      joinAsViewer();
-    }
-  }, [stream, user]);
+    if (!streamId || !stream?.is_live || isOwner || viewerRef.current) return;
+    setIsConnecting(true);
+    viewerRef.current = startViewer(
+      streamId,
+      (remote) => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = remote;
+          void videoRef.current.play().catch(() => {});
+        }
+        setIsStreaming(true);
+        setIsConnecting(false);
+      },
+      (state) => {
+        setConnState(state);
+        if (state === "connected") setIsConnecting(false);
+        if (state === "failed") setIsStreaming(false);
+      }
+    );
+    return () => {
+      viewerRef.current?.stop();
+      viewerRef.current = null;
+    };
+  }, [streamId, stream?.is_live, isOwner]);
+
+  // Real viewer count via presence (same source for host and fans)
+  useEffect(() => {
+    if (!streamId || !stream?.is_live) return;
+    const ch = supabase.channel(`stream-presence-${streamId}`, {
+      config: { presence: { key: isOwner ? `host-${streamId}` : user?.id || `guest-${Math.random()}` } },
+    });
+    ch.on("presence", { event: "sync" }, () => {
+      const state = ch.presenceState() as Record<string, unknown[]>;
+      setPresenceViewers(Object.keys(state).filter((k) => !k.startsWith("host-")).length);
+    }).subscribe((status) => {
+      if (status === "SUBSCRIBED") void ch.track({ at: Date.now() });
+    });
+    return () => { supabase.removeChannel(ch); };
+  }, [streamId, stream?.is_live, isOwner, user?.id]);
+
+  // Keep the DB viewer count fresh while broadcasting
+  useEffect(() => {
+    if (!isOwner || !isStreaming || !streamId) return;
+    const sync = () => {
+      void supabase
+        .from("live_streams")
+        .update({ viewer_count: Math.max(peerViewers, presenceViewers) })
+        .eq("id", streamId);
+    };
+    sync();
+    const t = window.setInterval(sync, 5000);
+    return () => window.clearInterval(t);
+  }, [isOwner, isStreaming, peerViewers, presenceViewers, streamId]);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      stopStreaming();
+      broadcastRef.current?.stop();
+      viewerRef.current?.stop();
+      localStreamRef.current?.getTracks().forEach((t) => t.stop());
     };
   }, []);
+
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -514,39 +453,52 @@ export default function LiveStream() {
                   />
                   
                   {!isStreaming && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                      <div className="text-center text-white space-y-4">
-                        <Video className="h-24 w-24 mx-auto opacity-50" />
-                        {user?.id === stream.influencer_profiles?.user_id ? (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 p-4">
+                      <div className="text-center text-primary-foreground space-y-4">
+                        <Video className="h-20 w-20 mx-auto opacity-50" />
+                        {isOwner ? (
                           <>
-                            <p className="text-lg">Click the button to start the camera</p>
-                            <Button 
-                              onClick={startBroadcast} 
-                              variant="default"
-                              size="lg"
-                              disabled={isConnecting}
-                              className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700"
-                            >
-                              {isConnecting ? "Connecting camera..." : "📹 Start camera"}
-                            </Button>
+                            <p className={`text-sm ${streamError ? "font-medium text-destructive" : "text-lg"}`}>
+                              {streamError ?? "Turn on your camera to go live"}
+                            </p>
+                            <div className="flex flex-col items-center gap-2">
+                              <Button
+                                onClick={startBroadcasting}
+                                size="lg"
+                                disabled={isConnecting}
+                                className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700"
+                              >
+                                {isConnecting ? "Connecting camera..." : "📹 Turn camera on & go live"}
+                              </Button>
+                              {inIframe && (
+                                <Button
+                                  variant="outline"
+                                  onClick={() => window.open(window.location.href, "_blank", "noopener")}
+                                >
+                                  Open stream in new tab
+                                </Button>
+                              )}
+                            </div>
                           </>
                         ) : (
-                          <>
+                          <div className="space-y-3">
                             <p className="text-lg">
-                              {isConnecting ? "Connecting to stream..." : "Stream is preparing..."}
+                              {connState === "failed"
+                                ? "Connection lost — try reconnecting"
+                                : isConnecting || connState === "connecting"
+                                  ? "Connecting to stream..."
+                                  : stream.is_live
+                                    ? "Waiting for the creator's camera..."
+                                    : "Stream is not live yet"}
                             </p>
-                          </>
+                            {stream.is_live && (
+                              <Button variant="outline" onClick={() => viewerRef.current?.reconnect()}>
+                                Reconnect
+                              </Button>
+                            )}
+                          </div>
                         )}
                       </div>
-                    </div>
-                  )}
-
-                  {user?.id === stream.influencer_profiles?.user_id && isStreaming && (
-                    <div className="absolute bottom-4 right-4">
-                      <Button onClick={() => stopStreaming()} variant="destructive" size="sm">
-                        <VideoOff className="h-4 w-4 mr-2" />
-                        Stop Stream
-                      </Button>
                     </div>
                   )}
 
@@ -556,10 +508,25 @@ export default function LiveStream() {
                     </Badge>
                     <Badge variant="secondary">
                       <Users className="h-3 w-3 mr-1" />
-                      {stream.viewer_count}
+                      {Math.max(presenceViewers, peerViewers, stream.viewer_count ?? 0)}
                     </Badge>
                   </div>
                 </div>
+
+                {isOwner && isStreaming && (
+                  <div className="flex flex-col gap-2 p-4 border-b">
+                    <Button variant="outline" onClick={toggleMic} className="w-full justify-start gap-2">
+                      {micEnabled ? "🎙️ Mute" : "🔇 Unmute"}
+                    </Button>
+                    <Button variant="outline" onClick={toggleCam} className="w-full justify-start gap-2">
+                      {camEnabled ? "📷 Hide camera" : "📷 Show camera"}
+                    </Button>
+                    <Button variant="destructive" onClick={() => stopStreaming()} className="w-full">
+                      <VideoOff className="h-4 w-4 mr-2" /> End stream
+                    </Button>
+                  </div>
+                )}
+
                 <div className="p-6">
                   <div className="flex items-center gap-4 mb-4">
                     <Avatar className="h-12 w-12">
