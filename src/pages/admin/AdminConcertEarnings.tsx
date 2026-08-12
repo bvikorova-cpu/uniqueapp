@@ -29,6 +29,7 @@ interface WithdrawalRow {
   amount: number;
   status: string;
   payment_method: string | null;
+  payment_details: any;
   admin_notes: string | null;
   created_at: string | null;
 }
@@ -48,7 +49,7 @@ export default function AdminConcertEarnings() {
         (supabase as any).rpc("admin_concert_earnings_overview"),
         (supabase as any)
           .from("musician_withdrawal_requests")
-          .select("id, musician_id, amount, status, payment_method, admin_notes, created_at")
+          .select("id, musician_id, amount, status, payment_method, payment_details, admin_notes, created_at")
           .order("created_at", { ascending: false })
           .limit(100),
       ]);

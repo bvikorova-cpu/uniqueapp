@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
 import { Music, Ticket, Gift, Euro } from "lucide-react";
+import { MusicianPayoutCard } from "@/components/concerts/MusicianPayoutCard";
 
 interface EarningRow {
   id: string;
@@ -19,7 +20,7 @@ const eur = (n: number) => `€${Number(n || 0).toFixed(2)}`;
 export const ConcertEarningsCard = () => {
   const [loading, setLoading] = useState(true);
   const [rows, setRows] = useState<EarningRow[]>([]);
-  const [profile, setProfile] = useState<{ stage_name: string; pending_balance: number; total_withdrawn: number } | null>(null);
+  const [profile, setProfile] = useState<{ id: string; stage_name: string; pending_balance: number; total_withdrawn: number } | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -33,6 +34,7 @@ export const ConcertEarningsCard = () => {
           .maybeSingle();
         if (!prof) return;
         setProfile({
+          id: (prof as any).id,
           stage_name: (prof as any).stage_name,
           pending_balance: Number((prof as any).pending_balance || 0),
           total_withdrawn: Number((prof as any).total_withdrawn || 0),
@@ -136,6 +138,8 @@ export const ConcertEarningsCard = () => {
             </Table>
           </div>
         )}
+
+        <MusicianPayoutCard musicianId={profile.id} pendingBalance={profile.pending_balance} />
       </CardContent>
     </Card>
   );
