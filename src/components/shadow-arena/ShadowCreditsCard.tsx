@@ -36,7 +36,7 @@ export function ShadowCreditsCard() {
           <p className="text-xs text-red-200 font-semibold mb-1">{"Cost per use"}</p>
           <div className="flex flex-wrap gap-1.5 text-[11px] text-red-50 justify-end">
             <span className="px-2 py-0.5 rounded bg-red-950/70 border border-red-700/50 font-medium">{"Story 4"}</span>
-            <span className="px-2 py-0.5 rounded bg-red-950/70 border border-red-700/50 font-medium">{"Voice 6"}</span>
+            
             <span className="px-2 py-0.5 rounded bg-red-950/70 border border-red-700/50 font-medium">{"Predict 5"}</span>
             <span className="px-2 py-0.5 rounded bg-red-950/70 border border-red-700/50 font-medium">{"Avatar 8"}</span>
           </div>
