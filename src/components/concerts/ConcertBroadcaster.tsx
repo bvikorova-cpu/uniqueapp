@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Camera, CameraOff, Loader2, Mic, MicOff, Radio, Users } from "lucide-react";
+import { Camera, CameraOff, ExternalLink, Loader2, Mic, MicOff, Radio, Users } from "lucide-react";
 import { toast } from "sonner";
 import { startBroadcast, type BroadcastHandle } from "@/lib/concertWebRTC";
 
