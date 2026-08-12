@@ -53,6 +53,15 @@ export function useSpendCredits() {
             usage_type: "custom_generation",
             credits_used: amount,
             description: opts?.description || action });
+
+          // Every spend must be recorded in the unified ledger (Core rule).
+          await supabase.from("ai_credits_ledger").insert({ user_id: user.id,
+            delta: -amount,
+            balance_before: remaining,
+            balance_after: remaining - amount,
+            reason: opts?.description || action,
+            source: action,
+            actor: user.id });
           return true;
         }
       } catch (e) {
