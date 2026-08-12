@@ -16,7 +16,7 @@ type ServiceAccount = {
 
 let cachedToken: { token: string; exp: number } | null = null;
 
-function getServiceAccount(): ServiceAccount | null {
+export function getServiceAccount(): ServiceAccount | null {
   const raw = Deno.env.get("GCP_SERVICE_ACCOUNT_JSON");
   if (!raw) return null;
   try {
@@ -55,7 +55,7 @@ async function importPrivateKey(pem: string): Promise<CryptoKey> {
   );
 }
 
-async function getAccessToken(sa: ServiceAccount): Promise<string | null> {
+export async function getAccessToken(sa: ServiceAccount): Promise<string | null> {
   const now = Math.floor(Date.now() / 1000);
   if (cachedToken && cachedToken.exp - 60 > now) return cachedToken.token;
 
@@ -149,6 +149,83 @@ export async function tryVertexChat(body: Record<string, unknown>): Promise<any 
     return data;
   } catch (e) {
     console.warn("[vertexDirect] error, falling back:", e instanceof Error ? e.message : String(e));
+    return null;
+  }
+}
+
+/** Append an aspect-ratio hint to the prompt for non-square sizes (best-effort; Gemini image gen honors it when it can). */
+function imagePromptWithAspect(prompt: string, size?: unknown): string {
+  const s = typeof size === "string" ? size.toLowerCase() : "";
+  let ratio = "";
+  if (s.includes("1024x1792") || s.includes("768x1344")) ratio = "9:16 portrait";
+  else if (s.includes("1792x1024") || s.includes("1344x768")) ratio = "16:9 landscape";
+  else if (s.includes("1024x1536") || s.includes("1536x1024")) ratio = "3:2";
+  else if (s.includes("832x1248") || s.includes("1248x832")) ratio = "2:3 portrait";
+  if (!ratio) return prompt;
+  return `${prompt}\n\n(Aspect ratio ${ratio}.)`;
+}
+
+/**
+ * Image generation on Vertex AI (postpay) using Gemini 2.5 Flash Image
+ * (`gemini-2.5-flash-image`) via the native generateContent endpoint with
+ * responseModalities = ["IMAGE","TEXT"]. This model is the only image-capable
+ * model enabled on the project's Vertex AI; Imagen (`:predict`) and the
+ * dedicated image-generation preview models are NOT enabled (404).
+ *
+ * Returns an OpenAI-shaped image-generation response
+ * (`{ data: [{ b64_json }] }`) so the fetch-patch redirect path can wrap it
+ * transparently, or null when Vertex is unavailable / failed (caller falls
+ * back to the Lovable Gateway).
+ */
+export async function tryVertexImage(
+  prompt: string,
+  size?: unknown,
+  _n?: unknown,
+): Promise<any | null> {
+  const sa = getServiceAccount();
+  if (!sa) return null;
+  const projectId = Deno.env.get("GCP_PROJECT_ID") || sa.project_id;
+  const location = Deno.env.get("GCP_LOCATION") || "us-central1";
+  if (!projectId) return null;
+  const token = await getAccessToken(sa);
+  if (!token) return null;
+
+  const model = "gemini-2.5-flash-image";
+  const url = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`;
+
+  try {
+    const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
+    const res = await rawFetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts: [{ text: imagePromptWithAspect(prompt, size) }] }],
+        generationConfig: { responseModalities: ["IMAGE", "TEXT"], temperature: 0.9 },
+      }),
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      console.warn(`[vertexDirect] image ${res.status}, falling back:`, text.slice(0, 300));
+      return null;
+    }
+    const data = await res.json();
+    const parts = data?.candidates?.[0]?.content?.parts;
+    if (!Array.isArray(parts)) {
+      console.warn("[vertexDirect] image empty response, falling back");
+      return null;
+    }
+    const images: string[] = [];
+    for (const p of parts) {
+      const b64 = p?.inlineData?.data;
+      if (typeof b64 === "string" && b64.length) images.push(b64);
+    }
+    if (!images.length) {
+      console.warn("[vertexDirect] image response had no inlineData, falling back");
+      return null;
+    }
+    return { data: images.map((b64) => ({ b64_json: b64 })) };
+  } catch (e) {
+    console.warn("[vertexDirect] image error, falling back:", e instanceof Error ? e.message : String(e));
     return null;
   }
 }
