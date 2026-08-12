@@ -30,6 +30,7 @@ export const ArtistStudio = ({ onBack }: Props) => {
   const [saving, setSaving] = useState(false);
   const [profile, setProfile] = useState<MusicianProfile | null>(null);
   const [concerts, setConcerts] = useState<any[]>([]);
+  const [studioId, setStudioId] = useState<string | null>(null);
 
   // profile form
   const [stageName, setStageName] = useState("");
