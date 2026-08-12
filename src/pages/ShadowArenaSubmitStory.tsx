@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ShadowCreditsGate } from '@/components/shadow-arena/ShadowCreditsGate';
-import { supabase } from '@/integrations/supabase/client';
+import { shadowArenaCall } from '@/hooks/useShadowArenaRouter';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, Image as ImageIcon, ArrowLeft, Feather, Eye, Skull, Volume2, Pen } from 'lucide-react';
