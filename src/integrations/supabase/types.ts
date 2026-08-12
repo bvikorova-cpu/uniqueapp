@@ -66875,6 +66875,22 @@ export type Database = {
             }
             Returns: undefined
           }
+      admin_concert_earnings_overview: {
+        Args: never
+        Returns: {
+          artist_share: number
+          gift_gross: number
+          musician_id: string
+          pending_balance: number
+          platform_share: number
+          stage_name: string
+          ticket_gross: number
+          total_gross: number
+          total_withdrawn: number
+          transactions: number
+          verified: boolean
+        }[]
+      }
       admin_get_xp_events: {
         Args: { _target_user_id: string }
         Returns: {
