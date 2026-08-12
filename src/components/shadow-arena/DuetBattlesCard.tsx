@@ -195,9 +195,10 @@ export function DuetBattlesCard() {
                 )}
                 {result.won && (
                   <p className="text-sm font-bold text-emerald-500">
-                    +{result.creditsWon} credits · +{result.pointsWon} pts
+                    +{result.pointsWon} pts
                   </p>
                 )}
+
                 <Button onClick={close} className="w-full bg-gradient-to-r from-red-600 to-purple-600 text-white">
                   Next rival
                 </Button>
