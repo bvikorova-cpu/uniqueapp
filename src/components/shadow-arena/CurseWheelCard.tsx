@@ -6,8 +6,11 @@ import { Sparkles, Lock } from "lucide-react";
 import { useCurseWheel } from "@/hooks/useShadowArenaFeatures";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
+// Must mirror the prize pool in shadow-arena-router (curse_wheel_spin).
+// Credits are never a prize — they are only spent, never won.
 const SEGMENTS = [
-  "+5 cr", "+10 cr", "2x votes", "Lucky badge", "Nothing", "+20 cr", "JACKPOT", "Cursed",
+  "2x votes", "3x votes", "Lucky badge", "Nothing",
+  "2x votes", "3x votes", "Lucky badge", "Cursed",
 ];
 
 export function CurseWheelCard() {
@@ -31,7 +34,7 @@ export function CurseWheelCard() {
             <Sparkles className="w-5 h-5 text-yellow-400" />
             Daily Curse Wheel
           </h3>
-          <p className="text-xs text-red-200/60">One free spin every 24h. Win credits, badges, multipliers.</p>
+          <p className="text-xs text-red-200/60">One free spin every 24h. Win vote multipliers and badges — never credits.</p>
         </div>
       </div>
 
