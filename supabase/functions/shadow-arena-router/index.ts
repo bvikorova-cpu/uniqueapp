@@ -89,19 +89,47 @@ Deno.serve(async (req) => {
         const spend = await spendAiCredits(supabase as any, user.id, ENTRY_COST, "shadow_duet_duel", "shadow-arena-router");
         if (!spend.ok) return json({ error: "insufficient_credits", required: ENTRY_COST }, 402);
 
+        // ---- Power levels (deterministic, from duel history) ----
+        const { data: histBattles } = await supabase
+          .from("shadow_duet_battles")
+          .select("creator_a, creator_b, winner_id")
+          .or(`creator_a.in.(${user.id},${opponentId}),creator_b.in.(${user.id},${opponentId})`)
+          .limit(4000);
+        const pstats: Record<string, { duels: number; wins: number }> = {
+          [user.id]: { duels: 0, wins: 0 },
+          [opponentId]: { duels: 0, wins: 0 },
+        };
+        for (const b of histBattles ?? []) {
+          for (const side of [b.creator_a, b.creator_b]) {
+            if (!side || !pstats[side]) continue;
+            pstats[side].duels++;
+            if (b.winner_id === side) pstats[side].wins++;
+          }
+        }
+        const powerOf = (id: string) => 40 + pstats[id].wins * 6 + pstats[id].duels * 2;
+        const myPower = powerOf(user.id);
+        const oppPower = powerOf(opponentId);
+
         const ROUNDS = [
           { name: "Round 1 — Dread Opening", desc: "Who sets the darker tone" },
           { name: "Round 2 — Twist of Terror", desc: "Sharpest plot twist wins" },
           { name: "Round 3 — Final Nightmare", desc: "The last scare decides it" },
         ];
+        // Stronger power always wins the duel; rounds reflect the power gap.
+        const won = myPower === oppPower ? pstats[user.id].wins >= pstats[opponentId].wins : myPower > oppPower;
+        // Underdog steals one round when the gap is small (< 10 power), for drama.
+        const gap = Math.abs(myPower - oppPower);
+        const stolenRound = gap < 10 ? 1 : -1;
         let myScore = 0, oppScore = 0;
-        const rounds = ROUNDS.map((r) => {
-          const mine = 40 + Math.floor(Math.random() * 61);
-          const theirs = 40 + Math.floor(Math.random() * 61);
-          if (mine >= theirs) myScore++; else oppScore++;
-          return { name: r.name, desc: r.desc, mine, theirs, won: mine >= theirs };
+        const rounds = ROUNDS.map((r, i) => {
+          const iWin = i === stolenRound ? !won : won;
+          const strong = 60 + Math.min(40, Math.round(gap * 1.5)) - i * 2;
+          const weak = Math.max(20, strong - Math.max(4, Math.round(gap * 1.2)) - 6);
+          const mine = iWin ? strong : weak;
+          const theirs = iWin ? weak : strong;
+          if (iWin) myScore++; else oppScore++;
+          return { name: r.name, desc: r.desc, mine, theirs, won: iWin };
         });
-        const won = myScore > oppScore;
 
         const { data: duel } = await supabase.from("shadow_duet_battles").insert({
           creator_a: user.id,
@@ -127,6 +155,8 @@ Deno.serve(async (req) => {
           won,
           myScore,
           opponentScore: oppScore,
+          myPower,
+          opponentPower: oppPower,
           creditsWon,
           pointsWon: won ? PRIZE * POINTS_PER_CREDIT : 0,
           rounds,
