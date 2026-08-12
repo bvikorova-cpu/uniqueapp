@@ -32,41 +32,20 @@ export function useSpendCredits() {
 
       // Free-tier path removed — paid-only model (Core).
 
-      // 2) Fallback to AI credits
+      // 2) Atomic AI credit spend: deduct + ledger + usage history in one RPC.
+      // Client-side ledger inserts are blocked by RLS, so the RPC is the only
+      // path that keeps balance and ledger consistent (Core rule).
       try {
-        const { data: row } = await supabase
-          .from("ai_credits")
-          .select("credits_remaining")
-          .eq("user_id", user.id)
-          .maybeSingle();
-
-        const remaining = row?.credits_remaining ?? 0;
-        if (remaining >= amount) {
-          const { error: updErr } = await supabase
-            .from("ai_credits")
-            .update({ credits_remaining: remaining - amount,
-              last_used_at: new Date().toISOString() })
-            .eq("user_id", user.id);
-          if (updErr) throw updErr;
-
-          await supabase.from("ai_usage_history").insert({ user_id: user.id,
-            usage_type: "custom_generation",
-            credits_used: amount,
-            description: opts?.description || action });
-
-          // Every spend must be recorded in the unified ledger (Core rule).
-          await supabase.from("ai_credits_ledger").insert({ user_id: user.id,
-            delta: -amount,
-            balance_before: remaining,
-            balance_after: remaining - amount,
-            reason: opts?.description || action,
-            source: action,
-            actor: user.id });
-          return true;
-        }
+        const { data, error } = await (supabase as any).rpc("spend_ai_credits", {
+          _amount: amount,
+          _reason: opts?.description || action,
+          _source: action });
+        if (error) throw error;
+        if ((data as any)?.ok) return true;
       } catch (e) {
         console.error("AI credits deduction failed", e);
       }
+
 
       // 3) Insufficient — toast + redirect
       toast.error("Not enough credits", {
