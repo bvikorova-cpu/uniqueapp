@@ -117,6 +117,8 @@ serve(async (req) => {
       userId: user.id,
       userEmail: user.email,
       origin,
+      successPath: "/live-concerts?view=browse",
+      cancelPath: "/live-concerts?view=browse",
       metadata: { concertId,
         ticketTypeId,
         musicianAmount: musicianAmount.toFixed(2),
