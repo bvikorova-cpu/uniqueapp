@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
-import { Clock, ThumbsUp, Eye } from "lucide-react";
+import { Clock, Eye, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { StoryGiftPicker } from "@/components/shadow-arena/StoryGiftPicker";
 
 interface Story {
   id: string;
@@ -11,7 +12,10 @@ interface Story {
   votes_count: number;
   is_top_week: boolean;
   created_at: string;
+  user_id?: string | null;
+  is_anonymous?: boolean | null;
 }
+
 
 const atmosphereTags = ["Psychological", "Supernatural", "Cosmic Horror", "Gothic", "Slasher", "Folk Horror"];
 
@@ -57,16 +61,23 @@ export function ArenaStoryCard({ story }: { story: Story }) {
           {story.content.substring(0, 300)}...
         </p>
 
-        {/* Vote bar */}
-        <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/20">
-          <div className="flex items-center gap-1 text-sm text-red-400">
-            <ThumbsUp className="w-4 h-4" />
+        {/* Gift bar */}
+        <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/20 gap-2">
+
+          <div className="flex items-center gap-1 text-sm text-pink-400">
+            <Sparkles className="w-4 h-4" />
             <span className="font-bold">{story.votes_count}</span>
-            <span className="text-muted-foreground">votes</span>
+            <span className="text-muted-foreground">gift points</span>
           </div>
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <Eye className="w-3 h-3" />
-            Read story
+          <div className="flex items-center gap-2">
+            <StoryGiftPicker
+              recipientId={story.is_anonymous ? null : story.user_id}
+              storyId={story.id}
+            />
+            <span className="hidden sm:flex items-center gap-1 text-xs text-muted-foreground">
+              <Eye className="w-3 h-3" />
+              Read
+            </span>
           </div>
         </div>
       </div>
@@ -74,3 +85,4 @@ export function ArenaStoryCard({ story }: { story: Story }) {
   </>
   );
 }
+

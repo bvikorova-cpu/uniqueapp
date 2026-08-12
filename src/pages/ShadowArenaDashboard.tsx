@@ -12,7 +12,6 @@ import { ArenaStoryCard } from '@/components/shadow-arena/ArenaStoryCard';
 import { CurseWheelCard } from '@/components/shadow-arena/CurseWheelCard';
 import { HorrorReelsCard } from '@/components/shadow-arena/HorrorReelsCard';
 import { PushNotificationsCard } from '@/components/shadow-arena/PushNotificationsCard';
-import { VirtualGiftsCard } from '@/components/shadow-arena/VirtualGiftsCard';
 import { DuetBattlesCard } from '@/components/shadow-arena/DuetBattlesCard';
 
 import { Plus, Swords, BookOpen, Trophy } from 'lucide-react';
@@ -39,6 +38,8 @@ interface Story {
   votes_count: number;
   is_top_week: boolean;
   created_at: string;
+  user_id?: string | null;
+  is_anonymous?: boolean | null;
 }
 
 export default function ShadowArenaDashboard() {
@@ -105,7 +106,6 @@ export default function ShadowArenaDashboard() {
         <ArenaLeaderboard />
 
         <DuetBattlesCard />
-        <VirtualGiftsCard />
         <PushNotificationsCard />
         <CurseWheelCard />
         <HorrorReelsCard />
