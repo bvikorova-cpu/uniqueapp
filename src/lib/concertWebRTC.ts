@@ -40,11 +40,22 @@ export function startBroadcast(
 ): BroadcastHandle {
   const peers = new Map<string, RTCPeerConnection>();
   const pendingCandidates = new Map<string, RTCIceCandidateInit[]>();
+  const viewerHeartbeats = new Map<string, number>();
   const channel = supabase.channel(`concert-rtc-${concertId}`, {
     config: { broadcast: { self: false, ack: true } },
   });
 
-  const report = () => onViewerCount?.(peers.size);
+  const report = () => {
+    const cutoff = Date.now() - 15_000;
+    viewerHeartbeats.forEach((seenAt, id) => {
+      if (seenAt < cutoff) viewerHeartbeats.delete(id);
+    });
+    const connected = [...peers.values()].filter((peer) =>
+      ["new", "connecting", "connected"].includes(peer.connectionState)
+    ).length;
+    onViewerCount?.(Math.max(connected, viewerHeartbeats.size));
+  };
+  const heartbeatSweep = window.setInterval(report, 5_000);
 
   const createPeer = async (viewerId: string) => {
     const existing = peers.get(viewerId);
@@ -83,7 +94,16 @@ export function startBroadcast(
 
   channel
     .on("broadcast", { event: "join" }, ({ payload }) => {
-      if (payload?.from) void createPeer(payload.from);
+      if (payload?.from) {
+        viewerHeartbeats.set(payload.from, Date.now());
+        report();
+        void createPeer(payload.from);
+      }
+    })
+    .on("broadcast", { event: "viewer-heartbeat" }, ({ payload }) => {
+      if (!payload?.from) return;
+      viewerHeartbeats.set(payload.from, Date.now());
+      report();
     })
     .on("broadcast", { event: "answer" }, async ({ payload }) => {
       const pc = peers.get(payload?.from);
@@ -120,6 +140,8 @@ export function startBroadcast(
       peers.forEach((pc) => pc.close());
       peers.clear();
       pendingCandidates.clear();
+      viewerHeartbeats.clear();
+      window.clearInterval(heartbeatSweep);
       supabase.removeChannel(channel);
     },
   };
@@ -140,6 +162,7 @@ export function startViewer(
   let pc: RTCPeerConnection | null = null;
   let stopped = false;
   let retry: number | undefined;
+  let heartbeat: number | undefined;
   let connectTimeout: number | undefined;
   const pendingCandidates: RTCIceCandidateInit[] = [];
 
@@ -150,6 +173,10 @@ export function startViewer(
   const sendJoin = () => {
     if (stopped) return;
     void channel.send({ type: "broadcast", event: "join", payload: { from: viewerId } });
+  };
+  const sendHeartbeat = () => {
+    if (stopped) return;
+    void channel.send({ type: "broadcast", event: "viewer-heartbeat", payload: { from: viewerId } });
   };
 
   const ensurePeer = () => {
@@ -214,6 +241,8 @@ export function startViewer(
     .subscribe((status) => {
       if (status === "SUBSCRIBED") {
         sendJoin();
+        sendHeartbeat();
+        heartbeat = window.setInterval(sendHeartbeat, 5_000);
         retry = window.setInterval(() => {
           if (!pc || !["connected", "connecting"].includes(pc.connectionState)) sendJoin();
         }, 5000);
@@ -231,6 +260,7 @@ export function startViewer(
     stop: () => {
       stopped = true;
       if (retry) window.clearInterval(retry);
+      if (heartbeat) window.clearInterval(heartbeat);
       if (connectTimeout) window.clearTimeout(connectTimeout);
       pc?.close();
       pc = null;

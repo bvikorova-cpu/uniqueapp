@@ -30,19 +30,26 @@ export const ConcertChat = ({ onBack, embedded = false, roomId }: Props) => {
 
   useEffect(() => {
     let cancelled = false;
+    let refresh: number | undefined;
 
     if (roomId) {
-      (async () => {
-        const { data } = await supabase
+      const loadMessages = async () => {
+        const { data, error } = await supabase
           .from("concert_chat_messages")
           .select("id, user_id, username, content, created_at")
           .eq("concert_id", roomId)
           .order("created_at", { ascending: true })
           .limit(200);
+        if (error) {
+          if (!cancelled) toast.error(`Chat could not refresh: ${error.message}`);
+          return;
+        }
         if (!cancelled) {
           setMessages((data ?? []).map((m: any) => ({ ...m, timestamp: m.created_at })));
         }
-      })();
+      };
+      void loadMessages();
+      refresh = window.setInterval(loadMessages, 3_000);
 
       const ch = supabase
         .channel(`concert-chat-db-${roomId}`)
@@ -58,7 +65,11 @@ export const ConcertChat = ({ onBack, embedded = false, roomId }: Props) => {
         )
         .subscribe();
       channelRef.current = null;
-      return () => { cancelled = true; supabase.removeChannel(ch); };
+      return () => {
+        cancelled = true;
+        if (refresh) window.clearInterval(refresh);
+        supabase.removeChannel(ch);
+      };
     }
 
     const channel = supabase
