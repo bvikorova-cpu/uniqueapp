@@ -65898,6 +65898,7 @@ export type Database = {
       }
       live_concert_streams_public: {
         Row: {
+          cover_image_url: string | null
           created_at: string | null
           description: string | null
           ended_at: string | null
@@ -65912,6 +65913,7 @@ export type Database = {
           viewer_count: number | null
         }
         Insert: {
+          cover_image_url?: string | null
           created_at?: string | null
           description?: string | null
           ended_at?: string | null
@@ -65926,6 +65928,7 @@ export type Database = {
           viewer_count?: number | null
         }
         Update: {
+          cover_image_url?: string | null
           created_at?: string | null
           description?: string | null
           ended_at?: string | null
