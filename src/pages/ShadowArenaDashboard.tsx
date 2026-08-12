@@ -27,7 +27,7 @@ import { StreamScheduleCard } from '@/components/shadow-arena/StreamScheduleCard
 import { AutoClipsCard } from '@/components/shadow-arena/AutoClipsCard';
 import { ChatModerationCard } from '@/components/shadow-arena/ChatModerationCard';
 import { Plus, Swords, BookOpen, Trophy } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 
 import { toast } from 'sonner';
@@ -54,7 +54,6 @@ interface Story {
 
 export default function ShadowArenaDashboard() {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const [battles, setBattles] = useState<Battle[]>([]);
   const [stories, setStories] = useState<Story[]>([]);
