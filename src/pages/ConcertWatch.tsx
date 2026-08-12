@@ -71,7 +71,7 @@ const ConcertWatch = () => {
         // view instead of misreporting an RLS-hidden row as "not found".
         const { data, error: cErr } = await supabase
           .from("live_concert_streams_public")
-          .select("*, musician_profiles(stage_name, user_id, avatar_url)")
+          .select("*, musician_profiles(stage_name, user_id, avatar_url, verified)")
           .eq("id", id)
           .maybeSingle();
         if (cErr) throw cErr;
