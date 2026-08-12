@@ -453,10 +453,20 @@ The story must have a strong opening hook, atmospheric build-up, and chilling en
         let generatedStory = "";
         try {
           const data = await aiResponse.json();
-          const raw = data.choices?.[0]?.message?.content ?? "{}";
-          const parsed = JSON.parse(raw.replace(/^```json\s*|```$/g, "").trim());
-          generatedTitle = parsed.title || generatedTitle;
-          generatedStory = parsed.story || "";
+          const raw: string = data.choices?.[0]?.message?.content ?? "";
+          const cleaned = raw.replace(/```json/gi, "").replace(/```/g, "").trim();
+          const match = cleaned.match(/\{[\s\S]*\}/);
+          if (match) {
+            try {
+              const parsed = JSON.parse(match[0]);
+              generatedTitle = parsed.title || generatedTitle;
+              generatedStory = parsed.story || "";
+            } catch {
+              generatedStory = cleaned;
+            }
+          } else {
+            generatedStory = cleaned;
+          }
         } catch (e) {
           console.error("story parse failed", e);
           return json({ error: "AI returned an unreadable story. Please try again." }, 502);
