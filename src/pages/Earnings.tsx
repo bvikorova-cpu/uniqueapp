@@ -30,6 +30,7 @@ import { PayoutFeeCalculator } from "@/components/earnings/PayoutFeeCalculator";
 import { RefundsDisputesPanel } from "@/components/earnings/RefundsDisputesPanel";
 import { WithdrawalHistoryTable } from "@/components/earnings/WithdrawalHistoryTable";
 import { TaxFormWidget } from "@/components/earnings/TaxFormWidget";
+import { ConcertEarningsCard } from "@/components/earnings/ConcertEarningsCard";
 
 interface Transaction {
   id: string;
@@ -222,6 +223,10 @@ const Earnings = () => {
       <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
         <EarningsLiveTicker />
         <EarningsExport rows={exportRows} filename="my-earnings" />
+      </div>
+
+      <div className="mb-6">
+        <ConcertEarningsCard />
       </div>
 
       <div className="mb-6">
