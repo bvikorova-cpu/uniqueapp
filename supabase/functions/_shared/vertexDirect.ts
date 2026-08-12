@@ -625,18 +625,21 @@ export async function startVertexVideo(opts: {
       }
     }
   }
-  return null;
+  // Vertex publisher Veo models may not be enabled on the project — fall back to the Gemini API.
+  return await startGeminiVideo(opts);
 }
 
 /** Poll a Veo operation. Returns { done, videoBase64?, error? } or null when unreachable. */
 export async function pollVertexVideo(op: { operationName: string; model: string; location: string }):
   Promise<{ done: boolean; videoBase64?: string; error?: string } | null> {
+  if (op.location === "gemini-api") return await pollGeminiVideo(op);
   const sa = getServiceAccount();
   if (!sa) return null;
   const projectId = Deno.env.get("GCP_PROJECT_ID") || sa.project_id;
   if (!projectId) return null;
   const token = await getAccessToken(sa);
   if (!token) return null;
+
   const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
 
   const url =
