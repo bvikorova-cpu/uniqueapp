@@ -146,11 +146,28 @@ export const ArtistStudio = ({ onBack }: Props) => {
     if (!Number.isFinite(price) || price < 0) { toast.error("Invalid ticket price"); return; }
     setSaving(true);
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { toast.error("Please sign in"); return; }
+
+      // Optional cover photo — stored in the public "covers" bucket under the
+      // uploader's own folder (required by the storage RLS policy).
+      let coverUrl: string | null = null;
+      if (coverFile) {
+        const ext = (coverFile.name.split(".").pop() || "jpg").toLowerCase();
+        const path = `${session.user.id}/concerts/${crypto.randomUUID()}.${ext}`;
+        const { error: upErr } = await supabase.storage
+          .from("covers")
+          .upload(path, coverFile, { cacheControl: "3600", upsert: false, contentType: coverFile.type });
+        if (upErr) throw upErr;
+        coverUrl = supabase.storage.from("covers").getPublicUrl(path).data.publicUrl;
+      }
+
       const { data: concert, error } = await supabase.from("live_concert_streams").insert({
         musician_id: profile.id,
         title: title.trim(),
         description: description.trim() || null,
         scheduled_at: new Date(scheduledAt).toISOString(),
+        cover_image_url: coverUrl,
         status: "scheduled" }).select("id").single();
       if (error) throw error;
       const { error: ttErr } = await supabase.from("concert_ticket_types").insert({
@@ -161,7 +178,9 @@ export const ArtistStudio = ({ onBack }: Props) => {
       if (ttErr) throw ttErr;
       toast.success("Concert scheduled — fans can now buy tickets");
       setTitle(""); setDescription(""); setScheduledAt("");
+      setCoverFile(null); setCoverPreview(null);
       await load();
+
     } catch (e: any) {
       toast.error(e.message || "Failed to schedule concert");
     } finally { setSaving(false); }
