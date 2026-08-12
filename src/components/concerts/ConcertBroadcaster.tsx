@@ -154,14 +154,32 @@ export const ConcertBroadcaster = ({ concertId, title, scheduledAt, status, onSt
   }, [dueMs <= 0, status, inIframe]);
 
 
+  // Real viewer count: watchers announce themselves on the concert presence
+  // channel, so this matches what fans see even before WebRTC peers connect.
+  useEffect(() => {
+    if (!live) return;
+    const ch = supabase.channel(`concert-presence-${concertId}`, {
+      config: { presence: { key: `host-${concertId}` } } });
+    ch.on("presence", { event: "sync" }, () => {
+      const state = ch.presenceState() as Record<string, unknown[]>;
+      const n = Object.keys(state).filter((k) => !k.startsWith("host-")).length;
+      setPresenceViewers(n);
+    }).subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [live, concertId]);
+
   // Keep viewer count in the DB fresh so fans see it
   useEffect(() => {
     if (!live) return;
     const t = window.setInterval(() => {
-      void supabase.from("live_concert_streams").update({ viewer_count: viewers }).eq("id", concertId);
+      void supabase
+        .from("live_concert_streams")
+        .update({ viewer_count: Math.max(viewers, presenceViewers) })
+        .eq("id", concertId);
     }, 15000);
     return () => window.clearInterval(t);
-  }, [live, viewers, concertId]);
+  }, [live, viewers, presenceViewers, concertId]);
+
 
   const toggleMic = () => {
     const track = streamRef.current?.getAudioTracks()[0];
