@@ -281,12 +281,10 @@ Deno.serve(async (req) => {
 Generate a complete, polished horror story (${lengthMap[length] || lengthMap.medium}).
 Return JSON with: { "title": "evocative title", "story": "full story text" }.
 The story must have a strong opening hook, atmospheric build-up, and chilling ending.`;
-        let aiResponse: Response;
-        try {
-          aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+        const storyRequest = fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
             headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
-            signal: AbortSignal.timeout(90_000),
+            signal: AbortSignal.timeout(55_000),
             body: JSON.stringify({
               model: "gpt-4o",
               messages: [
@@ -294,6 +292,30 @@ The story must have a strong opening hook, atmospheric build-up, and chilling en
                 { role: "user", content: prompt },
               ],
               response_format: { type: "json_object" } }) });
+
+        // Generate the optional illustration at the same time as the story.
+        // Running these sequentially could exceed the edge request lifetime on mobile.
+        const illustrationRequest: Promise<Response | null> = generateImage
+          ? fetch("https://api.openai.com/v1/images/generations", {
+              method: "POST",
+              headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
+              signal: AbortSignal.timeout(45_000),
+              body: JSON.stringify({
+                model: "gpt-image-1",
+                prompt: `Cinematic ${tone} horror illustration inspired by: ${prompt.slice(0, 300)}. Dark moody atmosphere, deep shadows, crimson accents, painterly oil texture, no text, no watermark.`,
+                n: 1,
+                size: "1024x1024",
+              }),
+            }).catch((e) => {
+              console.warn("Image gen exception", e);
+              return null;
+            })
+          : Promise.resolve(null);
+
+        let aiResponse: Response;
+        let imgResp: Response | null;
+        try {
+          [aiResponse, imgResp] = await Promise.all([storyRequest, illustrationRequest]);
         } catch (e) {
           console.error("story ai fetch failed", e);
           return json({ error: "AI is busy right now. Please try again in a few seconds." }, 503);
@@ -318,29 +340,29 @@ The story must have a strong opening hook, atmospheric build-up, and chilling en
         }
         if (!generatedStory) return json({ error: "AI returned an empty story. Please try again." }, 502);
         let illustrationUrl: string | null = null;
-        if (generateImage) {
+        if (imgResp?.ok) {
           try {
-            const imgPrompt = `Cinematic gothic horror illustration for: "${generatedTitle}". ${prompt.slice(0, 200)}. Dark moody atmospheric, deep shadows, crimson accents, painterly oil texture, no text, no watermark.`;
-            const imgResp = await fetch("https://api.openai.com/v1/images/generations", {
-              method: "POST",
-              headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
-              signal: AbortSignal.timeout(60_000),
-              body: JSON.stringify({ model: "gpt-image-1", prompt: imgPrompt, n: 1, size: "1024x1024" }) });
-            if (imgResp.ok) {
-              const imgData = await imgResp.json();
-              illustrationUrl = imgData.data?.[0]?.b64_json
-                ? `data:image/png;base64,${imgData.data[0].b64_json}`
-                : null;
-            } else {
-              console.warn("Image gen failed", imgResp.status);
-            }
+            const imgData = await imgResp.json();
+            illustrationUrl = imgData.data?.[0]?.b64_json
+              ? `data:image/png;base64,${imgData.data[0].b64_json}`
+              : imgData.data?.[0]?.url ?? null;
           } catch (e) {
-            console.warn("Image gen exception", e);
+            console.warn("Image response parse failed", e);
           }
+        } else if (imgResp) {
+          console.warn("Image gen failed", imgResp.status);
         }
-        const { data: saved } = await supabase.from("shadow_ai_stories").insert({ user_id: user.id, prompt, generated_title: generatedTitle, generated_story: generatedStory,
+        const { data: saved, error: saveError } = await supabase.from("shadow_ai_stories").insert({ user_id: user.id, prompt, generated_title: generatedTitle, generated_story: generatedStory,
           illustration_url: illustrationUrl, tone, length, credits_used: STORY_COST }).select().single();
-        await spendAiCredits(supabase as any, user.id, STORY_COST, "shadow_ai_story", "shadow-arena-router");
+        if (saveError || !saved) {
+          console.error("story save failed", saveError);
+          return json({ error: "The story could not be saved. Your credits were not charged." }, 500);
+        }
+        const spent = await spendAiCredits(supabase as any, user.id, STORY_COST, "shadow_ai_story", "shadow-arena-router");
+        if (!spent.ok) {
+          await supabase.from("shadow_ai_stories").delete().eq("id", saved.id).eq("user_id", user.id);
+          return json({ error: "Insufficient credits", required: STORY_COST }, 402);
+        }
         return json({ story: saved, creditsRemaining: credits.credits_remaining - STORY_COST });
       }
 
