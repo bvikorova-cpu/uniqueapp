@@ -608,7 +608,12 @@ Return JSON: {
           battle_id: battleId, user_id: user.id, story_title: title, story_content: content,
           entry_fee_paid: true }).select().single();
         if (error) throw error;
+        // Prize pool is tracked in POINTS (1 credit = 10 points)
+        const { data: bp } = await supabase.from("shadow_battles").select("total_prize_pool").eq("id", battleId).maybeSingle();
+        await supabase.from("shadow_battles")
+          .update({ total_prize_pool: (bp?.total_prize_pool || 0) + ENTRY_COST * POINTS_PER_CREDIT }).eq("id", battleId);
         return json({ participant: data, charged: ENTRY_COST, credits_remaining: spend.remaining });
+
       }
       case "battle_gift": {
         const { battleId, participantId, credits: giftCredits } = p;
