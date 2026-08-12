@@ -28,7 +28,7 @@ export const useHomeworkCredits = () => { const [state, setState] = useState<Hom
       }
 
       const { data, error } = await supabase
-        .from("homework_credits")
+        .from("ai_credits")
         .select("credits_remaining, total_credits_purchased")
         .eq("user_id", user.id)
         .maybeSingle();
@@ -40,10 +40,6 @@ export const useHomeworkCredits = () => { const [state, setState] = useState<Hom
           total_credits_purchased: data.total_credits_purchased ?? 0,
           loading: false });
       } else {
-        // Lazy-create row
-        await supabase
-          .from("homework_credits")
-          .insert({ user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
         setState({ credits_remaining: 0, total_credits_purchased: 0, loading: false });
       }
     } catch (e) {

@@ -26,13 +26,13 @@ export const useCookingCredits = () => {
       }
 
       const { data, error } = await supabase
-        .from('cooking_credits')
-        .select('credits, subscription_tier')
+        .from('ai_credits')
+        .select('credits_remaining')
         .eq('user_id', user.id)
         .single();
 
       if (error) throw error;
-      return data || { credits: 0, subscription_tier: 'basic' };
+      return { credits: (data as any)?.credits_remaining ?? 0, subscription_tier: 'basic' };
     } });
 
   const purchaseCredits = async (credits: number): Promise<string | null> => {

@@ -38,7 +38,7 @@ export const useTutoringCredits = () => {
       if (!user) return null;
 
       const { data, error } = await supabase
-        .from("tutoring_credits")
+        .from("ai_credits")
         .select("*")
         .eq("user_id", user.id)
         .maybeSingle();
@@ -53,7 +53,7 @@ export const useTutoringCredits = () => {
       if (!user) throw new Error("Not authenticated");
 
       const { data: currentCredits } = await supabase
-        .from("tutoring_credits")
+        .from("ai_credits")
         .select("*")
         .eq("user_id", user.id)
         .maybeSingle();
@@ -63,7 +63,7 @@ export const useTutoringCredits = () => {
       }
 
       const { error } = await supabase
-        .from("tutoring_credits")
+        .from("ai_credits")
         .update({ credits_remaining: currentCredits.credits_remaining - 1,
           updated_at: new Date().toISOString() })
         .eq("user_id", user.id);
@@ -116,13 +116,13 @@ export const useTutoringCredits = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       const { data: cur } = await supabase
-        .from("tutoring_credits")
+        .from("ai_credits")
         .select("credits_remaining")
         .eq("user_id", user.id)
         .maybeSingle();
       if (!cur) return;
       await supabase
-        .from("tutoring_credits")
+        .from("ai_credits")
         .update({ credits_remaining: cur.credits_remaining + 1,
           updated_at: new Date().toISOString() })
         .eq("user_id", user.id);
