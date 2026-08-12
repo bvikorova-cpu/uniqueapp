@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, BadgeCheck, Loader2, Mic2, Music, Plus, Radio, ShieldCheck, Ticket } from "lucide-react";
+import { AlertCircle, ArrowLeft, BadgeCheck, Loader2, Mic2, Music, Plus, Radio, RefreshCw, ShieldCheck, Ticket } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -27,6 +27,7 @@ interface MusicianProfile {
 
 export const ArtistStudio = ({ onBack }: Props) => {
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [profile, setProfile] = useState<MusicianProfile | null>(null);
   const [concerts, setConcerts] = useState<any[]>([]);
@@ -45,28 +46,44 @@ export const ArtistStudio = ({ onBack }: Props) => {
 
   const load = async () => {
     setLoading(true);
+    setLoadError(null);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
-      const { data: mp } = await supabase
-        .from("musician_profiles")
-        .select("id, stage_name, bio, genre, verified, verification_status, suspended, total_concerts")
-        .eq("user_id", session.user.id)
-        .maybeSingle();
+      const timeout = new Promise<never>((_, reject) =>
+        window.setTimeout(() => reject(new Error("Artist Studio took too long to load. Check your connection and try again.")), 12000)
+      );
+      const sessionResult = await Promise.race([supabase.auth.getSession(), timeout]);
+      const session = sessionResult.data.session;
+      if (!session) throw new Error("Your session has expired. Please sign in again.");
+      const profileResult = await Promise.race([
+        supabase
+          .from("musician_profiles")
+          .select("id, stage_name, bio, genre, verified, verification_status, suspended, total_concerts")
+          .eq("user_id", session.user.id)
+          .maybeSingle(),
+        timeout,
+      ]);
+      if (profileResult.error) throw profileResult.error;
+      const mp = profileResult.data;
       setProfile(mp as MusicianProfile | null);
       if (mp) {
         setStageName(mp.stage_name || "");
         setGenre(mp.genre || "");
         setBio(mp.bio || "");
-        const { data: cs } = await supabase
-          .from("live_concert_streams")
-          .select("*, concert_ticket_types(*)")
-          .eq("musician_id", mp.id)
-          .order("scheduled_at", { ascending: false });
-        setConcerts(cs || []);
+        const concertResult = await Promise.race([
+          supabase
+            .from("live_concert_streams")
+            .select("*, concert_ticket_types(*)")
+            .eq("musician_id", mp.id)
+            .order("scheduled_at", { ascending: false }),
+          timeout,
+        ]);
+        if (concertResult.error) throw concertResult.error;
+        setConcerts(concertResult.data || []);
       }
     } catch (e: any) {
-      toast.error(e.message || "Failed to load artist studio");
+      const message = e?.message || "Failed to load Artist Studio";
+      setLoadError(message);
+      toast.error(message);
     } finally { setLoading(false); }
   };
 
@@ -160,7 +177,35 @@ export const ArtistStudio = ({ onBack }: Props) => {
   };
 
   if (loading) {
-    return <div className="flex justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
+    return (
+      <div className="flex min-h-[320px] flex-col items-center justify-center gap-3 py-20 text-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-sm font-medium">Loading Artist Studio…</p>
+        <p className="text-xs text-muted-foreground">This will stop automatically if the connection fails.</p>
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="space-y-4 py-6">
+        <Button variant="ghost" onClick={onBack} className="gap-2">
+          <ArrowLeft className="h-4 w-4" /> Back to Hub
+        </Button>
+        <Card className="border-destructive/40">
+          <CardContent className="flex min-h-[260px] flex-col items-center justify-center gap-4 p-6 text-center">
+            <AlertCircle className="h-10 w-10 text-destructive" />
+            <div className="space-y-1">
+              <h2 className="text-lg font-bold">Artist Studio could not load</h2>
+              <p className="max-w-md text-sm text-destructive">{loadError}</p>
+            </div>
+            <Button onClick={() => void load()} className="gap-2">
+              <RefreshCw className="h-4 w-4" /> Try again
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (
