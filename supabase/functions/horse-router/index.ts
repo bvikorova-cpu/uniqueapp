@@ -3,6 +3,9 @@
 // CURRENCY: the Horse Racing arena runs 100% on the unified `ai_credits` pool.
 // There are no coins and no gems anywhere in this module.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+// Vertex AI (postpay) is the platform's only AI provider — this patch reroutes
+// every AI call to Vertex.
+import "../_shared/aiRedirect.ts";
 import { checkTestMode } from "../_shared/testMode.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
