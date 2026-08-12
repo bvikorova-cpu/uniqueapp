@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, MessageCircle, Send, Users } from "lucide-react";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { useSpendCredits, CREDIT_COSTS } from "@/hooks/useSpendCredits";
 
 interface Props {
   onBack: () => void;
@@ -21,6 +22,7 @@ export const ConcertChat = ({ onBack, embedded = false, roomId }: Props) => {
   const [sending, setSending] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+  const { spend } = useSpendCredits();
 
   const topic = roomId ? `concert-chat-${roomId}` : "concert-global-chat";
 
@@ -46,6 +48,10 @@ export const ConcertChat = ({ onBack, embedded = false, roomId }: Props) => {
       setSending(true);
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in to chat"); return; }
+
+      // Each chat message costs 1 AI credit (unified ai_credits + ledger).
+      const paid = await spend("concert_chat_message", { description: "concert_chat_message" });
+      if (!paid) return;
 
       const msg = { user_id: session.user.id,
         username: session.user.email?.split("@")[0] || "Anonymous",
@@ -85,7 +91,7 @@ export const ConcertChat = ({ onBack, embedded = false, roomId }: Props) => {
   const composer = (
     <div className="flex gap-2">
       <Input
-        placeholder="Type a message..."
+        placeholder={`Type a message... (${CREDIT_COSTS.concert_chat_message} credit)`}
         value={newMessage}
         onChange={(e) => setNewMessage(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && sendMessage()}
