@@ -1,0 +1,1 @@
+ALTER TABLE public.live_concert_streams ADD COLUMN IF NOT EXISTS cover_image_url text;
