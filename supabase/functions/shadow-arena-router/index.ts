@@ -457,6 +457,41 @@ Return JSON: {
         return json({ credits: existing ?? { user_id: user.id, credits_remaining: 0 } });
       }
 
+      // ---- Arena entry pass: 5 credits, valid 24h ----
+      case "arena_access_status": {
+        const { data: pass } = await supabase
+          .from("shadow_arena_access")
+          .select("expires_at")
+          .eq("user_id", user.id)
+          .gt("expires_at", new Date().toISOString())
+          .order("expires_at", { ascending: false })
+          .maybeSingle();
+        const { data: bal } = await supabase.from("ai_credits")
+          .select("credits_remaining").eq("user_id", user.id).maybeSingle();
+        return json({ has_access: !!pass, expires_at: pass?.expires_at ?? null, cost: 5, credits_remaining: bal?.credits_remaining ?? 0 });
+      }
+      case "arena_enter": {
+        const ENTRY_COST = 5;
+        const { data: pass } = await supabase
+          .from("shadow_arena_access")
+          .select("expires_at")
+          .eq("user_id", user.id)
+          .gt("expires_at", new Date().toISOString())
+          .order("expires_at", { ascending: false })
+          .maybeSingle();
+        if (pass) return json({ has_access: true, expires_at: pass.expires_at, charged: 0 });
+
+        const spend = await spendAiCredits(supabase as any, user.id, ENTRY_COST, "shadow_arena_entry", "shadow-arena-router");
+        if (!spend.ok) return json({ error: "insufficient_credits", required: ENTRY_COST }, 402);
+        const expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+        const { error: insErr } = await supabase.from("shadow_arena_access")
+          .insert({ user_id: user.id, expires_at: expires });
+        if (insErr) throw insErr;
+        return json({ has_access: true, expires_at: expires, charged: ENTRY_COST, credits_remaining: spend.remaining });
+      }
+
+
+
       // ---- Batch 14: shadow-voice-clone ----
       case "voice_clone": {
         const CLONE_COST = 25;
