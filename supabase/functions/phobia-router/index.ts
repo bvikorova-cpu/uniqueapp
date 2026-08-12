@@ -84,7 +84,7 @@ Deno.serve(async (req) => {
           );
         } catch (_e) {
           // Refund on provider failure so the user is never charged for nothing.
-          await admin.rpc("add_ai_credits", { p_user_id: userId, p_amount: COST_DETECT } as any).catch(() => {});
+          try { await admin.rpc("add_ai_credits", { p_user_id: userId, p_amount: COST_DETECT } as any); } catch { /* non-fatal */ }
           return json({ error: "AI is busy right now. Please try again in a moment." }, 503);
         }
 
@@ -162,7 +162,7 @@ Deno.serve(async (req) => {
             { max_tokens: 3000 },
           );
         } catch (_e) {
-          await admin.rpc("add_ai_credits", { p_user_id: userId, p_amount: COST_CURE } as any).catch(() => {});
+          try { await admin.rpc("add_ai_credits", { p_user_id: userId, p_amount: COST_CURE } as any); } catch { /* non-fatal */ }
           return json({ error: "AI is busy right now. Please try again in a moment." }, 503);
         }
 
@@ -210,7 +210,7 @@ Deno.serve(async (req) => {
             { max_tokens: 4000 },
           );
         } catch (_e) {
-          await admin.rpc("add_ai_credits", { p_user_id: userId, p_amount: COST_EXPOSURE } as any).catch(() => {});
+          try { await admin.rpc("add_ai_credits", { p_user_id: userId, p_amount: COST_EXPOSURE } as any); } catch { /* non-fatal */ }
           return json({ error: "AI is busy right now. Please try again in a moment." }, 503);
         }
 
@@ -227,7 +227,7 @@ Deno.serve(async (req) => {
         }));
 
         if (!steps.length) {
-          await admin.rpc("add_ai_credits", { p_user_id: userId, p_amount: COST_EXPOSURE } as any).catch(() => {});
+          try { await admin.rpc("add_ai_credits", { p_user_id: userId, p_amount: COST_EXPOSURE } as any); } catch { /* non-fatal */ }
           return json({ error: "Could not build a scenario. Please try again." }, 503);
         }
 
