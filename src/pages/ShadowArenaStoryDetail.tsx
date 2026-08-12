@@ -122,12 +122,6 @@ export default function ShadowArenaStoryDetail() {
           </Button>
         </GothicPageHeader>
 
-        {/* AI Voice Narrator */}
-        <StoryNarratorPanel
-          text={story.content || ""}
-          storyId={story.id}
-          existingAudioUrl={story.ai_sound_url}
-        />
 
         {/* Patron Mode — support this author */}
         {story.user_id && story.user_id !== user?.id && (
