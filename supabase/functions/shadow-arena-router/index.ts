@@ -143,14 +143,6 @@ Deno.serve(async (req) => {
           ends_at: new Date().toISOString(),
         }).select().single();
 
-        let creditsWon = 0;
-        if (won) {
-          try {
-            await supabase.rpc("add_ai_credits", { p_user_id: user.id, p_amount: PRIZE, p_reason: "shadow_duet_duel_win", p_source: "shadow-arena-router" });
-            creditsWon = PRIZE;
-          } catch { /* non-fatal */ }
-        }
-
         return json({
           duel_id: duel?.id ?? null,
           won,
@@ -158,10 +150,11 @@ Deno.serve(async (req) => {
           opponentScore: oppScore,
           myPower,
           opponentPower: oppPower,
-          creditsWon,
-          pointsWon: won ? PRIZE * POINTS_PER_CREDIT : 0,
+          creditsWon: 0,
+          pointsWon: won ? PRIZE_POINTS : 0,
           rounds,
         });
+
       }
 
 
