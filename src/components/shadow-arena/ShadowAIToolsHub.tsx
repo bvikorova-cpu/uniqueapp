@@ -13,16 +13,11 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const TONES = ["Cosmic dread", "Slasher", "Gothic", "Psychological", "Folk horror", "Body horror"];
 const LENGTHS = ["short", "medium", "long"];
-const VOICES = [
-  { id: "kPtEHAvRnjUJFv7SK9WI", label: "Glitch (whispered horror)" },
-  { id: "MDLAMJ0jxkpYkjXbmG4t", label: "Deep narrator" },
-  { id: "EXAVITQu4vr4xnSDxMaL", label: "Sarah (haunted female)" },
-  { id: "iP95p4xoKVk53GoZ742B", label: "Chris (dark male)" },
-];
 const AVATAR_STYLES = ["Demonic", "Vampire", "Zombie", "Possessed", "Wraith", "Cursed doll"];
 
 export function ShadowAIToolsHub() {
-  const { generateStory, narrate, generateAvatar } = useShadowAITools();
+  const { generateStory, generateAvatar } = useShadowAITools();
+
   const { credits } = useShadowArenaCredits();
   const balance = credits?.credits_remaining ?? 0;
 
