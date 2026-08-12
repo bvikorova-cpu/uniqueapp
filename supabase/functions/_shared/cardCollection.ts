@@ -211,6 +211,72 @@ const KIDS3D_ACCENTS = [
   "candy-bright colour accents", "gentle golden sun flares",
 ];
 
+/** Motorsport axes — each machine reads as a different car/bike, livery and race moment. */
+const RACE_SLUGS = [
+  "grand-prix-machines", "rally-warriors", "endurance-hypercars",
+  "drift-street-kings", "superbike-legends",
+];
+const RACE_LIVERIES = [
+  "matte black livery with acid-green accents", "papaya orange and gunmetal livery",
+  "deep navy livery with copper pinstripes", "white livery with red sunburst stripes",
+  "candy-apple red livery with gold rims", "teal and cream retro-heritage livery",
+  "purple-to-pink chrome fade livery", "raw carbon-fibre finish with yellow highlights",
+  "silver arrow bare-metal livery", "military olive livery with orange arrows",
+  "electric blue livery with white lightning graphics", "graffiti-splash multicolour livery",
+];
+const RACE_MOMENTS: Record<string, string[]> = {
+  "grand-prix-machines": [
+    "flat out through a floodlit night chicane with sparks under the floor",
+    "kerb-hopping over red-and-white kerbs mid-corner",
+    "leaving the pitlane with the crew blurred behind",
+    "slicing through spray in heavy rain with a rooster tail of water",
+    "wheel-to-wheel down a long straight in a slipstream battle",
+    "locking a front tyre under braking with smoke off the rubber",
+    "crossing the line as the chequered flag waves",
+    "parked on the grid under heat haze with tyre blankets",
+  ],
+  "rally-warriors": [
+    "airborne over a gravel crest with dust exploding behind",
+    "sliding sideways through a muddy forest hairpin",
+    "blasting through deep snow with studded tyres",
+    "night stage lit by a roof light-pod through fog",
+    "throwing gravel across a mountain switchback",
+    "splashing through a shallow ford at speed",
+    "kicking dust across a desert piste at sunset",
+    "tackling a narrow tarmac stage between stone walls",
+  ],
+  "endurance-hypercars": [
+    "streaking under floodlights at 3am with glowing brake discs",
+    "cutting through rain with headlights flaring",
+    "sweeping past the pit wall with a long-exposure light trail",
+    "dawn stint with mist over the circuit",
+    "double-stinting past a slower car in the Esses",
+    "in the lit pit box during a driver change",
+    "on the banking of a high-speed oval section",
+    "under a dark sky with the grandstand lights glittering",
+  ],
+  "drift-street-kings": [
+    "full-lock drift through a neon-soaked city intersection",
+    "tandem drift with tyre smoke filling a mountain pass",
+    "sliding across wet asphalt reflecting pink and cyan signs",
+    "smoky donut in an empty rooftop car park",
+    "entering a downhill hairpin with the rear stepped out",
+    "clipping a wall with sparks under streetlights",
+    "burnout on the start line with the crowd blurred",
+    "night touge run with headlight beams cutting through mist",
+  ],
+  "superbike-legends": [
+    "knee and elbow down through a fast sunlit corner",
+    "wheelie off the line with the front wheel high",
+    "hard braking with the rear wheel lifting into a corner",
+    "leaning through a wet corner with spray off the tyre",
+    "crossing the line standing on the pegs in celebration",
+    "slipstreaming inches behind a rival on the straight",
+    "flicking through a chicane with the bike almost horizontal",
+    "sunset session on a coastal circuit with long shadows",
+  ],
+};
+
 const SPORT_SCENES: Record<string, string[]> = {
   "football-legends": [
     "striking the ball at a floodlit night stadium", "celebrating with arms wide on wet turf",
@@ -277,6 +343,17 @@ function cardPrompt(card: Record<string, any>, cat: Record<string, any>) {
       `${composition}, ${light}, ${palette}, ${render}, ${card.rarity} rarity energy accents. ` +
       `Make this horse visually unmistakably different from any other racehorse card — unique coat pattern, unique pose, ` +
       `unique environment and unique colour grading. ${ORIGINALITY}`;
+  }
+
+  // Motorsport collections: unique machine, livery and race moment per card.
+  if (RACE_SLUGS.includes(String(cat.slug ?? ""))) {
+    const moments = RACE_MOMENTS[String(cat.slug)] ?? RACE_MOMENTS["grand-prix-machines"];
+    return `${format}. Collectible motorsport trading-card illustration of "${card.name}", a completely invented ` +
+      `${card.subject} in a ${pick(RACE_LIVERIES, seed, 6)}, ${pick(moments, seed, 7)}. ` +
+      `${cat.art_style}, ${composition}, ${light}, ${palette}, ${render}, ${card.rarity} rarity energy accents. ` +
+      `The machine must look unmistakably different from every other card in the set — different silhouette, ` +
+      `aero details, wheels, livery colours, angle and track environment. Fictional machine and fictional team only: ` +
+      `no real manufacturer, no brand logos, no sponsor decals, no readable text or numbers. ${ORIGINALITY}`;
   }
 
   // Sports collections: give every athlete a different body, face, kit and match moment.
