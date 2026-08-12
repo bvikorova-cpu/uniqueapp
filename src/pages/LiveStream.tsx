@@ -453,39 +453,52 @@ export default function LiveStream() {
                   />
                   
                   {!isStreaming && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                      <div className="text-center text-white space-y-4">
-                        <Video className="h-24 w-24 mx-auto opacity-50" />
-                        {user?.id === stream.influencer_profiles?.user_id ? (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 p-4">
+                      <div className="text-center text-primary-foreground space-y-4">
+                        <Video className="h-20 w-20 mx-auto opacity-50" />
+                        {isOwner ? (
                           <>
-                            <p className="text-lg">Click the button to start the camera</p>
-                            <Button 
-                              onClick={startBroadcast} 
-                              variant="default"
-                              size="lg"
-                              disabled={isConnecting}
-                              className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700"
-                            >
-                              {isConnecting ? "Connecting camera..." : "📹 Start camera"}
-                            </Button>
+                            <p className={`text-sm ${streamError ? "font-medium text-destructive" : "text-lg"}`}>
+                              {streamError ?? "Turn on your camera to go live"}
+                            </p>
+                            <div className="flex flex-col items-center gap-2">
+                              <Button
+                                onClick={startBroadcasting}
+                                size="lg"
+                                disabled={isConnecting}
+                                className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700"
+                              >
+                                {isConnecting ? "Connecting camera..." : "📹 Turn camera on & go live"}
+                              </Button>
+                              {inIframe && (
+                                <Button
+                                  variant="outline"
+                                  onClick={() => window.open(window.location.href, "_blank", "noopener")}
+                                >
+                                  Open stream in new tab
+                                </Button>
+                              )}
+                            </div>
                           </>
                         ) : (
-                          <>
+                          <div className="space-y-3">
                             <p className="text-lg">
-                              {isConnecting ? "Connecting to stream..." : "Stream is preparing..."}
+                              {connState === "failed"
+                                ? "Connection lost — try reconnecting"
+                                : isConnecting || connState === "connecting"
+                                  ? "Connecting to stream..."
+                                  : stream.is_live
+                                    ? "Waiting for the creator's camera..."
+                                    : "Stream is not live yet"}
                             </p>
-                          </>
+                            {stream.is_live && (
+                              <Button variant="outline" onClick={() => viewerRef.current?.reconnect()}>
+                                Reconnect
+                              </Button>
+                            )}
+                          </div>
                         )}
                       </div>
-                    </div>
-                  )}
-
-                  {user?.id === stream.influencer_profiles?.user_id && isStreaming && (
-                    <div className="absolute bottom-4 right-4">
-                      <Button onClick={() => stopStreaming()} variant="destructive" size="sm">
-                        <VideoOff className="h-4 w-4 mr-2" />
-                        Stop Stream
-                      </Button>
                     </div>
                   )}
 
@@ -495,10 +508,25 @@ export default function LiveStream() {
                     </Badge>
                     <Badge variant="secondary">
                       <Users className="h-3 w-3 mr-1" />
-                      {stream.viewer_count}
+                      {Math.max(presenceViewers, peerViewers, stream.viewer_count ?? 0)}
                     </Badge>
                   </div>
                 </div>
+
+                {isOwner && isStreaming && (
+                  <div className="flex flex-col gap-2 p-4 border-b">
+                    <Button variant="outline" onClick={toggleMic} className="w-full justify-start gap-2">
+                      {micEnabled ? "🎙️ Mute" : "🔇 Unmute"}
+                    </Button>
+                    <Button variant="outline" onClick={toggleCam} className="w-full justify-start gap-2">
+                      {camEnabled ? "📷 Hide camera" : "📷 Show camera"}
+                    </Button>
+                    <Button variant="destructive" onClick={() => stopStreaming()} className="w-full">
+                      <VideoOff className="h-4 w-4 mr-2" /> End stream
+                    </Button>
+                  </div>
+                )}
+
                 <div className="p-6">
                   <div className="flex items-center gap-4 mb-4">
                     <Avatar className="h-12 w-12">
