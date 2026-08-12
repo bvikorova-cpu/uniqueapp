@@ -65,8 +65,12 @@ const ConcertWatch = () => {
           return;
         }
 
+        // The base table is intentionally visible only to the artist because it
+        // also contains private stream fields. After can_watch_concert confirms
+        // the paid ticket, load attendee-safe concert metadata from the public
+        // view instead of misreporting an RLS-hidden row as "not found".
         const { data, error: cErr } = await supabase
-          .from("live_concert_streams")
+          .from("live_concert_streams_public")
           .select("*, musician_profiles(stage_name, user_id, avatar_url)")
           .eq("id", id)
           .maybeSingle();
