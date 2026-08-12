@@ -3,6 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { spendAiCredits } from "../_shared/spendCredits.ts";
 import { encode as base64Encode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
+import { tryVertexChat, tryVertexImage } from "../_shared/vertexDirect.ts";
 
 // Prize pools are tracked in POINTS, not credits (1 credit spent = 10 points added)
 const POINTS_PER_CREDIT = 10;
@@ -375,11 +376,9 @@ Deno.serve(async (req) => {
         return json({ audioBase64, narrationId: saved?.id, creditsRemaining: credits.credits_remaining - NARRATOR_COST });
       }
 
-      // ---- AI Story Generator (OpenAI gpt-4o + optional image, 4 credits) ----
+      // ---- AI Story Generator (Vertex AI + optional image, 4 credits) ----
       case "ai_story_generate": {
         const STORY_COST = 4;
-        const openaiKey = Deno.env.get("LOVABLE_API_KEY");
-        if (!openaiKey) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
         const { prompt, tone = "gothic", length = "medium", generateImage = true } = p;
         if (!prompt) return json({ error: "Missing prompt" }, 400);
         const { data: credits } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
@@ -399,59 +398,19 @@ Deno.serve(async (req) => {
 Generate a complete, polished horror story (${lengthMap[length] || lengthMap.medium}).
 Return JSON with: { "title": "evocative title", "story": "full story text" }.
 The story must have a strong opening hook, atmospheric build-up, and chilling ending.`;
-        const storyRequest = fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-            method: "POST",
-            headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
-            signal: AbortSignal.timeout(55_000),
-            body: JSON.stringify({
-              model: "google/gemini-2.5-flash",
-              messages: [
-                { role: "system", content: systemPrompt },
-                { role: "user", content: prompt },
-              ] }) });
-
-        // Generate the optional illustration at the same time as the story.
-        // Running these sequentially could exceed the edge request lifetime on mobile.
-        const illustrationRequest: Promise<Response | null> = generateImage
-          ? Promise.race([
-              fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
-                method: "POST",
-                headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  model: "openai/gpt-image-1-mini",
-                  prompt: `Cinematic ${tone} horror illustration inspired by: ${prompt.slice(0, 300)}. Dark moody atmosphere, deep shadows, crimson accents, painterly oil texture, no text, no watermark.`,
-                  n: 1,
-                  size: "1024x1024",
-                }),
-              }).catch((e) => {
-                console.warn("Image gen exception", e);
-                return null;
-              }),
-              // Never let the illustration hold the story hostage.
-              new Promise<null>((r) => setTimeout(() => r(null), 80_000)),
-            ])
-          : Promise.resolve(null);
-
-
-        let aiResponse: Response;
-        let imgResp: Response | null;
-        try {
-          [aiResponse, imgResp] = await Promise.all([storyRequest, illustrationRequest]);
-        } catch (e) {
-          console.error("story ai fetch failed", e);
-          return json({ error: "AI is busy right now. Please try again in a few seconds." }, 503);
-        }
-        if (!aiResponse.ok) {
-          if (aiResponse.status === 429) return json({ error: "AI rate limited — try again shortly." }, 429);
-          const t = await aiResponse.text();
-          console.error("AI error:", aiResponse.status, t);
-          return json({ error: "AI request failed. Please try again." }, 502);
-        }
+        const aiData = await tryVertexChat({
+          model: "google/gemini-2.5-flash",
+          max_tokens: length === "long" ? 4096 : 2048,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: String(prompt) },
+          ],
+        });
+        if (!aiData) return json({ error: "Vertex AI could not generate the story. Please try again." }, 503);
         let generatedTitle = "Untitled Horror";
         let generatedStory = "";
         try {
-          const data = await aiResponse.json();
-          const raw: string = data.choices?.[0]?.message?.content ?? "";
+          const raw: string = aiData.choices?.[0]?.message?.content ?? "";
           const cleaned = raw.replace(/```json/gi, "").replace(/```/g, "").trim();
           const match = cleaned.match(/\{[\s\S]*\}/);
           if (match) {
@@ -471,17 +430,19 @@ The story must have a strong opening hook, atmospheric build-up, and chilling en
         }
         if (!generatedStory) return json({ error: "AI returned an empty story. Please try again." }, 502);
         let illustrationUrl: string | null = null;
-        if (imgResp?.ok) {
+        if (generateImage) {
           try {
-            const imgData = await imgResp.json();
+            const imgData = await tryVertexImage(
+              `Cinematic ${tone} horror illustration inspired by: ${String(prompt).slice(0, 300)}. Dark moody atmosphere, deep shadows, crimson accents, painterly oil texture, no text, no watermark.`,
+              "1024x1024",
+              1,
+            );
             illustrationUrl = imgData.data?.[0]?.b64_json
               ? `data:image/png;base64,${imgData.data[0].b64_json}`
               : imgData.data?.[0]?.url ?? null;
           } catch (e) {
-            console.warn("Image response parse failed", e);
+            console.warn("Optional story illustration failed", e);
           }
-        } else if (imgResp) {
-          console.warn("Image gen failed", imgResp.status);
         }
         const { data: saved, error: saveError } = await supabase.from("shadow_ai_stories").insert({ user_id: user.id, prompt, generated_title: generatedTitle, generated_story: generatedStory,
           illustration_url: illustrationUrl, tone, length, credits_used: STORY_COST }).select().single();
