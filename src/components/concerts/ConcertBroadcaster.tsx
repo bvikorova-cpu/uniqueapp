@@ -173,12 +173,14 @@ export const ConcertBroadcaster = ({ concertId, title, scheduledAt, status, onSt
   // Keep viewer count in the DB fresh so fans see it
   useEffect(() => {
     if (!live) return;
-    const t = window.setInterval(() => {
+    const syncViewerCount = () => {
       void supabase
         .from("live_concert_streams")
         .update({ viewer_count: Math.max(viewers, presenceViewers) })
         .eq("id", concertId);
-    }, 15000);
+    };
+    syncViewerCount();
+    const t = window.setInterval(syncViewerCount, 5_000);
     return () => window.clearInterval(t);
   }, [live, viewers, presenceViewers, concertId]);
 

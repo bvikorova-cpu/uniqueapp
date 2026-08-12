@@ -33,11 +33,12 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
   const [gifts, setGifts] = useState<GiftRow[]>([]);
   const [giftNames, setGiftNames] = useState<Record<string, { name: string; icon: string }>>({});
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
-      const [{ data: giftRows }, { data: catalog }] = await Promise.all([
+      const [{ data: giftRows, error: giftsError }, { data: catalog, error: catalogError }] = await Promise.all([
         supabase
           .from("concert_gifts")
           .select("id, gift_id, amount, musician_amount, platform_commission, message, created_at, payment_status")
@@ -47,6 +48,8 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
         supabase.from("platform_gifts").select("id, name, icon"),
       ]);
       if (cancelled) return;
+      const queryError = giftsError || catalogError;
+      setLoadError(queryError?.message || null);
       setGifts((giftRows as GiftRow[]) || []);
       const map: Record<string, { name: string; icon: string }> = {};
       (catalog || []).forEach((g: any) => { map[g.id] = { name: g.name, icon: g.icon }; });
@@ -63,8 +66,13 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
         () => void load()
       )
       .subscribe();
+    const refresh = window.setInterval(load, 5_000);
 
-    return () => { cancelled = true; supabase.removeChannel(channel); };
+    return () => {
+      cancelled = true;
+      window.clearInterval(refresh);
+      supabase.removeChannel(channel);
+    };
   }, [concertId, musicianId]);
 
   const totals = useMemo(() => {
@@ -89,6 +97,21 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
+        <div className="mb-3 grid grid-cols-2 gap-2">
+          <div className="rounded-lg border p-3">
+            <p className="text-[11px] text-muted-foreground">Paid gifts</p>
+            <p className="text-lg font-bold">{totals.count}</p>
+          </div>
+          <div className="rounded-lg border p-3">
+            <p className="text-[11px] text-muted-foreground">Your 80% share</p>
+            <p className="text-lg font-bold text-primary">€{totals.yours.toFixed(2)}</p>
+          </div>
+        </div>
+        {loadError && (
+          <p className="mb-3 rounded-lg border border-destructive/30 bg-destructive/5 p-2 text-xs text-destructive">
+            Live data could not refresh: {loadError}
+          </p>
+        )}
         <Tabs defaultValue="chat">
           <TabsList className="w-full">
             <TabsTrigger value="chat" className="flex-1 gap-1">

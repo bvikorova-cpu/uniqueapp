@@ -395,6 +395,7 @@ export const ArtistStudio = ({ onBack }: Props) => {
                   </div>
                   {studioId === c.id && (
                     <>
+                      {profile && <ConcertHostPanel concertId={c.id} musicianId={profile.id} />}
                       <ConcertBroadcaster
                         concertId={c.id}
                         title={c.title}
@@ -402,7 +403,6 @@ export const ArtistStudio = ({ onBack }: Props) => {
                         status={c.status}
                         onStatusChange={async (s) => { await setStatus(c.id, s); if (s === "ended") setStudioId(null); }}
                       />
-                      {profile && <ConcertHostPanel concertId={c.id} musicianId={profile.id} />}
                     </>
                   )}
 
