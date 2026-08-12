@@ -14,7 +14,7 @@ export const ConcertReplay = ({ onBack }: Props) => {
     queryKey: ["past-concerts"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("live_concert_streams")
+        .from("live_concert_streams_public")
         .select(`*, musician_profiles(stage_name, genre, avatar_url)`)
         .eq("status", "ended")
         .order("scheduled_at", { ascending: false })
