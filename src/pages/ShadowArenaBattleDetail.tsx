@@ -10,16 +10,19 @@ import { LiveReactions } from '@/components/shadow-arena/LiveReactions';
 import { Swords, Trophy, Gift, User, ArrowLeft, Clock, Skull } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { shadowArenaCall } from '@/hooks/useShadowArenaRouter';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
 import { GothicPageHeader } from '@/components/shadow-arena/GothicPageHeader';
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const GIFT_TYPES = [
-  { type: "faint_whisper", amount: 0.10, name: "Faint Whisper", icon: "W" },
-  { type: "scream", amount: 0.50, name: "Scream", icon: "S" },
-  { type: "golden_fear_chest", amount: 5.00, name: "Golden Fear Chest", icon: "G" },
+  { type: "faint_whisper", credits: 1, name: "Faint Whisper", icon: "W" },
+  { type: "scream", credits: 3, name: "Scream", icon: "S" },
+  { type: "golden_fear_chest", credits: 10, name: "Golden Fear Chest", icon: "G" },
 ];
+
+const BATTLE_ENTRY_CREDITS = 5;
 
 interface Participant {
   id: string;
@@ -79,37 +82,22 @@ export default function ShadowArenaBattleDetail() {
     }
   };
 
-  const handleJoinBattle = async () => {
+  const handleJoinBattle = () => {
     if (!user) { toast.error('Please sign in to join'); return; }
-    try {
-      const { data, error } = await supabase.functions.invoke('join-shadow-battle', {
-        body: { battleId }
-      });
-      if (error) throw error;
-      if (data.url) {
-        window.open(data.url, '_blank');
-        toast.info('Complete payment to join the battle');
-      }
-    } catch (error) {
-      console.error('Join error:', error);
-      toast.error('Failed to join battle');
-    }
+    navigate(`/shadow-arena/battle/${battleId}/submit`);
   };
 
-  const handleSendGift = async (participantId: string, giftType: string) => {
+  const handleSendGift = async (participantId: string, credits: number) => {
     if (!user) { toast.error('Please sign in to send gifts'); return; }
     try {
-      const { data, error } = await supabase.functions.invoke('purchase-shadow-gift', {
-        body: { battleId, participantId, giftType }
-      });
-      if (error) throw error;
-      if (data.url) {
-        window.open(data.url, '_blank');
-        toast.info('Complete payment to send gift');
-      }
-    } catch (error) {
-      console.error('Gift error:', error);
-      toast.error('Failed to send gift');
+      await shadowArenaCall('battle_gift', { battleId, participantId, credits });
+      toast.success(`Gift sent — ${credits} credits charged`);
+      fetchBattleDetails();
+    } catch (error: any) {
+      const msg = String(error?.message || '');
+      toast.error(msg.includes('insufficient_credits')
+        ? `Not enough credits — this gift costs ${credits} credits.`
+        : 'Failed to send gift');
     }
   };
 
@@ -168,7 +156,7 @@ export default function ShadowArenaBattleDetail() {
             )}
             <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-yellow-800/40">
               <Trophy className="w-3.5 h-3.5 text-yellow-400" />
-              <span className="text-sm font-black text-yellow-400">€{battle.total_prize_pool.toFixed(2)}</span>
+              <span className="text-sm font-black text-yellow-400">{battle.total_prize_pool} credits</span>
             </div>
           </div>
           {battle.challenge_keywords && battle.challenge_keywords.length > 0 && (
@@ -185,7 +173,7 @@ export default function ShadowArenaBattleDetail() {
               className="bg-gradient-to-r from-red-700 to-red-900 hover:from-red-800 hover:to-red-950 border border-red-700/40 shadow-[0_0_25px_-5px_rgba(220,38,38,0.7)]"
             >
               <Swords className="mr-2 h-5 w-5" />
-              Join Battle (€1.00 Entry Fee)
+              Join Battle ({BATTLE_ENTRY_CREDITS} credits)
             </Button>
           )}
         </GothicPageHeader>
@@ -251,9 +239,9 @@ export default function ShadowArenaBattleDetail() {
                     </div>
                     <div className="text-right shrink-0">
                       <p className="text-2xl font-black text-yellow-400">
-                        {"\u20AC"}{participant.total_gifts_received.toFixed(2)}
+                        {participant.total_gifts_received}
                       </p>
-                      <p className="text-xs text-muted-foreground">Total Gifts</p>
+                      <p className="text-xs text-muted-foreground">Gift credits</p>
                     </div>
                   </div>
 
@@ -268,14 +256,14 @@ export default function ShadowArenaBattleDetail() {
                           <Button
                             key={gift.type}
                             variant="outline"
-                            onClick={() => handleSendGift(participant.id, gift.type)}
+                            onClick={() => handleSendGift(participant.id, gift.credits)}
                             className="flex-col h-auto py-4 border-red-900/20 hover:border-red-700/40 hover:bg-red-950/20 transition-colors"
                           >
                             <span className="w-8 h-8 rounded-full bg-gradient-to-br from-red-700 to-purple-800 flex items-center justify-center text-white font-bold text-xs mb-2">
                               {gift.icon}
                             </span>
                             <span className="font-semibold text-sm">{gift.name}</span>
-                            <span className="text-yellow-400 font-bold text-xs">{"\u20AC"}{gift.amount.toFixed(2)}</span>
+                            <span className="text-yellow-400 font-bold text-xs">{gift.credits} cr</span>
                           </Button>
                         ))}
                       </div>

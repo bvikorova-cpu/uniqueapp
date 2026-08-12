@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,54 +8,28 @@ import { Textarea } from '@/components/ui/textarea';
 import { ShadowCreditsGate } from '@/components/shadow-arena/ShadowCreditsGate';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { shadowArenaCall } from '@/hooks/useShadowArenaRouter';
 import { useAuth } from '@/contexts/AuthContext';
 import { Clock, CheckCircle, ArrowLeft, Swords, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { GothicPageHeader } from '@/components/shadow-arena/GothicPageHeader';
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
+const ENTRY_CREDITS = 5;
+
 export default function ShadowArenaBattleSubmit() {
   const { battleId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [searchParams] = useSearchParams();
-  const sessionId = searchParams.get('session_id');
 
   const [battle, setBattle] = useState<any>(null);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [paymentVerified, setPaymentVerified] = useState(false);
 
   useEffect(() => {
-    if (battleId && sessionId) {
-      verifyPaymentAndFetch();
-    } else if (battleId) {
-      fetchBattle();
-    }
-  }, [battleId, sessionId]);
-
-  const verifyPaymentAndFetch = async () => {
-    try {
-      if (!sessionId || !battleId) return;
-      const { data, error } = await supabase.functions.invoke('verify-shadow-battle-payment', {
-        body: { sessionId, battleId } });
-      if (error) throw error;
-      if (!data?.verified) {
-        setPaymentVerified(false);
-        toast.error('Payment not verified yet. Please complete checkout first.');
-        navigate(`/shadow-arena/battle/${battleId}`);
-        return;
-      }
-      setPaymentVerified(true);
-      fetchBattle();
-    } catch (err) {
-      console.error('Verify payment error:', err);
-      setPaymentVerified(false);
-      toast.error('Failed to verify payment');
-      navigate(`/shadow-arena/battle/${battleId}`);
-    }
-  };
+    if (battleId) fetchBattle();
+  }, [battleId]);
 
   const fetchBattle = async () => {
     try {
@@ -76,25 +50,18 @@ export default function ShadowArenaBattleSubmit() {
     e.preventDefault();
     if (!user || !battleId) { toast.error('Authentication required'); return; }
     if (!title.trim() || !content.trim()) { toast.error('Please fill in all fields'); return; }
-    if (!paymentVerified) { toast.error('Payment verification required before submitting'); return; }
 
     try {
       setSubmitting(true);
-      const { error } = await supabase
-        .from('shadow_battle_participants')
-        .insert({
-          battle_id: battleId,
-          user_id: user.id,
-          story_title: title,
-          story_content: content,
-          entry_fee_paid: true
-        });
-      if (error) throw error;
-      toast.success('Story submitted successfully!');
+      await shadowArenaCall('battle_submit', { battleId, title, content });
+      toast.success(`Story submitted! ${ENTRY_CREDITS} credits charged.`);
       navigate(`/shadow-arena/battle/${battleId}`);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Submit error:', error);
-      toast.error('Failed to submit story');
+      const msg = String(error?.message || '');
+      if (msg.includes('insufficient_credits')) toast.error(`Not enough credits — entry costs ${ENTRY_CREDITS} credits.`);
+      else if (msg.includes('already_joined')) toast.error('You already submitted a story to this battle.');
+      else toast.error('Failed to submit story');
     } finally {
       setSubmitting(false);
     }
