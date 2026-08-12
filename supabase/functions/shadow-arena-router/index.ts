@@ -75,7 +75,7 @@ Deno.serve(async (req) => {
             avatar_url: r.avatar_url,
             duels: stats[r.id]?.duels ?? 0,
             wins: stats[r.id]?.wins ?? 0,
-            power: 40 + ((stats[r.id]?.wins ?? 0) * 6) + Math.floor(Math.random() * 40),
+            power: 40 + ((stats[r.id]?.wins ?? 0) * 6) + ((stats[r.id]?.duels ?? 0) * 2),
           })),
         });
       }
