@@ -94,6 +94,31 @@ export const ArtistStudio = ({ onBack }: Props) => {
 
   useEffect(() => { load(); }, []);
 
+  useEffect(() => {
+    if (!profile?.id) return;
+    const refreshConcerts = async () => {
+      const { data, error } = await supabase
+        .from("live_concert_streams")
+        .select("*, concert_ticket_types(*)")
+        .eq("musician_id", profile.id)
+        .order("scheduled_at", { ascending: false });
+      if (!error) setConcerts(data || []);
+    };
+    const channel = supabase
+      .channel(`artist-concerts-${profile.id}`)
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "live_concert_streams", filter: `musician_id=eq.${profile.id}` },
+        () => void refreshConcerts()
+      )
+      .subscribe();
+    const refresh = window.setInterval(refreshConcerts, 5_000);
+    return () => {
+      window.clearInterval(refresh);
+      void supabase.removeChannel(channel);
+    };
+  }, [profile?.id]);
+
   const saveProfile = async () => {
     if (stageName.trim().length < 2) { toast.error("Stage name is too short"); return; }
     setSaving(true);
@@ -393,9 +418,11 @@ export const ArtistStudio = ({ onBack }: Props) => {
                       )}
                     </div>
                   </div>
+                  {c.status === "live" && profile && (
+                    <ConcertHostPanel concertId={c.id} musicianId={profile.id} />
+                  )}
                   {studioId === c.id && (
                     <>
-                      {profile && <ConcertHostPanel concertId={c.id} musicianId={profile.id} />}
                       <ConcertBroadcaster
                         concertId={c.id}
                         title={c.title}
