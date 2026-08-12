@@ -67551,8 +67551,8 @@ export type Database = {
         Returns: {
           avatar_url: string
           display_name: string
-          earnings_cents: number
           matches: number
+          points: number
           user_id: string
           wins: number
         }[]
