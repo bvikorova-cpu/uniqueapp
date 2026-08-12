@@ -21,12 +21,46 @@ export const ConcertChat = ({ onBack, embedded = false, roomId }: Props) => {
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const { spend } = useSpendCredits();
 
+  // Persisted chat (per concert). The legacy global lounge (no roomId) stays
+  // broadcast-only because it isn't tied to a concert row.
+  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const topic = roomId ? `concert-chat-${roomId}` : "concert-global-chat";
 
   useEffect(() => {
+    let cancelled = false;
+
+    if (roomId) {
+      (async () => {
+        const { data } = await supabase
+          .from("concert_chat_messages")
+          .select("id, user_id, username, content, created_at")
+          .eq("concert_id", roomId)
+          .order("created_at", { ascending: true })
+          .limit(200);
+        if (!cancelled) {
+          setMessages((data ?? []).map((m: any) => ({ ...m, timestamp: m.created_at })));
+        }
+      })();
+
+      const ch = supabase
+        .channel(`concert-chat-db-${roomId}`)
+        .on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "concert_chat_messages", filter: `concert_id=eq.${roomId}` },
+          (payload) => {
+            const row: any = payload.new;
+            setMessages((prev) =>
+              prev.some((m) => m.id === row.id) ? prev : [...prev, { ...row, timestamp: row.created_at }]
+            );
+          }
+        )
+        .subscribe();
+      channelRef.current = null;
+      return () => { cancelled = true; supabase.removeChannel(ch); };
+    }
+
     const channel = supabase
       .channel(topic)
       .on("broadcast", { event: "chat_message" }, (payload) => {
@@ -35,15 +69,16 @@ export const ConcertChat = ({ onBack, embedded = false, roomId }: Props) => {
       .subscribe();
     channelRef.current = channel;
 
-    return () => { supabase.removeChannel(channel); channelRef.current = null; };
-  }, [topic]);
+    return () => { cancelled = true; supabase.removeChannel(channel); channelRef.current = null; };
+  }, [topic, roomId]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages]);
 
   const sendMessage = async () => {
-    if (!newMessage.trim() || !channelRef.current) return;
+    const text = newMessage.trim();
+    if (!text) return;
     try {
       setSending(true);
       const { data: { session } } = await supabase.auth.getSession();
@@ -53,21 +88,42 @@ export const ConcertChat = ({ onBack, embedded = false, roomId }: Props) => {
       const paid = await spend("concert_chat_message", { description: "concert_chat_message" });
       if (!paid) return;
 
+      const username = session.user.email?.split("@")[0] || "Anonymous";
+
+      if (roomId) {
+        const { data, error } = await supabase
+          .from("concert_chat_messages")
+          .insert({ concert_id: roomId, user_id: session.user.id, username, content: text })
+          .select("id, user_id, username, content, created_at")
+          .single();
+        if (error) throw error;
+        setMessages((prev) =>
+          prev.some((m) => m.id === (data as any).id)
+            ? prev
+            : [...prev, { ...(data as any), timestamp: (data as any).created_at }]
+        );
+        setNewMessage("");
+        toast.success("Sent · 1 credit used");
+        return;
+      }
+
       const msg = { user_id: session.user.id,
-        username: session.user.email?.split("@")[0] || "Anonymous",
-        content: newMessage.trim(),
+        username,
+        content: text,
         timestamp: new Date().toISOString() };
 
       // Reuse subscribed channel instead of creating a new one per send (leak fix).
-      await channelRef.current.send({ type: "broadcast",
+      await channelRef.current?.send({ type: "broadcast",
         event: "chat_message",
         payload: msg });
 
       setMessages(prev => [...prev, msg]);
       setNewMessage("");
-    } catch { toast.error("Failed to send message"); }
+      toast.success("Sent · 1 credit used");
+    } catch (e: any) { toast.error(e?.message || "Failed to send message"); }
     finally { setSending(false); }
   };
+
 
   const messageList = (
     <div
