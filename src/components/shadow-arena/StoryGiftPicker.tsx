@@ -60,6 +60,9 @@ export function StoryGiftPicker({ recipientId, storyId }: { recipientId?: string
     }
   };
 
+  // No gift button on your own story — nothing to send.
+  if (isOwn) return null;
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -74,16 +77,14 @@ export function StoryGiftPicker({ recipientId, storyId }: { recipientId?: string
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-72 p-3"
+        className="w-72 p-3 bg-zinc-950/95 backdrop-blur-md border-pink-900/40 text-zinc-100"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mb-2 text-xs text-muted-foreground">
+        <div className="mb-2 text-xs text-zinc-400">
           Gifts replace likes — they support the author and count as votes.
         </div>
         {!recipientId ? (
-          <p className="text-sm text-muted-foreground">Anonymous author — gifts unavailable.</p>
-        ) : isOwn ? (
-          <p className="text-sm text-muted-foreground">This is your story.</p>
+          <p className="text-sm text-zinc-400">Anonymous author — gifts unavailable.</p>
         ) : (
           <div className="grid grid-cols-4 gap-2 relative">
             {items.map((g) => (
@@ -91,10 +92,10 @@ export function StoryGiftPicker({ recipientId, storyId }: { recipientId?: string
                 key={g.id}
                 onClick={() => send(g)}
                 disabled={sending === g.code}
-                className={`rounded-lg border ${TIER_COLOR[g.tier] ?? "border-border"} p-2 bg-muted/30 hover:bg-pink-950/20 transition active:scale-95 disabled:opacity-50`}
+                className={`rounded-lg border ${TIER_COLOR[g.tier] ?? "border-border"} p-2 bg-white/5 hover:bg-pink-950/40 transition active:scale-95 disabled:opacity-50`}
               >
                 <div className="text-xl">{g.emoji}</div>
-                <div className="text-[9px] text-muted-foreground truncate">{g.name}</div>
+                <div className="text-[9px] text-zinc-400 truncate">{g.name}</div>
                 <div className="text-[10px] font-bold text-amber-500">{g.credit_cost}c</div>
               </button>
             ))}
