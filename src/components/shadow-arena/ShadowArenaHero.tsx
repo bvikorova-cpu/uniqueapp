@@ -34,8 +34,6 @@ export function ShadowArenaHero({ topStories = 0 }: Props) {
   };
 
   const stats = [
-    { icon: Flame, label: "Prize Pool", value: `${totalPrizePool} pts` },
-    { icon: Skull, label: "Active Battles", value: activeBattles.toString() },
     { icon: Eye, label: "Top Stories", value: topStories.toString() },
     { icon: Ghost, label: "Platform Cut", value: "20%" },
   ];
