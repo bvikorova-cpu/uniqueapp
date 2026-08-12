@@ -13055,6 +13055,48 @@ export type Database = {
           },
         ]
       }
+      concert_chat_messages: {
+        Row: {
+          concert_id: string
+          content: string
+          created_at: string
+          id: string
+          user_id: string
+          username: string
+        }
+        Insert: {
+          concert_id: string
+          content: string
+          created_at?: string
+          id?: string
+          user_id: string
+          username?: string
+        }
+        Update: {
+          concert_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+          username?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "concert_chat_messages_concert_id_fkey"
+            columns: ["concert_id"]
+            isOneToOne: false
+            referencedRelation: "live_concert_streams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "concert_chat_messages_concert_id_fkey"
+            columns: ["concert_id"]
+            isOneToOne: false
+            referencedRelation: "live_concert_streams_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       concert_gifts: {
         Row: {
           amount: number
@@ -69252,6 +69294,10 @@ export type Database = {
         }
       }
       snapshot_weekly_xp_winners: { Args: never; Returns: number }
+      spend_ai_credits: {
+        Args: { _amount: number; _reason: string; _source?: string }
+        Returns: Json
+      }
       spend_brain_duel_credits: {
         Args: { p_amount: number; p_user_id: string }
         Returns: undefined
