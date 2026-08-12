@@ -171,21 +171,45 @@ export default function ComedyLiveViewer() {
                   <h1 className="text-3xl font-bold">{show.title}</h1>
                   <p className="text-muted-foreground">by {show.comedian?.stage_name}</p>
                 </div>
-                <div className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-full">
-                  <div className="w-3 h-3 bg-white rounded-full animate-pulse" />
-                  <span className="font-bold">LIVE</span>
+                <div className="flex items-center gap-2">
+                  {isLive && (
+                    <div className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-full">
+                      <div className="w-3 h-3 bg-white rounded-full animate-pulse" />
+                      <span className="font-bold">LIVE</span>
+                    </div>
+                  )}
+                  <Badge variant="secondary" className="gap-1">
+                    <Users className="h-3 w-3" /> {Math.max(presenceViewers, show.viewer_count || 0)}
+                  </Badge>
                 </div>
               </div>
 
               <div className="relative aspect-video bg-black rounded-lg overflow-hidden mb-4">
-                <div className="absolute inset-0 flex items-center justify-center text-white">
-                  <div className="text-center">
-                    <p className="text-xl mb-2">🎤 Live Stream</p>
-                    <p className="text-sm text-muted-foreground">
-                      Stream will appear here when comedian starts broadcasting
-                    </p>
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  className="w-full h-full object-cover"
+                />
+                {!hasStream && (
+                  <div className="absolute inset-0 flex items-center justify-center text-white">
+                    <div className="text-center px-6 space-y-3">
+                      <p className="text-xl">🎤 Live Stream</p>
+                      <p className="text-sm text-white/70">
+                        {!isLive
+                          ? "This show is not broadcasting right now"
+                          : connState === "failed"
+                            ? "Connection lost — try reconnecting"
+                            : "Connecting to the comedian's stream..."}
+                      </p>
+                      {isLive && (
+                        <Button variant="secondary" size="sm" onClick={() => setRtcKey((k) => k + 1)}>
+                          <RefreshCw className="mr-2 h-4 w-4" /> Reconnect
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               {/* Tips Section */}
