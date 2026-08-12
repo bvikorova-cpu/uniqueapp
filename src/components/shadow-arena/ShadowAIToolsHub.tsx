@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Skull, Sparkles, Wand2, Loader2, Image as ImageIcon, BookOpen, User as UserIcon } from "lucide-react";
+import { Skull, Sparkles, Wand2, Loader2, Image as ImageIcon, BookOpen, User as UserIcon, Upload } from "lucide-react";
 import { useShadowAITools, useShadowArenaCredits, SHADOW_AI_COSTS } from "@/hooks/useShadowArenaAI";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 
@@ -33,6 +34,30 @@ export function ShadowAIToolsHub() {
   const [avatarUrl, setAvatarUrl] = useState("");
   const [avatarStyle, setAvatarStyle] = useState(AVATAR_STYLES[0]);
   const [avatarResult, setAvatarResult] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleUpload = async (file: File) => {
+    if (!file.type.startsWith("image/")) { toast.error("Please select an image file"); return; }
+    if (file.size > 10 * 1024 * 1024) { toast.error("Image must be under 10 MB"); return; }
+    setUploading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { toast.error("Please sign in first"); return; }
+      const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+      const path = `${user.id}/${Date.now()}.${ext}`;
+      const { error } = await supabase.storage.from("shadow-nightmare-avatars").upload(path, file, { upsert: true });
+      if (error) throw error;
+      const { data } = supabase.storage.from("shadow-nightmare-avatars").getPublicUrl(path);
+      setAvatarUrl(data.publicUrl);
+      toast.success("Photo uploaded");
+    } catch (e: any) {
+      toast.error(e?.message || "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
 
   const requireCredits = (need: number) => {
     if (balance < need) {
@@ -137,12 +162,34 @@ export function ShadowAIToolsHub() {
 
         {/* NIGHTMARE AVATAR */}
         <TabsContent value="avatar" className="mt-4 space-y-3">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => { const f = e.target.files?.[0]; if (f) handleUpload(f); e.target.value = ""; }}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            className="w-full border-red-800/50 bg-black/40 text-red-50 hover:bg-red-950/40"
+          >
+            {uploading
+              ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Uploading...</>
+              : <><Upload className="w-4 h-4 mr-2" /> Upload photo from your device</>}
+          </Button>
+          {avatarUrl && (
+            <img src={avatarUrl} alt="Selected source photo" className="w-28 h-28 object-cover rounded-lg border border-red-900/40" />
+          )}
           <Input
             value={avatarUrl}
             onChange={(e) => setAvatarUrl(e.target.value)}
-            placeholder={"Public image URL (selfie or photo)"}
+            placeholder={"...or paste a public image URL"}
             className="bg-black/60 border-red-800/50 text-red-50 placeholder:text-red-200/50"
           />
+
           <select
             value={avatarStyle}
             onChange={(e) => setAvatarStyle(e.target.value)}
