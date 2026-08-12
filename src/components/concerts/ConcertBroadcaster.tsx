@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Camera, CameraOff, Loader2, Mic, MicOff, Radio, Users } from "lucide-react";
+import { Camera, CameraOff, ExternalLink, Loader2, Mic, MicOff, Radio, Users } from "lucide-react";
 import { toast } from "sonner";
 import { startBroadcast, type BroadcastHandle } from "@/lib/concertWebRTC";
 
@@ -60,15 +60,38 @@ export const ConcertBroadcaster = ({ concertId, title, scheduledAt, status, onSt
 
   useEffect(() => () => stopEverything(), []);
 
+  // Camera/mic is blocked inside the Lovable preview iframe unless the frame
+  // explicitly allows it — detect that so the artist gets a real explanation
+  // instead of a button that spins forever.
+  const inIframe = typeof window !== "undefined" && window.self !== window.top;
+
   const goLive = async () => {
     if (startingRef.current || broadcastRef.current) return;
     startingRef.current = true;
     setStarting(true);
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" },
-        audio: { echoCancellation: true, noiseSuppression: true },
-      });
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error("This browser does not support live camera streaming");
+      }
+      const stream = await Promise.race([
+        navigator.mediaDevices.getUserMedia({
+          video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" },
+          audio: { echoCancellation: true, noiseSuppression: true },
+        }),
+        new Promise<never>((_, reject) =>
+          window.setTimeout(
+            () =>
+              reject(
+                new Error(
+                  inIframe
+                    ? "Camera is blocked in the embedded preview — open the studio in a new tab"
+                    : "No answer from the camera — check the browser permission and try again"
+                )
+              ),
+            25000
+          )
+        ),
+      ]);
       streamRef.current = stream;
       setCameraOn(true);
       if (videoRef.current) {
@@ -84,7 +107,9 @@ export const ConcertBroadcaster = ({ concertId, title, scheduledAt, status, onSt
       toast.error(
         e?.name === "NotAllowedError"
           ? "Camera access denied — allow camera & microphone in your browser"
-          : e?.message || "Could not start the camera"
+          : e?.name === "NotFoundError"
+            ? "No camera found on this device"
+            : e?.message || "Could not start the camera"
       );
     } finally {
       startingRef.current = false;
@@ -98,12 +123,14 @@ export const ConcertBroadcaster = ({ concertId, title, scheduledAt, status, onSt
     await onStatusChange("ended");
   };
 
-  // Auto-start the camera at the scheduled time
+  // Auto-start the camera at the scheduled time (browsers require a user
+  // gesture inside an iframe, so only auto-start on a top-level page).
   useEffect(() => {
-    if (status === "ended") return;
+    if (status === "ended" || inIframe) return;
     if (broadcastRef.current || startingRef.current) return;
     if (dueMs <= 0) void goLive();
-  }, [dueMs <= 0, status]);
+  }, [dueMs <= 0, status, inIframe]);
+
 
   // Keep viewer count in the DB fresh so fans see it
   useEffect(() => {
@@ -162,8 +189,19 @@ export const ConcertBroadcaster = ({ concertId, title, scheduledAt, status, onSt
               {starting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Radio className="h-4 w-4" />}
               {dueMs > 0 ? "Start early" : "Turn camera on & go live"}
             </Button>
-          ) : (
+          ) : null}
+          {!live && inIframe && (
+            <Button
+              variant="outline"
+              className="gap-2"
+              onClick={() => window.open(window.location.href, "_blank", "noopener")}
+            >
+              <ExternalLink className="h-4 w-4" /> Open studio in new tab
+            </Button>
+          )}
+          {live && (
             <>
+
               <Button variant="outline" onClick={toggleMic} className="gap-2">
                 {micEnabled ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
                 {micEnabled ? "Mute" : "Unmute"}
@@ -177,7 +215,9 @@ export const ConcertBroadcaster = ({ concertId, title, scheduledAt, status, onSt
           )}
         </div>
         <p className="text-xs text-muted-foreground">
-          Keep this page open while streaming — only fans with a paid ticket can watch.
+          {!live && inIframe
+            ? "Camera & microphone are blocked in the embedded preview — open the studio in a new tab to go live."
+            : "Keep this page open while streaming — only fans with a paid ticket can watch."}
         </p>
       </CardContent>
     </Card>
