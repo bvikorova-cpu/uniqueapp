@@ -189,11 +189,20 @@ export default function AdminConcertEarnings() {
                   const artist = rows.find((r) => r.musician_id === w.musician_id);
                   return (
                     <div key={w.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border p-3">
-                      <div>
+                      <div className="min-w-0">
                         <p className="font-semibold">{artist?.stage_name || w.musician_id.slice(0, 8)} · {eur(w.amount)}</p>
                         <p className="text-xs text-muted-foreground">
                           {w.payment_method || "no method"} · {w.created_at ? new Date(w.created_at).toLocaleString() : ""}
                         </p>
+                        {w.payment_details && (
+                          <div className="mt-1 rounded-md border bg-muted/40 px-2 py-1 text-xs">
+                            <span className="font-medium">{w.payment_details.account_holder || "—"}</span>
+                            {w.payment_details.account && (
+                              <span className="ml-2 break-all font-mono">{w.payment_details.account}</span>
+                            )}
+                            <span className="ml-2 text-muted-foreground">{w.payment_details.currency || "EUR"}</span>
+                          </div>
+                        )}
                       </div>
                       <div className="flex items-center gap-2">
                         <Badge variant={w.status === "completed" ? "default" : "secondary"}>{w.status}</Badge>
