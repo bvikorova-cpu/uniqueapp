@@ -141,34 +141,6 @@ export const useCursedAchievements = (userId?: string) => {
     } });
 };
 
-export const useHorrorReels = () => {
-  const qc = useQueryClient();
-  const { data: reels, isLoading } = useQuery({
-    queryKey: ["horror-reels"],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("shadow_horror_reels")
-        .select("*")
-        .eq("is_public", true)
-        .order("created_at", { ascending: false })
-        .limit(20);
-      return data || [];
-    } });
-
-  const generate = useMutation({
-    mutationFn: async (vars: { prompt: string; storyId?: string; title?: string }) =>
-      shadowArenaCall("horror_reel", vars),
-
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["horror-reels"] });
-      qc.invalidateQueries({ queryKey: ["shadow-arena-credits"] });
-      toast.success("Horror reel generated!");
-    },
-    onError: (e: Error) => toast.error(e.message) });
-
-  return { reels, isLoading, generate };
-};
-
 export const usePushNotifications = () => {
   const qc = useQueryClient();
   const { data: subscription } = useQuery({

@@ -30,7 +30,6 @@ const SHADOW = [
   "shadow-arena-credits-init",
   "shadow-battle-predictor",
   "shadow-curse-wheel-spin",
-  "shadow-horror-reel",
   "shadow-nightmare-avatar",
   "shadow-patron-checkout",
   "shadow-voice-clone",

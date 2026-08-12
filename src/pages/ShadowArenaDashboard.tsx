@@ -10,7 +10,6 @@ import { LiveBattleTicker } from '@/components/shadow-arena/LiveBattleTicker';
 import { ArenaLeaderboard } from '@/components/shadow-arena/ArenaLeaderboard';
 import { ArenaStoryCard } from '@/components/shadow-arena/ArenaStoryCard';
 import { CurseWheelCard } from '@/components/shadow-arena/CurseWheelCard';
-import { HorrorReelsCard } from '@/components/shadow-arena/HorrorReelsCard';
 import { PushNotificationsCard } from '@/components/shadow-arena/PushNotificationsCard';
 import { DuetBattlesCard } from '@/components/shadow-arena/DuetBattlesCard';
 
@@ -108,7 +107,6 @@ export default function ShadowArenaDashboard() {
         <DuetBattlesCard />
         <PushNotificationsCard />
         <CurseWheelCard />
-        <HorrorReelsCard />
 
 
 
