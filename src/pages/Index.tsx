@@ -58,7 +58,7 @@ const coreModules = [
 ];
 
 const services = [
-  { title: "GP Fantasy Racing", icon: Car, path: "/gp-subscription", badge: "Premium", gradient: "from-red-600 to-orange-600", featured: true, category: "racing" },
+  { title: "GP Fantasy Racing", icon: Car, path: "/gp-racing", badge: "Credits", gradient: "from-red-600 to-orange-600", featured: true, category: "racing" },
   { title: "Kids Channel", icon: Baby, path: "/kids-channel", badge: "Family", gradient: "from-blue-500 to-cyan-500", category: "entertainment" },
   { title: "Education & AI Tutor", icon: GraduationCap, path: "/education", badge: "Learning", gradient: "from-green-500 to-emerald-500", category: "learning" },
   { title: "Jobs & Career", icon: Briefcase, path: "/jobs", badge: "Career", gradient: "from-purple-500 to-indigo-500", category: "career" },

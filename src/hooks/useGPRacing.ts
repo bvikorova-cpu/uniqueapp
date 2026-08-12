@@ -2,49 +2,62 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export const useGPCurrency = () => {
-  const queryClient = useQueryClient();
+/**
+ * GP Racing Arena — 100% AI-credit based (paid-only model).
+ * Every paid action goes through the `gp-racing-action` edge function which
+ * deducts from the unified `ai_credits` pool and writes a ledger/audit row.
+ */
 
-  const { data: currency, isLoading } = useQuery({
-    queryKey: ["f1-currency"],
+export const GP_CREDIT_COSTS = {
+  buyCar: 5,
+  joinRace: 2,
+  upgrade: 2,
+  livery: 1,
+  shopPurchase: 3,
+  raceStart: 1 } as const;
+
+export type GPAction = "buy-car" | "join-race" | "shop-purchase" | "upgrade" | "livery" | "bet" | "race-start";
+
+export async function chargeGPCredits(
+  action: GPAction,
+  extra: { item_name?: string; amount?: number; metadata?: Record<string, unknown> } = {},
+): Promise<boolean> {
+  const { data, error } = await supabase.functions.invoke("gp-racing-action", {
+    body: { action, ...extra } });
+
+  if (error || (data as any)?.requiresPayment) {
+    const msg = (error as any)?.message || "";
+    if (/402|insufficient|requiresPayment/i.test(msg) || (data as any)?.requiresPayment) {
+      toast.error("Not enough credits", {
+        description: "Top up your AI credits to continue racing.",
+        action: { label: "Top up", onClick: () => (window.location.href = "/ai-credits-store") } });
+    } else {
+      toast.error(msg || "Action failed");
+    }
+    return false;
+  }
+  window.dispatchEvent(new Event("ai-credits-updated"));
+  return true;
+}
+
+/** Unified AI credit balance used across the whole GP Racing Arena. */
+export const useGPCredits = () => {
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ["gp-ai-credits"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null; // Return null instead of throwing for unauthenticated users
-
-      const { data, error } = await supabase
-        .from("f1_currency")
-        .select("*")
+      if (!user) return null;
+      const { data: row, error } = await supabase
+        .from("ai_credits")
+        .select("credits_remaining, total_credits_purchased")
         .eq("user_id", user.id)
         .maybeSingle();
-
       if (error) throw error;
-
-      if (!data) {
-        // Give starter balance
-        const { error: starterError } = await supabase.rpc(
-          "give_f1_starter_balance",
-          { p_user_id: user.id }
-        );
-
-        if (starterError) {
-          console.error("Error giving F1 starter balance:", starterError);
-          throw starterError;
-        }
-
-        const { data: newData, error: fetchError } = await supabase
-          .from("f1_currency")
-          .select("*")
-          .eq("user_id", user.id)
-          .single();
-
-        if (fetchError) throw fetchError;
-        return newData;
-      }
-
-      return data;
+      return { credits_remaining: row?.credits_remaining ?? 0,
+        total_credits_purchased: row?.total_credits_purchased ?? 0 };
     } });
 
-  return { currency, isLoading };
+  return { credits: data, isLoading, refetch };
 };
 
 export const useUserCars = () => {
@@ -67,27 +80,17 @@ export const useUserCars = () => {
     } });
 
   const createCar = useMutation({
-    mutationFn: async ({ name, team, color, costCoins }: { 
-      name: string; 
-      team: string; 
+    mutationFn: async ({ name, team, color }: {
+      name: string;
+      team: string;
       color: string;
-      costCoins: number;
     }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      // Check coins
-      const { data: currency } = await supabase
-        .from("f1_currency")
-        .select("coins")
-        .eq("user_id", user.id)
-        .single();
+      const charged = await chargeGPCredits("buy-car", { item_name: name, metadata: { team, color } });
+      if (!charged) throw new Error("__handled__");
 
-      if (!currency || currency.coins < costCoins) {
-        throw new Error("Insufficient coins");
-      }
-
-      // Random stats
       const stats = { engine_stat: Math.floor(Math.random() * 30) + 40,
         aero_stat: Math.floor(Math.random() * 30) + 40,
         tires_stat: Math.floor(Math.random() * 30) + 40,
@@ -95,31 +98,20 @@ export const useUserCars = () => {
 
       const { data, error } = await supabase
         .from("f1_cars")
-        .insert({ user_id: user.id,
-          name,
-          team,
-          color,
-          ...stats })
+        .insert({ user_id: user.id, name, team, color, ...stats })
         .select()
         .single();
 
       if (error) throw error;
-
-      // Deduct coins
-      await supabase
-        .from("f1_currency")
-        .update({ coins: currency.coins - costCoins })
-        .eq("user_id", user.id);
-
       return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-f1-cars"] });
-      queryClient.invalidateQueries({ queryKey: ["f1-currency"] });
-      toast.success("New racing car acquired! 🏎️");
+      queryClient.invalidateQueries({ queryKey: ["gp-ai-credits"] });
+      toast.success(`New racing car acquired! (−${GP_CREDIT_COSTS.buyCar} credits) 🏎️`);
     },
     onError: (error: Error) => {
-      toast.error(error.message);
+      if (error.message !== "__handled__") toast.error(error.message);
     } });
 
   return { cars, isLoading, createCar };
@@ -157,35 +149,17 @@ export const useJoinGPRace = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ raceId, carId, strategy }: { 
-      raceId: string; 
-      carId: string; 
+    mutationFn: async ({ raceId, carId, strategy }: {
+      raceId: string;
+      carId: string;
       strategy: string;
     }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      // Get race entry fee
-      const { data: race } = await supabase
-        .from("f1_races")
-        .select("entry_fee_coins")
-        .eq("id", raceId)
-        .single();
+      const charged = await chargeGPCredits("join-race", { metadata: { raceId, carId, strategy } });
+      if (!charged) throw new Error("__handled__");
 
-      if (!race) throw new Error("Race not found");
-
-      // Check coins
-      const { data: currency } = await supabase
-        .from("f1_currency")
-        .select("coins")
-        .eq("user_id", user.id)
-        .single();
-
-      if (!currency || currency.coins < race.entry_fee_coins) {
-        throw new Error("Insufficient coins");
-      }
-
-      // Join race
       const { data, error } = await supabase
         .from("f1_race_participants")
         .insert({ race_id: raceId,
@@ -196,22 +170,15 @@ export const useJoinGPRace = () => {
         .single();
 
       if (error) throw error;
-
-      // Deduct entry fee
-      await supabase
-        .from("f1_currency")
-        .update({ coins: currency.coins - race.entry_fee_coins })
-        .eq("user_id", user.id);
-
       return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["active-f1-races"] });
-      queryClient.invalidateQueries({ queryKey: ["f1-currency"] });
-      toast.success("Joined the race! 🏁");
+      queryClient.invalidateQueries({ queryKey: ["gp-ai-credits"] });
+      toast.success(`Joined the race! (−${GP_CREDIT_COSTS.joinRace} credits) 🏁`);
     },
     onError: (error: Error) => {
-      toast.error(error.message);
+      if (error.message !== "__handled__") toast.error(error.message);
     } });
 };
 
@@ -223,21 +190,11 @@ export const useUpgradeCar = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const UPGRADE_COST = 25;
       const STAT_INCREASE = 5;
 
-      // Check coins
-      const { data: currency } = await supabase
-        .from("f1_currency")
-        .select("coins")
-        .eq("user_id", user.id)
-        .single();
+      const charged = await chargeGPCredits("upgrade", { item_name: statType, metadata: { carId } });
+      if (!charged) throw new Error("__handled__");
 
-      if (!currency || currency.coins < UPGRADE_COST) {
-        throw new Error("Insufficient coins for upgrade");
-      }
-
-      // Get current car stats
       const { data: car } = await supabase
         .from("f1_cars")
         .select("*")
@@ -246,7 +203,6 @@ export const useUpgradeCar = () => {
 
       if (!car) throw new Error("Car not found");
 
-      // Update stat
       const statField = `${statType}_stat`;
       const currentValue = car[statField as keyof typeof car] as number;
       const newStatValue = Math.min(currentValue + STAT_INCREASE, 100);
@@ -260,21 +216,15 @@ export const useUpgradeCar = () => {
           level: newLevel } as any)
         .eq("id", carId);
 
-      // Deduct coins
-      await supabase
-        .from("f1_currency")
-        .update({ coins: currency.coins - UPGRADE_COST })
-        .eq("user_id", user.id);
-
       return { statType, newValue: newStatValue };
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["user-f1-cars"] });
-      queryClient.invalidateQueries({ queryKey: ["f1-currency"] });
-      toast.success(`${data.statType} upgraded to ${data.newValue}! 🔧`);
+      queryClient.invalidateQueries({ queryKey: ["gp-ai-credits"] });
+      toast.success(`${data.statType} upgraded to ${data.newValue}! (−${GP_CREDIT_COSTS.upgrade} credits) 🔧`);
     },
     onError: (error: Error) => {
-      toast.error(error.message);
+      if (error.message !== "__handled__") toast.error(error.message);
     } });
 };
 
@@ -286,39 +236,22 @@ export const usePurchaseCarColor = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const COLOR_COST = 50; // Gems
+      const charged = await chargeGPCredits("livery", { metadata: { carId, newColor } });
+      if (!charged) throw new Error("__handled__");
 
-      // Check gems
-      const { data: currency } = await supabase
-        .from("f1_currency")
-        .select("gems")
-        .eq("user_id", user.id)
-        .single();
-
-      if (!currency || currency.gems < COLOR_COST) {
-        throw new Error("Insufficient gems");
-      }
-
-      // Update car color
       await supabase
         .from("f1_cars")
         .update({ color: newColor })
         .eq("id", carId);
 
-      // Deduct gems
-      await supabase
-        .from("f1_currency")
-        .update({ gems: currency.gems - COLOR_COST })
-        .eq("user_id", user.id);
-
       return { carId, newColor };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-f1-cars"] });
-      queryClient.invalidateQueries({ queryKey: ["f1-currency"] });
-      toast.success("Car livery changed! 🎨");
+      queryClient.invalidateQueries({ queryKey: ["gp-ai-credits"] });
+      toast.success(`Car livery changed! (−${GP_CREDIT_COSTS.livery} credit) 🎨`);
     },
     onError: (error: Error) => {
-      toast.error(error.message);
+      if (error.message !== "__handled__") toast.error(error.message);
     } });
 };

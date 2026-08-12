@@ -23,7 +23,7 @@ import { BettingSystem } from "@/components/gp-racing/BettingSystem";
 import { AchievementSystem } from "@/components/gp-racing/AchievementSystem";
 import { TrackEditor } from "@/components/gp-racing/TrackEditor";
 import { GPCircuit3D } from "@/components/gp-racing/GPCircuit3D";
-import { useUserCars, useGPRaces, useJoinGPRace, useUpgradeCar, usePurchaseCarColor, useGPCurrency } from "@/hooks/useGPRacing";
+import { useUserCars, useGPRaces, useJoinGPRace, useUpgradeCar, usePurchaseCarColor, useGPCredits, GP_CREDIT_COSTS, chargeGPCredits } from "@/hooks/useGPRacing";
 import { Trophy, Wrench, Sparkles, Zap, TrendingUp, Car, LogIn, Info, Gauge, Wind, CircleDot, Compass, ShoppingCart, Box, Rocket, Shield, Target, Cpu, Flame, Play, Palette, Cloud, Timer as TimerIcon, Users, Award, Coins, Map, Activity, Crown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -103,9 +103,9 @@ function RaceTrack3D({ participants, isRacing }: { participants: any[]; isRacing
 }
 
 const demoRaces = [
-  { id: "demo-race-1", track_name: "Nebula Drift Circuit", distance: 5410, entry_fee_coins: 24, max_participants: 8, weather: "solar_storm", track_condition: "ion_charged", status: "open", f1_race_participants: [] },
-  { id: "demo-race-2", track_name: "Quantum Horizon Ring", distance: 3340, entry_fee_coins: 50, max_participants: 6, weather: "cosmic_clear", track_condition: "plasma_smooth", status: "open", f1_race_participants: [] },
-  { id: "demo-race-3", track_name: "Asteroid Belt Gauntlet", distance: 4200, entry_fee_coins: 35, max_participants: 10, weather: "meteor_shower", track_condition: "debris_field", status: "open", f1_race_participants: [] },
+  { id: "demo-race-1", track_name: "Nebula Drift Circuit", distance: 5410, entry_fee_coins: 2, max_participants: 8, weather: "solar_storm", track_condition: "ion_charged", status: "open", f1_race_participants: [] },
+  { id: "demo-race-2", track_name: "Quantum Horizon Ring", distance: 3340, entry_fee_coins: 2, max_participants: 6, weather: "cosmic_clear", track_condition: "plasma_smooth", status: "open", f1_race_participants: [] },
+  { id: "demo-race-3", track_name: "Asteroid Belt Gauntlet", distance: 4200, entry_fee_coins: 2, max_participants: 10, weather: "meteor_shower", track_condition: "debris_field", status: "open", f1_race_participants: [] },
 ];
 
 const toolCards = [
@@ -116,7 +116,7 @@ const toolCards = [
   { id: "championship", name: "Championship", icon: Crown, desc: "Seasonal league & standings", color: "text-amber-300", gradient: "from-amber-900/30 to-yellow-950/20", border: "border-amber-400/20" },
   { id: "teams", name: "Team Racing", icon: Users, desc: "Form squads & compete", color: "text-pink-400", gradient: "from-pink-950/30 to-rose-950/20", border: "border-pink-500/20" },
   { id: "telemetry", name: "Telemetry", icon: Activity, desc: "Real-time speed & G-force", color: "text-cyan-300", gradient: "from-cyan-900/30 to-blue-950/20", border: "border-cyan-400/20" },
-  { id: "betting", name: "Race Betting", icon: Coins, desc: "Wager coins on winners", color: "text-orange-400", gradient: "from-orange-950/30 to-red-950/20", border: "border-orange-500/20" },
+  { id: "betting", name: "Race Betting", icon: Coins, desc: "Wager credits on winners", color: "text-orange-400", gradient: "from-orange-950/30 to-red-950/20", border: "border-orange-500/20" },
   { id: "achievements", name: "Achievements", icon: Award, desc: "Track racing milestones", color: "text-yellow-400", gradient: "from-yellow-950/30 to-amber-950/20", border: "border-yellow-500/20" },
   { id: "track-editor", name: "Track Editor", icon: Map, desc: "Design custom circuits", color: "text-indigo-400", gradient: "from-indigo-950/30 to-violet-950/20", border: "border-indigo-500/20" },
 ];
@@ -130,7 +130,7 @@ export default function GPRacingArena() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const { currency } = useGPCurrency();
+  const { credits } = useGPCredits();
   const { cars: userCars, createCar } = useUserCars();
   const { races: userRaces } = useGPRaces();
   const joinRace = useJoinGPRace();
@@ -158,8 +158,8 @@ export default function GPRacingArena() {
     const params = new URLSearchParams(window.location.search);
     const paymentStatus = params.get("payment");
     if (paymentStatus === "success") {
-      toast.success("Purchase successful! Your resources will be added shortly.");
-      setTimeout(() => { queryClient.invalidateQueries({ queryKey: ["f1-currency"] }); }, 2000);
+      toast.success("Purchase successful! Your credits will be added shortly.");
+      setTimeout(() => { queryClient.invalidateQueries({ queryKey: ["gp-ai-credits"] }); }, 2000);
       window.history.replaceState({}, "", "/gp-racing");
     } else if (paymentStatus === "cancelled") {
       toast.info("Payment was cancelled");
@@ -174,7 +174,7 @@ export default function GPRacingArena() {
 
   const handleBuyCar = () => {
     if (!carName) { toast.error("Please enter a car name"); return; }
-    createCar.mutate({ name: carName, team: carTeam, color: carColor, costCoins: 75 }, {
+    createCar.mutate({ name: carName, team: carTeam, color: carColor }, {
       onSuccess: () => { setShowBuyCar(false); setCarName(""); }
     });
   };
@@ -197,6 +197,14 @@ export default function GPRacingArena() {
     purchaseColor.mutate({ carId: selectedCarForShop, newColor: shopColor }, {
       onSuccess: () => { setShowShop(false); setSelectedCarForShop(""); }
     });
+  };
+
+  const handleShopPurchase = async (itemName: string) => {
+    const ok = await chargeGPCredits("shop-purchase", { item_name: itemName });
+    if (ok) {
+      toast.success(`${itemName} purchased! (−${GP_CREDIT_COSTS.shopPurchase} credits)`);
+      queryClient.invalidateQueries({ queryKey: ["gp-ai-credits"] });
+    }
   };
 
   const activeRace = races?.find(r => r.id === selectedRace);
@@ -345,7 +353,7 @@ export default function GPRacingArena() {
               </div>
               <Button onClick={() => requireAuth(() => setShowBuyCar(true))}
                 className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/30 shadow-lg shadow-cyan-500/20 font-mono uppercase tracking-wider text-xs">
-                <Zap className="mr-2 h-4 w-4" /> Buy Car (75 Coins)
+                <Zap className="mr-2 h-4 w-4" /> Buy Car (5 Credits)
               </Button>
             </div>
 
@@ -447,7 +455,7 @@ export default function GPRacingArena() {
                       if (data?.results) {
                         const winner = data.results[0];
                         setTimeout(() => {
-                          toast.success(`Race complete! Victor: ${winner.carName}${winner.prize > 0 ? ` — Reward: ${winner.prize} coins` : ""} 🏆`);
+                          toast.success(`Race complete! Victor: ${winner.carName}${winner.prize > 0 ? ` — Reward: ${winner.prize} credits` : ""} 🏆`);
                         }, 12000);
                       }
                     } catch (error) {
@@ -458,7 +466,7 @@ export default function GPRacingArena() {
                       setRaceRunning(false);
                       queryClient.invalidateQueries({ queryKey: ["active-f1-races"] });
                       queryClient.invalidateQueries({ queryKey: ["user-f1-cars"] });
-                      queryClient.invalidateQueries({ queryKey: ["f1-currency"] });
+                      queryClient.invalidateQueries({ queryKey: ["gp-ai-credits"] });
                     }, 13000);
                   })}>
                   <Flame className="mr-2 h-5 w-5" /> {raceRunning ? "Race in progress…" : "Start Race"}
@@ -478,7 +486,7 @@ export default function GPRacingArena() {
                               <Target className="h-3 w-3" /> {race.distance}m
                             </span>
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/15 text-[10px] font-mono text-amber-300 uppercase">
-                              Entry: {race.entry_fee_coins}
+                              Entry: {GP_CREDIT_COSTS.joinRace} credits
                             </span>
                           </div>
                           <div className="flex flex-wrap gap-2 mt-1.5">
@@ -514,7 +522,7 @@ export default function GPRacingArena() {
               <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
               <div className="p-4 sm:p-6">
                 <h2 className="text-xl sm:text-2xl font-mono font-bold mb-1 text-white uppercase tracking-wider">Car Upgrades</h2>
-                <p className="text-cyan-400/50 font-mono text-xs mb-6 uppercase tracking-wider">Upgrade car components — 25 Coins per upgrade</p>
+                <p className="text-cyan-400/50 font-mono text-xs mb-6 uppercase tracking-wider">Upgrade car components — 2 credits per upgrade</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {cars?.map((car) => (
                     <Card key={car.id} className="p-4 bg-slate-950/50 border-cyan-500/15 backdrop-blur-sm">
@@ -565,24 +573,25 @@ export default function GPRacingArena() {
               <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
               <div className="p-4 sm:p-6">
                 <h2 className="text-xl sm:text-2xl font-mono font-bold mb-1 text-white uppercase tracking-wider">Parts & Tech Shop</h2>
-                <p className="text-cyan-400/50 font-mono text-xs mb-6 uppercase tracking-wider">Buy performance parts to dominate races</p>
+                <p className="text-cyan-400/50 font-mono text-xs mb-6 uppercase tracking-wider">Buy performance parts — 3 credits per item</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {[
-                    { emoji: "🔥", name: "Turbo Engine V8", desc: "+15 Engine Power", price: "150 Coins", tier: "standard" },
-                    { emoji: "⚡", name: "Hybrid Power Unit", desc: "+20 Engine, +5 Efficiency", price: "250 Coins", tier: "standard" },
-                    { emoji: "💎", name: "Nuclear Fusion Core", desc: "+30 Engine Power", price: "100 Gems", tier: "premium" },
-                    { emoji: "🌬️", name: "Carbon Fiber Wing", desc: "+10 Aerodynamics", price: "100 Coins", tier: "standard" },
-                    { emoji: "🛸", name: "DRS+ System", desc: "+18 Aero, +5 Speed", price: "200 Coins", tier: "standard" },
-                    { emoji: "🚀", name: "Active Aero Kit", desc: "+25 Aerodynamics", price: "80 Gems", tier: "premium" },
-                    { emoji: "🛞", name: "Soft Compound Tires", desc: "+12 Grip, +8 Handling", price: "120 Coins", tier: "standard" },
-                    { emoji: "🏁", name: "Slick Racing Tires", desc: "+20 Grip", price: "180 Coins", tier: "standard" },
-                    { emoji: "✨", name: "Quantum Grip Tires", desc: "+30 Grip, +15 Handling", price: "120 Gems", tier: "premium" },
-                    { emoji: "🎯", name: "Precision Steering", desc: "+15 Handling", price: "130 Coins", tier: "standard" },
-                    { emoji: "⚙️", name: "Advanced Suspension", desc: "+18 Handling, +8 Stability", price: "200 Coins", tier: "standard" },
-                    { emoji: "🤖", name: "AI Assist System", desc: "+25 Handling, Auto-correct", price: "90 Gems", tier: "premium" },
+                    { emoji: "🔥", name: "Turbo Engine V8", desc: "+15 Engine Power", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "standard" },
+                    { emoji: "⚡", name: "Hybrid Power Unit", desc: "+20 Engine, +5 Efficiency", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "standard" },
+                    { emoji: "💎", name: "Nuclear Fusion Core", desc: "+30 Engine Power", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "premium" },
+                    { emoji: "🌬️", name: "Carbon Fiber Wing", desc: "+10 Aerodynamics", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "standard" },
+                    { emoji: "🛸", name: "DRS+ System", desc: "+18 Aero, +5 Speed", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "standard" },
+                    { emoji: "🚀", name: "Active Aero Kit", desc: "+25 Aerodynamics", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "premium" },
+                    { emoji: "🛞", name: "Soft Compound Tires", desc: "+12 Grip, +8 Handling", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "standard" },
+                    { emoji: "🏁", name: "Slick Racing Tires", desc: "+20 Grip", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "standard" },
+                    { emoji: "✨", name: "Quantum Grip Tires", desc: "+30 Grip, +15 Handling", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "premium" },
+                    { emoji: "🎯", name: "Precision Steering", desc: "+15 Handling", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "standard" },
+                    { emoji: "⚙️", name: "Advanced Suspension", desc: "+18 Handling, +8 Stability", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "standard" },
+                    { emoji: "🤖", name: "AI Assist System", desc: "+25 Handling, Auto-correct", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "premium" },
                   ].map((item, i) => (
                     <motion.div key={i} whileHover={{ scale: 1.02 }}
-                      className={`p-4 rounded-xl border backdrop-blur-sm transition-all ${
+                      onClick={() => requireAuth(() => handleShopPurchase(item.name))}
+                      className={`cursor-pointer p-4 rounded-xl border backdrop-blur-sm transition-all ${
                         item.tier === "premium" 
                           ? "bg-gradient-to-b from-violet-950/40 to-slate-950/60 border-violet-500/30 hover:border-violet-400/50" 
                           : "bg-slate-950/40 border-cyan-500/15 hover:border-cyan-400/30"
@@ -602,12 +611,13 @@ export default function GPRacingArena() {
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     {[
-                      { emoji: "🏆", name: "Champion's Nitro Boost", desc: "+10% Race Speed", price: "300 Coins", gradient: "from-amber-950/40 to-orange-950/30", border: "border-amber-500/30" },
-                      { emoji: "❄️", name: "Cryo Cooling System", desc: "Anti-overheat, +5 All", price: "350 Coins", gradient: "from-blue-950/40 to-cyan-950/30", border: "border-blue-500/30" },
-                      { emoji: "⭐", name: "Legendary Engine Swap", desc: "+50 All Stats", price: "500 Gems", gradient: "from-violet-950/40 to-purple-950/30", border: "border-violet-400/40" },
+                      { emoji: "🏆", name: "Champion's Nitro Boost", desc: "+10% Race Speed", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, gradient: "from-amber-950/40 to-orange-950/30", border: "border-amber-500/30" },
+                      { emoji: "❄️", name: "Cryo Cooling System", desc: "Anti-overheat, +5 All", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, gradient: "from-blue-950/40 to-cyan-950/30", border: "border-blue-500/30" },
+                      { emoji: "⭐", name: "Legendary Engine Swap", desc: "+50 All Stats", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, gradient: "from-violet-950/40 to-purple-950/30", border: "border-violet-400/40" },
                     ].map((item, i) => (
                       <motion.div key={i} whileHover={{ scale: 1.02 }}
-                        className={`p-4 rounded-xl bg-gradient-to-b ${item.gradient} border ${item.border} backdrop-blur-sm`}>
+                        onClick={() => requireAuth(() => handleShopPurchase(item.name))}
+                        className={`cursor-pointer p-4 rounded-xl bg-gradient-to-b ${item.gradient} border ${item.border} backdrop-blur-sm`}>
                         <div className="text-2xl mb-2">{item.emoji}</div>
                         <h3 className="font-mono font-bold text-sm text-white">{item.name}</h3>
                         <p className="text-[10px] font-mono text-cyan-400/50 mt-1">{item.desc}</p>
@@ -624,14 +634,15 @@ export default function GPRacingArena() {
                   </h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
                     {[
-                      { name: "Bronze", desc: "+5-15 stats", price: "50 Coins", gradient: "from-amber-900/30 to-amber-950/30", border: "border-amber-500/20" },
-                      { name: "Silver", desc: "+10-25 stats", price: "100 Coins", gradient: "from-gray-700/30 to-gray-900/30", border: "border-gray-400/20" },
-                      { name: "Gold", desc: "+20-40 stats", price: "200 Coins", gradient: "from-yellow-900/30 to-amber-950/30", border: "border-yellow-500/30" },
-                      { name: "Diamond", desc: "+30-60 stats", price: "50 Gems", gradient: "from-blue-900/30 to-violet-950/30", border: "border-blue-400/30" },
-                      { name: "Legendary", desc: "+100 All + Skin", price: "300 Gems", gradient: "from-amber-600/20 via-orange-600/20 to-red-600/20", border: "border-amber-300/40", special: true },
+                      { name: "Bronze", desc: "+5-15 stats", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, gradient: "from-amber-900/30 to-amber-950/30", border: "border-amber-500/20" },
+                      { name: "Silver", desc: "+10-25 stats", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, gradient: "from-gray-700/30 to-gray-900/30", border: "border-gray-400/20" },
+                      { name: "Gold", desc: "+20-40 stats", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, gradient: "from-yellow-900/30 to-amber-950/30", border: "border-yellow-500/30" },
+                      { name: "Diamond", desc: "+30-60 stats", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, gradient: "from-blue-900/30 to-violet-950/30", border: "border-blue-400/30" },
+                      { name: "Legendary", desc: "+100 All + Skin", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, gradient: "from-amber-600/20 via-orange-600/20 to-red-600/20", border: "border-amber-300/40", special: true },
                     ].map((box, i) => (
                       <motion.div key={i} whileHover={{ scale: 1.03 }}
-                        className={`p-3 rounded-xl bg-gradient-to-b ${box.gradient} border ${box.border} text-center backdrop-blur-sm ${box.special ? "animate-pulse" : ""}`}>
+                        onClick={() => requireAuth(() => handleShopPurchase(box.name + " Crate"))}
+                        className={`cursor-pointer p-3 rounded-xl bg-gradient-to-b ${box.gradient} border ${box.border} text-center backdrop-blur-sm ${box.special ? "animate-pulse" : ""}`}>
                         <div className="text-xl mb-1">{box.special ? "👑" : ["📦", "🎁", "✨", "💎"][i]}</div>
                         <h4 className="font-mono font-bold text-xs text-white">{box.name}</h4>
                         <p className="text-[9px] font-mono text-cyan-400/40 mt-0.5">{box.desc}</p>
@@ -648,7 +659,7 @@ export default function GPRacingArena() {
                   </h3>
                   <Button onClick={() => requireAuth(() => setShowShop(true))} disabled={!cars || cars.length === 0}
                     className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 border border-violet-400/30 font-mono uppercase tracking-wider text-xs">
-                    <Sparkles className="mr-2 h-4 w-4" /> Change Car Livery (50 Gems)
+                    <Sparkles className="mr-2 h-4 w-4" /> Change Car Livery (1 Credit)
                   </Button>
                 </div>
               </div>
@@ -696,7 +707,7 @@ export default function GPRacingArena() {
               <Input type="color" value={carColor} onChange={(e) => setCarColor(e.target.value)} className="h-12 bg-slate-900/50 border-cyan-500/30" />
             </div>
             <Button onClick={handleBuyCar} className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/20 font-mono uppercase tracking-wider" disabled={createCar.isPending}>
-              {createCar.isPending ? "Building..." : "Buy Car (75 Coins)"}
+              {createCar.isPending ? "Building..." : "Buy Car (5 Credits)"}
             </Button>
           </div>
         </DialogContent>
@@ -759,7 +770,7 @@ export default function GPRacingArena() {
               <Input type="color" value={shopColor} onChange={(e) => setShopColor(e.target.value)} className="h-12 bg-slate-900/50 border-cyan-500/30" />
             </div>
             <Button onClick={handlePurchaseColor} className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 border border-violet-400/20 font-mono uppercase tracking-wider" disabled={purchaseColor.isPending}>
-              {purchaseColor.isPending ? "Applying..." : "Apply Livery (50 Gems)"}
+              {purchaseColor.isPending ? "Applying..." : "Apply Livery (1 Credit)"}
             </Button>
           </div>
         </DialogContent>

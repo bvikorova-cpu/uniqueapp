@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { ArrowLeft, Coins, TrendingUp, TrendingDown, Clock, Trophy, Flame, Star, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { chargeGPCredits } from "@/hooks/useGPRacing";
 
 interface RaceBet {
   id: string;
@@ -54,19 +55,25 @@ const betHistory = [
 export function BettingSystem({ onBack }: { onBack: () => void }) {
   const [showBetDialog, setShowBetDialog] = useState(false);
   const [selectedBet, setSelectedBet] = useState<{ raceId: string; driver: string; odds: number } | null>(null);
-  const [betAmount, setBetAmount] = useState("50");
+  const [betAmount, setBetAmount] = useState("5");
+  const [placing, setPlacing] = useState(false);
   const [tab, setTab] = useState<"races" | "history">("races");
 
   const totalWon = betHistory.filter(b => b.result === "won").reduce((s, b) => s + b.payout, 0);
   const totalLost = betHistory.filter(b => b.result === "lost").reduce((s, b) => s + b.amount, 0);
 
-  const placeBet = () => {
-    if (!selectedBet || !betAmount || Number(betAmount) <= 0) { toast.error("Enter a valid bet amount"); return; }
-    const potential = (Number(betAmount) * selectedBet.odds).toFixed(0);
-    toast.success(`Bet placed! ${betAmount} Coins on ${selectedBet.driver} @ ${selectedBet.odds}x — Potential win: ${potential} Coins 🎰`);
+  const placeBet = async () => {
+    const stake = Number(betAmount);
+    if (!selectedBet || !stake || stake <= 0 || stake > 50) { toast.error("Enter a stake between 1 and 50 credits"); return; }
+    setPlacing(true);
+    const ok = await chargeGPCredits("bet", { amount: Math.round(stake), item_name: selectedBet.driver, metadata: { raceId: selectedBet.raceId, odds: selectedBet.odds } });
+    setPlacing(false);
+    if (!ok) return;
+    const potential = (stake * selectedBet.odds).toFixed(0);
+    toast.success(`Bet placed! ${stake} credits on ${selectedBet.driver} @ ${selectedBet.odds}x — Potential win: ${potential} credits 🎰`);
     setShowBetDialog(false);
     setSelectedBet(null);
-    setBetAmount("50");
+    setBetAmount("5");
   };
 
   return (
@@ -79,7 +86,7 @@ export function BettingSystem({ onBack }: { onBack: () => void }) {
         </Button>
         <div>
           <h2 className="text-2xl font-mono font-bold text-white uppercase tracking-wider">Race Betting</h2>
-          <p className="text-[10px] font-mono text-cyan-400/40 uppercase tracking-[0.3em]">Wager coins on race outcomes</p>
+          <p className="text-[10px] font-mono text-cyan-400/40 uppercase tracking-[0.3em]">Wager AI credits on race outcomes</p>
         </div>
       </div>
 
@@ -194,22 +201,22 @@ export function BettingSystem({ onBack }: { onBack: () => void }) {
                 <p className="font-mono text-sm text-white mt-1">Odds: <span className="text-amber-400">{selectedBet.odds}x</span></p>
               </Card>
               <div>
-                <label className="text-cyan-300 font-mono text-xs uppercase tracking-wider block mb-1.5">Bet Amount (Coins)</label>
+                <label className="text-cyan-300 font-mono text-xs uppercase tracking-wider block mb-1.5">Bet Amount (Credits, 1–50)</label>
                 <Input type="number" value={betAmount} onChange={e => setBetAmount(e.target.value)} min={1}
                   className="bg-slate-900/50 border-cyan-500/30 text-white font-mono" />
                 <p className="text-xs font-mono text-cyan-400/40 mt-1">
-                  Potential win: <span className="text-amber-400 font-bold">{(Number(betAmount) * selectedBet.odds).toFixed(0)} Coins</span>
+                  Potential win: <span className="text-amber-400 font-bold">{(Number(betAmount) * selectedBet.odds).toFixed(0)} credits</span>
                 </p>
               </div>
               <div className="flex gap-2">
-                {[25, 50, 100, 250].map(amount => (
+                {[2, 5, 10, 25].map(amount => (
                   <Button key={amount} variant="outline" size="sm" onClick={() => setBetAmount(String(amount))}
                     className="flex-1 border-cyan-500/20 text-cyan-300 font-mono text-xs hover:bg-cyan-950/30">
                     {amount}
                   </Button>
                 ))}
               </div>
-              <Button onClick={placeBet}
+              <Button onClick={placeBet} disabled={placing}
                 className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 border border-amber-400/30 font-mono uppercase tracking-wider">
                 Place Bet
               </Button>

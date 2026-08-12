@@ -230,7 +230,6 @@ export const TipsterDashboard = lazy(() => import("@/pages/TipsterDashboard"));
 export const LotteryAI = lazy(() => import("@/pages/LotteryAI"));
 export const LotteryHistory = lazy(() => import("@/pages/LotteryHistory"));
 export const GPRacing = lazy(() => import("@/pages/GPRacing"));
-export const GPSubscription = lazy(() => import("@/pages/GPSubscription"));
 export const GPFantasyTeam = lazy(() => import("@/pages/GPFantasyTeam"));
 export const GPRacingArena = lazy(() => import("@/pages/GPRacingArena"));
 export const GPLeaderboard = lazy(() => import("@/pages/GPLeaderboard"));

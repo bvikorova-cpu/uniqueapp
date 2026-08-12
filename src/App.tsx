@@ -300,7 +300,6 @@ import { ResetPassword,
   GlamourWorld,
   E2EAnonymousDateMatches,
   GPRacing,
-  GPSubscription,
   GPFantasyTeam,
   GPRacingArena,
   GPLeaderboard,
@@ -1218,38 +1217,15 @@ const App = () => {
                         <Route path="/parallel-universe" element={<ParallelUniverse />} />
                         <Route path="/memory-auctions" element={<MemoryAuctions />} />
                         <Route path="/brand-kits" element={<BrandKits />} />
-                        <Route path="/gp-racing-old" element={
-                          <SubscriptionGuard 
-                            checkFunction="check-f1-subscription" 
-                            redirectTo="/gp-subscription"
-                            serviceName="GP Racing"
-                          >
-                            <GPRacing />
-                          </SubscriptionGuard>
-                        } />
-                        <Route path="/gp-subscription" element={<GPSubscription />} />
-                        <Route path="/gp-fantasy-team" element={
-                          <SubscriptionGuard 
-                            checkFunction="check-f1-subscription" 
-                            redirectTo="/gp-subscription"
-                            serviceName="GP Racing"
-                          >
-                            <GPFantasyTeam />
-                          </SubscriptionGuard>
-                        } />
-                        <Route path="/gp-leaderboard" element={
-                          <SubscriptionGuard 
-                            checkFunction="check-f1-subscription" 
-                            redirectTo="/gp-subscription"
-                            serviceName="GP Racing"
-                          >
-                            <GPLeaderboard />
-                          </SubscriptionGuard>
-                        } />
+                        {/* GP Racing is 100% AI-credit based — no subscription gate */}
+                        <Route path="/gp-racing-old" element={<GPRacing />} />
+                        <Route path="/gp-subscription" element={<Navigate to="/gp-racing" replace />} />
+                        <Route path="/gp-fantasy-team" element={<GPFantasyTeam />} />
+                        <Route path="/gp-leaderboard" element={<GPLeaderboard />} />
                         {/* Legacy /f1-* redirects → /gp-* */}
                         <Route path="/f1-racing" element={<Navigate to="/gp-racing" replace />} />
                         <Route path="/f1-racing-old" element={<Navigate to="/gp-racing-old" replace />} />
-                        <Route path="/f1-subscription" element={<Navigate to="/gp-subscription" replace />} />
+                        <Route path="/f1-subscription" element={<Navigate to="/gp-racing" replace />} />
                         <Route path="/f1-fantasy-team" element={<Navigate to="/gp-fantasy-team" replace />} />
                         <Route path="/f1-leaderboard" element={<Navigate to="/gp-leaderboard" replace />} />
 
