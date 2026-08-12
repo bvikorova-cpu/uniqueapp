@@ -404,7 +404,7 @@ Return JSON with: { "title": "evocative title", "story": "full story text" }.
 The story must have a strong opening hook, atmospheric build-up, and chilling ending.`;
         const aiData = await tryVertexChat({
           model: "google/gemini-2.5-flash",
-          max_tokens: length === "long" ? 4096 : 2048,
+          max_tokens: length === "long" ? 8192 : 4096,
           messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: String(prompt) },
@@ -417,22 +417,36 @@ The story must have a strong opening hook, atmospheric build-up, and chilling en
           const raw: string = aiData.choices?.[0]?.message?.content ?? "";
           const cleaned = raw.replace(/```json/gi, "").replace(/```/g, "").trim();
           const match = cleaned.match(/\{[\s\S]*\}/);
-          if (match) {
-            try {
-              const parsed = JSON.parse(match[0]);
-              generatedTitle = parsed.title || generatedTitle;
-              generatedStory = parsed.story || "";
-            } catch {
-              generatedStory = cleaned;
+          let parsed: any = null;
+          if (match) { try { parsed = JSON.parse(match[0]); } catch { /* repair below */ } }
+          if (!parsed) {
+            // Truncated / malformed JSON — pull the fields out with regex and unescape.
+            const t = cleaned.match(/"title"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+            const s = cleaned.match(/"story"\s*:\s*"((?:[^"\\]|\\.)*)/);
+            const unescape = (v: string) => v
+              .replace(/\\n/g, "\n").replace(/\\t/g, "\t")
+              .replace(/\\"/g, '"').replace(/\\\\/g, "\\").trim();
+            if (t) generatedTitle = unescape(t[1]) || generatedTitle;
+            if (s) generatedStory = unescape(s[1]);
+            // Last resort: strip any JSON scaffolding so the reader never sees braces/keys.
+            if (!generatedStory) {
+              generatedStory = cleaned
+                .replace(/^\s*\{/, "").replace(/\}\s*$/, "")
+                .replace(/"(title|story)"\s*:\s*/gi, "")
+                .replace(/^\s*"|"\s*,?\s*$/g, "")
+                .replace(/\\n/g, "\n")
+                .trim();
             }
           } else {
-            generatedStory = cleaned;
+            generatedTitle = parsed.title || generatedTitle;
+            generatedStory = typeof parsed.story === "string" ? parsed.story : "";
           }
         } catch (e) {
           console.error("story parse failed", e);
           return json({ error: "AI returned an unreadable story. Please try again." }, 502);
         }
         if (!generatedStory) return json({ error: "AI returned an empty story. Please try again." }, 502);
+
         let illustrationUrl: string | null = null;
         if (generateImage) {
           try {

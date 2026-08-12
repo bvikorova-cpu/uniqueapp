@@ -156,7 +156,7 @@ export function ShadowAIToolsHub() {
               {(storyResult.story?.illustration_url || storyResult.imageUrl) && (
                 <img src={storyResult.story?.illustration_url || storyResult.imageUrl} alt="Generated horror" className="w-full rounded-lg border border-red-900/30" />
               )}
-              <p className="text-sm whitespace-pre-wrap text-foreground/90 font-serif leading-relaxed max-h-80 overflow-y-auto">
+              <p className="text-sm whitespace-pre-wrap text-red-50 font-serif leading-relaxed max-h-80 overflow-y-auto">
                 {storyResult.story?.generated_story ||
                   (typeof storyResult.story === "string" ? storyResult.story : "") ||
                   storyResult.content}
