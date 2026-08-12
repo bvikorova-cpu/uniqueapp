@@ -196,10 +196,12 @@ export const ConcertBroadcaster = ({ concertId, title, scheduledAt, status, onSt
           {!cameraOn && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center p-4">
               <Camera className="h-10 w-10 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">
-                {dueMs > 0
-                  ? `Camera starts automatically in ${fmtCountdown(dueMs)}`
-                  : "Camera is off — start the stream to go live"}
+              <p className={`text-sm ${error ? "text-destructive font-medium" : "text-muted-foreground"}`}>
+                {error
+                  ? error
+                  : dueMs > 0
+                    ? `Camera starts automatically in ${fmtCountdown(dueMs)}`
+                    : "Camera is off — start the stream to go live"}
               </p>
             </div>
           )}
