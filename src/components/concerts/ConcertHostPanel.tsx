@@ -59,7 +59,10 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
           .select("viewer_count")
           .eq("id", concertId)
           .maybeSingle(),
-        supabase.from("concert_tickets").select("ticket_type").eq("concert_id", concertId),
+        supabase
+          .from("concert_ticket_purchases")
+          .select("amount, payment_status")
+          .eq("concert_id", concertId),
         supabase.from("concert_ticket_types").select("name, price").eq("concert_id", concertId),
       ]);
       if (cancelled) return;
@@ -67,13 +70,12 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
       setLoadError(queryError?.message || null);
       setGifts((giftRows as GiftRow[]) || []);
       setViewerCount(Number(concert?.viewer_count || 0));
-      const priceByType: Record<string, number> = {};
-      (ticketTypes || []).forEach((t: any) => { priceByType[String(t.name).toLowerCase()] = Number(t.price || 0); });
-      const tickets = ticketRows || [];
-      setTicketCount(tickets.length);
-      setTicketRevenue(
-        tickets.reduce((s: number, t: any) => s + (priceByType[String(t.ticket_type || "").toLowerCase()] || 0), 0)
+      const paidTickets = (ticketRows || []).filter((t: any) =>
+        PAID.includes(String(t.payment_status || "").toLowerCase())
       );
+      setTicketCount(paidTickets.length);
+      setTicketRevenue(paidTickets.reduce((s: number, t: any) => s + Number(t.amount || 0), 0));
+
       const map: Record<string, { name: string; icon: string }> = {};
       (catalog || []).forEach((g: any) => { map[g.id] = { name: g.name, icon: g.icon }; });
       setGiftNames(map);
