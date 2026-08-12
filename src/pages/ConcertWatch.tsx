@@ -141,13 +141,9 @@ const ConcertWatch = () => {
     const handle = startViewer(
       id,
       (stream) => {
+        rtcStreamRef.current = stream;
         setRtcConnecting(false);
         setRtcActive(true);
-        const video = videoRef.current;
-        if (video) {
-          video.srcObject = stream;
-          video.play().catch(() => {});
-        }
       },
       (state) => {
         if (state === "failed" || state === "closed" || state === "disconnected") {
@@ -158,10 +154,23 @@ const ConcertWatch = () => {
     );
     return () => {
       handle.stop();
+      rtcStreamRef.current = null;
       setRtcActive(false);
       setRtcConnecting(false);
     };
   }, [id, allowed, concert?.status, concert?.playback_url]);
+
+  // Attach the WebRTC stream once the <video> element is mounted
+  useEffect(() => {
+    if (!rtcActive) return;
+    const video = videoRef.current;
+    const stream = rtcStreamRef.current;
+    if (video && stream) {
+      video.srcObject = stream;
+      video.play().catch(() => {});
+    }
+  }, [rtcActive]);
+
 
 
 
