@@ -12,7 +12,7 @@ export const ConcertAnalytics = ({ onBack }: Props) => {
     queryKey: ["concert-analytics"],
     queryFn: async () => {
       const [concerts, musicians, gifts] = await Promise.all([
-        supabase.from("live_concert_streams").select("id", { count: "exact", head: true }),
+        supabase.from("live_concert_streams_public").select("id", { count: "exact", head: true }),
         supabase.from("musician_profiles").select("id", { count: "exact", head: true }),
         supabase.from("platform_gifts").select("id", { count: "exact", head: true }),
       ]);
