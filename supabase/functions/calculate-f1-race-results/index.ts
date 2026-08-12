@@ -46,9 +46,12 @@ serve(async (req) => {
 
     if (raceError) throw raceError;
 
-    const participants = race.f1_race_participants;
+    const participants = race.f1_race_participants ?? [];
     if (participants.length === 0) {
-      throw new Error("No participants in race");
+      return new Response(
+        JSON.stringify({ success: false, results: [], message: "No participants in this race yet. Join with a car first." }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 },
+      );
     }
 
     console.log(`Processing ${participants.length} participants`);
