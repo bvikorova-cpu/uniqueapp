@@ -39,6 +39,7 @@ export const ConcertBroadcaster = ({ concertId, title, scheduledAt, status, onSt
   const [camEnabled, setCamEnabled] = useState(true);
   const [live, setLive] = useState(status === "live");
   const [viewers, setViewers] = useState(0);
+  const [error, setError] = useState<string | null>(null);
   const [now, setNow] = useState(Date.now());
 
   const scheduledMs = new Date(scheduledAt).getTime();
