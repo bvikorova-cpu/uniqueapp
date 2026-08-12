@@ -28,7 +28,7 @@ export function ArenaPrizePool({ totalPool }: ArenaPrizePoolProps) {
           transition={{ duration: 2, repeat: Infinity }}
         >
           <DollarSign className="w-5 h-5" />
-          €{totalPool.toFixed(2)}
+          {totalPool} cr
         </motion.div>
       </div>
 
@@ -56,7 +56,7 @@ export function ArenaPrizePool({ totalPool }: ArenaPrizePoolProps) {
       </div>
 
       <p className="text-xs text-muted-foreground mt-4 text-center">
-        Payouts processed via Stripe within 48 hours of battle completion
+        Winners receive credit payouts right after the battle ends
       </p>
     </div>
   </>

@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { SubscriptionGate } from '@/components/shadow-arena/SubscriptionGate';
+import { ShadowCreditsGate } from '@/components/shadow-arena/ShadowCreditsGate';
 import { Swords, Trophy, Clock, ArrowLeft, Sparkles, Shield, Gift, Timer, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { shadowArenaCall } from '@/hooks/useShadowArenaRouter';
 import { motion } from 'framer-motion';
 import { GothicPageHeader } from '@/components/shadow-arena/GothicPageHeader';
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -72,14 +73,16 @@ export default function ShadowArenaBattles() {
   const createNewBattle = async () => {
     try {
       setCreating(true);
-      toast.info('Creating new battle with AI challenge...');
-      const { error } = await supabase.functions.invoke('create-shadow-battle');
-      if (error) throw error;
-      toast.success('New battle created!');
+      toast.info('Creating new battle (3 credits)...');
+      await shadowArenaCall('battle_create');
+      toast.success('New battle created! 3 credits charged.');
       fetchBattles();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Create battle error:', error);
-      toast.error('Failed to create battle');
+      const msg = String(error?.message || '');
+      toast.error(msg.includes('insufficient_credits')
+        ? 'Not enough credits — creating a battle costs 3 credits.'
+        : 'Failed to create battle');
     } finally {
       setCreating(false);
     }
@@ -108,13 +111,13 @@ export default function ShadowArenaBattles() {
     { icon: Sparkles, label: "AI-generated themes every month" },
     { icon: Shield, label: "Anonymous submissions for fair judging" },
     { icon: Gift, label: "Digital gifts = weighted votes" },
-    { icon: Trophy, label: "80% to winners, Top 3 split" },
+    { icon: Trophy, label: "Prize pool in credits, Top 3 split" },
     { icon: Timer, label: "14-day battle duration" },
-    { icon: Users, label: "€1 entry — all goes to prize pool" },
+    { icon: Users, label: "5 credits entry — all goes to the prize pool" },
   ];
 
   return (
-<SubscriptionGate>
+<ShadowCreditsGate>
   <FloatingHowItWorks title="ShadowArenaBattles — How it works" steps={[{title:"Open this section",desc:"Access ShadowArenaBattles from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
       <div className="container mx-auto px-4 sm:px-6 pt-24 pb-8 max-w-5xl">
         {/* Back nav */}
@@ -132,7 +135,7 @@ export default function ShadowArenaBattles() {
             {totalPool > 0 && (
               <div className="px-4 py-2 rounded-xl bg-black/60 backdrop-blur-md border border-yellow-800/40">
                 <p className="text-[10px] uppercase tracking-wide text-yellow-400/70">Active Pools</p>
-                <p className="text-lg font-black text-yellow-400">€{totalPool.toFixed(2)}</p>
+                <p className="text-lg font-black text-yellow-400">{totalPool} cr</p>
               </div>
             )}
             <Button
@@ -238,7 +241,7 @@ export default function ShadowArenaBattles() {
                       <div className="text-right shrink-0">
                         <Trophy className="h-6 w-6 text-yellow-500 mb-1 ml-auto" />
                         <p className="text-2xl font-black text-yellow-400">
-                          €{battle.total_prize_pool.toFixed(2)}
+                          {battle.total_prize_pool} cr
                         </p>
                         <p className="text-xs text-muted-foreground">Prize Pool</p>
                       </div>
@@ -261,6 +264,6 @@ export default function ShadowArenaBattles() {
           </div>
         )}
       </div>
-    </SubscriptionGate>
+    </ShadowCreditsGate>
   );
 }

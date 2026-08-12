@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { SubscriptionGate } from '@/components/shadow-arena/SubscriptionGate';
+import { ShadowCreditsGate } from '@/components/shadow-arena/ShadowCreditsGate';
 import { ShadowArenaHero } from '@/components/shadow-arena/ShadowArenaHero';
 import { ShadowCreditsCard } from '@/components/shadow-arena/ShadowCreditsCard';
 import { ShadowAIToolsHub } from '@/components/shadow-arena/ShadowAIToolsHub';
@@ -27,7 +27,7 @@ import { StreamScheduleCard } from '@/components/shadow-arena/StreamScheduleCard
 import { AutoClipsCard } from '@/components/shadow-arena/AutoClipsCard';
 import { ChatModerationCard } from '@/components/shadow-arena/ChatModerationCard';
 import { Plus, Swords, BookOpen, Trophy } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 
 import { toast } from 'sonner';
@@ -54,38 +54,11 @@ interface Story {
 
 export default function ShadowArenaDashboard() {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const [battles, setBattles] = useState<Battle[]>([]);
   const [stories, setStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Verify payment after Stripe redirect
-  useEffect(() => {
-    const sessionId = searchParams.get('session_id');
-    const paymentStatus = searchParams.get('payment');
-    if (paymentStatus === 'canceled') {
-      toast.error("Payment canceled");
-      searchParams.delete('payment');
-      setSearchParams(searchParams, { replace: true });
-      return;
-    }
-    if (paymentStatus === 'success' && sessionId) {
-      supabase.functions
-        .invoke('verify-credits-payment', { body: { session_id: sessionId } })
-        .then(({ data, error }) => {
-          if (error || !data?.success) {
-            toast.error("Could not verify payment");
-          } else {
-            toast.success("Credits added to your account!");
-            queryClient.invalidateQueries({ queryKey: ['shadow-arena-credits'] });
-          }
-          searchParams.delete('payment');
-          searchParams.delete('session_id');
-          setSearchParams(searchParams, { replace: true });
-        });
-    }
-  }, [searchParams, setSearchParams, queryClient]);
 
   useEffect(() => {
     fetchData();
@@ -127,7 +100,7 @@ export default function ShadowArenaDashboard() {
 
   return (
     <><FloatingHowItWorks title="ShadowArenaDashboard — How it works" steps={[{title:"Open this section",desc:"Access ShadowArenaDashboard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
-<SubscriptionGate>
+<ShadowCreditsGate>
       <div className="container mx-auto px-4 sm:px-6 pt-6 pb-28 md:pb-8 max-w-6xl">
         <ShadowArenaHero
           totalPrizePool={totalActivePrizePool}
@@ -226,7 +199,7 @@ export default function ShadowArenaDashboard() {
                     </div>
                     <div className="flex items-center gap-1">
                       <Trophy className="h-4 w-4 text-yellow-500" />
-                      <span className="text-lg font-bold text-yellow-400">€{battle.total_prize_pool.toFixed(2)}</span>
+                      <span className="text-lg font-bold text-yellow-400">{battle.total_prize_pool} cr</span>
                     </div>
                   </div>
                 </Card>
@@ -235,7 +208,7 @@ export default function ShadowArenaDashboard() {
           </TabsContent>
         </Tabs>
       </div>
-    </SubscriptionGate>
+    </ShadowCreditsGate>
   </>
   );
 }

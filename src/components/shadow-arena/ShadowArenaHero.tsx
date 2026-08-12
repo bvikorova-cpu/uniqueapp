@@ -36,7 +36,7 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
   };
 
   const stats = [
-    { icon: Flame, label: "Prize Pool", value: `€${totalPrizePool.toFixed(2)}` },
+    { icon: Flame, label: "Prize Pool", value: `${totalPrizePool} cr` },
     { icon: Skull, label: "Active Battles", value: activeBattles.toString() },
     { icon: Eye, label: "Top Stories", value: topStories.toString() },
     { icon: Ghost, label: "Platform Cut", value: "20%" },

@@ -1,61 +1,35 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { SubscriptionGate } from '@/components/shadow-arena/SubscriptionGate';
+import { ShadowCreditsGate } from '@/components/shadow-arena/ShadowCreditsGate';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { shadowArenaCall } from '@/hooks/useShadowArenaRouter';
 import { useAuth } from '@/contexts/AuthContext';
 import { Clock, CheckCircle, ArrowLeft, Swords, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { GothicPageHeader } from '@/components/shadow-arena/GothicPageHeader';
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
+const ENTRY_CREDITS = 5;
+
 export default function ShadowArenaBattleSubmit() {
   const { battleId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [searchParams] = useSearchParams();
-  const sessionId = searchParams.get('session_id');
 
   const [battle, setBattle] = useState<any>(null);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [paymentVerified, setPaymentVerified] = useState(false);
 
   useEffect(() => {
-    if (battleId && sessionId) {
-      verifyPaymentAndFetch();
-    } else if (battleId) {
-      fetchBattle();
-    }
-  }, [battleId, sessionId]);
-
-  const verifyPaymentAndFetch = async () => {
-    try {
-      if (!sessionId || !battleId) return;
-      const { data, error } = await supabase.functions.invoke('verify-shadow-battle-payment', {
-        body: { sessionId, battleId } });
-      if (error) throw error;
-      if (!data?.verified) {
-        setPaymentVerified(false);
-        toast.error('Payment not verified yet. Please complete checkout first.');
-        navigate(`/shadow-arena/battle/${battleId}`);
-        return;
-      }
-      setPaymentVerified(true);
-      fetchBattle();
-    } catch (err) {
-      console.error('Verify payment error:', err);
-      setPaymentVerified(false);
-      toast.error('Failed to verify payment');
-      navigate(`/shadow-arena/battle/${battleId}`);
-    }
-  };
+    if (battleId) fetchBattle();
+  }, [battleId]);
 
   const fetchBattle = async () => {
     try {
@@ -76,25 +50,18 @@ export default function ShadowArenaBattleSubmit() {
     e.preventDefault();
     if (!user || !battleId) { toast.error('Authentication required'); return; }
     if (!title.trim() || !content.trim()) { toast.error('Please fill in all fields'); return; }
-    if (!paymentVerified) { toast.error('Payment verification required before submitting'); return; }
 
     try {
       setSubmitting(true);
-      const { error } = await supabase
-        .from('shadow_battle_participants')
-        .insert({
-          battle_id: battleId,
-          user_id: user.id,
-          story_title: title,
-          story_content: content,
-          entry_fee_paid: true
-        });
-      if (error) throw error;
-      toast.success('Story submitted successfully!');
+      await shadowArenaCall('battle_submit', { battleId, title, content });
+      toast.success(`Story submitted! ${ENTRY_CREDITS} credits charged.`);
       navigate(`/shadow-arena/battle/${battleId}`);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Submit error:', error);
-      toast.error('Failed to submit story');
+      const msg = String(error?.message || '');
+      if (msg.includes('insufficient_credits')) toast.error(`Not enough credits — entry costs ${ENTRY_CREDITS} credits.`);
+      else if (msg.includes('already_joined')) toast.error('You already submitted a story to this battle.');
+      else toast.error('Failed to submit story');
     } finally {
       setSubmitting(false);
     }
@@ -102,11 +69,11 @@ export default function ShadowArenaBattleSubmit() {
 
   if (!battle) {
     return (
-<SubscriptionGate>
+<ShadowCreditsGate>
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500"></div>
         </div>
-      </SubscriptionGate>
+      </ShadowCreditsGate>
     );
   }
 
@@ -117,26 +84,26 @@ export default function ShadowArenaBattleSubmit() {
   const charCount = content.length;
 
   return (
-    <SubscriptionGate>
+    <ShadowCreditsGate>
       <FloatingHowItWorks title="ShadowArenaBattleSubmit — How it works" steps={[{title:"Open this section",desc:"Access ShadowArenaBattleSubmit from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
       <div className="container mx-auto px-4 sm:px-6 pt-24 pb-8 max-w-4xl">
         <Button variant="ghost" size="sm" onClick={() => navigate(`/shadow-arena/battle/${battleId}`)} className="mb-4">
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Battle
         </Button>
 
-        {/* Payment verified banner */}
-        {paymentVerified && (
-          <motion.div
-            className="mb-6 rounded-xl border border-green-800/30 bg-green-950/20 p-4"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <div className="flex items-center gap-2 text-green-400">
-              <CheckCircle className="h-5 w-5" />
-              <p className="font-semibold text-sm">Payment verified! You can now submit your story.</p>
-            </div>
-          </motion.div>
-        )}
+        {/* Credit cost banner */}
+        <motion.div
+          className="mb-6 rounded-xl border border-red-800/30 bg-red-950/20 p-4"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="flex items-center gap-2 text-red-200">
+            <CheckCircle className="h-5 w-5 text-yellow-400" />
+            <p className="font-semibold text-sm">
+              Entry costs {ENTRY_CREDITS} AI credits — charged when you submit. All of it goes to the prize pool.
+            </p>
+          </div>
+        </motion.div>
 
         {/* Cinematic gothic hero */}
         <GothicPageHeader
@@ -218,14 +185,14 @@ export default function ShadowArenaBattleSubmit() {
                 type="submit"
                 size="lg"
                 className="w-full bg-gradient-to-r from-red-700 to-purple-800 hover:from-red-800 hover:to-purple-900 border border-red-700/40 shadow-lg"
-                disabled={submitting || !paymentVerified || !title.trim() || !content.trim()}
+                disabled={submitting || !title.trim() || !content.trim()}
               >
-                {submitting ? 'Submitting...' : 'Submit Story'}
+                {submitting ? 'Submitting...' : `Submit Story (${ENTRY_CREDITS} credits)`}
               </Button>
             </form>
           </Card>
         </motion.div>
       </div>
-    </SubscriptionGate>
+    </ShadowCreditsGate>
   );
 }
