@@ -45,20 +45,17 @@ export default function ShadowArenaSubmitStory() {
       setSubmitting(true);
       toast.info('Enhancing your story with AI...');
 
-      const { data, error } = await supabase.functions.invoke('enhance-shadow-story', {
-        body: { title, content }
-      });
+      const data = await shadowArenaCall<{ images_generated: number }>('story_submit', { title, content });
 
-      if (error) throw error;
-
-      toast.success(`Story submitted! Generated ${data.images_generated} AI images`);
+      toast.success(`Story submitted! Generated ${data?.images_generated ?? 0} AI illustrations`);
       navigate('/shadow-arena/dashboard');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Submit error:', error);
-      toast.error('Failed to submit story');
+      toast.error(error?.message || 'Failed to submit story');
     } finally {
       setSubmitting(false);
     }
+
   };
 
   const charCount = content.length;
