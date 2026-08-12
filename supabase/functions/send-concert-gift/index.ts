@@ -33,11 +33,18 @@ serve(async (req) => {
     const { concertId, giftId, message } = await req.json();
     if (!concertId || !giftId) throw new Error("Missing required fields");
 
+    // Service-role client: concert rows are protected by RLS (stream keys), so a
+    // user-scoped read returns nothing even for a valid concert.
+    const admin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    );
+
     const { data: gift, error: giftErr } = await supabase
       .from("platform_gifts").select("*").eq("id", giftId).single();
     if (giftErr || !gift) throw new Error("Gift not found");
 
-    const { data: concert, error: cErr } = await supabase
+    const { data: concert, error: cErr } = await admin
       .from("live_concert_streams")
       .select("id, musician_id, status, musician_profiles!inner(user_id)")
       .eq("id", concertId).single();
@@ -65,7 +72,7 @@ serve(async (req) => {
         message: message || "",
         type: "concert_gift" } });
 
-    await supabase.from("sent_platform_gifts").insert({ sender_id: user.id,
+    await admin.from("sent_platform_gifts").insert({ sender_id: user.id,
       receiver_id: receiverId,
       gift_id: giftId,
       context_type: "concert",
