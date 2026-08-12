@@ -42,11 +42,6 @@ export const chargeHorseAction = (
   extra: { horse_name?: string; metadata?: Record<string, unknown> } = {},
 ) => callFn("horse-racing-action", { action, ...extra });
 
-export const chargeGPAction = (
-  action: "buy-car" | "join-race" | "shop-purchase",
-  extra: { item_name?: string; metadata?: Record<string, unknown> } = {},
-) => callFn("gp-racing-action", { action, ...extra });
-
 export const chargeLotteryAction = (
   action: "save-pick" | "submit-ticket",
   extra: { game_type: string; numbers: number[]; bonus_numbers?: number[]; label?: string },
