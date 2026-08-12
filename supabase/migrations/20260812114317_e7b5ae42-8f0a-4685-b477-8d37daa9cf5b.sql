@@ -1,0 +1,1 @@
+ALTER TABLE public.shadow_horror_reels ADD COLUMN IF NOT EXISTS video_op jsonb;

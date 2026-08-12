@@ -54478,6 +54478,7 @@ export type Database = {
           thumbnail_url: string | null
           title: string
           user_id: string
+          video_op: Json | null
           video_url: string | null
           views_count: number
         }
@@ -54494,6 +54495,7 @@ export type Database = {
           thumbnail_url?: string | null
           title: string
           user_id: string
+          video_op?: Json | null
           video_url?: string | null
           views_count?: number
         }
@@ -54510,6 +54512,7 @@ export type Database = {
           thumbnail_url?: string | null
           title?: string
           user_id?: string
+          video_op?: Json | null
           video_url?: string | null
           views_count?: number
         }

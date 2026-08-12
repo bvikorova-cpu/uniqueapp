@@ -480,3 +480,193 @@ function wrapPcmAsWav(pcm: Uint8Array, sampleRate: number): Uint8Array {
   out.set(pcm, 44);
   return out;
 }
+
+/* ------------------------------------------------------------------ *
+ * Veo video generation (Vertex AI, long-running operations)
+ * ------------------------------------------------------------------ */
+
+const VEO_MODELS = [
+  Deno.env.get("GCP_VIDEO_MODEL") || "veo-3.1-fast-generate-preview",
+  "veo-3.0-fast-generate-001",
+  "veo-3.0-generate-001",
+  "veo-2.0-generate-001",
+].filter((m, i, a) => a.indexOf(m) === i);
+
+function veoLocations(): string[] {
+  const primary = Deno.env.get("GCP_VIDEO_LOCATION") || "us-central1";
+  return [primary, "us-east4", "europe-west4"].filter((l, i, a) => a.indexOf(l) === i);
+}
+
+const GEMINI_VEO_MODELS = [
+  "veo-3.1-fast-generate-preview",
+  "veo-3.1-lite-generate-preview",
+  "veo-3.1-generate-preview",
+];
+
+/** Veo through the Google Gemini API (used because Veo publisher models are not enabled on the Vertex project). */
+async function startGeminiVideo(opts: { prompt: string; durationSeconds?: number; aspectRatio?: string }) {
+  const key = Deno.env.get("GEMINI_API_KEY");
+  if (!key) return null;
+  const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
+  for (const model of GEMINI_VEO_MODELS) {
+    try {
+      const res = await rawFetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:predictLongRunning?key=${key}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          signal: AbortSignal.timeout(30_000),
+          body: JSON.stringify({
+            instances: [{ prompt: opts.prompt }],
+            parameters: {
+              aspectRatio: opts.aspectRatio ?? "9:16",
+              durationSeconds: Math.min(Math.max(opts.durationSeconds ?? 8, 4), 8),
+              personGeneration: "allow_adult",
+            },
+          }),
+        },
+      );
+      if (!res.ok) {
+        console.warn(`[vertexDirect] gemini veo start ${model} ${res.status}:`, (await res.text().catch(() => "")).slice(0, 200));
+        continue;
+      }
+      const data = await res.json();
+      if (data?.name) return { operationName: String(data.name), model, location: "gemini-api" };
+    } catch (e) {
+      console.warn(`[vertexDirect] gemini veo start ${model} error:`, e instanceof Error ? e.message : String(e));
+    }
+  }
+  return null;
+}
+
+async function pollGeminiVideo(op: { operationName: string }) {
+  const key = Deno.env.get("GEMINI_API_KEY");
+  if (!key) return null;
+  const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
+  try {
+    const res = await rawFetch(
+      `https://generativelanguage.googleapis.com/v1beta/${op.operationName}?key=${key}`,
+      { signal: AbortSignal.timeout(30_000) },
+    );
+    if (!res.ok) {
+      console.warn("[vertexDirect] gemini veo poll", res.status, (await res.text().catch(() => "")).slice(0, 200));
+      return null;
+    }
+    const data = await res.json();
+    if (!data?.done) return { done: false };
+    if (data?.error) return { done: true, error: String(data.error?.message || "generation failed") };
+    const sample = data?.response?.generateVideoResponse?.generatedSamples?.[0]
+      ?? data?.response?.generatedSamples?.[0];
+    const uri: string | undefined = sample?.video?.uri ?? sample?.video?.videoUri;
+    const inline: string | undefined = sample?.video?.bytesBase64Encoded;
+    if (inline) return { done: true, videoBase64: inline };
+    if (!uri) {
+      const filtered = data?.response?.generateVideoResponse?.raiMediaFilteredReasons?.[0];
+      return { done: true, error: filtered ? String(filtered) : "Video generation returned no data." };
+    }
+    const dl = await rawFetch(uri.includes("key=") ? uri : `${uri}${uri.includes("?") ? "&" : "?"}key=${key}`, {
+      signal: AbortSignal.timeout(120_000),
+    });
+    if (!dl.ok) return { done: true, error: `Could not download the generated video (${dl.status}).` };
+    const buf = new Uint8Array(await dl.arrayBuffer());
+    let bin = "";
+    for (let i = 0; i < buf.length; i += 8192) {
+      bin += String.fromCharCode(...buf.subarray(i, i + 8192));
+    }
+    return { done: true, videoBase64: btoa(bin) };
+  } catch (e) {
+    console.warn("[vertexDirect] gemini veo poll error:", e instanceof Error ? e.message : String(e));
+    return null;
+  }
+}
+
+/** Start a Veo generation. Returns { operationName, model, location } or null. */
+export async function startVertexVideo(opts: {
+  prompt: string;
+  durationSeconds?: number;
+  aspectRatio?: string;
+}): Promise<{ operationName: string; model: string; location: string } | null> {
+  const sa = getServiceAccount();
+  const projectId = sa ? (Deno.env.get("GCP_PROJECT_ID") || sa.project_id) : null;
+  const token = sa ? await getAccessToken(sa) : null;
+  if (!sa || !projectId || !token) return await startGeminiVideo(opts);
+  const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
+
+
+  for (const model of VEO_MODELS) {
+    for (const location of veoLocations()) {
+      const url =
+        `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:predictLongRunning`;
+      try {
+        const res = await rawFetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          signal: AbortSignal.timeout(30_000),
+          body: JSON.stringify({
+            instances: [{ prompt: opts.prompt }],
+            parameters: {
+              durationSeconds: Math.min(Math.max(opts.durationSeconds ?? 8, 4), 8),
+              aspectRatio: opts.aspectRatio ?? "9:16",
+              sampleCount: 1,
+              generateAudio: true,
+              personGeneration: "allow_adult",
+            },
+          }),
+        });
+        if (!res.ok) {
+          const text = await res.text().catch(() => "");
+          console.warn(`[vertexDirect] veo start ${model}@${location} ${res.status}:`, text.slice(0, 200));
+          continue;
+        }
+        const data = await res.json();
+        if (data?.name) return { operationName: data.name as string, model, location };
+      } catch (e) {
+        console.warn(`[vertexDirect] veo start ${model}@${location} error:`, e instanceof Error ? e.message : String(e));
+      }
+    }
+  }
+  // Vertex publisher Veo models may not be enabled on the project — fall back to the Gemini API.
+  return await startGeminiVideo(opts);
+}
+
+/** Poll a Veo operation. Returns { done, videoBase64?, error? } or null when unreachable. */
+export async function pollVertexVideo(op: { operationName: string; model: string; location: string }):
+  Promise<{ done: boolean; videoBase64?: string; error?: string } | null> {
+  if (op.location === "gemini-api") return await pollGeminiVideo(op);
+  const sa = getServiceAccount();
+  if (!sa) return null;
+  const projectId = Deno.env.get("GCP_PROJECT_ID") || sa.project_id;
+  if (!projectId) return null;
+  const token = await getAccessToken(sa);
+  if (!token) return null;
+
+  const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
+
+  const url =
+    `https://${op.location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${op.location}/publishers/google/models/${op.model}:fetchPredictOperation`;
+  try {
+    const res = await rawFetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      signal: AbortSignal.timeout(30_000),
+      body: JSON.stringify({ operationName: op.operationName }),
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      console.warn("[vertexDirect] veo poll", res.status, text.slice(0, 200));
+      return null;
+    }
+    const data = await res.json();
+    if (!data?.done) return { done: false };
+    if (data?.error) return { done: true, error: String(data.error?.message || "generation failed") };
+    const videos = data?.response?.videos ?? data?.response?.generatedSamples ?? [];
+    const first = Array.isArray(videos) ? videos[0] : null;
+    const b64 = first?.bytesBase64Encoded ?? first?.video?.bytesBase64Encoded;
+    if (typeof b64 === "string" && b64.length) return { done: true, videoBase64: b64 };
+    const filtered = data?.response?.raiMediaFilteredReasons?.[0];
+    return { done: true, error: filtered ? String(filtered) : "Video generation returned no data." };
+  } catch (e) {
+    console.warn("[vertexDirect] veo poll error:", e instanceof Error ? e.message : String(e));
+    return null;
+  }
+}

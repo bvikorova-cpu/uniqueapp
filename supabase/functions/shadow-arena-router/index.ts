@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { spendAiCredits } from "../_shared/spendCredits.ts";
 import { encode as base64Encode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
-import { tryVertexChat, tryVertexImage } from "../_shared/vertexDirect.ts";
+import { tryVertexChat, tryVertexImage, startVertexVideo, pollVertexVideo } from "../_shared/vertexDirect.ts";
 
 // Prize pools are tracked in POINTS, not credits (1 credit spent = 10 points added)
 const POINTS_PER_CREDIT = 10;
@@ -344,6 +344,71 @@ Deno.serve(async (req) => {
         await spendAiCredits(supabase as any, user.id, REEL_COST, "shadow_horror_reel", "shadow-arena-router");
         return json({ reel, script: reelScript });
       }
+
+      // ---- Horror Reel video (Veo on Vertex AI) ----
+      case "horror_reel_video_start": {
+        const { reelId } = p;
+        if (!reelId) return json({ error: "Missing reelId" }, 400);
+        const { data: reel } = await supabase.from("shadow_horror_reels")
+          .select("*").eq("id", reelId).eq("user_id", user.id).maybeSingle();
+        if (!reel) return json({ error: "Reel not found" }, 404);
+        if (reel.video_url) return json({ status: "ready", reel });
+
+        const scenes = (reel.script as any)?.scenes ?? [];
+        const visual = scenes.map((s: any) => s?.visual).filter(Boolean).slice(0, 3).join(" Then: ");
+        const videoPrompt = [
+          "Cinematic vertical horror short film, dark moody lighting, film grain, unsettling atmosphere.",
+          (reel.script as any)?.hook ? `Hook: ${(reel.script as any).hook}` : "",
+          visual || reel.prompt,
+          "No on-screen text. No gore.",
+        ].filter(Boolean).join("\n");
+
+        const op = await startVertexVideo({ prompt: videoPrompt, durationSeconds: 8, aspectRatio: "9:16" });
+        if (!op) return json({ error: "Video generation (Veo) is not available on this Google project yet — enable the Veo models / top up Google billing, then try again. Your script is saved." }, 503);
+        await supabase.from("shadow_horror_reels")
+          .update({ status: "rendering", video_op: op }).eq("id", reelId);
+        return json({ status: "rendering", op });
+      }
+
+      case "horror_reel_video_status": {
+        const { reelId } = p;
+        if (!reelId) return json({ error: "Missing reelId" }, 400);
+        const { data: reel } = await supabase.from("shadow_horror_reels")
+          .select("*").eq("id", reelId).eq("user_id", user.id).maybeSingle();
+        if (!reel) return json({ error: "Reel not found" }, 404);
+        if (reel.video_url) {
+          const { data: signed } = await supabase.storage.from("shadow-horror-reels")
+            .createSignedUrl(reel.video_url, 3600);
+          return json({ status: "ready", videoUrl: signed?.signedUrl ?? null });
+        }
+        const op = reel.video_op as any;
+        if (!op?.operationName) return json({ status: "idle" });
+
+        const res = await pollVertexVideo(op);
+        if (!res) return json({ status: "rendering" });
+        if (!res.done) return json({ status: "rendering" });
+        if (res.error || !res.videoBase64) {
+          await supabase.from("shadow_horror_reels")
+            .update({ status: "failed", video_op: null }).eq("id", reelId);
+          return json({ status: "failed", error: res.error || "Video generation failed." });
+        }
+
+        const bytes = Uint8Array.from(atob(res.videoBase64), (c) => c.charCodeAt(0));
+        const path = `${user.id}/${reelId}.mp4`;
+        const { error: upErr } = await supabase.storage.from("shadow-horror-reels")
+          .upload(path, bytes, { contentType: "video/mp4", upsert: true });
+        if (upErr) {
+          console.error("reel upload failed", upErr);
+          return json({ status: "failed", error: "Could not store the generated video." });
+        }
+        await supabase.from("shadow_horror_reels")
+          .update({ status: "ready", video_url: path, video_op: null }).eq("id", reelId);
+        const { data: signed } = await supabase.storage.from("shadow-horror-reels")
+          .createSignedUrl(path, 3600);
+        return json({ status: "ready", videoUrl: signed?.signedUrl ?? null });
+      }
+
+
 
 
       // ---- AI Narrator (ElevenLabs TTS, 6 credits) ----
