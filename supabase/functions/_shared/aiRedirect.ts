@@ -104,10 +104,19 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
       }
 
       if (url.includes("/images/generations") || url.includes("/images/edits")) {
-        const img = await withRetry("image", () => tryVertexImage(body!.prompt, body!.size, body!.n));
+        // Collect any reference image the caller supplied (edit / transform flows).
+        const b = body!;
+        const refs: unknown[] = [];
+        for (const key of ["image", "image_url", "images", "reference_image", "reference_image_url"]) {
+          const v = (b as Record<string, unknown>)[key];
+          if (Array.isArray(v)) refs.push(...v);
+          else if (typeof v === "string" && v) refs.push(v);
+        }
+        const img = await withRetry("image", () => tryVertexImage(b.prompt as string, b.size, b.n, refs), 1);
         if (!img) return blocked("vertex image generation failed");
         return json(img);
       }
+
 
       if (url.includes("/embeddings")) {
         const emb = await withRetry("embeddings", () => tryVertexEmbeddings(body!.input));

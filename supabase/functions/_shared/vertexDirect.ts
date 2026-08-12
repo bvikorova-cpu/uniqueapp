@@ -181,62 +181,110 @@ export async function tryVertexImage(
   prompt: string,
   size?: unknown,
   _n?: unknown,
+  refImages?: unknown,
 ): Promise<any | null> {
   const sa = getServiceAccount();
   if (!sa) return null;
   const projectId = Deno.env.get("GCP_PROJECT_ID") || sa.project_id;
-  const location = Deno.env.get("GCP_LOCATION") || "us-central1";
   if (!projectId) return null;
   const token = await getAccessToken(sa);
   if (!token) return null;
 
-  // Vertex image models, tried in order. 429 (RESOURCE_EXHAUSTED) on one model
-  // is retried on the next candidate + a short backoff — there is no
-  // non-Vertex fallback anywhere on the platform.
+  const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
+
+  // Reference images (for edit / avatar transforms) → inlineData parts.
+  const imageParts: Array<Record<string, unknown>> = [];
+  const refs = Array.isArray(refImages) ? refImages : refImages ? [refImages] : [];
+  for (const ref of refs.slice(0, 3)) {
+    const inline = await toInlineImage(String(ref), rawFetch);
+    if (inline) imageParts.push({ inlineData: inline });
+  }
+
   const models = [
     Deno.env.get("GCP_IMAGE_MODEL") || "gemini-2.5-flash-image",
     "gemini-2.5-flash-image-preview",
-    "gemini-2.0-flash-preview-image-generation",
   ].filter((m, i, a) => a.indexOf(m) === i);
 
-  const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
+  // Image quota (429 RESOURCE_EXHAUSTED) is per-region, so rotate regions
+  // instead of hammering one. Whole routine is bounded by a time budget so an
+  // edge function never dies waiting on retries.
+  const primary = Deno.env.get("GCP_LOCATION") || "us-central1";
+  const locations = [primary, "us-east4", "europe-west4", "us-west1", "asia-southeast1"]
+    .filter((l, i, a) => a.indexOf(l) === i);
 
-  for (let attempt = 0; attempt < models.length * 2; attempt++) {
-    const model = models[attempt % models.length];
-    const url =
-      `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`;
-    try {
-      const res = await rawFetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          contents: [{ role: "user", parts: [{ text: imagePromptWithAspect(prompt, size) }] }],
-          generationConfig: { responseModalities: ["IMAGE", "TEXT"], temperature: 0.9 },
-        }),
-      });
-      if (!res.ok) {
-        const text = await res.text().catch(() => "");
-        console.warn(`[vertexDirect] image ${model} ${res.status}:`, text.slice(0, 200));
-        if (res.status === 429 || res.status >= 500) await new Promise((r) => setTimeout(r, 800 * (attempt + 1)));
-        continue;
-      }
-      const data = await res.json();
-      const parts = data?.candidates?.[0]?.content?.parts;
-      const images: string[] = [];
-      if (Array.isArray(parts)) {
-        for (const p of parts) {
-          const b64 = p?.inlineData?.data;
-          if (typeof b64 === "string" && b64.length) images.push(b64);
+  const deadline = Date.now() + 70_000;
+
+  for (const model of models) {
+    for (const location of locations) {
+      if (Date.now() > deadline) break;
+      const url =
+        `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`;
+      try {
+        const res = await rawFetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          signal: AbortSignal.timeout(35_000),
+          body: JSON.stringify({
+            contents: [{
+              role: "user",
+              parts: [...imageParts, { text: imagePromptWithAspect(prompt, size) }],
+            }],
+            generationConfig: { responseModalities: ["IMAGE", "TEXT"], temperature: 0.9 },
+          }),
+        });
+        if (!res.ok) {
+          const text = await res.text().catch(() => "");
+          console.warn(`[vertexDirect] image ${model}@${location} ${res.status}:`, text.slice(0, 160));
+          continue;
         }
+        const data = await res.json();
+        const parts = data?.candidates?.[0]?.content?.parts;
+        const images: string[] = [];
+        if (Array.isArray(parts)) {
+          for (const p of parts) {
+            const b64 = p?.inlineData?.data;
+            if (typeof b64 === "string" && b64.length) images.push(b64);
+          }
+        }
+        if (images.length) return { data: images.map((b64) => ({ b64_json: b64 })) };
+        console.warn(`[vertexDirect] image ${model}@${location} returned no inlineData`);
+      } catch (e) {
+        console.warn(`[vertexDirect] image ${model}@${location} error:`, e instanceof Error ? e.message : String(e));
       }
-      if (images.length) return { data: images.map((b64) => ({ b64_json: b64 })) };
-      console.warn(`[vertexDirect] image ${model} returned no inlineData`);
-    } catch (e) {
-      console.warn(`[vertexDirect] image ${model} error:`, e instanceof Error ? e.message : String(e));
     }
   }
   return null;
 }
+
+/** Turn a data URL or http(s) image URL into a Gemini inlineData payload. */
+async function toInlineImage(
+  ref: string,
+  rawFetch: typeof fetch,
+): Promise<{ mimeType: string; data: string } | null> {
+  try {
+    if (ref.startsWith("data:")) {
+      const [head, data] = ref.split(",");
+      if (!data) return null;
+      const mimeType = head.slice(5).split(";")[0] || "image/png";
+      return { mimeType, data };
+    }
+    if (!/^https?:\/\//.test(ref)) return null;
+    const res = await rawFetch(ref, { signal: AbortSignal.timeout(15_000) });
+    if (!res.ok) return null;
+    const mimeType = res.headers.get("content-type")?.split(";")[0] || "image/png";
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    let bin = "";
+    const chunk = 0x8000;
+    for (let i = 0; i < bytes.length; i += chunk) {
+      bin += String.fromCharCode(...bytes.subarray(i, i + chunk));
+    }
+    return { mimeType, data: btoa(bin) };
+  } catch {
+    return null;
+  }
+}
+
+
 
 
 /**
