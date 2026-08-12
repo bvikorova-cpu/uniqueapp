@@ -24,10 +24,7 @@ export const useCurseWheel = () => {
 
   const spin = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke("shadow-curse-wheel-spin");
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      return data;
+      return await shadowArenaCall<{ prize?: { label?: string } }>("curse_wheel_spin");
     },
     onSuccess: (data) => {
       toast.success(data.prize?.label || "Spin complete");
