@@ -102,29 +102,15 @@ export default function ShadowArenaDashboard() {
         <ShadowCreditsCard />
         <ShadowAIToolsHub />
 
-        <ArenaPrizePool totalPool={totalActivePrizePool} />
         <ArenaLeaderboard />
 
-        {/* TikTok-LIVE parity pack */}
         <DuetBattlesCard />
         <VirtualGiftsCard />
-        <StreamGoalsCard />
-        <TopGiftersCard />
-        <TournamentsCard />
-        <StreamScheduleCard />
-        <AutoClipsCard />
-        <ChatModerationCard />
-
-        {/* New 8 advanced features */}
         <PushNotificationsCard />
         <CurseWheelCard />
-        <StoryChainsCard />
         <HorrorReelsCard />
-        <VoiceCloneCard />
-        <CursedAchievementsCard />
-        <ArenaAchievements />
 
-        <ArenaSteps />
+
 
         {/* Content Tabs */}
         <Tabs defaultValue="stories" className="w-full">
