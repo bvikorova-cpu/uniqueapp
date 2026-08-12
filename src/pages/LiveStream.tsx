@@ -60,11 +60,18 @@ export default function LiveStream() {
   const [user, setUser] = useState<any>(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
+  const [streamError, setStreamError] = useState<string | null>(null);
+  const [micEnabled, setMicEnabled] = useState(true);
+  const [camEnabled, setCamEnabled] = useState(true);
+  const [peerViewers, setPeerViewers] = useState(0);
+  const [presenceViewers, setPresenceViewers] = useState(0);
+  const [connState, setConnState] = useState<RTCPeerConnectionState | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
-  const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
-  const channelRef = useRef<any>(null);
+  const broadcastRef = useRef<BroadcastHandle | null>(null);
+  const viewerRef = useRef<ViewerHandle | null>(null);
+
 
   // Fetch available gifts
   const { data: gifts = [] } = useQuery({
