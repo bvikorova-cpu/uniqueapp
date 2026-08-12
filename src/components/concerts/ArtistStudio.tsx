@@ -116,6 +116,8 @@ export const ArtistStudio = ({ onBack }: Props) => {
 
   const createConcert = async () => {
     if (!profile) { toast.error("Create your artist profile first"); return; }
+    if (!profile.verified) { toast.error("Only verified artists can schedule concerts — request verification first"); return; }
+    if (profile.suspended) { toast.error("Your artist account is suspended"); return; }
     if (title.trim().length < 3) { toast.error("Enter a concert title"); return; }
     if (!scheduledAt) { toast.error("Pick a date and time"); return; }
     const price = Number(ticketPrice);
@@ -220,10 +222,20 @@ export const ArtistStudio = ({ onBack }: Props) => {
             {profile?.suspended && (
               <p className="text-sm text-destructive">Your artist account is suspended. Contact support.</p>
             )}
+            {profile && !profile.verified && !profile.suspended && (
+              <p className="text-sm text-muted-foreground">
+                To prevent fraud and impersonation, only <strong>verified artists</strong> can schedule concerts and sell tickets.
+                {profile.verification_status === "pending"
+                  ? " Your request is under review — you'll get the badge once approved."
+                  : profile.verification_status === "rejected"
+                    ? " Your last request was rejected. Update your profile and request verification again."
+                    : " Request verification to unlock concert scheduling."}
+              </p>
+            )}
           </CardContent>
         </Card>
 
-        {profile && !profile.suspended && (
+        {profile && !profile.suspended && profile.verified && (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base"><Plus className="h-4 w-4 text-primary" /> Schedule a concert</CardTitle>
