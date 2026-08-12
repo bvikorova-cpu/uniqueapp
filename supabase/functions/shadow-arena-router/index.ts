@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
         const { error } = await supabase.from("shadow_duet_votes").insert({ duet_id, voter_id: user.id, vote_for });
         if (error && !String(error.message).includes("duplicate")) throw error;
         const col = vote_for === "A" ? "votes_a" : "votes_b";
-        await supabase.rpc("noop", {}).catch(() => {});
+        try { await supabase.rpc("noop", {}); } catch { /* non-fatal */ }
         const { data: cur } = await supabase.from("shadow_duet_battles").select(col).eq("id", duet_id).single();
         await supabase.from("shadow_duet_battles").update({ [col]: ((cur as any)?.[col] || 0) + 1 }).eq("id", duet_id);
         return json({ ok: true });

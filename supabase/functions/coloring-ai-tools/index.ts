@@ -227,7 +227,7 @@ Each palette should have 6-8 colors with hex codes and names. Include a palette 
         if (subErr) throw subErr;
 
         // Increment participant count
-        await supabase.rpc("increment_challenge_participants", { challenge_id: challengeId }).catch(() => {});
+        try { await supabase.rpc("increment_challenge_participants", { challenge_id: challengeId }); } catch { /* non-fatal */ }
 
         result = sub;
         break;
