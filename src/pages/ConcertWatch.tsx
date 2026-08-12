@@ -130,6 +130,38 @@ const ConcertWatch = () => {
     };
   }, [concert?.playback_url, concert?.status]);
 
+  // WebRTC camera stream (artist broadcasts from their camera, no HLS URL)
+  useEffect(() => {
+    if (!id || !allowed) return;
+    if (concert?.status !== "live" || concert?.playback_url) return;
+    setRtcConnecting(true);
+    const handle = startViewer(
+      id,
+      (stream) => {
+        setRtcConnecting(false);
+        setRtcActive(true);
+        const video = videoRef.current;
+        if (video) {
+          video.srcObject = stream;
+          video.play().catch(() => {});
+        }
+      },
+      (state) => {
+        if (state === "failed" || state === "closed" || state === "disconnected") {
+          setRtcActive(false);
+          setRtcConnecting(true);
+        }
+      }
+    );
+    return () => {
+      handle.stop();
+      setRtcActive(false);
+      setRtcConnecting(false);
+    };
+  }, [id, allowed, concert?.status, concert?.playback_url]);
+
+
+
   // Viewer presence + count
   useEffect(() => {
     if (!id || !allowed) return;
