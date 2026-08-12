@@ -16,11 +16,9 @@ interface GiftRow {
   id: string;
   gift_id: string;
   amount: number;
-  musician_amount: number;
-  platform_commission: number;
   message: string | null;
   created_at: string | null;
-  payment_status: string | null;
+  status: string | null;
 }
 
 const PAID = ["paid", "completed", "succeeded"];
@@ -45,9 +43,10 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
         { data: concert, error: concertError },
       ] = await Promise.all([
         supabase
-          .from("concert_gifts")
-          .select("id, gift_id, amount, musician_amount, platform_commission, message, created_at, payment_status")
-          .eq("concert_id", concertId)
+          .from("sent_platform_gifts")
+          .select("id, gift_id, amount, message, created_at, status")
+          .eq("context_type", "concert")
+          .eq("context_id", concertId)
           .order("created_at", { ascending: false })
           .limit(100),
         supabase.from("platform_gifts").select("id, name, icon"),
@@ -73,7 +72,7 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
       .channel(`concert-host-gifts-${concertId}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "concert_gifts", filter: `concert_id=eq.${concertId}` },
+        { event: "*", schema: "public", table: "sent_platform_gifts", filter: `context_id=eq.${concertId}` },
         () => void load()
       )
       .subscribe();
@@ -87,16 +86,10 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
   }, [concertId, musicianId]);
 
   const totals = useMemo(() => {
-    const paid = gifts.filter((g) => PAID.includes((g.payment_status || "").toLowerCase()));
+    const paid = gifts.filter((g) => PAID.includes((g.status || "").toLowerCase()));
     const gross = paid.reduce((s, g) => s + Number(g.amount || 0), 0);
-    const yours = paid.reduce(
-      (s, g) => s + Number(g.musician_amount ?? Number(g.amount || 0) * 0.8),
-      0
-    );
-    const fee = paid.reduce(
-      (s, g) => s + Number(g.platform_commission ?? Number(g.amount || 0) * 0.2),
-      0
-    );
+    const yours = gross * 0.8;
+    const fee = gross * 0.2;
     return { gross, yours, fee, count: paid.length };
   }, [gifts]);
 
@@ -160,7 +153,7 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
               <div className="max-h-[380px] space-y-2 overflow-y-auto">
                 {gifts.map((g) => {
                   const meta = giftNames[g.gift_id];
-                  const isPaid = PAID.includes((g.payment_status || "").toLowerCase());
+                  const isPaid = PAID.includes((g.status || "").toLowerCase());
                   return (
                     <div key={g.id} className="flex items-center gap-3 rounded-lg border bg-card p-2">
                       <span className="text-2xl">{meta?.icon || "🎁"}</span>
@@ -174,7 +167,7 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
                       </div>
                       <div className="text-right">
                         <p className="text-sm font-bold text-primary">
-                          €{Number(g.musician_amount ?? Number(g.amount) * 0.8).toFixed(2)}
+                          €{(Number(g.amount) * 0.8).toFixed(2)}
                         </p>
                         <p className="text-[10px] text-muted-foreground">of €{Number(g.amount).toFixed(2)}</p>
                       </div>
