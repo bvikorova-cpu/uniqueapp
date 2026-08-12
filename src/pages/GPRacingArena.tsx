@@ -23,7 +23,7 @@ import { BettingSystem } from "@/components/gp-racing/BettingSystem";
 import { AchievementSystem } from "@/components/gp-racing/AchievementSystem";
 import { TrackEditor } from "@/components/gp-racing/TrackEditor";
 import { GPCircuit3D } from "@/components/gp-racing/GPCircuit3D";
-import { useUserCars, useGPRaces, useJoinGPRace, useUpgradeCar, usePurchaseCarColor, useGPCredits, GP_CREDIT_COSTS } from "@/hooks/useGPRacing";
+import { useUserCars, useGPRaces, useJoinGPRace, useUpgradeCar, usePurchaseCarColor, useGPCredits, GP_CREDIT_COSTS, chargeGPCredits } from "@/hooks/useGPRacing";
 import { Trophy, Wrench, Sparkles, Zap, TrendingUp, Car, LogIn, Info, Gauge, Wind, CircleDot, Compass, ShoppingCart, Box, Rocket, Shield, Target, Cpu, Flame, Play, Palette, Cloud, Timer as TimerIcon, Users, Award, Coins, Map, Activity, Crown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -197,6 +197,14 @@ export default function GPRacingArena() {
     purchaseColor.mutate({ carId: selectedCarForShop, newColor: shopColor }, {
       onSuccess: () => { setShowShop(false); setSelectedCarForShop(""); }
     });
+  };
+
+  const handleShopPurchase = async (itemName: string) => {
+    const ok = await chargeGPCredits("shop-purchase", { item_name: itemName });
+    if (ok) {
+      toast.success(`${itemName} purchased! (−${GP_CREDIT_COSTS.shopPurchase} credits)`);
+      queryClient.invalidateQueries({ queryKey: ["gp-ai-credits"] });
+    }
   };
 
   const activeRace = races?.find(r => r.id === selectedRace);
@@ -565,24 +573,25 @@ export default function GPRacingArena() {
               <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
               <div className="p-4 sm:p-6">
                 <h2 className="text-xl sm:text-2xl font-mono font-bold mb-1 text-white uppercase tracking-wider">Parts & Tech Shop</h2>
-                <p className="text-cyan-400/50 font-mono text-xs mb-6 uppercase tracking-wider">Buy performance parts to dominate races</p>
+                <p className="text-cyan-400/50 font-mono text-xs mb-6 uppercase tracking-wider">Buy performance parts — 3 credits per item</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {[
-                    { emoji: "🔥", name: "Turbo Engine V8", desc: "+15 Engine Power", price: "150 Credits", tier: "standard" },
-                    { emoji: "⚡", name: "Hybrid Power Unit", desc: "+20 Engine, +5 Efficiency", price: "250 Credits", tier: "standard" },
-                    { emoji: "💎", name: "Nuclear Fusion Core", desc: "+30 Engine Power", price: "100 Credits", tier: "premium" },
-                    { emoji: "🌬️", name: "Carbon Fiber Wing", desc: "+10 Aerodynamics", price: "100 Credits", tier: "standard" },
-                    { emoji: "🛸", name: "DRS+ System", desc: "+18 Aero, +5 Speed", price: "200 Credits", tier: "standard" },
-                    { emoji: "🚀", name: "Active Aero Kit", desc: "+25 Aerodynamics", price: "80 Credits", tier: "premium" },
-                    { emoji: "🛞", name: "Soft Compound Tires", desc: "+12 Grip, +8 Handling", price: "120 Credits", tier: "standard" },
-                    { emoji: "🏁", name: "Slick Racing Tires", desc: "+20 Grip", price: "180 Credits", tier: "standard" },
-                    { emoji: "✨", name: "Quantum Grip Tires", desc: "+30 Grip, +15 Handling", price: "120 Credits", tier: "premium" },
-                    { emoji: "🎯", name: "Precision Steering", desc: "+15 Handling", price: "130 Credits", tier: "standard" },
-                    { emoji: "⚙️", name: "Advanced Suspension", desc: "+18 Handling, +8 Stability", price: "200 Credits", tier: "standard" },
-                    { emoji: "🤖", name: "AI Assist System", desc: "+25 Handling, Auto-correct", price: "90 Credits", tier: "premium" },
+                    { emoji: "🔥", name: "Turbo Engine V8", desc: "+15 Engine Power", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "standard" },
+                    { emoji: "⚡", name: "Hybrid Power Unit", desc: "+20 Engine, +5 Efficiency", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "standard" },
+                    { emoji: "💎", name: "Nuclear Fusion Core", desc: "+30 Engine Power", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "premium" },
+                    { emoji: "🌬️", name: "Carbon Fiber Wing", desc: "+10 Aerodynamics", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "standard" },
+                    { emoji: "🛸", name: "DRS+ System", desc: "+18 Aero, +5 Speed", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "standard" },
+                    { emoji: "🚀", name: "Active Aero Kit", desc: "+25 Aerodynamics", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "premium" },
+                    { emoji: "🛞", name: "Soft Compound Tires", desc: "+12 Grip, +8 Handling", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "standard" },
+                    { emoji: "🏁", name: "Slick Racing Tires", desc: "+20 Grip", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "standard" },
+                    { emoji: "✨", name: "Quantum Grip Tires", desc: "+30 Grip, +15 Handling", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "premium" },
+                    { emoji: "🎯", name: "Precision Steering", desc: "+15 Handling", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "standard" },
+                    { emoji: "⚙️", name: "Advanced Suspension", desc: "+18 Handling, +8 Stability", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "standard" },
+                    { emoji: "🤖", name: "AI Assist System", desc: "+25 Handling, Auto-correct", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, tier: "premium" },
                   ].map((item, i) => (
                     <motion.div key={i} whileHover={{ scale: 1.02 }}
-                      className={`p-4 rounded-xl border backdrop-blur-sm transition-all ${
+                      onClick={() => requireAuth(() => handleShopPurchase(item.name))}
+                      className={`cursor-pointer p-4 rounded-xl border backdrop-blur-sm transition-all ${
                         item.tier === "premium" 
                           ? "bg-gradient-to-b from-violet-950/40 to-slate-950/60 border-violet-500/30 hover:border-violet-400/50" 
                           : "bg-slate-950/40 border-cyan-500/15 hover:border-cyan-400/30"
@@ -602,12 +611,13 @@ export default function GPRacingArena() {
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     {[
-                      { emoji: "🏆", name: "Champion's Nitro Boost", desc: "+10% Race Speed", price: "300 Credits", gradient: "from-amber-950/40 to-orange-950/30", border: "border-amber-500/30" },
-                      { emoji: "❄️", name: "Cryo Cooling System", desc: "Anti-overheat, +5 All", price: "350 Credits", gradient: "from-blue-950/40 to-cyan-950/30", border: "border-blue-500/30" },
-                      { emoji: "⭐", name: "Legendary Engine Swap", desc: "+50 All Stats", price: "500 Credits", gradient: "from-violet-950/40 to-purple-950/30", border: "border-violet-400/40" },
+                      { emoji: "🏆", name: "Champion's Nitro Boost", desc: "+10% Race Speed", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, gradient: "from-amber-950/40 to-orange-950/30", border: "border-amber-500/30" },
+                      { emoji: "❄️", name: "Cryo Cooling System", desc: "Anti-overheat, +5 All", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, gradient: "from-blue-950/40 to-cyan-950/30", border: "border-blue-500/30" },
+                      { emoji: "⭐", name: "Legendary Engine Swap", desc: "+50 All Stats", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, gradient: "from-violet-950/40 to-purple-950/30", border: "border-violet-400/40" },
                     ].map((item, i) => (
                       <motion.div key={i} whileHover={{ scale: 1.02 }}
-                        className={`p-4 rounded-xl bg-gradient-to-b ${item.gradient} border ${item.border} backdrop-blur-sm`}>
+                        onClick={() => requireAuth(() => handleShopPurchase(item.name))}
+                        className={`cursor-pointer p-4 rounded-xl bg-gradient-to-b ${item.gradient} border ${item.border} backdrop-blur-sm`}>
                         <div className="text-2xl mb-2">{item.emoji}</div>
                         <h3 className="font-mono font-bold text-sm text-white">{item.name}</h3>
                         <p className="text-[10px] font-mono text-cyan-400/50 mt-1">{item.desc}</p>
@@ -624,14 +634,15 @@ export default function GPRacingArena() {
                   </h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
                     {[
-                      { name: "Bronze", desc: "+5-15 stats", price: "50 Credits", gradient: "from-amber-900/30 to-amber-950/30", border: "border-amber-500/20" },
-                      { name: "Silver", desc: "+10-25 stats", price: "100 Credits", gradient: "from-gray-700/30 to-gray-900/30", border: "border-gray-400/20" },
-                      { name: "Gold", desc: "+20-40 stats", price: "200 Credits", gradient: "from-yellow-900/30 to-amber-950/30", border: "border-yellow-500/30" },
-                      { name: "Diamond", desc: "+30-60 stats", price: "50 Credits", gradient: "from-blue-900/30 to-violet-950/30", border: "border-blue-400/30" },
-                      { name: "Legendary", desc: "+100 All + Skin", price: "300 Credits", gradient: "from-amber-600/20 via-orange-600/20 to-red-600/20", border: "border-amber-300/40", special: true },
+                      { name: "Bronze", desc: "+5-15 stats", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, gradient: "from-amber-900/30 to-amber-950/30", border: "border-amber-500/20" },
+                      { name: "Silver", desc: "+10-25 stats", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, gradient: "from-gray-700/30 to-gray-900/30", border: "border-gray-400/20" },
+                      { name: "Gold", desc: "+20-40 stats", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, gradient: "from-yellow-900/30 to-amber-950/30", border: "border-yellow-500/30" },
+                      { name: "Diamond", desc: "+30-60 stats", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, gradient: "from-blue-900/30 to-violet-950/30", border: "border-blue-400/30" },
+                      { name: "Legendary", desc: "+100 All + Skin", price: `${GP_CREDIT_COSTS.shopPurchase} Credits`, gradient: "from-amber-600/20 via-orange-600/20 to-red-600/20", border: "border-amber-300/40", special: true },
                     ].map((box, i) => (
                       <motion.div key={i} whileHover={{ scale: 1.03 }}
-                        className={`p-3 rounded-xl bg-gradient-to-b ${box.gradient} border ${box.border} text-center backdrop-blur-sm ${box.special ? "animate-pulse" : ""}`}>
+                        onClick={() => requireAuth(() => handleShopPurchase(box.name + " Crate"))}
+                        className={`cursor-pointer p-3 rounded-xl bg-gradient-to-b ${box.gradient} border ${box.border} text-center backdrop-blur-sm ${box.special ? "animate-pulse" : ""}`}>
                         <div className="text-xl mb-1">{box.special ? "👑" : ["📦", "🎁", "✨", "💎"][i]}</div>
                         <h4 className="font-mono font-bold text-xs text-white">{box.name}</h4>
                         <p className="text-[9px] font-mono text-cyan-400/40 mt-0.5">{box.desc}</p>
