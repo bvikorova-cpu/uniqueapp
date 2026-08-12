@@ -45,6 +45,9 @@ export const ArtistStudio = ({ onBack }: Props) => {
   const [description, setDescription] = useState("");
   const [scheduledAt, setScheduledAt] = useState("");
   const [ticketPrice, setTicketPrice] = useState("5");
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
+
 
   const load = async () => {
     setLoading(true);
