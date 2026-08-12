@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { ConcertBroadcaster } from "@/components/concerts/ConcertBroadcaster";
+import { ConcertHostPanel } from "@/components/concerts/ConcertHostPanel";
+
 
 interface Props { onBack: () => void; }
 
