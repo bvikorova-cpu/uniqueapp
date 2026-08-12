@@ -135,7 +135,7 @@ export default function ShadowArenaBattles() {
             {totalPool > 0 && (
               <div className="px-4 py-2 rounded-xl bg-black/60 backdrop-blur-md border border-yellow-800/40">
                 <p className="text-[10px] uppercase tracking-wide text-yellow-400/70">Active Pools</p>
-                <p className="text-lg font-black text-yellow-400">€{totalPool.toFixed(2)}</p>
+                <p className="text-lg font-black text-yellow-400">{totalPool} cr</p>
               </div>
             )}
             <Button
@@ -241,7 +241,7 @@ export default function ShadowArenaBattles() {
                       <div className="text-right shrink-0">
                         <Trophy className="h-6 w-6 text-yellow-500 mb-1 ml-auto" />
                         <p className="text-2xl font-black text-yellow-400">
-                          €{battle.total_prize_pool.toFixed(2)}
+                          {battle.total_prize_pool} cr
                         </p>
                         <p className="text-xs text-muted-foreground">Prize Pool</p>
                       </div>

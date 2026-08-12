@@ -11,16 +11,16 @@ export function PatronModeCard({ authorUserId, authorName }: { authorUserId: str
     {
       id: "bronze" as const,
       name: "Bronze",
-      price: "€4.99/mo",
+      price: "25 credits",
       perks: ["Patron badge", "Exclusive stories"] },
     { id: "silver" as const,
       name: "Silver",
-      price: "€9.99/mo",
+      price: "50 credits",
       perks: ["All Bronze perks", "Voice narrations", "Early access"],
       popular: true },
     { id: "gold" as const,
       name: "Gold",
-      price: "€19.99/mo",
+      price: "100 credits",
       perks: ["All Silver perks", "Custom requests", "Direct messages"] },
   ];
 

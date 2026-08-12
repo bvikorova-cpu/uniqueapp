@@ -3,17 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Coins, Zap } from "lucide-react";
 import { useShadowArenaCredits } from "@/hooks/useShadowArenaAI";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 
-const PACKAGES = [
-  { credits: 30 as const, price: "€4.99", label: "Starter" },
-  { credits: 100 as const, price: "€12.99", label: "Creator", popular: true },
-  { credits: 280 as const, price: "€29.99", label: "Pro" },
-];
-
 export function ShadowCreditsCard() {
-  const { credits, buyCredits, isLoading } = useShadowArenaCredits();
+  const { credits, isLoading } = useShadowArenaCredits();
   const balance = credits?.credits_remaining ?? 0;
 
   return (
@@ -48,29 +43,15 @@ export function ShadowCreditsCard() {
         </div>
       </div>
 
-      <div className="relative z-10 grid grid-cols-3 gap-2">
-        {PACKAGES.map((pkg) => (
-          <Button
-            key={pkg.credits}
-            disabled={buyCredits.isPending}
-            onClick={() => buyCredits.mutate(pkg.credits)}
-            className={`relative h-auto flex-col py-3 border transition-all ${
-              pkg.popular
-                ? "bg-gradient-to-br from-red-800 to-red-950 border-red-600 ring-2 ring-red-500/40 hover:from-red-700 hover:to-red-900 shadow-[0_0_20px_rgba(220,38,38,0.4)]"
-                : "bg-black/60 border-red-800/50 hover:bg-red-950/50 hover:border-red-600"
-            }`}
-          >
-            {pkg.popular && (
-              <span className="absolute -top-2 right-2 text-[9px] px-1.5 py-0.5 rounded-full bg-red-500 text-white font-bold shadow-md">
-                {"POPULAR"}
-              </span>
-            )}
-            <Coins className="w-4 h-4 text-yellow-300 mb-1" />
-            <span className="font-black text-white text-base">{pkg.credits} {"cr"}</span>
-            <span className="text-[11px] text-red-100 font-semibold">{pkg.price}</span>
-            <span className="text-[10px] text-red-200/90 mt-0.5 font-medium">{pkg.label}</span>
-          </Button>
-        ))}
+      <div className="relative z-10">
+        <Button asChild className="w-full bg-gradient-to-r from-red-800 to-purple-900 border border-red-600/50 hover:from-red-700 hover:to-purple-800">
+          <Link to="/ai-credits-store">
+            <Coins className="w-4 h-4 mr-2 text-yellow-300" /> Top up AI credits
+          </Link>
+        </Button>
+        <p className="mt-2 text-[11px] text-red-200/70 text-center">
+          Shadow Arena uses your platform-wide AI credits — no subscription, pay only for what you use.
+        </p>
       </div>
     </Card>
   </>

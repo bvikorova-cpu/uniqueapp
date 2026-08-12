@@ -20,17 +20,7 @@ export const useShadowArenaCredits = () => {
       return data?.credits || null;
     } });
 
-  const buyCredits = useMutation({
-    mutationFn: async (credits: 30 | 100 | 280) => {
-      const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { creditType: "shadow_arena", credits } });
-      if (error) throw error;
-      if (data?.url) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; } }
-      return data;
-    },
-    onError: (e: Error) => toast.error(e.message || "Checkout failed") });
-
-  return { credits, isLoading, buyCredits, refetch: () => queryClient.invalidateQueries({ queryKey: ["shadow-arena-credits"] }) };
+  return { credits, isLoading, refetch: () => queryClient.invalidateQueries({ queryKey: ["shadow-arena-credits"] }) };
 };
 
 export const useShadowAITools = () => {

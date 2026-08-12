@@ -60,32 +60,6 @@ export default function ShadowArenaDashboard() {
   const [stories, setStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Verify payment after Stripe redirect
-  useEffect(() => {
-    const sessionId = searchParams.get('session_id');
-    const paymentStatus = searchParams.get('payment');
-    if (paymentStatus === 'canceled') {
-      toast.error("Payment canceled");
-      searchParams.delete('payment');
-      setSearchParams(searchParams, { replace: true });
-      return;
-    }
-    if (paymentStatus === 'success' && sessionId) {
-      supabase.functions
-        .invoke('verify-credits-payment', { body: { session_id: sessionId } })
-        .then(({ data, error }) => {
-          if (error || !data?.success) {
-            toast.error("Could not verify payment");
-          } else {
-            toast.success("Credits added to your account!");
-            queryClient.invalidateQueries({ queryKey: ['shadow-arena-credits'] });
-          }
-          searchParams.delete('payment');
-          searchParams.delete('session_id');
-          setSearchParams(searchParams, { replace: true });
-        });
-    }
-  }, [searchParams, setSearchParams, queryClient]);
 
   useEffect(() => {
     fetchData();
@@ -226,7 +200,7 @@ export default function ShadowArenaDashboard() {
                     </div>
                     <div className="flex items-center gap-1">
                       <Trophy className="h-4 w-4 text-yellow-500" />
-                      <span className="text-lg font-bold text-yellow-400">€{battle.total_prize_pool.toFixed(2)}</span>
+                      <span className="text-lg font-bold text-yellow-400">{battle.total_prize_pool} cr</span>
                     </div>
                   </div>
                 </Card>

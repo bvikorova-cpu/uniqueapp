@@ -2,10 +2,10 @@ import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const steps = [
-  { num: 1, title: "Subscribe", desc: "Unlock full access for €2/month", color: "from-red-700 to-red-900" },
+  { num: 1, title: "Top up credits", desc: "No subscription — buy AI credits once and use them anywhere", color: "from-red-700 to-red-900" },
   { num: 2, title: "Write Horror", desc: "Submit stories — AI generates 3 atmospheric illustrations", color: "from-purple-700 to-purple-900" },
-  { num: 3, title: "Join & Stream", desc: "Pay €1 entry, go live, viewers send gifts to vote", color: "from-red-700 to-red-900" },
-  { num: 4, title: "Win Prizes", desc: "Top 3 split 80% of pool — instant Stripe payouts", color: "from-purple-700 to-purple-900" },
+  { num: 3, title: "Join & Stream", desc: "Pay 5 credits entry, go live, viewers send credit gifts to vote", color: "from-red-700 to-red-900" },
+  { num: 4, title: "Win Prizes", desc: "Top 3 split the credit prize pool", color: "from-purple-700 to-purple-900" },
   { num: 5, title: "Build Following", desc: "Gain fans, archive streams, earn from past performances", color: "from-red-700 to-red-900" },
 ];
 

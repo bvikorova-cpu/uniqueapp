@@ -17,7 +17,7 @@ const guidelines = [
   { icon: Skull, title: "Set the Mood", desc: "Use descriptive language to create atmosphere and tension" },
   { icon: Eye, title: "Keep it Engaging", desc: "Hook readers from the first sentence to the last" },
   { icon: ImageIcon, title: "AI Enhancement", desc: "Our AI will generate 2-3 illustrations and format your story" },
-  { icon: Feather, title: "Audience", desc: "Your story will be visible to all Shadow Arena subscribers" },
+  { icon: Feather, title: "Audience", desc: "Your story will be visible to everyone in Shadow Arena" },
   { icon: Sparkles, title: "Battle Ready", desc: "Quality stories may be selected for monthly creator battles" },
 ];
 

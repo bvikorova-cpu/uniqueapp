@@ -556,6 +556,25 @@ Return JSON: {
         return json({ ok: true, charged: amount, credits_remaining: spend.remaining });
       }
 
+      case "patron_support": {
+        const TIER_COST: Record<string, number> = { bronze: 25, silver: 50, gold: 100 };
+        const tier = String(p.tier || "");
+        const cost = TIER_COST[tier];
+        const authorUserId = String(p.authorUserId || "");
+        if (!cost || !authorUserId) return json({ error: "bad_input" }, 400);
+        if (authorUserId === user.id) return json({ error: "cannot_support_yourself" }, 400);
+        const spend = await spendAiCredits(supabase as any, user.id, cost, `shadow_patron_${tier}`, "shadow-arena-router");
+        if (!spend.ok) return json({ error: "insufficient_credits", required: cost }, 402);
+        try {
+          await supabase.from("shadow_gifts").insert({
+            sender_id: user.id,
+            recipient_id: authorUserId,
+            gift_type: `patron_${tier}`,
+            amount_cents: cost });
+        } catch (_e) { /* gift log is best-effort */ }
+        return json({ ok: true, tier, charged: cost, credits_remaining: spend.remaining });
+      }
+
       default:
         return json({ error: "unknown_action" }, 400);
 
