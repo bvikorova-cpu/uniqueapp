@@ -17,19 +17,58 @@ export const BrowseConcerts = ({ onBack }: Props) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<string | null>(null);
   const [myTickets, setMyTickets] = useState<Set<string>>(new Set());
+  const [awaitingPayment, setAwaitingPayment] = useState(false);
+
+  const loadMyTickets = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return new Set<string>();
+    const { data } = await supabase
+      .from("concert_ticket_purchases")
+      .select("concert_id")
+      .eq("user_id", session.user.id)
+      .eq("payment_status", "completed");
+    const set = new Set<string>((data || []).map((r: any) => r.concert_id));
+    setMyTickets(set);
+    return set;
+  };
 
   useEffect(() => {
+    // Returning from Stripe success URL: the verify function may still be running,
+    // so retry a few times until the ticket shows up.
+    const returned = new URLSearchParams(window.location.search).has("session_id");
+    let cancelled = false;
     (async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
-      const { data } = await supabase
-        .from("concert_ticket_purchases")
-        .select("concert_id")
-        .eq("user_id", session.user.id)
-        .eq("payment_status", "completed");
-      setMyTickets(new Set((data || []).map((r: any) => r.concert_id)));
+      const before = await loadMyTickets();
+      if (!returned) return;
+      for (let i = 0; i < 8 && !cancelled; i++) {
+        await new Promise((r) => setTimeout(r, 2000));
+        const set = await loadMyTickets();
+        if (set.size > before.size) break;
+      }
     })();
+    return () => { cancelled = true; };
   }, []);
+
+  /** Poll for the ticket after Stripe checkout (opened in another tab). */
+  const pollForTicket = async (concertId: string, sessionId?: string) => {
+    setAwaitingPayment(true);
+    for (let i = 0; i < 40; i++) {
+      await new Promise((r) => setTimeout(r, 3000));
+      if (sessionId) {
+        // Activate the purchase server-side in case the success tab was closed.
+        await supabase.functions
+          .invoke("verify-concert-ticket-payment", { body: { sessionId } })
+          .catch(() => null);
+      }
+      const set = await loadMyTickets();
+      if (set.has(concertId)) {
+        setAwaitingPayment(false);
+        toast.success("Payment confirmed — your ticket is ready!");
+        return;
+      }
+    }
+    setAwaitingPayment(false);
+  };
 
   const { data: concerts, isLoading } = useQuery({
     queryKey: ["browse-concerts"],
@@ -51,9 +90,15 @@ export const BrowseConcerts = ({ onBack }: Props) => {
       const { data, error } = await supabase.functions.invoke("create-concert-ticket-checkout", {
         body: { concertId, ticketTypeId } });
       if (error) throw error;
-      if (data?.url) { window.open(data.url, "_blank"); toast.success("Redirecting to checkout..."); }
+      if (data?.url) {
+        window.open(data.url, "_blank");
+        toast.success("Complete the payment in the new tab…");
+        pollForTicket(concertId, data.sessionId);
+      }
     } catch (error: any) {
-      toast.error(error.message || "Failed to create checkout");
+      const msg = error?.message || "Failed to create checkout";
+      if (/already own a ticket/i.test(msg)) { await loadMyTickets(); toast.success("You already own a ticket for this concert."); }
+      else toast.error(msg);
     } finally { setLoading(null); }
   };
 
@@ -136,11 +181,16 @@ export const BrowseConcerts = ({ onBack }: Props) => {
                   </Button>
                 )}
                 {myTickets.has(concert.id) && concert.status !== "live" && (
-                  <Button variant="outline" onClick={() => navigate(`/concert-watch/${concert.id}`)} className="w-full">
-                    <Ticket className="h-4 w-4 mr-2" />Your ticket (waiting room)
+                  <Button variant="outline" onClick={() => navigate(`/concert-watch/${concert.id}`)} className="w-full border-primary text-primary">
+                    <Ticket className="h-4 w-4 mr-2" />Open concert (ticket owned)
                   </Button>
                 )}
-                {!myTickets.has(concert.id) && concert.concert_ticket_types?.map((ticket: any) => (
+                {!myTickets.has(concert.id) && awaitingPayment && (
+                  <Button variant="outline" disabled className="w-full">
+                    <Ticket className="h-4 w-4 mr-2 animate-pulse" />Confirming payment…
+                  </Button>
+                )}
+                {!myTickets.has(concert.id) && !awaitingPayment && concert.concert_ticket_types?.map((ticket: any) => (
                   <div key={ticket.id} className={`p-3 rounded-xl border transition-all ${ticket.name === "vip" ? "bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border-yellow-500/30" : "bg-primary/5 border-primary/20"}`}>
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
