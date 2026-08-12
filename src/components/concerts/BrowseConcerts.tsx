@@ -35,7 +35,7 @@ export const BrowseConcerts = ({ onBack }: Props) => {
     queryKey: ["browse-concerts"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("live_concert_streams")
+        .from("live_concert_streams_public")
         .select(`*, musician_profiles(stage_name, genre, avatar_url, total_earnings, total_concerts), concert_ticket_types(*)`)
         .in("status", ["scheduled", "live"])
         .order("scheduled_at", { ascending: true });

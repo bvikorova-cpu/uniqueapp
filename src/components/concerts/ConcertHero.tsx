@@ -26,7 +26,7 @@ export const ConcertHero = () => {
   const [isMuted, setIsMuted] = useState(true);
 
   const { stats, loading } = useLiveStats([
-    { key: "concerts", table: "live_concert_streams" },
+    { key: "concerts", table: "live_concert_streams_public" },
     { key: "musicians", table: "musician_profiles" },
     { key: "gifts", table: "platform_gifts" },
   ]);

@@ -14,7 +14,7 @@ export const ConcertSchedule = ({ onBack }: Props) => {
     queryKey: ["concert-schedule"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("live_concert_streams")
+        .from("live_concert_streams_public")
         .select(`*, musician_profiles(stage_name, genre)`)
         .eq("status", "scheduled")
         .gte("scheduled_at", new Date().toISOString())
