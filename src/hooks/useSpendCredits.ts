@@ -4,12 +4,13 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
-export type CreditAction = "megatalent_vote" | "megatalent_comment" | "megatalent_upload" | "wellness_ai_tool";
+export type CreditAction = "megatalent_vote" | "megatalent_comment" | "megatalent_upload" | "wellness_ai_tool" | "concert_chat_message";
 
 export const CREDIT_COSTS: Record<CreditAction, number> = { megatalent_vote: 1,
   megatalent_comment: 1,
   megatalent_upload: 3,
-  wellness_ai_tool: 3 };
+  wellness_ai_tool: 3,
+  concert_chat_message: 1 };
 
 
 /**
@@ -52,6 +53,15 @@ export function useSpendCredits() {
             usage_type: "custom_generation",
             credits_used: amount,
             description: opts?.description || action });
+
+          // Every spend must be recorded in the unified ledger (Core rule).
+          await supabase.from("ai_credits_ledger").insert({ user_id: user.id,
+            delta: -amount,
+            balance_before: remaining,
+            balance_after: remaining - amount,
+            reason: opts?.description || action,
+            source: action,
+            actor: user.id });
           return true;
         }
       } catch (e) {
