@@ -310,7 +310,7 @@ Deno.serve(async (req) => {
         return json({ prize });
       }
 
-      // ---- Horror Reel (15 credits, gpt-4o-mini script gen) ----
+      // ---- Horror Reel (15 credits, Vertex AI script gen) ----
       case "horror_reel": {
         const REEL_COST = 15;
         const { prompt, storyId, title } = p;
@@ -320,27 +320,31 @@ Deno.serve(async (req) => {
         if (!cur || cur.credits_remaining < REEL_COST) {
           return json({ error: `Need ${REEL_COST} credits.` }, 402);
         }
-        const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-        if (!LOVABLE_API_KEY) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
-        const scriptRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${LOVABLE_API_KEY}` },
-          body: JSON.stringify({
-            model: "google/gemini-2.5-flash",
-            messages: [
-              { role: "system", content: "You write 30-second horror reel scripts: 5 short cinematic scenes with timestamps, visual descriptions, and a chilling voiceover line each. Output JSON: {scenes:[{time, visual, voiceover}], hook}." },
-              { role: "user", content: prompt },
-            ],
-            response_format: { type: "json_object" } }) });
-        const scriptJson = await scriptRes.json();
-        const reelScript = JSON.parse(scriptJson.choices[0].message.content);
+        const vres = await tryVertexChat({
+          model: "google/gemini-2.5-flash",
+          messages: [
+            { role: "system", content: "You write 30-second horror reel scripts: 5 short cinematic scenes with timestamps, visual descriptions, and a chilling voiceover line each. Output ONLY raw JSON: {\"hook\":string,\"scenes\":[{\"time\":string,\"visual\":string,\"voiceover\":string}]}." },
+            { role: "user", content: prompt },
+          ],
+          response_format: { type: "json_object" } });
+        const raw = vres?.choices?.[0]?.message?.content;
+        if (!raw) return json({ error: "AI script generation failed. Please try again." }, 502);
+        let reelScript: any = null;
+        try {
+          reelScript = JSON.parse(String(raw).replace(/```json|```/g, "").trim());
+        } catch {
+          const m = String(raw).match(/\{[\s\S]*\}/);
+          if (m) { try { reelScript = JSON.parse(m[0]); } catch { /* noop */ } }
+        }
+        if (!reelScript?.scenes) return json({ error: "AI returned an unreadable script. Please try again." }, 502);
         const { data: reel, error: rErr } = await supabase.from("shadow_horror_reels").insert({ user_id: user.id, story_id: storyId || null, title: title || "Untitled Horror Reel",
-          prompt, status: "ready", thumbnail_url: null, video_url: null,
+          prompt, status: "ready", thumbnail_url: null, video_url: null, script: reelScript,
           duration_seconds: 30, credits_used: REEL_COST }).select().single();
         if (rErr) throw rErr;
         await spendAiCredits(supabase as any, user.id, REEL_COST, "shadow_horror_reel", "shadow-arena-router");
         return json({ reel, script: reelScript });
       }
+
 
       // ---- AI Narrator (ElevenLabs TTS, 6 credits) ----
       case "ai_narrate": {
