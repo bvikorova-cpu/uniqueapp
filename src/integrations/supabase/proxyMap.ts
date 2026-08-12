@@ -297,7 +297,6 @@ export function resolveProxy(
   const CUSTOMER_PORTAL_MODULES: Record<string, string> = { "companions-customer-portal": "/companions",
     "customer-portal-creator": "/creator-dashboard",
     "employer-customer-portal": "/employer",
-    "f1-customer-portal": "/gp-racing",
     "healthcare-customer-portal": "/healthcare",
     "kids-drawing-customer-portal": "/kids-drawing",
     "kids-story-customer-portal": "/kids-story",

@@ -4,7 +4,6 @@ import path from "node:path";
 
 const FNS = [
   "horse-racing-action",
-  "gp-racing-action",
   "lottery-ai-action",
   "phobia-trading-action",
   "education-skill-unlock",

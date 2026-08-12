@@ -299,10 +299,6 @@ import { ResetPassword,
   HorseRacing,
   GlamourWorld,
   E2EAnonymousDateMatches,
-  GPRacing,
-  GPFantasyTeam,
-  GPRacingArena,
-  GPLeaderboard,
   ComedyClub,
   ComedianDashboard,
   ComedyLiveShow,
@@ -1212,22 +1208,10 @@ const App = () => {
                         <Route path="/kids-channel/disney-castles/:castleId" element={<DisneyCastleRedirect />} />
                         <Route path="/kids-channel/disney-admin" element={<Navigate to="/kids-channel/fairy-admin" replace />} />
                         <Route path="/kids-channel/certificate-gallery" element={<CertificateGallery />} />
-                        <Route path="/gp-racing" element={<GPRacingArena />} />
                         <Route path="/numerology" element={<Numerology />} />
                         <Route path="/parallel-universe" element={<ParallelUniverse />} />
                         <Route path="/memory-auctions" element={<MemoryAuctions />} />
                         <Route path="/brand-kits" element={<BrandKits />} />
-                        {/* GP Racing is 100% AI-credit based — no subscription gate */}
-                        <Route path="/gp-racing-old" element={<GPRacing />} />
-                        <Route path="/gp-subscription" element={<Navigate to="/gp-racing" replace />} />
-                        <Route path="/gp-fantasy-team" element={<GPFantasyTeam />} />
-                        <Route path="/gp-leaderboard" element={<GPLeaderboard />} />
-                        {/* Legacy /f1-* redirects → /gp-* */}
-                        <Route path="/f1-racing" element={<Navigate to="/gp-racing" replace />} />
-                        <Route path="/f1-racing-old" element={<Navigate to="/gp-racing-old" replace />} />
-                        <Route path="/f1-subscription" element={<Navigate to="/gp-racing" replace />} />
-                        <Route path="/f1-fantasy-team" element={<Navigate to="/gp-fantasy-team" replace />} />
-                        <Route path="/f1-leaderboard" element={<Navigate to="/gp-leaderboard" replace />} />
 
                         <Route path="/masterchef-subscription" element={<MasterChefHub />} />
                         <Route path="/masterchef/competitions-public" element={<MasterChefCompetitionsGallery />} />
