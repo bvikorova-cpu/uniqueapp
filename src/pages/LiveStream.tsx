@@ -26,6 +26,8 @@ import { ChatMuteBanner } from "@/components/live/ChatMuteBanner";
 import { ReportMessageButton } from "@/components/live/ReportMessageButton";
 import { HideMessageButton } from "@/components/live/HideMessageButton";
 import { useStreamViewerSession } from "@/hooks/useStreamViewerSession";
+import { startBroadcast, startViewer, type BroadcastHandle, type ViewerHandle } from "@/lib/concertWebRTC";
+
 
 interface Message {
   id: string;
