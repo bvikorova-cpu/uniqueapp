@@ -320,7 +320,7 @@ const GPRacing = () => {
           <CardContent className="text-center space-y-6">
             <p className="text-xl">Subscribe to access the GP Fantasy Racing platform!</p>
             <Button
-              onClick={() => navigate('/gp-subscription')}
+              onClick={() => navigate('/ai-credits-store')}
               className="bg-red-600 hover:bg-red-700 text-white px-8 py-6 text-xl"
             >
               View Subscription Plans
@@ -478,7 +478,7 @@ const GPRacing = () => {
               </Button>
 
               <Button
-                onClick={() => navigate('/gp-subscription')}
+                onClick={() => navigate('/ai-credits-store')}
                 className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-6 text-lg"
               >
                 <Star className="w-5 h-5 mr-2" />
