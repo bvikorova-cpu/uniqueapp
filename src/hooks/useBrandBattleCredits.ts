@@ -19,7 +19,7 @@ export const useBrandBattleCredits = () => {
       }
 
       const { data, error } = await supabase
-        .from("brand_battle_credits")
+        .from("ai_credits")
         .select("*")
         .eq("user_id", user.id)
         .single();
@@ -30,8 +30,8 @@ export const useBrandBattleCredits = () => {
           totalCreditsSpent: 0 };
       }
 
-      return { creditsBalance: data.credits_balance,
-        totalCreditsEarned: data.total_credits_earned,
-        totalCreditsSpent: data.total_credits_spent };
+      return { creditsBalance: (data as any).credits_remaining ?? 0,
+        totalCreditsEarned: (data as any).total_credits_purchased ?? 0,
+        totalCreditsSpent: 0 };
     } });
 };

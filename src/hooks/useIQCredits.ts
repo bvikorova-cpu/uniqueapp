@@ -14,7 +14,7 @@ export const useIQCredits = () => {
       if (!user) throw new Error("Not authenticated");
 
       const { data, error } = await supabase
-        .from("iq_credits")
+        .from("ai_credits")
         .select("*")
         .eq("user_id", user.id)
         .single();
@@ -24,8 +24,8 @@ export const useIQCredits = () => {
       // If no record exists, create one
       if (!data) {
         const { data: newData, error: insertError } = await supabase
-          .from("iq_credits")
-          .insert({ user_id: user.id, balance: 0 })
+          .from("ai_credits")
+          .select("*")
           .select()
           .single();
         
@@ -65,13 +65,13 @@ export const useIQCredits = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      if (!credits || credits.balance < amount) {
+      if (!credits || ((credits as any).credits_remaining ?? 0) < amount) {
         throw new Error("Insufficient credits");
       }
 
       const { error } = await supabase
-        .from("iq_credits")
-        .update({ balance: credits.balance - amount })
+        .from("ai_credits")
+        .update({ credits_remaining: (credits as any).credits_remaining - amount })
         .eq("user_id", user.id);
 
       if (error) throw error;
@@ -80,7 +80,7 @@ export const useIQCredits = () => {
       queryClient.invalidateQueries({ queryKey: ["iq-credits"] });
     } });
 
-  return { credits: credits?.balance || 0,
+  return { credits: (credits as any)?.credits_remaining || 0,
     isLoading,
     purchaseCredits: purchaseCredits.mutate,
     isPurchasing: purchaseCredits.isPending,

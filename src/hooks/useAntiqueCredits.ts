@@ -12,7 +12,7 @@ export const useAntiqueCredits = () => {
       if (!user) throw new Error("Not authenticated");
 
       const { data, error } = await supabase
-        .from("antique_credits")
+        .from("ai_credits")
         .select("*")
         .eq("user_id", user.id)
         .maybeSingle();
@@ -21,7 +21,7 @@ export const useAntiqueCredits = () => {
       
       if (!data) {
         const { data: newData, error: insertError } = await supabase
-          .from("antique_credits")
+          .from("ai_credits")
           .insert({
             user_id: user.id,
             credits_remaining: 0,

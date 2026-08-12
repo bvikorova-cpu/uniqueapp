@@ -13,7 +13,7 @@ export const usePastLifeCredits = () => {
       if (!user) throw new Error("Not authenticated");
 
       const { data, error } = await supabase
-        .from("past_life_credits")
+        .from("ai_credits")
         .select("*")
         .eq("user_id", user.id)
         .maybeSingle();
@@ -22,7 +22,7 @@ export const usePastLifeCredits = () => {
       
       if (!data) {
         const { data: newCredits, error: insertError } = await supabase
-          .from("past_life_credits")
+          .from("ai_credits")
           .insert({ user_id: user.id })
           .select()
           .single();

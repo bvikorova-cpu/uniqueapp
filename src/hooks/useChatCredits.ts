@@ -28,7 +28,7 @@ export const useChatCredits = () => { const [state, setState] = useState<ChatCre
       }
 
       const { data, error } = await supabase
-        .from("chat_credits")
+        .from("ai_credits")
         .select("credits_remaining, total_credits_purchased")
         .eq("user_id", user.id)
         .maybeSingle();
