@@ -81,7 +81,8 @@ Deno.serve(async (req) => {
       }
       case "duet_duel": {
         const ENTRY_COST = 1;
-        const PRIZE = 2;
+        const PRIZE_POINTS = 20; // winners earn POINTS only — never credits
+
         const opponentId = String(p.opponent_id || "");
         const theme = String(p.theme || "Shadow Duel");
         if (!opponentId || opponentId === user.id) return json({ error: "bad_input" }, 400);
