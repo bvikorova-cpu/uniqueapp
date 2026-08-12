@@ -181,7 +181,7 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
         {/* Framed stats table */}
         <div className="rounded-xl border bg-card/60 p-1">
           <div className="grid grid-cols-2 gap-1 sm:grid-cols-4">
-            <StatCard icon={Users} label="Viewers" value={viewerCount} sub="watching now" />
+            <StatCard icon={Users} label="Viewers" value={liveViewers} sub="watching now" />
             <StatCard icon={Ticket} label="Tickets" value={ticketCount} sub="paid sales" />
             <StatCard icon={Gift} label="Gifts" value={totals.count} sub="received" accent="accent" />
             <StatCard icon={TrendingUp} label="Gross" value={`€${totals.gross.toFixed(2)}`} sub="tickets + gifts" accent="success" />
