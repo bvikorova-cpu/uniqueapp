@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
-import { Ticket, Mic2, Music, Calendar, Loader2 } from "lucide-react";
+import { Ticket, Mic2, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ConcertHero } from "@/components/concerts/ConcertHero";
 import { ConcertToolCard } from "@/components/concerts/ConcertToolCard";
