@@ -7,18 +7,26 @@ import { ArrowLeft, MessageCircle, Send, Users } from "lucide-react";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
-interface Props { onBack: () => void; }
+interface Props {
+  onBack: () => void;
+  /** Embedded mode: renders only the message list + composer (no page chrome). */
+  embedded?: boolean;
+  /** Optional room id so each concert has its own lounge. */
+  roomId?: string;
+}
 
-export const ConcertChat = ({ onBack }: Props) => {
+export const ConcertChat = ({ onBack, embedded = false, roomId }: Props) => {
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
+  const topic = roomId ? `concert-chat-${roomId}` : "concert-global-chat";
+
   useEffect(() => {
     const channel = supabase
-      .channel("concert-global-chat")
+      .channel(topic)
       .on("broadcast", { event: "chat_message" }, (payload) => {
         setMessages(prev => [...prev, payload.payload]);
       })
@@ -26,7 +34,7 @@ export const ConcertChat = ({ onBack }: Props) => {
     channelRef.current = channel;
 
     return () => { supabase.removeChannel(channel); channelRef.current = null; };
-  }, []);
+  }, [topic]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -55,6 +63,47 @@ export const ConcertChat = ({ onBack }: Props) => {
     finally { setSending(false); }
   };
 
+  const messageList = (
+    <div
+      ref={scrollRef}
+      className={`overflow-y-auto space-y-3 p-3 bg-muted/30 rounded-lg ${embedded ? "flex-1 min-h-0" : "h-[400px] mb-4"}`}
+    >
+      {messages.length === 0 ? (
+        <div className="text-center text-muted-foreground py-16">
+          <MessageCircle className="h-12 w-12 mx-auto mb-3 opacity-30" />
+          <p>No messages yet. Start the conversation!</p>
+        </div>
+      ) : messages.map((msg, i) => (
+        <div key={i} className="text-sm">
+          <span className="font-bold text-primary">{msg.username}: </span>
+          <span className="text-foreground break-words">{msg.content}</span>
+        </div>
+      ))}
+    </div>
+  );
+
+  const composer = (
+    <div className="flex gap-2">
+      <Input
+        placeholder="Type a message..."
+        value={newMessage}
+        onChange={(e) => setNewMessage(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+      />
+      <Button onClick={sendMessage} disabled={sending} size="icon">
+        <Send className="h-4 w-4" />
+      </Button>
+    </div>
+  );
+
+  if (embedded) {
+    return (
+      <div className="flex flex-col h-full min-h-0 gap-2 px-2 pb-2">
+        {messageList}
+        {composer}
+      </div>
+    );
+  }
 
   return (
     <>
@@ -79,30 +128,8 @@ export const ConcertChat = ({ onBack }: Props) => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div ref={scrollRef} className="h-[400px] overflow-y-auto space-y-3 mb-4 p-3 bg-muted/30 rounded-lg">
-            {messages.length === 0 ? (
-              <div className="text-center text-muted-foreground py-16">
-                <MessageCircle className="h-12 w-12 mx-auto mb-3 opacity-30" />
-                <p>No messages yet. Start the conversation!</p>
-              </div>
-            ) : messages.map((msg, i) => (
-              <div key={i} className="text-sm">
-                <span className="font-bold text-primary">{msg.username}: </span>
-                <span className="text-foreground">{msg.content}</span>
-              </div>
-            ))}
-          </div>
-          <div className="flex gap-2">
-            <Input
-              placeholder="Type a message..."
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-            />
-            <Button onClick={sendMessage} disabled={sending} size="icon">
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
+          {messageList}
+          {composer}
         </CardContent>
       </Card>
     </div>
