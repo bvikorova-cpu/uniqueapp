@@ -9,12 +9,10 @@ import shadowPoster from "@/assets/shadow-arena-poster.jpg";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
-  totalPrizePool?: number;
-  activeBattles?: number;
   topStories?: number;
 }
 
-export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStories = 0 }: Props) {
+export function ShadowArenaHero({ topStories = 0 }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
