@@ -61,9 +61,9 @@ export function ArenaStoryCard({ story }: { story: Story }) {
           {story.content.substring(0, 300)}...
         </p>
 
-        {/* Vote bar */}
-        <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/20">
+        {/* Gift bar */}
         <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/20 gap-2">
+
           <div className="flex items-center gap-1 text-sm text-pink-400">
             <Sparkles className="w-4 h-4" />
             <span className="font-bold">{story.votes_count}</span>
