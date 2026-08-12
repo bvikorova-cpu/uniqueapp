@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { SubscriptionGate } from '@/components/shadow-arena/SubscriptionGate';
+import { ShadowCreditsGate } from '@/components/shadow-arena/ShadowCreditsGate';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -65,7 +65,7 @@ export default function ShadowArenaSubmitStory() {
 
   return (
     <><FloatingHowItWorks title="ShadowArenaSubmitStory — How it works" steps={[{title:"Open this section",desc:"Access ShadowArenaSubmitStory from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
-<SubscriptionGate>
+<ShadowCreditsGate>
       <div className="container mx-auto px-4 sm:px-6 pt-24 pb-8 max-w-4xl">
         <Button variant="ghost" size="sm" onClick={() => navigate('/shadow-arena/dashboard')} className="mb-4">
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Dashboard
@@ -162,7 +162,7 @@ export default function ShadowArenaSubmitStory() {
           </Card>
         </motion.div>
       </div>
-    </SubscriptionGate>
+    </ShadowCreditsGate>
   </>
   );
 }

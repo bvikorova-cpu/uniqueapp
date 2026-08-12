@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { SubscriptionGate } from '@/components/shadow-arena/SubscriptionGate';
+import { ShadowCreditsGate } from '@/components/shadow-arena/ShadowCreditsGate';
 import { ShadowArenaHero } from '@/components/shadow-arena/ShadowArenaHero';
 import { ShadowCreditsCard } from '@/components/shadow-arena/ShadowCreditsCard';
 import { ShadowAIToolsHub } from '@/components/shadow-arena/ShadowAIToolsHub';
@@ -127,7 +127,7 @@ export default function ShadowArenaDashboard() {
 
   return (
     <><FloatingHowItWorks title="ShadowArenaDashboard — How it works" steps={[{title:"Open this section",desc:"Access ShadowArenaDashboard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
-<SubscriptionGate>
+<ShadowCreditsGate>
       <div className="container mx-auto px-4 sm:px-6 pt-6 pb-28 md:pb-8 max-w-6xl">
         <ShadowArenaHero
           totalPrizePool={totalActivePrizePool}
@@ -235,7 +235,7 @@ export default function ShadowArenaDashboard() {
           </TabsContent>
         </Tabs>
       </div>
-    </SubscriptionGate>
+    </ShadowCreditsGate>
   </>
   );
 }
