@@ -65,33 +65,46 @@ export const ConcertBroadcaster = ({ concertId, title, scheduledAt, status, onSt
   // instead of a button that spins forever.
   const inIframe = typeof window !== "undefined" && window.self !== window.top;
 
-  const goLive = async () => {
-    if (startingRef.current || broadcastRef.current) return;
-    startingRef.current = true;
-    setStarting(true);
+  const requestStream = async () => {
+    const withTimeout = (p: Promise<MediaStream>, ms: number) =>
+      Promise.race([
+        p,
+        new Promise<never>((_, reject) =>
+          window.setTimeout(() => reject(new Error("__timeout__")), ms)
+        ),
+      ]);
     try {
-      if (!navigator.mediaDevices?.getUserMedia) {
-        throw new Error("This browser does not support live camera streaming");
-      }
-      const stream = await Promise.race([
+      return await withTimeout(
         navigator.mediaDevices.getUserMedia({
           video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" },
           audio: { echoCancellation: true, noiseSuppression: true },
         }),
-        new Promise<never>((_, reject) =>
-          window.setTimeout(
-            () =>
-              reject(
-                new Error(
-                  inIframe
-                    ? "Camera is blocked in the embedded preview — open the studio in a new tab"
-                    : "No answer from the camera — check the browser permission and try again"
-                )
-              ),
-            25000
-          )
-        ),
-      ]);
+        15000
+      );
+    } catch (e: any) {
+      if (e?.name === "NotAllowedError") throw e;
+      // Some devices fail when audio + video are requested together — retry video only.
+      return await withTimeout(navigator.mediaDevices.getUserMedia({ video: true }), 15000);
+    }
+  };
+
+  const goLive = async () => {
+    if (startingRef.current || broadcastRef.current) return;
+    startingRef.current = true;
+    setStarting(true);
+    setError(null);
+    try {
+      if (!window.isSecureContext) {
+        throw new Error("Live streaming needs a secure (https) page");
+      }
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error(
+          inIframe
+            ? "Camera is blocked in the embedded preview — open the studio in a new tab"
+            : "This browser does not support live camera streaming"
+        );
+      }
+      const stream = await requestStream();
       streamRef.current = stream;
       setCameraOn(true);
       if (videoRef.current) {
@@ -104,18 +117,26 @@ export const ConcertBroadcaster = ({ concertId, title, scheduledAt, status, onSt
       toast.success("You are live — ticket holders can see your camera");
     } catch (e: any) {
       stopEverything();
-      toast.error(
+      const msg =
         e?.name === "NotAllowedError"
-          ? "Camera access denied — allow camera & microphone in your browser"
+          ? "Camera access denied — allow camera & microphone for this site in your browser settings"
           : e?.name === "NotFoundError"
             ? "No camera found on this device"
-            : e?.message || "Could not start the camera"
-      );
+            : e?.name === "NotReadableError"
+              ? "Camera is used by another app — close it and try again"
+              : e?.message === "__timeout__"
+                ? inIframe
+                  ? "Camera is blocked in the embedded preview — open the studio in a new tab"
+                  : "No answer from the camera — reload the page and allow the permission prompt"
+                : e?.message || "Could not start the camera";
+      setError(msg);
+      toast.error(msg);
     } finally {
       startingRef.current = false;
       setStarting(false);
     }
   };
+
 
   const endStream = async () => {
     stopEverything();
