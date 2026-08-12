@@ -113,6 +113,20 @@ export default function ComedyLiveViewer() {
     return () => { supabase.removeChannel(ch); };
   }, [showId, isLive]);
 
+  // Keep the show status fresh so viewers auto-connect when the comedian goes live
+  useEffect(() => {
+    if (!showId) return;
+    const t = window.setInterval(async () => {
+      const { data } = await supabase
+        .from("comedy_shows")
+        .select("status, viewer_count")
+        .eq("id", showId)
+        .maybeSingle();
+      if (data) setShow((prev: any) => (prev ? { ...prev, ...data } : prev));
+    }, 8000);
+    return () => window.clearInterval(t);
+  }, [showId]);
+
   const sendTip = async (tipType: string, amount: number) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
