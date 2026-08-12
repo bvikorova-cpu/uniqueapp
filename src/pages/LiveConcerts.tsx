@@ -1,43 +1,18 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import { 
-  Music, Calendar, Gift, Trophy, Users, Sparkles, Crown, MessageCircle,
-  PlayCircle, BarChart3, Star, Bell, ShoppingBag, ListMusic, Loader2,
-  Info, Ticket, Headphones, Mic2
-} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Ticket, Mic2, Music, Calendar, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ConcertHero } from "@/components/concerts/ConcertHero";
-import { ConcertEngagement } from "@/components/concerts/ConcertEngagement";
 import { ConcertToolCard } from "@/components/concerts/ConcertToolCard";
 import { BrowseConcerts } from "@/components/concerts/BrowseConcerts";
-import { VirtualGiftsShop } from "@/components/concerts/VirtualGiftsShop";
-import { ArtistDiscovery } from "@/components/concerts/ArtistDiscovery";
 import { ArtistStudio } from "@/components/concerts/ArtistStudio";
-import { FanLeaderboard } from "@/components/concerts/FanLeaderboard";
-import { ConcertReplay } from "@/components/concerts/ConcertReplay";
-import { ConcertSchedule } from "@/components/concerts/ConcertSchedule";
-import { ConcertChat } from "@/components/concerts/ConcertChat";
-import { ConcertAnalytics } from "@/components/concerts/ConcertAnalytics";
-import { VIPExperience } from "@/components/concerts/VIPExperience";
-import { SetlistVoting } from "@/components/concerts/SetlistVoting";
-import { MerchStore } from "@/components/concerts/MerchStore";
-import { ConcertNotifications } from "@/components/concerts/ConcertNotifications";
-import { ConcertHowItWorks } from "@/components/concerts/ConcertHowItWorks";
-
-import { SongRequests } from "@/components/concerts/SongRequests";
-import { MultiCamera } from "@/components/concerts/MultiCamera";
-import { FanBadges } from "@/components/concerts/FanBadges";
-import { ConcertStories } from "@/components/concerts/ConcertStories";
-import { CollectibleTickets } from "@/components/concerts/CollectibleTickets";
-import { ConcertAfterparty } from "@/components/concerts/ConcertAfterparty";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { useOneOffPaymentVerify } from "@/hooks/useOneOffPaymentVerify";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-type ViewType = "hub" | "browse" | "gifts" | "artists" | "leaderboard" | "replay" | 
-  "schedule" | "chat" | "analytics" | "vip" | "setlist" | "merch" | "notifications" | "how-it-works" |
-  "artist-studio" | "song-requests" | "multi-camera" | "fan-badges" | "stories" | "collectibles" | "afterparty";
+
+type ViewType = "hub" | "browse" | "artist-studio";
 
 const tools = [
   { id: "artist-studio" as ViewType, icon: Mic2, title: "Artist Studio", description: "Sign up as a performer & schedule your own concerts", color: "violet", badge: "Artists" },
