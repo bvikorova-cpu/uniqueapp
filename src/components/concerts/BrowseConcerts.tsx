@@ -75,9 +75,15 @@ export const BrowseConcerts = ({ onBack }: Props) => {
       const { data, error } = await supabase.functions.invoke("create-concert-ticket-checkout", {
         body: { concertId, ticketTypeId } });
       if (error) throw error;
-      if (data?.url) { window.open(data.url, "_blank"); toast.success("Redirecting to checkout..."); }
+      if (data?.url) {
+        window.open(data.url, "_blank");
+        toast.success("Complete the payment in the new tab…");
+        pollForTicket(concertId, data.sessionId);
+      }
     } catch (error: any) {
-      toast.error(error.message || "Failed to create checkout");
+      const msg = error?.message || "Failed to create checkout";
+      if (/already own a ticket/i.test(msg)) { await loadMyTickets(); toast.success("You already own a ticket for this concert."); }
+      else toast.error(msg);
     } finally { setLoading(null); }
   };
 
