@@ -54472,6 +54472,7 @@ export type Database = {
           id: string
           is_public: boolean
           prompt: string
+          script: Json | null
           status: string
           story_id: string | null
           thumbnail_url: string | null
@@ -54487,6 +54488,7 @@ export type Database = {
           id?: string
           is_public?: boolean
           prompt: string
+          script?: Json | null
           status?: string
           story_id?: string | null
           thumbnail_url?: string | null
@@ -54502,6 +54504,7 @@ export type Database = {
           id?: string
           is_public?: boolean
           prompt?: string
+          script?: Json | null
           status?: string
           story_id?: string | null
           thumbnail_url?: string | null
