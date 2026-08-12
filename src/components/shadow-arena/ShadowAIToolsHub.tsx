@@ -210,7 +210,10 @@ export function ShadowAIToolsHub() {
               if (!requireCredits(SHADOW_AI_COSTS.avatar)) return;
               generateAvatar.mutate(
                 { sourceImageUrl: avatarUrl, style: avatarStyle },
-                { onSuccess: (data) => setAvatarResult(data.avatarUrl || data.avatar_url) }
+                { onSuccess: (data: any) => setAvatarResult(
+                  data?.nightmareImageUrl || data?.avatar?.nightmare_image_url || data?.avatarUrl || data?.avatar_url || null
+                ) }
+
               );
             }}
             disabled={generateAvatar.isPending}
