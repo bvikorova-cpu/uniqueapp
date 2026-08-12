@@ -32,6 +32,8 @@ interface DuelResult {
   won: boolean;
   myScore: number;
   opponentScore: number;
+  myPower?: number;
+  opponentPower?: number;
   creditsWon: number;
   pointsWon: number;
   rounds: RoundResult[];
@@ -186,6 +188,11 @@ export function DuetBattlesCard() {
                   {result.won ? "Victory" : "Defeat"}
                 </Badge>
                 <p className="text-lg font-black">{result.myScore} : {result.opponentScore}</p>
+                {typeof result.myPower === "number" && (
+                  <p className="text-xs text-muted-foreground">
+                    Power {result.myPower} vs {result.opponentPower} — stronger power wins
+                  </p>
+                )}
                 {result.won && (
                   <p className="text-sm font-bold text-emerald-500">
                     +{result.creditsWon} credits · +{result.pointsWon} pts
