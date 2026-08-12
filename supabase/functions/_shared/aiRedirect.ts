@@ -17,6 +17,7 @@
  */
 
 import { tryDirectGeminiChatResponse } from "./geminiDirect.ts";
+import { tryVertexImage } from "./vertexDirect.ts";
 
 const GATEWAY_BASE = "https://ai.gateway.lovable.dev/v1";
 
@@ -166,7 +167,28 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
             "google/gemini-3.5-flash",
           ]);
         }
-        // Non-chat gateway endpoints (images, audio, embeddings): pass through unchanged.
+        if (url.includes("/images/generations") || url.includes("/images/edits")) {
+          // Vertex AI (postpay Imagen) gets the first attempt for image generation.
+          const vertexImg = await tryVertexImage(body.prompt, body.size, body.n);
+          if (vertexImg) {
+            return new Response(JSON.stringify(vertexImg), {
+              status: 200,
+              headers: { "Content-Type": "application/json" },
+            });
+          }
+          // Vertex unavailable/failed — fall back to the Lovable gateway.
+          const gwBody = {
+            model: DEFAULT_IMAGE_MODEL,
+            prompt: body.prompt,
+            n: 1,
+            ...(body.size ? { size: body.size } : {}),
+            quality: "low",
+          };
+          return await postWithRetry(`${GATEWAY_BASE}/images/generations`, gwBody, [
+            "google/gemini-3-pro-image",
+          ]);
+        }
+        // Non-chat, non-image gateway endpoints (audio, embeddings): pass through unchanged.
         return await originalFetch(input as any, init);
       }
 
@@ -193,6 +215,15 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
 
 
       if (url.includes("/images/generations") || url.includes("/images/edits")) {
+        // Vertex AI (postpay Imagen) gets the first attempt for image generation.
+        const vertexImg = await tryVertexImage(body.prompt, body.size, body.n);
+        if (vertexImg) {
+          return new Response(JSON.stringify(vertexImg), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+        // Vertex unavailable/failed — fall back to the Lovable gateway.
         const gwBody = {
           model: DEFAULT_IMAGE_MODEL,
           prompt: body.prompt,
