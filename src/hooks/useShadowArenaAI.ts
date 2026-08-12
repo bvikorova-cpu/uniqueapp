@@ -15,9 +15,14 @@ export const useShadowArenaCredits = () => {
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return null;
-      const { data, error } = await supabase.functions.invoke("shadow-arena-credits-init");
+      // Unified balance — read straight from ai_credits (RLS scoped to the user).
+      const { data, error } = await supabase
+        .from("ai_credits")
+        .select("credits_remaining, total_credits_purchased")
+        .eq("user_id", user.id)
+        .maybeSingle();
       if (error) throw error;
-      return data?.credits || null;
+      return data ?? { credits_remaining: 0, total_credits_purchased: 0 };
     } });
 
   return { credits, isLoading, refetch: () => queryClient.invalidateQueries({ queryKey: ["shadow-arena-credits"] }) };
