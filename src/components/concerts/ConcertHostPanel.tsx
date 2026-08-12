@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Gift, Loader2, MessageCircle, Wallet } from "lucide-react";
+import { Gift, Loader2, MessageCircle, Users, Wallet } from "lucide-react";
 import { ConcertChat } from "@/components/concerts/ConcertChat";
 
 interface Props {
@@ -32,13 +32,18 @@ const PAID = ["paid", "completed", "succeeded"];
 export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
   const [gifts, setGifts] = useState<GiftRow[]>([]);
   const [giftNames, setGiftNames] = useState<Record<string, { name: string; icon: string }>>({});
+  const [viewerCount, setViewerCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
-      const [{ data: giftRows, error: giftsError }, { data: catalog, error: catalogError }] = await Promise.all([
+      const [
+        { data: giftRows, error: giftsError },
+        { data: catalog, error: catalogError },
+        { data: concert, error: concertError },
+      ] = await Promise.all([
         supabase
           .from("concert_gifts")
           .select("id, gift_id, amount, musician_amount, platform_commission, message, created_at, payment_status")
@@ -46,11 +51,17 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
           .order("created_at", { ascending: false })
           .limit(100),
         supabase.from("platform_gifts").select("id, name, icon"),
+        supabase
+          .from("live_concert_streams")
+          .select("viewer_count")
+          .eq("id", concertId)
+          .maybeSingle(),
       ]);
       if (cancelled) return;
-      const queryError = giftsError || catalogError;
+      const queryError = giftsError || catalogError || concertError;
       setLoadError(queryError?.message || null);
       setGifts((giftRows as GiftRow[]) || []);
+      setViewerCount(Number(concert?.viewer_count || 0));
       const map: Record<string, { name: string; icon: string }> = {};
       (catalog || []).forEach((g: any) => { map[g.id] = { name: g.name, icon: g.icon }; });
       setGiftNames(map);
@@ -97,7 +108,13 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="mb-3 grid grid-cols-2 gap-2">
+        <div className="mb-3 grid grid-cols-3 gap-2">
+          <div className="rounded-lg border p-3">
+            <p className="text-[11px] text-muted-foreground">Viewers</p>
+            <p className="flex items-center gap-1 text-lg font-bold">
+              <Users className="h-4 w-4 text-primary" /> {viewerCount}
+            </p>
+          </div>
           <div className="rounded-lg border p-3">
             <p className="text-[11px] text-muted-foreground">Paid gifts</p>
             <p className="text-lg font-bold">{totals.count}</p>

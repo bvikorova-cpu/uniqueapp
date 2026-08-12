@@ -393,9 +393,11 @@ export const ArtistStudio = ({ onBack }: Props) => {
                       )}
                     </div>
                   </div>
+                  {c.status === "live" && profile && (
+                    <ConcertHostPanel concertId={c.id} musicianId={profile.id} />
+                  )}
                   {studioId === c.id && (
                     <>
-                      {profile && <ConcertHostPanel concertId={c.id} musicianId={profile.id} />}
                       <ConcertBroadcaster
                         concertId={c.id}
                         title={c.title}
