@@ -63,11 +63,12 @@ export default function ShadowArenaDashboard() {
           .limit(10),
         supabase
           .from('shadow_stories')
-          .select('*')
+          .select('id, title, content, votes_count, is_top_week, created_at, user_id, is_anonymous')
           .order('is_top_week', { ascending: false })
           .order('votes_count', { ascending: false })
           .order('created_at', { ascending: false })
           .limit(10)
+
 
       ]);
 
