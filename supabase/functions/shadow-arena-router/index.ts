@@ -4,6 +4,10 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { spendAiCredits } from "../_shared/spendCredits.ts";
 import { encode as base64Encode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
 
+// Prize pools are tracked in POINTS, not credits (1 credit spent = 10 points added)
+const POINTS_PER_CREDIT = 10;
+
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   try {
@@ -608,7 +612,12 @@ Return JSON: {
           battle_id: battleId, user_id: user.id, story_title: title, story_content: content,
           entry_fee_paid: true }).select().single();
         if (error) throw error;
+        // Prize pool is tracked in POINTS (1 credit = 10 points)
+        const { data: bp } = await supabase.from("shadow_battles").select("total_prize_pool").eq("id", battleId).maybeSingle();
+        await supabase.from("shadow_battles")
+          .update({ total_prize_pool: (bp?.total_prize_pool || 0) + ENTRY_COST * POINTS_PER_CREDIT }).eq("id", battleId);
         return json({ participant: data, charged: ENTRY_COST, credits_remaining: spend.remaining });
+
       }
       case "battle_gift": {
         const { battleId, participantId, credits: giftCredits } = p;
@@ -626,7 +635,7 @@ Return JSON: {
           .update({ total_gifts_received: (part.total_gifts_received || 0) + amount }).eq("id", participantId);
         const { data: b } = await supabase.from("shadow_battles").select("total_prize_pool").eq("id", battleId).maybeSingle();
         await supabase.from("shadow_battles")
-          .update({ total_prize_pool: (b?.total_prize_pool || 0) + amount }).eq("id", battleId);
+          .update({ total_prize_pool: (b?.total_prize_pool || 0) + amount * POINTS_PER_CREDIT }).eq("id", battleId);
         return json({ ok: true, charged: amount, credits_remaining: spend.remaining });
       }
 

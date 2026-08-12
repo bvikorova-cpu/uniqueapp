@@ -113,7 +113,7 @@ export default function ShadowArenaBattles() {
     { icon: Gift, label: "Digital gifts = weighted votes" },
     { icon: Trophy, label: "Prize pool in credits, Top 3 split" },
     { icon: Timer, label: "14-day battle duration" },
-    { icon: Users, label: "5 credits entry — all goes to the prize pool" },
+    { icon: Users, label: "5 credits entry — converted into 50 prize-pool points" },
   ];
 
   return (
@@ -241,7 +241,7 @@ export default function ShadowArenaBattles() {
                       <div className="text-right shrink-0">
                         <Trophy className="h-6 w-6 text-yellow-500 mb-1 ml-auto" />
                         <p className="text-2xl font-black text-yellow-400">
-                          {battle.total_prize_pool} cr
+                          {battle.total_prize_pool} pts
                         </p>
                         <p className="text-xs text-muted-foreground">Prize Pool</p>
                       </div>

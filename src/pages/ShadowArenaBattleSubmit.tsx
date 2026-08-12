@@ -100,7 +100,7 @@ export default function ShadowArenaBattleSubmit() {
           <div className="flex items-center gap-2 text-red-200">
             <CheckCircle className="h-5 w-5 text-yellow-400" />
             <p className="font-semibold text-sm">
-              Entry costs {ENTRY_CREDITS} AI credits — charged when you submit. All of it goes to the prize pool.
+              Entry costs {ENTRY_CREDITS} AI credits — charged when you submit. It is converted into 50 prize-pool points.
             </p>
           </div>
         </motion.div>

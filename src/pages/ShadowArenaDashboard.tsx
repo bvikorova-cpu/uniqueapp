@@ -199,7 +199,7 @@ export default function ShadowArenaDashboard() {
                     </div>
                     <div className="flex items-center gap-1">
                       <Trophy className="h-4 w-4 text-yellow-500" />
-                      <span className="text-lg font-bold text-yellow-400">{battle.total_prize_pool} cr</span>
+                      <span className="text-lg font-bold text-yellow-400">{battle.total_prize_pool} pts</span>
                     </div>
                   </div>
                 </Card>

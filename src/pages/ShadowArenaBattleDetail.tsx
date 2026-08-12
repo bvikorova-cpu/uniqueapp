@@ -156,7 +156,7 @@ export default function ShadowArenaBattleDetail() {
             )}
             <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-yellow-800/40">
               <Trophy className="w-3.5 h-3.5 text-yellow-400" />
-              <span className="text-sm font-black text-yellow-400">{battle.total_prize_pool} credits</span>
+              <span className="text-sm font-black text-yellow-400">{battle.total_prize_pool} points</span>
             </div>
           </div>
           {battle.challenge_keywords && battle.challenge_keywords.length > 0 && (

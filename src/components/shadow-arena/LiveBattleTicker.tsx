@@ -77,7 +77,7 @@ export function LiveBattleTicker({ battles }: { battles: Battle[] }) {
               )}
               <div className="flex items-center gap-1">
                 <Trophy className="w-3 h-3 text-yellow-500" />
-                <span className="text-sm font-bold text-yellow-400">{battle.total_prize_pool} cr</span>
+                <span className="text-sm font-bold text-yellow-400">{battle.total_prize_pool} pts</span>
               </div>
             </div>
           </motion.div>
