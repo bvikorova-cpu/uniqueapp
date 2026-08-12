@@ -315,9 +315,6 @@ export const LieDetector = lazy(() => import("@/pages/LieDetector"));
 export const ShadowArena = lazy(() => import("@/pages/ShadowArena"));
 export const ShadowArenaDashboard = lazy(() => import("@/pages/ShadowArenaDashboard"));
 export const ShadowArenaSubmitStory = lazy(() => import("@/pages/ShadowArenaSubmitStory"));
-export const ShadowArenaBattles = lazy(() => import("@/pages/ShadowArenaBattles"));
-export const ShadowArenaBattleDetail = lazy(() => import("@/pages/ShadowArenaBattleDetail"));
-export const ShadowArenaBattleSubmit = lazy(() => import("@/pages/ShadowArenaBattleSubmit"));
 export const ShadowArenaStoryDetail = lazy(() => import("@/pages/ShadowArenaStoryDetail"));
 
 // MasterChef
