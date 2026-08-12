@@ -111,7 +111,6 @@ export async function tryVertexChat(body: Record<string, unknown>): Promise<any 
   if (!sa) return null;
 
   const projectId = Deno.env.get("GCP_PROJECT_ID") || sa.project_id;
-  const location = Deno.env.get("GCP_LOCATION") || "us-central1";
   if (!projectId) return null;
 
   const token = await getAccessToken(sa);
@@ -123,34 +122,40 @@ export async function tryVertexChat(body: Record<string, unknown>): Promise<any 
   delete payload.reasoning_effort;
   if (budget) payload.max_tokens = Math.max(budget, 2048);
 
-  const url = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/endpoints/openapi/chat/completions`;
+  const primary = Deno.env.get("GCP_LOCATION") || "us-central1";
+  const locations = [primary, "global", "us-east4", "europe-west4", "us-west1"]
+    .filter((location, index, all) => all.indexOf(location) === index);
+  const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
 
-  try {
-    const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
-    const res = await rawFetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      console.warn(`[vertexDirect] ${res.status}, falling back:`, text.slice(0, 300));
-      return null;
+  for (const location of locations) {
+    const host = location === "global" ? "aiplatform.googleapis.com" : `${location}-aiplatform.googleapis.com`;
+    const url = `https://${host}/v1/projects/${projectId}/locations/${location}/endpoints/openapi/chat/completions`;
+    try {
+      const res = await rawFetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        console.warn(`[vertexDirect] chat ${location} ${res.status}:`, text.slice(0, 300));
+        continue;
+      }
+      const data = await res.json();
+      const message = data?.choices?.[0]?.message;
+      if (!message?.content && !message?.tool_calls) {
+        console.warn(`[vertexDirect] chat ${location} returned an empty response`);
+        continue;
+      }
+      return data;
+    } catch (e) {
+      console.warn(`[vertexDirect] chat ${location} error:`, e instanceof Error ? e.message : String(e));
     }
-    const data = await res.json();
-    const message = data?.choices?.[0]?.message;
-    if (!message?.content && !message?.tool_calls) {
-      console.warn("[vertexDirect] empty response, falling back");
-      return null;
-    }
-    return data;
-  } catch (e) {
-    console.warn("[vertexDirect] error, falling back:", e instanceof Error ? e.message : String(e));
-    return null;
   }
+  return null;
 }
 
 /** Append an aspect-ratio hint to the prompt for non-square sizes (best-effort; Gemini image gen honors it when it can). */
