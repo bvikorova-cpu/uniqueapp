@@ -565,11 +565,6 @@ const Index = () => {
             caption="🎨 Kids Channel — safe & fun for ages 6–12"
           />
           <SectionVideoPreview
-            src={sectionVideos.racing}
-            label="GP Fantasy Racing preview"
-            caption="🏎️ GP Fantasy Racing — 3D race & manage teams"
-          />
-          <SectionVideoPreview
             src={sectionVideos.livestream}
             label="Live Streaming preview"
             caption="📡 Live Streaming — go live, earn gifts"
