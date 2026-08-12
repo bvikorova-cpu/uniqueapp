@@ -54,13 +54,17 @@ const AdminMusicianVerifications = () => {
         user_id: target.user_id,
         verification_notes: notes[id] }, { onConflict: "user_id" });
     }
-    const { error } = await supabase.from("musician_profiles").update({ verified: approve,
+    const { data: updated, error } = await supabase.from("musician_profiles").update({ verified: approve,
       verification_status: approve ? "verified" : "rejected",
       verification_reviewed_at: new Date().toISOString(),
-      verification_reviewed_by: session?.user.id }).eq("id", id);
+      verification_reviewed_by: session?.user.id }).eq("id", id).select("id, verified");
     if (error) return toast.error(error.message);
+    if (!updated || updated.length === 0) {
+      return toast.error("Update blocked — your account needs the admin role");
+    }
     toast.success(approve ? "Musician verified ✓" : "Verification rejected");
     load();
+
   };
 
 
