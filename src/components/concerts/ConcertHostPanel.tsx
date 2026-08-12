@@ -99,6 +99,21 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
     };
   }, [concertId, musicianId]);
 
+  // Real-time viewer count from the same presence channel fans join.
+  useEffect(() => {
+    const ch = supabase.channel(`concert-presence-${concertId}`, {
+      config: { presence: { key: `host-panel-${concertId}` } },
+    });
+    ch.on("presence", { event: "sync" }, () => {
+      const state = ch.presenceState() as Record<string, unknown[]>;
+      const n = Object.keys(state).filter((k) => !k.startsWith("host")).length;
+      setPresenceViewers(n);
+    }).subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [concertId]);
+
+  const liveViewers = Math.max(presenceViewers, viewerCount);
+
   const totals = useMemo(() => {
     const paid = gifts.filter((g) => PAID.includes((g.status || "").toLowerCase()));
     const giftGross = paid.reduce((s, g) => s + Number(g.amount || 0), 0);
@@ -107,6 +122,7 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
     const fee = gross * 0.2;
     return { gross, giftGross, ticketGross: ticketRevenue, yours, fee, count: paid.length };
   }, [gifts, ticketRevenue]);
+
 
   const StatCard = ({
     icon: Icon,
