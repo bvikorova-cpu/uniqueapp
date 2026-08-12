@@ -4,7 +4,6 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ShadowCreditsGate } from '@/components/shadow-arena/ShadowCreditsGate';
-import { StoryNarratorPanel } from '@/components/shadow-arena/StoryNarratorPanel';
 import { PatronModeCard } from '@/components/shadow-arena/PatronModeCard';
 import { ThumbsUp, Image as ImageIcon, Volume2, ArrowLeft, Clock, Eye } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -122,12 +121,6 @@ export default function ShadowArenaStoryDetail() {
           </Button>
         </GothicPageHeader>
 
-        {/* AI Voice Narrator */}
-        <StoryNarratorPanel
-          text={story.content || ""}
-          storyId={story.id}
-          existingAudioUrl={story.ai_sound_url}
-        />
 
         {/* Patron Mode — support this author */}
         {story.user_id && story.user_id !== user?.id && (
