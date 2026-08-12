@@ -54820,6 +54820,38 @@ export type Database = {
         }
         Relationships: []
       }
+      shadow_story_comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          story_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          story_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          story_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shadow_story_comments_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "shadow_stories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       shadow_stream_goals: {
         Row: {
           completed_at: string | null
