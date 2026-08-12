@@ -45,6 +45,9 @@ export const ArtistStudio = ({ onBack }: Props) => {
   const [description, setDescription] = useState("");
   const [scheduledAt, setScheduledAt] = useState("");
   const [ticketPrice, setTicketPrice] = useState("5");
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
+
 
   const load = async () => {
     setLoading(true);
@@ -143,11 +146,28 @@ export const ArtistStudio = ({ onBack }: Props) => {
     if (!Number.isFinite(price) || price < 0) { toast.error("Invalid ticket price"); return; }
     setSaving(true);
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { toast.error("Please sign in"); return; }
+
+      // Optional cover photo — stored in the public "covers" bucket under the
+      // uploader's own folder (required by the storage RLS policy).
+      let coverUrl: string | null = null;
+      if (coverFile) {
+        const ext = (coverFile.name.split(".").pop() || "jpg").toLowerCase();
+        const path = `${session.user.id}/concerts/${crypto.randomUUID()}.${ext}`;
+        const { error: upErr } = await supabase.storage
+          .from("covers")
+          .upload(path, coverFile, { cacheControl: "3600", upsert: false, contentType: coverFile.type });
+        if (upErr) throw upErr;
+        coverUrl = supabase.storage.from("covers").getPublicUrl(path).data.publicUrl;
+      }
+
       const { data: concert, error } = await supabase.from("live_concert_streams").insert({
         musician_id: profile.id,
         title: title.trim(),
         description: description.trim() || null,
         scheduled_at: new Date(scheduledAt).toISOString(),
+        cover_image_url: coverUrl,
         status: "scheduled" }).select("id").single();
       if (error) throw error;
       const { error: ttErr } = await supabase.from("concert_ticket_types").insert({
@@ -158,7 +178,9 @@ export const ArtistStudio = ({ onBack }: Props) => {
       if (ttErr) throw ttErr;
       toast.success("Concert scheduled — fans can now buy tickets");
       setTitle(""); setDescription(""); setScheduledAt("");
+      setCoverFile(null); setCoverPreview(null);
       await load();
+
     } catch (e: any) {
       toast.error(e.message || "Failed to schedule concert");
     } finally { setSaving(false); }
@@ -302,13 +324,33 @@ export const ArtistStudio = ({ onBack }: Props) => {
                 <Label htmlFor="concert-desc">Description</Label>
                 <Textarea id="concert-desc" value={description} onChange={(e) => setDescription(e.target.value)} rows={3} maxLength={1000} placeholder="What can fans expect?" />
               </div>
-              <div className="space-y-2 sm:max-w-[200px]">
-                <Label htmlFor="ticket-price">Ticket price (€)</Label>
-                <Input id="ticket-price" type="number" min="0" step="0.5" value={ticketPrice} onChange={(e) => setTicketPrice(e.target.value)} />
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2 sm:max-w-[200px]">
+                  <Label htmlFor="ticket-price">Ticket price (€)</Label>
+                  <Input id="ticket-price" type="number" min="0" step="0.5" value={ticketPrice} onChange={(e) => setTicketPrice(e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="concert-cover">Concert photo (optional)</Label>
+                  <Input
+                    id="concert-cover"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0] || null;
+                      if (f && f.size > 8 * 1024 * 1024) { toast.error("Image is too large (max 8 MB)"); return; }
+                      setCoverFile(f);
+                      setCoverPreview(f ? URL.createObjectURL(f) : null);
+                    }}
+                  />
+                  {coverPreview && (
+                    <img src={coverPreview} alt="Concert cover preview" className="h-28 w-full rounded-lg border object-cover sm:w-48" />
+                  )}
+                </div>
               </div>
               <Button onClick={createConcert} disabled={saving} className="gap-2">
                 {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Ticket className="h-4 w-4" />} Schedule concert
               </Button>
+
             </CardContent>
           </Card>
         )}
@@ -324,14 +366,21 @@ export const ArtistStudio = ({ onBack }: Props) => {
               ) : concerts.map((c) => (
                 <div key={c.id} className="space-y-3 rounded-lg border p-3">
                   <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div className="min-w-0">
+                    <div className="flex min-w-0 items-center gap-3">
+                      {c.cover_image_url && (
+                        <img src={c.cover_image_url} alt={`${c.title} cover`} className="h-12 w-12 shrink-0 rounded-lg border object-cover" loading="lazy" />
+                      )}
+                      <div className="min-w-0">
                       <p className="font-semibold truncate">{c.title}</p>
+
                       <p className="text-xs text-muted-foreground">
                         {format(new Date(c.scheduled_at), "d MMM yyyy HH:mm")}
                         {c.concert_ticket_types?.[0] && ` · €${Number(c.concert_ticket_types[0].price).toFixed(2)}`}
                         {` · ${c.viewer_count || 0} viewers`}
                       </p>
+                      </div>
                     </div>
+
                     <div className="flex items-center gap-2">
                       <Badge variant={c.status === "live" ? "default" : "secondary"} className="capitalize">{c.status}</Badge>
                       {c.status !== "ended" && (
