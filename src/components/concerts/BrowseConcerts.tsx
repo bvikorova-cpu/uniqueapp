@@ -17,19 +17,43 @@ export const BrowseConcerts = ({ onBack }: Props) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<string | null>(null);
   const [myTickets, setMyTickets] = useState<Set<string>>(new Set());
+  const [awaitingPayment, setAwaitingPayment] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
-      const { data } = await supabase
-        .from("concert_ticket_purchases")
-        .select("concert_id")
-        .eq("user_id", session.user.id)
-        .eq("payment_status", "completed");
-      setMyTickets(new Set((data || []).map((r: any) => r.concert_id)));
-    })();
-  }, []);
+  const loadMyTickets = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return new Set<string>();
+    const { data } = await supabase
+      .from("concert_ticket_purchases")
+      .select("concert_id")
+      .eq("user_id", session.user.id)
+      .eq("payment_status", "completed");
+    const set = new Set<string>((data || []).map((r: any) => r.concert_id));
+    setMyTickets(set);
+    return set;
+  };
+
+  useEffect(() => { loadMyTickets(); }, []);
+
+  /** Poll for the ticket after Stripe checkout (opened in another tab). */
+  const pollForTicket = async (concertId: string, sessionId?: string) => {
+    setAwaitingPayment(true);
+    for (let i = 0; i < 40; i++) {
+      await new Promise((r) => setTimeout(r, 3000));
+      if (sessionId) {
+        // Activate the purchase server-side in case the success tab was closed.
+        await supabase.functions
+          .invoke("verify-concert-ticket-payment", { body: { sessionId } })
+          .catch(() => null);
+      }
+      const set = await loadMyTickets();
+      if (set.has(concertId)) {
+        setAwaitingPayment(false);
+        toast.success("Payment confirmed — your ticket is ready!");
+        return;
+      }
+    }
+    setAwaitingPayment(false);
+  };
 
   const { data: concerts, isLoading } = useQuery({
     queryKey: ["browse-concerts"],
