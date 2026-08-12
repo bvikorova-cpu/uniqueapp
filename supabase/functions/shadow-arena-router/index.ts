@@ -414,8 +414,7 @@ The story must have a strong opening hook, atmospheric build-up, and chilling en
               messages: [
                 { role: "system", content: systemPrompt },
                 { role: "user", content: prompt },
-              ],
-              response_format: { type: "json_object" } }) });
+              ] }) });
 
         // Generate the optional illustration at the same time as the story.
         // Running these sequentially could exceed the edge request lifetime on mobile.
