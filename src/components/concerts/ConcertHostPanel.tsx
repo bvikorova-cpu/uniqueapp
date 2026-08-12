@@ -32,6 +32,7 @@ export const ConcertHostPanel = ({ concertId, musicianId }: Props) => {
   const [gifts, setGifts] = useState<GiftRow[]>([]);
   const [giftNames, setGiftNames] = useState<Record<string, { name: string; icon: string }>>({});
   const [viewerCount, setViewerCount] = useState(0);
+  const [presenceViewers, setPresenceViewers] = useState(0);
   const [ticketRevenue, setTicketRevenue] = useState(0);
   const [ticketCount, setTicketCount] = useState(0);
   const [loading, setLoading] = useState(true);
