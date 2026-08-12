@@ -71,17 +71,15 @@ export function ShadowAIToolsHub() {
       </div>
 
       <Tabs defaultValue="story">
-        <TabsList className="grid grid-cols-3 w-full bg-black/60 border border-red-800/50">
+        <TabsList className="grid grid-cols-2 w-full bg-black/60 border border-red-800/50">
           <TabsTrigger value="story" className="text-red-100 data-[state=active]:bg-red-800/60 data-[state=active]:text-white">
             <BookOpen className="w-3.5 h-3.5 mr-1" /> {"Story"}
-          </TabsTrigger>
-          <TabsTrigger value="narrator" className="text-red-100 data-[state=active]:bg-red-800/60 data-[state=active]:text-white">
-            <Volume2 className="w-3.5 h-3.5 mr-1" /> {"Voice"}
           </TabsTrigger>
           <TabsTrigger value="avatar" className="text-red-100 data-[state=active]:bg-red-800/60 data-[state=active]:text-white">
             <UserIcon className="w-3.5 h-3.5 mr-1" /> {"Avatar"}
           </TabsTrigger>
         </TabsList>
+
 
         {/* AI HORROR STORY GENERATOR */}
         <TabsContent value="story" className="mt-4 space-y-3">
