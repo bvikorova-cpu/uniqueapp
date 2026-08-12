@@ -341,7 +341,7 @@ const ConcertWatch = () => {
                     <TabsTrigger value="gifts" className="gap-1"><Gift className="h-3 w-3" />Gifts</TabsTrigger>
                   </TabsList>
                   <TabsContent value="chat" className="flex-1 overflow-hidden m-0">
-                    <ConcertChat onBack={() => navigate("/live-concerts")} />
+                    <ConcertChat embedded roomId={id} onBack={() => navigate("/live-concerts")} />
                   </TabsContent>
                   <TabsContent value="gifts" className="flex-1 overflow-y-auto m-0">
                     {id && <ConcertGiftsPanel concertId={id} />}
