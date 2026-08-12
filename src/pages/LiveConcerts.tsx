@@ -4,7 +4,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { 
   Music, Calendar, Gift, Trophy, Users, Sparkles, Crown, MessageCircle,
   PlayCircle, BarChart3, Star, Bell, ShoppingBag, ListMusic, Loader2,
-  Info, Ticket, Headphones
+  Info, Ticket, Headphones, Mic2
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ConcertHero } from "@/components/concerts/ConcertHero";
@@ -13,6 +13,7 @@ import { ConcertToolCard } from "@/components/concerts/ConcertToolCard";
 import { BrowseConcerts } from "@/components/concerts/BrowseConcerts";
 import { VirtualGiftsShop } from "@/components/concerts/VirtualGiftsShop";
 import { ArtistDiscovery } from "@/components/concerts/ArtistDiscovery";
+import { ArtistStudio } from "@/components/concerts/ArtistStudio";
 import { FanLeaderboard } from "@/components/concerts/FanLeaderboard";
 import { ConcertReplay } from "@/components/concerts/ConcertReplay";
 import { ConcertSchedule } from "@/components/concerts/ConcertSchedule";
@@ -36,9 +37,10 @@ import { useOneOffPaymentVerify } from "@/hooks/useOneOffPaymentVerify";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "browse" | "gifts" | "artists" | "leaderboard" | "replay" | 
   "schedule" | "chat" | "analytics" | "vip" | "setlist" | "merch" | "notifications" | "how-it-works" |
-  "song-requests" | "multi-camera" | "fan-badges" | "stories" | "collectibles" | "afterparty";
+  "artist-studio" | "song-requests" | "multi-camera" | "fan-badges" | "stories" | "collectibles" | "afterparty";
 
 const tools = [
+  { id: "artist-studio" as ViewType, icon: Mic2, title: "Artist Studio", description: "Sign up as a performer & schedule your own concerts", color: "violet", badge: "Artists" },
   { id: "browse" as ViewType, icon: Ticket, title: "Browse Concerts", description: "Discover & buy tickets for upcoming live shows", color: "red" },
   { id: "schedule" as ViewType, icon: Calendar, title: "Concert Schedule", description: "View upcoming performances timeline", color: "blue" },
   { id: "artists" as ViewType, icon: Users, title: "Artist Discovery", description: "Explore talented musicians on the platform", color: "violet" },
@@ -98,6 +100,7 @@ const LiveConcerts = () => { const [activeView, setActiveView] = useState<ViewTy
       case "browse": return <BrowseConcerts onBack={goBack} />;
       case "gifts": return <VirtualGiftsShop onBack={goBack} />;
       case "artists": return <ArtistDiscovery onBack={goBack} />;
+      case "artist-studio": return <ArtistStudio onBack={goBack} />;
       case "leaderboard": return <FanLeaderboard onBack={goBack} />;
       case "replay": return <ConcertReplay onBack={goBack} />;
       case "schedule": return <ConcertSchedule onBack={goBack} />;
