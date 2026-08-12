@@ -366,8 +366,13 @@ export const ArtistStudio = ({ onBack }: Props) => {
               ) : concerts.map((c) => (
                 <div key={c.id} className="space-y-3 rounded-lg border p-3">
                   <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div className="min-w-0">
+                    <div className="flex min-w-0 items-center gap-3">
+                      {c.cover_image_url && (
+                        <img src={c.cover_image_url} alt={`${c.title} cover`} className="h-12 w-12 shrink-0 rounded-lg border object-cover" loading="lazy" />
+                      )}
+                      <div className="min-w-0">
                       <p className="font-semibold truncate">{c.title}</p>
+
                       <p className="text-xs text-muted-foreground">
                         {format(new Date(c.scheduled_at), "d MMM yyyy HH:mm")}
                         {c.concert_ticket_types?.[0] && ` · €${Number(c.concert_ticket_types[0].price).toFixed(2)}`}
