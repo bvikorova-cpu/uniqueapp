@@ -17,25 +17,6 @@ type ViewType = "hub" | "browse" | "artist-studio";
 const tools = [
   { id: "artist-studio" as ViewType, icon: Mic2, title: "Artist Studio", description: "Sign up as a performer & schedule your own concerts", color: "violet", badge: "Artists" },
   { id: "browse" as ViewType, icon: Ticket, title: "Browse Concerts", description: "Discover & buy tickets for upcoming live shows", color: "red" },
-  { id: "schedule" as ViewType, icon: Calendar, title: "Concert Schedule", description: "View upcoming performances timeline", color: "blue" },
-  { id: "artists" as ViewType, icon: Users, title: "Artist Discovery", description: "Explore talented musicians on the platform", color: "violet" },
-  { id: "gifts" as ViewType, icon: Gift, title: "Virtual Gifts", description: "Send gifts to support your favorite artists", color: "pink" },
-  { id: "vip" as ViewType, icon: Crown, title: "VIP Experience", description: "Upgrade to front-row seats & exclusive content", color: "amber" },
-  { id: "replay" as ViewType, icon: PlayCircle, title: "Concert Replays", description: "Relive the best past performances", color: "indigo" },
-  { id: "chat" as ViewType, icon: MessageCircle, title: "Concert Lounge", description: "Chat with fans in real-time", color: "cyan" },
-  { id: "leaderboard" as ViewType, icon: Trophy, title: "Fan Leaderboard", description: "Top supporters & most generous fans", color: "amber" },
-  { id: "setlist" as ViewType, icon: ListMusic, title: "Setlist Voting", description: "Vote for songs you want to hear live", color: "emerald" },
-  { id: "merch" as ViewType, icon: ShoppingBag, title: "Artist Merch", description: "Exclusive merchandise from musicians", color: "orange" },
-  { id: "analytics" as ViewType, icon: BarChart3, title: "Concert Analytics", description: "Platform performance metrics", color: "blue" },
-  { id: "notifications" as ViewType, icon: Bell, title: "Notifications", description: "Customize your concert alerts", color: "red" },
-  { id: "song-requests" as ViewType, icon: Music, title: "Song Requests", description: "Pay to request songs during live shows", color: "pink", badge: "€1-5" },
-  { id: "multi-camera" as ViewType, icon: PlayCircle, title: "Multi-Camera", description: "Switch between 6 camera angles live", color: "cyan" },
-  { id: "fan-badges" as ViewType, icon: Star, title: "Fan Badges & Levels", description: "Earn XP, unlock badges, level up", color: "amber" },
-  { id: "stories" as ViewType, icon: Sparkles, title: "Concert Stories", description: "15s highlights from live performances", color: "violet" },
-  { id: "collectibles" as ViewType, icon: Ticket, title: "Collectible Tickets", description: "Limited edition digital collectibles", color: "emerald", badge: "New" },
-  { id: "afterparty" as ViewType, icon: Users, title: "Afterparty", description: "Exclusive post-concert hangout rooms", color: "red" },
-  
-  { id: "how-it-works" as ViewType, icon: Info, title: "How It Works", description: "Learn about the concert platform", color: "cyan" },
 ];
 
 const LiveConcerts = () => { const [activeView, setActiveView] = useState<ViewType>("hub");
