@@ -166,11 +166,16 @@ export const BrowseConcerts = ({ onBack }: Props) => {
                   </Button>
                 )}
                 {myTickets.has(concert.id) && concert.status !== "live" && (
-                  <Button variant="outline" onClick={() => navigate(`/concert-watch/${concert.id}`)} className="w-full">
-                    <Ticket className="h-4 w-4 mr-2" />Your ticket (waiting room)
+                  <Button variant="outline" onClick={() => navigate(`/concert-watch/${concert.id}`)} className="w-full border-primary text-primary">
+                    <Ticket className="h-4 w-4 mr-2" />Open concert (ticket owned)
                   </Button>
                 )}
-                {!myTickets.has(concert.id) && concert.concert_ticket_types?.map((ticket: any) => (
+                {!myTickets.has(concert.id) && awaitingPayment && (
+                  <Button variant="outline" disabled className="w-full">
+                    <Ticket className="h-4 w-4 mr-2 animate-pulse" />Confirming payment…
+                  </Button>
+                )}
+                {!myTickets.has(concert.id) && !awaitingPayment && concert.concert_ticket_types?.map((ticket: any) => (
                   <div key={ticket.id} className={`p-3 rounded-xl border transition-all ${ticket.name === "vip" ? "bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border-yellow-500/30" : "bg-primary/5 border-primary/20"}`}>
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
