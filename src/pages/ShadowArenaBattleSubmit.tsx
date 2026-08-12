@@ -91,19 +91,19 @@ export default function ShadowArenaBattleSubmit() {
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Battle
         </Button>
 
-        {/* Payment verified banner */}
-        {paymentVerified && (
-          <motion.div
-            className="mb-6 rounded-xl border border-green-800/30 bg-green-950/20 p-4"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <div className="flex items-center gap-2 text-green-400">
-              <CheckCircle className="h-5 w-5" />
-              <p className="font-semibold text-sm">Payment verified! You can now submit your story.</p>
-            </div>
-          </motion.div>
-        )}
+        {/* Credit cost banner */}
+        <motion.div
+          className="mb-6 rounded-xl border border-red-800/30 bg-red-950/20 p-4"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="flex items-center gap-2 text-red-200">
+            <CheckCircle className="h-5 w-5 text-yellow-400" />
+            <p className="font-semibold text-sm">
+              Entry costs {ENTRY_CREDITS} AI credits — charged when you submit. All of it goes to the prize pool.
+            </p>
+          </div>
+        </motion.div>
 
         {/* Cinematic gothic hero */}
         <GothicPageHeader
@@ -185,9 +185,9 @@ export default function ShadowArenaBattleSubmit() {
                 type="submit"
                 size="lg"
                 className="w-full bg-gradient-to-r from-red-700 to-purple-800 hover:from-red-800 hover:to-purple-900 border border-red-700/40 shadow-lg"
-                disabled={submitting || !paymentVerified || !title.trim() || !content.trim()}
+                disabled={submitting || !title.trim() || !content.trim()}
               >
-                {submitting ? 'Submitting...' : 'Submit Story'}
+                {submitting ? 'Submitting...' : `Submit Story (${ENTRY_CREDITS} credits)`}
               </Button>
             </form>
           </Card>
