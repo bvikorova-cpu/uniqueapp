@@ -33,10 +33,6 @@ export function ShadowAIToolsHub() {
   const [storyImage, setStoryImage] = useState(true);
   const [storyResult, setStoryResult] = useState<any>(null);
 
-  // Narrator state
-  const [narratorText, setNarratorText] = useState("");
-  const [narratorVoice, setNarratorVoice] = useState(VOICES[0].id);
-  const [narratorAudio, setNarratorAudio] = useState<string | null>(null);
 
   // Avatar state
   const [avatarUrl, setAvatarUrl] = useState("");
