@@ -129,7 +129,7 @@ export const ArtistStudio = ({ onBack }: Props) => {
       if (error) throw error;
       const { error: ttErr } = await supabase.from("concert_ticket_types").insert({
         concert_id: concert.id,
-        name: "Standard",
+        name: "standard",
         price,
         description: "General admission to the live stream" });
       if (ttErr) throw ttErr;
