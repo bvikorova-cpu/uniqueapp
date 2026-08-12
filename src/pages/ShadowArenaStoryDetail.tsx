@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ShadowCreditsGate } from '@/components/shadow-arena/ShadowCreditsGate';
 import { PatronModeCard } from '@/components/shadow-arena/PatronModeCard';
+import { StoryGiftPicker } from '@/components/shadow-arena/StoryGiftPicker';
 import { ThumbsUp, Image as ImageIcon, Volume2, ArrowLeft, Clock, Eye } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -111,14 +112,17 @@ export default function ShadowArenaStoryDetail() {
               <Eye className="w-3 h-3" /> {story.votes_count} votes
             </span>
           </div>
-          <Button
-            onClick={handleVote}
-            disabled={voting}
-            className="bg-gradient-to-r from-red-700 to-red-900 hover:from-red-800 hover:to-red-950 border border-red-700/40 shadow-[0_0_20px_-5px_rgba(220,38,38,0.6)]"
-          >
-            <ThumbsUp className="mr-2 h-4 w-4" />
-            {voting ? 'Voting...' : `Vote (${story.votes_count})`}
-          </Button>
+          <div className="flex items-center gap-2 flex-wrap">
+            <Button
+              onClick={handleVote}
+              disabled={voting}
+              className="bg-gradient-to-r from-red-700 to-red-900 hover:from-red-800 hover:to-red-950 border border-red-700/40 shadow-[0_0_20px_-5px_rgba(220,38,38,0.6)]"
+            >
+              <ThumbsUp className="mr-2 h-4 w-4" />
+              {voting ? 'Voting...' : `Vote (${story.votes_count})`}
+            </Button>
+            <StoryGiftPicker recipientId={story.user_id} storyId={story.id} />
+          </div>
         </GothicPageHeader>
 
 
