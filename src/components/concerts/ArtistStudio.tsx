@@ -10,6 +10,7 @@ import { ArrowLeft, BadgeCheck, Loader2, Mic2, Music, Plus, Radio, ShieldCheck, 
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { ConcertBroadcaster } from "@/components/concerts/ConcertBroadcaster";
 
 interface Props { onBack: () => void; }
 
