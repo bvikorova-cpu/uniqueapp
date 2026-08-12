@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { ConcertBroadcaster } from "@/components/concerts/ConcertBroadcaster";
+import { ConcertHostPanel } from "@/components/concerts/ConcertHostPanel";
+
 
 interface Props { onBack: () => void; }
 
@@ -343,14 +345,18 @@ export const ArtistStudio = ({ onBack }: Props) => {
                     </div>
                   </div>
                   {studioId === c.id && (
-                    <ConcertBroadcaster
-                      concertId={c.id}
-                      title={c.title}
-                      scheduledAt={c.scheduled_at}
-                      status={c.status}
-                      onStatusChange={async (s) => { await setStatus(c.id, s); if (s === "ended") setStudioId(null); }}
-                    />
+                    <>
+                      <ConcertBroadcaster
+                        concertId={c.id}
+                        title={c.title}
+                        scheduledAt={c.scheduled_at}
+                        status={c.status}
+                        onStatusChange={async (s) => { await setStatus(c.id, s); if (s === "ended") setStudioId(null); }}
+                      />
+                      {profile && <ConcertHostPanel concertId={c.id} musicianId={profile.id} />}
+                    </>
                   )}
+
                 </div>
               ))}
             </CardContent>
