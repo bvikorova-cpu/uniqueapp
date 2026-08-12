@@ -75,14 +75,12 @@ const LiveConcerts = () => { const [activeView, setActiveView] = useState<ViewTy
 
             <HeroRewardedAd sectionKey="page_liveconcerts" />
 
-            <ConcertEngagement liveShows={0} totalConcerts={0} topGifts={0} />
-
             {/* Tool Cards Grid */}
             <div className="mb-8">
               <h2 className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-6">
                 Concert Tools
               </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+              <div className="grid grid-cols-2 gap-3 max-w-2xl mx-auto">
                 {tools.map((tool, i) => (
                   <ConcertToolCard
                     key={tool.id}
@@ -102,12 +100,10 @@ const LiveConcerts = () => { const [activeView, setActiveView] = useState<ViewTy
             <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
               <CardContent className="p-6 space-y-4">
                 <h3 className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">How It Works</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {[
-                    { icon: Ticket, title: "1. Browse Concerts", desc: "Discover upcoming live shows from talented musicians" },
-                    { icon: Crown, title: "2. Get Tickets", desc: "Choose Standard or VIP tier with Stripe checkout" },
-                    { icon: Headphones, title: "3. Watch Live", desc: "HD streaming with real-time chat interaction" },
-                    { icon: Gift, title: "4. Send Gifts", desc: "Support artists with virtual gifts — 80% goes to them" },
+                    { icon: Ticket, title: "For Fans", desc: "Browse upcoming shows, buy tickets, and watch live streams." },
+                    { icon: Mic2, title: "For Artists", desc: "Create your artist profile, get verified, and schedule concerts." },
                   ].map((step, i) => (
                     <div key={i} className="text-center space-y-2">
                       <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 border border-primary/20">
