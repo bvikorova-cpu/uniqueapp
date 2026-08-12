@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Skull, Volume2, Sparkles, Wand2, Loader2, Image as ImageIcon, BookOpen, User as UserIcon } from "lucide-react";
+import { Skull, Sparkles, Wand2, Loader2, Image as ImageIcon, BookOpen, User as UserIcon } from "lucide-react";
 import { useShadowAITools, useShadowArenaCredits, SHADOW_AI_COSTS } from "@/hooks/useShadowArenaAI";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
