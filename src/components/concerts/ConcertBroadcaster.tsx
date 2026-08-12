@@ -189,6 +189,18 @@ export const ConcertBroadcaster = ({ concertId, title, scheduledAt, status, onSt
               {starting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Radio className="h-4 w-4" />}
               {dueMs > 0 ? "Start early" : "Turn camera on & go live"}
             </Button>
+          ) : null}
+          {!live && inIframe && (
+            <Button
+              variant="outline"
+              className="gap-2"
+              onClick={() => window.open(window.location.href, "_blank", "noopener")}
+            >
+              <ExternalLink className="h-4 w-4" /> Open studio in new tab
+            </Button>
+          )}
+          {live ? (
+
           ) : (
             <>
               <Button variant="outline" onClick={toggleMic} className="gap-2">
