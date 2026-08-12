@@ -47,8 +47,11 @@ export default function ShadowArenaSubmitStory() {
 
       const data = await shadowArenaCall<{ images_generated: number }>('story_submit', { title, content });
 
-      toast.success(`Story submitted! Generated ${data?.images_generated ?? 0} AI illustrations`);
-      navigate('/shadow-arena/dashboard');
+      toast.success(`Story submitted! Generated ${data?.images_generated ?? 0} AI illustrations`, {
+        action: { label: 'View dashboard', onClick: () => navigate('/shadow-arena/dashboard') } });
+      setTitle('');
+      setContent('');
+
     } catch (error: any) {
       console.error('Submit error:', error);
       toast.error(error?.message || 'Failed to submit story');
