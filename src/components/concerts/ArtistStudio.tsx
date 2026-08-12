@@ -430,6 +430,9 @@ export const ArtistStudio = ({ onBack }: Props) => {
                         status={c.status}
                         onStatusChange={async (s) => { await setStatus(c.id, s); if (s === "ended") setStudioId(null); }}
                       />
+                      {c.status === "live" && profile && (
+                        <ConcertHostPanel concertId={c.id} musicianId={profile.id} />
+                      )}
                     </>
                   )}
 
