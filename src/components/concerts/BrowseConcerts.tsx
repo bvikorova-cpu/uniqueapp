@@ -32,7 +32,22 @@ export const BrowseConcerts = ({ onBack }: Props) => {
     return set;
   };
 
-  useEffect(() => { loadMyTickets(); }, []);
+  useEffect(() => {
+    // Returning from Stripe success URL: the verify function may still be running,
+    // so retry a few times until the ticket shows up.
+    const returned = new URLSearchParams(window.location.search).has("session_id");
+    let cancelled = false;
+    (async () => {
+      const before = await loadMyTickets();
+      if (!returned) return;
+      for (let i = 0; i < 8 && !cancelled; i++) {
+        await new Promise((r) => setTimeout(r, 2000));
+        const set = await loadMyTickets();
+        if (set.size > before.size) break;
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   /** Poll for the ticket after Stripe checkout (opened in another tab). */
   const pollForTicket = async (concertId: string, sessionId?: string) => {
