@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Heart, Send } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Heart, Send, Users, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
+import { startViewer, type ViewerHandle } from "@/lib/concertWebRTC";
 
 export default function ComedyLiveViewer() {
   const { showId } = useParams();
@@ -14,6 +16,13 @@ export default function ComedyLiveViewer() {
   const [loading, setLoading] = useState(true);
   const [tipMessage, setTipMessage] = useState("");
   const [chatMessages, setChatMessages] = useState<any[]>([]);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const viewerRef = useRef<ViewerHandle | null>(null);
+  const [hasStream, setHasStream] = useState(false);
+  const [connState, setConnState] = useState<RTCPeerConnectionState | null>(null);
+  const [presenceViewers, setPresenceViewers] = useState(0);
+  const [rtcKey, setRtcKey] = useState(0);
+
 
   useEffect(() => {
     loadShow();
