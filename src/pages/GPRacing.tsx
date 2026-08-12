@@ -159,23 +159,17 @@ const GPRacing = () => {
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke('check-f1-subscription');
-      if (error) throw error;
+      // GP Racing is credit-based: no subscription check, read the unified AI credit balance.
+      setIsSubscribed(true);
+      setTier('credits');
 
-      setIsSubscribed(data.subscribed);
-      setTier(data.tier);
+      const { data: creditsData } = await supabase
+        .from('ai_credits')
+        .select('credits_remaining')
+        .eq('user_id', session.user.id)
+        .maybeSingle();
 
-      if (data.subscribed) {
-        const { data: creditsData } = await supabase
-          .from('f1_user_credits')
-          .select('credits')
-          .eq('user_id', session.user.id)
-          .maybeSingle();
-
-        if (creditsData) {
-          setCredits(creditsData.credits);
-        }
-      }
+      if (creditsData) setCredits(creditsData.credits_remaining ?? 0);
     } catch (error) {
       console.error('Error checking subscription:', error);
     } finally {
