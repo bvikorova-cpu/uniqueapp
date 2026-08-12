@@ -635,7 +635,7 @@ Return JSON: {
           .update({ total_gifts_received: (part.total_gifts_received || 0) + amount }).eq("id", participantId);
         const { data: b } = await supabase.from("shadow_battles").select("total_prize_pool").eq("id", battleId).maybeSingle();
         await supabase.from("shadow_battles")
-          .update({ total_prize_pool: (b?.total_prize_pool || 0) + amount }).eq("id", battleId);
+          .update({ total_prize_pool: (b?.total_prize_pool || 0) + amount * POINTS_PER_CREDIT }).eq("id", battleId);
         return json({ ok: true, charged: amount, credits_remaining: spend.remaining });
       }
 
