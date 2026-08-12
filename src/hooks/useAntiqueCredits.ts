@@ -19,20 +19,7 @@ export const useAntiqueCredits = () => {
 
       if (error) throw error;
       
-      if (!data) {
-        const { data: newData, error: insertError } = await supabase
-          .from("ai_credits")
-          .insert({
-            user_id: user.id,
-            credits_remaining: 0,
-            total_credits_purchased: 0
-          })
-          .select()
-          .single();
-
-        if (insertError) throw insertError;
-        return newData;
-      }
+      if (!data) return { credits_remaining: 0, total_credits_purchased: 0 } as any;
 
       return data;
     } });

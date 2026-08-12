@@ -40,10 +40,6 @@ export const useScienceCredits = () => { const [state, setState] = useState<Scie
           total_credits_purchased: data.total_credits_purchased ?? 0,
           loading: false });
       } else {
-        // Lazy-create row
-        await supabase
-          .from("ai_credits")
-          .insert({ user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
         setState({ credits_remaining: 0, total_credits_purchased: 0, loading: false });
       }
     } catch (e) {
