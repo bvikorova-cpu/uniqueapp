@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { spendAiCredits } from "../_shared/spendCredits.ts";
 import { encode as base64Encode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
-import { tryVertexChat, tryVertexImage } from "../_shared/vertexDirect.ts";
+import { tryVertexChat, tryVertexImage, startVertexVideo, pollVertexVideo } from "../_shared/vertexDirect.ts";
 
 // Prize pools are tracked in POINTS, not credits (1 credit spent = 10 points added)
 const POINTS_PER_CREDIT = 10;
