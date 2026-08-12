@@ -4,6 +4,10 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { spendAiCredits } from "../_shared/spendCredits.ts";
 import { encode as base64Encode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
 
+// Prize pools are tracked in POINTS, not credits (1 credit spent = 10 points added)
+const POINTS_PER_CREDIT = 10;
+
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   try {
