@@ -199,10 +199,9 @@ export const ConcertBroadcaster = ({ concertId, title, scheduledAt, status, onSt
               <ExternalLink className="h-4 w-4" /> Open studio in new tab
             </Button>
           )}
-          {live ? (
-
-          ) : (
+          {live && (
             <>
+
               <Button variant="outline" onClick={toggleMic} className="gap-2">
                 {micEnabled ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
                 {micEnabled ? "Mute" : "Unmute"}
