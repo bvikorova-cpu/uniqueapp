@@ -10,7 +10,7 @@ export type ChampionBadge = {
   badge_expires_at: string;
 };
 
-/** Monthly champion rewards, identical in KitchenStars, Reel Battles and MegaTalent. */
+/** Monthly champion rewards, identical in KitchenStars, Clip Battles and MegaTalent. */
 export const CHAMPION_REWARDS = [
   {
     rank: 1,
