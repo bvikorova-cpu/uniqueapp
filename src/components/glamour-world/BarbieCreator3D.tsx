@@ -1,14 +1,12 @@
-import { useState, useRef, useMemo, Suspense } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Environment, ContactShadows } from "@react-three/drei";
-import * as THREE from "three";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, RotateCcw, Download, Sparkles, Camera, Loader2, User, Shirt, Gem } from "lucide-react";
+import { ArrowLeft, RotateCcw, Download, Camera, Loader2, User, Shirt, Gem } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { DollIllustration } from "./DollIllustration";
+import { ACCESSORY_STYLES, HAIR_STYLES, OUTFIT_STYLES } from "./dollAssets";
 
 // Color palettes — [hex, human-readable name for the AI render]
 const SKIN_COLORS: [string, string][] = [
