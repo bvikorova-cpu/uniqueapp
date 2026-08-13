@@ -29,6 +29,72 @@ serve(async (req) => {
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
+    // ── Comedy show ticket (real money, EUR) ──
+    if (session.metadata?.type === "comedy_ticket") {
+      if (session.payment_status !== "paid") {
+        return new Response(
+          JSON.stringify({ status: session.payment_status, activated: false }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
+        );
+      }
+      const md = session.metadata as Record<string, string>;
+      const showId = md.showId;
+      const ticketUserId = md.user_id || user.id;
+      const amount = Number(md.amount ?? 0);
+      const comedianAmount = Number(md.comedianAmount ?? 0);
+      if (!showId) throw new Error("session_metadata_incomplete");
+
+      const { data: existingTicket } = await admin
+        .from("comedy_tickets")
+        .select("id")
+        .eq("user_id", ticketUserId)
+        .eq("show_id", showId)
+        .maybeSingle();
+
+      if (existingTicket) {
+        return new Response(
+          JSON.stringify({ status: "paid", activated: true, ticketId: existingTicket.id }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
+        );
+      }
+
+      const { data: ticket, error: insertErr } = await admin
+        .from("comedy_tickets")
+        .insert({ show_id: showId, user_id: ticketUserId, price_paid: amount })
+        .select("id")
+        .single();
+      if (insertErr) throw insertErr;
+
+      const { data: show } = await admin
+        .from("comedy_shows")
+        .select("total_revenue, comedian_id")
+        .eq("id", showId)
+        .maybeSingle();
+      if (show) {
+        await admin
+          .from("comedy_shows")
+          .update({ total_revenue: Number((show as any).total_revenue ?? 0) + amount })
+          .eq("id", showId);
+
+        const { data: comedian } = await admin
+          .from("comedian_profiles")
+          .select("total_earnings")
+          .eq("id", (show as any).comedian_id)
+          .maybeSingle();
+        if (comedian) {
+          await admin
+            .from("comedian_profiles")
+            .update({ total_earnings: Number((comedian as any).total_earnings ?? 0) + comedianAmount })
+            .eq("id", (show as any).comedian_id);
+        }
+      }
+
+      return new Response(
+        JSON.stringify({ status: "paid", activated: true, ticketId: ticket.id }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
+      );
+    }
+
     if (session.payment_status !== "paid" || session.metadata?.user_id !== user.id) {
       return new Response(
         JSON.stringify({ success: false, message: "Payment not completed" }),

@@ -530,6 +530,12 @@ export function resolveProxy(
   if (functionName === "create-concert-ticket-checkout") {
     return { target: "create-checkout", body: { ...b, product: "concert_ticket" } };
   }
+  if (functionName === "create-comedy-ticket-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "comedy_ticket" } };
+  }
+  if (functionName === "verify-comedy-ticket-payment") {
+    return { target: "verify-comedy-payment", body: { ...b } };
+  }
   if (functionName === "create-comedy-payment") {
     return { target: "create-checkout", body: { ...b, product: "comedy_coins" } };
   }
