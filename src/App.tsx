@@ -601,6 +601,7 @@ const MasterChefChefChat = lazy(() => import("@/pages/MasterChefChefChat"));
 const MasterChefLiveStream = lazy(() => import("@/pages/MasterChefLiveStream"));
 const CreatorLiveAnalytics = lazy(() => import("@/pages/CreatorLiveAnalytics"));
 const KitchenStarsBattles = lazy(() => import("@/pages/KitchenStarsBattles"));
+const KitchenStarsDuelUpload = lazy(() => import("@/pages/KitchenStarsDuelUpload"));
 const MasterChefWeeklyAwards = lazy(() => import("@/pages/MasterChefWeeklyAwards"));
 const MasterChefNutritionAnalyzer = lazy(() => import("@/pages/MasterChefNutritionAnalyzer"));
 const MasterChefGlobalMap = lazy(() => import("@/pages/MasterChefGlobalMap"));
@@ -1249,6 +1250,7 @@ const App = () => {
                         <Route path="/masterchef/leaderboard" element={<MasterChefWeeklyAwards />} />
                         <Route path="/masterchef/live-battles" element={<ProtectedRoute><KitchenStarsBattles /></ProtectedRoute>} />
                         <Route path="/kitchenstars/battles" element={<ProtectedRoute><KitchenStarsBattles /></ProtectedRoute>} />
+                        <Route path="/masterchef/duel-upload" element={<ProtectedRoute><KitchenStarsDuelUpload /></ProtectedRoute>} />
                         <Route path="/masterchef/profile" element={<ProtectedRoute><MasterChefDashboard /></ProtectedRoute>} />
                         {/* KitchenStars brand aliases — redirect to internal /masterchef paths */}
                         <Route path="/kitchenstars" element={<Navigate to="/masterchef-subscription" replace />} />
