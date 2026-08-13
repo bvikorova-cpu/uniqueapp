@@ -70,7 +70,7 @@ export default function MasterChefCompetitions() {
       difficulty: "Professional" },
   ];
 
-  if (loading || subscriptionLoading) {
+  if (loading || accessLoading) {
     return (
       <>
         <FloatingHowItWorks title="How Master Chef Competitions works" steps={[
