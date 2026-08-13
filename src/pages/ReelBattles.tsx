@@ -20,8 +20,6 @@ import { useEquippedCosmetics } from "@/hooks/useEquippedCosmetics";
 import { useChampionBadges } from "@/hooks/useChampionBadges";
 import { useBattleCoins, BATTLE_ENTRY_COINS } from "@/hooks/useBattleCoins";
 import BattleCoinsWallet from "@/components/battle-coins/BattleCoinsWallet";
-import AutoMatchQueue from "@/components/battle-coins/AutoMatchQueue";
-
 import MonthlyChampionRewardsCard from "@/components/battle-coins/MonthlyChampionRewardsCard";
 import BattleCosmeticsShop from "@/components/battle-coins/BattleCosmeticsShop";
 import { frameClassForCode } from "@/lib/cosmeticFrames";
@@ -570,15 +568,7 @@ export default function ReelBattles() {
           )
         )}
 
-        <AutoMatchQueue
-          module="reel_battles"
-          mediaLabel="clip"
-          onMatched={async (battleId) => { await load(); openCompetition(battleId); }}
-          onQueued={() => load()}
-        />
-
         {formFor === "new" ? videoForm("new") : (
-
           <Button size="lg" onClick={() => { setFormFor("new"); setReelTitle(""); setReelDesc(""); setReelFile(null); }} className="w-full">
             <Plus className="h-4 w-4 mr-2" /> Start Clip Duel
           </Button>
