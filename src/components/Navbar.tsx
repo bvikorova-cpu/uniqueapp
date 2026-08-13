@@ -90,7 +90,6 @@ const Navbar = () => {
 
   const mainNavItems = [
     { path: "/wall", label: "Wall", icon: MessageSquare },
-    { path: "/clip-battles", label: "Clip Battles", icon: Film },
     { path: "/games-hub", label: "Games", icon: Gamepad2 },
     { path: "/jobs", label: "Work", icon: Briefcase },
     { path: "/promotions", label: "Promotions", icon: Megaphone },
@@ -99,6 +98,11 @@ const Navbar = () => {
     { path: "/rewards", label: "Rewards", icon: Trophy },
     { path: "/megatalent", label: "Megatalent", icon: Crown, premium: true },
     
+  ];
+
+  const clipBattlesServices = [
+    { path: "/clip-battles", label: "Clip Battles", icon: Film },
+    { path: "/face-insight", label: "Face Insight Studio", icon: Sparkles },
   ];
 
   const challengeServices = [
