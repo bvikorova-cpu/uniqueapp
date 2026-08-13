@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ChefHat, Trophy, Plus, Flame, MessageCircle, Send, Trash2, Video, Swords, X } from "lucide-react";
+import { Trophy, Plus, Flame, MessageCircle, Send, Trash2, Video, Swords, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -25,7 +25,7 @@ const MAX_VIDEO = 50 * 1024 * 1024; // 50 MB
 export default function KitchenStarsCompetitions() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { spendAction, balance } = useMasterChefAccess();
+  const { balance, refresh: refreshCredits } = useMasterChefAccess();
   const [battles, setBattles] = useState<Battle[]>([]);
   const [participants, setParticipants] = useState<Record<string, Participant[]>>({});
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
@@ -100,8 +100,8 @@ export default function KitchenStarsCompetitions() {
 
   const resetForm = () => { setFormFor(null); setDishTitle(""); setDishDesc(""); setDishFile(null); };
 
-  /** Uploads the cooking video and returns its public URL. */
-  const uploadVideo = async (battleId: string, file: File): Promise<string | null> => {
+  /** Uploads the cooking video and returns its public URL and storage path. */
+  const uploadVideo = async (battleId: string, file: File): Promise<{ url: string; path: string } | null> => {
     const ext = file.name.split(".").pop()?.toLowerCase() || "mp4";
     const path = `${userId}/${battleId}/${crypto.randomUUID()}.${ext}`;
     const { error } = await supabase.storage.from("kitchen-battles")
@@ -110,7 +110,32 @@ export default function KitchenStarsCompetitions() {
       toast({ title: "Upload failed", description: error.message, variant: "destructive" });
       return null;
     }
-    return supabase.storage.from("kitchen-battles").getPublicUrl(path).data.publicUrl;
+    return { url: supabase.storage.from("kitchen-battles").getPublicUrl(path).data.publicUrl, path };
+  };
+
+  const registerPaidEntry = async (battleId: string, file: File, videoUrl: string) => {
+    const { data, error } = await supabase.rpc("enter_kitchen_competition", {
+      _battle_id: battleId,
+      _dish_title: dishTitle.trim(),
+      _description: dishDesc.trim(),
+      _video_url: videoUrl,
+      _media_size: file.size,
+      _media_mime: file.type,
+    });
+    if (error) {
+      const insufficient = error.message.includes("INSUFFICIENT_CREDITS");
+      toast({
+        title: insufficient ? "Not enough credits" : "Could not enter the competition",
+        description: insufficient
+          ? `Entry costs ${KITCHENSTARS_COSTS.competition_entry} credits — you have ${balance}.`
+          : error.message,
+        variant: "destructive",
+      });
+      return false;
+    }
+    await refreshCredits();
+    window.dispatchEvent(new Event("ai-credits-updated"));
+    return Boolean(data);
   };
 
   /** Validates the shared video form. */
@@ -134,8 +159,10 @@ export default function KitchenStarsCompetitions() {
     const file = validateForm();
     if (!file || !userId) return;
 
-    const paid = await spendAction("competition_entry");
-    if (!paid) return;
+    if (balance < KITCHENSTARS_COSTS.competition_entry) {
+      toast({ title: "Not enough credits", description: `Entry costs ${KITCHENSTARS_COSTS.competition_entry} credits — you have ${balance}.`, variant: "destructive" });
+      return;
+    }
 
     setBusy(true);
     const { data: battle, error: be } = await supabase.from("kitchen_battles")
@@ -147,15 +174,17 @@ export default function KitchenStarsCompetitions() {
       return;
     }
 
-    const url = await uploadVideo(battle.id, file);
-    if (!url) { setBusy(false); return; }
-
-    const { error } = await supabase.from("kitchen_battle_participants").insert({
-      battle_id: battle.id, user_id: userId, dish_title: dishTitle.trim(),
-      description: dishDesc.trim() || null, video_url: url, media_type: "video",
-      media_size: file.size, media_mime: file.type });
+    const upload = await uploadVideo(battle.id, file);
+    if (!upload) { setBusy(false); return; }
+    const registered = await registerPaidEntry(battle.id, file, upload.url);
     setBusy(false);
-    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    if (!registered) {
+      await Promise.all([
+        supabase.storage.from("kitchen-battles").remove([upload.path]),
+        supabase.from("kitchen_battles").delete().eq("id", battle.id).eq("created_by", userId),
+      ]);
+      return;
+    }
 
     resetForm();
     toast({ title: "Competition started!", description: "The next chef who uploads a video becomes your opponent." });
@@ -175,19 +204,20 @@ export default function KitchenStarsCompetitions() {
     const file = validateForm();
     if (!file || !userId) return;
 
-    const paid = await spendAction("competition_entry");
-    if (!paid) return;
+    if (balance < KITCHENSTARS_COSTS.competition_entry) {
+      toast({ title: "Not enough credits", description: `Entry costs ${KITCHENSTARS_COSTS.competition_entry} credits — you have ${balance}.`, variant: "destructive" });
+      return;
+    }
 
     setBusy(true);
-    const url = await uploadVideo(battleId, file);
-    if (!url) { setBusy(false); return; }
-
-    const { error } = await supabase.from("kitchen_battle_participants").insert({
-      battle_id: battleId, user_id: userId, dish_title: dishTitle.trim(),
-      description: dishDesc.trim() || null, video_url: url, media_type: "video",
-      media_size: file.size, media_mime: file.type });
+    const upload = await uploadVideo(battleId, file);
+    if (!upload) { setBusy(false); return; }
+    const registered = await registerPaidEntry(battleId, file, upload.url);
     setBusy(false);
-    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    if (!registered) {
+      await supabase.storage.from("kitchen-battles").remove([upload.path]);
+      return;
+    }
 
     resetForm();
     toast({ title: "You are the opponent!", description: "Both videos are live — voting is open." });
@@ -329,34 +359,30 @@ export default function KitchenStarsCompetitions() {
       />
       <div className="min-h-screen bg-background pt-20 pb-12 px-4">
         <div className="max-w-3xl mx-auto space-y-6">
-          <div className="relative w-full h-[260px] sm:h-[360px] rounded-2xl overflow-hidden">
+          <section className="relative h-[76svh] min-h-[520px] overflow-hidden rounded-2xl bg-black">
             <video
               autoPlay
               loop
               muted
               playsInline
-              preload="metadata"
               className="absolute inset-0 w-full h-full object-cover"
-              style={{ filter: "brightness(1.15) contrast(1.15) saturate(1.35)" }}
               src={masterchefHero.url}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
-            <div className="relative z-10 h-full flex flex-col items-center justify-end text-center px-4 pb-6">
-              <div className="rounded-2xl bg-black/50 px-5 py-4 backdrop-blur-sm border border-white/10 shadow-2xl">
-                <Badge className="mb-3 bg-black/60 border border-orange-400/50 text-orange-200 backdrop-blur-xl">
-                  <ChefHat className="h-3.5 w-3.5 mr-1.5" /> Cook-off Arena
-                </Badge>
-                <h1 className="text-3xl md:text-5xl font-black" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.6)' }}>
-                  <span className="bg-gradient-to-r from-orange-300 via-amber-200 to-white bg-clip-text text-transparent">
-                    KitchenStars Competitions
-                  </span>
-                </h1>
-                <p className="mt-2 text-sm md:text-lg text-white font-medium" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.9)' }}>
-                  Two chefs, two cooking videos — the platform votes 👑
-                </p>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20" />
+            <div className="absolute inset-0 z-10 flex flex-col justify-end p-4 pb-8 md:p-10">
+              <div className="inline-block self-start mb-3 px-4 py-1.5 bg-orange-500/30 backdrop-blur-sm rounded-full border border-orange-400/40">
+                <span className="text-orange-300 font-semibold text-xs uppercase tracking-wider">
+                  🔥 Online Cooking Competition Platform
+                </span>
               </div>
+              <h1 className="text-[clamp(2.2rem,11vw,4.5rem)] font-black leading-[1.05] mb-3 max-w-[20ch] bg-gradient-to-br from-white via-orange-300 to-orange-500 bg-clip-text text-transparent drop-shadow-xl">
+                KitchenStars Arena
+              </h1>
+              <p className="text-white/80 text-sm md:text-lg max-w-xl mb-3 leading-relaxed">
+                Two chefs upload cooking videos. Each pays 5 credits, the platform votes, and the winner receives all 10 credits.
+              </p>
             </div>
-          </div>
+          </section>
 
 
           {formFor === "new" ? videoForm("new") : (
