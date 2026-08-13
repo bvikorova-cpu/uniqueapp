@@ -23344,6 +23344,48 @@ export type Database = {
         }
         Relationships: []
       }
+      face_insight_reports: {
+        Row: {
+          created_at: string
+          credits_used: number
+          headline: string | null
+          id: string
+          is_comparison: boolean
+          mode: string
+          report: string | null
+          scores: Json
+          summary: string | null
+          traits: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          headline?: string | null
+          id?: string
+          is_comparison?: boolean
+          mode?: string
+          report?: string | null
+          scores?: Json
+          summary?: string | null
+          traits?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          headline?: string | null
+          id?: string
+          is_comparison?: boolean
+          mode?: string
+          report?: string | null
+          scores?: Json
+          summary?: string | null
+          traits?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       fairy_castle_rooms: {
         Row: {
           audio_guide_text: string | null
