@@ -473,7 +473,7 @@ export default function ReelBattles() {
               <div className="flex items-start gap-3 p-3 rounded-xl border border-primary/20 bg-secondary/20">
                 <Trophy className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-semibold text-sm">1 000 coins + 10 XP</p>
+                  <p className="font-semibold text-sm">160 coins + 10 XP</p>
                   <p className="text-xs text-muted-foreground">The winning creator takes the whole coin pot plus 10 XP.</p>
                 </div>
               </div>

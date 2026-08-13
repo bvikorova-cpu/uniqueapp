@@ -7,7 +7,7 @@ export const COINS_PER_CREDIT = 100;
 /** Duel entry fee, paid exclusively in Battle Coins. */
 export const BATTLE_ENTRY_COINS = 100;
 /** Prize paid to the winner of a duel. */
-export const BATTLE_PRIZE_COINS = 160;
+export const BATTLE_PRIZE_COINS = 160; // 80% of a 2-player 100-coin pot
 
 export const BATTLE_COINS_UPDATED = "battle-coins-updated";
 
