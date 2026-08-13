@@ -51,6 +51,40 @@
   filter: drop-shadow(0 0 18px rgba(220,38,38,0.45));
 }
 
+/* Aurora Legend frame — animated radiant border for the top-tier Battle Coins cosmetic */
+@keyframes aurora-legend-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.aurora-legend-frame {
+  position: relative;
+  z-index: 0;
+  border-radius: 0.875rem;
+  overflow: visible;
+}
+
+.aurora-legend-frame::before {
+  content: "";
+  position: absolute;
+  top: -50%; left: -50%; right: -50%; bottom: -50%;
+  z-index: -2;
+  background: conic-gradient(from 0deg, #e879f9, #a855f7, #22d3ee, #f472b6, #e879f9);
+  animation: aurora-legend-spin 3.5s linear infinite;
+  filter: blur(10px);
+  opacity: 0.9;
+}
+
+.aurora-legend-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: conic-gradient(from 0deg, #f0abfc, #a855f7, #67e8f9, #f0abfc);
+  animation: aurora-legend-spin 3.5s linear infinite;
+  border-radius: 0.875rem;
+}
+
 
 @tailwind base;
 @tailwind components;
