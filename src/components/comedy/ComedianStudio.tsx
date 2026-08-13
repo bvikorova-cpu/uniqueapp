@@ -155,9 +155,10 @@ export const ComedianStudio = ({ onBack }: Props) => {
 
   const setStatus = async (id: string, status: "live" | "ended") => {
     try {
-      const patch: Record<string, unknown> = { status };
-      if (status === "live") patch.started_at = new Date().toISOString();
-      if (status === "ended") patch.ended_at = new Date().toISOString();
+      const now = new Date().toISOString();
+      const patch = status === "live"
+        ? { status, started_at: now }
+        : { status, ended_at: now };
       const { error } = await supabase.from("comedy_shows").update(patch).eq("id", id);
       if (error) throw error;
       toast.success(status === "live" ? "You are live!" : "Show ended");
