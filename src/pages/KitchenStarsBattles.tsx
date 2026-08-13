@@ -286,13 +286,26 @@ export default function KitchenStarsCompetitions() {
           <Progress value={pct} />
         </div>
         {canVote && p.user_id !== userId && (
-          <Button className="w-full" variant={votedThis ? "default" : "outline"} onClick={() => vote(battle.id, p.id)}>
-            {votedThis ? `✓ Voted for Chef ${label}` : `Vote for Chef ${label}`}
+          <Button
+            className="w-full"
+            variant={votedThis ? "default" : "outline"}
+            disabled={!!myVote}
+            onClick={() => vote(battle.id, p.id)}
+          >
+            {votedThis
+              ? `✓ Voted for Chef ${label}`
+              : myVote
+                ? "Vote already used"
+                : `Vote for Chef ${label}`}
           </Button>
+        )}
+        {canVote && p.user_id !== userId && myVote && (
+          <p className="text-[11px] text-center text-muted-foreground">You have 1 vote per duel — it can't be changed.</p>
         )}
         {p.user_id === userId && (
           <p className="text-xs text-center text-muted-foreground">This is your entry — you can't vote for yourself.</p>
         )}
+
       </div>
     );
   };
