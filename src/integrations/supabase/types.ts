@@ -50485,6 +50485,178 @@ export type Database = {
           },
         ]
       }
+      reel_battle_comments: {
+        Row: {
+          battle_id: string
+          content: string
+          created_at: string
+          id: string
+          participant_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          battle_id: string
+          content: string
+          created_at?: string
+          id?: string
+          participant_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          battle_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          participant_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reel_battle_comments_battle_id_fkey"
+            columns: ["battle_id"]
+            isOneToOne: false
+            referencedRelation: "reel_battles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reel_battle_participants: {
+        Row: {
+          battle_id: string
+          created_at: string
+          description: string | null
+          dislike_count: number
+          id: string
+          media_mime: string | null
+          media_size: number | null
+          media_type: string | null
+          reel_title: string
+          user_id: string
+          video_url: string | null
+          vote_count: number
+        }
+        Insert: {
+          battle_id: string
+          created_at?: string
+          description?: string | null
+          dislike_count?: number
+          id?: string
+          media_mime?: string | null
+          media_size?: number | null
+          media_type?: string | null
+          reel_title: string
+          user_id: string
+          video_url?: string | null
+          vote_count?: number
+        }
+        Update: {
+          battle_id?: string
+          created_at?: string
+          description?: string | null
+          dislike_count?: number
+          id?: string
+          media_mime?: string | null
+          media_size?: number | null
+          media_type?: string | null
+          reel_title?: string
+          user_id?: string
+          video_url?: string | null
+          vote_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reel_battle_participants_battle_id_fkey"
+            columns: ["battle_id"]
+            isOneToOne: false
+            referencedRelation: "reel_battles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reel_battle_votes: {
+        Row: {
+          battle_id: string
+          created_at: string
+          id: string
+          participant_id: string
+          vote_type: string
+          voter_id: string
+        }
+        Insert: {
+          battle_id: string
+          created_at?: string
+          id?: string
+          participant_id: string
+          vote_type?: string
+          voter_id: string
+        }
+        Update: {
+          battle_id?: string
+          created_at?: string
+          id?: string
+          participant_id?: string
+          vote_type?: string
+          voter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reel_battle_votes_battle_id_fkey"
+            columns: ["battle_id"]
+            isOneToOne: false
+            referencedRelation: "reel_battles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reel_battle_votes_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "reel_battle_participants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reel_battles: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          deadline: string
+          description: string | null
+          id: string
+          prize_pool: number
+          status: string
+          theme: string
+          updated_at: string
+          winner_participant_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          deadline?: string
+          description?: string | null
+          id?: string
+          prize_pool?: number
+          status?: string
+          theme: string
+          updated_at?: string
+          winner_participant_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          deadline?: string
+          description?: string | null
+          id?: string
+          prize_pool?: number
+          status?: string
+          theme?: string
+          updated_at?: string
+          winner_participant_id?: string | null
+        }
+        Relationships: []
+      }
       reference_checks: {
         Row: {
           candidate_id: string
@@ -67646,6 +67818,17 @@ export type Database = {
         }
         Returns: Json
       }
+      enter_reel_competition: {
+        Args: {
+          _battle_id: string
+          _description: string
+          _media_mime: string
+          _media_size: number
+          _reel_title: string
+          _video_url: string
+        }
+        Returns: Json
+      }
       erf: { Args: { x: number }; Returns: number }
       evaluate_xp_bets: { Args: never; Returns: number }
       exclusive_is_matched: {
@@ -68571,6 +68754,18 @@ export type Database = {
           donor_name: string
         }[]
       }
+      get_reel_battles_leaderboard: {
+        Args: { _limit?: number }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          duels: number
+          reel_xp: number
+          total_votes: number
+          user_id: string
+          wins: number
+        }[]
+      }
       get_referral_funnel: { Args: { _period?: string }; Returns: Json }
       get_referral_leaderboard: {
         Args: { period?: string }
@@ -69421,6 +69616,7 @@ export type Database = {
         Returns: string
       }
       settle_kitchen_competitions: { Args: never; Returns: number }
+      settle_reel_competitions: { Args: never; Returns: number }
       share_secret_santa_gift_to_story: {
         Args: { p_gift_id: string }
         Returns: {
