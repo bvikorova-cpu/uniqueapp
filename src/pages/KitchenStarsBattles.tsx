@@ -574,10 +574,6 @@ export default function KitchenStarsCompetitions() {
                       </button>
                     );
                   })}
-
-                      </button>
-                    );
-                  })}
                 </CardContent>
               </Card>
             )
