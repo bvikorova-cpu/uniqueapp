@@ -87,7 +87,7 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
     <>
       <FloatingHowItWorks title="How Browse Shows works" steps={[
         { title: "Open this section", desc: "See every upcoming and live stand-up show." },
-        { title: "Buy a ticket", desc: "Tickets are paid in comedy coins from your comedy wallet." },
+        { title: "Buy a ticket", desc: "Tickets are paid in AI credits from your account balance." },
         { title: "Watch live", desc: "When the comedian goes live, open the stream from here." },
         { title: "Support comedians", desc: "Send tips during the show — creators keep the majority." },
       ]} />

@@ -56,7 +56,7 @@ const ComedyClub = () => {
     <>
       <FloatingHowItWorks title="How Comedy Club works" steps={[
         { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
-        { title: 'Interact', desc: 'Buy tickets with comedy coins or host your own show.' },
+        { title: 'Interact', desc: 'Buy tickets with AI credits or host your own show.' },
         { title: 'Review results', desc: 'Watch live shows, tip comedians and rate performances.' },
         { title: 'Come back', desc: 'Tickets and progress are saved to your account.' },
       ]} />
@@ -95,7 +95,7 @@ const ComedyClub = () => {
                   <h3 className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">How It Works</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {[
-                      { icon: Ticket, title: "For Fans", desc: "Browse upcoming shows, buy tickets with coins, and watch live streams." },
+                      { icon: Ticket, title: "For Fans", desc: "Browse upcoming shows, buy tickets with credits, and watch live streams." },
                       { icon: Mic2, title: "For Comedians", desc: "Create your comedian profile, schedule shows, and go live." },
                     ].map((step, i) => (
                       <div key={i} className="text-center space-y-2">
