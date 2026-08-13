@@ -90,8 +90,8 @@ function Doll({ config, isSpinning }: { config: BarbieConfig; isSpinning: boolea
   const headGeo = useMemo(
     () =>
       latheProfile([
-        [0.005, 0.34], [0.10, 0.33], [0.17, 0.29], [0.205, 0.20], [0.215, 0.10],
-        [0.205, 0.0], [0.185, -0.10], [0.145, -0.19], [0.09, -0.26], [0.005, -0.30],
+        [0.005, 0.30], [0.10, 0.29], [0.175, 0.245], [0.21, 0.17], [0.222, 0.08],
+        [0.212, -0.01], [0.19, -0.10], [0.15, -0.18], [0.095, -0.24], [0.005, -0.27],
       ]),
     []
   );
@@ -598,7 +598,7 @@ export function BarbieCreator3D({ onBack }: { onBack: () => void }) {
               </div>
             </>
           ) : (
-            <Canvas camera={{ position: [0, 0.6, 3.6], fov: 42 }} shadows dpr={[1, 2]}>
+            <Canvas camera={{ position: [0, 0.35, 3.9], fov: 40 }} shadows dpr={[1, 2]}>
               <ambientLight intensity={0.45} />
               <directionalLight position={[3, 5, 3]} intensity={1.5} castShadow shadow-mapSize={[1024, 1024]} />
               <directionalLight position={[-3, 2, 2]} intensity={0.5} color="#ffd7e6" />
@@ -612,7 +612,7 @@ export function BarbieCreator3D({ onBack }: { onBack: () => void }) {
               </Suspense>
               <OrbitControls
                 enablePan={false}
-                target={[0, 0.5, 0]}
+                target={[0, 0.1, 0]}
                 minDistance={2.2}
                 maxDistance={6}
                 minPolarAngle={0.3}
