@@ -96,8 +96,8 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
     if (!session) { toast.error("Please sign in to buy tickets"); return; }
     try {
       setBuying(showId);
-      const { data, error } = await supabase.functions.invoke("create-comedy-ticket-checkout", {
-        body: { showId },
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { product: "comedy_ticket", showId },
       });
       if (error) throw error;
       if (!data?.url) throw new Error(data?.error || "Could not start checkout");
