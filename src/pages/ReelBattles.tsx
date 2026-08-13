@@ -568,7 +568,15 @@ export default function ReelBattles() {
           )
         )}
 
+        <AutoMatchQueue
+          module="reel_battles"
+          mediaLabel="clip"
+          onMatched={async (battleId) => { await load(); openCompetition(battleId); }}
+          onQueued={() => load()}
+        />
+
         {formFor === "new" ? videoForm("new") : (
+
           <Button size="lg" onClick={() => { setFormFor("new"); setReelTitle(""); setReelDesc(""); setReelFile(null); }} className="w-full">
             <Plus className="h-4 w-4 mr-2" /> Start Clip Duel
           </Button>
