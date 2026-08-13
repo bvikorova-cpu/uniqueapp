@@ -543,7 +543,8 @@ export default function ReelBattles() {
                 {battles.map(b => {
                   const parts = participants[b.id] || [];
                   const votes = parts.reduce((s, p) => s + (p.vote_count || 0), 0);
-                  const open = b.status === "open" && new Date(b.deadline) > new Date();
+                  const waiting = parts.length < 2;
+                  const open = b.status === "open" && (waiting || new Date(b.deadline) > new Date());
                   return (
                     <button
                       key={b.id}
@@ -555,11 +556,12 @@ export default function ReelBattles() {
                           <Film className="h-4 w-4 text-primary shrink-0" />
                           <span className="truncate">{b.theme}</span>
                         </span>
-                        <Badge variant={open ? "default" : "secondary"} className="shrink-0">{open ? "OPEN" : "CLOSED"}</Badge>
+                        <Badge variant={open ? "default" : "secondary"} className="shrink-0">{open ? (waiting ? "WAITING" : "OPEN") : "CLOSED"}</Badge>
                       </div>
                       <p className="mt-1 text-xs text-muted-foreground">
-                        {parts.length}/2 creators · {votes} votes · deadline {new Date(b.deadline).toLocaleDateString()}
+                        {parts.length}/2 creators · {votes} votes · {waiting ? "waiting for an opponent — no time limit" : `deadline ${new Date(b.deadline).toLocaleDateString()}`}
                       </p>
+
                     </button>
                   );
                 })}
