@@ -19,8 +19,14 @@ type Participant = { id: string; battle_id: string; user_id: string; dish_title:
 type Comment = { id: string; battle_id: string; participant_id: string | null; user_id: string; content: string; created_at: string };
 type MyVote = { participant_id: string; vote_type: string };
 
-const ALLOWED_VIDEO = ["video/mp4", "video/webm", "video/quicktime"];
+const VIDEO_EXTS = ["mp4", "webm", "mov", "m4v", "3gp", "3gpp", "mkv", "avi", "mpeg", "mpg", "ogv"];
 const MAX_VIDEO = 50 * 1024 * 1024; // 50 MB
+/** Mobile pickers often report odd or empty MIME types — accept any video/* or a known extension. */
+const isVideoFile = (file: File) => {
+  if (file.type?.toLowerCase().startsWith("video/")) return true;
+  const ext = file.name.split(".").pop()?.toLowerCase() || "";
+  return VIDEO_EXTS.includes(ext);
+};
 
 export default function KitchenStarsCompetitions() {
   const navigate = useNavigate();
@@ -101,7 +107,7 @@ export default function KitchenStarsCompetitions() {
   const formatBytes = (b: number) => b < 1024 * 1024 ? `${(b / 1024).toFixed(0)} KB` : `${(b / 1024 / 1024).toFixed(2)} MB`;
 
   const validateFile = (file: File): DropZoneValidation => {
-    if (!ALLOWED_VIDEO.includes(file.type)) {
+    if (!isVideoFile(file)) {
       return { ok: false, title: "Video required", reason: `"${file.name}" is not a supported video format.`, suggestion: "Upload MP4, WEBM or MOV, max 50 MB." };
     }
     if (file.size > MAX_VIDEO) {
@@ -120,7 +126,7 @@ export default function KitchenStarsCompetitions() {
     const ext = file.name.split(".").pop()?.toLowerCase() || "mp4";
     const path = `${userId}/${battleId}/${crypto.randomUUID()}.${ext}`;
     const { error } = await supabase.storage.from("kitchen-battles")
-      .upload(path, file, { contentType: file.type, upsert: false });
+      .upload(path, file, { contentType: file.type || "video/mp4", upsert: false });
     if (error) {
       toast({ title: "Upload failed", description: error.message, variant: "destructive" });
       return null;
@@ -289,7 +295,7 @@ export default function KitchenStarsCompetitions() {
         onChange={e => setDishTitle(e.target.value)} />
       <Textarea placeholder="Short description of your dish (optional)" value={dishDesc} maxLength={500}
         onChange={e => setDishDesc(e.target.value)} rows={3} />
-      <DropZone file={dishFile} onChange={setDishFile} validate={validateFile} accept="video/mp4,video/webm,video/quicktime" hint="Cooking video: MP4 / WEBM / MOV, max 50 MB" />
+      <DropZone file={dishFile} onChange={setDishFile} validate={validateFile} accept="video/*" hint="Cooking video: MP4 / WEBM / MOV, max 50 MB" />
       <p className="text-xs text-muted-foreground">
         Cooking video only — MP4 / WEBM / MOV, max 50 MB. Entry costs {KITCHENSTARS_COSTS.competition_entry} credits (you have {balance}).
       </p>
