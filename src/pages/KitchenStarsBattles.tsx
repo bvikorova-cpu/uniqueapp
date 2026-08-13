@@ -390,6 +390,48 @@ export default function KitchenStarsCompetitions() {
             </div>
           </section>
 
+          {/* Public competition directory — tap any competition to open it */}
+          {!loading && battles.length > 0 && (
+            selectedId ? (
+              <Button variant="outline" className="w-full" onClick={() => closeCompetition()}>
+                ← Back to all competitions
+              </Button>
+            ) : (
+              <Card className="border-orange-500/20">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Trophy className="h-5 w-5 text-orange-500" /> All competitions ({battles.length})
+                  </CardTitle>
+                  <p className="text-xs text-muted-foreground">Tap a competition to open it and vote for free.</p>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {battles.map(b => {
+                    const parts = participants[b.id] || [];
+                    const votes = parts.reduce((s, p) => s + (p.vote_count || 0), 0);
+                    const open = b.status === "open" && new Date(b.deadline) > new Date();
+                    return (
+                      <button
+                        key={b.id}
+                        onClick={() => openCompetition(b.id)}
+                        className="w-full text-left p-3 rounded-xl border border-primary/20 bg-secondary/20 hover:bg-secondary/40 transition-colors"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="flex items-center gap-2 min-w-0 font-semibold">
+                            <ChefHat className="h-4 w-4 text-orange-500 shrink-0" />
+                            <span className="truncate">{b.theme}</span>
+                          </span>
+                          <Badge variant={open ? "default" : "secondary"} className="shrink-0">{open ? "OPEN" : "CLOSED"}</Badge>
+                        </div>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {parts.length}/2 chefs · {votes} votes · deadline {new Date(b.deadline).toLocaleDateString()}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </CardContent>
+              </Card>
+            )
+          )}
 
           {formFor === "new" ? videoForm("new") : (
             <div className="space-y-2">
@@ -404,7 +446,8 @@ export default function KitchenStarsCompetitions() {
           ) : battles.length === 0 ? (
             <Card><CardContent className="py-10 text-center text-muted-foreground">No competitions yet. Be the first chef!</CardContent></Card>
           ) : (
-            battles.map(battle => {
+            visibleBattles.map(battle => {
+
               const parts = (participants[battle.id] || []).slice(0, 2);
               const [a, b] = parts;
               const allComments = comments[battle.id] || [];
