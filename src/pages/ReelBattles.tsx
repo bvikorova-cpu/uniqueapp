@@ -133,6 +133,16 @@ export default function ReelBattles() {
 
   useEffect(() => { load(); }, []);
 
+  // Realtime: duel status ("waiting for opponent" -> voting deadline) updates live
+  useEffect(() => {
+    const channel = supabase
+      .channel("reel-battles-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "reel_battle_participants" }, () => { load(); })
+      .on("postgres_changes", { event: "*", schema: "public", table: "reel_battles" }, () => { load(); })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
+
   const formatBytes = (b: number) => b < 1024 * 1024 ? `${(b / 1024).toFixed(0)} KB` : `${(b / 1024 / 1024).toFixed(2)} MB`;
 
   const validateFile = (file: File): DropZoneValidation => {
