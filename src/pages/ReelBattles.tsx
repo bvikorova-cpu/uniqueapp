@@ -699,6 +699,8 @@ export default function ReelBattles() {
             );
           })
         )}
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
