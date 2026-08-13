@@ -438,9 +438,12 @@ export default function ReelBattles() {
     );
   };
 
+  const tabTriggerClass =
+    "rounded-xl py-2.5 text-[11px] sm:text-sm font-semibold tracking-wide gap-1.5 flex-col sm:flex-row data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-primary-foreground data-[state=active]:shadow-[0_8px_24px_-8px_hsl(var(--primary)/0.6)] transition-all";
+
   return (
     <div className="min-h-screen bg-background pt-20 pb-12 px-4">
-      <div className="max-w-3xl mx-auto space-y-6">
+      <div className="max-w-5xl mx-auto space-y-6">
         <section className="relative h-[76svh] min-h-[520px] overflow-hidden rounded-2xl bg-black">
           <video
             autoPlay
