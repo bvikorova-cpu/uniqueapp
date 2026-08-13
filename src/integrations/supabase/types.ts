@@ -37657,6 +37657,36 @@ export type Database = {
         }
         Relationships: []
       }
+      masterchef_chef_passes: {
+        Row: {
+          created_at: string
+          credits_paid: number
+          expires_at: string
+          id: string
+          pass_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_paid?: number
+          expires_at: string
+          id?: string
+          pass_type?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_paid?: number
+          expires_at?: string
+          id?: string
+          pass_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       masterchef_competition_entries: {
         Row: {
           competition_id: string
@@ -68706,6 +68736,7 @@ export type Database = {
           users_seeded: number
         }[]
       }
+      has_active_chef_pass: { Args: { _user_id: string }; Returns: boolean }
       has_active_megatalent_subscription: {
         Args: { _user_id: string }
         Returns: boolean
