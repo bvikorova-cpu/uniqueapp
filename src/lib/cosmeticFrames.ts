@@ -11,7 +11,8 @@ export const COSMETIC_FRAME_CLASSES: Record<string, string> = {
   frame_gold: "ring-2 ring-yellow-400 shadow-[0_0_22px_rgba(250,204,21,0.7)]",
   frame_mint: "ring-2 ring-emerald-400",
   frame_inferno: "ring-2 ring-orange-500 shadow-[0_0_26px_rgba(249,115,22,0.8)]",
-  frame_aurora: "ring-2 ring-fuchsia-400 shadow-[0_0_30px_rgba(232,121,249,0.85)]",
+  frame_aurora:
+    "aurora-legend-frame ring-0 p-[3px] shadow-[0_0_45px_rgba(232,121,249,0.95),0_0_90px_rgba(168,85,247,0.65)]",
 };
 
 /** Resolve a safe, build-time-known frame class for a cosmetic code. */
