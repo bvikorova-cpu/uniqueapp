@@ -19,8 +19,14 @@ type Participant = { id: string; battle_id: string; user_id: string; dish_title:
 type Comment = { id: string; battle_id: string; participant_id: string | null; user_id: string; content: string; created_at: string };
 type MyVote = { participant_id: string; vote_type: string };
 
-const ALLOWED_VIDEO = ["video/mp4", "video/webm", "video/quicktime"];
+const VIDEO_EXTS = ["mp4", "webm", "mov", "m4v", "3gp", "3gpp", "mkv", "avi", "mpeg", "mpg", "ogv"];
 const MAX_VIDEO = 50 * 1024 * 1024; // 50 MB
+/** Mobile pickers often report odd or empty MIME types — accept any video/* or a known extension. */
+const isVideoFile = (file: File) => {
+  if (file.type?.toLowerCase().startsWith("video/")) return true;
+  const ext = file.name.split(".").pop()?.toLowerCase() || "";
+  return VIDEO_EXTS.includes(ext);
+};
 
 export default function KitchenStarsCompetitions() {
   const navigate = useNavigate();
