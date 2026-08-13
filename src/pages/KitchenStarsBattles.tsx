@@ -15,6 +15,8 @@ import { useToast } from "@/hooks/use-toast";
 import { DropZone, type DropZoneValidation } from "@/components/kitchen-battles/DropZone";
 import { useBattleCoins, BATTLE_ENTRY_COINS, BATTLE_PRIZE_COINS } from "@/hooks/useBattleCoins";
 import BattleCoinsWallet from "@/components/battle-coins/BattleCoinsWallet";
+import AutoMatchQueue from "@/components/battle-coins/AutoMatchQueue";
+
 import MonthlyChampionRewardsCard from "@/components/battle-coins/MonthlyChampionRewardsCard";
 import BattleCosmeticsShop from "@/components/battle-coins/BattleCosmeticsShop";
 import masterchefHero from "@/assets/masterchef-hero-v2.mp4.asset.json";
