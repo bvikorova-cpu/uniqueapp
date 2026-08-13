@@ -726,6 +726,29 @@ const Navbar = () => {
 
             <div className="border-t border-border/50 my-2" />
 
+            {/* Clip Battles Section */}
+            <div className="pt-2 pb-1">
+              <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground">
+                Clip Battles
+              </div>
+              {clipBattlesServices.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                return (
+                  <Link key={item.path} to={item.path} onClick={() => setIsMenuOpen(false)}>
+                    <Button
+                      variant={isActive ? "premium" : "ghost"}
+                      className="w-full justify-start text-sm py-2"
+                      size="sm"
+                    >
+                      <Icon className="h-4 w-4" />
+                      {item.label}
+                    </Button>
+                  </Link>
+                );
+              })}
+            </div>
+
             {/* Main Navigation Items */}
             <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground">
               Discover
