@@ -449,7 +449,8 @@ export default function KitchenStarsCompetitions() {
   return (
     <>
       <div className="min-h-screen bg-background pt-20 pb-12 px-4">
-        <div className="max-w-3xl mx-auto space-y-6">
+        <div className="max-w-5xl mx-auto space-y-6">
+
           <section className="relative h-[76svh] min-h-[520px] overflow-hidden rounded-2xl bg-black">
             <video
               autoPlay
