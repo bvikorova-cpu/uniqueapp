@@ -6,14 +6,14 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { SendGiftDialog } from "@/components/masterchef/SendGiftDialog";
-import { useMasterChefSubscription } from "@/hooks/useMasterChefSubscription";
+import { useMasterChefAccess } from "@/hooks/useMasterChefAccess";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function MasterChefDashboard() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { subscribed, tier, loading: subscriptionLoading } = useMasterChefSubscription();
+  const { hasPass, expiresAt, balance, loading: accessLoading } = useMasterChefAccess();
   const [giftDialogOpen, setGiftDialogOpen] = useState(false);
   const [selectedChef, setSelectedChef] = useState<{ id: string; name: string } | null>(null);
   const [stats, setStats] = useState({ totalCompetitions: 0,
@@ -27,14 +27,14 @@ export default function MasterChefDashboard() {
     checkAuth();
   }, []);
 
-  useEffect(() => { if (!subscriptionLoading && !subscribed) {
+  useEffect(() => { if (!accessLoading && !hasPass) {
       toast({
-        title: "Subscription Required",
-        description: "You need an active KitchenStars subscription to access the dashboard",
+        title: "Chef Pass required",
+        description: "Unlock chef access with credits to use the dashboard",
         variant: "destructive" });
       navigate("/masterchef-subscription");
     }
-  }, [subscribed, subscriptionLoading, navigate, toast]);
+  }, [hasPass, accessLoading, navigate, toast]);
 
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -46,7 +46,7 @@ export default function MasterChefDashboard() {
     }
   };
 
-  if (subscriptionLoading) {
+  if (accessLoading) {
     return (
       <>
         <FloatingHowItWorks title="How Master Chef Dashboard works" steps={[
@@ -65,7 +65,7 @@ export default function MasterChefDashboard() {
       );
   }
 
-  if (!subscribed) {
+  if (!hasPass) {
     return null; // Will redirect via useEffect
   }
 
