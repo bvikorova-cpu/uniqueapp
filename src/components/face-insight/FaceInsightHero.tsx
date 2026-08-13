@@ -41,15 +41,16 @@ export const FaceInsightHero = () => {
       </video>
       <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/85" />
 
+      <motion.span
+        initial={{ opacity: 0, y: -12 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="absolute top-4 left-1/2 -translate-x-1/2 z-20 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-background/50 backdrop-blur-md text-foreground text-xs sm:text-sm font-semibold border border-primary/40"
+      >
+        <Sparkles className="w-4 h-4 text-accent" /> AI Image Consultant
+        <ScanFace className="w-4 h-4 text-primary" />
+      </motion.span>
+
       <div className="relative z-10 h-full flex flex-col items-center justify-center px-5 text-center">
-        <motion.span
-          initial={{ opacity: 0, y: -12 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-background/50 backdrop-blur-md text-foreground text-xs sm:text-sm font-semibold border border-primary/40 mb-3"
-        >
-          <Sparkles className="w-4 h-4 text-accent" /> AI Image Consultant
-          <ScanFace className="w-4 h-4 text-primary" />
-        </motion.span>
         <motion.h1
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
