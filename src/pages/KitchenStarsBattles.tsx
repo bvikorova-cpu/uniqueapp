@@ -578,7 +578,15 @@ export default function KitchenStarsCompetitions() {
             )
           )}
 
+          <AutoMatchQueue
+            module="kitchenstars"
+            mediaLabel="dish video"
+            onMatched={async (battleId) => { await load(); openCompetition(battleId); }}
+            onQueued={() => load()}
+          />
+
           {formFor === "new" ? videoForm("new") : (
+
             <div className="space-y-2">
             <Button size="lg" onClick={() => { setFormFor("new"); setDishTitle(""); setDishDesc(""); setDishFile(null); }} className="w-full">
               <Plus className="h-4 w-4 mr-2" /> Start Competition
