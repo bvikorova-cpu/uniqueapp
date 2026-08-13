@@ -337,10 +337,10 @@ export default function KitchenStarsCompetitions() {
               playsInline
               preload="metadata"
               className="absolute inset-0 w-full h-full object-cover"
-              style={{ filter: "brightness(0.6) saturate(1.2)" }}
+              style={{ filter: "brightness(1.15) contrast(1.15) saturate(1.35)" }}
               src={masterchefHero.url}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/25 to-transparent" />
             <div className="relative z-10 h-full flex flex-col items-center justify-end text-center px-4 pb-6">
               <Badge className="mb-3 bg-black/60 border border-orange-400/50 text-orange-200 backdrop-blur-xl">
                 <ChefHat className="h-3.5 w-3.5 mr-1.5" /> Cook-off Arena
