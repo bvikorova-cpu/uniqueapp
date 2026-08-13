@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, Check, Coins } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { BATTLE_COINS_UPDATED } from "@/hooks/useBattleCoins";
+import { BATTLE_COINS_UPDATED, BATTLE_MODULE_LABELS, type BattleModule } from "@/hooks/useBattleCoins";
 
 type Cosmetic = {
   id: string; code: string; name: string; description: string | null;
