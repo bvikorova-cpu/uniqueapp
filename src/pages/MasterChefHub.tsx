@@ -15,16 +15,19 @@ import { useState } from "react";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import UnifiedXPLeaderboard from "@/components/shared/UnifiedXPLeaderboard";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-const TIERS = { amateur: {
-    name: "Amateur", price: "€19.99", priceId: "price_1SPiaUGaXSfGtYFtpV3Q8jjN",
-    icon: ChefHat, popular: false,
-    features: ["5 competitions per month", "Basic voting system", "Access to amateur categories", "Community recipes", "Basic performance statistics"] },
-  pro: { name: "Pro", price: "€49.99", priceId: "price_1SPiarGaXSfGtYFtBgTuCPiw",
-    icon: Crown, popular: true,
-    features: ["Unlimited competitions", "Live battles in real-time", "Premium categories (Fine Dining, Dessert Masters)", "Exclusive recipes from professionals", "Detailed statistics and analytics", "Priority support", "Mystery Box challenges"] },
-  elite: { name: "Elite", price: "€99.99", priceId: "price_1SPibC0QTWhd4oRpJwaH5vZM",
-    icon: Sparkles, popular: false,
-    features: ["Everything from Pro tier", "Personal mentoring from professional chefs", "VIP behind-the-scenes access", "Winning bonuses and rewards", "No commission on winnings", "Exclusive live events", "Priority leaderboard placement", "Access to closed premium communities"] } };
+import { CHEF_PASS_OPTIONS, useMasterChefAccess, type ChefPassType } from "@/hooks/useMasterChefAccess";
+
+const PASSES: Record<ChefPassType, { icon: typeof ChefHat; popular: boolean; tagline: string; features: string[] }> = {
+  day: {
+    icon: ChefHat, popular: false, tagline: "Try a full cooking day",
+    features: ["Chef dashboard for 24 hours", "Enter competitions & battles", "Post recipes to the feed", "Receive gifts from fans"] },
+  week: {
+    icon: Crown, popular: true, tagline: "For serious chefs",
+    features: ["Everything in the Day Pass", "7 days of chef access", "Live cook-along streaming", "Weekly awards eligibility"] },
+  month: {
+    icon: Sparkles, popular: false, tagline: "Best value per day",
+    features: ["Everything in the Week Pass", "30 days of chef access", "Priority placement in the chef feed", "No monthly commitment"] },
+};
 
 const toolCards = [
   { icon: Trophy, title: "Competitions", desc: "Join cooking battles & win prizes", route: "/masterchef/competitions-public", color: "from-orange-500 to-red-500" },
@@ -44,26 +47,20 @@ export default function MasterChefHub() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState<string | null>(null);
+  const { balance, hasPass, expiresAt, loading: accessLoading, activatePass } = useMasterChefAccess();
 
-  const handleSubscribe = async (tier: keyof typeof TIERS) => {
-    try {
-      setLoading(tier);
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({ title: "Login Required", description: "Please sign in to continue", variant: "destructive" });
-        navigate("/auth");
-        return;
-      }
-      const { data, error } = await supabase.functions.invoke("create-masterchef-checkout", {
-        body: { priceId: TIERS[tier].priceId, tier } });
-      if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
-    } catch (error) {
-      console.error("Subscription error:", error);
-      toast({ title: "Error", description: "Failed to start payment. Please try again.", variant: "destructive" });
-    } finally {
+  const handleActivate = async (passKey: ChefPassType) => {
+    setLoading(passKey);
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      toast({ title: "Login Required", description: "Please sign in to continue", variant: "destructive" });
       setLoading(null);
+      navigate("/auth");
+      return;
     }
+    const ok = await activatePass(passKey);
+    setLoading(null);
+    if (ok) navigate("/masterchef/dashboard");
   };
 
   return (
@@ -125,7 +122,7 @@ export default function MasterChefHub() {
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">How KitchenStars Arena Works</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { n: "1", t: "Choose Your Tier", d: "Pick Amateur, Pro, or Elite" },
+              { n: "1", t: "Buy a Chef Pass", d: "Unlock chef access with credits" },
               { n: "2", t: "Compete", d: "Join live battles or upload videos" },
               { n: "3", t: "Get Votes", d: "Community votes for the best dish" },
               { n: "4", t: "Win Prizes", d: "Earn rewards, XP & climb ranks" },
@@ -139,20 +136,34 @@ export default function MasterChefHub() {
           </div>
         </div>
 
-        {/* Subscription Tiers */}
+        {/* Credit-based Chef Passes */}
         <div>
           <h2 className="text-3xl md:text-4xl font-black mb-2 text-center bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            Choose Your Path
+            Chef Passes
           </h2>
-          <p className="text-center text-muted-foreground mb-8">Select the tier that matches your culinary ambitions</p>
-          
+          <p className="text-center text-muted-foreground mb-4">
+            KitchenStars runs entirely on AI credits — no subscriptions.
+          </p>
+          <div className="flex justify-center mb-8">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2">
+              <span className="font-semibold text-sm">{accessLoading ? "…" : `${balance} credits`}</span>
+              {hasPass && expiresAt && (
+                <span className="text-xs text-muted-foreground">
+                  • pass active until {new Date(expiresAt).toLocaleDateString()}
+                </span>
+              )}
+              <Button size="sm" variant="ghost" onClick={() => navigate("/ai-credits")}>Top up</Button>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {(Object.keys(TIERS) as Array<keyof typeof TIERS>).map((tierKey) => {
-              const tier = TIERS[tierKey];
-              const Icon = tier.icon;
+            {(Object.keys(CHEF_PASS_OPTIONS) as ChefPassType[]).map((passKey) => {
+              const option = CHEF_PASS_OPTIONS[passKey];
+              const meta = PASSES[passKey];
+              const Icon = meta.icon;
               return (
-                <Card key={tierKey} className={`relative ${tier.popular ? "border-primary shadow-lg shadow-primary/20" : ""}`}>
-                  {tier.popular && (
+                <Card key={passKey} className={`relative ${meta.popular ? "border-primary shadow-lg shadow-primary/20" : ""}`}>
+                  {meta.popular && (
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                       <span className="bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold">Most Popular</span>
                     </div>
@@ -161,27 +172,23 @@ export default function MasterChefHub() {
                     <div className="flex items-center justify-between mb-4">
                       <Icon className="h-8 w-8 text-primary" />
                       <div className="text-right">
-                        <div className="text-3xl font-bold">{tier.price}</div>
-                        <div className="text-sm text-muted-foreground">/month</div>
+                        <div className="text-3xl font-bold">{option.credits}</div>
+                        <div className="text-sm text-muted-foreground">credits</div>
                       </div>
                     </div>
-                    <h3 className="text-2xl font-bold mb-1">{tier.name}</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      {tierKey === "amateur" && "For beginners and enthusiasts"}
-                      {tierKey === "pro" && "For serious chefs"}
-                      {tierKey === "elite" && "For professionals and winners"}
-                    </p>
+                    <h3 className="text-2xl font-bold mb-1">{option.label}</h3>
+                    <p className="text-sm text-muted-foreground mb-4">{meta.tagline}</p>
                     <ul className="space-y-2 mb-6">
-                      {tier.features.map((f, i) => (
+                      {meta.features.map((f, i) => (
                         <li key={i} className="flex items-start gap-2 text-sm">
                           <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                           <span>{f}</span>
                         </li>
                       ))}
                     </ul>
-                    <Button className="w-full" size="lg" variant={tier.popular ? "default" : "outline"}
-                      onClick={() => handleSubscribe(tierKey)} disabled={loading === tierKey}>
-                      {loading === tierKey ? "Loading..." : "Choose Package"}
+                    <Button className="w-full" size="lg" variant={meta.popular ? "default" : "outline"}
+                      onClick={() => handleActivate(passKey)} disabled={loading === passKey || accessLoading}>
+                      {loading === passKey ? "Activating…" : hasPass ? `Extend for ${option.credits} credits` : `Unlock for ${option.credits} credits`}
                     </Button>
                   </CardContent>
                 </Card>
