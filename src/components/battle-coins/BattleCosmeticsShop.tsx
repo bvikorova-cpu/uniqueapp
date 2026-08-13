@@ -26,7 +26,7 @@ const KINDS: { key: string; label: string }[] = [
 ];
 
 /** Cosmetic-only shop. Battle Coins have no other use, so they never leak back into paid credits. */
-export default function BattleCosmeticsShop({ coins }: { coins: number }) {
+export default function BattleCosmeticsShop({ coins, module = "kitchenstars" }: { coins: number; module?: BattleModule }) {
   const { toast } = useToast();
   const [items, setItems] = useState<Cosmetic[]>([]);
   const [owned, setOwned] = useState<Record<string, Owned>>({});
