@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -13,65 +13,104 @@ type Row = {
   total_votes: number;
   wins: number;
   kitchen_xp: number;
+  rank: number;
 };
 
-const medal = (i: number) => (i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`);
+type MyRank = {
+  rank: number;
+  points: number;
+  wins: number;
+  total_votes: number;
+  duels: number;
+  total_participants: number;
+};
+
+const medal = (rank: number) => (rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : `#${rank}`);
+
+// Coalesce realtime bursts: at most one reload per window even with huge traffic.
+const MIN_RELOAD_MS = 10000;
 
 export default function KitchenStarsLeaderboard({ currentUserId }: { currentUserId?: string | null }) {
   const [rows, setRows] = useState<Row[]>([]);
+  const [me, setMe] = useState<MyRank | null>(null);
   const [loading, setLoading] = useState(true);
+  const lastLoad = useRef(0);
+  const pending = useRef<number | null>(null);
 
   const load = useCallback(async () => {
-    const { data, error } = await supabase.rpc("get_kitchenstars_leaderboard", { _limit: 20 });
+    lastLoad.current = Date.now();
+    const [{ data, error }, mine] = await Promise.all([
+      supabase.rpc("get_kitchenstars_leaderboard", { _limit: 20 }),
+      currentUserId
+        ? supabase.rpc("get_my_battle_leaderboard_rank", { _board: "kitchenstars" })
+        : Promise.resolve({ data: null, error: null } as any),
+    ]);
     if (!error) setRows((data as Row[]) || []);
+    const mineRow = Array.isArray(mine?.data) ? (mine.data[0] as MyRank | undefined) : null;
+    setMe(mineRow ?? null);
     setLoading(false);
-  }, []);
+  }, [currentUserId]);
+
+  const scheduleLoad = useCallback(() => {
+    if (pending.current) return;
+    const wait = Math.max(0, MIN_RELOAD_MS - (Date.now() - lastLoad.current));
+    pending.current = window.setTimeout(() => {
+      pending.current = null;
+      void load();
+    }, wait);
+  }, [load]);
 
   useEffect(() => {
     load();
     const channel = supabase
       .channel("kitchenstars-leaderboard")
-      .on("postgres_changes", { event: "*", schema: "public", table: "kitchen_battle_participants" }, () => load())
-      .on("postgres_changes", { event: "*", schema: "public", table: "kitchen_battles" }, () => load())
+      .on("postgres_changes", { event: "*", schema: "public", table: "kitchen_battle_participants" }, scheduleLoad)
+      .on("postgres_changes", { event: "*", schema: "public", table: "kitchen_battles" }, scheduleLoad)
       .subscribe();
 
-    const interval = window.setInterval(load, 30000);
+    const interval = window.setInterval(load, 60000);
     return () => {
       supabase.removeChannel(channel);
       window.clearInterval(interval);
+      if (pending.current) window.clearTimeout(pending.current);
     };
-  }, [load]);
+  }, [load, scheduleLoad]);
+
+  const inTop = rows.some((r) => r.user_id === currentUserId);
 
   return (
-    <Card className="border-orange-500/20">
+    <Card className="border-primary/20">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between text-base">
           <span className="flex items-center gap-2">
-            <Trophy className="h-5 w-5 text-orange-500" /> Live Leaderboard
+            <Trophy className="h-5 w-5 text-primary" /> Live Leaderboard
           </span>
-          <Badge variant="outline" className="gap-1 text-[10px] border-orange-500/40 text-orange-600">
+          <Badge variant="outline" className="gap-1 text-[10px] border-primary/40 text-primary">
             <Radio className="h-3 w-3 animate-pulse" /> LIVE
           </Badge>
         </CardTitle>
+        <p className="text-[11px] text-muted-foreground">
+          Ranked by real points earned (XP from duel wins){me ? ` · ${me.total_participants.toLocaleString()} chefs ranked` : ""}
+        </p>
       </CardHeader>
       <CardContent className="space-y-2">
         {loading ? (
           <p className="text-sm text-muted-foreground text-center py-4">Loading real-time standings…</p>
         ) : rows.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">
-            No chefs on the board yet — enter a competition to appear here.
+            No chefs on the board yet — start a competition to appear here.
           </p>
         ) : (
-          rows.map((r, i) => (
+          rows.map((r) => (
             <div
               key={r.user_id}
               className={`flex items-center gap-3 p-2.5 rounded-xl border ${
                 r.user_id === currentUserId
-                  ? "border-orange-500/50 bg-orange-500/10"
+                  ? "border-primary/50 bg-primary/10"
                   : "border-border/60 bg-secondary/20"
               }`}
             >
-              <span className="w-8 text-center text-sm font-bold shrink-0">{medal(i)}</span>
+              <span className="w-8 text-center text-sm font-bold shrink-0">{medal(Number(r.rank))}</span>
               <Avatar className="h-9 w-9 shrink-0">
                 <AvatarImage src={r.avatar_url || undefined} alt={r.display_name || "Chef"} />
                 <AvatarFallback>{(r.display_name || "C").slice(0, 1).toUpperCase()}</AvatarFallback>
@@ -79,19 +118,34 @@ export default function KitchenStarsLeaderboard({ currentUserId }: { currentUser
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold truncate">
                   {r.display_name || "Chef"}
-                  {r.user_id === currentUserId && <span className="text-orange-500 text-xs ml-1">(you)</span>}
+                  {r.user_id === currentUserId && <span className="text-primary text-xs ml-1">(you)</span>}
                 </p>
                 <p className="text-[11px] text-muted-foreground flex items-center gap-2 flex-wrap">
                   <span className="flex items-center gap-1"><Trophy className="h-3 w-3" />{r.wins} wins</span>
-                  <span className="flex items-center gap-1"><Flame className="h-3 w-3 text-orange-500" />{r.total_votes} votes</span>
+                  <span className="flex items-center gap-1"><Flame className="h-3 w-3 text-primary" />{r.total_votes} votes</span>
                   <span className="flex items-center gap-1"><Swords className="h-3 w-3" />{r.duels} duels</span>
                 </p>
               </div>
               <span className="flex items-center gap-1 text-xs font-semibold shrink-0">
-                <Sparkles className="h-3.5 w-3.5 text-orange-500" />{r.kitchen_xp} XP
+                <Sparkles className="h-3.5 w-3.5 text-primary" />{r.kitchen_xp} pts
               </span>
             </div>
           ))
+        )}
+
+        {me && !inTop && (
+          <div className="flex items-center gap-3 p-2.5 rounded-xl border border-primary/50 bg-primary/10">
+            <span className="w-8 text-center text-sm font-bold shrink-0">#{me.rank}</span>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold">Your position</p>
+              <p className="text-[11px] text-muted-foreground">
+                {me.wins} wins · {me.total_votes} votes · {me.duels} duels
+              </p>
+            </div>
+            <span className="flex items-center gap-1 text-xs font-semibold shrink-0">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />{me.points} pts
+            </span>
+          </div>
         )}
       </CardContent>
     </Card>

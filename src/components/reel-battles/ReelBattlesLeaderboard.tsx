@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -13,34 +13,71 @@ type Row = {
   total_votes: number;
   wins: number;
   reel_xp: number;
+  rank: number;
 };
 
-const medal = (i: number) => (i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`);
+type MyRank = {
+  rank: number;
+  points: number;
+  wins: number;
+  total_votes: number;
+  duels: number;
+  total_participants: number;
+};
+
+const medal = (rank: number) => (rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : `#${rank}`);
+
+// Refresh throttle: with very large user counts we never want a vote storm to
+// trigger one request per event — coalesce into at most one load per window.
+const MIN_RELOAD_MS = 10000;
 
 export default function ReelBattlesLeaderboard({ currentUserId }: { currentUserId?: string | null }) {
   const [rows, setRows] = useState<Row[]>([]);
+  const [me, setMe] = useState<MyRank | null>(null);
   const [loading, setLoading] = useState(true);
+  const lastLoad = useRef(0);
+  const pending = useRef<number | null>(null);
 
   const load = useCallback(async () => {
-    const { data, error } = await supabase.rpc("get_reel_battles_leaderboard", { _limit: 20 });
+    lastLoad.current = Date.now();
+    const [{ data, error }, mine] = await Promise.all([
+      supabase.rpc("get_reel_battles_leaderboard", { _limit: 20 }),
+      currentUserId
+        ? supabase.rpc("get_my_battle_leaderboard_rank", { _board: "reel_battles" })
+        : Promise.resolve({ data: null, error: null } as any),
+    ]);
     if (!error) setRows((data as Row[]) || []);
+    const mineRow = Array.isArray(mine?.data) ? (mine.data[0] as MyRank | undefined) : null;
+    setMe(mineRow ?? null);
     setLoading(false);
-  }, []);
+  }, [currentUserId]);
+
+  const scheduleLoad = useCallback(() => {
+    if (pending.current) return;
+    const wait = Math.max(0, MIN_RELOAD_MS - (Date.now() - lastLoad.current));
+    pending.current = window.setTimeout(() => {
+      pending.current = null;
+      void load();
+    }, wait);
+  }, [load]);
 
   useEffect(() => {
     load();
     const channel = supabase
       .channel("reel-battles-leaderboard")
-      .on("postgres_changes", { event: "*", schema: "public", table: "reel_battle_participants" }, () => load())
-      .on("postgres_changes", { event: "*", schema: "public", table: "reel_battles" }, () => load())
+      .on("postgres_changes", { event: "*", schema: "public", table: "reel_battle_participants" }, scheduleLoad)
+      .on("postgres_changes", { event: "*", schema: "public", table: "reel_battles" }, scheduleLoad)
       .subscribe();
 
-    const interval = window.setInterval(load, 30000);
+    const interval = window.setInterval(load, 60000);
     return () => {
       supabase.removeChannel(channel);
       window.clearInterval(interval);
+      if (pending.current) window.clearTimeout(pending.current);
     };
-  }, [load]);
+  }, [load, scheduleLoad]);
+
+  const inTop = rows.some((r) => r.user_id === currentUserId);
 
   return (
     <Card className="border-primary/20">
@@ -53,6 +90,9 @@ export default function ReelBattlesLeaderboard({ currentUserId }: { currentUserI
             <Radio className="h-3 w-3 animate-pulse" /> LIVE
           </Badge>
         </CardTitle>
+        <p className="text-[11px] text-muted-foreground">
+          Ranked by real points earned (XP from duel wins){me ? ` · ${me.total_participants.toLocaleString()} creators ranked` : ""}
+        </p>
       </CardHeader>
       <CardContent className="space-y-2">
         {loading ? (
@@ -62,7 +102,7 @@ export default function ReelBattlesLeaderboard({ currentUserId }: { currentUserI
             No creators on the board yet — start a reel duel to appear here.
           </p>
         ) : (
-          rows.map((r, i) => (
+          rows.map((r) => (
             <div
               key={r.user_id}
               className={`flex items-center gap-3 p-2.5 rounded-xl border ${
@@ -71,7 +111,7 @@ export default function ReelBattlesLeaderboard({ currentUserId }: { currentUserI
                   : "border-border/60 bg-secondary/20"
               }`}
             >
-              <span className="w-8 text-center text-sm font-bold shrink-0">{medal(i)}</span>
+              <span className="w-8 text-center text-sm font-bold shrink-0">{medal(Number(r.rank))}</span>
               <Avatar className="h-9 w-9 shrink-0">
                 <AvatarImage src={r.avatar_url || undefined} alt={r.display_name || "Creator"} />
                 <AvatarFallback>{(r.display_name || "C").slice(0, 1).toUpperCase()}</AvatarFallback>
@@ -88,10 +128,25 @@ export default function ReelBattlesLeaderboard({ currentUserId }: { currentUserI
                 </p>
               </div>
               <span className="flex items-center gap-1 text-xs font-semibold shrink-0">
-                <Sparkles className="h-3.5 w-3.5 text-primary" />{r.reel_xp} XP
+                <Sparkles className="h-3.5 w-3.5 text-primary" />{r.reel_xp} pts
               </span>
             </div>
           ))
+        )}
+
+        {me && !inTop && (
+          <div className="flex items-center gap-3 p-2.5 rounded-xl border border-primary/50 bg-primary/10">
+            <span className="w-8 text-center text-sm font-bold shrink-0">#{me.rank}</span>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold">Your position</p>
+              <p className="text-[11px] text-muted-foreground">
+                {me.wins} wins · {me.total_votes} votes · {me.duels} duels
+              </p>
+            </div>
+            <span className="flex items-center gap-1 text-xs font-semibold shrink-0">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />{me.points} pts
+            </span>
+          </div>
         )}
       </CardContent>
     </Card>

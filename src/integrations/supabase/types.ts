@@ -66266,6 +66266,28 @@ export type Database = {
           },
         ]
       }
+      mv_kitchenstars_leaderboard: {
+        Row: {
+          duels: number | null
+          points: number | null
+          rank: number | null
+          total_votes: number | null
+          user_id: string | null
+          wins: number | null
+        }
+        Relationships: []
+      }
+      mv_reel_battles_leaderboard: {
+        Row: {
+          duels: number | null
+          points: number | null
+          rank: number | null
+          total_votes: number | null
+          user_id: string | null
+          wins: number | null
+        }
+        Relationships: []
+      }
       mv_wall_feed_hot: {
         Row: {
           author_id: string | null
@@ -68395,6 +68417,7 @@ export type Database = {
           display_name: string
           duels: number
           kitchen_xp: number
+          rank: number
           total_votes: number
           user_id: string
           wins: number
@@ -68457,6 +68480,17 @@ export type Database = {
           module: string
           status: string
           tier: string
+        }[]
+      }
+      get_my_battle_leaderboard_rank: {
+        Args: { _board: string }
+        Returns: {
+          duels: number
+          points: number
+          rank: number
+          total_participants: number
+          total_votes: number
+          wins: number
         }[]
       }
       get_my_brand_api_key: {
@@ -68760,6 +68794,7 @@ export type Database = {
           avatar_url: string
           display_name: string
           duels: number
+          rank: number
           reel_xp: number
           total_votes: number
           user_id: string
@@ -69493,6 +69528,7 @@ export type Database = {
         }
       }
       redeem_shop_item: { Args: { _item_code: string }; Returns: Json }
+      refresh_battle_leaderboards: { Args: never; Returns: undefined }
       refresh_public_cache_mvs: { Args: never; Returns: undefined }
       refund_ai_credits_atomic: {
         Args: { _amount: number; _user_id: string }
