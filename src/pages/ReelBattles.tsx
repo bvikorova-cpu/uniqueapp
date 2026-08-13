@@ -17,7 +17,7 @@ import reelHero from "@/assets/reel-battles-hero.mp4.asset.json";
 import ReelBattlesLeaderboard from "@/components/reel-battles/ReelBattlesLeaderboard";
 import { useBattleCoins, BATTLE_ENTRY_COINS } from "@/hooks/useBattleCoins";
 import BattleCoinsWallet from "@/components/battle-coins/BattleCoinsWallet";
-import MonthlyPrizePoolCard from "@/components/battle-coins/MonthlyPrizePoolCard";
+import MonthlyChampionRewardsCard from "@/components/battle-coins/MonthlyChampionRewardsCard";
 import BattleCosmeticsShop from "@/components/battle-coins/BattleCosmeticsShop";
 
 type Battle = { id: string; theme: string; description: string | null; status: string; deadline: string; created_by: string | null };
@@ -506,7 +506,7 @@ export default function ReelBattles() {
 
         <BattleCosmeticsShop coins={balance} />
 
-        <MonthlyPrizePoolCard module="reel_battles" accent="primary" />
+        <MonthlyChampionRewardsCard module="reel_battles" accent="primary" />
 
         <ReelBattlesLeaderboard currentUserId={userId} />
 
