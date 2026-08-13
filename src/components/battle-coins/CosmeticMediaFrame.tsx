@@ -19,8 +19,8 @@ export default function CosmeticMediaFrame({
   const ring = champ.ring || frameClass || "";
   if (!ring) return <>{children}</>;
   return (
-    <div className={`rounded-lg overflow-hidden ring-offset-2 ring-offset-background ${ring}`}>
-      {children}
+    <div className={`rounded-xl p-1 ${ring}`}>
+      <div className="rounded-lg overflow-hidden">{children}</div>
     </div>
   );
 }
