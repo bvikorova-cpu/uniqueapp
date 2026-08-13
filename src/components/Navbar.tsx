@@ -266,6 +266,7 @@ const Navbar = () => {
 
   const otherServices = otherServiceGroups.flatMap((g) => g.items);
 
+  const isClipBattlesServiceActive = clipBattlesServices.some(item => location.pathname === item.path);
   const isLearningServiceActive = learningServices.some(item => location.pathname === item.path);
   const isBrandArenaActive = brandArenaServices.some(item => location.pathname === item.path) || location.pathname.startsWith('/brand-battle');
   const isKidsAcademyServiceActive = kidsAcademyServices.some(item => location.pathname === item.path) || location.pathname.startsWith('/kids');
