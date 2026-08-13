@@ -15,14 +15,17 @@ import { useToast } from "@/hooks/use-toast";
 import { DropZone, type DropZoneValidation } from "@/components/kitchen-battles/DropZone";
 import reelHero from "@/assets/reel-battles-hero.mp4.asset.json";
 import ReelBattlesLeaderboard from "@/components/reel-battles/ReelBattlesLeaderboard";
+import { useBattleCoins, BATTLE_ENTRY_COINS } from "@/hooks/useBattleCoins";
+import BattleCoinsWallet from "@/components/battle-coins/BattleCoinsWallet";
+import BattleCosmeticsShop from "@/components/battle-coins/BattleCosmeticsShop";
 
 type Battle = { id: string; theme: string; description: string | null; status: string; deadline: string; created_by: string | null };
 type Participant = { id: string; battle_id: string; user_id: string; reel_title: string; description: string | null; video_url: string | null; media_type: string | null; vote_count: number };
 type Comment = { id: string; battle_id: string; participant_id: string | null; user_id: string; content: string; created_at: string };
 type MyVote = { participant_id: string; vote_type: string };
 
-/** Entry fee in unified AI credits — identical to KitchenStars. */
-const REEL_ENTRY_COST = 5;
+/** Entry fee in Battle Coins — identical to KitchenStars. */
+const REEL_ENTRY_COST = BATTLE_ENTRY_COINS;
 const STORAGE_BUCKET = "wall-media";
 const VIDEO_EXTS = ["mp4", "webm", "mov", "m4v", "3gp", "3gpp", "mkv", "avi", "mpeg", "mpg", "ogv"];
 const MAX_VIDEO = 50 * 1024 * 1024; // 50 MB
@@ -39,7 +42,7 @@ const safeMime = (file: File) =>
 export default function ReelBattles() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [balance, setBalance] = useState(0);
+  const { coins: balance, refresh: refreshCoins } = useBattleCoins();
   const [battles, setBattles] = useState<Battle[]>([]);
   const [participants, setParticipants] = useState<Record<string, Participant[]>>({});
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
@@ -77,12 +80,11 @@ export default function ReelBattles() {
     if (!session) { navigate("/auth"); return; }
     setUserId(session.user.id);
 
-    const [{ data: credits }, { data: xpData }, { data: hubData }] = await Promise.all([
-      supabase.from("ai_credits").select("credits_remaining").eq("user_id", session.user.id).maybeSingle(),
+    const [{ data: xpData }, { data: hubData }] = await Promise.all([
       supabase.from("user_xp").select("total_xp").eq("user_id", session.user.id).maybeSingle(),
       supabase.from("hub_xp").select("xp").eq("user_id", session.user.id).eq("hub", "reel_battles").maybeSingle(),
     ]);
-    setBalance(credits?.credits_remaining ?? 0);
+    await refreshCoins();
     setUserXP(xpData?.total_xp ?? 0);
     setHubXP(hubData?.xp ?? 0);
 
@@ -162,17 +164,18 @@ export default function ReelBattles() {
       _media_mime: safeMime(file),
     });
     if (error) {
-      const insufficient = error.message.includes("INSUFFICIENT_CREDITS");
+      const insufficient = error.message.includes("INSUFFICIENT_COINS");
       toast({
-        title: insufficient ? "Not enough credits" : "Could not enter the duel",
+        title: insufficient ? "Not enough Battle Coins" : "Could not enter the duel",
         description: insufficient
-          ? `Entry costs ${REEL_ENTRY_COST} credits — you have ${balance}.`
+          ? `Entry costs ${REEL_ENTRY_COST} Battle Coins — you have ${balance}.`
           : error.message,
         variant: "destructive",
       });
       return false;
     }
-    window.dispatchEvent(new Event("ai-credits-updated"));
+    window.dispatchEvent(new Event("battle-coins-updated"));
+    await refreshCoins();
     return Boolean(data);
   };
 
@@ -198,7 +201,7 @@ export default function ReelBattles() {
     if (!file || !userId) return;
 
     if (balance < REEL_ENTRY_COST) {
-      toast({ title: "Not enough credits", description: `Entry costs ${REEL_ENTRY_COST} credits — you have ${balance}.`, variant: "destructive" });
+      toast({ title: "Not enough Battle Coins", description: `Entry costs ${REEL_ENTRY_COST} Battle Coins — you have ${balance}.`, variant: "destructive" });
       return;
     }
 
@@ -243,7 +246,7 @@ export default function ReelBattles() {
     if (!file || !userId) return;
 
     if (balance < REEL_ENTRY_COST) {
-      toast({ title: "Not enough credits", description: `Entry costs ${REEL_ENTRY_COST} credits — you have ${balance}.`, variant: "destructive" });
+      toast({ title: "Not enough Battle Coins", description: `Entry costs ${REEL_ENTRY_COST} Battle Coins — you have ${balance}.`, variant: "destructive" });
       return;
     }
 
@@ -335,7 +338,7 @@ export default function ReelBattles() {
         onChange={e => setReelDesc(e.target.value)} rows={3} />
       <DropZone file={reelFile} onChange={setReelFile} validate={validateFile} accept="video/*" hint="Reel video: MP4 / WEBM / MOV, max 50 MB" />
       <p className="text-xs text-muted-foreground">
-        Reel video only — MP4 / WEBM / MOV, max 50 MB. Entry costs {REEL_ENTRY_COST} credits (you have {balance}).
+        Reel video only — MP4 / WEBM / MOV, max 50 MB. Entry costs {REEL_ENTRY_COST} Battle Coins (you have {balance}).
       </p>
       <Button className="w-full" disabled={busy}
         onClick={() => mode === "new" ? startCompetition() : joinCompetition(mode)}>
@@ -431,7 +434,7 @@ export default function ReelBattles() {
               Reel Battles
             </h1>
             <p className="text-white/80 text-sm md:text-lg max-w-xl mb-3 leading-relaxed">
-              Two creators upload reel videos. Each pays 5 credits, the winner receives 10 XP — voting is free for every registered Unique user, 1 vote per duel. Collect 1 000 XP and convert them into 1 AI credit.
+              Two creators upload reel videos. Each pays 500 Battle Coins, the winner takes 1 000 coins + 10 XP — voting is free for every registered Unique user, 1 vote per duel. Coins are bought with AI credits (1 credit = 100 coins) and spent on cosmetics only.
             </p>
           </div>
         </section>
@@ -448,8 +451,8 @@ export default function ReelBattles() {
               <div className="flex items-start gap-3 p-3 rounded-xl border border-primary/20 bg-secondary/20">
                 <Coins className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-semibold text-sm">5 credits entry fee</p>
-                  <p className="text-xs text-muted-foreground">Both the starter and the opponent pay 5 credits to compete.</p>
+                  <p className="font-semibold text-sm">500 Battle Coins entry</p>
+                  <p className="text-xs text-muted-foreground">Both the starter and the opponent pay 500 Battle Coins to compete.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 rounded-xl border border-primary/20 bg-secondary/20">
@@ -469,8 +472,8 @@ export default function ReelBattles() {
               <div className="flex items-start gap-3 p-3 rounded-xl border border-primary/20 bg-secondary/20">
                 <Trophy className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-semibold text-sm">10 XP prize</p>
-                  <p className="text-xs text-muted-foreground">The winning creator receives 10 XP.</p>
+                  <p className="font-semibold text-sm">1 000 coins + 10 XP</p>
+                  <p className="text-xs text-muted-foreground">The winning creator takes the whole coin pot plus 10 XP.</p>
                 </div>
               </div>
             </div>
@@ -478,7 +481,7 @@ export default function ReelBattles() {
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/20 bg-secondary/20 p-3">
               <div className="flex items-center gap-2">
                 <Coins className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium">Credits: {balance}</span>
+                <span className="text-sm font-medium">Battle Coins: {balance.toLocaleString()}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Flame className="h-4 w-4 text-primary" />
