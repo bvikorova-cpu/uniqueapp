@@ -628,33 +628,16 @@ export function BarbieCreator3D({ onBack }: { onBack: () => void }) {
                       <Download className="h-3 w-3 mr-1" /> Download
                     </Button>
                     <Button size="sm" variant="secondary" className="flex-1" onClick={() => setRenderUrl(null)}>
-                      Back to 3D
+                      Back to sketch
                     </Button>
                   </div>
                 </>
               ) : (
-                <Canvas camera={{ position: [0, 0.2, 4.8], fov: 40 }} shadows dpr={[1, 2]}>
-                  <ambientLight intensity={0.45} />
-                  <directionalLight position={[3, 5, 3]} intensity={1.5} castShadow shadow-mapSize={[1024, 1024]} />
-                  <directionalLight position={[-3, 2, 2]} intensity={0.5} color="#ffd7e6" />
-                  <pointLight position={[0, 1.5, -3]} intensity={0.7} color="#c9a7ff" />
-                  <Suspense fallback={null}>
-                    <Doll config={config} isSpinning={isSpinning} />
-                    <Podium />
-                    <ContactShadows position={[0, -1.62, 0]} opacity={0.45} scale={5} blur={2.5} far={2} />
-                    <SparkleParticles />
-                    <Environment preset="studio" />
-                  </Suspense>
-                  <OrbitControls
-                    enablePan={false}
-                    target={[0, -0.05, 0]}
-                    minDistance={3}
-                    maxDistance={8}
-                    minPolarAngle={0.3}
-                    maxPolarAngle={Math.PI / 2}
-                  />
-                </Canvas>
+                <div className="flex h-full w-full items-center justify-center p-4">
+                  <DollIllustration look={config} />
+                </div>
               )}
+
               {rendering && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-background/70 backdrop-blur-sm">
                   <Loader2 className="h-8 w-8 animate-spin text-pink-500" />
