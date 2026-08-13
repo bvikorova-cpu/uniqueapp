@@ -549,16 +549,19 @@ export default function KitchenStarsCompetitions() {
               )}
             </CardContent>
           </Card>
+            </TabsContent>
 
-          <BattleCoinsWallet accent="orange" module="kitchenstars" />
+            <TabsContent value="wallet" className="mt-0 space-y-6">
+              <BattleCoinsWallet accent="orange" module="kitchenstars" />
+              <BattleCosmeticsShop coins={balance} module="kitchenstars" />
+            </TabsContent>
 
-          <BattleCosmeticsShop coins={balance} module="kitchenstars" />
+            <TabsContent value="rankings" className="mt-0 space-y-6">
+              <MonthlyChampionRewardsCard module="kitchenstars" accent="orange" />
+              <KitchenStarsLeaderboard currentUserId={userId} />
+            </TabsContent>
 
-          <MonthlyChampionRewardsCard module="kitchenstars" accent="orange" />
-
-        <KitchenStarsLeaderboard currentUserId={userId} />
-
-
+            <TabsContent value="arena" className="mt-0 space-y-6">
           {/* Public competition directory — tap any competition to open it */}
           {!loading && battles.length > 0 && (
             selectedId ? (
