@@ -225,10 +225,16 @@ export default function KitchenStarsCompetitions() {
   };
 
   const vote = async (battleId: string, participantId: string) => {
-    if (myVotes[battleId]) {
-      toast({ title: "Vote already used", description: "You have exactly 1 vote per duel and it can't be changed.", variant: "destructive" });
+    if (!userId) {
+      toast({ title: "Sign in required", description: "Voting is free, but you must be registered on Unique." });
+      navigate("/auth");
       return;
     }
+    if (myVotes[battleId]) {
+      toast({ title: "Vote already used", description: "You have exactly 1 free vote per duel and it can't be changed.", variant: "destructive" });
+      return;
+    }
+
     const { data, error } = await supabase.functions.invoke("kitchen-battle-vote", {
       body: { battleId, participantId, voteType: "like" } });
 
@@ -354,7 +360,7 @@ export default function KitchenStarsCompetitions() {
           { title: "Start a competition", desc: `Tap "Start Competition", fill the form and upload your cooking video (${KITCHENSTARS_COSTS.competition_entry} credits).` },
           { title: "An opponent joins", desc: "The next chef who uploads a cooking video to your competition becomes your opponent." },
           { title: "X vs Y", desc: "Both videos appear one under the other as Chef X vs Chef Y." },
-          { title: "Everyone votes", desc: "All platform users watch both videos and cast one vote per competition. The highest share wins the crown." },
+          { title: "Everyone votes for free", desc: "Voting is completely free — every registered Unique user has exactly 1 vote per competition. The highest share wins the crown." },
         ]}
       />
       <div className="min-h-screen bg-background pt-20 pb-12 px-4">
@@ -379,7 +385,7 @@ export default function KitchenStarsCompetitions() {
                 KitchenStars Arena
               </h1>
               <p className="text-white/80 text-sm md:text-lg max-w-xl mb-3 leading-relaxed">
-                Two chefs upload cooking videos. Each pays 5 credits, the platform votes, and the winner receives all 10 credits.
+                Two chefs upload cooking videos. Each pays 5 credits, the winner receives all 10 credits — voting is free for every registered Unique user, 1 vote per duel.
               </p>
             </div>
           </section>
