@@ -1717,6 +1717,60 @@ async function handler(req: Request): Promise<Response> {
       return successResponse({ url: session.url, session_id: session.id });
     }
 
+    // ─── Comedy Club: comedy_ticket (real money EUR, 80% comedian / 20% platform) ───
+    if (body.product === "comedy_ticket") {
+      const admin = createSupabaseAdminClient();
+      const showId = String(body.showId || "");
+      if (!showId) return errorResponse("showId is required", 400);
+      if (!userId) return errorResponse("Not authenticated", 401);
+
+      const { data: show, error: showErr } = await admin
+        .from("comedy_shows")
+        .select("id, title, ticket_price_coins, comedian_id, status")
+        .eq("id", showId)
+        .maybeSingle();
+      if (showErr || !show) return errorResponse("Show not found", 404);
+      if ((show as any).status === "ended") return errorResponse("This show has already ended", 400);
+
+      const { data: owned } = await admin
+        .from("comedy_tickets")
+        .select("id")
+        .eq("user_id", userId)
+        .eq("show_id", showId)
+        .maybeSingle();
+      if (owned) return errorResponse("You already own a ticket for this show", 400);
+
+      const priceEur = Number((show as any).ticket_price_coins);
+      const unit = Math.round(priceEur * 100);
+      if (!Number.isFinite(unit) || unit < 50) return errorResponse("Invalid ticket price", 400);
+
+      const platformCommission = Number((priceEur * 0.2).toFixed(2));
+      const comedianAmount = Number((priceEur - platformCommission).toFixed(2));
+
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        mode: "payment",
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            product_data: { name: `Comedy Ticket — ${(show as any).title}` },
+            unit_amount: unit },
+          quantity: 1 }],
+        success_url: `${origin}/comedy-club?view=browse&comedy_payment=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/comedy-club?view=browse&comedy_payment=canceled`,
+        metadata: { user_id: userId,
+          type: "comedy_ticket",
+          product: "comedy_ticket",
+          showId,
+          comedianId: String((show as any).comedian_id),
+          amount: priceEur.toFixed(2),
+          comedianAmount: comedianAmount.toFixed(2),
+          platformCommission: platformCommission.toFixed(2) } });
+
+      return successResponse({ url: session.url, session_id: session.id });
+    }
+
     // ─── B18c Events: kitchen_battle_create (no Stripe — DB insert only) ───
     if (body.product === "kitchen_battle_create") {
       const admin = createSupabaseAdminClient();
