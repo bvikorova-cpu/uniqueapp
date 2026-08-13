@@ -3405,6 +3405,75 @@ export type Database = {
         }
         Relationships: []
       }
+      battle_prize_payouts: {
+        Row: {
+          coins: number
+          created_at: string
+          id: string
+          module: string
+          percent: number
+          period_month: string
+          points: number
+          rank: number
+          user_id: string
+        }
+        Insert: {
+          coins: number
+          created_at?: string
+          id?: string
+          module: string
+          percent: number
+          period_month: string
+          points?: number
+          rank: number
+          user_id: string
+        }
+        Update: {
+          coins?: number
+          created_at?: string
+          id?: string
+          module?: string
+          percent?: number
+          period_month?: string
+          points?: number
+          rank?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      battle_prize_pools: {
+        Row: {
+          created_at: string
+          distributed_at: string | null
+          duels_counted: number
+          id: string
+          module: string
+          period_month: string
+          pool_coins: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          distributed_at?: string | null
+          duels_counted?: number
+          id?: string
+          module: string
+          period_month: string
+          pool_coins?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          distributed_at?: string | null
+          duels_counted?: number
+          id?: string
+          module?: string
+          period_month?: string
+          pool_coins?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       battle_royale_matches: {
         Row: {
           created_at: string
@@ -67488,6 +67557,10 @@ export type Database = {
         }
         Returns: number
       }
+      battle_pool_contribute: {
+        Args: { _coins: number; _module: string }
+        Returns: undefined
+      }
       bazaar_promote_listing: {
         Args: { p_item_id: string; p_plan: string }
         Returns: Json
@@ -67954,6 +68027,7 @@ export type Database = {
         Args: { _payload: Json; _user_ids: string[] }
         Returns: undefined
       }
+      distribute_battle_prize_pools: { Args: never; Returns: number }
       donate_xp: {
         Args: {
           _amount: number
@@ -68132,6 +68206,7 @@ export type Database = {
         }[]
       }
       get_auth_uid: { Args: never; Returns: string }
+      get_battle_prize_pool: { Args: { _module: string }; Returns: Json }
       get_battle_royale_available_payout: {
         Args: { _tournament_id: string }
         Returns: number
