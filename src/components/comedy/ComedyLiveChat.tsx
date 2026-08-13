@@ -55,11 +55,11 @@ export function ComedyLiveChat({ showId, canModerate = false, className }: Comed
   const hydrateNames = useCallback(async (ids: string[]) => {
     const missing = ids.filter((id) => id && !namesRef.current.has(id));
     if (!missing.length) return;
-    const { data } = await supabase
+    const { data } = await (supabase as any)
       .from("profiles")
       .select("user_id, display_name, avatar_url")
       .in("user_id", missing);
-    (data ?? []).forEach((p: any) => {
+    ((data ?? []) as any[]).forEach((p: any) => {
       namesRef.current.set(p.user_id, { name: p.display_name ?? null, avatar: p.avatar_url ?? null });
     });
     missing.forEach((id) => {
