@@ -107,7 +107,7 @@ export default function KitchenStarsCompetitions() {
   const formatBytes = (b: number) => b < 1024 * 1024 ? `${(b / 1024).toFixed(0)} KB` : `${(b / 1024 / 1024).toFixed(2)} MB`;
 
   const validateFile = (file: File): DropZoneValidation => {
-    if (!ALLOWED_VIDEO.includes(file.type)) {
+    if (!isVideoFile(file)) {
       return { ok: false, title: "Video required", reason: `"${file.name}" is not a supported video format.`, suggestion: "Upload MP4, WEBM or MOV, max 50 MB." };
     }
     if (file.size > MAX_VIDEO) {
