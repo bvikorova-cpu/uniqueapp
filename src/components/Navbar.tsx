@@ -217,7 +217,6 @@ const Navbar = () => {
         { path: "/shadow-arena", label: "Shadow Arena - Horror Platform", icon: Ghost },
         { path: "/live-concerts", label: "Live Concerts", icon: Music },
         { path: "/masterchef-subscription", label: "KitchenStars Competition", icon: ChefHat },
-        { path: "/glamour-world", label: "Glamour World", icon: Crown },
         { path: "/comedy-club", label: "Comedy Club - Stand Up", icon: Mic2 },
         { path: "/influ-king", label: "Influ-King", icon: Star },
         { path: "/ai-experiences", label: "Exclusive Experiences", icon: Sparkles },

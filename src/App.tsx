@@ -297,7 +297,6 @@ import { ResetPassword,
   BrainDuel,
   VirtualEscapeRoom,
   HorseRacing,
-  GlamourWorld,
   E2EAnonymousDateMatches,
   ComedyClub,
   ComedianDashboard,
@@ -1311,7 +1310,6 @@ const App = () => {
                         <Route path="/my-properties" element={<ProtectedRoute><MyProperties /></ProtectedRoute>} />
                         <Route path="/property-favorites" element={<ProtectedRoute><PropertyFavorites /></ProtectedRoute>} />
                         
-                        <Route path="/glamour-world" element={<GlamourWorld />} />
                         <Route path="/__e2e/anonymous-date-matches" element={<E2EAnonymousDateMatches />} />
                         <Route path="/roadmap" element={<Roadmap />} />
                         <Route path="/__preview/ad" element={<AdPreview />} />

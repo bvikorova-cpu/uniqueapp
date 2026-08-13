@@ -213,7 +213,6 @@ export const EDGE_FUNCTIONS: string[] = [
   "get-payment-statistics",
   "get-referrer-info",
   "get-user-universes",
-  "glamour-ai-generate",
   "handwriting-router",
   "health-check",
   "health-monitor",
