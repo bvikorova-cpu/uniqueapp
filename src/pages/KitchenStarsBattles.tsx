@@ -295,7 +295,7 @@ export default function KitchenStarsCompetitions() {
         onChange={e => setDishTitle(e.target.value)} />
       <Textarea placeholder="Short description of your dish (optional)" value={dishDesc} maxLength={500}
         onChange={e => setDishDesc(e.target.value)} rows={3} />
-      <DropZone file={dishFile} onChange={setDishFile} validate={validateFile} accept="video/mp4,video/webm,video/quicktime" hint="Cooking video: MP4 / WEBM / MOV, max 50 MB" />
+      <DropZone file={dishFile} onChange={setDishFile} validate={validateFile} accept="video/*" hint="Cooking video: MP4 / WEBM / MOV, max 50 MB" />
       <p className="text-xs text-muted-foreground">
         Cooking video only — MP4 / WEBM / MOV, max 50 MB. Entry costs {KITCHENSTARS_COSTS.competition_entry} credits (you have {balance}).
       </p>
