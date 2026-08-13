@@ -13,6 +13,7 @@ import AiMarkdown from "@/components/common/AiMarkdown";
 import { normalizeImageForUpload } from "@/utils/imageUploadPrep";
 import { exportFaceReportPDF } from "@/lib/exportFaceReportPDF";
 import { downloadFaceShareCard } from "@/lib/faceShareCard";
+import { FaceInsightHero } from "@/components/face-insight/FaceInsightHero";
 import {
   ScanFace, Sparkles, Loader2, Download, Share2, Trash2, FileText, Users, History, Gem, HelpCircle, Camera,
 } from "lucide-react";
@@ -283,6 +284,8 @@ const FaceInsight = () => {
       </Helmet>
 
       <div className="container mx-auto px-3 sm:px-4 max-w-4xl space-y-6">
+        <FaceInsightHero />
+
         {/* Hero */}
         <Card className="relative overflow-hidden border-primary/20 p-6 sm:p-8 bg-gradient-to-br from-primary/15 via-accent/10 to-background">
           <div className="relative space-y-3">
