@@ -46,9 +46,8 @@ const SHOE_COLORS: [string, string][] = [
   ["#F5F3EE", "nude ivory"],
 ];
 
-const HAIR_STYLES = ["Long", "Short", "Ponytail", "Bun", "Pigtails", "Curly"];
-const DRESS_STYLES = ["Ball Gown", "Mini Dress", "Mermaid", "A-Line", "Jumpsuit"];
-const ACCESSORIES = ["None", "Tiara", "Necklace", "Sunglasses", "Handbag"];
+const DRESS_STYLES = OUTFIT_STYLES;
+const ACCESSORIES = ACCESSORY_STYLES;
 const SCENES = ["Studio", "Runway", "Ballroom", "Garden", "City"];
 
 interface BarbieConfig {
