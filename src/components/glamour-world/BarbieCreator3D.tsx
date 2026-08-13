@@ -505,10 +505,26 @@ function StyleCard({ options, selected, onSelect, emoji }: StyleCardProps) {
 }
 
 const hairEmoji = (s: string) =>
-  ({ Long: "💇", Short: "💇‍♀️", Ponytail: "🎀", Bun: "🍥", Pigtails: "👧", Curly: "🌀" }[s] ?? "✨");
+  ({
+    "Long Straight": "💇",
+    "Long Wavy": "🌊",
+    Bob: "💇‍♀️",
+    Ponytail: "🎀",
+    Bun: "🍥",
+    Curly: "🌀",
+  }[s] ?? "✨");
 
 const dressEmoji = (s: string) =>
-  ({ "Ball Gown": "👗", "Mini Dress": "🎽", Mermaid: "🧜", "A-Line": "👘", Jumpsuit: "🩱" }[s] ?? "✨");
+  ({
+    "Ball Gown": "👗",
+    "Mini Dress": "🎽",
+    Mermaid: "🧜",
+    "A-Line": "👘",
+    Jumpsuit: "🩱",
+    "Casual Jeans": "👖",
+    "Skirt & Blouse": "👚",
+    Sporty: "🏃‍♀️",
+  }[s] ?? "✨");
 
 const accessoryEmoji = (s: string) =>
   ({ None: "🚫", Tiara: "👑", Necklace: "📿", Sunglasses: "🕶️", Handbag: "👜" }[s] ?? "✨");
@@ -518,7 +534,6 @@ const sceneEmoji = (s: string) =>
 
 export function BarbieCreator3D({ onBack }: { onBack: () => void }) {
   const [config, setConfig] = useState<BarbieConfig>(defaultConfig);
-  const [isSpinning, setIsSpinning] = useState(false);
   const [scene, setScene] = useState("Studio");
   const [rendering, setRendering] = useState(false);
   const [renderUrl, setRenderUrl] = useState<string | null>(null);
