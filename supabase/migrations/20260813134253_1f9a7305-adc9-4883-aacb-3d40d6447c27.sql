@@ -1,0 +1,2 @@
+REVOKE ALL ON FUNCTION public.settle_monthly_battle_champions(text, date) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.settle_monthly_battle_champions(text, date) TO service_role;
