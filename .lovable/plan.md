@@ -1,59 +1,49 @@
-# Plán: Kvalita, bezpečnosť a konverzie
+# Reels Battle — tokenomika, DB, API a UX architektúra
 
-Zoradené podľa hodnoty pre používateľa a nezávislosti (dá sa robiť paralelne v tomto poradí):
+Cieľ: 1v1 duel krátkych videí s vlastnou hernou menou, plnou gamifikáciou a ochranou hlavných kreditov.
 
-## 1) 404 / route errors report
+Pozn.: Battle Coins už v projekte existujú (kurz 1 kredit = 100 mincí, vstup 500, výhra 1 000). Tento plán ich pretokenizuje na nové pravidlá a rozšíri o mesačný rebríček, XP odmeny a anti-cheat.
 
-**Cieľ:** vedieť, kam v produkcii chodia ľudia a nenachádzajú stránku.
+## 1. Menový systém
+- `battle_coins` (zostatok) + `battle_coins_ledger` (každý pohyb) zostávajú; všetky zmeny len cez `battle_coins_apply()`.
+- Nový kurz: **1 kredit = 10 mincí** (jednosmerne, bez cashoutu). Zmena konštánt v DB RPC aj v `useBattleCoins.ts`.
+- Ledger dostane `is_winnings boolean` — rozlíši nakúpené vs. vyhrané mince (podklad pre rebríček).
 
-- Nová tabuľka `public.route_404_events` (path, referrer, user_id nullable, user_agent, occurred_at, redirected_to nullable).
-- RLS: `INSERT` pre `anon` + `authenticated`, `SELECT` iba pre admina (`has_role(auth.uid(),'admin')`). GRANT-y podľa pravidiel.
-- `NotFound.tsx` po detekcii nezhody spraví jeden `insert` (aj pri redirecte cez alias — uložíme aj `redirected_to`, nech vidíme čo bol legitímny redirect a čo skutočný miss).
-- Throttling: dedupe cez `sessionStorage` (rovnaká cesta v rámci session sa nezapíše 2x).
-- Nová admin stránka `/admin/route-errors` (chránená `AdminRoute`):
-  - Top 50 chýbajúcich ciest za 7 / 30 dní (počet, unikátni používatelia, posledný výskyt, top referrer).
-  - Tlačidlo „Add alias" → pri redirecte to iba otvorí `PREMIUM_ALIASES` mapu v `NotFound.tsx` s návodom (bez auto-editu).
-  - Export CSV.
+## 2. Matematika duelu
+- Vstup 10 mincí / hráč, bank 20 mincí.
+- Vyhodnotenie: víťaz 16 mincí + 20 XP, porazený 4 mince + 5 XP, provízia 0.
+- Prepíšeme `enter_reel_competition` (10 mincí) a `settle_reel_competitions` (rozdelenie 16/4 + XP 20/5 cez `add_user_points`).
 
-## 2) Button audit
+## 3. Freemium hráči
+- Nová tabuľka `reel_vote_progress(user_id, votes_counted, xp_awarded_total)` — každých 10 odhlasovaných duelov = 1 XP.
+- Funkcia `convert_xp_to_battle_coins()`: pri každom náraste XP sa automaticky za každých **1 000 XP** pripíše 10 mincí (spotrebuje XP, zapíše do ledgeru ako `xp_conversion`). Beží v triggeri na `user_xp`.
 
-**Cieľ:** žiadny `<Button>` v UI, ktorý po kliku nič nespraví.
+## 4. Mesačný rebríček
+- `reel_monthly_leaderboard(period, user_id, coins_won, rank)` + materializovaný pohľad pre live TOP 20 (refresh cron 2 min) — pokrytie pre veľkú návštevnosť.
+- Body = suma mincí z ledgeru s `is_winnings = true` v danom mesiaci.
+- Cron `reel-monthly-settlement` (1. deň mesiaca 00:10 UTC) zapíše archív a rozdelí odmeny:
+  - 1.: 100 kreditov, zlatá korunka 30 dní, promo na Wall 7 dní, tričko + šiltovka
+  - 2.: 50 kreditov, strieborná korunka, promo 3 dni, tričko
+  - 3.: 20 kreditov, bronzová korunka, šiltovka
+  - 4.–5.: 10 kreditov + odznak „Top 5 Tvorca“
+  - 6.–10.: 200 mincí + odznak „Top 10 Tvorca“
+- `reel_profile_perks(user_id, perk, expires_at)` drží korunky/odznaky/promo; `reel_physical_rewards(user_id, period, items, fulfillment_status)` pre fyzické ceny — admin ich vybaví v `/admin`, používateľ zadá doručovacie údaje po výhre (bez zobrazovania krajiny/adresy v brandingu, len v objednávke).
 
-- Script `scripts/audit-buttons.mjs`: AST-lite regex sken `src/**/*.tsx` — nájde `<Button ...>` bez `onClick`, `asChild`, `type="submit"`, `form=`, alebo bez toho, aby bol vnútri `<DialogTrigger>`, `<PopoverTrigger>`, `<DropdownMenuTrigger>`, `<SheetTrigger>`, `<TooltipTrigger>`, `<AlertDialogTrigger>`, `<Link>`.
-- Report do konzoly + `docs/BUTTON_AUDIT.md` (path:line, kontext).
-- Prejdem výsledok manuálne, opravím reálne mŕtve tlačidlá (očakávam ~15–25 skutočných hitov z ~80 kandidátov).
-- Pridám script do `package.json` ako `audit:buttons`.
+## 5. Anti-cheat
+- Náhodný matchmaking: RPC `join_reel_queue()` → front `reel_matchmaking_queue`, systém páruje náhodne. Výber súpera z UI sa odstráni.
+- `user_devices(user_id, device_hash, last_ip_hash, last_seen)` — hash z fingerprintu prehliadača + IP (hashované, nie plain).
+- Párovanie preskočí protihráča so zhodným `device_hash` alebo `ip_hash`; ak nie je nikto vhodný, hráč zostane vo fronte.
+- Hlasovanie: 1 hlas / duel / účet (už existuje), plus rate-limit `check_rate_limit('reel.vote', 60, 60)` a blokovanie hlasov z rovnakého device ako účastník duelu.
 
-## 3) Odstránenie `any` v Stripe / auth ceste
+## 6. UX / UI architektúra
+- `/reel-battles` — hero video, zostatok mincí, tlačidlo **Nájdi súpera** (queue stav „Hľadám súpera…“), zoznam bežiacich duelov na hlasovanie (swipe deck 2 videá vedľa seba).
+- Duel obrazovka — dva reels, hlasovanie jedným ťapnutím, countdown do konca, komentáre.
+- Peňaženka — výmena kreditov (1 : 10), história pohybov, jasná poznámka „mince sa nedajú vymeniť späť“.
+- Progres divákov — pás „Odhlasoval si 7/10 duelov → 1 XP“ a „XP 640/1000 → 10 mincí“.
+- Rebríček — mesačný TOP 20 s korunkami, tvoja pozícia, odpočet do konca mesiaca, panel odmien.
+- Profil — korunka/odznaky z rebríčka, promované profily sa zobrazia na Wall.
 
-**Cieľ:** znížiť riziko skrytých chýb v peniazoch a prihlásení.
-
-Zúžený scope (nie celý codebase — iba kritické cesty):
-
-- `src/contexts/AuthContext.tsx` — nahradiť `(data as any)` presnými typmi profilu (`Pick<Tables<'profiles'>, 'verification_tier'|'verification_expires_at'>`).
-- `src/hooks/useClubMembership.ts`, `src/pages/Club.tsx`, `src/pages/ClubCard.tsx`, `src/pages/ClubCheckout.tsx`, `src/components/profile/ClubMembershipCard.tsx`, `src/components/profile/BillingOverviewCard.tsx`, `src/pages/Subscriptions.tsx`.
-- `src/utils/createSaleTransaction.ts` a `src/lib/handleEdgeError.ts` ak obsahujú `any`.
-- Nový `src/types/club.ts` s `ClubMembership`, `ClubShippingAddress`, `BillingInvoice`, `SubscriptionSummary`.
-- Edge functions ostávajú (Deno, iný scope) — poznamenám do follow-upu.
-
-Nesťahujem do toho `unknown` masaker — len tam, kde to reálne pomôže type-checkeru.
-
-## 4) Google OAuth + magic-link login
-
-**Cieľ:** menej trenia pri registrácii.
-
-- Do `src/pages/Auth.tsx` (alebo existujúceho auth komponentu — najprv overím):
-  - „Continue with Google" tlačidlo → `supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/' } })`.
-  - „Email me a magic link" prepínač → `supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: … } })`.
-- Google provider musí povoliť **užívateľ** v Supabase dashboarde (Auth → Providers → Google) s Client ID / Secret z Google Cloud — dám mu presné kroky v odpovedi. Bez toho tlačidlo bude vracať „provider is not enabled".
-- Magic link funguje ihneď (default email provider už beží cez managed Lovable auth email).
-- Site URL + redirect URL v Supabase Auth musia obsahovať `https://uniqueapp.fun` a `https://uniqueapp.lovable.app` — pripomeniem.
-
-## Poradie doručenia
-
-1. Task 1 (migrácia + NotFound insert + admin stránka) — samostatné.
-2. Task 4 (OAuth + magic link UI) — samostatné, hneď viditeľné pre používateľov.
-3. Task 2 (audit script + oprava reálnych mŕtvych buttonov).
-4. Task 3 (typy) — najmenej viditeľné, ale najbezpečnejšie na konci, keď máme čistý strom.
-
-Po schválení idem robiť v tomto poradí, každý task doručím a poviem ti čo je hotové.
+## Technické poznámky
+- Zmeny v DB idú jednou migráciou (tabuľky + GRANT + RLS + RPC + cron).
+- Frontend: úprava `useBattleCoins.ts`, `ReelBattles.tsx`, `ReelBattlesLeaderboard.tsx`, nové `ReelMatchmaking.tsx`, `VoteProgressCard.tsx`, `MonthlyRewardsPanel.tsx`, `useDeviceFingerprint.ts`.
+- KitchenStars ponechá súčasné hodnoty, pokiaľ nepovieš inak (nové pravidlá sú napísané pre Reels).
