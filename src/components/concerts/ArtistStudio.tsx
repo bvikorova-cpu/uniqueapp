@@ -40,6 +40,13 @@ export const ArtistStudio = ({ onBack }: Props) => {
   const [genre, setGenre] = useState("");
   const [bio, setBio] = useState("");
 
+  // legal declaration (first-time artist onboarding)
+  const [representationRole, setRepresentationRole] = useState<string>("");
+  const [signatoryName, setSignatoryName] = useState("");
+  const [declarationAccepted, setDeclarationAccepted] = useState(false);
+  const [fraudAccepted, setFraudAccepted] = useState(false);
+
+
   // concert form
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
