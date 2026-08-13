@@ -39,3 +39,4 @@
 - [SECURITY DEFINER views & linter warnings](mem://architecture/security-definer-views) — Which definer views must stay, and why the recurring WARN classes are accepted.
 - [Battle Coins](mem://features/battle-coins) — Separate game currency for KitchenStars + Reel Battles: 1 credit = 100 coins, one-way, cosmetics only.
 - [Monthly battle champions](mem://features/monthly-battle-champions) — Fixed TOP 3 rewards (5000/2500/1000 credits + badges) in KitchenStars, Reel Battles, MegaTalent; no % cash prizes.
+- [Battle matchmaking](mem://features/battle-matchmaking) — Auto-match queue: 100-coin entry, random pairing, refund on leave.
