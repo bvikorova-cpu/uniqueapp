@@ -648,15 +648,7 @@ export function BarbieCreator3D({ onBack }: { onBack: () => void }) {
             </div>
 
             <div className="mt-3 flex gap-2">
-              <Button
-                size="sm"
-                variant={isSpinning ? "default" : "outline"}
-                onClick={() => setIsSpinning(!isSpinning)}
-                className={cn("flex-1", isSpinning && "bg-pink-500 hover:bg-pink-600")}
-              >
-                <Sparkles className="h-3 w-3 mr-1" />
-                {isSpinning ? "Stop Spin" : "Auto Spin"}
-              </Button>
+
               <Button
                 size="sm"
                 onClick={renderRealistic}
