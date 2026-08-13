@@ -126,7 +126,7 @@ export default function KitchenStarsCompetitions() {
     const ext = file.name.split(".").pop()?.toLowerCase() || "mp4";
     const path = `${userId}/${battleId}/${crypto.randomUUID()}.${ext}`;
     const { error } = await supabase.storage.from("kitchen-battles")
-      .upload(path, file, { contentType: file.type, upsert: false });
+      .upload(path, file, { contentType: file.type || "video/mp4", upsert: false });
     if (error) {
       toast({ title: "Upload failed", description: error.message, variant: "destructive" });
       return null;
