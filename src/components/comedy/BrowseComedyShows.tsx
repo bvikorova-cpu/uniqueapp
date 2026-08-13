@@ -6,11 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowLeft, Calendar, Mic, Users, Ticket, Zap, Star, PlayCircle, Coins, BadgeCheck } from "lucide-react";
+import { ArrowLeft, Calendar, Mic, Users, Ticket, Zap, Star, PlayCircle, Sparkles, BadgeCheck } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-import { useComedyCurrency, useBuyTicket } from "@/hooks/useComedy";
+import { useAICredits } from "@/hooks/useAICredits";
 
 interface Props { onBack: () => void; }
 
@@ -18,8 +18,7 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [myTickets, setMyTickets] = useState<Set<string>>(new Set());
-  const { currency } = useComedyCurrency();
-  const buyTicket = useBuyTicket();
+  const { totalBalance, loadCredits } = useAICredits();
   const [buying, setBuying] = useState<string | null>(null);
 
   const loadMyTickets = async () => {
@@ -48,16 +47,37 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
     refetchInterval: 15000,
   });
 
+  /** Tickets are paid in AI credits — atomic spend RPC keeps balance + ledger consistent. */
   const handleBuy = async (showId: string, price: number) => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) { toast.error("Please sign in to buy tickets"); return; }
     try {
       setBuying(showId);
-      await buyTicket.mutateAsync({ showId, price });
+      const { data: spend, error: spendErr } = await (supabase as any).rpc("spend_ai_credits", {
+        _amount: price,
+        _reason: "Comedy show ticket",
+        _source: "comedy_ticket",
+      });
+      if (spendErr) throw spendErr;
+      if (!spend?.ok) {
+        toast.error("Not enough credits", {
+          description: `This ticket costs ${price} credit${price === 1 ? "" : "s"}.`,
+          action: { label: "Top up", onClick: () => navigate("/ai-credits") },
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from("comedy_tickets")
+        .insert({ show_id: showId, user_id: session.user.id, price_paid: price });
+      if (error) throw error;
+
+      toast.success("Ticket purchased! Enjoy the show!");
       await loadMyTickets();
+      await loadCredits();
       queryClient.invalidateQueries({ queryKey: ["browse-comedy-shows"] });
-    } catch {
-      // errors surfaced by the mutation's onError toast
+    } catch (e: any) {
+      toast.error(e?.message || "Failed to buy ticket");
     } finally {
       setBuying(null);
     }
