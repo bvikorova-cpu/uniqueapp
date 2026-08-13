@@ -318,6 +318,69 @@ export const ArtistStudio = ({ onBack }: Props) => {
               <Label htmlFor="bio">Bio</Label>
               <Textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} rows={3} maxLength={800} placeholder="Tell fans who you are" />
             </div>
+
+            {!profile && (
+              <div className="space-y-4 rounded-lg border-2 border-destructive/40 bg-destructive/5 p-4">
+                <div className="flex items-start gap-2">
+                  <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
+                  <div>
+                    <h3 className="text-sm font-bold">Identity & authority declaration (required)</h3>
+                    <p className="text-xs text-muted-foreground">
+                      Live concerts involve real payments from real fans. Impersonating an artist is fraud.
+                      This declaration is legally binding, timestamped and stored with your account.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>I am acting as</Label>
+                  <Select value={representationRole} onValueChange={setRepresentationRole}>
+                    <SelectTrigger><SelectValue placeholder="Select your role" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="artist">The artist / performer myself</SelectItem>
+                      <SelectItem value="manager">The artist's official manager</SelectItem>
+                      <SelectItem value="authorised_representative">An authorised person acting on the artist's behalf</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="signatory-name">Your full legal name</Label>
+                  <Input
+                    id="signatory-name"
+                    value={signatoryName}
+                    onChange={(e) => setSignatoryName(e.target.value)}
+                    placeholder="First name and surname as on your ID"
+                    maxLength={120}
+                  />
+                </div>
+
+                <label className="flex cursor-pointer items-start gap-3 text-xs leading-relaxed">
+                  <Checkbox checked={declarationAccepted} onCheckedChange={(v) => setDeclarationAccepted(v === true)} className="mt-0.5" />
+                  <span>
+                    I declare under my own legal responsibility that I am the artist, the artist's manager, or a person
+                    duly authorised to act on the artist's behalf, and that I hold all rights needed to perform, stream
+                    and monetise the content I publish. I can provide proof of identity and authorisation on request.
+                  </span>
+                </label>
+
+                <label className="flex cursor-pointer items-start gap-3 text-xs leading-relaxed">
+                  <Checkbox checked={fraudAccepted} onCheckedChange={(v) => setFraudAccepted(v === true)} className="mt-0.5" />
+                  <span>
+                    I understand that impersonation, false statements or any fraudulent conduct will lead to
+                    <strong> immediate permanent ban, full withholding and reversal of all payouts</strong>, and may be
+                    reported to the relevant authorities. Any resulting damage, refunds, chargebacks, legal costs or
+                    third-party claims are <strong>solely my responsibility</strong> — the platform acts only as a
+                    technical intermediary and accepts <strong>no liability for fraud committed by an account holder</strong>.
+                  </span>
+                </label>
+
+                <p className="text-[11px] text-muted-foreground">
+                  Your role, legal name and the exact time of acceptance are recorded as evidence.
+                </p>
+              </div>
+            )}
+
             <div className="flex flex-wrap gap-2">
               <Button onClick={saveProfile} disabled={saving} className="gap-2">
                 {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Music className="h-4 w-4" />}
