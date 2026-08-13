@@ -82,6 +82,7 @@ export default function BattleCoinsWallet({
           </p>
           <ul className="text-xs text-muted-foreground list-disc pl-4 space-y-0.5">
             <li>Duel entry costs {BATTLE_ENTRY_COINS} coins, the winner takes {BATTLE_PRIZE_COINS.toLocaleString()} coins + 10 XP.</li>
+            <li>Each section has its own wallet — {moduleLabel} coins cannot be spent anywhere else.</li>
             <li>Coins buy cosmetics only — profile frames, stickers and badges.</li>
             <li>The exchange is one-way: coins can never be converted back into AI credits.</li>
           </ul>
