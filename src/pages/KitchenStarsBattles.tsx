@@ -40,6 +40,21 @@ export default function KitchenStarsCompetitions() {
   const [dishFile, setDishFile] = useState<File | null>(null);
   const [commentDraft, setCommentDraft] = useState<Record<string, string>>({});
   const [showComments, setShowComments] = useState<Record<string, boolean>>({});
+  /** Deep-linkable selected competition (?c=<battleId>) */
+  const [selectedId, setSelectedId] = useState<string | null>(
+    () => new URLSearchParams(window.location.search).get("c"),
+  );
+  const openCompetition = (id: string) => {
+    setSelectedId(id);
+    navigate({ search: `?c=${id}` }, { replace: false });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const closeCompetition = () => {
+    setSelectedId(null);
+    navigate({ search: "" }, { replace: false });
+  };
+  const visibleBattles = selectedId ? battles.filter(b => b.id === selectedId) : battles;
+
 
   const load = async () => {
     setLoading(true);
