@@ -41977,8 +41977,11 @@ export type Database = {
           created_at: string | null
           genre: string | null
           id: string
+          legal_declaration_accepted_at: string | null
+          legal_signatory_name: string | null
           lifetime_earnings: number | null
           pending_balance: number | null
+          representation_role: string | null
           stage_name: string
           suspended: boolean
           total_concerts: number | null
@@ -41998,8 +42001,11 @@ export type Database = {
           created_at?: string | null
           genre?: string | null
           id?: string
+          legal_declaration_accepted_at?: string | null
+          legal_signatory_name?: string | null
           lifetime_earnings?: number | null
           pending_balance?: number | null
+          representation_role?: string | null
           stage_name: string
           suspended?: boolean
           total_concerts?: number | null
@@ -42019,8 +42025,11 @@ export type Database = {
           created_at?: string | null
           genre?: string | null
           id?: string
+          legal_declaration_accepted_at?: string | null
+          legal_signatory_name?: string | null
           lifetime_earnings?: number | null
           pending_balance?: number | null
+          representation_role?: string | null
           stage_name?: string
           suspended?: boolean
           total_concerts?: number | null
