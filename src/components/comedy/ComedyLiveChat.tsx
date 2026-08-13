@@ -57,10 +57,10 @@ export function ComedyLiveChat({ showId, canModerate = false, className }: Comed
     if (!missing.length) return;
     const { data } = await (supabase as any)
       .from("profiles")
-      .select("user_id, display_name, avatar_url")
-      .in("user_id", missing);
+      .select("id, full_name, avatar_url")
+      .in("id", missing);
     ((data ?? []) as any[]).forEach((p: any) => {
-      namesRef.current.set(p.user_id, { name: p.display_name ?? null, avatar: p.avatar_url ?? null });
+      namesRef.current.set(p.id, { name: p.full_name ?? null, avatar: p.avatar_url ?? null });
     });
     missing.forEach((id) => {
       if (!namesRef.current.has(id)) namesRef.current.set(id, { name: null, avatar: null });
