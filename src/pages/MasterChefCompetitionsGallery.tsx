@@ -308,18 +308,19 @@ export default function MasterChefCompetitionsGallery() {
     <div className="min-h-screen bg-gradient-to-br from-orange-500/5 via-background to-red-500/5 pt-24 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h1 className="text-4xl md:text-5xl font-black mb-2 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+          <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
+            <div className="min-w-0">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-2 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent break-words">
                 KitchenStars Competitions
               </h1>
-              <p className="text-muted-foreground text-lg">
+              <p className="text-muted-foreground text-base sm:text-lg">
                 Vote for your favorite dishes and support talented chefs
               </p>
             </div>
-            <Button 
-              variant="outline" 
-              onClick={() => navigate("/masterchef-subscription")}
+            <Button
+              variant="outline"
+              className="w-full sm:w-auto shrink-0"
+              onClick={() => navigate("/masterchef/dashboard")}
             >
               <ChefHat className="mr-2 h-4 w-4" />
               Become a Chef
