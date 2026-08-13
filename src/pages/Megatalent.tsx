@@ -424,8 +424,10 @@ const Megatalent = () => {
             </div>
 
             <ReferralProgram />
+            <MonthlyChampionRewardsCard module="megatalent" accent="primary" />
             <BattleRoyalePayouts userId={currentUserId} />
             <UnifiedXPLeaderboard hub="megatalent" />
+
           </section>
 
           <MegaTalentGuide />
