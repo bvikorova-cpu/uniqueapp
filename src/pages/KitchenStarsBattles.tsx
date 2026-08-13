@@ -340,17 +340,21 @@ export default function KitchenStarsCompetitions() {
               style={{ filter: "brightness(1.15) contrast(1.15) saturate(1.35)" }}
               src={masterchefHero.url}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/25 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
             <div className="relative z-10 h-full flex flex-col items-center justify-end text-center px-4 pb-6">
-              <Badge className="mb-3 bg-black/60 border border-orange-400/50 text-orange-200 backdrop-blur-xl">
-                <ChefHat className="h-3.5 w-3.5 mr-1.5" /> Cook-off Arena
-              </Badge>
-              <h1 className="text-3xl md:text-5xl font-black bg-gradient-to-r from-orange-400 via-amber-300 to-primary bg-clip-text text-transparent drop-shadow-lg">
-                KitchenStars Competitions
-              </h1>
-              <p className="mt-2 text-sm md:text-lg text-white/90 drop-shadow-md">
-                Two chefs, two cooking videos — the platform votes 👑
-              </p>
+              <div className="rounded-2xl bg-black/50 px-5 py-4 backdrop-blur-sm border border-white/10 shadow-2xl">
+                <Badge className="mb-3 bg-black/60 border border-orange-400/50 text-orange-200 backdrop-blur-xl">
+                  <ChefHat className="h-3.5 w-3.5 mr-1.5" /> Cook-off Arena
+                </Badge>
+                <h1 className="text-3xl md:text-5xl font-black" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.6)' }}>
+                  <span className="bg-gradient-to-r from-orange-300 via-amber-200 to-white bg-clip-text text-transparent">
+                    KitchenStars Competitions
+                  </span>
+                </h1>
+                <p className="mt-2 text-sm md:text-lg text-white font-medium" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.9)' }}>
+                  Two chefs, two cooking videos — the platform votes 👑
+                </p>
+              </div>
             </div>
           </div>
 
