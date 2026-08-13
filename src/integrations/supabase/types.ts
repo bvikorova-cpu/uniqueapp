@@ -3125,6 +3125,155 @@ export type Database = {
         }
         Relationships: []
       }
+      battle_coins: {
+        Row: {
+          balance: number
+          created_at: string
+          total_earned: number
+          total_purchased: number
+          total_spent: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          total_earned?: number
+          total_purchased?: number
+          total_spent?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          total_earned?: number
+          total_purchased?: number
+          total_spent?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      battle_coins_ledger: {
+        Row: {
+          balance_after: number
+          balance_before: number
+          created_at: string
+          delta: number
+          id: string
+          metadata: Json | null
+          reason: string
+          ref_id: string | null
+          source: string | null
+          user_id: string
+        }
+        Insert: {
+          balance_after: number
+          balance_before: number
+          created_at?: string
+          delta: number
+          id?: string
+          metadata?: Json | null
+          reason?: string
+          ref_id?: string | null
+          source?: string | null
+          user_id: string
+        }
+        Update: {
+          balance_after?: number
+          balance_before?: number
+          created_at?: string
+          delta?: number
+          id?: string
+          metadata?: Json | null
+          reason?: string
+          ref_id?: string | null
+          source?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      battle_cosmetics: {
+        Row: {
+          code: string
+          created_at: string
+          css_class: string | null
+          description: string | null
+          id: string
+          is_active: boolean
+          kind: string
+          name: string
+          preview: string | null
+          price_coins: number
+          rarity: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          css_class?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          kind: string
+          name: string
+          preview?: string | null
+          price_coins: number
+          rarity?: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          css_class?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          kind?: string
+          name?: string
+          preview?: string | null
+          price_coins?: number
+          rarity?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      battle_cosmetics_owned: {
+        Row: {
+          cosmetic_id: string
+          created_at: string
+          id: string
+          is_equipped: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cosmetic_id: string
+          created_at?: string
+          id?: string
+          is_equipped?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cosmetic_id?: string
+          created_at?: string
+          id?: string
+          is_equipped?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "battle_cosmetics_owned_cosmetic_id_fkey"
+            columns: ["cosmetic_id"]
+            isOneToOne: false
+            referencedRelation: "battle_cosmetics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       battle_participants: {
         Row: {
           battle_id: string
@@ -67329,6 +67478,16 @@ export type Database = {
         Returns: number
       }
       batch_apply_reactions: { Args: { items: Json }; Returns: Json }
+      battle_coins_apply: {
+        Args: {
+          _delta: number
+          _reason: string
+          _ref_id?: string
+          _source?: string
+          _user_id: string
+        }
+        Returns: number
+      }
       bazaar_promote_listing: {
         Args: { p_item_id: string; p_plan: string }
         Returns: Json
@@ -67851,8 +68010,16 @@ export type Database = {
         }
         Returns: Json
       }
+      equip_battle_cosmetic: {
+        Args: { _code: string; _equip?: boolean }
+        Returns: Json
+      }
       erf: { Args: { x: number }; Returns: number }
       evaluate_xp_bets: { Args: never; Returns: number }
+      exchange_credits_for_battle_coins: {
+        Args: { _credits: number }
+        Returns: Json
+      }
       exclusive_is_matched: {
         Args: { _a: string; _b: string }
         Returns: boolean
@@ -69443,6 +69610,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      purchase_battle_cosmetic: { Args: { _code: string }; Returns: Json }
       purchase_brain_duel_powerup: {
         Args: { p_powerup_type: string; p_price: number }
         Returns: undefined
