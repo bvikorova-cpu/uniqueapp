@@ -397,11 +397,6 @@ import { ResetPassword,
   FairyCastles,
   FairyCastleTour,
   FairyAdmin,
-  MasterChefSubscription,
-  MasterChefDashboard,
-  MasterChefCompetitions,
-  MasterChefCompetitionsGallery,
-  MasterChefEarnings,
   NutritionHub,
   NutritionSubscriptions,
   HealthcareProviderDashboard,
@@ -593,20 +588,9 @@ const CreatorPayouts = lazy(() => import("@/pages/CreatorPayouts"));
 const CreatorAnalytics = lazy(() => import("@/pages/CreatorAnalytics"));
 const Billing = lazy(() => import("@/pages/Billing"));
 const MySubscriptions = lazy(() => import("@/pages/MySubscriptions"));
-const MasterChefHub = lazy(() => import("@/pages/MasterChefHub"));
-const MasterChefAIRecipes = lazy(() => import("@/pages/MasterChefAIRecipes"));
-const MasterChefCookingTimer = lazy(() => import("@/pages/MasterChefCookingTimer"));
-const MasterChefIngredientScanner = lazy(() => import("@/pages/MasterChefIngredientScanner"));
-const MasterChefChefChat = lazy(() => import("@/pages/MasterChefChefChat"));
-const MasterChefLiveStream = lazy(() => import("@/pages/MasterChefLiveStream"));
 const CreatorLiveAnalytics = lazy(() => import("@/pages/CreatorLiveAnalytics"));
 const KitchenStarsBattles = lazy(() => import("@/pages/KitchenStarsBattles"));
 const KitchenStarsDuelUpload = lazy(() => import("@/pages/KitchenStarsDuelUpload"));
-const MasterChefWeeklyAwards = lazy(() => import("@/pages/MasterChefWeeklyAwards"));
-const MasterChefNutritionAnalyzer = lazy(() => import("@/pages/MasterChefNutritionAnalyzer"));
-const MasterChefGlobalMap = lazy(() => import("@/pages/MasterChefGlobalMap"));
-const MasterChefAICoach = lazy(() => import("@/pages/MasterChefAICoach"));
-const MasterChefRecipeFeed = lazy(() => import("@/pages/MasterChefRecipeFeed"));
 const LegalPrivacy = lazy(() => import("@/pages/legal/Privacy"));
 const LegalRefund = lazy(() => import("@/pages/legal/Refund"));
 const LegalCreator = lazy(() => import("@/pages/legal/Creator"));

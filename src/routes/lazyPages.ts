@@ -318,11 +318,6 @@ export const ShadowArenaSubmitStory = lazy(() => import("@/pages/ShadowArenaSubm
 export const ShadowArenaStoryDetail = lazy(() => import("@/pages/ShadowArenaStoryDetail"));
 
 // MasterChef
-export const MasterChefSubscription = lazy(() => import("@/pages/MasterChefSubscription"));
-export const MasterChefDashboard = lazy(() => import("@/pages/MasterChefDashboard"));
-export const MasterChefCompetitions = lazy(() => import("@/pages/MasterChefCompetitions"));
-export const MasterChefCompetitionsGallery = lazy(() => import("@/pages/MasterChefCompetitionsGallery"));
-export const MasterChefEarnings = lazy(() => import("@/pages/MasterChefEarnings"));
 
 // Time & Capsule
 export const TimeReversalSubscription = lazy(() => import("@/pages/TimeReversalSubscription"));
