@@ -140,7 +140,7 @@ export default function ReelBattles() {
       return { ok: false, title: "Video required", reason: `"${file.name}" is not a supported video format.`, suggestion: "Upload MP4, WEBM or MOV, max 50 MB." };
     }
     if (file.size > MAX_VIDEO) {
-      return { ok: false, title: "Video too large", reason: `Your reel is ${formatBytes(file.size)} — the limit is 50 MB.`, suggestion: "Trim it or re-encode at 720p." };
+      return { ok: false, title: "Video too large", reason: `Your clip is ${formatBytes(file.size)} — the limit is 50 MB.`, suggestion: "Trim it or re-encode at 720p." };
     }
     if (file.size === 0) {
       return { ok: false, title: "Empty file", reason: "The selected file is 0 bytes.", suggestion: "Pick another video and try again." };
@@ -191,13 +191,13 @@ export default function ReelBattles() {
   /** Validates the shared reel form. */
   const validateForm = (): File | null => {
     if (!reelTitle.trim() || reelTitle.length > 120) {
-      toast({ title: "Reel title required (max 120 characters)", variant: "destructive" }); return null;
+      toast({ title: "Clip title required (max 120 characters)", variant: "destructive" }); return null;
     }
     if (reelDesc.length > 500) {
       toast({ title: "Description too long (max 500 characters)", variant: "destructive" }); return null;
     }
     if (!reelFile) {
-      toast({ title: "Reel video required", description: "Upload your reel video.", variant: "destructive" }); return null;
+      toast({ title: "Clip video required", description: "Upload your clip video.", variant: "destructive" }); return null;
     }
     const v = validateFile(reelFile);
     if (v.ok === false) { toast({ title: v.title, description: `${v.reason} ${v.suggestion}`, variant: "destructive" }); return null; }
@@ -237,7 +237,7 @@ export default function ReelBattles() {
     }
 
     resetForm();
-    toast({ title: "Reel duel started!", description: "The next creator who uploads a reel becomes your opponent." });
+    toast({ title: "Clip duel started!", description: "The next creator who uploads a clip becomes your opponent." });
     load();
   };
 
@@ -270,7 +270,7 @@ export default function ReelBattles() {
     }
 
     resetForm();
-    toast({ title: "You are the opponent!", description: "Both reels are live — voting is open." });
+    toast({ title: "You are the opponent!", description: "Both clips are live — voting is open." });
     load();
   };
 
@@ -337,21 +337,21 @@ export default function ReelBattles() {
       <div className="flex items-center justify-between">
         <p className="font-semibold flex items-center gap-2">
           <Video className="h-4 w-4 text-primary" />
-          {mode === "new" ? "Start a reel duel" : "Upload your reel as the opponent"}
+          {mode === "new" ? "Start a clip duel" : "Upload your clip as the opponent"}
         </p>
         <Button size="icon" variant="ghost" onClick={resetForm} aria-label="Close form"><X className="h-4 w-4" /></Button>
       </div>
-      <Input placeholder="Reel title (e.g. Sunset skate line)" value={reelTitle} maxLength={120}
+      <Input placeholder="Clip title (e.g. Sunset skate line)" value={reelTitle} maxLength={120}
         onChange={e => setReelTitle(e.target.value)} />
-      <Textarea placeholder="Short description of your reel (optional)" value={reelDesc} maxLength={500}
+      <Textarea placeholder="Short description of your clip (optional)" value={reelDesc} maxLength={500}
         onChange={e => setReelDesc(e.target.value)} rows={3} />
-      <DropZone file={reelFile} onChange={setReelFile} validate={validateFile} accept="video/*" hint="Reel video: MP4 / WEBM / MOV, max 50 MB" />
+      <DropZone file={reelFile} onChange={setReelFile} validate={validateFile} accept="video/*" hint="Clip video: MP4 / WEBM / MOV, max 50 MB" />
       <p className="text-xs text-muted-foreground">
-        Reel video only — MP4 / WEBM / MOV, max 50 MB. Entry costs {REEL_ENTRY_COST} Battle Coins (you have {balance}).
+        Clip video only — MP4 / WEBM / MOV, max 50 MB. Entry costs {REEL_ENTRY_COST} Battle Coins (you have {balance}).
       </p>
       <Button className="w-full" disabled={busy}
         onClick={() => mode === "new" ? startCompetition() : joinCompetition(mode)}>
-        {busy ? "Uploading..." : mode === "new" ? "Create duel & upload reel" : "Upload reel & become opponent"}
+        {busy ? "Uploading..." : mode === "new" ? "Create duel & upload clip" : "Upload reel & become opponent"}
       </Button>
     </div>
   );
@@ -370,7 +370,7 @@ export default function ReelBattles() {
         <div className="rounded-xl border-2 border-dashed border-border p-6 text-center space-y-2">
           <Video className="h-8 w-8 mx-auto text-muted-foreground/50" />
           <p className="font-semibold">Creator {label} slot open</p>
-          <p className="text-xs text-muted-foreground">The next creator who uploads a reel becomes the opponent.</p>
+          <p className="text-xs text-muted-foreground">The next creator who uploads a clip becomes the opponent.</p>
         </div>
       );
     }
@@ -421,7 +421,7 @@ export default function ReelBattles() {
           <p className="text-[11px] text-center text-muted-foreground">You have 1 vote per duel — it can't be changed.</p>
         )}
         {p.user_id === userId && (
-          <p className="text-xs text-center text-muted-foreground">This is your reel — you can't vote for yourself.</p>
+          <p className="text-xs text-center text-muted-foreground">This is your clip — you can't vote for yourself.</p>
         )}
       </div>
     );
@@ -443,14 +443,14 @@ export default function ReelBattles() {
           <div className="absolute inset-0 z-10 flex flex-col justify-end p-4 pb-8 md:p-10">
             <div className="inline-block self-start mb-3 px-4 py-1.5 bg-primary/30 backdrop-blur-sm rounded-full border border-primary/40">
               <span className="text-white font-semibold text-xs uppercase tracking-wider">
-                🎬 Online Reel Battle Platform
+                🎬 Online Clip Battle Platform
               </span>
             </div>
             <h1 className="text-[clamp(2.2rem,11vw,4.5rem)] font-black leading-[1.05] mb-3 max-w-[20ch] bg-gradient-to-br from-white via-primary to-accent bg-clip-text text-transparent drop-shadow-xl">
-              Reel Battles
+              Clip Battles
             </h1>
             <p className="text-white/80 text-sm md:text-lg max-w-xl mb-3 leading-relaxed">
-              Two creators upload reel videos. Each pays 100 Battle Coins (1 AI credit), the winner takes 80% of the pot + 10 XP — voting is free for every registered Unique user, 1 vote per duel. Coins are bought with AI credits (1 credit = 100 coins) and spent on cosmetics only.
+              Two creators upload clip videos. Each pays 100 Battle Coins (1 AI credit), the winner takes 80% of the pot + 10 XP — voting is free for every registered Unique user, 1 vote per duel. Coins are bought with AI credits (1 credit = 100 coins) and spent on cosmetics only.
             </p>
           </div>
         </section>
@@ -459,7 +459,7 @@ export default function ReelBattles() {
         <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
-              <Info className="h-5 w-5 text-primary" /> How Reel Battles work
+              <Info className="h-5 w-5 text-primary" /> How Clip Battles work
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -475,7 +475,7 @@ export default function ReelBattles() {
                 <Video className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <div>
                   <p className="font-semibold text-sm">Creator X vs Creator Y</p>
-                  <p className="text-xs text-muted-foreground">Two reels are paired one under the other.</p>
+                  <p className="text-xs text-muted-foreground">Two clips are paired one under the other.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 rounded-xl border border-primary/20 bg-secondary/20">
@@ -501,7 +501,7 @@ export default function ReelBattles() {
               </div>
               <div className="flex items-center gap-2">
                 <Flame className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium">Reel XP: {hubXP}</span>
+                <span className="text-sm font-medium">Clip XP: {hubXP}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Trophy className="h-4 w-4 text-yellow-500" />
@@ -529,13 +529,13 @@ export default function ReelBattles() {
         {!loading && battles.length > 0 && (
           selectedId ? (
             <Button variant="outline" className="w-full" onClick={() => closeCompetition()}>
-              ← Back to all reel duels
+              ← Back to all clip duels
             </Button>
           ) : (
             <Card className="border-primary/20">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
-                  <Trophy className="h-5 w-5 text-primary" /> All reel duels ({battles.length})
+                  <Trophy className="h-5 w-5 text-primary" /> All clip duels ({battles.length})
                 </CardTitle>
                 <p className="text-xs text-muted-foreground">Tap a duel to open it and vote for free.</p>
               </CardHeader>
@@ -570,14 +570,14 @@ export default function ReelBattles() {
 
         {formFor === "new" ? videoForm("new") : (
           <Button size="lg" onClick={() => { setFormFor("new"); setReelTitle(""); setReelDesc(""); setReelFile(null); }} className="w-full">
-            <Plus className="h-4 w-4 mr-2" /> Start Reel Duel
+            <Plus className="h-4 w-4 mr-2" /> Start Clip Duel
           </Button>
         )}
 
         {loading ? (
           <p className="text-center text-muted-foreground">Loading...</p>
         ) : battles.length === 0 ? (
-          <Card><CardContent className="py-10 text-center text-muted-foreground">No reel duels yet. Be the first creator!</CardContent></Card>
+          <Card><CardContent className="py-10 text-center text-muted-foreground">No clip duels yet. Be the first creator!</CardContent></Card>
         ) : (
           visibleBattles.map(battle => {
             const parts = (participants[battle.id] || []).slice(0, 2);
@@ -623,13 +623,13 @@ export default function ReelBattles() {
                   {renderSide(battle, b, "Y", totalVotes, canVote, myVote, winnerId === b?.id)}
 
                   {isOpen && bothIn && !myVote && (
-                    <p className="text-xs text-center text-muted-foreground">Watch both reels, then vote for the better one. One vote per duel.</p>
+                    <p className="text-xs text-center text-muted-foreground">Watch both clips, then vote for the better one. One vote per duel.</p>
                   )}
 
                   {isOpen && !myEntry && parts.length < 2 && (
                     formFor === battle.id ? videoForm(battle.id) : (
                       <Button variant="outline" className="w-full" onClick={() => { setFormFor(battle.id); setReelTitle(""); setReelDesc(""); setReelFile(null); }}>
-                        <Video className="h-4 w-4 mr-2" /> Upload your reel & become the opponent
+                        <Video className="h-4 w-4 mr-2" /> Upload your clip & become the opponent
                       </Button>
                     )
                   )}
