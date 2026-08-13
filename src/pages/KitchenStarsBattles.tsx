@@ -598,7 +598,9 @@ export default function KitchenStarsCompetitions() {
               const [a, b] = parts;
               const allComments = comments[battle.id] || [];
               const myEntry = parts.find(p => p.user_id === userId);
-              const isOpen = battle.status === "open" && new Date(battle.deadline) > new Date();
+              const waitingForOpponent = parts.length < 2;
+              // A duel waits for an opponent indefinitely — the 7-day voting clock starts only once both are in.
+              const isOpen = battle.status === "open" && (waitingForOpponent || new Date(battle.deadline) > new Date());
               const myVote = myVotes[battle.id];
               const showCs = showComments[battle.id];
               const totalVotes = (a?.vote_count || 0) + (b?.vote_count || 0);
