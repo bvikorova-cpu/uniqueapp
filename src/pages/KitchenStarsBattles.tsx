@@ -711,6 +711,8 @@ export default function KitchenStarsCompetitions() {
               );
             })
           )}
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </>
