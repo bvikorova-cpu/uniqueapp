@@ -384,12 +384,6 @@ export function BarbieCreator3D({ onBack }: { onBack: () => void }) {
                       selected={config.dressColor}
                       onSelect={(c) => update("dressColor", c)}
                     />
-                    <ColorSwatch
-                      label="Shoe Color"
-                      colors={SHOE_COLORS}
-                      selected={config.shoeColor}
-                      onSelect={(c) => update("shoeColor", c)}
-                    />
                   </>
                 )}
 
