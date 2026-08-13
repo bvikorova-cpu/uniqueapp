@@ -318,9 +318,14 @@ export default function KitchenStarsCompetitions() {
           </div>
 
           {formFor === "new" ? videoForm("new") : (
+            <div className="space-y-2">
             <Button size="lg" onClick={() => { setFormFor("new"); setDishTitle(""); setDishDesc(""); setDishFile(null); }} className="w-full">
               <Plus className="h-4 w-4 mr-2" /> Start Competition
             </Button>
+            <Button size="lg" variant="outline" onClick={() => navigate("/masterchef/duel-upload")} className="w-full">
+              <Swords className="h-4 w-4 mr-2" /> Upload both duel videos (Chef X vs Chef Y)
+            </Button>
+            </div>
           )}
 
           {loading ? (
