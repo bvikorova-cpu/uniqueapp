@@ -29,6 +29,7 @@ import MegatalentAchievements from "@/components/megatalent/MegatalentAchievemen
 import BattleRoyalePayouts from "@/components/megatalent/BattleRoyalePayouts";
 import MegatalentNotificationBell from "@/components/megatalent/MegatalentNotificationBell";
 import { LiveSocialProof } from "@/components/social/LiveSocialProof";
+import MonthlyChampionRewardsCard from "@/components/battle-coins/MonthlyChampionRewardsCard";
 import UnifiedXPLeaderboard from "@/components/shared/UnifiedXPLeaderboard";
 import NextVotingCountdown from "@/components/megatalent/NextVotingCountdown";
 import MegaTalentCategoryGrid from "@/components/megatalent/MegaTalentCategoryGrid";
