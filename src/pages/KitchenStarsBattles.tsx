@@ -5,12 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ChefHat, Trophy, Plus, Flame, MessageCircle, Send, Trash2, Video, Swords, X } from "lucide-react";
+import {
+  ChefHat, Trophy, Plus, Flame, MessageCircle, Send, Trash2, Video, Swords, X,
+  Info, RefreshCw, Coins, Users,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { DropZone, type DropZoneValidation } from "@/components/kitchen-battles/DropZone";
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useMasterChefAccess, KITCHENSTARS_COSTS } from "@/hooks/useMasterChefAccess";
 import masterchefHero from "@/assets/masterchef-hero-v2.mp4.asset.json";
 
@@ -39,6 +41,8 @@ export default function KitchenStarsCompetitions() {
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
+  const [userXP, setUserXP] = useState<number>(0);
+  const [hubXP, setHubXP] = useState<number>(0);
   /** null = closed, "new" = start a competition, "<battleId>" = join as opponent */
   const [formFor, setFormFor] = useState<string | null>(null);
   const [dishTitle, setDishTitle] = useState("");
@@ -67,6 +71,13 @@ export default function KitchenStarsCompetitions() {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) { navigate("/auth"); return; }
     setUserId(session.user.id);
+
+    const [{ data: xpData }, { data: hubData }] = await Promise.all([
+      supabase.from("user_xp").select("total_xp").eq("user_id", session.user.id).maybeSingle(),
+      supabase.from("hub_xp").select("xp").eq("user_id", session.user.id).eq("hub", "kitchenstars").maybeSingle(),
+    ]);
+    setUserXP(xpData?.total_xp ?? 0);
+    setHubXP(hubData?.xp ?? 0);
 
     const { data: bs } = await supabase.from("kitchen_battles")
       .select("id, theme, description, status, deadline, created_by")
@@ -282,6 +293,30 @@ export default function KitchenStarsCompetitions() {
     load();
   };
 
+  const convertXP = async () => {
+    if (userXP < 1000) {
+      toast({ title: "Not enough XP", description: "You need at least 1 000 XP to convert.", variant: "destructive" });
+      return;
+    }
+    setBusy(true);
+    const { data, error } = await supabase.rpc("convert_xp_to_credits", {
+      p_xp_amount: 1000,
+      p_target: "ai_credits",
+    });
+    setBusy(false);
+    if (error) {
+      toast({ title: "Conversion failed", description: error.message, variant: "destructive" });
+      return;
+    }
+    const received = (data as any)?.credits_received ?? 1;
+    toast({
+      title: "XP converted!",
+      description: `You spent 1 000 XP and received ${received} AI credit.`,
+    });
+    await Promise.all([refreshCredits(), load()]);
+    window.dispatchEvent(new Event("ai-credits-updated"));
+  };
+
   const videoForm = (mode: "new" | string) => (
     <div className="space-y-3 p-4 rounded-xl border border-primary/30 bg-secondary/20">
       <div className="flex items-center justify-between">
@@ -375,15 +410,6 @@ export default function KitchenStarsCompetitions() {
 
   return (
     <>
-      <FloatingHowItWorks
-        title="How KitchenStars Competitions work"
-        steps={[
-          { title: "Start a competition", desc: `Tap "Start Competition", fill the form and upload your cooking video (${KITCHENSTARS_COSTS.competition_entry} credits).` },
-          { title: "An opponent joins", desc: "The next chef who uploads a cooking video to your competition becomes your opponent." },
-          { title: "X vs Y", desc: "Both videos appear one under the other as Chef X vs Chef Y." },
-          { title: "Everyone votes for free", desc: "Voting is completely free — every registered Unique user has exactly 1 vote per competition. The highest share wins the crown." },
-        ]}
-      />
       <div className="min-h-screen bg-background pt-20 pb-12 px-4">
         <div className="max-w-3xl mx-auto space-y-6">
           <section className="relative h-[76svh] min-h-[520px] overflow-hidden rounded-2xl bg-black">
@@ -406,10 +432,72 @@ export default function KitchenStarsCompetitions() {
                 KitchenStars Arena
               </h1>
               <p className="text-white/80 text-sm md:text-lg max-w-xl mb-3 leading-relaxed">
-                Two chefs upload cooking videos. Each pays 5 credits, the winner receives all 10 credits — voting is free for every registered Unique user, 1 vote per duel.
+                Two chefs upload cooking videos. Each pays 5 credits, the winner receives 10 XP — voting is free for every registered Unique user, 1 vote per duel. Collect 1 000 XP and convert them into 1 AI credit.
               </p>
             </div>
           </section>
+
+          {/* How it works */}
+          <Card className="border-orange-500/20 bg-gradient-to-br from-orange-500/5 to-background">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Info className="h-5 w-5 text-orange-500" /> How KitchenStars Competitions work
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="flex items-start gap-3 p-3 rounded-xl border border-primary/20 bg-secondary/20">
+                  <Coins className="h-5 w-5 text-orange-500 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-sm">5 credits entry fee</p>
+                    <p className="text-xs text-muted-foreground">Both the starter and the opponent pay 5 credits to compete.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-3 rounded-xl border border-primary/20 bg-secondary/20">
+                  <Video className="h-5 w-5 text-orange-500 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-sm">Chef X vs Chef Y</p>
+                    <p className="text-xs text-muted-foreground">Two cooking videos are paired one under the other.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-3 rounded-xl border border-primary/20 bg-secondary/20">
+                  <Users className="h-5 w-5 text-orange-500 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-sm">Free voting</p>
+                    <p className="text-xs text-muted-foreground">Every registered Unique user gets exactly 1 free vote per duel.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-3 rounded-xl border border-primary/20 bg-secondary/20">
+                  <Trophy className="h-5 w-5 text-orange-500 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-sm">10 XP prize</p>
+                    <p className="text-xs text-muted-foreground">The winning chef receives 10 XP.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/20 bg-secondary/20 p-3">
+                <div className="flex items-center gap-2">
+                  <Coins className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium">Credits: {balance}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Flame className="h-4 w-4 text-orange-500" />
+                  <span className="text-sm font-medium">Kitchen XP: {hubXP}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Trophy className="h-4 w-4 text-yellow-500" />
+                  <span className="text-sm font-medium">Total XP: {userXP}</span>
+                </div>
+              </div>
+
+              {userXP >= 1000 && (
+                <Button variant="outline" className="w-full" onClick={convertXP} disabled={busy}>
+                  <RefreshCw className="h-4 w-4 mr-2" /> Convert 1 000 XP to 1 credit
+                </Button>
+              )}
+            </CardContent>
+          </Card>
 
           {/* Public competition directory — tap any competition to open it */}
           {!loading && battles.length > 0 && (
