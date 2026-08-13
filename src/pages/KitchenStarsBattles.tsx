@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Trophy, Plus, Flame, MessageCircle, Send, Trash2, Video, Swords, X } from "lucide-react";
+import { ChefHat, Trophy, Plus, Flame, MessageCircle, Send, Trash2, Video, Swords, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -390,9 +390,6 @@ export default function KitchenStarsCompetitions() {
             <Button size="lg" onClick={() => { setFormFor("new"); setDishTitle(""); setDishDesc(""); setDishFile(null); }} className="w-full">
               <Plus className="h-4 w-4 mr-2" /> Start Competition
             </Button>
-            <Button size="lg" variant="outline" onClick={() => navigate("/masterchef/duel-upload")} className="w-full">
-              <Swords className="h-4 w-4 mr-2" /> Upload both duel videos (Chef X vs Chef Y)
-            </Button>
             </div>
           )}
 
@@ -412,8 +409,9 @@ export default function KitchenStarsCompetitions() {
               const totalVotes = (a?.vote_count || 0) + (b?.vote_count || 0);
               const bothIn = !!a && !!b;
               const canVote = isOpen && bothIn;
-              const winnerId = !bothIn || totalVotes === 0 ? null
-                : (a!.vote_count === b!.vote_count ? null : (a!.vote_count > b!.vote_count ? a!.id : b!.id));
+              const winnerId = !a || !b || totalVotes === 0
+                ? null
+                : (a.vote_count === b.vote_count ? null : (a.vote_count > b.vote_count ? a.id : b.id));
 
               return (
                 <Card key={battle.id} className="border-orange-500/20">
