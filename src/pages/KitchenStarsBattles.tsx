@@ -22,6 +22,7 @@ import KitchenStarsLeaderboard from "@/components/kitchen-battles/KitchenStarsLe
 import CosmeticMediaFrame from "@/components/battle-coins/CosmeticMediaFrame";
 import { useEquippedCosmetics } from "@/hooks/useEquippedCosmetics";
 import { useChampionBadges } from "@/hooks/useChampionBadges";
+import { frameClassForCode } from "@/lib/cosmeticFrames";
 
 
 type Battle = { id: string; theme: string; description: string | null; status: string; deadline: string; created_by: string | null };
@@ -384,14 +385,14 @@ export default function KitchenStarsCompetitions() {
         </div>
         {p.video_url ? (
           <CosmeticMediaFrame
-            frameClass={mediaCosmetics[p.user_id]?.frame?.css_class}
+            frameClass={frameClassForCode(mediaCosmetics[p.user_id]?.frame?.code)}
             championRank={mediaChampions[p.user_id]?.rank}
           >
             <video src={p.video_url} controls playsInline className="w-full rounded-lg bg-black max-h-[60vh]" />
           </CosmeticMediaFrame>
         ) : p.image_url ? (
           <CosmeticMediaFrame
-            frameClass={mediaCosmetics[p.user_id]?.frame?.css_class}
+            frameClass={frameClassForCode(mediaCosmetics[p.user_id]?.frame?.code)}
             championRank={mediaChampions[p.user_id]?.rank}
           >
             <img src={p.image_url} alt={p.dish_title} loading="lazy" className="w-full rounded-lg object-cover max-h-72" />
