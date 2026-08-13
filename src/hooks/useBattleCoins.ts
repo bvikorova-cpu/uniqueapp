@@ -5,9 +5,9 @@ import { useToast } from "@/hooks/use-toast";
 /** 1 AI credit buys this many Battle Coins (one-way only). */
 export const COINS_PER_CREDIT = 100;
 /** Duel entry fee, paid exclusively in Battle Coins. */
-export const BATTLE_ENTRY_COINS = 500;
+export const BATTLE_ENTRY_COINS = 100;
 /** Prize paid to the winner of a duel. */
-export const BATTLE_PRIZE_COINS = 1000;
+export const BATTLE_PRIZE_COINS = 160;
 
 export const BATTLE_COINS_UPDATED = "battle-coins-updated";
 
