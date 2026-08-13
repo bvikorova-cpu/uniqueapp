@@ -389,6 +389,8 @@ export default function ReelBattles() {
           <CosmeticMediaFrame
             frameClass={frameClassForCode(mediaCosmetics[p.user_id]?.frame?.code)}
             championRank={mediaChampions[p.user_id]?.rank}
+            sticker={mediaCosmetics[p.user_id]?.sticker}
+            badge={mediaCosmetics[p.user_id]?.badge}
           >
             <video src={p.video_url} controls playsInline className="w-full rounded-lg bg-black max-h-[60vh]" />
           </CosmeticMediaFrame>
