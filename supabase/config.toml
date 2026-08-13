@@ -441,5 +441,3 @@ verify_jwt = true
 [functions.emotion-exchange-match]
 verify_jwt = true
 
-[functions.face-insight-ai]
-verify_jwt = true
