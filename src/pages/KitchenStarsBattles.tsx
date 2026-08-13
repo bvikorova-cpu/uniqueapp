@@ -619,11 +619,16 @@ export default function KitchenStarsCompetitions() {
                         <Badge variant={myEntry ? "default" : "outline"} className={myEntry ? "bg-green-600 hover:bg-green-700" : "text-muted-foreground"}>
                           {myEntry ? "✓ You're in" : `${parts.length}/2 chefs`}
                         </Badge>
-                        <Badge variant={isOpen ? "default" : "secondary"}>{isOpen ? "OPEN" : "CLOSED"}</Badge>
+                        <Badge variant={isOpen ? "default" : "secondary"}>{isOpen ? (waitingForOpponent ? "WAITING" : "OPEN") : "CLOSED"}</Badge>
                       </div>
                     </CardTitle>
                     {battle.description && <p className="text-sm text-muted-foreground">{battle.description}</p>}
-                    <p className="text-xs text-muted-foreground">Deadline: {new Date(battle.deadline).toLocaleString()} · {totalVotes} total votes</p>
+                    <p className="text-xs text-muted-foreground">
+                      {waitingForOpponent
+                        ? "Waiting for an opponent — no time limit, the entry fee stays in the pot"
+                        : `Voting deadline: ${new Date(battle.deadline).toLocaleString()}`} · {totalVotes} total votes
+                    </p>
+
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {renderSide(battle, a, "X", totalVotes, canVote, myVote, winnerId === a?.id)}
