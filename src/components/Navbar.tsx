@@ -90,6 +90,7 @@ const Navbar = () => {
 
   const mainNavItems = [
     { path: "/wall", label: "Wall", icon: MessageSquare },
+    { path: "/reel-battles", label: "Reel Battles", icon: Film },
     { path: "/games-hub", label: "Games", icon: Gamepad2 },
     { path: "/jobs", label: "Work", icon: Briefcase },
     { path: "/promotions", label: "Promotions", icon: Megaphone },
