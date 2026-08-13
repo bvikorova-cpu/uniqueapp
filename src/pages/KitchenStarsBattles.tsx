@@ -15,6 +15,8 @@ import { useToast } from "@/hooks/use-toast";
 import { DropZone, type DropZoneValidation } from "@/components/kitchen-battles/DropZone";
 import { useBattleCoins, BATTLE_ENTRY_COINS, BATTLE_PRIZE_COINS } from "@/hooks/useBattleCoins";
 import BattleCoinsWallet from "@/components/battle-coins/BattleCoinsWallet";
+import AutoMatchQueue from "@/components/battle-coins/AutoMatchQueue";
+
 import MonthlyChampionRewardsCard from "@/components/battle-coins/MonthlyChampionRewardsCard";
 import BattleCosmeticsShop from "@/components/battle-coins/BattleCosmeticsShop";
 import masterchefHero from "@/assets/masterchef-hero-v2.mp4.asset.json";
@@ -578,7 +580,15 @@ export default function KitchenStarsCompetitions() {
             )
           )}
 
+          <AutoMatchQueue
+            module="kitchenstars"
+            mediaLabel="dish video"
+            onMatched={async (battleId) => { await load(); openCompetition(battleId); }}
+            onQueued={() => load()}
+          />
+
           {formFor === "new" ? videoForm("new") : (
+
             <div className="space-y-2">
             <Button size="lg" onClick={() => { setFormFor("new"); setDishTitle(""); setDishDesc(""); setDishFile(null); }} className="w-full">
               <Plus className="h-4 w-4 mr-2" /> Start Competition
