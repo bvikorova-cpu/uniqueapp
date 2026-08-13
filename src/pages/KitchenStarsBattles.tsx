@@ -19,6 +19,9 @@ import MonthlyChampionRewardsCard from "@/components/battle-coins/MonthlyChampio
 import BattleCosmeticsShop from "@/components/battle-coins/BattleCosmeticsShop";
 import masterchefHero from "@/assets/masterchef-hero-v2.mp4.asset.json";
 import KitchenStarsLeaderboard from "@/components/kitchen-battles/KitchenStarsLeaderboard";
+import CosmeticMediaFrame from "@/components/battle-coins/CosmeticMediaFrame";
+import { useEquippedCosmetics } from "@/hooks/useEquippedCosmetics";
+import { useChampionBadges } from "@/hooks/useChampionBadges";
 
 
 type Battle = { id: string; theme: string; description: string | null; status: string; deadline: string; created_by: string | null };
@@ -41,6 +44,10 @@ export default function KitchenStarsCompetitions() {
   const { coins: balance, refresh: refreshCredits } = useBattleCoins("kitchenstars");
   const [battles, setBattles] = useState<Battle[]>([]);
   const [participants, setParticipants] = useState<Record<string, Participant[]>>({});
+  const participantUserIds = Object.values(participants).flat().map((p) => p.user_id);
+  // Equipped frame cosmetics + champion rank frames shown around duel media.
+  const mediaCosmetics = useEquippedCosmetics(participantUserIds);
+  const mediaChampions = useChampionBadges(participantUserIds);
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
   const [myVotes, setMyVotes] = useState<Record<string, MyVote>>({});
   const [userId, setUserId] = useState<string | null>(null);
