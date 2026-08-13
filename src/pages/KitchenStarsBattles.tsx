@@ -9,7 +9,7 @@ import { ChefHat, Trophy, Plus, Flame, MessageCircle, Send, Trash2, Video, Sword
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { DropZone } from "@/components/kitchen-battles/DropZone";
+import { DropZone, type DropZoneValidation } from "@/components/kitchen-battles/DropZone";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useMasterChefAccess, KITCHENSTARS_COSTS } from "@/hooks/useMasterChefAccess";
 
@@ -84,17 +84,17 @@ export default function KitchenStarsCompetitions() {
 
   const formatBytes = (b: number) => b < 1024 * 1024 ? `${(b / 1024).toFixed(0)} KB` : `${(b / 1024 / 1024).toFixed(2)} MB`;
 
-  const validateFile = (file: File): { ok: true } | { ok: false; title: string; description: string } => {
+  const validateFile = (file: File): DropZoneValidation => {
     if (!ALLOWED_VIDEO.includes(file.type)) {
-      return { ok: false, title: "Video required", description: `"${file.name}" is not a supported video. Upload MP4, WEBM or MOV, max 50 MB.` };
+      return { ok: false, title: "Video required", reason: `"${file.name}" is not a supported video format.`, suggestion: "Upload MP4, WEBM or MOV, max 50 MB." };
     }
     if (file.size > MAX_VIDEO) {
-      return { ok: false, title: "Video too large", description: `Your video is ${formatBytes(file.size)} — the limit is 50 MB. Trim it or re-encode at 720p.` };
+      return { ok: false, title: "Video too large", reason: `Your video is ${formatBytes(file.size)} — the limit is 50 MB.`, suggestion: "Trim it or re-encode at 720p." };
     }
     if (file.size === 0) {
-      return { ok: false, title: "Empty file", description: "The selected file is 0 bytes. Pick another video." };
+      return { ok: false, title: "Empty file", reason: "The selected file is 0 bytes.", suggestion: "Pick another video and try again." };
     }
-    return { ok: true };
+    return { ok: true, type: "video" };
   };
 
   const resetForm = () => { setFormFor(null); setDishTitle(""); setDishDesc(""); setDishFile(null); };
@@ -124,7 +124,7 @@ export default function KitchenStarsCompetitions() {
       toast({ title: "Cooking video required", description: "Upload a video of you cooking the dish.", variant: "destructive" }); return null;
     }
     const v = validateFile(dishFile);
-    if (v.ok === false) { toast({ title: v.title, description: v.description, variant: "destructive" }); return null; }
+    if (v.ok === false) { toast({ title: v.title, description: `${v.reason} ${v.suggestion}`, variant: "destructive" }); return null; }
     return dishFile;
   };
 
@@ -232,7 +232,7 @@ export default function KitchenStarsCompetitions() {
         onChange={e => setDishTitle(e.target.value)} />
       <Textarea placeholder="Short description of your dish (optional)" value={dishDesc} maxLength={500}
         onChange={e => setDishDesc(e.target.value)} rows={3} />
-      <DropZone file={dishFile} onFile={setDishFile} accept="video/mp4,video/webm,video/quicktime" />
+      <DropZone file={dishFile} onChange={setDishFile} validate={validateFile} accept="video/mp4,video/webm,video/quicktime" hint="Cooking video: MP4 / WEBM / MOV, max 50 MB" />
       <p className="text-xs text-muted-foreground">
         Cooking video only — MP4 / WEBM / MOV, max 50 MB. Entry costs {KITCHENSTARS_COSTS.competition_entry} credits (you have {balance}).
       </p>
