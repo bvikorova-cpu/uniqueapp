@@ -68147,9 +68147,10 @@ export type Database = {
       }
       erf: { Args: { x: number }; Returns: number }
       evaluate_xp_bets: { Args: never; Returns: number }
-      exchange_credits_for_battle_coins:
-        | { Args: { _credits: number }; Returns: Json }
-        | { Args: { _credits: number; _module?: string }; Returns: Json }
+      exchange_credits_for_battle_coins: {
+        Args: { _credits: number; _module?: string }
+        Returns: Json
+      }
       exclusive_is_matched: {
         Args: { _a: string; _b: string }
         Returns: boolean
@@ -69775,9 +69776,10 @@ export type Database = {
         }
         Returns: undefined
       }
-      purchase_battle_cosmetic:
-        | { Args: { _code: string }; Returns: Json }
-        | { Args: { _code: string; _module?: string }; Returns: Json }
+      purchase_battle_cosmetic: {
+        Args: { _code: string; _module?: string }
+        Returns: Json
+      }
       purchase_brain_duel_powerup: {
         Args: { p_powerup_type: string; p_price: number }
         Returns: undefined
