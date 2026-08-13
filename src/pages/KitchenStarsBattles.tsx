@@ -387,6 +387,8 @@ export default function KitchenStarsCompetitions() {
           <CosmeticMediaFrame
             frameClass={frameClassForCode(mediaCosmetics[p.user_id]?.frame?.code)}
             championRank={mediaChampions[p.user_id]?.rank}
+            sticker={mediaCosmetics[p.user_id]?.sticker}
+            badge={mediaCosmetics[p.user_id]?.badge}
           >
             <video src={p.video_url} controls playsInline className="w-full rounded-lg bg-black max-h-[60vh]" />
           </CosmeticMediaFrame>
@@ -394,6 +396,8 @@ export default function KitchenStarsCompetitions() {
           <CosmeticMediaFrame
             frameClass={frameClassForCode(mediaCosmetics[p.user_id]?.frame?.code)}
             championRank={mediaChampions[p.user_id]?.rank}
+            sticker={mediaCosmetics[p.user_id]?.sticker}
+            badge={mediaCosmetics[p.user_id]?.badge}
           >
             <img src={p.image_url} alt={p.dish_title} loading="lazy" className="w-full rounded-lg object-cover max-h-72" />
           </CosmeticMediaFrame>
