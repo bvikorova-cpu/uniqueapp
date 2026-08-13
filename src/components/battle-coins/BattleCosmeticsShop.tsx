@@ -53,13 +53,13 @@ export default function BattleCosmeticsShop({ coins, module = "kitchenstars" }: 
     if (coins < item.price_coins) {
       toast({
         title: "Not enough Battle Coins",
-        description: `${item.name} costs ${item.price_coins.toLocaleString()} coins — you have ${coins.toLocaleString()}.`,
+        description: `${item.name} costs ${item.price_coins.toLocaleString()} coins — you have ${coins.toLocaleString()} in ${BATTLE_MODULE_LABELS[module]}.`,
         variant: "destructive",
       });
       return;
     }
     setBusy(item.code);
-    const { error } = await supabase.rpc("purchase_battle_cosmetic", { _code: item.code });
+    const { error } = await (supabase as any).rpc("purchase_battle_cosmetic", { _code: item.code, _module: module });
     setBusy(null);
     if (error) {
       toast({
