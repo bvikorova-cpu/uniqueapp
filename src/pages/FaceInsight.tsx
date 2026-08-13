@@ -15,7 +15,7 @@ import { exportFaceReportPDF } from "@/lib/exportFaceReportPDF";
 import { downloadFaceShareCard } from "@/lib/faceShareCard";
 import { FaceInsightHero } from "@/components/face-insight/FaceInsightHero";
 import {
-  ScanFace, Sparkles, Loader2, Download, Share2, Trash2, FileText, Users, History, Gem, HelpCircle, Camera,
+  ScanFace, Sparkles, Loader2, Download, Share2, Trash2, FileText, Users, History, Gem, HelpCircle, Camera, ImagePlus,
 } from "lucide-react";
 
 type Report = {
@@ -44,7 +44,8 @@ const fileToDataUrl = (file: File) =>
 const PhotoPicker = ({
   label, value, onPick, id,
 }: { label: string; value: string | null; onPick: (dataUrl: string | null) => void; id: string }) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
+  const uploadRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const handle = async (file?: File | null) => {
@@ -66,26 +67,42 @@ const PhotoPicker = ({
       <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</p>
       <button
         type="button"
-        onClick={() => inputRef.current?.click()}
+        onClick={() => uploadRef.current?.click()}
         className="w-full aspect-square rounded-2xl border-2 border-dashed border-primary/40 bg-primary/5 overflow-hidden flex flex-col items-center justify-center gap-2 hover:border-primary transition-colors"
       >
         {value ? (
           <img src={value} alt={`${label} preview`} className="w-full h-full object-cover" />
         ) : (
           <>
-            <Camera className="w-8 h-8 text-primary" />
-            <span className="text-xs text-muted-foreground px-4 text-center">Tap to take or choose a clear front-facing photo</span>
+            <ImagePlus className="w-8 h-8 text-primary" />
+            <span className="text-xs text-muted-foreground px-4 text-center">Upload a clear front-facing photo</span>
           </>
         )}
       </button>
+      <div className="grid grid-cols-2 gap-2">
+        <Button type="button" variant="outline" size="sm" onClick={() => uploadRef.current?.click()}>
+          <ImagePlus className="w-4 h-4 mr-1" /> Upload photo
+        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={() => cameraRef.current?.click()}>
+          <Camera className="w-4 h-4 mr-1" /> Take photo
+        </Button>
+      </div>
       <input
-        ref={inputRef}
+        ref={uploadRef}
         id={id}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => { handle(e.target.files?.[0]); e.currentTarget.value = ""; }}
+      />
+      <input
+        ref={cameraRef}
+        id={`${id}-camera`}
         type="file"
         accept="image/*"
         capture="user"
         className="hidden"
-        onChange={(e) => handle(e.target.files?.[0])}
+        onChange={(e) => { handle(e.target.files?.[0]); e.currentTarget.value = ""; }}
       />
       {value && (
         <Button variant="ghost" size="sm" className="w-full" onClick={() => onPick(null)}>
@@ -95,6 +112,7 @@ const PhotoPicker = ({
     </div>
   );
 };
+
 
 const ReportView = ({ report, photo }: { report: Report; photo?: string | null }) => (
   <Card className="overflow-hidden border-primary/20">
