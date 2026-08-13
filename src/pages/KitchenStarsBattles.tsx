@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { DropZone, type DropZoneValidation } from "@/components/kitchen-battles/DropZone";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useMasterChefAccess, KITCHENSTARS_COSTS } from "@/hooks/useMasterChefAccess";
+import masterchefHero from "@/assets/masterchef-hero-v2.mp4.asset.json";
 
 type Battle = { id: string; theme: string; description: string | null; status: string; deadline: string; created_by: string | null };
 type Participant = { id: string; battle_id: string; user_id: string; dish_title: string; description: string | null; image_url: string | null; video_url: string | null; media_type: string | null; vote_count: number };
@@ -328,12 +329,31 @@ export default function KitchenStarsCompetitions() {
       />
       <div className="min-h-screen bg-background pt-20 pb-12 px-4">
         <div className="max-w-3xl mx-auto space-y-6">
-          <div className="text-center">
-            <h1 className="text-3xl md:text-5xl font-black bg-gradient-to-r from-orange-500 via-primary to-accent bg-clip-text text-transparent mb-2">
-              KitchenStars Competitions
-            </h1>
-            <p className="text-muted-foreground text-base md:text-lg">Two chefs, two cooking videos — the platform votes 👑</p>
+          <div className="relative w-full h-[260px] sm:h-[360px] rounded-2xl overflow-hidden">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="metadata"
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ filter: "brightness(0.6) saturate(1.2)" }}
+              src={masterchefHero.url}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+            <div className="relative z-10 h-full flex flex-col items-center justify-end text-center px-4 pb-6">
+              <Badge className="mb-3 bg-black/60 border border-orange-400/50 text-orange-200 backdrop-blur-xl">
+                <ChefHat className="h-3.5 w-3.5 mr-1.5" /> Cook-off Arena
+              </Badge>
+              <h1 className="text-3xl md:text-5xl font-black bg-gradient-to-r from-orange-400 via-amber-300 to-primary bg-clip-text text-transparent drop-shadow-lg">
+                KitchenStars Competitions
+              </h1>
+              <p className="mt-2 text-sm md:text-lg text-white/90 drop-shadow-md">
+                Two chefs, two cooking videos — the platform votes 👑
+              </p>
+            </div>
           </div>
+
 
           {formFor === "new" ? videoForm("new") : (
             <div className="space-y-2">
