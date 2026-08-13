@@ -86,20 +86,39 @@ function rgbToHsv(r: number, g: number, b: number): [number, number, number] {
   return [h, mx > 0 ? d / mx : 0, mx];
 }
 
+/** Converts HSV (h in degrees, s/v 0..1) back to RGB 0..255. */
+function hsvToRgb(h: number, s: number, v: number): [number, number, number] {
+  const c = v * s;
+  const hp = (h % 360) / 60;
+  const x = c * (1 - Math.abs((hp % 2) - 1));
+  let r = 0;
+  let g = 0;
+  let b = 0;
+  if (hp < 1) [r, g, b] = [c, x, 0];
+  else if (hp < 2) [r, g, b] = [x, c, 0];
+  else if (hp < 3) [r, g, b] = [0, c, x];
+  else if (hp < 4) [r, g, b] = [0, x, c];
+  else if (hp < 5) [r, g, b] = [x, 0, c];
+  else [r, g, b] = [c, 0, x];
+  const m = v - c;
+  return [clamp((r + m) * 255), clamp((g + m) * 255), clamp((b + m) * 255)];
+}
+
 const clamp = (v: number) => (v < 0 ? 0 : v > 255 ? 255 : v);
 
-/** Recolors skin pixels and (optionally) white fabric / shoe pixels in place. */
+/** Recolors skin pixels and white fabric pixels in place. */
 export function tintDollBody(
   data: Uint8ClampedArray,
   width: number,
   height: number,
   skin: [number, number, number],
   fabric: [number, number, number] | null,
-  shoe: [number, number, number] | null,
+  _shoe: [number, number, number] | null,
 ) {
   const headEnd = Math.round(height * 0.22);
-  const shoeStart = Math.round(height * 0.9);
   const skinRatio = [skin[0] / REF_SKIN[0], skin[1] / REF_SKIN[1], skin[2] / REF_SKIN[2]];
+  const [fh, fs] = fabric ? rgbToHsv(fabric[0], fabric[1], fabric[2]) : [0, 0, 0];
+  const fabricV = fabric ? Math.max(fabric[0], Math.max(fabric[1], fabric[2])) / 255 : 1;
 
   for (let i = 0; i < data.length; i += 4) {
     if (data[i + 3] < 8) continue;
@@ -116,27 +135,33 @@ export function tintDollBody(
       continue;
     }
 
-    // Neutral bright pixels = white fabric (below the head) or shoes (bottom band).
-    if (s <= 0.14 && v >= 0.7) {
+    // Neutral bright pixels below the head = white garment fabric (incl. shoes).
+    if (fabric && s <= 0.16 && v >= 0.62) {
       const y = Math.floor(i / 4 / width);
       if (y < headEnd) continue; // keep eye whites intact
-      const target = y >= shoeStart ? shoe ?? fabric : fabric;
-      if (!target) continue;
-      data[i] = clamp((r / 255) * target[0]);
-      data[i + 1] = clamp((g / 255) * target[1]);
-      data[i + 2] = clamp((b / 255) * target[2]);
+      // Keep the artwork's own shading by scaling the target value with it.
+      const shade = 0.55 + 0.45 * v;
+      const [nr, ng, nb] = hsvToRgb(fh, fs, Math.min(1, fabricV * shade));
+      data[i] = nr;
+      data[i + 1] = ng;
+      data[i + 2] = nb;
     }
   }
 }
 
-/** Recolors an extracted hair layer to the chosen hair color. */
+/** Recolors an extracted hair layer, keeping the artwork's shading. */
 export function tintHair(data: Uint8ClampedArray, hair: [number, number, number]) {
-  const ratio = [hair[0] / REF_HAIR[0], hair[1] / REF_HAIR[1], hair[2] / REF_HAIR[2]];
+  const [th, ts, tv] = rgbToHsv(hair[0], hair[1], hair[2]);
+  const [, , refV] = rgbToHsv(REF_HAIR[0], REF_HAIR[1], REF_HAIR[2]);
   for (let i = 0; i < data.length; i += 4) {
     if (data[i + 3] < 8) continue;
-    data[i] = clamp(data[i] * ratio[0]);
-    data[i + 1] = clamp(data[i + 1] * ratio[1]);
-    data[i + 2] = clamp(data[i + 2] * ratio[2]);
+    const [, , v] = rgbToHsv(data[i], data[i + 1], data[i + 2]);
+    // relative luminance of this pixel vs the reference hair tone
+    const shade = Math.min(1.6, v / (refV || 0.5));
+    const [nr, ng, nb] = hsvToRgb(th, ts, Math.min(1, tv * (0.55 + 0.45 * shade)));
+    data[i] = nr;
+    data[i + 1] = ng;
+    data[i + 2] = nb;
   }
 }
 
