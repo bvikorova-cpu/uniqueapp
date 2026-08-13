@@ -68196,6 +68196,18 @@ export type Database = {
           xp_reward: number
         }[]
       }
+      get_kitchenstars_leaderboard: {
+        Args: { _limit?: number }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          duels: number
+          kitchen_xp: number
+          total_votes: number
+          user_id: string
+          wins: number
+        }[]
+      }
       get_last_week_xp_winners: {
         Args: never
         Returns: {
