@@ -67626,6 +67626,17 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      enter_kitchen_competition: {
+        Args: {
+          _battle_id: string
+          _description: string
+          _dish_title: string
+          _media_mime: string
+          _media_size: number
+          _video_url: string
+        }
+        Returns: Json
+      }
       erf: { Args: { x: number }; Returns: number }
       evaluate_xp_bets: { Args: never; Returns: number }
       exclusive_is_matched: {
@@ -69388,6 +69399,7 @@ export type Database = {
         }
         Returns: string
       }
+      settle_kitchen_competitions: { Args: never; Returns: number }
       share_secret_santa_gift_to_story: {
         Args: { p_gift_id: string }
         Returns: {

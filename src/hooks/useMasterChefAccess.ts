@@ -13,7 +13,7 @@ export type ChefPassType = keyof typeof CHEF_PASS_OPTIONS;
 
 /** Per-action credit costs inside KitchenStars. */
 export const KITCHENSTARS_COSTS = {
-  competition_entry: 3,
+  competition_entry: 5,
   battle_entry: 3,
   ai_recipe: 3,
   ai_coach: 3,
