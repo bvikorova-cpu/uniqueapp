@@ -252,31 +252,7 @@ export default function ComedyLiveViewer() {
 
           {/* Chat Sidebar */}
           <div>
-            <Card className="p-4 h-[600px] flex flex-col">
-              <h3 className="font-bold mb-4">Live Chat</h3>
-              
-              <div className="flex-1 overflow-y-auto space-y-3 mb-4">
-                {chatMessages.map((msg) => (
-                  <div key={msg.id} className="text-sm">
-                    <span className="font-medium">{msg.sender?.full_name || 'Anonymous'}: </span>
-                    <span>{msg.message}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex gap-2">
-                <Input id="comedy-chat-input" placeholder="Type a message..." />
-                <Button size="icon" onClick={() => {
-                  const input = document.getElementById("comedy-chat-input") as HTMLInputElement | null;
-                  const text = input?.value?.trim();
-                  if (!text) return;
-                  toast.success("Message sent!");
-                  if (input) input.value = "";
-                }}>
-                  <Send className="h-4 w-4" />
-                </Button>
-              </div>
-            </Card>
+            <ComedyLiveChat showId={showId!} canModerate={isHost} />
           </div>
         </div>
       </div>
