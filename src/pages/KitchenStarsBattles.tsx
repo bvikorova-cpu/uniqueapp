@@ -194,8 +194,13 @@ export default function KitchenStarsCompetitions() {
   };
 
   const vote = async (battleId: string, participantId: string) => {
+    if (myVotes[battleId]) {
+      toast({ title: "Vote already used", description: "You have exactly 1 vote per duel and it can't be changed.", variant: "destructive" });
+      return;
+    }
     const { data, error } = await supabase.functions.invoke("kitchen-battle-vote", {
       body: { battleId, participantId, voteType: "like" } });
+
     if (error || data?.error) {
       toast({ title: "Vote failed", description: error?.message || data?.error, variant: "destructive" });
       return;
