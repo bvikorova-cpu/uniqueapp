@@ -3,37 +3,42 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Coins, ArrowRight, Info } from "lucide-react";
-import { useBattleCoins, COINS_PER_CREDIT, BATTLE_ENTRY_COINS, BATTLE_PRIZE_COINS } from "@/hooks/useBattleCoins";
+import { useBattleCoins, COINS_PER_CREDIT, BATTLE_ENTRY_COINS, BATTLE_PRIZE_COINS, BATTLE_MODULE_LABELS, type BattleModule } from "@/hooks/useBattleCoins";
 
 const PACKS = [1, 5, 10, 25];
 
 /**
  * Battle Coins wallet + one-way credit exchange.
- * Coins are the only currency accepted in KitchenStars and Reel Battles, which keeps
- * purchased AI credits isolated from competitive play.
+ * Every module has its OWN wallet: coins bought here stay in this section and can never be
+ * used in another section, which keeps purchased AI credits isolated from competitive play.
  */
-export default function BattleCoinsWallet({ accent = "primary" }: { accent?: "primary" | "orange" }) {
-  const { coins, credits, busy, exchange } = useBattleCoins();
+export default function BattleCoinsWallet({
+  accent = "primary",
+  module = "kitchenstars",
+}: { accent?: "primary" | "orange"; module?: BattleModule }) {
+  const { coins, credits, busy, exchange } = useBattleCoins(module);
   const [selected, setSelected] = useState<number>(5);
   const accentText = accent === "orange" ? "text-orange-500" : "text-primary";
   const accentBorder = accent === "orange" ? "border-orange-500/20" : "border-primary/20";
+  const moduleLabel = BATTLE_MODULE_LABELS[module];
 
   return (
     <Card className={accentBorder}>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <Coins className={`h-5 w-5 ${accentText}`} /> Battle Coins wallet
+          <Coins className={`h-5 w-5 ${accentText}`} /> {moduleLabel} Battle Coins
         </CardTitle>
         <p className="text-xs text-muted-foreground">
-          Duels run on Battle Coins only — your AI credits stay untouched everywhere else on Unique.
+          This wallet works only in {moduleLabel} — coins never transfer to other sections, and your AI credits stay untouched.
         </p>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-xl border border-primary/20 bg-secondary/20 p-3">
-            <p className="text-xs text-muted-foreground">Battle Coins</p>
+            <p className="text-xs text-muted-foreground">{moduleLabel} coins</p>
             <p className="text-2xl font-black tabular-nums">{coins.toLocaleString()}</p>
           </div>
+
           <div className="rounded-xl border border-primary/20 bg-secondary/20 p-3">
             <p className="text-xs text-muted-foreground">AI credits</p>
             <p className="text-2xl font-black tabular-nums">{credits.toLocaleString()}</p>
