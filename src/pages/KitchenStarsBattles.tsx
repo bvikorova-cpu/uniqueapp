@@ -4,20 +4,27 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { ChefHat, Trophy, ThumbsUp, ThumbsDown, Plus, Flame, MessageCircle, Send, Trash2 } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { ChefHat, Trophy, Plus, Flame, MessageCircle, Send, Trash2, Video, Swords } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { DropZone } from "@/components/kitchen-battles/DropZone";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { useMasterChefAccess, KITCHENSTARS_COSTS } from "@/hooks/useMasterChefAccess";
 
 type Battle = { id: string; theme: string; description: string | null; status: string; deadline: string; prize_pool: number };
 type Participant = { id: string; battle_id: string; user_id: string; dish_title: string; description: string | null; image_url: string | null; video_url: string | null; media_type: string | null; vote_count: number; dislike_count: number };
 type Comment = { id: string; battle_id: string; participant_id: string | null; user_id: string; content: string; created_at: string };
 type MyVote = { participant_id: string; vote_type: string };
 
+const ALLOWED_VIDEO = ["video/mp4", "video/webm", "video/quicktime"];
+const MAX_VIDEO = 50 * 1024 * 1024; // 50 MB
+
 export default function KitchenStarsBattles() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { spendAction } = useMasterChefAccess();
   const [battles, setBattles] = useState<Battle[]>([]);
   const [participants, setParticipants] = useState<Record<string, Participant[]>>({});
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
@@ -28,14 +35,8 @@ export default function KitchenStarsBattles() {
   const [entryFor, setEntryFor] = useState<string | null>(null);
   const [dishTitle, setDishTitle] = useState("");
   const [dishDesc, setDishDesc] = useState("");
-  const [dishImage, setDishImage] = useState("");
   const [dishFile, setDishFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
-
-  const ALLOWED_IMAGE = ["image/jpeg", "image/png", "image/webp"];
-  const ALLOWED_VIDEO = ["video/mp4", "video/webm", "video/quicktime"];
-  const MAX_IMAGE = 8 * 1024 * 1024;   // 8 MB
-  const MAX_VIDEO = 50 * 1024 * 1024;  // 50 MB
   const [commentDraft, setCommentDraft] = useState<Record<string, string>>({});
   const [showComments, setShowComments] = useState<Record<string, boolean>>({});
 
@@ -52,7 +53,7 @@ export default function KitchenStarsBattles() {
     if (bs && bs.length) {
       const ids = bs.map(b => b.id);
       const [{ data: ps }, { data: cs }, { data: vs }] = await Promise.all([
-        supabase.from("kitchen_battle_participants").select("*").in("battle_id", ids),
+        supabase.from("kitchen_battle_participants").select("*").in("battle_id", ids).order("created_at", { ascending: true }),
         supabase.from("kitchen_battle_comments").select("*").in("battle_id", ids).order("created_at", { ascending: true }),
         supabase.from("kitchen_battle_votes").select("battle_id, participant_id, vote_type").eq("voter_id", session.user.id).in("battle_id", ids),
       ]);
@@ -62,7 +63,6 @@ export default function KitchenStarsBattles() {
         grouped[p.battle_id] = grouped[p.battle_id] || [];
         grouped[p.battle_id].push(p);
       });
-      Object.values(grouped).forEach(arr => arr.sort((a, b) => (b.vote_count - b.dislike_count) - (a.vote_count - a.dislike_count)));
       setParticipants(grouped);
 
       const cgrouped: Record<string, Comment[]> = {};
@@ -89,7 +89,7 @@ export default function KitchenStarsBattles() {
       toast({ title: "Error", description: error?.message || data?.error, variant: "destructive" });
       return;
     }
-    toast({ title: "Battle created!" });
+    toast({ title: "Duel created!", description: "Two chefs can now upload their cooking videos." });
     load();
   };
 
@@ -98,136 +98,96 @@ export default function KitchenStarsBattles() {
   const validateFile = (file: File):
     | { ok: true; type: "image" | "video" }
     | { ok: false; title: string; reason: string; suggestion: string } => {
-    const isImage = ALLOWED_IMAGE.includes(file.type);
-    const isVideo = ALLOWED_VIDEO.includes(file.type);
-    const ext = file.name.split(".").pop()?.toUpperCase() || "unknown";
-
-    if (!isImage && !isVideo) {
-      const looksLikeImage = file.type.startsWith("image/");
-      const looksLikeVideo = file.type.startsWith("video/");
+    if (!ALLOWED_VIDEO.includes(file.type)) {
       return {
         ok: false,
-        title: "Unsupported file format",
-        reason: looksLikeImage
-          ? `Image type ${file.type} (${ext}) is not allowed.`
-          : looksLikeVideo
-          ? `Video type ${file.type} (${ext}) is not allowed.`
-          : `File "${file.name}" has type "${file.type || "unknown"}", which is neither image nor video.`,
-        suggestion: looksLikeImage
-          ? "Convert to JPG, PNG or WEBP before uploading."
-          : looksLikeVideo
-          ? "Convert to MP4, WEBM or MOV (H.264) before uploading."
-          : "Upload an image (JPG/PNG/WEBP, ≤8 MB) or a video (MP4/WEBM/MOV, ≤50 MB)." };
+        title: "Video required",
+        reason: `"${file.name}" has type "${file.type || "unknown"}" — duels accept cooking videos only.`,
+        suggestion: "Upload MP4, WEBM or MOV (H.264), max 50 MB." };
     }
-
-    const max = isImage ? MAX_IMAGE : MAX_VIDEO;
-    if (file.size > max) {
-      const overBy = file.size - max;
+    if (file.size > MAX_VIDEO) {
       return {
         ok: false,
-        title: isImage ? "Image too large" : "Video too large",
-        reason: `Your ${isImage ? "image" : "video"} is ${formatBytes(file.size)} — that's ${formatBytes(overBy)} over the ${isImage ? "8 MB" : "50 MB"} limit.`,
-        suggestion: isImage
-          ? "Compress with squoosh.app or tinypng.com, or resize to ≤2000px on the long edge."
-          : "Trim length, lower resolution to 720p, or re-encode at a lower bitrate (e.g. with HandBrake)." };
+        title: "Video too large",
+        reason: `Your video is ${formatBytes(file.size)} — ${formatBytes(file.size - MAX_VIDEO)} over the 50 MB limit.`,
+        suggestion: "Trim the length or re-encode at 720p with a lower bitrate." };
     }
-
     if (file.size === 0) {
-      return { ok: false, title: "Empty file", reason: "The selected file is 0 bytes.", suggestion: "Pick a different file and try again." };
+      return { ok: false, title: "Empty file", reason: "The selected file is 0 bytes.", suggestion: "Pick a different video and try again." };
     }
-
-    return { ok: true, type: isImage ? "image" : "video" };
+    return { ok: true, type: "video" };
   };
 
   const submitEntry = async (battleId: string) => {
-    // Hard limit: one entry per user per battle
-    const existing = (participants[battleId] || []).find(p => p.user_id === userId);
-    if (existing) {
-      toast({
-        title: "You already entered this battle",
-        description: `Your dish "${existing.dish_title}" is already submitted. Each chef can submit only ONE dish per battle to keep voting fair. Wait for the next battle to compete again.`,
-        variant: "destructive" });
-      setEntryFor(null);
-      return;
+    const parts = participants[battleId] || [];
+    if (parts.find(p => p.user_id === userId)) {
+      toast({ title: "You are already in this duel", description: "Each chef uploads one video per duel.", variant: "destructive" });
+      setEntryFor(null); return;
     }
-
+    if (parts.length >= 2) {
+      toast({ title: "Duel is full", description: "This duel already has two chefs. Start a new duel instead.", variant: "destructive" });
+      setEntryFor(null); load(); return;
+    }
     if (!dishTitle.trim() || dishTitle.length > 120) {
       toast({ title: "Dish title required (max 120 chars)", variant: "destructive" }); return;
     }
     if (dishDesc.length > 500) {
       toast({ title: "Description too long (max 500)", variant: "destructive" }); return;
     }
-
-    let imageUrl: string | null = dishImage || null;
-    let videoUrl: string | null = null;
-    let mediaType: "image" | "video" | null = null;
-    let mediaSize: number | null = null;
-    let mediaMime: string | null = null;
-
-    if (dishFile) {
-      const v = validateFile(dishFile);
-      if (v.ok === false) {
-        toast({ title: v.title, description: `${v.reason} ${v.suggestion}`, variant: "destructive" });
-        return;
-      }
-      setUploading(true);
-      const ext = dishFile.name.split(".").pop()?.toLowerCase() || "bin";
-      const path = `${userId}/${battleId}/${crypto.randomUUID()}.${ext}`;
-      const { error: ue } = await supabase.storage.from("kitchen-battles")
-        .upload(path, dishFile, { contentType: dishFile.type, upsert: false });
-      if (ue) {
-        setUploading(false);
-        const msg = /exceeded|too large|payload/i.test(ue.message)
-          ? "Server rejected the file (too large for the storage bucket). Try a smaller file."
-          : /duplicate|already exists/i.test(ue.message)
-          ? "A file with this name already exists. Try renaming and re-uploading."
-          : ue.message;
-        toast({ title: "Upload failed", description: msg, variant: "destructive" });
-        return;
-      }
-      const { data: pub } = supabase.storage.from("kitchen-battles").getPublicUrl(path);
-      mediaType = v.type; mediaSize = dishFile.size; mediaMime = dishFile.type;
-      if (v.type === "image") imageUrl = pub.publicUrl;
-      else videoUrl = pub.publicUrl;
-      setUploading(false);
+    if (!dishFile) {
+      toast({ title: "Cooking video required", description: "Upload a video of you cooking the dish.", variant: "destructive" }); return;
+    }
+    const v = validateFile(dishFile);
+    if (v.ok === false) {
+      toast({ title: v.title, description: `${v.reason} ${v.suggestion}`, variant: "destructive" }); return;
     }
 
-    const { error } = await supabase.from("kitchen_battle_participants").insert({ battle_id: battleId, user_id: userId, dish_title: dishTitle.trim(),
-      description: dishDesc.trim() || null, image_url: imageUrl, video_url: videoUrl,
-      media_type: mediaType, media_size: mediaSize, media_mime: mediaMime });
-    if (error) { const isDup = (error as any).code === "23505" || /duplicate|unique/i.test(error.message);
-      toast({
-        title: isDup ? "You already entered this battle" : "Error",
-        description: isDup
-          ? "Each chef can submit only ONE dish per battle. Refresh to see your existing entry."
-          : error.message,
-        variant: "destructive" });
-      if (isDup) { setEntryFor(null); load(); }
+    const paid = await spendAction("battle_entry");
+    if (!paid) return;
+
+    setUploading(true);
+    const ext = dishFile.name.split(".").pop()?.toLowerCase() || "mp4";
+    const path = `${userId}/${battleId}/${crypto.randomUUID()}.${ext}`;
+    const { error: ue } = await supabase.storage.from("kitchen-battles")
+      .upload(path, dishFile, { contentType: dishFile.type, upsert: false });
+    if (ue) {
+      setUploading(false);
+      toast({ title: "Upload failed", description: ue.message, variant: "destructive" });
       return;
     }
-    setEntryFor(null); setDishTitle(""); setDishDesc(""); setDishImage(""); setDishFile(null);
-    toast({ title: "Entry submitted!" });
+    const { data: pub } = supabase.storage.from("kitchen-battles").getPublicUrl(path);
+
+    const { error } = await supabase.from("kitchen_battle_participants").insert({
+      battle_id: battleId, user_id: userId, dish_title: dishTitle.trim(),
+      description: dishDesc.trim() || null, image_url: null, video_url: pub.publicUrl,
+      media_type: "video", media_size: dishFile.size, media_mime: dishFile.type });
+    setUploading(false);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      return;
+    }
+    setEntryFor(null); setDishTitle(""); setDishDesc(""); setDishFile(null);
+    toast({ title: "Video submitted!", description: "Voting is open once both chefs uploaded." });
     load();
   };
 
-  const vote = async (battleId: string, participantId: string, voteType: "like" | "dislike") => {
+  const vote = async (battleId: string, participantId: string) => {
     const { data, error } = await supabase.functions.invoke("kitchen-battle-vote", {
-      body: { battleId, participantId, voteType } });
+      body: { battleId, participantId, voteType: "like" } });
     if (error || data?.error) {
       toast({ title: "Vote failed", description: error?.message || data?.error, variant: "destructive" });
       return;
     }
-    toast({ title: voteType === "like" ? "👍 Liked!" : "👎 Disliked" });
+    toast({ title: "Vote counted!" });
     load();
   };
 
-  const postComment = async (battleId: string, participantId?: string) => {
-    const key = `${battleId}:${participantId || ""}`;
-    const content = (commentDraft[key] || "").trim();
+  const postComment = async (battleId: string) => {
+    const content = (commentDraft[battleId] || "").trim();
     if (!content) return;
-    const { error } = await supabase.from("kitchen_battle_comments").insert({ battle_id: battleId, participant_id: participantId || null, user_id: userId, content });
+    const { error } = await supabase.from("kitchen_battle_comments").insert({ battle_id: battleId, participant_id: null, user_id: userId, content });
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
-    setCommentDraft(prev => ({ ...prev, [key]: "" }));
+    setCommentDraft(prev => ({ ...prev, [battleId]: "" }));
     load();
   };
 
@@ -237,164 +197,198 @@ export default function KitchenStarsBattles() {
     load();
   };
 
-  return (
-    <div className="min-h-screen bg-background pt-20 pb-12 px-4">
-      <div className="max-w-5xl mx-auto space-y-6">
-        <Button variant="ghost" onClick={() => navigate("/masterchef")}>← Back</Button>
-
-        <div className="text-center">
-          <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-orange-500 via-primary to-accent bg-clip-text text-transparent mb-2">
-            KitchenStars Battles
-          </h1>
-          <p className="text-muted-foreground text-lg">Submit your dish, get votes, win the crown 👑</p>
+  const renderSide = (
+    battle: Battle,
+    p: Participant | undefined,
+    label: "X" | "Y",
+    totalVotes: number,
+    canVote: boolean,
+    myVote: MyVote | undefined,
+    isWinner: boolean,
+  ) => {
+    if (!p) {
+      return (
+        <div className="rounded-xl border-2 border-dashed border-border p-6 text-center space-y-2">
+          <Video className="h-8 w-8 mx-auto text-muted-foreground/50" />
+          <p className="font-semibold">Chef {label} slot open</p>
+          <p className="text-xs text-muted-foreground">Waiting for a chef to upload a cooking video.</p>
         </div>
-
-        <Button size="lg" onClick={createBattle} disabled={creating} className="w-full">
-          <Plus className="h-4 w-4 mr-2" /> {creating ? "Creating..." : "Start a New Battle"}
-        </Button>
-
-        {loading ? (
-          <p className="text-center text-muted-foreground">Loading...</p>
-        ) : battles.length === 0 ? (
-          <Card><CardContent className="py-10 text-center text-muted-foreground">No battles yet. Be the first!</CardContent></Card>
-        ) : (
-          battles.map(battle => {
-            const parts = participants[battle.id] || [];
-            const allComments = comments[battle.id] || [];
-            const myEntry = parts.find(p => p.user_id === userId);
-            const isOpen = battle.status === "open" && new Date(battle.deadline) > new Date();
-            const myVote = myVotes[battle.id];
-            const showCs = showComments[battle.id];
-            return (
-              <Card key={battle.id} className="border-orange-500/20">
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span className="flex items-center gap-2"><ChefHat className="h-5 w-5 text-orange-500" /> {battle.theme}</span>
-                    <div className="flex items-center gap-2">
-                      <Badge variant={myEntry ? "default" : "outline"} className={myEntry ? "bg-green-600 hover:bg-green-700" : "text-muted-foreground"}>
-                        {myEntry ? "✓ Entered" : "Not entered"}
-                      </Badge>
-                      <Badge variant={isOpen ? "default" : "secondary"}>{isOpen ? "OPEN" : "CLOSED"}</Badge>
-                    </div>
-                  </CardTitle>
-                  {battle.description && <p className="text-sm text-muted-foreground">{battle.description}</p>}
-                  <p className="text-xs text-muted-foreground">Deadline: {new Date(battle.deadline).toLocaleString()}</p>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {parts.length === 0 && <p className="text-sm text-muted-foreground italic">No entries yet.</p>}
-                  {parts.map((p, i) => {
-                    const liked = myVote?.participant_id === p.id && myVote.vote_type === "like";
-                    const disliked = myVote?.participant_id === p.id && myVote.vote_type === "dislike";
-                    const score = p.vote_count - p.dislike_count;
-                    return (
-                      <div key={p.id} className="p-3 rounded-lg bg-secondary/30 space-y-2">
-                        {p.video_url && (
-                          <video src={p.video_url} controls className="w-full max-h-64 rounded" />
-                        )}
-                        {!p.video_url && p.image_url && (
-                          <img src={p.image_url} alt={p.dish_title} loading="lazy" className="w-full max-h-64 object-cover rounded" />
-                        )}
-                        <div className="flex items-center justify-between flex-wrap gap-2">
-                          <div className="flex items-center gap-3">
-                            {i === 0 && score > 0 && <Trophy className="h-5 w-5 text-yellow-500" />}
-                            <div>
-                              <p className="font-semibold">{p.dish_title}</p>
-                              {p.description && <p className="text-xs text-muted-foreground">{p.description}</p>}
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <Badge variant="outline"><Flame className="h-3 w-3 mr-1" />{score}</Badge>
-                            {isOpen && p.user_id !== userId && (
-                              <>
-                                <Button size="sm" variant={liked ? "default" : "outline"} onClick={() => vote(battle.id, p.id, "like")}>
-                                  <ThumbsUp className="h-3 w-3 mr-1" /> {p.vote_count}
-                                </Button>
-                                <Button size="sm" variant={disliked ? "destructive" : "outline"} onClick={() => vote(battle.id, p.id, "dislike")}>
-                                  <ThumbsDown className="h-3 w-3 mr-1" /> {p.dislike_count}
-                                </Button>
-                              </>
-                            )}
-                            {(!isOpen || p.user_id === userId) && (
-                              <>
-                                <Badge variant="outline"><ThumbsUp className="h-3 w-3 mr-1" />{p.vote_count}</Badge>
-                                <Badge variant="outline"><ThumbsDown className="h-3 w-3 mr-1" />{p.dislike_count}</Badge>
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-
-                  {myEntry && (
-                    <div className="p-3 rounded-lg border border-primary/30 bg-primary/5 text-sm">
-                      ✅ You've already submitted "<strong>{myEntry.dish_title}</strong>" to this battle. Only one entry per chef is allowed.
-                    </div>
-                  )}
-                  {isOpen && !myEntry && (
-                    entryFor === battle.id ? (
-                      <div className="space-y-2 p-3 rounded-lg border border-primary/20">
-                        <Input placeholder="Dish title" value={dishTitle} onChange={e => setDishTitle(e.target.value)} />
-                        <Textarea placeholder="Short description (optional)" value={dishDesc} onChange={e => setDishDesc(e.target.value)} />
-                        <Input placeholder="Image URL (optional)" value={dishImage} onChange={e => setDishImage(e.target.value)} />
-                        <DropZone
-                          file={dishFile}
-                          onChange={setDishFile}
-                          validate={validateFile}
-                          accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime"
-                          hint="Images: JPG/PNG/WEBP ≤ 8 MB · Videos: MP4/WEBM/MOV ≤ 50 MB"
-                        />
-                        <div className="flex gap-2">
-                          <Button size="sm" onClick={() => submitEntry(battle.id)} disabled={uploading}>{uploading ? "Uploading..." : "Submit"}</Button>
-                          <Button size="sm" variant="ghost" onClick={() => setEntryFor(null)}>Cancel</Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <Button variant="outline" className="w-full" onClick={() => setEntryFor(battle.id)}>
-                        <Plus className="h-4 w-4 mr-2" /> Submit Your Dish
-                      </Button>
-                    )
-                  )}
-
-                  <Button variant="ghost" size="sm" className="w-full" onClick={() => setShowComments(s => ({ ...s, [battle.id]: !s[battle.id] }))}>
-                    <MessageCircle className="h-4 w-4 mr-2" /> {showCs ? "Hide" : "Show"} Comments ({allComments.length})
-                  </Button>
-
-                  {showCs && (
-                    <div className="space-y-2 pt-2 border-t border-border">
-                      {allComments.length === 0 && <p className="text-xs text-muted-foreground italic">No comments yet.</p>}
-                      {allComments.map(c => (
-                        <div key={c.id} className="flex items-start justify-between gap-2 p-2 rounded bg-background/50">
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm">{c.content}</p>
-                            <p className="text-[10px] text-muted-foreground">{new Date(c.created_at).toLocaleString()}</p>
-                          </div>
-                          {c.user_id === userId && (
-                            <Button size="icon" variant="ghost" onClick={() => deleteComment(c.id)}>
-                              <Trash2 className="h-3 w-3" />
-                            </Button>
-                          )}
-                        </div>
-                      ))}
-                      <div className="flex gap-2">
-                        <Input
-                          placeholder="Write a comment..."
-                          value={commentDraft[`${battle.id}:`] || ""}
-                          onChange={e => setCommentDraft(prev => ({ ...prev, [`${battle.id}:`]: e.target.value }))}
-                          onKeyDown={e => { if (e.key === "Enter") postComment(battle.id); }}
-                        />
-                        <Button size="icon" onClick={() => postComment(battle.id)}>
-                          <Send className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            );
-          })
+      );
+    }
+    const pct = totalVotes > 0 ? Math.round((p.vote_count / totalVotes) * 100) : 0;
+    const votedThis = myVote?.participant_id === p.id;
+    return (
+      <div className={`rounded-xl border p-3 space-y-3 ${isWinner ? "border-yellow-500/60 bg-yellow-500/5" : "border-primary/20 bg-secondary/20"}`}>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <Badge className="bg-orange-600 hover:bg-orange-700">Chef {label}</Badge>
+            <p className="font-semibold">{p.dish_title}</p>
+          </div>
+          {isWinner && <Trophy className="h-5 w-5 text-yellow-500 shrink-0" />}
+        </div>
+        {p.video_url ? (
+          <video src={p.video_url} controls playsInline className="w-full rounded-lg bg-black max-h-[60vh]" />
+        ) : p.image_url ? (
+          <img src={p.image_url} alt={p.dish_title} loading="lazy" className="w-full rounded-lg object-cover max-h-72" />
+        ) : null}
+        {p.description && <p className="text-xs text-muted-foreground">{p.description}</p>}
+        <div className="space-y-1">
+          <div className="flex items-center justify-between text-sm">
+            <span className="flex items-center gap-1"><Flame className="h-3.5 w-3.5 text-orange-500" />{p.vote_count} votes</span>
+            <span className="font-semibold">{pct}%</span>
+          </div>
+          <Progress value={pct} />
+        </div>
+        {canVote && p.user_id !== userId && (
+          <Button className="w-full" variant={votedThis ? "default" : "outline"} onClick={() => vote(battle.id, p.id)}>
+            {votedThis ? `✓ Voted for Chef ${label}` : `Vote for Chef ${label}`}
+          </Button>
+        )}
+        {p.user_id === userId && (
+          <p className="text-xs text-center text-muted-foreground">This is your entry — you can't vote for yourself.</p>
         )}
       </div>
-    </div>
+    );
+  };
+
+  return (
+    <>
+      <FloatingHowItWorks
+        title="How KitchenStars Duels work"
+        steps={[
+          { title: "Start a duel", desc: "Create a duel with a cooking theme — two chef slots open up." },
+          { title: "Upload your video", desc: `Two chefs each upload one cooking video (${KITCHENSTARS_COSTS.battle_entry} credits, MP4/WEBM/MOV up to 50 MB).` },
+          { title: "X vs Y", desc: "Both videos appear one under the other as Chef X vs Chef Y." },
+          { title: "Everyone votes", desc: "All platform users watch both videos and cast one vote per duel. Highest share wins the crown." },
+        ]}
+      />
+      <div className="min-h-screen bg-background pt-20 pb-12 px-4">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <Button variant="ghost" onClick={() => navigate("/masterchef")}>← Back</Button>
+
+          <div className="text-center">
+            <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-orange-500 via-primary to-accent bg-clip-text text-transparent mb-2">
+              KitchenStars Video Duels
+            </h1>
+            <p className="text-muted-foreground text-lg">Two chefs, two cooking videos — the platform votes 👑</p>
+          </div>
+
+          <Button size="lg" onClick={createBattle} disabled={creating} className="w-full">
+            <Plus className="h-4 w-4 mr-2" /> {creating ? "Creating..." : "Start a New Duel"}
+          </Button>
+
+          {loading ? (
+            <p className="text-center text-muted-foreground">Loading...</p>
+          ) : battles.length === 0 ? (
+            <Card><CardContent className="py-10 text-center text-muted-foreground">No duels yet. Be the first!</CardContent></Card>
+          ) : (
+            battles.map(battle => {
+              const parts = (participants[battle.id] || []).slice(0, 2);
+              const [a, b] = parts;
+              const allComments = comments[battle.id] || [];
+              const myEntry = parts.find(p => p.user_id === userId);
+              const isOpen = battle.status === "open" && new Date(battle.deadline) > new Date();
+              const myVote = myVotes[battle.id];
+              const showCs = showComments[battle.id];
+              const totalVotes = (a?.vote_count || 0) + (b?.vote_count || 0);
+              const bothIn = !!a && !!b;
+              const canVote = isOpen && bothIn;
+              const winnerId = !bothIn || totalVotes === 0 ? null
+                : (a!.vote_count === b!.vote_count ? null : (a!.vote_count > b!.vote_count ? a!.id : b!.id));
+
+              return (
+                <Card key={battle.id} className="border-orange-500/20">
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between gap-2 flex-wrap">
+                      <span className="flex items-center gap-2"><ChefHat className="h-5 w-5 text-orange-500" /> {battle.theme}</span>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={myEntry ? "default" : "outline"} className={myEntry ? "bg-green-600 hover:bg-green-700" : "text-muted-foreground"}>
+                          {myEntry ? "✓ You're in" : `${parts.length}/2 chefs`}
+                        </Badge>
+                        <Badge variant={isOpen ? "default" : "secondary"}>{isOpen ? "OPEN" : "CLOSED"}</Badge>
+                      </div>
+                    </CardTitle>
+                    {battle.description && <p className="text-sm text-muted-foreground">{battle.description}</p>}
+                    <p className="text-xs text-muted-foreground">Deadline: {new Date(battle.deadline).toLocaleString()} · {totalVotes} total votes</p>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {renderSide(battle, a, "X", totalVotes, canVote, myVote, winnerId === a?.id)}
+
+                    <div className="flex items-center gap-3">
+                      <div className="h-px flex-1 bg-border" />
+                      <span className="flex items-center gap-1 font-black text-lg text-orange-500">
+                        <Swords className="h-5 w-5" /> VS
+                      </span>
+                      <div className="h-px flex-1 bg-border" />
+                    </div>
+
+                    {renderSide(battle, b, "Y", totalVotes, canVote, myVote, winnerId === b?.id)}
+
+                    {isOpen && bothIn && !myVote && (
+                      <p className="text-xs text-center text-muted-foreground">Watch both videos, then vote for the better dish. One vote per duel.</p>
+                    )}
+
+                    {isOpen && !myEntry && parts.length < 2 && (
+                      entryFor === battle.id ? (
+                        <div className="space-y-2 p-3 rounded-lg border border-primary/20">
+                          <Input placeholder="Dish title" value={dishTitle} onChange={e => setDishTitle(e.target.value)} />
+                          <Textarea placeholder="Short description (optional)" value={dishDesc} onChange={e => setDishDesc(e.target.value)} />
+                          <DropZone
+                            file={dishFile}
+                            onChange={setDishFile}
+                            validate={validateFile}
+                            accept="video/mp4,video/webm,video/quicktime"
+                            hint="Cooking video: MP4/WEBM/MOV ≤ 50 MB"
+                          />
+                          <div className="flex gap-2">
+                            <Button size="sm" onClick={() => submitEntry(battle.id)} disabled={uploading}>
+                              {uploading ? "Uploading..." : `Submit video (${KITCHENSTARS_COSTS.battle_entry} credits)`}
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => setEntryFor(null)}>Cancel</Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <Button variant="outline" className="w-full" onClick={() => setEntryFor(battle.id)}>
+                          <Video className="h-4 w-4 mr-2" /> Upload your cooking video
+                        </Button>
+                      )
+                    )}
+
+                    <Button variant="ghost" size="sm" className="w-full" onClick={() => setShowComments(s => ({ ...s, [battle.id]: !s[battle.id] }))}>
+                      <MessageCircle className="h-4 w-4 mr-2" /> {showCs ? "Hide" : "Show"} Comments ({allComments.length})
+                    </Button>
+
+                    {showCs && (
+                      <div className="space-y-2 pt-2 border-t border-border">
+                        {allComments.length === 0 && <p className="text-xs text-muted-foreground italic">No comments yet.</p>}
+                        {allComments.map(c => (
+                          <div key={c.id} className="flex items-start justify-between gap-2 text-sm p-2 rounded bg-secondary/30">
+                            <p className="break-words">{c.content}</p>
+                            {c.user_id === userId && (
+                              <Button size="icon" variant="ghost" className="h-6 w-6 shrink-0" onClick={() => deleteComment(c.id)}>
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            )}
+                          </div>
+                        ))}
+                        <div className="flex gap-2">
+                          <Input
+                            placeholder="Write a comment..."
+                            value={commentDraft[battle.id] || ""}
+                            onChange={e => setCommentDraft(prev => ({ ...prev, [battle.id]: e.target.value }))}
+                            onKeyDown={e => { if (e.key === "Enter") postComment(battle.id); }}
+                          />
+                          <Button size="icon" onClick={() => postComment(battle.id)}><Send className="h-4 w-4" /></Button>
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })
+          )}
+        </div>
+      </div>
+    </>
   );
 }
