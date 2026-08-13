@@ -5,9 +5,10 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Heart, Send, Users, RefreshCw } from "lucide-react";
+import { ArrowLeft, Users, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { startViewer, type ViewerHandle } from "@/lib/concertWebRTC";
+import { ComedyLiveChat } from "@/components/comedy/ComedyLiveChat";
 
 export default function ComedyLiveViewer() {
   const { showId } = useParams();
@@ -15,7 +16,7 @@ export default function ComedyLiveViewer() {
   const [show, setShow] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [tipMessage, setTipMessage] = useState("");
-  const [chatMessages, setChatMessages] = useState<any[]>([]);
+  const [isHost, setIsHost] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const viewerRef = useRef<ViewerHandle | null>(null);
   const [hasStream, setHasStream] = useState(false);
@@ -23,26 +24,8 @@ export default function ComedyLiveViewer() {
   const [presenceViewers, setPresenceViewers] = useState(0);
   const [rtcKey, setRtcKey] = useState(0);
 
-
   useEffect(() => {
     loadShow();
-    
-    // Subscribe to real-time chat updates
-    const channel = supabase
-      .channel(`show_${showId}_chat`)
-      .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'comedy_show_messages',
-        filter: `show_id=eq.${showId}`
-      }, (payload) => {
-        setChatMessages(prev => [...prev, payload.new]);
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
   }, [showId]);
 
   const loadShow = async () => {
@@ -62,17 +45,12 @@ export default function ComedyLiveViewer() {
     setShow(data);
     setLoading(false);
 
-    // Load chat messages
-    const { data: messages } = await supabase
-      .from("comedy_show_messages")
-      .select("*, sender:profiles(*)")
-      .eq("show_id", showId)
-      .order("created_at", { ascending: true });
-
-    setChatMessages(messages || []);
+    const { data: auth } = await supabase.auth.getUser();
+    setIsHost(!!auth.user && (data as any)?.comedian?.user_id === auth.user.id);
   };
 
   const isLive = show?.status === "live";
+
 
   // Viewers connect automatically over WebRTC (same engine as Live Concerts)
   useEffect(() => {
@@ -252,31 +230,7 @@ export default function ComedyLiveViewer() {
 
           {/* Chat Sidebar */}
           <div>
-            <Card className="p-4 h-[600px] flex flex-col">
-              <h3 className="font-bold mb-4">Live Chat</h3>
-              
-              <div className="flex-1 overflow-y-auto space-y-3 mb-4">
-                {chatMessages.map((msg) => (
-                  <div key={msg.id} className="text-sm">
-                    <span className="font-medium">{msg.sender?.full_name || 'Anonymous'}: </span>
-                    <span>{msg.message}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex gap-2">
-                <Input id="comedy-chat-input" placeholder="Type a message..." />
-                <Button size="icon" onClick={() => {
-                  const input = document.getElementById("comedy-chat-input") as HTMLInputElement | null;
-                  const text = input?.value?.trim();
-                  if (!text) return;
-                  toast.success("Message sent!");
-                  if (input) input.value = "";
-                }}>
-                  <Send className="h-4 w-4" />
-                </Button>
-              </div>
-            </Card>
+            <ComedyLiveChat showId={showId!} canModerate={isHost} />
           </div>
         </div>
       </div>
