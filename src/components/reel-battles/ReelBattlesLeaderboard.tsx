@@ -112,44 +112,49 @@ export default function ReelBattlesLeaderboard({ currentUserId }: { currentUserI
           rows.map((r) => (
             <div
               key={r.user_id}
-              className={`flex items-center gap-3 p-2.5 rounded-xl border ${
+              className={`flex items-center gap-2.5 p-2.5 rounded-xl border ${
                 r.user_id === currentUserId
                   ? "border-primary/50 bg-primary/10"
                   : "border-border/60 bg-secondary/20"
               }`}
             >
-              <span className="w-8 text-center text-sm font-bold shrink-0">{medal(Number(r.rank))}</span>
+              <span className="w-6 shrink-0 text-center text-sm font-bold tabular-nums">{medal(Number(r.rank))}</span>
               <Avatar className={`h-9 w-9 shrink-0 ${championRankClasses(champBadges[r.user_id]?.rank).ring || frameClassForCode(cosmetics[r.user_id]?.frame?.code)}`}>
                 <AvatarImage src={r.avatar_url || undefined} alt={r.display_name || "Creator"} />
                 <AvatarFallback>{(r.display_name || "C").slice(0, 1).toUpperCase()}</AvatarFallback>
               </Avatar>
               <div className="min-w-0 flex-1">
-                <p className={`text-sm font-semibold truncate flex items-center gap-1.5 ${championRankClasses(champBadges[r.user_id]?.rank).text}`}>
-                  <span className="truncate">{r.display_name || "Creator"}</span>
+                <div className="flex items-center gap-1 min-w-0">
+                  <span className={`text-sm font-semibold truncate ${championRankClasses(champBadges[r.user_id]?.rank).text}`}>
+                    {r.display_name || "Creator"}
+                  </span>
                   <ChampionBadge badge={champBadges[r.user_id]} />
                   {cosmetics[r.user_id]?.badge && (
-                    <span title={cosmetics[r.user_id]!.badge!.name} aria-label={cosmetics[r.user_id]!.badge!.name}>
+                    <span className="shrink-0 text-sm" title={cosmetics[r.user_id]!.badge!.name} aria-label={cosmetics[r.user_id]!.badge!.name}>
                       {cosmetics[r.user_id]!.badge!.preview}
                     </span>
                   )}
                   {cosmetics[r.user_id]?.sticker && (
-                    <span title={cosmetics[r.user_id]!.sticker!.name} aria-label={cosmetics[r.user_id]!.sticker!.name}>
+                    <span className="shrink-0 text-sm" title={cosmetics[r.user_id]!.sticker!.name} aria-label={cosmetics[r.user_id]!.sticker!.name}>
                       {cosmetics[r.user_id]!.sticker!.preview}
                     </span>
                   )}
-                  {r.user_id === currentUserId && <span className="text-primary text-xs ml-1">(you)</span>}
-                </p>
-                <p className="text-[11px] text-muted-foreground flex items-center gap-2 flex-wrap">
-                  <span className="flex items-center gap-1"><Trophy className="h-3 w-3" />{r.wins} wins</span>
-                  <span className="flex items-center gap-1"><Flame className="h-3 w-3 text-primary" />{r.total_votes} votes</span>
-                  <span className="flex items-center gap-1"><Swords className="h-3 w-3" />{r.duels} duels</span>
+                  {r.user_id === currentUserId && (
+                    <span className="shrink-0 text-[10px] font-medium text-primary">(you)</span>
+                  )}
+                </div>
+                <p className="mt-0.5 text-[11px] text-muted-foreground truncate tabular-nums">
+                  {r.wins} {r.wins === 1 ? "win" : "wins"} · {r.total_votes} {r.total_votes === 1 ? "vote" : "votes"} ·{" "}
+                  {r.duels} {r.duels === 1 ? "duel" : "duels"}
                 </p>
               </div>
-              <span className="flex items-center gap-1 text-xs font-semibold shrink-0">
-                <Sparkles className="h-3.5 w-3.5 text-primary" />{r.reel_xp} pts
+              <span className="shrink-0 text-right">
+                <span className="block text-sm font-bold tabular-nums text-primary">{r.reel_xp}</span>
+                <span className="block text-[10px] uppercase tracking-wide text-muted-foreground">pts</span>
               </span>
             </div>
           ))
+
         )}
 
         {me && !inTop && (
