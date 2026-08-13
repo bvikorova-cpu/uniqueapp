@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import ChampionBadge from "@/components/battle-coins/ChampionBadge";
 import { useChampionBadges, championRankClasses } from "@/hooks/useChampionBadges";
 import { useEquippedCosmetics } from "@/hooks/useEquippedCosmetics";
+import { frameClassForCode } from "@/lib/cosmeticFrames";
 
 type Row = {
   user_id: string;
@@ -117,7 +118,7 @@ export default function KitchenStarsLeaderboard({ currentUserId }: { currentUser
               }`}
             >
               <span className="w-8 text-center text-sm font-bold shrink-0">{medal(Number(r.rank))}</span>
-              <Avatar className={`h-9 w-9 shrink-0 ${championRankClasses(champBadges[r.user_id]?.rank).ring || cosmetics[r.user_id]?.frame?.css_class || ""}`}>
+              <Avatar className={`h-9 w-9 shrink-0 ${championRankClasses(champBadges[r.user_id]?.rank).ring || frameClassForCode(cosmetics[r.user_id]?.frame?.code)}`}>
                 <AvatarImage src={r.avatar_url || undefined} alt={r.display_name || "Chef"} />
                 <AvatarFallback>{(r.display_name || "C").slice(0, 1).toUpperCase()}</AvatarFallback>
               </Avatar>

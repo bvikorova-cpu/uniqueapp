@@ -22,6 +22,7 @@ import { useBattleCoins, BATTLE_ENTRY_COINS } from "@/hooks/useBattleCoins";
 import BattleCoinsWallet from "@/components/battle-coins/BattleCoinsWallet";
 import MonthlyChampionRewardsCard from "@/components/battle-coins/MonthlyChampionRewardsCard";
 import BattleCosmeticsShop from "@/components/battle-coins/BattleCosmeticsShop";
+import { frameClassForCode } from "@/lib/cosmeticFrames";
 
 type Battle = { id: string; theme: string; description: string | null; status: string; deadline: string; created_by: string | null };
 type Participant = { id: string; battle_id: string; user_id: string; reel_title: string; description: string | null; video_url: string | null; media_type: string | null; vote_count: number };
@@ -386,7 +387,7 @@ export default function ReelBattles() {
         </div>
         {p.video_url && (
           <CosmeticMediaFrame
-            frameClass={mediaCosmetics[p.user_id]?.frame?.css_class}
+            frameClass={frameClassForCode(mediaCosmetics[p.user_id]?.frame?.code)}
             championRank={mediaChampions[p.user_id]?.rank}
           >
             <video src={p.video_url} controls playsInline className="w-full rounded-lg bg-black max-h-[60vh]" />

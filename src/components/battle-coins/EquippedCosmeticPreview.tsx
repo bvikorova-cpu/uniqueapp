@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useEquippedCosmetics } from "@/hooks/useEquippedCosmetics";
+import { frameClassForCode } from "@/lib/cosmeticFrames";
 
 /**
  * Live preview of how your equipped frame, sticker and badge look publicly.
@@ -34,7 +35,7 @@ export default function EquippedCosmeticPreview() {
 
   return (
     <div className="rounded-xl border border-primary/20 bg-background/60 p-3 flex items-center gap-3">
-      <Avatar className={`h-11 w-11 shrink-0 ${mine?.frame?.css_class || ""}`}>
+      <Avatar className={`h-11 w-11 shrink-0 ${frameClassForCode(mine?.frame?.code)}`}>
         <AvatarImage src={profile?.avatar_url || undefined} alt={name} />
         <AvatarFallback>{name.slice(0, 2).toUpperCase()}</AvatarFallback>
       </Avatar>
