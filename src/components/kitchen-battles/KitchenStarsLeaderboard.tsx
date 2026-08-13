@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Trophy, Flame, Swords, Sparkles, Radio } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import ChampionBadge from "@/components/battle-coins/ChampionBadge";
+import { useChampionBadges, championRankClasses } from "@/hooks/useChampionBadges";
 
 type Row = {
   user_id: string;
@@ -76,6 +78,7 @@ export default function KitchenStarsLeaderboard({ currentUserId }: { currentUser
     };
   }, [load, scheduleLoad]);
 
+  const champBadges = useChampionBadges(rows.map((r) => r.user_id));
   const inTop = rows.some((r) => r.user_id === currentUserId);
 
   return (
@@ -111,13 +114,14 @@ export default function KitchenStarsLeaderboard({ currentUserId }: { currentUser
               }`}
             >
               <span className="w-8 text-center text-sm font-bold shrink-0">{medal(Number(r.rank))}</span>
-              <Avatar className="h-9 w-9 shrink-0">
+              <Avatar className={`h-9 w-9 shrink-0 ${championRankClasses(champBadges[r.user_id]?.rank).ring}`}>
                 <AvatarImage src={r.avatar_url || undefined} alt={r.display_name || "Chef"} />
                 <AvatarFallback>{(r.display_name || "C").slice(0, 1).toUpperCase()}</AvatarFallback>
               </Avatar>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold truncate">
-                  {r.display_name || "Chef"}
+                <p className={`text-sm font-semibold truncate flex items-center gap-1.5 ${championRankClasses(champBadges[r.user_id]?.rank).text}`}>
+                  <span className="truncate">{r.display_name || "Chef"}</span>
+                  <ChampionBadge badge={champBadges[r.user_id]} />
                   {r.user_id === currentUserId && <span className="text-primary text-xs ml-1">(you)</span>}
                 </p>
                 <p className="text-[11px] text-muted-foreground flex items-center gap-2 flex-wrap">

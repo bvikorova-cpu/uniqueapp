@@ -3274,6 +3274,45 @@ export type Database = {
           },
         ]
       }
+      battle_monthly_champions: {
+        Row: {
+          badge_expires_at: string
+          created_at: string
+          credits_awarded: number
+          id: string
+          module: string
+          period: string
+          perks: string[]
+          points: number
+          rank: number
+          user_id: string
+        }
+        Insert: {
+          badge_expires_at: string
+          created_at?: string
+          credits_awarded?: number
+          id?: string
+          module: string
+          period: string
+          perks?: string[]
+          points?: number
+          rank: number
+          user_id: string
+        }
+        Update: {
+          badge_expires_at?: string
+          created_at?: string
+          credits_awarded?: number
+          id?: string
+          module?: string
+          period?: string
+          perks?: string[]
+          points?: number
+          rank?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       battle_participants: {
         Row: {
           battle_id: string
@@ -68161,6 +68200,16 @@ export type Database = {
       generate_megatalent_daily_challenge: { Args: never; Returns: string }
       generate_referral_code: { Args: never; Returns: string }
       generate_story_share_code: { Args: never; Returns: string }
+      get_active_champion_badge: {
+        Args: { _user_id: string }
+        Returns: {
+          badge_expires_at: string
+          module: string
+          period: string
+          perks: string[]
+          rank: number
+        }[]
+      }
       get_affiliate_reward_eur: { Args: { _user_id: string }; Returns: number }
       get_anon_date_deck: {
         Args: { _limit?: number }
@@ -68693,6 +68742,19 @@ export type Database = {
           last_tip_at: string
           total_amount_cents: number
           total_tips: number
+        }[]
+      }
+      get_module_champions: {
+        Args: { _module: string }
+        Returns: {
+          avatar_url: string
+          credits_awarded: number
+          display_name: string
+          period: string
+          perks: string[]
+          points: number
+          rank: number
+          user_id: string
         }[]
       }
       get_module_xp_leaderboard: {
@@ -69895,6 +69957,10 @@ export type Database = {
         Returns: string
       }
       settle_kitchen_competitions: { Args: never; Returns: number }
+      settle_monthly_battle_champions: {
+        Args: { _module: string; _period?: string }
+        Returns: Json
+      }
       settle_reel_competitions: { Args: never; Returns: number }
       share_secret_santa_gift_to_story: {
         Args: { p_gift_id: string }
