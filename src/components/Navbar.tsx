@@ -165,6 +165,7 @@ const Navbar = () => {
         { path: "/beauty-studio", label: "Beauty Studio", icon: Sparkles },
         { path: "/fashion-studio", label: "Fashion Studio", icon: Palette },
         { path: "/guess-age", label: "Guess My Age", icon: Cake },
+        { path: "/face-insight", label: "Face Insight Studio", icon: Sparkles },
       ] },
     {
       category: "Mystical & Spiritual",

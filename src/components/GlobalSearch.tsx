@@ -167,6 +167,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "123", title: "Past Life", category: "Mystical", path: "/past-life" },
   
   { id: "125", title: "Future Face", category: "Mystical", path: "/future-face" },
+  { id: "125b", title: "Face Insight Studio", description: "AI face analysis report, styling and colour typology", category: "AI Tools", path: "/face-insight" },
   
   { id: "129", title: "Crystal Energy Network", category: "Mystical", path: "/crystal-energy-network" },
   { id: "130", title: "Holographic Avatars", category: "Mystical", path: "/holographic-avatars" },

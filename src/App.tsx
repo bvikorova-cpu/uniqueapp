@@ -374,6 +374,7 @@ import { ResetPassword,
   FutureFace,
   FairytaleBook,
   GuessAge,
+  FaceInsight,
 
   TimeReversalSubscription,
   TimeReversalSocial,
@@ -914,6 +915,7 @@ const App = () => {
                         <Route path="/future-face" element={<FutureFace />} />
                         <Route path="/fairytale-book" element={<FairytaleBook />} />
                         <Route path="/guess-age" element={<GuessAge />} />
+                        <Route path="/face-insight" element={<FaceInsight />} />
 
                         <Route path="/skill-swap" element={<SkillSwap />} />
                         <Route path="/skill-swap/dashboard" element={<ProtectedRoute><SkillSwapDashboard /></ProtectedRoute>} />
