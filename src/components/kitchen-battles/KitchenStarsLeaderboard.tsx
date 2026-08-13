@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Trophy, Flame, Swords, Sparkles, Radio } from "lucide-react";
+import { Trophy, Sparkles, Radio } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ChampionBadge from "@/components/battle-coins/ChampionBadge";
 import { useChampionBadges, championRankClasses } from "@/hooks/useChampionBadges";
