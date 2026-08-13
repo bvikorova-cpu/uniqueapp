@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ChefHat, Trophy, Plus, Flame, MessageCircle, Send, Trash2, Video, Swords } from "lucide-react";
+import { ChefHat, Trophy, Plus, Flame, MessageCircle, Send, Trash2, Video, Swords, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -13,30 +13,30 @@ import { DropZone } from "@/components/kitchen-battles/DropZone";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useMasterChefAccess, KITCHENSTARS_COSTS } from "@/hooks/useMasterChefAccess";
 
-type Battle = { id: string; theme: string; description: string | null; status: string; deadline: string; prize_pool: number };
-type Participant = { id: string; battle_id: string; user_id: string; dish_title: string; description: string | null; image_url: string | null; video_url: string | null; media_type: string | null; vote_count: number; dislike_count: number };
+type Battle = { id: string; theme: string; description: string | null; status: string; deadline: string; created_by: string | null };
+type Participant = { id: string; battle_id: string; user_id: string; dish_title: string; description: string | null; image_url: string | null; video_url: string | null; media_type: string | null; vote_count: number };
 type Comment = { id: string; battle_id: string; participant_id: string | null; user_id: string; content: string; created_at: string };
 type MyVote = { participant_id: string; vote_type: string };
 
 const ALLOWED_VIDEO = ["video/mp4", "video/webm", "video/quicktime"];
 const MAX_VIDEO = 50 * 1024 * 1024; // 50 MB
 
-export default function KitchenStarsBattles() {
+export default function KitchenStarsCompetitions() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { spendAction } = useMasterChefAccess();
+  const { spendAction, balance } = useMasterChefAccess();
   const [battles, setBattles] = useState<Battle[]>([]);
   const [participants, setParticipants] = useState<Record<string, Participant[]>>({});
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
   const [myVotes, setMyVotes] = useState<Record<string, MyVote>>({});
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [creating, setCreating] = useState(false);
-  const [entryFor, setEntryFor] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  /** null = closed, "new" = start a competition, "<battleId>" = join as opponent */
+  const [formFor, setFormFor] = useState<string | null>(null);
   const [dishTitle, setDishTitle] = useState("");
   const [dishDesc, setDishDesc] = useState("");
   const [dishFile, setDishFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
   const [commentDraft, setCommentDraft] = useState<Record<string, string>>({});
   const [showComments, setShowComments] = useState<Record<string, boolean>>({});
 
@@ -47,7 +47,8 @@ export default function KitchenStarsBattles() {
     setUserId(session.user.id);
 
     const { data: bs } = await supabase.from("kitchen_battles")
-      .select("*").order("created_at", { ascending: false }).limit(20);
+      .select("id, theme, description, status, deadline, created_by")
+      .order("created_at", { ascending: false }).limit(30);
     setBattles(bs || []);
 
     if (bs && bs.length) {
@@ -81,93 +82,114 @@ export default function KitchenStarsBattles() {
 
   useEffect(() => { load(); }, []);
 
-  const createBattle = async () => {
-    setCreating(true);
-    const { data, error } = await supabase.functions.invoke("create-kitchen-battle", { body: {} });
-    setCreating(false);
-    if (error || data?.error) {
-      toast({ title: "Error", description: error?.message || data?.error, variant: "destructive" });
+  const formatBytes = (b: number) => b < 1024 * 1024 ? `${(b / 1024).toFixed(0)} KB` : `${(b / 1024 / 1024).toFixed(2)} MB`;
+
+  const validateFile = (file: File): { ok: true } | { ok: false; title: string; description: string } => {
+    if (!ALLOWED_VIDEO.includes(file.type)) {
+      return { ok: false, title: "Video required", description: `"${file.name}" is not a supported video. Upload MP4, WEBM or MOV, max 50 MB.` };
+    }
+    if (file.size > MAX_VIDEO) {
+      return { ok: false, title: "Video too large", description: `Your video is ${formatBytes(file.size)} — the limit is 50 MB. Trim it or re-encode at 720p.` };
+    }
+    if (file.size === 0) {
+      return { ok: false, title: "Empty file", description: "The selected file is 0 bytes. Pick another video." };
+    }
+    return { ok: true };
+  };
+
+  const resetForm = () => { setFormFor(null); setDishTitle(""); setDishDesc(""); setDishFile(null); };
+
+  /** Uploads the cooking video and returns its public URL. */
+  const uploadVideo = async (battleId: string, file: File): Promise<string | null> => {
+    const ext = file.name.split(".").pop()?.toLowerCase() || "mp4";
+    const path = `${userId}/${battleId}/${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from("kitchen-battles")
+      .upload(path, file, { contentType: file.type, upsert: false });
+    if (error) {
+      toast({ title: "Upload failed", description: error.message, variant: "destructive" });
+      return null;
+    }
+    return supabase.storage.from("kitchen-battles").getPublicUrl(path).data.publicUrl;
+  };
+
+  /** Validates the shared video form. */
+  const validateForm = (): File | null => {
+    if (!dishTitle.trim() || dishTitle.length > 120) {
+      toast({ title: "Dish title required (max 120 characters)", variant: "destructive" }); return null;
+    }
+    if (dishDesc.length > 500) {
+      toast({ title: "Description too long (max 500 characters)", variant: "destructive" }); return null;
+    }
+    if (!dishFile) {
+      toast({ title: "Cooking video required", description: "Upload a video of you cooking the dish.", variant: "destructive" }); return null;
+    }
+    const v = validateFile(dishFile);
+    if (v.ok === false) { toast({ title: v.title, description: v.description, variant: "destructive" }); return null; }
+    return dishFile;
+  };
+
+  /** Start a competition: creates the competition and uploads the first video. */
+  const startCompetition = async () => {
+    const file = validateForm();
+    if (!file || !userId) return;
+
+    const paid = await spendAction("competition_entry");
+    if (!paid) return;
+
+    setBusy(true);
+    const { data: battle, error: be } = await supabase.from("kitchen_battles")
+      .insert({ theme: dishTitle.trim(), description: dishDesc.trim() || null, created_by: userId })
+      .select("id").single();
+    if (be || !battle) {
+      setBusy(false);
+      toast({ title: "Could not start the competition", description: be?.message, variant: "destructive" });
       return;
     }
-    toast({ title: "Duel created!", description: "Two chefs can now upload their cooking videos." });
+
+    const url = await uploadVideo(battle.id, file);
+    if (!url) { setBusy(false); return; }
+
+    const { error } = await supabase.from("kitchen_battle_participants").insert({
+      battle_id: battle.id, user_id: userId, dish_title: dishTitle.trim(),
+      description: dishDesc.trim() || null, video_url: url, media_type: "video",
+      media_size: file.size, media_mime: file.type });
+    setBusy(false);
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+
+    resetForm();
+    toast({ title: "Competition started!", description: "The next chef who uploads a video becomes your opponent." });
     load();
   };
 
-  const formatBytes = (b: number) => b < 1024 * 1024 ? `${(b / 1024).toFixed(0)} KB` : `${(b / 1024 / 1024).toFixed(2)} MB`;
-
-  const validateFile = (file: File):
-    | { ok: true; type: "image" | "video" }
-    | { ok: false; title: string; reason: string; suggestion: string } => {
-    if (!ALLOWED_VIDEO.includes(file.type)) {
-      return {
-        ok: false,
-        title: "Video required",
-        reason: `"${file.name}" has type "${file.type || "unknown"}" — duels accept cooking videos only.`,
-        suggestion: "Upload MP4, WEBM or MOV (H.264), max 50 MB." };
-    }
-    if (file.size > MAX_VIDEO) {
-      return {
-        ok: false,
-        title: "Video too large",
-        reason: `Your video is ${formatBytes(file.size)} — ${formatBytes(file.size - MAX_VIDEO)} over the 50 MB limit.`,
-        suggestion: "Trim the length or re-encode at 720p with a lower bitrate." };
-    }
-    if (file.size === 0) {
-      return { ok: false, title: "Empty file", reason: "The selected file is 0 bytes.", suggestion: "Pick a different video and try again." };
-    }
-    return { ok: true, type: "video" };
-  };
-
-  const submitEntry = async (battleId: string) => {
+  /** Join an open competition as the opponent. */
+  const joinCompetition = async (battleId: string) => {
     const parts = participants[battleId] || [];
     if (parts.find(p => p.user_id === userId)) {
-      toast({ title: "You are already in this duel", description: "Each chef uploads one video per duel.", variant: "destructive" });
-      setEntryFor(null); return;
+      toast({ title: "You are already in this competition", variant: "destructive" }); resetForm(); return;
     }
     if (parts.length >= 2) {
-      toast({ title: "Duel is full", description: "This duel already has two chefs. Start a new duel instead.", variant: "destructive" });
-      setEntryFor(null); load(); return;
+      toast({ title: "Competition is full", description: "Start your own competition instead.", variant: "destructive" });
+      resetForm(); load(); return;
     }
-    if (!dishTitle.trim() || dishTitle.length > 120) {
-      toast({ title: "Dish title required (max 120 chars)", variant: "destructive" }); return;
-    }
-    if (dishDesc.length > 500) {
-      toast({ title: "Description too long (max 500)", variant: "destructive" }); return;
-    }
-    if (!dishFile) {
-      toast({ title: "Cooking video required", description: "Upload a video of you cooking the dish.", variant: "destructive" }); return;
-    }
-    const v = validateFile(dishFile);
-    if (v.ok === false) {
-      toast({ title: v.title, description: `${v.reason} ${v.suggestion}`, variant: "destructive" }); return;
-    }
+    const file = validateForm();
+    if (!file || !userId) return;
 
-    const paid = await spendAction("battle_entry");
+    const paid = await spendAction("competition_entry");
     if (!paid) return;
 
-    setUploading(true);
-    const ext = dishFile.name.split(".").pop()?.toLowerCase() || "mp4";
-    const path = `${userId}/${battleId}/${crypto.randomUUID()}.${ext}`;
-    const { error: ue } = await supabase.storage.from("kitchen-battles")
-      .upload(path, dishFile, { contentType: dishFile.type, upsert: false });
-    if (ue) {
-      setUploading(false);
-      toast({ title: "Upload failed", description: ue.message, variant: "destructive" });
-      return;
-    }
-    const { data: pub } = supabase.storage.from("kitchen-battles").getPublicUrl(path);
+    setBusy(true);
+    const url = await uploadVideo(battleId, file);
+    if (!url) { setBusy(false); return; }
 
     const { error } = await supabase.from("kitchen_battle_participants").insert({
       battle_id: battleId, user_id: userId, dish_title: dishTitle.trim(),
-      description: dishDesc.trim() || null, image_url: null, video_url: pub.publicUrl,
-      media_type: "video", media_size: dishFile.size, media_mime: dishFile.type });
-    setUploading(false);
-    if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
-      return;
-    }
-    setEntryFor(null); setDishTitle(""); setDishDesc(""); setDishFile(null);
-    toast({ title: "Video submitted!", description: "Voting is open once both chefs uploaded." });
+      description: dishDesc.trim() || null, video_url: url, media_type: "video",
+      media_size: file.size, media_mime: file.type });
+    setBusy(false);
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+
+    resetForm();
+    toast({ title: "You are the opponent!", description: "Both videos are live — voting is open." });
     load();
   };
 
@@ -197,6 +219,30 @@ export default function KitchenStarsBattles() {
     load();
   };
 
+  const videoForm = (mode: "new" | string) => (
+    <div className="space-y-3 p-4 rounded-xl border border-primary/30 bg-secondary/20">
+      <div className="flex items-center justify-between">
+        <p className="font-semibold flex items-center gap-2">
+          <Video className="h-4 w-4 text-orange-500" />
+          {mode === "new" ? "Start a competition" : "Upload your video as the opponent"}
+        </p>
+        <Button size="icon" variant="ghost" onClick={resetForm} aria-label="Close form"><X className="h-4 w-4" /></Button>
+      </div>
+      <Input placeholder="Dish name (e.g. Truffle risotto)" value={dishTitle} maxLength={120}
+        onChange={e => setDishTitle(e.target.value)} />
+      <Textarea placeholder="Short description of your dish (optional)" value={dishDesc} maxLength={500}
+        onChange={e => setDishDesc(e.target.value)} rows={3} />
+      <DropZone file={dishFile} onFile={setDishFile} accept="video/mp4,video/webm,video/quicktime" />
+      <p className="text-xs text-muted-foreground">
+        Cooking video only — MP4 / WEBM / MOV, max 50 MB. Entry costs {KITCHENSTARS_COSTS.competition_entry} credits (you have {balance}).
+      </p>
+      <Button className="w-full" disabled={busy}
+        onClick={() => mode === "new" ? startCompetition() : joinCompetition(mode)}>
+        {busy ? "Uploading..." : mode === "new" ? "Create competition & upload video" : "Upload video & become opponent"}
+      </Button>
+    </div>
+  );
+
   const renderSide = (
     battle: Battle,
     p: Participant | undefined,
@@ -211,7 +257,7 @@ export default function KitchenStarsBattles() {
         <div className="rounded-xl border-2 border-dashed border-border p-6 text-center space-y-2">
           <Video className="h-8 w-8 mx-auto text-muted-foreground/50" />
           <p className="font-semibold">Chef {label} slot open</p>
-          <p className="text-xs text-muted-foreground">Waiting for a chef to upload a cooking video.</p>
+          <p className="text-xs text-muted-foreground">The next chef who uploads a cooking video becomes the opponent.</p>
         </div>
       );
     }
@@ -220,9 +266,9 @@ export default function KitchenStarsBattles() {
     return (
       <div className={`rounded-xl border p-3 space-y-3 ${isWinner ? "border-yellow-500/60 bg-yellow-500/5" : "border-primary/20 bg-secondary/20"}`}>
         <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <Badge className="bg-orange-600 hover:bg-orange-700">Chef {label}</Badge>
-            <p className="font-semibold">{p.dish_title}</p>
+          <div className="flex items-center gap-2 min-w-0">
+            <Badge className="bg-orange-600 hover:bg-orange-700 shrink-0">Chef {label}</Badge>
+            <p className="font-semibold truncate">{p.dish_title}</p>
           </div>
           {isWinner && <Trophy className="h-5 w-5 text-yellow-500 shrink-0" />}
         </div>
@@ -254,33 +300,33 @@ export default function KitchenStarsBattles() {
   return (
     <>
       <FloatingHowItWorks
-        title="How KitchenStars Duels work"
+        title="How KitchenStars Competitions work"
         steps={[
-          { title: "Start a duel", desc: "Create a duel with a cooking theme — two chef slots open up." },
-          { title: "Upload your video", desc: `Two chefs each upload one cooking video (${KITCHENSTARS_COSTS.battle_entry} credits, MP4/WEBM/MOV up to 50 MB).` },
+          { title: "Start a competition", desc: `Tap "Start Competition", fill the form and upload your cooking video (${KITCHENSTARS_COSTS.competition_entry} credits).` },
+          { title: "An opponent joins", desc: "The next chef who uploads a cooking video to your competition becomes your opponent." },
           { title: "X vs Y", desc: "Both videos appear one under the other as Chef X vs Chef Y." },
-          { title: "Everyone votes", desc: "All platform users watch both videos and cast one vote per duel. Highest share wins the crown." },
+          { title: "Everyone votes", desc: "All platform users watch both videos and cast one vote per competition. The highest share wins the crown." },
         ]}
       />
       <div className="min-h-screen bg-background pt-20 pb-12 px-4">
         <div className="max-w-3xl mx-auto space-y-6">
-          <Button variant="ghost" onClick={() => navigate("/masterchef")}>← Back</Button>
-
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-orange-500 via-primary to-accent bg-clip-text text-transparent mb-2">
-              KitchenStars Video Duels
+            <h1 className="text-3xl md:text-5xl font-black bg-gradient-to-r from-orange-500 via-primary to-accent bg-clip-text text-transparent mb-2">
+              KitchenStars Competitions
             </h1>
-            <p className="text-muted-foreground text-lg">Two chefs, two cooking videos — the platform votes 👑</p>
+            <p className="text-muted-foreground text-base md:text-lg">Two chefs, two cooking videos — the platform votes 👑</p>
           </div>
 
-          <Button size="lg" onClick={createBattle} disabled={creating} className="w-full">
-            <Plus className="h-4 w-4 mr-2" /> {creating ? "Creating..." : "Start a New Duel"}
-          </Button>
+          {formFor === "new" ? videoForm("new") : (
+            <Button size="lg" onClick={() => { setFormFor("new"); setDishTitle(""); setDishDesc(""); setDishFile(null); }} className="w-full">
+              <Plus className="h-4 w-4 mr-2" /> Start Competition
+            </Button>
+          )}
 
           {loading ? (
             <p className="text-center text-muted-foreground">Loading...</p>
           ) : battles.length === 0 ? (
-            <Card><CardContent className="py-10 text-center text-muted-foreground">No duels yet. Be the first!</CardContent></Card>
+            <Card><CardContent className="py-10 text-center text-muted-foreground">No competitions yet. Be the first chef!</CardContent></Card>
           ) : (
             battles.map(battle => {
               const parts = (participants[battle.id] || []).slice(0, 2);
@@ -300,7 +346,7 @@ export default function KitchenStarsBattles() {
                 <Card key={battle.id} className="border-orange-500/20">
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between gap-2 flex-wrap">
-                      <span className="flex items-center gap-2"><ChefHat className="h-5 w-5 text-orange-500" /> {battle.theme}</span>
+                      <span className="flex items-center gap-2 min-w-0"><ChefHat className="h-5 w-5 text-orange-500 shrink-0" /> <span className="truncate">{battle.theme}</span></span>
                       <div className="flex items-center gap-2">
                         <Badge variant={myEntry ? "default" : "outline"} className={myEntry ? "bg-green-600 hover:bg-green-700" : "text-muted-foreground"}>
                           {myEntry ? "✓ You're in" : `${parts.length}/2 chefs`}
@@ -325,60 +371,38 @@ export default function KitchenStarsBattles() {
                     {renderSide(battle, b, "Y", totalVotes, canVote, myVote, winnerId === b?.id)}
 
                     {isOpen && bothIn && !myVote && (
-                      <p className="text-xs text-center text-muted-foreground">Watch both videos, then vote for the better dish. One vote per duel.</p>
+                      <p className="text-xs text-center text-muted-foreground">Watch both videos, then vote for the better dish. One vote per competition.</p>
                     )}
 
                     {isOpen && !myEntry && parts.length < 2 && (
-                      entryFor === battle.id ? (
-                        <div className="space-y-2 p-3 rounded-lg border border-primary/20">
-                          <Input placeholder="Dish title" value={dishTitle} onChange={e => setDishTitle(e.target.value)} />
-                          <Textarea placeholder="Short description (optional)" value={dishDesc} onChange={e => setDishDesc(e.target.value)} />
-                          <DropZone
-                            file={dishFile}
-                            onChange={setDishFile}
-                            validate={validateFile}
-                            accept="video/mp4,video/webm,video/quicktime"
-                            hint="Cooking video: MP4/WEBM/MOV ≤ 50 MB"
-                          />
-                          <div className="flex gap-2">
-                            <Button size="sm" onClick={() => submitEntry(battle.id)} disabled={uploading}>
-                              {uploading ? "Uploading..." : `Submit video (${KITCHENSTARS_COSTS.battle_entry} credits)`}
-                            </Button>
-                            <Button size="sm" variant="ghost" onClick={() => setEntryFor(null)}>Cancel</Button>
-                          </div>
-                        </div>
-                      ) : (
-                        <Button variant="outline" className="w-full" onClick={() => setEntryFor(battle.id)}>
-                          <Video className="h-4 w-4 mr-2" /> Upload your cooking video
+                      formFor === battle.id ? videoForm(battle.id) : (
+                        <Button variant="outline" className="w-full" onClick={() => { setFormFor(battle.id); setDishTitle(""); setDishDesc(""); setDishFile(null); }}>
+                          <Video className="h-4 w-4 mr-2" /> Upload your video & become the opponent
                         </Button>
                       )
                     )}
 
-                    <Button variant="ghost" size="sm" className="w-full" onClick={() => setShowComments(s => ({ ...s, [battle.id]: !s[battle.id] }))}>
-                      <MessageCircle className="h-4 w-4 mr-2" /> {showCs ? "Hide" : "Show"} Comments ({allComments.length})
+                    <Button variant="ghost" size="sm" className="w-full"
+                      onClick={() => setShowComments(prev => ({ ...prev, [battle.id]: !showCs }))}>
+                      <MessageCircle className="h-4 w-4 mr-2" /> {showCs ? "Hide" : "Show"} comments ({allComments.length})
                     </Button>
 
                     {showCs && (
-                      <div className="space-y-2 pt-2 border-t border-border">
-                        {allComments.length === 0 && <p className="text-xs text-muted-foreground italic">No comments yet.</p>}
+                      <div className="space-y-2">
                         {allComments.map(c => (
-                          <div key={c.id} className="flex items-start justify-between gap-2 text-sm p-2 rounded bg-secondary/30">
+                          <div key={c.id} className="flex items-start justify-between gap-2 text-sm p-2 rounded-lg bg-secondary/30">
                             <p className="break-words">{c.content}</p>
                             {c.user_id === userId && (
-                              <Button size="icon" variant="ghost" className="h-6 w-6 shrink-0" onClick={() => deleteComment(c.id)}>
-                                <Trash2 className="h-3 w-3" />
+                              <Button size="icon" variant="ghost" className="h-6 w-6 shrink-0" onClick={() => deleteComment(c.id)} aria-label="Delete comment">
+                                <Trash2 className="h-3.5 w-3.5" />
                               </Button>
                             )}
                           </div>
                         ))}
                         <div className="flex gap-2">
-                          <Input
-                            placeholder="Write a comment..."
-                            value={commentDraft[battle.id] || ""}
-                            onChange={e => setCommentDraft(prev => ({ ...prev, [battle.id]: e.target.value }))}
-                            onKeyDown={e => { if (e.key === "Enter") postComment(battle.id); }}
-                          />
-                          <Button size="icon" onClick={() => postComment(battle.id)}><Send className="h-4 w-4" /></Button>
+                          <Input placeholder="Write a comment..." value={commentDraft[battle.id] || ""} maxLength={500}
+                            onChange={e => setCommentDraft(prev => ({ ...prev, [battle.id]: e.target.value }))} />
+                          <Button size="icon" onClick={() => postComment(battle.id)} aria-label="Send comment"><Send className="h-4 w-4" /></Button>
                         </div>
                       </div>
                     )}
