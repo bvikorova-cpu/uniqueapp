@@ -200,7 +200,9 @@ const FaceInsight = () => {
   }, []);
 
   const call = useCallback(async <T,>(body: Record<string, unknown>): Promise<T> => {
-    const { data, error } = await supabase.functions.invoke("face-insight-ai", { body });
+    const { data, error } = await supabase.functions.invoke("future-face-ai", {
+      body: { ...body, module: "face_insight" },
+    });
     const payload = data as { error?: string } | null;
     if (error) throw new Error(payload?.error || error.message);
     if (payload?.error) throw new Error(payload.error);

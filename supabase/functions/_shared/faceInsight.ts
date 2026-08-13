@@ -1,8 +1,6 @@
-import "../_shared/aiRedirect.ts";
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
-import { corsHeaders, errorResponse, jsonResponse } from "../_shared/openai.ts";
-import { deductAICredits, refundAICredits } from "../_shared/credits.ts";
+import { corsHeaders, errorResponse, jsonResponse } from "./openai.ts";
+import { deductAICredits, refundAICredits } from "./credits.ts";
 
 /**
  * Face Insight Studio — long-form AI face analysis.
@@ -135,7 +133,7 @@ async function runAI(mode: Mode, images: string[], note: string): Promise<string
   throw lastErr ?? new Error("AI request failed");
 }
 
-serve(async (req) => {
+export async function handleFaceInsight(req: Request, body: any): Promise<Response> {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
@@ -156,7 +154,7 @@ serve(async (req) => {
       { auth: { persistSession: false } },
     );
 
-    const body = await req.json().catch(() => ({}));
+    
     const action = String(body.action || "analyze");
 
     if (action === "history") {
@@ -234,4 +232,4 @@ serve(async (req) => {
   } catch (e: any) {
     return errorResponse(e?.message || "Function failed");
   }
-});
+}
