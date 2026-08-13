@@ -207,25 +207,23 @@ function Doll({ config, isSpinning }: { config: BarbieConfig; isSpinning: boolea
             ))}
           </>
         );
-      default: // Long — flowing strands
+      default: // Long — smooth flowing hair falling behind the shoulders
         return (
           <>
             {cap}
-            {strands.map(({ a, r, len }, i) => {
-              if (Math.sin(a) > 0.55) return null;
-              return (
-                <mesh
-                  key={i}
-                  position={[Math.cos(a) * r, 2.32 - len / 2, Math.sin(a) * r - 0.03]}
-                  rotation={[0.06, 0, -Math.cos(a) * 0.12]}
-                >
-                  <capsuleGeometry args={[0.045, len, 6, 12]} />
-                  {hairMat}
-                </mesh>
-              );
-            })}
+            <mesh position={[0, 2.13, -0.09]} scale={[1, 1, 0.55]}>
+              <capsuleGeometry args={[0.185, 0.42, 10, 28]} />
+              {hairMat}
+            </mesh>
+            {[-1, 1].map((s) => (
+              <mesh key={s} position={[s * 0.175, 2.24, 0.01]} rotation={[0, 0, s * 0.06]}>
+                <capsuleGeometry args={[0.055, 0.34, 8, 20]} />
+                {hairMat}
+              </mesh>
+            ))}
           </>
         );
+
     }
   };
 
