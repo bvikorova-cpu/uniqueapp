@@ -385,7 +385,7 @@ export default function KitchenStarsCompetitions() {
                 KitchenStars Arena
               </h1>
               <p className="text-white/80 text-sm md:text-lg max-w-xl mb-3 leading-relaxed">
-                Two chefs upload cooking videos. Each pays 5 credits, the platform votes, and the winner receives all 10 credits.
+                Two chefs upload cooking videos. Each pays 5 credits, the winner receives all 10 credits — voting is free for every registered Unique user, 1 vote per duel.
               </p>
             </div>
           </section>
