@@ -208,6 +208,7 @@ export const Handwriting = lazy(() => import("@/pages/Handwriting"));
 export const FutureFace = lazy(() => import("@/pages/FutureFace"));
 export const FairytaleBook = lazy(() => import("@/pages/FairytaleBook"));
 export const GuessAge = lazy(() => import("@/pages/GuessAge"));
+export const FaceInsight = lazy(() => import("@/pages/FaceInsight"));
 
 export const PastLife = lazy(() => import("@/pages/PastLife"));
 export const AntiqueAppraisal = lazy(() => import("@/pages/AntiqueAppraisal"));
