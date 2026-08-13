@@ -15,6 +15,8 @@ import { useToast } from "@/hooks/use-toast";
 import { DropZone, type DropZoneValidation } from "@/components/kitchen-battles/DropZone";
 import { useMasterChefAccess, KITCHENSTARS_COSTS } from "@/hooks/useMasterChefAccess";
 import masterchefHero from "@/assets/masterchef-hero-v2.mp4.asset.json";
+import KitchenStarsLeaderboard from "@/components/kitchen-battles/KitchenStarsLeaderboard";
+
 
 type Battle = { id: string; theme: string; description: string | null; status: string; deadline: string; created_by: string | null };
 type Participant = { id: string; battle_id: string; user_id: string; dish_title: string; description: string | null; image_url: string | null; video_url: string | null; media_type: string | null; vote_count: number };
@@ -498,6 +500,9 @@ export default function KitchenStarsCompetitions() {
               )}
             </CardContent>
           </Card>
+
+          <KitchenStarsLeaderboard currentUserId={userId} />
+
 
           {/* Public competition directory — tap any competition to open it */}
           {!loading && battles.length > 0 && (
