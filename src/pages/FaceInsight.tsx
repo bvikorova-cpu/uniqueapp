@@ -13,6 +13,7 @@ import AiMarkdown from "@/components/common/AiMarkdown";
 import { normalizeImageForUpload } from "@/utils/imageUploadPrep";
 import { exportFaceReportPDF } from "@/lib/exportFaceReportPDF";
 import { downloadFaceShareCard } from "@/lib/faceShareCard";
+import { FaceInsightHero } from "@/components/face-insight/FaceInsightHero";
 import {
   ScanFace, Sparkles, Loader2, Download, Share2, Trash2, FileText, Users, History, Gem, HelpCircle, Camera,
 } from "lucide-react";
