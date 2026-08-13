@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Check, Coins } from "lucide-react";
+import { Sparkles, Check, Coins, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { BATTLE_COINS_UPDATED, BATTLE_MODULE_LABELS, type BattleModule } from "@/hooks/useBattleCoins";
@@ -126,13 +126,60 @@ export default function BattleCosmeticsShop({ coins, module = "kitchenstars" }: 
               </div>
               <p className="text-[11px] text-muted-foreground">
                 {equipped.length > 0
-                  ? `Equipped now: ${equipped.map(i => i.name).join(", ")} — visible next to your name on the leaderboard and on your duel entries.`
+                  ? `Equipped now: ${equipped.map(i => `${i.kind}: ${i.name}`).join(", ")} — visible next to your name on the leaderboard and on your duel entries.`
                   : "Nothing equipped yet — tap Equip on an item below to show it publicly."}
               </p>
             </>
           )}
         </div>
 
+
+
+        {/* Loadout slots: one item per kind, switchable from everything you own, with an explicit
+            Unequip so a slot can be cleared without hunting for the item in the catalogue below. */}
+        <div className="rounded-xl border border-primary/20 bg-secondary/20 p-3 space-y-2">
+          <p className="text-xs font-semibold">Loadout slots</p>
+          <div className="grid gap-2 sm:grid-cols-3">
+            {KINDS.map(k => {
+              const slotItems = ownedItems.filter(i => i.kind === k.key);
+              const current = slotItems.find(i => owned[i.id]?.is_equipped);
+              return (
+                <div key={k.key} className="rounded-lg border border-primary/15 bg-background/60 p-2 space-y-1.5">
+                  <p className="text-[11px] font-semibold text-muted-foreground">{k.label.replace(/s$/, "")} slot</p>
+                  {slotItems.length === 0 ? (
+                    <p className="text-[11px] text-muted-foreground">Nothing owned yet — buy one below.</p>
+                  ) : (
+                    <>
+                      <div className="flex flex-wrap gap-1">
+                        {slotItems.map(i => (
+                          <Button
+                            key={i.id}
+                            size="sm"
+                            variant={owned[i.id]?.is_equipped ? "default" : "outline"}
+                            className="h-7 px-2 text-[11px] gap-1"
+                            disabled={busy === i.code}
+                            onClick={() => equip(i, !owned[i.id]?.is_equipped)}
+                          >
+                            <span aria-hidden>{i.preview || "✨"}</span>
+                            <span className="truncate max-w-[70px]">{i.name}</span>
+                          </Button>
+                        ))}
+                      </div>
+                      {current ? (
+                        <Button size="sm" variant="ghost" className="h-7 px-2 text-[11px] w-full"
+                          disabled={busy === current.code} onClick={() => equip(current, false)}>
+                          <X className="h-3 w-3 mr-1" /> Unequip
+                        </Button>
+                      ) : (
+                        <p className="text-[11px] text-muted-foreground">Slot empty — tap an item to wear it.</p>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
         <div className="flex gap-2">
           {KINDS.map(k => (
@@ -164,7 +211,7 @@ export default function BattleCosmeticsShop({ coins, module = "kitchenstars" }: 
                   {own ? (
                     <Button size="sm" variant={own.is_equipped ? "default" : "outline"} disabled={busy === item.code}
                       onClick={() => equip(item, !own.is_equipped)}>
-                      {own.is_equipped ? <><Check className="h-3.5 w-3.5 mr-1" /> Equipped</> : "Equip"}
+                      {own.is_equipped ? <><X className="h-3.5 w-3.5 mr-1" /> Unequip</> : "Equip"}
                     </Button>
                   ) : (
                     <Button size="sm" disabled={busy === item.code} onClick={() => buy(item)}>
