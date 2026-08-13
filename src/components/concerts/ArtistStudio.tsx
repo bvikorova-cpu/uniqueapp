@@ -6,7 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, ArrowLeft, BadgeCheck, Loader2, Mic2, Music, Plus, Radio, RefreshCw, ShieldCheck, Ticket } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AlertCircle, ArrowLeft, BadgeCheck, Loader2, Mic2, Music, Plus, Radio, RefreshCw, ShieldAlert, ShieldCheck, Ticket } from "lucide-react";
+
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
