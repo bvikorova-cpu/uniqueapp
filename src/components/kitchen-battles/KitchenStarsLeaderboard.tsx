@@ -82,7 +82,7 @@ export default function KitchenStarsLeaderboard({ currentUserId }: { currentUser
 
   const champBadges = useChampionBadges(rows.map((r) => r.user_id));
   // Equipped Battle Coins cosmetics: frame ring on the avatar, sticker + badge next to the name.
-  const cosmetics = useEquippedCosmetics(rows.map((r) => r.user_id));
+  const cosmetics = useEquippedCosmetics(rows.map((r) => r.user_id), "kitchenstars");
   const inTop = rows.some((r) => r.user_id === currentUserId);
 
   return (

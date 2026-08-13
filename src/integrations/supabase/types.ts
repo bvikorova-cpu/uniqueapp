@@ -3251,6 +3251,7 @@ export type Database = {
           created_at: string
           id: string
           is_equipped: boolean
+          module: string
           updated_at: string
           user_id: string
         }
@@ -3259,6 +3260,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_equipped?: boolean
+          module?: string
           updated_at?: string
           user_id: string
         }
@@ -3267,6 +3269,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_equipped?: boolean
+          module?: string
           updated_at?: string
           user_id?: string
         }
@@ -68142,7 +68145,7 @@ export type Database = {
         Returns: Json
       }
       equip_battle_cosmetic: {
-        Args: { _code: string; _equip?: boolean }
+        Args: { _code: string; _equip?: boolean; _module?: string }
         Returns: Json
       }
       erf: { Args: { x: number }; Returns: number }
@@ -68455,7 +68458,7 @@ export type Database = {
       }
       get_engagement_metrics: { Args: { p_days?: number }; Returns: Json }
       get_equipped_battle_cosmetics: {
-        Args: { _user_ids: string[] }
+        Args: { _module?: string; _user_ids: string[] }
         Returns: {
           code: string
           css_class: string

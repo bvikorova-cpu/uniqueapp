@@ -39,14 +39,14 @@ export default function BattleCosmeticsShop({ coins, module = "kitchenstars" }: 
     const [{ data: cat }, ownedRes] = await Promise.all([
       supabase.from("battle_cosmetics").select("*").eq("is_active", true).order("price_coins", { ascending: true }),
       session
-        ? supabase.from("battle_cosmetics_owned").select("cosmetic_id, is_equipped").eq("user_id", session.user.id)
+        ? supabase.from("battle_cosmetics_owned").select("cosmetic_id, is_equipped").eq("user_id", session.user.id).eq("module", module)
         : Promise.resolve({ data: [] as Owned[] }),
     ]);
     setItems((cat as Cosmetic[]) || []);
     const map: Record<string, Owned> = {};
     ((ownedRes.data as Owned[]) || []).forEach(o => { map[o.cosmetic_id] = o; });
     setOwned(map);
-  }, []);
+  }, [module]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -77,7 +77,7 @@ export default function BattleCosmeticsShop({ coins, module = "kitchenstars" }: 
 
   const equip = async (item: Cosmetic, next: boolean) => {
     setBusy(item.code);
-    const { error } = await supabase.rpc("equip_battle_cosmetic", { _code: item.code, _equip: next });
+    const { error } = await supabase.rpc("equip_battle_cosmetic", { _code: item.code, _equip: next, _module: module } as never);
     setBusy(null);
     if (error) { toast({ title: "Could not update", description: error.message, variant: "destructive" }); return; }
     toast({
@@ -107,7 +107,7 @@ export default function BattleCosmeticsShop({ coins, module = "kitchenstars" }: 
         {/* Locker: everything bought lives here, and whatever is equipped shows up next to your
             name and avatar on the live leaderboard and on your duel entries. */}
         <div className="rounded-xl border border-primary/20 bg-secondary/20 p-3 space-y-1.5">
-          <EquippedCosmeticPreview />
+          <EquippedCosmeticPreview module={module} />
           <p className="text-xs font-semibold">Your locker ({ownedItems.length} owned)</p>
           {ownedItems.length === 0 ? (
             <p className="text-[11px] text-muted-foreground">
