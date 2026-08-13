@@ -83,6 +83,8 @@ export default function BattleCosmeticsShop({ coins }: { coins: number }) {
   };
 
   const visible = items.filter(i => i.kind === tab);
+  const equipped = items.filter(i => owned[i.id]?.is_equipped);
+  const ownedItems = items.filter(i => owned[i.id]);
 
   return (
     <Card className="border-primary/20">
@@ -95,6 +97,35 @@ export default function BattleCosmeticsShop({ coins }: { coins: number }) {
         </p>
       </CardHeader>
       <CardContent className="space-y-3">
+        {/* Locker: everything bought lives here, and whatever is equipped shows up next to your
+            name and avatar on the live leaderboard and on your duel entries. */}
+        <div className="rounded-xl border border-primary/20 bg-secondary/20 p-3 space-y-1.5">
+          <p className="text-xs font-semibold">Your locker ({ownedItems.length} owned)</p>
+          {ownedItems.length === 0 ? (
+            <p className="text-[11px] text-muted-foreground">
+              Nothing bought yet. Anything you buy appears here — equip it and it shows on the leaderboard
+              and on your duel entries.
+            </p>
+          ) : (
+            <>
+              <div className="flex flex-wrap gap-1.5">
+                {ownedItems.map(i => (
+                  <Badge key={i.id} variant={owned[i.id]?.is_equipped ? "default" : "outline"} className="gap-1">
+                    <span aria-hidden>{i.preview || "✨"}</span>
+                    <span className="truncate max-w-[110px]">{i.name}</span>
+                  </Badge>
+                ))}
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                {equipped.length > 0
+                  ? `Equipped now: ${equipped.map(i => i.name).join(", ")} — visible next to your name on the leaderboard and on your duel entries.`
+                  : "Nothing equipped yet — tap Equip on an item below to show it publicly."}
+              </p>
+            </>
+          )}
+        </div>
+
+
         <div className="flex gap-2">
           {KINDS.map(k => (
             <Button key={k.key} size="sm" variant={tab === k.key ? "default" : "outline"} onClick={() => setTab(k.key)}>

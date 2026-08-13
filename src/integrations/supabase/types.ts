@@ -68436,6 +68436,17 @@ export type Database = {
         }[]
       }
       get_engagement_metrics: { Args: { p_days?: number }; Returns: Json }
+      get_equipped_battle_cosmetics: {
+        Args: { _user_ids: string[] }
+        Returns: {
+          code: string
+          css_class: string
+          kind: string
+          name: string
+          preview: string
+          user_id: string
+        }[]
+      }
       get_escape_room_hint: { Args: { _puzzle_id: string }; Returns: string }
       get_featured_campaign: { Args: never; Returns: Json }
       get_follower_count: { Args: { user_id: string }; Returns: number }
