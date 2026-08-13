@@ -6,6 +6,7 @@ import { Sparkles, Check, Coins } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { BATTLE_COINS_UPDATED, BATTLE_MODULE_LABELS, type BattleModule } from "@/hooks/useBattleCoins";
+import EquippedCosmeticPreview from "./EquippedCosmeticPreview";
 
 type Cosmetic = {
   id: string; code: string; name: string; description: string | null;
@@ -79,6 +80,12 @@ export default function BattleCosmeticsShop({ coins, module = "kitchenstars" }: 
     const { error } = await supabase.rpc("equip_battle_cosmetic", { _code: item.code, _equip: next });
     setBusy(null);
     if (error) { toast({ title: "Could not update", description: error.message, variant: "destructive" }); return; }
+    toast({
+      title: next ? `${item.name} equipped` : `${item.name} unequipped`,
+      description: next ? "It now shows on your preview card, the leaderboard and your duel entries." : "Removed from your public profile.",
+    });
+    // Refreshes the public cosmetics lookup used by the preview card and leaderboards.
+    window.dispatchEvent(new Event(BATTLE_COINS_UPDATED));
     load();
   };
 
@@ -100,6 +107,7 @@ export default function BattleCosmeticsShop({ coins, module = "kitchenstars" }: 
         {/* Locker: everything bought lives here, and whatever is equipped shows up next to your
             name and avatar on the live leaderboard and on your duel entries. */}
         <div className="rounded-xl border border-primary/20 bg-secondary/20 p-3 space-y-1.5">
+          <EquippedCosmeticPreview />
           <p className="text-xs font-semibold">Your locker ({ownedItems.length} owned)</p>
           {ownedItems.length === 0 ? (
             <p className="text-[11px] text-muted-foreground">
