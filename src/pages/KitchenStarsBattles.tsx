@@ -19,6 +19,9 @@ import MonthlyChampionRewardsCard from "@/components/battle-coins/MonthlyChampio
 import BattleCosmeticsShop from "@/components/battle-coins/BattleCosmeticsShop";
 import masterchefHero from "@/assets/masterchef-hero-v2.mp4.asset.json";
 import KitchenStarsLeaderboard from "@/components/kitchen-battles/KitchenStarsLeaderboard";
+import CosmeticMediaFrame from "@/components/battle-coins/CosmeticMediaFrame";
+import { useEquippedCosmetics } from "@/hooks/useEquippedCosmetics";
+import { useChampionBadges } from "@/hooks/useChampionBadges";
 
 
 type Battle = { id: string; theme: string; description: string | null; status: string; deadline: string; created_by: string | null };
@@ -41,6 +44,10 @@ export default function KitchenStarsCompetitions() {
   const { coins: balance, refresh: refreshCredits } = useBattleCoins("kitchenstars");
   const [battles, setBattles] = useState<Battle[]>([]);
   const [participants, setParticipants] = useState<Record<string, Participant[]>>({});
+  const participantUserIds = Object.values(participants).flat().map((p) => p.user_id);
+  // Equipped frame cosmetics + champion rank frames shown around duel media.
+  const mediaCosmetics = useEquippedCosmetics(participantUserIds);
+  const mediaChampions = useChampionBadges(participantUserIds);
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
   const [myVotes, setMyVotes] = useState<Record<string, MyVote>>({});
   const [userId, setUserId] = useState<string | null>(null);
@@ -376,9 +383,19 @@ export default function KitchenStarsCompetitions() {
           {isWinner && <Trophy className="h-5 w-5 text-yellow-500 shrink-0" />}
         </div>
         {p.video_url ? (
-          <video src={p.video_url} controls playsInline className="w-full rounded-lg bg-black max-h-[60vh]" />
+          <CosmeticMediaFrame
+            frameClass={mediaCosmetics[p.user_id]?.frame?.css_class}
+            championRank={mediaChampions[p.user_id]?.rank}
+          >
+            <video src={p.video_url} controls playsInline className="w-full rounded-lg bg-black max-h-[60vh]" />
+          </CosmeticMediaFrame>
         ) : p.image_url ? (
-          <img src={p.image_url} alt={p.dish_title} loading="lazy" className="w-full rounded-lg object-cover max-h-72" />
+          <CosmeticMediaFrame
+            frameClass={mediaCosmetics[p.user_id]?.frame?.css_class}
+            championRank={mediaChampions[p.user_id]?.rank}
+          >
+            <img src={p.image_url} alt={p.dish_title} loading="lazy" className="w-full rounded-lg object-cover max-h-72" />
+          </CosmeticMediaFrame>
         ) : null}
         {p.description && <p className="text-xs text-muted-foreground">{p.description}</p>}
         <div className="space-y-1">
