@@ -530,15 +530,19 @@ export default function ReelBattles() {
             )}
           </CardContent>
         </Card>
+          </TabsContent>
 
-        <BattleCoinsWallet accent="primary" module="reel_battles" />
+          <TabsContent value="wallet" className="mt-0 space-y-6">
+            <BattleCoinsWallet accent="primary" module="reel_battles" />
+            <BattleCosmeticsShop coins={balance} module="reel_battles" />
+          </TabsContent>
 
-        <BattleCosmeticsShop coins={balance} module="reel_battles" />
+          <TabsContent value="rankings" className="mt-0 space-y-6">
+            <MonthlyChampionRewardsCard module="reel_battles" accent="primary" />
+            <ReelBattlesLeaderboard currentUserId={userId} />
+          </TabsContent>
 
-        <MonthlyChampionRewardsCard module="reel_battles" accent="primary" />
-
-        <ReelBattlesLeaderboard currentUserId={userId} />
-
+          <TabsContent value="arena" className="mt-0 space-y-6">
         {/* Public duel directory — tap any duel to open it */}
         {!loading && battles.length > 0 && (
           selectedId ? (
