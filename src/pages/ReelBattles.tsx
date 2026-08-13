@@ -43,7 +43,7 @@ const safeMime = (file: File) =>
 export default function ReelBattles() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { coins: balance, refresh: refreshCoins } = useBattleCoins();
+  const { coins: balance, refresh: refreshCoins } = useBattleCoins("reel_battles");
   const [battles, setBattles] = useState<Battle[]>([]);
   const [participants, setParticipants] = useState<Record<string, Participant[]>>({});
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
@@ -502,9 +502,9 @@ export default function ReelBattles() {
           </CardContent>
         </Card>
 
-        <BattleCoinsWallet accent="primary" />
+        <BattleCoinsWallet accent="primary" module="reel_battles" />
 
-        <BattleCosmeticsShop coins={balance} />
+        <BattleCosmeticsShop coins={balance} module="reel_battles" />
 
         <MonthlyChampionRewardsCard module="reel_battles" accent="primary" />
 

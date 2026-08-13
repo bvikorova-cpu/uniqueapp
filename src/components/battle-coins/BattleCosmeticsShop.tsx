@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, Check, Coins } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { BATTLE_COINS_UPDATED } from "@/hooks/useBattleCoins";
+import { BATTLE_COINS_UPDATED, BATTLE_MODULE_LABELS, type BattleModule } from "@/hooks/useBattleCoins";
 
 type Cosmetic = {
   id: string; code: string; name: string; description: string | null;
@@ -26,7 +26,7 @@ const KINDS: { key: string; label: string }[] = [
 ];
 
 /** Cosmetic-only shop. Battle Coins have no other use, so they never leak back into paid credits. */
-export default function BattleCosmeticsShop({ coins }: { coins: number }) {
+export default function BattleCosmeticsShop({ coins, module = "kitchenstars" }: { coins: number; module?: BattleModule }) {
   const { toast } = useToast();
   const [items, setItems] = useState<Cosmetic[]>([]);
   const [owned, setOwned] = useState<Record<string, Owned>>({});
@@ -53,13 +53,13 @@ export default function BattleCosmeticsShop({ coins }: { coins: number }) {
     if (coins < item.price_coins) {
       toast({
         title: "Not enough Battle Coins",
-        description: `${item.name} costs ${item.price_coins.toLocaleString()} coins — you have ${coins.toLocaleString()}.`,
+        description: `${item.name} costs ${item.price_coins.toLocaleString()} coins — you have ${coins.toLocaleString()} in ${BATTLE_MODULE_LABELS[module]}.`,
         variant: "destructive",
       });
       return;
     }
     setBusy(item.code);
-    const { error } = await supabase.rpc("purchase_battle_cosmetic", { _code: item.code });
+    const { error } = await (supabase as any).rpc("purchase_battle_cosmetic", { _code: item.code, _module: module });
     setBusy(null);
     if (error) {
       toast({

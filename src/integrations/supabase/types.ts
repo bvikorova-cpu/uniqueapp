@@ -3129,6 +3129,7 @@ export type Database = {
         Row: {
           balance: number
           created_at: string
+          module: string
           total_earned: number
           total_purchased: number
           total_spent: number
@@ -3138,6 +3139,7 @@ export type Database = {
         Insert: {
           balance?: number
           created_at?: string
+          module?: string
           total_earned?: number
           total_purchased?: number
           total_spent?: number
@@ -3147,6 +3149,7 @@ export type Database = {
         Update: {
           balance?: number
           created_at?: string
+          module?: string
           total_earned?: number
           total_purchased?: number
           total_spent?: number
@@ -3163,6 +3166,7 @@ export type Database = {
           delta: number
           id: string
           metadata: Json | null
+          module: string
           reason: string
           ref_id: string | null
           source: string | null
@@ -3175,6 +3179,7 @@ export type Database = {
           delta: number
           id?: string
           metadata?: Json | null
+          module?: string
           reason?: string
           ref_id?: string | null
           source?: string | null
@@ -3187,6 +3192,7 @@ export type Database = {
           delta?: number
           id?: string
           metadata?: Json | null
+          module?: string
           reason?: string
           ref_id?: string | null
           source?: string | null
@@ -67586,16 +67592,28 @@ export type Database = {
         Returns: number
       }
       batch_apply_reactions: { Args: { items: Json }; Returns: Json }
-      battle_coins_apply: {
-        Args: {
-          _delta: number
-          _reason: string
-          _ref_id?: string
-          _source?: string
-          _user_id: string
-        }
-        Returns: number
-      }
+      battle_coins_apply:
+        | {
+            Args: {
+              _delta: number
+              _reason: string
+              _ref_id?: string
+              _source?: string
+              _user_id: string
+            }
+            Returns: number
+          }
+        | {
+            Args: {
+              _delta: number
+              _module: string
+              _reason: string
+              _ref_id?: string
+              _source?: string
+              _user_id: string
+            }
+            Returns: number
+          }
       battle_pool_contribute: {
         Args: { _coins: number; _module: string }
         Returns: undefined
@@ -68129,10 +68147,9 @@ export type Database = {
       }
       erf: { Args: { x: number }; Returns: number }
       evaluate_xp_bets: { Args: never; Returns: number }
-      exchange_credits_for_battle_coins: {
-        Args: { _credits: number }
-        Returns: Json
-      }
+      exchange_credits_for_battle_coins:
+        | { Args: { _credits: number }; Returns: Json }
+        | { Args: { _credits: number; _module?: string }; Returns: Json }
       exclusive_is_matched: {
         Args: { _a: string; _b: string }
         Returns: boolean
@@ -69758,7 +69775,9 @@ export type Database = {
         }
         Returns: undefined
       }
-      purchase_battle_cosmetic: { Args: { _code: string }; Returns: Json }
+      purchase_battle_cosmetic:
+        | { Args: { _code: string }; Returns: Json }
+        | { Args: { _code: string; _module?: string }; Returns: Json }
       purchase_brain_duel_powerup: {
         Args: { p_powerup_type: string; p_price: number }
         Returns: undefined
