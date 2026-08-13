@@ -47,26 +47,20 @@ export default function MasterChefHub() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState<string | null>(null);
+  const { balance, hasPass, expiresAt, loading: accessLoading, activatePass } = useMasterChefAccess();
 
-  const handleSubscribe = async (tier: keyof typeof TIERS) => {
-    try {
-      setLoading(tier);
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({ title: "Login Required", description: "Please sign in to continue", variant: "destructive" });
-        navigate("/auth");
-        return;
-      }
-      const { data, error } = await supabase.functions.invoke("create-masterchef-checkout", {
-        body: { priceId: TIERS[tier].priceId, tier } });
-      if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
-    } catch (error) {
-      console.error("Subscription error:", error);
-      toast({ title: "Error", description: "Failed to start payment. Please try again.", variant: "destructive" });
-    } finally {
+  const handleActivate = async (passKey: ChefPassType) => {
+    setLoading(passKey);
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      toast({ title: "Login Required", description: "Please sign in to continue", variant: "destructive" });
       setLoading(null);
+      navigate("/auth");
+      return;
     }
+    const ok = await activatePass(passKey);
+    setLoading(null);
+    if (ok) navigate("/masterchef/dashboard");
   };
 
   return (
