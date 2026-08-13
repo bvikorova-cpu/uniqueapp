@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -437,9 +438,12 @@ export default function ReelBattles() {
     );
   };
 
+  const tabTriggerClass =
+    "rounded-xl py-2.5 text-[11px] sm:text-sm font-semibold tracking-wide gap-1.5 flex-col sm:flex-row data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-primary-foreground data-[state=active]:shadow-[0_8px_24px_-8px_hsl(var(--primary)/0.6)] transition-all";
+
   return (
     <div className="min-h-screen bg-background pt-20 pb-12 px-4">
-      <div className="max-w-3xl mx-auto space-y-6">
+      <div className="max-w-5xl mx-auto space-y-6">
         <section className="relative h-[76svh] min-h-[520px] overflow-hidden rounded-2xl bg-black">
           <video
             autoPlay
@@ -465,6 +469,15 @@ export default function ReelBattles() {
           </div>
         </section>
 
+        <Tabs defaultValue="arena" className="space-y-6">
+          <TabsList className="w-full grid grid-cols-4 h-auto p-1.5 gap-1.5 rounded-2xl border border-primary/25 bg-secondary/40 backdrop-blur-xl shadow-[0_10px_40px_-20px_hsl(var(--primary)/0.5)]">
+            <TabsTrigger value="arena" className={tabTriggerClass}><Swords className="h-4 w-4" /> Arena</TabsTrigger>
+            <TabsTrigger value="rankings" className={tabTriggerClass}><Trophy className="h-4 w-4" /> Rankings</TabsTrigger>
+            <TabsTrigger value="wallet" className={tabTriggerClass}><Coins className="h-4 w-4" /> Wallet</TabsTrigger>
+            <TabsTrigger value="guide" className={tabTriggerClass}><Info className="h-4 w-4" /> Guide</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="guide" className="mt-0 space-y-6">
         {/* How it works */}
         <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
           <CardHeader>
@@ -526,15 +539,19 @@ export default function ReelBattles() {
             )}
           </CardContent>
         </Card>
+          </TabsContent>
 
-        <BattleCoinsWallet accent="primary" module="reel_battles" />
+          <TabsContent value="wallet" className="mt-0 space-y-6">
+            <BattleCoinsWallet accent="primary" module="reel_battles" />
+            <BattleCosmeticsShop coins={balance} module="reel_battles" />
+          </TabsContent>
 
-        <BattleCosmeticsShop coins={balance} module="reel_battles" />
+          <TabsContent value="rankings" className="mt-0 space-y-6">
+            <MonthlyChampionRewardsCard module="reel_battles" accent="primary" />
+            <ReelBattlesLeaderboard currentUserId={userId} />
+          </TabsContent>
 
-        <MonthlyChampionRewardsCard module="reel_battles" accent="primary" />
-
-        <ReelBattlesLeaderboard currentUserId={userId} />
-
+          <TabsContent value="arena" className="mt-0 space-y-6">
         {/* Public duel directory — tap any duel to open it */}
         {!loading && battles.length > 0 && (
           selectedId ? (
@@ -682,6 +699,8 @@ export default function ReelBattles() {
             );
           })
         )}
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

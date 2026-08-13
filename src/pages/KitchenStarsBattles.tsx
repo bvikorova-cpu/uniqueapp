@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -445,10 +446,14 @@ export default function KitchenStarsCompetitions() {
     );
   };
 
+  const tabTriggerClass =
+    "rounded-xl py-2.5 text-[11px] sm:text-sm font-semibold tracking-wide gap-1.5 flex-col sm:flex-row data-[state=active]:bg-gradient-to-br data-[state=active]:from-orange-500 data-[state=active]:to-amber-600 data-[state=active]:text-white data-[state=active]:shadow-[0_8px_24px_-8px_hsl(25_95%_53%/0.6)] transition-all";
+
   return (
     <>
       <div className="min-h-screen bg-background pt-20 pb-12 px-4">
-        <div className="max-w-3xl mx-auto space-y-6">
+        <div className="max-w-5xl mx-auto space-y-6">
+
           <section className="relative h-[76svh] min-h-[520px] overflow-hidden rounded-2xl bg-black">
             <video
               autoPlay
@@ -474,6 +479,15 @@ export default function KitchenStarsCompetitions() {
             </div>
           </section>
 
+          <Tabs defaultValue="arena" className="space-y-6">
+            <TabsList className="w-full grid grid-cols-4 h-auto p-1.5 gap-1.5 rounded-2xl border border-orange-500/25 bg-secondary/40 backdrop-blur-xl shadow-[0_10px_40px_-20px_hsl(25_95%_53%/0.5)]">
+              <TabsTrigger value="arena" className={tabTriggerClass}><Swords className="h-4 w-4" /> Arena</TabsTrigger>
+              <TabsTrigger value="rankings" className={tabTriggerClass}><Trophy className="h-4 w-4" /> Rankings</TabsTrigger>
+              <TabsTrigger value="wallet" className={tabTriggerClass}><Coins className="h-4 w-4" /> Wallet</TabsTrigger>
+              <TabsTrigger value="guide" className={tabTriggerClass}><Info className="h-4 w-4" /> Guide</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="guide" className="mt-0 space-y-6">
           {/* How it works */}
           <Card className="border-orange-500/20 bg-gradient-to-br from-orange-500/5 to-background">
             <CardHeader>
@@ -535,16 +549,19 @@ export default function KitchenStarsCompetitions() {
               )}
             </CardContent>
           </Card>
+            </TabsContent>
 
-          <BattleCoinsWallet accent="orange" module="kitchenstars" />
+            <TabsContent value="wallet" className="mt-0 space-y-6">
+              <BattleCoinsWallet accent="orange" module="kitchenstars" />
+              <BattleCosmeticsShop coins={balance} module="kitchenstars" />
+            </TabsContent>
 
-          <BattleCosmeticsShop coins={balance} module="kitchenstars" />
+            <TabsContent value="rankings" className="mt-0 space-y-6">
+              <MonthlyChampionRewardsCard module="kitchenstars" accent="orange" />
+              <KitchenStarsLeaderboard currentUserId={userId} />
+            </TabsContent>
 
-          <MonthlyChampionRewardsCard module="kitchenstars" accent="orange" />
-
-        <KitchenStarsLeaderboard currentUserId={userId} />
-
-
+            <TabsContent value="arena" className="mt-0 space-y-6">
           {/* Public competition directory — tap any competition to open it */}
           {!loading && battles.length > 0 && (
             selectedId ? (
@@ -694,6 +711,8 @@ export default function KitchenStarsCompetitions() {
               );
             })
           )}
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </>
