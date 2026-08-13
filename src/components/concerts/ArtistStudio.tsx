@@ -128,6 +128,11 @@ export const ArtistStudio = ({ onBack }: Props) => {
 
   const saveProfile = async () => {
     if (stageName.trim().length < 2) { toast.error("Stage name is too short"); return; }
+    if (!profile) {
+      if (!representationRole) { toast.error("Select your role: artist, manager or authorised representative"); return; }
+      if (signatoryName.trim().length < 3) { toast.error("Enter your full legal name"); return; }
+      if (!declarationAccepted || !fraudAccepted) { toast.error("You must accept the legal declaration to continue"); return; }
+    }
     setSaving(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -143,10 +148,14 @@ export const ArtistStudio = ({ onBack }: Props) => {
           user_id: session.user.id,
           stage_name: stageName.trim(),
           genre: genre.trim() || null,
-          bio: bio.trim() || null });
+          bio: bio.trim() || null,
+          representation_role: representationRole,
+          legal_signatory_name: signatoryName.trim(),
+          legal_declaration_accepted_at: new Date().toISOString() });
         if (error) throw error;
-        toast.success("Artist profile created — you can now schedule concerts");
+        toast.success("Artist profile created — declaration recorded. You can now request verification.");
       }
+
       await load();
     } catch (e: any) {
       toast.error(e.message || "Failed to save profile");
