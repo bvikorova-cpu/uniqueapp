@@ -13,7 +13,9 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { DropZone, type DropZoneValidation } from "@/components/kitchen-battles/DropZone";
-import { useMasterChefAccess, KITCHENSTARS_COSTS } from "@/hooks/useMasterChefAccess";
+import { useBattleCoins, BATTLE_ENTRY_COINS, BATTLE_PRIZE_COINS } from "@/hooks/useBattleCoins";
+import BattleCoinsWallet from "@/components/battle-coins/BattleCoinsWallet";
+import BattleCosmeticsShop from "@/components/battle-coins/BattleCosmeticsShop";
 import masterchefHero from "@/assets/masterchef-hero-v2.mp4.asset.json";
 import KitchenStarsLeaderboard from "@/components/kitchen-battles/KitchenStarsLeaderboard";
 
@@ -35,7 +37,7 @@ const isVideoFile = (file: File) => {
 export default function KitchenStarsCompetitions() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { balance, refresh: refreshCredits } = useMasterChefAccess();
+  const { coins: balance, refresh: refreshCredits } = useBattleCoins();
   const [battles, setBattles] = useState<Battle[]>([]);
   const [participants, setParticipants] = useState<Record<string, Participant[]>>({});
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
@@ -157,11 +159,11 @@ export default function KitchenStarsCompetitions() {
       _media_mime: file.type,
     });
     if (error) {
-      const insufficient = error.message.includes("INSUFFICIENT_CREDITS");
+      const insufficient = error.message.includes("INSUFFICIENT_COINS");
       toast({
-        title: insufficient ? "Not enough credits" : "Could not enter the competition",
+        title: insufficient ? "Not enough Battle Coins" : "Could not enter the competition",
         description: insufficient
-          ? `Entry costs ${KITCHENSTARS_COSTS.competition_entry} credits — you have ${balance}.`
+          ? `Entry costs ${BATTLE_ENTRY_COINS} Battle Coins — you have ${balance}.`
           : error.message,
         variant: "destructive",
       });
@@ -193,8 +195,8 @@ export default function KitchenStarsCompetitions() {
     const file = validateForm();
     if (!file || !userId) return;
 
-    if (balance < KITCHENSTARS_COSTS.competition_entry) {
-      toast({ title: "Not enough credits", description: `Entry costs ${KITCHENSTARS_COSTS.competition_entry} credits — you have ${balance}.`, variant: "destructive" });
+    if (balance < BATTLE_ENTRY_COINS) {
+      toast({ title: "Not enough Battle Coins", description: `Entry costs ${BATTLE_ENTRY_COINS} Battle Coins — you have ${balance}.`, variant: "destructive" });
       return;
     }
 
@@ -238,8 +240,8 @@ export default function KitchenStarsCompetitions() {
     const file = validateForm();
     if (!file || !userId) return;
 
-    if (balance < KITCHENSTARS_COSTS.competition_entry) {
-      toast({ title: "Not enough credits", description: `Entry costs ${KITCHENSTARS_COSTS.competition_entry} credits — you have ${balance}.`, variant: "destructive" });
+    if (balance < BATTLE_ENTRY_COINS) {
+      toast({ title: "Not enough Battle Coins", description: `Entry costs ${BATTLE_ENTRY_COINS} Battle Coins — you have ${balance}.`, variant: "destructive" });
       return;
     }
 
@@ -334,7 +336,7 @@ export default function KitchenStarsCompetitions() {
         onChange={e => setDishDesc(e.target.value)} rows={3} />
       <DropZone file={dishFile} onChange={setDishFile} validate={validateFile} accept="video/*" hint="Cooking video: MP4 / WEBM / MOV, max 50 MB" />
       <p className="text-xs text-muted-foreground">
-        Cooking video only — MP4 / WEBM / MOV, max 50 MB. Entry costs {KITCHENSTARS_COSTS.competition_entry} credits (you have {balance}).
+        Cooking video only — MP4 / WEBM / MOV, max 50 MB. Entry costs {BATTLE_ENTRY_COINS} Battle Coins (you have {balance}).
       </p>
       <Button className="w-full" disabled={busy}
         onClick={() => mode === "new" ? startCompetition() : joinCompetition(mode)}>
@@ -434,7 +436,7 @@ export default function KitchenStarsCompetitions() {
                 KitchenStars Arena
               </h1>
               <p className="text-white/80 text-sm md:text-lg max-w-xl mb-3 leading-relaxed">
-                Two chefs upload cooking videos. Each pays 5 credits, the winner receives 10 XP — voting is free for every registered Unique user, 1 vote per duel. Collect 1 000 XP and convert them into 1 AI credit.
+                Two chefs upload cooking videos. Each pays 500 Battle Coins, the winner takes 1 000 coins + 10 XP — voting is free for every registered Unique user, 1 vote per duel. Coins are bought with AI credits (1 credit = 100 coins) and spent on cosmetics only.
               </p>
             </div>
           </section>
@@ -451,8 +453,8 @@ export default function KitchenStarsCompetitions() {
                 <div className="flex items-start gap-3 p-3 rounded-xl border border-primary/20 bg-secondary/20">
                   <Coins className="h-5 w-5 text-orange-500 shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-semibold text-sm">5 credits entry fee</p>
-                    <p className="text-xs text-muted-foreground">Both the starter and the opponent pay 5 credits to compete.</p>
+                    <p className="font-semibold text-sm">500 Battle Coins entry</p>
+                    <p className="text-xs text-muted-foreground">Both the starter and the opponent pay 500 Battle Coins to compete.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3 p-3 rounded-xl border border-primary/20 bg-secondary/20">
@@ -472,8 +474,8 @@ export default function KitchenStarsCompetitions() {
                 <div className="flex items-start gap-3 p-3 rounded-xl border border-primary/20 bg-secondary/20">
                   <Trophy className="h-5 w-5 text-orange-500 shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-semibold text-sm">10 XP prize</p>
-                    <p className="text-xs text-muted-foreground">The winning chef receives 10 XP.</p>
+                    <p className="font-semibold text-sm">1 000 coins + 10 XP</p>
+                    <p className="text-xs text-muted-foreground">The winning chef takes the whole coin pot plus 10 XP.</p>
                   </div>
                 </div>
               </div>
@@ -481,7 +483,7 @@ export default function KitchenStarsCompetitions() {
               <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/20 bg-secondary/20 p-3">
                 <div className="flex items-center gap-2">
                   <Coins className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium">Credits: {balance}</span>
+                  <span className="text-sm font-medium">Battle Coins: {balance.toLocaleString()}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Flame className="h-4 w-4 text-orange-500" />
@@ -500,6 +502,10 @@ export default function KitchenStarsCompetitions() {
               )}
             </CardContent>
           </Card>
+
+          <BattleCoinsWallet accent="orange" />
+
+          <BattleCosmeticsShop coins={balance} />
 
           <KitchenStarsLeaderboard currentUserId={userId} />
 
