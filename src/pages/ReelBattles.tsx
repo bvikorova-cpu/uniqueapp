@@ -435,7 +435,7 @@ export default function ReelBattles() {
               Reel Battles
             </h1>
             <p className="text-white/80 text-sm md:text-lg max-w-xl mb-3 leading-relaxed">
-              Two creators upload reel videos. Each pays 500 Battle Coins, the winner takes 1 000 coins + 10 XP — voting is free for every registered Unique user, 1 vote per duel. Coins are bought with AI credits (1 credit = 100 coins) and spent on cosmetics only.
+              Two creators upload reel videos. Each pays 100 Battle Coins (1 AI credit), the winner takes 80% of the pot + 10 XP — voting is free for every registered Unique user, 1 vote per duel. Coins are bought with AI credits (1 credit = 100 coins) and spent on cosmetics only.
             </p>
           </div>
         </section>
@@ -452,8 +452,8 @@ export default function ReelBattles() {
               <div className="flex items-start gap-3 p-3 rounded-xl border border-primary/20 bg-secondary/20">
                 <Coins className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-semibold text-sm">500 Battle Coins entry</p>
-                  <p className="text-xs text-muted-foreground">Both the starter and the opponent pay 500 Battle Coins to compete.</p>
+                  <p className="font-semibold text-sm">100 Battle Coins entry</p>
+                  <p className="text-xs text-muted-foreground">Both the starter and the opponent pay 100 Battle Coins (1 AI credit) to compete.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 rounded-xl border border-primary/20 bg-secondary/20">
@@ -473,7 +473,7 @@ export default function ReelBattles() {
               <div className="flex items-start gap-3 p-3 rounded-xl border border-primary/20 bg-secondary/20">
                 <Trophy className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-semibold text-sm">1 000 coins + 10 XP</p>
+                  <p className="font-semibold text-sm">160 coins + 10 XP</p>
                   <p className="text-xs text-muted-foreground">The winning creator takes the whole coin pot plus 10 XP.</p>
                 </div>
               </div>
