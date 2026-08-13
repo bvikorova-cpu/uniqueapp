@@ -8,10 +8,10 @@ import { frameClassForCode } from "@/lib/cosmeticFrames";
  * Live preview of how your equipped frame, sticker and badge look publicly.
  * Without this, equipping an item changed nothing you could actually see.
  */
-export default function EquippedCosmeticPreview() {
+export default function EquippedCosmeticPreview({ module = "kitchenstars" }: { module?: string }) {
   const [userId, setUserId] = useState<string | null>(null);
   const [profile, setProfile] = useState<{ username: string | null; avatar_url: string | null } | null>(null);
-  const cosmetics = useEquippedCosmetics([userId]);
+  const cosmetics = useEquippedCosmetics([userId], module);
   const mine = userId ? cosmetics[userId] : undefined;
 
   useEffect(() => {

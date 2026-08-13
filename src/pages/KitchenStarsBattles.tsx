@@ -47,7 +47,7 @@ export default function KitchenStarsCompetitions() {
   const [participants, setParticipants] = useState<Record<string, Participant[]>>({});
   const participantUserIds = Object.values(participants).flat().map((p) => p.user_id);
   // Equipped frame cosmetics + champion rank frames shown around duel media.
-  const mediaCosmetics = useEquippedCosmetics(participantUserIds);
+  const mediaCosmetics = useEquippedCosmetics(participantUserIds, "kitchenstars");
   const mediaChampions = useChampionBadges(participantUserIds);
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
   const [myVotes, setMyVotes] = useState<Record<string, MyVote>>({});

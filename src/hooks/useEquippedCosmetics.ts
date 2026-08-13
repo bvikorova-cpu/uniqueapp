@@ -16,7 +16,7 @@ export type EquippedMap = Record<string, Partial<Record<"frame" | "sticker" | "b
  * Public lookup of the cosmetics other players have equipped, so purchased frames,
  * stickers and badges are actually visible on leaderboards and duel cards.
  */
-export function useEquippedCosmetics(userIds: (string | null | undefined)[]) {
+export function useEquippedCosmetics(userIds: (string | null | undefined)[], module: string = "kitchenstars") {
   const [map, setMap] = useState<EquippedMap>({});
   const key = Array.from(new Set(userIds.filter(Boolean) as string[])).sort().join(",");
 
@@ -26,7 +26,7 @@ export function useEquippedCosmetics(userIds: (string | null | undefined)[]) {
     let alive = true;
 
     const load = async () => {
-      const { data, error } = await supabase.rpc("get_equipped_battle_cosmetics", { _user_ids: ids });
+      const { data, error } = await supabase.rpc("get_equipped_battle_cosmetics", { _user_ids: ids, _module: module } as never);
       if (!alive || error) return;
       const next: EquippedMap = {};
       ((data as (EquippedCosmetic & { user_id: string })[]) || []).forEach((row) => {
@@ -39,7 +39,7 @@ export function useEquippedCosmetics(userIds: (string | null | undefined)[]) {
     const handler = () => load();
     window.addEventListener(BATTLE_COINS_UPDATED, handler);
     return () => { alive = false; window.removeEventListener(BATTLE_COINS_UPDATED, handler); };
-  }, [key]);
+  }, [key, module]);
 
   return map;
 }
