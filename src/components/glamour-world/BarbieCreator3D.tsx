@@ -3,10 +3,11 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Environment, ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, RotateCcw, Download, Sparkles, Camera, Loader2 } from "lucide-react";
+import { ArrowLeft, RotateCcw, Download, Sparkles, Camera, Loader2, User, Shirt, Gem } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 // Color palettes — [hex, human-readable name for the AI render]
 const SKIN_COLORS: [string, string][] = [
@@ -86,7 +87,6 @@ function Doll({ config, isSpinning }: { config: BarbieConfig; isSpinning: boolea
   const dress = config.dressColor;
   const shoe = config.shoeColor;
 
-  // Smooth anatomical shells instead of stacked primitives
   const headGeo = useMemo(
     () =>
       latheProfile([
@@ -207,7 +207,7 @@ function Doll({ config, isSpinning }: { config: BarbieConfig; isSpinning: boolea
             ))}
           </>
         );
-      default: // Long — smooth flowing hair falling behind the shoulders
+      default: // Long
         return (
           <>
             {cap}
@@ -223,7 +223,6 @@ function Doll({ config, isSpinning }: { config: BarbieConfig; isSpinning: boolea
             ))}
           </>
         );
-
     }
   };
 
@@ -274,7 +273,6 @@ function Doll({ config, isSpinning }: { config: BarbieConfig; isSpinning: boolea
 
   return (
     <group ref={groupRef} position={[0, -1.5, 0]}>
-      {/* Head + face */}
       <mesh geometry={headGeo} position={[0, 2.45, 0]} castShadow>
         {skinMat}
       </mesh>
@@ -293,7 +291,6 @@ function Doll({ config, isSpinning }: { config: BarbieConfig; isSpinning: boolea
             <sphereGeometry args={[0.008, 16, 16]} />
             <meshStandardMaterial color="#111" />
           </mesh>
-          {/* lash line */}
           <mesh position={[0, 0.03, 0.02]} rotation={[0, 0, 0]}>
             <torusGeometry args={[0.036, 0.005, 8, 24, Math.PI]} />
             <meshStandardMaterial color="#2b1b12" />
@@ -301,13 +298,11 @@ function Doll({ config, isSpinning }: { config: BarbieConfig; isSpinning: boolea
         </group>
       ))}
 
-      {/* Nose */}
       <mesh position={[0, 2.4, 0.19]} scale={[0.7, 1, 0.8]}>
         <sphereGeometry args={[0.022, 16, 16]} />
         {skinMat}
       </mesh>
 
-      {/* Lips */}
       <group position={[0, 2.33, 0.175]}>
         <mesh scale={[1.6, 0.55, 0.5]} position={[0, 0.012, 0]}>
           <sphereGeometry args={[0.034, 24, 24]} />
@@ -319,7 +314,6 @@ function Doll({ config, isSpinning }: { config: BarbieConfig; isSpinning: boolea
         </mesh>
       </group>
 
-      {/* Brows */}
       {[-1, 1].map((s) => (
         <mesh key={s} position={[s * 0.077, 2.535, 0.165]} rotation={[0, 0, s * -0.12]} scale={[1.5, 0.35, 0.4]}>
           <sphereGeometry args={[0.026, 16, 16]} />
@@ -329,18 +323,15 @@ function Doll({ config, isSpinning }: { config: BarbieConfig; isSpinning: boolea
 
       {renderHair()}
 
-      {/* Neck */}
       <mesh position={[0, 2.12, 0]}>
         <capsuleGeometry args={[0.055, 0.12, 8, 24]} />
         {skinMat}
       </mesh>
 
-      {/* Torso / bodice */}
       <mesh geometry={torsoGeo} position={[0, 1.66, 0]} castShadow>
         {fabricMat}
       </mesh>
 
-      {/* Shoulders + arms */}
       {[-1, 1].map((s) => (
         <group key={s}>
           <mesh position={[s * 0.16, 2.02, 0]}>
@@ -362,12 +353,10 @@ function Doll({ config, isSpinning }: { config: BarbieConfig; isSpinning: boolea
         </group>
       ))}
 
-      {/* Skirt / lower garment */}
       <mesh geometry={skirtGeo} position={[0, skirtY, 0]} castShadow>
         {fabricMat}
       </mesh>
 
-      {/* Legs */}
       {legsVisible &&
         [-1, 1].map((s) => (
           <group key={s}>
@@ -382,7 +371,6 @@ function Doll({ config, isSpinning }: { config: BarbieConfig; isSpinning: boolea
           </group>
         ))}
 
-      {/* Heels */}
       {[-1, 1].map((s) => (
         <group key={s} position={[s * 0.085, -0.02, 0.03]}>
           <mesh position={[0, 0, 0.045]} rotation={[0.35, 0, 0]} scale={[0.9, 0.5, 1.5]}>
@@ -437,59 +425,6 @@ function SparkleParticles() {
   );
 }
 
-interface ColorPickerProps {
-  label: string;
-  colors: [string, string][];
-  selected: string;
-  onSelect: (c: string) => void;
-}
-
-function ColorPicker({ label, colors, selected, onSelect }: ColorPickerProps) {
-  return (
-    <div>
-      <p className="text-xs font-semibold text-muted-foreground mb-1">{label}</p>
-      <div className="flex gap-1 flex-wrap">
-        {colors.map(([hex, name]) => (
-          <button
-            key={hex}
-            title={name}
-            aria-label={name}
-            onClick={() => onSelect(hex)}
-            className={`w-7 h-7 rounded-full border-2 transition-transform ${selected === hex ? "border-pink-500 scale-110" : "border-transparent"}`}
-            style={{ backgroundColor: hex }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-interface StylePickerProps {
-  label: string;
-  options: string[];
-  selected: string;
-  onSelect: (s: string) => void;
-}
-
-function StylePicker({ label, options, selected, onSelect }: StylePickerProps) {
-  return (
-    <div>
-      <p className="text-xs font-semibold text-muted-foreground mb-1">{label}</p>
-      <div className="flex gap-1 flex-wrap">
-        {options.map((o) => (
-          <button
-            key={o}
-            onClick={() => onSelect(o)}
-            className={`px-2 py-1 text-xs rounded-full border transition-all ${selected === o ? "bg-pink-500 text-white border-pink-500" : "bg-card border-border text-foreground"}`}
-          >
-            {o}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 const defaultConfig: BarbieConfig = {
   skinColor: SKIN_COLORS[0][0],
   hairColor: HAIR_COLORS[3][0],
@@ -500,12 +435,93 @@ const defaultConfig: BarbieConfig = {
   accessory: "Tiara",
 };
 
+type Step = "look" | "dress" | "accessories";
+
+interface ColorSwatchProps {
+  label: string;
+  colors: [string, string][];
+  selected: string;
+  onSelect: (c: string) => void;
+}
+
+function ColorSwatch({ label, colors, selected, onSelect }: ColorSwatchProps) {
+  return (
+    <div className="space-y-2">
+      <p className="text-xs font-bold uppercase tracking-wider text-pink-600/80">{label}</p>
+      <div className="grid grid-cols-6 gap-2">
+        {colors.map(([hex, name]) => (
+          <button
+            key={hex}
+            title={name}
+            aria-label={name}
+            onClick={() => onSelect(hex)}
+            className={cn(
+              "aspect-square rounded-xl border-2 transition-all hover:scale-105",
+              selected === hex
+                ? "border-pink-500 ring-2 ring-pink-300 scale-105"
+                : "border-white/60 shadow-sm"
+            )}
+            style={{ backgroundColor: hex }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+interface StyleCardProps {
+  options: string[];
+  selected: string;
+  onSelect: (s: string) => void;
+  emoji?: (s: string) => string;
+}
+
+function StyleCard({ options, selected, onSelect, emoji }: StyleCardProps) {
+  return (
+    <div className="grid grid-cols-3 gap-2">
+      {options.map((o) => (
+        <button
+          key={o}
+          onClick={() => onSelect(o)}
+          className={cn(
+            "relative flex flex-col items-center justify-center gap-1 rounded-2xl border-2 p-3 text-xs font-semibold transition-all hover:scale-[1.02]",
+            selected === o
+              ? "border-pink-500 bg-gradient-to-br from-pink-50 to-fuchsia-50 text-pink-700 shadow-md"
+              : "border-pink-200/60 bg-white/70 text-foreground hover:border-pink-300"
+          )}
+        >
+          <span className="text-lg">{emoji ? emoji(o) : "✨"}</span>
+          <span className="text-center leading-tight">{o}</span>
+          {selected === o && (
+            <span className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-pink-500 text-[10px] text-white">
+              ✓
+            </span>
+          )}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+const hairEmoji = (s: string) =>
+  ({ Long: "💇", Short: "💇‍♀️", Ponytail: "🎀", Bun: "🍥", Pigtails: "👧", Curly: "🌀" }[s] ?? "✨");
+
+const dressEmoji = (s: string) =>
+  ({ "Ball Gown": "👗", "Mini Dress": "🎽", Mermaid: "🧜", "A-Line": "👘", Jumpsuit: "🩱" }[s] ?? "✨");
+
+const accessoryEmoji = (s: string) =>
+  ({ None: "🚫", Tiara: "👑", Necklace: "📿", Sunglasses: "🕶️", Handbag: "👜" }[s] ?? "✨");
+
+const sceneEmoji = (s: string) =>
+  ({ Studio: "📸", Runway: "🪩", Ballroom: "🏰", Garden: "🌸", City: "🌃" }[s] ?? "✨");
+
 export function BarbieCreator3D({ onBack }: { onBack: () => void }) {
   const [config, setConfig] = useState<BarbieConfig>(defaultConfig);
   const [isSpinning, setIsSpinning] = useState(false);
   const [scene, setScene] = useState("Studio");
   const [rendering, setRendering] = useState(false);
   const [renderUrl, setRenderUrl] = useState<string | null>(null);
+  const [step, setStep] = useState<Step>("look");
 
   const update = (key: keyof BarbieConfig, value: string) =>
     setConfig((prev) => ({ ...prev, [key]: value }));
@@ -562,106 +578,238 @@ export function BarbieCreator3D({ onBack }: { onBack: () => void }) {
     a.click();
   };
 
+  const steps: { key: Step; label: string; icon: React.ReactNode }[] = [
+    { key: "look", label: "Choose Look", icon: <User className="h-4 w-4" /> },
+    { key: "dress", label: "Dress Up", icon: <Shirt className="h-4 w-4" /> },
+    { key: "accessories", label: "Accessorize", icon: <Gem className="h-4 w-4" /> },
+  ];
+
   return (
     <div className="space-y-4">
       <FloatingHowItWorks
         title="3D Doll Creator — How it works"
         steps={[
-          { title: "Design", desc: "Pick skin tone, hair, dress, heels and one accessory in the live 3D preview." },
-          { title: "Rotate", desc: "Drag the doll to inspect her from any angle, or turn on Auto Spin." },
-          { title: "Render", desc: "Tap Realistic Photo (3 AI credits) to turn your design into a photorealistic fashion shot." },
-          { title: "Save", desc: "Download the finished photo, or tweak the design and render again." },
+          { title: "Choose Look", desc: "Pick skin tone, hair color and hairstyle for your doll." },
+          { title: "Dress Up", desc: "Select a dress style, color and matching shoes." },
+          { title: "Accessorize", desc: "Add a tiara, necklace or bag and choose a photo scene." },
+          { title: "Render", desc: "Tap Realistic Photo (3 AI credits) to create a fashion shot." },
         ]}
       />
 
       <Button variant="ghost" onClick={onBack}>
         <ArrowLeft className="h-4 w-4 mr-2" /> Back
       </Button>
-      <h2 className="text-2xl font-black">👸 3D Doll Creator</h2>
-      <p className="text-muted-foreground text-sm">
-        Design your doll in 3D, then render her as a photorealistic fashion photo.
-      </p>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* 3D Canvas / AI render */}
-        <div className="bg-gradient-to-b from-pink-100 to-purple-100 dark:from-pink-950/30 dark:to-purple-950/30 rounded-2xl overflow-hidden h-[400px] lg:h-[520px] border border-pink-300/30 relative">
-          {renderUrl ? (
-            <>
-              <img src={renderUrl} alt="Photorealistic render of your custom doll" className="w-full h-full object-contain" />
-              <div className="absolute bottom-2 left-2 right-2 flex gap-2">
-                <Button size="sm" className="flex-1 bg-pink-500 hover:bg-pink-600" onClick={downloadRender}>
-                  <Download className="h-3 w-3 mr-1" /> Download
-                </Button>
-                <Button size="sm" variant="secondary" className="flex-1" onClick={() => setRenderUrl(null)}>
-                  Back to 3D
-                </Button>
-              </div>
-            </>
-          ) : (
-            <Canvas camera={{ position: [0, 0.2, 4.8], fov: 40 }} shadows dpr={[1, 2]}>
-              <ambientLight intensity={0.45} />
-              <directionalLight position={[3, 5, 3]} intensity={1.5} castShadow shadow-mapSize={[1024, 1024]} />
-              <directionalLight position={[-3, 2, 2]} intensity={0.5} color="#ffd7e6" />
-              <pointLight position={[0, 1.5, -3]} intensity={0.7} color="#c9a7ff" />
-              <Suspense fallback={null}>
-                <Doll config={config} isSpinning={isSpinning} />
-                <Podium />
-                <ContactShadows position={[0, -1.62, 0]} opacity={0.45} scale={5} blur={2.5} far={2} />
-                <SparkleParticles />
-                <Environment preset="studio" />
-              </Suspense>
-              <OrbitControls
-                enablePan={false}
-                target={[0, -0.05, 0]}
-                minDistance={3}
-                maxDistance={8}
-                minPolarAngle={0.3}
-                maxPolarAngle={Math.PI / 2}
-              />
-            </Canvas>
-          )}
-          {rendering && (
-            <div className="absolute inset-0 bg-background/70 backdrop-blur-sm flex flex-col items-center justify-center gap-2">
-              <Loader2 className="h-8 w-8 animate-spin text-pink-500" />
-              <p className="text-sm font-semibold">Rendering your realistic doll…</p>
-            </div>
-          )}
+      <div className="rounded-3xl border border-pink-300/30 bg-gradient-to-br from-pink-50/80 via-white/90 to-fuchsia-50/80 p-4 shadow-xl backdrop-blur-sm dark:from-pink-950/30 dark:to-fuchsia-950/30">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-black text-pink-700">👸 My Doll</h2>
+            <p className="text-sm text-pink-600/70">Design your dream fashion doll step by step</p>
+          </div>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => { setConfig(defaultConfig); setRenderUrl(null); }}
+            className="border-pink-300/50"
+          >
+            <RotateCcw className="h-3 w-3 mr-1" /> Reset
+          </Button>
         </div>
 
-        {/* Controls */}
-        <div className="space-y-3 bg-card/50 backdrop-blur-sm border border-pink-400/20 rounded-2xl p-4 overflow-y-auto max-h-[520px]">
-          <div className="flex gap-2 flex-wrap mb-1">
-            <Button
-              size="sm"
-              variant={isSpinning ? "default" : "outline"}
-              onClick={() => setIsSpinning(!isSpinning)}
-              className={isSpinning ? "bg-pink-500 hover:bg-pink-600" : ""}
-            >
-              <Sparkles className="h-3 w-3 mr-1" />
-              {isSpinning ? "Stop Spin" : "Auto Spin"}
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => { setConfig(defaultConfig); setRenderUrl(null); }}>
-              <RotateCcw className="h-3 w-3 mr-1" /> Reset
-            </Button>
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+          {/* Left: 3D preview */}
+          <div className="lg:col-span-5">
+            <div className="relative overflow-hidden rounded-3xl border-4 border-white/60 bg-gradient-to-b from-pink-100 to-purple-100 shadow-inner dark:from-pink-950/30 dark:to-purple-950/30 h-[420px] lg:h-[560px]">
+              {renderUrl ? (
+                <>
+                  <img src={renderUrl} alt="Photorealistic render of your custom doll" className="h-full w-full object-contain" />
+                  <div className="absolute bottom-3 left-3 right-3 flex gap-2">
+                    <Button size="sm" className="flex-1 bg-pink-500 hover:bg-pink-600" onClick={downloadRender}>
+                      <Download className="h-3 w-3 mr-1" /> Download
+                    </Button>
+                    <Button size="sm" variant="secondary" className="flex-1" onClick={() => setRenderUrl(null)}>
+                      Back to 3D
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <Canvas camera={{ position: [0, 0.2, 4.8], fov: 40 }} shadows dpr={[1, 2]}>
+                  <ambientLight intensity={0.45} />
+                  <directionalLight position={[3, 5, 3]} intensity={1.5} castShadow shadow-mapSize={[1024, 1024]} />
+                  <directionalLight position={[-3, 2, 2]} intensity={0.5} color="#ffd7e6" />
+                  <pointLight position={[0, 1.5, -3]} intensity={0.7} color="#c9a7ff" />
+                  <Suspense fallback={null}>
+                    <Doll config={config} isSpinning={isSpinning} />
+                    <Podium />
+                    <ContactShadows position={[0, -1.62, 0]} opacity={0.45} scale={5} blur={2.5} far={2} />
+                    <SparkleParticles />
+                    <Environment preset="studio" />
+                  </Suspense>
+                  <OrbitControls
+                    enablePan={false}
+                    target={[0, -0.05, 0]}
+                    minDistance={3}
+                    maxDistance={8}
+                    minPolarAngle={0.3}
+                    maxPolarAngle={Math.PI / 2}
+                  />
+                </Canvas>
+              )}
+              {rendering && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-background/70 backdrop-blur-sm">
+                  <Loader2 className="h-8 w-8 animate-spin text-pink-500" />
+                  <p className="text-sm font-semibold">Rendering your realistic doll…</p>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-3 flex gap-2">
+              <Button
+                size="sm"
+                variant={isSpinning ? "default" : "outline"}
+                onClick={() => setIsSpinning(!isSpinning)}
+                className={cn("flex-1", isSpinning && "bg-pink-500 hover:bg-pink-600")}
+              >
+                <Sparkles className="h-3 w-3 mr-1" />
+                {isSpinning ? "Stop Spin" : "Auto Spin"}
+              </Button>
+              <Button
+                size="sm"
+                onClick={renderRealistic}
+                disabled={rendering}
+                className="flex-[2] bg-gradient-to-r from-pink-500 to-fuchsia-500 hover:from-pink-600 hover:to-fuchsia-600 text-white font-bold"
+              >
+                {rendering ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Camera className="h-4 w-4 mr-2" />}
+                Realistic Photo · 3 credits
+              </Button>
+            </div>
           </div>
 
-          <Button
-            onClick={renderRealistic}
-            disabled={rendering}
-            className="w-full bg-gradient-to-r from-pink-500 to-fuchsia-500 hover:from-pink-600 hover:to-fuchsia-600 text-white font-bold"
-          >
-            {rendering ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Camera className="h-4 w-4 mr-2" />}
-            Realistic Photo · 3 credits
-          </Button>
+          {/* Right: step tabs + options */}
+          <div className="lg:col-span-7">
+            <div className="rounded-3xl border border-pink-300/30 bg-white/70 p-4 shadow-sm backdrop-blur-sm dark:bg-black/20">
+              {/* Step tabs */}
+              <div className="mb-4 grid grid-cols-3 gap-2 rounded-2xl bg-pink-100/50 p-1.5 dark:bg-pink-950/20">
+                {steps.map((s, idx) => (
+                  <button
+                    key={s.key}
+                    onClick={() => setStep(s.key)}
+                    className={cn(
+                      "flex items-center justify-center gap-2 rounded-xl px-2 py-2.5 text-xs font-bold transition-all sm:text-sm",
+                      step === s.key
+                        ? "bg-gradient-to-r from-pink-500 to-fuchsia-500 text-white shadow-md"
+                        : "text-pink-700/70 hover:bg-pink-200/40 dark:text-pink-300/70"
+                    )}
+                  >
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-[10px]">
+                      {idx + 1}
+                    </span>
+                    <span className="hidden sm:inline">{s.label}</span>
+                    <span className="sm:hidden">{s.icon}</span>
+                  </button>
+                ))}
+              </div>
 
-          <ColorPicker label="👩 Skin Tone" colors={SKIN_COLORS} selected={config.skinColor} onSelect={(c) => update("skinColor", c)} />
-          <ColorPicker label="💇 Hair Color" colors={HAIR_COLORS} selected={config.hairColor} onSelect={(c) => update("hairColor", c)} />
-          <StylePicker label="✂️ Hair Style" options={HAIR_STYLES} selected={config.hairStyle} onSelect={(s) => update("hairStyle", s)} />
-          <ColorPicker label="👗 Dress Color" colors={DRESS_COLORS} selected={config.dressColor} onSelect={(c) => update("dressColor", c)} />
-          <StylePicker label="💃 Dress Style" options={DRESS_STYLES} selected={config.dressStyle} onSelect={(s) => update("dressStyle", s)} />
-          <ColorPicker label="👠 Shoe Color" colors={SHOE_COLORS} selected={config.shoeColor} onSelect={(c) => update("shoeColor", c)} />
-          <StylePicker label="💎 Accessory" options={ACCESSORIES} selected={config.accessory} onSelect={(s) => update("accessory", s)} />
-          <StylePicker label="📸 Photo Scene" options={SCENES} selected={scene} onSelect={setScene} />
+              {/* Step content */}
+              <div className="space-y-5 max-h-[420px] overflow-y-auto pr-1 lg:max-h-[480px]">
+                {step === "look" && (
+                  <>
+                    <ColorSwatch
+                      label="Skin Tone"
+                      colors={SKIN_COLORS}
+                      selected={config.skinColor}
+                      onSelect={(c) => update("skinColor", c)}
+                    />
+                    <ColorSwatch
+                      label="Hair Color"
+                      colors={HAIR_COLORS}
+                      selected={config.hairColor}
+                      onSelect={(c) => update("hairColor", c)}
+                    />
+                    <div className="space-y-2">
+                      <p className="text-xs font-bold uppercase tracking-wider text-pink-600/80">Hair Style</p>
+                      <StyleCard
+                        options={HAIR_STYLES}
+                        selected={config.hairStyle}
+                        onSelect={(s) => update("hairStyle", s)}
+                        emoji={hairEmoji}
+                      />
+                    </div>
+                  </>
+                )}
+
+                {step === "dress" && (
+                  <>
+                    <div className="space-y-2">
+                      <p className="text-xs font-bold uppercase tracking-wider text-pink-600/80">Dress Style</p>
+                      <StyleCard
+                        options={DRESS_STYLES}
+                        selected={config.dressStyle}
+                        onSelect={(s) => update("dressStyle", s)}
+                        emoji={dressEmoji}
+                      />
+                    </div>
+                    <ColorSwatch
+                      label="Dress Color"
+                      colors={DRESS_COLORS}
+                      selected={config.dressColor}
+                      onSelect={(c) => update("dressColor", c)}
+                    />
+                    <ColorSwatch
+                      label="Shoe Color"
+                      colors={SHOE_COLORS}
+                      selected={config.shoeColor}
+                      onSelect={(c) => update("shoeColor", c)}
+                    />
+                  </>
+                )}
+
+                {step === "accessories" && (
+                  <>
+                    <div className="space-y-2">
+                      <p className="text-xs font-bold uppercase tracking-wider text-pink-600/80">Accessory</p>
+                      <StyleCard
+                        options={ACCESSORIES}
+                        selected={config.accessory}
+                        onSelect={(s) => update("accessory", s)}
+                        emoji={accessoryEmoji}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-xs font-bold uppercase tracking-wider text-pink-600/80">Photo Scene</p>
+                      <StyleCard
+                        options={SCENES}
+                        selected={scene}
+                        onSelect={setScene}
+                        emoji={sceneEmoji}
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Navigation */}
+              <div className="mt-5 flex items-center justify-between border-t border-pink-200/50 pt-4">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  disabled={step === "look"}
+                  onClick={() => setStep((prev) => (prev === "dress" ? "look" : "dress"))}
+                  className="text-pink-700"
+                >
+                  ← Back
+                </Button>
+                <Button
+                  size="sm"
+                  disabled={step === "accessories"}
+                  onClick={() => setStep((prev) => (prev === "look" ? "dress" : "accessories"))}
+                  className="bg-pink-500 hover:bg-pink-600"
+                >
+                  Next Step →
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
