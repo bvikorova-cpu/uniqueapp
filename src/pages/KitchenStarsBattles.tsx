@@ -446,6 +446,9 @@ export default function KitchenStarsCompetitions() {
     );
   };
 
+  const tabTriggerClass =
+    "rounded-xl py-2.5 text-[11px] sm:text-sm font-semibold tracking-wide gap-1.5 flex-col sm:flex-row data-[state=active]:bg-gradient-to-br data-[state=active]:from-orange-500 data-[state=active]:to-amber-600 data-[state=active]:text-white data-[state=active]:shadow-[0_8px_24px_-8px_hsl(25_95%_53%/0.6)] transition-all";
+
   return (
     <>
       <div className="min-h-screen bg-background pt-20 pb-12 px-4">
