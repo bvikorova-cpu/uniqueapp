@@ -6,9 +6,10 @@ type: feature
 
 Battle Coins isolate competitive play from purchased AI credits.
 
-- Wallet: `battle_coins` (balance) + `battle_coins_ledger` (every movement). All balance changes go through `battle_coins_apply()` (SECURITY DEFINER) — never direct client writes.
-- Exchange: `exchange_credits_for_battle_coins(_credits)` — 1 AI credit = 100 coins. **One-way only**: coins can never be converted back into AI credits.
-- Duel entry in KitchenStars and Reel Battles costs **100 coins** (1 AI credit). Winner receives **80% of the pot (160 coins for a 1v1) + 10 XP** via `settle_kitchen_competitions()` / `settle_reel_competitions()`.
-- Coins are spendable **only** on cosmetics: `battle_cosmetics` catalog (frame / sticker / badge), purchased with `purchase_battle_cosmetic(_code)`, equipped with `equip_battle_cosmetic(_code, _equip)` (one equipped item per kind).
-- Scope: only KitchenStars + Reel Battles. All other modules keep using AI credits.
-- Frontend: `useBattleCoins()` hook, `BattleCoinsWallet`, `BattleCosmeticsShop`; `battle-coins-updated` window event refreshes balances.
+- **Wallets are per module** (`kitchenstars`, `reel_battles`, `megatalent`): `battle_coins` PK is `(user_id, module)` and `battle_coins_ledger` carries `module`. Coins NEVER transfer between sections.
+- All balance changes go through `battle_coins_apply(_user_id, _module, _delta, ...)` (SECURITY DEFINER) — never direct client writes. A legacy 5-arg overload maps `_source` to the module.
+- Exchange: `exchange_credits_for_battle_coins(_credits, _module)` — 1 AI credit = 100 coins into that module's wallet. **One-way only**.
+- Duel entry costs **100 coins** (1 AI credit) from the module's own wallet. Winner receives **80% of the pot (160 coins) + 10 XP**; 20% goes to that module's monthly pool.
+- Coins are spendable **only** on cosmetics: `purchase_battle_cosmetic(_code, _module)` charges the module wallet; ownership/equip is global per user (`equip_battle_cosmetic`).
+- Frontend: `useBattleCoins(module)`, `BattleCoinsWallet module=...`, `BattleCosmeticsShop module=...`; `battle-coins-updated` window event refreshes balances.
+
