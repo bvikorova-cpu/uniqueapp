@@ -469,6 +469,15 @@ export default function ReelBattles() {
           </div>
         </section>
 
+        <Tabs defaultValue="arena" className="space-y-6">
+          <TabsList className="w-full grid grid-cols-4 h-auto p-1.5 gap-1.5 rounded-2xl border border-primary/25 bg-secondary/40 backdrop-blur-xl shadow-[0_10px_40px_-20px_hsl(var(--primary)/0.5)]">
+            <TabsTrigger value="arena" className={tabTriggerClass}><Swords className="h-4 w-4" /> Arena</TabsTrigger>
+            <TabsTrigger value="rankings" className={tabTriggerClass}><Trophy className="h-4 w-4" /> Rankings</TabsTrigger>
+            <TabsTrigger value="wallet" className={tabTriggerClass}><Coins className="h-4 w-4" /> Wallet</TabsTrigger>
+            <TabsTrigger value="guide" className={tabTriggerClass}><Info className="h-4 w-4" /> Guide</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="guide" className="mt-0 space-y-6">
         {/* How it works */}
         <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
           <CardHeader>
