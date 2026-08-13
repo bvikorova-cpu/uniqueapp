@@ -590,7 +590,6 @@ const Billing = lazy(() => import("@/pages/Billing"));
 const MySubscriptions = lazy(() => import("@/pages/MySubscriptions"));
 const CreatorLiveAnalytics = lazy(() => import("@/pages/CreatorLiveAnalytics"));
 const KitchenStarsBattles = lazy(() => import("@/pages/KitchenStarsBattles"));
-const KitchenStarsDuelUpload = lazy(() => import("@/pages/KitchenStarsDuelUpload"));
 const LegalPrivacy = lazy(() => import("@/pages/legal/Privacy"));
 const LegalRefund = lazy(() => import("@/pages/legal/Refund"));
 const LegalCreator = lazy(() => import("@/pages/legal/Creator"));
@@ -1221,7 +1220,7 @@ const App = () => {
                         <Route path="/masterchef" element={<ProtectedRoute><KitchenStarsBattles /></ProtectedRoute>} />
                         <Route path="/masterchef/live-battles" element={<Navigate to="/masterchef" replace />} />
                         <Route path="/kitchenstars/battles" element={<Navigate to="/masterchef" replace />} />
-                        <Route path="/masterchef/duel-upload" element={<ProtectedRoute><KitchenStarsDuelUpload /></ProtectedRoute>} />
+                        <Route path="/masterchef/duel-upload" element={<Navigate to="/masterchef" replace />} />
 
                         {/* KitchenStars brand aliases — redirect to internal /masterchef paths */}
                         <Route path="/kitchenstars" element={<Navigate to="/masterchef-subscription" replace />} />
