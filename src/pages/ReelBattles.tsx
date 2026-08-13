@@ -20,6 +20,8 @@ import { useEquippedCosmetics } from "@/hooks/useEquippedCosmetics";
 import { useChampionBadges } from "@/hooks/useChampionBadges";
 import { useBattleCoins, BATTLE_ENTRY_COINS } from "@/hooks/useBattleCoins";
 import BattleCoinsWallet from "@/components/battle-coins/BattleCoinsWallet";
+import AutoMatchQueue from "@/components/battle-coins/AutoMatchQueue";
+
 import MonthlyChampionRewardsCard from "@/components/battle-coins/MonthlyChampionRewardsCard";
 import BattleCosmeticsShop from "@/components/battle-coins/BattleCosmeticsShop";
 import { frameClassForCode } from "@/lib/cosmeticFrames";
