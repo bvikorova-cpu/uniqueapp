@@ -216,8 +216,8 @@ function Doll({ config, isSpinning }: { config: BarbieConfig; isSpinning: boolea
               {hairMat}
             </mesh>
             {[-1, 1].map((s) => (
-              <mesh key={s} position={[s * 0.175, 2.24, 0.01]} rotation={[0, 0, s * 0.06]}>
-                <capsuleGeometry args={[0.055, 0.34, 8, 20]} />
+              <mesh key={s} position={[s * 0.2, 2.26, -0.04]} rotation={[0, 0, s * 0.05]}>
+                <capsuleGeometry args={[0.045, 0.3, 8, 20]} />
                 {hairMat}
               </mesh>
             ))}
@@ -231,8 +231,8 @@ function Doll({ config, isSpinning }: { config: BarbieConfig; isSpinning: boolea
     switch (config.accessory) {
       case "Tiara":
         return (
-          <mesh position={[0, 2.73, 0.05]} rotation={[0.25, 0, 0]}>
-            <torusGeometry args={[0.19, 0.018, 16, 48, Math.PI * 1.1]} />
+          <mesh position={[0, 2.63, 0.02]} rotation={[0.3, 0, 0]}>
+            <torusGeometry args={[0.165, 0.016, 16, 48, Math.PI * 1.05]} />
             <meshPhysicalMaterial color="#F3D27A" metalness={1} roughness={0.12} />
           </mesh>
         );
@@ -598,7 +598,7 @@ export function BarbieCreator3D({ onBack }: { onBack: () => void }) {
               </div>
             </>
           ) : (
-            <Canvas camera={{ position: [0, 0.35, 3.9], fov: 40 }} shadows dpr={[1, 2]}>
+            <Canvas camera={{ position: [0, 0.2, 4.8], fov: 40 }} shadows dpr={[1, 2]}>
               <ambientLight intensity={0.45} />
               <directionalLight position={[3, 5, 3]} intensity={1.5} castShadow shadow-mapSize={[1024, 1024]} />
               <directionalLight position={[-3, 2, 2]} intensity={0.5} color="#ffd7e6" />
@@ -612,9 +612,9 @@ export function BarbieCreator3D({ onBack }: { onBack: () => void }) {
               </Suspense>
               <OrbitControls
                 enablePan={false}
-                target={[0, 0.1, 0]}
-                minDistance={2.2}
-                maxDistance={6}
+                target={[0, -0.05, 0]}
+                minDistance={3}
+                maxDistance={8}
                 minPolarAngle={0.3}
                 maxPolarAngle={Math.PI / 2}
               />
