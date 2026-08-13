@@ -71,8 +71,8 @@
   z-index: -2;
   background: conic-gradient(from 0deg, #e879f9, #a855f7, #22d3ee, #f472b6, #e879f9);
   animation: aurora-legend-spin 3.5s linear infinite;
-  filter: blur(10px);
-  opacity: 0.9;
+  filter: blur(8px);
+  opacity: 0.55;
 }
 
 .aurora-legend-frame::after {
