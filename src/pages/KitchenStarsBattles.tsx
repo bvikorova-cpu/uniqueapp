@@ -194,8 +194,13 @@ export default function KitchenStarsCompetitions() {
   };
 
   const vote = async (battleId: string, participantId: string) => {
+    if (myVotes[battleId]) {
+      toast({ title: "Vote already used", description: "You have exactly 1 vote per duel and it can't be changed.", variant: "destructive" });
+      return;
+    }
     const { data, error } = await supabase.functions.invoke("kitchen-battle-vote", {
       body: { battleId, participantId, voteType: "like" } });
+
     if (error || data?.error) {
       toast({ title: "Vote failed", description: error?.message || data?.error, variant: "destructive" });
       return;
@@ -286,13 +291,26 @@ export default function KitchenStarsCompetitions() {
           <Progress value={pct} />
         </div>
         {canVote && p.user_id !== userId && (
-          <Button className="w-full" variant={votedThis ? "default" : "outline"} onClick={() => vote(battle.id, p.id)}>
-            {votedThis ? `✓ Voted for Chef ${label}` : `Vote for Chef ${label}`}
+          <Button
+            className="w-full"
+            variant={votedThis ? "default" : "outline"}
+            disabled={!!myVote}
+            onClick={() => vote(battle.id, p.id)}
+          >
+            {votedThis
+              ? `✓ Voted for Chef ${label}`
+              : myVote
+                ? "Vote already used"
+                : `Vote for Chef ${label}`}
           </Button>
+        )}
+        {canVote && p.user_id !== userId && myVote && (
+          <p className="text-[11px] text-center text-muted-foreground">You have 1 vote per duel — it can't be changed.</p>
         )}
         {p.user_id === userId && (
           <p className="text-xs text-center text-muted-foreground">This is your entry — you can't vote for yourself.</p>
         )}
+
       </div>
     );
   };

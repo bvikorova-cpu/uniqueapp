@@ -38,22 +38,8 @@ Deno.serve(async (req) => {
       .select("id, participant_id, vote_type")
       .eq("battle_id", battleId).eq("voter_id", user.id).maybeSingle();
 
-    if (existing && existing.participant_id === participantId && existing.vote_type === vt) {
-      throw new Error("You already cast this vote");
-    }
-
-    // Decrement previous vote if any
     if (existing) {
-      const prevField = existing.vote_type === "like" ? "vote_count" : "dislike_count";
-      const { data: prevPart } = await supabase
-        .from("kitchen_battle_participants")
-        .select(`id, ${prevField}`).eq("id", existing.participant_id).single();
-      if (prevPart) {
-        await supabase.from("kitchen_battle_participants")
-          .update({ [prevField]: Math.max(0, ((prevPart as any)[prevField] || 0) - 1) })
-          .eq("id", existing.participant_id);
-      }
-      await supabase.from("kitchen_battle_votes").delete().eq("id", existing.id);
+      throw new Error("You already used your single vote in this duel");
     }
 
     const { error: ve } = await supabase.from("kitchen_battle_votes").insert({ battle_id: battleId, participant_id: participantId, voter_id: user.id, vote_type: vt });
