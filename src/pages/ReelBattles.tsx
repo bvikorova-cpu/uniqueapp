@@ -501,6 +501,10 @@ export default function ReelBattles() {
           </CardContent>
         </Card>
 
+        <BattleCoinsWallet accent="primary" />
+
+        <BattleCosmeticsShop coins={balance} />
+
         <ReelBattlesLeaderboard currentUserId={userId} />
 
         {/* Public duel directory — tap any duel to open it */}
