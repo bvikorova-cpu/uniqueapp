@@ -360,7 +360,7 @@ export default function KitchenStarsCompetitions() {
           { title: "Start a competition", desc: `Tap "Start Competition", fill the form and upload your cooking video (${KITCHENSTARS_COSTS.competition_entry} credits).` },
           { title: "An opponent joins", desc: "The next chef who uploads a cooking video to your competition becomes your opponent." },
           { title: "X vs Y", desc: "Both videos appear one under the other as Chef X vs Chef Y." },
-          { title: "Everyone votes", desc: "All platform users watch both videos and cast one vote per competition. The highest share wins the crown." },
+          { title: "Everyone votes for free", desc: "Voting is completely free — every registered Unique user has exactly 1 vote per competition. The highest share wins the crown." },
         ]}
       />
       <div className="min-h-screen bg-background pt-20 pb-12 px-4">
