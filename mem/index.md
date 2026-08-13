@@ -37,3 +37,4 @@
 - [Healthcare Advanced (Phase 5)](mem://features/health-advanced) — Video calls, e-prescriptions, medical records with time-boxed doctor access, insurance claims.
 - [Anonymous Dating swipe & reveal](mem://features/anonymous-dating-swipe-reveal) — Free anonymous swiping deck; photo unlocks after 7 days or for 5 credits.
 - [SECURITY DEFINER views & linter warnings](mem://architecture/security-definer-views) — Which definer views must stay, and why the recurring WARN classes are accepted.
+- [Battle Coins](mem://features/battle-coins) — Separate game currency for KitchenStars + Reel Battles: 1 credit = 100 coins, one-way, cosmetics only.
