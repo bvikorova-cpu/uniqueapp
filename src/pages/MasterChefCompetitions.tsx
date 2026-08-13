@@ -89,7 +89,7 @@ export default function MasterChefCompetitions() {
       );
   }
 
-  if (!subscribed) {
+  if (!hasPass) {
     return null; // Will redirect via useEffect
   }
 
