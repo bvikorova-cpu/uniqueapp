@@ -351,7 +351,7 @@ export default function ReelBattles() {
       </p>
       <Button className="w-full" disabled={busy}
         onClick={() => mode === "new" ? startCompetition() : joinCompetition(mode)}>
-        {busy ? "Uploading..." : mode === "new" ? "Create duel & upload clip" : "Upload reel & become opponent"}
+        {busy ? "Uploading..." : mode === "new" ? "Create duel & upload clip" : "Upload clip & become opponent"}
       </Button>
     </div>
   );
