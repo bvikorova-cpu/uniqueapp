@@ -18,7 +18,7 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [myTickets, setMyTickets] = useState<Set<string>>(new Set());
-  const { totalBalance, loadCredits } = useAICredits();
+  const { totalBalance, refresh: refreshCredits } = useAICredits();
   const [buying, setBuying] = useState<string | null>(null);
 
   const loadMyTickets = async () => {
@@ -74,7 +74,7 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
 
       toast.success("Ticket purchased! Enjoy the show!");
       await loadMyTickets();
-      await loadCredits();
+      await refreshCredits();
       queryClient.invalidateQueries({ queryKey: ["browse-comedy-shows"] });
     } catch (e: any) {
       toast.error(e?.message || "Failed to buy ticket");
@@ -101,7 +101,7 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
             Browse Shows
           </h2>
           <Badge variant="outline" className="gap-1 text-sm">
-            <Coins className="h-3.5 w-3.5 text-amber-500" /> {currency?.coins ?? 0} coins
+            <Sparkles className="h-3.5 w-3.5 text-primary" /> {totalBalance} credits
           </Badge>
         </div>
 
@@ -195,7 +195,7 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
                             <Ticket className="h-4 w-4 text-primary" /> Ticket
                           </span>
                           <Badge variant="secondary" className="gap-1 font-bold">
-                            <Coins className="h-3 w-3" />{show.ticket_price_coins}
+                            <Sparkles className="h-3 w-3" />{show.ticket_price_coins} credits
                           </Badge>
                         </div>
                         <Button size="sm" className="w-full" disabled={buying === show.id} onClick={() => handleBuy(show.id, show.ticket_price_coins)}>
