@@ -89,7 +89,6 @@ const visionaryModules = [
   { name: "Cooking", path: "/cooking", icon: ChefHat, color: "text-orange-500" },
   { name: "Coffee", path: "/coffee", icon: Star, color: "text-amber-600" },
   { name: "AI Clone", path: "/ai-clone", icon: Bot, color: "text-purple-500" },
-  { name: "Glamour World", path: "/glamour-world", icon: Crown, color: "text-pink-500" },
   { name: "Emotion Economy", path: "/emotion-economy", icon: Heart, color: "text-pink-500" },
 ];
 
