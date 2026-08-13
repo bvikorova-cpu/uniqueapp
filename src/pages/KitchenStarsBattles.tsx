@@ -38,7 +38,7 @@ const isVideoFile = (file: File) => {
 export default function KitchenStarsCompetitions() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { coins: balance, refresh: refreshCredits } = useBattleCoins();
+  const { coins: balance, refresh: refreshCredits } = useBattleCoins("kitchenstars");
   const [battles, setBattles] = useState<Battle[]>([]);
   const [participants, setParticipants] = useState<Record<string, Participant[]>>({});
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
@@ -504,9 +504,9 @@ export default function KitchenStarsCompetitions() {
             </CardContent>
           </Card>
 
-          <BattleCoinsWallet accent="orange" />
+          <BattleCoinsWallet accent="orange" module="kitchenstars" />
 
-          <BattleCosmeticsShop coins={balance} />
+          <BattleCosmeticsShop coins={balance} module="kitchenstars" />
 
           <MonthlyChampionRewardsCard module="kitchenstars" accent="orange" />
 
