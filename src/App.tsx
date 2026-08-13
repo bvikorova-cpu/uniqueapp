@@ -397,11 +397,6 @@ import { ResetPassword,
   FairyCastles,
   FairyCastleTour,
   FairyAdmin,
-  MasterChefSubscription,
-  MasterChefDashboard,
-  MasterChefCompetitions,
-  MasterChefCompetitionsGallery,
-  MasterChefEarnings,
   NutritionHub,
   NutritionSubscriptions,
   HealthcareProviderDashboard,
@@ -593,20 +588,9 @@ const CreatorPayouts = lazy(() => import("@/pages/CreatorPayouts"));
 const CreatorAnalytics = lazy(() => import("@/pages/CreatorAnalytics"));
 const Billing = lazy(() => import("@/pages/Billing"));
 const MySubscriptions = lazy(() => import("@/pages/MySubscriptions"));
-const MasterChefHub = lazy(() => import("@/pages/MasterChefHub"));
-const MasterChefAIRecipes = lazy(() => import("@/pages/MasterChefAIRecipes"));
-const MasterChefCookingTimer = lazy(() => import("@/pages/MasterChefCookingTimer"));
-const MasterChefIngredientScanner = lazy(() => import("@/pages/MasterChefIngredientScanner"));
-const MasterChefChefChat = lazy(() => import("@/pages/MasterChefChefChat"));
-const MasterChefLiveStream = lazy(() => import("@/pages/MasterChefLiveStream"));
 const CreatorLiveAnalytics = lazy(() => import("@/pages/CreatorLiveAnalytics"));
 const KitchenStarsBattles = lazy(() => import("@/pages/KitchenStarsBattles"));
 const KitchenStarsDuelUpload = lazy(() => import("@/pages/KitchenStarsDuelUpload"));
-const MasterChefWeeklyAwards = lazy(() => import("@/pages/MasterChefWeeklyAwards"));
-const MasterChefNutritionAnalyzer = lazy(() => import("@/pages/MasterChefNutritionAnalyzer"));
-const MasterChefGlobalMap = lazy(() => import("@/pages/MasterChefGlobalMap"));
-const MasterChefAICoach = lazy(() => import("@/pages/MasterChefAICoach"));
-const MasterChefRecipeFeed = lazy(() => import("@/pages/MasterChefRecipeFeed"));
 const LegalPrivacy = lazy(() => import("@/pages/legal/Privacy"));
 const LegalRefund = lazy(() => import("@/pages/legal/Refund"));
 const LegalCreator = lazy(() => import("@/pages/legal/Creator"));
@@ -1211,22 +1195,10 @@ const App = () => {
                         <Route path="/memory-auctions" element={<MemoryAuctions />} />
                         <Route path="/brand-kits" element={<BrandKits />} />
 
-                        <Route path="/masterchef-subscription" element={<MasterChefHub />} />
-                        <Route path="/masterchef/competitions-public" element={<MasterChefCompetitionsGallery />} />
-                        <Route path="/masterchef/gallery" element={<MasterChefCompetitionsGallery />} />
-                        <Route path="/masterchef/dashboard" element={<ProtectedRoute><MasterChefDashboard /></ProtectedRoute>} />
-                        <Route path="/masterchef/competitions" element={<ProtectedRoute><MasterChefCompetitions /></ProtectedRoute>} />
-                        <Route path="/masterchef/earnings" element={<ProtectedRoute><MasterChefEarnings /></ProtectedRoute>} />
-                        <Route path="/masterchef/ai-recipes" element={<ProtectedRoute><MasterChefAIRecipes /></ProtectedRoute>} />
-                        <Route path="/masterchef/cooking-timer" element={<MasterChefCookingTimer />} />
-                        <Route path="/masterchef/ingredient-scanner" element={<ProtectedRoute><MasterChefIngredientScanner /></ProtectedRoute>} />
-                        <Route path="/masterchef/chef-chat" element={<ProtectedRoute><MasterChefChefChat /></ProtectedRoute>} />
-                        <Route path="/masterchef/live-stream" element={<ProtectedRoute><MasterChefLiveStream /></ProtectedRoute>} />
-                        <Route path="/masterchef/weekly-awards" element={<MasterChefWeeklyAwards />} />
-                        <Route path="/masterchef/nutrition-analyzer" element={<ProtectedRoute><MasterChefNutritionAnalyzer /></ProtectedRoute>} />
-                        <Route path="/masterchef/global-map" element={<MasterChefGlobalMap />} />
-                        <Route path="/masterchef/ai-coach" element={<ProtectedRoute><MasterChefAICoach /></ProtectedRoute>} />
-                        <Route path="/masterchef/recipe-feed" element={<ProtectedRoute><MasterChefRecipeFeed /></ProtectedRoute>} />
+                        {/* KitchenStars — single Competitions page (video duels) */}
+                        <Route path="/masterchef-subscription" element={<ProtectedRoute><KitchenStarsBattles /></ProtectedRoute>} />
+                        <Route path="/masterchef/competitions" element={<Navigate to="/masterchef" replace />} />
+
                         <Route path="/influencer/earnings" element={<ProtectedRoute><InfluencerEarnings /></ProtectedRoute>} />
                         <Route path="/creator-studio" element={<ProtectedRoute><CreatorStudio /></ProtectedRoute>} />
                         <Route path="/time-reversal-subscription" element={<Navigate to="/time-reversal" replace />} />
@@ -1245,13 +1217,12 @@ const App = () => {
                         <Route path="/course-creator" element={<ProtectedRoute><TutorialPlatform /></ProtectedRoute>} />
                         {/* Verification alias */}
                         <Route path="/verification" element={<Navigate to="/account/verification" replace />} />
-                        {/* MasterChef aliases */}
-                        <Route path="/masterchef" element={<MasterChefHub />} />
-                        <Route path="/masterchef/leaderboard" element={<MasterChefWeeklyAwards />} />
-                        <Route path="/masterchef/live-battles" element={<ProtectedRoute><KitchenStarsBattles /></ProtectedRoute>} />
-                        <Route path="/kitchenstars/battles" element={<ProtectedRoute><KitchenStarsBattles /></ProtectedRoute>} />
+                        {/* KitchenStars Competitions */}
+                        <Route path="/masterchef" element={<ProtectedRoute><KitchenStarsBattles /></ProtectedRoute>} />
+                        <Route path="/masterchef/live-battles" element={<Navigate to="/masterchef" replace />} />
+                        <Route path="/kitchenstars/battles" element={<Navigate to="/masterchef" replace />} />
                         <Route path="/masterchef/duel-upload" element={<ProtectedRoute><KitchenStarsDuelUpload /></ProtectedRoute>} />
-                        <Route path="/masterchef/profile" element={<ProtectedRoute><MasterChefDashboard /></ProtectedRoute>} />
+
                         {/* KitchenStars brand aliases — redirect to internal /masterchef paths */}
                         <Route path="/kitchenstars" element={<Navigate to="/masterchef-subscription" replace />} />
                         <Route path="/kitchenstars-subscription" element={<Navigate to="/masterchef-subscription" replace />} />
