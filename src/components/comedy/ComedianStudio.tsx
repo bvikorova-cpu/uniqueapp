@@ -129,7 +129,7 @@ export const ComedianStudio = ({ onBack }: Props) => {
     if (title.trim().length < 3) { toast.error("Enter a show title"); return; }
     if (!scheduledAt) { toast.error("Pick a date and time"); return; }
     const price = Number(ticketPrice);
-    if (!Number.isFinite(price) || price < 0) { toast.error("Invalid ticket price"); return; }
+    if (!Number.isFinite(price) || price < 1) { toast.error("Ticket price must be at least €1"); return; }
     const mins = Number(duration);
     if (!Number.isFinite(mins) || mins < 5) { toast.error("Invalid duration"); return; }
 
@@ -203,9 +203,9 @@ export const ComedianStudio = ({ onBack }: Props) => {
     <>
       <FloatingHowItWorks title="How Comedian Studio works" steps={[
         { title: "Create your comedian profile", desc: "Stage name, experience level and bio — this is your public comedian page." },
-        { title: "Schedule a show", desc: "Set title, date/time, duration and ticket price in AI credits." },
+        { title: "Schedule a show", desc: "Set title, date/time, duration and ticket price in euros (min €1)." },
         { title: "Go live", desc: "Start the stream when ready — ticket holders can watch instantly." },
-        { title: "Get paid", desc: "Ticket credits and tips land in your comedian balance." },
+        { title: "Get paid", desc: "You keep 80% of every ticket sold — earnings are tracked in euros." },
       ]} />
       <div className="space-y-6">
         <Button variant="ghost" onClick={onBack} className="gap-2">
@@ -261,7 +261,7 @@ export const ComedianStudio = ({ onBack }: Props) => {
                 </div>
                 <div className="rounded-lg border p-3 text-center">
                   <p className="text-lg font-black">{profile.total_earnings}</p>
-                  <p className="text-[10px] text-muted-foreground">Credits earned</p>
+                  <p className="text-[10px] text-muted-foreground">Earned (EUR)</p>
                 </div>
               </div>
             )}
@@ -293,8 +293,8 @@ export const ComedianStudio = ({ onBack }: Props) => {
                 <Input id="show-when" type="datetime-local" value={scheduledAt} onChange={(e) => setScheduledAt(e.target.value)} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="show-price">Ticket price (credits)</Label>
-                <Input id="show-price" type="number" min={0} step={1} value={ticketPrice} onChange={(e) => setTicketPrice(e.target.value)} />
+                <Label htmlFor="show-price">Ticket price (EUR)</Label>
+                <Input id="show-price" type="number" min={1} step={1} value={ticketPrice} onChange={(e) => setTicketPrice(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="show-dur">Duration (minutes)</Label>
@@ -323,7 +323,7 @@ export const ComedianStudio = ({ onBack }: Props) => {
                     <Badge variant={s.status === "live" ? "default" : "secondary"} className="capitalize">{s.status}</Badge>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {format(new Date(s.scheduled_at), "MMM d, HH:mm")} · {s.duration_minutes} min · {s.ticket_price_coins} credits
+                    {format(new Date(s.scheduled_at), "MMM d, HH:mm")} · {s.duration_minutes} min · €{s.ticket_price_coins}
                   </p>
                 </div>
                 <div className="flex shrink-0 gap-2">

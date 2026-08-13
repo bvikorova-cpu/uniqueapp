@@ -85,6 +85,14 @@ export const PRODUCTS: Record<string, ProductDef> = { // === Jobs (Phase 4 part 
     successPath: "/live-concerts",
     cancelPath: "/live-concerts" },
 
+  // === Comedy Club: show tickets (dynamic amount, EUR) ===
+  comedy_ticket: { currency: "eur",
+    name: "Comedy Show Ticket",
+    successPath: "/comedy-club?view=browse",
+    cancelPath: "/comedy-club?view=browse" },
+
+
+
   // === Crystal marketplace ===
   crystal_purchase: { currency: "eur",
     name: "Crystal Item",

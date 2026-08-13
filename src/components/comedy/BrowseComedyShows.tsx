@@ -6,19 +6,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowLeft, Calendar, Mic, Users, Ticket, Zap, Star, PlayCircle, Sparkles, BadgeCheck } from "lucide-react";
+import { ArrowLeft, Calendar, Mic, Users, Ticket, Zap, Star, PlayCircle, BadgeCheck } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-import { useAICredits } from "@/hooks/useAICredits";
 
 interface Props { onBack: () => void; }
+
+const formatEur = (v: number) =>
+  `€${Number(v).toLocaleString("en-IE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 export const BrowseComedyShows = ({ onBack }: Props) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [myTickets, setMyTickets] = useState<Set<string>>(new Set());
-  const { totalBalance, refresh: refreshCredits } = useAICredits();
   const [buying, setBuying] = useState<string | null>(null);
 
   const loadMyTickets = async () => {
@@ -32,6 +33,48 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
   };
 
   useEffect(() => { void loadMyTickets(); }, []);
+
+  // Stripe return handler — activates the ticket after a successful payment.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get("comedy_payment");
+    const sessionId = params.get("session_id");
+    if (!status) return;
+
+    const clean = () => {
+      const url = new URL(window.location.href);
+      ["comedy_payment", "session_id"].forEach((k) => url.searchParams.delete(k));
+      window.history.replaceState({}, "", url.pathname + (url.search || "") );
+    };
+
+    if (status === "canceled") {
+      toast.info("Payment canceled — no ticket was purchased");
+      clean();
+      return;
+    }
+    if (status === "success" && sessionId) {
+      (async () => {
+        try {
+          const { data, error } = await supabase.functions.invoke("verify-comedy-ticket-payment", {
+            body: { sessionId },
+          });
+          if (error) throw error;
+          if (data?.activated) {
+            toast.success("Ticket confirmed — enjoy the show!");
+            await loadMyTickets();
+            queryClient.invalidateQueries({ queryKey: ["browse-comedy-shows"] });
+          } else {
+            toast.info("Payment is still processing — refresh in a moment");
+          }
+        } catch (e: any) {
+          toast.error(e?.message || "Could not verify your payment");
+        } finally {
+          clean();
+        }
+      })();
+    }
+  }, []);
+
 
   const { data: shows, isLoading } = useQuery({
     queryKey: ["browse-comedy-shows"],
@@ -47,37 +90,20 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
     refetchInterval: 15000,
   });
 
-  /** Tickets are paid in AI credits — atomic spend RPC keeps balance + ledger consistent. */
-  const handleBuy = async (showId: string, price: number) => {
+  /** Tickets are paid with real money in EUR via Stripe Checkout. */
+  const handleBuy = async (showId: string) => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) { toast.error("Please sign in to buy tickets"); return; }
     try {
       setBuying(showId);
-      const { data: spend, error: spendErr } = await (supabase as any).rpc("spend_ai_credits", {
-        _amount: price,
-        _reason: "Comedy show ticket",
-        _source: "comedy_ticket",
+      const { data, error } = await supabase.functions.invoke("create-comedy-ticket-checkout", {
+        body: { showId },
       });
-      if (spendErr) throw spendErr;
-      if (!spend?.ok) {
-        toast.error("Not enough credits", {
-          description: `This ticket costs ${price} credit${price === 1 ? "" : "s"}.`,
-          action: { label: "Top up", onClick: () => navigate("/ai-credits") },
-        });
-        return;
-      }
-
-      const { error } = await supabase
-        .from("comedy_tickets")
-        .insert({ show_id: showId, user_id: session.user.id, price_paid: price });
       if (error) throw error;
-
-      toast.success("Ticket purchased! Enjoy the show!");
-      await loadMyTickets();
-      await refreshCredits();
-      queryClient.invalidateQueries({ queryKey: ["browse-comedy-shows"] });
+      if (!data?.url) throw new Error(data?.error || "Could not start checkout");
+      window.location.href = data.url;
     } catch (e: any) {
-      toast.error(e?.message || "Failed to buy ticket");
+      toast.error(e?.message || "Failed to start checkout");
     } finally {
       setBuying(null);
     }
@@ -87,9 +113,9 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
     <>
       <FloatingHowItWorks title="How Browse Shows works" steps={[
         { title: "Open this section", desc: "See every upcoming and live stand-up show." },
-        { title: "Buy a ticket", desc: "Tickets are paid in AI credits from your account balance." },
+        { title: "Buy a ticket", desc: "Tickets are paid in euros by card via secure Stripe checkout." },
         { title: "Watch live", desc: "When the comedian goes live, open the stream from here." },
-        { title: "Support comedians", desc: "Send tips during the show — creators keep the majority." },
+        { title: "Support comedians", desc: "Comedians keep 80% of every ticket sold." },
       ]} />
       <div className="space-y-6">
         <Button variant="ghost" onClick={onBack} className="gap-2">
@@ -101,9 +127,11 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
             Browse Shows
           </h2>
           <Badge variant="outline" className="gap-1 text-sm">
-            <Sparkles className="h-3.5 w-3.5 text-primary" /> {totalBalance} credits
+            <Ticket className="h-3.5 w-3.5 text-primary" /> Tickets in EUR
           </Badge>
         </div>
+
+
 
         {isLoading ? (
           <div className="grid gap-4 md:grid-cols-2">
@@ -195,12 +223,13 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
                             <Ticket className="h-4 w-4 text-primary" /> Ticket
                           </span>
                           <Badge variant="secondary" className="gap-1 font-bold">
-                            <Sparkles className="h-3 w-3" />{show.ticket_price_coins} credits
+                            {formatEur(show.ticket_price_coins)}
                           </Badge>
                         </div>
-                        <Button size="sm" className="w-full" disabled={buying === show.id} onClick={() => handleBuy(show.id, show.ticket_price_coins)}>
-                          {buying === show.id ? "Processing..." : <><Zap className="mr-2 h-4 w-4" />Get Ticket</>}
+                        <Button size="sm" className="w-full" disabled={buying === show.id} onClick={() => handleBuy(show.id)}>
+                          {buying === show.id ? "Opening checkout..." : <><Zap className="mr-2 h-4 w-4" />Buy Ticket · {formatEur(show.ticket_price_coins)}</>}
                         </Button>
+
                       </div>
                     )}
                   </CardContent>
