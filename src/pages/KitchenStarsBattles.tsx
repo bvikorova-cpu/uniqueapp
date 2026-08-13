@@ -553,7 +553,8 @@ export default function KitchenStarsCompetitions() {
                   {battles.map(b => {
                     const parts = participants[b.id] || [];
                     const votes = parts.reduce((s, p) => s + (p.vote_count || 0), 0);
-                    const open = b.status === "open" && new Date(b.deadline) > new Date();
+                    const waiting = parts.length < 2;
+                    const open = b.status === "open" && (waiting || new Date(b.deadline) > new Date());
                     return (
                       <button
                         key={b.id}
@@ -565,10 +566,10 @@ export default function KitchenStarsCompetitions() {
                             <ChefHat className="h-4 w-4 text-orange-500 shrink-0" />
                             <span className="truncate">{b.theme}</span>
                           </span>
-                          <Badge variant={open ? "default" : "secondary"} className="shrink-0">{open ? "OPEN" : "CLOSED"}</Badge>
+                          <Badge variant={open ? "default" : "secondary"} className="shrink-0">{open ? (waiting ? "WAITING" : "OPEN") : "CLOSED"}</Badge>
                         </div>
                         <p className="mt-1 text-xs text-muted-foreground">
-                          {parts.length}/2 chefs · {votes} votes · deadline {new Date(b.deadline).toLocaleDateString()}
+                          {parts.length}/2 chefs · {votes} votes · {waiting ? "waiting for an opponent — no time limit" : `deadline ${new Date(b.deadline).toLocaleDateString()}`}
                         </p>
                       </button>
                     );
@@ -597,7 +598,9 @@ export default function KitchenStarsCompetitions() {
               const [a, b] = parts;
               const allComments = comments[battle.id] || [];
               const myEntry = parts.find(p => p.user_id === userId);
-              const isOpen = battle.status === "open" && new Date(battle.deadline) > new Date();
+              const waitingForOpponent = parts.length < 2;
+              // A duel waits for an opponent indefinitely — the 7-day voting clock starts only once both are in.
+              const isOpen = battle.status === "open" && (waitingForOpponent || new Date(battle.deadline) > new Date());
               const myVote = myVotes[battle.id];
               const showCs = showComments[battle.id];
               const totalVotes = (a?.vote_count || 0) + (b?.vote_count || 0);
@@ -616,11 +619,16 @@ export default function KitchenStarsCompetitions() {
                         <Badge variant={myEntry ? "default" : "outline"} className={myEntry ? "bg-green-600 hover:bg-green-700" : "text-muted-foreground"}>
                           {myEntry ? "✓ You're in" : `${parts.length}/2 chefs`}
                         </Badge>
-                        <Badge variant={isOpen ? "default" : "secondary"}>{isOpen ? "OPEN" : "CLOSED"}</Badge>
+                        <Badge variant={isOpen ? "default" : "secondary"}>{isOpen ? (waitingForOpponent ? "WAITING" : "OPEN") : "CLOSED"}</Badge>
                       </div>
                     </CardTitle>
                     {battle.description && <p className="text-sm text-muted-foreground">{battle.description}</p>}
-                    <p className="text-xs text-muted-foreground">Deadline: {new Date(battle.deadline).toLocaleString()} · {totalVotes} total votes</p>
+                    <p className="text-xs text-muted-foreground">
+                      {waitingForOpponent
+                        ? "Waiting for an opponent — no time limit, the entry fee stays in the pot"
+                        : `Voting deadline: ${new Date(battle.deadline).toLocaleString()}`} · {totalVotes} total votes
+                    </p>
+
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {renderSide(battle, a, "X", totalVotes, canVote, myVote, winnerId === a?.id)}

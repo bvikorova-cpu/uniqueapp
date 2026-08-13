@@ -3283,6 +3283,54 @@ export type Database = {
           },
         ]
       }
+      battle_matchmaking_queue: {
+        Row: {
+          battle_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          matched_at: string | null
+          media_mime: string | null
+          media_size: number | null
+          module: string
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+          video_url: string
+        }
+        Insert: {
+          battle_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          matched_at?: string | null
+          media_mime?: string | null
+          media_size?: number | null
+          module: string
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+          video_url: string
+        }
+        Update: {
+          battle_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          matched_at?: string | null
+          media_mime?: string | null
+          media_size?: number | null
+          module?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          video_url?: string
+        }
+        Relationships: []
+      }
       battle_monthly_champions: {
         Row: {
           badge_expires_at: string
@@ -68277,6 +68325,7 @@ export type Database = {
       }
       get_auth_uid: { Args: never; Returns: string }
       get_battle_prize_pool: { Args: { _module: string }; Returns: Json }
+      get_battle_queue_status: { Args: { _module: string }; Returns: Json }
       get_battle_royale_available_payout: {
         Args: { _tournament_id: string }
         Returns: number
@@ -69531,7 +69580,19 @@ export type Database = {
         Returns: boolean
       }
       is_vip_user: { Args: { user_id_param: string }; Returns: boolean }
+      join_battle_queue: {
+        Args: {
+          _description: string
+          _media_mime: string
+          _media_size: number
+          _module: string
+          _title: string
+          _video_url: string
+        }
+        Returns: Json
+      }
       join_guild: { Args: { _guild_id: string }; Returns: Json }
+      leave_battle_queue: { Args: { _module: string }; Returns: Json }
       leave_guild: { Args: never; Returns: Json }
       list_pet_pvp_opponents: {
         Args: { _limit?: number }
