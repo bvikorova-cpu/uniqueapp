@@ -55,7 +55,7 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
     if (status === "success" && sessionId) {
       (async () => {
         try {
-          const { data, error } = await supabase.functions.invoke("verify-comedy-ticket-payment", {
+          const { data, error } = await supabase.functions.invoke("verify-comedy-payment", {
             body: { sessionId },
           });
           if (error) throw error;
