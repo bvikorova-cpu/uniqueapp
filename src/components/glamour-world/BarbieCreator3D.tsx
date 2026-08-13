@@ -67,7 +67,7 @@ const nameOf = (list: [string, string][], hex: string) =>
 const defaultConfig: BarbieConfig = {
   skinColor: SKIN_COLORS[0][0],
   hairColor: HAIR_COLORS[3][0],
-  hairStyle: "Long",
+  hairStyle: HAIR_STYLES[1],
   dressColor: DRESS_COLORS[0][0],
   dressStyle: "Ball Gown",
   shoeColor: SHOE_COLORS[0][0],
