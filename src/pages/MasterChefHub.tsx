@@ -15,16 +15,19 @@ import { useState } from "react";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import UnifiedXPLeaderboard from "@/components/shared/UnifiedXPLeaderboard";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-const TIERS = { amateur: {
-    name: "Amateur", price: "€19.99", priceId: "price_1SPiaUGaXSfGtYFtpV3Q8jjN",
-    icon: ChefHat, popular: false,
-    features: ["5 competitions per month", "Basic voting system", "Access to amateur categories", "Community recipes", "Basic performance statistics"] },
-  pro: { name: "Pro", price: "€49.99", priceId: "price_1SPiarGaXSfGtYFtBgTuCPiw",
-    icon: Crown, popular: true,
-    features: ["Unlimited competitions", "Live battles in real-time", "Premium categories (Fine Dining, Dessert Masters)", "Exclusive recipes from professionals", "Detailed statistics and analytics", "Priority support", "Mystery Box challenges"] },
-  elite: { name: "Elite", price: "€99.99", priceId: "price_1SPibC0QTWhd4oRpJwaH5vZM",
-    icon: Sparkles, popular: false,
-    features: ["Everything from Pro tier", "Personal mentoring from professional chefs", "VIP behind-the-scenes access", "Winning bonuses and rewards", "No commission on winnings", "Exclusive live events", "Priority leaderboard placement", "Access to closed premium communities"] } };
+import { CHEF_PASS_OPTIONS, useMasterChefAccess, type ChefPassType } from "@/hooks/useMasterChefAccess";
+
+const PASSES: Record<ChefPassType, { icon: typeof ChefHat; popular: boolean; tagline: string; features: string[] }> = {
+  day: {
+    icon: ChefHat, popular: false, tagline: "Try a full cooking day",
+    features: ["Chef dashboard for 24 hours", "Enter competitions & battles", "Post recipes to the feed", "Receive gifts from fans"] },
+  week: {
+    icon: Crown, popular: true, tagline: "For serious chefs",
+    features: ["Everything in the Day Pass", "7 days of chef access", "Live cook-along streaming", "Weekly awards eligibility"] },
+  month: {
+    icon: Sparkles, popular: false, tagline: "Best value per day",
+    features: ["Everything in the Week Pass", "30 days of chef access", "Priority placement in the chef feed", "No monthly commitment"] },
+};
 
 const toolCards = [
   { icon: Trophy, title: "Competitions", desc: "Join cooking battles & win prizes", route: "/masterchef/competitions-public", color: "from-orange-500 to-red-500" },
