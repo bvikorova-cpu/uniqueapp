@@ -12166,6 +12166,47 @@ export type Database = {
           },
         ]
       }
+      comedy_chat_timeouts: {
+        Row: {
+          created_at: string
+          created_by: string
+          expires_at: string
+          id: string
+          reason: string | null
+          show_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          expires_at: string
+          id?: string
+          reason?: string | null
+          show_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          expires_at?: string
+          id?: string
+          reason?: string | null
+          show_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comedy_chat_timeouts_show_id_fkey"
+            columns: ["show_id"]
+            isOneToOne: false
+            referencedRelation: "comedy_shows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comedy_clips: {
         Row: {
           comedian_id: string
@@ -12368,21 +12409,30 @@ export type Database = {
       comedy_show_messages: {
         Row: {
           created_at: string | null
+          hidden_at: string | null
+          hidden_by: string | null
           id: string
+          is_hidden: boolean
           message: string
           sender_id: string
           show_id: string
         }
         Insert: {
           created_at?: string | null
+          hidden_at?: string | null
+          hidden_by?: string | null
           id?: string
+          is_hidden?: boolean
           message: string
           sender_id: string
           show_id: string
         }
         Update: {
           created_at?: string | null
+          hidden_at?: string | null
+          hidden_by?: string | null
           id?: string
+          is_hidden?: boolean
           message?: string
           sender_id?: string
           show_id?: string
@@ -68776,6 +68826,14 @@ export type Database = {
         Returns: boolean
       }
       is_club_member: { Args: { _user_id: string }; Returns: boolean }
+      is_comedy_chat_muted: {
+        Args: { _show_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_comedy_show_moderator: {
+        Args: { _show_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_community_moderator: {
         Args: { _community_id: string; _user_id: string }
         Returns: boolean
