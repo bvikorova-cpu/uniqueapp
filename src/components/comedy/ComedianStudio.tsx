@@ -52,7 +52,7 @@ export const ComedianStudio = ({ onBack }: Props) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [scheduledAt, setScheduledAt] = useState("");
-  const [ticketPrice, setTicketPrice] = useState("100");
+  const [ticketPrice, setTicketPrice] = useState("3");
   const [duration, setDuration] = useState("60");
 
   const load = useCallback(async () => {
@@ -203,9 +203,9 @@ export const ComedianStudio = ({ onBack }: Props) => {
     <>
       <FloatingHowItWorks title="How Comedian Studio works" steps={[
         { title: "Create your comedian profile", desc: "Stage name, experience level and bio — this is your public comedian page." },
-        { title: "Schedule a show", desc: "Set title, date/time, duration and ticket price in comedy coins." },
+        { title: "Schedule a show", desc: "Set title, date/time, duration and ticket price in AI credits." },
         { title: "Go live", desc: "Start the stream when ready — ticket holders can watch instantly." },
-        { title: "Get paid", desc: "Ticket and tip revenue lands in your comedian balance." },
+        { title: "Get paid", desc: "Ticket credits and tips land in your comedian balance." },
       ]} />
       <div className="space-y-6">
         <Button variant="ghost" onClick={onBack} className="gap-2">
@@ -261,7 +261,7 @@ export const ComedianStudio = ({ onBack }: Props) => {
                 </div>
                 <div className="rounded-lg border p-3 text-center">
                   <p className="text-lg font-black">{profile.total_earnings}</p>
-                  <p className="text-[10px] text-muted-foreground">Coins earned</p>
+                  <p className="text-[10px] text-muted-foreground">Credits earned</p>
                 </div>
               </div>
             )}
@@ -293,8 +293,8 @@ export const ComedianStudio = ({ onBack }: Props) => {
                 <Input id="show-when" type="datetime-local" value={scheduledAt} onChange={(e) => setScheduledAt(e.target.value)} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="show-price">Ticket price (coins)</Label>
-                <Input id="show-price" type="number" min={0} step={10} value={ticketPrice} onChange={(e) => setTicketPrice(e.target.value)} />
+                <Label htmlFor="show-price">Ticket price (credits)</Label>
+                <Input id="show-price" type="number" min={0} step={1} value={ticketPrice} onChange={(e) => setTicketPrice(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="show-dur">Duration (minutes)</Label>
@@ -323,7 +323,7 @@ export const ComedianStudio = ({ onBack }: Props) => {
                     <Badge variant={s.status === "live" ? "default" : "secondary"} className="capitalize">{s.status}</Badge>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {format(new Date(s.scheduled_at), "MMM d, HH:mm")} · {s.duration_minutes} min · {s.ticket_price_coins} coins
+                    {format(new Date(s.scheduled_at), "MMM d, HH:mm")} · {s.duration_minutes} min · {s.ticket_price_coins} credits
                   </p>
                 </div>
                 <div className="flex shrink-0 gap-2">

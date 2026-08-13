@@ -6,11 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowLeft, Calendar, Mic, Users, Ticket, Zap, Star, PlayCircle, Coins, BadgeCheck } from "lucide-react";
+import { ArrowLeft, Calendar, Mic, Users, Ticket, Zap, Star, PlayCircle, Sparkles, BadgeCheck } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-import { useComedyCurrency, useBuyTicket } from "@/hooks/useComedy";
+import { useAICredits } from "@/hooks/useAICredits";
 
 interface Props { onBack: () => void; }
 
@@ -18,8 +18,7 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [myTickets, setMyTickets] = useState<Set<string>>(new Set());
-  const { currency } = useComedyCurrency();
-  const buyTicket = useBuyTicket();
+  const { totalBalance, refresh: refreshCredits } = useAICredits();
   const [buying, setBuying] = useState<string | null>(null);
 
   const loadMyTickets = async () => {
@@ -48,16 +47,37 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
     refetchInterval: 15000,
   });
 
+  /** Tickets are paid in AI credits — atomic spend RPC keeps balance + ledger consistent. */
   const handleBuy = async (showId: string, price: number) => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) { toast.error("Please sign in to buy tickets"); return; }
     try {
       setBuying(showId);
-      await buyTicket.mutateAsync({ showId, price });
+      const { data: spend, error: spendErr } = await (supabase as any).rpc("spend_ai_credits", {
+        _amount: price,
+        _reason: "Comedy show ticket",
+        _source: "comedy_ticket",
+      });
+      if (spendErr) throw spendErr;
+      if (!spend?.ok) {
+        toast.error("Not enough credits", {
+          description: `This ticket costs ${price} credit${price === 1 ? "" : "s"}.`,
+          action: { label: "Top up", onClick: () => navigate("/ai-credits") },
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from("comedy_tickets")
+        .insert({ show_id: showId, user_id: session.user.id, price_paid: price });
+      if (error) throw error;
+
+      toast.success("Ticket purchased! Enjoy the show!");
       await loadMyTickets();
+      await refreshCredits();
       queryClient.invalidateQueries({ queryKey: ["browse-comedy-shows"] });
-    } catch {
-      // errors surfaced by the mutation's onError toast
+    } catch (e: any) {
+      toast.error(e?.message || "Failed to buy ticket");
     } finally {
       setBuying(null);
     }
@@ -67,7 +87,7 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
     <>
       <FloatingHowItWorks title="How Browse Shows works" steps={[
         { title: "Open this section", desc: "See every upcoming and live stand-up show." },
-        { title: "Buy a ticket", desc: "Tickets are paid in comedy coins from your comedy wallet." },
+        { title: "Buy a ticket", desc: "Tickets are paid in AI credits from your account balance." },
         { title: "Watch live", desc: "When the comedian goes live, open the stream from here." },
         { title: "Support comedians", desc: "Send tips during the show — creators keep the majority." },
       ]} />
@@ -81,7 +101,7 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
             Browse Shows
           </h2>
           <Badge variant="outline" className="gap-1 text-sm">
-            <Coins className="h-3.5 w-3.5 text-amber-500" /> {currency?.coins ?? 0} coins
+            <Sparkles className="h-3.5 w-3.5 text-primary" /> {totalBalance} credits
           </Badge>
         </div>
 
@@ -175,7 +195,7 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
                             <Ticket className="h-4 w-4 text-primary" /> Ticket
                           </span>
                           <Badge variant="secondary" className="gap-1 font-bold">
-                            <Coins className="h-3 w-3" />{show.ticket_price_coins}
+                            <Sparkles className="h-3 w-3" />{show.ticket_price_coins} credits
                           </Badge>
                         </div>
                         <Button size="sm" className="w-full" disabled={buying === show.id} onClick={() => handleBuy(show.id, show.ticket_price_coins)}>
