@@ -385,7 +385,12 @@ export default function ReelBattles() {
           {isWinner && <Trophy className="h-5 w-5 text-yellow-500 shrink-0" />}
         </div>
         {p.video_url && (
-          <video src={p.video_url} controls playsInline className="w-full rounded-lg bg-black max-h-[60vh]" />
+          <CosmeticMediaFrame
+            frameClass={mediaCosmetics[p.user_id]?.frame?.css_class}
+            championRank={mediaChampions[p.user_id]?.rank}
+          >
+            <video src={p.video_url} controls playsInline className="w-full rounded-lg bg-black max-h-[60vh]" />
+          </CosmeticMediaFrame>
         )}
         {p.description && <p className="text-xs text-muted-foreground">{p.description}</p>}
         <div className="space-y-1">
