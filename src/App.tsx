@@ -1211,22 +1211,10 @@ const App = () => {
                         <Route path="/memory-auctions" element={<MemoryAuctions />} />
                         <Route path="/brand-kits" element={<BrandKits />} />
 
-                        <Route path="/masterchef-subscription" element={<MasterChefHub />} />
-                        <Route path="/masterchef/competitions-public" element={<MasterChefCompetitionsGallery />} />
-                        <Route path="/masterchef/gallery" element={<MasterChefCompetitionsGallery />} />
-                        <Route path="/masterchef/dashboard" element={<ProtectedRoute><MasterChefDashboard /></ProtectedRoute>} />
-                        <Route path="/masterchef/competitions" element={<ProtectedRoute><MasterChefCompetitions /></ProtectedRoute>} />
-                        <Route path="/masterchef/earnings" element={<ProtectedRoute><MasterChefEarnings /></ProtectedRoute>} />
-                        <Route path="/masterchef/ai-recipes" element={<ProtectedRoute><MasterChefAIRecipes /></ProtectedRoute>} />
-                        <Route path="/masterchef/cooking-timer" element={<MasterChefCookingTimer />} />
-                        <Route path="/masterchef/ingredient-scanner" element={<ProtectedRoute><MasterChefIngredientScanner /></ProtectedRoute>} />
-                        <Route path="/masterchef/chef-chat" element={<ProtectedRoute><MasterChefChefChat /></ProtectedRoute>} />
-                        <Route path="/masterchef/live-stream" element={<ProtectedRoute><MasterChefLiveStream /></ProtectedRoute>} />
-                        <Route path="/masterchef/weekly-awards" element={<MasterChefWeeklyAwards />} />
-                        <Route path="/masterchef/nutrition-analyzer" element={<ProtectedRoute><MasterChefNutritionAnalyzer /></ProtectedRoute>} />
-                        <Route path="/masterchef/global-map" element={<MasterChefGlobalMap />} />
-                        <Route path="/masterchef/ai-coach" element={<ProtectedRoute><MasterChefAICoach /></ProtectedRoute>} />
-                        <Route path="/masterchef/recipe-feed" element={<ProtectedRoute><MasterChefRecipeFeed /></ProtectedRoute>} />
+                        {/* KitchenStars — single Competitions page (video duels) */}
+                        <Route path="/masterchef-subscription" element={<ProtectedRoute><KitchenStarsBattles /></ProtectedRoute>} />
+                        <Route path="/masterchef/competitions" element={<Navigate to="/masterchef" replace />} />
+
                         <Route path="/influencer/earnings" element={<ProtectedRoute><InfluencerEarnings /></ProtectedRoute>} />
                         <Route path="/creator-studio" element={<ProtectedRoute><CreatorStudio /></ProtectedRoute>} />
                         <Route path="/time-reversal-subscription" element={<Navigate to="/time-reversal" replace />} />
