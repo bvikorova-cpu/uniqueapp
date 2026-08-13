@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { DropZone, type DropZoneValidation } from "@/components/kitchen-battles/DropZone";
 import { useBattleCoins, BATTLE_ENTRY_COINS, BATTLE_PRIZE_COINS } from "@/hooks/useBattleCoins";
 import BattleCoinsWallet from "@/components/battle-coins/BattleCoinsWallet";
+import MonthlyPrizePoolCard from "@/components/battle-coins/MonthlyPrizePoolCard";
 import BattleCosmeticsShop from "@/components/battle-coins/BattleCosmeticsShop";
 import masterchefHero from "@/assets/masterchef-hero-v2.mp4.asset.json";
 import KitchenStarsLeaderboard from "@/components/kitchen-battles/KitchenStarsLeaderboard";
@@ -507,7 +508,9 @@ export default function KitchenStarsCompetitions() {
 
           <BattleCosmeticsShop coins={balance} />
 
-          <KitchenStarsLeaderboard currentUserId={userId} />
+          <MonthlyPrizePoolCard module="kitchenstars" accent="orange" />
+
+        <KitchenStarsLeaderboard currentUserId={userId} />
 
 
           {/* Public competition directory — tap any competition to open it */}
