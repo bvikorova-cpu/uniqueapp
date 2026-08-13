@@ -1219,8 +1219,9 @@ const App = () => {
                         <Route path="/verification" element={<Navigate to="/account/verification" replace />} />
                         {/* KitchenStars Competitions */}
                         <Route path="/masterchef" element={<ProtectedRoute><KitchenStarsBattles /></ProtectedRoute>} />
-                        {/* Reel Battles — video reel duels */}
-                        <Route path="/reel-battles" element={<ProtectedRoute><ReelBattles /></ProtectedRoute>} />
+                        {/* Clip Battles — short video duels */}
+                        <Route path="/clip-battles" element={<ProtectedRoute><ReelBattles /></ProtectedRoute>} />
+                        <Route path="/reel-battles" element={<Navigate to="/clip-battles" replace />} />
 
                         <Route path="/masterchef/live-battles" element={<Navigate to="/masterchef" replace />} />
                         <Route path="/kitchenstars/battles" element={<Navigate to="/masterchef" replace />} />

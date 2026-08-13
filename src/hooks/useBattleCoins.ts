@@ -16,7 +16,7 @@ export type BattleModule = "kitchenstars" | "reel_battles" | "megatalent";
 
 export const BATTLE_MODULE_LABELS: Record<BattleModule, string> = {
   kitchenstars: "KitchenStars",
-  reel_battles: "Reel Battles",
+  reel_battles: "Clip Battles",
   megatalent: "Megatalent",
 };
 

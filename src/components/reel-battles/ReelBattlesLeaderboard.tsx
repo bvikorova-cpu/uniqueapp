@@ -106,7 +106,7 @@ export default function ReelBattlesLeaderboard({ currentUserId }: { currentUserI
           <p className="text-sm text-muted-foreground text-center py-4">Loading real-time standings…</p>
         ) : rows.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">
-            No creators on the board yet — start a reel duel to appear here.
+            No creators on the board yet — start a clip duel to appear here.
           </p>
         ) : (
           rows.map((r) => (
