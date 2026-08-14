@@ -27,11 +27,26 @@ export const ComedyGiftsPanel = ({ showId }: Props) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in"); return; }
-      const { data, error } = await supabase.functions.invoke("send-comedy-gift", {
-        body: { showId, giftId, message } });
-      if (error) throw error;
-      const url = (data as any)?.url;
+      let url: string | undefined;
+      try {
+        const { data, error } = await supabase.functions.invoke("send-comedy-gift", {
+          body: { showId, giftId, message } });
+        if (error) throw error;
+        url = (data as any)?.url;
+      } catch (invokeErr: any) {
+        // FunctionsFetchError (preflight/network hiccup in the mobile preview iframe)
+        // — retry with a plain fetch straight to the function endpoint.
+        const res = await fetch(
+          `https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/send-concert-gift`,
+          { method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+            body: JSON.stringify({ showId, giftId, message, context: "comedy" }) });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error((json as any)?.error || invokeErr?.message || "Failed to send gift");
+        url = (json as any)?.url;
+      }
       if (!url) throw new Error("Checkout URL missing");
+
       // Stripe Checkout refuses to render inside the preview iframe — open a new tab.
       const win = window.open(url, "_blank", "noopener,noreferrer");
       if (!win) {
