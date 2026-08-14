@@ -5,6 +5,8 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2 } from "lucide-react";
 import { InfluencerWithdrawalForm } from "./InfluencerWithdrawalForm";
+import CreatorPaidInbox from "./CreatorPaidInbox";
+
 import { format } from "date-fns";
 import { EarningsHero, EarningsLiveTicker, EarningsTipsBanner } from "@/components/earnings";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -268,12 +270,19 @@ export const InfluencerEarningsPage = () => {
         <Tabs defaultValue="earnings">
           <TabsList className="w-full flex-wrap h-auto">
             <TabsTrigger value="earnings">Gift earnings</TabsTrigger>
+            <TabsTrigger value="inbox">Inbox</TabsTrigger>
             <TabsTrigger value="subs">Subscriptions</TabsTrigger>
             <TabsTrigger value="ppv">PPV posts</TabsTrigger>
             <TabsTrigger value="dms">Paid DMs</TabsTrigger>
             <TabsTrigger value="withdraw">Request withdrawal</TabsTrigger>
             <TabsTrigger value="history">Withdrawal history</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="inbox" className="mt-6">
+            <CreatorPaidInbox />
+          </TabsContent>
+
+
 
           <TabsContent value="earnings" className="mt-6">
             <Card className="p-6">
