@@ -207,7 +207,21 @@ const InfluKing = () => {
     },
     enabled: !!user && !!selectedInfluencer });
 
+  const { data: followedInfluencers = [], isLoading: loadingFollowing } = useQuery({
+    queryKey: ["myFollowedInfluencers", user?.id],
+    queryFn: async () => {
+      if (!user) return [] as InfluencerProfile[];
+      const { data: rows } = await supabase.from("influencer_followers")
+        .select("influencer_id").eq("follower_id", user.id);
+      const ids = (rows || []).map((r: any) => r.influencer_id);
+      if (ids.length === 0) return [] as InfluencerProfile[];
+      const { data } = await supabase.from("influencer_profiles").select("*").in("id", ids);
+      return (data || []) as InfluencerProfile[];
+    },
+    enabled: !!user });
+
   const totalFollowers = topInfluencers.reduce((sum, i) => sum + (i.followers_count || 0), 0);
+
   const totalLikes = topInfluencers.reduce((sum, i) => sum + (i.total_likes || 0), 0);
   const totalViews = topInfluencers.reduce((sum, i) => sum + (i.total_views || 0), 0);
 
