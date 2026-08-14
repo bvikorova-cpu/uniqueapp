@@ -108,9 +108,9 @@ export function ComedianEarnings({ earnings, comedianId, onRefresh }: ComedianEa
               <TrendingUp className="h-6 w-6 text-green-500" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Your Share (80%)</p>
+              <p className="text-sm text-muted-foreground">Total Earnings (80%)</p>
               <p className="text-3xl font-bold text-green-500">
-                €{earnings?.pendingPayout?.toFixed(2) || '0.00'}
+                €{earnings?.creatorShare?.toFixed(2) || '0.00'}
               </p>
             </div>
           </div>
@@ -124,7 +124,7 @@ export function ComedianEarnings({ earnings, comedianId, onRefresh }: ComedianEa
               <DialogHeader>
                 <DialogTitle>Request Withdrawal</DialogTitle>
                 <DialogDescription>
-                  Available balance: €{earnings?.pendingPayout?.toFixed(2)}
+                  Available balance: €{earnings?.pendingPayout?.toFixed(2) || '0.00'}
                 </DialogDescription>
               </DialogHeader>
 

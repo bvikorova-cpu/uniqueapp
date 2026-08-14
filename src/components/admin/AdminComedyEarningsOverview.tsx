@@ -55,7 +55,7 @@ export function AdminComedyEarningsOverview() {
 
         const map = new Map<string, ComedianAgg>();
         ((earnings as EarningRow[]) || []).forEach((e) => {
-          const gross = Number(e.amount_coins || 0);
+          const gross = Number(e.amount_coins || 0) / 100;
           const platform = Number(e.platform_commission || 0);
           const net = Number(e.net_amount || 0);
           const prof = nameById.get(e.comedian_id);
