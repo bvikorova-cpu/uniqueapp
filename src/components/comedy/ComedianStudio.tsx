@@ -163,7 +163,11 @@ export const ComedianStudio = ({ onBack }: Props) => {
         : { status, ended_at: now };
       const { error } = await supabase.from("comedy_shows").update(patch).eq("id", id);
       if (error) throw error;
-      toast.success(status === "live" ? "You are live!" : "Show ended");
+      toast.success(status === "live" ? "You are live — opening your broadcast studio…" : "Show ended");
+      if (status === "live") {
+        navigate(`/comedy-live/${id}`);
+        return;
+      }
       await load();
     } catch (e: any) {
       toast.error(e?.message || "Failed to update show");
