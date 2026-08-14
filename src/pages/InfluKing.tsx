@@ -31,6 +31,8 @@ import AudienceInsights from "@/components/influking/AudienceInsights";
 import { FanClubJoinCard } from "@/components/influking/FanClubJoinCard";
 import { FanClubLockedFeed } from "@/components/influking/FanClubLockedFeed";
 import PPVStudio from "@/components/influking/PPVStudio";
+import PPVLockedFeed from "@/components/influking/PPVLockedFeed";
+
 import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio } from "lucide-react";
 
 type InfluKingView = "hub" | "content-planner" | "collab" | "fan-club" | "brand-deals" | "analytics" | "hashtags" | "challenges" | "thumbnails" | "publisher" | "audience" | "ppv";
@@ -504,7 +506,11 @@ const InfluKing = () => {
                   </div>
                 </DialogContent>
               </Dialog>
+              <Button size="lg" variant="outline" className="gap-2" onClick={() => setActiveView("ppv")}>
+                <Lock className="h-5 w-5 text-fuchsia-500" /> PPV posts
+              </Button>
               <GoLiveButton influencerId={myProfile.id} />
+
               <Button variant="outline" onClick={() => navigate("/creator/live-analytics")}>Live Analytics</Button>
               <Button variant="outline" onClick={() => navigate("/influencer/earnings")}>{t("influking.my_earnings")}</Button>
               <Button variant="outline" onClick={() => setSelectedInfluencer(myProfile)}>{t("influking.my_profile")}</Button>
@@ -694,7 +700,9 @@ const InfluKing = () => {
                     creatorName={selectedInfluencer.display_name}
                   />
                   <FanClubLockedFeed creatorId={selectedInfluencer.user_id} />
+                  <PPVLockedFeed creatorId={selectedInfluencer.user_id} />
                   <h3 className="text-xl font-bold mb-4">Posts</h3>
+
                   {influencerPosts.length === 0 ? (
                     <p className="text-center text-muted-foreground py-8">No posts yet</p>
                   ) : (
