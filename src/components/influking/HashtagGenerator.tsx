@@ -32,7 +32,7 @@ const HashtagGenerator = ({ onBack }: HashtagGeneratorProps) => {
   const [generatedHashtags, setGeneratedHashtags] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const { data: credits } = useQuery({
+  const { data: credits, refetch: refetchCredits } = useQuery({
     queryKey: ["ai-credits-hashtag"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -57,7 +57,16 @@ const HashtagGenerator = ({ onBack }: HashtagGeneratorProps) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      await supabase.rpc("deduct_ai_credits" as any, { p_user_id: user.id, p_amount: 3 });
+      const { data: spend, error: spendError } = await supabase.rpc("spend_ai_credits" as any, {
+        _amount: 3,
+        _reason: `influking_hashtag_generator:${(topic || selectedCategory || "").slice(0, 60)}`,
+        _source: "influking" });
+      if (spendError) throw spendError;
+      if (!(spend as any)?.ok) {
+        throw new Error((spend as any)?.error === "insufficient"
+          ? "You do not have enough AI credits (3 required)."
+          : "Could not charge AI credits. Please try again.");
+      }
 
       // Generate hashtags based on topic + category
       const categoryTags = selectedCategory ? HASHTAG_CATEGORIES[selectedCategory] || [] : [];
@@ -73,14 +82,10 @@ const HashtagGenerator = ({ onBack }: HashtagGeneratorProps) => {
       // Deduplicate
       const unique = [...new Set(mixedTags)].slice(0, 25);
       setGeneratedHashtags(unique);
-
-      await supabase.from("ai_usage_history").insert({
-        user_id: user.id,
-        usage_type: "hashtag_generator",
-        credits_used: 3,
-        description: `Hashtags for: ${topic || selectedCategory}` });
+      await refetchCredits();
 
       toast({ title: "✅ Hashtags Generated!", description: "25 optimized hashtags ready (3 credits used)" });
+
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } finally {
