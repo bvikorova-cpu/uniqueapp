@@ -101,6 +101,8 @@ const InfluKing = () => {
   const [uploadingMedia, setUploadingMedia] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const captureInputRef = useRef<HTMLInputElement | null>(null);
+
   const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
   const [followStatusMap, setFollowStatusMap] = useState<Record<string, boolean>>({});
   const [showGiftDialog, setShowGiftDialog] = useState(false);
