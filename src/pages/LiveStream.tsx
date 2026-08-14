@@ -384,9 +384,13 @@ export default function LiveStream() {
     const ch = supabase.channel(`stream-presence-${streamId}`, {
       config: { presence: { key: isOwner ? `host-${streamId}` : user?.id || `guest-${Math.random()}` } },
     });
+    const ownerUserId = stream?.influencer_profiles?.user_id;
     ch.on("presence", { event: "sync" }, () => {
       const state = ch.presenceState() as Record<string, unknown[]>;
-      setPresenceViewers(Object.keys(state).filter((k) => !k.startsWith("host-")).length);
+      setPresenceViewers(
+        Object.keys(state).filter((k) => !k.startsWith("host-") && k !== ownerUserId).length
+      );
+
     }).subscribe((status) => {
       if (status === "SUBSCRIBED") void ch.track({ at: Date.now() });
     });
