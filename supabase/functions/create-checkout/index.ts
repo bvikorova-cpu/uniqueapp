@@ -2402,6 +2402,150 @@ async function handler(req: Request): Promise<Response> {
       return successResponse({ url: session.url, session_id: session.id });
     }
 
+    // ─── Fan Club (InfluKing) — checkout / verify / cancel / resume ───
+    // The standalone fanclub-* edge functions could not be deployed (function
+    // limit), so their logic lives here and is routed via proxyMap.
+    if (body.product === "fan_club") {
+      if (!userId || !email) return errorResponse("Login required", 401);
+      const admin = createSupabaseAdminClient();
+      const action = String((body as any).action || "checkout");
+      const fanClubId = (body as any).fan_club_id ? String((body as any).fan_club_id) : null;
+
+      if (action === "verify") {
+        const custId = customerId || (await getStripeCustomer(stripe, email));
+        if (!custId) return successResponse({ memberships: [] });
+        const subs = await stripe.subscriptions.list({ customer: custId, status: "all", limit: 100 });
+        const relevant = subs.data.filter((s) =>
+          s.metadata?.type === "fan_club" &&
+          s.metadata?.user_id === userId &&
+          (!fanClubId || s.metadata?.fan_club_id === fanClubId));
+        const memberships: Array<Record<string, unknown>> = [];
+        for (const sub of relevant) {
+          const clubId = sub.metadata?.fan_club_id;
+          if (!clubId) continue;
+          const active = sub.status === "active" || sub.status === "trialing";
+          const mappedStatus = active
+            ? "active"
+            : sub.status === "past_due"
+              ? "past_due"
+              : sub.status === "canceled" || sub.status === "unpaid"
+                ? "canceled"
+                : sub.status === "incomplete_expired"
+                  ? "expired"
+                  : "pending";
+          const periodEnd = (sub as any).current_period_end;
+          await admin.from("influencer_fan_club_members").upsert({
+            fan_club_id: clubId,
+            user_id: userId,
+            status: mappedStatus,
+            stripe_customer_id: custId,
+            stripe_subscription_id: sub.id,
+            current_period_end: periodEnd ? new Date(periodEnd * 1000).toISOString() : null,
+            cancel_at_period_end: Boolean((sub as any).cancel_at_period_end) },
+            { onConflict: "fan_club_id,user_id" });
+          memberships.push({ fan_club_id: clubId, active, status: mappedStatus });
+        }
+        return successResponse({ memberships });
+      }
+
+      if (!fanClubId) return errorResponse("fan_club_id required", 400);
+
+      if (action === "cancel" || action === "resume") {
+        const { data: member } = await admin
+          .from("influencer_fan_club_members")
+          .select("stripe_subscription_id")
+          .eq("fan_club_id", fanClubId)
+          .eq("user_id", userId)
+          .maybeSingle();
+        if (!member?.stripe_subscription_id) return errorResponse("No active subscription", 400);
+        if (action === "cancel") {
+          const immediate = Boolean((body as any).immediate);
+          if (immediate) {
+            await stripe.subscriptions.cancel(member.stripe_subscription_id);
+            await admin.from("influencer_fan_club_members")
+              .update({ status: "canceled", cancel_at_period_end: false })
+              .eq("fan_club_id", fanClubId).eq("user_id", userId);
+          } else {
+            await stripe.subscriptions.update(member.stripe_subscription_id, { cancel_at_period_end: true });
+            await admin.from("influencer_fan_club_members")
+              .update({ cancel_at_period_end: true })
+              .eq("fan_club_id", fanClubId).eq("user_id", userId);
+          }
+        } else {
+          const sub = await stripe.subscriptions.retrieve(member.stripe_subscription_id);
+          if (sub.status === "canceled") return errorResponse("Subscription already canceled; please re-join", 400);
+          await stripe.subscriptions.update(member.stripe_subscription_id, { cancel_at_period_end: false });
+          await admin.from("influencer_fan_club_members")
+            .update({ cancel_at_period_end: false, status: "active" })
+            .eq("fan_club_id", fanClubId).eq("user_id", userId);
+        }
+        return successResponse({ ok: true });
+      }
+
+      // action === "checkout"
+      const { data: club } = await admin
+        .from("influencer_fan_clubs")
+        .select("id, creator_id, name, tier, price_cents, currency, is_active")
+        .eq("id", fanClubId)
+        .maybeSingle();
+      if (!club) return errorResponse("Fan club not found", 404);
+      if (!club.is_active) return errorResponse("Fan club is inactive", 400);
+      if (club.creator_id === userId) {
+        return errorResponse("Creators cannot subscribe to their own fan club", 400);
+      }
+
+      const custId = customerId || (await getStripeCustomer(stripe, email));
+      if (custId) {
+        const existingSubs = await stripe.subscriptions.list({ customer: custId, status: "active", limit: 50 });
+        const already = existingSubs.data.find((s) => s.metadata?.fan_club_id === club.id);
+        if (already) {
+          const periodEnd = (already as any).current_period_end;
+          await admin.from("influencer_fan_club_members").upsert({
+            fan_club_id: club.id,
+            user_id: userId,
+            status: "active",
+            stripe_customer_id: custId,
+            stripe_subscription_id: already.id,
+            current_period_end: periodEnd ? new Date(periodEnd * 1000).toISOString() : null },
+            { onConflict: "fan_club_id,user_id" });
+          return successResponse({ already_member: true });
+        }
+      }
+
+      const fanMeta = { type: "fan_club",
+        product: "fan_club",
+        fan_club_id: club.id,
+        creator_id: club.creator_id,
+        user_id: userId };
+
+      const session = await stripe.checkout.sessions.create({
+        customer: custId || undefined,
+        customer_email: custId ? undefined : email,
+        mode: "subscription",
+        line_items: [{
+          price_data: {
+            currency: club.currency || "eur",
+            recurring: { interval: "month" },
+            unit_amount: club.price_cents,
+            product_data: { name: `Fan Club: ${club.name} (${club.tier})` } },
+          quantity: 1 }],
+        subscription_data: { metadata: fanMeta },
+        metadata: fanMeta,
+        success_url: `${origin}/influ-king?fanclub=success&fan_club_id=${club.id}&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/influ-king?fanclub=canceled&fan_club_id=${club.id}` });
+
+      await admin.from("influencer_fan_club_members").upsert({
+        fan_club_id: club.id,
+        user_id: userId,
+        status: "pending",
+        stripe_customer_id: custId || null },
+        { onConflict: "fan_club_id,user_id" });
+
+      return successResponse({ url: session.url, session_id: session.id });
+    }
+
+
+
 
     if (body.product && !body.priceId && !body.productKey && !body.credits) { // Free actions (e.g. create-character, create-universe) just return ok
       if (body.free === true) {
