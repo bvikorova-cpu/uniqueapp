@@ -63,9 +63,7 @@ export const ViewersList = ({ storyId, viewsCount, open, onOpenChange }: Viewers
       <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>
-            Seen by {viewsCount} {viewsCount === 1 ? "person" : viewsCount < 5 ? "people" : "people"}
-          </DialogTitle>
+          <DialogTitle>Viewers</DialogTitle>
         </DialogHeader>
 
         <ScrollArea className="max-h-[400px]">

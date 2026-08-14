@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import { ArrowLeft, Heart, Send, X, Trash2, Eye } from "lucide-react";
+import { ArrowLeft, Heart, Send, X, Trash2, Users } from "lucide-react";
 import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -328,8 +328,8 @@ export default function Stories() {
               onClick={() => setShowViewersList(true)}
               className="text-white hover:bg-white/20 gap-2"
             >
-              <Eye className="h-4 w-4" />
-              {currentStory.views_count}
+              <Users className="h-4 w-4" />
+              Viewers
             </Button>
           )}
           {/* Delete button (only for own stories) */}
