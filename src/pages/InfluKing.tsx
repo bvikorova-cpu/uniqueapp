@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { useTranslation } from "react-i18next";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Crown, Users, Heart, TrendingUp, Camera, Plus, CheckCircle, Star, Upload, ExternalLink, Gift, Brain, Handshake, Briefcase, Pencil, Wallet } from "lucide-react";
+import { Crown, Users, Heart, TrendingUp, Camera, Plus, CheckCircle, Star, Upload, ExternalLink, Gift, Brain, Handshake, Briefcase, Pencil, Wallet, Search } from "lucide-react";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { GoLiveButton } from "@/components/influencer/GoLiveButton";
 import { SendInfluencerGiftDialog } from "@/components/influencer/SendInfluencerGiftDialog";
@@ -33,6 +33,7 @@ import PPVStudio from "@/components/influking/PPVStudio";
 import PPVLockedFeed from "@/components/influking/PPVLockedFeed";
 import { InfluencerPostComments } from "@/components/influking/InfluencerPostComments";
 import { PaidMessageDialog } from "@/components/creator/PaidMessageDialog";
+import { useDebounce } from "@/hooks/use-debounce";
 
 import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio, MessageCircle, ShieldAlert } from "lucide-react";
 
