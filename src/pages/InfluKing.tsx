@@ -694,7 +694,9 @@ const InfluKing = () => {
                     creatorName={selectedInfluencer.display_name}
                   />
                   <FanClubLockedFeed creatorId={selectedInfluencer.user_id} />
+                  <PPVLockedFeed creatorId={selectedInfluencer.user_id} />
                   <h3 className="text-xl font-bold mb-4">Posts</h3>
+
                   {influencerPosts.length === 0 ? (
                     <p className="text-center text-muted-foreground py-8">No posts yet</p>
                   ) : (
