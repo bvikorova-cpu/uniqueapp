@@ -64,7 +64,7 @@ export default function LiveStream() {
   const [streamError, setStreamError] = useState<string | null>(null);
   const [micEnabled, setMicEnabled] = useState(true);
   const [camEnabled, setCamEnabled] = useState(true);
-  const [peerViewers, setPeerViewers] = useState(0);
+  
   const [presenceViewers, setPresenceViewers] = useState(0);
   const [connState, setConnState] = useState<RTCPeerConnectionState | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
