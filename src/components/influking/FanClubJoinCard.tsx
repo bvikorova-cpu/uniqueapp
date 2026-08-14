@@ -145,16 +145,33 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
   const checkout = useMutation({
     mutationFn: async (fan_club_id: string) => {
       if (!user) throw new Error("Sign in to subscribe");
+      if (user.id === creatorId) throw new Error("This is your own fan club — you can't subscribe to it.");
       const { data, error } = await supabase.functions.invoke("fanclub-checkout", {
         body: { fan_club_id } });
-      if (error) throw error;
+      if (error) {
+        // Surface the real server message instead of the generic non-2xx text.
+        let msg = error.message || "Checkout failed";
+        try {
+          const res = (error as any).context;
+          const text = res && typeof res.text === "function" ? await res.text() : null;
+          if (text) {
+            const parsed = JSON.parse(text);
+            if (parsed?.error) msg = String(parsed.error);
+          }
+        } catch { /* keep original message */ }
+        throw new Error(msg);
+      }
+      if ((data as any)?.error) throw new Error((data as any).error);
       if (data?.already_member) {
         qc.invalidateQueries({ queryKey: ["my-fan-club-memberships"] });
+        toast({ title: "You're already a member" });
         return;
       }
       if (data?.url) window.location.href = data.url;
+      else throw new Error("Stripe did not return a checkout URL. Please try again.");
     },
     onError: (e: any) => toast({ title: "Checkout error", description: e.message, variant: "destructive" }) });
+
 
   const cancel = useMutation({
     mutationFn: async (fan_club_id: string) => {
@@ -412,6 +429,8 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
           const Icon = TIER_ICON[c.tier];
           const membership = memberships.find((m) => m.fan_club_id === c.id);
           const active = membership?.status === "active";
+          const isOwnClub = !!user && user.id === creatorId;
+
           return (
             <Card key={c.id} className="border-border/40">
               <CardContent className="p-4 space-y-2">
@@ -464,6 +483,10 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
                     {swap.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <ArrowLeftRight className="h-3 w-3" />}
                     Switch to this tier
                   </Button>
+                ) : isOwnClub ? (
+                  <Button size="sm" variant="outline" className="w-full gap-1" disabled>
+                    <Crown className="h-3 w-3" /> Your own club
+                  </Button>
                 ) : (
                   <Button size="sm" className="w-full gap-1"
                     onClick={() => checkout.mutate(c.id)}
@@ -472,6 +495,7 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
                     {user ? "Join" : "Sign in to join"}
                   </Button>
                 )}
+
               </CardContent>
             </Card>
           );
