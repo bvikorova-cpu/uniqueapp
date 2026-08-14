@@ -410,11 +410,6 @@ const InfluKing = () => {
       <CollabMatchmaker onBack={() => setActiveView("hub")} />
     </div></div>
   );
-  if (activeView === "fan-club") return (
-    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4">
-      <FanClubManager onBack={() => setActiveView("hub")} />
-    </div></div>
-  );
   if (activeView === "brand-deals") return (
     <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4">
       <BrandDealFinder onBack={() => setActiveView("hub")} />
