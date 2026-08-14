@@ -630,9 +630,10 @@ const InfluKing = () => {
           ))}
         </TabsContent>
 
-        {/* Description Card */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
-          <Card className="max-w-4xl mx-auto mb-8 backdrop-blur-xl bg-card/80 border-primary/10">
+        {/* Guide */}
+        <TabsContent value="guide" className="focus-visible:outline-none">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <Card className="mx-auto mb-8 max-w-4xl rounded-3xl border-primary/15 bg-card/70 shadow-[0_10px_40px_-24px_hsl(var(--primary)/0.5)] backdrop-blur-xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Star className="h-5 w-5 text-amber-500" /> {t("influking.what_is_title")}
