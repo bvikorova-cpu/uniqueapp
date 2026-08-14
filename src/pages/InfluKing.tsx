@@ -156,7 +156,7 @@ const InfluKing = () => {
         const { data } = await supabase.functions.invoke("verify-influencer-gift", {
           body: sessionId ? { sessionId } : { recover: true } });
         if ((data as any)?.paid || (data as any)?.settled) {
-          toast.success("Gift confirmed – it now shows in earnings.");
+          toast({ title: "🎁 Gift confirmed", description: "It now shows in earnings." });
         }
       } catch (e) {
         console.error("Gift verification failed", e);
