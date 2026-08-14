@@ -58,7 +58,7 @@ export default function ComedyLiveShow() {
               <ComedyLiveStreamPlayer showId={show.id} streamKey={show.stream_key || ""} />
             </Card>
 
-            <TipAnimation performerName={show.comedian?.stage_name || "Comedian"} />
+            {/* Gifts/tips are sent by the audience only — the comedian does not gift their own show. */}
           </div>
 
           <div>
