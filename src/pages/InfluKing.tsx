@@ -444,7 +444,7 @@ const InfluKing = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-12">
+    <div className="min-h-screen bg-gradient-to-b from-background via-primary/[0.04] to-background pt-20 pb-12">
       <div className="container mx-auto px-4">
         {/* Cinematic Hero */}
         <InfluKingHero
@@ -454,9 +454,25 @@ const InfluKing = () => {
           totalViews={totalViews}
         />
 
+        <Tabs defaultValue="studio" className="mt-4">
+          <TabsList className="mx-auto mb-8 flex h-auto w-full max-w-3xl flex-wrap justify-center gap-1 rounded-2xl border border-primary/15 bg-card/70 p-1.5 shadow-[0_8px_30px_-12px_hsl(var(--primary)/0.35)] backdrop-blur-xl">
+            {[
+              { v: "studio", l: t("influking.tab_studio", "Creator Studio"), i: Crown },
+              { v: "tools", l: t("influking.tab_tools", "AI Tools"), i: Brain },
+              { v: "discover", l: t("influking.tab_discover", "Discover"), i: TrendingUp },
+              { v: "guide", l: t("influking.tab_guide", "How it works"), i: Star },
+            ].map(({ v, l, i: Icon }) => (
+              <TabsTrigger key={v} value={v}
+                className="gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg">
+                <Icon className="h-4 w-4" /> {l}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
+        <TabsContent value="studio" className="space-y-6 focus-visible:outline-none">
         {/* Action Buttons */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-          className="flex flex-wrap items-center justify-center gap-3 mb-8">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+          className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-3 rounded-3xl border border-primary/15 bg-card/70 p-5 shadow-[0_10px_40px_-20px_hsl(var(--primary)/0.5)] backdrop-blur-xl">
           {myProfile ? (
             <>
               <Dialog open={showPostDialog} onOpenChange={setShowPostDialog}>
