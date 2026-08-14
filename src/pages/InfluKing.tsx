@@ -735,7 +735,7 @@ const InfluKing = () => {
                       
                     </div>
                     {selectedInfluencer.user_id !== user?.id ? (
-                      <div className="grid grid-cols-1 xs:grid-cols-2 sm:flex sm:flex-wrap sm:justify-start gap-2">
+                      <div className="grid grid-cols-1 sm:flex sm:flex-wrap sm:justify-start gap-2">
                         <Button className="w-full sm:w-auto" onClick={() => followMutation.mutate({ influencerId: selectedInfluencer.id, follow: !isFollowing })}
                           disabled={followMutation.isPending} variant={isFollowing ? "outline" : "default"}>
                           {isFollowing ? "Following" : "Follow"}
