@@ -67,6 +67,12 @@ interface InfluencerPost {
   created_at: string;
 }
 
+interface ActiveLiveStream {
+  id: string;
+  influencer_id: string;
+  title: string;
+}
+
 const CATEGORIES = [
   "Fashion & Beauty", "Gaming", "Fitness & Health", "Travel",
   "Food & Cooking", "Technology", "Music", "Comedy", "Education",
@@ -147,6 +153,40 @@ const InfluKing = () => {
       if (error) throw error;
       return data as InfluencerProfile[];
     } });
+
+  const { data: activeLiveStreams = [] } = useQuery({
+    queryKey: ["influking-active-live-streams"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("live_streams")
+        .select("id, influencer_id, title")
+        .eq("is_live", true)
+        .order("started_at", { ascending: false });
+      if (error) throw error;
+      const seen = new Set<string>();
+      return ((data || []) as ActiveLiveStream[]).filter((stream) => {
+        if (seen.has(stream.influencer_id)) return false;
+        seen.add(stream.influencer_id);
+        return true;
+      });
+    },
+    refetchInterval: 10000,
+  });
+
+  const liveStreamByInfluencer = useMemo(
+    () => new Map(activeLiveStreams.map((stream) => [stream.influencer_id, stream])),
+    [activeLiveStreams]
+  );
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("influking-live-status")
+      .on("postgres_changes", { event: "*", schema: "public", table: "live_streams" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["influking-active-live-streams"] });
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [queryClient]);
 
   // Settle InfluKing gift payments after Stripe redirect (and recover missed ones)
   useEffect(() => {
@@ -731,6 +771,11 @@ const InfluKing = () => {
                     <div className="flex items-center justify-center sm:justify-start gap-2 mb-2">
                       <h2 className="text-lg sm:text-2xl font-bold break-words">{selectedInfluencer.display_name}</h2>
                       {selectedInfluencer.is_verified && <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 shrink-0 text-blue-500 fill-blue-500" />}
+                      {liveStreamByInfluencer.has(selectedInfluencer.id) && (
+                        <Badge variant="destructive" className="gap-1 animate-pulse">
+                          <Radio className="h-3 w-3" /> LIVE
+                        </Badge>
+                      )}
                     </div>
                     <Badge className="mb-3 max-w-full truncate">{selectedInfluencer.category}</Badge>
                     <p className="text-sm sm:text-base text-muted-foreground mb-4 break-words">{selectedInfluencer.bio}</p>
@@ -741,6 +786,15 @@ const InfluKing = () => {
                     </div>
                     {selectedInfluencer.user_id !== user?.id ? (
                       <div className="grid grid-cols-1 sm:flex sm:flex-wrap sm:justify-start gap-2">
+                        {liveStreamByInfluencer.get(selectedInfluencer.id) && (
+                          <Button
+                            className="w-full gap-2 sm:w-auto"
+                            variant="destructive"
+                            onClick={() => navigate(`/live/${liveStreamByInfluencer.get(selectedInfluencer.id)?.id}`)}
+                          >
+                            <Radio className="h-4 w-4" /> Watch live
+                          </Button>
+                        )}
                         <Button className="w-full sm:w-auto" onClick={() => followMutation.mutate({ influencerId: selectedInfluencer.id, follow: !isFollowing })}
                           disabled={followMutation.isPending} variant={isFollowing ? "outline" : "default"}>
                           {isFollowing ? "Following" : "Follow"}
@@ -890,6 +944,11 @@ const InfluKing = () => {
                         <div className="flex items-center gap-1.5">
                           <h3 className="font-bold truncate">{influencer.display_name}</h3>
                           {influencer.is_verified && <CheckCircle className="h-4 w-4 text-blue-500 fill-blue-500 shrink-0" />}
+                          {liveStreamByInfluencer.has(influencer.id) && (
+                            <Badge variant="destructive" className="h-5 shrink-0 gap-1 px-1.5 text-[9px] animate-pulse">
+                              <Radio className="h-2.5 w-2.5" /> LIVE
+                            </Badge>
+                          )}
                         </div>
                         <Badge variant="outline" className="mt-1 max-w-full truncate text-[10px] sm:text-xs">{influencer.category}</Badge>
                       </div>
@@ -951,6 +1010,11 @@ const InfluKing = () => {
                         <div className="flex items-center gap-1.5">
                           <h3 className="truncate font-bold">{influencer.display_name}</h3>
                           {influencer.is_verified && <CheckCircle className="h-4 w-4 shrink-0 fill-blue-500 text-blue-500" />}
+                          {liveStreamByInfluencer.has(influencer.id) && (
+                            <Badge variant="destructive" className="h-5 shrink-0 gap-1 px-1.5 text-[9px] animate-pulse">
+                              <Radio className="h-2.5 w-2.5" /> LIVE
+                            </Badge>
+                          )}
                         </div>
                         <div className="mt-1 flex items-center gap-2">
                           <Badge variant="outline" className="max-w-full truncate text-[10px]">{influencer.category}</Badge>
