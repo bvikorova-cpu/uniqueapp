@@ -75,18 +75,17 @@ export default function LiveStream() {
   const viewerRef = useRef<ViewerHandle | null>(null);
 
 
-  // Fetch available gifts
-  const { data: gifts = [] } = useQuery({
-    queryKey: ["platform-gifts"],
+  // Fetch available gifts (all platform gifts, cheapest first)
+  const { data: gifts = [], isLoading: giftsLoading } = useQuery({
+    queryKey: ["platform-gifts", "all"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("platform_gifts")
         .select("*")
-        .eq("category", "stream_gift")
         .order("price", { ascending: true });
-      
+
       if (error) throw error;
-      return data as GiftType[];
+      return (data || []) as GiftType[];
     } });
 
   useEffect(() => {
