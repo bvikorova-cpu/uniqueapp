@@ -154,14 +154,22 @@ const ReportView = ({ report, photo }: { report: Report; photo?: string | null }
         <Button
           size="sm"
           variant="outline"
-          onClick={() =>
-            downloadFaceShareCard({
-              headline: report.headline,
-              summary: report.summary,
-              scores: report.scores,
-              photo: photo ?? null,
-            })
-          }
+          onClick={async () => {
+            try {
+              await downloadFaceShareCard({
+                headline: report.headline,
+                summary: report.summary,
+                scores: report.scores,
+                photo: photo ?? null,
+              });
+            } catch (e) {
+              toast({
+                title: "Share card failed",
+                description: e instanceof Error ? e.message : "Please try again.",
+                variant: "destructive",
+              });
+            }
+          }}
         >
           <Share2 className="w-4 h-4 mr-1.5" />Share card
         </Button>
