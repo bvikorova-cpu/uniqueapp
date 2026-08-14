@@ -19,6 +19,33 @@ interface GiftRow {
   influencer_gifts?: { name: string | null; icon: string | null } | null;
 }
 
+interface SubRow {
+  id: string;
+  gross_cents: number | null;
+  platform_fee_cents: number | null;
+  net_cents: number | null;
+  period_end: string | null;
+  created_at: string;
+}
+
+interface PpvRow {
+  id: string;
+  amount_cents: number | null;
+  creator_earnings_cents: number | null;
+  platform_fee_cents: number | null;
+  created_at: string;
+  influking_ppv_posts?: { title: string | null } | null;
+}
+
+interface DmRow {
+  id: string;
+  amount_paid: number | null;
+  platform_fee: number | null;
+  creator_payout: number | null;
+  request_type: string | null;
+  created_at: string;
+}
+
 export const InfluencerEarningsPage = () => {
   const [selectedInfluencer, setSelectedInfluencer] = useState<string | null>(null);
   const refetchGiftsRef = useRef<(() => void) | null>(null);
