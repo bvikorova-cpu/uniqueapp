@@ -427,7 +427,7 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
           </Alert>
         </div>
       )}
-      <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-3 p-4 sm:p-6 pt-0">
         {clubs.map((c) => {
           const Icon = TIER_ICON[c.tier];
           const membership = memberships.find((m) => m.fan_club_id === c.id);
@@ -435,16 +435,17 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
           const isOwnClub = !!user && user.id === creatorId;
 
           return (
-            <Card key={c.id} className="border-border/40">
-              <CardContent className="p-4 space-y-2">
-                <div className="flex items-center justify-between">
-                  <Badge variant="outline" className="capitalize gap-1">
+            <Card key={c.id} className="border-border/40 min-w-0">
+              <CardContent className="p-3 sm:p-4 space-y-2 min-w-0">
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <Badge variant="outline" className="capitalize gap-1 shrink-0">
                     <Icon className={`h-3 w-3 ${TIER_COLOR[c.tier]}`} /> {c.tier}
                   </Badge>
-                  <span className="font-bold text-green-500">
+                  <span className="font-bold text-green-500 whitespace-nowrap">
                     €{(c.price_cents / 100).toFixed(2)}<span className="text-xs text-muted-foreground">/mo</span>
                   </span>
                 </div>
+
                 <h4 className="font-semibold text-sm">{c.name}</h4>
                 {c.description && <p className="text-xs text-muted-foreground line-clamp-2">{c.description}</p>}
                 {c.perks.length > 0 && (
