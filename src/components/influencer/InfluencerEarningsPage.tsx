@@ -5,6 +5,8 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2 } from "lucide-react";
 import { InfluencerWithdrawalForm } from "./InfluencerWithdrawalForm";
+import CreatorPaidInbox from "./CreatorPaidInbox";
+
 import { format } from "date-fns";
 import { EarningsHero, EarningsLiveTicker, EarningsTipsBanner } from "@/components/earnings";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
