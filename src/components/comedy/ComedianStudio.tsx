@@ -40,6 +40,7 @@ interface Show {
 }
 
 export const ComedianStudio = ({ onBack }: Props) => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
