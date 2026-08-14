@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { ComedyLiveStreamPlayer } from "@/components/comedy/ComedyLiveStreamPlayer";
 import { ComedyLiveChat } from "@/components/comedy/ComedyLiveChat";
-import { TipAnimation } from "@/components/comedy/TipAnimation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -58,7 +57,7 @@ export default function ComedyLiveShow() {
               <ComedyLiveStreamPlayer showId={show.id} streamKey={show.stream_key || ""} />
             </Card>
 
-            <TipAnimation performerName={show.comedian?.stage_name || "Comedian"} />
+            {/* Gifts/tips are sent by the audience only — the comedian does not gift their own show. */}
           </div>
 
           <div>
