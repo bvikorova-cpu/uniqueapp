@@ -411,7 +411,7 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
         {clubs.map((c) => {
           const Icon = TIER_ICON[c.tier];
           const membership = memberships.find((m) => m.fan_club_id === c.id);
-          const active = membership?.status === "active";
+          const isOwnClub = !!user && user.id === creatorId;
           return (
             <Card key={c.id} className="border-border/40">
               <CardContent className="p-4 space-y-2">
