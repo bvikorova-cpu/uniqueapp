@@ -52,9 +52,12 @@ export const SuperChatDialog = ({ streamId }: Props) => {
             placeholder="Optional message..."
             maxLength={200}
           />
-          <Button onClick={handleSend} className="w-full gap-2">
-            <Send className="h-4 w-4" /> Send €{(amount / 100).toFixed(2)}
+          <Button onClick={handleSend} disabled={isSending} className="w-full gap-2">
+            <Send className="h-4 w-4" /> {isSending ? "Opening checkout..." : `Pay €${(amount / 100).toFixed(2)}`}
           </Button>
+          <p className="text-xs text-muted-foreground text-center">
+            Secure card payment via Stripe. 85% goes to the creator.
+          </p>
         </div>
       </DialogContent>
     </Dialog>
