@@ -30,8 +30,11 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 });
     }
 
-    const { concertId, giftId, message } = await req.json();
-    if (!concertId || !giftId) throw new Error("Missing required fields");
+    const body = await req.json();
+    const { giftId, message } = body;
+    const isComedy = body.context === "comedy" || !!body.showId;
+    const contextId = isComedy ? body.showId : body.concertId;
+    if (!contextId || !giftId) throw new Error("Missing required fields");
 
     // Service-role client: concert rows are protected by RLS (stream keys), so a
     // user-scoped read returns nothing even for a valid concert.
@@ -44,14 +47,24 @@ serve(async (req) => {
       .from("platform_gifts").select("*").eq("id", giftId).single();
     if (giftErr || !gift) throw new Error("Gift not found");
 
-    const { data: concert, error: cErr } = await admin
-      .from("live_concert_streams")
-      .select("id, musician_id, status, musician_profiles!inner(user_id)")
-      .eq("id", concertId).single();
-    if (cErr || !concert) throw new Error("Concert not found");
-
-    const receiverId = (concert as any).musician_profiles?.user_id;
-    if (!receiverId) throw new Error("Musician profile not linked to a user");
+    let receiverId: string | undefined;
+    if (isComedy) {
+      const { data: show, error: sErr } = await admin
+        .from("comedy_shows")
+        .select("id, comedian_id, title, comedian_profiles!inner(user_id)")
+        .eq("id", contextId).single();
+      if (sErr || !show) throw new Error("Show not found");
+      receiverId = (show as any).comedian_profiles?.user_id;
+      if (!receiverId) throw new Error("Comedian profile not linked to a user");
+    } else {
+      const { data: concert, error: cErr } = await admin
+        .from("live_concert_streams")
+        .select("id, musician_id, status, musician_profiles!inner(user_id)")
+        .eq("id", contextId).single();
+      if (cErr || !concert) throw new Error("Concert not found");
+      receiverId = (concert as any).musician_profiles?.user_id;
+      if (!receiverId) throw new Error("Musician profile not linked to a user");
+    }
 
     const origin = req.headers.get("origin") || "https://uniqueapp.fun";
 
@@ -59,24 +72,25 @@ serve(async (req) => {
       productKey: "stream_gift",
       amount: Math.round(Number(gift.price) * 100),
       name: `${gift.icon} ${gift.name}`,
-      description: message || "Virtual gift for the artist",
+      description: message || (isComedy ? "Virtual gift for the comedian" : "Virtual gift for the artist"),
       userId: user.id,
       userEmail: user.email,
       origin,
-      successPath: `/concert-watch/${concertId}?gift=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancelPath: `/concert-watch/${concertId}?gift=canceled`,
+      successPath: `${isComedy ? `/comedy-live/${contextId}` : `/concert-watch/${contextId}`}?gift=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancelPath: `${isComedy ? `/comedy-live/${contextId}` : `/concert-watch/${contextId}`}?gift=canceled`,
       metadata: { sender_id: user.id,
-        concert_id: concertId,
+        concert_id: contextId,
+        show_id: isComedy ? contextId : "",
         receiver_id: receiverId,
         gift_id: giftId,
         message: message || "",
-        type: "concert_gift" } });
+        type: isComedy ? "comedy_gift" : "concert_gift" } });
 
     await admin.from("sent_platform_gifts").insert({ sender_id: user.id,
       receiver_id: receiverId,
       gift_id: giftId,
-      context_type: "concert",
-      context_id: concertId,
+      context_type: isComedy ? "comedy" : "concert",
+      context_id: contextId,
       message: message || null,
       amount: gift.price,
       status: "pending",
