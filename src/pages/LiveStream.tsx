@@ -75,18 +75,17 @@ export default function LiveStream() {
   const viewerRef = useRef<ViewerHandle | null>(null);
 
 
-  // Fetch available gifts
-  const { data: gifts = [] } = useQuery({
-    queryKey: ["platform-gifts"],
+  // Fetch available gifts (all platform gifts, cheapest first)
+  const { data: gifts = [], isLoading: giftsLoading } = useQuery({
+    queryKey: ["platform-gifts", "all"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("platform_gifts")
         .select("*")
-        .eq("category", "stream_gift")
         .order("price", { ascending: true });
-      
+
       if (error) throw error;
-      return data as GiftType[];
+      return (data || []) as GiftType[];
     } });
 
   useEffect(() => {
@@ -582,36 +581,51 @@ export default function LiveStream() {
                         Gifts
                       </Button>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto">
                       <DialogHeader>
                         <DialogTitle>Send a virtual gift</DialogTitle>
                         <DialogDescription>
                           Support your favorite influencer
                         </DialogDescription>
                       </DialogHeader>
-                      <div className="space-y-4 py-4">
+                      <div className="space-y-4 py-2">
                         <Input
                           placeholder="Add a message to the gift (optional)"
                           value={giftMessage}
                           onChange={(e) => setGiftMessage(e.target.value)}
                         />
-                        <div className="grid grid-cols-2 gap-4">
-                          {gifts.map((gift) => (
-                            <Button
-                              key={gift.id}
-                              variant="outline"
-                              className="h-24 flex flex-col gap-2"
-                              onClick={() => sendGiftMutation.mutate(gift)}
-                              disabled={!user || sendGiftMutation.isPending}
-                            >
-                              <span className="text-4xl">{gift.icon}</span>
-                              <span className="text-sm">{gift.name}</span>
-                              <span className="text-xs text-muted-foreground">
-                                €{gift.price.toFixed(2)}
-                              </span>
-                            </Button>
-                          ))}
-                        </div>
+                        {giftsLoading ? (
+                          <p className="text-sm text-muted-foreground text-center py-6">
+                            Loading gifts...
+                          </p>
+                        ) : gifts.length === 0 ? (
+                          <p className="text-sm text-muted-foreground text-center py-6">
+                            No gifts available right now.
+                          </p>
+                        ) : (
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            {gifts.map((gift) => (
+                              <Button
+                                key={gift.id}
+                                variant="outline"
+                                className="h-24 flex flex-col gap-1 p-2"
+                                onClick={() => sendGiftMutation.mutate(gift)}
+                                disabled={!user || sendGiftMutation.isPending}
+                              >
+                                <span className="text-3xl leading-none">{gift.icon}</span>
+                                <span className="text-xs truncate max-w-full">{gift.name}</span>
+                                <span className="text-xs text-muted-foreground">
+                                  €{Number(gift.price).toFixed(2)}
+                                </span>
+                              </Button>
+                            ))}
+                          </div>
+                        )}
+                        {!user && (
+                          <p className="text-xs text-muted-foreground text-center">
+                            Sign in to send a gift.
+                          </p>
+                        )}
                       </div>
                     </DialogContent>
                   </Dialog>
