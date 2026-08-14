@@ -10,6 +10,8 @@ import { ArrowLeft, Calendar, Mic, Users, Ticket, Zap, Star, PlayCircle, BadgeCh
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { openStripeCheckout } from "@/hooks/useClubMembership";
+
 
 interface Props { onBack: () => void; }
 
