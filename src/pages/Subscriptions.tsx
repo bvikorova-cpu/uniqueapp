@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Crown, Shield, Star, ExternalLink, RefreshCw, CreditCard, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
-import { FanClubMembershipsCard } from "@/components/profile/FanClubMembershipsCard";
 
 type ClubMembership = {
   tier: "digital" | "physical";
@@ -213,10 +212,6 @@ export default function Subscriptions() {
         </CardContent>
       </Card>
 
-      {/* Fan Clubs */}
-      <div className="mb-4">
-        <FanClubMembershipsCard />
-      </div>
 
       {!hasAnyStripeSub && !loading && (
         <p className="text-xs text-muted-foreground text-center mt-6">

@@ -20,7 +20,6 @@ import { useOneOffPaymentVerify } from "@/hooks/useOneOffPaymentVerify";
 import { SuperChatDialog } from "@/components/live/SuperChatDialog";
 import { SuperChatFeed } from "@/components/live/SuperChatFeed";
 import { SupportersLeaderboard } from "@/components/live/SupportersLeaderboard";
-import { StreamTierGate } from "@/components/live/StreamTierGate";
 import { StreamHighlights } from "@/components/live/StreamHighlights";
 import { ChatMuteBanner } from "@/components/live/ChatMuteBanner";
 import { ReportMessageButton } from "@/components/live/ReportMessageButton";
@@ -450,12 +449,6 @@ export default function LiveStream() {
           Back
         </Button>
 
-        <StreamTierGate
-          streamId={stream.id}
-          minTier={(stream as any).min_tier ?? null}
-          creatorUserId={stream.influencer_profiles?.user_id ?? null}
-          currentUserId={user?.id ?? null}
-        >
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Video Section */}
           <div className="lg:col-span-2">
@@ -713,7 +706,6 @@ export default function LiveStream() {
             )}
           </div>
         )}
-        </StreamTierGate>
       </div>
     </div>
   );

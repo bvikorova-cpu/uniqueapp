@@ -21,14 +21,11 @@ import { motion } from "framer-motion";
 import InfluKingHero from "@/components/influking/InfluKingHero";
 import AIContentPlanner from "@/components/influking/AIContentPlanner";
 import CollabMatchmaker from "@/components/influking/CollabMatchmaker";
-import FanClubManager from "@/components/influking/FanClubManager";
 import BrandDealFinder from "@/components/influking/BrandDealFinder";
 import EngagementAnalytics from "@/components/influking/EngagementAnalytics";
 import HashtagGenerator from "@/components/influking/HashtagGenerator";
 import AIThumbnailCreator from "@/components/influking/AIThumbnailCreator";
 import AudienceInsights from "@/components/influking/AudienceInsights";
-import { FanClubJoinCard } from "@/components/influking/FanClubJoinCard";
-import { FanClubLockedFeed } from "@/components/influking/FanClubLockedFeed";
 import PPVStudio from "@/components/influking/PPVStudio";
 import PPVLockedFeed from "@/components/influking/PPVLockedFeed";
 import { InfluencerPostComments } from "@/components/influking/InfluencerPostComments";
@@ -37,7 +34,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 
 import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio, MessageCircle, ShieldAlert } from "lucide-react";
 
-type InfluKingView = "hub" | "content-planner" | "collab" | "fan-club" | "brand-deals" | "analytics" | "hashtags" | "thumbnails" | "audience" | "ppv";
+type InfluKingView = "hub" | "content-planner" | "collab" | "brand-deals" | "analytics" | "hashtags" | "thumbnails" | "audience" | "ppv";
 
 interface InfluencerProfile {
   id: string;
@@ -76,7 +73,6 @@ const CATEGORIES = [
 const TOOL_DEFS = [
   { id: "content-planner" as const, icon: Brain, tKey: "content_planner", color: "text-primary", bg: "bg-primary/10", paid: true },
   { id: "collab" as const, icon: Handshake, tKey: "collab", color: "text-pink-500", bg: "bg-pink-500/10", paid: false },
-  { id: "fan-club" as const, icon: Crown, tKey: "fan_club", color: "text-amber-500", bg: "bg-amber-500/10", paid: false },
   { id: "brand-deals" as const, icon: Briefcase, tKey: "brand_deals", color: "text-emerald-500", bg: "bg-emerald-500/10", paid: false },
   { id: "analytics" as const, icon: BarChart3, tKey: "analytics", color: "text-cyan-500", bg: "bg-cyan-500/10", paid: false },
   { id: "hashtags" as const, icon: Hash, tKey: "hashtags", color: "text-indigo-500", bg: "bg-indigo-500/10", paid: true },
@@ -643,7 +639,7 @@ const InfluKing = () => {
         <TabsContent value="tools" className="space-y-8 focus-visible:outline-none">
           {[
             { title: t("influking.group_create", "Create & grow"), ids: ["content-planner", "hashtags", "thumbnails"] },
-            { title: t("influking.group_monetize", "Earn money"), ids: ["fan-club", "ppv", "brand-deals", "collab", "live"] },
+            { title: t("influking.group_monetize", "Earn money"), ids: ["ppv", "brand-deals", "collab", "live"] },
             
           ].map((group, gi) => (
             <motion.div key={group.title} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * gi }}>
@@ -693,7 +689,7 @@ const InfluKing = () => {
                   <li><strong className="text-foreground">Go Live</strong> – Start live streams to interact with fans in real-time.</li>
                   <li><strong className="text-foreground">Receive Gifts & Tips</strong> – Followers can send virtual gifts as appreciation.</li>
                   <li><strong className="text-foreground">Track & Withdraw Earnings</strong> – Monitor earnings and request withdrawals (min €50).</li>
-                  <li><strong className="text-foreground">Use AI Tools</strong> – Leverage the AI Content Planner, find brand deals, and manage fan clubs.</li>
+                  <li><strong className="text-foreground">Use AI Tools</strong> – Leverage the AI Content Planner, and find brand deals.</li>
                 </ul>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm text-muted-foreground">
@@ -776,11 +772,6 @@ const InfluKing = () => {
                   </div>
                 </div>
                 <div className="mt-6 space-y-4">
-                  <FanClubJoinCard
-                    creatorId={selectedInfluencer.user_id}
-                    creatorName={selectedInfluencer.display_name}
-                  />
-                  <FanClubLockedFeed creatorId={selectedInfluencer.user_id} />
                   <PPVLockedFeed creatorId={selectedInfluencer.user_id} />
                   <h3 className="text-xl font-bold mb-4">Posts</h3>
 
@@ -837,7 +828,7 @@ const InfluKing = () => {
               <CardTitle className="flex items-center gap-2 text-2xl font-black">
                 <TrendingUp className="h-6 w-6 text-amber-500" /> TOP Influencers
               </CardTitle>
-              <CardDescription>Tap any creator to open their profile, posts, fan club and gifts</CardDescription>
+              <CardDescription>Tap any creator to open their profile, posts and gifts</CardDescription>
               <div className="relative max-w-md pt-2">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
