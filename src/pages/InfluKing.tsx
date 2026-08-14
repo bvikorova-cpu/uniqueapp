@@ -25,7 +25,6 @@ import FanClubManager from "@/components/influking/FanClubManager";
 import BrandDealFinder from "@/components/influking/BrandDealFinder";
 import EngagementAnalytics from "@/components/influking/EngagementAnalytics";
 import HashtagGenerator from "@/components/influking/HashtagGenerator";
-import WeeklyChallenges from "@/components/influking/WeeklyChallenges";
 import AIThumbnailCreator from "@/components/influking/AIThumbnailCreator";
 import AudienceInsights from "@/components/influking/AudienceInsights";
 import { FanClubJoinCard } from "@/components/influking/FanClubJoinCard";
@@ -37,7 +36,7 @@ import { PaidMessageDialog } from "@/components/creator/PaidMessageDialog";
 
 import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio, MessageCircle, ShieldAlert } from "lucide-react";
 
-type InfluKingView = "hub" | "content-planner" | "collab" | "fan-club" | "brand-deals" | "analytics" | "hashtags" | "challenges" | "thumbnails" | "audience" | "ppv";
+type InfluKingView = "hub" | "content-planner" | "collab" | "fan-club" | "brand-deals" | "analytics" | "hashtags" | "thumbnails" | "audience" | "ppv";
 
 interface InfluencerProfile {
   id: string;
@@ -80,7 +79,6 @@ const TOOL_DEFS = [
   { id: "brand-deals" as const, icon: Briefcase, tKey: "brand_deals", color: "text-emerald-500", bg: "bg-emerald-500/10", paid: false },
   { id: "analytics" as const, icon: BarChart3, tKey: "analytics", color: "text-cyan-500", bg: "bg-cyan-500/10", paid: false },
   { id: "hashtags" as const, icon: Hash, tKey: "hashtags", color: "text-indigo-500", bg: "bg-indigo-500/10", paid: true },
-  { id: "challenges" as const, icon: Trophy, tKey: "challenges", color: "text-orange-500", bg: "bg-orange-500/10", paid: false },
   { id: "thumbnails" as const, icon: Image, tKey: "thumbnails", color: "text-rose-500", bg: "bg-rose-500/10", paid: true },
   { id: "audience" as const, icon: PieChart, tKey: "audience", color: "text-teal-500", bg: "bg-teal-500/10", paid: false },
   { id: "ppv" as const, icon: Lock, tKey: "ppv", color: "text-fuchsia-500", bg: "bg-fuchsia-500/10", paid: false },
@@ -433,11 +431,6 @@ const InfluKing = () => {
       <HashtagGenerator onBack={() => setActiveView("hub")} />
     </div></div>
   );
-  if (activeView === "challenges") return (
-    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4">
-      <WeeklyChallenges onBack={() => setActiveView("hub")} />
-    </div></div>
-  );
   if (activeView === "thumbnails") return (
     <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4">
       <AIThumbnailCreator onBack={() => setActiveView("hub")} />
@@ -646,7 +639,7 @@ const InfluKing = () => {
         {/* Tools */}
         <TabsContent value="tools" className="space-y-8 focus-visible:outline-none">
           {[
-            { title: t("influking.group_create", "Create & grow"), ids: ["content-planner", "hashtags", "thumbnails", "challenges"] },
+            { title: t("influking.group_create", "Create & grow"), ids: ["content-planner", "hashtags", "thumbnails"] },
             { title: t("influking.group_monetize", "Earn money"), ids: ["fan-club", "ppv", "brand-deals", "collab", "live"] },
             { title: t("influking.group_insights", "Know your audience"), ids: ["analytics", "audience"] },
           ].map((group, gi) => (
