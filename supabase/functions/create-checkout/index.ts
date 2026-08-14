@@ -1971,6 +1971,92 @@ async function handler(req: Request): Promise<Response> {
       return successResponse({ url: session.url, id: pendingMessage.id });
     }
 
+    // ─── Live Super Chat (real money, 85/15 split) ───
+    if (body.product === "super_chat") {
+      if (!userId) return errorResponse("Login required", 401);
+      const admin = createSupabaseAdminClient();
+      const streamId = String(body.streamId || "");
+      const amt = Number(body.amountCents);
+      if (!streamId) return errorResponse("streamId required", 400);
+      if (!Number.isFinite(amt) || amt < 100 || amt > 20_000) {
+        return errorResponse("Amount must be between €1 and €200", 400);
+      }
+
+      // Verify action: settle a returned session (or recover stuck pending ones)
+      if (body.action === "verify") {
+        const sid = String(body.sessionId || body.session_id || "");
+        if (!sid) return errorResponse("sessionId required", 400);
+        const session = await stripe.checkout.sessions.retrieve(sid);
+        if (session.payment_status !== "paid") return successResponse({ paid: false });
+        const pi = typeof session.payment_intent === "string"
+          ? session.payment_intent
+          : session.payment_intent?.id ?? null;
+        await admin
+          .from("live_super_chats")
+          .update({ status: "paid", stripe_payment_intent_id: pi })
+          .eq("stripe_session_id", sid)
+          .eq("status", "pending");
+        return successResponse({ paid: true });
+      }
+
+      const safeMessage = typeof body.message === "string" ? body.message.slice(0, 200) : null;
+      const { data: stream } = await admin
+        .from("live_streams")
+        .select("id, title, influencer_id")
+        .eq("id", streamId)
+        .maybeSingle();
+      if (!stream) return errorResponse("Stream not found", 404);
+
+      let creatorUserId: string | null = null;
+      const { data: infProfile } = await admin
+        .from("influencer_profiles")
+        .select("user_id")
+        .eq("id", stream.influencer_id)
+        .maybeSingle();
+      creatorUserId = infProfile?.user_id ?? stream.influencer_id ?? null;
+
+      const platformFee = Math.round(amt * 0.15);
+      const creatorAmount = amt - platformFee;
+      const highlight = amt >= 5000 ? "#ef4444" : amt >= 2000 ? "#f97316" : amt >= 1000 ? "#eab308" : amt >= 500 ? "#a855f7" : "#3b82f6";
+
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        mode: "payment",
+        payment_method_types: ["card"],
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: `Super Chat — ${stream.title || "Live stream"}`,
+              description: safeMessage ?? "Highlighted live chat message" },
+            unit_amount: amt },
+          quantity: 1 }],
+        success_url: `${origin}/livestream/${streamId}?super_chat=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/livestream/${streamId}?super_chat=cancel`,
+        metadata: { type: "super_chat",
+          product: "super_chat",
+          stream_id: streamId,
+          sender_id: userId,
+          creator_id: creatorUserId ?? "" } });
+
+      const { error: insertErr } = await admin.from("live_super_chats").insert({ stream_id: streamId,
+        sender_id: userId,
+        creator_id: creatorUserId,
+        amount_cents: amt,
+        platform_fee_cents: platformFee,
+        creator_amount_cents: creatorAmount,
+        message: safeMessage,
+        highlight_color: highlight,
+        duration_seconds: Math.min(300, 30 + Math.floor(amt / 100)),
+        status: "pending",
+        stripe_session_id: session.id });
+      if (insertErr) return errorResponse(insertErr.message, 400);
+
+      return successResponse({ url: session.url, sessionId: session.id });
+    }
+
+
     // ─── B18d Creator Economy: profile_tip (10% fee, Stripe Connect destination charges when available) ───
     if (body.product === "profile_tip") {
       const recipientId = String(body.recipientId || "");
