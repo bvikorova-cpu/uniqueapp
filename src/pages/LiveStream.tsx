@@ -281,7 +281,7 @@ export default function LiveStream() {
         videoRef.current.srcObject = mediaStream;
         await videoRef.current.play().catch(() => {});
       }
-      broadcastRef.current = startBroadcast(streamId!, mediaStream, setPeerViewers);
+      broadcastRef.current = startBroadcast(streamId!, mediaStream, () => {});
       await supabase
         .from("live_streams")
         .update({ is_live: true, started_at: new Date().toISOString() })
