@@ -784,13 +784,14 @@ const InfluKing = () => {
         )}
 
         {/* TOP Influencers Leaderboard */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}>
-          <Card className="max-w-6xl mx-auto backdrop-blur-xl bg-card/80 border-primary/10">
+        <TabsContent value="discover" className="focus-visible:outline-none">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <Card className="mx-auto max-w-6xl rounded-3xl border-primary/15 bg-card/70 shadow-[0_10px_40px_-24px_hsl(var(--primary)/0.5)] backdrop-blur-xl">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-2xl font-black">
                 <TrendingUp className="h-6 w-6 text-amber-500" /> TOP Influencers
               </CardTitle>
-              <CardDescription>Leaderboard ranked by follower count</CardDescription>
+              <CardDescription>Tap any creator to open their profile, posts, fan club and gifts</CardDescription>
             </CardHeader>
             <CardContent>
               {isLoading ? (
