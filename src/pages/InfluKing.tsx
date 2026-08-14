@@ -593,31 +593,42 @@ const InfluKing = () => {
             </Dialog>
           )}
         </motion.div>
+        </TabsContent>
 
-        {/* Tools Grid */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mb-8">
-          <h2 className="text-xl font-black mb-4 flex items-center gap-2">
-            <Crown className="h-5 w-5 text-amber-500" /> {t("influking.tools_heading")}
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {TOOLS.map((tool, i) => (
-              <motion.div key={tool.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5 + i * 0.08 }} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                <Card className="backdrop-blur-xl bg-card/80 border-primary/10 hover:border-primary/30 transition-all cursor-pointer group"
-                  onClick={() => tool.id === "live" ? navigate("/live") : setActiveView(tool.id as InfluKingView)}>
-                  <CardContent className="p-4 text-center">
-                    <div className={`${tool.bg} rounded-xl p-3 w-fit mx-auto mb-2 group-hover:scale-110 transition-transform`}>
-                      <tool.icon className={`h-6 w-6 ${tool.color}`} />
-                    </div>
-                    <h3 className="font-bold text-sm mb-1">{tool.label}</h3>
-                    <p className="text-[10px] text-muted-foreground">{tool.description}</p>
-                    {tool.paid && <Badge className="mt-2 text-[9px] bg-primary/20 text-primary border-primary/30">{t("influking.ai_powered_badge")}</Badge>}
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+        {/* Tools */}
+        <TabsContent value="tools" className="space-y-8 focus-visible:outline-none">
+          {[
+            { title: t("influking.group_create", "Create & grow"), ids: ["content-planner", "hashtags", "thumbnails", "publisher", "challenges"] },
+            { title: t("influking.group_monetize", "Earn money"), ids: ["fan-club", "ppv", "brand-deals", "collab", "live"] },
+            { title: t("influking.group_insights", "Know your audience"), ids: ["analytics", "audience"] },
+          ].map((group, gi) => (
+            <motion.div key={group.title} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * gi }}>
+              <div className="mb-4 flex items-center gap-3">
+                <span className="h-px flex-1 bg-gradient-to-r from-transparent to-primary/30" />
+                <h2 className="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground">{group.title}</h2>
+                <span className="h-px flex-1 bg-gradient-to-l from-transparent to-primary/30" />
+              </div>
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                {group.ids.map((id) => TOOLS.find((tl) => tl.id === id)).filter(Boolean).map((tool: any, i) => (
+                  <motion.div key={tool.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.05 * i }} whileHover={{ y: -4 }} whileTap={{ scale: 0.97 }}>
+                    <Card className="group h-full cursor-pointer overflow-hidden rounded-2xl border-primary/10 bg-card/70 backdrop-blur-xl transition-all hover:border-primary/40 hover:shadow-[0_16px_40px_-20px_hsl(var(--primary)/0.6)]"
+                      onClick={() => tool.id === "live" ? navigate("/live") : setActiveView(tool.id as InfluKingView)}>
+                      <CardContent className="flex h-full flex-col items-center p-5 text-center">
+                        <div className={`${tool.bg} mb-3 rounded-2xl p-3.5 ring-1 ring-inset ring-primary/10 transition-transform group-hover:scale-110`}>
+                          <tool.icon className={`h-6 w-6 ${tool.color}`} />
+                        </div>
+                        <h3 className="mb-1 text-sm font-bold leading-tight">{tool.label}</h3>
+                        <p className="text-[11px] leading-snug text-muted-foreground">{tool.description}</p>
+                        {tool.paid && <Badge className="mt-3 border-primary/30 bg-primary/15 text-[9px] text-primary">{t("influking.ai_powered_badge")}</Badge>}
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </TabsContent>
 
         {/* Description Card */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
