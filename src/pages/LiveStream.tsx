@@ -129,18 +129,24 @@ export default function LiveStream() {
 
       if (error) throw error;
       
-      // Fetch user profiles separately
+      // Fetch public profiles separately (own-profile RLS hides other users on `profiles`)
       const userIds = [...new Set(data.map(m => m.user_id))];
       const { data: profiles } = await supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url")
+        .from("public_profiles")
+        .select("id, full_name, username, avatar_url")
         .in("id", userIds);
 
       // Merge profiles with messages
-      return data.map(msg => ({
-        ...msg,
-        profiles: profiles?.find(p => p.id === msg.user_id)
-      })) as Message[];
+      return data.map(msg => {
+        const p = profiles?.find(pr => pr.id === msg.user_id);
+        return {
+          ...msg,
+          profiles: p
+            ? { full_name: p.full_name || p.username || "User", avatar_url: p.avatar_url }
+            : undefined,
+        };
+      }) as Message[];
+
     },
     refetchInterval: 2000 });
 
