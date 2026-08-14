@@ -170,7 +170,30 @@ const AIContentPlanner = ({ onBack }: AIContentPlannerProps) => {
                   <h4 className="font-bold mb-3 flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-primary" /> Your 7-Day Content Plan
                   </h4>
-                  <pre className="whitespace-pre-wrap text-sm text-muted-foreground font-mono">{generatedPlan}</pre>
+                  <div className="space-y-3">
+                    {generatedPlan.split(/\n\s*\n/).filter(Boolean).map((block, bi) => {
+                      const lines = block.split("\n").map((l) => l.trim()).filter(Boolean);
+                      const title = (lines.shift() || "").replace(/^[^\p{L}\p{N}]+/u, "").trim();
+                      return (
+                        <div key={bi} className="rounded-xl border border-primary/10 bg-background/60 p-3">
+                          <p className="font-semibold text-sm mb-2">{title}</p>
+                          <div className="space-y-1">
+                            {lines.map((line, li) => {
+                              const idx = line.indexOf(":");
+                              const label = idx > 0 ? line.slice(0, idx).trim() : null;
+                              const value = idx > 0 ? line.slice(idx + 1).trim() : line.replace(/^[-*•]\s*/, "");
+                              return (
+                                <div key={li} className="flex flex-wrap gap-x-2 text-sm leading-relaxed">
+                                  {label && <span className="text-muted-foreground shrink-0">{label}:</span>}
+                                  <span className="font-medium break-words">{value}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </motion.div>
               )}
             </CardContent>
