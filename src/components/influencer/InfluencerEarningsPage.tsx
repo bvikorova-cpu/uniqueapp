@@ -268,7 +268,7 @@ export const InfluencerEarningsPage = () => {
         <Card className="p-4">
           <p className="text-xs text-muted-foreground">Subscriptions (your 85%)</p>
           <p className="text-xl font-bold text-green-600">€{subsNet.toFixed(2)}</p>
-          <p className="text-xs text-muted-foreground">{subs.length} payments</p>
+          <p className="text-xs text-muted-foreground">{subs.length + members.length} payments</p>
         </Card>
         <Card className="p-4">
           <p className="text-xs text-muted-foreground">PPV posts (your 85%)</p>
