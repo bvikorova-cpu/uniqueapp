@@ -447,6 +447,14 @@ const InfluKing = () => {
                       <Label>Photo/Video</Label>
                       <div className="flex gap-2">
                         <Input type="file" accept="image/*,video/*" onChange={handleFileUpload} disabled={uploadingMedia || isRecording} className="flex-1" />
+                        <input
+                          ref={captureInputRef}
+                          type="file"
+                          accept="video/*,image/*"
+                          capture="user"
+                          className="hidden"
+                          onChange={handleFileUpload}
+                        />
                         {!isRecording ? (
                           <Button type="button" variant="outline" onClick={startRecording} disabled={uploadingMedia}>
                             <Camera className="h-4 w-4 mr-2" /> Record
@@ -454,6 +462,7 @@ const InfluKing = () => {
                         ) : (
                           <Button type="button" variant="destructive" onClick={stopRecording}>Stop</Button>
                         )}
+
                       </div>
                       {newPost.media_url && (
                         <div className="mt-3">
