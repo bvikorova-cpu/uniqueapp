@@ -610,33 +610,33 @@ const InfluKing = () => {
 
         {/* Influencer Detail Dialog */}
         <Dialog open={!!selectedInfluencer} onOpenChange={() => setSelectedInfluencer(null)}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="w-[calc(100vw-1.5rem)] sm:w-auto max-w-4xl max-h-[85vh] overflow-y-auto overflow-x-hidden p-4 sm:p-6">
             {selectedInfluencer && (
               <>
                 {selectedInfluencer.cover_photo_url && (
-                  <div className="h-48 -mt-6 -mx-6 mb-4 rounded-t-lg overflow-hidden">
+                  <div className="h-32 sm:h-48 -mt-4 sm:-mt-6 -mx-4 sm:-mx-6 mb-4 rounded-t-lg overflow-hidden">
                     <img src={selectedInfluencer.cover_photo_url} alt="Cover" className="w-full h-full object-cover" />
                   </div>
                 )}
-                <div className="flex items-start gap-6">
-                  <Avatar className="h-24 w-24 border-4 border-background">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 text-center sm:text-left">
+                  <Avatar className="h-20 w-20 sm:h-24 sm:w-24 border-4 border-background shrink-0">
                     <AvatarImage src={selectedInfluencer.profile_photo_url || undefined} />
                     <AvatarFallback>{selectedInfluencer.display_name[0]}</AvatarFallback>
                   </Avatar>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h2 className="text-2xl font-bold">{selectedInfluencer.display_name}</h2>
+                  <div className="flex-1 min-w-0 w-full">
+                    <div className="flex items-center justify-center sm:justify-start gap-2 mb-2">
+                      <h2 className="text-xl sm:text-2xl font-bold break-words">{selectedInfluencer.display_name}</h2>
                       {selectedInfluencer.is_verified && <CheckCircle className="h-6 w-6 text-blue-500 fill-blue-500" />}
                     </div>
                     <Badge className="mb-3">{selectedInfluencer.category}</Badge>
-                    <p className="text-muted-foreground mb-4">{selectedInfluencer.bio}</p>
-                    <div className="flex items-center gap-6 mb-4">
+                    <p className="text-sm sm:text-base text-muted-foreground mb-4 break-words">{selectedInfluencer.bio}</p>
+                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-2 mb-4">
                       <div className="flex items-center gap-2"><Users className="h-5 w-5 text-muted-foreground" /><span className="font-bold">{selectedInfluencer.followers_count.toLocaleString()}</span><span className="text-sm text-muted-foreground">followers</span></div>
                       <div className="flex items-center gap-2"><Heart className="h-5 w-5 text-muted-foreground" /><span className="font-bold">{selectedInfluencer.total_likes.toLocaleString()}</span><span className="text-sm text-muted-foreground">likes</span></div>
                       <div className="flex items-center gap-2"><Eye className="h-5 w-5 text-muted-foreground" /><span className="font-bold">{selectedInfluencer.total_views.toLocaleString()}</span><span className="text-sm text-muted-foreground">views</span></div>
                     </div>
                     {selectedInfluencer.user_id !== user?.id && (
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap justify-center sm:justify-start gap-2">
                         <Button onClick={() => followMutation.mutate({ influencerId: selectedInfluencer.id, follow: !isFollowing })}
                           disabled={followMutation.isPending} variant={isFollowing ? "outline" : "default"}>
                           {isFollowing ? "Following" : "Follow"}
