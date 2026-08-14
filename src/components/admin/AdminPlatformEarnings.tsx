@@ -423,28 +423,28 @@ export function AdminPlatformEarnings() {
 
       {/* Section Details */}
       <Tabs defaultValue="influencers" className="w-full">
-        <TabsList className="grid w-full grid-cols-7">
-          <TabsTrigger value="influencers">
-            <User className="w-4 h-4 mr-2" />
+        <TabsList className="w-full overflow-x-auto flex-nowrap h-auto sm:grid sm:grid-cols-7">
+          <TabsTrigger value="influencers" className="whitespace-nowrap">
+            <User className="w-4 h-4 mr-2 shrink-0" />
             Influencers
           </TabsTrigger>
-          <TabsTrigger value="musicians">
+          <TabsTrigger value="musicians" className="whitespace-nowrap">
             Musicians
           </TabsTrigger>
-          <TabsTrigger value="instructors">
+          <TabsTrigger value="instructors" className="whitespace-nowrap">
             Instructors
           </TabsTrigger>
-          <TabsTrigger value="influking">
+          <TabsTrigger value="influking" className="whitespace-nowrap">
             InfluKing (€{influkingStats.total.toFixed(2)})
           </TabsTrigger>
-          <TabsTrigger value="masterchef">
+          <TabsTrigger value="masterchef" className="whitespace-nowrap">
             KitchenStars (€{masterchefStats.total.toFixed(2)})
           </TabsTrigger>
-          <TabsTrigger value="sports">
+          <TabsTrigger value="sports" className="whitespace-nowrap">
             Sports (€{sportsStats.total.toFixed(2)})
           </TabsTrigger>
-          <TabsTrigger value="stock-content">
-            <ImageIcon className="w-4 h-4 mr-2" />
+          <TabsTrigger value="stock-content" className="whitespace-nowrap">
+            <ImageIcon className="w-4 h-4 mr-2 shrink-0" />
             Stock Content (€{stockStats.total.toFixed(2)})
           </TabsTrigger>
         </TabsList>
