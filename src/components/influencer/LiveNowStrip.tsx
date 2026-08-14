@@ -27,7 +27,15 @@ export default function LiveNowStrip() {
         .order("started_at", { ascending: false })
         .limit(10);
       if (error) throw error;
-      return (data || []) as unknown as LiveRow[];
+      const rows = (data || []) as unknown as LiveRow[];
+      // One card per creator (newest stream wins)
+      const seen = new Set<string>();
+      return rows.filter((r) => {
+        if (seen.has(r.influencer_id)) return false;
+        seen.add(r.influencer_id);
+        return true;
+      });
+
     },
     refetchInterval: 30000,
   });
