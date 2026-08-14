@@ -175,10 +175,18 @@ export function GoLiveButton({ influencerId }: GoLiveButtonProps) {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="public">🌍 Public — everyone</SelectItem>
-                  <SelectItem value="bronze">🥉 Bronze Fan Club and above</SelectItem>
-                  <SelectItem value="silver">🥈 Silver Fan Club and above</SelectItem>
-                  <SelectItem value="gold">🥇 Gold Fan Club only</SelectItem>
+                  {(["bronze", "silver", "gold"] as const).map((slot) => {
+                    const club = myClubs.find((c) => c.tier === slot);
+                    if (!club) return null;
+                    const icon = slot === "bronze" ? "🥉" : slot === "silver" ? "🥈" : "🥇";
+                    return (
+                      <SelectItem key={slot} value={slot}>
+                        {icon} {club.name} and above
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
+
               </Select>
               <p className="text-xs text-muted-foreground">
                 Tier-gated streams can only be watched by active Fan Club members of the selected tier or higher.
