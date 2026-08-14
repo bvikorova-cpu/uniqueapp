@@ -14,6 +14,7 @@ import {
   ArrowLeft, Loader2, AlertCircle, RefreshCw, Mic, BadgeCheck, Calendar, Radio, Square,
 } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { ComedianShowStatsTable } from "@/components/comedy/ComedianShowStatsTable";
 
 interface Props { onBack: () => void; }
 
@@ -277,6 +278,10 @@ export const ComedianStudio = ({ onBack }: Props) => {
             </Button>
           </CardContent>
         </Card>
+
+        {profile && <ComedianShowStatsTable comedianId={profile.id} />}
+
+
 
         <Card>
           <CardHeader>
