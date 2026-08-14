@@ -241,6 +241,15 @@ export function resolveProxy(
     return { target: "create-checkout", body: { ...b, product: "fan_club", action: fanclubAction } };
   }
 
+  // Pay-Per-View (InfluKing) — ppv-* functions merged into create-checkout.
+  if (functionName === "ppv-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "ppv", action: "checkout" } };
+  }
+  if (functionName === "ppv-verify") {
+    return { target: "create-checkout", body: { ...b, product: "ppv", action: "verify" } };
+  }
+
+
   if (functionName === "contact-live-chat") {
     return { target: "contact-ai-triage", body: { ...b, action: "live_chat" } };
   }

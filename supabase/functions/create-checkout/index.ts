@@ -2544,7 +2544,92 @@ async function handler(req: Request): Promise<Response> {
       return successResponse({ url: session.url, session_id: session.id });
     }
 
+    // ─── Pay-Per-View posts (InfluKing) — checkout / verify ───
+    // The standalone ppv-checkout / ppv-verify functions could not be deployed
+    // (function limit), so their logic lives here and is routed via proxyMap.
+    if (body.product === "ppv") {
+      const admin = createSupabaseAdminClient();
+      const action = String((body as any).action || "checkout");
 
+      if (action === "verify") {
+        const sessionId = (body as any).sessionId ? String((body as any).sessionId) : null;
+        if (!sessionId) return errorResponse("Missing sessionId", 400);
+        const session = await stripe.checkout.sessions.retrieve(sessionId);
+        const paid = session.payment_status === "paid";
+        const { data: unlock } = await admin
+          .from("influking_ppv_unlocks")
+          .select("id, status")
+          .eq("stripe_session_id", sessionId)
+          .maybeSingle();
+        if (!unlock) return errorResponse("Unlock record not found", 404);
+        if (paid && unlock.status !== "completed") {
+          await admin
+            .from("influking_ppv_unlocks")
+            .update({
+              status: "completed",
+              stripe_payment_intent_id: typeof session.payment_intent === "string"
+                ? session.payment_intent
+                : (session.payment_intent as any)?.id ?? null,
+              unlocked_at: new Date().toISOString() })
+            .eq("id", unlock.id);
+        }
+        return successResponse({ verified: paid, status: session.payment_status });
+      }
+
+      if (!userId || !email) return errorResponse("Login required", 401);
+      const postId = (body as any).postId ? String((body as any).postId) : null;
+      if (!postId) return errorResponse("Missing postId", 400);
+
+      const { data: post } = await admin
+        .from("influking_ppv_posts")
+        .select("id, creator_id, title, price_cents, currency, is_active")
+        .eq("id", postId)
+        .maybeSingle();
+      if (!post) return errorResponse("Post not found", 404);
+      if (!post.is_active) return errorResponse("Post not available", 400);
+      if (post.creator_id === userId) return errorResponse("You cannot buy your own post", 400);
+
+      const { data: existingUnlock } = await admin
+        .from("influking_ppv_unlocks")
+        .select("id")
+        .eq("post_id", postId)
+        .eq("buyer_id", userId)
+        .eq("status", "completed")
+        .maybeSingle();
+      if (existingUnlock) return successResponse({ alreadyUnlocked: true });
+
+      const ppvCustomer = customerId || (await getStripeCustomer(stripe, email));
+      const ppvSession = await stripe.checkout.sessions.create({
+        customer: ppvCustomer || undefined,
+        customer_email: ppvCustomer ? undefined : email,
+        mode: "payment",
+        line_items: [{
+          price_data: {
+            currency: post.currency || "eur",
+            product_data: { name: `PPV: ${post.title}` },
+            unit_amount: post.price_cents },
+          quantity: 1 }],
+        success_url: `${origin}/influ-king/ppv/${post.id}?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/influ-king/ppv/${post.id}?canceled=1`,
+        metadata: { type: "ppv_unlock",
+          product: "ppv",
+          post_id: post.id,
+          buyer_id: userId,
+          creator_id: post.creator_id } });
+
+      const creatorEarnings = Math.floor(post.price_cents * 0.85);
+      await admin.from("influking_ppv_unlocks").insert({ post_id: post.id,
+        buyer_id: userId,
+        creator_id: post.creator_id,
+        amount_cents: post.price_cents,
+        creator_earnings_cents: creatorEarnings,
+        platform_fee_cents: post.price_cents - creatorEarnings,
+        currency: post.currency || "eur",
+        stripe_session_id: ppvSession.id,
+        status: "pending" });
+
+      return successResponse({ url: ppvSession.url, session_id: ppvSession.id });
+    }
 
 
     if (body.product && !body.priceId && !body.productKey && !body.credits) { // Free actions (e.g. create-character, create-universe) just return ok
