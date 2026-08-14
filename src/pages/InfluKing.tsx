@@ -553,7 +553,7 @@ const InfluKing = () => {
                 <p className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
                   {t("influking.manage_heading", "Manage your creator business")}
                 </p>
-                <div className="flex flex-wrap items-center justify-center gap-2">
+                <div className="grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center items-stretch gap-2 w-full">
                   <Button variant="secondary" className="gap-2" onClick={() => setSelectedInfluencer(myProfile)}>
                     <Star className="h-4 w-4" /> {t("influking.my_profile")}
                   </Button>
