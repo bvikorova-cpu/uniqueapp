@@ -293,7 +293,9 @@ export default function LiveStream() {
     } catch (e: any) {
       const msg =
         e?.name === "NotAllowedError"
-          ? "Camera access denied — allow camera & microphone for this site"
+          ? inIframe
+            ? "Camera is blocked in the embedded preview — open the stream in a new tab to go live"
+            : "Camera access denied — allow camera & microphone for this site"
           : e?.name === "NotFoundError"
             ? "No camera found on this device"
             : e?.name === "NotReadableError"
@@ -469,9 +471,10 @@ export default function LiveStream() {
                   />
                   
                   {!isStreaming && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 p-4">
-                      <div className="text-center text-primary-foreground space-y-4">
-                        <Video className="h-20 w-20 mx-auto opacity-50" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
+                      <div className="text-center text-primary-foreground space-y-3 w-full max-w-sm">
+                        <Video className="h-12 w-12 sm:h-20 sm:w-20 mx-auto opacity-50" />
+                        
                         {isOwner ? (
                           <>
                             <p className={`text-sm ${streamError ? "font-medium text-destructive" : "text-lg"}`}>
