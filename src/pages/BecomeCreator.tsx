@@ -192,9 +192,6 @@ export default function BecomeCreator() {
               <Button onClick={() => navigate(`/creator/${existingProfile}`)} className="w-full">
                 Go to My Creator Profile
               </Button>
-              <Button onClick={() => navigate('/membership-community')} variant="outline" className="w-full">
-                Back to Membership Community
-              </Button>
             </CardContent>
           </Card>
         </div>

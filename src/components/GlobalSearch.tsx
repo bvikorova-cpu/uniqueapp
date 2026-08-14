@@ -126,7 +126,6 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   // Talent & Influencer
   { id: "90", title: "InfluKing", category: "Influencer", path: "/influ-king" },
   { id: "91", title: "Megatalent", category: "Talent", path: "/megatalent" },
-  { id: "93", title: "Membership Community", category: "Influencer", path: "/membership-community" },
   { id: "94", title: "Discover Creators", category: "Influencer", path: "/discover-creators" },
   { id: "95", title: "Become Creator", category: "Influencer", path: "/become-creator" },
   

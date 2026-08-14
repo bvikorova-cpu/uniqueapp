@@ -61,7 +61,6 @@ const ecosystemModules = [
 const advancedModules = [
   { name: "Lottery AI", path: "/lottery-ai", icon: Ticket, color: "text-amber-500" },
   { name: "Property Marketplace", path: "/property-marketplace", icon: Building2, color: "text-sky-500" },
-  { name: "Membership Community", path: "/membership-community", icon: Users, color: "text-rose-500" },
   { name: "Crystal Energy", path: "/crystal-energy", icon: Gem, color: "text-violet-500" },
   { name: "Phobia Network", path: "/phobia-trading", icon: Bug, color: "text-orange-500" },
   { name: "Live Concerts", path: "/live-concerts", icon: Music, color: "text-red-500" },

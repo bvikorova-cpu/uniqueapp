@@ -189,7 +189,6 @@ const Navbar = () => {
         { path: "/anonymous-date", label: "Anonymous Date", icon: Heart },
         { path: "/dating", label: "Dating", icon: Heart },
         { path: "/best-friend", label: "Best Friend", icon: UserPlus },
-        { path: "/membership-community", label: "Membership Community", icon: Users },
         { path: "/messenger", label: "Messenger", icon: Mail },
         { path: "/megaforum", label: "Megaforum", icon: Users },
         { path: "/companions", label: "Character Companions", icon: MessageCircle },
