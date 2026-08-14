@@ -847,6 +847,8 @@ const InfluKing = () => {
             </CardContent>
           </Card>
         </motion.div>
+        </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
