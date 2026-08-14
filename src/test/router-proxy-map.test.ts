@@ -128,6 +128,15 @@ describe("proxyMap router consolidation", () => {
       },
     );
 
+    it("routes paid-message verification to create-checkout", () => {
+      const r = resolveProxy("verify-paid-message", { id: "message-id", sessionId: "cs_test" });
+      expect(r).not.toBeNull();
+      expect(r!.target).toBe("create-checkout");
+      expect(r!.body.product).toBe("paid_message");
+      expect(r!.body.action).toBe("verify");
+      expect(r!.body.id).toBe("message-id");
+    });
+
   describe("B18e brand/campaign consolidation", () => { const BRAND_EXPECTED: Record<string, string> = {
       "brand-campaign-checkout": "brand_campaign_escrow",
       "create-brand-sponsorship": "brand_sponsorship",

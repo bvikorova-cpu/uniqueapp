@@ -1786,20 +1786,90 @@ async function handler(req: Request): Promise<Response> {
       return successResponse({ battle: data });
     }
 
-    // ─── B18d Creator Economy: paid_message (10% platform fee) ───
+    // ─── B18d Creator Economy: paid messages and video shoutouts (85/15 split) ───
     if (body.product === "paid_message") {
-      const creatorId = String(body.creatorId || "");
-      const message = String(body.message || "");
-      if (!creatorId || !message) return errorResponse("Missing creatorId or message", 400);
+      const action = String(body.action || "checkout");
       const admin = createSupabaseAdminClient();
-      const { data: settings } = await admin
+
+      if (action === "verify") {
+        const messageId = String(body.id || "");
+        const requestedSessionId = String(body.sessionId || "");
+        if (!messageId) return errorResponse("Message id is required", 400);
+
+        const { data: paidMessage, error: messageError } = await admin
+          .from("creator_paid_messages")
+          .select("id, sender_id, status, stripe_session_id")
+          .eq("id", messageId)
+          .maybeSingle();
+        if (messageError || !paidMessage) return errorResponse("Message not found", 404);
+        if (paidMessage.sender_id !== userId) return errorResponse("Not your message", 403);
+        if (paidMessage.status === "paid") return successResponse({ status: "paid" });
+
+        const stripeSessionId = requestedSessionId || paidMessage.stripe_session_id;
+        if (!stripeSessionId) return errorResponse("No Stripe session on record", 400);
+        const paidSession = await stripe.checkout.sessions.retrieve(stripeSessionId);
+        const nextStatus = paidSession.payment_status === "paid"
+          ? "paid"
+          : paidSession.status === "expired" ? "canceled" : paidMessage.status;
+
+        if (nextStatus !== paidMessage.status) {
+          const { error: updateError } = await admin
+            .from("creator_paid_messages")
+            .update({ status: nextStatus })
+            .eq("id", messageId);
+          if (updateError) return errorResponse(updateError.message, 400);
+        }
+        return successResponse({ status: nextStatus, payment_status: paidSession.payment_status });
+      }
+
+      const creatorId = String(body.creatorId || "");
+      const message = String(body.message || "").trim();
+      const requestType = body.requestType === "shoutout" ? "shoutout" : "message";
+      if (!creatorId) return errorResponse("Creator is required", 400);
+      if (creatorId === userId) return errorResponse("You cannot send a paid message to yourself", 400);
+      if (message.length < 3 || message.length > 2000) {
+        return errorResponse("Message must contain 3–2000 characters", 400);
+      }
+
+      const { data: settings, error: settingsError } = await admin
         .from("creator_message_settings")
-        .select("price_per_message")
+        .select("price_per_message, shoutout_price, is_enabled, shoutout_enabled")
         .eq("creator_id", creatorId)
         .maybeSingle();
-      const pricePerMessage = Number(settings?.price_per_message ?? 5);
-      const platformFee = Number((pricePerMessage * 0.1).toFixed(2));
-      const creatorPayout = Number((pricePerMessage - platformFee).toFixed(2));
+      if (settingsError) return errorResponse(settingsError.message, 400);
+      if (requestType === "message" && settings?.is_enabled === false) {
+        return errorResponse("This creator has disabled paid messages", 400);
+      }
+      if (requestType === "shoutout" && settings?.shoutout_enabled === false) {
+        return errorResponse("This creator has disabled video shoutouts", 400);
+      }
+
+      const priceEur = Number(requestType === "shoutout"
+        ? settings?.shoutout_price ?? 20
+        : settings?.price_per_message ?? 5);
+      if (!Number.isFinite(priceEur) || priceEur < 1 || priceEur > 10_000) {
+        return errorResponse("The creator's price is invalid", 400);
+      }
+      const amountCents = Math.round(priceEur * 100);
+      const platformFee = Math.round(amountCents * 0.15) / 100;
+      const creatorPayout = Number((priceEur - platformFee).toFixed(2));
+
+      const { data: pendingMessage, error: insertError } = await admin
+        .from("creator_paid_messages")
+        .insert({ sender_id: userId,
+          creator_id: creatorId,
+          content: message,
+          amount_paid: priceEur,
+          platform_fee: platformFee,
+          creator_payout: creatorPayout,
+          request_type: requestType,
+          status: "pending" })
+        .select("id")
+        .single();
+      if (insertError || !pendingMessage) {
+        return errorResponse(insertError?.message || "Could not create the paid message", 400);
+      }
+
       const session = await stripe.checkout.sessions.create({
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
@@ -1807,29 +1877,27 @@ async function handler(req: Request): Promise<Response> {
           price_data: {
             currency: "eur",
             product_data: {
-              name: "Paid Message to Creator",
+              name: requestType === "shoutout" ? "Personal Video Shoutout" : "Paid Message to Creator",
               description: `Direct message to the creator (${message.substring(0, 50)}...)` },
-            unit_amount: Math.round(pricePerMessage * 100) },
+            unit_amount: amountCents },
           quantity: 1 }],
         mode: "payment",
-        success_url: `${origin}/creator/${creatorId}?message=success`,
-        cancel_url: `${origin}/creator/${creatorId}?message=canceled`,
+        success_url: `${origin}/paid-message/success?id=${pendingMessage.id}&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/paid-message/canceled?id=${pendingMessage.id}`,
         metadata: { type: "paid_message",
           product: "paid_message",
+          paid_message_id: pendingMessage.id,
           sender_id: userId ?? "",
           creator_id: creatorId,
-          message: message.substring(0, 500),
+          request_type: requestType,
           platform_fee: String(platformFee),
           creator_payout: String(creatorPayout) } });
-      await admin.from("creator_paid_messages").insert({ sender_id: userId,
-        creator_id: creatorId,
-        content: message,
-        amount_paid: pricePerMessage,
-        platform_fee: platformFee,
-        creator_payout: creatorPayout,
-        stripe_session_id: session.id,
-        status: "pending" });
-      return successResponse({ url: session.url });
+      const { error: sessionUpdateError } = await admin
+        .from("creator_paid_messages")
+        .update({ stripe_session_id: session.id })
+        .eq("id", pendingMessage.id);
+      if (sessionUpdateError) return errorResponse(sessionUpdateError.message, 400);
+      return successResponse({ url: session.url, id: pendingMessage.id });
     }
 
     // ─── B18d Creator Economy: profile_tip (10% fee, Stripe Connect destination charges when available) ───
