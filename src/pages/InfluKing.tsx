@@ -104,6 +104,8 @@ const InfluKing = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const captureInputRef = useRef<HTMLInputElement | null>(null);
+  const [discoverSearch, setDiscoverSearch] = useState("");
+  const debouncedDiscoverSearch = useDebounce(discoverSearch, 300);
 
   const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
   const [followStatusMap, setFollowStatusMap] = useState<Record<string, boolean>>({});
