@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -35,6 +35,21 @@ export function GoLiveButton({ influencerId }: GoLiveButtonProps) {
     scheduled_at: "",
     min_tier: "public" as "public" | "bronze" | "silver" | "gold",
   });
+  const [myClubs, setMyClubs] = useState<Array<{ tier: "bronze" | "silver" | "gold"; name: string }>>([]);
+
+  useEffect(() => {
+    if (!open) return;
+    (async () => {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) return;
+      const { data } = await (supabase as any)
+        .from("influencer_fan_clubs")
+        .select("tier, name")
+        .eq("creator_id", auth.user.id)
+        .eq("is_active", true);
+      setMyClubs((data as any[])?.map((c) => ({ tier: c.tier, name: c.name })) ?? []);
+    })();
+  }, [open]);
 
   const submit = async () => {
     if (!form.title.trim()) {
@@ -175,10 +190,18 @@ export function GoLiveButton({ influencerId }: GoLiveButtonProps) {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="public">🌍 Public — everyone</SelectItem>
-                  <SelectItem value="bronze">🥉 Bronze Fan Club and above</SelectItem>
-                  <SelectItem value="silver">🥈 Silver Fan Club and above</SelectItem>
-                  <SelectItem value="gold">🥇 Gold Fan Club only</SelectItem>
+                  {(["bronze", "silver", "gold"] as const).map((slot) => {
+                    const club = myClubs.find((c) => c.tier === slot);
+                    if (!club) return null;
+                    const icon = slot === "bronze" ? "🥉" : slot === "silver" ? "🥈" : "🥇";
+                    return (
+                      <SelectItem key={slot} value={slot}>
+                        {icon} {club.name} and above
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
+
               </Select>
               <p className="text-xs text-muted-foreground">
                 Tier-gated streams can only be watched by active Fan Club members of the selected tier or higher.
