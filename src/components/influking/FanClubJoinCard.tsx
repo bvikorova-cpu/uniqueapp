@@ -80,8 +80,8 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
   const runVerify = async (clubId: string | null, opts?: { silent?: boolean }) => {
     setVerifying(true);
     try {
-      const { data, error } = await supabase.functions.invoke("fanclub-verify", {
-        body: { fan_club_id: clubId } });
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { product: "fan_club", action: "verify", fan_club_id: clubId } });
       if (error) throw new Error(error.message || "Verification failed");
       if ((data as any)?.error) throw new Error((data as any).error);
 
@@ -146,8 +146,8 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
     mutationFn: async (fan_club_id: string) => {
       if (!user) throw new Error("Sign in to subscribe");
       if (user.id === creatorId) throw new Error("This is your own fan club — you can't subscribe to it.");
-      const { data, error } = await supabase.functions.invoke("fanclub-checkout", {
-        body: { fan_club_id } });
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { product: "fan_club", action: "checkout", fan_club_id } });
       if (error) {
         // Surface the real server message instead of the generic non-2xx text.
         let msg = error.message || "Checkout failed";
@@ -175,7 +175,8 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
 
   const cancel = useMutation({
     mutationFn: async (fan_club_id: string) => {
-      const { error } = await supabase.functions.invoke("fanclub-cancel", { body: { fan_club_id } });
+      const { error } = await supabase.functions.invoke("create-checkout", {
+        body: { product: "fan_club", action: "cancel", fan_club_id } });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -186,7 +187,8 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
 
   const resume = useMutation({
     mutationFn: async (fan_club_id: string) => {
-      const { error } = await supabase.functions.invoke("fanclub-resume", { body: { fan_club_id } });
+      const { error } = await supabase.functions.invoke("create-checkout", {
+        body: { product: "fan_club", action: "resume", fan_club_id } });
       if (error) throw error;
     },
     onSuccess: () => {
