@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Crown, Users, Heart, Eye, TrendingUp, Camera, Plus, CheckCircle, Star, Upload, ExternalLink, Gift, Brain, Handshake, Briefcase, Pencil, Wallet } from "lucide-react";
+import { Crown, Users, Heart, TrendingUp, Camera, Plus, CheckCircle, Star, Upload, ExternalLink, Gift, Brain, Handshake, Briefcase, Pencil, Wallet } from "lucide-react";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { GoLiveButton } from "@/components/influencer/GoLiveButton";
 import { SendInfluencerGiftDialog } from "@/components/influencer/SendInfluencerGiftDialog";
@@ -665,7 +665,7 @@ const InfluKing = () => {
                     <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-2 mb-4">
                       <div className="flex items-center gap-2"><Users className="h-5 w-5 text-muted-foreground" /><span className="font-bold">{selectedInfluencer.followers_count.toLocaleString()}</span><span className="text-sm text-muted-foreground">followers</span></div>
                       <div className="flex items-center gap-2"><Heart className="h-5 w-5 text-muted-foreground" /><span className="font-bold">{selectedInfluencer.total_likes.toLocaleString()}</span><span className="text-sm text-muted-foreground">likes</span></div>
-                      <div className="flex items-center gap-2"><Eye className="h-5 w-5 text-muted-foreground" /><span className="font-bold">{selectedInfluencer.total_views.toLocaleString()}</span><span className="text-sm text-muted-foreground">views</span></div>
+                      
                     </div>
                     {selectedInfluencer.user_id !== user?.id ? (
                       <div className="flex flex-wrap justify-center sm:justify-start gap-2">
@@ -731,7 +731,6 @@ const InfluKing = () => {
                               <Button variant="ghost" size="sm" onClick={() => likePostMutation.mutate(post.id)} disabled={likePostMutation.isPending}>
                                 <Heart className="h-4 w-4 mr-1" /> {post.likes_count}
                               </Button>
-                              <div className="flex items-center gap-1 text-sm text-muted-foreground"><Eye className="h-4 w-4" /> {post.views_count}</div>
                             </div>
                           </CardContent>
                         </Card>
@@ -800,7 +799,7 @@ const InfluKing = () => {
                       <div className="hidden sm:flex items-center gap-4 text-sm shrink-0">
                         <div className="flex items-center gap-1"><Users className="h-4 w-4 text-muted-foreground" /><span className="font-bold">{influencer.followers_count.toLocaleString()}</span></div>
                         <div className="flex items-center gap-1"><Heart className="h-4 w-4 text-muted-foreground" /><span className="font-bold">{influencer.total_likes.toLocaleString()}</span></div>
-                        <div className="flex items-center gap-1"><Eye className="h-4 w-4 text-muted-foreground" /><span className="font-bold">{influencer.total_views.toLocaleString()}</span></div>
+                        
                       </div>
                       {user && influencer.user_id !== user.id && (
                         <Button variant="outline" size="sm" className="shrink-0" onClick={(e) => {

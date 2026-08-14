@@ -330,10 +330,6 @@ export default function CrystalMarketplace() { const [items, setItems] = useStat
                     <span className="text-muted-foreground">Weight:</span>
                     <span className="font-semibold">{item.weight_grams}g</span>
                   </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-muted-foreground">Views:</span>
-                    <span className="font-semibold">{item.views_count}</span>
-                  </div>
                   {item.authenticity_certificate && (
                     <Badge variant="outline" className="w-full justify-center">
                       ✓ AI Verified Authentic

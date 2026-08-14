@@ -44,7 +44,6 @@ export const TrendingPostsCard = () => {
                   </p>
                   <div className="flex items-center gap-3 text-xs text-muted-foreground">
                     <span>🔥 {trending.trending_score.toFixed(0)}</span>
-                    <span>👁️ {trending.views_24h}</span>
                     <span>❤️ {trending.reactions_24h}</span>
                     <span>💬 {trending.comments_24h}</span>
                   </div>

@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Eye, ThumbsUp } from "lucide-react";
+import { ThumbsUp } from "lucide-react";
 
 interface VideoCardProps {
   video: {
@@ -9,8 +9,6 @@ interface VideoCardProps {
     description: string | null;
     video_url: string;
     thumbnail_url: string | null;
-    views_count?: number | null;
-    view_count?: number | null;
     likes_count?: number | null;
     like_count?: number | null;
     created_at: string;
@@ -57,10 +55,6 @@ export default function VideoCard({ video }: VideoCardProps) {
         )}
 
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <Eye className="h-4 w-4" />
-            <span>{video.views_count || video.view_count || 0}</span>
-          </div>
           <div className="flex items-center gap-1">
             <ThumbsUp className="h-4 w-4" />
             <span>{video.likes_count || video.like_count || 0}</span>
