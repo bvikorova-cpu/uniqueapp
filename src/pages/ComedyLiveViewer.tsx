@@ -212,18 +212,20 @@ export default function ComedyLiveViewer() {
                   value={tipMessage}
                   onChange={(e) => setTipMessage(e.target.value)}
                 />
-                <div className="flex gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {tipOptions.map((tip) => (
                     <Button
                       key={tip.type}
                       variant="outline"
                       onClick={() => sendTip(tip.type, tip.cost)}
-                      className="flex-1"
+                      className="w-full justify-center gap-1 px-2"
                     >
-                      {tip.label} {tip.cost}
+                      <span>{tip.label}</span>
+                      <span className="font-semibold">{tip.cost}</span>
                     </Button>
                   ))}
                 </div>
+
               </div>
             </Card>
           </div>
