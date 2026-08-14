@@ -23,6 +23,7 @@ const CollabMatchmaker = ({ onBack }: CollabMatchmakerProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearch = useDebounce(searchQuery, 300);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedInfluencer, setSelectedInfluencer] = useState<any>(null);
   const [collabMessage, setCollabMessage] = useState("");
@@ -31,7 +32,7 @@ const CollabMatchmaker = ({ onBack }: CollabMatchmakerProps) => {
   const CATEGORIES = ["Fashion & Beauty", "Gaming", "Fitness & Health", "Travel", "Food & Cooking", "Technology", "Music", "Comedy", "Education", "Lifestyle"];
 
   const { data: influencers = [], isLoading } = useQuery({
-    queryKey: ["collab-influencers", searchQuery, selectedCategory],
+    queryKey: ["collab-influencers", debouncedSearch, selectedCategory],
     queryFn: async () => {
       let query = supabase
         .from("influencer_profiles")
@@ -44,8 +45,8 @@ const CollabMatchmaker = ({ onBack }: CollabMatchmakerProps) => {
         query = query.eq("category", selectedCategory);
       }
 
-      if (searchQuery.trim()) {
-        query = query.ilike("display_name", `%${searchQuery}%`);
+      if (debouncedSearch.trim()) {
+        query = query.or(`display_name.ilike.%${debouncedSearch}%,bio.ilike.%${debouncedSearch}%`);
       }
 
       const { data, error } = await query;
