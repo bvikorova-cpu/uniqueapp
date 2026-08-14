@@ -506,7 +506,11 @@ const InfluKing = () => {
                   </div>
                 </DialogContent>
               </Dialog>
+              <Button size="lg" variant="outline" className="gap-2" onClick={() => setActiveView("ppv")}>
+                <Lock className="h-5 w-5 text-fuchsia-500" /> PPV posts
+              </Button>
               <GoLiveButton influencerId={myProfile.id} />
+
               <Button variant="outline" onClick={() => navigate("/creator/live-analytics")}>Live Analytics</Button>
               <Button variant="outline" onClick={() => navigate("/influencer/earnings")}>{t("influking.my_earnings")}</Button>
               <Button variant="outline" onClick={() => setSelectedInfluencer(myProfile)}>{t("influking.my_profile")}</Button>
