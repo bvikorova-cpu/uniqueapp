@@ -71,7 +71,7 @@ export default function CreatorDashboard() {
           title: "No Creator Profile",
           description: "Please create a creator profile first",
           variant: "destructive" });
-        navigate("/membership-community");
+        navigate("/become-creator");
         return;
       }
 
