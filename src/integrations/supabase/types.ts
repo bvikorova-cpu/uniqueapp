@@ -37188,32 +37188,50 @@ export type Database = {
         Row: {
           amount_cents: number
           created_at: string
+          creator_amount_cents: number
+          creator_id: string | null
           duration_seconds: number
           highlight_color: string
           id: string
           message: string | null
+          platform_fee_cents: number
           sender_id: string
+          status: string
           stream_id: string
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
         }
         Insert: {
           amount_cents: number
           created_at?: string
+          creator_amount_cents?: number
+          creator_id?: string | null
           duration_seconds?: number
           highlight_color?: string
           id?: string
           message?: string | null
+          platform_fee_cents?: number
           sender_id: string
+          status?: string
           stream_id: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
         }
         Update: {
           amount_cents?: number
           created_at?: string
+          creator_amount_cents?: number
+          creator_id?: string | null
           duration_seconds?: number
           highlight_color?: string
           id?: string
           message?: string | null
+          platform_fee_cents?: number
           sender_id?: string
+          status?: string
           stream_id?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
         }
         Relationships: []
       }
