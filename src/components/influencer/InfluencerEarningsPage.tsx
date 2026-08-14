@@ -19,6 +19,33 @@ interface GiftRow {
   influencer_gifts?: { name: string | null; icon: string | null } | null;
 }
 
+interface SubRow {
+  id: string;
+  gross_cents: number | null;
+  platform_fee_cents: number | null;
+  net_cents: number | null;
+  period_end: string | null;
+  created_at: string;
+}
+
+interface PpvRow {
+  id: string;
+  amount_cents: number | null;
+  creator_earnings_cents: number | null;
+  platform_fee_cents: number | null;
+  created_at: string;
+  influking_ppv_posts?: { title: string | null } | null;
+}
+
+interface DmRow {
+  id: string;
+  amount_paid: number | null;
+  platform_fee: number | null;
+  creator_payout: number | null;
+  request_type: string | null;
+  created_at: string;
+}
+
 export const InfluencerEarningsPage = () => {
   const [selectedInfluencer, setSelectedInfluencer] = useState<string | null>(null);
   const refetchGiftsRef = useRef<(() => void) | null>(null);
@@ -89,6 +116,57 @@ export const InfluencerEarningsPage = () => {
 
   refetchGiftsRef.current = () => { refetchGifts(); };
 
+  // Subscriptions (85/15), PPV unlocks (85/15) and paid DMs / shoutouts (85/15)
+  const { data: extra } = useQuery({
+    queryKey: ["influencer-extra-earnings"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return { subs: [] as SubRow[], ppv: [] as PpvRow[], dms: [] as DmRow[] };
+
+      const { data: profile } = await supabase
+        .from("creator_profiles")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      const creatorIds = [user.id, profile?.id].filter(Boolean) as string[];
+
+      const [subsRes, ppvRes, dmsRes] = await Promise.all([
+        supabase
+          .from("creator_subscription_earnings")
+          .select("id, gross_cents, platform_fee_cents, net_cents, currency, period_end, created_at")
+          .in("creator_id", creatorIds)
+          .order("created_at", { ascending: false })
+          .limit(50),
+        supabase
+          .from("influking_ppv_unlocks")
+          .select("id, amount_cents, creator_earnings_cents, platform_fee_cents, status, created_at, influking_ppv_posts(title)")
+          .eq("creator_id", user.id)
+          .eq("status", "completed")
+          .order("created_at", { ascending: false })
+          .limit(50),
+        supabase
+          .from("creator_paid_messages")
+          .select("id, amount_paid, platform_fee, creator_payout, status, request_type, created_at")
+          .in("creator_id", creatorIds)
+          .in("status", ["paid", "completed", "replied", "succeeded"])
+          .order("created_at", { ascending: false })
+          .limit(50),
+      ]);
+
+      return {
+        subs: (subsRes.data || []) as unknown as SubRow[],
+        ppv: (ppvRes.data || []) as unknown as PpvRow[],
+        dms: (dmsRes.data || []) as unknown as DmRow[] };
+    } });
+
+  const subs = extra?.subs || [];
+  const ppv = extra?.ppv || [];
+  const dms = extra?.dms || [];
+  const subsNet = subs.reduce((s, r) => s + Number(r.net_cents || 0), 0) / 100;
+  const ppvNet = ppv.reduce((s, r) => s + Number(r.creator_earnings_cents || 0), 0) / 100;
+  const dmsNet = dms.reduce((s, r) => s + Number(r.creator_payout || 0), 0);
+
+
   if (loadingInfluencers) {
     return (
       <>
@@ -153,6 +231,24 @@ export const InfluencerEarningsPage = () => {
         </Card>
       </div>
 
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Card className="p-4">
+          <p className="text-xs text-muted-foreground">Subscriptions (your 85%)</p>
+          <p className="text-xl font-bold text-green-600">€{subsNet.toFixed(2)}</p>
+          <p className="text-xs text-muted-foreground">{subs.length} payments</p>
+        </Card>
+        <Card className="p-4">
+          <p className="text-xs text-muted-foreground">PPV posts (your 85%)</p>
+          <p className="text-xl font-bold text-green-600">€{ppvNet.toFixed(2)}</p>
+          <p className="text-xs text-muted-foreground">{ppv.length} unlocks</p>
+        </Card>
+        <Card className="p-4">
+          <p className="text-xs text-muted-foreground">Paid DMs (your 85%)</p>
+          <p className="text-xl font-bold text-green-600">€{dmsNet.toFixed(2)}</p>
+          <p className="text-xs text-muted-foreground">{dms.length} messages</p>
+        </Card>
+      </div>
+
       {influencers.length > 1 && (
         <Card className="p-4 border-amber-500/20">
           <label className="text-sm font-medium mb-2 block">Select profile</label>
@@ -172,6 +268,9 @@ export const InfluencerEarningsPage = () => {
         <Tabs defaultValue="earnings">
           <TabsList className="w-full flex-wrap h-auto">
             <TabsTrigger value="earnings">Gift earnings</TabsTrigger>
+            <TabsTrigger value="subs">Subscriptions</TabsTrigger>
+            <TabsTrigger value="ppv">PPV posts</TabsTrigger>
+            <TabsTrigger value="dms">Paid DMs</TabsTrigger>
             <TabsTrigger value="withdraw">Request withdrawal</TabsTrigger>
             <TabsTrigger value="history">Withdrawal history</TabsTrigger>
           </TabsList>
@@ -208,6 +307,79 @@ export const InfluencerEarningsPage = () => {
               </div>
             </Card>
           </TabsContent>
+
+          <TabsContent value="subs" className="mt-6">
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4">Fan club subscriptions (85% yours)</h3>
+              <div className="space-y-2">
+                {subs.length > 0 ? subs.map((s) => (
+                  <div key={s.id} className="flex justify-between items-center p-3 border rounded gap-3">
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">Subscription payment</p>
+                      <p className="text-sm text-muted-foreground">
+                        {format(new Date(s.created_at), "MMM dd, yyyy")} • gross €{(Number(s.gross_cents || 0) / 100).toFixed(2)}
+                      </p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="font-semibold text-green-600">+€{(Number(s.net_cents || 0) / 100).toFixed(2)}</p>
+                      <p className="text-xs text-muted-foreground">Fee: €{(Number(s.platform_fee_cents || 0) / 100).toFixed(2)}</p>
+                    </div>
+                  </div>
+                )) : (
+                  <p className="text-center text-muted-foreground py-8">No subscription earnings yet</p>
+                )}
+              </div>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="ppv" className="mt-6">
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4">PPV unlocks (85% yours)</h3>
+              <div className="space-y-2">
+                {ppv.length > 0 ? ppv.map((p) => (
+                  <div key={p.id} className="flex justify-between items-center p-3 border rounded gap-3">
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">{p.influking_ppv_posts?.title || "PPV post"}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {format(new Date(p.created_at), "MMM dd, yyyy")} • gross €{(Number(p.amount_cents || 0) / 100).toFixed(2)}
+                      </p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="font-semibold text-green-600">+€{(Number(p.creator_earnings_cents || 0) / 100).toFixed(2)}</p>
+                      <p className="text-xs text-muted-foreground">Fee: €{(Number(p.platform_fee_cents || 0) / 100).toFixed(2)}</p>
+                    </div>
+                  </div>
+                )) : (
+                  <p className="text-center text-muted-foreground py-8">No PPV earnings yet</p>
+                )}
+              </div>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="dms" className="mt-6">
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4">Paid DMs &amp; shoutouts (85% yours)</h3>
+              <div className="space-y-2">
+                {dms.length > 0 ? dms.map((d) => (
+                  <div key={d.id} className="flex justify-between items-center p-3 border rounded gap-3">
+                    <div className="min-w-0">
+                      <p className="font-medium truncate capitalize">{(d.request_type || "message").replace("_", " ")}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {format(new Date(d.created_at), "MMM dd, yyyy")} • gross €{Number(d.amount_paid || 0).toFixed(2)}
+                      </p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="font-semibold text-green-600">+€{Number(d.creator_payout || 0).toFixed(2)}</p>
+                      <p className="text-xs text-muted-foreground">Fee: €{Number(d.platform_fee || 0).toFixed(2)}</p>
+                    </div>
+                  </div>
+                )) : (
+                  <p className="text-center text-muted-foreground py-8">No paid DM earnings yet</p>
+                )}
+              </div>
+            </Card>
+          </TabsContent>
+
 
           <TabsContent value="withdraw" className="mt-6">
             {available >= 50 ? (
