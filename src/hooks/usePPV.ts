@@ -26,7 +26,20 @@ export function usePPVCheckout() {
     try {
       const { data, error } = await supabase.functions.invoke("ppv-checkout", {
         body: { postId } });
-      if (error) throw error;
+      if (error) {
+        // Surface the real server message instead of the generic non-2xx text.
+        let msg = error.message || "Checkout failed";
+        try {
+          const ctx = (error as any).context;
+          const text = ctx && typeof ctx.text === "function" ? await ctx.text() : null;
+          if (text) {
+            const parsed = JSON.parse(text);
+            if (parsed?.error) msg = String(parsed.error);
+          }
+        } catch { /* keep original message */ }
+        throw new Error(msg);
+      }
+      if ((data as any)?.error) throw new Error((data as any).error);
       if (data?.alreadyUnlocked) {
         toast({ title: "Already unlocked", description: "You already own this post." });
         return;
