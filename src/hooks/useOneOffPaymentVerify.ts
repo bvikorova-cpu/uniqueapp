@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 type VerifyFn =
+  | "create-checkout"
   | "verify-concert-ticket-payment"
   | "verify-crystal-purchase"
   | "verify-gift-payment"
@@ -18,6 +19,8 @@ interface Options {
   successDescription?: string;
   /** Optional callback after successful verification. */
   onSuccess?: (data: any) => void;
+  /** Extra fields required by consolidated verification routers. */
+  requestBody?: Record<string, unknown>;
   /** If true, strips ?session_id & success params from URL on completion. Default true. */
   cleanUrl?: boolean;
 }
@@ -31,6 +34,7 @@ export function useOneOffPaymentVerify({ fn,
   successTitle = "Payment successful!",
   successDescription = "Your purchase has been confirmed.",
   onSuccess,
+  requestBody,
   cleanUrl = true }: Options) {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
@@ -44,9 +48,16 @@ export function useOneOffPaymentVerify({ fn,
     (async () => {
       try {
         const { data, error } = await supabase.functions.invoke(fn, {
-          body: { sessionId } });
+          body: { ...requestBody, sessionId } });
         if (error) throw error;
 
+        if (cleanUrl) {
+          const url = new URL(window.location.href);
+          url.searchParams.delete("session_id");
+          url.searchParams.delete("success");
+          url.searchParams.delete("payment");
+          window.history.replaceState({}, "", url.pathname + url.search);
+        }
         toast({ title: successTitle, description: successDescription });
         onSuccess?.(data);
       } catch (err: any) {
@@ -55,7 +66,7 @@ export function useOneOffPaymentVerify({ fn,
           description: err?.message || "Please contact support.",
           variant: "destructive" });
       } finally {
-        if (cleanUrl) {
+        if (cleanUrl && window.location.search.includes("session_id=")) {
           const url = new URL(window.location.href);
           url.searchParams.delete("session_id");
           url.searchParams.delete("success");
@@ -64,5 +75,5 @@ export function useOneOffPaymentVerify({ fn,
         }
       }
     })();
-  }, [searchParams, fn, successTitle, successDescription, onSuccess, cleanUrl, toast]);
+  }, [searchParams, fn, successTitle, successDescription, onSuccess, requestBody, cleanUrl, toast]);
 }

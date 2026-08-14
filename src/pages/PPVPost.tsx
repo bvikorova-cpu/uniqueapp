@@ -15,7 +15,8 @@ export default function PPVPostPage() {
   const unlocked = usePPVUnlockStatus(id);
   const { buy, loading: buying } = usePPVCheckout();
 
-  useOneOffPaymentVerify({ fn: "ppv-verify" as any,
+  useOneOffPaymentVerify({ fn: "create-checkout",
+    requestBody: { product: "ppv", action: "verify" },
     successTitle: "Unlocked!",
     successDescription: "You now have access to this content.",
     onSuccess: () => window.location.reload() });
