@@ -530,18 +530,34 @@ const InfluKing = () => {
               </Button>
               <GoLiveButton influencerId={myProfile.id} />
 
-              <Button variant="outline" onClick={() => navigate("/creator/live-analytics")}>Live Analytics</Button>
-              <Button variant="outline" onClick={() => navigate("/influencer/earnings")}>{t("influking.my_earnings")}</Button>
-              <Button variant="outline" onClick={() => setSelectedInfluencer(myProfile)}>{t("influking.my_profile")}</Button>
-              <Button variant="destructive" size="sm" onClick={async () => {
-                if (!confirm('Delete your influencer profile? This is irreversible.')) return;
-                const { error } = await supabase.from('influencer_profiles').delete().eq('id', myProfile.id).eq('user_id', user.id);
-                if (!error) {
-                  queryClient.invalidateQueries({ queryKey: ["myInfluencerProfile"] });
-                  queryClient.invalidateQueries({ queryKey: ["topInfluencers"] });
-                  toast({ title: "Profile Deleted" });
-                }
-              }}>{t("influking.delete_profile")}</Button>
+              <div className="mt-2 w-full border-t border-primary/10 pt-4">
+                <p className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                  {t("influking.manage_heading", "Manage your creator business")}
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  <Button variant="secondary" className="gap-2" onClick={() => setSelectedInfluencer(myProfile)}>
+                    <Star className="h-4 w-4" /> {t("influking.my_profile")}
+                  </Button>
+                  <Button variant="secondary" className="gap-2" onClick={() => navigate("/influencer/earnings")}>
+                    <Wallet className="h-4 w-4" /> {t("influking.my_earnings")}
+                  </Button>
+                  <Button variant="secondary" className="gap-2" onClick={() => navigate("/creator/live-analytics")}>
+                    <BarChart3 className="h-4 w-4" /> Live analytics
+                  </Button>
+                  <Button variant="secondary" className="gap-2" onClick={() => navigate("/edit-profile")}>
+                    <Pencil className="h-4 w-4" /> Edit profile
+                  </Button>
+                  <Button variant="ghost" size="sm" className="text-destructive hover:bg-destructive/10" onClick={async () => {
+                    if (!confirm('Delete your influencer profile? This is irreversible.')) return;
+                    const { error } = await supabase.from('influencer_profiles').delete().eq('id', myProfile.id).eq('user_id', user.id);
+                    if (!error) {
+                      queryClient.invalidateQueries({ queryKey: ["myInfluencerProfile"] });
+                      queryClient.invalidateQueries({ queryKey: ["topInfluencers"] });
+                      toast({ title: "Profile Deleted" });
+                    }
+                  }}>{t("influking.delete_profile")}</Button>
+                </div>
+              </div>
             </>
           ) : (
             <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
