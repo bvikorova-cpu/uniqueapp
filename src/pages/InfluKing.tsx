@@ -709,7 +709,7 @@ const InfluKing = () => {
 
         {/* Influencer Detail Dialog */}
         <Dialog open={!!selectedInfluencer} onOpenChange={() => setSelectedInfluencer(null)}>
-          <DialogContent className="w-[calc(100vw-1.5rem)] sm:w-auto max-w-4xl max-h-[85vh] overflow-y-auto overflow-x-hidden p-4 sm:p-6">
+          <DialogContent className="w-[calc(100vw-1rem)] sm:w-auto max-w-4xl max-h-[92vh] sm:max-h-[85vh] overflow-y-auto overflow-x-hidden p-3 sm:p-6">
             {selectedInfluencer && (
               <>
                 {selectedInfluencer.cover_photo_url && (
