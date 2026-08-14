@@ -12,6 +12,8 @@ import { AdminGuard } from "@/components/admin/AdminGuard";
 import { AdminPageShell, AdminGlassCard } from "@/components/admin/AdminPageShell";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { exportToCsv } from "@/lib/exportCsv";
+import { AdminComedyEarningsOverview } from "@/components/admin/AdminComedyEarningsOverview";
+
 
 export default function AdminComedyPayouts() {
   const [requests, setRequests] = useState<any[]>([]);
