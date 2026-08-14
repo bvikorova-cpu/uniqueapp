@@ -39,8 +39,16 @@ export function GoLiveButton({ influencerId }: GoLiveButtonProps) {
 
     setLoading(true);
     try {
+      // Close any previous stream still marked live for this creator
+      await supabase
+        .from("live_streams")
+        .update({ is_live: false, ended_at: new Date().toISOString() })
+        .eq("influencer_id", influencerId)
+        .eq("is_live", true);
+
       const streamKey = `${influencerId}_${Date.now()}`;
       const payload: Record<string, unknown> = {
+
         influencer_id: influencerId,
         title: form.title,
         description: form.description,
