@@ -659,7 +659,7 @@ const InfluKing = () => {
                       <div className="flex items-center gap-2"><Heart className="h-5 w-5 text-muted-foreground" /><span className="font-bold">{selectedInfluencer.total_likes.toLocaleString()}</span><span className="text-sm text-muted-foreground">likes</span></div>
                       <div className="flex items-center gap-2"><Eye className="h-5 w-5 text-muted-foreground" /><span className="font-bold">{selectedInfluencer.total_views.toLocaleString()}</span><span className="text-sm text-muted-foreground">views</span></div>
                     </div>
-                    {selectedInfluencer.user_id !== user?.id && (
+                    {selectedInfluencer.user_id !== user?.id ? (
                       <div className="flex flex-wrap justify-center sm:justify-start gap-2">
                         <Button onClick={() => followMutation.mutate({ influencerId: selectedInfluencer.id, follow: !isFollowing })}
                           disabled={followMutation.isPending} variant={isFollowing ? "outline" : "default"}>
@@ -667,6 +667,15 @@ const InfluKing = () => {
                         </Button>
                         <Button onClick={() => setShowGiftDialog(true)} variant="outline" className="gap-2">
                           <Gift className="h-4 w-4" /> Send Gift
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex flex-wrap justify-center sm:justify-start gap-2">
+                        <Button onClick={() => { setSelectedInfluencer(null); navigate("/edit-profile"); }} className="gap-2">
+                          <Pencil className="h-4 w-4" /> Edit profile
+                        </Button>
+                        <Button onClick={() => { setSelectedInfluencer(null); navigate("/earnings"); }} variant="outline" className="gap-2">
+                          <Wallet className="h-4 w-4" /> Payout settings
                         </Button>
                       </div>
                     )}
