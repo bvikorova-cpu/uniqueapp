@@ -89,6 +89,57 @@ export const InfluencerEarningsPage = () => {
 
   refetchGiftsRef.current = () => { refetchGifts(); };
 
+  // Subscriptions (85/15), PPV unlocks (85/15) and paid DMs / shoutouts (85/15)
+  const { data: extra } = useQuery({
+    queryKey: ["influencer-extra-earnings"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return { subs: [] as SubRow[], ppv: [] as PpvRow[], dms: [] as DmRow[] };
+
+      const { data: profile } = await supabase
+        .from("creator_profiles")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      const creatorIds = [user.id, profile?.id].filter(Boolean) as string[];
+
+      const [subsRes, ppvRes, dmsRes] = await Promise.all([
+        supabase
+          .from("creator_subscription_earnings")
+          .select("id, gross_cents, platform_fee_cents, net_cents, currency, period_end, created_at")
+          .in("creator_id", creatorIds)
+          .order("created_at", { ascending: false })
+          .limit(50),
+        supabase
+          .from("influking_ppv_unlocks")
+          .select("id, amount_cents, creator_earnings_cents, platform_fee_cents, status, created_at, influking_ppv_posts(title)")
+          .eq("creator_id", user.id)
+          .eq("status", "completed")
+          .order("created_at", { ascending: false })
+          .limit(50),
+        supabase
+          .from("creator_paid_messages")
+          .select("id, amount_paid, platform_fee, creator_payout, status, request_type, created_at")
+          .in("creator_id", creatorIds)
+          .in("status", ["paid", "completed", "replied", "succeeded"])
+          .order("created_at", { ascending: false })
+          .limit(50),
+      ]);
+
+      return {
+        subs: (subsRes.data || []) as unknown as SubRow[],
+        ppv: (ppvRes.data || []) as unknown as PpvRow[],
+        dms: (dmsRes.data || []) as unknown as DmRow[] };
+    } });
+
+  const subs = extra?.subs || [];
+  const ppv = extra?.ppv || [];
+  const dms = extra?.dms || [];
+  const subsNet = subs.reduce((s, r) => s + Number(r.net_cents || 0), 0) / 100;
+  const ppvNet = ppv.reduce((s, r) => s + Number(r.creator_earnings_cents || 0), 0) / 100;
+  const dmsNet = dms.reduce((s, r) => s + Number(r.creator_payout || 0), 0);
+
+
   if (loadingInfluencers) {
     return (
       <>
