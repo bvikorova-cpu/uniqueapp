@@ -74,12 +74,17 @@ const CollabMatchmaker = ({ onBack }: CollabMatchmakerProps) => {
       if (!myProfile) throw new Error("Create your influencer profile first");
       if (!selectedInfluencer) throw new Error("Select an influencer");
 
-      // Send as a message in the platform
-      const { error } = await supabase.from("bazaar_messages").insert({
+      // Send as a direct message conversation
+      const { data: conversationId, error: convError } = await supabase.rpc(
+        "get_or_create_dm_conversation",
+        { _other_user: selectedInfluencer.user_id }
+      );
+      if (convError) throw convError;
+
+      const { error } = await supabase.from("messages").insert({
+        conversation_id: conversationId as string,
         sender_id: user.id,
-        receiver_id: selectedInfluencer.user_id,
-        item_id: selectedInfluencer.id,
-        message: `🤝 Collaboration Proposal from ${myProfile.display_name}:\n\n${collabMessage}` });
+        content: `🤝 Collaboration Proposal from ${myProfile.display_name}:\n\n${collabMessage}` });
       if (error) throw error;
     },
     onSuccess: () => {
