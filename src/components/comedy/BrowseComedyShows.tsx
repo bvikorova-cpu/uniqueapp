@@ -10,6 +10,8 @@ import { ArrowLeft, Calendar, Mic, Users, Ticket, Zap, Star, PlayCircle, BadgeCh
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { openStripeCheckout } from "@/hooks/useClubMembership";
+
 
 interface Props { onBack: () => void; }
 
@@ -92,8 +94,14 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
 
   /** Tickets are paid with real money in EUR via Stripe Checkout. */
   const handleBuy = async (showId: string) => {
+    // Open the tab synchronously so mobile/iframe popup blockers allow it.
+    const pending = window.open("", "_blank");
     const { data: { session } } = await supabase.auth.getSession();
-    if (!session) { toast.error("Please sign in to buy tickets"); return; }
+    if (!session) {
+      pending?.close();
+      toast.error("Please sign in to buy tickets");
+      return;
+    }
     try {
       setBuying(showId);
       const { data, error } = await supabase.functions.invoke("create-checkout", {
@@ -101,13 +109,15 @@ export const BrowseComedyShows = ({ onBack }: Props) => {
       });
       if (error) throw error;
       if (!data?.url) throw new Error(data?.error || "Could not start checkout");
-      window.location.href = data.url;
+      openStripeCheckout(data.url, pending);
     } catch (e: any) {
+      pending?.close();
       toast.error(e?.message || "Failed to start checkout");
     } finally {
       setBuying(null);
     }
   };
+
 
   return (
     <>
