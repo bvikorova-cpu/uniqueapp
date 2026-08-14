@@ -273,11 +273,12 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
 
   return (
     <Card className="border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-transparent">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 flex-wrap">
-          <Crown className="h-5 w-5 text-amber-500" />
-          <span>{creatorName}'s Fan Clubs</span>
-          <div className="ml-auto flex items-center gap-2 flex-wrap">
+      <CardHeader className="p-4 sm:p-6">
+        <CardTitle className="flex items-center gap-2 flex-wrap text-base sm:text-lg">
+          <Crown className="h-5 w-5 text-amber-500 shrink-0" />
+          <span className="min-w-0 break-words">{creatorName}'s Fan Clubs</span>
+          <div className="w-full sm:w-auto sm:ml-auto flex items-center gap-2 flex-wrap">
+
             <Button
               size="sm"
               variant="ghost"
@@ -426,7 +427,7 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
           </Alert>
         </div>
       )}
-      <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-3 p-4 sm:p-6 pt-0">
         {clubs.map((c) => {
           const Icon = TIER_ICON[c.tier];
           const membership = memberships.find((m) => m.fan_club_id === c.id);
@@ -434,16 +435,17 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
           const isOwnClub = !!user && user.id === creatorId;
 
           return (
-            <Card key={c.id} className="border-border/40">
-              <CardContent className="p-4 space-y-2">
-                <div className="flex items-center justify-between">
-                  <Badge variant="outline" className="capitalize gap-1">
+            <Card key={c.id} className="border-border/40 min-w-0">
+              <CardContent className="p-3 sm:p-4 space-y-2 min-w-0">
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <Badge variant="outline" className="capitalize gap-1 shrink-0">
                     <Icon className={`h-3 w-3 ${TIER_COLOR[c.tier]}`} /> {c.tier}
                   </Badge>
-                  <span className="font-bold text-green-500">
+                  <span className="font-bold text-green-500 whitespace-nowrap">
                     €{(c.price_cents / 100).toFixed(2)}<span className="text-xs text-muted-foreground">/mo</span>
                   </span>
                 </div>
+
                 <h4 className="font-semibold text-sm">{c.name}</h4>
                 {c.description && <p className="text-xs text-muted-foreground line-clamp-2">{c.description}</p>}
                 {c.perks.length > 0 && (
@@ -458,8 +460,9 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
                 )}
                 {active ? (
                   <div className="space-y-1">
-                    <Badge className="bg-green-500/10 text-green-600 border-green-500/30 w-full justify-center gap-1">
-                      <CheckCircle2 className="h-3 w-3" /> Active tier
+                    <Badge className="bg-green-500/10 text-green-600 border-green-500/30 w-full justify-center gap-1 text-[11px]">
+                      <CheckCircle2 className="h-3 w-3 shrink-0" /> Active tier
+
                     </Badge>
                     {membership?.cancel_at_period_end ? (
                       <>
@@ -472,10 +475,11 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
                         </Button>
                       </>
                     ) : (
-                      <Button size="sm" variant="ghost" className="w-full text-xs h-7"
+                      <Button size="sm" variant="ghost" className="w-full text-[11px] h-7 px-1"
                         onClick={() => cancel.mutate(c.id)} disabled={cancel.isPending}>
-                        <XCircle className="h-3 w-3 mr-1" /> Cancel at period end
+                        <XCircle className="h-3 w-3 mr-1 shrink-0" /> <span className="truncate">Cancel at period end</span>
                       </Button>
+
                     )}
                   </div>
                 ) : activeMembership && !activeMembership.cancel_at_period_end ? (
