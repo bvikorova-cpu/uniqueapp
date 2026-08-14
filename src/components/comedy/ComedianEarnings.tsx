@@ -71,22 +71,35 @@ export function ComedianEarnings({ earnings, comedianId, onRefresh }: ComedianEa
     <>
       <FloatingHowItWorks title={"Comedian Earnings - How it works"} steps={[{ title: 'Open', desc: 'Access the Comedian Earnings section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Comedian Earnings.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-3 bg-primary/10 rounded-full">
               <DollarSign className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Total Earned</p>
+              <p className="text-sm text-muted-foreground">Total Gross</p>
               <p className="text-3xl font-bold">
-                €{earnings?.totalEarned?.toFixed(2) || '0.00'}
+                €{earnings?.totalGross?.toFixed(2) || '0.00'}
               </p>
             </div>
           </div>
           <p className="text-xs text-muted-foreground">
-            Total earnings from all sources (after 25% platform fee)
+            Total amount paid by viewers
           </p>
+        </Card>
+
+        <Card className="p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-3 bg-muted rounded-full">
+              <TrendingUp className="h-6 w-6 text-muted-foreground" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Platform Fee (20%)</p>
+              <p className="text-3xl font-bold">€{earnings?.platformFee?.toFixed(2) || '0.00'}</p>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground">Your share is 80% of every paid ticket and gift</p>
         </Card>
 
         <Card className="p-6">
@@ -95,7 +108,7 @@ export function ComedianEarnings({ earnings, comedianId, onRefresh }: ComedianEa
               <TrendingUp className="h-6 w-6 text-green-500" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Available Balance</p>
+              <p className="text-sm text-muted-foreground">Your Share (80%)</p>
               <p className="text-3xl font-bold text-green-500">
                 €{earnings?.pendingPayout?.toFixed(2) || '0.00'}
               </p>
@@ -175,17 +188,17 @@ export function ComedianEarnings({ earnings, comedianId, onRefresh }: ComedianEa
           {earnings?.history?.map((earning: any) => (
             <div key={earning.id} className="flex items-center justify-between p-3 border rounded">
               <div>
-                <p className="font-medium">{earning.source}</p>
+                <p className="font-medium capitalize">{String(earning.source_type || "earning").replace(/_/g, " ")}</p>
                 <p className="text-sm text-muted-foreground">
                   {format(new Date(earning.created_at), "MMM d, yyyy")}
                 </p>
               </div>
               <div className="text-right">
                 <p className="font-bold text-green-500">
-                  +€{parseFloat(earning.net_amount).toFixed(2)}
+                  +€{Number(earning.net_amount || 0).toFixed(2)}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  (Total: €{parseFloat(earning.total_earned).toFixed(2)})
+                  Gross €{(Number(earning.amount_coins || 0) / 100).toFixed(2)} · Fee 20% €{Number(earning.platform_commission || 0).toFixed(2)}
                 </p>
               </div>
             </div>

@@ -42,6 +42,7 @@ serve(async (req) => {
       const ticketUserId = md.user_id || user.id;
       const amount = Number(md.amount ?? 0);
       const comedianAmount = Number(md.comedianAmount ?? 0);
+      const platformCommission = Number(md.platformCommission ?? 0);
       if (!showId) throw new Error("session_metadata_incomplete");
 
       const { data: existingTicket } = await admin
@@ -87,6 +88,30 @@ serve(async (req) => {
             .update({ total_earnings: Number((comedian as any).total_earnings ?? 0) + comedianAmount })
             .eq("id", (show as any).comedian_id);
         }
+
+        const comedianId = String((show as any).comedian_id);
+        await admin.from("comedian_earnings").insert({
+          comedian_id: comedianId,
+          amount_coins: Math.round(amount * 100),
+          source_type: "ticket",
+          source_id: showId,
+          description: "Comedy show ticket",
+          commission_rate: 20,
+          platform_commission: platformCommission,
+          net_amount: comedianAmount,
+          pending_payout: comedianAmount,
+        });
+
+        await admin.from("comedy_platform_earnings").insert({
+          comedian_id: comedianId,
+          transaction_type: "ticket",
+          total_amount: amount,
+          comedian_amount: comedianAmount,
+          platform_commission: platformCommission,
+          commission_rate: 20,
+          related_id: showId,
+          status: "pending",
+        });
       }
 
       return new Response(
