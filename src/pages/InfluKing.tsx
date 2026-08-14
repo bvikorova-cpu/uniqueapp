@@ -493,7 +493,8 @@ const InfluKing = () => {
               { v: "studio", l: t("influking.tab_studio", "Creator Studio"), i: Crown },
               { v: "tools", l: t("influking.tab_tools", "AI Tools"), i: Brain },
               { v: "discover", l: t("influking.tab_discover", "Discover"), i: TrendingUp },
-              { v: "guide", l: t("influking.tab_guide", "How it works"), i: Star },
+              { v: "following", l: t("influking.tab_following", "Following"), i: Users },
+
             ].map(({ v, l, i: Icon }) => (
               <TabsTrigger key={v} value={v}
                 className="gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg">
