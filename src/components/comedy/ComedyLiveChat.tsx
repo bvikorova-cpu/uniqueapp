@@ -311,7 +311,7 @@ export function ComedyLiveChat({ showId, canModerate = false, className }: Comed
 
       <div className="mt-3 flex gap-2">
         <Input
-          placeholder={muted ? "You are timed out" : "Type a message..."}
+          placeholder={muted ? "You are timed out" : `Type a message... (${CREDIT_COSTS.comedy_chat_message} credit)`}
           value={value}
           maxLength={MAX_MESSAGE_LEN}
           disabled={muted}
