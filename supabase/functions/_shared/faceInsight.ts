@@ -240,11 +240,15 @@ export async function handleFaceInsight(req: Request, body: any): Promise<Respon
       return errorResponse("The analysis could not be completed. Your credits were refunded.", 500);
     }
 
-    const parsed = safeJson(raw);
+    let parsed: any = safeJson(raw);
     if (!parsed || typeof parsed !== "object" || !parsed.report) {
+      parsed = salvage(raw);
+    }
+    if (!parsed || !parsed.report) {
       await refundAICredits(user.id, cost, `face-insight-${mode}`);
       return errorResponse("The studio could not read this photo. Try a clear, front-facing picture.", 502);
     }
+
 
     const report = {
       mode,
