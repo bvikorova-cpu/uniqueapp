@@ -73,6 +73,19 @@ export function PaidMessageDialog({ open,
         "create-paid-message-checkout",
         { body: { creatorId, message: trimmed, requestType: tab } }
       );
+      if (result.error) {
+        // Surface the real server message instead of the generic non-2xx text.
+        let msg = result.error.message || "Checkout failed";
+        try {
+          const ctx = (result.error as any).context;
+          const text = ctx && typeof ctx.text === "function" ? await ctx.text() : null;
+          if (text) {
+            const parsed = JSON.parse(text);
+            if (parsed?.error) msg = String(parsed.error);
+          }
+        } catch { /* keep original message */ }
+        throw new Error(msg);
+      }
       const data = throwIfInvokeError(result);
       if (data?.url) {
         window.location.assign(data.url);
