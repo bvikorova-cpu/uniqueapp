@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -444,7 +445,7 @@ const InfluKing = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-12">
+    <div className="min-h-screen bg-gradient-to-b from-background via-primary/[0.04] to-background pt-20 pb-12">
       <div className="container mx-auto px-4">
         {/* Cinematic Hero */}
         <InfluKingHero
@@ -454,9 +455,28 @@ const InfluKing = () => {
           totalViews={totalViews}
         />
 
+        <Tabs defaultValue="studio" className="mt-4">
+          <TabsList className="mx-auto mb-8 flex h-auto w-full max-w-3xl flex-wrap justify-center gap-1 rounded-2xl border border-primary/15 bg-card/70 p-1.5 shadow-[0_8px_30px_-12px_hsl(var(--primary)/0.35)] backdrop-blur-xl">
+            {[
+              { v: "studio", l: t("influking.tab_studio", "Creator Studio"), i: Crown },
+              { v: "tools", l: t("influking.tab_tools", "AI Tools"), i: Brain },
+              { v: "discover", l: t("influking.tab_discover", "Discover"), i: TrendingUp },
+              { v: "guide", l: t("influking.tab_guide", "How it works"), i: Star },
+            ].map(({ v, l, i: Icon }) => (
+              <TabsTrigger key={v} value={v}
+                className="gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg">
+                <Icon className="h-4 w-4" /> {l}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
+        <TabsContent value="studio" className="space-y-6 focus-visible:outline-none">
+        <p className="mx-auto mb-4 max-w-2xl text-center text-sm text-muted-foreground">
+          {t("influking.studio_hint", "Everything you need in one place: publish content, sell premium posts, go live and manage your money.")}
+        </p>
         {/* Action Buttons */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-          className="flex flex-wrap items-center justify-center gap-3 mb-8">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+          className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-3 rounded-3xl border border-primary/15 bg-card/70 p-5 shadow-[0_10px_40px_-20px_hsl(var(--primary)/0.5)] backdrop-blur-xl">
           {myProfile ? (
             <>
               <Dialog open={showPostDialog} onOpenChange={setShowPostDialog}>
@@ -513,18 +533,34 @@ const InfluKing = () => {
               </Button>
               <GoLiveButton influencerId={myProfile.id} />
 
-              <Button variant="outline" onClick={() => navigate("/creator/live-analytics")}>Live Analytics</Button>
-              <Button variant="outline" onClick={() => navigate("/influencer/earnings")}>{t("influking.my_earnings")}</Button>
-              <Button variant="outline" onClick={() => setSelectedInfluencer(myProfile)}>{t("influking.my_profile")}</Button>
-              <Button variant="destructive" size="sm" onClick={async () => {
-                if (!confirm('Delete your influencer profile? This is irreversible.')) return;
-                const { error } = await supabase.from('influencer_profiles').delete().eq('id', myProfile.id).eq('user_id', user.id);
-                if (!error) {
-                  queryClient.invalidateQueries({ queryKey: ["myInfluencerProfile"] });
-                  queryClient.invalidateQueries({ queryKey: ["topInfluencers"] });
-                  toast({ title: "Profile Deleted" });
-                }
-              }}>{t("influking.delete_profile")}</Button>
+              <div className="mt-2 w-full border-t border-primary/10 pt-4">
+                <p className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                  {t("influking.manage_heading", "Manage your creator business")}
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  <Button variant="secondary" className="gap-2" onClick={() => setSelectedInfluencer(myProfile)}>
+                    <Star className="h-4 w-4" /> {t("influking.my_profile")}
+                  </Button>
+                  <Button variant="secondary" className="gap-2" onClick={() => navigate("/influencer/earnings")}>
+                    <Wallet className="h-4 w-4" /> {t("influking.my_earnings")}
+                  </Button>
+                  <Button variant="secondary" className="gap-2" onClick={() => navigate("/creator/live-analytics")}>
+                    <BarChart3 className="h-4 w-4" /> Live analytics
+                  </Button>
+                  <Button variant="secondary" className="gap-2" onClick={() => navigate("/edit-profile")}>
+                    <Pencil className="h-4 w-4" /> Edit profile
+                  </Button>
+                  <Button variant="ghost" size="sm" className="text-destructive hover:bg-destructive/10" onClick={async () => {
+                    if (!confirm('Delete your influencer profile? This is irreversible.')) return;
+                    const { error } = await supabase.from('influencer_profiles').delete().eq('id', myProfile.id).eq('user_id', user.id);
+                    if (!error) {
+                      queryClient.invalidateQueries({ queryKey: ["myInfluencerProfile"] });
+                      queryClient.invalidateQueries({ queryKey: ["topInfluencers"] });
+                      toast({ title: "Profile Deleted" });
+                    }
+                  }}>{t("influking.delete_profile")}</Button>
+                </div>
+              </div>
             </>
           ) : (
             <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
@@ -577,35 +613,47 @@ const InfluKing = () => {
             </Dialog>
           )}
         </motion.div>
+        </TabsContent>
 
-        {/* Tools Grid */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mb-8">
-          <h2 className="text-xl font-black mb-4 flex items-center gap-2">
-            <Crown className="h-5 w-5 text-amber-500" /> {t("influking.tools_heading")}
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {TOOLS.map((tool, i) => (
-              <motion.div key={tool.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5 + i * 0.08 }} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                <Card className="backdrop-blur-xl bg-card/80 border-primary/10 hover:border-primary/30 transition-all cursor-pointer group"
-                  onClick={() => tool.id === "live" ? navigate("/live") : setActiveView(tool.id as InfluKingView)}>
-                  <CardContent className="p-4 text-center">
-                    <div className={`${tool.bg} rounded-xl p-3 w-fit mx-auto mb-2 group-hover:scale-110 transition-transform`}>
-                      <tool.icon className={`h-6 w-6 ${tool.color}`} />
-                    </div>
-                    <h3 className="font-bold text-sm mb-1">{tool.label}</h3>
-                    <p className="text-[10px] text-muted-foreground">{tool.description}</p>
-                    {tool.paid && <Badge className="mt-2 text-[9px] bg-primary/20 text-primary border-primary/30">{t("influking.ai_powered_badge")}</Badge>}
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+        {/* Tools */}
+        <TabsContent value="tools" className="space-y-8 focus-visible:outline-none">
+          {[
+            { title: t("influking.group_create", "Create & grow"), ids: ["content-planner", "hashtags", "thumbnails", "publisher", "challenges"] },
+            { title: t("influking.group_monetize", "Earn money"), ids: ["fan-club", "ppv", "brand-deals", "collab", "live"] },
+            { title: t("influking.group_insights", "Know your audience"), ids: ["analytics", "audience"] },
+          ].map((group, gi) => (
+            <motion.div key={group.title} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * gi }}>
+              <div className="mb-4 flex items-center gap-3">
+                <span className="h-px flex-1 bg-gradient-to-r from-transparent to-primary/30" />
+                <h2 className="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground">{group.title}</h2>
+                <span className="h-px flex-1 bg-gradient-to-l from-transparent to-primary/30" />
+              </div>
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                {group.ids.map((id) => TOOLS.find((tl) => tl.id === id)).filter(Boolean).map((tool: any, i) => (
+                  <motion.div key={tool.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.05 * i }} whileHover={{ y: -4 }} whileTap={{ scale: 0.97 }}>
+                    <Card className="group h-full cursor-pointer overflow-hidden rounded-2xl border-primary/10 bg-card/70 backdrop-blur-xl transition-all hover:border-primary/40 hover:shadow-[0_16px_40px_-20px_hsl(var(--primary)/0.6)]"
+                      onClick={() => tool.id === "live" ? navigate("/live") : setActiveView(tool.id as InfluKingView)}>
+                      <CardContent className="flex h-full flex-col items-center p-5 text-center">
+                        <div className={`${tool.bg} mb-3 rounded-2xl p-3.5 ring-1 ring-inset ring-primary/10 transition-transform group-hover:scale-110`}>
+                          <tool.icon className={`h-6 w-6 ${tool.color}`} />
+                        </div>
+                        <h3 className="mb-1 text-sm font-bold leading-tight">{tool.label}</h3>
+                        <p className="text-[11px] leading-snug text-muted-foreground">{tool.description}</p>
+                        {tool.paid && <Badge className="mt-3 border-primary/30 bg-primary/15 text-[9px] text-primary">{t("influking.ai_powered_badge")}</Badge>}
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </TabsContent>
 
-        {/* Description Card */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
-          <Card className="max-w-4xl mx-auto mb-8 backdrop-blur-xl bg-card/80 border-primary/10">
+        {/* Guide */}
+        <TabsContent value="guide" className="focus-visible:outline-none">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <Card className="mx-auto mb-8 max-w-4xl rounded-3xl border-primary/15 bg-card/70 shadow-[0_10px_40px_-24px_hsl(var(--primary)/0.5)] backdrop-blur-xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Star className="h-5 w-5 text-amber-500" /> {t("influking.what_is_title")}
@@ -639,6 +687,8 @@ const InfluKing = () => {
             </CardContent>
           </Card>
         </motion.div>
+        </TabsContent>
+
 
         {/* Influencer Detail Dialog */}
         <Dialog open={!!selectedInfluencer} onOpenChange={() => setSelectedInfluencer(null)}>
@@ -754,13 +804,14 @@ const InfluKing = () => {
         )}
 
         {/* TOP Influencers Leaderboard */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}>
-          <Card className="max-w-6xl mx-auto backdrop-blur-xl bg-card/80 border-primary/10">
+        <TabsContent value="discover" className="focus-visible:outline-none">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <Card className="mx-auto max-w-6xl rounded-3xl border-primary/15 bg-card/70 shadow-[0_10px_40px_-24px_hsl(var(--primary)/0.5)] backdrop-blur-xl">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-2xl font-black">
                 <TrendingUp className="h-6 w-6 text-amber-500" /> TOP Influencers
               </CardTitle>
-              <CardDescription>Leaderboard ranked by follower count</CardDescription>
+              <CardDescription>Tap any creator to open their profile, posts, fan club and gifts</CardDescription>
             </CardHeader>
             <CardContent>
               {isLoading ? (
@@ -816,6 +867,8 @@ const InfluKing = () => {
             </CardContent>
           </Card>
         </motion.div>
+        </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
