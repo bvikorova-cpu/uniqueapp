@@ -155,16 +155,47 @@ export const InfluencerEarningsPage = () => {
           .limit(50),
       ]);
 
+      // Active fan club members (VIP tiers) of clubs owned by this creator
+      const { data: clubs } = await supabase
+        .from("influencer_fan_clubs")
+        .select("id, name, tier, price_cents")
+        .eq("creator_id", user.id);
+      let members: any[] = [];
+      if (clubs && clubs.length > 0) {
+        const { data: memberRows } = await supabase
+          .from("influencer_fan_club_members")
+          .select("id, fan_club_id, status, subscribed_at, current_period_end")
+          .in("fan_club_id", clubs.map((c: any) => c.id))
+          .in("status", ["active", "trialing", "past_due"])
+          .order("subscribed_at", { ascending: false })
+          .limit(100);
+        members = (memberRows || []).map((m: any) => {
+          const club = clubs.find((c: any) => c.id === m.fan_club_id);
+          const gross = Number(club?.price_cents || 0);
+          return {
+            id: m.id,
+            name: club?.name || club?.tier || "Fan club",
+            status: m.status,
+            gross_cents: gross,
+            net_cents: Math.round(gross * 0.85),
+            created_at: m.subscribed_at,
+            current_period_end: m.current_period_end };
+        });
+      }
+
       return {
         subs: (subsRes.data || []) as unknown as SubRow[],
+        members,
         ppv: (ppvRes.data || []) as unknown as PpvRow[],
         dms: (dmsRes.data || []) as unknown as DmRow[] };
     } });
 
   const subs = extra?.subs || [];
+  const members = extra?.members || [];
   const ppv = extra?.ppv || [];
   const dms = extra?.dms || [];
-  const subsNet = subs.reduce((s, r) => s + Number(r.net_cents || 0), 0) / 100;
+  const membersNet = members.reduce((s: number, r: any) => s + Number(r.net_cents || 0), 0) / 100;
+  const subsNet = subs.reduce((s, r) => s + Number(r.net_cents || 0), 0) / 100 + membersNet;
   const ppvNet = ppv.reduce((s, r) => s + Number(r.creator_earnings_cents || 0), 0) / 100;
   const dmsNet = dms.reduce((s, r) => s + Number(r.creator_payout || 0), 0);
 
