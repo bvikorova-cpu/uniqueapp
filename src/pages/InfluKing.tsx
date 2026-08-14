@@ -368,7 +368,9 @@ const InfluKing = () => {
       setFollowStatusMap(prev => ({ ...prev, [variables.influencerId]: variables.follow }));
       queryClient.invalidateQueries({ queryKey: ["isFollowing"] });
       queryClient.invalidateQueries({ queryKey: ["topInfluencers"] });
-      toast({ title: variables.follow ? "✅ Following" : "Unfollowed" });
+      queryClient.invalidateQueries({ queryKey: ["myFollowedInfluencers"] });
+      toast({ title: variables.follow ? "✅ Following" : "Unfollowed", description: variables.follow ? "Added to your Following list" : undefined });
+
     } });
 
   const likePostMutation = useMutation({
