@@ -146,7 +146,13 @@ export default function AdminComedyPayouts() {
         />
 
         <AdminGlassCard className="p-4 sm:p-6 mb-6">
+          <h2 className="text-2xl font-black mb-4">Comedy earnings (80 / 20)</h2>
+          <AdminComedyEarningsOverview />
+        </AdminGlassCard>
+
+        <AdminGlassCard className="p-4 sm:p-6 mb-6">
           <h2 className="text-2xl font-black mb-4">Withdrawal Requests</h2>
+
           <div className="space-y-3">
             {requests.map((request) => (
               <Card key={request.id} className="p-4">
