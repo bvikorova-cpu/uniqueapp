@@ -114,7 +114,9 @@ const PhotoPicker = ({
 };
 
 
-const ReportView = ({ report, photo }: { report: Report; photo?: string | null }) => (
+const ReportView = ({ report, photo }: { report: Report; photo?: string | null }) => {
+  const { toast } = useToast();
+  return (
   <Card className="overflow-hidden border-primary/20">
     <div className="bg-gradient-to-br from-primary/15 via-accent/10 to-transparent p-5 space-y-3">
       <Badge className="bg-gradient-to-r from-primary to-accent text-white border-0">
