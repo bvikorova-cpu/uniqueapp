@@ -52,11 +52,11 @@ export default function PaidMessageSuccess() {
               <CheckCircle2 className="h-16 w-16 mx-auto text-green-500" />
               <h1 className="text-2xl font-bold">Payment successful!</h1>
               <p className="text-muted-foreground">
-                Your message was delivered to the creator. You'll get a
-                notification when they respond.
+                Your message was delivered to the creator's paid inbox. You'll
+                get a notification as soon as they reply.
               </p>
-              <Button onClick={() => navigate("/messages")} className="w-full">
-                Go to Messages
+              <Button onClick={() => navigate("/influ-king")} className="w-full">
+                Back to InfluKing
               </Button>
             </>
           )}
