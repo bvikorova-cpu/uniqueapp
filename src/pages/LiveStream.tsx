@@ -273,7 +273,11 @@ export default function LiveStream() {
             : "This browser does not support live camera streaming"
         );
       }
+      if (inIframe && cameraBlockedByPolicy()) {
+        throw new Error("Camera is blocked in the embedded preview — open the stream in a new tab");
+      }
       const mediaStream = await requestStream();
+
       localStreamRef.current = mediaStream;
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
