@@ -129,7 +129,7 @@ export default function ComedianDashboard() {
                         <p className="text-sm text-muted-foreground">{new Date(show.scheduled_at).toLocaleString()}</p>
                       </div>
                       <div className="text-right">
-                        <p className="font-bold">{show.ticket_price_coins} coins</p>
+                        <p className="font-bold">€{Number(show.ticket_price_coins || 0).toFixed(2)}</p>
                         <Badge variant="secondary">{show.status}</Badge>
                       </div>
                     </div>
@@ -146,7 +146,7 @@ export default function ComedianDashboard() {
                 {clips.map((clip) => (
                   <Card key={clip.id} className="p-4">
                     <h4 className="font-bold mb-2">{clip.title}</h4>
-                    <p className="text-sm text-muted-foreground mb-2">{clip.price_coins} coins</p>
+                    <p className="text-sm text-muted-foreground mb-2">€{Number(clip.price_coins || 0).toFixed(2)}</p>
                     <p className="text-xs text-muted-foreground">Sales: {clip.sales_count || 0}</p>
                   </Card>
                 ))}
