@@ -24,9 +24,10 @@ export default function PaidMessageSuccess() {
     (async () => {
       try {
         const { data, error } = await supabase.functions.invoke(
-          "verify-paid-message",
-          { body: { id, sessionId } }
+          "create-checkout",
+          { body: { product: "paid_message", action: "verify", id, sessionId } }
         );
+
         if (error) throw error;
         setState(data?.status === "paid" ? "paid" : "pending");
       } catch (e: any) {
