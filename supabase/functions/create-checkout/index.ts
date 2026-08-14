@@ -686,7 +686,10 @@ async function handler(req: Request): Promise<Response> {
     // ─── ACTION: verify (used by all verify-*-payment aliases) ───
     // Verifies a Stripe Checkout session id and returns its status.
     // Body: { action: "verify", sessionId: string, product?: string }
-    if (body.action === "verify") {
+    if (
+      body.action === "verify" &&
+      !["paid_message", "fan_club", "ppv", "influencer_gift"].includes(String(body.product || ""))
+    ) {
       const sessionId = body.sessionId || body.session_id;
       if (!sessionId) {
         return successResponse({ verified: false, error: "Missing sessionId" });
@@ -704,6 +707,68 @@ async function handler(req: Request): Promise<Response> {
         const msg = e instanceof Error ? e.message : String(e);
         return successResponse({ verified: false, error: msg });
       }
+    }
+
+    // ─── InfluKing gifts — verify a returned session or recover all paid pending gifts ───
+    if (body.product === "influencer_gift") {
+      if (!userId) return errorResponse("Login required", 401);
+      const admin = createSupabaseAdminClient();
+      const requestedSessionId = String(body.sessionId || body.session_id || "");
+      const recover = body.recover === true;
+
+      let pendingQuery = admin
+        .from("influencer_sent_gifts")
+        .select("id, sender_id, influencer_id, status, stripe_session_id")
+        .eq("status", "pending");
+
+      if (requestedSessionId) {
+        pendingQuery = pendingQuery.eq("stripe_session_id", requestedSessionId);
+      } else if (recover) {
+        const { data: ownedProfiles } = await admin
+          .from("influencer_profiles")
+          .select("id")
+          .eq("user_id", userId);
+        const influencerIds = (ownedProfiles || []).map((profile) => profile.id);
+        if (influencerIds.length > 0) {
+          pendingQuery = pendingQuery.or(`sender_id.eq.${userId},influencer_id.in.(${influencerIds.join(",")})`);
+        } else {
+          pendingQuery = pendingQuery.eq("sender_id", userId);
+        }
+      } else {
+        return errorResponse("sessionId required", 400);
+      }
+
+      const { data: pendingGifts, error: pendingError } = await pendingQuery.limit(100);
+      if (pendingError) return errorResponse(pendingError.message, 400);
+
+      let settled = 0;
+      for (const gift of pendingGifts || []) {
+        if (!gift.stripe_session_id) continue;
+        if (gift.sender_id !== userId) {
+          const { data: owned } = await admin
+            .from("influencer_profiles")
+            .select("id")
+            .eq("id", gift.influencer_id)
+            .eq("user_id", userId)
+            .maybeSingle();
+          if (!owned) continue;
+        }
+        const session = await stripe.checkout.sessions.retrieve(gift.stripe_session_id);
+        if (session.payment_status !== "paid") continue;
+        const paymentIntentId = typeof session.payment_intent === "string"
+          ? session.payment_intent
+          : session.payment_intent?.id ?? null;
+        const { data: updated } = await admin
+          .from("influencer_sent_gifts")
+          .update({ status: "completed", stripe_payment_intent: paymentIntentId })
+          .eq("id", gift.id)
+          .eq("status", "pending")
+          .select("id")
+          .maybeSingle();
+        if (updated) settled += 1;
+      }
+
+      return successResponse({ paid: settled > 0, settled });
     }
 
     // ─── CAMPAIGN DONATION PATH ───
@@ -2632,12 +2697,13 @@ async function handler(req: Request): Promise<Response> {
         const paid = session.payment_status === "paid";
         const { data: unlock } = await admin
           .from("influking_ppv_unlocks")
-          .select("id, status")
+          .select("id, buyer_id, status")
           .eq("stripe_session_id", sessionId)
           .maybeSingle();
         if (!unlock) return errorResponse("Unlock record not found", 404);
+        if (unlock.buyer_id !== userId) return errorResponse("Not your purchase", 403);
         if (paid && unlock.status !== "completed") {
-          await admin
+          const { error: updateError } = await admin
             .from("influking_ppv_unlocks")
             .update({
               status: "completed",
@@ -2646,6 +2712,7 @@ async function handler(req: Request): Promise<Response> {
                 : (session.payment_intent as any)?.id ?? null,
               unlocked_at: new Date().toISOString() })
             .eq("id", unlock.id);
+          if (updateError) return errorResponse(updateError.message, 400);
         }
         return successResponse({ verified: paid, status: session.payment_status });
       }

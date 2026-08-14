@@ -499,6 +499,88 @@ serve(async (req) => {
       // ─── CHECKOUT COMPLETED (fallback if frontend verify never fires) ─
       case "checkout.session.completed": { const session = event.data.object as Stripe.Checkout.Session;
 
+        // ── InfluKing creator economy: Stripe is the source of truth. ─────
+        // These updates do not depend on the buyer returning to the app.
+        if (session.payment_status === "paid") {
+          const meta = (session.metadata ?? {}) as Record<string, string>;
+          const paymentIntentId = typeof session.payment_intent === "string"
+            ? session.payment_intent
+            : session.payment_intent?.id ?? null;
+
+          try {
+            if (meta.type === "paid_message" && meta.paid_message_id) {
+              const { data: message, error } = await supabase
+                .from("creator_paid_messages")
+                .update({ status: "paid", stripe_session_id: session.id })
+                .eq("id", meta.paid_message_id)
+                .eq("status", "pending")
+                .select("id, sender_id, creator_id, request_type")
+                .maybeSingle();
+              if (error) log("paid message webhook update failed", { err: error.message });
+              if (message) {
+                await supabase.from("notifications").insert({
+                  user_id: message.creator_id,
+                  type: "paid_message_received",
+                  title: message.request_type === "shoutout" ? "New paid shoutout request" : "New paid message",
+                  message: "A customer completed payment. Open Creator Inbox to view it.",
+                  related_id: message.id,
+                  is_read: false });
+              }
+            }
+
+            if (meta.type === "ppv_unlock") {
+              const { data: unlock, error } = await supabase
+                .from("influking_ppv_unlocks")
+                .update({ status: "completed",
+                  stripe_payment_intent_id: paymentIntentId,
+                  unlocked_at: new Date().toISOString() })
+                .eq("stripe_session_id", session.id)
+                .eq("status", "pending")
+                .select("id, creator_id")
+                .maybeSingle();
+              if (error) log("ppv webhook update failed", { err: error.message });
+              if (unlock) {
+                await supabase.from("notifications").insert({
+                  user_id: unlock.creator_id,
+                  type: "ppv_purchase_received",
+                  title: "New PPV purchase",
+                  message: "Your paid post was unlocked by a customer.",
+                  related_id: unlock.id,
+                  is_read: false });
+              }
+            }
+
+            if (meta.type === "influencer_gift") {
+              const { data: gift, error } = await supabase
+                .from("influencer_sent_gifts")
+                .update({ status: "completed", stripe_payment_intent: paymentIntentId })
+                .eq("stripe_session_id", session.id)
+                .eq("status", "pending")
+                .select("id, influencer_id, amount")
+                .maybeSingle();
+              if (error) log("influencer gift webhook update failed", { err: error.message });
+              if (gift) {
+                const { data: profile } = await supabase
+                  .from("influencer_profiles")
+                  .select("user_id")
+                  .eq("id", gift.influencer_id)
+                  .maybeSingle();
+                if (profile?.user_id) {
+                  await supabase.from("notifications").insert({
+                    user_id: profile.user_id,
+                    type: "influencer_gift_received",
+                    title: "New gift received",
+                    message: `You received a €${Number(gift.amount).toFixed(2)} gift.`,
+                    related_id: gift.id,
+                    is_read: false });
+                }
+              }
+            }
+          } catch (e) {
+            log("InfluKing payment persistence error", { err: (e as Error).message, session: session.id });
+          }
+        }
+
         // ── Megatalent: flip pending → paid by session metadata ─────────
         try {
           const mtKind = session.metadata?.mt_kind as string | undefined;
@@ -857,8 +939,8 @@ serve(async (req) => {
                 const sub = await stripe.subscriptions.retrieve(subId);
                 if (session.metadata?.module === "megatalent") {
                   await syncMegatalentSubscription(supabase, stripe, sub);
-                  await syncFanClubMembership(supabase, stripe, sub);
                 }
+                await syncFanClubMembership(supabase, stripe, sub);
                 await syncKidsGoldPass(supabase, stripe, sub, session.metadata?.user_id ?? null);
                 log("subscription cache synced via checkout.completed", { user: session.metadata?.user_id, sub: subId, module: session.metadata?.module });
               } catch (e) {
