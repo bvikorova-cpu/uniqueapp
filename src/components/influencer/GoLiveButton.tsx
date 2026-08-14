@@ -35,6 +35,21 @@ export function GoLiveButton({ influencerId }: GoLiveButtonProps) {
     scheduled_at: "",
     min_tier: "public" as "public" | "bronze" | "silver" | "gold",
   });
+  const [myClubs, setMyClubs] = useState<Array<{ tier: "bronze" | "silver" | "gold"; name: string }>>([]);
+
+  useEffect(() => {
+    if (!open) return;
+    (async () => {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) return;
+      const { data } = await (supabase as any)
+        .from("influencer_fan_clubs")
+        .select("tier, name")
+        .eq("creator_id", auth.user.id)
+        .eq("is_active", true);
+      setMyClubs((data as any[])?.map((c) => ({ tier: c.tier, name: c.name })) ?? []);
+    })();
+  }, [open]);
 
   const submit = async () => {
     if (!form.title.trim()) {
