@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,11 +13,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Crown, Users, Heart, TrendingUp, Camera, Plus, CheckCircle, Star, Upload, ExternalLink, Gift, Brain, Handshake, Briefcase, Pencil, Wallet } from "lucide-react";
+import { Crown, Users, Heart, TrendingUp, Camera, Plus, CheckCircle, Star, Upload, ExternalLink, Gift, Brain, Handshake, Briefcase, Pencil, Wallet, Search } from "lucide-react";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { GoLiveButton } from "@/components/influencer/GoLiveButton";
 import { SendInfluencerGiftDialog } from "@/components/influencer/SendInfluencerGiftDialog";
-import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import InfluKingHero from "@/components/influking/InfluKingHero";
 import AIContentPlanner from "@/components/influking/AIContentPlanner";
@@ -33,6 +33,7 @@ import PPVStudio from "@/components/influking/PPVStudio";
 import PPVLockedFeed from "@/components/influking/PPVLockedFeed";
 import { InfluencerPostComments } from "@/components/influking/InfluencerPostComments";
 import { PaidMessageDialog } from "@/components/creator/PaidMessageDialog";
+import { useDebounce } from "@/hooks/use-debounce";
 
 import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio, MessageCircle, ShieldAlert } from "lucide-react";
 
@@ -103,6 +104,8 @@ const InfluKing = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const captureInputRef = useRef<HTMLInputElement | null>(null);
+  const [discoverSearch, setDiscoverSearch] = useState("");
+  const debouncedDiscoverSearch = useDebounce(discoverSearch, 300);
 
   const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
   const [followStatusMap, setFollowStatusMap] = useState<Record<string, boolean>>({});
@@ -835,6 +838,15 @@ const InfluKing = () => {
                 <TrendingUp className="h-6 w-6 text-amber-500" /> TOP Influencers
               </CardTitle>
               <CardDescription>Tap any creator to open their profile, posts, fan club and gifts</CardDescription>
+              <div className="relative max-w-md pt-2">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search influencers..."
+                  value={discoverSearch}
+                  onChange={(e) => setDiscoverSearch(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
             </CardHeader>
             <CardContent>
               {isLoading ? (
@@ -846,7 +858,17 @@ const InfluKing = () => {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {topInfluencers.map((influencer, index) => (
+                  {topInfluencers
+                    .filter((influencer) => {
+                      const q = debouncedDiscoverSearch.trim().toLowerCase();
+                      if (!q) return true;
+                      return (
+                        influencer.display_name.toLowerCase().includes(q) ||
+                        influencer.category.toLowerCase().includes(q) ||
+                        (influencer.bio && influencer.bio.toLowerCase().includes(q))
+                      );
+                    })
+                    .map((influencer, index) => (
                     <motion.div key={influencer.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.8 + index * 0.03 }}
                       onClick={() => setSelectedInfluencer(influencer)}
