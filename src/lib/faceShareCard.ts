@@ -113,11 +113,30 @@ export async function downloadFaceShareCard(opts: {
   const blob = await new Promise<Blob | null>((resolve) =>
     canvas.toBlob((b) => resolve(b), "image/png")
   );
+  const fileName = `face-insight-card-${Date.now()}.png`;
+
+  // Prefer the native share sheet (any device that supports file sharing).
+  if (blob) {
+    const file = new File([blob], fileName, { type: "image/png" });
+    const nav = navigator as Navigator & {
+      canShare?: (data: { files: File[] }) => boolean;
+      share?: (data: unknown) => Promise<void>;
+    };
+    if (nav.share && nav.canShare?.({ files: [file] })) {
+      try {
+        await nav.share({ files: [file], title: "Face Insight Studio" });
+        return "shared";
+      } catch (e: any) {
+        if (e?.name === "AbortError") return "cancelled";
+      }
+    }
+  }
+
   const url = blob ? URL.createObjectURL(blob) : canvas.toDataURL("image/png");
   try {
-    // Handles mobile share sheet + desktop download reliably.
-    return await downloadImage(url, `face-insight-card-${Date.now()}.png`);
+    return await downloadImage(url, fileName);
   } finally {
     if (blob) setTimeout(() => URL.revokeObjectURL(url), 15000);
   }
 }
+
