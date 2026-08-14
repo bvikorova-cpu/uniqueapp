@@ -24,8 +24,8 @@ export function usePPVCheckout() {
   const buy = useCallback(async (postId: string) => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("ppv-checkout", {
-        body: { postId } });
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { product: "ppv", action: "checkout", postId } });
       if (error) {
         // Surface the real server message instead of the generic non-2xx text.
         let msg = error.message || "Checkout failed";

@@ -70,8 +70,8 @@ export function PaidMessageDialog({ open,
         return;
       }
       const result = await supabase.functions.invoke(
-        "create-paid-message-checkout",
-        { body: { creatorId, message: trimmed, requestType: tab } }
+        "create-checkout",
+        { body: { product: "paid_message", action: "checkout", creatorId, message: trimmed, requestType: tab } }
       );
       if (result.error) {
         // Surface the real server message instead of the generic non-2xx text.
