@@ -41,7 +41,7 @@ const AIContentPlanner = ({ onBack }: AIContentPlannerProps) => {
   const [generatedPlan, setGeneratedPlan] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const { data: credits } = useQuery({
+  const { data: credits, refetch: refetchCredits } = useQuery({
     queryKey: ["ai-credits-influking"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -70,20 +70,25 @@ const AIContentPlanner = ({ onBack }: AIContentPlannerProps) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      // Deduct credits
-      await supabase.rpc("deduct_ai_credits" as any, { p_user_id: user.id, p_amount: 5 });
+      // Deduct credits through the unified credit ledger
+      const { data: spend, error: spendError } = await supabase.rpc("spend_ai_credits" as any, {
+        _amount: 5,
+        _reason: `influking_content_planner:${niche.slice(0, 60)}`,
+        _source: "influking" });
+      if (spendError) throw spendError;
+      if (!(spend as any)?.ok) {
+        throw new Error((spend as any)?.error === "insufficient"
+          ? "You do not have enough AI credits (5 required)."
+          : "Could not charge AI credits. Please try again.");
+      }
 
       // Generate content plan based on niche
       const weekPlan = generateWeeklyPlan(niche);
       setGeneratedPlan(weekPlan);
-
-      await supabase.from("ai_usage_history").insert({
-        user_id: user.id,
-        usage_type: "content_planner",
-        credits_used: 5,
-        description: `Content plan generated for niche: ${niche}` });
+      await refetchCredits();
 
       toast({ title: "✅ Plan Generated!", description: "Your 7-day content plan is ready (5 credits used)" });
+
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } finally {
