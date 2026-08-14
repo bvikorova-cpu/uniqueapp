@@ -2697,12 +2697,13 @@ async function handler(req: Request): Promise<Response> {
         const paid = session.payment_status === "paid";
         const { data: unlock } = await admin
           .from("influking_ppv_unlocks")
-          .select("id, status")
+          .select("id, buyer_id, status")
           .eq("stripe_session_id", sessionId)
           .maybeSingle();
         if (!unlock) return errorResponse("Unlock record not found", 404);
+        if (unlock.buyer_id !== userId) return errorResponse("Not your purchase", 403);
         if (paid && unlock.status !== "completed") {
-          await admin
+          const { error: updateError } = await admin
             .from("influking_ppv_unlocks")
             .update({
               status: "completed",
@@ -2711,6 +2712,7 @@ async function handler(req: Request): Promise<Response> {
                 : (session.payment_intent as any)?.id ?? null,
               unlocked_at: new Date().toISOString() })
             .eq("id", unlock.id);
+          if (updateError) return errorResponse(updateError.message, 400);
         }
         return successResponse({ verified: paid, status: session.payment_status });
       }
