@@ -10,10 +10,76 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
-    const { sessionId } = await req.json();
-    if (!sessionId) throw new Error("Missing sessionId");
+    const body = await req.json().catch(() => ({}));
+    const sessionId: string | undefined = body?.sessionId;
+    const isInfluencer = body?.context === "influencer" || !!body?.recover;
+    if (!sessionId && !isInfluencer) throw new Error("Missing sessionId");
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
+
+    if (isInfluencer) {
+      const admin = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+        { auth: { persistSession: false } },
+      );
+      const authHeader = req.headers.get("Authorization") || "";
+      let callerId: string | null = null;
+      if (authHeader.startsWith("Bearer ")) {
+        const { data } = await admin.auth.getUser(authHeader.replace("Bearer ", ""));
+        callerId = data.user?.id ?? null;
+      }
+
+      const settle = async (session: Stripe.Checkout.Session) => {
+        if (session.payment_status !== "paid") return false;
+        const md = (session.metadata || {}) as Record<string, string>;
+        if (md.type !== "influencer_gift" && md.productKey !== "influencer_gift") return false;
+
+        const { data: existing } = await admin.from("influencer_sent_gifts")
+          .select("id, status").eq("stripe_session_id", session.id).maybeSingle();
+        if (existing) {
+          if (existing.status !== "completed") {
+            await admin.from("influencer_sent_gifts")
+              .update({ status: "completed" }).eq("id", existing.id);
+          }
+          return true;
+        }
+        const senderId = md.sender_id || md.userId;
+        if (!senderId || !md.influencer_id || !md.gift_id) return false;
+        const { error: insErr } = await admin.from("influencer_sent_gifts").insert({
+          sender_id: senderId,
+          influencer_id: md.influencer_id,
+          gift_id: md.gift_id,
+          amount: Number(md.amount || (session.amount_total ?? 0) / 100),
+          message: md.message || null,
+          status: "completed",
+          stripe_session_id: session.id,
+        });
+        if (insErr) { console.error("influencer gift insert failed", insErr); return false; }
+        return true;
+      };
+
+      if (sessionId) {
+        const session = await stripe.checkout.sessions.retrieve(sessionId);
+        const paid = await settle(session);
+        return new Response(JSON.stringify({ paid, settled: paid }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 });
+      }
+
+      if (!callerId) {
+        return new Response(JSON.stringify({ error: "Sign in required" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 });
+      }
+      // Settling is idempotent and only writes Stripe-verified paid gifts,
+      // so any signed-in caller repairs every missing influencer gift record.
+      const list = await stripe.checkout.sessions.list({ limit: 100 });
+      let settled = 0;
+      for (const s of list.data) {
+        if (await settle(s)) settled++;
+      }
+      return new Response(JSON.stringify({ settled }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 });
+    }
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     const paid = session.payment_status === "paid";
 

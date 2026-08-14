@@ -536,6 +536,9 @@ export function resolveProxy(
   if (functionName === "verify-comedy-ticket-payment") {
     return { target: "verify-comedy-payment", body: { ...b } };
   }
+  if (functionName === "verify-influencer-gift") {
+    return { target: "verify-concert-gift", body: { ...b, context: "influencer" } };
+  }
   if (functionName === "send-comedy-gift") {
     return { target: "send-concert-gift", body: { ...b, context: "comedy" } };
   }
