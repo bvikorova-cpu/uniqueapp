@@ -11,6 +11,7 @@ import { ArrowLeft, Briefcase, DollarSign, Users, Clock, CheckCircle,
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { throwIfInvokeError } from "@/lib/handleEdgeError";
 
 interface BrandDealFinderProps {
   onBack: () => void;
@@ -44,8 +45,7 @@ const BrandDealFinder = ({ onBack }: BrandDealFinderProps) => {
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke("brand-deal-finder", {
         body: { action: "list" } });
-      if (error) throw error;
-      return data as { deals: BrandDeal[]; appliedDealIds: string[] };
+      return throwIfInvokeError({ data, error }) as { deals: BrandDeal[]; appliedDealIds: string[] };
     } });
 
   const deals: BrandDeal[] = data?.deals ?? [];
@@ -55,9 +55,7 @@ const BrandDealFinder = ({ onBack }: BrandDealFinderProps) => {
     mutationFn: async () => {
       const { data, error } = await supabase.functions.invoke("brand-deal-finder", {
         body: { action: "generate" } });
-      if (error) throw error;
-      if ((data as any)?.error) throw new Error((data as any).error);
-      return data;
+      return throwIfInvokeError({ data, error });
     },
     onSuccess: (d: any) => {
       toast({
@@ -83,8 +81,7 @@ const BrandDealFinder = ({ onBack }: BrandDealFinderProps) => {
       if (pitch.trim().length < 20) throw new Error("Pitch must be at least 20 characters");
       const { data, error } = await supabase.functions.invoke("brand-deal-finder", {
         body: { action: "apply", dealId: selectedDeal.id, pitch } });
-      if (error) throw error;
-      if ((data as any)?.error) throw new Error((data as any).error);
+      throwIfInvokeError({ data, error });
     },
     onSuccess: () => {
       toast({ title: "✅ Application Sent!", description: `Your pitch has been sent to ${selectedDeal?.brand}` });
@@ -110,7 +107,7 @@ const BrandDealFinder = ({ onBack }: BrandDealFinderProps) => {
         title="Brand Deal Finder — How it works"
         steps={[
           { title: "Set up profile", desc: "Add your influencer profile (category, followers) so AI can match relevant deals." },
-          { title: "Generate deals", desc: `Tap Generate — OpenAI creates 6 tailored brand opportunities (${GENERATE_COST} credits).` },
+          { title: "Generate deals", desc: `Tap Generate — AI creates 6 tailored brand opportunities (${GENERATE_COST} credits).` },
           { title: "Apply with a pitch", desc: "Send a personalized pitch (min 20 chars). Applications are saved in the database." },
           { title: "Track status", desc: "Your applications appear as Applied. Brands / admins review and update status." },
         ]}
