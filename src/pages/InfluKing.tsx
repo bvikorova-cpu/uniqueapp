@@ -644,7 +644,7 @@ const InfluKing = () => {
           {[
             { title: t("influking.group_create", "Create & grow"), ids: ["content-planner", "hashtags", "thumbnails"] },
             { title: t("influking.group_monetize", "Earn money"), ids: ["fan-club", "ppv", "brand-deals", "collab", "live"] },
-            { title: t("influking.group_insights", "Know your audience"), ids: ["analytics", "audience"] },
+            
           ].map((group, gi) => (
             <motion.div key={group.title} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * gi }}>
               <div className="mb-4 flex items-center gap-3">
