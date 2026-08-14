@@ -182,7 +182,8 @@ const ReportView = ({ report, photo }: { report: Report; photo?: string | null }
       <AiMarkdown content={report.report} />
     </div>
   </Card>
-);
+  );
+};
 
 const FaceInsight = () => {
   const navigate = useNavigate();
