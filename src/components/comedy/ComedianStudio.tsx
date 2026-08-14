@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft, Loader2, AlertCircle, RefreshCw, Mic, BadgeCheck, Calendar, Radio, Square,
 } from "lucide-react";
