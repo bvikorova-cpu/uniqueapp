@@ -125,6 +125,70 @@ function salvage(raw: string): any | null {
   return { headline, summary, report };
 }
 
+/**
+ * Providers occasionally return valid report content in a slightly different
+ * JSON shape, or truncate only the closing JSON punctuation. Do not mistake
+ * that formatting issue for an unreadable photograph.
+ */
+function findReportPayload(value: unknown, depth = 0): any | null {
+  if (!value || typeof value !== "object" || depth > 4) return null;
+  const record = value as Record<string, unknown>;
+  const reportValue = record.report ?? record.analysis ?? record.result ?? record.content;
+  if (typeof reportValue === "string" && reportValue.trim().length >= 200) {
+    return {
+      headline: typeof record.headline === "string" ? record.headline : undefined,
+      summary: typeof record.summary === "string" ? record.summary : undefined,
+      scores: record.scores,
+      traits: record.traits,
+      report: reportValue.trim(),
+    };
+  }
+  for (const nested of Object.values(record)) {
+    const found = findReportPayload(nested, depth + 1);
+    if (found) return found;
+  }
+  return null;
+}
+
+function plainTextFallback(raw: string): any | null {
+  let text = raw.trim()
+    .replace(/^```(?:json|markdown|md)?\s*/i, "")
+    .replace(/```\s*$/i, "")
+    .trim();
+  if (!text || text.length < 300) return null;
+
+  // A malformed/truncated JSON response may still contain a complete report.
+  const reportStart = text.search(/"(?:report|analysis|result|content)"\s*:\s*"/i);
+  if (reportStart >= 0) {
+    const colon = text.indexOf(":", reportStart);
+    text = text.slice(colon + 1).trim().replace(/^"/, "");
+  }
+  text = text
+    .replace(/"\s*[,}]\s*$/s, "")
+    .replace(/\\n/g, "\n")
+    .replace(/\\r/g, "")
+    .replace(/\\t/g, "\t")
+    .replace(/\\"/g, '"')
+    .trim();
+
+  return text.length >= 200 ? { report: text } : null;
+}
+
+function normalizeAssistantContent(content: unknown): string {
+  if (typeof content === "string") return content.trim();
+  if (!Array.isArray(content)) return "";
+  return content
+    .map((part) => {
+      if (typeof part === "string") return part;
+      if (!part || typeof part !== "object") return "";
+      const item = part as Record<string, unknown>;
+      return typeof item.text === "string" ? item.text : "";
+    })
+    .filter(Boolean)
+    .join("\n")
+    .trim();
+}
+
 
 async function runAI(mode: Mode, images: string[], note: string): Promise<string> {
   const key = Deno.env.get("LOVABLE_API_KEY");
@@ -158,8 +222,11 @@ async function runAI(mode: Mode, images: string[], note: string): Promise<string
 
       if (res.ok) {
         const data = await res.json();
-        const out = data?.choices?.[0]?.message?.content?.trim() || "";
-        if (out) return out;
+        const out = normalizeAssistantContent(data?.choices?.[0]?.message?.content);
+        // Very short answers are usually provider refusals or interrupted output;
+        // continue to the next attempt/model instead of charging for no report.
+        if (out.length >= 200) return out;
+        lastErr = Object.assign(new Error("AI returned an incomplete analysis"), { status: 502 });
       } else {
         const body = await res.text();
         lastErr = Object.assign(new Error(body || `AI error ${res.status}`), { status: res.status });
@@ -240,13 +307,12 @@ export async function handleFaceInsight(req: Request, body: any): Promise<Respon
       return errorResponse("The analysis could not be completed. Your credits were refunded.", 500);
     }
 
-    let parsed: any = safeJson(raw);
-    if (!parsed || typeof parsed !== "object" || !parsed.report) {
-      parsed = salvage(raw);
-    }
+    const decoded = safeJson(raw);
+    let parsed: any = findReportPayload(decoded) ?? salvage(raw) ?? plainTextFallback(raw);
     if (!parsed || !parsed.report) {
+      console.error("[face-insight] unusable AI response", { length: raw.length });
       await refundAICredits(user.id, cost, `face-insight-${mode}`);
-      return errorResponse("The studio could not read this photo. Try a clear, front-facing picture.", 502);
+      return errorResponse("The AI returned an incomplete report. Your credits were refunded; please try again.", 502);
     }
 
 
