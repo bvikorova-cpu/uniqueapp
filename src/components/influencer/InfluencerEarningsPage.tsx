@@ -352,7 +352,21 @@ export const InfluencerEarningsPage = () => {
             <Card className="p-6">
               <h3 className="text-lg font-semibold mb-4">Fan club subscriptions (85% yours)</h3>
               <div className="space-y-2">
-                {subs.length > 0 ? subs.map((s) => (
+                {members.map((m: any) => (
+                  <div key={m.id} className="flex justify-between items-center p-3 border rounded gap-3">
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">{m.name} • active subscriber</p>
+                      <p className="text-sm text-muted-foreground">
+                        {m.created_at ? format(new Date(m.created_at), "MMM dd, yyyy") : "—"} • gross €{(Number(m.gross_cents || 0) / 100).toFixed(2)}/mo
+                      </p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="font-semibold text-green-600">+€{(Number(m.net_cents || 0) / 100).toFixed(2)}</p>
+                      <p className="text-xs text-muted-foreground">per month</p>
+                    </div>
+                  </div>
+                ))}
+                {subs.map((s) => (
                   <div key={s.id} className="flex justify-between items-center p-3 border rounded gap-3">
                     <div className="min-w-0">
                       <p className="font-medium truncate">Subscription payment</p>
@@ -365,10 +379,12 @@ export const InfluencerEarningsPage = () => {
                       <p className="text-xs text-muted-foreground">Fee: €{(Number(s.platform_fee_cents || 0) / 100).toFixed(2)}</p>
                     </div>
                   </div>
-                )) : (
+                ))}
+                {subs.length === 0 && members.length === 0 && (
                   <p className="text-center text-muted-foreground py-8">No subscription earnings yet</p>
                 )}
               </div>
+
             </Card>
           </TabsContent>
 
