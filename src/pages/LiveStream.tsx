@@ -64,7 +64,7 @@ export default function LiveStream() {
   const [streamError, setStreamError] = useState<string | null>(null);
   const [micEnabled, setMicEnabled] = useState(true);
   const [camEnabled, setCamEnabled] = useState(true);
-  const [peerViewers, setPeerViewers] = useState(0);
+  
   const [presenceViewers, setPresenceViewers] = useState(0);
   const [connState, setConnState] = useState<RTCPeerConnectionState | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -281,7 +281,7 @@ export default function LiveStream() {
         videoRef.current.srcObject = mediaStream;
         await videoRef.current.play().catch(() => {});
       }
-      broadcastRef.current = startBroadcast(streamId!, mediaStream, setPeerViewers);
+      broadcastRef.current = startBroadcast(streamId!, mediaStream, () => {});
       await supabase
         .from("live_streams")
         .update({ is_live: true, started_at: new Date().toISOString() })
@@ -384,9 +384,13 @@ export default function LiveStream() {
     const ch = supabase.channel(`stream-presence-${streamId}`, {
       config: { presence: { key: isOwner ? `host-${streamId}` : user?.id || `guest-${Math.random()}` } },
     });
+    const ownerUserId = stream?.influencer_profiles?.user_id;
     ch.on("presence", { event: "sync" }, () => {
       const state = ch.presenceState() as Record<string, unknown[]>;
-      setPresenceViewers(Object.keys(state).filter((k) => !k.startsWith("host-")).length);
+      setPresenceViewers(
+        Object.keys(state).filter((k) => !k.startsWith("host-") && k !== ownerUserId).length
+      );
+
     }).subscribe((status) => {
       if (status === "SUBSCRIBED") void ch.track({ at: Date.now() });
     });
@@ -399,13 +403,14 @@ export default function LiveStream() {
     const sync = () => {
       void supabase
         .from("live_streams")
-        .update({ viewer_count: Math.max(peerViewers, presenceViewers) })
+        .update({ viewer_count: presenceViewers })
         .eq("id", streamId);
     };
     sync();
     const t = window.setInterval(sync, 5000);
     return () => window.clearInterval(t);
-  }, [isOwner, isStreaming, peerViewers, presenceViewers, streamId]);
+  }, [isOwner, isStreaming, presenceViewers, streamId]);
+
 
   // Cleanup on unmount
   useEffect(() => {
@@ -520,7 +525,7 @@ export default function LiveStream() {
                     </Badge>
                     <Badge variant="secondary">
                       <Users className="h-3 w-3 mr-1" />
-                      {Math.max(presenceViewers, peerViewers, stream.viewer_count ?? 0)}
+                      {presenceViewers}
                     </Badge>
                   </div>
                 </div>
