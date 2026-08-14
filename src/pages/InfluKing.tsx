@@ -32,8 +32,9 @@ import { FanClubJoinCard } from "@/components/influking/FanClubJoinCard";
 import { FanClubLockedFeed } from "@/components/influking/FanClubLockedFeed";
 import PPVStudio from "@/components/influking/PPVStudio";
 import PPVLockedFeed from "@/components/influking/PPVLockedFeed";
+import { PaidMessageDialog } from "@/components/creator/PaidMessageDialog";
 
-import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio } from "lucide-react";
+import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio, MessageCircle } from "lucide-react";
 
 type InfluKingView = "hub" | "content-planner" | "collab" | "fan-club" | "brand-deals" | "analytics" | "hashtags" | "challenges" | "thumbnails" | "publisher" | "audience" | "ppv";
 
@@ -108,6 +109,7 @@ const InfluKing = () => {
   const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
   const [followStatusMap, setFollowStatusMap] = useState<Record<string, boolean>>({});
   const [showGiftDialog, setShowGiftDialog] = useState(false);
+  const [showPaidMessageDialog, setShowPaidMessageDialog] = useState(false);
 
   const [newProfile, setNewProfile] = useState({ display_name: "", bio: "", category: CATEGORIES[0],
     profile_photo_url: "", cover_photo_url: "",
@@ -674,6 +676,10 @@ const InfluKing = () => {
                         <Button onClick={() => setShowGiftDialog(true)} variant="outline" className="gap-2">
                           <Gift className="h-4 w-4" /> Send Gift
                         </Button>
+                        <Button onClick={() => setShowPaidMessageDialog(true)} variant="outline" className="gap-2">
+                          <MessageCircle className="h-4 w-4" /> Paid message
+                        </Button>
+
                       </div>
                     ) : (
                       <div className="flex flex-wrap justify-center sm:justify-start gap-2">
@@ -739,6 +745,10 @@ const InfluKing = () => {
         </Dialog>
 
         {/* Gift Dialog */}
+        {selectedInfluencer && (
+          <PaidMessageDialog open={showPaidMessageDialog} onOpenChange={setShowPaidMessageDialog}
+            creatorId={selectedInfluencer.user_id} creatorName={selectedInfluencer.display_name} />
+        )}
         {selectedInfluencer && (
           <SendInfluencerGiftDialog open={showGiftDialog} onOpenChange={setShowGiftDialog}
             influencerId={selectedInfluencer.id} influencerName={selectedInfluencer.display_name} />
