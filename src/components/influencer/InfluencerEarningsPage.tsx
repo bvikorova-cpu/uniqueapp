@@ -123,7 +123,7 @@ export const InfluencerEarningsPage = () => {
     queryKey: ["influencer-extra-earnings"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return { subs: [] as SubRow[], ppv: [] as PpvRow[], dms: [] as DmRow[] };
+      if (!user) return { subs: [] as SubRow[], members: [] as any[], ppv: [] as PpvRow[], dms: [] as DmRow[] };
 
       const { data: profile } = await supabase
         .from("creator_profiles")
