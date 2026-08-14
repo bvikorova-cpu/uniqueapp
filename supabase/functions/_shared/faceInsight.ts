@@ -147,6 +147,8 @@ async function runAI(mode: Mode, images: string[], note: string): Promise<string
         body: JSON.stringify({
           model,
           max_tokens: mode === "deep" ? 6000 : 3500,
+          response_format: { type: "json_object" },
+
           messages: [
             { role: "system", content: systemPrompt(mode) },
             { role: "user", content },
