@@ -25,35 +25,33 @@ serve(async (req) => {
 
     const { influencerId, amount, paymentMethod, paymentDetails } = await req.json();
 
-    // Verify user owns this influencer
+    // Verify user owns this influencer profile
     const { data: influencer, error: influencerError } = await supabase
-      .from("virtual_influencers")
-      .select("id, user_id, name")
+      .from("influencer_profiles")
+      .select("id, user_id, display_name, pending_balance, total_withdrawn")
       .eq("id", influencerId)
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
 
     if (influencerError || !influencer) {
       throw new Error("Influencer not found or unauthorized");
     }
 
-    // Check available balance
-    const { data: balance, error: balanceError } = await supabase
-      .from("influencer_balances")
-      .select("*")
+    // Amount already locked in pending withdrawal requests
+    const { data: openRequests } = await supabase
+      .from("influencer_withdrawal_requests")
+      .select("amount, status")
       .eq("influencer_id", influencerId)
-      .single();
-
-    if (balanceError || !balance) {
-      throw new Error("Balance not found");
-    }
-
-    if (balance.available_balance < amount) {
-      throw new Error(`Insufficient balance. Available: €${balance.available_balance}`);
-    }
+      .in("status", ["pending", "approved"]);
+    const locked = (openRequests || []).reduce(
+      (sum: number, r: { amount: number }) => sum + Number(r.amount || 0), 0);
+    const available = Number(influencer.pending_balance || 0) - locked;
 
     if (amount < 50) {
       throw new Error("Minimum withdrawal amount is €50");
+    }
+    if (available < amount) {
+      throw new Error(`Insufficient balance. Available: €${available.toFixed(2)}`);
     }
 
     // Create withdrawal request
@@ -69,14 +67,6 @@ serve(async (req) => {
 
     if (withdrawalError) throw withdrawalError;
 
-    // Update pending_withdrawal in balance
-    const { error: updateError } = await supabase
-      .from("influencer_balances")
-      .update({ pending_withdrawal: balance.pending_withdrawal + amount })
-      .eq("influencer_id", influencerId);
-
-    if (updateError) throw updateError;
-
     // Notify admins about new withdrawal request
     const { data: adminUsers } = await supabase
       .from("user_roles")
@@ -88,7 +78,7 @@ serve(async (req) => {
         user_id: admin.user_id,
         type: "influencer_withdrawal_pending",
         title: "New Influencer Withdrawal Request",
-        message: `${influencer.name} requested €${amount} withdrawal via ${paymentMethod}`,
+        message: `${influencer.display_name} requested €${amount} withdrawal via ${paymentMethod}`,
         related_id: influencerId,
         is_read: false }));
 
