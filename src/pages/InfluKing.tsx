@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,7 +17,6 @@ import { Crown, Users, Heart, TrendingUp, Camera, Plus, CheckCircle, Star, Uploa
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { GoLiveButton } from "@/components/influencer/GoLiveButton";
 import { SendInfluencerGiftDialog } from "@/components/influencer/SendInfluencerGiftDialog";
-import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import InfluKingHero from "@/components/influking/InfluKingHero";
 import AIContentPlanner from "@/components/influking/AIContentPlanner";
