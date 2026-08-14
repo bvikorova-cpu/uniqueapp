@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -13,14 +14,6 @@ export interface SuperChat {
   created_at: string;
 }
 
-const tierColor = (cents: number) => {
-  if (cents >= 5000) return "#ef4444";
-  if (cents >= 2000) return "#f97316";
-  if (cents >= 1000) return "#eab308";
-  if (cents >= 500) return "#a855f7";
-  return "#3b82f6";
-};
-
 export const useSuperChats = (streamId?: string) => {
   const qc = useQueryClient();
   const { toast } = useToast();
@@ -33,28 +26,48 @@ export const useSuperChats = (streamId?: string) => {
         .from("live_super_chats" as any)
         .select("*")
         .eq("stream_id", streamId)
+        .eq("status", "paid")
         .order("created_at", { ascending: false })
         .limit(50);
       return (data || []) as unknown as SuperChat[];
     } });
 
+  // Verify a returned Stripe Checkout session (fallback to the webhook).
+  useEffect(() => {
+    if (!streamId) return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("super_chat") !== "success") return;
+    const sessionId = params.get("session_id");
+    if (!sessionId) return;
+    (async () => {
+      try {
+        await supabase.functions.invoke("create-checkout", {
+          body: { product: "super_chat", action: "verify", streamId, amountCents: 100, sessionId } });
+        toast({ title: "Super Chat sent! 🎉" });
+        qc.invalidateQueries({ queryKey: ["super-chats", streamId] });
+      } catch {
+        /* webhook will settle it */
+      }
+      params.delete("super_chat");
+      params.delete("session_id");
+      const url = `${window.location.pathname}${params.toString() ? `?${params}` : ""}`;
+      window.history.replaceState({}, "", url);
+    })();
+  }, [streamId, qc, toast]);
+
   const sendSuperChat = useMutation({
     mutationFn: async ({ amountCents, message }: { amountCents: number; message?: string }) => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user || !streamId) throw new Error("Missing context");
-      const { error } = await supabase.from("live_super_chats" as any).insert({ stream_id: streamId,
-        sender_id: user.id,
-        amount_cents: amountCents,
-        message,
-        highlight_color: tierColor(amountCents),
-        duration_seconds: Math.min(300, 30 + Math.floor(amountCents / 100)) } as any);
+      if (!user) throw new Error("Please sign in to send a Super Chat");
+      if (!streamId) throw new Error("Missing stream");
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { product: "super_chat", streamId, amountCents, message } });
       if (error) throw error;
+      const url = (data as any)?.url;
+      if (!url) throw new Error((data as any)?.error || "Could not start checkout");
+      window.location.href = url;
     },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["super-chats", streamId] });
-      toast({ title: "Super chat sent! 🎉" });
-    },
-    onError: (e: any) => toast({ title: "Failed", description: e.message, variant: "destructive" }) });
+    onError: (e: any) => toast({ title: "Payment failed", description: e.message, variant: "destructive" }) });
 
-  return { superChats, sendSuperChat: sendSuperChat.mutate };
+  return { superChats, sendSuperChat: sendSuperChat.mutate, isSending: sendSuperChat.isPending };
 };
