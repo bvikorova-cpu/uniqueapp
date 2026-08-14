@@ -278,6 +278,10 @@ export const ComedianStudio = ({ onBack }: Props) => {
           </CardContent>
         </Card>
 
+        {profile && <ComedianShowStatsTable comedianId={profile.id} />}
+
+
+
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
