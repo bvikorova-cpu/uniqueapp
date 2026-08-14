@@ -31,14 +31,12 @@ export const ComedyClubHero = () => {
     { key: "comedians", table: "comedian_profiles" },
     { key: "shows", table: "comedy_shows" },
     { key: "battles", table: "comedy_battles" },
-    { key: "clips", table: "comedy_clips" },
   ]);
 
   const statItems = [
     { icon: Mic2, label: "Comedians", value: stats.comedians || 0 },
     { icon: Video, label: "Shows", value: stats.shows || 0 },
     { icon: Trophy, label: "Battles", value: stats.battles || 0 },
-    { icon: Users, label: "Clips", value: stats.clips || 0 },
   ];
 
   return (

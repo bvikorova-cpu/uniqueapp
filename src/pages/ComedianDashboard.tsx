@@ -7,10 +7,9 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { ComedianGoLiveButton } from "@/components/comedy/ComedianGoLiveButton";
-import { ComedyVideoUpload } from "@/components/comedy/ComedyVideoUpload";
 import { ComedianEarnings } from "@/components/comedy/ComedianEarnings";
 import { useComedianProfile } from "@/hooks/useComedy";
-import { Mic2, Video, DollarSign, Calendar, TrendingUp, ArrowLeft } from "lucide-react";
+import { Mic2, DollarSign, Calendar, TrendingUp, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
 export default function ComedianDashboard() {
@@ -18,7 +17,6 @@ export default function ComedianDashboard() {
   const { profile, isLoading } = useComedianProfile();
   const [earnings, setEarnings] = useState<any>(null);
   const [shows, setShows] = useState<any[]>([]);
-  const [clips, setClips] = useState<any[]>([]);
 
   useEffect(() => {
     if (!isLoading && !profile) {
@@ -50,9 +48,6 @@ export default function ComedianDashboard() {
 
     const { data: showsData } = await supabase.from("comedy_shows").select("*").eq("comedian_id", profile.id).order("scheduled_at", { ascending: false }).limit(10);
     setShows(showsData || []);
-
-    const { data: clipsData } = await supabase.from("comedy_clips").select("*").eq("comedian_id", profile.id).order("created_at", { ascending: false }).limit(10);
-    setClips(clipsData || []);
   };
 
   if (isLoading) return <div className="min-h-screen flex items-center justify-center"><p>Loading...</p></div>;
@@ -62,7 +57,6 @@ export default function ComedianDashboard() {
     { icon: DollarSign, label: "Your Share (80%)", value: `€${earnings?.creatorShare?.toFixed(2) || '0.00'}`, color: "text-primary", bg: "bg-primary/10" },
     { icon: TrendingUp, label: "Pending Payout", value: `€${earnings?.pendingPayout?.toFixed(2) || '0.00'}`, color: "text-green-500", bg: "bg-green-500/10" },
     { icon: Calendar, label: "Total Shows", value: String(shows.length), color: "text-blue-500", bg: "bg-blue-500/10" },
-    { icon: Video, label: "Total Clips", value: String(clips.length), color: "text-purple-500", bg: "bg-purple-500/10" },
   ];
 
   return (
@@ -102,18 +96,12 @@ export default function ComedianDashboard() {
         </div>
 
         <Tabs defaultValue="earnings" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 h-auto">
+          <TabsList className="grid w-full grid-cols-2 h-auto">
             <TabsTrigger value="earnings" className="text-xs sm:text-sm py-2 flex-col sm:flex-row gap-1">
               <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" /> <span className="hidden sm:inline">Earnings</span><span className="sm:hidden">Earn</span>
             </TabsTrigger>
             <TabsTrigger value="shows" className="text-xs sm:text-sm py-2 flex-col sm:flex-row gap-1">
               <Mic2 className="h-3 w-3 sm:h-4 sm:w-4" /> Shows
-            </TabsTrigger>
-            <TabsTrigger value="clips" className="text-xs sm:text-sm py-2 flex-col sm:flex-row gap-1">
-              <Video className="h-3 w-3 sm:h-4 sm:w-4" /> Clips
-            </TabsTrigger>
-            <TabsTrigger value="upload" className="text-xs sm:text-sm py-2 flex-col sm:flex-row gap-1">
-              <Video className="h-3 w-3 sm:h-4 sm:w-4" /> Upload
             </TabsTrigger>
           </TabsList>
 
@@ -143,24 +131,6 @@ export default function ComedianDashboard() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="clips">
-            <Card className="p-4 sm:p-6">
-              <h3 className="text-xl font-black mb-4">My Clips</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {clips.map((clip) => (
-                  <Card key={clip.id} className="p-4">
-                    <h4 className="font-bold mb-2">{clip.title}</h4>
-                    <p className="text-sm text-muted-foreground mb-2">€{Number(clip.price_coins || 0).toFixed(2)}</p>
-                    <p className="text-xs text-muted-foreground">Sales: {clip.sales_count || 0}</p>
-                  </Card>
-                ))}
-              </div>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="upload">
-            <ComedyVideoUpload comedianId={profile.id} onUploadSuccess={loadDashboardData} />
-          </TabsContent>
         </Tabs>
       </div>
     </div>
