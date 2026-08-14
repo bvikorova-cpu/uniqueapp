@@ -439,8 +439,16 @@ const EditProfile = () => {
           totalBadges={checks.length}
         />
 
-        {/* Toggle live preview */}
-        <div className="flex justify-end mb-3">
+        {/* Creator settings shortcuts + live preview toggle */}
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" size="sm" onClick={() => navigate("/creator-studio")}>
+              <Wrench className="h-3.5 w-3.5 mr-1.5" /> Creator settings
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate("/earnings")}>
+              <Sparkles className="h-3.5 w-3.5 mr-1.5" /> Payouts & earnings
+            </Button>
+          </div>
           <Button variant="outline" size="sm" onClick={() => setShowPreview((v) => !v)}>
             {showPreview ? <><EyeOff className="h-3.5 w-3.5 mr-1.5" /> Hide preview</> : <><Eye className="h-3.5 w-3.5 mr-1.5" /> Show preview</>}
           </Button>
