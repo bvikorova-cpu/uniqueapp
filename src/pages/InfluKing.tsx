@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -101,6 +101,8 @@ const InfluKing = () => {
   const [uploadingMedia, setUploadingMedia] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const captureInputRef = useRef<HTMLInputElement | null>(null);
+
   const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
   const [followStatusMap, setFollowStatusMap] = useState<Record<string, boolean>>({});
   const [showGiftDialog, setShowGiftDialog] = useState(false);
@@ -252,13 +254,19 @@ const InfluKing = () => {
 
   const startRecording = async () => {
     try {
+      if (!navigator.mediaDevices?.getUserMedia) throw new Error("unsupported");
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+      const mimeType = MediaRecorder.isTypeSupported('video/webm')
+        ? 'video/webm'
+        : (MediaRecorder.isTypeSupported('video/mp4') ? 'video/mp4' : '');
+      const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
       const chunks: Blob[] = [];
       recorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
       recorder.onstop = async () => {
-        const blob = new Blob(chunks, { type: 'video/webm' });
-        const file = new File([blob], `recording-${Date.now()}.webm`, { type: 'video/webm' });
+        const type = recorder.mimeType || 'video/webm';
+        const ext = type.includes('mp4') ? 'mp4' : 'webm';
+        const blob = new Blob(chunks, { type });
+        const file = new File([blob], `recording-${Date.now()}.${ext}`, { type });
         const url = await uploadMediaToStorage(file);
         if (url) { setNewPost({ ...newPost, media_url: url, media_type: 'video' }); }
         stream.getTracks().forEach(track => track.stop());
@@ -266,8 +274,21 @@ const InfluKing = () => {
       recorder.start();
       setMediaRecorder(recorder);
       setIsRecording(true);
-    } catch (error: any) { toast({ title: "Camera Error", description: error.message, variant: "destructive" }); }
+    } catch (error: any) {
+      // In-app previews and embedded iframes often block camera access.
+      // Fall back to the phone's native camera via a capture file input.
+      if (captureInputRef.current) {
+        toast({ title: "Opening camera", description: "Using your device camera app instead." });
+        captureInputRef.current.click();
+        return;
+      }
+      toast({
+        title: "Camera unavailable",
+        description: "Allow camera access in your browser settings, or pick a file instead.",
+        variant: "destructive" });
+    }
   };
+
 
   const stopRecording = () => {
     if (mediaRecorder && isRecording) { mediaRecorder.stop(); setIsRecording(false); setMediaRecorder(null); }
@@ -426,6 +447,14 @@ const InfluKing = () => {
                       <Label>Photo/Video</Label>
                       <div className="flex gap-2">
                         <Input type="file" accept="image/*,video/*" onChange={handleFileUpload} disabled={uploadingMedia || isRecording} className="flex-1" />
+                        <input
+                          ref={captureInputRef}
+                          type="file"
+                          accept="video/*,image/*"
+                          capture="user"
+                          className="hidden"
+                          onChange={handleFileUpload}
+                        />
                         {!isRecording ? (
                           <Button type="button" variant="outline" onClick={startRecording} disabled={uploadingMedia}>
                             <Camera className="h-4 w-4 mr-2" /> Record
@@ -433,6 +462,7 @@ const InfluKing = () => {
                         ) : (
                           <Button type="button" variant="destructive" onClick={stopRecording}>Stop</Button>
                         )}
+
                       </div>
                       {newPost.media_url && (
                         <div className="mt-3">
