@@ -20,7 +20,7 @@ export interface RateLimitResult {
 
 // Default rate limit configurations for different actions
 export const RATE_LIMITS: Record<string, RateLimitConfig> = {
-  checkout: { action: 'checkout', maxRequests: 10, windowMinutes: 5 },
+  checkout: { action: 'checkout', maxRequests: 30, windowMinutes: 5 },
   subscription: { action: 'subscription', maxRequests: 5, windowMinutes: 5 },
   payment: { action: 'payment', maxRequests: 10, windowMinutes: 5 },
   ai_generation: { action: 'ai_generation', maxRequests: 20, windowMinutes: 5 },
