@@ -358,6 +358,7 @@ export const EDGE_FUNCTIONS: string[] = [
   "verify-bazaar-order-payment",
   "verify-brand-votes-payment",
   "verify-campaign-payment",
+  "send-comedy-gift",
   "verify-comedy-payment",
   "verify-concert-gift",
   "verify-concert-ticket-payment",

@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { sanitizeMessageContent, checkRateLimit, MAX_MESSAGE_LEN } from "@/lib/messageSafety";
 import { TypingDots } from "@/components/realtime/TypingDots";
 import { useTypingIndicator } from "@/hooks/useTypingIndicator";
+import { useSpendCredits, CREDIT_COSTS } from "@/hooks/useSpendCredits";
 
 interface ChatMessage {
   id: string;
@@ -46,6 +47,7 @@ export function ComedyLiveChat({ showId, canModerate = false, className }: Comed
   const [showHidden, setShowHidden] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
   const namesRef = useRef<Map<string, { name: string | null; avatar: string | null }>>(new Map());
+  const { spend } = useSpendCredits();
 
   const { typingUsers, notifyTyping } = useTypingIndicator({
     channelKey: `comedy-show:${showId}`,
@@ -171,6 +173,9 @@ export function ComedyLiveChat({ showId, canModerate = false, className }: Comed
       return;
     }
     setSending(true);
+    // Each comedy chat comment costs 1 credit (unified ai_credits + ledger).
+    const paid = await spend("comedy_chat_message", { description: "comedy_chat_message" });
+    if (!paid) { setSending(false); return; }
     const { error } = await (supabase as any)
       .from("comedy_show_messages")
       .insert({ show_id: showId, sender_id: userId, message: text });
@@ -182,6 +187,7 @@ export function ComedyLiveChat({ showId, canModerate = false, className }: Comed
       return;
     }
     setValue("");
+    toast.success("Sent · 1 credit used");
   };
 
   const setHidden = async (msg: ChatMessage, hidden: boolean) => {

@@ -9,13 +9,13 @@ import { ArrowLeft, Users, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { startViewer, type ViewerHandle } from "@/lib/concertWebRTC";
 import { ComedyLiveChat } from "@/components/comedy/ComedyLiveChat";
+import { ComedyGiftsPanel } from "@/components/comedy/ComedyGiftsPanel";
 
 export default function ComedyLiveViewer() {
   const { showId } = useParams();
   const navigate = useNavigate();
   const [show, setShow] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [tipMessage, setTipMessage] = useState("");
   const [isHost, setIsHost] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const viewerRef = useRef<ViewerHandle | null>(null);
@@ -48,6 +48,29 @@ export default function ComedyLiveViewer() {
     const { data: auth } = await supabase.auth.getUser();
     setIsHost(!!auth.user && (data as any)?.comedian?.user_id === auth.user.id);
   };
+
+  // Verify gift checkout when redirected back from Stripe
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const giftStatus = params.get("gift");
+    const sid = params.get("session_id");
+    if (!giftStatus) return;
+    if (giftStatus === "success" && sid) {
+      supabase.functions
+        .invoke("verify-concert-gift", { body: { sessionId: sid } })
+        .then(({ data }) => {
+          if ((data as any)?.paid) toast.success("Gift delivered to the comedian!");
+          else toast.error("Payment not completed");
+        })
+        .catch(() => toast.error("Could not verify the gift payment"));
+    } else if (giftStatus === "canceled") {
+      toast.info("Gift checkout canceled");
+    }
+    const url = new URL(window.location.href);
+    url.searchParams.delete("gift");
+    url.searchParams.delete("session_id");
+    window.history.replaceState({}, "", url.toString());
+  }, []);
 
   const isLive = show?.status === "live";
 
@@ -105,56 +128,12 @@ export default function ComedyLiveViewer() {
     return () => window.clearInterval(t);
   }, [showId]);
 
-  const sendTip = async (tipType: string, amount: number) => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast.error("You must be logged in to send tips");
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke("send-comedy-tip", {
-        body: {
-          showId,
-          comedianId: show.comedian_id,
-          tipType,
-          amount,
-          message: tipMessage
-        }
-      });
-
-      const status = (error as any)?.context?.status;
-      const errMsg = String((data as any)?.error ?? (error as any)?.message ?? "");
-      if (status === 402 || /insufficient_comedy_coins|insufficient/i.test(errMsg)) {
-        toast.error("Not enough comedy coins", {
-          description: `This gift costs ${amount} coins. Top up to keep supporting the show.`,
-          action: { label: "Buy coins", onClick: () => navigate("/comedy-club") },
-        });
-        return;
-      }
-      if (error) throw error;
-
-      toast.success(`Sent ${tipType}!`);
-      setTipMessage("");
-    } catch (error) {
-      console.error("Error sending tip:", error);
-      toast.error("Failed to send tip");
-    }
-
-  };
-
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
 
   if (!show) return null;
 
-  const tipOptions = [
-    { type: "applause", label: "👏", cost: 10 },
-    { type: "flowers", label: "🌹", cost: 25 },
-    { type: "mic_drop", label: "🎤", cost: 50 },
-    { type: "standing_ovation", label: "🙌", cost: 100 },
-  ];
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -214,29 +193,8 @@ export default function ComedyLiveViewer() {
                 )}
               </div>
 
-              {/* Tips Section */}
-              <div className="space-y-3">
-                <p className="font-medium">Send a tip:</p>
-                <Input
-                  placeholder="Add a message (optional)"
-                  value={tipMessage}
-                  onChange={(e) => setTipMessage(e.target.value)}
-                />
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {tipOptions.map((tip) => (
-                    <Button
-                      key={tip.type}
-                      variant="outline"
-                      onClick={() => sendTip(tip.type, tip.cost)}
-                      className="w-full justify-center gap-1 px-2"
-                    >
-                      <span>{tip.label}</span>
-                      <span className="font-semibold">{tip.cost}</span>
-                    </Button>
-                  ))}
-                </div>
-
-              </div>
+              {/* Paid gifts (EUR) — same model as Live Concerts */}
+              <ComedyGiftsPanel showId={showId!} />
             </Card>
           </div>
 
