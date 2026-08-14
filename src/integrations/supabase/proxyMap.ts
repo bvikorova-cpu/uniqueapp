@@ -571,7 +571,10 @@ export function resolveProxy(
 
   // ─── B18d — Creator Economy (paid message, profile tip, merch, service order) merged into create-checkout ───
   if (functionName === "create-paid-message-checkout") {
-    return { target: "create-checkout", body: { ...b, product: "paid_message" } };
+    return { target: "create-checkout", body: { ...b, product: "paid_message", action: "checkout" } };
+  }
+  if (functionName === "verify-paid-message") {
+    return { target: "create-checkout", body: { ...b, product: "paid_message", action: "verify" } };
   }
   if (functionName === "create-profile-tip") {
     return { target: "create-checkout", body: { ...b, product: "profile_tip" } };

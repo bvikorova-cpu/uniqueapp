@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { throwIfInvokeError } from "@/lib/handleEdgeError";
 import { MessageCircle, Video, Loader2 } from "lucide-react";
 
 interface PaidMessageDialogProps {
@@ -68,15 +69,17 @@ export function PaidMessageDialog({ open,
           variant: "destructive" });
         return;
       }
-      const { data, error } = await supabase.functions.invoke(
+      const result = await supabase.functions.invoke(
         "create-paid-message-checkout",
         { body: { creatorId, message: trimmed, requestType: tab } }
       );
-      if (error) throw error;
+      const data = throwIfInvokeError(result);
       if (data?.url) {
-        window.open(data.url, "_blank");
+        window.location.assign(data.url);
         onOpenChange(false);
         setMessage("");
+      } else {
+        throw new Error("Checkout link was not created");
       }
     } catch (error: any) { toast({
         title: "Error",
