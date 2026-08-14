@@ -524,7 +524,7 @@ export default function LiveStream() {
                     </Badge>
                     <Badge variant="secondary">
                       <Users className="h-3 w-3 mr-1" />
-                      {Math.max(presenceViewers, peerViewers, stream.viewer_count ?? 0)}
+                      {presenceViewers}
                     </Badge>
                   </div>
                 </div>
