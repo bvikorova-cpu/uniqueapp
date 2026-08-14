@@ -60,7 +60,7 @@ export const FearJournal = () => {
         prompt: situation,
         generated_text: thoughts || null,
         metadata: { fear_level: fearLevel, coping_used: copingUsed, type: "fear_journal" },
-        status: "completed" as any });
+        status: "generated" as any });
       if (error) throw error;
       toast.success("Journal entry saved!");
       setSituation(""); setThoughts(""); setCopingUsed(""); setFearLevel(5);
