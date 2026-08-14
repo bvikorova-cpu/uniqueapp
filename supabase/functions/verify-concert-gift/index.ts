@@ -21,9 +21,50 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     );
+    const { data: giftPayment } = await admin.from("sent_platform_gifts")
+      .select("id, status, amount, context_type, context_id")
+      .eq("stripe_session_id", sessionId)
+      .maybeSingle();
+
     await admin.from("sent_platform_gifts")
       .update({ status: paid ? "completed" : "failed" })
       .eq("stripe_session_id", sessionId);
+
+    if (paid && giftPayment?.context_type === "comedy" && giftPayment.status !== "completed") {
+      const gross = Number(giftPayment.amount || 0);
+      const platformCommission = Number((gross * 0.2).toFixed(2));
+      const comedianAmount = Number((gross - platformCommission).toFixed(2));
+      const { data: show } = await admin
+        .from("comedy_shows")
+        .select("comedian_id")
+        .eq("id", giftPayment.context_id)
+        .maybeSingle();
+
+      if (show?.comedian_id) {
+        await admin.from("comedian_earnings").insert({
+          comedian_id: show.comedian_id,
+          amount_coins: Math.round(gross * 100),
+          source_type: "gift",
+          source_id: giftPayment.context_id,
+          description: "Comedy live gift",
+          commission_rate: 20,
+          platform_commission: platformCommission,
+          net_amount: comedianAmount,
+          pending_payout: comedianAmount,
+        });
+
+        await admin.from("comedy_platform_earnings").insert({
+          comedian_id: show.comedian_id,
+          transaction_type: "gift",
+          total_amount: gross,
+          comedian_amount: comedianAmount,
+          platform_commission: platformCommission,
+          commission_rate: 20,
+          related_id: giftPayment.context_id,
+          status: "pending",
+        });
+      }
+    }
 
     return new Response(JSON.stringify({ paid }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 });

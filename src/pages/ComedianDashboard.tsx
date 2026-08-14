@@ -39,9 +39,13 @@ export default function ComedianDashboard() {
       .order("created_at", { ascending: false });
 
     if (earningsData && earningsData.length > 0) {
-      const totalEarned = earningsData.reduce((sum, e) => sum + (e.net_amount || 0), 0);
-      const pendingPayout = earningsData[0]?.pending_payout || 0;
-      setEarnings({ totalEarned, pendingPayout, history: earningsData });
+      const totalGross = earningsData.reduce((sum, e) => sum + Number(e.amount_coins || 0) / 100, 0);
+      const platformFee = earningsData.reduce((sum, e) => sum + Number(e.platform_commission || 0), 0);
+      const creatorShare = earningsData.reduce((sum, e) => sum + Number(e.net_amount || 0), 0);
+      const pendingPayout = earningsData.reduce((sum, e) => sum + Number(e.pending_payout || 0), 0);
+      setEarnings({ totalGross, platformFee, creatorShare, totalEarned: creatorShare, pendingPayout, history: earningsData });
+    } else {
+      setEarnings({ totalGross: 0, platformFee: 0, creatorShare: 0, totalEarned: 0, pendingPayout: 0, history: [] });
     }
 
     const { data: showsData } = await supabase.from("comedy_shows").select("*").eq("comedian_id", profile.id).order("scheduled_at", { ascending: false }).limit(10);
@@ -55,7 +59,7 @@ export default function ComedianDashboard() {
   if (!profile) return null;
 
   const statCards = [
-    { icon: DollarSign, label: "Total Earned", value: `€${earnings?.totalEarned?.toFixed(2) || '0.00'}`, color: "text-primary", bg: "bg-primary/10" },
+    { icon: DollarSign, label: "Your Share (80%)", value: `€${earnings?.creatorShare?.toFixed(2) || '0.00'}`, color: "text-primary", bg: "bg-primary/10" },
     { icon: TrendingUp, label: "Pending Payout", value: `€${earnings?.pendingPayout?.toFixed(2) || '0.00'}`, color: "text-green-500", bg: "bg-green-500/10" },
     { icon: Calendar, label: "Total Shows", value: String(shows.length), color: "text-blue-500", bg: "bg-blue-500/10" },
     { icon: Video, label: "Total Clips", value: String(clips.length), color: "text-purple-500", bg: "bg-purple-500/10" },
