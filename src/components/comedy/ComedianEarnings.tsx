@@ -188,7 +188,7 @@ export function ComedianEarnings({ earnings, comedianId, onRefresh }: ComedianEa
           {earnings?.history?.map((earning: any) => (
             <div key={earning.id} className="flex items-center justify-between p-3 border rounded">
               <div>
-                <p className="font-medium">{earning.source}</p>
+                <p className="font-medium capitalize">{String(earning.source_type || "earning").replace(/_/g, " ")}</p>
                 <p className="text-sm text-muted-foreground">
                   {format(new Date(earning.created_at), "MMM d, yyyy")}
                 </p>
