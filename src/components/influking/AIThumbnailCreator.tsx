@@ -87,7 +87,7 @@ const AIThumbnailCreator = ({ onBack }: AIThumbnailCreatorProps) => {
         title: `Thumbnail: ${title}`,
         prompt: `Create a ${selectedStyle} style thumbnail for: "${title}". Template: ${selectedTemplate || "custom"}`,
         credits_used: 8,
-        status: "completed" as any,
+        status: "generated" as any,
         generated_text: `AI Thumbnail concept for "${title}" in ${selectedStyle} style. Use bold typography, contrasting colors, and eye-catching composition.` }).select().single();
 
       if (error) throw error;
