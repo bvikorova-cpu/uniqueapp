@@ -667,6 +667,8 @@ const InfluKing = () => {
             </CardContent>
           </Card>
         </motion.div>
+        </TabsContent>
+
 
         {/* Influencer Detail Dialog */}
         <Dialog open={!!selectedInfluencer} onOpenChange={() => setSelectedInfluencer(null)}>
