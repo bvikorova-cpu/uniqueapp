@@ -33,6 +33,7 @@ import { FanClubJoinCard } from "@/components/influking/FanClubJoinCard";
 import { FanClubLockedFeed } from "@/components/influking/FanClubLockedFeed";
 import PPVStudio from "@/components/influking/PPVStudio";
 import PPVLockedFeed from "@/components/influking/PPVLockedFeed";
+import { InfluencerPostComments } from "@/components/influking/InfluencerPostComments";
 import { PaidMessageDialog } from "@/components/creator/PaidMessageDialog";
 
 import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio, MessageCircle } from "lucide-react";
@@ -782,6 +783,7 @@ const InfluKing = () => {
                                 <Heart className="h-4 w-4 mr-1" /> {post.likes_count}
                               </Button>
                             </div>
+                            <InfluencerPostComments postId={post.id} userId={user.id} />
                           </CardContent>
                         </Card>
                       ))}
