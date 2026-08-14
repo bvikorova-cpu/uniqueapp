@@ -170,7 +170,7 @@ export const InfluencerEarningsPage = () => {
   if (loadingInfluencers) {
     return (
       <>
-        <FloatingHowItWorks title={"Influencer Earnings - How it works"} steps={[{ title: 'Gifts', desc: 'Fans buy gifts in EUR on your influencer profile.' }, { title: 'Split', desc: 'You keep 80% of every gift, the platform keeps 20%.' }, { title: 'Balance', desc: 'Your share is added to your available balance automatically.' }, { title: 'Withdraw', desc: 'Request a payout once your balance reaches €50.' }]} />
+        <FloatingHowItWorks title={"Influencer Earnings - How it works"} steps={[{ title: 'Gifts', desc: 'Fans buy gifts in EUR on your influencer profile.' }, { title: 'Split', desc: 'You keep 85% of every gift, the platform keeps 15%.' }, { title: 'Balance', desc: 'Your share is added to your available balance automatically.' }, { title: 'Withdraw', desc: 'Request a payout once your balance reaches €50.' }]} />
         <div className="flex items-center justify-center min-h-[400px]">
           <Loader2 className="h-8 w-8 animate-spin" />
         </div>
@@ -198,11 +198,11 @@ export const InfluencerEarningsPage = () => {
 
   return (
     <div className="space-y-6">
-      <FloatingHowItWorks title={"Influencer Earnings - How it works"} steps={[{ title: 'Gifts', desc: 'Fans buy gifts in EUR on your influencer profile.' }, { title: 'Split', desc: 'You keep 80% of every gift, the platform keeps 20%.' }, { title: 'Balance', desc: 'Your share is added to your available balance automatically.' }, { title: 'Withdraw', desc: 'Request a payout once your balance reaches €50.' }]} />
+      <FloatingHowItWorks title={"Influencer Earnings - How it works"} steps={[{ title: 'Gifts', desc: 'Fans buy gifts in EUR on your influencer profile.' }, { title: 'Split', desc: 'You keep 85% of every gift, the platform keeps 15%.' }, { title: 'Balance', desc: 'Your share is added to your available balance automatically.' }, { title: 'Withdraw', desc: 'Request a payout once your balance reaches €50.' }]} />
 
       <EarningsHero
         title="Influencer Earnings"
-        subtitle="Gifts, subscriptions and paid content — 80% is yours."
+        subtitle="Gifts, subscriptions and paid content — 85% is yours."
         totalEarnings={Number(current?.lifetime_earnings || 0)}
         available={available}
         pending={lockedInWithdrawals}
@@ -222,11 +222,11 @@ export const InfluencerEarningsPage = () => {
           <p className="text-xl font-bold">€{grossFromGifts.toFixed(2)}</p>
         </Card>
         <Card className="p-4">
-          <p className="text-xs text-muted-foreground">Platform fee (20%)</p>
+          <p className="text-xs text-muted-foreground">Platform fee (15%)</p>
           <p className="text-xl font-bold">€{platformFee.toFixed(2)}</p>
         </Card>
         <Card className="p-4">
-          <p className="text-xs text-muted-foreground">Your share (80%)</p>
+          <p className="text-xs text-muted-foreground">Your share (85%)</p>
           <p className="text-xl font-bold text-green-600">€{(grossFromGifts - platformFee).toFixed(2)}</p>
         </Card>
       </div>
@@ -282,7 +282,7 @@ export const InfluencerEarningsPage = () => {
                 {gifts && gifts.length > 0 ? (
                   gifts.map((g) => {
                     const gross = Number(g.amount || 0);
-                    const fee = Number(g.platform_commission ?? gross * 0.2);
+                    const fee = Number(g.platform_commission ?? gross * 0.15);
                     const net = Number(g.chef_amount ?? gross - fee);
                     return (
                       <div key={g.id} className="flex justify-between items-center p-3 border rounded gap-3">
