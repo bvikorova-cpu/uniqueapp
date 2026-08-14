@@ -83,8 +83,13 @@ serve(async (req) => {
         type: "influencer_gift",
         amount: gift.price.toString() } });
 
-    // Pre-record gift with pending status
-    const { error: insertError } = await supabase.from("influencer_sent_gifts").insert({ sender_id: user.id,
+    // Pre-record gift with pending status (service role — RLS blocks anon inserts)
+    const admin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { persistSession: false } },
+    );
+    const { error: insertError } = await admin.from("influencer_sent_gifts").insert({ sender_id: user.id,
       influencer_id: influencerId,
       gift_id: giftId,
       amount: gift.price,
