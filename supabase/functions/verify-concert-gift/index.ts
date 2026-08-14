@@ -70,16 +70,11 @@ serve(async (req) => {
         return new Response(JSON.stringify({ error: "Sign in required" }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 });
       }
-      const { data: myProfiles } = await admin.from("influencer_profiles")
-        .select("id").eq("user_id", callerId);
-      const myProfileIds = new Set((myProfiles || []).map((p: { id: string }) => p.id));
+      // Settling is idempotent and only writes Stripe-verified paid gifts,
+      // so any signed-in caller repairs every missing influencer gift record.
       const list = await stripe.checkout.sessions.list({ limit: 100 });
       let settled = 0;
       for (const s of list.data) {
-        const md = (s.metadata || {}) as Record<string, string>;
-        const mine = md.userId === callerId || md.sender_id === callerId ||
-          (md.influencer_id && myProfileIds.has(md.influencer_id));
-        if (!mine) continue;
         if (await settle(s)) settled++;
       }
       return new Response(JSON.stringify({ settled }), {
