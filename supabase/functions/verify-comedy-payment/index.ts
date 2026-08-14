@@ -94,7 +94,7 @@ serve(async (req) => {
           comedian_id: comedianId,
           amount_coins: Math.round(amount * 100),
           source_type: "ticket",
-          source_id: showId,
+          source_id: ticket.id,
           description: "Comedy show ticket",
           commission_rate: 20,
           platform_commission: platformCommission,
@@ -104,12 +104,12 @@ serve(async (req) => {
 
         await admin.from("comedy_platform_earnings").insert({
           comedian_id: comedianId,
-          transaction_type: "ticket",
+          transaction_type: "ticket_sale",
           total_amount: amount,
           comedian_amount: comedianAmount,
           platform_commission: platformCommission,
           commission_rate: 20,
-          related_id: showId,
+          related_id: ticket.id,
           status: "pending",
         });
       }

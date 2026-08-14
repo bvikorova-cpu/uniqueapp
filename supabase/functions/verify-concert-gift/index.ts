@@ -45,7 +45,7 @@ serve(async (req) => {
           comedian_id: show.comedian_id,
           amount_coins: Math.round(gross * 100),
           source_type: "gift",
-          source_id: giftPayment.context_id,
+          source_id: giftPayment.id,
           description: "Comedy live gift",
           commission_rate: 20,
           platform_commission: platformCommission,
@@ -60,7 +60,7 @@ serve(async (req) => {
           comedian_amount: comedianAmount,
           platform_commission: platformCommission,
           commission_rate: 20,
-          related_id: giftPayment.context_id,
+          related_id: giftPayment.id,
           status: "pending",
         });
       }
