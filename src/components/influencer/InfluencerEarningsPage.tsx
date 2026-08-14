@@ -123,7 +123,7 @@ export const InfluencerEarningsPage = () => {
     queryKey: ["influencer-extra-earnings"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return { subs: [] as SubRow[], ppv: [] as PpvRow[], dms: [] as DmRow[] };
+      if (!user) return { subs: [] as SubRow[], members: [] as any[], ppv: [] as PpvRow[], dms: [] as DmRow[] };
 
       const { data: profile } = await supabase
         .from("creator_profiles")
@@ -155,16 +155,47 @@ export const InfluencerEarningsPage = () => {
           .limit(50),
       ]);
 
+      // Active fan club members (VIP tiers) of clubs owned by this creator
+      const { data: clubs } = await supabase
+        .from("influencer_fan_clubs")
+        .select("id, name, tier, price_cents")
+        .eq("creator_id", user.id);
+      let members: any[] = [];
+      if (clubs && clubs.length > 0) {
+        const { data: memberRows } = await supabase
+          .from("influencer_fan_club_members")
+          .select("id, fan_club_id, status, subscribed_at, current_period_end")
+          .in("fan_club_id", clubs.map((c: any) => c.id))
+          .in("status", ["active", "trialing", "past_due"])
+          .order("subscribed_at", { ascending: false })
+          .limit(100);
+        members = (memberRows || []).map((m: any) => {
+          const club = clubs.find((c: any) => c.id === m.fan_club_id);
+          const gross = Number(club?.price_cents || 0);
+          return {
+            id: m.id,
+            name: club?.name || club?.tier || "Fan club",
+            status: m.status,
+            gross_cents: gross,
+            net_cents: Math.round(gross * 0.85),
+            created_at: m.subscribed_at,
+            current_period_end: m.current_period_end };
+        });
+      }
+
       return {
         subs: (subsRes.data || []) as unknown as SubRow[],
+        members,
         ppv: (ppvRes.data || []) as unknown as PpvRow[],
         dms: (dmsRes.data || []) as unknown as DmRow[] };
     } });
 
   const subs = extra?.subs || [];
+  const members = extra?.members || [];
   const ppv = extra?.ppv || [];
   const dms = extra?.dms || [];
-  const subsNet = subs.reduce((s, r) => s + Number(r.net_cents || 0), 0) / 100;
+  const membersNet = members.reduce((s: number, r: any) => s + Number(r.net_cents || 0), 0) / 100;
+  const subsNet = subs.reduce((s, r) => s + Number(r.net_cents || 0), 0) / 100 + membersNet;
   const ppvNet = ppv.reduce((s, r) => s + Number(r.creator_earnings_cents || 0), 0) / 100;
   const dmsNet = dms.reduce((s, r) => s + Number(r.creator_payout || 0), 0);
 
@@ -237,7 +268,7 @@ export const InfluencerEarningsPage = () => {
         <Card className="p-4">
           <p className="text-xs text-muted-foreground">Subscriptions (your 85%)</p>
           <p className="text-xl font-bold text-green-600">€{subsNet.toFixed(2)}</p>
-          <p className="text-xs text-muted-foreground">{subs.length} payments</p>
+          <p className="text-xs text-muted-foreground">{subs.length + members.length} payments</p>
         </Card>
         <Card className="p-4">
           <p className="text-xs text-muted-foreground">PPV posts (your 85%)</p>
@@ -321,7 +352,21 @@ export const InfluencerEarningsPage = () => {
             <Card className="p-6">
               <h3 className="text-lg font-semibold mb-4">Fan club subscriptions (85% yours)</h3>
               <div className="space-y-2">
-                {subs.length > 0 ? subs.map((s) => (
+                {members.map((m: any) => (
+                  <div key={m.id} className="flex justify-between items-center p-3 border rounded gap-3">
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">{m.name} • active subscriber</p>
+                      <p className="text-sm text-muted-foreground">
+                        {m.created_at ? format(new Date(m.created_at), "MMM dd, yyyy") : "—"} • gross €{(Number(m.gross_cents || 0) / 100).toFixed(2)}/mo
+                      </p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="font-semibold text-green-600">+€{(Number(m.net_cents || 0) / 100).toFixed(2)}</p>
+                      <p className="text-xs text-muted-foreground">per month</p>
+                    </div>
+                  </div>
+                ))}
+                {subs.map((s) => (
                   <div key={s.id} className="flex justify-between items-center p-3 border rounded gap-3">
                     <div className="min-w-0">
                       <p className="font-medium truncate">Subscription payment</p>
@@ -334,10 +379,12 @@ export const InfluencerEarningsPage = () => {
                       <p className="text-xs text-muted-foreground">Fee: €{(Number(s.platform_fee_cents || 0) / 100).toFixed(2)}</p>
                     </div>
                   </div>
-                )) : (
+                ))}
+                {subs.length === 0 && members.length === 0 && (
                   <p className="text-center text-muted-foreground py-8">No subscription earnings yet</p>
                 )}
               </div>
+
             </Card>
           </TabsContent>
 
