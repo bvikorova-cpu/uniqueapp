@@ -36,7 +36,7 @@ import PPVLockedFeed from "@/components/influking/PPVLockedFeed";
 import { InfluencerPostComments } from "@/components/influking/InfluencerPostComments";
 import { PaidMessageDialog } from "@/components/creator/PaidMessageDialog";
 
-import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio, MessageCircle } from "lucide-react";
+import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio, MessageCircle, ShieldAlert } from "lucide-react";
 
 type InfluKingView = "hub" | "content-planner" | "collab" | "fan-club" | "brand-deals" | "analytics" | "hashtags" | "challenges" | "thumbnails" | "publisher" | "audience" | "ppv";
 
@@ -455,6 +455,21 @@ const InfluKing = () => {
           totalLikes={totalLikes}
           totalViews={totalViews}
         />
+
+        {/* Content policy warning */}
+        <div className="mx-auto mb-6 max-w-4xl rounded-2xl border-2 border-destructive/40 bg-destructive/10 p-4 shadow-[0_10px_30px_-18px_hsl(var(--destructive)/0.6)]">
+          <div className="flex items-start gap-3">
+            <ShieldAlert className="mt-0.5 h-6 w-6 shrink-0 text-destructive" />
+            <div className="space-y-1">
+              <p className="text-sm font-extrabold uppercase tracking-wide text-destructive">
+                {t("influking.policy_title", "Strictly no nudity, sexual or adult content")}
+              </p>
+              <p className="text-sm font-medium text-foreground/80">
+                {t("influking.policy_body", "Nudity, sexually explicit or suggestive material and any adult content are strictly forbidden in posts, PPV, live streams and messages. Violations lead to immediate content removal, loss of earnings and a permanent ban.")}
+              </p>
+            </div>
+          </div>
+        </div>
 
         <Tabs defaultValue="studio" className="mt-4">
           <TabsList className="mx-auto mb-8 flex h-auto w-full max-w-3xl flex-wrap justify-center gap-1 rounded-2xl border border-primary/15 bg-card/70 p-1.5 shadow-[0_8px_30px_-12px_hsl(var(--primary)/0.35)] backdrop-blur-xl">
