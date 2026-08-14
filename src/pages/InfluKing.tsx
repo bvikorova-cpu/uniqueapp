@@ -657,7 +657,7 @@ const InfluKing = () => {
                   <motion.div key={tool.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.05 * i }} whileHover={{ y: -4 }} whileTap={{ scale: 0.97 }}>
                     <Card className="group h-full cursor-pointer overflow-hidden rounded-2xl border-primary/10 bg-card/70 backdrop-blur-xl transition-all hover:border-primary/40 hover:shadow-[0_16px_40px_-20px_hsl(var(--primary)/0.6)]"
-                      onClick={() => tool.id === "live" ? navigate("/live") : setActiveView(tool.id as InfluKingView)}>
+                      onClick={() => tool.id === "live" ? navigate("/livestream") : setActiveView(tool.id as InfluKingView)}>
                       <CardContent className="flex h-full flex-col items-center p-5 text-center">
                         <div className={`${tool.bg} mb-3 rounded-2xl p-3.5 ring-1 ring-inset ring-primary/10 transition-transform group-hover:scale-110`}>
                           <tool.icon className={`h-6 w-6 ${tool.color}`} />
