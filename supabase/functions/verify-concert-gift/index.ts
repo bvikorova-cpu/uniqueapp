@@ -44,7 +44,7 @@ serve(async (req) => {
           }
           return true;
         }
-        const senderId = md.sender_id || md.userId || callerId;
+        const senderId = md.sender_id || md.userId;
         if (!senderId || !md.influencer_id || !md.gift_id) return false;
         const { error: insErr } = await admin.from("influencer_sent_gifts").insert({
           sender_id: senderId,
