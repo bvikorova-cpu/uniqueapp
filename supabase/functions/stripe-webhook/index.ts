@@ -550,6 +550,27 @@ serve(async (req) => {
               }
             }
 
+            if (meta.type === "super_chat") {
+              const { data: sc, error } = await supabase
+                .from("live_super_chats")
+                .update({ status: "paid", stripe_payment_intent_id: paymentIntentId })
+                .eq("stripe_session_id", session.id)
+                .eq("status", "pending")
+                .select("id, creator_id, amount_cents")
+                .maybeSingle();
+              if (error) log("super chat webhook update failed", { err: error.message });
+              if (sc?.creator_id) {
+                await supabase.from("notifications").insert({
+                  user_id: sc.creator_id,
+                  type: "super_chat_received",
+                  title: "New Super Chat",
+                  message: `You received a €${(Number(sc.amount_cents) / 100).toFixed(2)} Super Chat.`,
+                  related_id: sc.id,
+                  is_read: false });
+              }
+            }
+
+
             if (meta.type === "influencer_gift") {
               const { data: gift, error } = await supabase
                 .from("influencer_sent_gifts")
