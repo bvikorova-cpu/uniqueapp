@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft, Loader2, AlertCircle, RefreshCw, Mic, BadgeCheck, Calendar, Radio, Square,
 } from "lucide-react";
@@ -39,6 +40,7 @@ interface Show {
 }
 
 export const ComedianStudio = ({ onBack }: Props) => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -161,7 +163,11 @@ export const ComedianStudio = ({ onBack }: Props) => {
         : { status, ended_at: now };
       const { error } = await supabase.from("comedy_shows").update(patch).eq("id", id);
       if (error) throw error;
-      toast.success(status === "live" ? "You are live!" : "Show ended");
+      toast.success(status === "live" ? "You are live — opening your broadcast studio…" : "Show ended");
+      if (status === "live") {
+        navigate(`/comedy-live/${id}`);
+        return;
+      }
       await load();
     } catch (e: any) {
       toast.error(e?.message || "Failed to update show");
@@ -326,16 +332,21 @@ export const ComedianStudio = ({ onBack }: Props) => {
                     {format(new Date(s.scheduled_at), "MMM d, HH:mm")} · {s.duration_minutes} min · €{s.ticket_price_coins}
                   </p>
                 </div>
-                <div className="flex shrink-0 gap-2">
+                <div className="flex shrink-0 flex-wrap gap-2">
                   {s.status === "scheduled" && (
                     <Button size="sm" onClick={() => setStatus(s.id, "live")} className="gap-2">
                       <Radio className="h-4 w-4" /> Go live
                     </Button>
                   )}
                   {s.status === "live" && (
-                    <Button size="sm" variant="destructive" onClick={() => setStatus(s.id, "ended")} className="gap-2">
-                      <Square className="h-4 w-4" /> End show
-                    </Button>
+                    <>
+                      <Button size="sm" onClick={() => navigate(`/comedy-live/${s.id}`)} className="gap-2">
+                        <Radio className="h-4 w-4 animate-pulse" /> Open broadcast
+                      </Button>
+                      <Button size="sm" variant="destructive" onClick={() => setStatus(s.id, "ended")} className="gap-2">
+                        <Square className="h-4 w-4" /> End show
+                      </Button>
+                    </>
                   )}
                 </div>
               </div>
