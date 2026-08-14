@@ -87,11 +87,20 @@ serve(async (req) => {
 
     if (recover) {
       if (!callerId) return json({ error: "Sign in required" }, 401);
+      // Caller may recover gifts they sent OR gifts sent to their own profile
+      const { data: myProfiles } = await admin
+        .from("influencer_profiles")
+        .select("id")
+        .eq("user_id", callerId);
+      const myProfileIds = new Set((myProfiles || []).map((p: { id: string }) => p.id));
+
       const list = await stripe.checkout.sessions.list({ limit: 100 });
       let settled = 0;
       for (const s of list.data) {
         const md = (s.metadata || {}) as Record<string, string>;
-        if (md.userId !== callerId && md.sender_id !== callerId) continue;
+        const mine = md.userId === callerId || md.sender_id === callerId ||
+          (md.influencer_id && myProfileIds.has(md.influencer_id));
+        if (!mine) continue;
         if (await settle(s)) settled++;
       }
       return json({ settled });
