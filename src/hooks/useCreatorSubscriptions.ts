@@ -14,23 +14,53 @@ export interface CreatorTier {
   created_at: string;
 }
 
+/** creator_subscription_tiers.creator_id points at creator_profiles.id, not auth user id. */
+async function resolveCreatorProfileId(userId: string, create = false): Promise<string | null> {
+  const { data } = await (supabase as any)
+    .from("creator_profiles")
+    .select("id")
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (data?.id) return data.id as string;
+  if (!create) return null;
+
+  const { data: profile } = await (supabase as any)
+    .from("profiles")
+    .select("display_name, username")
+    .eq("id", userId)
+    .maybeSingle();
+
+  const { data: created } = await (supabase as any)
+    .from("creator_profiles")
+    .insert({ user_id: userId, display_name: profile?.display_name || profile?.username || "Creator" })
+    .select("id")
+    .maybeSingle();
+  return (created?.id as string) ?? null;
+}
+
 export function useCreatorTiers(creatorId?: string) {
   const { user } = useAuth();
-  const targetId = creatorId ?? user?.id;
+  const targetUserId = creatorId ?? user?.id;
   const [tiers, setTiers] = useState<CreatorTier[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchTiers = useCallback(async () => {
-    if (!targetId) return;
+    if (!targetUserId) return;
     setLoading(true);
+    const profileId = await resolveCreatorProfileId(targetUserId);
+    if (!profileId) {
+      setTiers([]);
+      setLoading(false);
+      return;
+    }
     const { data } = await (supabase as any)
       .from("creator_subscription_tiers")
       .select("*")
-      .eq("creator_id", targetId)
+      .eq("creator_id", profileId)
       .order("price", { ascending: true });
     setTiers((data as CreatorTier[]) ?? []);
     setLoading(false);
-  }, [targetId]);
+  }, [targetUserId]);
 
   useEffect(() => {
     fetchTiers();
@@ -43,14 +73,18 @@ export function useCreatorTiers(creatorId?: string) {
     benefits?: string[];
   }) => {
     if (!user) return;
+    const profileId = await resolveCreatorProfileId(user.id, true);
+    if (!profileId) return { message: "Could not create your creator profile." } as any;
     const { error } = await (supabase as any)
       .from("creator_subscription_tiers")
-      .insert({ creator_id: user.id,
+      .insert({
+        creator_id: profileId,
         name: input.name,
         description: input.description ?? null,
         price: input.price,
         benefits: input.benefits ?? [],
-        is_active: true });
+        is_active: true,
+      });
     if (!error) await fetchTiers();
     return error;
   };
