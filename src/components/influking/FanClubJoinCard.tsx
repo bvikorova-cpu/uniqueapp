@@ -464,6 +464,10 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
                     {swap.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <ArrowLeftRight className="h-3 w-3" />}
                     Switch to this tier
                   </Button>
+                ) : isOwnClub ? (
+                  <Button size="sm" variant="outline" className="w-full gap-1" disabled>
+                    <Crown className="h-3 w-3" /> Your own club
+                  </Button>
                 ) : (
                   <Button size="sm" className="w-full gap-1"
                     onClick={() => checkout.mutate(c.id)}
@@ -472,6 +476,7 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
                     {user ? "Join" : "Sign in to join"}
                   </Button>
                 )}
+
               </CardContent>
             </Card>
           );
