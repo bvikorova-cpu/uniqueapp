@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 import { Switch } from "@/components/ui/switch";
 import { Video, Radio, CalendarClock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -33,24 +33,7 @@ export function GoLiveButton({ influencerId }: GoLiveButtonProps) {
     title: "",
     description: "",
     scheduled_at: "",
-    min_tier: "public" as "public" | "bronze" | "silver" | "gold",
   });
-  const [myClubs, setMyClubs] = useState<Array<{ tier: "bronze" | "silver" | "gold"; name: string }>>([]);
-
-  useEffect(() => {
-    if (!open) return;
-    (async () => {
-      const { data: auth } = await supabase.auth.getUser();
-      if (!auth.user) return;
-      const { data } = await (supabase as any)
-        .from("influencer_fan_clubs")
-        .select("tier, name")
-        .eq("creator_id", auth.user.id)
-        .eq("is_active", true);
-      setMyClubs((data as any[])?.map((c) => ({ tier: c.tier, name: c.name })) ?? []);
-    })();
-  }, [open]);
-
   const submit = async () => {
     if (!form.title.trim()) {
       toast.error("Enter stream title");
@@ -64,14 +47,12 @@ export function GoLiveButton({ influencerId }: GoLiveButtonProps) {
     setLoading(true);
     try {
       const streamKey = `${influencerId}_${Date.now()}`;
-      const min_tier = form.min_tier === "public" ? null : form.min_tier;
-
       const payload: Record<string, unknown> = {
         influencer_id: influencerId,
         title: form.title,
         description: form.description,
         stream_key: streamKey,
-        min_tier,
+        min_tier: null,
       };
 
       if (scheduleLater) {
@@ -179,34 +160,9 @@ export function GoLiveButton({ influencerId }: GoLiveButtonProps) {
               </div>
             )}
 
-            <div className="grid gap-2">
-              <Label>Who can watch</Label>
-              <Select
-                value={form.min_tier}
-                onValueChange={(v) => setForm({ ...form, min_tier: v as typeof form.min_tier })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="public">🌍 Public — everyone</SelectItem>
-                  {(["bronze", "silver", "gold"] as const).map((slot) => {
-                    const club = myClubs.find((c) => c.tier === slot);
-                    if (!club) return null;
-                    const icon = slot === "bronze" ? "🥉" : slot === "silver" ? "🥈" : "🥇";
-                    return (
-                      <SelectItem key={slot} value={slot}>
-                        {icon} {club.name} and above
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-
-              </Select>
-              <p className="text-xs text-muted-foreground">
-                Tier-gated streams can only be watched by active Fan Club members of the selected tier or higher.
-              </p>
-            </div>
+            <p className="text-xs text-muted-foreground">
+              Every stream is public — anyone can watch, send gifts and Super Chats.
+            </p>
           </div>
 
           <DialogFooter>

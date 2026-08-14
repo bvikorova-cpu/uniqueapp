@@ -14,7 +14,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useFollowCounts } from "@/hooks/useFollow";
 import { ProfileHero } from "@/components/profile/ProfileHero";
 import { ProfileVerificationCard } from "@/components/profile/ProfileVerificationCard";
-import { FanClubMembershipsCard } from "@/components/profile/FanClubMembershipsCard";
 import { ClubMembershipCard } from "@/components/profile/ClubMembershipCard";
 import { BillingOverviewCard } from "@/components/profile/BillingOverviewCard";
 import { ActiveSubscriptionsCard } from "@/components/profile/ActiveSubscriptionsCard";
@@ -682,7 +681,6 @@ const Profile = () => {
         {currentUserId === userId && <ClubMembershipCard />}
         {currentUserId === userId && <ActiveSubscriptionsCard />}
         {currentUserId === userId && <BillingOverviewCard />}
-        {currentUserId === userId && <FanClubMembershipsCard />}
 
 
 

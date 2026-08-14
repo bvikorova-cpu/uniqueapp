@@ -75,13 +75,7 @@ export const UpcomingStreams = () => {
             <CardContent className="p-4 space-y-3">
               <div className="flex items-start justify-between gap-2">
                 <h3 className="font-semibold line-clamp-2">{r.title}</h3>
-                {r.min_tier ? (
-                  <Badge variant="secondary" className="gap-1 shrink-0">
-                    <Crown className="h-3 w-3" /> {r.min_tier}
-                  </Badge>
-                ) : (
-                  <Badge variant="outline" className="shrink-0">Public</Badge>
-                )}
+                <Badge variant="outline" className="shrink-0">Public</Badge>
               </div>
               {r.influencer_profiles?.display_name && (
                 <p className="text-xs text-muted-foreground">{r.influencer_profiles.display_name}</p>
