@@ -23,7 +23,7 @@ export const useCreatorStudioStats = (userId?: string) => {
       const prevSince = new Date(Date.now() - 14 * 86400000).toISOString();
       const sevenAgo = new Date(Date.now() - 7 * 86400000).toISOString();
 
-      const { data: posts = [] } = await supabase
+      const { data: wallPosts = [] } = await supabase
         .from("posts")
         .select("id, content, likes_count, comments_count, created_at")
         .eq("user_id", userId!)
@@ -31,15 +31,47 @@ export const useCreatorStudioStats = (userId?: string) => {
         .order("created_at", { ascending: false })
         .limit(500);
 
-      const { count: followers = 0 } = await (supabase as any)
+      // Influencer (InfluKing) posts count as creator content too
+      const { data: infProfile } = await supabase
+        .from("influencer_profiles")
+        .select("id, followers_count")
+        .eq("user_id", userId!)
+        .maybeSingle();
+
+      let influencerPosts: any[] = [];
+      let influencerViews = 0;
+      if (infProfile?.id) {
+        const { data: ip = [] } = await supabase
+          .from("influencer_posts")
+          .select("id, title, content, likes_count, views_count, created_at")
+          .eq("influencer_id", infProfile.id)
+          .eq("is_active", true)
+          .gte("created_at", since)
+          .order("created_at", { ascending: false })
+          .limit(500);
+        influencerPosts = (ip || []).map((p: any) => ({
+          id: p.id,
+          content: p.content || p.title || null,
+          likes_count: p.likes_count || 0,
+          comments_count: 0,
+          created_at: p.created_at }));
+        influencerViews = (ip || []).reduce((s: number, p: any) => s + (p.views_count || 0), 0);
+      }
+
+      const posts = [...(wallPosts || []), ...influencerPosts].sort(
+        (x: any, y: any) => (x.created_at < y.created_at ? 1 : -1)
+      );
+
+      const { count: followsCount = 0 } = await (supabase as any)
         .from("user_follows")
         .select("id", { count: "exact", head: true })
         .eq("following_id", userId!);
+      const followers = (followsCount || 0) + (infProfile?.followers_count || 0);
 
       const totalPosts = posts.length;
       const totalLikes = posts.reduce((s: number, p: any) => s + (p.likes_count || 0), 0);
       const totalComments = posts.reduce((s: number, p: any) => s + (p.comments_count || 0), 0);
-      const totalViews = totalLikes * 8 + totalComments * 12;
+      const totalViews = influencerViews + totalLikes * 8 + totalComments * 12;
       const engagementRate = totalViews ? ((totalLikes + totalComments) / totalViews) * 100 : 0;
 
       const last7 = posts.filter((p: any) => p.created_at >= sevenAgo);
