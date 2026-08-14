@@ -293,7 +293,9 @@ export default function LiveStream() {
     } catch (e: any) {
       const msg =
         e?.name === "NotAllowedError"
-          ? "Camera access denied — allow camera & microphone for this site"
+          ? inIframe
+            ? "Camera is blocked in the embedded preview — open the stream in a new tab to go live"
+            : "Camera access denied — allow camera & microphone for this site"
           : e?.name === "NotFoundError"
             ? "No camera found on this device"
             : e?.name === "NotReadableError"
