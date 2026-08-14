@@ -6,20 +6,45 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { useCreatorTiers } from "@/hooks/useCreatorSubscriptions";
 import { Crown, MessageCircle, Loader2, Plus, Save, Trash2 } from "lucide-react";
+
+type Slot = "bronze" | "silver" | "gold";
+
+interface ClubRow {
+  id: string;
+  name: string;
+  description: string | null;
+  tier: Slot;
+  price_cents: number;
+  is_active: boolean;
+  member_count: number;
+}
+
+const SLOT_LABEL: Record<Slot, string> = {
+  bronze: "Entry level (bronze)",
+  silver: "Mid level (silver)",
+  gold: "Top level (gold)",
+};
 
 export const MonetizationSettings = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const { tiers, loading, createTier, toggleTier, refetch } = useCreatorTiers(user?.id);
 
-  const [drafts, setDrafts] = useState<Record<string, { name: string; price: string; description: string }>>({});
-  const [newTier, setNewTier] = useState({ name: "", price: "", description: "" });
+  const [clubs, setClubs] = useState<ClubRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [drafts, setDrafts] = useState<Record<string, { name: string; price: string; description: string; tier: Slot }>>({});
+  const [newTier, setNewTier] = useState<{ name: string; price: string; description: string; tier: Slot }>({
+    name: "",
+    price: "",
+    description: "",
+    tier: "bronze",
+  });
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [creating, setCreating] = useState(false);
 
   // Paid DM settings
   const [msgLoading, setMsgLoading] = useState(true);
@@ -29,13 +54,33 @@ export const MonetizationSettings = () => {
   const [msgEnabled, setMsgEnabled] = useState(true);
   const [shoutoutEnabled, setShoutoutEnabled] = useState(true);
 
-  useEffect(() => {
-    const next: Record<string, { name: string; price: string; description: string }> = {};
-    tiers.forEach((t) => {
-      next[t.id] = { name: t.name, price: String(t.price ?? ""), description: t.description ?? "" };
+  const fetchClubs = async () => {
+    if (!user?.id) return;
+    setLoading(true);
+    const { data } = await (supabase as any)
+      .from("influencer_fan_clubs")
+      .select("id, name, description, tier, price_cents, is_active, member_count")
+      .eq("creator_id", user.id)
+      .order("price_cents", { ascending: true });
+    const rows = (data as ClubRow[]) ?? [];
+    setClubs(rows);
+    const next: Record<string, { name: string; price: string; description: string; tier: Slot }> = {};
+    rows.forEach((r) => {
+      next[r.id] = {
+        name: r.name,
+        price: (r.price_cents / 100).toFixed(2),
+        description: r.description ?? "",
+        tier: r.tier,
+      };
     });
     setDrafts(next);
-  }, [tiers]);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchClubs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -65,8 +110,14 @@ export const MonetizationSettings = () => {
     }
     setSavingId(id);
     const { error } = await (supabase as any)
-      .from("creator_subscription_tiers")
-      .update({ name: d.name.trim(), price, description: d.description.trim() || null })
+      .from("influencer_fan_clubs")
+      .update({
+        name: d.name.trim(),
+        price_cents: Math.round(price * 100),
+        description: d.description.trim() || "",
+        tier: d.tier,
+        updated_at: new Date().toISOString(),
+      })
       .eq("id", id);
     setSavingId(null);
     if (error) {
@@ -74,36 +125,57 @@ export const MonetizationSettings = () => {
       return;
     }
     toast({ title: "Tier updated", description: `${d.name} — €${price.toFixed(2)}/month` });
-    refetch();
+    fetchClubs();
+  };
+
+  const toggleActive = async (id: string, active: boolean) => {
+    await (supabase as any).from("influencer_fan_clubs").update({ is_active: active }).eq("id", id);
+    fetchClubs();
   };
 
   const removeTier = async (id: string) => {
-    const { error } = await (supabase as any).from("creator_subscription_tiers").delete().eq("id", id);
+    const { error } = await (supabase as any).from("influencer_fan_clubs").delete().eq("id", id);
     if (error) {
       toast({ title: "Could not delete", description: error.message, variant: "destructive" });
       return;
     }
     toast({ title: "Tier removed" });
-    refetch();
+    fetchClubs();
   };
 
   const addTier = async () => {
+    if (!user?.id || creating) return;
     const price = Number(newTier.price);
     if (!newTier.name.trim() || !Number.isFinite(price) || price < 1) {
       toast({ title: "Invalid tier", description: "Enter a name and a price of at least €1.", variant: "destructive" });
       return;
     }
-    const error = await createTier({
-      name: newTier.name.trim(),
-      price,
-      description: newTier.description.trim() || undefined,
-    });
-    if (error) {
-      toast({ title: "Could not create tier", description: (error as any).message, variant: "destructive" });
+    if (clubs.some((c) => c.tier === newTier.tier)) {
+      toast({
+        title: "Slot already used",
+        description: `You already have a ${newTier.tier} tier — edit it or pick another level.`,
+        variant: "destructive",
+      });
       return;
     }
-    setNewTier({ name: "", price: "", description: "" });
-    toast({ title: "Tier created", description: `€${price.toFixed(2)}/month` });
+    setCreating(true);
+    const { error } = await (supabase as any).from("influencer_fan_clubs").insert({
+      creator_id: user.id,
+      tier: newTier.tier,
+      name: newTier.name.trim(),
+      description: newTier.description.trim() || "",
+      price_cents: Math.round(price * 100),
+      perks: [],
+      is_active: true,
+    });
+    setCreating(false);
+    if (error) {
+      toast({ title: "Could not create tier", description: error.message, variant: "destructive" });
+      return;
+    }
+    setNewTier({ name: "", price: "", description: "", tier: "bronze" });
+    toast({ title: "Tier created", description: `€${price.toFixed(2)}/month — now visible on your profile.` });
+    fetchClubs();
   };
 
   const saveMessageSettings = async () => {
@@ -139,20 +211,28 @@ export const MonetizationSettings = () => {
   return (
     <div className="space-y-6">
       <Card className="p-5 space-y-5">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Crown className="h-5 w-5 text-amber-500" />
           <h3 className="text-lg font-black">Fan club subscription prices</h3>
           <Badge variant="secondary" className="ml-auto">85/15 split</Badge>
         </div>
+        <p className="text-xs text-muted-foreground">
+          Tiers you save here appear instantly on your public profile, in InfluKing and as the audience filter for live streams.
+        </p>
 
         {loading ? (
           <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
-        ) : tiers.length === 0 ? (
+        ) : clubs.length === 0 ? (
           <p className="text-sm text-muted-foreground italic">No tiers yet — create your first one below.</p>
         ) : (
           <div className="space-y-4">
-            {tiers.map((t) => {
-              const d = drafts[t.id] ?? { name: t.name, price: String(t.price), description: t.description ?? "" };
+            {clubs.map((t) => {
+              const d = drafts[t.id] ?? {
+                name: t.name,
+                price: (t.price_cents / 100).toFixed(2),
+                description: t.description ?? "",
+                tier: t.tier,
+              };
               return (
                 <div key={t.id} className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
                   <div className="grid gap-3 sm:grid-cols-[1fr_140px]">
@@ -175,6 +255,20 @@ export const MonetizationSettings = () => {
                     </div>
                   </div>
                   <div className="space-y-1.5">
+                    <Label>Access level</Label>
+                    <Select
+                      value={d.tier}
+                      onValueChange={(v) => setDrafts((p) => ({ ...p, [t.id]: { ...d, tier: v as Slot } }))}
+                    >
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {(["bronze", "silver", "gold"] as Slot[]).map((s) => (
+                          <SelectItem key={s} value={s}>{SLOT_LABEL[s]}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1.5">
                     <Label>Description</Label>
                     <Textarea
                       rows={2}
@@ -188,9 +282,10 @@ export const MonetizationSettings = () => {
                       <span className="ml-1.5">Save price</span>
                     </Button>
                     <div className="flex items-center gap-2">
-                      <Switch checked={t.is_active} onCheckedChange={(v) => toggleTier(t.id, v)} />
-                      <span className="text-xs text-muted-foreground">{t.is_active ? "Active" : "Hidden"}</span>
+                      <Switch checked={t.is_active} onCheckedChange={(v) => toggleActive(t.id, v)} />
+                      <span className="text-xs text-muted-foreground">{t.is_active ? "Visible to fans" : "Hidden"}</span>
                     </div>
+                    <span className="text-xs text-muted-foreground">{t.member_count} members</span>
                     <Button size="sm" variant="ghost" className="ml-auto text-destructive" onClick={() => removeTier(t.id)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -218,14 +313,25 @@ export const MonetizationSettings = () => {
               onChange={(e) => setNewTier((p) => ({ ...p, price: e.target.value }))}
             />
           </div>
+          <Select value={newTier.tier} onValueChange={(v) => setNewTier((p) => ({ ...p, tier: v as Slot }))}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {(["bronze", "silver", "gold"] as Slot[]).map((s) => (
+                <SelectItem key={s} value={s} disabled={clubs.some((c) => c.tier === s)}>
+                  {SLOT_LABEL[s]}{clubs.some((c) => c.tier === s) ? " — used" : ""}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Textarea
             rows={2}
             placeholder="What subscribers get"
             value={newTier.description}
             onChange={(e) => setNewTier((p) => ({ ...p, description: e.target.value }))}
           />
-          <Button onClick={addTier}>
-            <Plus className="h-4 w-4 mr-1.5" /> Create tier
+          <Button onClick={addTier} disabled={creating}>
+            {creating ? <Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> : <Plus className="h-4 w-4 mr-1.5" />}
+            Create tier
           </Button>
         </div>
       </Card>
