@@ -472,6 +472,7 @@ const InfluKing = () => {
             {[
               { v: "studio", l: t("influking.tab_studio", "Creator Studio"), i: Crown },
               { v: "tools", l: t("influking.tab_tools", "AI Tools"), i: Brain },
+              { v: "messages", l: t("influking.tab_messages", "Messages"), i: MessageCircle },
               { v: "discover", l: t("influking.tab_discover", "Discover"), i: TrendingUp },
               { v: "following", l: t("influking.tab_following", "Following"), i: Users },
               { v: "guide", l: t("influking.tab_guide", "How it works"), i: Star },
