@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Crown, Users, Heart, Eye, TrendingUp, Camera, Plus, CheckCircle, Star, Upload, ExternalLink, Gift, Brain, Handshake, Briefcase } from "lucide-react";
+import { Crown, Users, Heart, Eye, TrendingUp, Camera, Plus, CheckCircle, Star, Upload, ExternalLink, Gift, Brain, Handshake, Briefcase, Pencil, Wallet } from "lucide-react";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { GoLiveButton } from "@/components/influencer/GoLiveButton";
 import { SendInfluencerGiftDialog } from "@/components/influencer/SendInfluencerGiftDialog";
