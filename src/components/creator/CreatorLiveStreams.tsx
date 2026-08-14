@@ -187,7 +187,7 @@ export function CreatorLiveStreams({ creatorId }: CreatorLiveStreamsProps) {
                         className="w-full md:w-auto"
                         onClick={() => {
                           if (stream.status === "live") {
-                            window.open(`/live-stream/${stream.id}`, "_blank");
+                            window.open(`/live/${stream.id}`, "_blank");
                           } else if (stream.scheduled_at) {
                             // Generate ICS calendar reminder
                             const start = new Date(stream.scheduled_at);
