@@ -144,6 +144,30 @@ const InfluKing = () => {
       return data as InfluencerProfile[];
     } });
 
+  // Settle InfluKing gift payments after Stripe redirect (and recover missed ones)
+  useEffect(() => {
+    if (!user) return;
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id");
+    const success = params.get("success") === "true";
+    if (!sessionId && !success) return;
+    (async () => {
+      try {
+        const { data } = await supabase.functions.invoke("verify-influencer-gift", {
+          body: sessionId ? { sessionId } : { recover: true } });
+        if ((data as any)?.paid || (data as any)?.settled) {
+          toast({ title: "🎁 Gift confirmed", description: "It now shows in earnings." });
+        }
+      } catch (e) {
+        console.error("Gift verification failed", e);
+      } finally {
+        params.delete("session_id"); params.delete("success"); params.delete("type");
+        const q = params.toString();
+        window.history.replaceState({}, "", window.location.pathname + (q ? `?${q}` : ""));
+      }
+    })();
+  }, [user]);
+
   useEffect(() => {
     if (!user || topInfluencers.length === 0) return;
     const fetchFollowStatus = async () => {
