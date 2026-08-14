@@ -460,8 +460,9 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
                 )}
                 {active ? (
                   <div className="space-y-1">
-                    <Badge className="bg-green-500/10 text-green-600 border-green-500/30 w-full justify-center gap-1">
-                      <CheckCircle2 className="h-3 w-3" /> Active tier
+                    <Badge className="bg-green-500/10 text-green-600 border-green-500/30 w-full justify-center gap-1 text-[11px]">
+                      <CheckCircle2 className="h-3 w-3 shrink-0" /> Active tier
+
                     </Badge>
                     {membership?.cancel_at_period_end ? (
                       <>
