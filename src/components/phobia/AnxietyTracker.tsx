@@ -50,7 +50,7 @@ export const AnxietyTracker = () => {
         prompt: `Anxiety level: ${anxietyLevel}/10`,
         generated_text: `Symptoms: ${Array.from(selectedSymptoms).join(", ")}`,
         metadata: { anxiety_level: anxietyLevel, symptoms: Array.from(selectedSymptoms), type: "anxiety_log" },
-        status: "completed" as any });
+        status: "generated" as any });
       if (error) throw error;
       toast.success("Anxiety episode logged!");
       setSelectedSymptoms(new Set());
