@@ -252,13 +252,19 @@ const InfluKing = () => {
 
   const startRecording = async () => {
     try {
+      if (!navigator.mediaDevices?.getUserMedia) throw new Error("unsupported");
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+      const mimeType = MediaRecorder.isTypeSupported('video/webm')
+        ? 'video/webm'
+        : (MediaRecorder.isTypeSupported('video/mp4') ? 'video/mp4' : '');
+      const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
       const chunks: Blob[] = [];
       recorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
       recorder.onstop = async () => {
-        const blob = new Blob(chunks, { type: 'video/webm' });
-        const file = new File([blob], `recording-${Date.now()}.webm`, { type: 'video/webm' });
+        const type = recorder.mimeType || 'video/webm';
+        const ext = type.includes('mp4') ? 'mp4' : 'webm';
+        const blob = new Blob(chunks, { type });
+        const file = new File([blob], `recording-${Date.now()}.${ext}`, { type });
         const url = await uploadMediaToStorage(file);
         if (url) { setNewPost({ ...newPost, media_url: url, media_type: 'video' }); }
         stream.getTracks().forEach(track => track.stop());
@@ -266,8 +272,21 @@ const InfluKing = () => {
       recorder.start();
       setMediaRecorder(recorder);
       setIsRecording(true);
-    } catch (error: any) { toast({ title: "Camera Error", description: error.message, variant: "destructive" }); }
+    } catch (error: any) {
+      // In-app previews and embedded iframes often block camera access.
+      // Fall back to the phone's native camera via a capture file input.
+      if (captureInputRef.current) {
+        toast({ title: "Opening camera", description: "Using your device camera app instead." });
+        captureInputRef.current.click();
+        return;
+      }
+      toast({
+        title: "Camera unavailable",
+        description: "Allow camera access in your browser settings, or pick a file instead.",
+        variant: "destructive" });
+    }
   };
+
 
   const stopRecording = () => {
     if (mediaRecorder && isRecording) { mediaRecorder.stop(); setIsRecording(false); setMediaRecorder(null); }
