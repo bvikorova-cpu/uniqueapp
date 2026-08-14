@@ -231,9 +231,20 @@ export function resolveProxy(
       body: { ...b, source: (b as any).source ?? functionName } };
   }
 
+  // Fan Club (InfluKing) — fanclub-* functions merged into create-checkout.
+  const FANCLUB_ACTIONS: Record<string, string> = { "fanclub-checkout": "checkout",
+    "fanclub-verify": "verify",
+    "fanclub-cancel": "cancel",
+    "fanclub-resume": "resume" };
+  const fanclubAction = FANCLUB_ACTIONS[functionName];
+  if (fanclubAction) {
+    return { target: "create-checkout", body: { ...b, product: "fan_club", action: fanclubAction } };
+  }
+
   if (functionName === "contact-live-chat") {
     return { target: "contact-ai-triage", body: { ...b, action: "live_chat" } };
   }
+
 
   if (functionName === "ai-auto-recharge") {
     return { target: "create-checkout", body: { ...b, product: "ai_auto_recharge" } };
