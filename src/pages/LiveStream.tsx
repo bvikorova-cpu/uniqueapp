@@ -224,6 +224,18 @@ export default function LiveStream() {
   const isOwner = !!user && !!stream && user.id === stream.influencer_profiles?.user_id;
   const inIframe = typeof window !== "undefined" && window.self !== window.top;
 
+  // Some embedded previews (mobile Chrome in an iframe without allow="camera")
+  // never resolve or reject getUserMedia — detect that up-front.
+  const cameraBlockedByPolicy = () => {
+    try {
+      const fp: any = (document as any).featurePolicy || (document as any).permissionsPolicy;
+      if (fp?.allowsFeature) return !fp.allowsFeature("camera");
+    } catch {
+      /* ignore */
+    }
+    return false;
+  };
+
   const requestStream = async () => {
     const withTimeout = (p: Promise<MediaStream>, ms: number) =>
       Promise.race([
@@ -238,13 +250,14 @@ export default function LiveStream() {
           video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" },
           audio: { echoCancellation: true, noiseSuppression: true },
         }),
-        15000
+        8000
       );
     } catch (e: any) {
       if (e?.name === "NotAllowedError") throw e;
-      return await withTimeout(navigator.mediaDevices.getUserMedia({ video: true }), 15000);
+      return await withTimeout(navigator.mediaDevices.getUserMedia({ video: true }), 8000);
     }
   };
+
 
   // Start broadcasting (influencer)
   const startBroadcasting = async () => {
