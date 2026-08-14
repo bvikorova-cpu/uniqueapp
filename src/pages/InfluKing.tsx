@@ -471,6 +471,9 @@ const InfluKing = () => {
           </TabsList>
 
         <TabsContent value="studio" className="space-y-6 focus-visible:outline-none">
+        <p className="mx-auto mb-4 max-w-2xl text-center text-sm text-muted-foreground">
+          {t("influking.studio_hint", "Everything you need in one place: publish content, sell premium posts, go live and manage your money.")}
+        </p>
         {/* Action Buttons */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
           className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-3 rounded-3xl border border-primary/15 bg-card/70 p-5 shadow-[0_10px_40px_-20px_hsl(var(--primary)/0.5)] backdrop-blur-xl">
