@@ -141,9 +141,15 @@ export const useSendTip = () => { const queryClient = useQueryClient();
         body: { comedianId, amount, tipType, showId, message } });
       if (error) {
         const status = (error as any)?.context?.status;
-        if (status === 402) throw new Error("Insufficient coins");
+        const msg = String((data as any)?.error ?? (error as any)?.message ?? "");
+        if (status === 402 || /insufficient/i.test(msg)) throw new Error("INSUFFICIENT_COINS");
         throw error;
       }
+      if ((data as any)?.error) {
+        if (/insufficient/i.test(String((data as any).error))) throw new Error("INSUFFICIENT_COINS");
+        throw new Error(String((data as any).error));
+      }
+
       return data;
     },
     onSuccess: () => {
@@ -151,8 +157,16 @@ export const useSendTip = () => { const queryClient = useQueryClient();
       toast.success("Tip sent! The comedian will appreciate it!");
     },
     onError: (error: Error) => {
+      if (error.message === "INSUFFICIENT_COINS") {
+        toast.error("Not enough comedy coins", {
+          description: "Top up your comedy coins to send tips.",
+          action: { label: "Buy coins", onClick: () => { window.location.href = "/comedy-club"; } },
+        });
+        return;
+      }
       toast.error(error.message);
     } });
+
 };
 
 export const useUserTickets = () => {

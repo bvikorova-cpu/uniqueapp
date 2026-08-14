@@ -113,7 +113,7 @@ export default function ComedyLiveViewer() {
         return;
       }
 
-      const { error } = await supabase.functions.invoke("send-comedy-tip", {
+      const { data, error } = await supabase.functions.invoke("send-comedy-tip", {
         body: {
           showId,
           comedianId: show.comedian_id,
@@ -123,6 +123,15 @@ export default function ComedyLiveViewer() {
         }
       });
 
+      const status = (error as any)?.context?.status;
+      const errMsg = String((data as any)?.error ?? (error as any)?.message ?? "");
+      if (status === 402 || /insufficient_comedy_coins|insufficient/i.test(errMsg)) {
+        toast.error("Not enough comedy coins", {
+          description: `This gift costs ${amount} coins. Top up to keep supporting the show.`,
+          action: { label: "Buy coins", onClick: () => navigate("/comedy-club") },
+        });
+        return;
+      }
       if (error) throw error;
 
       toast.success(`Sent ${tipType}!`);
@@ -131,6 +140,7 @@ export default function ComedyLiveViewer() {
       console.error("Error sending tip:", error);
       toast.error("Failed to send tip");
     }
+
   };
 
   if (loading) {
