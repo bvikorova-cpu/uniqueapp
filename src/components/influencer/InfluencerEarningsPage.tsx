@@ -231,6 +231,24 @@ export const InfluencerEarningsPage = () => {
         </Card>
       </div>
 
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Card className="p-4">
+          <p className="text-xs text-muted-foreground">Subscriptions (your 85%)</p>
+          <p className="text-xl font-bold text-green-600">€{subsNet.toFixed(2)}</p>
+          <p className="text-xs text-muted-foreground">{subs.length} payments</p>
+        </Card>
+        <Card className="p-4">
+          <p className="text-xs text-muted-foreground">PPV posts (your 85%)</p>
+          <p className="text-xl font-bold text-green-600">€{ppvNet.toFixed(2)}</p>
+          <p className="text-xs text-muted-foreground">{ppv.length} unlocks</p>
+        </Card>
+        <Card className="p-4">
+          <p className="text-xs text-muted-foreground">Paid DMs (your 85%)</p>
+          <p className="text-xl font-bold text-green-600">€{dmsNet.toFixed(2)}</p>
+          <p className="text-xs text-muted-foreground">{dms.length} messages</p>
+        </Card>
+      </div>
+
       {influencers.length > 1 && (
         <Card className="p-4 border-amber-500/20">
           <label className="text-sm font-medium mb-2 block">Select profile</label>
