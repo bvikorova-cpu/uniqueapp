@@ -79,12 +79,26 @@ const PhotoPicker = ({
           </>
         )}
       </button>
-      <div className="grid grid-cols-2 gap-2">
-        <Button type="button" variant="outline" size="sm" onClick={() => uploadRef.current?.click()}>
-          <ImagePlus className="w-4 h-4 mr-1" /> Upload photo
+      <div className="flex flex-col gap-2">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="w-full justify-center gap-1.5 px-2 text-xs"
+          onClick={() => uploadRef.current?.click()}
+        >
+          <ImagePlus className="w-4 h-4 shrink-0" />
+          <span className="truncate">Upload</span>
         </Button>
-        <Button type="button" variant="outline" size="sm" onClick={() => cameraRef.current?.click()}>
-          <Camera className="w-4 h-4 mr-1" /> Take photo
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="w-full justify-center gap-1.5 px-2 text-xs"
+          onClick={() => cameraRef.current?.click()}
+        >
+          <Camera className="w-4 h-4 shrink-0" />
+          <span className="truncate">Camera</span>
         </Button>
       </div>
       <input
