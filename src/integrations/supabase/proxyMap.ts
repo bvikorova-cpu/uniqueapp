@@ -222,6 +222,15 @@ export function resolveProxy(
 ): { target: string; body: Record<string, unknown> } | null {
   const b = body && typeof body === "object" ? { ...body } : {};
 
+  // InfluKing Brand Deal Finder is hosted by the deployed InfluKing router.
+  // Keeping the public function name here avoids a separate Edge Function slot.
+  if (functionName === "brand-deal-finder") {
+    return {
+      target: "influ-king-ai",
+      body: { ...b, action: "brand-deal-finder", operation: b.action ?? "generate" },
+    };
+  }
+
   // Battle aliases — route to the real `battle-characters` edge function so
   // legacy callers (`football-simulate-match`, `character-battle`) get the
   // same payout/RLS behavior without separate functions existing.
