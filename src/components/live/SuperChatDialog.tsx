@@ -12,15 +12,13 @@ interface Props {
 }
 
 export const SuperChatDialog = ({ streamId }: Props) => {
-  const { sendSuperChat } = useSuperChats(streamId);
+  const { sendSuperChat, isSending } = useSuperChats(streamId);
   const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState<number>(500);
   const [message, setMessage] = useState("");
 
   const handleSend = () => {
     sendSuperChat({ amountCents: amount, message: message.trim() || undefined });
-    setMessage("");
-    setOpen(false);
   };
 
   return (
