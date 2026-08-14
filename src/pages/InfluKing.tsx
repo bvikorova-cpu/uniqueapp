@@ -838,6 +838,15 @@ const InfluKing = () => {
                 <TrendingUp className="h-6 w-6 text-amber-500" /> TOP Influencers
               </CardTitle>
               <CardDescription>Tap any creator to open their profile, posts, fan club and gifts</CardDescription>
+              <div className="relative max-w-md pt-2">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search influencers..."
+                  value={discoverSearch}
+                  onChange={(e) => setDiscoverSearch(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
             </CardHeader>
             <CardContent>
               {isLoading ? (
@@ -849,7 +858,17 @@ const InfluKing = () => {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {topInfluencers.map((influencer, index) => (
+                  {topInfluencers
+                    .filter((influencer) => {
+                      const q = debouncedDiscoverSearch.trim().toLowerCase();
+                      if (!q) return true;
+                      return (
+                        influencer.display_name.toLowerCase().includes(q) ||
+                        influencer.category.toLowerCase().includes(q) ||
+                        (influencer.bio && influencer.bio.toLowerCase().includes(q))
+                      );
+                    })
+                    .map((influencer, index) => (
                     <motion.div key={influencer.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.8 + index * 0.03 }}
                       onClick={() => setSelectedInfluencer(influencer)}
