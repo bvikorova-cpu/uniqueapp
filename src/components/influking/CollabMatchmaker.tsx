@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { useDebounce } from "@/hooks/use-debounce";
 
 interface CollabMatchmakerProps {
   onBack: () => void;
