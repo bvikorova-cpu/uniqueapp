@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
@@ -21,6 +21,7 @@ interface GiftRow {
 
 export const InfluencerEarningsPage = () => {
   const [selectedInfluencer, setSelectedInfluencer] = useState<string | null>(null);
+  const refetchGiftsRef = useRef<(() => void) | null>(null);
 
   const { data: influencers, isLoading: loadingInfluencers } = useQuery({
     queryKey: ["my-influencer-profiles"],
@@ -36,6 +37,19 @@ export const InfluencerEarningsPage = () => {
       if (error) throw error;
       return data;
     } });
+
+  // Repair gift records that were paid in Stripe but never recorded
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await supabase.functions.invoke("verify-influencer-gift", {
+          body: { recover: true } });
+        if ((data as { settled?: number } | null)?.settled) {
+          refetchGiftsRef.current?.();
+        }
+      } catch { /* non-blocking */ }
+    })();
+  }, []);
 
   useEffect(() => {
     if (!selectedInfluencer && influencers && influencers.length > 0) {
@@ -72,6 +86,8 @@ export const InfluencerEarningsPage = () => {
       return (data || []) as unknown as GiftRow[];
     },
     enabled: !!selectedInfluencer });
+
+  refetchGiftsRef.current = () => { refetchGifts(); };
 
   if (loadingInfluencers) {
     return (
