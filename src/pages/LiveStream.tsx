@@ -403,13 +403,14 @@ export default function LiveStream() {
     const sync = () => {
       void supabase
         .from("live_streams")
-        .update({ viewer_count: Math.max(peerViewers, presenceViewers) })
+        .update({ viewer_count: presenceViewers })
         .eq("id", streamId);
     };
     sync();
     const t = window.setInterval(sync, 5000);
     return () => window.clearInterval(t);
-  }, [isOwner, isStreaming, peerViewers, presenceViewers, streamId]);
+  }, [isOwner, isStreaming, presenceViewers, streamId]);
+
 
   // Cleanup on unmount
   useEffect(() => {
