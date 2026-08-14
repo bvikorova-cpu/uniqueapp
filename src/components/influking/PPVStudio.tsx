@@ -109,30 +109,31 @@ export default function PPVStudio({ onBack }: Props) {
           <DialogTrigger asChild>
             <Button className="gap-2"><Plus className="h-4 w-4" /> New PPV post</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-lg">
+          <DialogContent className="w-[calc(100vw-1.5rem)] max-w-lg max-h-[85vh] overflow-y-auto overflow-x-hidden p-4 sm:p-6 rounded-lg">
             <DialogHeader>
-              <DialogTitle>Create Pay-Per-View post</DialogTitle>
-              <DialogDescription>85% goes to you, 15% platform fee. EUR only.</DialogDescription>
+              <DialogTitle className="text-base sm:text-lg">Create Pay-Per-View post</DialogTitle>
+              <DialogDescription className="text-xs sm:text-sm">85% goes to you, 15% platform fee. EUR only.</DialogDescription>
             </DialogHeader>
-            <div className="space-y-3">
-              <div><Label>Title *</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></div>
-              <div><Label>Description</Label><Textarea rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
-              <div>
+            <div className="space-y-3 min-w-0">
+              <div className="min-w-0"><Label>Title *</Label><Input className="w-full" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></div>
+              <div className="min-w-0"><Label>Description</Label><Textarea className="w-full resize-none" rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
+              <div className="min-w-0">
                 <Label>Preview (public teaser)</Label>
-                <Input type="file" accept="image/*,video/*" onChange={(e) => e.target.files?.[0] && uploadFile(e.target.files[0], "preview_url")} />
-                {form.preview_url && <img src={form.preview_url} alt="" className="mt-2 h-24 rounded object-cover" />}
+                <Input type="file" accept="image/*,video/*" className="w-full text-xs file:mr-2 file:text-xs" onChange={(e) => e.target.files?.[0] && uploadFile(e.target.files[0], "preview_url")} />
+                {form.preview_url && <img src={form.preview_url} alt="" className="mt-2 h-20 w-20 rounded object-cover" />}
               </div>
-              <div>
+              <div className="min-w-0">
                 <Label>Locked content *</Label>
-                <Input type="file" accept="image/*,video/*" onChange={(e) => e.target.files?.[0] && uploadFile(e.target.files[0], "content_url")} />
-                {form.content_url && <p className="text-xs text-muted-foreground mt-1 truncate">{form.content_url}</p>}
+                <Input type="file" accept="image/*,video/*" className="w-full text-xs file:mr-2 file:text-xs" onChange={(e) => e.target.files?.[0] && uploadFile(e.target.files[0], "content_url")} />
+                {form.content_url && <p className="text-xs text-muted-foreground mt-1 truncate max-w-full">{form.content_url}</p>}
               </div>
-              <div>
+              <div className="min-w-0">
                 <Label>Price (EUR) *</Label>
-                <Input type="number" min="1" step="0.5" value={form.price_eur} onChange={(e) => setForm({ ...form, price_eur: e.target.value })} />
+                <Input type="number" inputMode="decimal" min="1" step="0.5" className="w-full" value={form.price_eur} onChange={(e) => setForm({ ...form, price_eur: e.target.value })} />
               </div>
               <Button className="w-full" onClick={submit} disabled={saving}>{saving ? "Saving…" : "Publish PPV post"}</Button>
             </div>
+
           </DialogContent>
         </Dialog>
       </div>
