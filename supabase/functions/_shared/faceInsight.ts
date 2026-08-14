@@ -74,21 +74,57 @@ function safeJson(raw: string): any | null {
   let text = raw.trim().replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
   const start = text.indexOf("{");
   if (start > 0) text = text.slice(start);
-  try {
-    return JSON.parse(text);
-  } catch {
-    let repaired = text.replace(/,\s*$/, "");
-    const opens = (repaired.match(/\{/g) || []).length - (repaired.match(/\}/g) || []).length;
-    const brOpens = (repaired.match(/\[/g) || []).length - (repaired.match(/\]/g) || []).length;
-    repaired += '"'.repeat((repaired.match(/"/g) || []).length % 2) +
-      "]".repeat(Math.max(0, brOpens)) + "}".repeat(Math.max(0, opens));
-    try {
-      return JSON.parse(repaired);
-    } catch {
-      return null;
+
+  const attempts: string[] = [text];
+
+  // Repair 1: close unbalanced quotes/brackets (truncated output).
+  let repaired = text.replace(/,\s*$/, "");
+  const opens = (repaired.match(/\{/g) || []).length - (repaired.match(/\}/g) || []).length;
+  const brOpens = (repaired.match(/\[/g) || []).length - (repaired.match(/\]/g) || []).length;
+  repaired += '"'.repeat((repaired.match(/"/g) || []).length % 2) +
+    "]".repeat(Math.max(0, brOpens)) + "}".repeat(Math.max(0, opens));
+  attempts.push(repaired);
+
+  // Repair 2: escape raw newlines/tabs inside string literals (common with long markdown).
+  const escapeInStrings = (src: string) => {
+    let out = "";
+    let inStr = false;
+    for (let i = 0; i < src.length; i++) {
+      const ch = src[i];
+      if (ch === '"' && src[i - 1] !== "\\") inStr = !inStr;
+      if (inStr && (ch === "\n" || ch === "\r" || ch === "\t")) {
+        out += ch === "\t" ? "\\t" : ch === "\r" ? "" : "\\n";
+        continue;
+      }
+      out += ch;
     }
+    return out;
+  };
+  attempts.push(escapeInStrings(text), escapeInStrings(repaired));
+
+  for (const candidate of attempts) {
+    try {
+      const parsed = JSON.parse(candidate);
+      if (parsed && typeof parsed === "object") return parsed;
+    } catch { /* try next */ }
   }
+  return null;
 }
+
+/** Last resort: pull the report/headline out of a malformed response. */
+function salvage(raw: string): any | null {
+  const text = raw.trim().replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
+  if (!text) return null;
+  const headline = text.match(/"headline"\s*:\s*"([^"]{3,120})"/)?.[1];
+  const summary = text.match(/"summary"\s*:\s*"([^"]{3,1200})"/)?.[1];
+  const reportMatch = text.match(/"report"\s*:\s*"([\s\S]+)$/);
+  let report = reportMatch?.[1] ?? "";
+  report = report.replace(/"\s*[,}]?\s*$/, "").replace(/\\n/g, "\n").replace(/\\"/g, '"').trim();
+  if (!report && /##\s/.test(text)) report = text; // model answered in plain markdown
+  if (!report || report.length < 200) return null;
+  return { headline, summary, report };
+}
+
 
 async function runAI(mode: Mode, images: string[], note: string): Promise<string> {
   const key = Deno.env.get("LOVABLE_API_KEY");
