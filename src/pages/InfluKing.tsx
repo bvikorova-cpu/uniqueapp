@@ -554,19 +554,20 @@ const InfluKing = () => {
                   {t("influking.manage_heading", "Manage your creator business")}
                 </p>
                 <div className="grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center items-stretch gap-2 w-full">
-                  <Button variant="secondary" className="gap-2" onClick={() => setSelectedInfluencer(myProfile)}>
-                    <Star className="h-4 w-4" /> {t("influking.my_profile")}
+                  <Button variant="secondary" className="w-full sm:w-auto gap-2 justify-center whitespace-normal h-auto py-2.5 text-xs sm:text-sm" onClick={() => setSelectedInfluencer(myProfile)}>
+                    <Star className="h-4 w-4 shrink-0" /> {t("influking.my_profile")}
                   </Button>
-                  <Button variant="secondary" className="gap-2" onClick={() => navigate("/influencer/earnings")}>
-                    <Wallet className="h-4 w-4" /> {t("influking.my_earnings")}
+                  <Button variant="secondary" className="w-full sm:w-auto gap-2 justify-center whitespace-normal h-auto py-2.5 text-xs sm:text-sm" onClick={() => navigate("/influencer/earnings")}>
+                    <Wallet className="h-4 w-4 shrink-0" /> {t("influking.my_earnings")}
                   </Button>
-                  <Button variant="secondary" className="gap-2" onClick={() => navigate("/creator/live-analytics")}>
-                    <BarChart3 className="h-4 w-4" /> Live analytics
+                  <Button variant="secondary" className="w-full sm:w-auto gap-2 justify-center whitespace-normal h-auto py-2.5 text-xs sm:text-sm" onClick={() => navigate("/creator/live-analytics")}>
+                    <BarChart3 className="h-4 w-4 shrink-0" /> Live analytics
                   </Button>
-                  <Button variant="secondary" className="gap-2" onClick={() => navigate("/edit-profile")}>
-                    <Pencil className="h-4 w-4" /> Edit profile
+                  <Button variant="secondary" className="w-full sm:w-auto gap-2 justify-center whitespace-normal h-auto py-2.5 text-xs sm:text-sm" onClick={() => navigate("/edit-profile")}>
+                    <Pencil className="h-4 w-4 shrink-0" /> Edit profile
                   </Button>
-                  <Button variant="ghost" size="sm" className="text-destructive hover:bg-destructive/10" onClick={async () => {
+                  <Button variant="ghost" size="sm" className="col-span-2 sm:col-auto w-full sm:w-auto text-destructive hover:bg-destructive/10" onClick={async () => {
+
                     if (!confirm('Delete your influencer profile? This is irreversible.')) return;
                     const { error } = await supabase.from('influencer_profiles').delete().eq('id', myProfile.id).eq('user_id', user.id);
                     if (!error) {
