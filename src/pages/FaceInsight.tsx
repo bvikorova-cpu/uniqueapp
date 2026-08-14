@@ -114,7 +114,9 @@ const PhotoPicker = ({
 };
 
 
-const ReportView = ({ report, photo }: { report: Report; photo?: string | null }) => (
+const ReportView = ({ report, photo }: { report: Report; photo?: string | null }) => {
+  const { toast } = useToast();
+  return (
   <Card className="overflow-hidden border-primary/20">
     <div className="bg-gradient-to-br from-primary/15 via-accent/10 to-transparent p-5 space-y-3">
       <Badge className="bg-gradient-to-r from-primary to-accent text-white border-0">
@@ -154,14 +156,22 @@ const ReportView = ({ report, photo }: { report: Report; photo?: string | null }
         <Button
           size="sm"
           variant="outline"
-          onClick={() =>
-            downloadFaceShareCard({
-              headline: report.headline,
-              summary: report.summary,
-              scores: report.scores,
-              photo: photo ?? null,
-            })
-          }
+          onClick={async () => {
+            try {
+              await downloadFaceShareCard({
+                headline: report.headline,
+                summary: report.summary,
+                scores: report.scores,
+                photo: photo ?? null,
+              });
+            } catch (e) {
+              toast({
+                title: "Share card failed",
+                description: e instanceof Error ? e.message : "Please try again.",
+                variant: "destructive",
+              });
+            }
+          }}
         >
           <Share2 className="w-4 h-4 mr-1.5" />Share card
         </Button>
@@ -172,7 +182,8 @@ const ReportView = ({ report, photo }: { report: Report; photo?: string | null }
       <AiMarkdown content={report.report} />
     </div>
   </Card>
-);
+  );
+};
 
 const FaceInsight = () => {
   const navigate = useNavigate();
