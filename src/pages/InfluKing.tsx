@@ -468,7 +468,10 @@ const InfluKing = () => {
           </div>
         </div>
 
+        <LiveNowStrip />
+
         <Tabs defaultValue="studio" className="mt-4">
+
           <TabsList className="mx-auto mb-8 flex h-auto w-full max-w-3xl flex-wrap justify-center gap-1 rounded-2xl border border-primary/15 bg-card/70 p-1.5 shadow-[0_8px_30px_-12px_hsl(var(--primary)/0.35)] backdrop-blur-xl">
             {[
               { v: "studio", l: t("influking.tab_studio", "Creator Studio"), i: Crown },
