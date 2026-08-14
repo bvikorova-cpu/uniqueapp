@@ -273,11 +273,12 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
 
   return (
     <Card className="border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-transparent">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 flex-wrap">
-          <Crown className="h-5 w-5 text-amber-500" />
-          <span>{creatorName}'s Fan Clubs</span>
-          <div className="ml-auto flex items-center gap-2 flex-wrap">
+      <CardHeader className="p-4 sm:p-6">
+        <CardTitle className="flex items-center gap-2 flex-wrap text-base sm:text-lg">
+          <Crown className="h-5 w-5 text-amber-500 shrink-0" />
+          <span className="min-w-0 break-words">{creatorName}'s Fan Clubs</span>
+          <div className="w-full sm:w-auto sm:ml-auto flex items-center gap-2 flex-wrap">
+
             <Button
               size="sm"
               variant="ghost"
