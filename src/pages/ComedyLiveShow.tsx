@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { ComedyLiveStreamPlayer } from "@/components/comedy/ComedyLiveStreamPlayer";
 import { ComedyLiveChat } from "@/components/comedy/ComedyLiveChat";
-import { TipAnimation } from "@/components/comedy/TipAnimation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
