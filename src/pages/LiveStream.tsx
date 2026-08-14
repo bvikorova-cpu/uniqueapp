@@ -471,8 +471,9 @@ export default function LiveStream() {
                   />
                   
                   {!isStreaming && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 p-4">
-                      <div className="text-center text-primary-foreground space-y-4">
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
+                      <div className="text-center text-primary-foreground space-y-3 w-full max-w-sm">
+                        <Video className="h-12 w-12 sm:h-20 sm:w-20 mx-auto opacity-50" />
                         <Video className="h-20 w-20 mx-auto opacity-50" />
                         {isOwner ? (
                           <>
