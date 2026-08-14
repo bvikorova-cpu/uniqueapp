@@ -332,16 +332,21 @@ export const ComedianStudio = ({ onBack }: Props) => {
                     {format(new Date(s.scheduled_at), "MMM d, HH:mm")} · {s.duration_minutes} min · €{s.ticket_price_coins}
                   </p>
                 </div>
-                <div className="flex shrink-0 gap-2">
+                <div className="flex shrink-0 flex-wrap gap-2">
                   {s.status === "scheduled" && (
                     <Button size="sm" onClick={() => setStatus(s.id, "live")} className="gap-2">
                       <Radio className="h-4 w-4" /> Go live
                     </Button>
                   )}
                   {s.status === "live" && (
-                    <Button size="sm" variant="destructive" onClick={() => setStatus(s.id, "ended")} className="gap-2">
-                      <Square className="h-4 w-4" /> End show
-                    </Button>
+                    <>
+                      <Button size="sm" onClick={() => navigate(`/comedy-live/${s.id}`)} className="gap-2">
+                        <Radio className="h-4 w-4 animate-pulse" /> Open broadcast
+                      </Button>
+                      <Button size="sm" variant="destructive" onClick={() => setStatus(s.id, "ended")} className="gap-2">
+                        <Square className="h-4 w-4" /> End show
+                      </Button>
+                    </>
                   )}
                 </div>
               </div>
