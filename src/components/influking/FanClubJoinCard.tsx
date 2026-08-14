@@ -475,10 +475,11 @@ export function FanClubJoinCard({ creatorId, creatorName }: Props) {
                         </Button>
                       </>
                     ) : (
-                      <Button size="sm" variant="ghost" className="w-full text-xs h-7"
+                      <Button size="sm" variant="ghost" className="w-full text-[11px] h-7 px-1"
                         onClick={() => cancel.mutate(c.id)} disabled={cancel.isPending}>
-                        <XCircle className="h-3 w-3 mr-1" /> Cancel at period end
+                        <XCircle className="h-3 w-3 mr-1 shrink-0" /> <span className="truncate">Cancel at period end</span>
                       </Button>
+
                     )}
                   </div>
                 ) : activeMembership && !activeMembership.cancel_at_period_end ? (
