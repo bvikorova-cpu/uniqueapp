@@ -27,7 +27,6 @@ import EngagementAnalytics from "@/components/influking/EngagementAnalytics";
 import HashtagGenerator from "@/components/influking/HashtagGenerator";
 import WeeklyChallenges from "@/components/influking/WeeklyChallenges";
 import AIThumbnailCreator from "@/components/influking/AIThumbnailCreator";
-import CrossPlatformPublisher from "@/components/influking/CrossPlatformPublisher";
 import AudienceInsights from "@/components/influking/AudienceInsights";
 import { FanClubJoinCard } from "@/components/influking/FanClubJoinCard";
 import { FanClubLockedFeed } from "@/components/influking/FanClubLockedFeed";
@@ -38,7 +37,7 @@ import { PaidMessageDialog } from "@/components/creator/PaidMessageDialog";
 
 import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio, MessageCircle, ShieldAlert } from "lucide-react";
 
-type InfluKingView = "hub" | "content-planner" | "collab" | "fan-club" | "brand-deals" | "analytics" | "hashtags" | "challenges" | "thumbnails" | "publisher" | "audience" | "ppv";
+type InfluKingView = "hub" | "content-planner" | "collab" | "fan-club" | "brand-deals" | "analytics" | "hashtags" | "challenges" | "thumbnails" | "audience" | "ppv";
 
 interface InfluencerProfile {
   id: string;
@@ -83,7 +82,6 @@ const TOOL_DEFS = [
   { id: "hashtags" as const, icon: Hash, tKey: "hashtags", color: "text-indigo-500", bg: "bg-indigo-500/10", paid: true },
   { id: "challenges" as const, icon: Trophy, tKey: "challenges", color: "text-orange-500", bg: "bg-orange-500/10", paid: false },
   { id: "thumbnails" as const, icon: Image, tKey: "thumbnails", color: "text-rose-500", bg: "bg-rose-500/10", paid: true },
-  { id: "publisher" as const, icon: Share2, tKey: "publisher", color: "text-violet-500", bg: "bg-violet-500/10", paid: false },
   { id: "audience" as const, icon: PieChart, tKey: "audience", color: "text-teal-500", bg: "bg-teal-500/10", paid: false },
   { id: "ppv" as const, icon: Lock, tKey: "ppv", color: "text-fuchsia-500", bg: "bg-fuchsia-500/10", paid: false },
   { id: "live" as const, icon: Radio, tKey: "live", color: "text-red-500", bg: "bg-red-500/10", paid: false, external: "/live" as string },
@@ -445,11 +443,6 @@ const InfluKing = () => {
       <AIThumbnailCreator onBack={() => setActiveView("hub")} />
     </div></div>
   );
-  if (activeView === "publisher") return (
-    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4">
-      <CrossPlatformPublisher onBack={() => setActiveView("hub")} />
-    </div></div>
-  );
   if (activeView === "audience") return (
     <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4">
       <AudienceInsights onBack={() => setActiveView("hub")} />
@@ -653,7 +646,7 @@ const InfluKing = () => {
         {/* Tools */}
         <TabsContent value="tools" className="space-y-8 focus-visible:outline-none">
           {[
-            { title: t("influking.group_create", "Create & grow"), ids: ["content-planner", "hashtags", "thumbnails", "publisher", "challenges"] },
+            { title: t("influking.group_create", "Create & grow"), ids: ["content-planner", "hashtags", "thumbnails", "challenges"] },
             { title: t("influking.group_monetize", "Earn money"), ids: ["fan-club", "ppv", "brand-deals", "collab", "live"] },
             { title: t("influking.group_insights", "Know your audience"), ids: ["analytics", "audience"] },
           ].map((group, gi) => (
