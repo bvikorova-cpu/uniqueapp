@@ -845,25 +845,25 @@ const InfluKing = () => {
                     <motion.div key={influencer.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.8 + index * 0.03 }}
                       onClick={() => setSelectedInfluencer(influencer)}
-                      className={`flex items-center gap-4 p-4 rounded-lg cursor-pointer transition-all hover:bg-accent/50 ${
+                      className={`flex flex-wrap items-center gap-3 p-3 sm:p-4 rounded-lg cursor-pointer transition-all hover:bg-accent/50 ${
                         index < 3 ? "bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/10" : ""
                       }`}>
-                      <div className="flex items-center justify-center w-10 h-10 shrink-0">
-                        {index === 0 && <Crown className="h-8 w-8 text-amber-500" />}
-                        {index === 1 && <Crown className="h-7 w-7 text-gray-400" />}
-                        {index === 2 && <Crown className="h-6 w-6 text-orange-600" />}
-                        {index > 2 && <span className="text-xl font-bold text-muted-foreground">#{index + 1}</span>}
+                      <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 shrink-0">
+                        {index === 0 && <Crown className="h-7 w-7 sm:h-8 sm:w-8 text-amber-500" />}
+                        {index === 1 && <Crown className="h-6 w-6 sm:h-7 sm:w-7 text-gray-400" />}
+                        {index === 2 && <Crown className="h-5 w-5 sm:h-6 sm:w-6 text-orange-600" />}
+                        {index > 2 && <span className="text-lg sm:text-xl font-bold text-muted-foreground">#{index + 1}</span>}
                       </div>
-                      <Avatar className="h-12 w-12 shrink-0">
+                      <Avatar className="h-11 w-11 sm:h-12 sm:w-12 shrink-0">
                         <AvatarImage src={influencer.profile_photo_url || undefined} />
                         <AvatarFallback>{influencer.display_name[0]}</AvatarFallback>
                       </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
+                      <div className="min-w-0 flex-1 basis-[40%]">
+                        <div className="flex items-center gap-1.5">
                           <h3 className="font-bold truncate">{influencer.display_name}</h3>
                           {influencer.is_verified && <CheckCircle className="h-4 w-4 text-blue-500 fill-blue-500 shrink-0" />}
                         </div>
-                        <Badge variant="outline" className="text-xs">{influencer.category}</Badge>
+                        <Badge variant="outline" className="mt-1 max-w-full truncate text-[10px] sm:text-xs">{influencer.category}</Badge>
                       </div>
                       <div className="hidden sm:flex items-center gap-4 text-sm shrink-0">
                         <div className="flex items-center gap-1"><Users className="h-4 w-4 text-muted-foreground" /><span className="font-bold">{influencer.followers_count.toLocaleString()}</span></div>
@@ -871,13 +871,14 @@ const InfluKing = () => {
                         
                       </div>
                       {user && influencer.user_id !== user.id && (
-                        <Button variant="outline" size="sm" className="shrink-0" onClick={(e) => {
+                        <Button variant="outline" size="sm" className="ml-auto shrink-0 text-xs" onClick={(e) => {
                           e.stopPropagation();
                           followMutation.mutate({ influencerId: influencer.id, follow: !followStatusMap[influencer.id] });
                         }} disabled={followMutation.isPending}>
                           {followStatusMap[influencer.id] ? "Following" : "Follow"}
                         </Button>
                       )}
+
                     </motion.div>
                   ))}
                 </div>
