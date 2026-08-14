@@ -193,8 +193,8 @@ export default function ComedyLiveViewer() {
                 )}
               </div>
 
-              {/* Paid gifts (EUR) — same model as Live Concerts */}
-              <ComedyGiftsPanel showId={showId!} />
+              {/* Paid gifts (EUR) — viewers only; the comedian cannot gift their own show */}
+              {!isHost && <ComedyGiftsPanel showId={showId!} />}
             </Card>
           </div>
 
