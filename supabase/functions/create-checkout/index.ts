@@ -252,6 +252,12 @@ serve(async (req) => {
 async function handler(req: Request): Promise<Response> {
   try {
     const body = await req.json();
+
+    // Public deployment probe — confirms which product branches this build supports.
+    if (body?.product === "__ping") {
+      return successResponse({ ok: true, products: ["paid_message", "fan_club", "ppv"] });
+    }
+
     const stripe = createStripeClient();
     const origin = normalizeOrigin(req.headers.get("origin"));
 
