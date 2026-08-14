@@ -308,6 +308,79 @@ export const InfluencerEarningsPage = () => {
             </Card>
           </TabsContent>
 
+          <TabsContent value="subs" className="mt-6">
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4">Fan club subscriptions (85% yours)</h3>
+              <div className="space-y-2">
+                {subs.length > 0 ? subs.map((s) => (
+                  <div key={s.id} className="flex justify-between items-center p-3 border rounded gap-3">
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">Subscription payment</p>
+                      <p className="text-sm text-muted-foreground">
+                        {format(new Date(s.created_at), "MMM dd, yyyy")} • gross €{(Number(s.gross_cents || 0) / 100).toFixed(2)}
+                      </p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="font-semibold text-green-600">+€{(Number(s.net_cents || 0) / 100).toFixed(2)}</p>
+                      <p className="text-xs text-muted-foreground">Fee: €{(Number(s.platform_fee_cents || 0) / 100).toFixed(2)}</p>
+                    </div>
+                  </div>
+                )) : (
+                  <p className="text-center text-muted-foreground py-8">No subscription earnings yet</p>
+                )}
+              </div>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="ppv" className="mt-6">
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4">PPV unlocks (85% yours)</h3>
+              <div className="space-y-2">
+                {ppv.length > 0 ? ppv.map((p) => (
+                  <div key={p.id} className="flex justify-between items-center p-3 border rounded gap-3">
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">{p.influking_ppv_posts?.title || "PPV post"}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {format(new Date(p.created_at), "MMM dd, yyyy")} • gross €{(Number(p.amount_cents || 0) / 100).toFixed(2)}
+                      </p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="font-semibold text-green-600">+€{(Number(p.creator_earnings_cents || 0) / 100).toFixed(2)}</p>
+                      <p className="text-xs text-muted-foreground">Fee: €{(Number(p.platform_fee_cents || 0) / 100).toFixed(2)}</p>
+                    </div>
+                  </div>
+                )) : (
+                  <p className="text-center text-muted-foreground py-8">No PPV earnings yet</p>
+                )}
+              </div>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="dms" className="mt-6">
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4">Paid DMs &amp; shoutouts (85% yours)</h3>
+              <div className="space-y-2">
+                {dms.length > 0 ? dms.map((d) => (
+                  <div key={d.id} className="flex justify-between items-center p-3 border rounded gap-3">
+                    <div className="min-w-0">
+                      <p className="font-medium truncate capitalize">{(d.request_type || "message").replace("_", " ")}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {format(new Date(d.created_at), "MMM dd, yyyy")} • gross €{Number(d.amount_paid || 0).toFixed(2)}
+                      </p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="font-semibold text-green-600">+€{Number(d.creator_payout || 0).toFixed(2)}</p>
+                      <p className="text-xs text-muted-foreground">Fee: €{Number(d.platform_fee || 0).toFixed(2)}</p>
+                    </div>
+                  </div>
+                )) : (
+                  <p className="text-center text-muted-foreground py-8">No paid DM earnings yet</p>
+                )}
+              </div>
+            </Card>
+          </TabsContent>
+
+
           <TabsContent value="withdraw" className="mt-6">
             {available >= 50 ? (
               <InfluencerWithdrawalForm
