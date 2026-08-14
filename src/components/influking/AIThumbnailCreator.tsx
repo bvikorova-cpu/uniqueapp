@@ -41,7 +41,7 @@ const AIThumbnailCreator = ({ onBack }: AIThumbnailCreatorProps) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedThumbnail, setGeneratedThumbnail] = useState<string | null>(null);
 
-  const { data: credits } = useQuery({
+  const { data: credits, refetch: refetchCredits } = useQuery({
     queryKey: ["ai-credits-thumbnail"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -69,7 +69,16 @@ const AIThumbnailCreator = ({ onBack }: AIThumbnailCreatorProps) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      await supabase.rpc("deduct_ai_credits" as any, { p_user_id: user.id, p_amount: 8 });
+      const { data: spend, error: spendError } = await supabase.rpc("spend_ai_credits" as any, {
+        _amount: 8,
+        _reason: `influking_thumbnail:${title.slice(0, 60)}`,
+        _source: "influking" });
+      if (spendError) throw spendError;
+      if (!(spend as any)?.ok) {
+        throw new Error((spend as any)?.error === "insufficient"
+          ? "You do not have enough AI credits (8 required)."
+          : "Could not charge AI credits. Please try again.");
+      }
 
       // Generate a thumbnail using the AI content generation table
       const { data, error } = await supabase.from("ai_generated_content").insert({
@@ -85,14 +94,10 @@ const AIThumbnailCreator = ({ onBack }: AIThumbnailCreatorProps) => {
 
       // Create a visual representation
       setGeneratedThumbnail(data.id);
-
-      await supabase.from("ai_usage_history").insert({
-        user_id: user.id,
-        usage_type: "thumbnail_creator",
-        credits_used: 8,
-        description: `Thumbnail for: ${title} (${selectedStyle})` });
+      await refetchCredits();
 
       toast({ title: "✅ Thumbnail Generated!", description: "Your AI thumbnail concept is ready (8 credits used)" });
+
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } finally {
