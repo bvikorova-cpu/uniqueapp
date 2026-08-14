@@ -674,6 +674,10 @@ const InfluKing = () => {
                         <Button onClick={() => setShowGiftDialog(true)} variant="outline" className="gap-2">
                           <Gift className="h-4 w-4" /> Send Gift
                         </Button>
+                        <Button onClick={() => setShowPaidMessageDialog(true)} variant="outline" className="gap-2">
+                          <MessageCircle className="h-4 w-4" /> Paid message
+                        </Button>
+
                       </div>
                     ) : (
                       <div className="flex flex-wrap justify-center sm:justify-start gap-2">
