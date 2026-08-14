@@ -31,6 +31,7 @@ import PPVLockedFeed from "@/components/influking/PPVLockedFeed";
 import { InfluencerPostComments } from "@/components/influking/InfluencerPostComments";
 import { PaidMessageDialog } from "@/components/creator/PaidMessageDialog";
 import { useDebounce } from "@/hooks/use-debounce";
+import FanPaidMessages from "@/components/influencer/FanPaidMessages";
 
 import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio, MessageCircle, ShieldAlert } from "lucide-react";
 
@@ -472,6 +473,7 @@ const InfluKing = () => {
             {[
               { v: "studio", l: t("influking.tab_studio", "Creator Studio"), i: Crown },
               { v: "tools", l: t("influking.tab_tools", "AI Tools"), i: Brain },
+              { v: "messages", l: t("influking.tab_messages", "Messages"), i: MessageCircle },
               { v: "discover", l: t("influking.tab_discover", "Discover"), i: TrendingUp },
               { v: "following", l: t("influking.tab_following", "Following"), i: Users },
               { v: "guide", l: t("influking.tab_guide", "How it works"), i: Star },
@@ -814,6 +816,14 @@ const InfluKing = () => {
           <SendInfluencerGiftDialog open={showGiftDialog} onOpenChange={setShowGiftDialog}
             influencerId={selectedInfluencer.id} influencerName={selectedInfluencer.display_name} />
         )}
+
+        {/* Fan messages — replies from creators */}
+        <TabsContent value="messages" className="space-y-4 focus-visible:outline-none">
+          <p className="mx-auto max-w-2xl text-center text-sm text-muted-foreground">
+            {t("influking.messages_hint", "Your paid messages and video shoutouts, plus the creators' replies.")}
+          </p>
+          <FanPaidMessages />
+        </TabsContent>
 
         {/* TOP Influencers Leaderboard */}
         <TabsContent value="discover" className="focus-visible:outline-none">
