@@ -816,6 +816,14 @@ const InfluKing = () => {
             influencerId={selectedInfluencer.id} influencerName={selectedInfluencer.display_name} />
         )}
 
+        {/* Fan messages — replies from creators */}
+        <TabsContent value="messages" className="space-y-4 focus-visible:outline-none">
+          <p className="mx-auto max-w-2xl text-center text-sm text-muted-foreground">
+            {t("influking.messages_hint", "Your paid messages and video shoutouts, plus the creators' replies.")}
+          </p>
+          <FanPaidMessages />
+        </TabsContent>
+
         {/* TOP Influencers Leaderboard */}
         <TabsContent value="discover" className="focus-visible:outline-none">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
