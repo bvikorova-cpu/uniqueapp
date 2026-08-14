@@ -906,7 +906,65 @@ const InfluKing = () => {
           </Card>
         </motion.div>
         </TabsContent>
+
+        <TabsContent value="following" className="focus-visible:outline-none">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <Card className="mx-auto max-w-6xl rounded-3xl border-primary/15 bg-card/70 shadow-[0_10px_40px_-24px_hsl(var(--primary)/0.5)] backdrop-blur-xl">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-2xl font-black">
+                <Users className="h-6 w-6 text-primary" /> {t("influking.following_title", "Creators you follow")}
+              </CardTitle>
+              <CardDescription>
+                {t("influking.following_desc", "Everyone you followed appears here. Tap a creator to open their profile, or unfollow anytime.")}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {loadingFollowing ? (
+                <div className="py-12 text-center"><p className="text-muted-foreground">Loading...</p></div>
+              ) : followedInfluencers.length === 0 ? (
+                <div className="py-12 text-center">
+                  <Users className="mx-auto mb-4 h-16 w-16 text-muted-foreground" />
+                  <p className="text-muted-foreground">
+                    {t("influking.following_empty", "You are not following anyone yet. Open Discover and tap Follow.")}
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {followedInfluencers.map((influencer) => (
+                    <div key={influencer.id}
+                      onClick={() => setSelectedInfluencer(influencer)}
+                      className="flex flex-wrap items-center gap-3 rounded-2xl border border-primary/10 bg-background/40 p-3 transition-all hover:bg-accent/50 cursor-pointer">
+                      <Avatar className="h-12 w-12 shrink-0">
+                        <AvatarImage src={influencer.profile_photo_url || undefined} />
+                        <AvatarFallback>{influencer.display_name[0]}</AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5">
+                          <h3 className="truncate font-bold">{influencer.display_name}</h3>
+                          {influencer.is_verified && <CheckCircle className="h-4 w-4 shrink-0 fill-blue-500 text-blue-500" />}
+                        </div>
+                        <div className="mt-1 flex items-center gap-2">
+                          <Badge variant="outline" className="max-w-full truncate text-[10px]">{influencer.category}</Badge>
+                          <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <Users className="h-3 w-3" />{(influencer.followers_count || 0).toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                      <Button variant="outline" size="sm" className="ml-auto shrink-0 text-xs"
+                        onClick={(e) => { e.stopPropagation(); followMutation.mutate({ influencerId: influencer.id, follow: false }); }}
+                        disabled={followMutation.isPending}>
+                        {t("influking.unfollow", "Unfollow")}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
+        </TabsContent>
         </Tabs>
+
       </div>
     </div>
   );
