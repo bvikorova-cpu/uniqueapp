@@ -31,6 +31,7 @@ import PPVLockedFeed from "@/components/influking/PPVLockedFeed";
 import { InfluencerPostComments } from "@/components/influking/InfluencerPostComments";
 import { PaidMessageDialog } from "@/components/creator/PaidMessageDialog";
 import { useDebounce } from "@/hooks/use-debounce";
+import FanPaidMessages from "@/components/influencer/FanPaidMessages";
 
 import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio, MessageCircle, ShieldAlert } from "lucide-react";
 
