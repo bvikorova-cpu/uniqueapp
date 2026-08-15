@@ -488,9 +488,32 @@ const AIExperiences = () => {
         <MapPin className="h-6 w-6 text-primary" />
         <div>
           <h2 className="text-2xl font-bold">Choose Your Destination</h2>
-          <p className="text-muted-foreground text-sm">Walk through cities in immersive panoramic mode</p>
+        <p className="text-muted-foreground text-sm">Walk through cities in immersive panoramic mode</p>
         </div>
       </div>
+
+      <Card className="border-primary/30 bg-gradient-to-br from-primary/10 to-accent/10 overflow-hidden">
+        <CardContent className="p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0">
+                <Plane className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-bold text-base sm:text-lg">Travel Pass</h3>
+                <p className="text-muted-foreground text-xs sm:text-sm">Unlock 10 cities at once and save 50%.</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <Badge variant="secondary" className="text-xs">25 credits</Badge>
+                  <span className="text-xs text-muted-foreground line-through">50 credits</span>
+                </div>
+              </div>
+            </div>
+            <Button onClick={handleVirtualTourBundle} disabled={loading} className="w-full sm:w-auto" size="sm">
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Sparkles className="h-4 w-4 mr-2" />Get Travel Pass</>}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
         {destinations.map((dest) => {
