@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 /** Credit prices for the Virtual Escape Room module (credits only, no EUR). */
 export const ESCAPE_ROOM_CREDIT_COSTS = {
-  play_room: 5,
+  play_room: 8,
   season_pass: 20,
   tournament_entry: 5,
 } as const;
