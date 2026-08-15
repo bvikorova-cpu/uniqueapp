@@ -220,7 +220,8 @@ export function PanoramaEscapeRoom({
           type: 'generate_escape_room_panorama',
           roomName: room.name, 
           theme: theme,
-          description: room.description 
+          description: room.description,
+          cacheKey: key 
         }
       });
 

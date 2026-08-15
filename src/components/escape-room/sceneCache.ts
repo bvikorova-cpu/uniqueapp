@@ -31,9 +31,10 @@ function openDb(): Promise<IDBDatabase | null> {
 // In-memory layer so repeated reads in one session are instant.
 const memory = new Map<string, string>();
 
-export function sceneKey(theme: string, room: { id?: number | string; name?: string; description?: string }, fallbackIdx: number) {
-  const version = `${room?.name ?? ""}|${room?.description ?? ""}`.trim().toLowerCase().replace(/\s+/g, " ");
-  return `escape-scene:${theme}:${room?.id ?? fallbackIdx}:${encodeURIComponent(version)}`;
+// Stable per room: the key intentionally ignores re-skinned names/descriptions so
+// the same room always resolves to the same cached scene image.
+export function sceneKey(theme: string, room: { id?: number | string }, fallbackIdx: number) {
+  return `escape-scene:${theme}:${room?.id ?? fallbackIdx}`;
 }
 
 export async function getCachedScene(key: string): Promise<string | null> {
