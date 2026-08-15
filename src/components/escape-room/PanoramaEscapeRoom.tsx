@@ -426,6 +426,47 @@ export function PanoramaEscapeRoom({
   ).length;
   const progress = totalPuzzles > 0 ? Math.min(100, (solvedPuzzles / totalPuzzles) * 100) : 0;
 
+  // ---- Search guidance (what to look for) ----
+  const pendingHotspots = (currentRoom?.hotspots || []).filter(
+    (h) => !solvedHotspots.has(`${currentRoomIndex}-${h.id}`) && h.type !== "door"
+  );
+  const nextTarget = pendingHotspots[0];
+
+  const searchClue = (() => {
+    if (!nextTarget) return "Everything here is solved — find the way out and tap the door.";
+    switch (nextTarget.type) {
+      case "puzzle":
+        return "Somewhere in this room a puzzle is waiting — look for numbers, symbols or a strange marking.";
+      case "lock":
+        return "Something is locked. Search for the lock, then find what opens it.";
+      case "item":
+        return "An object you can carry is hidden in plain sight — check furniture, shelves and corners.";
+      case "clue":
+        return "There is a written clue nearby — inspect notes, walls and papers.";
+      case "hidden":
+        return "Something is very well hidden here. Look at the darkest corners of the scene.";
+      default:
+        return "Look around carefully and tap anything that seems out of place.";
+    }
+  })();
+
+  const revealSearchClue = () => {
+    if (!nextTarget) {
+      toast({ title: "Nothing left to search", description: "Tap the door to move on." });
+      return;
+    }
+    const [x, y] = nextTarget.position;
+    const horizontal = x < -0.15 ? "left" : x > 0.15 ? "right" : "centre";
+    const vertical = y > 0.15 ? "upper" : y < -0.15 ? "lower" : "middle";
+    setHintsUsed((n) => n + 1);
+    sounds.playEffect("hint");
+    setRevealedClue(
+      `Hint: look at the ${vertical} ${horizontal} part of the scene — it hides “${nextTarget.label}”.`
+    );
+  };
+
+
+
   // Show tutorial first
   if (showTutorial) {
     return (
