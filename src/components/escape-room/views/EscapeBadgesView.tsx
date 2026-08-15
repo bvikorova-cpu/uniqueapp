@@ -63,6 +63,31 @@ export function EscapeBadgesView({ onBack }: Props) {
             </Card>
           ))}
         </div>
+
+        <div className="mt-8 rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-500/10 via-background/80 to-background/40 p-5 backdrop-blur-sm">
+          <div className="flex items-center gap-2 mb-4">
+            <Award className="w-5 h-5 text-amber-400" />
+            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-amber-300">How Badges Work</h3>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {[
+              { step: "1", title: "Enter a Room", desc: "Pick a themed escape room and pay the credit entry." },
+              { step: "2", title: "Solve Puzzles", desc: "Find clues, crack codes, and beat the timer." },
+              { step: "3", title: "Earn XP", desc: "Complete challenges to unlock badge rewards." },
+              { step: "4", title: "Track Progress", desc: "Watch your collection grow and climb the leaderboard." },
+            ].map((item) => (
+              <div key={item.step} className="flex items-start gap-3 rounded-xl border border-amber-500/10 bg-amber-950/20 p-3">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-500/20 text-xs font-black text-amber-300">
+                  {item.step}
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-amber-100">{item.title}</p>
+                  <p className="text-xs text-amber-200/60">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
     </>
