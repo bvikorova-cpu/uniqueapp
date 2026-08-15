@@ -96,7 +96,7 @@ const StreetWalkViewer = ({ destination, landmark, onClose }: StreetWalkViewerPr
             linksControl: true,
             panControl: false,
             zoomControl: false,
-            showRoadLabels: false,
+            showRoadLabels: true,
             clickToGo: true,
             scrollwheel: true,
             disableDefaultUI: false,
