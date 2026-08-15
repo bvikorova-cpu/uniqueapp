@@ -9,13 +9,16 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Video, Send, Users, Gift, ArrowLeft, VideoOff } from "lucide-react";
-import { Dialog,
+import { Video, Send, Users, Gift, ArrowLeft, VideoOff, Mic, MicOff, Camera, CameraOff } from "lucide-react";
+import {
+  Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger } from "@/components/ui/dialog";
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useOneOffPaymentVerify } from "@/hooks/useOneOffPaymentVerify";
 import { SuperChatDialog } from "@/components/live/SuperChatDialog";
 import { SuperChatFeed } from "@/components/live/SuperChatFeed";
