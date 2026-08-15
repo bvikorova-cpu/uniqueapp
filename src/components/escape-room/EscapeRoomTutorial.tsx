@@ -17,19 +17,19 @@ interface TutorialStep {
 const tutorialSteps: TutorialStep[] = [
   {
     icon: <Eye className="h-12 w-12" />,
-    title: "Rozhliadni sa",
+    title: "Look around",
     description: "Drag with the mouse or finger across the screen for a 360° view of the room. Use the mouse wheel or pinch gesture to zoom in.",
     tip: "💡 Try looking into all corners - some objects are hidden!"
   },
   {
     icon: <MousePointer2 className="h-12 w-12" />,
-    title: "Klikaj na objekty",
+    title: "Click on objects",
     description: "Colored dots indicate interactive objects. Click on them to interact - you can find items, clues, or puzzles.",
     tip: "🔍 Orange = puzzles, Blue = items, Turquoise = clues"
   },
   {
     icon: <Package className="h-12 w-12" />,
-    title: "Zbieraj predmety",
+    title: "Collect items",
     description: "Found items are stored in your inventory. Select an item from your inventory and click on the lock to use it.",
     tip: "🎒 Every item has its purpose - read the description carefully!"
   },
