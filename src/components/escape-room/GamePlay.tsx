@@ -215,6 +215,7 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
         }}
         onExit={onExit}
         onUpdateRoomPanorama={handleUpdateRoomPanorama}
+        sessionId={sessionId}
       />
     );
   }
