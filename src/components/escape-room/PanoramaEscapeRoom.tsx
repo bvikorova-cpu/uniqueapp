@@ -735,7 +735,7 @@ export function PanoramaEscapeRoom({
             <p className="text-[11px] sm:text-xs text-gray-300 mb-2 line-clamp-2">{currentRoom.description}</p>
             <div className="flex flex-wrap gap-2 text-[10px] sm:text-xs items-center">
               <Badge variant="outline" className="border-white/30">
-                Room {currentRoomIndex + 1}/{rooms.length}
+                Room {currentRoomIndex + 1}/{localRooms.length}
               </Badge>
               {foundHiddenItems > 0 && (
                 <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
