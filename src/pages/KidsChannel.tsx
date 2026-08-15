@@ -100,9 +100,9 @@ const FeatureCard = ({ title,
 
 const KidsChannel = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+
   
   const [showParentalGate, setShowParentalGate] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
