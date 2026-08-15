@@ -9,6 +9,7 @@ const CREDIT_COSTS: Record<string, number> = { "destination-recommender": 3,
   "travel-planner": 4,
   "virtual-postcard": 3,
   "virtual-tour": 5,
+  "virtual-tour-bundle": 25,
   "age-progression": 5 };
 
 async function aiChat(messages: any[]) {
