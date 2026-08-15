@@ -19,6 +19,7 @@ import { DestinationRecommender } from "@/components/experiences/DestinationReco
 import { ExplorerAchievements } from "@/components/experiences/ExplorerAchievements";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import StreetWalkViewer, { hasStreetWalk } from "@/components/experiences/StreetWalkViewer";
 
 type ActiveView = "hub" | "tours" | "future" | "travel-planner" | "postcards" | "recommender" | "achievements";
 
