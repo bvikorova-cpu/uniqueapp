@@ -35,7 +35,7 @@ import FanPaidMessages from "@/components/influencer/FanPaidMessages";
 import LiveNowStrip from "@/components/influencer/LiveNowStrip";
 
 
-import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio, MessageCircle, ShieldAlert } from "lucide-react";
+import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio, MessageCircle, ShieldAlert, Trash2 } from "lucide-react";
 
 type InfluKingView = "hub" | "content-planner" | "collab" | "brand-deals" | "analytics" | "hashtags" | "thumbnails" | "audience" | "ppv";
 
