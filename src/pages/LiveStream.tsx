@@ -9,13 +9,16 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Video, Send, Users, Gift, ArrowLeft, VideoOff } from "lucide-react";
-import { Dialog,
+import { Video, Send, Users, Gift, ArrowLeft, VideoOff, Mic, MicOff, Camera, CameraOff } from "lucide-react";
+import {
+  Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger } from "@/components/ui/dialog";
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useOneOffPaymentVerify } from "@/hooks/useOneOffPaymentVerify";
 import { SuperChatDialog } from "@/components/live/SuperChatDialog";
 import { SuperChatFeed } from "@/components/live/SuperChatFeed";
@@ -64,7 +67,9 @@ export default function LiveStream() {
   const [streamError, setStreamError] = useState<string | null>(null);
   const [micEnabled, setMicEnabled] = useState(true);
   const [camEnabled, setCamEnabled] = useState(true);
-  
+  const [showEndConfirm, setShowEndConfirm] = useState(false);
+  const [isEnding, setIsEnding] = useState(false);
+
   const [presenceViewers, setPresenceViewers] = useState(0);
   const [connState, setConnState] = useState<RTCPeerConnectionState | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -333,7 +338,8 @@ export default function LiveStream() {
   };
 
   // Stop streaming / leave
-  const stopStreaming = async (opts?: { silent?: boolean }) => {
+  const stopStreaming = async (opts?: { silent?: boolean; navigateAway?: boolean }) => {
+    setIsEnding(true);
     broadcastRef.current?.stop();
     broadcastRef.current = null;
     viewerRef.current?.stop();
@@ -353,9 +359,13 @@ export default function LiveStream() {
       }
     } catch (e) {
       console.error("Failed to mark stream ended:", e);
+    } finally {
+      setIsEnding(false);
+      setShowEndConfirm(false);
     }
 
     if (!opts?.silent) toast.info("Stream ended");
+    if (opts?.navigateAway) navigate("/influ-king");
   };
 
   // Viewers connect automatically over WebRTC (TURN relay fallback included)
@@ -537,15 +547,26 @@ export default function LiveStream() {
                 </div>
 
                 {isOwner && isStreaming && (
-                  <div className="flex flex-col gap-2 p-4 border-b">
-                    <Button variant="outline" onClick={toggleMic} className="w-full justify-start gap-2">
-                      {micEnabled ? "🎙️ Mute" : "🔇 Unmute"}
-                    </Button>
-                    <Button variant="outline" onClick={toggleCam} className="w-full justify-start gap-2">
-                      {camEnabled ? "📷 Hide camera" : "📷 Show camera"}
-                    </Button>
-                    <Button variant="destructive" onClick={() => stopStreaming()} className="w-full">
-                      <VideoOff className="h-4 w-4 mr-2" /> End stream
+                  <div className="sticky bottom-0 z-20 flex flex-wrap items-center justify-between gap-2 p-3 border-t bg-background/95 backdrop-blur">
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="sm" onClick={toggleMic} className="gap-2">
+                        {micEnabled ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
+                        <span className="hidden sm:inline">{micEnabled ? "Mute" : "Unmute"}</span>
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={toggleCam} className="gap-2">
+                        {camEnabled ? <Camera className="h-4 w-4" /> : <CameraOff className="h-4 w-4" />}
+                        <span className="hidden sm:inline">{camEnabled ? "Hide cam" : "Show cam"}</span>
+                      </Button>
+                    </div>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => setShowEndConfirm(true)}
+                      disabled={isEnding}
+                      className="gap-2"
+                    >
+                      <VideoOff className="h-4 w-4" />
+                      {isEnding ? "Ending..." : "End stream"}
                     </Button>
                   </div>
                 )}
@@ -718,6 +739,29 @@ export default function LiveStream() {
           </div>
         )}
       </div>
+
+      <Dialog open={showEndConfirm} onOpenChange={setShowEndConfirm}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>End live stream?</DialogTitle>
+            <DialogDescription>
+              This will stop the broadcast immediately. Viewers will be disconnected and the stream will be marked as ended.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setShowEndConfirm(false)} disabled={isEnding}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => stopStreaming({ navigateAway: true })}
+              disabled={isEnding}
+            >
+              {isEnding ? "Ending..." : "End stream"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
