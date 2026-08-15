@@ -312,50 +312,82 @@ export function PanoramaEscapeRoom({
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Generate AI panorama for current room
-  const generateAIPanorama = async () => {
+  // Generate AI scene image for the current room (full-screen searchable scene)
+  const sceneCacheKey = (roomIdx: number) =>
+    `escape-scene:${theme}:${localRooms[roomIdx]?.id ?? roomIdx}`;
+
+  const generateAIPanorama = useCallback(async (roomIdx = currentRoomIndex, silent = false) => {
+    const room = localRooms[roomIdx];
+    if (!room) return;
+
     setIsGeneratingPanorama(true);
-    toast({
-      title: "🎨 Generating AI panorama...",
-      description: "This may take a few seconds"
-    });
+    if (!silent) {
+      toast({
+        title: "🎨 Generating scene...",
+        description: "Building a scene that matches this room"
+      });
+    }
 
     try {
       const { data, error } = await supabase.functions.invoke('generate-escape-room-panorama', {
         body: { 
-          roomName: currentRoom.name, 
+          roomName: room.name, 
           theme: theme,
-          description: currentRoom.description 
+          description: room.description 
         }
       });
 
       if (error) throw error;
 
       if (data?.imageUrl) {
-        setLocalRooms(prev => prev.map((room, idx) => 
-          idx === currentRoomIndex 
-            ? { ...room, panoramaUrl: data.imageUrl }
-            : room
+        try { sessionStorage.setItem(sceneCacheKey(roomIdx), data.imageUrl); } catch { /* quota */ }
+        setLocalRooms(prev => prev.map((r, idx) => 
+          idx === roomIdx 
+            ? { ...r, panoramaUrl: data.imageUrl }
+            : r
         ));
         
-        onUpdateRoomPanorama?.(currentRoomIndex, data.imageUrl);
+        onUpdateRoomPanorama?.(roomIdx, data.imageUrl);
         sounds.playEffect('success');
         
-        toast({
-          title: "✨ Panorama generated!",
-          description: "New AI panorama has been applied"
-        });
+        if (!silent) {
+          toast({
+            title: "✨ Scene ready!",
+            description: "The room now matches its story"
+          });
+        }
       }
-    } catch (err) { console.error('Failed to generate panorama:', err);
-      sounds.playEffect('error');
-      toast({
-        title: "Error generating",
-        description: "Try again later",
-        variant: "destructive" });
+    } catch (err) { console.error('Failed to generate scene:', err);
+      if (!silent) {
+        sounds.playEffect('error');
+        toast({
+          title: "Error generating",
+          description: "Try again later",
+          variant: "destructive" });
+      }
     } finally {
       setIsGeneratingPanorama(false);
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentRoomIndex, localRooms, theme, onUpdateRoomPanorama, sounds, toast]);
+
+  // Auto-generate a matching scene when entering a room that still uses a stock photo
+  useEffect(() => {
+    if (!gameStarted) return;
+    const room = localRooms[currentRoomIndex];
+    if (!room) return;
+    const isStock = /unsplash\.com|placeholder/.test(room.panoramaUrl);
+    if (!isStock || isGeneratingPanorama) return;
+
+    const cached = (() => { try { return sessionStorage.getItem(sceneCacheKey(currentRoomIndex)); } catch { return null; } })();
+    if (cached) {
+      setLocalRooms(prev => prev.map((r, idx) => idx === currentRoomIndex ? { ...r, panoramaUrl: cached } : r));
+      return;
+    }
+    generateAIPanorama(currentRoomIndex, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameStarted, currentRoomIndex, localRooms[currentRoomIndex]?.panoramaUrl]);
+
 
   const addToInventory = useCallback((item: InventoryItem) => {
     if (!inventory.find(i => i.id === item.id)) {
