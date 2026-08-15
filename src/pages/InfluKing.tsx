@@ -35,7 +35,7 @@ import FanPaidMessages from "@/components/influencer/FanPaidMessages";
 import LiveNowStrip from "@/components/influencer/LiveNowStrip";
 
 
-import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio, MessageCircle, ShieldAlert } from "lucide-react";
+import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio, MessageCircle, ShieldAlert, Trash2 } from "lucide-react";
 
 type InfluKingView = "hub" | "content-planner" | "collab" | "brand-deals" | "analytics" | "hashtags" | "thumbnails" | "audience" | "ppv";
 
@@ -125,6 +125,7 @@ const InfluKing = () => {
   const [uploadingCoverPhoto, setUploadingCoverPhoto] = useState(false);
 
   const [newPost, setNewPost] = useState({ title: "", content: "", media_url: "", media_type: "image" });
+  const [editingPost, setEditingPost] = useState<{ id: string; title: string; content: string } | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -425,6 +426,30 @@ const InfluKing = () => {
       queryClient.invalidateQueries({ queryKey: ["influencerPosts"] });
       queryClient.invalidateQueries({ queryKey: ["topInfluencers"] });
     } });
+
+  const updatePostMutation = useMutation({
+    mutationFn: async ({ id, title, content }: { id: string; title: string; content: string }) => {
+      const { error } = await supabase.from("influencer_posts")
+        .update({ title: title || null, content: content || null }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["influencerPosts"] });
+      setEditingPost(null);
+      toast({ title: "✅ Post updated" });
+    },
+    onError: (error: any) => toast({ title: "Error", description: error.message, variant: "destructive" }) });
+
+  const deletePostMutation = useMutation({
+    mutationFn: async (postId: string) => {
+      const { error } = await supabase.from("influencer_posts").delete().eq("id", postId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["influencerPosts"] });
+      toast({ title: "🗑️ Post deleted" });
+    },
+    onError: (error: any) => toast({ title: "Error", description: error.message, variant: "destructive" }) });
 
   if (!user) {
     return (
@@ -849,10 +874,22 @@ const InfluKing = () => {
                           <CardContent className="pt-4">
                             {post.title && <h4 className="font-bold mb-2">{post.title}</h4>}
                             {post.content && <p className="text-sm text-muted-foreground mb-3">{post.content}</p>}
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-wrap items-center justify-between gap-2">
                               <Button variant="ghost" size="sm" onClick={() => likePostMutation.mutate(post.id)} disabled={likePostMutation.isPending}>
                                 <Heart className="h-4 w-4 mr-1" /> {post.likes_count}
                               </Button>
+                              {myProfile?.id === post.influencer_id && (
+                                <div className="flex items-center gap-1">
+                                  <Button variant="ghost" size="sm" onClick={() => setEditingPost({ id: post.id, title: post.title || "", content: post.content || "" })}>
+                                    <Pencil className="h-4 w-4 mr-1" /> Edit
+                                  </Button>
+                                  <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive"
+                                    disabled={deletePostMutation.isPending}
+                                    onClick={() => { if (confirm("Delete this post permanently?")) deletePostMutation.mutate(post.id); }}>
+                                    <Trash2 className="h-4 w-4 mr-1" /> Delete
+                                  </Button>
+                                </div>
+                              )}
                             </div>
                             <InfluencerPostComments postId={post.id} userId={user.id} />
                           </CardContent>
@@ -865,6 +902,33 @@ const InfluKing = () => {
             )}
           </DialogContent>
         </Dialog>
+
+        {/* Edit post dialog */}
+        <Dialog open={!!editingPost} onOpenChange={(open) => { if (!open) setEditingPost(null); }}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Edit post</DialogTitle>
+            </DialogHeader>
+            {editingPost && (
+              <div className="space-y-4">
+                <div>
+                  <Label>Title</Label>
+                  <Input value={editingPost.title} onChange={(e) => setEditingPost({ ...editingPost, title: e.target.value })} placeholder="Enter title..." />
+                </div>
+                <div>
+                  <Label>Content</Label>
+                  <Textarea value={editingPost.content} onChange={(e) => setEditingPost({ ...editingPost, content: e.target.value })} rows={4} placeholder="Write something..." />
+                </div>
+                <Button className="w-full" disabled={updatePostMutation.isPending}
+                  onClick={() => updatePostMutation.mutate(editingPost)}>
+                  {updatePostMutation.isPending ? "Saving..." : "Save changes"}
+                </Button>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+
 
         {/* Gift Dialog */}
         {selectedInfluencer && (
