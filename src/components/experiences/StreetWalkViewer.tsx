@@ -242,8 +242,23 @@ const StreetWalkViewer = ({ destination, landmark, onClose }: StreetWalkViewerPr
         </div>
       )}
 
-      <div className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 rounded-full border border-white/10 bg-black/70 px-4 py-1.5 text-[11px] text-white/70 backdrop-blur-xl">
-        Drag to look · tap arrows to walk · pick a spot below
+      <div className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2">
+        <Button
+          size="sm"
+          variant="ghost"
+          className="rounded-full border border-white/10 bg-black/70 text-white backdrop-blur-xl hover:bg-black/90"
+          onClick={() => walk(true)}
+        >
+          Step back
+        </Button>
+        <Button
+          size="sm"
+          className="rounded-full bg-primary/90 text-primary-foreground hover:bg-primary"
+          onClick={() => walk(false)}
+        >
+          <Footprints className="mr-1.5 h-4 w-4" />
+          Walk forward
+        </Button>
       </div>
     </div>
   );
