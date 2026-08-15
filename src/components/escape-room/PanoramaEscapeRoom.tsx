@@ -592,21 +592,47 @@ export function PanoramaEscapeRoom({
       </motion.div>
 
 
-      {/* Bottom - Inventory with animation */}
+      {/* Bottom - Search clue + inventory */}
       <motion.div 
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="absolute z-20 bottom-4 left-1/2 -translate-x-1/2 pointer-events-auto"
+        className="absolute z-20 bottom-3 left-2 right-2 sm:bottom-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:max-w-xl pointer-events-auto"
       >
+        {/* Search clue banner */}
+        <Card className="bg-black/80 border-white/20 mb-2">
+          <CardContent className="py-2 px-3 flex items-start gap-2">
+            <Search className="h-4 w-4 mt-0.5 text-yellow-400 shrink-0" />
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] sm:text-xs text-white/90 leading-snug">
+                {searchClue}
+              </p>
+              {revealedClue && (
+                <p className="text-[11px] sm:text-xs text-yellow-300 leading-snug mt-1">
+                  {revealedClue}
+                </p>
+              )}
+            </div>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={revealSearchClue}
+              className="h-8 px-2 shrink-0"
+            >
+              <Lightbulb className="h-4 w-4 sm:mr-1" />
+              <span className="hidden sm:inline">Clue</span>
+            </Button>
+          </CardContent>
+        </Card>
+
         <Card className="bg-black/80 border-white/20">
-          <CardContent className="py-2 px-4">
-            <div className="flex items-center gap-3">
+          <CardContent className="py-2 px-3 sm:px-4">
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
               <Button 
                 variant="ghost" 
                 size="sm"
                 onClick={() => setShowInventory(!showInventory)}
-                className="text-white"
+                className="text-white text-xs sm:text-sm"
               >
                 <Package className="h-4 w-4 mr-1" />
                 Inventory ({inventory.length})
@@ -615,10 +641,10 @@ export function PanoramaEscapeRoom({
               <AnimatePresence>
                 {showInventory && (
                   <motion.div 
-                    initial={{ width: 0, opacity: 0 }}
-                    animate={{ width: "auto", opacity: 1 }}
-                    exit={{ width: 0, opacity: 0 }}
-                    className="flex gap-2 overflow-hidden"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="flex gap-2 flex-wrap"
                   >
                     {inventory.map(item => (
                       <motion.div
@@ -641,7 +667,7 @@ export function PanoramaEscapeRoom({
                       </motion.div>
                     ))}
                     {inventory.length === 0 && (
-                      <span className="text-gray-400 text-sm px-2">Empty</span>
+                      <span className="text-gray-400 text-xs px-2">Empty</span>
                     )}
                   </motion.div>
                 )}
@@ -654,11 +680,11 @@ export function PanoramaEscapeRoom({
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  className="mt-2 text-xs text-gray-300 border-t border-white/20 pt-2 overflow-hidden"
+                  className="mt-2 text-[11px] sm:text-xs text-gray-300 border-t border-white/20 pt-2 overflow-hidden"
                 >
                   <strong>{selectedItem.name}:</strong> {selectedItem.description}
                   <br />
-                  <span className="text-yellow-400">Click on an object to use</span>
+                  <span className="text-yellow-400">Tap an object in the scene to use it</span>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -666,10 +692,6 @@ export function PanoramaEscapeRoom({
         </Card>
       </motion.div>
 
-      {/* Search hint */}
-      <div className="absolute z-20 bottom-4 right-4 text-white/70 text-xs pointer-events-none">
-        Tap objects in the scene to investigate
-      </div>
 
       {/* Puzzle Dialog */}
       <Dialog open={!!activeHotspot} onOpenChange={() => setActiveHotspot(null)}>
