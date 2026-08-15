@@ -174,14 +174,15 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
   };
 
   // State for panorama rooms with AI-generated URLs
-  const [panoramaRooms, setPanoramaRooms] = useState<RoomData[]>(() => 
-    getRoomsForTheme(room?.theme || "mystery")
+  const [panoramaRooms, setPanoramaRooms] = useState<RoomData[]>(() =>
+    getRoomsForTheme(room?.theme || "mystery", room?.title || room?.name)
   );
 
-  // Update panorama rooms when theme changes
+  // Update panorama rooms when the selected experience changes
   useEffect(() => {
-    setPanoramaRooms(getRoomsForTheme(room?.theme || "mystery"));
-  }, [room?.theme]);
+    setPanoramaRooms(getRoomsForTheme(room?.theme || "mystery", room?.title || room?.name));
+  }, [room?.theme, room?.title, room?.name]);
+
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
