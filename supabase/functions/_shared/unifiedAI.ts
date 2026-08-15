@@ -62,7 +62,7 @@ export class UnifiedAIError extends Error {
   }
 }
 
-const GATEWAY_MODEL_MAP: Record<string, string> = {
+const VERTEX_MODEL_MAP: Record<string, string> = {
   "gpt-4o-mini": "openai/gpt-5.4-mini",
   "gpt-4o": "openai/gpt-5.5",
   "gpt-4o-latest": "openai/gpt-5.5",
@@ -73,7 +73,7 @@ const GATEWAY_MODEL_MAP: Record<string, string> = {
 
 /** Low-cost defaults used for the first attempt of every call. */
 export const CHEAP_OPENAI_MODEL = "gpt-4o-mini";
-export const CHEAP_GATEWAY_MODEL = "google/gemini-3.6-flash";
+export const CHEAP_VERTEX_MODEL = "google/gemini-3.6-flash";
 
 /** Models we consider expensive and downgrade on the first (cheap) attempt. */
 function isExpensiveModel(model: string): boolean {
@@ -84,21 +84,21 @@ function isRetryableStatus(status: number) {
   return status === 429 || status === 402 || status >= 500;
 }
 
-function gatewayModel(model?: string): string {
-  if (!model) return CHEAP_GATEWAY_MODEL;
+function vertexCompatibleModel(model?: string): string {
+  if (!model) return CHEAP_VERTEX_MODEL;
   if (model.includes("/")) return model; // already a gateway id
-  return GATEWAY_MODEL_MAP[model] || `openai/${model}`;
+  return VERTEX_MODEL_MAP[model] || `openai/${model}`;
 }
 
 /**
  * Resolve the model to use for a given attempt.
  * cheap=true -> force the low-cost model, unless the caller asked for "premium".
  */
-function resolveModel(opts: UnifiedAIOptions, useGateway: boolean, cheap: boolean): string {
+function resolveModel(opts: UnifiedAIOptions, useVertex: boolean, cheap: boolean): string {
   const requested = opts.model || CHEAP_OPENAI_MODEL;
-  const target = useGateway ? gatewayModel(requested) : requested;
+  const target = useVertex ? vertexCompatibleModel(requested) : requested;
   if (!cheap || opts.tier === "premium") return target;
-  if (useGateway) return CHEAP_GATEWAY_MODEL;
+  if (useVertex) return CHEAP_VERTEX_MODEL;
   if (!isExpensiveModel(target)) return target;
   return CHEAP_OPENAI_MODEL;
 }
@@ -107,14 +107,14 @@ function resolveModel(opts: UnifiedAIOptions, useGateway: boolean, cheap: boolea
 function buildBody(
   messages: UnifiedMessage[],
   opts: UnifiedAIOptions,
-  useGateway: boolean,
+  useVertex: boolean,
   cheap: boolean,
 ): Record<string, unknown> {
-  const targetModel = resolveModel(opts, useGateway, cheap);
+  const targetModel = resolveModel(opts, useVertex, cheap);
   const body: Record<string, unknown> = { model: targetModel, messages };
 
   // Newer OpenAI generations (gpt-5.x and o-series) reject `max_tokens` and
-  // require `max_completion_tokens`. The Lovable gateway maps legacy ids onto
+  // require `max_completion_tokens`. The Vertex compatibility layer maps legacy ids onto
   // those models, so translate the body instead of failing with a 400.
   const needsCompletionTokens = /gpt-5|o1|o3|o4/i.test(targetModel);
   const requested = opts.max_completion_tokens ?? opts.max_tokens;
@@ -143,7 +143,7 @@ function buildBody(
 
 
 async function callProviderRaw(
-  _useGateway: boolean,
+  _useVertex: boolean,
   messages: UnifiedMessage[],
   opts: UnifiedAIOptions,
   cheap: boolean,
@@ -164,12 +164,12 @@ export interface UnifiedAIResult {
 }
 
 async function callProvider(
-  useGateway: boolean,
+  useVertex: boolean,
   messages: UnifiedMessage[],
   opts: UnifiedAIOptions,
   cheap = true,
 ): Promise<UnifiedAIResult> {
-  const data = await callProviderRaw(useGateway, messages, opts, cheap);
+  const data = await callProviderRaw(useVertex, messages, opts, cheap);
   const message = data.choices?.[0]?.message;
 
   const content = message?.content?.toString().trim() || "";
@@ -208,9 +208,9 @@ export async function callUnifiedAIEx(
   const passes: boolean[] = opts.tier === "premium" ? [false] : [true, false];
 
   for (const cheap of passes) {
-    for (const useGateway of order) {
+    for (const useVertex of order) {
       try {
-        return await callProvider(useGateway, messages, opts, cheap);
+        return await callProvider(useVertex, messages, opts, cheap);
       } catch (e) {
         if (e instanceof UnifiedAIError && isRetryableStatus(e.status)) {
           lastError = e;
@@ -226,10 +226,10 @@ export async function callUnifiedAIEx(
 
   // Final backoff retry with the cheap model.
   for (let attempt = 1; attempt <= 2; attempt++) {
-    for (const useGateway of order) {
+    for (const useVertex of order) {
       try {
         await new Promise((r) => setTimeout(r, attempt * 1200));
-        return await callProvider(useGateway, messages, opts, opts.tier !== "premium");
+        return await callProvider(useVertex, messages, opts, opts.tier !== "premium");
       } catch (e) {
         if (e instanceof UnifiedAIError) lastError = e;
       }
