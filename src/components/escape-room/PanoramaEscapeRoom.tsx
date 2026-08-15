@@ -16,6 +16,7 @@ import { EscapeRoomTutorial } from "./EscapeRoomTutorial";
 import { StoryNarrative } from "./StoryNarrative";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 import { sceneKey, getCachedScene, setCachedScene, preloadImage } from "./sceneCache";
+import { getBonusRoomForTheme } from "./puzzleRooms";
 
 
 // Types
