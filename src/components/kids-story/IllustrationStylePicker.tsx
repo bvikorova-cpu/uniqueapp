@@ -12,7 +12,7 @@ const STYLES = [
   { value: "cartoon", label: "Cartoon", emoji: "🖍️", desc: "Bold, colorful and fun" },
   { value: "pixel-art", label: "Pixel Art", emoji: "👾", desc: "Retro 8-bit game style" },
   { value: "anime", label: "Anime", emoji: "⛩️", desc: "Japanese animation style" },
-  { value: "3d-render", label: "3D Render", emoji: "🎬", desc: "Pixar-like 3D look" },
+  { value: "3d-render", label: "3D Render", emoji: "🎬", desc: "Cinematic 3D look" },
 ];
 
 export const IllustrationStylePicker = ({ value, onChange }: IllustrationStylePickerProps) => {
