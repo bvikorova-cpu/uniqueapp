@@ -17,7 +17,7 @@ export default function WallVideos() {
     <>
       <Helmet>
         <title>Videos — Unique</title>
-        <meta name="description" content="TikTok-style vertikálny video feed od kreatorov Unique." />
+        <meta name="description" content="TikTok-style vertical video feed from Unique creators." />
       </Helmet>
       <TikTokFeed
         filter={mode}

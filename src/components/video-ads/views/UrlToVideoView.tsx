@@ -28,7 +28,7 @@ export const UrlToVideoView = ({ onBack }: { onBack: () => void }) => {
   const [activeFrame, setActiveFrame] = useState(0);
 
   const generate = async () => {
-    if (!url.trim()) { toast.error("Zadaj URL"); return; }
+    if (!url.trim()) { toast.error("Enter a URL"); return; }
     setLoading(true); setResult(null); setFrames([]);
     try {
       const { data, error } = await supabase.functions.invoke('video-ad-tools', {

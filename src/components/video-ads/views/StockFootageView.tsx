@@ -22,7 +22,7 @@ export const StockFootageView = ({ onBack }: { onBack: () => void }) => {
   const [r, setR] = useState<StockResult | null>(null);
 
   const go = async () => {
-    if (!script.trim()) { toast.error("Zadaj script"); return; }
+    if (!script.trim()) { toast.error("Enter a script"); return; }
     setLoading(true); setR(null);
     try {
       const { data, error } = await supabase.functions.invoke('video-ad-tools', {

@@ -28,7 +28,7 @@ export const TextToVideoScenesView = ({ onBack }: { onBack: () => void }) => {
   const [activeFrame, setActiveFrame] = useState(0);
 
   const split = async () => {
-    if (!script.trim()) { toast.error("Zadaj script"); return; }
+    if (!script.trim()) { toast.error("Enter a script"); return; }
     setLoading(true); setSplitResult(null); setFrames([]);
     try {
       const { data, error } = await supabase.functions.invoke('video-ad-tools', {

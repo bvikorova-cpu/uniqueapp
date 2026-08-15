@@ -157,7 +157,7 @@ export default function KidsVoiceChat() {
       }
       if (response.status === 402) {
         if (hasGoldPass) {
-          toast({ title: "Momentálna chyba", description: "Skús to prosím znova.", variant: "destructive" });
+          toast({ title: "Temporary error", description: "Please try again.", variant: "destructive" });
           setMessages(prev => prev.slice(0, -1));
           return;
         }

@@ -66,7 +66,7 @@ export default function AdminCrawler() {
         setLiveRunStatus(null);
       }
     } catch (e) {
-      toast.error(`Načítanie zlyhalo: ${(e as Error).message}`);
+      toast.error(`Loading failed: ${(e as Error).message}`);
     } finally {
       if (!silent) setLoading(false);
     }
@@ -76,7 +76,7 @@ export default function AdminCrawler() {
     setDispatching(true);
     try {
       await call("dispatch", { route_limit: routeLimit });
-      toast.success("Crawler spustený. Beh sa objaví o ~10s.");
+      toast.success("Crawler started. The run will appear in ~10s.");
       setTimeout(() => loadRuns(true), 8000);
     } catch (e) {
       toast.error(`Spustenie zlyhalo: ${(e as Error).message}`);
@@ -131,23 +131,23 @@ export default function AdminCrawler() {
     <div className="container mx-auto p-6 space-y-6 max-w-5xl">
       <div>
         <h1 className="text-3xl font-bold">Pre-launch Crawler</h1>
-        <p className="text-muted-foreground">Spustí Playwright audit všetkých routes cez GitHub Actions a zobrazí report.</p>
+        <p className="text-muted-foreground">Runs a Playwright audit of all routes via GitHub Actions and shows the report.</p>
       </div>
 
       <Card>
-        <CardHeader><CardTitle>Spustiť nový beh</CardTitle></CardHeader>
+        <CardHeader><CardTitle>Start a new run</CardTitle></CardHeader>
         <CardContent className="flex flex-wrap gap-3 items-end">
           <div className="space-y-1">
-            <label className="text-sm">Route limit (0 = všetky)</label>
+            <label className="text-sm">Route limit (0 = all)</label>
             <Input type="number" min={0} value={routeLimit} onChange={(e) => setRouteLimit(e.target.value)} className="w-40" />
           </div>
           <Button onClick={dispatch} disabled={dispatching}>
             {dispatching ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2" />}
-            Spustiť crawler
+            Start crawler
           </Button>
           <Button variant="outline" onClick={() => loadRuns()} disabled={loading}>
             {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
-            Obnoviť
+            Refresh
           </Button>
         </CardContent>
       </Card>
@@ -164,12 +164,12 @@ export default function AdminCrawler() {
             <div className="flex items-center justify-between text-sm">
               <StatusBadge status={liveRunStatus ?? "in_progress"} conclusion={null} />
               <span className="text-muted-foreground text-xs">
-                {lastUpdated ? `Aktualizované: ${lastUpdated.toLocaleTimeString()}` : ""}
+                {lastUpdated ? `Updated: ${lastUpdated.toLocaleTimeString()}` : ""}
               </span>
             </div>
             <Progress value={100} className="h-2 animate-pulse" />
             <p className="text-xs text-muted-foreground">
-              Beh sa automaticky obnovuje každých 15 s. Po dokončení tu pribudne tlačidlo na stiahnutie reportu.
+              The run refreshes automatically every 15s. When it finishes, a download button for the report appears here.
             </p>
             <div className="flex items-center gap-2">
               <input
@@ -187,17 +187,17 @@ export default function AdminCrawler() {
 
       <Card className="border-primary/40">
         <CardHeader>
-          <CardTitle>Lokálne (bez GitHub Actions)</CardTitle>
+          <CardTitle>Local (without GitHub Actions)</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            Spusti in-browser crawler priamo v tomto prehliadači — beží cez iframe, nepotrebuje CI ani billing.
+            Run the in-browser crawler directly in this browser - it works through an iframe and needs no CI or billing.
           </p>
           <div className="flex flex-wrap gap-2">
             <Link to="/admin/button-tester" target="_blank" rel="noopener noreferrer">
               <Button>
                 <MonitorPlay className="w-4 h-4 mr-2" />
-                Spustiť v prehliadači
+                Run in browser
               </Button>
             </Link>
             <Button
@@ -205,23 +205,23 @@ export default function AdminCrawler() {
               onClick={() => {
                 const cmd = "bunx playwright test e2e/crawler/all-buttons-crawler.spec.ts --project=crawler --reporter=list && node e2e/crawler/generate-report.mjs";
                 navigator.clipboard.writeText(cmd);
-                toast.success("Príkaz skopírovaný — spusti v termináli repa.");
+                toast.success("Command copied - run it in the repo terminal.");
               }}
             >
               <Copy className="w-4 h-4 mr-2" />
-              Kopírovať Playwright príkaz
+              Copy Playwright command
             </Button>
           </div>
           <p className="text-xs text-muted-foreground">
-            In-browser variant obsiahne ~2800 routes a bezpečné kliky. Playwright variant beží headless Chromium a produkuje <code>e2e/crawler-report/</code> so screenshotmi.
+            The in-browser variant covers ~2800 routes with safe clicks. The Playwright variant runs headless Chromium and produces <code>e2e/crawler-report/</code> with screenshots.
           </p>
         </CardContent>
       </Card>
 
       <Card>
-        <CardHeader><CardTitle>Posledné behy</CardTitle></CardHeader>
+        <CardHeader><CardTitle>Recent runs</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {runs.length === 0 && !loading && <p className="text-sm text-muted-foreground">Žiadne behy zatiaľ.</p>}
+          {runs.length === 0 && !loading && <p className="text-sm text-muted-foreground">No runs yet.</p>}
           {runs.map((r) => (
             <div key={r.id} className="border rounded-lg p-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
@@ -243,14 +243,14 @@ export default function AdminCrawler() {
                 <div className="mt-3 border-t pt-3 space-y-2">
                   {(artifacts[r.id] ?? []).length === 0 && (
                     <p className="text-sm text-muted-foreground">
-                      {r.status === "completed" ? "Bez artefaktov." : "Beh ešte prebieha — artefakty budú po dokončení."}
+                      {r.status === "completed" ? "No artifacts." : "The run is still in progress - artifacts appear once it finishes."}
                     </p>
                   )}
                   {(artifacts[r.id] ?? []).map((a) => (
                     <div key={a.id} className="flex items-center justify-between text-sm">
                       <span>{a.name} · {(a.size_in_bytes / 1024 / 1024).toFixed(1)} MB {a.expired && "(expired)"}</span>
                       <Button size="sm" onClick={() => download(a.id, a.name)} disabled={a.expired}>
-                        <Download className="w-4 h-4 mr-1" /> Stiahnuť
+                        <Download className="w-4 h-4 mr-1" /> Download
                       </Button>
                     </div>
                   ))}
@@ -262,7 +262,7 @@ export default function AdminCrawler() {
       </Card>
 
       <p className="text-xs text-muted-foreground">
-        Report ZIP obsahuje <code>report.html</code> so screenshotmi. Rozbaľ a otvor lokálne v prehliadači.
+        The report ZIP contains <code>report.html</code> with screenshots. Unpack it and open it locally in your browser.
       </p>
     </div>
   );

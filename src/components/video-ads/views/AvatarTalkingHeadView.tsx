@@ -28,7 +28,7 @@ export const AvatarTalkingHeadView = ({ onBack }: { onBack: () => void }) => {
   const [voiceLoading, setVoiceLoading] = useState(false);
 
   const generatePlan = async () => {
-    if (!product.trim()) { toast.error("Zadaj produkt"); return; }
+    if (!product.trim()) { toast.error("Enter a product"); return; }
     setLoading(true); setPlan(null); setPortrait(null); setAudio(null);
     try {
       const { data, error } = await supabase.functions.invoke('video-ad-tools', {

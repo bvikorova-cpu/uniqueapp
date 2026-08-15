@@ -182,7 +182,7 @@ export default function AdminButtonTester() {
 
   function formatCheckpointLabel(checkpoint: Checkpoint) {
     const tested = Object.keys(checkpoint.results).length;
-    return `${tested}/${checkpoint.routesTotal} uložené — ${new Date(checkpoint.updatedAt).toLocaleString()}`;
+    return `${tested}/${checkpoint.routesTotal} saved — ${new Date(checkpoint.updatedAt).toLocaleString()}`;
   }
 
   function saveCheckpoint(nextResults: Record<string, BtnResult>, routesTotal: number) { try {
@@ -508,7 +508,7 @@ export default function AdminButtonTester() {
     if (startIndex < 0 || startIndex >= list.length) {
       saveCheckpoint(nextResults, list.length);
       setRunning(false);
-      setCurrent("Všetky routes sú už v checkpointe.");
+      setCurrent("All routes are already in the checkpoint.");
       return;
     }
 
@@ -533,7 +533,7 @@ export default function AdminButtonTester() {
 
       const testedInThisRun = i - startIndex + 1;
       if (testedInThisRun % IFRAME_RECYCLE_EVERY === 0) {
-        setCurrent(`Čistím iframe pamäť… ${i + 1}/${list.length}`);
+        setCurrent(`Clearing iframe memory… ${i + 1}/${list.length}`);
         await recycleIframe(true);
       }
     }
@@ -544,8 +544,8 @@ export default function AdminButtonTester() {
     const remaining = list.length - Object.keys(nextResults).filter((route) => list.includes(route)).length;
     setCurrent(
       remaining > 0
-        ? `Batch dokončený: ${endIndex}/${list.length}. Ďalšie spustenie bude pokračovať od route ${endIndex + 1}.`
-        : `Hotovo: otestované všetky routes (${list.length}/${list.length}).`
+        ? `Batch finished: ${endIndex}/${list.length}. The next run will continue from route ${endIndex + 1}.`
+        : `Done: all routes tested (${list.length}/${list.length}).`
     );
   }
 
@@ -632,7 +632,7 @@ export default function AdminButtonTester() {
     const text = buildReportText();
     try {
       await navigator.clipboard.writeText(text);
-      toast.success("Report skopírovaný do schránky");
+      toast.success("Report copied to clipboard");
     } catch {
       // Fallback
       const ta = document.createElement("textarea");
@@ -641,9 +641,9 @@ export default function AdminButtonTester() {
       ta.select();
       try {
         document.execCommand("copy");
-        toast.success("Report skopírovaný do schránky");
+        toast.success("Report copied to clipboard");
       } catch {
-        toast.error("Kopírovanie zlyhalo");
+        toast.error("Copying failed");
       }
       document.body.removeChild(ta);
     }
@@ -655,7 +655,7 @@ export default function AdminButtonTester() {
         <div>
           <h1 className="text-2xl font-bold">Admin — Button Tester</h1>
           <p className="text-sm text-muted-foreground">
-            Načíta každú route v skrytom iframe, nájde všetky tlačidlá a bezpečne ich odklikne. Preskočí platby, delete, logout, report a podobné deštruktívne akcie.
+            Loads every route in a hidden iframe, finds all buttons and clicks them safely. Skips payments, delete, logout, report and similar destructive actions.
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -679,10 +679,10 @@ export default function AdminButtonTester() {
             <RotateCcw className="h-4 w-4 mr-1" /> Reset
           </Button>
           <Button onClick={downloadReport} disabled={Object.keys(results).length === 0} size="sm" variant="outline">
-            <Download className="h-4 w-4 mr-1" /> Stiahnuť report
+            <Download className="h-4 w-4 mr-1" /> Download report
           </Button>
           <Button onClick={copyReport} disabled={Object.keys(results).length === 0} size="sm" variant="outline">
-            <Copy className="h-4 w-4 mr-1" /> Kopírovať report
+            <Copy className="h-4 w-4 mr-1" /> Copy report
           </Button>
         </div>
       </div>
@@ -702,7 +702,7 @@ export default function AdminButtonTester() {
               onChange={(e) => setClickButtons(e.target.checked)}
               disabled={running}
             />
-            Klikať tlačidlá (nie len počítať)
+            Click buttons (not just count them)
           </label>
           <label className="flex items-center gap-2 text-sm">
             Routes per batch
@@ -727,7 +727,7 @@ export default function AdminButtonTester() {
           </label>
           {checkpointLabel && (
             <Button onClick={restoreCheckpoint} disabled={running} size="sm" variant="ghost">
-              Obnoviť checkpoint
+              Reset checkpoint
             </Button>
           )}
           <div className="flex gap-2 text-xs ml-auto">
@@ -746,7 +746,7 @@ export default function AdminButtonTester() {
         </div>
         {checkpointLabel && (
           <p className="text-xs text-muted-foreground">
-            Checkpoint: {checkpointLabel}. Ďalší batch automaticky preskočí už otestované routes a pokračuje ďalej.
+            Checkpoint: {checkpointLabel}. The next batch automatically skips already tested routes and continues from there.
           </p>
         )}
         {running && (
@@ -765,11 +765,11 @@ export default function AdminButtonTester() {
         <details className="text-xs">
           <summary className="cursor-pointer">Legenda</summary>
           <ul className="mt-2 space-y-1 text-muted-foreground">
-            <li>✅ <b>Pass</b> — route sa načíta, nájdené tlačidlá, žiadny crash ani runtime error po kliknutiach.</li>
-            <li>⚠️ <b>Warn</b> — route sa načíta, ale nenašli sa žiadne tlačidlá (skontroluj či nie je gated / prázdna).</li>
-            <li>❌ <b>Fail</b> — 404 stránka, iframe timeout, crash overlay, alebo runtime error po kliknutí.</li>
-            <li>🧠 Tester dokončí malý batch, uloží checkpoint a ďalšie spustenie automaticky pokračuje od prvej neotestovanej route.</li>
-            <li>🔎 Report obsahuje dôkaz ku route: načítanú URL, čas, textový odtlačok stránky, sample text a počet otvorených overlay prvkov.</li>
+            <li>✅ <b>Pass</b> — route loads, buttons found, no crash or runtime error after clicks.</li>
+            <li>⚠️ <b>Warn</b> — route loads, but no buttons were found (check whether it is gated / empty).</li>
+            <li>❌ <b>Fail</b> — 404 page, iframe timeout, crash overlay, or runtime error after a click.</li>
+            <li>🧠 The tester finishes a small batch, saves a checkpoint and the next run automatically continues from the first untested route.</li>
+            <li>🔎 The report includes evidence per route: loaded URL, time, page text fingerprint, sample text and the number of opened overlay elements.</li>
           </ul>
         </details>
       </Card>
@@ -778,7 +778,7 @@ export default function AdminButtonTester() {
         <Card className="p-2 max-h-[75vh] overflow-auto">
           {!filter && filtered.length > visibleTableRoutes.length && (
             <div className="px-2 py-1 text-xs text-muted-foreground border-b">
-              Kvôli výkonu zobrazujem posledné/ďalšie riadky ({visibleTableRoutes.length}/{filtered.length}); report obsahuje všetky výsledky.
+              For performance only the latest rows are shown ({visibleTableRoutes.length}/{filtered.length}); the report contains all results.
             </div>
           )}
           <table className="w-full text-xs">

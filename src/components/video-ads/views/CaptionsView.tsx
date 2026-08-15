@@ -26,7 +26,7 @@ export const CaptionsView = ({ onBack }: { onBack: () => void }) => {
   const [result, setResult] = useState<CapResult | null>(null);
 
   const generate = async () => {
-    if (!script.trim()) { toast.error("Zadaj script"); return; }
+    if (!script.trim()) { toast.error("Enter a script"); return; }
     setLoading(true); setResult(null);
     try {
       const { data, error } = await supabase.functions.invoke('video-ad-tools', {

@@ -131,7 +131,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
   const removeScene = (id: string) => setScenes(s => s.filter(x => x.id !== id));
 
   const generateVoice = async () => {
-    if (!voText.trim()) { toast.error("Zadaj text voiceoveru"); return; }
+    if (!voText.trim()) { toast.error("Enter voiceover text"); return; }
     setVoLoading(true); setVoAudio(null); setVoUrl(null);
     try {
       const finalVoiceId = customVoiceId.trim() || voiceId;
@@ -181,7 +181,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
 
   const generateSfx = async (id: string) => {
     const sfx = sfxList.find(s => s.id === id);
-    if (!sfx || !sfx.prompt.trim()) { toast.error("Zadaj popis SFX"); return; }
+    if (!sfx || !sfx.prompt.trim()) { toast.error("Enter an SFX description"); return; }
     updateSfx(id, { loading: true });
     try {
       const { data, error } = await supabase.functions.invoke('video-ad-sfx', {

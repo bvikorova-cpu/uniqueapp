@@ -81,7 +81,7 @@ export const PetTrading = () => {
     enabled: !!user
   });
 
-  // Realtime: nové ponuky a výsledky accept/reject bez refreshu.
+  // Realtime: new offers and accept/reject results without a refresh.
   useEffect(() => {
     if (!user) return;
     const refresh = () => {

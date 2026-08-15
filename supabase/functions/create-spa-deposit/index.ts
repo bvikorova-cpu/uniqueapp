@@ -36,7 +36,7 @@ Deno.serve(async (req) => {
         price_data: {
           currency: 'eur',
           unit_amount: amount_cents,
-          product_data: { name: description ?? 'Spa/Salon záloha' } },
+          product_data: { name: description ?? 'Spa/Salon deposit' } },
         quantity: 1 }],
       success_url: `${origin}/spa?deposit=success`,
       cancel_url: `${origin}/spa?deposit=cancel`,
