@@ -950,6 +950,143 @@ export const fantasyRooms: RoomData[] = [
   }
 ];
 
+// Educational / math themed rooms
+export const educationalMathRooms: RoomData[] = [
+  {
+    id: 0,
+    name: "Classroom of Numbers",
+    description: "Chalk dust, locked desks and equations everywhere. Solve the math to move on.",
+    panoramaUrl: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=2048",
+    hotspots: [
+      {
+        id: "blackboard",
+        position: angleToPosition(0, 0),
+        type: "puzzle",
+        label: "Blackboard",
+        puzzle: {
+          type: "cipher",
+          question: "The blackboard shows: 7 × 8 − 14 = ?",
+          hint: "First multiply, then subtract.",
+          answer: "42",
+          reward: {
+            id: "chalk-key",
+            name: "Chalk key",
+            icon: "🔑",
+            description: "A key hidden in the chalk tray."
+          }
+        }
+      },
+      {
+        id: "teacher-desk",
+        position: angleToPosition(-60, -10),
+        type: "clue",
+        label: "Teacher's desk",
+        description: "A note: 'The locker code is the next number in 2, 4, 8, 16, ...'"
+      },
+      {
+        id: "locker",
+        position: angleToPosition(70, 0),
+        type: "lock",
+        label: "Student locker",
+        puzzle: {
+          type: "code",
+          question: "Enter the next number of the sequence 2, 4, 8, 16, ...",
+          hint: "Each number doubles.",
+          answer: "32"
+        }
+      },
+      {
+        id: "classroom-door",
+        position: angleToPosition(180, 0),
+        type: "door",
+        label: "Classroom door",
+        requiredItem: "chalk-key",
+        nextRoom: 1
+      }
+    ]
+  },
+  {
+    id: 1,
+    name: "Geometry Vault",
+    description: "A round hall of shapes, angles and a locked geometric vault.",
+    panoramaUrl: "https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?w=2048",
+    hotspots: [
+      {
+        id: "triangle-wall",
+        position: angleToPosition(20, 5),
+        type: "puzzle",
+        label: "Triangle wall",
+        puzzle: {
+          type: "riddle",
+          question: "Two angles of a triangle are 55° and 65°. How many degrees is the third?",
+          hint: "Angles in a triangle add up to 180°.",
+          answer: "60",
+          reward: {
+            id: "compass",
+            name: "Brass compass",
+            icon: "📐",
+            description: "A drawing compass with a sharp point."
+          }
+        }
+      },
+      {
+        id: "circle-panel",
+        position: angleToPosition(-80, 0),
+        type: "lock",
+        label: "Circle panel",
+        puzzle: {
+          type: "code",
+          question: "A circle has radius 5. What is its area rounded to a whole number (use π ≈ 3.14)?",
+          hint: "Area = π × r².",
+          answer: "79|78.5"
+        }
+      },
+      {
+        id: "vault-door",
+        position: angleToPosition(160, 0),
+        type: "door",
+        label: "Vault door",
+        requiredItem: "compass",
+        nextRoom: 2
+      }
+    ]
+  },
+  {
+    id: 2,
+    name: "Logic Gate",
+    description: "The final room. One last equation stands between you and freedom.",
+    panoramaUrl: "https://images.unsplash.com/photo-1509228468518-180dd4864904?w=2048",
+    hotspots: [
+      {
+        id: "final-equation",
+        position: angleToPosition(0, 0),
+        type: "puzzle",
+        label: "Glowing equation",
+        puzzle: {
+          type: "riddle",
+          question: "Solve for x: 3x + 9 = 30",
+          hint: "Subtract 9, then divide by 3.",
+          answer: "7",
+          reward: {
+            id: "exit-code",
+            name: "Exit code",
+            icon: "🧮",
+            description: "The number that opens the final gate."
+          }
+        }
+      },
+      {
+        id: "exit-gate",
+        position: angleToPosition(180, 0),
+        type: "door",
+        label: "Exit gate",
+        requiredItem: "exit-code",
+        nextRoom: 999
+      }
+    ]
+  }
+];
+
 // Map themes to rooms
 export const themeRoomsMap: Record<string, RoomData[]> = {
   mystery: mysteryDetectiveRooms,
@@ -957,10 +1094,25 @@ export const themeRoomsMap: Record<string, RoomData[]> = {
   "sci-fi": scifiRooms,
   adventure: adventureRooms,
   fantasy: fantasyRooms,
-  educational: mysteryDetectiveRooms,
+  educational: educationalMathRooms,
   corporate: mysteryDetectiveRooms
 };
 
-export const getRoomsForTheme = (theme: string): RoomData[] => {
-  return themeRoomsMap[theme] || mysteryDetectiveRooms;
+/**
+ * Returns the room set for a theme. When the selected experience title is
+ * provided, room names/descriptions are re-skinned so the scenes and generated
+ * panoramas match the experience the user actually picked.
+ */
+export const getRoomsForTheme = (theme: string, experienceTitle?: string): RoomData[] => {
+  const base = themeRoomsMap[theme] || mysteryDetectiveRooms;
+  if (!experienceTitle) return base;
+
+  const stageNames = ["Entrance", "Inner Chamber", "Final Room", "Deep Section", "Last Gate"];
+
+  return base.map((room, idx) => ({
+    ...room,
+    name: `${experienceTitle} — ${stageNames[idx] || `Room ${idx + 1}`}`,
+    description: `${experienceTitle}: ${room.description}`,
+  }));
 };
+
