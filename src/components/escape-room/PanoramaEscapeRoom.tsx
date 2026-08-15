@@ -670,7 +670,7 @@ export function PanoramaEscapeRoom({
           <Card className="bg-black/80 border-white/20 text-white">
             <CardContent className="py-1.5 px-2.5 sm:py-2 sm:px-4 flex items-center gap-2 sm:gap-4">
               <span className="text-[11px] sm:text-sm font-semibold whitespace-nowrap">
-                Room {currentRoomIndex + 1}/{rooms.length}
+                Room {currentRoomIndex + 1}/{localRooms.length}
               </span>
               <div className="flex items-center gap-1">
                 <Clock className="h-4 w-4" />
