@@ -383,9 +383,27 @@ export function PanoramaEscapeRoom({
 
   const handlePuzzleSubmit = useCallback(() => {
     if (!activeHotspot?.puzzle) return;
-    
-    const isCorrect = puzzleAnswer.toLowerCase().trim() === 
-                      activeHotspot.puzzle.answer.toLowerCase().trim();
+
+    const normalize = (v: string) =>
+      v.toLowerCase().replace(/[^a-z0-9áäčďéíĺľňóôŕšťúýž]+/gi, " ").trim().replace(/\s+/g, " ");
+
+    const given = normalize(puzzleAnswer);
+    const accepted = activeHotspot.puzzle.answer
+      .split("|")
+      .map(normalize)
+      .filter(Boolean);
+
+    const isCorrect =
+      given.length > 0 &&
+      accepted.some(
+        (expected) =>
+          given === expected ||
+          given.split(" ").includes(expected) ||
+          expected.split(" ").includes(given) ||
+          given.includes(expected) ||
+          expected.includes(given)
+      );
+
     
     if (isCorrect) {
       const hotspotKey = `${currentRoomIndex}-${activeHotspot.id}`;

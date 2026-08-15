@@ -372,8 +372,8 @@ export const horrorRooms: RoomData[] = [
         puzzle: {
           type: "cipher",
           question: "There is a message on the table: 'GSRH RH GSV VCR'. It's an Atbash cipher (A=Z, B=Y...). What does it mean?",
-          hint: "THIS IS THE EX... translated: THIS IS THE EX...",
-          answer: "exit"
+          hint: "Reverse the alphabet: G=T, S=H, R=I... the message says THIS IS THE ...",
+          answer: "exit|this is the exit"
         }
       },
       {
