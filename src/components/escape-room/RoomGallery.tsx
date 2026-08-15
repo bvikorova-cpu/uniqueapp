@@ -189,35 +189,25 @@ const RoomGallery = ({ onSelectRoom }: RoomGalleryProps) => {
     }
   };
 
-  const handlePlayRoom = async (roomId: string) => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        toast({
-          title: "Authentication Required",
-          description: "Please sign in to play escape rooms",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke('create-escape-room-checkout', {
-        body: { roomId }
-      });
-
-      if (error) throw error;
-
-      if (data?.url) {
-        window.open(data.url, '_blank');
-      }
-    } catch (error) {
-      console.error("Error creating checkout:", error);
+  const handlePlayRoom = async (roomId: string, roomTitle: string) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
       toast({
-        title: "Error",
-        description: "Failed to start checkout process",
+        title: "Authentication Required",
+        description: "Please sign in to play escape rooms",
         variant: "destructive"
       });
+      return;
+    }
+
+    setUnlocking(roomId);
+    try {
+      const ok = await spend(costs.play_room, `Escape room: ${roomTitle}`);
+      if (!ok) return;
+      toast({ title: `${costs.play_room} credits used`, description: "Starting your escape room adventure..." });
+      onSelectRoom(roomId);
+    } finally {
+      setUnlocking(null);
     }
   };
 
