@@ -715,7 +715,7 @@ export function PanoramaEscapeRoom({
           />
         </div>
         <p className="text-center text-white/80 text-xs mt-1">
-          Postup: {Math.round(progress)}%
+          Progress: {Math.round(progress)}%
         </p>
       </motion.div>
 
