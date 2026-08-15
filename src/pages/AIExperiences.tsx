@@ -543,17 +543,18 @@ const AIExperiences = () => {
                       )}
                     </div>
                     {existingTour ? (
-                      <div className="flex gap-2">
-                        <Button onClick={(e) => { e.stopPropagation(); openExistingTour(); }} className="flex-1" size="sm">
-                          <Globe className="h-4 w-4 mr-2" />Open AI tour
+                      <div className="flex gap-1.5 min-w-0">
+                        <Button onClick={(e) => { e.stopPropagation(); openExistingTour(); }} className="flex-1 min-w-0 px-2 text-[11px] sm:text-xs leading-tight" size="sm">
+                          <Globe className="h-3.5 w-3.5 mr-1 shrink-0" /><span className="truncate">Open tour</span>
                         </Button>
                         {hasStreetWalk(dest.name) && (
                           <Button
                             onClick={(e) => { e.stopPropagation(); setStreetWalkDestination(dest.name); }}
                             size="sm"
                             variant="secondary"
-                            className="px-2"
+                            className="px-2 shrink-0"
                             title="Walk real streets"
+                            aria-label="Walk real streets"
                           >
                             <Navigation className="h-4 w-4" />
                           </Button>
@@ -563,12 +564,13 @@ const AIExperiences = () => {
                       <Button
                         onClick={(e) => { e.stopPropagation(); handleVirtualTour(dest.name, dest.credits); }}
                         disabled={loading}
-                        className="w-full"
+                        className="w-full min-w-0 px-2 text-[11px] sm:text-xs leading-tight"
                         size="sm"
                       >
-                        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Sparkles className="h-4 w-4 mr-2" />Generate AI tour</>}
+                        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Sparkles className="h-3.5 w-3.5 mr-1 shrink-0" /><span className="truncate">Generate tour</span></>}
                       </Button>
                     )}
+
                   </div>
                 </CardContent>
               </Card>
