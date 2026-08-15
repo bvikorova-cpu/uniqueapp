@@ -47,13 +47,6 @@ const AIExperiences = () => {
   const isDragging = useRef(false);
   const lastMousePos = useRef({ x: 0, y: 0 });
 
-  const { stats } = useLiveStats([
-    { key: "tours", table: "virtual_tours" as any },
-    { key: "progressions", table: "age_progressions" as any },
-    { key: "plans", table: "travel_plans" as any },
-    { key: "postcards", table: "virtual_postcards" as any },
-  ]);
-
   const destinations = [
     { name: "Paris", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&h=600&fit=crop", credits: 5, landmark: "Eiffel Tower" },
     { name: "Tokyo", image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&h=600&fit=crop", credits: 5, landmark: "Shibuya Crossing" },
