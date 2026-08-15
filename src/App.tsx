@@ -1179,10 +1179,6 @@ const App = () => {
                         <Route path="/kids-channel/fairy-castles" element={<KidsGoldPassGate moduleName="Fairy Castles" redirectPath="/kids-channel/fairy-castles"><KidsParentalGateGuard featureName="Fairy Castles" storageKey="pg_fairy_castles"><FairyCastles /></KidsParentalGateGuard></KidsGoldPassGate>} />
                         <Route path="/kids-channel/fairy-castles/:castleId" element={<KidsGoldPassGate moduleName="Fairy Castles" redirectPath="/kids-channel/fairy-castles"><KidsParentalGateGuard featureName="Fairy Castles" storageKey="pg_fairy_castles"><FairyCastleTour /></KidsParentalGateGuard></KidsGoldPassGate>} />
                         <Route path="/kids-channel/fairy-admin" element={<ProtectedRoute requireAdmin={true}><FairyAdmin /></ProtectedRoute>} />
-                        {/* Legacy Disney routes — redirect to new fairy-castles paths */}
-                        <Route path="/kids-channel/disney-castles" element={<Navigate to="/kids-channel/fairy-castles" replace />} />
-                        <Route path="/kids-channel/disney-castles/:castleId" element={<DisneyCastleRedirect />} />
-                        <Route path="/kids-channel/disney-admin" element={<Navigate to="/kids-channel/fairy-admin" replace />} />
                         <Route path="/kids-channel/certificate-gallery" element={<CertificateGallery />} />
                         <Route path="/numerology" element={<Numerology />} />
                         <Route path="/parallel-universe" element={<ParallelUniverse />} />
