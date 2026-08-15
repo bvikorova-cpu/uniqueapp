@@ -4,23 +4,15 @@ import { ArrowLeft, Award } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
+import { useEscapeRoomRealStats } from "@/hooks/useEscapeRoomRealStats";
+import { computeEscapeBadges } from "../escapeBadges";
 
 interface Props { onBack: () => void; }
 
-const badges = [
-  { name: "First Escape", desc: "Complete your first room", icon: "🔓", earned: true, xp: 50 },
-  { name: "Speed Demon", desc: "Complete a room under 20 minutes", icon: "⚡", earned: true, xp: 100 },
-  { name: "Hint-Free", desc: "Complete a room without any hints", icon: "🧠", earned: true, xp: 150 },
-  { name: "Team Player", desc: "Complete a room with 4+ players", icon: "👥", earned: true, xp: 75 },
-  { name: "Horror Master", desc: "Complete all horror rooms", icon: "👻", earned: false, xp: 200, progress: 60 },
-  { name: "Mystery Maven", desc: "Complete all mystery rooms", icon: "🔍", earned: false, xp: 200, progress: 40 },
-  { name: "Room Creator", desc: "Create and publish 5 rooms", icon: "🏗️", earned: false, xp: 250, progress: 20 },
-  { name: "Perfectionist", desc: "Score 950+ on any room", icon: "💎", earned: false, xp: 300, progress: 85 },
-  { name: "Marathon Runner", desc: "Play 10 rooms in one day", icon: "🏃", earned: false, xp: 200, progress: 30 },
-  { name: "Legend", desc: "Reach 10,000 total XP", icon: "🏆", earned: false, xp: 500, progress: 15 },
-];
 
 export function EscapeBadgesView({ onBack }: Props) {
+  const { user, loading } = useEscapeRoomRealStats();
+  const badges = computeEscapeBadges(user);
   const earned = badges.filter(b => b.earned).length;
   const totalXP = badges.filter(b => b.earned).reduce((s, b) => s + b.xp, 0);
 
@@ -36,7 +28,7 @@ export function EscapeBadgesView({ onBack }: Props) {
           </div>
           <div>
             <h2 className="text-2xl font-black">Achievement Badges</h2>
-            <p className="text-muted-foreground">{earned}/{badges.length} earned • {totalXP} XP</p>
+            <p className="text-muted-foreground">{loading ? "Loading your progress…" : `${earned}/${badges.length} earned • ${totalXP} badge XP • ${user.totalXp} score XP`}</p>
           </div>
         </div>
 
@@ -51,7 +43,7 @@ export function EscapeBadgesView({ onBack }: Props) {
                     {b.earned && <Badge className="text-[10px] bg-amber-500/20 text-amber-600 border-amber-500/30">Earned</Badge>}
                   </div>
                   <div className="text-xs text-muted-foreground">{b.desc}</div>
-                  {!b.earned && b.progress !== undefined && (
+                  {!b.earned && (
                     <Progress value={b.progress} className="h-1.5 mt-1.5" />
                   )}
                 </div>
