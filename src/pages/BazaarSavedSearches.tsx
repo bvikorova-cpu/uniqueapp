@@ -36,13 +36,13 @@ export default function BazaarSavedSearches() {
   useEffect(() => { void load(); }, []);
 
   const save = async () => {
-    if (!name.trim()) return toast.error("Zadaj názov");
+    if (!name.trim()) return toast.error("Enter a name");
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return toast.error("Prihlás sa");
+    if (!user) return toast.error("Please sign in");
     const { error } = await supabase.from("bazaar_saved_searches").insert({ user_id: user.id, name, search_term: query, notify: true });
     if (error) return toast.error(error.message);
     setName(""); setQuery("");
-    toast.success("Uložené");
+    toast.success("Saved");
     void load();
   };
 
@@ -71,18 +71,18 @@ export default function BazaarSavedSearches() {
         ]} />
       <div className="container max-w-3xl py-8 space-y-6">
       <header>
-        <h1 className="text-3xl font-bold">Uložené vyhľadávania</h1>
-        <p className="text-muted-foreground">Ulož filtre v Bazaare a dostaň notifikácie o nových výsledkoch.</p>
+        <h1 className="text-3xl font-bold">Saved searches</h1>
+        <p className="text-muted-foreground">Save your Bazaar filters and get notified about new results.</p>
       </header>
 
       <Card className="p-4 space-y-3">
-        <Input placeholder="Názov (napr. iPhone 15 do 500€)" value={name} onChange={(e) => setName(e.target.value)} />
-        <Input placeholder="Vyhľadávací výraz" value={query} onChange={(e) => setQuery(e.target.value)} />
-        <Button onClick={save} className="w-full">Uložiť vyhľadávanie</Button>
+        <Input placeholder="Name (e.g. iPhone 15 under €500)" value={name} onChange={(e) => setName(e.target.value)} />
+        <Input placeholder="Search term" value={query} onChange={(e) => setQuery(e.target.value)} />
+        <Button onClick={save} className="w-full">Save search</Button>
       </Card>
 
-      {loading ? <p>Načítavam…</p> : items.length === 0 ? (
-        <p className="text-muted-foreground">Žiadne uložené vyhľadávania.</p>
+      {loading ? <p>Loading…</p> : items.length === 0 ? (
+        <p className="text-muted-foreground">No saved searches yet.</p>
       ) : (
         <div className="space-y-3">
           {items.map((s) => (
@@ -92,7 +92,7 @@ export default function BazaarSavedSearches() {
                 <div className="font-semibold truncate">{s.name}</div>
                 {s.search_term && <div className="text-sm text-muted-foreground truncate">"{s.search_term}"</div>}
               </div>
-              <Button variant="ghost" size="icon" onClick={() => toggleNotify(s)} title="Notifikácie">
+              <Button variant="ghost" size="icon" onClick={() => toggleNotify(s)} title="Notifications">
                 {s.notify ? <Bell className="w-4 h-4" /> : <BellOff className="w-4 h-4 text-muted-foreground" />}
               </Button>
               <Button variant="ghost" size="icon" asChild>

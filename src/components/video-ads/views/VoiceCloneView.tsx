@@ -23,7 +23,7 @@ export const VoiceCloneView = ({ onBack }: { onBack: () => void }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const clone = async () => {
-    if (!name.trim() || !file) { toast.error("Zadaj meno a nahraj sample"); return; }
+    if (!name.trim() || !file) { toast.error("Enter a name and upload a sample"); return; }
     if (file.size > 10 * 1024 * 1024) { toast.error("Max 10MB"); return; }
     setLoading(true); setVoiceId(null); setTestAudio(null);
     try {

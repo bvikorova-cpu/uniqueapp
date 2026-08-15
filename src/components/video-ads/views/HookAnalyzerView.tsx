@@ -21,7 +21,7 @@ export const HookAnalyzerView = ({ onBack }: { onBack: () => void }) => {
   const [hook, setHook] = useState(""); const [audience, setAudience] = useState("");
   const [loading, setLoading] = useState(false); const [r, setR] = useState<HookResult | null>(null);
   const go = async () => {
-    if (!hook.trim()) { toast.error("Zadaj hook"); return; }
+    if (!hook.trim()) { toast.error("Enter a hook"); return; }
     setLoading(true); setR(null);
     try {
       const { data, error } = await supabase.functions.invoke('video-ad-tools', { body: { action: 'hook_analyzer', hook, audience, platform: 'all' } });

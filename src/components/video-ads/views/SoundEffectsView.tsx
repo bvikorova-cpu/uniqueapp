@@ -23,7 +23,7 @@ export const SoundEffectsView = ({ onBack }: { onBack: () => void }) => {
   const [audio, setAudio] = useState<string | null>(null);
 
   const generate = async () => {
-    if (!prompt.trim()) { toast.error("Zadaj popis SFX"); return; }
+    if (!prompt.trim()) { toast.error("Enter an SFX description"); return; }
     setLoading(true); setAudio(null);
     try {
       const { data, error } = await supabase.functions.invoke('video-ad-sfx', {

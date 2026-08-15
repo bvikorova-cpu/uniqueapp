@@ -221,7 +221,7 @@ export default function AdminCrawler() {
       <Card>
         <CardHeader><CardTitle>Posledné behy</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {runs.length === 0 && !loading && <p className="text-sm text-muted-foreground">Žiadne behy zatiaľ.</p>}
+          {runs.length === 0 && !loading && <p className="text-sm text-muted-foreground">No runs yet.</p>}
           {runs.map((r) => (
             <div key={r.id} className="border rounded-lg p-3">
               <div className="flex flex-wrap items-center justify-between gap-2">

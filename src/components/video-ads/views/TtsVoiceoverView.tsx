@@ -27,7 +27,7 @@ export const TtsVoiceoverView = ({ onBack }: { onBack: () => void }) => {
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
   const generate = async () => {
-    if (!text.trim()) { toast.error("Zadaj text"); return; }
+    if (!text.trim()) { toast.error("Enter text"); return; }
     if (text.length > 5000) { toast.error("Max 5000 znakov"); return; }
     setLoading(true); setAudioUrl(null);
     try {

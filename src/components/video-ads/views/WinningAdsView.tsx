@@ -31,7 +31,7 @@ export const WinningAdsView = ({ onBack }: { onBack: () => void }) => {
   }, [industry]);
 
   const getReco = async () => {
-    if (!product.trim()) { toast.error("Zadaj produkt"); return; }
+    if (!product.trim()) { toast.error("Enter a product"); return; }
     setLoadingReco(true); setReco(null);
     try {
       const { data, error } = await supabase.functions.invoke('video-ad-tools', { body: { action: 'winning_ads_recommend', product, industry } });
