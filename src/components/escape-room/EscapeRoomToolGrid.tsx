@@ -2,16 +2,20 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Lock, Trophy, Award, Sparkles, ChevronRight } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { useEscapeRoomRealStats } from "@/hooks/useEscapeRoomRealStats";
 
-const tools = [
-  { id: "browse", label: "Browse Rooms", desc: "Step into 76+ candle-lit chambers", icon: Lock, credits: 8 },
-  { id: "leaderboard", label: "Leaderboard", desc: "The bravest escape artists, ranked", icon: Trophy },
-  { id: "badges", label: "Achievement Badges", desc: "Collect relics of every escape", icon: Award },
-];
 
 interface Props { onToolSelect: (id: string) => void; }
 
 export function EscapeRoomToolGrid({ onToolSelect }: Props) {
+  const { global, user } = useEscapeRoomRealStats();
+
+  const tools = [
+    { id: "browse", label: "Browse Rooms", desc: `${global.rooms} candle-lit chambers available`, icon: Lock, credits: 8 },
+    { id: "leaderboard", label: "Leaderboard", desc: `${global.escapes} escapes recorded, ranked live`, icon: Trophy },
+    { id: "badges", label: "Achievement Badges", desc: `${user.completed} rooms escaped by you`, icon: Award },
+  ];
+
   return (
     <>
       <FloatingHowItWorks title={"Escape Room Tool Grid - How it works"} steps={[{ title: 'Open', desc: 'Access the Escape Room Tool Grid section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Escape Room Tool Grid.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
