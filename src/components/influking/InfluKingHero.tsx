@@ -42,12 +42,8 @@ const InfluKingHero = ({ totalInfluencers, totalFollowers, totalLikes, totalView
     }
   };
 
-  const stats = [
-    { icon: Users, label: t("influking.hero.stat_influencers"), value: totalInfluencers.toLocaleString(), color: "text-cyan-400" },
-    { icon: Heart, label: t("influking.hero.stat_likes"), value: totalLikes.toLocaleString(), color: "text-pink-400" },
-    { icon: Eye, label: t("influking.hero.stat_views"), value: totalViews.toLocaleString(), color: "text-emerald-400" },
-    { icon: TrendingUp, label: t("influking.hero.stat_followers"), value: totalFollowers.toLocaleString(), color: "text-amber-400" },
-  ];
+
+
 
   return (
     <>
