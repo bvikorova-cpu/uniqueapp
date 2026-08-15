@@ -27,7 +27,9 @@ const challenges = [
 ];
 
 export function SeasonPassView({ onBack }: { onBack: () => void }) {
-  const [owned] = useState(false);
+  const [owned, setOwned] = useState(false);
+  const [buying, setBuying] = useState(false);
+  const { spend, costs } = useEscapeRoomCredits();
   const currentXP = 1450;
   const currentLevel = 12;
 
