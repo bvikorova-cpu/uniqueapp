@@ -1,5 +1,5 @@
 import "./aiRedirect.ts";
-import { tryVertexChat } from "./vertexDirect.ts";
+import { tryVertexChat, tryVertexImage, tryVertexSpeech } from "./vertexDirect.ts";
 
 /**
  * Unified AI provider for all Supabase Edge Functions.
@@ -31,7 +31,7 @@ export interface UnifiedToolDefinition {
 }
 
 export interface UnifiedAIOptions {
-  /** OpenAI model id. We map it to a Lovable gateway id when needed. */
+  /** Legacy caller model id; normalized to an enabled Vertex model. */
   model?: string;
   temperature?: number;
   max_tokens?: number;
@@ -332,37 +332,16 @@ export async function askAIJSON<T = any>(system: string, user: string, opts?: Om
   );
 }
 
-/** Image generation via OpenAI Images API (no gateway fallback for images). */
+/** Vertex image generation. Export name is retained for caller compatibility. */
 export async function generateOpenAIImage(prompt: string, size: "1024x1024" | "1024x1536" | "1536x1024" = "1024x1024"): Promise<{ url?: string; b64_json?: string }> {
-  const key = Deno.env.get("LOVABLE_API_KEY");
-  if (!key) throw new UnifiedAIError(500, "AI image generation is not configured");
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: "openai/gpt-image-1-mini", prompt, n: 1, size, quality: "low" }),
-  });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    console.error("OpenAI image generation error:", res.status, text);
-    throw new UnifiedAIError(res.status === 429 ? 429 : res.status === 402 ? 402 : 502, "Image generation failed. Please try again.");
-  }
-  const data = await res.json();
+  const data = await tryVertexImage(prompt, size, 1);
+  if (!data) throw new UnifiedAIError(503, "Vertex AI image generation is temporarily unavailable.", "Vertex AI");
   return { b64_json: data?.data?.[0]?.b64_json, url: data?.data?.[0]?.url };
 }
 
-/** Text-to-speech via OpenAI TTS API (no gateway fallback for audio). */
-export async function generateOpenAITTS(text: string, voice: string = "nova", speed: number = 1.0): Promise<ArrayBuffer> {
-  const key = Deno.env.get("LOVABLE_API_KEY");
-  if (!key) throw new UnifiedAIError(500, "LOVABLE_API_KEY is not configured for TTS");
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/audio/speech", {
-    method: "POST",
-    headers: { "Lovable-API-Key": key, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: "openai/gpt-4o-mini-tts", voice, input: text.slice(0, 4000), response_format: "mp3", speed }),
-  });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    console.error("OpenAI TTS error:", res.status, text);
-    throw new UnifiedAIError(res.status === 429 ? 429 : res.status === 402 ? 402 : 502, "Text-to-speech failed. Please try again.");
-  }
-  return await res.arrayBuffer();
+/** Vertex text-to-speech. Export name is retained for caller compatibility. */
+export async function generateOpenAITTS(text: string, voice: string = "Kore", _speed: number = 1.0): Promise<ArrayBuffer> {
+  const audio = await tryVertexSpeech(text.slice(0, 4000), voice);
+  if (!audio) throw new UnifiedAIError(503, "Vertex AI text-to-speech is temporarily unavailable.", "Vertex AI");
+  return audio.buffer.slice(audio.byteOffset, audio.byteOffset + audio.byteLength) as ArrayBuffer;
 }
