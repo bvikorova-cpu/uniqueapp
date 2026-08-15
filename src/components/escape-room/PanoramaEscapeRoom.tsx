@@ -358,13 +358,11 @@ export function PanoramaEscapeRoom({
         }
       }
     } catch (err) { console.error('Failed to generate scene:', err);
-      if (!silent) {
-        sounds.playEffect('error');
-        toast({
-          title: "Error generating",
-          description: "Try again later",
-          variant: "destructive" });
-      }
+      sounds.playEffect('error');
+      toast({
+        title: "Scene generation failed",
+        description: "Showing the default scene — tap \"New scene\" to retry.",
+        variant: "destructive" });
     } finally {
       setIsGeneratingPanorama(false);
     }
