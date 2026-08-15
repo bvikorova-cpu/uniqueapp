@@ -45,7 +45,8 @@ Use markdown headings and write a long, thorough plan with these sections:
 5. "## Getting Around" - airport transfer, public transport passes and prices, taxi/app options.
 6. "## Practical Tips" - weather, what to pack, safety, tipping, useful phrases, opening-hours warnings.
 7. "## Estimated Total Cost" - a markdown table of cost items in EUR for ${form.travelers} traveler(s).
-Use only EUR (€) for prices. Be specific with real place names, never generic filler.`
+Use only EUR (€) for prices. Be specific with real place names, never generic filler.
+Write at least 200 words per day and never skip, merge or summarise a day — Day 1 through Day ${form.duration} must all be present in full detail. Do not stop early; finish every section including the final cost table.`
         }
       });
       if (error) throw error;
