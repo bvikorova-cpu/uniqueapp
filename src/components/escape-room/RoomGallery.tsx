@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Users, Star, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useEscapeRoomCredits } from "@/hooks/useEscapeRoomCredits";
+import { Sparkles } from "lucide-react";
 
 // Import all room images
 import hauntedManor from "@/assets/escape-rooms/haunted-manor.jpg";
