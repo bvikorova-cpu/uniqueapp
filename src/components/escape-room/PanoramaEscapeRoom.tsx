@@ -1,8 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Canvas, useThree } from "@react-three/fiber";
-import { OrbitControls, useTexture, Html } from "@react-three/drei";
 import { motion, AnimatePresence } from "framer-motion";
-import * as THREE from "three";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -67,131 +64,15 @@ interface PanoramaEscapeRoomProps {
   onUpdateRoomPanorama?: (roomIndex: number, newUrl: string) => void;
 }
 
-// Panorama Sphere Component
-function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
-  const texture = useTexture(imageUrl);
-  
-  useEffect(() => {
-    texture.colorSpace = THREE.SRGBColorSpace;
-  }, [texture]);
-  
-  return (
-    <>
-      <FloatingHowItWorks title={"Panorama Escape Room - How it works"} steps={[{ title: 'Open', desc: 'Access the Panorama Escape Room section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Panorama Escape Room.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <mesh>
-      <sphereGeometry args={[500, 60, 40]} />
-      <meshBasicMaterial map={texture} side={THREE.BackSide} />
-    </mesh>
-    </>
-  );
-}
-
-// Interactive Hotspot Marker with animations
-function HotspotMarker({ 
-  hotspot, 
-  onClick,
-  isSolved
-}: { 
-  hotspot: Hotspot;
-  onClick: () => void;
-  isSolved: boolean;
-}) {
-  const [hovered, setHovered] = useState(false);
-  const [pulse, setPulse] = useState(1);
-
-  // Pulsing animation
-  useEffect(() => {
-    if (isSolved || hotspot.isHidden) return;
-    const interval = setInterval(() => {
-      setPulse(p => p === 1 ? 1.2 : 1);
-    }, 800);
-    return () => clearInterval(interval);
-  }, [isSolved, hotspot.isHidden]);
-
-  const getColor = () => {
-    if (isSolved) return "#22c55e";
-    if (hotspot.isHidden) return "#ffffff";
-    switch (hotspot.type) {
-      case "puzzle": return "#f59e0b";
-      case "item": return "#3b82f6";
-      case "door": return "#8b5cf6";
-      case "clue": return "#06b6d4";
-      case "lock": return "#ef4444";
-      case "hidden": return "#ffffff";
-      default: return "#ffffff";
-    }
+const hotspotScreenPosition = ([x, y, z]: [number, number, number]) => {
+  const distance = Math.sqrt(x * x + y * y + z * z) || 1;
+  const yaw = Math.atan2(x, -z);
+  const pitch = Math.asin(y / distance);
+  return {
+    left: `${((yaw + Math.PI) / (Math.PI * 2)) * 100}%`,
+    top: `${(0.5 - pitch / Math.PI) * 100}%`,
   };
-
-  const getIcon = () => {
-    switch (hotspot.type) {
-      case "puzzle": return "🧩";
-      case "item": return "📦";
-      case "door": return "🚪";
-      case "clue": return "🔍";
-      case "lock": return isSolved ? "🔓" : "🔒";
-      case "hidden": return "✨";
-      default: return "❓";
-    }
-  };
-
-  // Hidden hotspots are smaller and less visible
-  const baseSize = hotspot.isHidden ? 1.5 : 3;
-  const opacity = hotspot.isHidden ? (hovered ? 0.8 : 0.3) : (hovered ? 1 : 0.8);
-
-  return (
-    <group position={hotspot.position}>
-      <mesh
-        onClick={(e) => {
-          e.stopPropagation();
-          onClick();
-        }}
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
-        scale={hovered ? baseSize * 1.3 : baseSize * pulse}
-      >
-        <sphereGeometry args={[1, 16, 16]} />
-        <meshBasicMaterial 
-          color={getColor()} 
-          transparent 
-          opacity={opacity}
-        />
-      </mesh>
-      
-      {/* Pulsing ring - not for hidden or solved */}
-      {!isSolved && !hotspot.isHidden && (
-        <mesh scale={[5, 5, 0.1]}>
-          <ringGeometry args={[0.8, 1, 32]} />
-          <meshBasicMaterial color={getColor()} transparent opacity={0.3} />
-        </mesh>
-      )}
-
-      {/* Label on hover */}
-      {hovered && (
-        <Html center position={[0, 6, 0]}>
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-black/80 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap shadow-lg"
-          >
-            <span className="mr-2">{getIcon()}</span>
-            {hotspot.label}
-            {hotspot.isHidden && <span className="ml-2 text-yellow-400">⭐ Hidden!</span>}
-          </motion.div>
-        </Html>
-      )}
-    </group>
-  );
-}
-
-function CameraController() {
-  const { camera } = useThree();
-
-  useEffect(() => {
-    camera.position.set(0, 0, 0.1);
-  }, [camera]);
-
-  return null;
-}
+};
 
 // Main Component
 export function PanoramaEscapeRoom({ 
@@ -231,42 +112,9 @@ export function PanoramaEscapeRoom({
 
   const currentRoom = localRooms[currentRoomIndex];
 
-  // Add hidden items to each room
+  // Keep the authored room interactions without adding arbitrary visible markers.
   useEffect(() => {
-    const roomsWithHidden = rooms.map(room => ({
-      ...room,
-      hotspots: [
-        ...room.hotspots,
-        // Add 2-3 hidden items per room
-        {
-          id: `hidden-${room.id}-1`,
-          position: [Math.random() * 100 - 50, Math.random() * 30 - 15, -Math.random() * 100] as [number, number, number],
-          type: "hidden" as const,
-          label: "Hidden treasure",
-          isHidden: true,
-          item: {
-            id: `secret-gem-${room.id}`,
-            name: "Secret Gem",
-            icon: "💎",
-            description: "A rare hidden gem! +50 bonus points."
-          }
-        },
-        {
-          id: `hidden-${room.id}-2`,
-          position: [Math.random() * 100 - 50, Math.random() * 20 - 10, Math.random() * 100 - 50] as [number, number, number],
-          type: "hidden" as const,
-          label: "Secret Coin",
-          isHidden: true,
-          item: {
-            id: `secret-coin-${room.id}`,
-            name: "Gold Coin",
-            icon: "🪙",
-            description: "An old gold coin! +25 bonus points."
-          }
-        }
-      ]
-    }));
-    setLocalRooms(roomsWithHidden);
+    setLocalRooms(rooms);
   }, [rooms]);
 
   // Handle tutorial completion
@@ -487,12 +335,17 @@ export function PanoramaEscapeRoom({
         break;
         
       case "door": {
-        const lockHotspots = currentRoom.hotspots.filter(h => h.type === "lock");
-        const allLocksOpen = lockHotspots.every(h => 
+        const requiredHotspots = currentRoom.hotspots.filter(h => h.type === "lock" || h.type === "puzzle");
+        const allChallengesSolved = requiredHotspots.every(h =>
           solvedHotspots.has(`${currentRoomIndex}-${h.id}`)
         );
-        
-        if (allLocksOpen || lockHotspots.length === 0) {
+        const requiredItem = hotspot.requiredItem
+          ? inventory.find(item => item.id === hotspot.requiredItem)
+          : null;
+        const hasRequiredItem = !hotspot.requiredItem || Boolean(requiredItem);
+
+        if (allChallengesSolved && hasRequiredItem) {
+          if (requiredItem) removeFromInventory(requiredItem.id);
           if (hotspot.nextRoom !== undefined && hotspot.nextRoom < rooms.length) {
             enterRoom(hotspot.nextRoom);
             toast({
@@ -510,13 +363,15 @@ export function PanoramaEscapeRoom({
         } else { sounds.playEffect('error');
           toast({
             title: "🚪 Door is locked",
-            description: "You must solve all puzzles in this room first",
+            description: !allChallengesSolved
+              ? "Solve every puzzle in this room before leaving."
+              : "Find the item that unlocks this door first.",
             variant: "destructive" });
         }
         break;
       }
     }
-  }, [currentRoomIndex, solvedHotspots, selectedItem, addToInventory, removeFromInventory, rooms, currentRoom, toast, elapsedTime, hintsUsed, onComplete, sounds, foundHiddenItems]);
+  }, [currentRoomIndex, solvedHotspots, selectedItem, addToInventory, removeFromInventory, rooms, currentRoom, inventory, toast, elapsedTime, hintsUsed, onComplete, sounds, foundHiddenItems]);
 
   const handlePuzzleSubmit = useCallback(() => {
     if (!activeHotspot?.puzzle) return;
@@ -604,30 +459,32 @@ export function PanoramaEscapeRoom({
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
-      {/* 3D Panorama Canvas */}
-      <Canvas camera={{ fov: 75 }}>
-        <CameraController />
-        <PanoramaSphere imageUrl={currentRoom.panoramaUrl} />
-        
-        {currentRoom.hotspots.map((hotspot) => (
-          <HotspotMarker
-            key={hotspot.id}
-            hotspot={hotspot}
-            onClick={() => handleHotspotClick(hotspot)}
-            isSolved={solvedHotspots.has(`${currentRoomIndex}-${hotspot.id}`)}
-          />
-        ))}
+      <FloatingHowItWorks title="Escape Room - How it works" steps={[{ title: "Search", desc: "Inspect the full scene carefully. Interactive objects are not marked." }, { title: "Discover", desc: "Tap objects in the scene to find clues, items, and puzzles." }, { title: "Solve", desc: "Solve every required puzzle and find the key item." }, { title: "Escape", desc: "Only the unlocked exit takes you to the next room." }]} />
 
-        <OrbitControls 
-          enableZoom={true}
-          enablePan={false}
-          rotateSpeed={-0.5}
-          minDistance={0.1}
-          maxDistance={100}
-          minPolarAngle={Math.PI * 0.2}
-          maxPolarAngle={Math.PI * 0.8}
-        />
-      </Canvas>
+      {/* Full-scene search view. Hit areas are deliberately invisible. */}
+      <img
+        src={currentRoom.panoramaUrl}
+        alt={`${currentRoom.name} escape room scene`}
+        className="absolute inset-0 h-full w-full object-cover select-none"
+        draggable={false}
+      />
+      <div className="absolute inset-0 z-10">
+        {currentRoom.hotspots.map((hotspot) => {
+          const solved = solvedHotspots.has(`${currentRoomIndex}-${hotspot.id}`);
+          return (
+            <Button
+              key={hotspot.id}
+              type="button"
+              variant="ghost"
+              aria-label={`Examine ${hotspot.label}`}
+              onClick={() => handleHotspotClick(hotspot)}
+              disabled={solved && hotspot.type !== "door"}
+              className="absolute h-16 w-16 -translate-x-1/2 -translate-y-1/2 rounded-full bg-transparent opacity-0 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none sm:h-20 sm:w-20"
+              style={hotspotScreenPosition(hotspot.position)}
+            />
+          );
+        })}
+      </div>
 
       {/* Scene generation overlay */}
       {isGeneratingPanorama && (
@@ -645,7 +502,7 @@ export function PanoramaEscapeRoom({
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-none"
+        className="absolute z-20 top-4 left-4 right-4 flex justify-between items-start pointer-events-none"
       >
         {/* Left - Room info */}
         <Card className="bg-black/80 border-white/20 text-white pointer-events-auto max-w-xs">
@@ -726,7 +583,7 @@ export function PanoramaEscapeRoom({
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 0.4 }}
-        className="absolute top-20 left-1/2 -translate-x-1/2 w-64 pointer-events-none"
+        className="absolute z-20 top-20 left-1/2 -translate-x-1/2 w-64 pointer-events-none"
       >
         <div className="bg-black/60 rounded-full p-1">
           <motion.div 
@@ -746,7 +603,7 @@ export function PanoramaEscapeRoom({
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-auto"
+        className="absolute z-20 bottom-4 left-1/2 -translate-x-1/2 pointer-events-auto"
       >
         <Card className="bg-black/80 border-white/20">
           <CardContent className="py-2 px-4">
@@ -815,20 +672,10 @@ export function PanoramaEscapeRoom({
         </Card>
       </motion.div>
 
-      {/* Controls hint */}
-      <div className="absolute bottom-4 right-4 text-white/60 text-xs pointer-events-none">
-        🖱️ Drag to look around • 🔍 Scroll to zoom • Click on objects
+      {/* Search hint */}
+      <div className="absolute z-20 bottom-4 right-4 text-white/70 text-xs pointer-events-none">
+        Tap objects in the scene to investigate
       </div>
-
-      {/* Hidden items hint */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
-        className="absolute bottom-4 left-4 text-yellow-400/60 text-xs pointer-events-none"
-      >
-        ✨ Look for hidden items for bonus points!
-      </motion.div>
 
       {/* Puzzle Dialog */}
       <Dialog open={!!activeHotspot} onOpenChange={() => setActiveHotspot(null)}>
@@ -872,7 +719,7 @@ export function PanoramaEscapeRoom({
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Search className="h-5 w-5" />
-              Stopa
+              Clue
             </DialogTitle>
           </DialogHeader>
           <div className="py-4">
