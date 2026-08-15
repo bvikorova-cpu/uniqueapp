@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Award } from "lucide-react";
+import { ArrowLeft, Award, Search, CreditCard, Puzzle, Trophy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 import { useEscapeRoomRealStats } from "@/hooks/useEscapeRoomRealStats";
 import { computeEscapeBadges } from "../escapeBadges";
 
@@ -18,7 +17,6 @@ export function EscapeBadgesView({ onBack }: Props) {
 
   return (
     <>
-      <FloatingHowItWorks title={"Escape Badges View - How it works"} steps={[{ title: 'Open', desc: 'Access the Escape Badges View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Escape Badges View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="max-w-3xl mx-auto">
@@ -59,25 +57,28 @@ export function EscapeBadgesView({ onBack }: Props) {
         <div className="mt-8 rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-500/10 via-background/80 to-background/40 p-5 backdrop-blur-sm">
           <div className="flex items-center gap-2 mb-4">
             <Award className="w-5 h-5 text-amber-400" />
-            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-amber-300">How Badges Work</h3>
+            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-amber-300">How It Works</h3>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
-              { step: "1", title: "Enter a Room", desc: "Pick a themed escape room and pay the credit entry." },
-              { step: "2", title: "Solve Puzzles", desc: "Find clues, crack codes, and beat the timer." },
-              { step: "3", title: "Earn XP", desc: "Complete challenges to unlock badge rewards." },
-              { step: "4", title: "Track Progress", desc: "Watch your collection grow and climb the leaderboard." },
-            ].map((item) => (
-              <div key={item.step} className="flex items-start gap-3 rounded-xl border border-amber-500/10 bg-amber-950/20 p-3">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-500/20 text-xs font-black text-amber-300">
-                  {item.step}
+              { step: "1", title: "Browse Rooms", desc: "Choose a themed escape room from the gallery.", icon: Search },
+              { step: "2", title: "Pay with Credits", desc: "Unlock a room for 8 credits — no subscriptions needed.", icon: CreditCard },
+              { step: "3", title: "Solve Puzzles", desc: "Find hidden clues, crack codes, and beat the timer.", icon: Puzzle },
+              { step: "4", title: "Earn Rewards", desc: "Complete rooms to earn XP, badges, and leaderboard ranks.", icon: Trophy },
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <div key={item.step} className="flex items-start gap-3 rounded-xl border border-amber-500/10 bg-amber-950/20 p-3">
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-500/20 text-xs font-black text-amber-300">
+                    <Icon className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-amber-100">{item.title}</p>
+                    <p className="text-xs text-amber-200/60">{item.desc}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-bold text-amber-100">{item.title}</p>
-                  <p className="text-xs text-amber-200/60">{item.desc}</p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
