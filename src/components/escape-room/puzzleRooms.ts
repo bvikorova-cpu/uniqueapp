@@ -1098,6 +1098,49 @@ export const themeRoomsMap: Record<string, RoomData[]> = {
   corporate: mysteryDetectiveRooms
 };
 
+/** Bonus "Secret Room" unlocked after completing the 3rd room of a theme. */
+export const getBonusRoomForTheme = (theme: string): RoomData => {
+  const themeName = (() => {
+    switch (theme) {
+      case "mystery": return "Detective's";
+      case "horror": return "Cursed";
+      case "sci-fi": return "Hidden Shuttle";
+      case "adventure": return "Pharaoh's Final";
+      case "fantasy": return "Arcane";
+      case "educational": return "Infinite";
+      default: return "Secret";
+    }
+  })();
+
+  return {
+    id: 999,
+    name: `${themeName} Secret Chamber`,
+    description: "A hidden chamber unlocked by your skill. Solve the final riddle to claim your reward.",
+    panoramaUrl: "https://images.unsplash.com/photo-1519074069444-1ba4fff66d16?w=2048",
+    hotspots: [
+      {
+        id: "bonus-final-puzzle",
+        position: angleToPosition(0, 0),
+        type: "puzzle",
+        label: "Ultimate riddle",
+        puzzle: {
+          type: "riddle",
+          question: "I am not alive, but I grow; I don't have lungs, but I need air; I don't have a mouth, but water kills me. What am I?",
+          hint: "Think of a flame...",
+          answer: "fire"
+        }
+      },
+      {
+        id: "bonus-exit",
+        position: angleToPosition(180, 0),
+        type: "door",
+        label: "Claim final reward",
+        nextRoom: 999
+      }
+    ]
+  };
+};
+
 /**
  * Returns the room set for a theme. When the selected experience title is
  * provided, room names/descriptions are re-skinned so the scenes and generated

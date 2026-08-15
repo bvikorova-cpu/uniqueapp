@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { 
   ArrowLeft, Clock, Lightbulb, Package, Eye, Lock, Unlock, 
-  Key, Search, X, Check, MapPin, Volume2, VolumeX, Wand2, Loader2
+  Key, Search, X, Check, MapPin, Volume2, VolumeX, Wand2, Loader2, Trophy
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,6 +16,7 @@ import { EscapeRoomTutorial } from "./EscapeRoomTutorial";
 import { StoryNarrative } from "./StoryNarrative";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 import { sceneKey, getCachedScene, setCachedScene, preloadImage } from "./sceneCache";
+import { getBonusRoomForTheme } from "./puzzleRooms";
 
 
 // Types
@@ -64,6 +65,7 @@ interface PanoramaEscapeRoomProps {
   onComplete: (score: number, time: number) => void;
   onExit: () => void;
   onUpdateRoomPanorama?: (roomIndex: number, newUrl: string) => void;
+  sessionId?: string | null;
 }
 
 const hotspotScreenPosition = ([x, y, z]: [number, number, number]) => {
@@ -82,7 +84,8 @@ export function PanoramaEscapeRoom({
   rooms, 
   onComplete, 
   onExit,
-  onUpdateRoomPanorama
+  onUpdateRoomPanorama,
+  sessionId
 }: PanoramaEscapeRoomProps) {
   const { toast } = useToast();
   const sounds = useEscapeRoomSounds(theme);
@@ -101,6 +104,9 @@ export function PanoramaEscapeRoom({
   const [isMuted, setIsMuted] = useState(false);
   const [foundHiddenItems, setFoundHiddenItems] = useState(0);
   const [revealedClue, setRevealedClue] = useState<string | null>(null);
+  const [showRewardDialog, setShowRewardDialog] = useState(false);
+  const [rewardClaimed, setRewardClaimed] = useState(false);
+  const [bonusRoomAdded, setBonusRoomAdded] = useState(false);
 
   
   // UI states
@@ -390,19 +396,26 @@ export function PanoramaEscapeRoom({
 
         if (allChallengesSolved && hasRequiredItem) {
           if (requiredItem) removeFromInventory(requiredItem.id);
-          if (hotspot.nextRoom !== undefined && hotspot.nextRoom < rooms.length) {
+          if (hotspot.nextRoom !== undefined && hotspot.nextRoom < localRooms.length) {
             enterRoom(hotspot.nextRoom);
             toast({
               title: "🚪 New room!",
-              description: `Entering: ${rooms[hotspot.nextRoom].name}`
+              description: `Entering: ${localRooms[hotspot.nextRoom].name}`
             });
-          } else if (currentRoomIndex === rooms.length - 1 || hotspot.nextRoom === 999) {
+          } else if (currentRoomIndex === localRooms.length - 1 || hotspot.nextRoom === 999) {
             // Last room - complete!
-            sounds.playEffect('complete');
-            const baseScore = Math.max(0, 1000 - (elapsedTime * 2) - (hintsUsed * 100));
-            const hiddenBonus = foundHiddenItems * 50;
-            const finalScore = baseScore + hiddenBonus;
-            onComplete(finalScore, elapsedTime);
+            if (!bonusRoomAdded && currentRoomIndex === rooms.length - 1) {
+              // Finished the 3rd authored room -> offer reward before true completion
+              sounds.playEffect('success');
+              setShowRewardDialog(true);
+            } else {
+              // Bonus room finished or explicit completion -> truly complete
+              sounds.playEffect('complete');
+              const baseScore = Math.max(0, 1000 - (elapsedTime * 2) - (hintsUsed * 100));
+              const hiddenBonus = foundHiddenItems * 50;
+              const finalScore = baseScore + hiddenBonus;
+              onComplete(finalScore, elapsedTime);
+            }
           }
         } else { sounds.playEffect('error');
           toast({
@@ -480,7 +493,7 @@ export function PanoramaEscapeRoom({
   };
 
   // Count progress
-  const totalPuzzles = rooms.reduce((acc, room) => 
+  const totalPuzzles = localRooms.reduce((acc, room) => 
     acc + room.hotspots.filter(h => h.type === "puzzle" || h.type === "lock").length, 0
   );
   const solvedPuzzles = [...solvedHotspots].filter(key => 
@@ -526,6 +539,51 @@ export function PanoramaEscapeRoom({
       `Hint: look at the ${vertical} ${horizontal} part of the scene — it hides “${nextTarget.label}”.`
     );
   };
+
+  // Reward after completing the 3rd room: 3 credits + unlock secret room
+  const grantReward = useCallback(async () => {
+    if (!rewardClaimed) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { error } = await (supabase as any).rpc("add_ai_credits", {
+          p_user_id: user.id,
+          p_amount: 3,
+          p_reason: "escape_room_completion_cashback",
+          p_source: "escape_room"
+        });
+        if (error) {
+          console.error("Failed to grant escape room cashback:", error);
+          toast({
+            title: "Reward error",
+            description: "Could not add credits, but you can still enter the secret room.",
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "🎁 +3 credits!",
+            description: "Cashback added to your account."
+          });
+          window.dispatchEvent(new Event("ai-credits-updated"));
+        }
+      }
+      setRewardClaimed(true);
+    }
+
+    const bonusIndex = localRooms.length;
+    const bonusRoom = { ...getBonusRoomForTheme(theme), id: bonusIndex };
+    setLocalRooms(prev => [...prev, bonusRoom]);
+    setBonusRoomAdded(true);
+    setShowRewardDialog(false);
+    enterRoom(bonusIndex);
+  }, [localRooms, rewardClaimed, theme, toast, sounds]);
+
+  const skipReward = useCallback(() => {
+    setShowRewardDialog(false);
+    sounds.playEffect('complete');
+    const baseScore = Math.max(0, 1000 - (elapsedTime * 2) - (hintsUsed * 100));
+    const hiddenBonus = foundHiddenItems * 50;
+    onComplete(baseScore + hiddenBonus, elapsedTime);
+  }, [elapsedTime, hintsUsed, foundHiddenItems, onComplete, sounds]);
 
 
 
@@ -612,7 +670,7 @@ export function PanoramaEscapeRoom({
           <Card className="bg-black/80 border-white/20 text-white">
             <CardContent className="py-1.5 px-2.5 sm:py-2 sm:px-4 flex items-center gap-2 sm:gap-4">
               <span className="text-[11px] sm:text-sm font-semibold whitespace-nowrap">
-                Room {currentRoomIndex + 1}/{rooms.length}
+                Room {currentRoomIndex + 1}/{localRooms.length}
               </span>
               <div className="flex items-center gap-1">
                 <Clock className="h-4 w-4" />
@@ -677,7 +735,7 @@ export function PanoramaEscapeRoom({
             <p className="text-[11px] sm:text-xs text-gray-300 mb-2 line-clamp-2">{currentRoom.description}</p>
             <div className="flex flex-wrap gap-2 text-[10px] sm:text-xs items-center">
               <Badge variant="outline" className="border-white/30">
-                Room {currentRoomIndex + 1}/{rooms.length}
+                Room {currentRoomIndex + 1}/{localRooms.length}
               </Badge>
               {foundHiddenItems > 0 && (
                 <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
@@ -847,6 +905,38 @@ export function PanoramaEscapeRoom({
           </DialogHeader>
           <div className="py-4">
             <p className="text-muted-foreground">{showClue}</p>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Reward dialog after 3rd room completion */}
+      <Dialog open={showRewardDialog} onOpenChange={(open) => {
+        if (!open && !bonusRoomAdded) skipReward();
+      }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Trophy className="h-5 w-5 text-amber-500" />
+              Secret room unlocked!
+            </DialogTitle>
+            <DialogDescription>
+              You escaped all 3 rooms. Claim a small cashback and enter the hidden bonus chamber.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="rounded-xl bg-gradient-to-br from-amber-500/10 to-purple-500/10 p-4 border border-amber-500/20 text-center">
+              <p className="text-3xl font-black text-amber-500">+3 credits</p>
+              <p className="text-sm text-muted-foreground">+ access to the secret room</p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Button onClick={grantReward} className="flex-1">
+                <Trophy className="h-4 w-4 mr-1" />
+                Claim & enter
+              </Button>
+              <Button variant="outline" onClick={skipReward} className="flex-1">
+                Exit game
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
