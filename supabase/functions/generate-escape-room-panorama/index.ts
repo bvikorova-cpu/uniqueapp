@@ -82,7 +82,7 @@ serve(async (req) => {
       rateLimit: { max: 30, windowSec: 60, bucket: "ai.escape_room_scene" },
     });
     if (auth.errorResponse) return auth.errorResponse;
-    userId = (auth as { userId?: string | null }).userId ?? null;
+    userId = (auth as { user?: { id: string } }).user?.id ?? null;
 
     const { roomName, theme, description } = await req.json();
     if (!roomName || !theme) {
