@@ -31,6 +31,7 @@ import { RefundsDisputesPanel } from "@/components/earnings/RefundsDisputesPanel
 import { WithdrawalHistoryTable } from "@/components/earnings/WithdrawalHistoryTable";
 import { TaxFormWidget } from "@/components/earnings/TaxFormWidget";
 import { ConcertEarningsCard } from "@/components/earnings/ConcertEarningsCard";
+import { InfluKingEarningsCard } from "@/components/earnings/InfluKingEarningsCard";
 
 interface Transaction {
   id: string;
@@ -226,8 +227,13 @@ const Earnings = () => {
       </div>
 
       <div className="mb-6">
+        <InfluKingEarningsCard />
+      </div>
+
+      <div className="mb-6">
         <ConcertEarningsCard />
       </div>
+
 
       <div className="mb-6">
         <StripeConnectBanner />
