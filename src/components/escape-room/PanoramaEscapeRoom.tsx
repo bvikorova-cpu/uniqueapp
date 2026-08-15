@@ -115,6 +115,8 @@ export function PanoramaEscapeRoom({
   const [showClue, setShowClue] = useState<string | null>(null);
 
   const currentRoom = localRooms[currentRoomIndex];
+  const inFlightRef = useRef<Set<string>>(new Set());
+
 
   // Clear a revealed clue whenever the room or solved state changes
   useEffect(() => {
