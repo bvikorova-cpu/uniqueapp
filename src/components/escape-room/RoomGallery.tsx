@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Users, Star, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useEscapeRoomCredits } from "@/hooks/useEscapeRoomCredits";
+import { Sparkles } from "lucide-react";
 
 // Import all room images
 import hauntedManor from "@/assets/escape-rooms/haunted-manor.jpg";
@@ -155,7 +157,9 @@ const RoomGallery = ({ onSelectRoom }: RoomGalleryProps) => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTheme, setSelectedTheme] = useState<string>("all");
+  const [unlocking, setUnlocking] = useState<string | null>(null);
   const { toast } = useToast();
+  const { spend, costs } = useEscapeRoomCredits();
 
   useEffect(() => {
     fetchRooms();
@@ -189,35 +193,25 @@ const RoomGallery = ({ onSelectRoom }: RoomGalleryProps) => {
     }
   };
 
-  const handlePlayRoom = async (roomId: string) => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        toast({
-          title: "Authentication Required",
-          description: "Please sign in to play escape rooms",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke('create-escape-room-checkout', {
-        body: { roomId }
-      });
-
-      if (error) throw error;
-
-      if (data?.url) {
-        window.open(data.url, '_blank');
-      }
-    } catch (error) {
-      console.error("Error creating checkout:", error);
+  const handlePlayRoom = async (roomId: string, roomTitle: string) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
       toast({
-        title: "Error",
-        description: "Failed to start checkout process",
+        title: "Authentication Required",
+        description: "Please sign in to play escape rooms",
         variant: "destructive"
       });
+      return;
+    }
+
+    setUnlocking(roomId);
+    try {
+      const ok = await spend(costs.play_room, `Escape room: ${roomTitle}`);
+      if (!ok) return;
+      toast({ title: `${costs.play_room} credits used`, description: "Starting your escape room adventure..." });
+      onSelectRoom(roomId);
+    } finally {
+      setUnlocking(null);
     }
   };
 
@@ -293,12 +287,15 @@ const RoomGallery = ({ onSelectRoom }: RoomGalleryProps) => {
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-lg font-bold">€10</span>
-                  </div>
-                  <Button onClick={() => handlePlayRoom(room.id)}>
-                    Buy & Play
+                <div className="flex items-center justify-between gap-2">
+                  <Badge variant="secondary" className="bg-amber-500/10 text-amber-600 border-amber-500/20">
+                    <Sparkles className="w-3 h-3 mr-1" />{costs.play_room} credits
+                  </Badge>
+                  <Button
+                    onClick={() => handlePlayRoom(room.id, room.title)}
+                    disabled={unlocking === room.id}
+                  >
+                    {unlocking === room.id ? "Unlocking..." : `Play · ${costs.play_room} CR`}
                   </Button>
                 </div>
                 

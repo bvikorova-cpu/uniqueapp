@@ -7,6 +7,7 @@ import { ArrowLeft, Calendar, Trophy, Gift, Lock, Star, Zap, Crown } from "lucid
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
+import { useEscapeRoomCredits } from "@/hooks/useEscapeRoomCredits";
 
 const tiers = [
   { level: 1, xp: 0, reward: "Bronze Key Badge", icon: Star, unlocked: true },
@@ -27,7 +28,9 @@ const challenges = [
 ];
 
 export function SeasonPassView({ onBack }: { onBack: () => void }) {
-  const [owned] = useState(false);
+  const [owned, setOwned] = useState(false);
+  const [buying, setBuying] = useState(false);
+  const { spend, costs } = useEscapeRoomCredits();
   const currentXP = 1450;
   const currentLevel = 12;
 
@@ -54,8 +57,24 @@ export function SeasonPassView({ onBack }: { onBack: () => void }) {
               <Progress value={(currentXP / 2000) * 100} className="mt-2 h-2 w-64" />
             </div>
             {!owned && (
-              <Button onClick={() => toast.info("Redirecting to checkout...")} className="bg-gradient-to-r from-amber-600 to-orange-700">
-                <Crown className="w-4 h-4 mr-2" />Buy Season Pass · €9.99
+              <Button
+                disabled={buying}
+                onClick={async () => {
+                  setBuying(true);
+                  try {
+                    const ok = await spend(costs.season_pass, "Escape room Season Pass");
+                    if (ok) {
+                      setOwned(true);
+                      toast.success(`Season Pass unlocked · ${costs.season_pass} credits used`);
+                    }
+                  } finally {
+                    setBuying(false);
+                  }
+                }}
+                className="bg-gradient-to-r from-amber-600 to-orange-700"
+              >
+                <Crown className="w-4 h-4 mr-2" />
+                {buying ? "Unlocking..." : `Buy Season Pass · ${costs.season_pass} CR`}
               </Button>
             )}
           </div>

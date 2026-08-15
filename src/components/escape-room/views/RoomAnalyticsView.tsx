@@ -10,15 +10,15 @@ export function RoomAnalyticsView({ onBack }: Props) {
     { label: "Total Plays", value: "2,847", change: "+12%", icon: Users },
     { label: "Avg. Completion", value: "34:21", change: "-2min", icon: Clock },
     { label: "Avg. Rating", value: "4.7", change: "+0.2", icon: Star },
-    { label: "Revenue", value: "€1,240", change: "+18%", icon: TrendingUp },
+    { label: "Revenue", value: "1,240 CR", change: "+18%", icon: TrendingUp },
   ];
 
   const rooms = [
-    { name: "Haunted Manor", plays: 423, rating: 4.8, completion: "78%", revenue: "€320" },
-    { name: "Cyberpunk Heist", plays: 387, rating: 4.6, completion: "62%", revenue: "€290" },
-    { name: "Dragon's Lair", plays: 312, rating: 4.9, completion: "54%", revenue: "€240" },
-    { name: "Mars Colony", plays: 298, rating: 4.5, completion: "71%", revenue: "€210" },
-    { name: "Detective's Office", plays: 267, rating: 4.7, completion: "83%", revenue: "€180" },
+    { name: "Haunted Manor", plays: 423, rating: 4.8, completion: "78%", revenue: "320 CR" },
+    { name: "Cyberpunk Heist", plays: 387, rating: 4.6, completion: "62%", revenue: "290 CR" },
+    { name: "Dragon's Lair", plays: 312, rating: 4.9, completion: "54%", revenue: "240 CR" },
+    { name: "Mars Colony", plays: 298, rating: 4.5, completion: "71%", revenue: "210 CR" },
+    { name: "Detective's Office", plays: 267, rating: 4.7, completion: "83%", revenue: "180 CR" },
   ];
 
   return (

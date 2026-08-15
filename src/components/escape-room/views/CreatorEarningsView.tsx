@@ -7,17 +7,17 @@ interface Props { onBack: () => void; }
 
 export function CreatorEarningsView({ onBack }: Props) {
   const stats = [
-    { label: "Total Revenue", value: "€3,420", icon: DollarSign },
-    { label: "Your Share (70%)", value: "€2,394", icon: TrendingUp },
+    { label: "Total Revenue", value: "3,420 CR", icon: DollarSign },
+    { label: "Your Share (70%)", value: "2,394 CR", icon: TrendingUp },
     { label: "Total Plays", value: "1,847", icon: Users },
     { label: "Published Rooms", value: "8", icon: BarChart3 },
   ];
 
   const months = [
-    { month: "March 2026", revenue: "€840", plays: 423, payout: "€588" },
-    { month: "February 2026", revenue: "€720", plays: 367, payout: "€504" },
-    { month: "January 2026", revenue: "€580", plays: 294, payout: "€406" },
-    { month: "December 2025", revenue: "€490", plays: 248, payout: "€343" },
+    { month: "March 2026", revenue: "840 CR", plays: 423, payout: "588 CR" },
+    { month: "February 2026", revenue: "720 CR", plays: 367, payout: "504 CR" },
+    { month: "January 2026", revenue: "580 CR", plays: 294, payout: "406 CR" },
+    { month: "December 2025", revenue: "490 CR", plays: 248, payout: "343 CR" },
   ];
 
   return (
