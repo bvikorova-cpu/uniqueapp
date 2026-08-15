@@ -125,6 +125,7 @@ const InfluKing = () => {
   const [uploadingCoverPhoto, setUploadingCoverPhoto] = useState(false);
 
   const [newPost, setNewPost] = useState({ title: "", content: "", media_url: "", media_type: "image" });
+  const [editingPost, setEditingPost] = useState<{ id: string; title: string; content: string } | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
