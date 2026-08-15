@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,8 @@ import { useEscapeRoomSounds } from "./useEscapeRoomSounds";
 import { EscapeRoomTutorial } from "./EscapeRoomTutorial";
 import { StoryNarrative } from "./StoryNarrative";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { sceneKey, getCachedScene, setCachedScene, preloadImage } from "./sceneCache";
+
 
 // Types
 interface InventoryItem {
@@ -113,6 +115,8 @@ export function PanoramaEscapeRoom({
   const [showClue, setShowClue] = useState<string | null>(null);
 
   const currentRoom = localRooms[currentRoomIndex];
+  const inFlightRef = useRef<Set<string>>(new Set());
+
 
   // Clear a revealed clue whenever the room or solved state changes
   useEffect(() => {
@@ -169,20 +173,34 @@ export function PanoramaEscapeRoom({
   };
 
   // Generate AI scene image for the current room (full-screen searchable scene)
-  const sceneCacheKey = (roomIdx: number) => {
-    const room = localRooms[roomIdx];
-    const sceneVersion = `${room?.name ?? ""}|${room?.description ?? ""}`
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, " ");
-    return `escape-scene:${theme}:${room?.id ?? roomIdx}:${encodeURIComponent(sceneVersion)}`;
-  };
+  const sceneCacheKey = useCallback(
+    (roomIdx: number) => sceneKey(theme, localRooms[roomIdx] ?? {}, roomIdx),
+    [theme, localRooms]
+  );
+
+  const applyScene = useCallback((roomIdx: number, url: string) => {
+    setLocalRooms(prev => prev.map((r, idx) => (idx === roomIdx ? { ...r, panoramaUrl: url } : r)));
+    onUpdateRoomPanorama?.(roomIdx, url);
+  }, [onUpdateRoomPanorama]);
 
   const generateAIPanorama = useCallback(async (roomIdx = currentRoomIndex, silent = false) => {
     const room = localRooms[roomIdx];
     if (!room) return;
 
-    setIsGeneratingPanorama(true);
+    const key = sceneKey(theme, room, roomIdx);
+    if (inFlightRef.current.has(key)) return;
+    inFlightRef.current.add(key);
+
+    // Cache first — instant open on repeat visits.
+    const cached = await getCachedScene(key);
+    if (cached) {
+      inFlightRef.current.delete(key);
+      await preloadImage(cached);
+      applyScene(roomIdx, cached);
+      return;
+    }
+
+    if (roomIdx === currentRoomIndex) setIsGeneratingPanorama(true);
     if (!silent) {
       toast({
         title: "🎨 Generating scene...",
@@ -212,59 +230,77 @@ export function PanoramaEscapeRoom({
       }
 
       if (data?.imageUrl) {
-        try { sessionStorage.setItem(sceneCacheKey(roomIdx), data.imageUrl); } catch { /* quota */ }
-        setLocalRooms(prev => prev.map((r, idx) => 
-          idx === roomIdx 
-            ? { ...r, panoramaUrl: data.imageUrl }
-            : r
-        ));
-        
-        onUpdateRoomPanorama?.(roomIdx, data.imageUrl);
-        sounds.playEffect('success');
-        
-        if (!silent) {
-          toast({
-            title: "✨ Scene ready!",
-            description: "The room now matches its story"
-          });
+        await setCachedScene(key, data.imageUrl);
+        await preloadImage(data.imageUrl);
+        applyScene(roomIdx, data.imageUrl);
+
+        if (roomIdx === currentRoomIndex) {
+          sounds.playEffect('success');
+          if (!silent) {
+            toast({
+              title: "✨ Scene ready!",
+              description: "The room now matches its story"
+            });
+          }
         }
       }
     } catch (err) {
       const info = err as Error & { errorType?: string; logId?: string | null; status?: number | null };
       console.error('Failed to generate scene:', info.errorType, info.logId, info.message);
-      sounds.playEffect('error');
-      toast({
-        title: "Scene generation failed",
-        description: [
-          `Reason: ${info.errorType ?? 'unknown'}${info.status ? ` (HTTP ${info.status})` : ''}`,
-          info.message,
-          info.logId ? `Log ID: ${info.logId}` : null,
-          'Showing the default scene — tap "New scene" to retry.',
-        ].filter(Boolean).join(' · '),
-        variant: "destructive",
-        duration: 12000 });
+      if (!silent) {
+        sounds.playEffect('error');
+        toast({
+          title: "Scene generation failed",
+          description: [
+            `Reason: ${info.errorType ?? 'unknown'}${info.status ? ` (HTTP ${info.status})` : ''}`,
+            info.message,
+            info.logId ? `Log ID: ${info.logId}` : null,
+            'Showing the default scene — tap "New scene" to retry.',
+          ].filter(Boolean).join(' · '),
+          variant: "destructive",
+          duration: 12000 });
+      }
     } finally {
-      setIsGeneratingPanorama(false);
+      inFlightRef.current.delete(key);
+      if (roomIdx === currentRoomIndex) setIsGeneratingPanorama(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentRoomIndex, localRooms, theme, onUpdateRoomPanorama, sounds, toast]);
+  }, [currentRoomIndex, localRooms, theme, applyScene, sounds, toast]);
 
-  // Auto-generate a matching scene when entering a room that still uses a stock photo
+  // Pre-generate + cache every room's scene up front (current room first),
+  // so entering the next room is instant.
   useEffect(() => {
-    if (!gameStarted) return;
-    const room = localRooms[currentRoomIndex];
-    if (!room) return;
-    const isStock = /unsplash\.com|placeholder/.test(room.panoramaUrl);
-    if (!isStock || isGeneratingPanorama) return;
+    if (!localRooms.length) return;
+    let cancelled = false;
 
-    const cached = (() => { try { return sessionStorage.getItem(sceneCacheKey(currentRoomIndex)); } catch { return null; } })();
-    if (cached) {
-      setLocalRooms(prev => prev.map((r, idx) => idx === currentRoomIndex ? { ...r, panoramaUrl: cached } : r));
-      return;
-    }
-    generateAIPanorama(currentRoomIndex, true);
+    (async () => {
+      const order = [
+        currentRoomIndex,
+        ...localRooms.map((_, i) => i).filter(i => i !== currentRoomIndex),
+      ];
+
+      for (const idx of order) {
+        if (cancelled) return;
+        const room = localRooms[idx];
+        if (!room) continue;
+        const key = sceneKey(theme, room, idx);
+        const cached = await getCachedScene(key);
+        if (cached) {
+          if (cancelled) return;
+          if (room.panoramaUrl !== cached) applyScene(idx, cached);
+          preloadImage(cached);
+          continue;
+        }
+        const isStock = /unsplash\.com|placeholder/.test(room.panoramaUrl);
+        if (!isStock) continue;
+        await generateAIPanorama(idx, true);
+      }
+    })();
+
+    return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameStarted, currentRoomIndex, localRooms[currentRoomIndex]?.panoramaUrl]);
+  }, [theme, localRooms.length, currentRoomIndex]);
+
 
 
   const addToInventory = useCallback((item: InventoryItem) => {
