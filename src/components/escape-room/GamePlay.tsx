@@ -76,6 +76,7 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
           .from("escape_room_sessions")
           .insert([{
             room_id: roomId,
+            user_id: user.id,
             team_name: "Solo Player",
             status: "in_progress",
             started_at: new Date().toISOString()
@@ -206,10 +207,24 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
       <PanoramaEscapeRoom
         theme={room?.theme || "mystery"}
         rooms={panoramaRooms}
-        onComplete={(score, time) => {
+        onComplete={async (score, time) => {
+          // Persist the completion so leaderboard points + badges use real data (1 point per completed room)
+          if (sessionId) {
+            const { error } = await supabase
+              .from("escape_room_sessions")
+              .update({
+                status: "completed",
+                completed_at: new Date().toISOString(),
+                completion_time_seconds: time,
+                hints_used: hintsUsed,
+                score,
+              })
+              .eq("id", sessionId);
+            if (error) console.error("Failed to save escape session:", error);
+          }
           toast({
-            title: "🎉 Gratulujem!",
-            description: `You escaped in ${Math.floor(time / 60)}:${(time % 60).toString().padStart(2, '0')} with a score of ${score}!`
+            title: "🎉 Congratulations!",
+            description: `You escaped in ${Math.floor(time / 60)}:${(time % 60).toString().padStart(2, '0')} — score ${score} • +1 leaderboard point!`
           });
           setTimeout(onExit, 3000);
         }}

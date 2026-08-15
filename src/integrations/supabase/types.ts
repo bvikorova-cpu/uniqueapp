@@ -68613,6 +68613,19 @@ export type Database = {
         }[]
       }
       get_escape_room_hint: { Args: { _puzzle_id: string }; Returns: string }
+      get_escape_room_points_leaderboard: {
+        Args: { _limit?: number }
+        Returns: {
+          avatar_url: string
+          best_time_seconds: number
+          display_name: string
+          hints_used: number
+          last_escape: string
+          points: number
+          total_score: number
+          user_id: string
+        }[]
+      }
       get_featured_campaign: { Args: never; Returns: Json }
       get_follower_count: { Args: { user_id: string }; Returns: number }
       get_following_count: { Args: { user_id: string }; Returns: number }

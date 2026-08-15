@@ -26,7 +26,7 @@ export function EscapeBadgesView({ onBack }: Props) {
           </div>
           <div>
             <h2 className="text-2xl font-black">Achievement Badges</h2>
-            <p className="text-muted-foreground">{loading ? "Loading your progress…" : `${earned}/${badges.length} earned • ${totalXP} badge XP • ${user.totalXp} score XP`}</p>
+            <p className="text-muted-foreground">{loading ? "Loading your progress…" : `${earned}/${badges.length} earned • ${user.completed} leaderboard ${user.completed === 1 ? "point" : "points"} • ${totalXP} badge XP • ${user.totalXp} score XP`}</p>
           </div>
         </div>
 
@@ -64,7 +64,7 @@ export function EscapeBadgesView({ onBack }: Props) {
               { step: "1", title: "Browse Rooms", desc: "Choose a themed escape room from the gallery.", icon: Search },
               { step: "2", title: "Pay with Credits", desc: "Unlock a room for 8 credits — no subscriptions needed.", icon: CreditCard },
               { step: "3", title: "Solve Puzzles", desc: "Find hidden clues, crack codes, and beat the timer.", icon: Puzzle },
-              { step: "4", title: "Earn Rewards", desc: "Complete rooms to earn XP, badges, and leaderboard ranks.", icon: Trophy },
+              { step: "4", title: "Earn Rewards", desc: "Every completed room gives 1 leaderboard point, plus XP and badges.", icon: Trophy },
             ].map((item) => {
               const Icon = item.icon;
               return (
