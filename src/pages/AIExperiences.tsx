@@ -292,16 +292,6 @@ const AIExperiences = () => {
     }
   };
 
-  const toggleMute = () => { if (videoRef.current) { videoRef.current.muted = !isMuted; setIsMuted(!isMuted); } };
-  const togglePlay = () => { if (videoRef.current) { if (isPlaying) videoRef.current.pause(); else videoRef.current.play(); setIsVideoPlaying(!isPlaying); } };
-
-  const statItems = [
-    { icon: Globe, label: "Virtual Tours", value: stats.tours || "—", color: "text-cyan-400" },
-    { icon: Clock, label: "Age Previews", value: stats.progressions || "—", color: "text-pink-400" },
-    { icon: Plane, label: "Travel Plans", value: stats.plans || "—", color: "text-emerald-400" },
-    { icon: Mail, label: "Postcards Sent", value: stats.postcards || "—", color: "text-amber-400" },
-  ];
-
   const toolCards = [
     { id: "tours", title: "Virtual Tours", description: "Walk through 33 global destinations in immersive 360° panoramic mode", icon: Globe, gradient: "from-cyan-500 to-blue-600", credits: "5 credits/tour" },
     { id: "future", title: "Future Preview", description: "AI age progression — see how you'll look 10-50 years from now", icon: Clock, gradient: "from-pink-500 to-rose-600", credits: "5 credits" },
