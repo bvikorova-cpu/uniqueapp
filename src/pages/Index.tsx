@@ -45,7 +45,7 @@ const ecosystemModules = [
 
 const coreModules = [
   { title: "Character Companions", description: "Chat with 5 AI personas", icon: MessageCircle, path: "/companions", badge: "5 Free Msgs", gradient: "from-pink-600 to-rose-600", category: "creative" },
-  { title: "Exclusive Experiences", description: "33 global destinations & fantasy worlds", icon: Sparkles, path: "/ai-experiences", badge: "15 Credits", gradient: "from-purple-600 to-violet-600", category: "entertainment" },
+  
   { title: "Brand Builder", description: "Generate complete brand kits with AI", icon: Palette, path: "/brand-builder", badge: "15 Credits", gradient: "from-indigo-600 to-blue-600", category: "creative" },
   { title: "Home Designer", description: "AI room redesign + furniture marketplace", icon: Building2, path: "/home-designer", badge: "Marketplace", gradient: "from-sky-600 to-cyan-600", category: "creative" },
   { title: "Beauty Studio", description: "AI makeup, skincare, nail art & celebrity look matching", icon: Star, path: "/beauty-studio", badge: "✨ 8 AI Tools", gradient: "from-rose-600 to-pink-600", featured: true, category: "creative" },
@@ -127,7 +127,7 @@ const quickActions = [
   { label: "Chat Now", icon: MessageCircle, path: "/messenger", gradient: "from-cyan-500 to-blue-500" },
   { label: "Create Content", icon: PenTool, path: "/content-studio", gradient: "from-purple-500 to-indigo-500" },
   { label: "AI Services", icon: Brain, path: "/psychologist", gradient: "from-emerald-500 to-teal-500" },
-  { label: "Explore World", icon: Globe, path: "/ai-experiences", gradient: "from-blue-500 to-violet-500" },
+  
   { label: "Go Live", icon: Video, path: "/livestream", gradient: "from-red-500 to-pink-500" },
   { label: "Learn", icon: BookOpen, path: "/education", gradient: "from-green-500 to-emerald-500" },
 ];
@@ -321,9 +321,6 @@ const Index = () => {
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4 w-full px-4">
             <Button size="lg" onClick={() => handleNavigate('/wall')} className="bg-white text-slate-900 hover:bg-white/90 shadow-2xl font-bold rounded-xl px-8 w-full sm:w-auto">
               <Zap className="w-4 h-4" /> Explore Now
-            </Button>
-            <Button size="lg" onClick={() => handleNavigate('/ai-experiences')} className="bg-gradient-to-r from-primary to-accent text-white hover:opacity-90 shadow-[0_8px_30px_-5px_hsl(var(--accent)/0.6)] font-bold rounded-xl px-8 w-full sm:w-auto border-2 border-white/30">
-              <Sparkles className="w-4 h-4" /> Discover AI
             </Button>
           </div>
         </div>

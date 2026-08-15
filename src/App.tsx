@@ -176,7 +176,7 @@ import { ResetPassword,
   AIMentor,
   AIMentorChat,
   AIClone,
-  AIExperiences,
+  
   KidsHomework,
   
   KidsStoryCreator,
@@ -958,7 +958,7 @@ const App = () => {
                         <Route path="/lie-detector" element={<LieDetector />} />
                         <Route path="/verify-report" element={<VerifyReport />} />
                         <Route path="/secret-santa" element={<SecretSanta />} />
-                        <Route path="/ai-experiences" element={<AIExperiences />} />
+                        
                         <Route path="/brand-builder" element={<BrandBuilder />} />
                         <Route path="/home-designer" element={<HomeDesigner />} />
                         <Route path="/beauty-studio" element={<BeautyStudio />} />
