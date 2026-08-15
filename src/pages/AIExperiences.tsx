@@ -220,6 +220,42 @@ const AIExperiences = () => {
     }
   };
 
+  const handleVirtualTourBundle = async () => {
+    try {
+      setLoading(true);
+      const currentCredits = typeof credits === 'number' ? credits : credits.credits_remaining;
+      if (currentCredits < 25) {
+        toast({ title: "Insufficient Credits", description: "You need 25 credits for the Travel Pass.", variant: "destructive" });
+        setTimeout(() => navigate("/ai-credits-store"), 2000);
+        return;
+      }
+      const unvisited = destinations
+        .filter((d) => d.name !== "City" && !visitedDestinations.includes(d.name))
+        .map((d) => d.name);
+      const shuffled = unvisited.sort(() => 0.5 - Math.random());
+      const bundleDestinations = shuffled.slice(0, 10);
+      if (bundleDestinations.length === 0) {
+        toast({ title: "No destinations", description: "You have already visited all cities.", variant: "destructive" });
+        return;
+      }
+      const { data, error } = await supabase.functions.invoke('experience-ai', { body: { action: 'virtual-tour-bundle', destinations: bundleDestinations } });
+      if (error) {
+        const status = (error as any).context?.status;
+        if (status === 402) { toast({ title: "Insufficient Credits", description: "Redirecting...", variant: "destructive" }); setTimeout(() => navigate("/ai-credits-store"), 1500); return; }
+        if (status === 429) { toast({ title: "Rate limit", description: "Try again shortly.", variant: "destructive" }); return; }
+        throw error;
+      }
+      toast({ title: "✨ Travel Pass Created!", description: `${data.count || bundleDestinations.length} cities unlocked.` });
+      await loadTours();
+      await refreshCredits();
+    } catch (error) {
+      console.error('Error:', error);
+      toast({ title: "Error", description: "Failed to create travel pass", variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleAgeProgression = async () => {
     if (!selectedFile) {
       toast({ title: "No image selected", description: "Please upload a photo first", variant: "destructive" });
