@@ -62,7 +62,9 @@ Deno.serve(async (req) => {
         { role: "user", content: `Create a vivid virtual tour of ${destination}. Return JSON: { title, overview, highlights: [string], experiences: [{ name, description }] }` }
       ]);
       const imageUrl = await generateImage(
-        `Stunning photorealistic travel scene of ${destination}, golden hour, cinematic, ultra detailed, 8k`
+        `Stunning photorealistic travel scene of ${destination}, daytime golden hour, cinematic, ultra detailed, 8k. ` +
+        `Classical and historic architecture only, no readable brand logos, no billboards or brand signage, ` +
+        `no trademarked characters or mascots, no theme-park attractions, no recognisable modern copyrighted buildings, no people's faces in focus`
       );
       const { data: row } = await supabase!.from("virtual_tours").insert({ user_id: user!.id, destination,
         description: description?.overview ?? description?.result ?? "",
