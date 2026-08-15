@@ -26,7 +26,7 @@ export function EscapeBadgesView({ onBack }: Props) {
           </div>
           <div>
             <h2 className="text-2xl font-black">Achievement Badges</h2>
-            <p className="text-muted-foreground">{loading ? "Loading your progress…" : `${earned}/${badges.length} earned • ${totalXP} badge XP • ${user.totalXp} score XP`}</p>
+            <p className="text-muted-foreground">{loading ? "Loading your progress…" : `${earned}/${badges.length} earned • ${user.completed} leaderboard ${user.completed === 1 ? "point" : "points"} • ${totalXP} badge XP • ${user.totalXp} score XP`}</p>
           </div>
         </div>
 
