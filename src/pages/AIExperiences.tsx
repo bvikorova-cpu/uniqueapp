@@ -47,6 +47,7 @@ const AIExperiences = () => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [compassAngle, setCompassAngle] = useState(0);
   const viewerRef = useRef<HTMLDivElement>(null);
+  const [streetWalkDestination, setStreetWalkDestination] = useState<string | null>(null);
   const isDragging = useRef(false);
   const lastMousePos = useRef({ x: 0, y: 0 });
 
