@@ -8,7 +8,7 @@ export default function Shorts() {
     <>
       <Helmet>
         <title>Shorts — Unique</title>
-        <meta name="description" content="Krátke vertikálne videá od kreatorov na Unique." />
+        <meta name="description" content="Short vertical videos from creators on Unique." />
       </Helmet>
       <TikTokFeed
         topOverlay={

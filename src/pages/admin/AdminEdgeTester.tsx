@@ -125,14 +125,14 @@ const Inner = () => {
                 onClick={() => setFilter(f)}
               >
                 <Filter className="w-3 h-3 mr-1" />
-                {f === "ok" ? "Funguje" : f === "error" ? "Nefunguje" : f === "idle" ? "Netestované" : "Všetko"}
+                {f === "ok" ? "Working" : f === "error" ? "Failing" : f === "idle" ? "Untested" : "All"}
               </Button>
             ))}
           </div>
           <div className="ml-auto flex gap-2">
-            <Badge variant="default">Funguje {counts.ok}</Badge>
-            <Badge variant="destructive">Nefunguje {counts.error}</Badge>
-            <Badge variant="outline">Netestované {counts.idle}</Badge>
+            <Badge variant="default">Working {counts.ok}</Badge>
+            <Badge variant="destructive">Failing {counts.error}</Badge>
+            <Badge variant="outline">Untested {counts.idle}</Badge>
           </div>
         </div>
 
@@ -168,15 +168,15 @@ const Inner = () => {
               const txt = [
                 `Edge Function Tester Report`,
                 `Generated: ${new Date().toISOString()}`,
-                `Total: ${EDGE_FUNCTIONS.length} | Funguje: ${okList.length} | Nefunguje: ${errList.length} | Netestované: ${idleList.length}`,
+                `Total: ${EDGE_FUNCTIONS.length} | Working: ${okList.length} | Failing: ${errList.length} | Untested: ${idleList.length}`,
                 ``,
-                `=== NEFUNGUJE (${errList.length}) ===`,
+                `=== FAILING (${errList.length}) ===`,
                 ...errList.map((r) => `${r.name}  [${r.code}]  ${r.message}`),
                 ``,
-                `=== FUNGUJE (${okList.length}) ===`,
+                `=== WORKING (${okList.length}) ===`,
                 ...okList,
                 ``,
-                `=== NETESTOVANÉ (${idleList.length}) ===`,
+                `=== UNTESTED (${idleList.length}) ===`,
                 ...idleList,
               ].join("\n");
 
@@ -193,7 +193,7 @@ const Inner = () => {
             disabled={running}
           >
             <Download className="w-4 h-4 mr-2" />
-            Stiahnuť report
+            Download report
           </Button>
           <div className="ml-auto text-xs text-muted-foreground self-center">
             Total {EDGE_FUNCTIONS.length} functions
@@ -249,8 +249,8 @@ const Inner = () => {
         <div className="rounded-md border bg-muted/30 p-4 space-y-3 text-sm">
           <h3 className="font-semibold">Ako to funguje</h3>
           <p className="text-xs text-muted-foreground">
-            Server-side probe zavolá každú funkciu autentifikovaným <code>POST</code> s telom{" "}
-            <code>{`{ __probe: true }`}</code>. Klasifikuje sa reálna odpoveď workera:
+            Server-side probe calls every function with an authenticated <code>POST</code> with the body{" "}
+            <code>{`{ __probe: true }`}</code>. The real worker response is classified:
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="flex items-start gap-2">
@@ -258,9 +258,9 @@ const Inner = () => {
               <div>
                 <p className="font-medium">Funguje</p>
                 <p className="text-xs text-muted-foreground">
-                  Handler sa spustil a odpovedal. Zahŕňa 2xx (OK), 400/422 (validácia zamietla probe),
-                  401/403 (auth guard funguje), 405 (metóda zamietnutá), 429 (rate-limit funguje).
-                  Vo všetkých prípadoch kód funkcie reálne beží.
+                  The handler ran and responded. Includes 2xx (OK), 400/422 (validation rejected the probe),
+                  401/403 (auth guard works), 405 (method rejected), 429 (rate limit works).
+                  In all these cases the function code really runs.
                 </p>
               </div>
             </div>
@@ -269,9 +269,9 @@ const Inner = () => {
               <div>
                 <p className="font-medium">Nefunguje</p>
                 <p className="text-xs text-muted-foreground">
-                  <strong>404</strong> = funkcia nie je nasadená pod týmto názvom. <strong>5xx</strong>{" "}
-                  = worker spadol (boot error, chýbajúci import, unhandled exception).{" "}
-                  <strong>Network</strong> = gateway nedostupný. Toto sú reálne bugy na opravu.
+                  <strong>404</strong> = the function is not deployed under this name. <strong>5xx</strong>{" "}
+                  = the worker crashed (boot error, missing import, unhandled exception).{" "}
+                  <strong>Network</strong> = gateway unreachable. These are real bugs to fix.
                 </p>
               </div>
             </div>
