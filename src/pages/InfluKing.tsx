@@ -903,6 +903,33 @@ const InfluKing = () => {
           </DialogContent>
         </Dialog>
 
+        {/* Edit post dialog */}
+        <Dialog open={!!editingPost} onOpenChange={(open) => { if (!open) setEditingPost(null); }}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Edit post</DialogTitle>
+            </DialogHeader>
+            {editingPost && (
+              <div className="space-y-4">
+                <div>
+                  <Label>Title</Label>
+                  <Input value={editingPost.title} onChange={(e) => setEditingPost({ ...editingPost, title: e.target.value })} placeholder="Enter title..." />
+                </div>
+                <div>
+                  <Label>Content</Label>
+                  <Textarea value={editingPost.content} onChange={(e) => setEditingPost({ ...editingPost, content: e.target.value })} rows={4} placeholder="Write something..." />
+                </div>
+                <Button className="w-full" disabled={updatePostMutation.isPending}
+                  onClick={() => updatePostMutation.mutate(editingPost)}>
+                  {updatePostMutation.isPending ? "Saving..." : "Save changes"}
+                </Button>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+
+
         {/* Gift Dialog */}
         {selectedInfluencer && (
           <PaidMessageDialog open={showPaidMessageDialog} onOpenChange={setShowPaidMessageDialog}
