@@ -84,7 +84,8 @@ export function PanoramaEscapeRoom({
   rooms, 
   onComplete, 
   onExit,
-  onUpdateRoomPanorama
+  onUpdateRoomPanorama,
+  sessionId
 }: PanoramaEscapeRoomProps) {
   const { toast } = useToast();
   const sounds = useEscapeRoomSounds(theme);
