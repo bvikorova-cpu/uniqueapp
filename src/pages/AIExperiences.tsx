@@ -726,6 +726,13 @@ const AIExperiences = () => {
       </div>
 
       {renderPanoramicTour()}
+      {streetWalkDestination && (
+        <StreetWalkViewer
+          destination={streetWalkDestination}
+          landmark={destinations.find((d) => d.name === streetWalkDestination)?.landmark}
+          onClose={() => setStreetWalkDestination(null)}
+        />
+      )}
     </div>
   );
 };
