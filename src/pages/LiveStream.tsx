@@ -547,15 +547,26 @@ export default function LiveStream() {
                 </div>
 
                 {isOwner && isStreaming && (
-                  <div className="flex flex-col gap-2 p-4 border-b">
-                    <Button variant="outline" onClick={toggleMic} className="w-full justify-start gap-2">
-                      {micEnabled ? "🎙️ Mute" : "🔇 Unmute"}
-                    </Button>
-                    <Button variant="outline" onClick={toggleCam} className="w-full justify-start gap-2">
-                      {camEnabled ? "📷 Hide camera" : "📷 Show camera"}
-                    </Button>
-                    <Button variant="destructive" onClick={() => stopStreaming()} className="w-full">
-                      <VideoOff className="h-4 w-4 mr-2" /> End stream
+                  <div className="sticky bottom-0 z-20 flex flex-wrap items-center justify-between gap-2 p-3 border-t bg-background/95 backdrop-blur">
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="sm" onClick={toggleMic} className="gap-2">
+                        {micEnabled ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
+                        <span className="hidden sm:inline">{micEnabled ? "Mute" : "Unmute"}</span>
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={toggleCam} className="gap-2">
+                        {camEnabled ? <Camera className="h-4 w-4" /> : <CameraOff className="h-4 w-4" />}
+                        <span className="hidden sm:inline">{camEnabled ? "Hide cam" : "Show cam"}</span>
+                      </Button>
+                    </div>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => setShowEndConfirm(true)}
+                      disabled={isEnding}
+                      className="gap-2"
+                    >
+                      <VideoOff className="h-4 w-4" />
+                      {isEnding ? "Ending..." : "End stream"}
                     </Button>
                   </div>
                 )}
