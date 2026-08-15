@@ -105,7 +105,7 @@ const StreetWalkViewer = ({ destination, landmark, onClose }: StreetWalkViewerPr
             fullscreenControl: false,
             motionTracking: false,
             motionTrackingControl: false,
-literal            gestureHandling: "greedy",
+gestureHandling: "greedy",
           });
           panorama.setVisible(true);
           setLoading(false);
