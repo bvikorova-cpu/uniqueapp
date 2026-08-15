@@ -441,3 +441,6 @@ verify_jwt = true
 [functions.emotion-exchange-match]
 verify_jwt = true
 
+[functions.generate-escape-room-panorama]
+verify_jwt = true
+
