@@ -8,7 +8,6 @@ export function EscapeRoomEngagement() {
   const { user, loading } = useEscapeRoomRealStats();
   const badges = computeEscapeBadges(user);
   const earned = badges.filter((b) => b.earned).length;
-  const weekBadges = 0;
 
   const v = (n: number | string) => (loading ? "…" : n);
 
@@ -16,7 +15,6 @@ export function EscapeRoomEngagement() {
     <>
       <FloatingHowItWorks title={"Escape Room Engagement - How it works"} steps={[{ title: 'Open', desc: 'Access the Escape Room Engagement section from its module.' }, { title: 'Explore', desc: 'Review your live escape statistics.' }, { title: 'Interact', desc: 'Play rooms to update these numbers in real time.' }, { title: 'Review', desc: 'Track streaks, weekly progress and earned badges.' }]} />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-challenge
       <Card className="border-amber-500/20 bg-gradient-to-br from-amber-500/5 to-orange-500/5">
         <CardContent className="p-4 flex items-center gap-3">
           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
