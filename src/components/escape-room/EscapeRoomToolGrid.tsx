@@ -8,11 +8,10 @@ import {
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const tools = [
-  { id: "browse", label: "Browse Rooms", desc: "Explore 76+ immersive rooms", icon: Lock, gradient: "from-amber-500 to-orange-600" },
+  { id: "browse", label: "Browse Rooms", desc: "Explore 76+ immersive rooms", icon: Lock, gradient: "from-amber-500 to-orange-600", credits: 5 },
   { id: "create", label: "Create Room", desc: "Build & publish your own room", icon: Plus, gradient: "from-purple-500 to-violet-600" },
   { id: "leaderboard", label: "Leaderboard", desc: "Top escape artists globally", icon: Trophy, gradient: "from-yellow-500 to-amber-600" },
-  { id: "premium", label: "Premium Plans", desc: "Unlock all rooms & AI tools", icon: Crown, gradient: "from-rose-500 to-pink-600" },
-  { id: "corporate", label: "Corporate Events", desc: "Team building packages", icon: Briefcase, gradient: "from-blue-500 to-indigo-600" },
+  { id: "premium", label: "Credit Pricing", desc: "All costs in credits", icon: Crown, gradient: "from-rose-500 to-pink-600" },
   { id: "ai-puzzle", label: "AI Puzzle Generator", desc: "Generate unique puzzles with AI", icon: Sparkles, gradient: "from-violet-500 to-purple-600", credits: 4 },
   { id: "ai-story", label: "AI Story Writer", desc: "Create room storylines & lore", icon: BookOpen, gradient: "from-emerald-500 to-teal-600", credits: 4 },
   { id: "ai-hint", label: "AI Hint System", desc: "Smart contextual hints", icon: Lightbulb, gradient: "from-cyan-500 to-blue-600", credits: 3 },
@@ -28,10 +27,10 @@ const tools = [
   { id: "ai-clue", label: "AI Clue Generator", desc: "Generate cryptic clue chains", icon: Wand2, gradient: "from-fuchsia-500 to-purple-600", credits: 4 },
   { id: "multiplayer", label: "Multiplayer Lobby", desc: "Real-time team waiting rooms", icon: Users, gradient: "from-green-500 to-emerald-600" },
   { id: "ai-narrator", label: "AI Room Narrator", desc: "AI voice narration scripts", icon: Volume2, gradient: "from-violet-500 to-purple-600", credits: 4 },
-  { id: "season-pass", label: "Season Pass", desc: "Seasonal challenges & rewards", icon: Calendar, gradient: "from-amber-500 to-orange-600" },
+  { id: "season-pass", label: "Season Pass", desc: "Seasonal challenges & rewards", icon: Calendar, gradient: "from-amber-500 to-orange-600", credits: 20 },
   { id: "replay", label: "Room Replay", desc: "Replay rooms with analytics", icon: Play, gradient: "from-blue-500 to-indigo-600" },
   { id: "ai-sound", label: "Custom Sound Designer", desc: "AI atmospheric sound design", icon: Music, gradient: "from-pink-500 to-rose-600", credits: 5 },
-  { id: "speedrun", label: "Speedrun Tournaments", desc: "Race for the fastest time", icon: Timer, gradient: "from-red-500 to-orange-600" },
+  { id: "speedrun", label: "Speedrun Tournaments", desc: "Race for the fastest time", icon: Timer, gradient: "from-red-500 to-orange-600", credits: 5 },
 ];
 
 interface Props { onToolSelect: (id: string) => void; }

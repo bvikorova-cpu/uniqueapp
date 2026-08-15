@@ -7,6 +7,7 @@ import { ArrowLeft, Timer, Trophy, Flame, Medal, Users, Clock, Zap } from "lucid
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
+import { useEscapeRoomCredits } from "@/hooks/useEscapeRoomCredits";
 
 interface Tournament {
   id: string;
@@ -27,14 +28,33 @@ const tournaments: Tournament[] = [
 ];
 
 const leaderboard = [
-  { rank: 1, name: "SpeedPhantom", time: "12:34", room: "Neon Crypt", prize: "€75" },
-  { rank: 2, name: "FlashEscape", time: "13:01", room: "Neon Crypt", prize: "€45" },
-  { rank: 3, name: "QuickSolver", time: "13:28", room: "Neon Crypt", prize: "€30" },
+  { rank: 1, name: "SpeedPhantom", time: "12:34", room: "Neon Crypt", prize: "75 CR" },
+  { rank: 2, name: "FlashEscape", time: "13:01", room: "Neon Crypt", prize: "45 CR" },
+  { rank: 3, name: "QuickSolver", time: "13:28", room: "Neon Crypt", prize: "30 CR" },
   { rank: 4, name: "NightRunner", time: "14:15", room: "Neon Crypt", prize: "—" },
   { rank: 5, name: "PuzzleBolt", time: "14:52", room: "Neon Crypt", prize: "—" },
 ];
 
 export function SpeedrunTournamentsView({ onBack }: { onBack: () => void }) {
+  const { spend } = useEscapeRoomCredits();
+  const [joining, setJoining] = useState<string | null>(null);
+  const [joined, setJoined] = useState<string[]>([]);
+
+  const joinTournament = async (t: Tournament) => {
+    if (t.status === "live") { toast.info("Opening live tournament stream..."); return; }
+    if (joined.includes(t.id)) { toast.info("You are already registered."); return; }
+    setJoining(t.id);
+    try {
+      const ok = await spend(t.entryFee, `Speedrun tournament: ${t.name}`);
+      if (ok) {
+        setJoined((prev) => [...prev, t.id]);
+        toast.success(`Registered · ${t.entryFee} credits used`);
+      }
+    } finally {
+      setJoining(null);
+    }
+  };
+
   return (
     <>
       <FloatingHowItWorks title={"Speedrun Tournaments View - How it works"} steps={[{ title: 'Open', desc: 'Access the Speedrun Tournaments View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Speedrun Tournaments View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
@@ -77,7 +97,7 @@ export function SpeedrunTournamentsView({ onBack }: { onBack: () => void }) {
                     </div>
                     <div className="flex items-center gap-1">
                       <Trophy className="w-4 h-4 text-yellow-500" />
-                      <span className="font-bold text-yellow-400">€{t.prizePool}</span>
+                      <span className="font-bold text-yellow-400">{t.prizePool} CR</span>
                     </div>
                   </div>
                   <div className="flex items-center justify-between text-xs text-muted-foreground">
@@ -85,9 +105,9 @@ export function SpeedrunTournamentsView({ onBack }: { onBack: () => void }) {
                     <span className="flex items-center gap-1"><Users className="w-3 h-3" />{t.participants}/{t.maxParticipants}</span>
                   </div>
                   <div className="flex items-center justify-between mt-3">
-                    <span className="text-xs">Entry: €{t.entryFee}</span>
-                    <Button size="sm" onClick={() => toast.info("Joining tournament...")} disabled={t.status === "live" && t.participants >= t.maxParticipants}>
-                      {t.status === "live" ? "Watch Live" : "Register"}
+                    <span className="text-xs">Entry: {t.entryFee} CR</span>
+                    <Button size="sm" onClick={() => joinTournament(t)} disabled={joining === t.id}>
+                      {t.status === "live" ? "Watch Live" : joining === t.id ? "Joining..." : joined.includes(t.id) ? "Registered" : `Register · ${t.entryFee} CR`}
                     </Button>
                   </div>
                 </CardContent>
