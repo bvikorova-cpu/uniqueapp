@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { 
   ArrowLeft, Clock, Lightbulb, Package, Eye, Lock, Unlock, 
-  Key, Search, X, Check, MapPin, Volume2, VolumeX, Wand2, Loader2
+  Key, Search, X, Check, MapPin, Volume2, VolumeX, Wand2, Loader2, Trophy
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
