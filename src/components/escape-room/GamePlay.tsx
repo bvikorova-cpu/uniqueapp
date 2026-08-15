@@ -76,6 +76,7 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
           .from("escape_room_sessions")
           .insert([{
             room_id: roomId,
+            user_id: user.id,
             team_name: "Solo Player",
             status: "in_progress",
             started_at: new Date().toISOString()
