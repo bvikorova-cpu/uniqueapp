@@ -487,6 +487,16 @@ const AIExperiences = () => {
                     >
                       {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Footprints className="h-4 w-4 mr-2" />{isVisited ? "Walk Again" : "Start Walking"}</>}
                     </Button>
+                    {hasStreetWalk(dest.name) && (
+                      <Button
+                        onClick={(e) => { e.stopPropagation(); setStreetWalkDestination(dest.name); }}
+                        className="w-full"
+                        size="sm"
+                        variant="secondary"
+                      >
+                        <Navigation className="h-4 w-4 mr-2" />Walk real streets
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
