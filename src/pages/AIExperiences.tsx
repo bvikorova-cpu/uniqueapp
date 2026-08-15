@@ -6,13 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Globe, History, Clock, Sparkles, MapPin, User, ChevronLeft, ChevronRight, Play, Pause, Trophy, Star, Zap, CheckCircle, Info, Compass, Navigation, Eye, Maximize2, Minimize2, RotateCcw, Camera, Footprints, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, X, Map, Send, Award, Volume2, VolumeX, Plane, Mail, Target } from "lucide-react";
+import { Loader2, Globe, History, Clock, Sparkles, MapPin, User, ChevronLeft, ChevronRight, Play, Pause, Trophy, Star, Zap, CheckCircle, Info, Compass, Navigation, Eye, Maximize2, Minimize2, RotateCcw, Camera, Footprints, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, X, Map, Send, Award, Plane, Mail, Target } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { useAICredits } from "@/hooks/useAICredits";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLiveStats } from "@/hooks/useLiveStats";
-import heroVideo from "@/assets/experiences-hero.mp4.asset.json";
 import { TravelPlanner } from "@/components/experiences/TravelPlanner";
 import { VirtualPostcards } from "@/components/experiences/VirtualPostcards";
 import { DestinationRecommender } from "@/components/experiences/DestinationRecommender";
@@ -28,9 +27,6 @@ const AIExperiences = () => {
   const { toast } = useToast();
   const { credits, loading: creditsLoading, refresh: refreshCredits } = useAICredits();
   const [activeView, setActiveView] = useState<ActiveView>("hub");
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isMuted, setIsMuted] = useState(true);
-  const [isPlaying, setIsVideoPlaying] = useState(true);
 
   const [loading, setLoading] = useState(false);
   const [tours, setTours] = useState<any[]>([]);
@@ -295,16 +291,6 @@ const AIExperiences = () => {
       setLoading(false);
     }
   };
-
-  const toggleMute = () => { if (videoRef.current) { videoRef.current.muted = !isMuted; setIsMuted(!isMuted); } };
-  const togglePlay = () => { if (videoRef.current) { if (isPlaying) videoRef.current.pause(); else videoRef.current.play(); setIsVideoPlaying(!isPlaying); } };
-
-  const statItems = [
-    { icon: Globe, label: "Virtual Tours", value: stats.tours || "—", color: "text-cyan-400" },
-    { icon: Clock, label: "Age Previews", value: stats.progressions || "—", color: "text-pink-400" },
-    { icon: Plane, label: "Travel Plans", value: stats.plans || "—", color: "text-emerald-400" },
-    { icon: Mail, label: "Postcards Sent", value: stats.postcards || "—", color: "text-amber-400" },
-  ];
 
   const toolCards = [
     { id: "tours", title: "Virtual Tours", description: "Walk through 33 global destinations in immersive 360° panoramic mode", icon: Globe, gradient: "from-cyan-500 to-blue-600", credits: "5 credits/tour" },
@@ -668,75 +654,23 @@ const AIExperiences = () => {
       <Navbar />
 
       <div className="container mx-auto px-4 pt-20 pb-12 max-w-7xl">
-        {/* ====== CINEMATIC VIDEO HERO ====== */}
-        <div className="relative w-full h-[76svh] min-h-[500px] sm:min-h-[540px] rounded-2xl sm:rounded-3xl overflow-hidden mb-8 border border-border/40">
-          <video ref={videoRef} src={heroVideo.url} autoPlay loop muted={isMuted} playsInline className="absolute inset-0 w-full h-full object-cover brightness-[1.5] saturate-[1.2] contrast-[1.08]" />
-          <div className="absolute inset-0 bg-black/25" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-
-          {/* Scan line */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <motion.div className="absolute left-0 right-0 h-[2px] bg-primary/30" animate={{ top: ["-2px", "100%"] }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }} />
-          </div>
-
-          {/* Corner brackets */}
-          <div className="absolute top-4 left-4 w-8 h-8 border-t-2 border-l-2 border-primary/60" />
-          <div className="absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 border-primary/60" />
-          <div className="absolute bottom-4 left-4 w-8 h-8 border-b-2 border-l-2 border-primary/60" />
-          <div className="absolute bottom-4 right-4 w-8 h-8 border-b-2 border-r-2 border-primary/60" />
-
-          {/* Controls */}
-          <div className="absolute top-3 right-3 sm:top-4 sm:right-4 flex gap-2 z-20">
-            <Button size="icon" variant="ghost" onClick={togglePlay} className="bg-black/40 hover:bg-black/60 text-white rounded-full h-9 w-9 sm:h-10 sm:w-10">
-              {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-            </Button>
-            <Button size="icon" variant="ghost" onClick={toggleMute} className="bg-black/40 hover:bg-black/60 text-white rounded-full h-9 w-9 sm:h-10 sm:w-10">
-              {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-            </Button>
-          </div>
-
-          {/* Hero Content */}
-          <div className="absolute inset-0 flex flex-col justify-end p-5 pt-20 sm:p-6 md:p-10 z-10">
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-              <div className="inline-flex items-center gap-2 mb-4 px-5 py-1.5 bg-purple-500/25 backdrop-blur-sm rounded-full border border-purple-400/40">
-                <Sparkles className="h-4 w-4 text-purple-300" />
-                <span className="text-purple-200 font-semibold text-sm uppercase tracking-wider">Exclusive Experiences</span>
-              </div>
-            </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.15 }}
-              className="text-[clamp(2.2rem,11vw,3.5rem)] md:text-6xl lg:text-7xl font-black mb-3 leading-[1.02] max-w-[14ch]"
-              style={ {
-                WebkitTextStroke: "1.5px rgba(0,0,0,0.5)",
-                textShadow: "0 0 40px rgba(139,92,246,0.3), 0 4px 15px rgba(0,0,0,0.8)",
-                background: "linear-gradient(135deg, #fff 0%, #c4b5fd 40%, #8b5cf6 70%, #7c3aed 100%)",
-                WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
-            >
-              Explore the World
-            </motion.h1>
-
-            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }}
-              className="text-white/90 text-sm sm:text-base md:text-lg max-w-[38ch] mb-5 sm:mb-6 leading-relaxed"
-              style={{ textShadow: "0 2px 8px rgba(0,0,0,0.8)" }}>
-              AI-powered virtual tours, travel planning, future previews and postcards from 33+ global destinations.
-            </motion.p>
-
-            {/* 4-Stat Compact */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.45 }}
-              className="grid grid-cols-2 gap-2.5 w-full max-w-md">
-              {statItems.map((stat, i) => (
-                <div key={i} className="min-w-0 flex items-center gap-2 px-3 sm:px-4 py-2 bg-black/40 backdrop-blur-sm rounded-xl border border-white/10">
-                  <stat.icon className={`h-4 w-4 ${stat.color} shrink-0`} />
-                  <div className="min-w-0">
-                    <div className="text-white font-bold text-sm sm:text-base leading-none">{stat.value}</div>
-                    <div className="text-white/60 text-[10px] sm:text-xs leading-tight">{stat.label}</div>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-          </div>
+        {/* ====== PAGE HEADER ====== */}
+        <div className="mb-6">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
+            className="text-2xl sm:text-3xl font-black mb-2"
+          >
+            Exclusive Experiences
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-muted-foreground text-sm max-w-xl"
+          >
+            AI-powered virtual tours, travel planning, future previews and postcards from 33+ global destinations.
+          </motion.p>
         </div>
+
+
 
         {/* ====== DESCRIPTION CARD ====== */}
         <Card className="mb-8 bg-gradient-to-br from-primary/5 to-purple-500/5 border-primary/20">
