@@ -739,6 +739,29 @@ export default function LiveStream() {
           </div>
         )}
       </div>
+
+      <Dialog open={showEndConfirm} onOpenChange={setShowEndConfirm}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>End live stream?</DialogTitle>
+            <DialogDescription>
+              This will stop the broadcast immediately. Viewers will be disconnected and the stream will be marked as ended.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setShowEndConfirm(false)} disabled={isEnding}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => stopStreaming({ navigateAway: true })}
+              disabled={isEnding}
+            >
+              {isEnding ? "Ending..." : "End stream"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
