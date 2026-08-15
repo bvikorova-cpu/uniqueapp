@@ -71,6 +71,30 @@ Deno.serve(async (req) => {
         description: description?.overview ?? description?.result ?? "",
         image_urls: [imageUrl], tour_data: description, credits_used: cost }).select().single();
       result = { tour: row, imageUrl };
+    } else if (action === "virtual-tour-bundle") {
+      const { destinations: bundleDestinations } = p;
+      if (!Array.isArray(bundleDestinations) || bundleDestinations.length === 0) throw new Error("destinations array required");
+      const tours: any[] = [];
+      for (const destination of bundleDestinations.slice(0, 10)) {
+        try {
+          const description = await aiChat([
+            { role: "system", content: "You are a virtual tour guide. Return JSON only." },
+            { role: "user", content: `Create a vivid virtual tour of ${destination}. Return JSON: { title, overview, highlights: [string], experiences: [{ name, description }] }` }
+          ]);
+          const imageUrl = await generateImage(
+            `Stunning photorealistic travel scene of ${destination}, daytime golden hour, cinematic, ultra detailed, 8k. ` +
+            `Classical and historic architecture only, no readable brand logos, no billboards or brand signage, ` +
+            `no trademarked characters or mascots, no theme-park attractions, no recognisable modern copyrighted buildings, no people's faces in focus`
+          );
+          const { data: row } = await supabase!.from("virtual_tours").insert({ user_id: user!.id, destination,
+            description: description?.overview ?? description?.result ?? "",
+            image_urls: [imageUrl], tour_data: description, credits_used: 2.5 }).select().single();
+          if (row) tours.push(row);
+        } catch (e) {
+          console.error(`bundle tour failed for ${destination}:`, e);
+        }
+      }
+      result = { tours, count: tours.length };
     } else if (action === "age-progression") {
       const { imageUrl: originalUrl, yearsForward } = p;
       if (!originalUrl || !yearsForward) throw new Error("imageUrl and yearsForward required");
