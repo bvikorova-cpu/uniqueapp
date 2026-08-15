@@ -338,7 +338,8 @@ export default function LiveStream() {
   };
 
   // Stop streaming / leave
-  const stopStreaming = async (opts?: { silent?: boolean }) => {
+  const stopStreaming = async (opts?: { silent?: boolean; navigateAway?: boolean }) => {
+    setIsEnding(true);
     broadcastRef.current?.stop();
     broadcastRef.current = null;
     viewerRef.current?.stop();
@@ -358,9 +359,13 @@ export default function LiveStream() {
       }
     } catch (e) {
       console.error("Failed to mark stream ended:", e);
+    } finally {
+      setIsEnding(false);
+      setShowEndConfirm(false);
     }
 
     if (!opts?.silent) toast.info("Stream ended");
+    if (opts?.navigateAway) navigate("/influ-king");
   };
 
   // Viewers connect automatically over WebRTC (TURN relay fallback included)
