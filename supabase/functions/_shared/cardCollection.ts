@@ -187,7 +187,7 @@ const KIDS_SLUGS = [
   "kids-farm-friends", "kids-garden-bugs",
 ];
 
-// Cinematic 3D animated-movie kids sets (Pixar-like glossy render).
+// Cinematic 3D animated-movie kids sets (glossy animated-film render).
 const KIDS3D_SLUGS = [
   "kids3d-magic-pets", "kids3d-unicorn-kingdom", "kids3d-fairy-blossoms",
   "kids3d-baby-dragons", "kids3d-robot-mates", "kids3d-dino-explorers",
@@ -383,7 +383,7 @@ function cardPrompt(card: Record<string, any>, cat: Record<string, any>) {
     return `${format}. Glossy cinematic 3D animated-movie collectible card render for children of "${card.name}", ` +
       `a completely original adorable ${card.subject} from the ${cat.name} collection (${cat.description}), ` +
       `${pick(KIDS3D_POSES, seed, 6)}, in a ${pick(KIDS3D_SETTINGS, seed, 7)}, with ${pick(KIDS3D_ACCENTS, seed, 8)}. ` +
-      `${cat.art_style}. Pixar-like feature-film quality, subsurface-scattering skin or fluffy fur detail, ` +
+      `${cat.art_style}. feature-film animation quality, subsurface-scattering skin or fluffy fur detail, ` +
       `big shiny expressive eyes, chunky cute proportions, soft cinematic depth of field, physically based shading, ` +
       `sweet and gentle mood, absolutely nothing scary, no weapons, no blood, no text or logos. ` +
       `Make this character clearly different from every other card in the set — different colours, species detail, ` +

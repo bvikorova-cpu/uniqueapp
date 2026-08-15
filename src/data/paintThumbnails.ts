@@ -7,7 +7,6 @@ import raceCar from "@/assets/paint-thumbnails/race-car.png";
 import airplane from "@/assets/paint-thumbnails/airplane.png";
 import aladdinLamp from "@/assets/paint-thumbnails/aladdin-lamp.png";
 import ambulance from "@/assets/paint-thumbnails/ambulance.png";
-import arielMermaid from "@/assets/paint-thumbnails/ariel-mermaid.png";
 import auroraBorealis from "@/assets/paint-thumbnails/aurora-borealis.png";
 import autumnLeaves from "@/assets/paint-thumbnails/autumn-leaves.png";
 import babyPenguin from "@/assets/paint-thumbnails/baby-penguin.png";
@@ -36,18 +35,14 @@ import seaTurtle from "@/assets/paint-thumbnails/sea-turtle.png";
 import solarSystem from "@/assets/paint-thumbnails/solar-system.png";
 import springGarden from "@/assets/paint-thumbnails/spring-garden.png";
 import snowQueen from "@/assets/paint-thumbnails/snow-queen.png";
-import clownfishNemo from "@/assets/paint-thumbnails/clownfish-nemo.png";
 import coralReef from "@/assets/paint-thumbnails/coral-reef.png";
 import cruiseShip from "@/assets/paint-thumbnails/cruise-ship.png";
-import deerBambi from "@/assets/paint-thumbnails/deer-bambi.png";
 import desertDunes from "@/assets/paint-thumbnails/desert-dunes.png";
 import eagleFlying from "@/assets/paint-thumbnails/eagle-flying.png";
-import elsaIcePalace from "@/assets/paint-thumbnails/elsa-ice-palace.png";
 import excavator from "@/assets/paint-thumbnails/excavator.png";
 import flamingoPink from "@/assets/paint-thumbnails/flamingo-pink.png";
 import forestPath from "@/assets/paint-thumbnails/forest-path.png";
 import foxForest from "@/assets/paint-thumbnails/fox-forest.png";
-import frozenSisters from "@/assets/paint-thumbnails/frozen-sisters.png";
 import fullMoonNight from "@/assets/paint-thumbnails/full-moon-night.png";
 import garbageTruck from "@/assets/paint-thumbnails/garbage-truck.png";
 import giraffeFamily from "@/assets/paint-thumbnails/giraffe-family.png";
@@ -64,7 +59,6 @@ import jellyfishGlow from "@/assets/paint-thumbnails/jellyfish-glow.png";
 import koalaBear from "@/assets/paint-thumbnails/koala-bear.png";
 import lightningStorm from "@/assets/paint-thumbnails/lightning-storm.png";
 import littleRedRidingHood from "@/assets/paint-thumbnails/little-red-riding-hood.png";
-import moanaOcean from "@/assets/paint-thumbnails/moana-ocean.png";
 import monkeyJungle from "@/assets/paint-thumbnails/monkey-jungle.png";
 import monsterTruck from "@/assets/paint-thumbnails/monster-truck.png";
 import motorcycle from "@/assets/paint-thumbnails/motorcycle.png";
@@ -108,7 +102,6 @@ export const paintThumbnails: Record<string, string> = { "Cute Unicorn": cuteUni
   "Airplane": airplane,
   "Aladdin Lamp": aladdinLamp,
   "Ambulance": ambulance,
-  "Ariel Mermaid": arielMermaid,
   "Aurora Borealis": auroraBorealis,
   "Autumn Leaves": autumnLeaves,
   "Baby Penguin": babyPenguin,
@@ -137,18 +130,14 @@ export const paintThumbnails: Record<string, string> = { "Cute Unicorn": cuteUni
   "Solar System": solarSystem,
   "Spring Garden": springGarden,
   "Snow Queen": snowQueen,
-  "Clownfish Nemo": clownfishNemo,
   "Coral Reef": coralReef,
   "Cruise Ship": cruiseShip,
-  "Deer Bambi": deerBambi,
   "Desert Dunes": desertDunes,
   "Eagle Flying": eagleFlying,
-  "Elsa Ice Palace": elsaIcePalace,
   "Excavator": excavator,
   "Flamingo Pink": flamingoPink,
   "Forest Path": forestPath,
   "Fox Forest": foxForest,
-  "Frozen Sisters": frozenSisters,
   "Full Moon Night": fullMoonNight,
   "Garbage Truck": garbageTruck,
   "Giraffe Family": giraffeFamily,
@@ -165,7 +154,6 @@ export const paintThumbnails: Record<string, string> = { "Cute Unicorn": cuteUni
   "Koala Bear": koalaBear,
   "Lightning Storm": lightningStorm,
   "Little Red Riding Hood": littleRedRidingHood,
-  "Moana Ocean": moanaOcean,
   "Monkey Jungle": monkeyJungle,
   "Monster Truck": monsterTruck,
   "Motorcycle": motorcycle,

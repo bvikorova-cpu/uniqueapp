@@ -19,7 +19,7 @@ const STYLES: Record<string, string> = {
   anime: "soft anime / ghibli-inspired illustration, gentle cel shading",
 };
 
-const PREMIUM_STYLE = `photorealistic cinematic 3D render (Pixar/Unreal Engine feature-film quality), NOT a drawing, NOT watercolor, NOT flat illustration, NOT cartoon line art: physically based rendering, ray-traced lighting, realistic materials and fabrics, true-to-life skin with subsurface scattering, pores and individual hair strands, realistic eyes with catchlights, shallow depth of field, volumetric golden light, 8k detail`;
+const PREMIUM_STYLE = `photorealistic cinematic 3D render (feature-film animation quality), NOT a drawing, NOT watercolor, NOT flat illustration, NOT cartoon line art: physically based rendering, ray-traced lighting, realistic materials and fabrics, true-to-life skin with subsurface scattering, pores and individual hair strands, realistic eyes with catchlights, shallow depth of field, volumetric golden light, 8k detail`;
 
 const PREMIUM_HINT = `The child character must look like a realistic 3D-rendered version of the child in the attached photo (same face shape, eye colour and shape, hair colour and curl pattern, skin tone, freckles, smile), child-friendly and warm, printed-picture-book quality.`;
 

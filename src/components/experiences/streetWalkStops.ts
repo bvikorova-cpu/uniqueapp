@@ -34,9 +34,6 @@ export const STREET_WALK_STOPS: Record<string, StreetWalkStop[]> = {
     { name: "Bastille", lat: 48.853200, lng: 2.369100 },
     { name: "Père Lachaise", lat: 48.861200, lng: 2.393600 },
     { name: "La Défense", lat: 48.892400, lng: 2.236100 },
-    { name: "Disneyland Paris entrance", lat: 48.872100, lng: 2.775800 },
-    { name: "Disneyland Main Street", lat: 48.872600, lng: 2.776300 },
-    { name: "Disney Village", lat: 48.870000, lng: 2.781700 },
     { name: "Versailles Palace", lat: 48.804900, lng: 2.120300 },
   ],
   Tokyo: [

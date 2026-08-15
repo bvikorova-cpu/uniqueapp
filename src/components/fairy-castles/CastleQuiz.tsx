@@ -16,7 +16,7 @@ interface CastleQuizProps {
 function generateQuestions(castleName: string, funFacts: string[]) { const questions = [
     {
       q: `Which castle did you just explore?`,
-      options: [castleName, "Hogwarts Castle", "Buckingham Palace", "Neuschwanstein"],
+      options: [castleName, "Moonlight Keep", "Buckingham Palace", "Neuschwanstein"],
       correct: 0 },
     { q: `How many fairy castles exist around the world?`,
       options: ["4", "6", "8", "10"],

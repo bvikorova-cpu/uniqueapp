@@ -40,7 +40,7 @@ The character MUST have these EXACT features - follow them precisely:
 - Superpower theme: ${powerDesc}
 - ${personalityDesc}
 
-Style: Disney/Pixar 3D animated character with big expressive eyes, exaggerated proportions for cuteness, smooth rounded shapes, vibrant saturated colors, and a joyful friendly smile. The character should have a dynamic playful pose with personality, glossy cartoon shading, and be placed on a simple colorful gradient background. Make it look like a professional animated movie character - cheerful, energetic, and irresistibly cute! Ultra high resolution.
+Style: original 3D animated cartoon character with big expressive eyes, exaggerated proportions for cuteness, smooth rounded shapes, vibrant saturated colors, and a joyful friendly smile. The character should have a dynamic playful pose with personality, glossy cartoon shading, and be placed on a simple colorful gradient background. Make it look like a professional animated movie character - cheerful, energetic, and irresistibly cute! Ultra high resolution.
 
 CRITICAL: Pay very close attention to the eye color (${eyeColor || "blue"}), costume/outfit color (${costumeColor || "blue"}), hair color (${hairColor || "brown"}), and skin tone (${skinColor || "medium"}). These must match EXACTLY as specified.`;
 

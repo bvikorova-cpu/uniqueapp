@@ -16,7 +16,7 @@ const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
 
 const STYLE_HINTS: Record<string, string> = { watercolor: "soft watercolor children's book illustration, gentle pastel colors",
   cartoon: "bright cheerful cartoon style, bold outlines, vivid colors",
-  pixar: "3D Pixar-style render, warm cinematic lighting, expressive characters",
+  pixar: "3D animated movie render, warm cinematic lighting, expressive characters",
   anime: "cute anime / studio ghibli style, soft cel-shading",
   storybook: "classic storybook illustration, hand-drawn ink and color wash",
   pencil: "delicate pencil sketch with light color tint" };

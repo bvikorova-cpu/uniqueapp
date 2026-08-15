@@ -84,7 +84,7 @@ export const ComedyRoastArena = ({ onBack }: Props) => {
             <Input
               value={target}
               onChange={(e) => setTarget(e.target.value)}
-              placeholder="e.g. Elon Musk, Monday mornings, Batman..."
+              placeholder="e.g. Monday mornings, gym selfies, my neighbour..."
             />
           </div>
           <div>

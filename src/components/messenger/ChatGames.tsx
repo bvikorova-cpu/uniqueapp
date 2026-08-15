@@ -24,10 +24,10 @@ const TRIVIA_QUESTIONS = [
 
 const EMOJI_PUZZLES = [
   { emojis: "🎬🦁👑", answer: "The Lion King" },
-  { emojis: "🕷️🕸️🦸", answer: "Spider-Man" },
+  { emojis: "🕷️🕸️🦸", answer: "Web Hero" },
   { emojis: "⭐🔫💫", answer: "Star Wars" },
-  { emojis: "🧊❄️👸", answer: "Frozen" },
-  { emojis: "🦇🌃🦹", answer: "Batman" },
+  { emojis: "🧊❄️👸", answer: "Ice Queen" },
+  { emojis: "🦇🌃🦹", answer: "Night Guardian" },
   { emojis: "🧙‍♂️💍🌋", answer: "Lord of the Rings" },
   { emojis: "🚢💑🧊", answer: "Titanic" },
   { emojis: "🦖🏝️🔬", answer: "Jurassic Park" },

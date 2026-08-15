@@ -60,12 +60,6 @@ const ProClassRedirect = () => {
   return <Navigate to={target} replace />;
 };
 
-// Redirect /kids-channel/disney-castles/:castleId -> /kids-channel/fairy-castles/:castleId
-const DisneyCastleRedirect = () => {
-  const { pathname, search, hash } = useLocation();
-  const target = pathname.replace(/^\/kids-channel\/disney-castles/, "/kids-channel/fairy-castles") + search + hash;
-  return <Navigate to={target} replace />;
-};
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import FanClubAutoResyncMount from "@/components/fanclub/FanClubAutoResyncMount";
@@ -1179,10 +1173,6 @@ const App = () => {
                         <Route path="/kids-channel/fairy-castles" element={<KidsGoldPassGate moduleName="Fairy Castles" redirectPath="/kids-channel/fairy-castles"><KidsParentalGateGuard featureName="Fairy Castles" storageKey="pg_fairy_castles"><FairyCastles /></KidsParentalGateGuard></KidsGoldPassGate>} />
                         <Route path="/kids-channel/fairy-castles/:castleId" element={<KidsGoldPassGate moduleName="Fairy Castles" redirectPath="/kids-channel/fairy-castles"><KidsParentalGateGuard featureName="Fairy Castles" storageKey="pg_fairy_castles"><FairyCastleTour /></KidsParentalGateGuard></KidsGoldPassGate>} />
                         <Route path="/kids-channel/fairy-admin" element={<ProtectedRoute requireAdmin={true}><FairyAdmin /></ProtectedRoute>} />
-                        {/* Legacy Disney routes — redirect to new fairy-castles paths */}
-                        <Route path="/kids-channel/disney-castles" element={<Navigate to="/kids-channel/fairy-castles" replace />} />
-                        <Route path="/kids-channel/disney-castles/:castleId" element={<DisneyCastleRedirect />} />
-                        <Route path="/kids-channel/disney-admin" element={<Navigate to="/kids-channel/fairy-admin" replace />} />
                         <Route path="/kids-channel/certificate-gallery" element={<CertificateGallery />} />
                         <Route path="/numerology" element={<Numerology />} />
                         <Route path="/parallel-universe" element={<ParallelUniverse />} />
