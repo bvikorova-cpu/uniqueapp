@@ -108,30 +108,15 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Deduct credits
-    await supabaseClient
-      .from('ai_credits')
-      .update({
-        credits_remaining: credits.credits_remaining - 5,
-        last_used_at: new Date().toISOString()
-      })
-      .eq('user_id', user.id);
-
-    // Log usage
-    await supabaseClient
-      .from('ai_usage_history')
-      .insert({
-        user_id: user.id,
-        usage_type: 'ai_image_generation',
-        credits_used: 5,
-        description: `Image generation: ${prompt.substring(0, 100)}`
-      });
+    // Deduct credits + ledger (unified accounting)
+    const spend = await spendAiCredits(admin, user.id, COST, `Image generation: ${prompt.substring(0, 80)}`, 'ai-image-generation');
 
     return new Response(JSON.stringify({
       imageUrl,
-      creditsRemaining: credits.credits_remaining - 5
+      creditsRemaining: spend.ok ? spend.remaining : available
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
   } catch (error) {
     console.error("Error:", error);
     return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
