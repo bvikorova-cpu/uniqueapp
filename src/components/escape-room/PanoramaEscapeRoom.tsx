@@ -98,6 +98,8 @@ export function PanoramaEscapeRoom({
   const [localRooms, setLocalRooms] = useState(rooms);
   const [isMuted, setIsMuted] = useState(false);
   const [foundHiddenItems, setFoundHiddenItems] = useState(0);
+  const [revealedClue, setRevealedClue] = useState<string | null>(null);
+
   
   // UI states
   const [showTutorial, setShowTutorial] = useState(true);
@@ -111,6 +113,12 @@ export function PanoramaEscapeRoom({
   const [showClue, setShowClue] = useState<string | null>(null);
 
   const currentRoom = localRooms[currentRoomIndex];
+
+  // Clear a revealed clue whenever the room or solved state changes
+  useEffect(() => {
+    setRevealedClue(null);
+  }, [currentRoomIndex, solvedHotspots]);
+
 
   // Keep the authored room interactions without adding arbitrary visible markers.
   useEffect(() => {
@@ -426,6 +434,47 @@ export function PanoramaEscapeRoom({
   ).length;
   const progress = totalPuzzles > 0 ? Math.min(100, (solvedPuzzles / totalPuzzles) * 100) : 0;
 
+  // ---- Search guidance (what to look for) ----
+  const pendingHotspots = (currentRoom?.hotspots || []).filter(
+    (h) => !solvedHotspots.has(`${currentRoomIndex}-${h.id}`) && h.type !== "door"
+  );
+  const nextTarget = pendingHotspots[0];
+
+  const searchClue = (() => {
+    if (!nextTarget) return "Everything here is solved — find the way out and tap the door.";
+    switch (nextTarget.type) {
+      case "puzzle":
+        return "Somewhere in this room a puzzle is waiting — look for numbers, symbols or a strange marking.";
+      case "lock":
+        return "Something is locked. Search for the lock, then find what opens it.";
+      case "item":
+        return "An object you can carry is hidden in plain sight — check furniture, shelves and corners.";
+      case "clue":
+        return "There is a written clue nearby — inspect notes, walls and papers.";
+      case "hidden":
+        return "Something is very well hidden here. Look at the darkest corners of the scene.";
+      default:
+        return "Look around carefully and tap anything that seems out of place.";
+    }
+  })();
+
+  const revealSearchClue = () => {
+    if (!nextTarget) {
+      toast({ title: "Nothing left to search", description: "Tap the door to move on." });
+      return;
+    }
+    const [x, y] = nextTarget.position;
+    const horizontal = x < -0.15 ? "left" : x > 0.15 ? "right" : "centre";
+    const vertical = y > 0.15 ? "upper" : y < -0.15 ? "lower" : "middle";
+    setHintsUsed((n) => n + 1);
+    sounds.playEffect("hint");
+    setRevealedClue(
+      `Hint: look at the ${vertical} ${horizontal} part of the scene — it hides “${nextTarget.label}”.`
+    );
+  };
+
+
+
   // Show tutorial first
   if (showTutorial) {
     return (
@@ -502,19 +551,73 @@ export function PanoramaEscapeRoom({
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="absolute z-20 top-4 left-4 right-4 flex justify-between items-start pointer-events-none"
+        className="absolute z-20 top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4 flex flex-col gap-2 pointer-events-none"
       >
-        {/* Left - Room info */}
-        <Card className="bg-black/80 border-white/20 text-white pointer-events-auto max-w-xs">
-          <CardHeader className="py-3 px-4">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <MapPin className="h-4 w-4" />
-              {currentRoom.name}
+        {/* Row: stats + actions (compact on mobile) */}
+        <div className="flex items-center justify-between gap-2 pointer-events-auto">
+          <Card className="bg-black/80 border-white/20 text-white">
+            <CardContent className="py-1.5 px-2.5 sm:py-2 sm:px-4 flex items-center gap-2 sm:gap-4">
+              <div className="flex items-center gap-1">
+                <Clock className="h-4 w-4" />
+                <span className="font-mono text-xs sm:text-sm">{formatTime(elapsedTime)}</span>
+              </div>
+              <div className="flex items-center gap-1 text-xs sm:text-sm">
+                <Lightbulb className="h-4 w-4" />
+                <span>{hintsUsed}</span>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleMute}
+                aria-label={isMuted ? "Unmute" : "Mute"}
+                className="text-white p-1 h-auto"
+              >
+                {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+              </Button>
+            </CardContent>
+          </Card>
+
+          <div className="flex items-center gap-2">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => generateAIPanorama(currentRoomIndex)}
+              disabled={isGeneratingPanorama}
+              aria-label="Generate a new scene"
+              className="h-9 px-2.5 sm:px-3"
+            >
+              {isGeneratingPanorama ? (
+                <Loader2 className="h-4 w-4 animate-spin sm:mr-1" />
+              ) : (
+                <Wand2 className="h-4 w-4 sm:mr-1" />
+              )}
+              <span className="hidden sm:inline">New scene</span>
+            </Button>
+
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={onExit}
+              aria-label="Exit room"
+              className="h-9 px-2.5 sm:px-3"
+            >
+              <ArrowLeft className="h-4 w-4 sm:mr-1" />
+              <span className="hidden sm:inline">Exit</span>
+            </Button>
+          </div>
+        </div>
+
+        {/* Room info */}
+        <Card className="bg-black/75 border-white/20 text-white pointer-events-auto w-full sm:max-w-xs">
+          <CardHeader className="py-2 px-3 sm:py-3 sm:px-4">
+            <CardTitle className="text-sm sm:text-lg flex items-center gap-2">
+              <MapPin className="h-4 w-4 shrink-0" />
+              <span className="truncate">{currentRoom.name}</span>
             </CardTitle>
           </CardHeader>
-          <CardContent className="py-2 px-4">
-            <p className="text-xs text-gray-300 mb-2">{currentRoom.description}</p>
-            <div className="flex gap-2 text-xs">
+          <CardContent className="py-1.5 px-3 sm:py-2 sm:px-4">
+            <p className="text-[11px] sm:text-xs text-gray-300 mb-2 line-clamp-2">{currentRoom.description}</p>
+            <div className="flex flex-wrap gap-2 text-[10px] sm:text-xs items-center">
               <Badge variant="outline" className="border-white/30">
                 Room {currentRoomIndex + 1}/{rooms.length}
               </Badge>
@@ -523,96 +626,62 @@ export function PanoramaEscapeRoom({
                   ✨ {foundHiddenItems} hidden
                 </Badge>
               )}
+              <span className="text-white/70">Progress: {Math.round(progress)}%</span>
+            </div>
+            <div className="mt-2 bg-white/10 rounded-full p-0.5">
+              <motion.div
+                className="h-1.5 bg-gradient-to-r from-green-500 to-emerald-400 rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: `${progress}%` }}
+                transition={{ duration: 0.5 }}
+              />
             </div>
           </CardContent>
         </Card>
-
-        {/* Right - Stats */}
-        <div className="flex flex-col gap-2 pointer-events-auto">
-          <Card className="bg-black/80 border-white/20 text-white">
-            <CardContent className="py-2 px-4 flex items-center gap-4">
-              <div className="flex items-center gap-1">
-                <Clock className="h-4 w-4" />
-                <span className="font-mono">{formatTime(elapsedTime)}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Lightbulb className="h-4 w-4" />
-                <span>{hintsUsed}</span>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={toggleMute}
-                className="text-white p-1 h-auto"
-              >
-                {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-              </Button>
-            </CardContent>
-          </Card>
-          
-          <Button 
-            variant="secondary" 
-            size="sm"
-            onClick={() => generateAIPanorama(currentRoomIndex)}
-            disabled={isGeneratingPanorama}
-            className="w-full"
-          >
-            {isGeneratingPanorama ? (
-              <Loader2 className="h-4 w-4 mr-1 animate-spin" />
-            ) : (
-              <Wand2 className="h-4 w-4 mr-1" />
-            )}
-            New scene
-
-          </Button>
-          
-          <Button 
-            variant="destructive" 
-            size="sm"
-            onClick={onExit}
-            className="w-full"
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Exit
-          </Button>
-        </div>
       </motion.div>
 
-      {/* Progress bar */}
-      <motion.div 
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 0.4 }}
-        className="absolute z-20 top-20 left-1/2 -translate-x-1/2 w-64 pointer-events-none"
-      >
-        <div className="bg-black/60 rounded-full p-1">
-          <motion.div 
-            className="h-2 bg-gradient-to-r from-green-500 to-emerald-400 rounded-full"
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.5 }}
-          />
-        </div>
-        <p className="text-center text-white/80 text-xs mt-1">
-          Progress: {Math.round(progress)}%
-        </p>
-      </motion.div>
 
-      {/* Bottom - Inventory with animation */}
+      {/* Bottom - Search clue + inventory */}
       <motion.div 
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="absolute z-20 bottom-4 left-1/2 -translate-x-1/2 pointer-events-auto"
+        className="absolute z-20 bottom-3 left-2 right-2 sm:bottom-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:max-w-xl pointer-events-auto"
       >
+        {/* Search clue banner */}
+        <Card className="bg-black/80 border-white/20 mb-2">
+          <CardContent className="py-2 px-3 flex items-start gap-2">
+            <Search className="h-4 w-4 mt-0.5 text-yellow-400 shrink-0" />
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] sm:text-xs text-white/90 leading-snug">
+                {searchClue}
+              </p>
+              {revealedClue && (
+                <p className="text-[11px] sm:text-xs text-yellow-300 leading-snug mt-1">
+                  {revealedClue}
+                </p>
+              )}
+            </div>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={revealSearchClue}
+              className="h-8 px-2 shrink-0"
+            >
+              <Lightbulb className="h-4 w-4 sm:mr-1" />
+              <span className="hidden sm:inline">Clue</span>
+            </Button>
+          </CardContent>
+        </Card>
+
         <Card className="bg-black/80 border-white/20">
-          <CardContent className="py-2 px-4">
-            <div className="flex items-center gap-3">
+          <CardContent className="py-2 px-3 sm:px-4">
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
               <Button 
                 variant="ghost" 
                 size="sm"
                 onClick={() => setShowInventory(!showInventory)}
-                className="text-white"
+                className="text-white text-xs sm:text-sm"
               >
                 <Package className="h-4 w-4 mr-1" />
                 Inventory ({inventory.length})
@@ -621,10 +690,10 @@ export function PanoramaEscapeRoom({
               <AnimatePresence>
                 {showInventory && (
                   <motion.div 
-                    initial={{ width: 0, opacity: 0 }}
-                    animate={{ width: "auto", opacity: 1 }}
-                    exit={{ width: 0, opacity: 0 }}
-                    className="flex gap-2 overflow-hidden"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="flex gap-2 flex-wrap"
                   >
                     {inventory.map(item => (
                       <motion.div
@@ -647,7 +716,7 @@ export function PanoramaEscapeRoom({
                       </motion.div>
                     ))}
                     {inventory.length === 0 && (
-                      <span className="text-gray-400 text-sm px-2">Empty</span>
+                      <span className="text-gray-400 text-xs px-2">Empty</span>
                     )}
                   </motion.div>
                 )}
@@ -660,11 +729,11 @@ export function PanoramaEscapeRoom({
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  className="mt-2 text-xs text-gray-300 border-t border-white/20 pt-2 overflow-hidden"
+                  className="mt-2 text-[11px] sm:text-xs text-gray-300 border-t border-white/20 pt-2 overflow-hidden"
                 >
                   <strong>{selectedItem.name}:</strong> {selectedItem.description}
                   <br />
-                  <span className="text-yellow-400">Click on an object to use</span>
+                  <span className="text-yellow-400">Tap an object in the scene to use it</span>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -672,10 +741,6 @@ export function PanoramaEscapeRoom({
         </Card>
       </motion.div>
 
-      {/* Search hint */}
-      <div className="absolute z-20 bottom-4 right-4 text-white/70 text-xs pointer-events-none">
-        Tap objects in the scene to investigate
-      </div>
 
       {/* Puzzle Dialog */}
       <Dialog open={!!activeHotspot} onOpenChange={() => setActiveHotspot(null)}>
