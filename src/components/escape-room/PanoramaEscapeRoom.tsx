@@ -540,6 +540,51 @@ export function PanoramaEscapeRoom({
     );
   };
 
+  // Reward after completing the 3rd room: 3 credits + unlock secret room
+  const grantReward = useCallback(async () => {
+    if (!rewardClaimed) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { error } = await (supabase as any).rpc("add_ai_credits", {
+          p_user_id: user.id,
+          p_amount: 3,
+          p_reason: "escape_room_completion_cashback",
+          p_source: "escape_room"
+        });
+        if (error) {
+          console.error("Failed to grant escape room cashback:", error);
+          toast({
+            title: "Reward error",
+            description: "Could not add credits, but you can still enter the secret room.",
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "🎁 +3 credits!",
+            description: "Cashback added to your account."
+          });
+          window.dispatchEvent(new Event("ai-credits-updated"));
+        }
+      }
+      setRewardClaimed(true);
+    }
+
+    const bonusIndex = localRooms.length;
+    const bonusRoom = { ...getBonusRoomForTheme(theme), id: bonusIndex };
+    setLocalRooms(prev => [...prev, bonusRoom]);
+    setBonusRoomAdded(true);
+    setShowRewardDialog(false);
+    enterRoom(bonusIndex);
+  }, [localRooms, rewardClaimed, theme, toast, sounds]);
+
+  const skipReward = useCallback(() => {
+    setShowRewardDialog(false);
+    sounds.playEffect('complete');
+    const baseScore = Math.max(0, 1000 - (elapsedTime * 2) - (hintsUsed * 100));
+    const hiddenBonus = foundHiddenItems * 50;
+    onComplete(baseScore + hiddenBonus, elapsedTime);
+  }, [elapsedTime, hintsUsed, foundHiddenItems, onComplete, sounds]);
+
 
 
   // Show tutorial first
