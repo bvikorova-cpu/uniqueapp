@@ -168,7 +168,7 @@ export const useEarnStamp = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-castle-stamps"] });
-      toast.success("🏆 New stamp earned! You're a true Disney Explorer!");
+      toast.success("🏆 New stamp earned! You're a true Castle Explorer!");
     } });
 };
 
