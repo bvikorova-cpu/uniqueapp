@@ -73,7 +73,7 @@ export function useEscapeRoomRealStats() {
       return;
     }
 
-    const [{ data: sessions }, { data: created }] = await Promise.all([
+    const [{ data: sessions }, createdRes] = await Promise.all([
       supabase
         .from("escape_room_sessions")
         .select("id, room_id, status, score, hints_used, completion_time_seconds, completed_at, created_at")
@@ -127,7 +127,7 @@ export function useEscapeRoomRealStats() {
       totalXp: done.reduce((sum: number, s: any) => sum + (s.score || 0), 0),
       themesCompleted,
       roomsToday,
-      createdRooms: (created as any)?.length ?? 0,
+      createdRooms: createdRes.count ?? 0,
     });
     setLoading(false);
   }, []);
