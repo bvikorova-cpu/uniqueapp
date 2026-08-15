@@ -494,15 +494,35 @@ export default function LiveStream() {
                             <p className={`text-sm ${streamError ? "font-medium text-destructive" : "text-lg"}`}>
                               {streamError ?? "Turn on your camera to go live"}
                             </p>
-                            <div className="flex flex-col items-center gap-2">
-                              <Button
-                                onClick={startBroadcasting}
-                                size="lg"
-                                disabled={isConnecting}
-                                className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700"
-                              >
-                                {isConnecting ? "Connecting camera..." : "📹 Turn camera on & go live"}
-                              </Button>
+                            <div className="flex flex-col items-center gap-2 w-full">
+                              {isConnecting ? (
+                                <>
+                                  <Button
+                                    size="lg"
+                                    disabled
+                                    className="bg-gradient-to-r from-red-600 to-pink-600"
+                                  >
+                                    Connecting camera...
+                                  </Button>
+                                  <Button
+                                    variant="destructive"
+                                    size="lg"
+                                    onClick={() => setShowEndConfirm(true)}
+                                    className="w-full max-w-xs"
+                                  >
+                                    <VideoOff className="h-4 w-4 mr-2" /> Cancel & end stream
+                                  </Button>
+                                </>
+                              ) : (
+                                <Button
+                                  onClick={startBroadcasting}
+                                  size="lg"
+                                  disabled={isConnecting}
+                                  className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700"
+                                >
+                                  📹 Turn camera on & go live
+                                </Button>
+                              )}
                               {inIframe && (
                                 <Button
                                   variant="outline"
@@ -544,16 +564,31 @@ export default function LiveStream() {
                       {presenceViewers}
                     </Badge>
                   </div>
+
+                  {isOwner && (isStreaming || isConnecting) && (
+                    <div className="absolute top-4 right-4">
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => setShowEndConfirm(true)}
+                        disabled={isEnding}
+                        className="shadow-lg gap-1"
+                      >
+                        <VideoOff className="h-4 w-4" />
+                        <span className="hidden sm:inline">End</span>
+                      </Button>
+                    </div>
+                  )}
                 </div>
 
-                {isOwner && isStreaming && (
+                {isOwner && (isStreaming || isConnecting) && (
                   <div className="sticky bottom-0 z-20 flex flex-wrap items-center justify-between gap-2 p-3 border-t bg-background/95 backdrop-blur">
                     <div className="flex items-center gap-2">
-                      <Button variant="outline" size="sm" onClick={toggleMic} className="gap-2">
+                      <Button variant="outline" size="sm" onClick={toggleMic} disabled={!isStreaming} className="gap-2">
                         {micEnabled ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
                         <span className="hidden sm:inline">{micEnabled ? "Mute" : "Unmute"}</span>
                       </Button>
-                      <Button variant="outline" size="sm" onClick={toggleCam} className="gap-2">
+                      <Button variant="outline" size="sm" onClick={toggleCam} disabled={!isStreaming} className="gap-2">
                         {camEnabled ? <Camera className="h-4 w-4" /> : <CameraOff className="h-4 w-4" />}
                         <span className="hidden sm:inline">{camEnabled ? "Hide cam" : "Show cam"}</span>
                       </Button>
