@@ -427,6 +427,30 @@ const InfluKing = () => {
       queryClient.invalidateQueries({ queryKey: ["topInfluencers"] });
     } });
 
+  const updatePostMutation = useMutation({
+    mutationFn: async ({ id, title, content }: { id: string; title: string; content: string }) => {
+      const { error } = await supabase.from("influencer_posts")
+        .update({ title: title || null, content: content || null }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["influencerPosts"] });
+      setEditingPost(null);
+      toast({ title: "✅ Post updated" });
+    },
+    onError: (error: any) => toast({ title: "Error", description: error.message, variant: "destructive" }) });
+
+  const deletePostMutation = useMutation({
+    mutationFn: async (postId: string) => {
+      const { error } = await supabase.from("influencer_posts").delete().eq("id", postId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["influencerPosts"] });
+      toast({ title: "🗑️ Post deleted" });
+    },
+    onError: (error: any) => toast({ title: "Error", description: error.message, variant: "destructive" }) });
+
   if (!user) {
     return (
       <div className="min-h-screen bg-background pt-20 pb-12 flex items-center justify-center">
