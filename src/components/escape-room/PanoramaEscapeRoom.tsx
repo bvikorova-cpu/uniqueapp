@@ -65,6 +65,7 @@ interface PanoramaEscapeRoomProps {
   onComplete: (score: number, time: number) => void;
   onExit: () => void;
   onUpdateRoomPanorama?: (roomIndex: number, newUrl: string) => void;
+  sessionId?: string | null;
 }
 
 const hotspotScreenPosition = ([x, y, z]: [number, number, number]) => {
