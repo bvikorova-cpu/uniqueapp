@@ -287,12 +287,15 @@ const RoomGallery = ({ onSelectRoom }: RoomGalleryProps) => {
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-lg font-bold">€10</span>
-                  </div>
-                  <Button onClick={() => handlePlayRoom(room.id)}>
-                    Buy & Play
+                <div className="flex items-center justify-between gap-2">
+                  <Badge variant="secondary" className="bg-amber-500/10 text-amber-600 border-amber-500/20">
+                    <Sparkles className="w-3 h-3 mr-1" />{costs.play_room} credits
+                  </Badge>
+                  <Button
+                    onClick={() => handlePlayRoom(room.id, room.title)}
+                    disabled={unlocking === room.id}
+                  >
+                    {unlocking === room.id ? "Unlocking..." : `Play · ${costs.play_room} CR`}
                   </Button>
                 </div>
                 
