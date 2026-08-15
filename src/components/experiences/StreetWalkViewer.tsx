@@ -131,6 +131,27 @@ const StreetWalkViewer = ({ destination, landmark, onClose }: StreetWalkViewerPr
 
   const currentStop = stops[stopIndex];
 
+  const walk = useCallback((backwards: boolean) => {
+    const panorama = panoramaRef.current;
+    if (!panorama) return;
+    const links = panorama.getLinks?.() || [];
+    if (!links.length) return;
+    const pov = panorama.getPov?.() || { heading: 0 };
+    const target = ((backwards ? pov.heading + 180 : pov.heading) % 360 + 360) % 360;
+    let best = links[0];
+    let bestDiff = 999;
+    for (const link of links) {
+      const diff = Math.abs(((link.heading - target + 540) % 360) - 180);
+      if (diff < bestDiff) {
+        bestDiff = diff;
+        best = link;
+      }
+    }
+    if (!best?.pano) return;
+    panorama.setPano(best.pano);
+    panorama.setPov({ heading: best.heading ?? pov.heading, pitch: 0 });
+  }, []);
+
   return (
     <div className="fixed inset-0 z-[60] bg-black">
       <div ref={containerRef} className="absolute inset-0" style={{ touchAction: "none" }} />
