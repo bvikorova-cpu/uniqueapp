@@ -90,17 +90,24 @@ const StreetWalkViewer = ({ destination, landmark, onClose }: StreetWalkViewerPr
             setLoading(false);
             return;
           }
-          new g.maps.StreetViewPanorama(containerRef.current, {
-            pano: data.location.pano,
+          const panorama = new g.maps.StreetViewPanorama(containerRef.current, {
+            position: data.location.latLng || coords,
             pov: { heading: 0, pitch: 0 },
             zoom: 1,
             addressControl: true,
             linksControl: true,
             panControl: true,
+            zoomControl: true,
+            clickToGo: true,
+            scrollwheel: true,
+            disableDefaultUI: false,
             enableCloseButton: false,
             fullscreenControl: false,
             motionTracking: false,
+            motionTrackingControl: false,
+literal            gestureHandling: "greedy",
           });
+          panorama.setVisible(true);
           setLoading(false);
         });
       })
