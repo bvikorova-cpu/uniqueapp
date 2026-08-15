@@ -104,6 +104,9 @@ export function PanoramaEscapeRoom({
   const [isMuted, setIsMuted] = useState(false);
   const [foundHiddenItems, setFoundHiddenItems] = useState(0);
   const [revealedClue, setRevealedClue] = useState<string | null>(null);
+  const [showRewardDialog, setShowRewardDialog] = useState(false);
+  const [rewardClaimed, setRewardClaimed] = useState(false);
+  const [bonusRoomAdded, setBonusRoomAdded] = useState(false);
 
   
   // UI states
