@@ -42,6 +42,7 @@ export const GIFT_CATEGORIES = [
   { id: "mythical", label: "Mythical", emoji: "🦄" },
   { id: "vip", label: "VIP", emoji: "👑" },
   { id: "fantasy", label: "Fantasy", emoji: "🏰" },
+  { id: "heroes", label: "Heroes", emoji: "🦸" },
 ];
 
 export const GIFT_CATALOG = [
@@ -527,29 +528,27 @@ export const GIFT_CATALOG = [
   { type: "absolute_god", emoji: "⚡", label: "Absolute God", value: 2000, category: "vip", description: "Supreme deity" },
   { type: "infinity_itself", emoji: "♾️", label: "Infinity Itself", value: 2500, category: "vip", description: "Boundless power" },
 
-  // MARVEL HEROES with images
-  { type: "spider-man", emoji: "🕷️", label: "Spider-Man", value: 45, category: "disney", description: "Friendly neighborhood hero", image: characterImages["spider-man"] },
-  { type: "iron-man", emoji: "🤖", label: "Iron Man", value: 65, category: "disney", description: "Genius billionaire", image: characterImages["iron-man"] },
-  { type: "captain-america", emoji: "🛡️", label: "Captain America", value: 55, category: "disney", description: "First Avenger", image: characterImages["captain-america"] },
-  { type: "black-panther", emoji: "🐆", label: "Black Panther", value: 70, category: "disney", description: "King of Wakanda", image: characterImages["black-panther"] },
-  { type: "hulk", emoji: "💪", label: "Hulk", value: 50, category: "disney", description: "Incredible strength", image: characterImages["hulk"] },
-  { type: "thor", emoji: "⚡", label: "Thor", value: 60, category: "disney", description: "God of Thunder", image: characterImages["thor"] },
-  { type: "black-widow", emoji: "🕷️", label: "Black Widow", value: 48, category: "disney", description: "Super spy", image: characterImages["black-widow"] },
-  { type: "captain-marvel", emoji: "⭐", label: "Captain Marvel", value: 68, category: "disney", description: "Cosmic hero", image: characterImages["captain-marvel"] },
-  { type: "ant-man", emoji: "🐜", label: "Ant-Man", value: 42, category: "disney", description: "Size-changing hero", image: characterImages["ant-man"] },
-  { type: "doctor-strange", emoji: "🔮", label: "Doctor Strange", value: 75, category: "disney", description: "Sorcerer Supreme", image: characterImages["doctor-strange"] },
-
-  // DC HEROES with images
-  { type: "batman", emoji: "🦇", label: "Batman", value: 70, category: "disney", description: "Dark Knight", image: characterImages["batman"] },
-  { type: "superman", emoji: "💪", label: "Superman", value: 65, category: "disney", description: "Man of Steel", image: characterImages["superman"] },
-  { type: "wonder-woman", emoji: "⭐", label: "Wonder Woman", value: 68, category: "disney", description: "Amazon Princess", image: characterImages["wonder-woman"] },
-  { type: "flash", emoji: "⚡", label: "The Flash", value: 55, category: "disney", description: "Fastest man alive", image: characterImages["flash"] },
-  { type: "aquaman", emoji: "🔱", label: "Aquaman", value: 58, category: "disney", description: "King of Atlantis", image: characterImages["aquaman"] },
-  { type: "green-lantern", emoji: "💚", label: "Green Lantern", value: 52, category: "disney", description: "Emerald Knight", image: characterImages["green-lantern"] },
-  { type: "cyborg", emoji: "🤖", label: "Cyborg", value: 48, category: "disney", description: "Half man, half machine", image: characterImages["cyborg"] },
-  { type: "batgirl", emoji: "🦇", label: "Batgirl", value: 45, category: "disney", description: "Gotham's protector", image: characterImages["batgirl"] },
-  { type: "supergirl", emoji: "💫", label: "Supergirl", value: 60, category: "disney", description: "Girl of Steel", image: characterImages["supergirl"] },
-  { type: "robin", emoji: "🐦", label: "Robin", value: 42, category: "disney", description: "Boy Wonder", image: characterImages["robin"] },
+  // Original hero characters (IP-safe designs)
+  { type: "web_slinger", emoji: "🕷️", label: "Web Slinger", value: 45, category: "heroes", description: "Friendly rooftop guardian" },
+  { type: "iron_inventor", emoji: "🤖", label: "Iron Inventor", value: 65, category: "heroes", description: "Genius in armor" },
+  { type: "valor_shield", emoji: "🛡️", label: "Valor Shield", value: 55, category: "heroes", description: "Shield of courage" },
+  { type: "kito_panther", emoji: "🐆", label: "Kito Panther", value: 70, category: "heroes", description: "Guardian of the highlands" },
+  { type: "rage_titan", emoji: "💪", label: "Rage Titan", value: 50, category: "heroes", description: "Unstoppable strength" },
+  { type: "thunder_god", emoji: "⚡", label: "Thunder Bearer", value: 60, category: "heroes", description: "Storm and hammer" },
+  { type: "shadow_spy", emoji: "🕷️", label: "Shadow Spy", value: 48, category: "heroes", description: "Silent operative" },
+  { type: "cosmic_star", emoji: "⭐", label: "Cosmic Star", value: 68, category: "heroes", description: "Light of galaxies" },
+  { type: "tiny_scout", emoji: "🐜", label: "Tiny Scout", value: 42, category: "heroes", description: "Shrinks to win" },
+  { type: "arcane_master", emoji: "🔮", label: "Arcane Master", value: 75, category: "heroes", description: "Keeper of spells" },
+  { type: "night_guardian", emoji: "🦇", label: "Night Guardian", value: 70, category: "heroes", description: "Watcher in the dark" },
+  { type: "steel_savior", emoji: "💪", label: "Steel Savior", value: 65, category: "heroes", description: "Will of iron" },
+  { type: "amazon_champion", emoji: "⭐", label: "Amazon Champion", value: 68, category: "heroes", description: "Warrior of truth" },
+  { type: "streak_runner", emoji: "⚡", label: "Streak Runner", value: 55, category: "heroes", description: "Faster than light" },
+  { type: "tide_king", emoji: "🔱", label: "Tide King", value: 58, category: "heroes", description: "Ruler of the deep" },
+  { type: "emerald_knight", emoji: "💚", label: "Emerald Knight", value: 52, category: "heroes", description: "Ring of willpower" },
+  { type: "machine_ally", emoji: "🤖", label: "Machine Ally", value: 48, category: "heroes", description: "Half heart, half circuit" },
+  { type: "night_scout", emoji: "🦇", label: "Night Scout", value: 45, category: "heroes", description: "City's young protector" },
+  { type: "solaris", emoji: "💫", label: "Solaris", value: 60, category: "heroes", description: "Daughter of the sun" },
+  { type: "young_sidekick", emoji: "🐦", label: "Young Sidekick", value: 42, category: "heroes", description: "Brave apprentice" },
 ];
 
 export const CREDIT_PACKAGES = [
