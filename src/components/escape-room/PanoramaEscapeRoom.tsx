@@ -472,9 +472,10 @@ export function PanoramaEscapeRoom({
         {currentRoom.hotspots.map((hotspot) => {
           const solved = solvedHotspots.has(`${currentRoomIndex}-${hotspot.id}`);
           return (
-            <button
+            <Button
               key={hotspot.id}
               type="button"
+              variant="ghost"
               aria-label={`Examine ${hotspot.label}`}
               onClick={() => handleHotspotClick(hotspot)}
               disabled={solved && hotspot.type !== "door"}
