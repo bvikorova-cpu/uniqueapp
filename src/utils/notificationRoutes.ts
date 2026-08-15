@@ -155,6 +155,7 @@ export function getNotificationRoute(n: NotifLike): string {
     brand_deal_status: "/influ-king",
     challenge_reviewed: "/influ-king",
     live_stream_started: "/influ-king",
+    stream_live: n.related_id ? `/live/${n.related_id}` : "/influ-king",
 
     coffee_match: "/coffee",
     coffee_message: "/coffee" };
