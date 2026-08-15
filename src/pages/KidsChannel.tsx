@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Heart, Play, Star, Sparkles, Crown, BookOpen, Volume2, Trophy, Moon, CreditCard, Video, Castle, Palette, Unlock, Shield, Library, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
-import { showImages } from "@/components/kids/ShowImages";
 import castleBg from "@/assets/kids/fairy-castle-bg.jpg";
 import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
 import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
@@ -29,24 +28,12 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const __HIW_KIDSCHANNEL_STEPS = [
   { title: 'Parental gate first', desc: 'A quick math challenge protects premium and settings.' },
-  { title: 'Pick a show', desc: 'Browse curated shows — all content is age-rated and moderated.' },
+  { title: 'Pick an activity', desc: 'Browse original stories, games and creative studios — all age-rated and moderated.' },
   { title: 'Earn Daily Stars', desc: 'Watching, learning and quizzes give stars, badges and streaks.' },
   { title: 'Explore the map', desc: 'Adventure Map, Weekly Themes and Story Creator keep it fresh.' },
-  { title: 'Gold Pass perks', desc: 'Optional Gold Pass unlocks premium shows and no ads.' }
+  { title: 'Gold Pass perks', desc: 'Optional Gold Pass unlocks premium activities and no ads.' }
 ];
-const __HIW_KIDSCHANNEL = { title: 'Kids Channel', intro: 'Safe, moderated shows and learning games for ages 6–12.', steps: __HIW_KIDSCHANNEL_STEPS };
-
-interface Show {
-  id: string;
-  title: string;
-  description: string;
-  thumbnail_url: string;
-  cover_image_url: string;
-  category: string;
-  age_rating: string;
-  is_premium: boolean;
-  created_at: string;
-}
+const __HIW_KIDSCHANNEL = { title: 'Kids Channel', intro: 'Safe, moderated original stories and learning games for ages 6–12.', steps: __HIW_KIDSCHANNEL_STEPS };
 
 // Feature card component with playful animations
 const FeatureCard = ({ title,
@@ -113,8 +100,6 @@ const FeatureCard = ({ title,
 
 const KidsChannel = () => {
   const navigate = useNavigate();
-  const [shows, setShows] = useState<Show[]>([]);
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -131,142 +116,13 @@ const KidsChannel = () => {
     { path: '/kids-homework', name: 'AI Homework Helper' },
   ];
 
-  const showImageMap: Record<string, string> = { "Peppa Pig": showImages.peppa,
-    "Paw Patrol": showImages.pawPatrol,
-    "Frozen Stories": showImages.frozen,
-    "Lion Kingdom": showImages.lionking,
-    "Music Time": showImages.music,
-    "Fairy Tale Castle": showImages.fairytale,
-    "Bluey": showImages.bluey,
-    "Masha and the Bear": showImages.masha,
-    "Dora the Explorer": showImages.dora,
-    "Cocomelon": showImages.cocomelon,
-    "SpongeBob SquarePants": showImages.spongebob,
-    "PJ Masks": showImages.pjmasks,
-    "Mickey Mouse Clubhouse": showImages.mickey,
-    "Daniel Tiger's Neighborhood": showImages.danielTiger,
-    "Super Wings": showImages.superwings,
-    "Blippi": showImages.blippi,
-    "Scooby-Doo": showImages.scooby,
-    "Mr. Bean": showImages.mrbean,
-    "Snow White": showImages.snowwhite,
-    "Pinocchio": showImages.pinocchio,
-    "Dumbo": showImages.dumbo,
-    "Bambi": showImages.bambi,
-    "Cinderella": showImages.cinderella,
-    "Alice in Wonderland": showImages.alice,
-    "Sleeping Beauty": showImages.sleepingbeauty,
-    "101 Dalmatians": showImages['101dalmatians'],
-    "The Jungle Book": showImages.junglebook,
-    "Peter Pan": showImages.peterpan,
-    "Lady and the Tramp": showImages.ladyandthetramp,
-    "Beauty and the Beast": showImages.beautyandthebeast,
-    "Aladdin": showImages.aladdin,
-    "The Lion King": showImages.lionking,
-    "Pocahontas": showImages.pocahontas,
-    "Mulan": showImages.mulan,
-    "Tarzan": showImages.tarzan,
-    "Atlantis": showImages.atlantis,
-    "Brother Bear": showImages.brotherbear,
-    "Bolt": showImages.bolt,
-    "Tangled": showImages.tangled,
-    "Wreck-It Ralph": showImages.wreckitralph,
-    "Ralph Breaks the Internet": showImages.ralphbreakstheinternet,
-    "Frozen": showImages.frozen,
-    "Big Hero 6": showImages.bighero6,
-    "Moana": showImages.moana,
-    "The Princess and the Frog": showImages.theprincessandthefrog,
-    "Encanto": showImages.encanto,
-    "The Little Mermaid": showImages.thelittlemermaid,
-    "Toy Story": showImages.toystory,
-    "Toy Story 2": showImages.toystory,
-    "Toy Story 3": showImages.toystory,
-    "Toy Story 4": showImages.toystory,
-    "A Bug's Life": showImages["abug'slife"],
-    "Monsters Inc": showImages.monstersinc,
-    "Monsters University": showImages.monstersinc,
-    "Finding Nemo": showImages.findingnemo,
-    "Finding Dory": showImages.findingnemo,
-    "The Incredibles": showImages.theincredibles,
-    "Incredibles 2": showImages.theincredibles,
-    "Cars": showImages.cars,
-    "Cars 2": showImages.cars,
-    "Cars 3": showImages.cars,
-    "Ratatouille": showImages.ratatouille,
-    "WALL-E": showImages['wall-e'],
-    "Up": showImages.up,
-    "Inside Out": showImages.insideout,
-    "Inside Out 2": showImages.insideout,
-    "Coco": showImages.coco,
-    "Onward": showImages.onward,
-    "Soul": showImages.soul,
-    "Luca": showImages.luca,
-    "Turning Red": showImages.turningred,
-    "Zootopia": showImages.zootopia,
-    "Lilo & Stitch": showImages['lilo&stitch'],
-    "Winnie the Pooh": showImages.winniethepooh,
-    "Hercules": showImages.hercules };
-
   useEffect(() => {
-    fetchShows();
     checkUser();
   }, []);
 
   const checkUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     setUser(user);
-    if (user) fetchFavorites(user.id);
-  };
-
-  const fetchShows = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("kids_shows")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      setShows(data || []);
-    } catch (error) {
-      console.error("Error fetching shows:", error);
-      toast.error("Failed to load shows");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchFavorites = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from("kids_favorites")
-        .select("show_id")
-        .eq("user_id", userId);
-      if (error) throw error;
-      setFavorites(new Set(data?.map(f => f.show_id) || []));
-    } catch (error) {
-      console.error("Error fetching favorites:", error);
-    }
-  };
-
-  const toggleFavorite = async (showId: string) => {
-    if (!user) {
-      toast.error("Please sign in to add favorites");
-      navigate("/auth");
-      return;
-    }
-    try {
-      if (favorites.has(showId)) {
-        await supabase.from("kids_favorites").delete().eq("user_id", user.id).eq("show_id", showId);
-        setFavorites(prev => { const s = new Set(prev); s.delete(showId); return s; });
-        toast.success("Removed from favorites");
-      } else {
-        await supabase.from("kids_favorites").insert({ user_id: user.id, show_id: showId });
-        setFavorites(prev => new Set(prev).add(showId));
-        toast.success("Added to favorites");
-      }
-    } catch (error) {
-      console.error("Error toggling favorite:", error);
-      toast.error("Something went wrong");
-    }
   };
 
   const handleFeatureNavigation = (path: string, featureName: string, requiresGate: boolean) => {
