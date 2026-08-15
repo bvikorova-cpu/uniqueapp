@@ -4,22 +4,26 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Brain, Loader2, Sparkles, ArrowLeft } from "lucide-react";
+import { Brain, Loader2, Sparkles, ArrowLeft, Image as ImageIcon, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { AiMarkdown } from "../common/AiMarkdown";
 
 interface Props { onBack: () => void; }
 
 export const AITravelPlanner = ({ onBack }: Props) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [imgLoading, setImgLoading] = useState(false);
   const [result, setResult] = useState("");
+  const [image, setImage] = useState<string | null>(null);
   const [form, setForm] = useState({ destination: "", duration: "7", budget: "medium", interests: "", travelers: "2" });
 
   const generate = async () => {
     if (!form.destination) { toast({ title: "Enter a destination", variant: "destructive" }); return; }
     setLoading(true);
+    setImage(null);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Login required");
@@ -27,7 +31,21 @@ export const AITravelPlanner = ({ onBack }: Props) => {
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
           type: "travel_planner",
-          prompt: `Create a detailed ${form.duration}-day travel itinerary for ${form.destination}. Budget level: ${form.budget}. Number of travelers: ${form.travelers}. Interests: ${form.interests || "general sightseeing"}. Include: day-by-day schedule with morning/afternoon/evening activities, estimated costs, restaurant recommendations, transportation tips, must-see attractions, hidden gems, and practical travel tips. Format with clear headings and bullet points.`
+          prompt: `You are an expert local travel advisor. Create an EXTREMELY DETAILED ${form.duration}-day travel itinerary for ${form.destination}.
+Budget level: ${form.budget}. Travelers: ${form.travelers}. Interests: ${form.interests || "general sightseeing"}.
+
+Use markdown headings and write a long, thorough plan with these sections:
+1. "## Trip Overview" - vibe of the destination, best areas to stay (3 neighbourhoods with pros/cons), total estimated budget per person in EUR broken down (accommodation, food, transport, activities).
+2. "## Day-by-Day Plan" - for EVERY single day from Day 1 to Day ${form.duration} a separate "### Day N - theme" section with:
+   - Morning / Afternoon / Evening blocks, each with concrete named places, suggested time windows (e.g. 09:00-11:00), entrance fees in EUR, and walking/transport time between stops.
+   - One breakfast, lunch and dinner recommendation with cuisine type and average price in EUR.
+   - A "Tip of the day" line (booking tip, crowd avoidance, best photo spot).
+3. "## Must-See Highlights" and "## Hidden Gems" - bullet lists with a sentence of context each.
+4. "## Food Guide" - local dishes, markets, street food, one splurge restaurant.
+5. "## Getting Around" - airport transfer, public transport passes and prices, taxi/app options.
+6. "## Practical Tips" - weather, what to pack, safety, tipping, useful phrases, opening-hours warnings.
+7. "## Estimated Total Cost" - a markdown table of cost items in EUR for ${form.travelers} traveler(s).
+Use only EUR (€) for prices. Be specific with real place names, never generic filler.`
         }
       });
       if (error) throw error;
@@ -36,6 +54,32 @@ export const AITravelPlanner = ({ onBack }: Props) => {
       toast({ title: "Error", description: e.message, variant: "destructive" });
     } finally { setLoading(false); }
   };
+
+  const generateImage = async () => {
+    if (!form.destination) return;
+    setImgLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-image-generation", {
+        body: {
+          prompt: `Beautiful cinematic travel poster photograph of ${form.destination}, iconic landmarks and streets, golden hour light, vibrant colors, ultra detailed, no text, no watermark`
+        }
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      setImage(data.imageUrl);
+    } catch (e: any) {
+      toast({ title: "Image generation failed", description: e.message, variant: "destructive" });
+    } finally { setImgLoading(false); }
+  };
+
+  const downloadImage = () => {
+    if (!image) return;
+    const a = document.createElement("a");
+    a.href = image;
+    a.download = `${form.destination.replace(/\s+/g, "-").toLowerCase()}-travel.png`;
+    a.click();
+  };
+
 
   return (
     <>
@@ -77,9 +121,31 @@ export const AITravelPlanner = ({ onBack }: Props) => {
           </Button>
           {result && (
             <Card className="bg-card/50">
-              <CardContent className="pt-4 whitespace-pre-wrap text-sm">{result}</CardContent>
+              <CardContent className="space-y-4 pt-4">
+                <div className="flex flex-wrap gap-2">
+                  <Button variant="secondary" size="sm" onClick={generateImage} disabled={imgLoading}>
+                    {imgLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ImageIcon className="mr-2 h-4 w-4" />}
+                    {imgLoading ? "Creating image..." : image ? "Generate again (5 credits)" : "Generate destination image (5 credits)"}
+                  </Button>
+                  {image && (
+                    <Button variant="outline" size="sm" onClick={downloadImage}>
+                      <Download className="mr-2 h-4 w-4" />Download
+                    </Button>
+                  )}
+                </div>
+                {image && (
+                  <img
+                    src={image}
+                    alt={`AI generated travel image of ${form.destination}`}
+                    className="w-full rounded-xl border border-border object-cover"
+                    loading="lazy"
+                  />
+                )}
+                <AiMarkdown content={result} />
+              </CardContent>
             </Card>
           )}
+
         </CardContent>
       </Card>
     </div>
