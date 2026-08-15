@@ -125,22 +125,7 @@ const InfluKingHero = ({ totalInfluencers, totalFollowers, totalLikes, totalView
         >
           {t("influking.hero.subtitle")}
         </motion.p>
-
-        {/* Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.45 }}
-          className="grid grid-cols-2 gap-2.5 w-full max-w-md"
-        >
-          {stats.map((stat, i) => (
-            <div key={i} className="min-w-0 flex items-center gap-2 px-3 sm:px-4 py-2 bg-black/40 backdrop-blur-sm rounded-xl border border-white/10">
-              <stat.icon className={`h-4 w-4 ${stat.color} shrink-0`} />
-              <div className="min-w-0">
-                <div className="text-white font-bold text-sm sm:text-base leading-none">{stat.value}</div>
-                <div className="text-white/60 text-[10px] sm:text-xs leading-tight">{stat.label}</div>
-              </div>
-            </div>
-          ))}
-        </motion.div>
+      
       </div>
     </div>
     </>
