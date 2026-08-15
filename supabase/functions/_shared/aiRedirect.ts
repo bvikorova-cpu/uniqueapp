@@ -112,7 +112,33 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
           if (Array.isArray(v)) refs.push(...v);
           else if (typeof v === "string" && v) refs.push(v);
         }
-        const img = await withRetry("image", () => tryVertexImage(b.prompt as string, b.size, b.n, refs), 1);
+        const messagePrompt = Array.isArray(b.messages)
+          ? b.messages
+              .map((message) => {
+                if (!message || typeof message !== "object") return "";
+                const content = (message as Record<string, unknown>).content;
+                if (typeof content === "string") return content;
+                if (!Array.isArray(content)) return "";
+                return content
+                  .map((part) => part && typeof part === "object" ? String((part as Record<string, unknown>).text ?? "") : "")
+                  .filter(Boolean)
+                  .join("\n");
+              })
+              .filter(Boolean)
+              .join("\n")
+          : "";
+        const contentsPrompt = Array.isArray(b.contents)
+          ? b.contents
+              .flatMap((content) => content && typeof content === "object" && Array.isArray((content as Record<string, unknown>).parts)
+                ? ((content as Record<string, unknown>).parts as unknown[])
+                : [])
+              .map((part) => part && typeof part === "object" ? String((part as Record<string, unknown>).text ?? "") : "")
+              .filter(Boolean)
+              .join("\n")
+          : "";
+        const prompt = String(b.prompt ?? messagePrompt ?? contentsPrompt).trim();
+        if (!prompt) return blocked("image generation payload has no prompt");
+        const img = await withRetry("image", () => tryVertexImage(prompt, b.size, b.n, refs), 1);
         if (!img) return blocked("vertex image generation failed");
         return json(img);
       }
