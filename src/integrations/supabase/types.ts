@@ -22965,6 +22965,30 @@ export type Database = {
           },
         ]
       }
+      escape_room_scene_cache: {
+        Row: {
+          cache_key: string
+          created_at: string
+          image_url: string
+          room_name: string | null
+          theme: string | null
+        }
+        Insert: {
+          cache_key: string
+          created_at?: string
+          image_url: string
+          room_name?: string | null
+          theme?: string | null
+        }
+        Update: {
+          cache_key?: string
+          created_at?: string
+          image_url?: string
+          room_name?: string | null
+          theme?: string | null
+        }
+        Relationships: []
+      }
       escape_room_sessions: {
         Row: {
           completed_at: string | null
