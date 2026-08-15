@@ -286,6 +286,19 @@ const AIExperiences = () => {
   // ====== IMMERSIVE PANORAMIC TOUR VIEWER ======
   const renderPanoramicTour = () => {
     if (!selectedTour) return null;
+    if (hasStreetWalk(selectedTour.destination)) {
+      return (
+        <StreetWalkViewer
+          destination={selectedTour.destination}
+          landmark={destinations.find((d) => d.name === selectedTour.destination)?.landmark}
+          onClose={() => {
+            setSelectedTour(null);
+            setStreetWalkDestination(null);
+            setIsFullscreen(false);
+          }}
+        />
+      );
+    }
     const images = selectedTour.image_urls || [];
     if (images.length === 0) return null;
 
