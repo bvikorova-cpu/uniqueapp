@@ -38,7 +38,7 @@ Deno.serve(async (req) => {
     if (!description || !text) throw new Error("description and text required");
     if (text.length > 250) throw new Error("Text too long (max 250 chars)");
 
-    // 1) Pixar-style avatar via Nano banana
+    // 1) Stylised 3D avatar via Nano banana
     const imgRes = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
       headers: {
@@ -48,7 +48,7 @@ Deno.serve(async (req) => {
         model: "gpt-image-1",
         messages: [{
           role: "user",
-          content: `Pixar 3D animated character portrait of: ${description}. Friendly expressive face, big eyes, cinematic studio lighting, clean background. NO real person, NO trademark, NO text.` }] }) });
+          content: `Stylised 3D animated character portrait of: ${description}. Friendly expressive face, big eyes, cinematic studio lighting, clean background. NO real person, NO trademark, NO text.` }] }) });
     if (!imgRes.ok) {
       const t = await imgRes.text();
       if (imgRes.status === 429) throw new Error("Rate limit, try again shortly");

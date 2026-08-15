@@ -99,10 +99,10 @@ export const CastlePanoramaGenerator = ({ castle, rooms, onRoomUpdated }: Castle
   return (
     <>
       <FloatingHowItWorks title={"Castle Panorama Generator - How it works"} steps={[{ title: 'Open', desc: 'Access the Castle Panorama Generator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Castle Panorama Generator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <Card className="border-disney-accent/20">
+      <Card className="border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-disney-accent" />
+          <Sparkles className="h-5 w-5 text-primary" />
           AI 360° Panorama Generator
         </CardTitle>
         <CardDescription>

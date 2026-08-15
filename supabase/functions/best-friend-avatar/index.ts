@@ -1,5 +1,5 @@
 import "../_shared/aiRedirect.ts";
-// Generate AI Best Friend avatar (Pixar-style portrait) and save URL on persona row.
+// Generate AI Best Friend avatar (3D animated portrait) and save URL on persona row.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 
@@ -36,7 +36,7 @@ Deno.serve(async (req) => {
         model: "google/gemini-2.5-flash-image",
         modalities: ["image", "text"],
         messages: [{ role: "user", content:
-          `Pixar 3D portrait of: ${description}. Friendly, glowing, cinematic studio lighting, square crop, no text, no real person.` }] }) });
+          `Stylised 3D animated portrait of: ${description}. Friendly, glowing, cinematic studio lighting, square crop, no text, no real person.` }] }) });
     if (!imgRes.ok) {
       const t = await imgRes.text();
       if (imgRes.status === 429) return j({ error: "Rate limit" }, 429);

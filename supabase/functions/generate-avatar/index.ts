@@ -10,7 +10,7 @@ const STYLE_MODIFIERS: Record<string, string> = { realistic: "ultra-photorealist
   anime: "vibrant anime portrait, clean line art, expressive eyes, Studio Ghibli inspired, soft cel-shading",
   cyberpunk: "neon cyberpunk portrait, glowing pink-cyan rim lights, futuristic visor reflections, rainy night atmosphere",
   watercolor: "delicate watercolor painting portrait, flowing pastel washes, paper texture, artistic brush strokes",
-  pixar: "Pixar / Disney 3D animated character portrait, expressive friendly face, polished render, soft warm lighting",
+  pixar: "Stylised 3D animated character portrait, expressive friendly face, polished render, soft warm lighting",
   oilpainting: "renaissance oil painting portrait, dramatic chiaroscuro lighting, rich textured brushwork, classical composition",
   comic: "bold pop-art comic book portrait, halftone shading, vibrant primary colors, ink outlines",
   fantasy: "epic fantasy portrait, ethereal glowing aura, intricate ornate details, mystical atmosphere" };
