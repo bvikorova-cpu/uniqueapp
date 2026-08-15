@@ -7,6 +7,7 @@ import { ArrowLeft, Calendar, Trophy, Gift, Lock, Star, Zap, Crown } from "lucid
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
+import { useEscapeRoomCredits } from "@/hooks/useEscapeRoomCredits";
 
 const tiers = [
   { level: 1, xp: 0, reward: "Bronze Key Badge", icon: Star, unlocked: true },
