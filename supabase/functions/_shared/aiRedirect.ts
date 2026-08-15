@@ -136,7 +136,7 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
               .filter(Boolean)
               .join("\n")
           : "";
-        const prompt = String(b.prompt ?? messagePrompt ?? contentsPrompt).trim();
+        const prompt = String(b.prompt || messagePrompt || contentsPrompt).trim();
         if (!prompt) return blocked("image generation payload has no prompt");
         const img = await withRetry("image", () => tryVertexImage(prompt, b.size, b.n, refs), 1);
         if (!img) return blocked("vertex image generation failed");
