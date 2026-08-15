@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { EscapeRoomHero } from "@/components/escape-room/EscapeRoomHero";
-import { EscapeRoomEngagement } from "@/components/escape-room/EscapeRoomEngagement";
+
 import { EscapeRoomToolGrid } from "@/components/escape-room/EscapeRoomToolGrid";
 import RoomGallery from "@/components/escape-room/RoomGallery";
 import GamePlay from "@/components/escape-room/GamePlay";
@@ -46,7 +46,7 @@ const VirtualEscapeRoom = () => {
             <EscapeRoomHero />
             <HeroRewardedAd sectionKey="page_virtualescaperoom" />
 
-            <EscapeRoomEngagement />
+
             <h2 className="mb-4 text-center text-sm font-black uppercase tracking-[0.35em] text-amber-400/80">
               Enter the Dark
             </h2>
