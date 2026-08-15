@@ -6,7 +6,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 // Vertex AI (postpay) is the platform's only AI provider — this patch reroutes
 // every AI call to Vertex.
 import "../_shared/aiRedirect.ts";
-import { tryVertexImage } from "../_shared/vertexDirect.ts";
+import { tryVertexChat, tryVertexImage } from "../_shared/vertexDirect.ts";
 import { checkTestMode } from "../_shared/testMode.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
@@ -254,23 +254,13 @@ Deno.serve(async (req) => {
         // Foal portrait + short profile (best-effort).
         let imageUrl: string | null = null;
         let description: string | null = null;
-        const key = Deno.env.get("LOVABLE_API_KEY");
         try {
-          if (key) {
-            const prompt =
+          const prompt =
               `Adorable photorealistic cinematic portrait of a newborn ${foalColor} ${foalBreed} foal (baby horse) named "${foalName}". ` +
               `Small fluffy body, long thin legs, soft fuzzy coat, big curious eyes, standing in a sunlit meadow beside straw, ` +
               `shallow depth of field, warm golden-hour light, ultra detailed, 4k, no text, no watermark.`;
-            const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
-              method: "POST",
-              headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-              body: JSON.stringify({
-                model: "google/gemini-3.1-flash-lite-image",
-                contents: [{ role: "user", parts: [{ text: prompt }] }],
-                generationConfig: { responseModalities: ["TEXT", "IMAGE"] } }),
-            });
-            if (res.ok) {
-              const data = await res.json();
+          const data = await tryVertexImage(prompt, "1024x1024", 1);
+          if (data) {
               const b64 = data?.data?.[0]?.b64_json;
               if (b64) {
                 const bin = atob(b64);
@@ -281,20 +271,13 @@ Deno.serve(async (req) => {
                   .upload(path, bytes, { contentType: "image/png", upsert: true, cacheControl: "31536000" });
                 if (!upErr) imageUrl = admin.storage.from("ai-studio").getPublicUrl(path).data.publicUrl;
               }
-            } else {
-              console.error("[horse-router] foal portrait failed", res.status, await res.text().catch(() => ""));
-            }
           }
         } catch (e) {
           console.error("[horse-router] foal portrait error", e);
         }
 
         try {
-          if (key) {
-            const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-              method: "POST",
-              headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-              body: JSON.stringify({
+          const data = await tryVertexChat({
                 model: "google/gemini-2.5-flash",
                 messages: [{
                   role: "user",
@@ -303,13 +286,8 @@ Deno.serve(async (req) => {
                     `Name: ${foalName}. Breed: ${foalBreed}. Coat: ${foalColor}. ` +
                     `Parents: ${p1.name} and ${p2.name}. ` +
                     `Stats — speed ${stats.speed_stat}, stamina ${stats.stamina_stat}, acceleration ${stats.acceleration_stat}, temperament ${stats.temperament_stat}. ` +
-                    `Mention its bloodline and racing potential. Plain text only, no markdown.` }] }),
-            });
-            if (res.ok) {
-              const data = await res.json();
-              description = data?.choices?.[0]?.message?.content?.trim()?.slice(0, 700) ?? null;
-            }
-          }
+                     `Mention its bloodline and racing potential. Plain text only, no markdown.` }] });
+          description = data?.choices?.[0]?.message?.content?.trim()?.slice(0, 700) ?? null;
         } catch (e) {
           console.error("[horse-router] foal description error", e);
         }
