@@ -19,6 +19,7 @@ import { DestinationRecommender } from "@/components/experiences/DestinationReco
 import { ExplorerAchievements } from "@/components/experiences/ExplorerAchievements";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import StreetWalkViewer, { hasStreetWalk } from "@/components/experiences/StreetWalkViewer";
 
 type ActiveView = "hub" | "tours" | "future" | "travel-planner" | "postcards" | "recommender" | "achievements";
 
@@ -46,6 +47,7 @@ const AIExperiences = () => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [compassAngle, setCompassAngle] = useState(0);
   const viewerRef = useRef<HTMLDivElement>(null);
+  const [streetWalkDestination, setStreetWalkDestination] = useState<string | null>(null);
   const isDragging = useRef(false);
   const lastMousePos = useRef({ x: 0, y: 0 });
 
@@ -336,6 +338,11 @@ const AIExperiences = () => {
                   </div>
                 </motion.div>
                 <div className="flex items-center gap-2">
+                  {hasStreetWalk(selectedTour.destination) && (
+                    <Button size="sm" className="rounded-xl bg-white/15 text-white backdrop-blur-xl border border-white/20 hover:bg-white/25" onClick={() => setStreetWalkDestination(selectedTour.destination)}>
+                      <Footprints className="h-4 w-4 mr-2" />Walk the streets
+                    </Button>
+                  )}
                   <Button variant="ghost" size="icon" className="bg-black/50 backdrop-blur-xl border border-white/10 text-white hover:bg-white/20 rounded-xl" onClick={() => setIsFullscreen(!isFullscreen)}>
                     {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
                   </Button>
@@ -480,6 +487,16 @@ const AIExperiences = () => {
                     >
                       {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Footprints className="h-4 w-4 mr-2" />{isVisited ? "Walk Again" : "Start Walking"}</>}
                     </Button>
+                    {hasStreetWalk(dest.name) && (
+                      <Button
+                        onClick={(e) => { e.stopPropagation(); setStreetWalkDestination(dest.name); }}
+                        className="w-full"
+                        size="sm"
+                        variant="secondary"
+                      >
+                        <Navigation className="h-4 w-4 mr-2" />Walk real streets
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -709,6 +726,13 @@ const AIExperiences = () => {
       </div>
 
       {renderPanoramicTour()}
+      {streetWalkDestination && (
+        <StreetWalkViewer
+          destination={streetWalkDestination}
+          landmark={destinations.find((d) => d.name === streetWalkDestination)?.landmark}
+          onClose={() => setStreetWalkDestination(null)}
+        />
+      )}
     </div>
   );
 };
