@@ -874,10 +874,22 @@ const InfluKing = () => {
                           <CardContent className="pt-4">
                             {post.title && <h4 className="font-bold mb-2">{post.title}</h4>}
                             {post.content && <p className="text-sm text-muted-foreground mb-3">{post.content}</p>}
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-wrap items-center justify-between gap-2">
                               <Button variant="ghost" size="sm" onClick={() => likePostMutation.mutate(post.id)} disabled={likePostMutation.isPending}>
                                 <Heart className="h-4 w-4 mr-1" /> {post.likes_count}
                               </Button>
+                              {myProfile?.id === post.influencer_id && (
+                                <div className="flex items-center gap-1">
+                                  <Button variant="ghost" size="sm" onClick={() => setEditingPost({ id: post.id, title: post.title || "", content: post.content || "" })}>
+                                    <Pencil className="h-4 w-4 mr-1" /> Edit
+                                  </Button>
+                                  <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive"
+                                    disabled={deletePostMutation.isPending}
+                                    onClick={() => { if (confirm("Delete this post permanently?")) deletePostMutation.mutate(post.id); }}>
+                                    <Trash2 className="h-4 w-4 mr-1" /> Delete
+                                  </Button>
+                                </div>
+                              )}
                             </div>
                             <InfluencerPostComments postId={post.id} userId={user.id} />
                           </CardContent>
