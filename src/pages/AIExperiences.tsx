@@ -534,29 +534,39 @@ const AIExperiences = () => {
                 </div>
                 <CardContent className="pt-2 pb-2 sm:pt-3 sm:pb-3">
                   <div className="space-y-2">
-                    <Badge variant="secondary" className="text-[10px] sm:text-xs">{dest.credits} credits</Badge>
-                    {existingTour && (
-                      <Button onClick={(e) => { e.stopPropagation(); openExistingTour(); }} className="w-full" size="sm">
-                        <Globe className="h-4 w-4 mr-2" />Open tour
-                      </Button>
-                    )}
-                    <Button
-                      onClick={(e) => { e.stopPropagation(); handleVirtualTour(dest.name, dest.credits); }}
-                      disabled={loading}
-                      className="w-full"
-                      size="sm"
-                      variant={existingTour ? "outline" : "default"}
-                    >
-                      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Footprints className="h-4 w-4 mr-2" />{isVisited ? "Walk Again" : "Start Walking"}</>}
-                    </Button>
-                    {hasStreetWalk(dest.name) && (
+                    <div className="flex items-center justify-between">
+                      <Badge variant="secondary" className="text-[10px] sm:text-xs">{dest.credits} credits</Badge>
+                      {existingTour && (
+                        <span className="text-[10px] text-green-500 flex items-center gap-1">
+                          <CheckCircle className="h-3 w-3" /> Ready
+                        </span>
+                      )}
+                    </div>
+                    {existingTour ? (
+                      <div className="flex gap-2">
+                        <Button onClick={(e) => { e.stopPropagation(); openExistingTour(); }} className="flex-1" size="sm">
+                          <Globe className="h-4 w-4 mr-2" />Open AI tour
+                        </Button>
+                        {hasStreetWalk(dest.name) && (
+                          <Button
+                            onClick={(e) => { e.stopPropagation(); setStreetWalkDestination(dest.name); }}
+                            size="sm"
+                            variant="secondary"
+                            className="px-2"
+                            title="Walk real streets"
+                          >
+                            <Navigation className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    ) : (
                       <Button
-                        onClick={(e) => { e.stopPropagation(); setStreetWalkDestination(dest.name); }}
+                        onClick={(e) => { e.stopPropagation(); handleVirtualTour(dest.name, dest.credits); }}
+                        disabled={loading}
                         className="w-full"
                         size="sm"
-                        variant="secondary"
                       >
-                        <Navigation className="h-4 w-4 mr-2" />Walk real streets
+                        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Sparkles className="h-4 w-4 mr-2" />Generate AI tour</>}
                       </Button>
                     )}
                   </div>
