@@ -227,8 +227,13 @@ const Earnings = () => {
       </div>
 
       <div className="mb-6">
+        <InfluKingEarningsCard />
+      </div>
+
+      <div className="mb-6">
         <ConcertEarningsCard />
       </div>
+
 
       <div className="mb-6">
         <StripeConnectBanner />
