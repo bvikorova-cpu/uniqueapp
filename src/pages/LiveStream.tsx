@@ -564,6 +564,21 @@ export default function LiveStream() {
                       {presenceViewers}
                     </Badge>
                   </div>
+
+                  {isOwner && (isStreaming || isConnecting) && (
+                    <div className="absolute top-4 right-4">
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => setShowEndConfirm(true)}
+                        disabled={isEnding}
+                        className="shadow-lg gap-1"
+                      >
+                        <VideoOff className="h-4 w-4" />
+                        <span className="hidden sm:inline">End</span>
+                      </Button>
+                    </div>
+                  )}
                 </div>
 
                 {isOwner && isStreaming && (
