@@ -59,39 +59,39 @@ const AIExperiences = () => {
   ]);
 
   const destinations = [
-    { name: "Paris", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&h=600&fit=crop", credits: 15, landmark: "Eiffel Tower" },
-    { name: "Tokyo", image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&h=600&fit=crop", credits: 15, landmark: "Shibuya Crossing" },
-    { name: "New York", image: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&h=600&fit=crop", credits: 15, landmark: "Times Square" },
-    { name: "London", image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&h=600&fit=crop", credits: 15, landmark: "Big Ben" },
-    { name: "Dubai", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&h=600&fit=crop", credits: 15, landmark: "Burj Khalifa" },
-    { name: "Barcelona", image: "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=800&h=600&fit=crop", credits: 15, landmark: "Sagrada Família" },
-    { name: "Rome", image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800&h=600&fit=crop", credits: 15, landmark: "Colosseum" },
-    { name: "Istanbul", image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=800&h=600&fit=crop", credits: 15, landmark: "Hagia Sophia" },
-    { name: "Sydney", image: "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=800&h=600&fit=crop", credits: 15, landmark: "Opera House" },
-    { name: "Singapore", image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=800&h=600&fit=crop", credits: 15, landmark: "Marina Bay" },
-    { name: "Hong Kong", image: "https://images.unsplash.com/photo-1536599018102-9f803c140fc1?w=800&h=600&fit=crop", credits: 15, landmark: "Victoria Peak" },
-    { name: "Las Vegas", image: "https://images.unsplash.com/photo-1605833556294-ea5c7a74f57d?w=800&h=600&fit=crop", credits: 15, landmark: "The Strip" },
-    { name: "San Francisco", image: "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=800&h=600&fit=crop", credits: 15, landmark: "Golden Gate" },
-    { name: "Los Angeles", image: "https://images.unsplash.com/photo-1444723121867-7a241cacace9?w=800&h=600&fit=crop", credits: 15, landmark: "Hollywood" },
-    { name: "Miami", image: "https://images.unsplash.com/photo-1506966953602-c20cc11f75e3?w=800&h=600&fit=crop", credits: 15, landmark: "South Beach" },
-    { name: "Amsterdam", image: "https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=800&h=600&fit=crop", credits: 15, landmark: "Canal Ring" },
-    { name: "Prague", image: "https://images.unsplash.com/photo-1541849546-216549ae216d?w=800&h=600&fit=crop", credits: 15, landmark: "Charles Bridge" },
-    { name: "Vienna", image: "https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=800&h=600&fit=crop", credits: 15, landmark: "Schönbrunn" },
-    { name: "City", image: "https://images.unsplash.com/photo-1560969184-10fe8719e047?w=800&h=600&fit=crop", credits: 15, landmark: "Landmark" },
-    { name: "Bangkok", image: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=800&h=600&fit=crop", credits: 15, landmark: "Grand Palace" },
-    { name: "Seoul", image: "https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=800&h=600&fit=crop", credits: 15, landmark: "Gyeongbokgung" },
-    { name: "Athens", image: "https://images.unsplash.com/photo-1555993539-1732b0258235?w=800&h=600&fit=crop", credits: 15, landmark: "Acropolis" },
-    { name: "Lisbon", image: "https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=800&h=600&fit=crop", credits: 15, landmark: "Belém Tower" },
-    { name: "Moscow", image: "https://images.unsplash.com/photo-1513326738677-b964603b136d?w=800&h=600&fit=crop", credits: 15, landmark: "Red Square" },
-    { name: "Cairo", image: "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=800&h=600&fit=crop", credits: 15, landmark: "Pyramids" },
-    { name: "Mexico City", image: "https://images.unsplash.com/photo-1518105779142-d975f22f1b0a?w=800&h=600&fit=crop", credits: 15, landmark: "Zócalo" },
-    { name: "Toronto", image: "https://images.unsplash.com/photo-1517935706615-2717063c2225?w=800&h=600&fit=crop", credits: 15, landmark: "CN Tower" },
-    { name: "Copenhagen", image: "https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?w=800&h=600&fit=crop", credits: 15, landmark: "Nyhavn" },
-    { name: "Stockholm", image: "https://images.unsplash.com/photo-1509356843151-3e7d96241e11?w=800&h=600&fit=crop", credits: 15, landmark: "Gamla Stan" },
-    { name: "Mars", image: "https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=800&h=600&fit=crop", credits: 15, landmark: "Olympus Mons" },
-    { name: "Ancient Rome", image: "https://images.unsplash.com/photo-1531572753322-ad063cecc140?w=800&h=600&fit=crop", credits: 15, landmark: "Forum Romanum" },
-    { name: "Underwater City", image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=600&fit=crop", credits: 15, landmark: "Coral Palace" },
-    { name: "Future Metropolis", image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=600&fit=crop", credits: 15, landmark: "Sky District" },
+    { name: "Paris", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&h=600&fit=crop", credits: 5, landmark: "Eiffel Tower" },
+    { name: "Tokyo", image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&h=600&fit=crop", credits: 5, landmark: "Shibuya Crossing" },
+    { name: "New York", image: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&h=600&fit=crop", credits: 5, landmark: "Times Square" },
+    { name: "London", image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&h=600&fit=crop", credits: 5, landmark: "Big Ben" },
+    { name: "Dubai", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&h=600&fit=crop", credits: 5, landmark: "Burj Khalifa" },
+    { name: "Barcelona", image: "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=800&h=600&fit=crop", credits: 5, landmark: "Sagrada Família" },
+    { name: "Rome", image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800&h=600&fit=crop", credits: 5, landmark: "Colosseum" },
+    { name: "Istanbul", image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=800&h=600&fit=crop", credits: 5, landmark: "Hagia Sophia" },
+    { name: "Sydney", image: "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=800&h=600&fit=crop", credits: 5, landmark: "Opera House" },
+    { name: "Singapore", image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=800&h=600&fit=crop", credits: 5, landmark: "Marina Bay" },
+    { name: "Hong Kong", image: "https://images.unsplash.com/photo-1536599018102-9f803c140fc1?w=800&h=600&fit=crop", credits: 5, landmark: "Victoria Peak" },
+    { name: "Las Vegas", image: "https://images.unsplash.com/photo-1605833556294-ea5c7a74f57d?w=800&h=600&fit=crop", credits: 5, landmark: "The Strip" },
+    { name: "San Francisco", image: "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=800&h=600&fit=crop", credits: 5, landmark: "Golden Gate" },
+    { name: "Los Angeles", image: "https://images.unsplash.com/photo-1444723121867-7a241cacace9?w=800&h=600&fit=crop", credits: 5, landmark: "Hollywood" },
+    { name: "Miami", image: "https://images.unsplash.com/photo-1506966953602-c20cc11f75e3?w=800&h=600&fit=crop", credits: 5, landmark: "South Beach" },
+    { name: "Amsterdam", image: "https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=800&h=600&fit=crop", credits: 5, landmark: "Canal Ring" },
+    { name: "Prague", image: "https://images.unsplash.com/photo-1541849546-216549ae216d?w=800&h=600&fit=crop", credits: 5, landmark: "Charles Bridge" },
+    { name: "Vienna", image: "https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=800&h=600&fit=crop", credits: 5, landmark: "Schönbrunn" },
+    { name: "City", image: "https://images.unsplash.com/photo-1560969184-10fe8719e047?w=800&h=600&fit=crop", credits: 5, landmark: "Landmark" },
+    { name: "Bangkok", image: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=800&h=600&fit=crop", credits: 5, landmark: "Grand Palace" },
+    { name: "Seoul", image: "https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=800&h=600&fit=crop", credits: 5, landmark: "Gyeongbokgung" },
+    { name: "Athens", image: "https://images.unsplash.com/photo-1555993539-1732b0258235?w=800&h=600&fit=crop", credits: 5, landmark: "Acropolis" },
+    { name: "Lisbon", image: "https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=800&h=600&fit=crop", credits: 5, landmark: "Belém Tower" },
+    { name: "Moscow", image: "https://images.unsplash.com/photo-1513326738677-b964603b136d?w=800&h=600&fit=crop", credits: 5, landmark: "Red Square" },
+    { name: "Cairo", image: "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=800&h=600&fit=crop", credits: 5, landmark: "Pyramids" },
+    { name: "Mexico City", image: "https://images.unsplash.com/photo-1518105779142-d975f22f1b0a?w=800&h=600&fit=crop", credits: 5, landmark: "Zócalo" },
+    { name: "Toronto", image: "https://images.unsplash.com/photo-1517935706615-2717063c2225?w=800&h=600&fit=crop", credits: 5, landmark: "CN Tower" },
+    { name: "Copenhagen", image: "https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?w=800&h=600&fit=crop", credits: 5, landmark: "Nyhavn" },
+    { name: "Stockholm", image: "https://images.unsplash.com/photo-1509356843151-3e7d96241e11?w=800&h=600&fit=crop", credits: 5, landmark: "Gamla Stan" },
+    { name: "Mars", image: "https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=800&h=600&fit=crop", credits: 5, landmark: "Olympus Mons" },
+    { name: "Ancient Rome", image: "https://images.unsplash.com/photo-1531572753322-ad063cecc140?w=800&h=600&fit=crop", credits: 5, landmark: "Forum Romanum" },
+    { name: "Underwater City", image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=600&fit=crop", credits: 5, landmark: "Coral Palace" },
+    { name: "Future Metropolis", image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=600&fit=crop", credits: 5, landmark: "Sky District" },
   ];
 
   useEffect(() => {
@@ -215,6 +215,42 @@ const AIExperiences = () => {
     } catch (error) {
       console.error('Error:', error);
       toast({ title: "Error", description: "Failed to generate virtual tour", variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVirtualTourBundle = async () => {
+    try {
+      setLoading(true);
+      const currentCredits = typeof credits === 'number' ? credits : credits.credits_remaining;
+      if (currentCredits < 25) {
+        toast({ title: "Insufficient Credits", description: "You need 25 credits for the Travel Pass.", variant: "destructive" });
+        setTimeout(() => navigate("/ai-credits-store"), 2000);
+        return;
+      }
+      const unvisited = destinations
+        .filter((d) => d.name !== "City" && !visitedDestinations.includes(d.name))
+        .map((d) => d.name);
+      const shuffled = unvisited.sort(() => 0.5 - Math.random());
+      const bundleDestinations = shuffled.slice(0, 10);
+      if (bundleDestinations.length === 0) {
+        toast({ title: "No destinations", description: "You have already visited all cities.", variant: "destructive" });
+        return;
+      }
+      const { data, error } = await supabase.functions.invoke('experience-ai', { body: { action: 'virtual-tour-bundle', destinations: bundleDestinations } });
+      if (error) {
+        const status = (error as any).context?.status;
+        if (status === 402) { toast({ title: "Insufficient Credits", description: "Redirecting...", variant: "destructive" }); setTimeout(() => navigate("/ai-credits-store"), 1500); return; }
+        if (status === 429) { toast({ title: "Rate limit", description: "Try again shortly.", variant: "destructive" }); return; }
+        throw error;
+      }
+      toast({ title: "✨ Travel Pass Created!", description: `${data.count || bundleDestinations.length} cities unlocked.` });
+      await loadTours();
+      await refreshCredits();
+    } catch (error) {
+      console.error('Error:', error);
+      toast({ title: "Error", description: "Failed to create travel pass", variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -452,9 +488,32 @@ const AIExperiences = () => {
         <MapPin className="h-6 w-6 text-primary" />
         <div>
           <h2 className="text-2xl font-bold">Choose Your Destination</h2>
-          <p className="text-muted-foreground text-sm">Walk through cities in immersive panoramic mode</p>
+        <p className="text-muted-foreground text-sm">Walk through cities in immersive panoramic mode</p>
         </div>
       </div>
+
+      <Card className="border-primary/30 bg-gradient-to-br from-primary/10 to-accent/10 overflow-hidden">
+        <CardContent className="p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0">
+                <Plane className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-bold text-base sm:text-lg">Travel Pass</h3>
+                <p className="text-muted-foreground text-xs sm:text-sm">Unlock 10 cities at once and save 50%.</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <Badge variant="secondary" className="text-xs">25 credits</Badge>
+                  <span className="text-xs text-muted-foreground line-through">50 credits</span>
+                </div>
+              </div>
+            </div>
+            <Button onClick={handleVirtualTourBundle} disabled={loading} className="w-full sm:w-auto" size="sm">
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Sparkles className="h-4 w-4 mr-2" />Get Travel Pass</>}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
         {destinations.map((dest) => {
