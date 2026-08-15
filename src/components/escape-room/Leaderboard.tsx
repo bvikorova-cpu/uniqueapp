@@ -20,6 +20,15 @@ const Leaderboard = () => {
 
   useEffect(() => {
     fetchLeaderboard();
+    const channel = supabase
+      .channel("escape-leaderboard-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "escape_room_leaderboard" }, () => fetchLeaderboard())
+      .subscribe();
+    const interval = setInterval(fetchLeaderboard, 30000);
+    return () => {
+      supabase.removeChannel(channel);
+      clearInterval(interval);
+    };
   }, []);
 
   const fetchLeaderboard = async () => {

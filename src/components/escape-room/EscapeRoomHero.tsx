@@ -1,30 +1,32 @@
 import { useState, useEffect } from "react";
 import { Lock, Users, Trophy, Puzzle } from "lucide-react";
+import { useEscapeRoomRealStats } from "@/hooks/useEscapeRoomRealStats";
 import heroVideo from "@/assets/escape-room-hero.mp4.asset.json";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-const stats = [
-  { label: "Escape Rooms", icon: Lock, end: 76 },
-  { label: "Active Players", icon: Users, end: 12400 },
-  { label: "Rooms Escaped", icon: Trophy, end: 89200 },
-  { label: "Puzzles Solved", icon: Puzzle, end: 534000 },
-];
-
 export function EscapeRoomHero() {
-  const [counts, setCounts] = useState(stats.map(() => 0));
+  const { global } = useEscapeRoomRealStats();
+
+  const stats = [
+    { label: "Escape Rooms", icon: Lock, end: global.rooms },
+    { label: "Active Players", icon: Users, end: global.players },
+    { label: "Rooms Escaped", icon: Trophy, end: global.escapes },
+    { label: "Puzzles Solved", icon: Puzzle, end: global.puzzles },
+  ];
+
+  const [counts, setCounts] = useState<number[]>([0, 0, 0, 0]);
 
   useEffect(() => {
-    const duration = 2000;
-    const steps = 60;
-    const interval = duration / steps;
+    const targets = [global.rooms, global.players, global.escapes, global.puzzles];
+    const steps = 40;
     let step = 0;
     const timer = setInterval(() => {
       step++;
-      setCounts(stats.map(s => Math.floor(s.end * Math.min(step / steps, 1))));
+      setCounts(targets.map(t => Math.floor(t * Math.min(step / steps, 1))));
       if (step >= steps) clearInterval(timer);
-    }, interval);
+    }, 25);
     return () => clearInterval(timer);
-  }, []);
+  }, [global.rooms, global.players, global.escapes, global.puzzles]);
 
   const formatNum = (n: number) => n >= 1000 ? `${(n / 1000).toFixed(1)}K` : n.toString();
 
