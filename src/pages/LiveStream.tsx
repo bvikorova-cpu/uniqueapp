@@ -581,14 +581,14 @@ export default function LiveStream() {
                   )}
                 </div>
 
-                {isOwner && isStreaming && (
+                {isOwner && (isStreaming || isConnecting) && (
                   <div className="sticky bottom-0 z-20 flex flex-wrap items-center justify-between gap-2 p-3 border-t bg-background/95 backdrop-blur">
                     <div className="flex items-center gap-2">
-                      <Button variant="outline" size="sm" onClick={toggleMic} className="gap-2">
+                      <Button variant="outline" size="sm" onClick={toggleMic} disabled={!isStreaming} className="gap-2">
                         {micEnabled ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
                         <span className="hidden sm:inline">{micEnabled ? "Mute" : "Unmute"}</span>
                       </Button>
-                      <Button variant="outline" size="sm" onClick={toggleCam} className="gap-2">
+                      <Button variant="outline" size="sm" onClick={toggleCam} disabled={!isStreaming} className="gap-2">
                         {camEnabled ? <Camera className="h-4 w-4" /> : <CameraOff className="h-4 w-4" />}
                         <span className="hidden sm:inline">{camEnabled ? "Hide cam" : "Show cam"}</span>
                       </Button>
