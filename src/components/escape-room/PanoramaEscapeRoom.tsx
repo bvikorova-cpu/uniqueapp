@@ -493,7 +493,7 @@ export function PanoramaEscapeRoom({
   };
 
   // Count progress
-  const totalPuzzles = rooms.reduce((acc, room) => 
+  const totalPuzzles = localRooms.reduce((acc, room) => 
     acc + room.hotspots.filter(h => h.type === "puzzle" || h.type === "lock").length, 0
   );
   const solvedPuzzles = [...solvedHotspots].filter(key => 
