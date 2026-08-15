@@ -31,7 +31,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
-import { toast } from "sonner";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const VirtualEscapeRoom = () => {
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
