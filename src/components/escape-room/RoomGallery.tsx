@@ -155,7 +155,9 @@ const RoomGallery = ({ onSelectRoom }: RoomGalleryProps) => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTheme, setSelectedTheme] = useState<string>("all");
+  const [unlocking, setUnlocking] = useState<string | null>(null);
   const { toast } = useToast();
+  const { spend, costs } = useEscapeRoomCredits();
 
   useEffect(() => {
     fetchRooms();
