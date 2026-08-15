@@ -663,7 +663,7 @@ export function PanoramaEscapeRoom({
           <Button 
             variant="secondary" 
             size="sm"
-            onClick={generateAIPanorama}
+            onClick={() => generateAIPanorama(currentRoomIndex)}
             disabled={isGeneratingPanorama}
             className="w-full"
           >
@@ -672,7 +672,8 @@ export function PanoramaEscapeRoom({
             ) : (
               <Wand2 className="h-4 w-4 mr-1" />
             )}
-            AI Panorama
+            New scene
+
           </Button>
           
           <Button 
