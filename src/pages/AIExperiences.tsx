@@ -430,9 +430,21 @@ const AIExperiences = () => {
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
         {destinations.map((dest) => {
           const isVisited = visitedDestinations.includes(dest.name);
+          const existingTour = tours.find((t) => t.destination === dest.name && (t.image_urls?.length ?? 0) > 0);
+          const openExistingTour = () => {
+            if (!existingTour) return;
+            setSelectedTour(existingTour);
+            setCurrentImageIndex(0);
+            setIsAutoPlaying(false);
+            setViewAngle({ x: 0, y: 0 });
+            setCompassAngle(0);
+          };
           return (
             <motion.div key={dest.name} whileHover={{ y: -4 }} transition={{ type: "spring", stiffness: 300 }}>
-              <Card className={`overflow-hidden group cursor-pointer h-full ${isVisited ? 'ring-2 ring-green-500/40' : ''}`}>
+              <Card
+                className={`overflow-hidden group h-full ${existingTour ? 'cursor-pointer' : ''} ${isVisited ? 'ring-2 ring-green-500/40' : ''}`}
+                onClick={existingTour ? openExistingTour : undefined}
+              >
                 <div className="relative h-32 sm:h-44 overflow-hidden">
                   <img src={dest.image} alt={dest.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -445,7 +457,18 @@ const AIExperiences = () => {
                 <CardContent className="pt-2 pb-2 sm:pt-3 sm:pb-3">
                   <div className="space-y-2">
                     <Badge variant="secondary" className="text-[10px] sm:text-xs">{dest.credits} credits</Badge>
-                    <Button onClick={() => handleVirtualTour(dest.name, dest.credits)} disabled={loading} className="w-full" size="sm">
+                    {existingTour && (
+                      <Button onClick={(e) => { e.stopPropagation(); openExistingTour(); }} className="w-full" size="sm">
+                        <Globe className="h-4 w-4 mr-2" />Open tour
+                      </Button>
+                    )}
+                    <Button
+                      onClick={(e) => { e.stopPropagation(); handleVirtualTour(dest.name, dest.credits); }}
+                      disabled={loading}
+                      className="w-full"
+                      size="sm"
+                      variant={existingTour ? "outline" : "default"}
+                    >
                       {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Footprints className="h-4 w-4 mr-2" />{isVisited ? "Walk Again" : "Start Walking"}</>}
                     </Button>
                   </div>
@@ -454,6 +477,7 @@ const AIExperiences = () => {
             </motion.div>
           );
         })}
+
       </div>
 
       {tours.length > 0 && (
