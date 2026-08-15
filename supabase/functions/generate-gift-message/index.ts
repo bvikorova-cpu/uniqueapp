@@ -773,7 +773,7 @@ Only call the navigate tool when the user clearly asks to open/go to/show one of
       userPrompt = customPrompt || "List emergency facilities near the given location.";
     } else if (type === "travel_planner") {
 
-      systemPrompt = "You are an expert travel advisor and trip planner. Provide detailed, practical, and well-organized travel advice. Use clear headings, bullet points, and specific recommendations. Be thorough but concise.";
+      systemPrompt = "You are an expert local travel advisor and professional trip planner. Write EXHAUSTIVE, magazine-quality itineraries in markdown. Rules: cover EVERY requested day individually with its own '### Day N' heading — never summarise, never merge days, never write 'repeat as above' or 'similar to previous days'. Always include concrete named places, opening time windows, entrance fees and prices in EUR (€), transport between stops, and named restaurant/cafe suggestions. Use headings, bullet lists and markdown tables. Length is not a problem — be as detailed as possible and finish every section.";
       userPrompt = customPrompt || "Suggest a great travel destination";
 
     } else if (type === "gift_designer") {
