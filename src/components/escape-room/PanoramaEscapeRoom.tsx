@@ -908,6 +908,38 @@ export function PanoramaEscapeRoom({
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Reward dialog after 3rd room completion */}
+      <Dialog open={showRewardDialog} onOpenChange={(open) => {
+        if (!open && !bonusRoomAdded) skipReward();
+      }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Trophy className="h-5 w-5 text-amber-500" />
+              Secret room unlocked!
+            </DialogTitle>
+            <DialogDescription>
+              You escaped all 3 rooms. Claim a small cashback and enter the hidden bonus chamber.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="rounded-xl bg-gradient-to-br from-amber-500/10 to-purple-500/10 p-4 border border-amber-500/20 text-center">
+              <p className="text-3xl font-black text-amber-500">+3 credits</p>
+              <p className="text-sm text-muted-foreground">+ access to the secret room</p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Button onClick={grantReward} className="flex-1">
+                <Trophy className="h-4 w-4 mr-1" />
+                Claim & enter
+              </Button>
+              <Button variant="outline" onClick={skipReward} className="flex-1">
+                Exit game
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
