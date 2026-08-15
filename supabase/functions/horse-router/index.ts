@@ -6,6 +6,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 // Vertex AI (postpay) is the platform's only AI provider — this patch reroutes
 // every AI call to Vertex.
 import "../_shared/aiRedirect.ts";
+import { tryVertexImage } from "../_shared/vertexDirect.ts";
 import { checkTestMode } from "../_shared/testMode.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
@@ -149,22 +150,12 @@ Deno.serve(async (req) => {
         // Generate the horse portrait (best-effort: never fails the purchase).
         let imageUrl: string | null = null;
         try {
-          const key = Deno.env.get("LOVABLE_API_KEY");
-          if (key) {
-            const prompt =
+          const prompt =
               `Photorealistic cinematic portrait of a ${color} ${breed} racehorse named "${name}". ` +
               `Athletic thoroughbred build, glossy coat, flowing mane, standing on a sunlit racetrack, ` +
               `shallow depth of field, dramatic golden-hour rim light, ultra detailed, 4k, no text, no watermark.`;
-            const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
-              method: "POST",
-              headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-              body: JSON.stringify({
-                model: "google/gemini-3.1-flash-lite-image",
-                contents: [{ role: "user", parts: [{ text: prompt }] }],
-                generationConfig: { responseModalities: ["TEXT", "IMAGE"] } }),
-            });
-            if (res.ok) {
-              const data = await res.json();
+          const data = await tryVertexImage(prompt, "1024x1024", 1);
+          if (data) {
               const b64 = data?.data?.[0]?.b64_json;
               if (b64) {
                 const bin = atob(b64);
@@ -180,7 +171,6 @@ Deno.serve(async (req) => {
               }
             } else {
               console.error("[horse-router] portrait failed", res.status, await res.text().catch(() => ""));
-            }
           }
         } catch (e) {
           console.error("[horse-router] portrait error", e);

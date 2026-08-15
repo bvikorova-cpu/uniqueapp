@@ -1,6 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { corsHeaders, errorResponse, jsonResponse } from "./openai.ts";
 import { deductAICredits, refundAICredits } from "./credits.ts";
+import { tryVertexChat } from "./vertexDirect.ts";
 
 /**
  * Face Insight Studio — long-form AI face analysis.
@@ -191,9 +192,6 @@ function normalizeAssistantContent(content: unknown): string {
 
 
 async function runAI(mode: Mode, images: string[], note: string): Promise<string> {
-  const key = Deno.env.get("LOVABLE_API_KEY");
-  if (!key) throw Object.assign(new Error("AI is not configured"), { status: 500 });
-
   const content: unknown[] = [{
     type: "text",
     text: note
@@ -205,32 +203,23 @@ async function runAI(mode: Mode, images: string[], note: string): Promise<string
   let lastErr: any = null;
   for (const model of MODELS) {
     for (let attempt = 0; attempt < 3; attempt++) {
-      const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Lovable-API-Key": key },
-        body: JSON.stringify({
+      const data = await tryVertexChat({
           model,
           max_tokens: mode === "deep" ? 6000 : 3500,
           response_format: { type: "json_object" },
-
           messages: [
             { role: "system", content: systemPrompt(mode) },
             { role: "user", content },
           ],
-        }),
       });
-
-      if (res.ok) {
-        const data = await res.json();
+      if (data) {
         const out = normalizeAssistantContent(data?.choices?.[0]?.message?.content);
         // Very short answers are usually provider refusals or interrupted output;
         // continue to the next attempt/model instead of charging for no report.
         if (out.length >= 200) return out;
         lastErr = Object.assign(new Error("AI returned an incomplete analysis"), { status: 502 });
       } else {
-        const body = await res.text();
-        lastErr = Object.assign(new Error(body || `AI error ${res.status}`), { status: res.status });
-        if (res.status !== 429 && res.status < 500) break;
+        lastErr = Object.assign(new Error("Vertex AI analysis failed"), { status: 503 });
       }
       await sleep(700 * (attempt + 1));
     }

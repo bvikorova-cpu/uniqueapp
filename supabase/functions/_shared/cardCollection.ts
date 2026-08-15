@@ -407,31 +407,8 @@ function cardPrompt(card: Record<string, any>, cat: Record<string, any>) {
 }
 
 
-/** Fast + cheap card artwork via Gemini image, with an OpenAI image fallback. */
+/** Card artwork through Vertex AI only. */
 async function renderCardImage(prompt: string): Promise<{ b64_json?: string; url?: string }> {
-  const key = Deno.env.get("LOVABLE_API_KEY");
-  if (key) {
-    try {
-      const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "google/gemini-3.1-flash-lite-image",
-          contents: [{ role: "user", parts: [{ text: prompt }] }],
-          generationConfig: { responseModalities: ["TEXT", "IMAGE"] },
-        }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        const b64 = data?.data?.[0]?.b64_json;
-        if (b64) return { b64_json: b64 };
-      } else {
-        console.error("[card-collection] gemini image failed", res.status, await res.text().catch(() => ""));
-      }
-    } catch (e) {
-      console.error("[card-collection] gemini image error", e);
-    }
-  }
   return await generateOpenAIImage(prompt, "1024x1024");
 }
 
