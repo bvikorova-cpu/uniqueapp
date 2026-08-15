@@ -53,13 +53,16 @@ export const InfluKingEarningsCard = () => {
             .eq("influencer_id", p.id)
             .in("status", ["completed", "paid", "succeeded"]),
           supabase
-            .from("influking_ppv_purchases")
+            .from("influking_ppv_unlocks")
             .select("creator_earnings_cents")
-            .eq("creator_id", user.id),
+            .eq("creator_id", user.id)
+            .eq("status", "completed"),
           supabase
-            .from("influking_paid_messages")
+            .from("creator_paid_messages")
             .select("creator_payout")
-            .eq("creator_id", user.id),
+            .eq("creator_id", user.id)
+            .in("status", ["paid", "completed", "replied", "succeeded"]),
+
         ]);
 
         const giftRows = (giftRes.data as any[]) || [];
