@@ -208,7 +208,6 @@ import { ResetPassword,
   TeenSocialCoach,
   KidsChannel,
   KidsShareView,
-  KidsShowDetail,
   ChooseAdventure,
   KidsVoiceChat,
   KidsVoiceChatPricing,
@@ -487,7 +486,6 @@ import { ResetPassword,
   AdminVerifications,
   AdminBazaarTrust,
   AdminWithdrawals,
-  AdminImageEditor,
   AdminPaymentDashboard,
   PaymentDocumentation,
   CampaignApprovals,
@@ -1073,8 +1071,7 @@ const App = () => {
                         <Route path="/analyzer/collections" element={<AnalyzerCollections />} />
                         <Route path="/video-ad-generator" element={<VideoAdGenerator />} />
                         <Route path="/kids-channel" element={<KidsChannel />} />
-                        <Route path="/kids-channel/share/:token" element={<KidsShareView />} />
-                        <Route path="/kids-channel/:showId" element={<KidsShowDetail />} />
+                        <Route path="/kids-channel/share/:token" element={<KidsShareView />} />} />
                         <Route path="/choose-adventure" element={<ChooseAdventure />} />
                         <Route path="/kids-voice-chat" element={<KidsGoldPassGate moduleName="Character Chat" pricingPath="/kids-pricing" redirectPath="/kids-voice-chat"><KidsVoiceChat /></KidsGoldPassGate>} />
                         <Route path="/kids-voice-chat-pricing" element={<KidsVoiceChatPricing />} />
@@ -1087,8 +1084,7 @@ const App = () => {
                         <Route path="/story-gallery" element={<StoryGallery />} />
                         <Route path="/shared/:shareCode" element={<SharedStory />} />
                         <Route path="/kids-channel/my-gallery" element={<ProtectedRoute><KidsParentalGateGuard featureName="Magic Library" storageKey="pg_magic_library"><KidsMagicLibrary /></KidsParentalGateGuard></ProtectedRoute>} />
-                        <Route path="/kids-channel/parental-dashboard" element={<ProtectedRoute><KidsParentalDashboard /></ProtectedRoute>} />
-                        <Route path="/admin-image-editor" element={<ProtectedRoute requireAdmin={true}><AdminImageEditor /></ProtectedRoute>} />
+                        <Route path="/kids-channel/parental-dashboard" element={<ProtectedRoute><KidsParentalDashboard /></ProtectedRoute>} /></ProtectedRoute>} />
                         <Route path="/coffee" element={<Coffee />} />
                         <Route path="/coffee/checkins" element={<CoffeeCheckins />} />
                         <Route path="/coffee/buddy" element={<CoffeeBuddy />} />
@@ -1260,8 +1256,7 @@ const App = () => {
                         <Route path="/character-gallery" element={<CharacterGallery />} />
                         <Route path="/kids-stories/educational" element={<KidsGoldPassGate moduleName="Learn & Play" redirectPath="/kids-stories/educational"><EducationalStories /></KidsGoldPassGate>} />
                         <Route path="/kids-stories/bedtime" element={<KidsGoldPassGate moduleName="Bedtime Stories" redirectPath="/kids-stories/bedtime"><KidsParentalGateGuard featureName="Bedtime Stories" storageKey="pg_bedtime"><BedtimeStories /></KidsParentalGateGuard></KidsGoldPassGate>} />
-                        <Route path="/kids-stories/games" element={<KidsGoldPassGate moduleName="Story Games" redirectPath="/kids-stories/games"><StoryGames /></KidsGoldPassGate>} />
-                        <Route path="/admin/image-editor" element={<ProtectedRoute requireAdmin={true}><AdminImageEditor /></ProtectedRoute>} />
+                        <Route path="/kids-stories/games" element={<KidsGoldPassGate moduleName="Story Games" redirectPath="/kids-stories/games"><StoryGames /></KidsGoldPassGate>} /></ProtectedRoute>} />
                         <Route path="/iq-platform" element={<IQPlatform />} />
                         <Route path="/iq-platform/lab" element={<IQBrainLab />} />
                         <Route path="/iq/lab" element={<IQBrainLab />} />
