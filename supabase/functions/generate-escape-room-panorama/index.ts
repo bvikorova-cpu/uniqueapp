@@ -36,13 +36,17 @@ Requirements:
 - Rich searchable detail: furniture, doors, drawers, locks, safes, notes, keys, props and dark corners where objects could be hidden.
 - Moody atmospheric lighting matching the ${theme} theme, photorealistic, highly detailed, no watermark, no UI overlay.`;
 
-    const response = await fetch('https://api.openai.com/v1/images/generations', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/images/generations', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ model: "gpt-image-1", prompt, n: 1, size: "1536x1024" }),
+      body: JSON.stringify({
+        model: "google/gemini-3.1-flash-image",
+        messages: [{ role: "user", content: prompt }],
+        modalities: ["image", "text"],
+      }),
     });
 
     if (!response.ok) {
