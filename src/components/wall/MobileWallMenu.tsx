@@ -35,7 +35,7 @@ interface MobileWallMenuProps {
 
 const coreModules = [
   { name: "Character Companions", path: "/companions", icon: MessageCircle, color: "text-pink-500" },
-  { name: "Exclusive Experiences", path: "/ai-experiences", icon: SparklesIcon, color: "text-purple-500" },
+  
   { name: "Brand Builder", path: "/brand-builder", icon: Palette, color: "text-indigo-500" },
   { name: "Home Designer", path: "/home-designer", icon: Building2, color: "text-sky-500" },
   { name: "Beauty Studio", path: "/beauty-studio", icon: Star, color: "text-rose-500" },

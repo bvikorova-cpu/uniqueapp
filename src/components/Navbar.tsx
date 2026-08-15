@@ -223,7 +223,7 @@ const Navbar = () => {
         { path: "/masterchef-subscription", label: "KitchenStars Competition", icon: ChefHat },
         { path: "/comedy-club", label: "Comedy Club - Stand Up", icon: Mic2 },
         { path: "/influ-king", label: "Influ-King", icon: Star },
-        { path: "/ai-experiences", label: "Exclusive Experiences", icon: Sparkles },
+        
         { path: "/virtual-escape-room", label: "Virtual Escape Room", icon: Lock },
         { path: "/mystery-box", label: "Mystery Box", icon: Gift },
         { path: "/secret-santa", label: "Social Gifts Hub", icon: Gift },

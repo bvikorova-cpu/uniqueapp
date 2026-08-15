@@ -71,7 +71,7 @@ export const AdminCouponDisputes = lazy(() => import("@/pages/AdminCouponDispute
 
 // AI & Generation
 export const AIGeneration = lazy(() => import("@/pages/AIGeneration"));
-export const AIExperiences = lazy(() => import("@/pages/AIExperiences"));
+
 export const BestFriend = lazy(() => import("@/pages/BestFriend"));
 export const AICompanions = lazy(() => import("@/pages/AICompanions"));
 export const CompanionChat = lazy(() => import("@/pages/CompanionChat"));
