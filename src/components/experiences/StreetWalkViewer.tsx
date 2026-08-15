@@ -96,7 +96,7 @@ const StreetWalkViewer = ({ destination, landmark, onClose }: StreetWalkViewerPr
             linksControl: true,
             panControl: false,
             zoomControl: false,
-            showRoadLabels: false,
+            showRoadLabels: true,
             clickToGo: true,
             scrollwheel: true,
             disableDefaultUI: false,
@@ -130,6 +130,27 @@ const StreetWalkViewer = ({ destination, landmark, onClose }: StreetWalkViewerPr
   }, [onClose]);
 
   const currentStop = stops[stopIndex];
+
+  const walk = useCallback((backwards: boolean) => {
+    const panorama = panoramaRef.current;
+    if (!panorama) return;
+    const links = panorama.getLinks?.() || [];
+    if (!links.length) return;
+    const pov = panorama.getPov?.() || { heading: 0 };
+    const target = ((backwards ? pov.heading + 180 : pov.heading) % 360 + 360) % 360;
+    let best = links[0];
+    let bestDiff = 999;
+    for (const link of links) {
+      const diff = Math.abs(((link.heading - target + 540) % 360) - 180);
+      if (diff < bestDiff) {
+        bestDiff = diff;
+        best = link;
+      }
+    }
+    if (!best?.pano) return;
+    panorama.setPano(best.pano);
+    panorama.setPov({ heading: best.heading ?? pov.heading, pitch: 0 });
+  }, []);
 
   return (
     <div className="fixed inset-0 z-[60] bg-black">
@@ -221,8 +242,23 @@ const StreetWalkViewer = ({ destination, landmark, onClose }: StreetWalkViewerPr
         </div>
       )}
 
-      <div className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 rounded-full border border-white/10 bg-black/70 px-4 py-1.5 text-[11px] text-white/70 backdrop-blur-xl">
-        Drag to look · tap arrows to walk · pick a spot below
+      <div className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2">
+        <Button
+          size="sm"
+          variant="ghost"
+          className="rounded-full border border-white/10 bg-black/70 text-white backdrop-blur-xl hover:bg-black/90"
+          onClick={() => walk(true)}
+        >
+          Step back
+        </Button>
+        <Button
+          size="sm"
+          className="rounded-full bg-primary/90 text-primary-foreground hover:bg-primary"
+          onClick={() => walk(false)}
+        >
+          <Footprints className="mr-1.5 h-4 w-4" />
+          Walk forward
+        </Button>
       </div>
     </div>
   );
