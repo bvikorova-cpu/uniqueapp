@@ -27,9 +27,6 @@ const AIExperiences = () => {
   const { toast } = useToast();
   const { credits, loading: creditsLoading, refresh: refreshCredits } = useAICredits();
   const [activeView, setActiveView] = useState<ActiveView>("hub");
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isMuted, setIsMuted] = useState(true);
-  const [isPlaying, setIsVideoPlaying] = useState(true);
 
   const [loading, setLoading] = useState(false);
   const [tours, setTours] = useState<any[]>([]);
