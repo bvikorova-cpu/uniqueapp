@@ -335,8 +335,9 @@ export function PanoramaEscapeRoom({
     }
 
     try {
-      const { data, error } = await supabase.functions.invoke('generate-escape-room-panorama', {
+      const { data, error } = await supabase.functions.invoke('generate-gift-message', {
         body: { 
+          type: 'generate_escape_room_panorama',
           roomName: room.name, 
           theme: theme,
           description: room.description 
