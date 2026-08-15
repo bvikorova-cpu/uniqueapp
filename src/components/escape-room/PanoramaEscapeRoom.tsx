@@ -607,6 +607,17 @@ export function PanoramaEscapeRoom({
         />
       </Canvas>
 
+      {/* Scene generation overlay */}
+      {isGeneratingPanorama && (
+        <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-3 bg-black/70 backdrop-blur-sm pointer-events-none">
+          <Loader2 className="h-8 w-8 animate-spin text-white" />
+          <p className="text-white font-semibold">Painting “{currentRoom.name}”…</p>
+          <p className="text-white/70 text-xs">Generating a scene that matches the story</p>
+        </div>
+      )}
+
+
+
       {/* Top HUD with animations */}
       <motion.div 
         initial={{ y: -50, opacity: 0 }}
