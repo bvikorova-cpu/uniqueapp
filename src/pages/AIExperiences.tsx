@@ -11,7 +11,6 @@ import Navbar from "@/components/Navbar";
 import { useAICredits } from "@/hooks/useAICredits";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLiveStats } from "@/hooks/useLiveStats";
 import { TravelPlanner } from "@/components/experiences/TravelPlanner";
 import { VirtualPostcards } from "@/components/experiences/VirtualPostcards";
 import { DestinationRecommender } from "@/components/experiences/DestinationRecommender";
@@ -46,13 +45,6 @@ const AIExperiences = () => {
   const [streetWalkDestination, setStreetWalkDestination] = useState<string | null>(null);
   const isDragging = useRef(false);
   const lastMousePos = useRef({ x: 0, y: 0 });
-
-  const { stats } = useLiveStats([
-    { key: "tours", table: "virtual_tours" as any },
-    { key: "progressions", table: "age_progressions" as any },
-    { key: "plans", table: "travel_plans" as any },
-    { key: "postcards", table: "virtual_postcards" as any },
-  ]);
 
   const destinations = [
     { name: "Paris", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&h=600&fit=crop", credits: 5, landmark: "Eiffel Tower" },
