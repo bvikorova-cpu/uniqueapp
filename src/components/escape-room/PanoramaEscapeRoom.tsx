@@ -114,6 +114,12 @@ export function PanoramaEscapeRoom({
 
   const currentRoom = localRooms[currentRoomIndex];
 
+  // Clear a revealed clue whenever the room or solved state changes
+  useEffect(() => {
+    setRevealedClue(null);
+  }, [currentRoomIndex, solvedHotspots]);
+
+
   // Keep the authored room interactions without adding arbitrary visible markers.
   useEffect(() => {
     setLocalRooms(rooms);
