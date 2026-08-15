@@ -502,19 +502,73 @@ export function PanoramaEscapeRoom({
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="absolute z-20 top-4 left-4 right-4 flex justify-between items-start pointer-events-none"
+        className="absolute z-20 top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4 flex flex-col gap-2 pointer-events-none"
       >
-        {/* Left - Room info */}
-        <Card className="bg-black/80 border-white/20 text-white pointer-events-auto max-w-xs">
-          <CardHeader className="py-3 px-4">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <MapPin className="h-4 w-4" />
-              {currentRoom.name}
+        {/* Row: stats + actions (compact on mobile) */}
+        <div className="flex items-center justify-between gap-2 pointer-events-auto">
+          <Card className="bg-black/80 border-white/20 text-white">
+            <CardContent className="py-1.5 px-2.5 sm:py-2 sm:px-4 flex items-center gap-2 sm:gap-4">
+              <div className="flex items-center gap-1">
+                <Clock className="h-4 w-4" />
+                <span className="font-mono text-xs sm:text-sm">{formatTime(elapsedTime)}</span>
+              </div>
+              <div className="flex items-center gap-1 text-xs sm:text-sm">
+                <Lightbulb className="h-4 w-4" />
+                <span>{hintsUsed}</span>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleMute}
+                aria-label={isMuted ? "Unmute" : "Mute"}
+                className="text-white p-1 h-auto"
+              >
+                {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+              </Button>
+            </CardContent>
+          </Card>
+
+          <div className="flex items-center gap-2">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => generateAIPanorama(currentRoomIndex)}
+              disabled={isGeneratingPanorama}
+              aria-label="Generate a new scene"
+              className="h-9 px-2.5 sm:px-3"
+            >
+              {isGeneratingPanorama ? (
+                <Loader2 className="h-4 w-4 animate-spin sm:mr-1" />
+              ) : (
+                <Wand2 className="h-4 w-4 sm:mr-1" />
+              )}
+              <span className="hidden sm:inline">New scene</span>
+            </Button>
+
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={onExit}
+              aria-label="Exit room"
+              className="h-9 px-2.5 sm:px-3"
+            >
+              <ArrowLeft className="h-4 w-4 sm:mr-1" />
+              <span className="hidden sm:inline">Exit</span>
+            </Button>
+          </div>
+        </div>
+
+        {/* Room info */}
+        <Card className="bg-black/75 border-white/20 text-white pointer-events-auto w-full sm:max-w-xs">
+          <CardHeader className="py-2 px-3 sm:py-3 sm:px-4">
+            <CardTitle className="text-sm sm:text-lg flex items-center gap-2">
+              <MapPin className="h-4 w-4 shrink-0" />
+              <span className="truncate">{currentRoom.name}</span>
             </CardTitle>
           </CardHeader>
-          <CardContent className="py-2 px-4">
-            <p className="text-xs text-gray-300 mb-2">{currentRoom.description}</p>
-            <div className="flex gap-2 text-xs">
+          <CardContent className="py-1.5 px-3 sm:py-2 sm:px-4">
+            <p className="text-[11px] sm:text-xs text-gray-300 mb-2 line-clamp-2">{currentRoom.description}</p>
+            <div className="flex flex-wrap gap-2 text-[10px] sm:text-xs items-center">
               <Badge variant="outline" className="border-white/30">
                 Room {currentRoomIndex + 1}/{rooms.length}
               </Badge>
@@ -523,80 +577,20 @@ export function PanoramaEscapeRoom({
                   ✨ {foundHiddenItems} hidden
                 </Badge>
               )}
+              <span className="text-white/70">Progress: {Math.round(progress)}%</span>
+            </div>
+            <div className="mt-2 bg-white/10 rounded-full p-0.5">
+              <motion.div
+                className="h-1.5 bg-gradient-to-r from-green-500 to-emerald-400 rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: `${progress}%` }}
+                transition={{ duration: 0.5 }}
+              />
             </div>
           </CardContent>
         </Card>
-
-        {/* Right - Stats */}
-        <div className="flex flex-col gap-2 pointer-events-auto">
-          <Card className="bg-black/80 border-white/20 text-white">
-            <CardContent className="py-2 px-4 flex items-center gap-4">
-              <div className="flex items-center gap-1">
-                <Clock className="h-4 w-4" />
-                <span className="font-mono">{formatTime(elapsedTime)}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Lightbulb className="h-4 w-4" />
-                <span>{hintsUsed}</span>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={toggleMute}
-                className="text-white p-1 h-auto"
-              >
-                {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-              </Button>
-            </CardContent>
-          </Card>
-          
-          <Button 
-            variant="secondary" 
-            size="sm"
-            onClick={() => generateAIPanorama(currentRoomIndex)}
-            disabled={isGeneratingPanorama}
-            className="w-full"
-          >
-            {isGeneratingPanorama ? (
-              <Loader2 className="h-4 w-4 mr-1 animate-spin" />
-            ) : (
-              <Wand2 className="h-4 w-4 mr-1" />
-            )}
-            New scene
-
-          </Button>
-          
-          <Button 
-            variant="destructive" 
-            size="sm"
-            onClick={onExit}
-            className="w-full"
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Exit
-          </Button>
-        </div>
       </motion.div>
 
-      {/* Progress bar */}
-      <motion.div 
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 0.4 }}
-        className="absolute z-20 top-20 left-1/2 -translate-x-1/2 w-64 pointer-events-none"
-      >
-        <div className="bg-black/60 rounded-full p-1">
-          <motion.div 
-            className="h-2 bg-gradient-to-r from-green-500 to-emerald-400 rounded-full"
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.5 }}
-          />
-        </div>
-        <p className="text-center text-white/80 text-xs mt-1">
-          Progress: {Math.round(progress)}%
-        </p>
-      </motion.div>
 
       {/* Bottom - Inventory with animation */}
       <motion.div 
