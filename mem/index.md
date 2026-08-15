@@ -9,6 +9,7 @@
 - Theme: Primary purple (270 91%), accent hot pink (330 100%), 0.75rem radius, dark luxury glassmorphism.
 - Branding: "Unique" wordmark in Lobster Two Bold font.
 - Security: RLS lockdown, sanitized anonymous feeds, server-side currency control.
+- Credit modules (9 total): Voice Chat (1cr), Drawing (2cr), Reading (2cr), Homework (2cr), Story (3cr), Career (5cr), Coloring (5cr) + Academy banner + GoldPass (neutralized to false).
 - IP: No third-party brands/characters (Disney, Pixar, Marvel, DC, Barbie, Harry Potter…) in assets, labels or copy — no licenses.
 
 ## Memories
