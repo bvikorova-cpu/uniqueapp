@@ -9,10 +9,12 @@
 - Theme: Primary purple (270 91%), accent hot pink (330 100%), 0.75rem radius, dark luxury glassmorphism.
 - Branding: "Unique" wordmark in Lobster Two Bold font.
 - Security: RLS lockdown, sanitized anonymous feeds, server-side currency control.
-- Credit modules (9 total): Voice Chat (1cr), Drawing (2cr), Reading (2cr), Homework (2cr), Story (3cr), Career (5cr), Coloring (5cr) + Academy banner + GoldPass (neutralized to false).
+- IP: No third-party brands/characters (Disney, Pixar, Marvel, DC, Barbie, Harry Potter…) in assets, labels or copy — no licenses.
 
 ## Memories
+- [IP-safe content only](mem://constraints/ip-safe-content) — Forbidden brands/characters; Kids Shows catalog removed, gifts rebranded to fantasy/heroes.
 - [No fan club subscriptions](mem://constraints/no-fanclub-subscriptions) — VIP subscriptions removed; live streams public with gifts + Super Chats.
+
 - [Monetization Rules](mem://features/monetization) — Revenue splits (e.g., 80/20 for Brand Collabs), paid-only strategy, Stripe Connect.
 - [Megatalent Subscription Split](mem://features/megatalent-subscription-split) — Premium €10 / TOP €15: flat €5 referrer + rest platform. Subs DO NOT fund prize pool.
 - [Megatalent Contest Periods](mem://features/megatalent-contest-periods) — Quarterly schedule, fixed €10,000/quarter via mt_contest_settings table. Q3+Q4 2026 seeded.
