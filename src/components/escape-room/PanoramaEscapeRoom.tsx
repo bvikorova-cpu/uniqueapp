@@ -337,7 +337,16 @@ export function PanoramaEscapeRoom({
         }
       });
 
-      if (error) throw error;
+      // Edge function returns a structured failure payload even on non-2xx
+      if (data?.error || error) {
+        const detail = {
+          message: data?.error ?? error?.message ?? 'Unknown error',
+          errorType: data?.errorType ?? 'invoke_failed',
+          logId: data?.logId ?? null,
+          status: data?.status ?? null,
+        };
+        throw Object.assign(new Error(detail.message), detail);
+      }
 
       if (data?.imageUrl) {
         try { sessionStorage.setItem(sceneCacheKey(roomIdx), data.imageUrl); } catch { /* quota */ }
@@ -357,12 +366,20 @@ export function PanoramaEscapeRoom({
           });
         }
       }
-    } catch (err) { console.error('Failed to generate scene:', err);
+    } catch (err) {
+      const info = err as Error & { errorType?: string; logId?: string | null; status?: number | null };
+      console.error('Failed to generate scene:', info.errorType, info.logId, info.message);
       sounds.playEffect('error');
       toast({
         title: "Scene generation failed",
-        description: "Showing the default scene — tap \"New scene\" to retry.",
-        variant: "destructive" });
+        description: [
+          `Reason: ${info.errorType ?? 'unknown'}${info.status ? ` (HTTP ${info.status})` : ''}`,
+          info.message,
+          info.logId ? `Log ID: ${info.logId}` : null,
+          'Showing the default scene — tap "New scene" to retry.',
+        ].filter(Boolean).join(' · '),
+        variant: "destructive",
+        duration: 12000 });
     } finally {
       setIsGeneratingPanorama(false);
     }
