@@ -4,6 +4,7 @@ import { requireAiCredits } from "../_shared/credit-check.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 import { callOpenAI, callOpenAIRaw } from "../_shared/openai-safe.ts";
+import { tryVertexImage } from "../_shared/vertexDirect.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
@@ -67,6 +68,50 @@ serve(async (req) => {
 
   try {
     const reqBody = await req.json();
+
+    // Escape-room scene generation lives in this deployed universal router.
+    // The legacy function name is transparently mapped here by the web client.
+    // A room unlock already paid for the scene, so this route authenticates and
+    // rate-limits the request without deducting a second credit charge.
+    if (reqBody.type === "generate_escape_room_panorama" || reqBody.type === "escape_panorama") {
+      const logId = crypto.randomUUID().slice(0, 8);
+      const auth = await requireAiCredits(req, corsHeaders, {
+        credits: 0,
+        usageType: "escape_room_scene",
+        rateLimit: { max: 30, windowSec: 60, bucket: "ai.escape_room_scene" },
+      });
+      if (auth.errorResponse) return auth.errorResponse;
+
+      const roomName = String(reqBody.roomName || "").trim().slice(0, 160);
+      const theme = String(reqBody.theme || "").trim().slice(0, 120);
+      const description = String(reqBody.description || "").trim().slice(0, 1200);
+      if (!roomName || !theme) {
+        console.error(`[escape-room-scene] logId=${logId} type=bad_request`);
+        return new Response(JSON.stringify({
+          error: "Room name and theme are required.", errorType: "bad_request", logId, status: 400,
+        }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+      const prompt = `Ultra-wide cinematic first-person view inside the escape room "${roomName}".
+Theme: ${theme}. Story: ${description || roomName}.
+Clearly depict this exact location. Include rich searchable details such as furniture, doors, drawers, locks, safes, notes, keys, props and shadowed hiding places. Photorealistic, highly detailed, atmospheric lighting, wide-angle environmental view, no people, no plants, no text, no watermark, no interface.`;
+      const imageResult = await tryVertexImage(prompt, "1536x1024", 1);
+      const b64 = imageResult?.data?.[0]?.b64_json;
+      const directUrl = imageResult?.data?.[0]?.url;
+      const imageUrl = b64 ? `data:image/png;base64,${b64}` : directUrl;
+
+      if (!imageUrl) {
+        console.error(`[escape-room-scene] logId=${logId} type=vertex_error room=${roomName}`);
+        return new Response(JSON.stringify({
+          error: "Vertex AI could not generate the scene. Please try again shortly.",
+          errorType: "vertex_error", logId, status: 503,
+        }), { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+      return new Response(JSON.stringify({ imageUrl, logId }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     // ─── STORY VIDEO PIPELINE (multi-scene story + illustrations + TTS) ───
     if (reqBody.type === "story_video" || reqBody.type === "generate_story_video") {
