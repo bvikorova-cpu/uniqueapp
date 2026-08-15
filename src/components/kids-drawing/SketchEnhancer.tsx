@@ -13,7 +13,7 @@ import { useKidsDrawingGallery } from "@/hooks/useKidsDrawingGallery";
 const STYLES: Array<{ id: string; label: string; emoji: string }> = [
   { id: "cartoon", label: "Cartoon", emoji: "🎨" },
   { id: "watercolor", label: "Watercolor", emoji: "💧" },
-  { id: "pixar", label: "Pixar 3D", emoji: "✨" },
+  { id: "pixar", label: "Animated 3D", emoji: "✨" },
   { id: "anime", label: "Anime", emoji: "🌸" },
   { id: "storybook", label: "Storybook", emoji: "📖" },
   { id: "pencil", label: "Colored Pencil", emoji: "✏️" },

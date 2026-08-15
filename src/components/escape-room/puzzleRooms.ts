@@ -785,9 +785,9 @@ export const fantasyRooms: RoomData[] = [
         label: "Crystal ball",
         puzzle: {
           type: "riddle",
-          question: "The ball glows: 'What 9-letter spell opens doors? Starts with ALO...'",
-          hint: "A famous spell from Harry Potter for opening...",
-          answer: "alohomora",
+          question: "The ball glows: 'What 7-letter Latin word means to open? Starts with APE...'",
+          hint: "Latin for 'I open' — think APERIRE...",
+          answer: "aperire",
           reward: {
             id: "wand",
             name: "Magic Wand",

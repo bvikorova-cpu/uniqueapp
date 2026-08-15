@@ -55,7 +55,7 @@ export const AnimatedAvatarStudio = ({ imageUrl, audioUrl, onSaved }: Props) => 
         <div>
           <p className="text-xs uppercase tracking-wider text-muted-foreground font-bold">Animated Avatar</p>
           <p className="text-base font-black bg-gradient-to-r from-fuchsia-300 to-pink-400 bg-clip-text text-transparent">
-            Pixar-style portrait + voiceover
+            3D animated portrait + voiceover
           </p>
         </div>
       </div>
@@ -85,7 +85,7 @@ export const AnimatedAvatarStudio = ({ imageUrl, audioUrl, onSaved }: Props) => 
 
         <div className="space-y-3">
           <div>
-            <Label className="text-xs">Describe how you want to look (Pixar style)</Label>
+            <Label className="text-xs">Describe how you want to look (3D animated style)</Label>
             <Input
               value={desc}
               onChange={(e) => setDesc(e.target.value)}

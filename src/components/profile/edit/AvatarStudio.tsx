@@ -9,7 +9,7 @@ import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 const STYLES = [
   { id: "realistic", label: "Realistic", emoji: "📷" },
   { id: "anime", label: "Anime", emoji: "🎌" },
-  { id: "pixar", label: "Pixar 3D", emoji: "🎬" },
+  { id: "pixar", label: "Animated 3D", emoji: "🎬" },
   { id: "cyberpunk", label: "Cyberpunk", emoji: "🌃" },
   { id: "watercolor", label: "Watercolor", emoji: "🎨" },
   { id: "oilpainting", label: "Oil Painting", emoji: "🖼️" },

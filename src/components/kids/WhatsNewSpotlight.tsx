@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 const newItems = [
-  { title: "Frozen Adventures 2", type: "New Story", emoji: "❄️", color: "bg-blue-500", path: "/kids-stories/bedtime" },
+  { title: "Snow Kingdom Adventures", type: "New Story", emoji: "❄️", color: "bg-blue-500", path: "/kids-stories/bedtime" },
   { title: "Pirate Treasure Hunt", type: "New Game", emoji: "🏴‍☠️", color: "bg-red-500", path: "/kids-stories/games" },
   { title: "Space Explorer Badge", type: "New Badge", emoji: "🚀", color: "bg-purple-500", path: "/kids-channel/hub" },
 ];
