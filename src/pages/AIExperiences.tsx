@@ -201,6 +201,15 @@ const AIExperiences = () => {
       toast({ title: "✨ Virtual Tour Created!", description: `Enjoy your journey to ${dest}` });
       await loadTours();
       await refreshCredits();
+      const { data: fresh } = await supabase.from('virtual_tours').select('*').eq('destination', dest).order('created_at', { ascending: false }).limit(1);
+      if (fresh?.[0] && (fresh[0].image_urls?.length ?? 0) > 0) {
+        setSelectedTour(fresh[0]);
+        setCurrentImageIndex(0);
+        setIsAutoPlaying(false);
+        setViewAngle({ x: 0, y: 0 });
+        setCompassAngle(0);
+      }
+
     } catch (error) {
       console.error('Error:', error);
       toast({ title: "Error", description: "Failed to generate virtual tour", variant: "destructive" });
