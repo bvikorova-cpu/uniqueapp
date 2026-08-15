@@ -43,19 +43,27 @@ serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    // Check AI credits (5 credits per image)
-    const { data: credits } = await supabaseClient
+    // Check AI credits (3 credits per image — unified platform cost)
+    const COST = 3;
+    const admin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    const { data: credits } = await admin
       .from('ai_credits')
       .select('credits_remaining')
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
 
-    if (!credits || credits.credits_remaining < 5) {
+    const available = credits?.credits_remaining ?? 0;
+    if (available < COST) {
       return new Response(
-        JSON.stringify({ error: 'Insufficient AI credits. Need 5 credits for image generation.' }),
+        JSON.stringify({ error: `Insufficient AI credits. Need ${COST} credits for image generation (you have ${available}).` }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 402 }
       );
     }
+
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
