@@ -569,7 +569,7 @@ export function PanoramaEscapeRoom({
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="absolute z-20 top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4 flex flex-col gap-2 pointer-events-none"
+        className="absolute z-20 top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4 flex flex-col gap-2 pointer-events-none select-none [-webkit-touch-callout:none]"
       >
         {/* Row: stats + actions (compact on mobile) */}
         <div className="flex items-center justify-between gap-2 pointer-events-auto">
