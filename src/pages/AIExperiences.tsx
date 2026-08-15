@@ -374,9 +374,12 @@ const AIExperiences = () => {
                   </div>
                 </motion.div>
                 <div className="flex items-center gap-2">
+                  <Button size="sm" variant="ghost" className="rounded-xl bg-white/10 text-white backdrop-blur-xl border border-white/20 hover:bg-white/20" onClick={() => { setSelectedTour(null); handleVirtualTour(selectedTour.destination, destinations.find(d => d.name === selectedTour.destination)?.credits || 5); }}>
+                    <RotateCcw className="h-4 w-4 mr-2" />Regenerate
+                  </Button>
                   {hasStreetWalk(selectedTour.destination) && (
-                    <Button size="sm" className="rounded-xl bg-white/15 text-white backdrop-blur-xl border border-white/20 hover:bg-white/25" onClick={() => setStreetWalkDestination(selectedTour.destination)}>
-                      <Footprints className="h-4 w-4 mr-2" />Walk the streets
+                    <Button size="sm" className="rounded-xl bg-white/15 text-white backdrop-blur-xl border border-white/20 hover:bg-white/25 hidden sm:flex" onClick={() => setStreetWalkDestination(selectedTour.destination)}>
+                      <Footprints className="h-4 w-4 mr-2" />Real streets
                     </Button>
                   )}
                   <Button variant="ghost" size="icon" className="bg-black/50 backdrop-blur-xl border border-white/10 text-white hover:bg-white/20 rounded-xl" onClick={() => setIsFullscreen(!isFullscreen)}>
