@@ -396,19 +396,26 @@ export function PanoramaEscapeRoom({
 
         if (allChallengesSolved && hasRequiredItem) {
           if (requiredItem) removeFromInventory(requiredItem.id);
-          if (hotspot.nextRoom !== undefined && hotspot.nextRoom < rooms.length) {
+          if (hotspot.nextRoom !== undefined && hotspot.nextRoom < localRooms.length) {
             enterRoom(hotspot.nextRoom);
             toast({
               title: "🚪 New room!",
-              description: `Entering: ${rooms[hotspot.nextRoom].name}`
+              description: `Entering: ${localRooms[hotspot.nextRoom].name}`
             });
-          } else if (currentRoomIndex === rooms.length - 1 || hotspot.nextRoom === 999) {
+          } else if (currentRoomIndex === localRooms.length - 1 || hotspot.nextRoom === 999) {
             // Last room - complete!
-            sounds.playEffect('complete');
-            const baseScore = Math.max(0, 1000 - (elapsedTime * 2) - (hintsUsed * 100));
-            const hiddenBonus = foundHiddenItems * 50;
-            const finalScore = baseScore + hiddenBonus;
-            onComplete(finalScore, elapsedTime);
+            if (!bonusRoomAdded && currentRoomIndex === rooms.length - 1) {
+              // Finished the 3rd authored room -> offer reward before true completion
+              sounds.playEffect('success');
+              setShowRewardDialog(true);
+            } else {
+              // Bonus room finished or explicit completion -> truly complete
+              sounds.playEffect('complete');
+              const baseScore = Math.max(0, 1000 - (elapsedTime * 2) - (hintsUsed * 100));
+              const hiddenBonus = foundHiddenItems * 50;
+              const finalScore = baseScore + hiddenBonus;
+              onComplete(finalScore, elapsedTime);
+            }
           }
         } else { sounds.playEffect('error');
           toast({
