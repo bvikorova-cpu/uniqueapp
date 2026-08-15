@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Award } from "lucide-react";
+import { ArrowLeft, Award, Search, CreditCard, Puzzle, Trophy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 import { useEscapeRoomRealStats } from "@/hooks/useEscapeRoomRealStats";
 import { computeEscapeBadges } from "../escapeBadges";
 
@@ -18,7 +17,6 @@ export function EscapeBadgesView({ onBack }: Props) {
 
   return (
     <>
-      <FloatingHowItWorks title={"Escape Badges View - How it works"} steps={[{ title: 'Open', desc: 'Access the Escape Badges View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Escape Badges View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="max-w-3xl mx-auto">
