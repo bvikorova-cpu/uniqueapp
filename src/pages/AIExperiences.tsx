@@ -11,7 +11,6 @@ import Navbar from "@/components/Navbar";
 import { useAICredits } from "@/hooks/useAICredits";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLiveStats } from "@/hooks/useLiveStats";
 import { TravelPlanner } from "@/components/experiences/TravelPlanner";
 import { VirtualPostcards } from "@/components/experiences/VirtualPostcards";
 import { DestinationRecommender } from "@/components/experiences/DestinationRecommender";
