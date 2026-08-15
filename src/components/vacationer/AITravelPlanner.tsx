@@ -121,9 +121,31 @@ Use only EUR (€) for prices. Be specific with real place names, never generic 
           </Button>
           {result && (
             <Card className="bg-card/50">
-              <CardContent className="pt-4 whitespace-pre-wrap text-sm">{result}</CardContent>
+              <CardContent className="space-y-4 pt-4">
+                <div className="flex flex-wrap gap-2">
+                  <Button variant="secondary" size="sm" onClick={generateImage} disabled={imgLoading}>
+                    {imgLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ImageIcon className="mr-2 h-4 w-4" />}
+                    {imgLoading ? "Creating image..." : image ? "Generate again (5 credits)" : "Generate destination image (5 credits)"}
+                  </Button>
+                  {image && (
+                    <Button variant="outline" size="sm" onClick={downloadImage}>
+                      <Download className="mr-2 h-4 w-4" />Download
+                    </Button>
+                  )}
+                </div>
+                {image && (
+                  <img
+                    src={image}
+                    alt={`AI generated travel image of ${form.destination}`}
+                    className="w-full rounded-xl border border-border object-cover"
+                    loading="lazy"
+                  />
+                )}
+                <AiMarkdown content={result} />
+              </CardContent>
             </Card>
           )}
+
         </CardContent>
       </Card>
     </div>
