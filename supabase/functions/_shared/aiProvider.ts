@@ -2,11 +2,11 @@ import "./aiRedirect.ts";
 /**
  * Centralized AI Provider Module (legacy compatibility wrapper)
  *
- * Vertex AI (postpay) is primary. Lovable AI Gateway is fallback only.
- * OpenAI is never called directly.
+ * Vertex AI (postpay) is the only provider.
  */
 
 import { callUnifiedAI, callUnifiedAIJSON, UnifiedMessage } from "./unifiedAI.ts";
+import { tryVertexChat } from "./vertexDirect.ts";
 
 export const AI_CONFIG = { // Default model for all AI calls
   defaultModel: "gpt-4o-mini",
@@ -87,27 +87,9 @@ export async function chatCompletion(options: AIRequestOptions): Promise<AIRespo
  * for streaming is not yet implemented in the unified provider.
  */
 export async function streamChatCompletion(options: AIRequestOptions): Promise<Response> {
-  const key = Deno.env.get("LOVABLE_API_KEY");
-  if (!key) throw new Error("AI is not configured");
-
-  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Lovable-API-Key": key,
-      "Content-Type": "application/json" },
-    body: JSON.stringify({ model: "google/gemini-3.6-flash",
-      messages: options.messages,
-      stream: true }) });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error("OpenAI API error:", response.status, errorText);
-    if (response.status === 429) throw new AIRateLimitError("OpenAI rate limit exceeded");
-    if (response.status === 402) throw new AIPaymentError("OpenAI payment required");
-    throw new Error(`OpenAI API error: ${response.status}`);
-  }
-
-  return response;
+  const data = await tryVertexChat({ model: options.model, messages: options.messages });
+  if (!data) throw new AIRateLimitError("Vertex AI is temporarily unavailable");
+  return new Response(JSON.stringify(data), { headers: { "Content-Type": "application/json" } });
 }
 
 /**
@@ -192,16 +174,7 @@ export async function analyzeImage(
   imageUrl: string,
   prompt: string
 ): Promise<AIResponse> {
-  // Vision is not yet supported in the unified fallback, so we try OpenAI directly.
-  const key = Deno.env.get("LOVABLE_API_KEY");
-  if (!key) throw new Error("AI is not configured for vision");
-
-  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Lovable-API-Key": key,
-      "Content-Type": "application/json" },
-    body: JSON.stringify({
+  const data = await tryVertexChat({
       model: "google/gemini-3.6-flash",
       messages: [
         {
@@ -211,14 +184,8 @@ export async function analyzeImage(
             { type: "image_url", image_url: { url: imageUrl } },
           ] },
       ],
-      max_completion_tokens: 1000 }) });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Vision API error: ${response.status} - ${errorText}`);
-  }
-
-  const data = await response.json();
+       max_completion_tokens: 1000 });
+  if (!data) throw new Error("Vertex AI vision is temporarily unavailable");
   return { content: data.choices[0].message.content,
     usage: data.usage };
 }

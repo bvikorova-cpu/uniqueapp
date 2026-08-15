@@ -1,15 +1,13 @@
 import "./aiRedirect.ts";
-import { hasDirectGemini, tryDirectGeminiChat } from "./geminiDirect.ts";
+import { tryVertexChat, tryVertexImage, tryVertexSpeech } from "./vertexDirect.ts";
 
 /**
  * Unified AI provider for all Supabase Edge Functions.
  *
  * Behavior:
  *  - Vertex AI (postpay service account) is the PRIMARY provider for all calls.
- *  - The Lovable AI Gateway is only used as a fallback when Vertex is unavailable.
- *  - If Vertex fails with a retryable status (429, 402, >=500), we fall back to
- *    the Lovable AI Gateway with backoff.
- *  - OpenAI is never called directly.
+ *  - No Lovable AI Gateway, Gemini API-key, or OpenAI fallback is permitted.
+ *  - If Vertex fails, the request fails clearly after bounded retries.
  *
  * No provider-specific errors are exposed to the user.
  */
@@ -33,7 +31,7 @@ export interface UnifiedToolDefinition {
 }
 
 export interface UnifiedAIOptions {
-  /** OpenAI model id. We map it to a Lovable gateway id when needed. */
+  /** Legacy caller model id; normalized to an enabled Vertex model. */
   model?: string;
   temperature?: number;
   max_tokens?: number;
@@ -64,9 +62,7 @@ export class UnifiedAIError extends Error {
   }
 }
 
-const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
-
-const GATEWAY_MODEL_MAP: Record<string, string> = {
+const VERTEX_MODEL_MAP: Record<string, string> = {
   "gpt-4o-mini": "openai/gpt-5.4-mini",
   "gpt-4o": "openai/gpt-5.5",
   "gpt-4o-latest": "openai/gpt-5.5",
@@ -77,7 +73,7 @@ const GATEWAY_MODEL_MAP: Record<string, string> = {
 
 /** Low-cost defaults used for the first attempt of every call. */
 export const CHEAP_OPENAI_MODEL = "gpt-4o-mini";
-export const CHEAP_GATEWAY_MODEL = "google/gemini-3.6-flash";
+export const CHEAP_VERTEX_MODEL = "google/gemini-3.6-flash";
 
 /** Models we consider expensive and downgrade on the first (cheap) attempt. */
 function isExpensiveModel(model: string): boolean {
@@ -88,21 +84,21 @@ function isRetryableStatus(status: number) {
   return status === 429 || status === 402 || status >= 500;
 }
 
-function gatewayModel(model?: string): string {
-  if (!model) return CHEAP_GATEWAY_MODEL;
+function vertexCompatibleModel(model?: string): string {
+  if (!model) return CHEAP_VERTEX_MODEL;
   if (model.includes("/")) return model; // already a gateway id
-  return GATEWAY_MODEL_MAP[model] || `openai/${model}`;
+  return VERTEX_MODEL_MAP[model] || `openai/${model}`;
 }
 
 /**
  * Resolve the model to use for a given attempt.
  * cheap=true -> force the low-cost model, unless the caller asked for "premium".
  */
-function resolveModel(opts: UnifiedAIOptions, useGateway: boolean, cheap: boolean): string {
+function resolveModel(opts: UnifiedAIOptions, useVertex: boolean, cheap: boolean): string {
   const requested = opts.model || CHEAP_OPENAI_MODEL;
-  const target = useGateway ? gatewayModel(requested) : requested;
+  const target = useVertex ? vertexCompatibleModel(requested) : requested;
   if (!cheap || opts.tier === "premium") return target;
-  if (useGateway) return CHEAP_GATEWAY_MODEL;
+  if (useVertex) return CHEAP_VERTEX_MODEL;
   if (!isExpensiveModel(target)) return target;
   return CHEAP_OPENAI_MODEL;
 }
@@ -111,14 +107,14 @@ function resolveModel(opts: UnifiedAIOptions, useGateway: boolean, cheap: boolea
 function buildBody(
   messages: UnifiedMessage[],
   opts: UnifiedAIOptions,
-  useGateway: boolean,
+  useVertex: boolean,
   cheap: boolean,
 ): Record<string, unknown> {
-  const targetModel = resolveModel(opts, useGateway, cheap);
+  const targetModel = resolveModel(opts, useVertex, cheap);
   const body: Record<string, unknown> = { model: targetModel, messages };
 
   // Newer OpenAI generations (gpt-5.x and o-series) reject `max_tokens` and
-  // require `max_completion_tokens`. The Lovable gateway maps legacy ids onto
+  // require `max_completion_tokens`. The Vertex compatibility layer maps legacy ids onto
   // those models, so translate the body instead of failing with a 400.
   const needsCompletionTokens = /gpt-5|o1|o3|o4/i.test(targetModel);
   const requested = opts.max_completion_tokens ?? opts.max_tokens;
@@ -147,52 +143,17 @@ function buildBody(
 
 
 async function callProviderRaw(
-  useGateway: boolean,
+  _useVertex: boolean,
   messages: UnifiedMessage[],
   opts: UnifiedAIOptions,
   cheap: boolean,
 ): Promise<any> {
 
-  const key = Deno.env.get("LOVABLE_API_KEY");
-  const providerName = "Lovable AI Gateway";
+  const providerName = "Vertex AI";
   const body = buildBody(messages, opts, true, cheap);
-
-  // 1) Try the project's own Gemini API key first (cheapest, highest limits).
-  if (hasDirectGemini()) {
-    const direct = await tryDirectGeminiChat(body);
-    if (direct) return direct;
-  }
-
-  // 2) Fall back to the Lovable AI Gateway.
-  if (!key) {
-    throw new UnifiedAIError(500, `${providerName} key is not configured`, providerName);
-  }
-
-  const headers = { "Lovable-API-Key": key, "Content-Type": "application/json" };
-
-  const res = await fetch(GATEWAY_URL, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(body),
-  });
-
-
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    console.error(`UnifiedAI ${providerName} error:`, res.status, text);
-    if (res.status === 429) {
-      throw new UnifiedAIError(429, "AI is busy right now. Please try again in a few seconds.", providerName);
-    }
-    if (res.status === 402) {
-      throw new UnifiedAIError(402, "AI service temporarily unavailable. Please try again later.", providerName);
-    }
-    if (res.status >= 500) {
-      throw new UnifiedAIError(502, "AI provider is having issues. Please try again.", providerName);
-    }
-    throw new UnifiedAIError(res.status, "AI request failed. Please try again.", providerName);
-  }
-
-  return await res.json();
+  const result = await tryVertexChat(body);
+  if (!result) throw new UnifiedAIError(503, "Vertex AI is temporarily unavailable. Please try again.", providerName);
+  return result;
 }
 
 export interface UnifiedAIResult {
@@ -203,17 +164,17 @@ export interface UnifiedAIResult {
 }
 
 async function callProvider(
-  useGateway: boolean,
+  useVertex: boolean,
   messages: UnifiedMessage[],
   opts: UnifiedAIOptions,
   cheap = true,
 ): Promise<UnifiedAIResult> {
-  const data = await callProviderRaw(useGateway, messages, opts, cheap);
+  const data = await callProviderRaw(useVertex, messages, opts, cheap);
   const message = data.choices?.[0]?.message;
 
   const content = message?.content?.toString().trim() || "";
   if (!content && !message?.tool_calls) {
-    throw new UnifiedAIError(502, "AI returned an empty response. Please try again.", "Lovable AI Gateway");
+    throw new UnifiedAIError(502, "AI returned an empty response. Please try again.", "Vertex AI");
   }
   return {
     content,
@@ -224,8 +185,7 @@ async function callProvider(
 }
 
 /**
- * Call a chat-completion with automatic provider fallback.
- * OpenAI is primary. Lovable AI Gateway is the fallback.
+ * Call a chat-completion through Vertex AI only.
  */
 export async function callUnifiedAI(
   messages: UnifiedMessage[],
@@ -239,12 +199,7 @@ export async function callUnifiedAIEx(
   messages: UnifiedMessage[],
   opts: UnifiedAIOptions = {},
 ): Promise<UnifiedAIResult> {
-  const lovableKey = Deno.env.get("LOVABLE_API_KEY");
-  if (!lovableKey) {
-    throw new UnifiedAIError(500, "AI is not configured. Please add an API key.");
-  }
-
-  // PLATFORM-WIDE RULE: Vertex AI (postpay) is primary. Lovable gateway is fallback. OpenAI is never used.
+  // PLATFORM-WIDE RULE: Vertex AI (postpay) is the only provider.
   const order: boolean[] = [true];
   let lastError: UnifiedAIError | undefined;
 
@@ -253,9 +208,9 @@ export async function callUnifiedAIEx(
   const passes: boolean[] = opts.tier === "premium" ? [false] : [true, false];
 
   for (const cheap of passes) {
-    for (const useGateway of order) {
+    for (const useVertex of order) {
       try {
-        return await callProvider(useGateway, messages, opts, cheap);
+        return await callProvider(useVertex, messages, opts, cheap);
       } catch (e) {
         if (e instanceof UnifiedAIError && isRetryableStatus(e.status)) {
           lastError = e;
@@ -271,10 +226,10 @@ export async function callUnifiedAIEx(
 
   // Final backoff retry with the cheap model.
   for (let attempt = 1; attempt <= 2; attempt++) {
-    for (const useGateway of order) {
+    for (const useVertex of order) {
       try {
         await new Promise((r) => setTimeout(r, attempt * 1200));
-        return await callProvider(useGateway, messages, opts, opts.tier !== "premium");
+        return await callProvider(useVertex, messages, opts, opts.tier !== "premium");
       } catch (e) {
         if (e instanceof UnifiedAIError) lastError = e;
       }
@@ -377,37 +332,16 @@ export async function askAIJSON<T = any>(system: string, user: string, opts?: Om
   );
 }
 
-/** Image generation via OpenAI Images API (no gateway fallback for images). */
+/** Vertex image generation. Export name is retained for caller compatibility. */
 export async function generateOpenAIImage(prompt: string, size: "1024x1024" | "1024x1536" | "1536x1024" = "1024x1024"): Promise<{ url?: string; b64_json?: string }> {
-  const key = Deno.env.get("LOVABLE_API_KEY");
-  if (!key) throw new UnifiedAIError(500, "AI image generation is not configured");
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: "openai/gpt-image-1-mini", prompt, n: 1, size, quality: "low" }),
-  });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    console.error("OpenAI image generation error:", res.status, text);
-    throw new UnifiedAIError(res.status === 429 ? 429 : res.status === 402 ? 402 : 502, "Image generation failed. Please try again.");
-  }
-  const data = await res.json();
+  const data = await tryVertexImage(prompt, size, 1);
+  if (!data) throw new UnifiedAIError(503, "Vertex AI image generation is temporarily unavailable.", "Vertex AI");
   return { b64_json: data?.data?.[0]?.b64_json, url: data?.data?.[0]?.url };
 }
 
-/** Text-to-speech via OpenAI TTS API (no gateway fallback for audio). */
-export async function generateOpenAITTS(text: string, voice: string = "nova", speed: number = 1.0): Promise<ArrayBuffer> {
-  const key = Deno.env.get("LOVABLE_API_KEY");
-  if (!key) throw new UnifiedAIError(500, "LOVABLE_API_KEY is not configured for TTS");
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/audio/speech", {
-    method: "POST",
-    headers: { "Lovable-API-Key": key, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: "openai/gpt-4o-mini-tts", voice, input: text.slice(0, 4000), response_format: "mp3", speed }),
-  });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    console.error("OpenAI TTS error:", res.status, text);
-    throw new UnifiedAIError(res.status === 429 ? 429 : res.status === 402 ? 402 : 502, "Text-to-speech failed. Please try again.");
-  }
-  return await res.arrayBuffer();
+/** Vertex text-to-speech. Export name is retained for caller compatibility. */
+export async function generateOpenAITTS(text: string, voice: string = "Kore", _speed: number = 1.0): Promise<ArrayBuffer> {
+  const audio = await tryVertexSpeech(text.slice(0, 4000), voice);
+  if (!audio) throw new UnifiedAIError(503, "Vertex AI text-to-speech is temporarily unavailable.", "Vertex AI");
+  return audio.buffer.slice(audio.byteOffset, audio.byteOffset + audio.byteLength) as ArrayBuffer;
 }
