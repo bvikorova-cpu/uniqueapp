@@ -1,15 +1,13 @@
 import "./aiRedirect.ts";
-import { hasDirectGemini, tryDirectGeminiChat } from "./geminiDirect.ts";
+import { tryVertexChat } from "./vertexDirect.ts";
 
 /**
  * Unified AI provider for all Supabase Edge Functions.
  *
  * Behavior:
  *  - Vertex AI (postpay service account) is the PRIMARY provider for all calls.
- *  - The Lovable AI Gateway is only used as a fallback when Vertex is unavailable.
- *  - If Vertex fails with a retryable status (429, 402, >=500), we fall back to
- *    the Lovable AI Gateway with backoff.
- *  - OpenAI is never called directly.
+ *  - No Lovable AI Gateway, Gemini API-key, or OpenAI fallback is permitted.
+ *  - If Vertex fails, the request fails clearly after bounded retries.
  *
  * No provider-specific errors are exposed to the user.
  */
@@ -63,8 +61,6 @@ export class UnifiedAIError extends Error {
     if (provider) this.provider = provider;
   }
 }
-
-const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
 
 const GATEWAY_MODEL_MAP: Record<string, string> = {
   "gpt-4o-mini": "openai/gpt-5.4-mini",
@@ -147,52 +143,17 @@ function buildBody(
 
 
 async function callProviderRaw(
-  useGateway: boolean,
+  _useGateway: boolean,
   messages: UnifiedMessage[],
   opts: UnifiedAIOptions,
   cheap: boolean,
 ): Promise<any> {
 
-  const key = Deno.env.get("LOVABLE_API_KEY");
-  const providerName = "Lovable AI Gateway";
+  const providerName = "Vertex AI";
   const body = buildBody(messages, opts, true, cheap);
-
-  // 1) Try the project's own Gemini API key first (cheapest, highest limits).
-  if (hasDirectGemini()) {
-    const direct = await tryDirectGeminiChat(body);
-    if (direct) return direct;
-  }
-
-  // 2) Fall back to the Lovable AI Gateway.
-  if (!key) {
-    throw new UnifiedAIError(500, `${providerName} key is not configured`, providerName);
-  }
-
-  const headers = { "Lovable-API-Key": key, "Content-Type": "application/json" };
-
-  const res = await fetch(GATEWAY_URL, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(body),
-  });
-
-
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    console.error(`UnifiedAI ${providerName} error:`, res.status, text);
-    if (res.status === 429) {
-      throw new UnifiedAIError(429, "AI is busy right now. Please try again in a few seconds.", providerName);
-    }
-    if (res.status === 402) {
-      throw new UnifiedAIError(402, "AI service temporarily unavailable. Please try again later.", providerName);
-    }
-    if (res.status >= 500) {
-      throw new UnifiedAIError(502, "AI provider is having issues. Please try again.", providerName);
-    }
-    throw new UnifiedAIError(res.status, "AI request failed. Please try again.", providerName);
-  }
-
-  return await res.json();
+  const result = await tryVertexChat(body);
+  if (!result) throw new UnifiedAIError(503, "Vertex AI is temporarily unavailable. Please try again.", providerName);
+  return result;
 }
 
 export interface UnifiedAIResult {
@@ -213,7 +174,7 @@ async function callProvider(
 
   const content = message?.content?.toString().trim() || "";
   if (!content && !message?.tool_calls) {
-    throw new UnifiedAIError(502, "AI returned an empty response. Please try again.", "Lovable AI Gateway");
+    throw new UnifiedAIError(502, "AI returned an empty response. Please try again.", "Vertex AI");
   }
   return {
     content,
@@ -224,8 +185,7 @@ async function callProvider(
 }
 
 /**
- * Call a chat-completion with automatic provider fallback.
- * OpenAI is primary. Lovable AI Gateway is the fallback.
+ * Call a chat-completion through Vertex AI only.
  */
 export async function callUnifiedAI(
   messages: UnifiedMessage[],
@@ -239,12 +199,7 @@ export async function callUnifiedAIEx(
   messages: UnifiedMessage[],
   opts: UnifiedAIOptions = {},
 ): Promise<UnifiedAIResult> {
-  const lovableKey = Deno.env.get("LOVABLE_API_KEY");
-  if (!lovableKey) {
-    throw new UnifiedAIError(500, "AI is not configured. Please add an API key.");
-  }
-
-  // PLATFORM-WIDE RULE: Vertex AI (postpay) is primary. Lovable gateway is fallback. OpenAI is never used.
+  // PLATFORM-WIDE RULE: Vertex AI (postpay) is the only provider.
   const order: boolean[] = [true];
   let lastError: UnifiedAIError | undefined;
 

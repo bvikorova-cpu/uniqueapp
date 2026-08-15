@@ -5,7 +5,7 @@
  * short-lived OAuth access token, then calls Vertex AI's OpenAI-compatible
  * chat-completions endpoint so request/response shapes match the gateway.
  *
- * Any failure returns null so callers fall back (API key → Lovable Gateway).
+ * Any failure returns null so callers can return a clear Vertex-unavailable error.
  */
 
 type ServiceAccount = {
@@ -179,8 +179,7 @@ function imagePromptWithAspect(prompt: string, size?: unknown): string {
  *
  * Returns an OpenAI-shaped image-generation response
  * (`{ data: [{ b64_json }] }`) so the fetch-patch redirect path can wrap it
- * transparently, or null when Vertex is unavailable / failed (caller falls
- * back to the Lovable Gateway).
+ * transparently, or null when Vertex is unavailable / failed.
  */
 export async function tryVertexImage(
   prompt: string,
@@ -294,8 +293,7 @@ async function toInlineImage(
 
 /**
  * Speech-to-text on Vertex AI (postpay) using Gemini's native audio input.
- * Returns the transcript, or null when Vertex is unavailable / failed so the
- * caller can fall back to the Lovable AI Gateway.
+ * Returns the transcript, or null when Vertex is unavailable / failed.
  */
 export async function tryVertexTranscribe(
   audioBase64: string,

@@ -313,8 +313,14 @@ export function PanoramaEscapeRoom({
   };
 
   // Generate AI scene image for the current room (full-screen searchable scene)
-  const sceneCacheKey = (roomIdx: number) =>
-    `escape-scene:${theme}:${localRooms[roomIdx]?.id ?? roomIdx}`;
+  const sceneCacheKey = (roomIdx: number) => {
+    const room = localRooms[roomIdx];
+    const sceneVersion = `${room?.name ?? ""}|${room?.description ?? ""}`
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, " ");
+    return `escape-scene:${theme}:${room?.id ?? roomIdx}:${encodeURIComponent(sceneVersion)}`;
+  };
 
   const generateAIPanorama = useCallback(async (roomIdx = currentRoomIndex, silent = false) => {
     const room = localRooms[roomIdx];

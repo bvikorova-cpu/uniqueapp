@@ -2,6 +2,7 @@ import "../_shared/aiRedirect.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { requireAiCredits } from "../_shared/credit-check.ts";
+import { tryVertexImage } from "../_shared/vertexDirect.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -9,9 +10,9 @@ const corsHeaders = {
 };
 
 type ErrorType =
-  | "missing_api_key"
+  | "vertex_not_configured"
   | "rate_limited"
-  | "gateway_error"
+  | "vertex_error"
   | "empty_image"
   | "bad_request"
   | "unknown";
@@ -92,14 +93,6 @@ serve(async (req) => {
       });
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      return fail({
-        logId, userId, status: 500, errorType: "missing_api_key",
-        message: "LOVABLE_API_KEY is not configured",
-      });
-    }
-
     const prompt = `Ultra-wide cinematic first-person view of an escape room scene: "${roomName}".
 Theme: ${theme}. Scene story: ${description || roomName}.
 
@@ -109,33 +102,18 @@ Requirements:
 - Rich searchable detail: furniture, doors, drawers, locks, safes, notes, keys, props and dark corners where objects could be hidden.
 - Moody atmospheric lighting matching the ${theme} theme, photorealistic, highly detailed, no watermark, no UI overlay.`;
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/images/generations', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: "google/gemini-3.1-flash-image",
-        messages: [{ role: "user", content: prompt }],
-        modalities: ["image", "text"],
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = (await response.text()).slice(0, 1000);
+    const imageResult = await tryVertexImage(prompt, "1536x1024", 1);
+    if (!imageResult) {
       return fail({
         logId, userId,
-        status: response.status === 429 ? 429 : 502,
-        errorType: response.status === 429 ? "rate_limited" : "gateway_error",
-        message: response.status === 429
-          ? "AI rate limit exceeded. Please try again in a moment."
-          : `AI gateway returned ${response.status}: ${errorText}`,
-        context: { room_name: roomName, theme, upstream_status: response.status },
+        status: 503,
+        errorType: "vertex_error",
+        message: "Vertex AI could not generate the scene. Please try again shortly.",
+        context: { room_name: roomName, theme, provider: "vertex_ai" },
       });
     }
 
-    const data = await response.json();
+    const data = imageResult;
     const b64 = data?.data?.[0]?.b64_json;
     const imageUrl = b64 ? `data:image/png;base64,${b64}` : (data?.data?.[0]?.url ?? null);
 
