@@ -85,11 +85,30 @@ serve(async (req) => {
       const roomName = String(reqBody.roomName || "").trim().slice(0, 160);
       const theme = String(reqBody.theme || "").trim().slice(0, 120);
       const description = String(reqBody.description || "").trim().slice(0, 1200);
+      const cacheKey = String(reqBody.cacheKey || "").trim().slice(0, 200);
       if (!roomName || !theme) {
         console.error(`[escape-room-scene] logId=${logId} type=bad_request`);
         return new Response(JSON.stringify({
           error: "Room name and theme are required.", errorType: "bad_request", logId, status: 400,
         }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+      // Shared cache: the same room always shows the same scene for every player.
+      const admin = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      );
+      if (cacheKey) {
+        const { data: cachedRow } = await admin
+          .from("escape_room_scene_cache")
+          .select("image_url")
+          .eq("cache_key", cacheKey)
+          .maybeSingle();
+        if (cachedRow?.image_url) {
+          return new Response(JSON.stringify({ imageUrl: cachedRow.image_url, cached: true, logId }), {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
       }
 
       const prompt = `Ultra-wide cinematic first-person view inside the escape room "${roomName}".
@@ -108,9 +127,21 @@ Clearly depict this exact location. Include rich searchable details such as furn
         }), { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
 
+      if (cacheKey) {
+        try {
+          await admin.from("escape_room_scene_cache").upsert(
+            { cache_key: cacheKey, image_url: imageUrl, theme, room_name: roomName },
+            { onConflict: "cache_key" },
+          );
+        } catch (e) {
+          console.error("[escape-room-scene] cache write failed", e);
+        }
+      }
+
       return new Response(JSON.stringify({ imageUrl, logId }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+
     }
 
     // ─── STORY VIDEO PIPELINE (multi-scene story + illustrations + TTS) ───
