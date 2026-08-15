@@ -2,6 +2,7 @@ import "../_shared/aiRedirect.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.7.1";
 import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
+import { spendAiCredits } from "../_shared/spendCredits.ts";
 
 const corsHeaders = { 'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version' };
@@ -43,19 +44,27 @@ serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    // Check AI credits (5 credits per image)
-    const { data: credits } = await supabaseClient
+    // Check AI credits (3 credits per image — unified platform cost)
+    const COST = 3;
+    const admin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    const { data: credits } = await admin
       .from('ai_credits')
       .select('credits_remaining')
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
 
-    if (!credits || credits.credits_remaining < 5) {
+    const available = credits?.credits_remaining ?? 0;
+    if (available < COST) {
       return new Response(
-        JSON.stringify({ error: 'Insufficient AI credits. Need 5 credits for image generation.' }),
+        JSON.stringify({ error: `Insufficient AI credits. Need ${COST} credits for image generation (you have ${available}).` }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 402 }
       );
     }
+
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -100,30 +109,15 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Deduct credits
-    await supabaseClient
-      .from('ai_credits')
-      .update({
-        credits_remaining: credits.credits_remaining - 5,
-        last_used_at: new Date().toISOString()
-      })
-      .eq('user_id', user.id);
-
-    // Log usage
-    await supabaseClient
-      .from('ai_usage_history')
-      .insert({
-        user_id: user.id,
-        usage_type: 'ai_image_generation',
-        credits_used: 5,
-        description: `Image generation: ${prompt.substring(0, 100)}`
-      });
+    // Deduct credits + ledger (unified accounting)
+    const spend = await spendAiCredits(admin, user.id, COST, `Image generation: ${prompt.substring(0, 80)}`, 'ai-image-generation');
 
     return new Response(JSON.stringify({
       imageUrl,
-      creditsRemaining: credits.credits_remaining - 5
+      creditsRemaining: spend.ok ? spend.remaining : available
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
   } catch (error) {
     console.error("Error:", error);
     return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
