@@ -67,8 +67,8 @@ const Vacationer = () => {
     const allReviewUserIds = Array.from(new Set((data || []).flatMap(d => d.reviews?.map((r: any) => r.user_id) || [])));
     let profileMap = new Map<string, { full_name: string | null; avatar_url: string | null }>();
     if (allReviewUserIds.length > 0) {
-      const { data: profiles } = await supabase.from("profiles").select("id, full_name, avatar_url").in("id", allReviewUserIds);
-      (profiles || []).forEach(p => profileMap.set(p.id, { full_name: p.full_name, avatar_url: p.avatar_url }));
+      const { data: profiles } = await supabase.from("profiles_public").select("id, full_name, username, avatar_url").in("id", allReviewUserIds);
+      (profiles || []).forEach((p: any) => profileMap.set(p.id, { full_name: p.full_name || p.username, avatar_url: p.avatar_url }));
     }
 
     setDestinations((data || []).map(d => ({
@@ -333,7 +333,7 @@ const Vacationer = () => {
                   </div>
                   {selectedDestination.reviews?.length ? (
                     <div className="space-y-3">{selectedDestination.reviews.map(r => (
-                      <Card key={r.id}><CardContent className="pt-4"><div className="flex items-start gap-3"><Avatar className="h-10 w-10">{r.profiles?.avatar_url ? <img src={r.profiles.avatar_url} alt="" className="h-full w-full object-cover rounded-full" /> : <AvatarFallback>{(r.profiles?.full_name?.[0] || "U").toUpperCase()}</AvatarFallback>}</Avatar><div className="flex-1 space-y-2"><div className="flex items-center justify-between"><span className="font-semibold">{r.profiles?.full_name || "Traveler"}</span><div className="flex">{[1,2,3,4,5].map(s => <Star key={s} className={`h-4 w-4 ${s <= r.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/30"}`} />)}</div></div><p className="text-sm text-muted-foreground">{r.comment}</p></div></div></CardContent></Card>
+                      <Card key={r.id}><CardContent className="pt-4"><div className="flex items-start gap-3"><Avatar className="h-10 w-10">{r.profiles?.avatar_url ? <img src={r.profiles.avatar_url} alt="" className="h-full w-full object-cover rounded-full" /> : <AvatarFallback>{(r.profiles?.full_name?.[0] || "U").toUpperCase()}</AvatarFallback>}</Avatar><div className="flex-1 space-y-2"><div className="flex items-center justify-between"><span className="font-semibold">{r.profiles?.full_name || "User"}</span><div className="flex">{[1,2,3,4,5].map(s => <Star key={s} className={`h-4 w-4 ${s <= r.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/30"}`} />)}</div></div><p className="text-sm text-muted-foreground">{r.comment}</p></div></div></CardContent></Card>
                     ))}</div>
                   ) : <p className="text-center text-muted-foreground py-6">No reviews yet.</p>}
                 </div>
