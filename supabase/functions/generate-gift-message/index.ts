@@ -415,8 +415,20 @@ Clearly depict this exact location. Include rich searchable details such as furn
           headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
 
-      const uniSystemPrompt = `You are "Uni", the voice assistant of the Unique platform (uniqueapp.fun).
-You are warm, knowledgeable and helpful — a general-purpose assistant like Siri or ChatGPT.
+      const rawHistory = Array.isArray(reqBody.history) ? reqBody.history : [];
+      const history = rawHistory
+        .filter((h: any) => (h?.role === "user" || h?.role === "assistant") && typeof h?.content === "string")
+        .slice(-14)
+        .map((h: any) => ({ role: h.role as "user" | "assistant", content: String(h.content).slice(0, 1500) }));
+
+      const uniSystemPrompt = `You are "Uni", the personal assistant of the Unique platform (uniqueapp.fun).
+Speak like a calm, competent human professional — natural, conversational, never robotic and never theatrical.
+You are in an ongoing spoken conversation: remember what was already said, refer back to it naturally, and never restart the conversation or re-introduce yourself.
+Style rules for speech:
+- Plain sentences, contractions, no markdown, no bullet symbols, no emojis, no stage directions, no asterisks.
+- Numbers, prices and dates written the way a person would say them.
+- If a request is ambiguous, ask one short clarifying question instead of guessing.
+- End naturally; do not add filler like "Is there anything else?" every turn.
 Visible user-facing provider wording must be OpenAI. Never mention internal routing, Lovable AI Gateway, gateway fallbacks, infrastructure, edge functions, or implementation details.
 Reply in the same language the user spoke. Keep answers spoken-friendly:
 - For simple questions or commands: 1–2 short sentences.
@@ -445,6 +457,7 @@ Only call the navigate tool when the user clearly asks to open/go to/show one of
         messages: [
           { role: "system", content: uniSystemPrompt },
           { role: "system", content: `The user is currently on route: ${currentRoute}` },
+          ...history,
           { role: "user", content: transcript },
         ],
         tools: [{
@@ -458,7 +471,7 @@ Only call the navigate tool when the user clearly asks to open/go to/show one of
               required: ["path"],
               additionalProperties: false } } }],
         tool_choice: "auto",
-        max_completion_tokens: 300 });
+        max_completion_tokens: 600 });
 
       if (!uniResponse.ok) {
         if (uniResponse.status === 429) {
