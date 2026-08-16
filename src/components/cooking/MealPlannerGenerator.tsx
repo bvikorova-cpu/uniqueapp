@@ -2,39 +2,44 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Calendar } from 'lucide-react';
 import { useCookingCredits } from '@/hooks/useCookingCredits';
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { AiMarkdown } from '@/components/common/AiMarkdown';
 
 export const MealPlannerGenerator = () => {
   const [days, setDays] = useState(7);
   const [calorieTarget, setCalorieTarget] = useState('2000');
-  const [mealPlan, setMealPlan] = useState<any>(null);
+  const [mealPlan, setMealPlan] = useState<string>('');
   const { data: credits } = useCookingCredits();
+  const queryClient = useQueryClient();
 
   const generateMutation = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('generate-weekly-meal-plan', {
-        body: { 
-          days, 
-          dietary_preferences: [],
-          calorie_target: parseInt(calorieTarget)
-        }
+      const safeDays = Math.min(Math.max(days || 7, 1), 14);
+      const { data, error } = await supabase.functions.invoke('generate-gift-message', {
+        body: {
+          type: 'weekly_meal_plan',
+          prompt: `Create a ${safeDays}-day meal plan with a daily target of about ${parseInt(calorieTarget) || 2000} kcal.`,
+        },
       });
       if (error) throw error;
-      return data;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      return data as any;
     },
     onSuccess: (data) => {
-      setMealPlan(data.meal_plan);
+      setMealPlan(data.message || data.text || data.result || '');
+      queryClient.invalidateQueries({ queryKey: ['cooking-credits'] });
       toast.success('Meal plan generated successfully!');
     },
     onError: (error: any) => {
       toast.error(error.message || 'Error generating meal plan');
     }
   });
+
 
   return (
     <>
@@ -74,14 +79,14 @@ export const MealPlannerGenerator = () => {
 
           <Button
             onClick={() => generateMutation.mutate()}
-            disabled={generateMutation.isPending || !credits || credits.credits < 50}
+            disabled={generateMutation.isPending || !credits || credits.credits < 5}
             className="w-full"
           >
             {generateMutation.isPending ? 'Generating...' : 'Generate Plan (5 credits)'}
           </Button>
-          {credits && credits.credits < 50 && (
+          {credits && credits.credits < 5 && (
             <p className="text-sm text-destructive mt-2">
-              You need 50 credits to generate a meal plan. You have {credits.credits} credits.
+              You need 5 credits to generate a meal plan. You have {credits.credits} credits.
             </p>
           )}
         </div>
@@ -90,21 +95,10 @@ export const MealPlannerGenerator = () => {
       {mealPlan && (
         <Card className="p-6">
           <h3 className="text-xl font-bold mb-4">Your Meal Plan</h3>
-          <div className="space-y-4">
-            {mealPlan.meal_plan?.days?.map((day: any, idx: number) => (
-              <div key={idx} className="border-b pb-4 last:border-0">
-                <h4 className="font-semibold">Day {day.day}</h4>
-                <div className="mt-2 space-y-2 text-sm">
-                  <p><strong>Breakfast:</strong> {day.meals?.breakfast?.name}</p>
-                  <p><strong>Lunch:</strong> {day.meals?.lunch?.name}</p>
-                  <p><strong>Dinner:</strong> {day.meals?.dinner?.name}</p>
-                  <p className="text-muted-foreground">Total: {day.total_calories} kcal</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <AiMarkdown content={mealPlan} />
         </Card>
       )}
+
     </div>
     </>
     );
