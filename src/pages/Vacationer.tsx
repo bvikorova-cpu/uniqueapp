@@ -169,21 +169,22 @@ const Vacationer = () => {
           <h2 className="text-2xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Community Destinations</h2>
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-2" />Add Destination</Button></DialogTrigger>
-            <DialogContent>
-              <DialogHeader><DialogTitle>New Destination</DialogTitle></DialogHeader>
+            <DialogContent className="w-[calc(100vw-2rem)] max-w-md max-h-[85vh] overflow-y-auto p-4 sm:p-6">
+              <DialogHeader><DialogTitle className="text-left text-lg">New Destination</DialogTitle></DialogHeader>
               <div className="space-y-4">
                 <Input value={newDestination.name} onChange={e => setNewDestination({...newDestination, name: e.target.value})} placeholder="Destination name" />
                 <Input value={newDestination.location} onChange={e => setNewDestination({...newDestination, location: e.target.value})} placeholder="Location (e.g., Dubrovnik, Croatia)" />
                 <Textarea value={newDestination.description} onChange={e => setNewDestination({...newDestination, description: e.target.value})} placeholder="Description..." className="min-h-24" />
                 <div>
                   <label className="text-sm font-medium">Photos (max 5)</label>
-                  <Input type="file" accept="image/*,video/*" multiple onChange={handleFileChange} className="mt-1" disabled={selectedFiles.length >= 5} />
+                  <Input type="file" accept="image/*,video/*" multiple onChange={handleFileChange} className="mt-1 text-xs file:text-xs w-full" disabled={selectedFiles.length >= 5} />
                   {selectedFiles.length > 0 && <div className="flex gap-2 mt-2 flex-wrap">{selectedFiles.map((f, i) => (
-                    <Badge key={i} variant="secondary" className="gap-1">{f.name.slice(0, 15)}<X className="w-3 h-3 cursor-pointer" onClick={() => setSelectedFiles(p => p.filter((_, j) => j !== i))} /></Badge>
+                    <Badge key={i} variant="secondary" className="gap-1 max-w-full"><span className="truncate max-w-[7rem]">{f.name.slice(0, 15)}</span><X className="w-3 h-3 shrink-0 cursor-pointer" onClick={() => setSelectedFiles(p => p.filter((_, j) => j !== i))} /></Badge>
                   ))}</div>}
                 </div>
                 <Button onClick={handleAddDestination} className="w-full" disabled={isUploading}><Send className="h-4 w-4 mr-2" />{isUploading ? "Uploading..." : "Add Destination"}</Button>
               </div>
+
             </DialogContent>
           </Dialog>
         </div>
