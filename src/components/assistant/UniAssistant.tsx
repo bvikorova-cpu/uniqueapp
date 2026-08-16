@@ -26,6 +26,10 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
   const [typed, setTyped] = useState("");
 
   const [turns, setTurns] = useState<Turn[]>([]);
+  const [handsFree, setHandsFree] = useState(false);
+  const turnsRef = useRef<Turn[]>([]);
+  const handsFreeRef = useRef(false);
+  const openRef = useRef(false);
   const [caption, setCaption] = useState<{ role: "user" | "assistant"; text: string } | null>(null);
   const [showOnboarding, setShowOnboarding] = useState<boolean>(() => {
     if (typeof window === "undefined") return true;
@@ -61,6 +65,21 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     ("webkitSpeechRecognition" in window || "SpeechRecognition" in window);
 
 
+  useEffect(() => { turnsRef.current = turns; }, [turns]);
+  useEffect(() => { handsFreeRef.current = handsFree; }, [handsFree]);
+  useEffect(() => {
+    openRef.current = open;
+    if (!open) {
+      setHandsFree(false);
+      stopSpeaking();
+      try { recognitionRef.current?.abort?.(); } catch { /* noop */ }
+      setListening(false);
+    }
+  }, [open]);
+  // Voice lists load asynchronously in most browsers — warm them up early.
+  useEffect(() => {
+    try { window.speechSynthesis?.getVoices?.(); } catch { /* noop */ }
+  }, []);
   useEffect(() => {
     return () => {
       try { recognitionRef.current?.stop?.(); } catch {}
@@ -81,23 +100,65 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     setSpeaking(false);
   };
 
-  const speakBrowser = (text: string) => {
-    try {
-      window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.rate = 1.02;
-      u.pitch = 1.05;
-      u.onend = () => setSpeaking(false);
-      setSpeaking(true);
-      window.speechSynthesis.speak(u);
-    } catch {}
+  /** Strip markdown / symbols a human would never read out loud. */
+  const toSpeech = (text: string) =>
+    text
+      .replace(/```[\s\S]*?```/g, " ")
+      .replace(/[*_`#>]/g, "")
+      .replace(/\[(.*?)\]\((.*?)\)/g, "$1")
+      .replace(/^\s*[-•]\s*/gm, "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+  /** Pick the most natural-sounding installed voice for the spoken language. */
+  const pickVoice = (lang: string) => {
+    const voices = window.speechSynthesis?.getVoices?.() ?? [];
+    if (!voices.length) return null;
+    const base = lang.split("-")[0].toLowerCase();
+    const sameLang = voices.filter((v) => v.lang?.toLowerCase().startsWith(base));
+    const pool = sameLang.length ? sameLang : voices;
+    const preferred = [/neural/i, /natural/i, /premium/i, /enhanced/i, /siri/i, /google/i, /microsoft/i];
+    for (const rx of preferred) {
+      const hit = pool.find((v) => rx.test(v.name));
+      if (hit) return hit;
+    }
+    return pool[0] ?? null;
   };
 
-  const speak = async (text: string) => {
+  const speakBrowser = (text: string, onDone?: () => void) => {
+    try {
+      window.speechSynthesis.cancel();
+      const clean = toSpeech(text);
+      if (!clean) { onDone?.(); return; }
+      const lang = navigator.language || "en-US";
+      const voice = pickVoice(lang);
+      // Split into sentences so pauses land where a person would breathe.
+      const parts = clean.match(/[^.!?…]+[.!?…]*/g)?.map((p) => p.trim()).filter(Boolean) ?? [clean];
+      setSpeaking(true);
+      parts.forEach((part, i) => {
+        const u = new SpeechSynthesisUtterance(part);
+        if (voice) u.voice = voice;
+        u.lang = voice?.lang || lang;
+        u.rate = 0.98;
+        u.pitch = 1;
+        u.volume = 1;
+        if (i === parts.length - 1) {
+          u.onend = () => { setSpeaking(false); onDone?.(); };
+          u.onerror = () => { setSpeaking(false); onDone?.(); };
+        }
+        window.speechSynthesis.speak(u);
+      });
+    } catch {
+      setSpeaking(false);
+      onDone?.();
+    }
+  };
+
+  const speak = async (text: string, onDone?: () => void) => {
     stopSpeaking();
-    // Use native speech synthesis directly: the old uni-tts edge function is not
-    // deployed on this Supabase project and caused the visible failure toast.
-    speakBrowser(text);
+    // Native speech synthesis with the best installed voice: the uni-tts edge
+    // function is not deployed on this project.
+    speakBrowser(text, onDone);
   };
 
   const send = async (text: string) => {
@@ -107,7 +168,13 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     setThinking(true);
     try {
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
-        body: { type: "uni_assistant", transcript: text, currentRoute: location.pathname } });
+        body: {
+          type: "uni_assistant",
+          transcript: text,
+          currentRoute: location.pathname,
+          // Full conversation so Uni remembers the thread like a person would.
+          history: turnsRef.current.slice(-14),
+        } });
 
       // The Supabase SDK collapses every non-2xx response into a generic
       // "non-2xx status code" error and hides the real body on error.context.
@@ -154,7 +221,14 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       const reply = sanitizeVisibleText(payload?.reply ?? payload?.message ?? payload?.text ?? payload?.result ?? "Okay.");
       setTurns((t) => [...t, { role: "assistant", content: reply }]);
       showCaption("assistant", reply);
-      speak(reply);
+      speak(reply, () => {
+        // Hands-free conversation: reopen the mic as soon as Uni stops talking.
+        if (handsFreeRef.current && openRef.current) {
+          window.setTimeout(() => {
+            if (handsFreeRef.current && openRef.current) void startListening();
+          }, 250);
+        }
+      });
       if (payload?.action?.type === "navigate" && payload.action.path) {
         setTimeout(() => navigate(payload.action.path), 400);
       }
