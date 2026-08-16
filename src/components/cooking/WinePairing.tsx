@@ -56,10 +56,10 @@ export const WinePairing = () => {
 
           <Button
             onClick={() => pairingMutation.mutate()}
-            disabled={!dishName || pairingMutation.isPending || !credits || credits.credits < 1}
+            disabled={!dishName || pairingMutation.isPending || !credits || credits.credits < 3}
             className="w-full"
           >
-            {pairingMutation.isPending ? 'Generating...' : 'Find Wine Pairing (1 credit)'}
+            {pairingMutation.isPending ? 'Generating...' : 'Find Wine Pairing (3 credits)'}
           </Button>
         </div>
       </Card>

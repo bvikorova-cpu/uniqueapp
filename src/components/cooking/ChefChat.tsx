@@ -87,17 +87,17 @@ export const ChefChat = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-              disabled={chatMutation.isPending || !credits || credits.credits < 1}
+              disabled={chatMutation.isPending || !credits || credits.credits < 3}
             />
             <Button 
               onClick={handleSend}
-              disabled={!input.trim() || chatMutation.isPending || !credits || credits.credits < 1}
+              disabled={!input.trim() || chatMutation.isPending || !credits || credits.credits < 3}
               size="icon"
             >
               <Send className="h-4 w-4" />
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground">1 credit per message</p>
+          <p className="text-xs text-muted-foreground">3 credits per message</p>
         </div>
       </Card>
     </div>
