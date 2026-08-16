@@ -37,11 +37,12 @@ export const VacationerHero = () => {
 
   return (
     <div className="relative h-[78vh] min-h-[540px] w-full overflow-hidden rounded-3xl border border-border/40 mb-8">
-      <video ref={videoRef} className="absolute inset-0 h-full w-full object-cover brightness-[1.15] saturate-[1.3] contrast-[1.1]" autoPlay muted loop playsInline>
+      <video ref={videoRef} className="absolute inset-0 h-full w-full object-cover brightness-125 saturate-[1.7] contrast-125 sepia-[0.15]" autoPlay muted loop playsInline>
         <source src={heroVideo.url} type="video/mp4" />
       </video>
-      <div className="absolute inset-0 bg-gradient-to-b from-gold/10 via-gold/15 to-background/75" />
-      <div className="absolute inset-0 bg-gradient-to-tr from-gold/10 via-transparent to-gold/5" />
+      <div className="absolute inset-0 bg-gradient-to-b from-gold/30 via-gold/40 to-background/80" />
+      <div className="absolute inset-0 bg-gradient-to-tr from-gold/25 via-transparent to-gold/15" />
+      <div className="absolute inset-0 bg-gold/10 mix-blend-overlay" />
       <div className="relative z-10 h-full flex flex-col justify-center px-6 sm:px-10">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mb-4">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-card/45 backdrop-blur-md text-foreground text-sm font-semibold border border-border/60">
