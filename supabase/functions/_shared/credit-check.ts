@@ -46,9 +46,15 @@ export async function requireAiCredits(
   // Data client uses the service role so RLS doesn't hide the user's own
   // ai_credits row when the helper queries it server-side.
   const authClient = createClient(supabaseUrl, anonKey);
-  const supabase = createClient(supabaseUrl, serviceKey || anonKey);
+  const authHeaderRaw = req.headers.get("Authorization");
+  // Without the service role key the data client must forward the caller's JWT,
+  // otherwise RLS hides the user's own ai_credits row and the balance reads 0.
+  const supabase = serviceKey
+    ? createClient(supabaseUrl, serviceKey)
+    : createClient(supabaseUrl, anonKey, {
+        global: { headers: authHeaderRaw ? { Authorization: authHeaderRaw } : {} } });
 
-  const authHeader = req.headers.get("Authorization");
+  const authHeader = authHeaderRaw;
   if (!authHeader) {
     return {
       errorResponse: new Response(
