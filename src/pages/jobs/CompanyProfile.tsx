@@ -46,7 +46,16 @@ export default function CompanyProfile() {
       supabase.from("interview_questions_public" as any).select("*").eq("company_id", c.id).order("created_at", { ascending: false }),
       supabase.from("job_listings").select("id,title,location,salary_min,salary_max").eq("company_name", c.name).eq("is_active", true).limit(10),
     ]);
-    setReviews(r.data || []); setSalaries(s.data || []); setQuestions(q.data || []); setJobs(j.data || []);
+
+    const reviewRows = (r.data || []) as any[];
+    const reviewUserIds = Array.from(new Set(reviewRows.map((x) => x.user_id).filter(Boolean));
+    if (reviewUserIds.length > 0) {
+      const { data: profs } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", reviewUserIds);
+      const profileMap = new Map((profs || []).map((p: any) => [p.id, p]));
+      reviewRows.forEach((x) => { x.profile = profileMap.get(x.user_id) || null; });
+    }
+
+    setReviews(reviewRows); setSalaries(s.data || []); setQuestions(q.data || []); setJobs(j.data || []);
     setLoading(false);
   };
 
