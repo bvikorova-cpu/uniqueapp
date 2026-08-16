@@ -146,21 +146,8 @@ const Vacationer = () => {
 
         <HeroRewardedAd sectionKey="page_vacationer" />
 
-        {/* Engagement Row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card/80 backdrop-blur-xl rounded-2xl p-5 border border-border/40 text-center">
-            <div className="text-3xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">{destinations.length}</div>
-            <p className="text-sm text-muted-foreground">Destinations Shared</p>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-card/80 backdrop-blur-xl rounded-2xl p-5 border border-border/40 text-center">
-            <div className="text-3xl font-black bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">6</div>
-            <p className="text-sm text-muted-foreground">AI Travel Tools</p>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-card/80 backdrop-blur-xl rounded-2xl p-5 border border-border/40 text-center">
-            <div className="text-3xl font-black bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">∞</div>
-            <p className="text-sm text-muted-foreground">Adventures Await</p>
-          </motion.div>
-        </div>
+
+
 
         {/* AI Travel Tools — single clickable category */}
         <motion.div
