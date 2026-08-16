@@ -833,6 +833,9 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
       if (type === "first_aid_map") return 2000;
       if (type === "fitness_plan") return 3000;
       if (type === "travel_planner") return 12000;
+      if (type === "recipe_from_ingredients") return 3000;
+      if (type === "wine_pairing") return 1500;
+      if (type === "chef_chat") return 1800;
 
       if (longTypes.has(type)) return 1500;
       if (isSport) return 1200;
