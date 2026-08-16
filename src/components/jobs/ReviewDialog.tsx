@@ -26,7 +26,7 @@ export function ReviewDialog({ open, onOpenChange, companyId, onSubmitted }: Pro
     setBusy(true);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setBusy(false); return toast({ title: "Sign in required", variant: "destructive" }); }
-    const { error } = await supabase.from("company_reviews").insert({ ...form, company_id: companyId, user_id: user.id, is_anonymous: true });
+    const { error } = await supabase.from("company_reviews").insert({ ...form, company_id: companyId, user_id: user.id, is_anonymous: false });
     setBusy(false);
     if (error) return toast({ title: "Could not submit", description: error.message, variant: "destructive" });
     toast({ title: "Review submitted" });
