@@ -68,7 +68,7 @@ export default function SellerReviewsList({ sellerId }: Props) {
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className="font-medium text-sm truncate">{p?.full_name || "Anonymous"}</p>
+                      <p className="font-medium text-sm truncate">{p?.full_name || "User"}</p>
                       <div className="flex items-center">
                         {Array.from({ length: 5 }).map((_, i) => (
                           <Star
