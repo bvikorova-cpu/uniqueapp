@@ -195,13 +195,14 @@ export const UserProfile = () => {
               <div className="space-y-4">
                 {reviews.map((review) => (
                   <div key={review.id}>
-                    <div className="flex items-start gap-3">
-                      <Avatar className="w-9 h-9">
-                        <AvatarFallback className="text-xs bg-primary/10 text-primary">{review.reviewer.full_name?.charAt(0) || 'U'}</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="font-bold text-sm">{review.reviewer.full_name}</span>
+                  <div className="flex items-start gap-3">
+                    <Avatar className="w-9 h-9">
+                      {review.reviewer.avatar_url && <img src={review.reviewer.avatar_url} alt={review.reviewer.full_name} className="h-full w-full object-cover" />}
+                      <AvatarFallback className="text-xs bg-primary/10 text-primary">{review.reviewer.full_name?.charAt(0) || 'U'}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-bold text-sm">{review.reviewer.full_name}</span>
                           <span className="text-[10px] text-muted-foreground">{new Date(review.created_at).toLocaleDateString()}</span>
                         </div>
                         <div className="flex items-center gap-0.5 mb-1">
