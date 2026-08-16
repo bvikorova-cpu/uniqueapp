@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Plane, MapPin, Star, Plus, Camera, Send, X, Upload, Eye, Trash2, Brain, Luggage, Compass, Calculator, BookOpen, UtensilsCrossed, Globe, Search, ArrowLeft } from "lucide-react";
+import { Plane, MapPin, Star, Plus, Camera, Send, X, Upload, Eye, Trash2, Brain, Luggage, Compass, Calculator, BookOpen, UtensilsCrossed, Globe, Search, ArrowLeft, ZoomIn, ChevronLeft, ChevronRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
@@ -52,6 +52,7 @@ const Vacationer = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [newReview, setNewReview] = useState({ rating: 5, comment: "" });
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => { fetchUser(); fetchDestinations(); }, []);
 
@@ -247,7 +248,19 @@ const Vacationer = () => {
             {selectedDestination && (
               <div className="space-y-6">
                 {selectedDestination.photos?.length ? (
-                  <div className="grid grid-cols-2 gap-2">{selectedDestination.photos.map(p => <div key={p.id} className="aspect-video rounded-lg overflow-hidden"><img src={p.photo_url} alt="" className="w-full h-full object-cover" /></div>)}</div>
+                  <div className="grid grid-cols-2 gap-2">{selectedDestination.photos.map((p, idx) => (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => setLightboxIndex(idx)}
+                      className="relative aspect-video rounded-lg overflow-hidden group cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-primary"
+                    >
+                      <img src={p.photo_url} alt="" className="w-full h-full object-cover transition-transform group-hover:scale-105" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                        <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 drop-shadow-md transition-opacity" />
+                      </div>
+                    </button>
+                  ))}</div>
                 ) : null}
                 <div className="flex items-center gap-3">
                   <div className="flex">{[1,2,3,4,5].map(s => <Star key={s} className={`h-6 w-6 ${s <= Math.round(Number(avgRating(selectedDestination))) ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/30"}`} />)}</div>
@@ -265,6 +278,45 @@ const Vacationer = () => {
                       <Card key={r.id}><CardContent className="pt-4"><div className="flex items-start gap-3"><Avatar className="h-10 w-10"><AvatarFallback>U</AvatarFallback></Avatar><div className="flex-1 space-y-2"><div className="flex items-center justify-between"><span className="font-semibold">Traveler</span><div className="flex">{[1,2,3,4,5].map(s => <Star key={s} className={`h-4 w-4 ${s <= r.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/30"}`} />)}</div></div><p className="text-sm text-muted-foreground">{r.comment}</p></div></div></CardContent></Card>
                     ))}</div>
                   ) : <p className="text-center text-muted-foreground py-6">No reviews yet.</p>}
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Lightbox */}
+        <Dialog open={lightboxIndex !== null} onOpenChange={open => !open && setLightboxIndex(null)}>
+          <DialogContent className="w-[calc(100vw-1rem)] max-w-5xl max-h-[95vh] p-0 overflow-hidden border-0 bg-black/95">
+            <DialogHeader className="sr-only"><DialogTitle>Photo preview</DialogTitle></DialogHeader>
+            {selectedDestination && lightboxIndex !== null && selectedDestination.photos?.[lightboxIndex] && (
+              <div className="relative flex items-center justify-center h-[80vh] sm:h-[85vh]">
+                <img
+                  src={selectedDestination.photos[lightboxIndex].photo_url}
+                  alt=""
+                  className="max-w-full max-h-full object-contain"
+                />
+                {selectedDestination.photos.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setLightboxIndex(i => (i === null ? 0 : (i - 1 + selectedDestination.photos!.length) % selectedDestination.photos!.length))}
+                      className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 backdrop-blur-sm"
+                      aria-label="Previous photo"
+                    >
+                      <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setLightboxIndex(i => (i === null ? 0 : (i + 1) % selectedDestination.photos!.length))}
+                      className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 backdrop-blur-sm"
+                      aria-label="Next photo"
+                    >
+                      <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8" />
+                    </button>
+                  </>
+                )}
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-black/60 text-white text-xs backdrop-blur-sm">
+                  {lightboxIndex + 1} / {selectedDestination.photos.length}
                 </div>
               </div>
             )}
