@@ -411,7 +411,9 @@ export async function tryVertexEmbeddings(
 export async function tryVertexSpeech(
   text: string,
   voice?: unknown,
+  instructions?: unknown,
 ): Promise<Uint8Array | null> {
+
   const sa = getServiceAccount();
   if (!sa) return null;
   const projectId = Deno.env.get("GCP_PROJECT_ID") || sa.project_id;
@@ -430,7 +432,17 @@ export async function tryVertexSpeech(
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text }] }],
+        // Gemini-TTS is steered through the text itself: a native-speaker
+        // direction prefix keeps phonemes, stress and intonation authentic.
+        contents: [{
+          role: "user",
+          parts: [{
+            text: typeof instructions === "string" && instructions.trim()
+              ? `${instructions.trim()}\n\n${text}`
+              : text,
+          }],
+        }],
+
         generationConfig: {
           responseModalities: ["AUDIO"],
           speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName } } },
