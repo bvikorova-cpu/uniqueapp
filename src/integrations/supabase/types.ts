@@ -65933,7 +65933,7 @@ export type Database = {
           rating_work_life?: number | null
           title?: string | null
           updated_at?: string | null
-          user_id?: never
+          user_id?: string | null
         }
         Update: {
           advice?: string | null
@@ -65954,7 +65954,7 @@ export type Database = {
           rating_work_life?: number | null
           title?: string | null
           updated_at?: string | null
-          user_id?: never
+          user_id?: string | null
         }
         Relationships: [
           {
