@@ -67,8 +67,8 @@ const Vacationer = () => {
     const allReviewUserIds = Array.from(new Set((data || []).flatMap(d => d.reviews?.map((r: any) => r.user_id) || [])));
     let profileMap = new Map<string, { full_name: string | null; avatar_url: string | null }>();
     if (allReviewUserIds.length > 0) {
-      const { data: profiles } = await supabase.from("profiles").select("id, full_name, avatar_url").in("id", allReviewUserIds);
-      (profiles || []).forEach(p => profileMap.set(p.id, { full_name: p.full_name, avatar_url: p.avatar_url }));
+      const { data: profiles } = await supabase.from("profiles_public").select("id, full_name, username, avatar_url").in("id", allReviewUserIds);
+      (profiles || []).forEach((p: any) => profileMap.set(p.id, { full_name: p.full_name || p.username, avatar_url: p.avatar_url }));
     }
 
     setDestinations((data || []).map(d => ({
