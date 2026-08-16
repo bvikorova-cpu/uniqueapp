@@ -71,7 +71,8 @@ async function analyzeImage(imageUrl: string, note: string): Promise<string> {
         headers: { "Content-Type": "application/json", "Lovable-API-Key": key },
         body: JSON.stringify({
           model,
-          max_tokens: 3500,
+          max_tokens: 6000,
+          response_format: { type: "json_object" },
           messages: [
             { role: "system", content: SYSTEM },
             {
@@ -87,7 +88,12 @@ async function analyzeImage(imageUrl: string, note: string): Promise<string> {
 
       if (res.ok) {
         const data = await res.json();
-        return data?.choices?.[0]?.message?.content?.trim() || "";
+        const content = data?.choices?.[0]?.message?.content?.trim() || "";
+        // Empty completion (safety filter / hiccup) — retry instead of failing.
+        if (content) return content;
+        lastErr = Object.assign(new Error("Empty AI response"), { status: 502 });
+        await sleep(500 * (attempt + 1));
+        continue;
       }
 
       const body = await res.text();
@@ -96,11 +102,12 @@ async function analyzeImage(imageUrl: string, note: string): Promise<string> {
         await sleep(700 * (attempt + 1));
         continue;
       }
-      throw lastErr;
+      if (res.status === 400) break; // model rejected the payload — try next model
     }
   }
   throw lastErr ?? new Error("AI request failed");
 }
+
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -122,20 +129,28 @@ serve(async (req) => {
     }
     const note = typeof body.note === "string" ? body.note.slice(0, 500) : "";
 
-    let raw: string;
-    try {
-      raw = await analyzeImage(imageUrl, note);
-    } catch (e: any) {
-      const status = e?.status ?? 500;
-      if (status === 429) return errorResponse("AI is busy right now. Please try again in a moment.", 429);
-      if (status === 402) return errorResponse("AI credits exhausted. Please try again later.", 402);
-      return errorResponse(e?.message || "AI request failed", 500);
+    let parsed: any = null;
+    let lastAiError: any = null;
+    // Two full passes: unreadable/unparseable output gets a second chance.
+    for (let pass = 0; pass < 2 && !parsed; pass++) {
+      try {
+        const raw = await analyzeImage(imageUrl, note);
+        const candidate = safeJson(raw);
+        if (candidate && typeof candidate === "object") parsed = candidate;
+      } catch (e: any) {
+        lastAiError = e;
+        const status = e?.status ?? 500;
+        if (status === 429) return errorResponse("AI is busy right now. Please try again in a moment.", 429);
+        if (status === 402) return errorResponse("AI credits exhausted. Please try again later.", 402);
+      }
+    }
+    if (!parsed) {
+      const msg = lastAiError?.message
+        ? "The scanner could not analyze the photo. Please try again."
+        : "The scanner could not read the photo. Please try another image.";
+      return errorResponse(msg, 502);
     }
 
-    const parsed = safeJson(raw);
-    if (!parsed || typeof parsed !== "object") {
-      return errorResponse("The scanner could not read the photo. Please try another image.", 502);
-    }
 
     const macros = parsed.macros && typeof parsed.macros === "object" ? parsed.macros : {};
     const scan = {
