@@ -110,13 +110,52 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       .replace(/\s+/g, " ")
       .trim();
 
-  /** Pick the most natural-sounding installed voice for the spoken language. */
+  /** Language the UI (and therefore the conversation) is currently in. */
+  const uiLang = () => {
+    try {
+      const stored = localStorage.getItem("preferred_language");
+      if (stored) return stored;
+    } catch { /* noop */ }
+    return (document.documentElement.lang || navigator.language || "en").split("-")[0];
+  };
+
+  /** Detect the language actually used in a piece of text, so a Spanish answer is
+   *  never read out by an English voice (which is what causes a heavy accent). */
+  const detectLang = (text: string): string => {
+    const t = text.toLowerCase();
+    if (/[\u3040-\u30ff]/.test(text)) return "ja";
+    if (/[\uac00-\ud7af]/.test(text)) return "ko";
+    if (/[\u4e00-\u9fff]/.test(text)) return "zh";
+    if (/[\u0400-\u04ff]/.test(text)) return "ru";
+    if (/[\u0600-\u06ff]/.test(text)) return "ar";
+    const hints: Record<string, RegExp> = {
+      sk: /\b(ďakujem|prosím|môžeš|nájdeš|takže|nie je|ahoj|kredity|stránke)\b|[ľĺňŕôä]/,
+      cs: /\b(děkuji|prosím|můžeš|najdeš|takže|ahoj|jsem|jsi)\b|[ěřůň]/,
+      de: /\b(und|nicht|ich|kannst|bitte|danke|deine|hier|sind)\b|[äöüß]/,
+      es: /\b(y|para|puedes|gracias|por favor|tus|está|aquí|hola)\b|[ñ¿¡]/,
+      fr: /\b(et|pour|vous|merci|s'il|votre|ici|bonjour|est)\b|[çœ]/,
+      it: /\b(e|per|puoi|grazie|tuo|qui|ciao|sono|della)\b/,
+      hu: /\b(és|nem|köszönöm|kérem|tudsz|itt|szia|van)\b|[őű]/,
+      pl: /\b(dziękuję|proszę|możesz|jest|tutaj|cześć)\b|[ąęśćźżł]/,
+    };
+    const scores = Object.entries(hints)
+      .map(([code, rx]) => [code, (t.match(new RegExp(rx.source, "gi")) ?? []).length] as const)
+      .sort((a, b) => b[1] - a[1]);
+    if (scores[0] && scores[0][1] >= 2) return scores[0][0];
+    if (/\b(the|and|you|your|here|please|thanks|can)\b/.test(t)) return "en";
+    return uiLang();
+  };
+
+  /** Pick a natural-sounding voice that natively speaks `lang`. */
   const pickVoice = (lang: string) => {
     const voices = window.speechSynthesis?.getVoices?.() ?? [];
     if (!voices.length) return null;
     const base = lang.split("-")[0].toLowerCase();
-    const sameLang = voices.filter((v) => v.lang?.toLowerCase().startsWith(base));
-    const pool = sameLang.length ? sameLang : voices;
+    let pool = voices.filter((v) => v.lang?.toLowerCase().replace("_", "-").startsWith(base));
+    // No native voice installed for this language: fall back to the browser
+    // default rather than forcing a mismatched (accented) voice.
+    if (!pool.length) pool = voices.filter((v) => v.default);
+    if (!pool.length) return null;
     const preferred = [/neural/i, /natural/i, /premium/i, /enhanced/i, /siri/i, /google/i, /microsoft/i];
     for (const rx of preferred) {
       const hit = pool.find((v) => rx.test(v.name));
@@ -130,7 +169,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       window.speechSynthesis.cancel();
       const clean = toSpeech(text);
       if (!clean) { onDone?.(); return; }
-      const lang = navigator.language || "en-US";
+      const lang = detectLang(clean);
       const voice = pickVoice(lang);
       // Split into sentences so pauses land where a person would breathe.
       const parts = clean.match(/[^.!?…]+[.!?…]*/g)?.map((p) => p.trim()).filter(Boolean) ?? [clean];
@@ -138,7 +177,9 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       parts.forEach((part, i) => {
         const u = new SpeechSynthesisUtterance(part);
         if (voice) u.voice = voice;
-        u.lang = voice?.lang || lang;
+        // Always tag the utterance with the text's own language so engines with
+        // multilingual voices switch pronunciation instead of adding an accent.
+        u.lang = voice?.lang && voice.lang.toLowerCase().startsWith(lang) ? voice.lang : lang;
         u.rate = 0.98;
         u.pitch = 1;
         u.volume = 1;
@@ -160,6 +201,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     // function is not deployed on this project.
     speakBrowser(text, onDone);
   };
+
 
   const send = async (text: string) => {
     if (!text.trim()) return;
