@@ -41,7 +41,7 @@ export const VacationerHero = () => {
         <source src={heroVideo.url} type="video/mp4" />
       </video>
       <div className="absolute inset-0 bg-gradient-to-b from-gold/10 via-gold/15 to-background/75" />
-      <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/10 via-transparent to-yellow-400/10" />
+      <div className="absolute inset-0 bg-gradient-to-tr from-gold/10 via-transparent to-gold/5" />
       <div className="relative z-10 h-full flex flex-col justify-center px-6 sm:px-10">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mb-4">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-card/45 backdrop-blur-md text-foreground text-sm font-semibold border border-border/60">
