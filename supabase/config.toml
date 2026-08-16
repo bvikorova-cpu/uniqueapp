@@ -453,3 +453,6 @@ verify_jwt = true
 
 [functions.suggest-wine-pairing]
 verify_jwt = true
+
+[functions.cooking-ai]
+verify_jwt = true
