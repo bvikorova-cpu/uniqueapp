@@ -79,14 +79,14 @@ export const MealPlannerGenerator = () => {
 
           <Button
             onClick={() => generateMutation.mutate()}
-            disabled={generateMutation.isPending || !credits || credits.credits < 50}
+            disabled={generateMutation.isPending || !credits || credits.credits < 5}
             className="w-full"
           >
             {generateMutation.isPending ? 'Generating...' : 'Generate Plan (5 credits)'}
           </Button>
-          {credits && credits.credits < 50 && (
+          {credits && credits.credits < 5 && (
             <p className="text-sm text-destructive mt-2">
-              You need 50 credits to generate a meal plan. You have {credits.credits} credits.
+              You need 5 credits to generate a meal plan. You have {credits.credits} credits.
             </p>
           )}
         </div>
@@ -95,21 +95,10 @@ export const MealPlannerGenerator = () => {
       {mealPlan && (
         <Card className="p-6">
           <h3 className="text-xl font-bold mb-4">Your Meal Plan</h3>
-          <div className="space-y-4">
-            {mealPlan.meal_plan?.days?.map((day: any, idx: number) => (
-              <div key={idx} className="border-b pb-4 last:border-0">
-                <h4 className="font-semibold">Day {day.day}</h4>
-                <div className="mt-2 space-y-2 text-sm">
-                  <p><strong>Breakfast:</strong> {day.meals?.breakfast?.name}</p>
-                  <p><strong>Lunch:</strong> {day.meals?.lunch?.name}</p>
-                  <p><strong>Dinner:</strong> {day.meals?.dinner?.name}</p>
-                  <p className="text-muted-foreground">Total: {day.total_calories} kcal</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <AiMarkdown content={mealPlan} />
         </Card>
       )}
+
     </div>
     </>
     );
