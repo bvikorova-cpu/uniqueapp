@@ -30,7 +30,7 @@ interface Review {
   rating: number;
   comment: string;
   created_at: string;
-  reviewer: { full_name: string; };
+  reviewer: { full_name: string; avatar_url: string | null };
 }
 
 export const UserProfile = () => {
