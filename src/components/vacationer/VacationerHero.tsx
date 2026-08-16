@@ -26,18 +26,8 @@ export const VacationerHero = () => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
 
-  const { stats, loading } = useLiveStats([
-    { key: "destinations", table: "destinations" },
-    { key: "reviews", table: "destination_reviews" },
-    { key: "photos", table: "destination_photos" },
-  ]);
 
-  const heroStats = [
-    { icon: Globe, label: "Destinations", value: stats.destinations || 0, suffix: "+" },
-    { icon: Star, label: "Reviews", value: stats.reviews || 0, suffix: "+" },
-    { icon: MapPin, label: "Photos", value: stats.photos || 0, suffix: "+" },
-    { icon: Users, label: "Community", value: 0, suffix: "", staticLabel: "Free" },
-  ];
+
 
   useEffect(() => {
     if (videoRef.current) { videoRef.current.play().catch(() => setIsPlaying(false)); }
