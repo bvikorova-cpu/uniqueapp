@@ -311,10 +311,14 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
         send(heard);
       } else if (reason === "end") {
         setListening(false);
-        toast({
-          title: "I didn't catch that",
-          description: "Speak a bit closer to the mic, or type your question below.",
-        });
+        // In hands-free mode silence is normal — keep quiet and just wait for the
+        // user to tap again instead of nagging with a toast every pause.
+        if (!handsFreeRef.current) {
+          toast({
+            title: "I didn't catch that",
+            description: "Speak a bit closer to the mic, or type your question below.",
+          });
+        }
       }
     };
 
@@ -437,13 +441,32 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
                   <p className="font-black text-sm flex items-center gap-1.5">
                     Uni
                     <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30">
-                      Voice AI · like Siri
+                      Voice & chat
                     </span>
                   </p>
-                  <p className="text-[10px] text-muted-foreground">Speak naturally · 5 credits per command</p>
+                  <p className="text-[10px] text-muted-foreground">Talk or type — Uni remembers the conversation · 5 credits per reply</p>
                 </div>
               </div>
               <div className="flex items-center gap-1">
+                <button
+                  onClick={() => {
+                    const next = !handsFree;
+                    setHandsFree(next);
+                    handsFreeRef.current = next;
+                    if (next && !listening && !thinking && !speaking) void startListening();
+                    if (!next) { stopSpeaking(); stopListening(); }
+                  }}
+                  aria-pressed={handsFree}
+                  title="Hands-free conversation — Uni keeps listening after each answer"
+                  className={cn(
+                    "text-[10px] font-bold px-2 py-1 rounded-full border transition-colors",
+                    handsFree
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-muted/60 text-muted-foreground border-border hover:text-foreground"
+                  )}
+                >
+                  {handsFree ? "Conversation on" : "Conversation"}
+                </button>
                 <button onClick={() => setOpen(false)} className="p-1 hover:bg-muted rounded">
                   <X className="h-4 w-4" />
                 </button>
@@ -465,7 +488,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
                       <Mic className="h-4 w-4 text-white" />
                     </div>
                     <p className="text-sm font-semibold leading-snug self-center">
-                      Uni is your voice assistant — just like Siri. Tap the mic and ask anything.
+                      Uni talks with you like a person. Tap the mic to speak, or type below — turn on "Conversation" for hands-free back-and-forth.
                     </p>
                   </div>
                 </div>
@@ -505,7 +528,13 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
                   <Loader2 className="h-6 w-6 animate-spin" />
                 </Button>
               ) : speaking ? (
-                <Button onClick={stopSpeaking} size="lg" className="rounded-full h-14 w-14 p-0" variant="secondary">
+                <Button
+                  onClick={() => { stopSpeaking(); void startListening(); }}
+                  title="Interrupt Uni and speak"
+                  size="lg"
+                  className="rounded-full h-14 w-14 p-0"
+                  variant="secondary"
+                >
                   <Volume2 className="h-6 w-6" />
                 </Button>
               ) : (
