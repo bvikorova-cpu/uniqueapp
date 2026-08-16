@@ -71,7 +71,8 @@ async function analyzeImage(imageUrl: string, note: string): Promise<string> {
         headers: { "Content-Type": "application/json", "Lovable-API-Key": key },
         body: JSON.stringify({
           model,
-          max_tokens: 3500,
+          max_tokens: 6000,
+          response_format: { type: "json_object" },
           messages: [
             { role: "system", content: SYSTEM },
             {
@@ -87,7 +88,12 @@ async function analyzeImage(imageUrl: string, note: string): Promise<string> {
 
       if (res.ok) {
         const data = await res.json();
-        return data?.choices?.[0]?.message?.content?.trim() || "";
+        const content = data?.choices?.[0]?.message?.content?.trim() || "";
+        // Empty completion (safety filter / hiccup) — retry instead of failing.
+        if (content) return content;
+        lastErr = Object.assign(new Error("Empty AI response"), { status: 502 });
+        await sleep(500 * (attempt + 1));
+        continue;
       }
 
       const body = await res.text();
@@ -96,11 +102,12 @@ async function analyzeImage(imageUrl: string, note: string): Promise<string> {
         await sleep(700 * (attempt + 1));
         continue;
       }
-      throw lastErr;
+      if (res.status === 400) break; // model rejected the payload — try next model
     }
   }
   throw lastErr ?? new Error("AI request failed");
 }
+
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
