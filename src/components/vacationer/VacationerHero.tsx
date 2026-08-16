@@ -53,15 +53,15 @@ export const VacationerHero = () => {
           className="text-3xl md:text-5xl lg:text-6xl font-black text-center mb-3"
           style={ {
             WebkitTextStroke: "1.5px rgba(0,0,0,0.45)",
-            textShadow: "0 0 40px hsl(var(--gold) / 0.75), 0 0 80px hsl(var(--gold) / 0.55), 0 0 120px hsl(var(--gold) / 0.35), 0 0 180px hsl(var(--gold) / 0.2), 0 2px 6px rgba(0,0,0,0.6)",
-            background: "linear-gradient(135deg, #FFD700, hsl(var(--gold)), hsl(var(--gold)), hsl(var(--primary)))",
+            textShadow: "0 0 40px hsl(var(--gold) / 0.85), 0 0 80px hsl(var(--gold) / 0.65), 0 0 120px hsl(var(--gold) / 0.45), 0 0 180px hsl(var(--gold) / 0.25), 0 2px 6px rgba(0,0,0,0.6)",
+            background: "var(--gradient-gold)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent" }}>
           Vacationer
         </motion.h1>
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
           className="text-sm sm:text-base md:text-lg text-center mb-7 max-w-3xl mx-auto font-semibold"
-          style={{ textShadow: "0 1px 10px rgba(0,0,0,0.7), 0 0 30px hsl(var(--gold) / 0.4)", color: "#FFF8DC" }}>
+          style={{ textShadow: "0 1px 10px rgba(0,0,0,0.7), 0 0 30px hsl(var(--gold) / 0.5)", color: "hsl(var(--gold-foreground))" }}>
           Discover breathtaking destinations, share travel stories, and plan your dream adventures with AI-powered tools.
         </motion.p>
       </div>
