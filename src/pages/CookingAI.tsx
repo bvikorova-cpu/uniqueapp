@@ -79,12 +79,12 @@ const CookingAI = () => {
           </p>
           <div className="max-w-3xl mx-auto text-sm text-muted-foreground space-y-2 text-left bg-card p-6 rounded-lg border">
             <p className="font-semibold text-foreground mb-2">How it works:</p>
-            <p>• Each AI feature requires credits to use</p>
+            <p>• Every AI feature is paid per use with AI credits — no subscriptions</p>
             <p>• Credits are deducted automatically when you generate content</p>
-            <p>• Free tier includes 10 credits to get started</p>
-            <p>• Subscribe for unlimited monthly credits</p>
+            <p>• Top up your balance anytime in the AI Credits Store</p>
             <p>• All generated content is saved to your account</p>
             <p>• Export or share your recipes and meal plans</p>
+
           </div>
         </div>
 
