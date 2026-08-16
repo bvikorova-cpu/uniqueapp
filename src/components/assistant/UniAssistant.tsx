@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Mic, Sparkles, X, Loader2, Volume2, VolumeX, Send, Bot, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { supabase } from "/integrations/supabase/client";
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ToastAction } from "@/components/ui/toast";
