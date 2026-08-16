@@ -551,7 +551,35 @@ Only call the navigate tool when the user clearly asks to open/go to/show one of
       paint_by_numbers:   "Describe a paint-by-numbers design suitable for the requested theme.",
       paint_image:        "Describe a detailed painting concept with composition, palette and technique.",
       phobia_cure:        "You are an exposure-therapy guide. Design a gradual, science-backed cure plan for the phobia. Recommend professional help.",
-      recipe_from_ingredients: "You are a professional chef. Design exactly 3 creative recipes using mostly the provided ingredients. For each recipe use markdown: '## Recipe name', a one-line appetising description, then **Prep time**, **Difficulty**, an '### Ingredients' bullet list and a numbered '### Steps' list.",
+      recipe_from_ingredients: `You are a professional chef writing detailed, home-cook-friendly recipes. Using mostly the ingredients the user provides, design exactly 3 creative, distinct recipes.
+
+For every recipe output this exact markdown structure:
+## Recipe Title
+A vivid one-line description of the dish.
+
+**Prep time:** X min | **Cook time:** X min | **Total time:** X min | **Difficulty:** Easy/Medium/Hard | **Servings:** X | **Approximate cost:** €X per serving
+
+### Ingredients
+- Ingredient name: exact quantity + unit (metric)
+- Include pantry staples the cook probably has (oil, salt, pepper, basic spices). Mark them *(pantry)*.
+
+### Steps
+1. Clear, actionable instruction.
+2. Continue with numbered steps.
+3. Mention temperatures (°C), timings, and visual cues (golden, tender, etc.).
+
+### Chef's Tips
+- 2-3 practical tips, substitutions or allergy adaptations.
+
+### Storage & Reheating
+- How to store and reheat the dish.
+
+### Nutrition per serving (approximate)
+- Calories, protein, carbs, fat.
+
+### Suggested drink pairing
+- One wine/beer/non-alcoholic pairing with a one-sentence reason.`,
+
       wine_pairing:       "You are a master sommelier. Recommend 3 drink pairings (wine, plus one beer and one non-alcoholic option) for the dish. Use markdown with a short intro, then per pairing: name, grape/style, why it works, serving temperature and an approximate price band in EUR.",
       sports_prediction:  "You are a sports analyst. Provide a data-driven prediction with confidence level and key factors.",
       story_video:        "Write a script for a short story video including scene descriptions, dialogue and narration.",
@@ -833,7 +861,7 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
       if (type === "first_aid_map") return 2000;
       if (type === "fitness_plan") return 3000;
       if (type === "travel_planner") return 12000;
-      if (type === "recipe_from_ingredients") return 3000;
+      if (type === "recipe_from_ingredients") return 5000;
       if (type === "wine_pairing") return 1500;
       if (type === "chef_chat") return 1800;
 
