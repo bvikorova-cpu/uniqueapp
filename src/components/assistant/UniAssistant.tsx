@@ -197,10 +197,44 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
 
   const speak = async (text: string, onDone?: () => void) => {
     stopSpeaking();
-    // Native speech synthesis with the best installed voice: the uni-tts edge
-    // function is not deployed on this project.
+    const clean = toSpeech(text);
+    if (!clean) { onDone?.(); return; }
+    const lang = detectLang(clean);
+
+    // Preferred path: neural TTS with a native-speaker pronunciation profile for
+    // the detected language (correct phonemes, stress and intonation, no accent).
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.access_token) {
+        const res = await fetch(
+          `${(supabase as any).functionsUrl ?? ""}/uni-tts`.replace(/^\/uni-tts$/, "") ||
+            `https://uebpwfrivgpcnmqjfssv.supabase.co/functions/v1/uni-tts`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session.access_token}`,
+            },
+            body: JSON.stringify({ text: clean.slice(0, 800), lang }),
+          },
+        );
+        if (res.ok && res.headers.get("Content-Type")?.startsWith("audio")) {
+          const blob = await res.blob();
+          const audio = new Audio(URL.createObjectURL(blob));
+          audioRef.current = audio;
+          setSpeaking(true);
+          audio.onended = () => { setSpeaking(false); audioRef.current = null; onDone?.(); };
+          audio.onerror = () => { setSpeaking(false); audioRef.current = null; speakBrowser(text, onDone); };
+          await audio.play();
+          return;
+        }
+      }
+    } catch { /* fall through to the browser voice */ }
+
+    // Fallback: best installed native voice for the detected language.
     speakBrowser(text, onDone);
   };
+
 
 
   const send = async (text: string) => {
