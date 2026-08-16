@@ -328,7 +328,17 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     rec.continuous = true;
     rec.interimResults = true;
     rec.maxAlternatives = 1;
-    rec.lang = navigator.language || "en-US";
+    // Listen in the language the user picked in the app, so foreign speech is
+    // transcribed natively instead of being forced through English phonetics.
+    rec.lang = (() => {
+      const base = uiLang();
+      const map: Record<string, string> = {
+        en: "en-US", sk: "sk-SK", cs: "cs-CZ", de: "de-DE", es: "es-ES", fr: "fr-FR",
+        it: "it-IT", hu: "hu-HU", ru: "ru-RU", ja: "ja-JP", ko: "ko-KR", zh: "zh-CN",
+      };
+      return map[base] || navigator.language || "en-US";
+    })();
+
 
     // Buffer everything we hear; we finalise ourselves after a short silence so
     // nothing is lost when the engine never flags a result as final.
