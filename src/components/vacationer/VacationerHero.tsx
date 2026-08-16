@@ -52,16 +52,16 @@ export const VacationerHero = () => {
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
           className="text-3xl md:text-5xl lg:text-6xl font-black text-center mb-3"
           style={ {
-            WebkitTextStroke: "1.5px rgba(0,0,0,0.35)",
-            textShadow: "0 0 30px hsl(var(--gold) / 0.5), 0 0 60px hsl(var(--gold) / 0.3), 0 0 90px hsl(var(--gold) / 0.15), 0 2px 4px rgba(0,0,0,0.5)",
-            background: "linear-gradient(135deg, hsl(var(--gold)), hsl(var(--gold)), hsl(var(--primary)))",
+            WebkitTextStroke: "1.5px rgba(0,0,0,0.45)",
+            textShadow: "0 0 40px hsl(var(--gold) / 0.75), 0 0 80px hsl(var(--gold) / 0.55), 0 0 120px hsl(var(--gold) / 0.35), 0 0 180px hsl(var(--gold) / 0.2), 0 2px 6px rgba(0,0,0,0.6)",
+            background: "linear-gradient(135deg, #FFD700, hsl(var(--gold)), hsl(var(--gold)), hsl(var(--primary)))",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent" }}>
           Vacationer
         </motion.h1>
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
-          className="text-sm sm:text-base md:text-lg text-center mb-7 max-w-3xl mx-auto font-medium"
-          style={{ textShadow: "0 1px 8px rgba(0,0,0,0.6), 0 0 20px rgba(0,0,0,0.3)", color: "rgba(255,255,255,0.95)" }}>
+          className="text-sm sm:text-base md:text-lg text-center mb-7 max-w-3xl mx-auto font-semibold"
+          style={{ textShadow: "0 1px 10px rgba(0,0,0,0.7), 0 0 30px hsl(var(--gold) / 0.4)", color: "#FFF8DC" }}>
           Discover breathtaking destinations, share travel stories, and plan your dream adventures with AI-powered tools.
         </motion.p>
       </div>
