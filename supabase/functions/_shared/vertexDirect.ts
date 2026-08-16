@@ -411,7 +411,9 @@ export async function tryVertexEmbeddings(
 export async function tryVertexSpeech(
   text: string,
   voice?: unknown,
+  instructions?: unknown,
 ): Promise<Uint8Array | null> {
+
   const sa = getServiceAccount();
   if (!sa) return null;
   const projectId = Deno.env.get("GCP_PROJECT_ID") || sa.project_id;
