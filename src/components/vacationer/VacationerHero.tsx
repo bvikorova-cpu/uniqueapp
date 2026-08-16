@@ -61,7 +61,7 @@ export const VacationerHero = () => {
         </motion.h1>
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
           className="text-sm sm:text-base md:text-lg text-center mb-7 max-w-3xl mx-auto font-semibold"
-          style={{ textShadow: "0 1px 10px rgba(0,0,0,0.7), 0 0 30px hsl(var(--gold) / 0.5)", color: "hsl(var(--gold-foreground))" }}>
+          style={{ textShadow: "0 1px 10px rgba(0,0,0,0.7), 0 0 30px hsl(var(--gold) / 0.5)", color: "hsl(var(--gold))" }}>
           Discover breathtaking destinations, share travel stories, and plan your dream adventures with AI-powered tools.
         </motion.p>
       </div>
