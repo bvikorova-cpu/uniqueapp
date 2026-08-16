@@ -18,10 +18,11 @@ export const RestaurantAnalyzer = () => {
 
   const analyzeMutation = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('analyze-restaurant-menu-ai', {
-        body: { restaurant_name: restaurantName, menu_image: menuImage }
+      const { data, error } = await supabase.functions.invoke('scan-food', {
+        body: { mode: 'menu', restaurantName, imageBase64: menuImage }
       });
       if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
       return data;
     },
     onSuccess: (data) => {
@@ -35,14 +36,28 @@ export const RestaurantAnalyzer = () => {
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setMenuImage(reader.result as string);
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      // Downscale before sending so the edge request payload stays small.
+      const img = new Image();
+      img.onload = () => {
+        const max = 1024;
+        const scale = Math.min(1, max / Math.max(img.width, img.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        const ctx = canvas.getContext('2d');
+        if (!ctx) { setMenuImage(reader.result as string); return; }
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        setMenuImage(canvas.toDataURL('image/jpeg', 0.8));
       };
-      reader.readAsDataURL(file);
-    }
+      img.onerror = () => setMenuImage(reader.result as string);
+      img.src = reader.result as string;
+    };
+    reader.readAsDataURL(file);
   };
+
 
   return (
     <>
@@ -96,7 +111,7 @@ export const RestaurantAnalyzer = () => {
 
           <Button
             onClick={() => analyzeMutation.mutate()}
-            disabled={!restaurantName || analyzeMutation.isPending || !credits || credits.credits < 25}
+            disabled={!restaurantName || analyzeMutation.isPending || !credits || credits.credits < 2}
             className="w-full"
           >
             {analyzeMutation.isPending ? 'Analyzing...' : 'Analyze Menu (2 credits)'}

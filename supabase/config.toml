@@ -444,3 +444,4 @@ verify_jwt = true
 [functions.generate-escape-room-panorama]
 verify_jwt = true
 
+
