@@ -40,7 +40,17 @@ export const CourseReviews = ({ courseId, userHasAccess }: CourseReviewsProps) =
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data as Review[];
+      const rows = (data || []) as Review[];
+      const userIds = Array.from(new Set(rows.map((r) => r.user_id).filter(Boolean)));
+      if (userIds.length > 0) {
+        const { data: profiles } = await (supabase as any)
+          .from("profiles_public")
+          .select("id, full_name, avatar_url")
+          .in("id", userIds);
+        const profileMap = new Map<string, any>((profiles || []).map((p: any) => [p.id, p]));
+        rows.forEach((r) => { r.profile = profileMap.get(r.user_id) || null; });
+      }
+      return rows;
     } });
 
   const { data: userReview } = useQuery({
