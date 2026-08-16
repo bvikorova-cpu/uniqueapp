@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Plane, MapPin, Star, Plus, Camera, Send, X, Upload, Eye, Trash2, Brain, Luggage, Compass, Calculator, BookOpen, UtensilsCrossed, Globe, Search, ArrowLeft, ZoomIn, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plane, MapPin, Star, Plus, Camera, Send, X, Upload, Eye, Trash2, Brain, Luggage, Compass, Calculator, BookOpen, UtensilsCrossed, Globe, Search, ArrowLeft, ZoomIn, ChevronLeft, ChevronRight, Sparkles, Wand2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
