@@ -151,7 +151,11 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
       }
 
       if (url.includes("/audio/speech")) {
-        const audio = await withRetry("tts", () => tryVertexSpeech(String(body!.input ?? ""), body!.voice));
+        const audio = await withRetry(
+          "tts",
+          () => tryVertexSpeech(String(body!.input ?? ""), body!.voice, body!.instructions),
+        );
+
         if (!audio) return blocked("vertex text-to-speech failed");
         return new Response(audio, { status: 200, headers: { "Content-Type": "audio/wav" } });
       }
