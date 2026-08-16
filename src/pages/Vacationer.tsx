@@ -59,7 +59,7 @@ const Vacationer = () => {
   const fetchUser = async () => { const { data: { user } } = await supabase.auth.getUser(); setUser(user); };
 
   const fetchDestinations = async () => {
-    const { data, error } = await supabase.from("destinations").select("*, photos:destination_photos(*), reviews:destination_reviews(*)").eq("is_active", true).order("created_at", { ascending: false });
+    const { data, error } = await supabase.from("destinations").select("*, photos:destination_photos(*), reviews:destination_reviews(*, profiles(full_name, avatar_url))").eq("is_active", true).order("created_at", { ascending: false });
     if (error) toast({ title: "Error", description: "Failed to load destinations", variant: "destructive" });
     else setDestinations(data || []);
   };
