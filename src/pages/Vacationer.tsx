@@ -248,7 +248,19 @@ const Vacationer = () => {
             {selectedDestination && (
               <div className="space-y-6">
                 {selectedDestination.photos?.length ? (
-                  <div className="grid grid-cols-2 gap-2">{selectedDestination.photos.map(p => <div key={p.id} className="aspect-video rounded-lg overflow-hidden"><img src={p.photo_url} alt="" className="w-full h-full object-cover" /></div>)}</div>
+                  <div className="grid grid-cols-2 gap-2">{selectedDestination.photos.map((p, idx) => (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => setLightboxIndex(idx)}
+                      className="relative aspect-video rounded-lg overflow-hidden group cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-primary"
+                    >
+                      <img src={p.photo_url} alt="" className="w-full h-full object-cover transition-transform group-hover:scale-105" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                        <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 drop-shadow-md transition-opacity" />
+                      </div>
+                    </button>
+                  ))}</div>
                 ) : null}
                 <div className="flex items-center gap-3">
                   <div className="flex">{[1,2,3,4,5].map(s => <Star key={s} className={`h-6 w-6 ${s <= Math.round(Number(avgRating(selectedDestination))) ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/30"}`} />)}</div>
