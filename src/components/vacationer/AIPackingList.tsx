@@ -7,6 +7,7 @@ import { Luggage, Loader2, Sparkles, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { AiMarkdown } from "../common/AiMarkdown";
 
 interface Props { onBack: () => void; }
 
@@ -66,7 +67,7 @@ export const AIPackingList = ({ onBack }: Props) => {
             {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
             {loading ? "Generating..." : "Generate Packing List"}
           </Button>
-          {result && <Card className="bg-card/50"><CardContent className="pt-4 whitespace-pre-wrap text-sm">{result}</CardContent></Card>}
+          {result && <Card className="bg-card/50"><CardContent className="pt-4"><AiMarkdown content={result} /></CardContent></Card>}
         </CardContent>
       </Card>
     </div>
