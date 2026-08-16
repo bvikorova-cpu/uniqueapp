@@ -162,21 +162,79 @@ const Vacationer = () => {
           </motion.div>
         </div>
 
-        {/* AI Tools Grid */}
-        <h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">AI Travel Tools</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-10">
-          {FEATURE_CARDS.map((card, i) => (
-            <motion.div key={card.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.05 }}
-              onClick={() => setActiveView(card.id as ViewType)}
-              className="bg-card/80 backdrop-blur-xl rounded-xl p-4 border border-border/40 cursor-pointer hover:scale-105 active:scale-[0.97] transition-all group">
-              <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${card.color} flex items-center justify-center mb-2`}>
-                <card.icon className="w-5 h-5 text-white" />
+        {/* AI Travel Tools — single clickable category */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          onClick={() => setIsAiToolsOpen(true)}
+          className="group relative overflow-hidden rounded-3xl border border-border/40 bg-gradient-to-br from-sky-50 to-indigo-50 dark:from-sky-950/30 dark:to-indigo-950/20 p-6 sm:p-8 mb-10 cursor-pointer hover:shadow-xl transition-all active:scale-[0.99]"
+        >
+          <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-gradient-to-br from-amber-300/40 to-orange-400/30 blur-2xl group-hover:scale-110 transition-transform" />
+          <div className="absolute -left-10 -bottom-10 w-40 h-40 rounded-full bg-gradient-to-br from-emerald-300/30 to-teal-400/20 blur-2xl group-hover:scale-110 transition-transform" />
+          <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-5">
+            <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-105 transition-transform">
+              <Wand2 className="w-8 h-8 text-white" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <h2 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">AI Travel Tools</h2>
+                <Sparkles className="w-5 h-5 text-amber-500" />
               </div>
-              <h3 className="font-semibold text-sm text-foreground">{card.label}</h3>
-              <p className="text-xs text-muted-foreground">{card.desc}</p>
-            </motion.div>
-          ))}
-        </div>
+              <p className="text-sm sm:text-base text-muted-foreground max-w-xl">
+                Open your smart travel assistant — itinerary planner, packing list, local guide, budget calculator, cultural tips and food explorer in one place.
+              </p>
+            </div>
+            <div className="flex-shrink-0 self-end sm:self-center">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card/80 backdrop-blur-md border border-border/40 font-semibold text-sm group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                <span>Open</span>
+                <ArrowLeft className="w-4 h-4 rotate-180" />
+              </div>
+            </div>
+          </div>
+          <div className="relative z-10 mt-5 flex flex-wrap gap-2">
+            {FEATURE_CARDS.map((card) => (
+              <div key={card.id} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-background/70 border border-border/40 text-xs font-medium text-foreground">
+                <card.icon className="w-3.5 h-3.5 text-primary" />
+                {card.label}
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* AI Tools Dialog */}
+        <Dialog open={isAiToolsOpen} onOpenChange={setIsAiToolsOpen}>
+          <DialogContent className="w-[calc(100vw-2rem)] max-w-3xl max-h-[85vh] overflow-y-auto p-0">
+            <div className="relative overflow-hidden bg-gradient-to-br from-sky-50 to-indigo-50 dark:from-sky-950/30 dark:to-indigo-950/20 p-6 sm:p-8">
+              <div className="absolute -right-16 -top-16 w-48 h-48 rounded-full bg-gradient-to-br from-amber-300/30 to-orange-400/20 blur-3xl" />
+              <DialogHeader className="relative z-10">
+                <DialogTitle className="text-2xl sm:text-3xl font-black flex items-center gap-2">
+                  <Wand2 className="w-7 h-7 text-primary" />
+                  AI Travel Tools
+                </DialogTitle>
+                <p className="text-sm text-muted-foreground mt-1">Pick a tool to plan your next adventure.</p>
+              </DialogHeader>
+            </div>
+            <div className="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {FEATURE_CARDS.map((card, i) => (
+                <motion.div
+                  key={card.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  onClick={() => { setIsAiToolsOpen(false); setActiveView(card.id as ViewType); }}
+                  className="bg-card/80 backdrop-blur-xl rounded-2xl p-5 border border-border/40 cursor-pointer hover:scale-[1.03] active:scale-[0.97] transition-all group hover:shadow-lg"
+                >
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${card.color} flex items-center justify-center mb-3 shadow-md group-hover:shadow-lg transition-shadow`}>
+                    <card.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="font-bold text-base text-foreground mb-1">{card.label}</h3>
+                  <p className="text-xs text-muted-foreground">{card.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Destinations Section */}
         <div className="flex items-center justify-between mb-4">
