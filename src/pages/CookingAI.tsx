@@ -118,49 +118,21 @@ const CookingAI = () => {
 
         <Card className="mt-12 bg-gradient-to-r from-orange-100 to-red-100">
           <CardHeader>
-            <CardTitle>💰 Pricing & Credits</CardTitle>
+            <CardTitle>💰 Credits only</CardTitle>
+            <CardDescription>
+              No subscriptions and no monthly plans — you only pay for what you generate.
+            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Free</CardTitle>
-                  <CardDescription>10 credits</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold">€0</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Basic</CardTitle>
-                  <CardDescription>100 credits/month</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold">€4.99</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Premium</CardTitle>
-                  <CardDescription>500 credits/month</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold">€9.99</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Pro</CardTitle>
-                  <CardDescription>Unlimited</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold">€19.99</p>
-                </CardContent>
-              </Card>
-            </div>
+          <CardContent className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <p className="text-sm text-muted-foreground flex-1">
+              Each tool above shows its exact credit cost. Credits are shared across the whole platform.
+            </p>
+            <Button onClick={() => navigate('/ai-credits-store')} className="w-full sm:w-auto">
+              Buy AI Credits
+            </Button>
           </CardContent>
         </Card>
+
       </div>
     </div>
     </>
