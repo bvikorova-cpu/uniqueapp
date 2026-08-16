@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Mic, Sparkles, X, Loader2, Volume2 } from "lucide-react";
+import { Mic, Sparkles, X, Loader2, Volume2, VolumeX, Send, Bot, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -32,6 +32,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     return localStorage.getItem("uni-onboarding-seen") !== "1";
   });
   const captionTimerRef = useRef<number | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const sanitizeVisibleText = (value: string) =>
     value
@@ -60,7 +61,6 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
   const supported = typeof window !== "undefined" &&
     ("webkitSpeechRecognition" in window || "SpeechRecognition" in window);
 
-
   useEffect(() => {
     return () => {
       try { recognitionRef.current?.stop?.(); } catch {}
@@ -68,6 +68,12 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       try { audioRef.current?.pause(); } catch {}
     };
   }, []);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [turns, transcript, thinking, showOnboarding]);
 
   const stopSpeaking = () => {
     try { window.speechSynthesis?.cancel?.(); } catch {}
@@ -95,8 +101,6 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
 
   const speak = async (text: string) => {
     stopSpeaking();
-    // Use native speech synthesis directly: the old uni-tts edge function is not
-    // deployed on this Supabase project and caused the visible failure toast.
     speakBrowser(text);
   };
 
@@ -109,9 +113,6 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: { type: "uni_assistant", transcript: text, currentRoute: location.pathname } });
 
-      // The Supabase SDK collapses every non-2xx response into a generic
-      // "non-2xx status code" error and hides the real body on error.context.
-      // Unwrap it so Uni can react to 401 / 402 / 429 properly.
       let payload: any = data;
       if (error) {
         let status: number | undefined;
@@ -144,8 +145,8 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       }
 
       if (payload?.error === "INSUFFICIENT_CREDITS") {
-        toast({ title: "Not enough credits", description: "Uni costs 5 credits per command.", variant: "destructive" });
-        const msg = "You need 5 credits to use me. Top up in Wallet.";
+        toast({ title: "Not enough credits", description: "Uni costs 3 credits per command.", variant: "destructive" });
+        const msg = "You need 3 credits to use me. Top up in Wallet.";
         setTurns((t) => [...t, { role: "assistant", content: msg }]);
         showCaption("assistant", msg, 6000);
         return;
@@ -166,7 +167,6 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     }
   };
 
-
   const startListening = async () => {
     if (!supported) {
       toast({
@@ -177,8 +177,6 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       return;
     }
 
-    // Ask for the microphone explicitly first: on mobile, SpeechRecognition
-    // often fails silently ("not-allowed") when permission was never granted.
     const inIframe = typeof window !== "undefined" && window.self !== window.top;
     try {
       if (!navigator.mediaDevices?.getUserMedia) throw new Error("unsupported");
@@ -200,22 +198,16 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       return;
     }
 
-
-    // Speaking output would be picked up by the mic — stop it before listening.
     stopSpeaking();
     try { recognitionRef.current?.abort?.(); } catch { /* noop */ }
 
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     const rec = new SR();
-    // Continuous + interim keeps the session alive on mobile, where a short pause
-    // otherwise ends recognition before any final result is emitted.
     rec.continuous = true;
     rec.interimResults = true;
     rec.maxAlternatives = 1;
     rec.lang = navigator.language || "en-US";
 
-    // Buffer everything we hear; we finalise ourselves after a short silence so
-    // nothing is lost when the engine never flags a result as final.
     latestHeardRef.current = "";
     sentRef.current = false;
 
@@ -269,7 +261,6 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       const code = String(e?.error ?? "");
       if (code === "aborted") return;
       if (code === "no-speech") {
-        // Not fatal in continuous mode — keep whatever we already heard.
         finalise("end");
         return;
       }
@@ -299,8 +290,6 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     }
   };
 
-
-
   const stopListening = () => {
     try { recognitionRef.current?.stop?.(); } catch {}
     setListening(false);
@@ -311,19 +300,25 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     try { localStorage.setItem("uni-onboarding-seen", "1"); } catch {}
   };
 
-
+  const statusText = listening
+    ? "Listening…"
+    : thinking
+      ? "Uni is thinking…"
+      : speaking
+        ? "Uni is speaking…"
+        : supported
+          ? "Tap the mic and speak, or type below"
+          : "Voice input is unavailable — type below";
 
   const uniButton = (
     <button
-      aria-label="Open Uni — voice AI assistant (like Siri)"
-      title="Uni · Voice AI assistant (like Siri) — tap to talk"
+      aria-label="Open Uni — AI assistant"
+      title="Uni · AI assistant"
       onClick={() => setOpen(true)}
-      className="relative h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-xl shadow-primary/40 flex items-center justify-center hover:scale-110 transition-transform"
+      className="relative h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/30 flex items-center justify-center hover:scale-105 transition-transform duration-200 border border-primary/20"
     >
-      {/* Siri-like pulsing halo so users recognize this as a voice AI */}
-      <span className="absolute inset-0 rounded-full bg-primary/40 animate-ping" aria-hidden="true" />
-      <span className="absolute -inset-1 rounded-full border border-primary/40" aria-hidden="true" />
-      <Mic className="h-6 w-6 text-white relative" />
+      <span className="absolute inset-0 rounded-full bg-primary/30 animate-pulse" aria-hidden="true" />
+      <Sparkles className="h-6 w-6 text-primary-foreground relative" />
     </button>
   );
 
@@ -344,7 +339,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/50 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm"
           onClick={() => setOpen(false)}
         >
           <motion.div
@@ -352,123 +347,178 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 40, opacity: 0 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full md:max-w-md bg-card border-t md:border md:rounded-2xl border-primary/30 shadow-2xl p-5 space-y-4 max-h-[85vh] flex flex-col"
+            className="w-full md:max-w-md bg-card border-t md:border md:rounded-3xl border-border shadow-2xl shadow-primary/10 flex flex-col max-h-[90vh] md:max-h-[85vh] overflow-hidden"
           >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="h-9 w-9 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                  <Sparkles className="h-4 w-4 text-white" />
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-border bg-card/80 backdrop-blur-md shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="relative h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md">
+                  <Bot className="h-5 w-5 text-primary-foreground" />
+                  {(listening || thinking || speaking) && (
+                    <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-success animate-pulse border-2 border-card" />
+                  )}
                 </div>
                 <div>
-                  <p className="font-black text-sm flex items-center gap-1.5">
-                    Uni
-                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30">
-                      Voice AI · like Siri
-                    </span>
-                  </p>
-                  <p className="text-[10px] text-muted-foreground">Speak naturally · 5 credits per command</p>
+                  <p className="font-bold text-sm leading-tight">Uni Assistant</p>
+                  <p className="text-[11px] text-muted-foreground">Voice & text AI · 3 credits per command</p>
                 </div>
               </div>
-              <div className="flex items-center gap-1">
-                <button onClick={() => setOpen(false)} className="p-1 hover:bg-muted rounded">
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
+              <Button variant="ghost" size="icon" onClick={() => setOpen(false)} className="rounded-full h-8 w-8">
+                <X className="h-4 w-4" />
+              </Button>
             </div>
 
-            <div className="flex-1 overflow-y-auto space-y-2 min-h-[120px]">
+            {/* Messages */}
+            <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 py-4 space-y-4 min-h-[160px]">
               {showOnboarding && (
-                <div className="relative overflow-hidden rounded-xl border border-primary/30 bg-gradient-to-r from-primary/10 to-accent/10 p-3">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/8 to-accent/8 p-4"
+                >
                   <button
                     onClick={dismissOnboarding}
                     aria-label="Dismiss onboarding"
-                    className="absolute top-1.5 right-1.5 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-background/80"
+                    className="absolute top-2 right-2 p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-background/80 transition-colors"
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>
-                  <div className="flex items-start gap-3 pr-6">
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0 shadow-lg">
-                      <Mic className="h-4 w-4 text-white" />
+                  <div className="flex items-start gap-3 pr-5">
+                    <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0 shadow-md">
+                      <Mic className="h-4 w-4 text-primary-foreground" />
                     </div>
-                    <p className="text-sm font-semibold leading-snug self-center">
-                      Uni is your voice assistant — just like Siri. Tap the mic and ask anything.
-                    </p>
+                    <div>
+                      <p className="text-sm font-semibold leading-snug mb-1">
+                        Meet Uni — your platform assistant
+                      </p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        Tap the microphone and ask naturally, or type your request. Uni can navigate, explain features, and help you get things done faster.
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {turns.length === 0 && !showOnboarding && (
+                <div className="rounded-2xl border border-border bg-muted/40 p-4">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">Try asking</p>
+                  <div className="grid grid-cols-1 gap-2">
+                    {["Open Megatalent", "Go to my wallet", "Motivate me today", "Show the mentor hub"].map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => send(s)}
+                        className="text-left text-sm px-3 py-2 rounded-lg bg-background border border-border hover:border-primary/40 hover:bg-primary/5 transition-colors"
+                      >
+                        {s}
+                      </button>
+                    ))}
                   </div>
                 </div>
               )}
-              {turns.length === 0 && !showOnboarding && (
-                <div className="text-xs text-muted-foreground p-3 rounded-lg bg-muted/50">
-                  <p className="font-semibold mb-1">Try saying:</p>
-                  <ul className="space-y-0.5">
-                    <li>• "Open Megatalent"</li>
-                    <li>• "Go to my wallet"</li>
-                    <li>• "Motivate me today"</li>
-                    <li>• "Show the mentor hub"</li>
-                  </ul>
-                </div>
-              )}
+
               {turns.map((t, i) => (
-                <div key={i} className={`text-sm p-2.5 rounded-lg ${t.role === "user" ? "bg-primary/10 ml-6" : "bg-muted mr-6"}`}>
-                  {t.content}
+                <div key={i} className={cn("flex gap-3", t.role === "user" ? "flex-row-reverse" : "flex-row")}>
+                  <div className={cn(
+                    "h-8 w-8 rounded-full flex items-center justify-center shrink-0 border",
+                    t.role === "user"
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-muted text-muted-foreground border-border"
+                  )}>
+                    {t.role === "user" ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
+                  </div>
+                  <div className={cn(
+                    "text-sm px-4 py-3 rounded-2xl max-w-[80%] leading-relaxed shadow-sm",
+                    t.role === "user"
+                      ? "bg-primary text-primary-foreground rounded-tr-sm"
+                      : "bg-muted text-foreground rounded-tl-sm border border-border"
+                  )}>
+                    {t.content}
+                  </div>
                 </div>
               ))}
+
               {transcript && listening && (
-                <div className="text-sm p-2.5 rounded-lg bg-primary/5 border border-primary/20 italic ml-6">
-                  {transcript}…
+                <div className="flex gap-3 flex-row-reverse">
+                  <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground border border-primary flex items-center justify-center shrink-0">
+                    <User className="h-4 w-4" />
+                  </div>
+                  <div className="text-sm px-4 py-3 rounded-2xl rounded-tr-sm bg-primary/10 border border-primary/20 text-foreground max-w-[80%] italic">
+                    {transcript}…
+                  </div>
+                </div>
+              )}
+
+              {thinking && (
+                <div className="flex gap-3 flex-row">
+                  <div className="h-8 w-8 rounded-full bg-muted text-muted-foreground border border-border flex items-center justify-center shrink-0">
+                    <Bot className="h-4 w-4" />
+                  </div>
+                  <div className="text-sm px-4 py-3 rounded-2xl rounded-tl-sm bg-muted border border-border text-muted-foreground">
+                    <span className="inline-flex gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-current animate-bounce" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-current animate-bounce [animation-delay:0.15s]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-current animate-bounce [animation-delay:0.3s]" />
+                    </span>
+                  </div>
                 </div>
               )}
             </div>
 
-            <div className="flex items-center justify-center gap-3 pt-2 border-t border-border">
-              {listening ? (
-                <Button onClick={stopListening} variant="destructive" size="lg" className="rounded-full h-14 w-14 p-0">
-                  <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }}>
+            {/* Controls */}
+            <div className="px-5 py-4 border-t border-border bg-card/80 backdrop-blur-md shrink-0 space-y-3">
+              <div className="flex items-center justify-center gap-4">
+                {listening ? (
+                  <Button onClick={stopListening} variant="destructive" size="lg" className="rounded-full h-14 w-14 p-0 shadow-lg">
+                    <motion.div animate={{ scale: [1, 1.15, 1] }} transition={{ repeat: Infinity, duration: 1.2 }}>
+                      <Mic className="h-6 w-6" />
+                    </motion.div>
+                  </Button>
+                ) : thinking ? (
+                  <Button disabled size="lg" className="rounded-full h-14 w-14 p-0 shadow-lg">
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                  </Button>
+                ) : speaking ? (
+                  <Button onClick={stopSpeaking} size="lg" className="rounded-full h-14 w-14 p-0 shadow-lg" variant="secondary">
+                    <Volume2 className="h-6 w-6" />
+                  </Button>
+                ) : (
+                  <Button onClick={startListening} size="lg" className="rounded-full h-14 w-14 p-0 bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/30 hover:shadow-primary/40 transition-shadow">
                     <Mic className="h-6 w-6" />
-                  </motion.div>
+                  </Button>
+                )}
+                {speaking && (
+                  <Button onClick={stopSpeaking} variant="outline" size="icon" className="rounded-full h-10 w-10" aria-label="Stop speaking">
+                    <VolumeX className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+
+              <form
+                className="flex items-center gap-2"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const value = typed.trim();
+                  if (!value || thinking) return;
+                  setTyped("");
+                  send(value);
+                }}
+              >
+                <input
+                  value={typed}
+                  onChange={(e) => setTyped(e.target.value)}
+                  placeholder="Type your request…"
+                  aria-label="Type a message to Uni"
+                  className="flex-1 h-11 rounded-full border border-border bg-background px-4 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                />
+                <Button type="submit" size="icon" className="rounded-full h-11 w-11 shrink-0" disabled={thinking || !typed.trim()}>
+                  <Send className="h-4 w-4" />
                 </Button>
-              ) : thinking ? (
-                <Button disabled size="lg" className="rounded-full h-14 w-14 p-0">
-                  <Loader2 className="h-6 w-6 animate-spin" />
-                </Button>
-              ) : speaking ? (
-                <Button onClick={stopSpeaking} size="lg" className="rounded-full h-14 w-14 p-0" variant="secondary">
-                  <Volume2 className="h-6 w-6" />
-                </Button>
-              ) : (
-                <Button onClick={startListening} size="lg" className="rounded-full h-14 w-14 p-0 bg-gradient-to-br from-primary to-accent">
-                  <Mic className="h-6 w-6" />
-                </Button>
-              )}
+              </form>
+
+              <p className="text-[11px] text-center text-muted-foreground font-medium">
+                {statusText}
+              </p>
             </div>
-
-            {/* Text fallback — works even when the browser has no speech
-                recognition or the mic permission is blocked. */}
-            <form
-              className="flex items-center gap-2"
-              onSubmit={(e) => {
-                e.preventDefault();
-                const value = typed.trim();
-                if (!value || thinking) return;
-                setTyped("");
-                send(value);
-              }}
-            >
-              <input
-                value={typed}
-                onChange={(e) => setTyped(e.target.value)}
-                placeholder="…or type your question"
-                aria-label="Type a message to Uni"
-                className="flex-1 h-10 rounded-full border border-border bg-background px-4 text-sm outline-none focus:border-primary"
-              />
-              <Button type="submit" size="sm" className="rounded-full" disabled={thinking || !typed.trim()}>
-                Send
-              </Button>
-            </form>
-
-            <p className="text-[10px] text-center text-muted-foreground">
-              {listening ? "Listening…" : thinking ? "Uni is thinking…" : speaking ? "Uni is speaking…" : supported ? "Tap the mic and speak, or type below" : "Voice input is unavailable in this browser — type below"}
-            </p>
-
           </motion.div>
         </motion.div>
       )}
@@ -484,10 +534,10 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
           exit={{ opacity: 0, y: 20 }}
           className="fixed left-1/2 -translate-x-1/2 bottom-40 md:bottom-28 z-[9997] max-w-[92vw] md:max-w-lg pointer-events-none"
         >
-          <div className={`px-4 py-2.5 rounded-2xl shadow-2xl backdrop-blur-md border text-sm leading-snug text-center ${
+          <div className={`px-5 py-3 rounded-2xl shadow-2xl backdrop-blur-md border text-sm leading-snug text-center ${
             caption.role === "user"
-              ? "bg-primary/90 text-primary-foreground border-primary/40"
-              : "bg-background/95 text-foreground border-primary/30"
+              ? "bg-primary/95 text-primary-foreground border-primary/40"
+              : "bg-card/95 text-foreground border-primary/30"
           }`}>
             <div className="text-[10px] font-bold uppercase tracking-wider opacity-70 mb-0.5">
               {caption.role === "user" ? "You" : "Uni"}
