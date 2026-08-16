@@ -15,6 +15,7 @@ interface Review {
   comment: string;
   created_at: string;
   user_id: string;
+  profile?: { full_name: string; avatar_url: string | null } | null;
 }
 
 interface CourseReviewsProps {
