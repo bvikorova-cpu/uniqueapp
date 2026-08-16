@@ -214,7 +214,18 @@ export const CourseReviews = ({ courseId, userHasAccess }: CourseReviewsProps) =
           .map((review) => (
             <Card key={review.id}>
               <CardContent className="pt-6 space-y-2">
-                <StarRating value={review.rating} />
+                <div className="flex items-center gap-3">
+                  <Avatar className="w-9 h-9">
+                    <AvatarImage src={review.profile?.avatar_url || undefined} />
+                    <AvatarFallback className="text-xs bg-primary/10 text-primary">
+                      {review.profile?.full_name?.charAt(0) || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-bold text-sm">{review.profile?.full_name || 'User'}</p>
+                    <StarRating value={review.rating} />
+                  </div>
+                </div>
                 {review.comment && (
                   <p className="text-muted-foreground">{review.comment}</p>
                 )}
