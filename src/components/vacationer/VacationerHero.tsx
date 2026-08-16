@@ -53,7 +53,7 @@ export const VacationerHero = () => {
           style={ {
             WebkitTextStroke: "1.5px rgba(0,0,0,0.35)",
             textShadow: "0 0 30px hsl(var(--gold) / 0.5), 0 0 60px hsl(var(--gold) / 0.3), 0 0 90px hsl(var(--gold) / 0.15), 0 2px 4px rgba(0,0,0,0.5)",
-            background: "linear-gradient(135deg, hsl(var(--gold)), hsl(45 100% 60%), hsl(var(--primary)))",
+            background: "linear-gradient(135deg, hsl(var(--gold)), hsl(var(--gold)), hsl(var(--primary)))",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent" }}>
           Vacationer
