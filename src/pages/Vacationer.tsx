@@ -59,9 +59,21 @@ const Vacationer = () => {
   const fetchUser = async () => { const { data: { user } } = await supabase.auth.getUser(); setUser(user); };
 
   const fetchDestinations = async () => {
-    const { data, error } = await supabase.from("destinations").select("*, photos:destination_photos(*), reviews:destination_reviews(*, profiles(full_name, avatar_url))").eq("is_active", true).order("created_at", { ascending: false });
-    if (error) toast({ title: "Error", description: "Failed to load destinations", variant: "destructive" });
-    else setDestinations(data || []);
+    const { data, error } = await supabase.from("destinations").select("*, photos:destination_photos(*), reviews:destination_reviews(*)").eq("is_active", true).order("created_at", { ascending: false });
+    if (error) { toast({ title: "Error", description: "Failed to load destinations", variant: "destructive" }); return; }
+
+    // Enrich reviews with reviewer profile names/avatars
+    const allReviewUserIds = Array.from(new Set((data || []).flatMap(d => d.reviews?.map((r: any) => r.user_id) || [])));
+    let profileMap = new Map<string, { full_name: string | null; avatar_url: string | null }>();
+    if (allReviewUserIds.length > 0) {
+      const { data: profiles } = await supabase.from("profiles").select("id, full_name, avatar_url").in("id", allReviewUserIds);
+      (profiles || []).forEach(p => profileMap.set(p.id, { full_name: p.full_name, avatar_url: p.avatar_url }));
+    }
+
+    setDestinations((data || []).map(d => ({
+      ...d,
+      reviews: (d.reviews || []).map((r: any) => ({ ...r, profiles: profileMap.get(r.user_id) || null }))
+    })));
   };
 
   const handleAddDestination = async () => {
