@@ -21,8 +21,8 @@ export default function RestaurantAnalyzer() {
 
   const analyzeMutation = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('analyze-menu', {
-        body: { restaurantName, menuImage }
+      const { data, error } = await supabase.functions.invoke('scan-food', {
+        body: { mode: 'menu', restaurantName, imageBase64: menuImage }
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
