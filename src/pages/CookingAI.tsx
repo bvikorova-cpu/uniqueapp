@@ -14,7 +14,7 @@ const CookingAI = () => {
       icon: <ChefHat className="w-8 h-8" />,
       title: "Recipe Generator",
       description: "Enter ingredients and get 3 amazing recipes",
-      credits: 1,
+      credits: 3,
       color: "from-orange-500 to-red-500",
       path: "/recipe-generator"
     },
@@ -22,7 +22,7 @@ const CookingAI = () => {
       icon: <Calendar className="w-8 h-8" />,
       title: "Weekly Meal Plan",
       description: "AI creates complete meal plan for the week",
-      credits: 3,
+      credits: 50,
       color: "from-green-500 to-emerald-500",
       path: "/meal-planner"
     },
@@ -30,7 +30,7 @@ const CookingAI = () => {
       icon: <Camera className="w-8 h-8" />,
       title: "Food Scanner",
       description: "Snap food and find out calories and nutritional values",
-      credits: 1,
+      credits: 10,
       color: "from-blue-500 to-cyan-500",
       path: "/food-scanner"
     },
@@ -38,7 +38,7 @@ const CookingAI = () => {
       icon: <MapPin className="w-8 h-8" />,
       title: "Restaurant Menu Analyzer",
       description: "Analyze restaurant menu and get healthy recommendations",
-      credits: 2,
+      credits: 25,
       color: "from-purple-500 to-pink-500",
       path: "/restaurant-analyzer"
     },
@@ -46,7 +46,7 @@ const CookingAI = () => {
       icon: <MessageSquare className="w-8 h-8" />,
       title: "AI Chef Chat",
       description: "Chat with experienced chef and get advice",
-      credits: 1,
+      credits: 3,
       color: "from-yellow-500 to-orange-500",
       path: "/chef-chat"
     },
@@ -54,7 +54,7 @@ const CookingAI = () => {
       icon: <Wine className="w-8 h-8" />,
       title: "Wine Pairing",
       description: "Wine and beverage recommendations for your dishes",
-      credits: 1,
+      credits: 3,
       color: "from-red-500 to-rose-500",
       path: "/wine-pairing"
     }
