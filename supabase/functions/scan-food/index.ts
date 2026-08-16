@@ -36,6 +36,22 @@ Return ONLY raw JSON (no markdown fences) in exactly this shape:
 Rules: all numeric values are numbers (no units inside numbers) for the VISIBLE portion. health_score and confidence are 0-100.
 Give 3-6 ingredients, 4-6 micronutrients, 2-4 pros, 2-4 cons, 3-5 improvement_tips, 2-3 activity_equivalent entries and 2-3 healthier_alternatives. Be specific and quantitative.`
 
+
+const MENU_SYSTEM = `You are a senior clinical nutritionist analysing a restaurant menu (or a photo of restaurant food).
+Return ONLY raw JSON (no markdown fences) in exactly this shape:
+{
+ "restaurant_name":"string",
+ "summary":"2-3 sentence overview of how healthy this menu is and how to order well here",
+ "top_recommendations":[{"name":"string","reason":"why it is a good choice","calories":number,"protein":number}],
+ "items_to_avoid":[{"name":"string","reason":"why to limit it","calories":number}],
+ "analysis_data":[{"name":"string","calories":number,"protein":number,"carbs":number,"fats":number,"health_score":number}],
+ "recommendations":["short practical ordering tip"],
+ "hidden_calorie_traps":["string"],
+ "allergen_warnings":["string"],
+ "best_for":{"weight_loss":"string","muscle_gain":"string","kids":"string"}
+}
+Rules: numbers only in numeric fields (no units). Give 3-5 top_recommendations, 2-4 items_to_avoid, 5-10 analysis_data rows, 4-6 recommendations. If a photo is provided, base the analysis on the dishes visible in it; otherwise use well-known typical menu items for the named restaurant. Be specific and quantitative.`;
+
 const MODELS = ["google/gemini-2.5-flash", "google/gemini-2.5-flash-lite"];
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -59,7 +75,7 @@ function safeJson(raw: string): any | null {
   }
 }
 
-async function analyzeImage(imageUrl: string, note: string): Promise<string> {
+async function analyzeImage(imageUrl: string | null, note: string, system: string = SYSTEM): Promise<string> {
   const key = Deno.env.get("LOVABLE_API_KEY");
   if (!key) throw Object.assign(new Error("Missing LOVABLE_API_KEY"), { status: 500 });
 
@@ -74,12 +90,12 @@ async function analyzeImage(imageUrl: string, note: string): Promise<string> {
           max_tokens: 6000,
           response_format: { type: "json_object" },
           messages: [
-            { role: "system", content: SYSTEM },
+            { role: "system", content: system },
             {
               role: "user",
               content: [
                 { type: "text", text: note || "Analyze this food photo and return the JSON." },
-                { type: "image_url", image_url: { url: imageUrl } },
+                ...(imageUrl ? [{ type: "image_url", image_url: { url: imageUrl } }] : []),
               ],
             },
           ],
@@ -124,10 +140,59 @@ serve(async (req) => {
 
     const body = await req.json().catch(() => ({}));
     const imageUrl: string | undefined = body.imageBase64 || body.image || body.imageUrl || body.photo;
-    if (!imageUrl || typeof imageUrl !== "string") {
+    if (body.mode !== "menu" && (!imageUrl || typeof imageUrl !== "string")) {
       return errorResponse("Please upload a food photo first.", 400);
     }
     const note = typeof body.note === "string" ? body.note.slice(0, 500) : "";
+
+    // ── Restaurant menu mode (2 credits): analyses a menu / restaurant food photo ──
+    if (body.mode === "menu") {
+      const restaurant = (body.restaurantName || body.restaurant_name || body.restaurant || "").toString().slice(0, 200);
+      if (!restaurant && !imageUrl) {
+        return errorResponse("Enter a restaurant name or add a menu photo.", 400);
+      }
+      let menuParsed: any = null;
+      let menuErr: any = null;
+      for (let pass = 0; pass < 2 && !menuParsed; pass++) {
+        try {
+          const raw = await analyzeImage(
+            imageUrl,
+            `Restaurant: ${restaurant || "Unknown restaurant"}. Analyse the menu and return the JSON.`,
+            MENU_SYSTEM,
+          );
+          const candidate = safeJson(raw);
+          if (candidate && typeof candidate === "object") menuParsed = candidate;
+        } catch (e: any) {
+          menuErr = e;
+          const status = e?.status ?? 500;
+          if (status === 429) return errorResponse("AI is busy right now. Please try again in a moment.", 429);
+          if (status === 402) return errorResponse("AI credits exhausted. Please try again later.", 402);
+        }
+      }
+      if (!menuParsed) {
+        return errorResponse(
+          menuErr?.message
+            ? "The menu could not be analysed. Please try again."
+            : "The menu could not be read. Please try another photo.",
+          502,
+        );
+      }
+      const arr = (v: any) => (Array.isArray(v) ? v : []);
+      const analysis = {
+        restaurant_name: menuParsed.restaurant_name || restaurant || "Restaurant",
+        summary: menuParsed.summary || "",
+        top_recommendations: arr(menuParsed.top_recommendations),
+        items_to_avoid: arr(menuParsed.items_to_avoid),
+        analysis_data: arr(menuParsed.analysis_data),
+        recommendations: arr(menuParsed.recommendations),
+        hidden_calorie_traps: arr(menuParsed.hidden_calorie_traps),
+        allergen_warnings: arr(menuParsed.allergen_warnings),
+        best_for: menuParsed.best_for && typeof menuParsed.best_for === "object" ? menuParsed.best_for : null,
+      };
+      const menuDenied = await deductAICredits(user.id, 2, "analyze-menu");
+      if (menuDenied) return menuDenied;
+      return jsonResponse({ success: true, analysis, data: analysis, result: analysis });
+    }
 
     let parsed: any = null;
     let lastAiError: any = null;
