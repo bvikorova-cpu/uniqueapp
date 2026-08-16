@@ -74,14 +74,14 @@ export const MealPlannerGenerator = () => {
 
           <Button
             onClick={() => generateMutation.mutate()}
-            disabled={generateMutation.isPending || !credits || credits.credits < 5}
+            disabled={generateMutation.isPending || !credits || credits.credits < 50}
             className="w-full"
           >
             {generateMutation.isPending ? 'Generating...' : 'Generate Plan (5 credits)'}
           </Button>
-          {credits && credits.credits < 5 && (
+          {credits && credits.credits < 50 && (
             <p className="text-sm text-destructive mt-2">
-              You need 5 credits to generate a meal plan. You have {credits.credits} credits.
+              You need 50 credits to generate a meal plan. You have {credits.credits} credits.
             </p>
           )}
         </div>
