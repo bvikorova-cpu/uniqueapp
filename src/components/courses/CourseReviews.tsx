@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -14,6 +15,7 @@ interface Review {
   comment: string;
   created_at: string;
   user_id: string;
+  profile?: { full_name: string; avatar_url: string | null } | null;
 }
 
 interface CourseReviewsProps {
@@ -38,7 +40,17 @@ export const CourseReviews = ({ courseId, userHasAccess }: CourseReviewsProps) =
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data as Review[];
+      const rows = (data || []) as Review[];
+      const userIds = Array.from(new Set(rows.map((r) => r.user_id).filter(Boolean)));
+      if (userIds.length > 0) {
+        const { data: profiles } = await (supabase as any)
+          .from("profiles_public")
+          .select("id, full_name, avatar_url")
+          .in("id", userIds);
+        const profileMap = new Map<string, any>((profiles || []).map((p: any) => [p.id, p]));
+        rows.forEach((r) => { r.profile = profileMap.get(r.user_id) || null; });
+      }
+      return rows;
     } });
 
   const { data: userReview } = useQuery({
@@ -202,7 +214,18 @@ export const CourseReviews = ({ courseId, userHasAccess }: CourseReviewsProps) =
           .map((review) => (
             <Card key={review.id}>
               <CardContent className="pt-6 space-y-2">
-                <StarRating value={review.rating} />
+                <div className="flex items-center gap-3">
+                  <Avatar className="w-9 h-9">
+                    <AvatarImage src={review.profile?.avatar_url || undefined} />
+                    <AvatarFallback className="text-xs bg-primary/10 text-primary">
+                      {review.profile?.full_name?.charAt(0) || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-bold text-sm">{review.profile?.full_name || 'User'}</p>
+                    <StarRating value={review.rating} />
+                  </div>
+                </div>
                 {review.comment && (
                   <p className="text-muted-foreground">{review.comment}</p>
                 )}

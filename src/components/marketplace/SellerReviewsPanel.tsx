@@ -1,16 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSellerReviews } from "@/hooks/useSellerReviews";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   sellerId: string;
 }
+
+type Profile = { id: string; full_name: string | null; avatar_url: string | null };
 
 const StarRow = ({ value, onChange }: { value: number; onChange?: (n: number) => void }) => (
   <div className="flex gap-1">
@@ -32,6 +36,21 @@ export const SellerReviewsPanel = ({ sellerId }: Props) => {
   const { reviews, avgRating, count, submitReview } = useSellerReviews(sellerId);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
+  const [profiles, setProfiles] = useState<Record<string, Profile>>({});
+
+  useEffect(() => {
+    const ids = [...new Set(reviews.map((r) => r.buyer_id))];
+    if (ids.length === 0) return;
+    (async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("id,full_name,avatar_url")
+        .in("id", ids);
+      const map: Record<string, Profile> = {};
+      (data || []).forEach((p: any) => (map[p.id] = p));
+      setProfiles(map);
+    })();
+  }, [reviews]);
 
   const handleSubmit = () => {
     if (!rating) return;
@@ -72,17 +91,27 @@ export const SellerReviewsPanel = ({ sellerId }: Props) => {
       </Card>
 
       <div className="space-y-3">
-        {reviews.map((r) => (
-          <Card key={r.id} className="p-3 space-y-1">
-            <div className="flex items-center justify-between">
+        {reviews.map((r) => {
+          const p = profiles[r.buyer_id];
+          return (
+            <Card key={r.id} className="p-3 space-y-2">
+              <div className="flex items-center gap-2">
+                <Avatar className="h-7 w-7">
+                  <AvatarImage src={p?.avatar_url ?? undefined} />
+                  <AvatarFallback className="text-xs">{(p?.full_name || "U").slice(0, 1).toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">{p?.full_name || "User"}</p>
+                </div>
+                <span className="text-xs text-muted-foreground shrink-0">
+                  {formatDistanceToNow(new Date(r.created_at), { addSuffix: true })}
+                </span>
+              </div>
               <StarRow value={r.rating} />
-              <span className="text-xs text-muted-foreground">
-                {formatDistanceToNow(new Date(r.created_at), { addSuffix: true })}
-              </span>
-            </div>
-            {r.comment && <p className="text-sm">{r.comment}</p>}
-          </Card>
-        ))}
+              {r.comment && <p className="text-sm">{r.comment}</p>}
+            </Card>
+          );
+        })}
         {reviews.length === 0 && (
           <p className="text-sm text-muted-foreground text-center py-4">No reviews yet.</p>
         )}

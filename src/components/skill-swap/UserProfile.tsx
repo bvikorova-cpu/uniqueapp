@@ -30,7 +30,7 @@ interface Review {
   rating: number;
   comment: string;
   created_at: string;
-  reviewer: { full_name: string; };
+  reviewer: { full_name: string; avatar_url: string | null };
 }
 
 export const UserProfile = () => {
@@ -56,9 +56,12 @@ export const UserProfile = () => {
       setProfile(profileData);
       const { data: reviewsData } = await supabase.from('skill_swap_reviews').select('*').eq('reviewed_user_id', userId).order('created_at', { ascending: false });
       const reviewerIds = reviewsData?.map(r => r.reviewer_id) || [];
-      const { data: profilesData } = await (supabase as any).from('profiles_public').select('id, full_name').in('id', reviewerIds);
+      const { data: profilesData } = await (supabase as any).from('profiles_public').select('id, full_name, avatar_url').in('id', reviewerIds);
       const profilesMap = new Map<string, any>(profilesData?.map((p: any) => [p.id, p]) || []);
-      setReviews((reviewsData || []).map(r => ({ ...r, reviewer: { full_name: profilesMap.get(r.reviewer_id)?.full_name || 'Anonymous' } })));
+      setReviews((reviewsData || []).map(r => {
+        const p = profilesMap.get(r.reviewer_id);
+        return { ...r, reviewer: { full_name: p?.full_name || 'User', avatar_url: p?.avatar_url || null } };
+      }));
     } catch (error) { console.error('Error loading profile:', error); toast.error('Error loading profile'); }
     finally { setLoading(false); }
   };
@@ -192,13 +195,14 @@ export const UserProfile = () => {
               <div className="space-y-4">
                 {reviews.map((review) => (
                   <div key={review.id}>
-                    <div className="flex items-start gap-3">
-                      <Avatar className="w-9 h-9">
-                        <AvatarFallback className="text-xs bg-primary/10 text-primary">{review.reviewer.full_name?.charAt(0) || 'U'}</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="font-bold text-sm">{review.reviewer.full_name}</span>
+                  <div className="flex items-start gap-3">
+                    <Avatar className="w-9 h-9">
+                      {review.reviewer.avatar_url && <img src={review.reviewer.avatar_url} alt={review.reviewer.full_name} className="h-full w-full object-cover" />}
+                      <AvatarFallback className="text-xs bg-primary/10 text-primary">{review.reviewer.full_name?.charAt(0) || 'U'}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-bold text-sm">{review.reviewer.full_name}</span>
                           <span className="text-[10px] text-muted-foreground">{new Date(review.created_at).toLocaleDateString()}</span>
                         </div>
                         <div className="flex items-center gap-0.5 mb-1">

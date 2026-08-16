@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -46,7 +47,16 @@ export default function CompanyProfile() {
       supabase.from("interview_questions_public" as any).select("*").eq("company_id", c.id).order("created_at", { ascending: false }),
       supabase.from("job_listings").select("id,title,location,salary_min,salary_max").eq("company_name", c.name).eq("is_active", true).limit(10),
     ]);
-    setReviews(r.data || []); setSalaries(s.data || []); setQuestions(q.data || []); setJobs(j.data || []);
+
+    const reviewRows = (r.data || []) as any[];
+    const reviewUserIds = Array.from(new Set(reviewRows.map((x) => x.user_id).filter(Boolean)));
+    if (reviewUserIds.length > 0) {
+      const { data: profs } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", reviewUserIds);
+      const profileMap = new Map((profs || []).map((p: any) => [p.id, p]));
+      reviewRows.forEach((x) => { x.profile = profileMap.get(x.user_id) || null; });
+    }
+
+    setReviews(reviewRows); setSalaries(s.data || []); setQuestions(q.data || []); setJobs(j.data || []);
     setLoading(false);
   };
 
@@ -115,14 +125,22 @@ export default function CompanyProfile() {
           {reviews.length === 0 ? <p className="text-center text-muted-foreground py-8">No reviews yet.</p> :
             reviews.map(r => (
               <Card key={r.id}><CardContent className="p-4">
-                <div className="flex justify-between items-start gap-2">
-                  <h3 className="font-bold">{r.title}</h3>
-                  <span className="flex items-center gap-1 text-sm font-semibold"><Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />{r.rating}</span>
+                <div className="flex items-start gap-3">
+                  <Avatar className="h-9 w-9 shrink-0">
+                    <AvatarImage src={r.profile?.avatar_url ?? undefined} />
+                    <AvatarFallback className="text-xs bg-primary/10 text-primary">{(r.profile?.full_name || "U").slice(0, 1).toUpperCase()}</AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-start gap-2">
+                      <h3 className="font-bold">{r.title}</h3>
+                      <span className="flex items-center gap-1 text-sm font-semibold"><Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />{r.rating}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{r.profile?.full_name || "User"} · {r.job_title || ""} · {r.employment_status || ""}</p>
+                    {r.pros && <p className="text-sm mt-2"><span className="font-semibold text-emerald-500">Pros:</span> {r.pros}</p>}
+                    {r.cons && <p className="text-sm mt-1"><span className="font-semibold text-rose-500">Cons:</span> {r.cons}</p>}
+                    {r.advice && <p className="text-sm mt-1 text-muted-foreground"><span className="font-semibold">Advice:</span> {r.advice}</p>}
+                  </div>
                 </div>
-                <p className="text-xs text-muted-foreground">{r.job_title || "Anonymous"} · {r.employment_status || ""}</p>
-                {r.pros && <p className="text-sm mt-2"><span className="font-semibold text-emerald-500">Pros:</span> {r.pros}</p>}
-                {r.cons && <p className="text-sm mt-1"><span className="font-semibold text-rose-500">Cons:</span> {r.cons}</p>}
-                {r.advice && <p className="text-sm mt-1 text-muted-foreground"><span className="font-semibold">Advice:</span> {r.advice}</p>}
               </CardContent></Card>
             ))}
         </TabsContent>
