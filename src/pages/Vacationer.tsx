@@ -26,7 +26,7 @@ type ViewType = "hub" | "planner" | "packing" | "localguide" | "budget" | "cultu
 interface Destination {
   id: string; name: string; description: string; location: string; created_at: string; user_id: string;
   photos?: { id: string; photo_url: string }[];
-  reviews?: { id: string; rating: number; comment: string; user_id: string }[];
+  reviews?: { id: string; rating: number; comment: string; user_id: string; profiles?: { full_name: string | null; avatar_url: string | null } | null }[];
 }
 
 const FEATURE_CARDS = [
@@ -60,8 +60,20 @@ const Vacationer = () => {
 
   const fetchDestinations = async () => {
     const { data, error } = await supabase.from("destinations").select("*, photos:destination_photos(*), reviews:destination_reviews(*)").eq("is_active", true).order("created_at", { ascending: false });
-    if (error) toast({ title: "Error", description: "Failed to load destinations", variant: "destructive" });
-    else setDestinations(data || []);
+    if (error) { toast({ title: "Error", description: "Failed to load destinations", variant: "destructive" }); return; }
+
+    // Enrich reviews with reviewer profile names/avatars
+    const allReviewUserIds = Array.from(new Set((data || []).flatMap(d => d.reviews?.map((r: any) => r.user_id) || [])));
+    let profileMap = new Map<string, { full_name: string | null; avatar_url: string | null }>();
+    if (allReviewUserIds.length > 0) {
+      const { data: profiles } = await supabase.from("profiles").select("id, full_name, avatar_url").in("id", allReviewUserIds);
+      (profiles || []).forEach(p => profileMap.set(p.id, { full_name: p.full_name, avatar_url: p.avatar_url }));
+    }
+
+    setDestinations((data || []).map(d => ({
+      ...d,
+      reviews: (d.reviews || []).map((r: any) => ({ ...r, profiles: profileMap.get(r.user_id) || null }))
+    })));
   };
 
   const handleAddDestination = async () => {
@@ -262,7 +274,7 @@ const Vacationer = () => {
                   </div>
                   {selectedDestination.reviews?.length ? (
                     <div className="space-y-3">{selectedDestination.reviews.map(r => (
-                      <Card key={r.id}><CardContent className="pt-4"><div className="flex items-start gap-3"><Avatar className="h-10 w-10"><AvatarFallback>U</AvatarFallback></Avatar><div className="flex-1 space-y-2"><div className="flex items-center justify-between"><span className="font-semibold">Traveler</span><div className="flex">{[1,2,3,4,5].map(s => <Star key={s} className={`h-4 w-4 ${s <= r.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/30"}`} />)}</div></div><p className="text-sm text-muted-foreground">{r.comment}</p></div></div></CardContent></Card>
+                      <Card key={r.id}><CardContent className="pt-4"><div className="flex items-start gap-3"><Avatar className="h-10 w-10">{r.profiles?.avatar_url ? <img src={r.profiles.avatar_url} alt="" className="h-full w-full object-cover rounded-full" /> : <AvatarFallback>{(r.profiles?.full_name?.[0] || "U").toUpperCase()}</AvatarFallback>}</Avatar><div className="flex-1 space-y-2"><div className="flex items-center justify-between"><span className="font-semibold">{r.profiles?.full_name || "Traveler"}</span><div className="flex">{[1,2,3,4,5].map(s => <Star key={s} className={`h-4 w-4 ${s <= r.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/30"}`} />)}</div></div><p className="text-sm text-muted-foreground">{r.comment}</p></div></div></CardContent></Card>
                     ))}</div>
                   ) : <p className="text-center text-muted-foreground py-6">No reviews yet.</p>}
                 </div>
