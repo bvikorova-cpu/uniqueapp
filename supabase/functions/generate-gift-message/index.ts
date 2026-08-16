@@ -318,6 +318,7 @@ Clearly depict this exact location. Include rich searchable details such as furn
       recipe_from_ingredients: 3,
       chef_chat: 3,
       wine_pairing: 3,
+      weekly_meal_plan: 5,
     };
     if (!__hasKidsLedger && !__firstAidFollowup) {
       const __isLegacyGift = !!__style || !!__giftType;
