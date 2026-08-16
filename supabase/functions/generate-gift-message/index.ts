@@ -315,6 +315,9 @@ Clearly depict this exact location. Include rich searchable details such as furn
       story_video: 5,
       uni_assistant: 5,
       generate_ai_room_design: 30,
+      recipe_from_ingredients: 3,
+      chef_chat: 3,
+      wine_pairing: 3,
     };
     if (!__hasKidsLedger && !__firstAidFollowup) {
       const __isLegacyGift = !!__style || !!__giftType;
@@ -548,7 +551,8 @@ Only call the navigate tool when the user clearly asks to open/go to/show one of
       paint_by_numbers:   "Describe a paint-by-numbers design suitable for the requested theme.",
       paint_image:        "Describe a detailed painting concept with composition, palette and technique.",
       phobia_cure:        "You are an exposure-therapy guide. Design a gradual, science-backed cure plan for the phobia. Recommend professional help.",
-      recipe_from_ingredients: "You are a creative chef. Design a recipe using ONLY the provided ingredients. Include steps, time and macros.",
+      recipe_from_ingredients: "You are a professional chef. Design exactly 3 creative recipes using mostly the provided ingredients. For each recipe use markdown: '## Recipe name', a one-line appetising description, then **Prep time**, **Difficulty**, an '### Ingredients' bullet list and a numbered '### Steps' list.",
+      wine_pairing:       "You are a master sommelier. Recommend 3 drink pairings (wine, plus one beer and one non-alcoholic option) for the dish. Use markdown with a short intro, then per pairing: name, grape/style, why it works, serving temperature and an approximate price band in EUR.",
       sports_prediction:  "You are a sports analyst. Provide a data-driven prediction with confidence level and key factors.",
       story_video:        "Write a script for a short story video including scene descriptions, dialogue and narration.",
       tattoo:             "You are a tattoo artist. Describe a meaningful tattoo design with symbolism, style and placement.",
@@ -829,6 +833,9 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
       if (type === "first_aid_map") return 2000;
       if (type === "fitness_plan") return 3000;
       if (type === "travel_planner") return 12000;
+      if (type === "recipe_from_ingredients") return 3000;
+      if (type === "wine_pairing") return 1500;
+      if (type === "chef_chat") return 1800;
 
       if (longTypes.has(type)) return 1500;
       if (isSport) return 1200;
