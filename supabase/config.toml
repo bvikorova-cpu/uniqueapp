@@ -444,3 +444,12 @@ verify_jwt = true
 [functions.generate-escape-room-panorama]
 verify_jwt = true
 
+
+[functions.generate-recipe-from-ingredients]
+verify_jwt = true
+
+[functions.chat-with-chef]
+verify_jwt = true
+
+[functions.suggest-wine-pairing]
+verify_jwt = true
