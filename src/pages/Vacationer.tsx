@@ -45,6 +45,7 @@ const Vacationer = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
+  const [isAiToolsOpen, setIsAiToolsOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [activeView, setActiveView] = useState<ViewType>("hub");
   const [searchQuery, setSearchQuery] = useState("");
