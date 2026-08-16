@@ -284,6 +284,45 @@ const Vacationer = () => {
           </DialogContent>
         </Dialog>
 
+        {/* Lightbox */}
+        <Dialog open={lightboxIndex !== null} onOpenChange={open => !open && setLightboxIndex(null)}>
+          <DialogContent className="w-[calc(100vw-1rem)] max-w-5xl max-h-[95vh] p-0 overflow-hidden border-0 bg-black/95">
+            <DialogHeader className="sr-only"><DialogTitle>Photo preview</DialogTitle></DialogHeader>
+            {selectedDestination && lightboxIndex !== null && selectedDestination.photos?.[lightboxIndex] && (
+              <div className="relative flex items-center justify-center h-[80vh] sm:h-[85vh]">
+                <img
+                  src={selectedDestination.photos[lightboxIndex].photo_url}
+                  alt=""
+                  className="max-w-full max-h-full object-contain"
+                />
+                {selectedDestination.photos.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setLightboxIndex(i => (i === null ? 0 : (i - 1 + selectedDestination.photos!.length) % selectedDestination.photos!.length))}
+                      className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 backdrop-blur-sm"
+                      aria-label="Previous photo"
+                    >
+                      <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setLightboxIndex(i => (i === null ? 0 : (i + 1) % selectedDestination.photos!.length))}
+                      className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 backdrop-blur-sm"
+                      aria-label="Next photo"
+                    >
+                      <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8" />
+                    </button>
+                  </>
+                )}
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-black/60 text-white text-xs backdrop-blur-sm">
+                  {lightboxIndex + 1} / {selectedDestination.photos.length}
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
         {/* Review Dialog */}
         <Dialog open={isReviewDialogOpen} onOpenChange={setIsReviewDialogOpen}>
           <DialogContent>
