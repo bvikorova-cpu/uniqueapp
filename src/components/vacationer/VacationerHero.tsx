@@ -1,8 +1,7 @@
 import { motion } from "framer-motion";
-import { Plane, Globe, Users, MapPin, Star, Sparkles, Play, Pause, Volume2, VolumeX } from "lucide-react";
+import { Plane, Sparkles, Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useLiveStats } from "@/hooks/useLiveStats";
 import heroVideo from "@/assets/vacationer-hero.mp4.asset.json";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
@@ -26,18 +25,8 @@ export const VacationerHero = () => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
 
-  const { stats, loading } = useLiveStats([
-    { key: "destinations", table: "destinations" },
-    { key: "reviews", table: "destination_reviews" },
-    { key: "photos", table: "destination_photos" },
-  ]);
 
-  const heroStats = [
-    { icon: Globe, label: "Destinations", value: stats.destinations || 0, suffix: "+" },
-    { icon: Star, label: "Reviews", value: stats.reviews || 0, suffix: "+" },
-    { icon: MapPin, label: "Photos", value: stats.photos || 0, suffix: "+" },
-    { icon: Users, label: "Community", value: 0, suffix: "", staticLabel: "Free" },
-  ];
+
 
   useEffect(() => {
     if (videoRef.current) { videoRef.current.play().catch(() => setIsPlaying(false)); }
@@ -73,22 +62,6 @@ export const VacationerHero = () => {
           style={{ textShadow: "0 1px 8px rgba(0,0,0,0.6), 0 0 20px rgba(0,0,0,0.3)", color: "rgba(255,255,255,0.9)" }}>
           Discover breathtaking destinations, share travel stories, and plan your dream adventures with AI-powered tools.
         </motion.p>
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto w-full">
-          {heroStats.map((stat, i) => (
-            <motion.div key={stat.label} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.35 + i * 0.05 }}
-              className="bg-card/45 backdrop-blur-md rounded-xl p-3 text-center border border-border/60">
-              <div className="flex items-center justify-center gap-1.5 mb-1">
-                <stat.icon className="w-4 h-4 text-primary" />
-                <span className="text-xl sm:text-2xl font-black text-foreground">
-                  {(stat as any).staticLabel ? (stat as any).staticLabel : loading ? "..." : <AnimatedCounter target={stat.value} suffix={stat.suffix} />}
-                </span>
-              </div>
-              <span className="text-xs text-muted-foreground font-medium">{stat.label}</span>
-            </motion.div>
-          ))}
-        </motion.div>
       </div>
       <div className="absolute bottom-4 right-4 flex gap-2 z-20">
         <Button variant="ghost" size="icon" className="bg-card/30 backdrop-blur-sm hover:bg-card/50 text-foreground" onClick={togglePlay}>
