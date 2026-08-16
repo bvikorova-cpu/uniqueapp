@@ -49,13 +49,14 @@ export const VacationerHero = () => {
           </span>
         </motion.div>
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-          className="text-3xl md:text-5xl lg:text-6xl font-black text-center mb-3"
+          className="text-5xl md:text-7xl lg:text-8xl font-black text-center mb-3 tracking-tight"
           style={ {
-            WebkitTextStroke: "1.5px rgba(0,0,0,0.35)",
-            textShadow: "0 0 30px hsl(var(--gold) / 0.5), 0 0 60px hsl(var(--gold) / 0.3), 0 0 90px hsl(var(--gold) / 0.15), 0 2px 4px rgba(0,0,0,0.5)",
-            background: "linear-gradient(135deg, hsl(var(--gold)), hsl(var(--gold)), hsl(var(--primary)))",
+            WebkitTextStroke: "2px rgba(0,0,0,0.45)",
+            textShadow: "0 0 40px hsl(var(--gold) / 0.75), 0 0 80px hsl(var(--gold) / 0.55), 0 0 120px hsl(var(--gold) / 0.35), 0 0 180px hsl(var(--gold) / 0.2), 0 4px 10px rgba(0,0,0,0.65)",
+            background: "linear-gradient(135deg, hsl(var(--gold)) 0%, hsl(var(--gold)) 45%, hsl(var(--primary)) 100%)",
             WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent" }}>
+            WebkitTextFillColor: "transparent",
+            filter: "drop-shadow(0 0 16px hsl(var(--gold) / 0.6))" }}>
           Vacationer
         </motion.h1>
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
