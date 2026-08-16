@@ -52,6 +52,7 @@ const Vacationer = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [newReview, setNewReview] = useState({ rating: 5, comment: "" });
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => { fetchUser(); fetchDestinations(); }, []);
 
