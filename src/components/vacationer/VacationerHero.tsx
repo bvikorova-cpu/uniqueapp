@@ -1,8 +1,7 @@
 import { motion } from "framer-motion";
-import { Plane, Globe, Users, MapPin, Star, Sparkles, Play, Pause, Volume2, VolumeX } from "lucide-react";
+import { Plane, Sparkles, Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useLiveStats } from "@/hooks/useLiveStats";
 import heroVideo from "@/assets/vacationer-hero.mp4.asset.json";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
