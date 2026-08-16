@@ -315,6 +315,9 @@ Clearly depict this exact location. Include rich searchable details such as furn
       story_video: 5,
       uni_assistant: 5,
       generate_ai_room_design: 30,
+      recipe_from_ingredients: 3,
+      chef_chat: 3,
+      wine_pairing: 3,
     };
     if (!__hasKidsLedger && !__firstAidFollowup) {
       const __isLegacyGift = !!__style || !!__giftType;
