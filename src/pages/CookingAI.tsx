@@ -14,7 +14,7 @@ const CookingAI = () => {
       icon: <ChefHat className="w-8 h-8" />,
       title: "Recipe Generator",
       description: "Enter ingredients and get 3 amazing recipes",
-      credits: 1,
+      credits: 3,
       color: "from-orange-500 to-red-500",
       path: "/recipe-generator"
     },
@@ -22,7 +22,7 @@ const CookingAI = () => {
       icon: <Calendar className="w-8 h-8" />,
       title: "Weekly Meal Plan",
       description: "AI creates complete meal plan for the week",
-      credits: 3,
+      credits: 50,
       color: "from-green-500 to-emerald-500",
       path: "/meal-planner"
     },
@@ -30,7 +30,7 @@ const CookingAI = () => {
       icon: <Camera className="w-8 h-8" />,
       title: "Food Scanner",
       description: "Snap food and find out calories and nutritional values",
-      credits: 1,
+      credits: 10,
       color: "from-blue-500 to-cyan-500",
       path: "/food-scanner"
     },
@@ -38,7 +38,7 @@ const CookingAI = () => {
       icon: <MapPin className="w-8 h-8" />,
       title: "Restaurant Menu Analyzer",
       description: "Analyze restaurant menu and get healthy recommendations",
-      credits: 2,
+      credits: 25,
       color: "from-purple-500 to-pink-500",
       path: "/restaurant-analyzer"
     },
@@ -46,7 +46,7 @@ const CookingAI = () => {
       icon: <MessageSquare className="w-8 h-8" />,
       title: "AI Chef Chat",
       description: "Chat with experienced chef and get advice",
-      credits: 1,
+      credits: 3,
       color: "from-yellow-500 to-orange-500",
       path: "/chef-chat"
     },
@@ -54,7 +54,7 @@ const CookingAI = () => {
       icon: <Wine className="w-8 h-8" />,
       title: "Wine Pairing",
       description: "Wine and beverage recommendations for your dishes",
-      credits: 1,
+      credits: 3,
       color: "from-red-500 to-rose-500",
       path: "/wine-pairing"
     }
@@ -79,12 +79,12 @@ const CookingAI = () => {
           </p>
           <div className="max-w-3xl mx-auto text-sm text-muted-foreground space-y-2 text-left bg-card p-6 rounded-lg border">
             <p className="font-semibold text-foreground mb-2">How it works:</p>
-            <p>• Each AI feature requires credits to use</p>
+            <p>• Every AI feature is paid per use with AI credits — no subscriptions</p>
             <p>• Credits are deducted automatically when you generate content</p>
-            <p>• Free tier includes 10 credits to get started</p>
-            <p>• Subscribe for unlimited monthly credits</p>
+            <p>• Top up your balance anytime in the AI Credits Store</p>
             <p>• All generated content is saved to your account</p>
             <p>• Export or share your recipes and meal plans</p>
+
           </div>
         </div>
 
@@ -118,49 +118,21 @@ const CookingAI = () => {
 
         <Card className="mt-12 bg-gradient-to-r from-orange-100 to-red-100">
           <CardHeader>
-            <CardTitle>💰 Pricing & Credits</CardTitle>
+            <CardTitle>💰 Credits only</CardTitle>
+            <CardDescription>
+              No subscriptions and no monthly plans — you only pay for what you generate.
+            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Free</CardTitle>
-                  <CardDescription>10 credits</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold">€0</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Basic</CardTitle>
-                  <CardDescription>100 credits/month</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold">€4.99</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Premium</CardTitle>
-                  <CardDescription>500 credits/month</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold">€9.99</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Pro</CardTitle>
-                  <CardDescription>Unlimited</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold">€19.99</p>
-                </CardContent>
-              </Card>
-            </div>
+          <CardContent className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <p className="text-sm text-muted-foreground flex-1">
+              Each tool above shows its exact credit cost. Credits are shared across the whole platform.
+            </p>
+            <Button onClick={() => navigate('/ai-credits-store')} className="w-full sm:w-auto">
+              Buy AI Credits
+            </Button>
           </CardContent>
         </Card>
+
       </div>
     </div>
     </>

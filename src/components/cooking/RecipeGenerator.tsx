@@ -84,10 +84,10 @@ export const RecipeGenerator = () => {
 
           <Button
             onClick={() => generateMutation.mutate()}
-            disabled={ingredients.length === 0 || generateMutation.isPending || !credits || credits.credits < 1}
+            disabled={ingredients.length === 0 || generateMutation.isPending || !credits || credits.credits < 3}
             className="w-full"
           >
-            {generateMutation.isPending ? 'Generating...' : 'Generate Recipes (1 credit)'}
+            {generateMutation.isPending ? 'Generating...' : 'Generate Recipes (3 credits)'}
           </Button>
         </div>
       </Card>

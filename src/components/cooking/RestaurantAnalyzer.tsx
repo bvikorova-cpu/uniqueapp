@@ -96,7 +96,7 @@ export const RestaurantAnalyzer = () => {
 
           <Button
             onClick={() => analyzeMutation.mutate()}
-            disabled={!restaurantName || analyzeMutation.isPending || !credits || credits.credits < 2}
+            disabled={!restaurantName || analyzeMutation.isPending || !credits || credits.credits < 25}
             className="w-full"
           >
             {analyzeMutation.isPending ? 'Analyzing...' : 'Analyze Menu (2 credits)'}
