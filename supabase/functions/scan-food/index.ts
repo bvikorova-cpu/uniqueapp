@@ -4,10 +4,37 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { corsHeaders, errorResponse, jsonResponse } from "../_shared/openai.ts";
 import { deductAICredits } from "../_shared/credits.ts";
 
-const SYSTEM = `You are a nutrition vision expert. Look at the food photo and identify it.
+const SYSTEM = `You are a senior clinical nutritionist and food-vision expert. Analyse the food photo in depth.
 Return ONLY raw JSON (no markdown fences) in exactly this shape:
-{"food_name":"string","portion_g":number,"calories":number,"protein":number,"carbs":number,"fats":number,"health_tags":["string"],"healthier_alternatives":[{"name":"string","reason":"string"}]}
-All numeric values must be numbers for the visible portion. Provide 2-3 healthier_alternatives.`;
+{
+ "food_name":"string",
+ "description":"1-2 sentence description of what is on the plate and how it was cooked",
+ "confidence":number,
+ "portion_g":number,
+ "calories":number,
+ "protein":number,
+ "carbs":number,
+ "fats":number,
+ "fiber_g":number,
+ "sugar_g":number,
+ "saturated_fat_g":number,
+ "sodium_mg":number,
+ "ingredients":[{"name":"string","approx_g":number,"calories":number,"note":"cooking method or quality note"}],
+ "micronutrients":[{"name":"Vitamin C","amount":"45 mg","percent_dv":50}],
+ "allergens":["string"],
+ "diet_tags":["high-protein","gluten-free"],
+ "glycemic_index":"low|medium|high",
+ "health_score":number,
+ "verdict":"one-sentence overall assessment",
+ "pros":["string"],
+ "cons":["string"],
+ "improvement_tips":["concrete swap or portion advice"],
+ "meal_fit":{"breakfast":"good|ok|poor","lunch":"good|ok|poor","dinner":"good|ok|poor","post_workout":"good|ok|poor"},
+ "activity_equivalent":[{"activity":"Brisk walking","minutes":60}],
+ "healthier_alternatives":[{"name":"string","reason":"string","calories":number}]
+}
+Rules: all numeric values are numbers (no units inside numbers) for the VISIBLE portion. health_score and confidence are 0-100.
+Give 3-6 ingredients, 4-6 micronutrients, 2-4 pros, 2-4 cons, 3-5 improvement_tips, 2-3 activity_equivalent entries and 2-3 healthier_alternatives. Be specific and quantitative.`
 
 const MODELS = ["google/gemini-2.5-flash", "google/gemini-2.5-flash-lite"];
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -44,7 +71,7 @@ async function analyzeImage(imageUrl: string, note: string): Promise<string> {
         headers: { "Content-Type": "application/json", "Lovable-API-Key": key },
         body: JSON.stringify({
           model,
-          max_tokens: 1200,
+          max_tokens: 3500,
           messages: [
             { role: "system", content: SYSTEM },
             {
@@ -120,6 +147,24 @@ serve(async (req) => {
       fats: parsed.fats ?? macros.fats ?? macros.f ?? 0,
       health_tags: Array.isArray(parsed.health_tags) ? parsed.health_tags : [],
       healthier_alternatives: Array.isArray(parsed.healthier_alternatives) ? parsed.healthier_alternatives : [],
+      description: parsed.description ?? "",
+      confidence: parsed.confidence ?? null,
+      fiber_g: parsed.fiber_g ?? null,
+      sugar_g: parsed.sugar_g ?? null,
+      saturated_fat_g: parsed.saturated_fat_g ?? null,
+      sodium_mg: parsed.sodium_mg ?? null,
+      ingredients: Array.isArray(parsed.ingredients) ? parsed.ingredients : [],
+      micronutrients: Array.isArray(parsed.micronutrients) ? parsed.micronutrients : [],
+      allergens: Array.isArray(parsed.allergens) ? parsed.allergens : [],
+      diet_tags: Array.isArray(parsed.diet_tags) ? parsed.diet_tags : [],
+      glycemic_index: parsed.glycemic_index ?? null,
+      health_score: parsed.health_score ?? null,
+      verdict: parsed.verdict ?? "",
+      pros: Array.isArray(parsed.pros) ? parsed.pros : [],
+      cons: Array.isArray(parsed.cons) ? parsed.cons : [],
+      improvement_tips: Array.isArray(parsed.improvement_tips) ? parsed.improvement_tips : [],
+      meal_fit: parsed.meal_fit && typeof parsed.meal_fit === "object" ? parsed.meal_fit : null,
+      activity_equivalent: Array.isArray(parsed.activity_equivalent) ? parsed.activity_equivalent : [],
       macros: {
         protein: parsed.protein ?? macros.protein ?? macros.p ?? 0,
         carbs: parsed.carbs ?? macros.carbs ?? macros.c ?? 0,
