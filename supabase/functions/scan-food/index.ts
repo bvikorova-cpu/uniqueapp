@@ -129,20 +129,28 @@ serve(async (req) => {
     }
     const note = typeof body.note === "string" ? body.note.slice(0, 500) : "";
 
-    let raw: string;
-    try {
-      raw = await analyzeImage(imageUrl, note);
-    } catch (e: any) {
-      const status = e?.status ?? 500;
-      if (status === 429) return errorResponse("AI is busy right now. Please try again in a moment.", 429);
-      if (status === 402) return errorResponse("AI credits exhausted. Please try again later.", 402);
-      return errorResponse(e?.message || "AI request failed", 500);
+    let parsed: any = null;
+    let lastAiError: any = null;
+    // Two full passes: unreadable/unparseable output gets a second chance.
+    for (let pass = 0; pass < 2 && !parsed; pass++) {
+      try {
+        const raw = await analyzeImage(imageUrl, note);
+        const candidate = safeJson(raw);
+        if (candidate && typeof candidate === "object") parsed = candidate;
+      } catch (e: any) {
+        lastAiError = e;
+        const status = e?.status ?? 500;
+        if (status === 429) return errorResponse("AI is busy right now. Please try again in a moment.", 429);
+        if (status === 402) return errorResponse("AI credits exhausted. Please try again later.", 402);
+      }
+    }
+    if (!parsed) {
+      const msg = lastAiError?.message
+        ? "The scanner could not analyze the photo. Please try again."
+        : "The scanner could not read the photo. Please try another image.";
+      return errorResponse(msg, 502);
     }
 
-    const parsed = safeJson(raw);
-    if (!parsed || typeof parsed !== "object") {
-      return errorResponse("The scanner could not read the photo. Please try another image.", 502);
-    }
 
     const macros = parsed.macros && typeof parsed.macros === "object" ? parsed.macros : {};
     const scan = {
