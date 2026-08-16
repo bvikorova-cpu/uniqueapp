@@ -26,7 +26,7 @@ type ViewType = "hub" | "planner" | "packing" | "localguide" | "budget" | "cultu
 interface Destination {
   id: string; name: string; description: string; location: string; created_at: string; user_id: string;
   photos?: { id: string; photo_url: string }[];
-  reviews?: { id: string; rating: number; comment: string; user_id: string }[];
+  reviews?: { id: string; rating: number; comment: string; user_id: string; profiles?: { full_name: string | null; avatar_url: string | null } | null }[];
 }
 
 const FEATURE_CARDS = [
