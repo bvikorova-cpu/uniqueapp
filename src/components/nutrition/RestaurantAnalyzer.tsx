@@ -21,8 +21,8 @@ export default function RestaurantAnalyzer() {
 
   const analyzeMutation = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('analyze-restaurant-menu', {
-        body: { restaurantName, menuImageBase64: menuImage }
+      const { data, error } = await supabase.functions.invoke('analyze-menu', {
+        body: { restaurantName, menuImage }
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
@@ -70,7 +70,7 @@ export default function RestaurantAnalyzer() {
                 </div>
                 Restaurant Intelligence
               </CardTitle>
-              <CardDescription>AI analyzes menus and recommends healthy options (25 credits)</CardDescription>
+              <CardDescription>AI analyzes menus and recommends healthy options (2 credits)</CardDescription>
             </div>
             <Badge variant="outline" className="gap-1">
               {credits ? `${credits.credits_remaining}` : '...'}
@@ -99,9 +99,9 @@ export default function RestaurantAnalyzer() {
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
           </div>
 
-          <Button onClick={() => { if (!restaurantName) { toast.error("Enter restaurant name"); return; } if (!credits || credits.credits_remaining < 25) { toast.error('Need 25 credits'); return; } analyzeMutation.mutate(); }}
+          <Button onClick={() => { if (!restaurantName) { toast.error("Enter restaurant name"); return; } if (!credits || credits.credits_remaining < 2) { toast.error('Need 2 credits'); return; } analyzeMutation.mutate(); }}
             disabled={analyzeMutation.isPending || !restaurantName} className="w-full gap-2" size="lg">
-            {analyzeMutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Analyzing...</> : <><Sparkles className="h-5 w-5" /> Analyze Menu (25 credits)</>}
+            {analyzeMutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Analyzing...</> : <><Sparkles className="h-5 w-5" /> Analyze Menu (2 credits)</>}
           </Button>
         </CardContent>
       </Card>
