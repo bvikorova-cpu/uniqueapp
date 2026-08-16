@@ -229,21 +229,8 @@ const Vacationer = () => {
         <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
           <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
-              <div className="flex items-start justify-between">
-                <div>
-                  <DialogTitle className="text-2xl">{selectedDestination?.name}</DialogTitle>
-                  <CardDescription className="flex items-center gap-1 text-base mt-1"><MapPin className="h-5 w-5" />{selectedDestination?.location}</CardDescription>
-                </div>
-                {user?.id === selectedDestination?.user_id && (
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild><Button variant="ghost" size="sm" className="text-destructive"><Trash2 className="h-4 w-4" /></Button></AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader><AlertDialogTitle>Delete?</AlertDialogTitle><AlertDialogDescription>This cannot be undone.</AlertDialogDescription></AlertDialogHeader>
-                      <AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction onClick={() => selectedDestination && handleDeleteDestination(selectedDestination.id)} className="bg-destructive text-destructive-foreground">Delete</AlertDialogAction></AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                )}
-              </div>
+              <DialogTitle className="text-2xl pr-10">{selectedDestination?.name}</DialogTitle>
+              <CardDescription className="flex items-center gap-1 text-base mt-1"><MapPin className="h-5 w-5" />{selectedDestination?.location}</CardDescription>
             </DialogHeader>
             {selectedDestination && (
               <div className="space-y-6">
@@ -279,6 +266,22 @@ const Vacationer = () => {
                     ))}</div>
                   ) : <p className="text-center text-muted-foreground py-6">No reviews yet.</p>}
                 </div>
+
+                {user?.id === selectedDestination?.user_id && (
+                  <div className="pt-4 border-t border-border/40">
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="outline" size="sm" className="text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive w-full sm:w-auto">
+                          <Trash2 className="h-4 w-4 mr-2" />Delete Destination
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader><AlertDialogTitle>Delete destination?</AlertDialogTitle><AlertDialogDescription>This cannot be undone.</AlertDialogDescription></AlertDialogHeader>
+                        <AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction onClick={() => handleDeleteDestination(selectedDestination.id)} className="bg-destructive text-destructive-foreground">Delete</AlertDialogAction></AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                )}
               </div>
             )}
           </DialogContent>
