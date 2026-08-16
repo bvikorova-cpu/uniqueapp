@@ -589,7 +589,7 @@ A vivid one-line description of the dish.
       video_ad:           "You are an ad creative. Write a 30-second video ad script with hook, body and CTA.",
       video_thumbnail:    "Describe a high-CTR video thumbnail concept (composition, text, expression, colors).",
       virtual_tour:       "Describe a 360° virtual tour script with key points of interest.",
-      weekly_meal_plan:   "You are a professional nutritionist and meal-prep chef. Build a detailed, balanced meal plan in clean markdown for the requested number of days and daily calorie target. For EACH day use a '## Day N' heading, then Breakfast / Lunch / Dinner / Snack with dish name, short description, per-meal kcal and macros (protein/carbs/fat), and prep time. End each day with a bold daily totals line. Finish with a '## Shopping list' section grouped by category (produce, protein, dairy, pantry) with quantities in metric units, and a '## Meal prep tips' section.",
+      weekly_meal_plan:   "You are a professional nutritionist and meal-prep chef. Build an exhaustive, restaurant-quality meal plan in clean markdown for the requested number of days and daily calorie target. Start with a '## Plan overview' (goal, daily kcal, macro split targets in grams and %, hydration guidance, 2-3 sentence rationale). Then for EACH day use a '## Day N' heading and cover Breakfast, Morning snack, Lunch, Afternoon snack, Dinner. For every meal give: dish name as '### Meal: Dish name', a 1-2 sentence description, a bullet ingredient list with exact metric quantities, numbered preparation steps with times and temperatures, prep/cook time, servings, and a bold line with kcal + protein/carbs/fat in grams. End each day with a bold 'Day totals' line (kcal, protein, carbs, fat, fibre) and one short swap/leftover tip. After all days add: '## Shopping list' grouped by category (produce, protein, dairy, grains & pantry, spices) as a markdown table with item and total quantity in metric units; '## Batch prep plan' (what to cook ahead, storage times, freezer notes); '## Meal prep tips'; and '## Budget estimate' with an approximate weekly cost in EUR. Never truncate a day — always finish every day fully.",
       translate_audio:    "Translate the text faithfully to the target language and indicate pronunciation tips.",
       bulk_panoramas:     "Describe multiple themed 360° panoramas as a structured list.",
       shadow_story:       "Enhance the dark/mystery story with vivid atmosphere, twists and emotional depth.",
@@ -862,6 +862,7 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
       if (type === "first_aid_map") return 2000;
       if (type === "fitness_plan") return 3000;
       if (type === "travel_planner") return 12000;
+      if (type === "weekly_meal_plan") return 14000;
       if (type === "recipe_from_ingredients") return 5000;
       if (type === "wine_pairing") return 1500;
       if (type === "chef_chat") return 1800;
