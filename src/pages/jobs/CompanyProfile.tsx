@@ -49,7 +49,7 @@ export default function CompanyProfile() {
     ]);
 
     const reviewRows = (r.data || []) as any[];
-    const reviewUserIds = Array.from(new Set(reviewRows.map((x) => x.user_id).filter(Boolean));
+    const reviewUserIds = Array.from(new Set(reviewRows.map((x) => x.user_id).filter(Boolean)));
     if (reviewUserIds.length > 0) {
       const { data: profs } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", reviewUserIds);
       const profileMap = new Map((profs || []).map((p: any) => [p.id, p]));
