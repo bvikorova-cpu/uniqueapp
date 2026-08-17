@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Video, Eye, Calendar, Loader2, Plus, Trash2 } from "lucide-react";
+import { Video, Eye, Calendar, Loader2, Plus, Trash2, MessageCircle } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,6 +16,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { VirtualTourUploader } from "./VirtualTourUploader";
+import { PropertyConversationsDialog } from "./PropertyConversationsDialog";
+import { usePropertyUnread } from "@/hooks/usePropertyUnread";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Property {
@@ -39,6 +41,8 @@ export function PropertyDashboard() {
   const [uploaderOpen, setUploaderOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Property | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [inboxOpen, setInboxOpen] = useState(false);
+  const { totalUnread } = usePropertyUnread({ notifyToasts: false });
   const { toast } = useToast();
 
   useEffect(() => {
@@ -131,6 +135,22 @@ export function PropertyDashboard() {
 
   if (properties.length === 0) {
     return (
+      <>
+      <div className="mb-6 flex items-center justify-between gap-3 rounded-xl border border-primary/30 bg-primary/5 p-4">
+        <div>
+          <p className="font-bold text-sm">Buyer messages</p>
+          <p className="text-xs text-muted-foreground">Read and reply to buyers who contacted you about your listings.</p>
+        </div>
+        <Button onClick={() => setInboxOpen(true)} className="relative shrink-0">
+          <MessageCircle className="h-4 w-4 mr-2" /> Messages
+          {totalUnread > 0 && (
+            <span className="ml-2 min-w-[20px] h-5 px-1.5 rounded-full bg-red-500 text-white text-[11px] font-bold flex items-center justify-center">
+              {totalUnread > 9 ? "9+" : totalUnread}
+            </span>
+          )}
+        </Button>
+      </div>
+      <PropertyConversationsDialog open={inboxOpen} onOpenChange={setInboxOpen} />
       <Card>
         <CardHeader>
           <CardTitle>No Properties Yet</CardTitle>
@@ -139,11 +159,27 @@ export function PropertyDashboard() {
           </CardDescription>
         </CardHeader>
       </Card>
+      </>
     );
   }
 
   return (
     <>
+      <div className="mb-6 flex items-center justify-between gap-3 rounded-xl border border-primary/30 bg-primary/5 p-4">
+        <div>
+          <p className="font-bold text-sm">Buyer messages</p>
+          <p className="text-xs text-muted-foreground">Read and reply to buyers who contacted you about your listings.</p>
+        </div>
+        <Button onClick={() => setInboxOpen(true)} className="relative shrink-0">
+          <MessageCircle className="h-4 w-4 mr-2" /> Messages
+          {totalUnread > 0 && (
+            <span className="ml-2 min-w-[20px] h-5 px-1.5 rounded-full bg-red-500 text-white text-[11px] font-bold flex items-center justify-center">
+              {totalUnread > 9 ? "9+" : totalUnread}
+            </span>
+          )}
+        </Button>
+      </div>
+      <PropertyConversationsDialog open={inboxOpen} onOpenChange={setInboxOpen} />
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {properties.map((property) => (
           <Card key={property.id} className="overflow-hidden">
