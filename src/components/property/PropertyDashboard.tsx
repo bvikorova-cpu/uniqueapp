@@ -4,7 +4,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Video, Eye, Calendar, Loader2, Plus } from "lucide-react";
+import { Video, Eye, Calendar, Loader2, Plus, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { VirtualTourUploader } from "./VirtualTourUploader";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
@@ -27,6 +37,8 @@ export function PropertyDashboard() {
   const [loading, setLoading] = useState(true);
   const [selectedProperty, setSelectedProperty] = useState<string | null>(null);
   const [uploaderOpen, setUploaderOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Property | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -76,6 +88,35 @@ export function PropertyDashboard() {
     setSelectedProperty(propertyId);
     setUploaderOpen(true);
   };
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Please sign in again.");
+
+      await supabase.from('property_images').delete().eq('property_id', deleteTarget.id);
+
+      const { error } = await supabase
+        .from('properties')
+        .delete()
+        .eq('id', deleteTarget.id)
+        .eq('user_id', user.id);
+      if (error) throw error;
+
+      setProperties((prev) => prev.filter((p) => p.id !== deleteTarget.id));
+      toast({ title: "Listing deleted", description: "Your listing was removed. Credits already spent are not refunded." });
+      setDeleteTarget(null);
+    } catch (error: any) {
+      console.error('Error deleting property:', error);
+      toast({ variant: "destructive", title: "Delete failed", description: error?.message || "Could not delete this listing." });
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+
 
   if (loading) {
     return (
@@ -160,10 +201,43 @@ export function PropertyDashboard() {
                   Add Virtual Tour
                 </Button>
               )}
+
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full text-destructive hover:text-destructive hover:bg-destructive/10"
+                onClick={() => setDeleteTarget(property)}
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete listing
+              </Button>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      <AlertDialog open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this listing?</AlertDialogTitle>
+            <AlertDialogDescription>
+              "{deleteTarget?.title}" will be permanently removed along with its photos.
+              Credits already spent on publishing are not refunded.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => { e.preventDefault(); handleDelete(); }}
+              disabled={deleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Trash2 className="h-4 w-4 mr-2" />}
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {selectedProperty && (
         <VirtualTourUploader
