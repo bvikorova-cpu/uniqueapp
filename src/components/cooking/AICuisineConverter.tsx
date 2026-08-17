@@ -28,7 +28,49 @@ export default function AICuisineConverter({ onBack }: Props) {
       const ok = await spendCredit("custom_generation", "AI Cuisine Converter");
       if (!ok) throw new Error("Failed to use credit");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
-        body: { type: "cooking_ai", prompt: `You are a world-renowned chef specializing in fusion cuisine. Convert the following recipe into authentic ${targetCuisine} style. Include: 1) Converted recipe name (in the target language + English), 2) Ingredient swaps with authentic alternatives, 3) Technique modifications, 4) Flavor profile changes, 5) Traditional serving suggestions, 6) Cultural context and tips, 7) Full step-by-step instructions. Original recipe: ${input}` } });
+        body: { type: "cooking_ai", prompt: `You are a world-renowned chef specialising in authentic ${targetCuisine} cuisine. Convert the recipe below into a genuine ${targetCuisine} dish. Answer in clean markdown (## and ### headings, bullet lists, markdown tables). No long intro paragraph — start straight with the first heading. Metric units and EUR only.
+
+Structure it exactly like this:
+## New dish name
+Name in the target language + English translation + one-line pronunciation guide.
+
+## What changes and why
+3-5 bullets summarising the transformation of the original dish.
+
+## Ingredient conversion table
+Markdown table: Original ingredient | ${targetCuisine} replacement | Amount (g/ml) | Why it works | Where to buy / substitute.
+
+## Authentic pantry additions
+Bullets of the signature spices, pastes, sauces, fats or aromatics that make it truly ${targetCuisine}, with the amount for this recipe.
+
+## Technique changes
+Bullets comparing the original technique to the ${targetCuisine} method (heat, pan, order of steps, marinating, resting).
+
+## Flavour profile
+Bullets for salt, acid, heat, umami, sweetness, aroma and texture — before vs after.
+
+## Step-by-step method
+Numbered steps with exact times, temperatures and sensory cues (what it should look, smell and sound like). Include prep time, cook time and total time.
+
+## Serving & pairing
+Traditional side dishes, garnish, tableware, plus a drink pairing (wine, beer, tea or non-alcoholic) with an approximate price in EUR.
+
+## Cultural context
+Short paragraph on the dish's regional origin and how it is eaten locally.
+
+## Chef's tips & common mistakes
+5 bullets of pro tips, plus 3 mistakes to avoid.
+
+## Make-ahead, storage & leftovers
+Fridge/freezer times, reheating method and one leftover idea.
+
+## Variations
+Bullets for vegetarian/vegan, gluten-free, spicier, kid-friendly and budget versions.
+
+## Nutrition estimate per serving
+Small markdown table: kcal, protein, carbs, fat, fibre, sodium.
+
+Original recipe: ${input}` } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No result");
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }
