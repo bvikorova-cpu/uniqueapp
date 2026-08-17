@@ -55,6 +55,15 @@ export default function PropertySubmissionForm() {
       toast.error("Please fill in all required fields");
       return;
     }
+    if (!formData.contactName.trim() || !formData.contactPhone.trim() || !formData.contactEmail.trim()) {
+      toast.error("Contact details required", { description: "Buyers need your name, phone number and email." });
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.contactEmail.trim())) {
+      toast.error("Please enter a valid contact email");
+      return;
+    }
+
     const priceNum = parseFloat(formData.price);
     if (!Number.isFinite(priceNum) || priceNum <= 0 || priceNum > 100_000_000) {
       toast.error("Invalid price");
