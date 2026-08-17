@@ -241,7 +241,7 @@ function SkillsMarketplaceContent() {
           { title: 'Free access', desc: 'Browsing the Skills section is free — no entry fee.' },
           { title: 'Pick a category', desc: 'Open a category folder and browse offerings inside it.' },
           { title: 'Publish an offering', desc: 'Opening your own offering costs 2 credits — no commission.' },
-          { title: 'Order & review', desc: 'Contact the provider, order the service and leave a review.' },
+          { title: 'Deal directly', desc: 'Unlock the chat for 1 credit, agree the price and pay the provider directly — no commission.' },
         ]} />
       <section className="relative overflow-hidden border-b border-border/40">
         <video
@@ -286,11 +286,6 @@ function SkillsMarketplaceContent() {
               {user && (
                 <Button variant="outline" onClick={() => navigate("/skills-marketplace/mine")} className="w-full sm:w-auto">
                   My offerings
-                </Button>
-              )}
-              {user && (
-                <Button variant="outline" onClick={() => navigate("/skills-marketplace/orders")} className="w-full sm:w-auto">
-                  My orders
                 </Button>
               )}
               <Button

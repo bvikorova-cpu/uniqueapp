@@ -67,8 +67,8 @@ export default function SkillsMarketplaceProvider() {
       <FloatingHowItWorks title="How Skills Marketplace Provider works" steps={[
           { title: 'Browse listings', desc: 'Explore items, services or offers.' },
           { title: 'Open a detail', desc: 'Review price, seller and terms.' },
-          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
-          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+          { title: 'Agree directly', desc: 'Unlock the chat for 1 credit and settle payment directly with the provider — no commission.' },
+          { title: 'Review', desc: 'Leave a review after the job is done and get notifications.' },
         ]} />
       <div className="container mx-auto px-4 py-8 max-w-5xl">
       <SEO title={`${profile?.full_name || "Provider"} — Skills Marketplace`} description={profile?.bio || "Provider profile"} />

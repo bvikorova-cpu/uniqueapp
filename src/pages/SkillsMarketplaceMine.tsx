@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, Plus, Pencil, Trash2, Eye, ListOrdered, MessageSquare, Euro } from "lucide-react";
+import { ArrowLeft, Plus, Pencil, Trash2, Eye, MessageSquare, Euro } from "lucide-react";
 import { PromotionBadge } from "@/components/skills/PromotionBadge";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -29,8 +29,6 @@ type Offering = {
 
 type Stats = {
   responses: number;
-  active_orders: number; // pending or paid
-  completed_orders: number;
 };
 
 export default function SkillsMarketplaceMine() {
@@ -59,26 +57,14 @@ export default function SkillsMarketplaceMine() {
 
     if (list.length) {
       const ids = list.map((o) => o.id);
-      const [{ data: resp }, { data: orders }] = await Promise.all([
-        supabase
-          .from("marketplace_responses")
-          .select("offering_id")
-          .eq("receiver_id", user.id)
-          .in("offering_id", ids),
-        supabase
-          .from("skill_service_orders")
-          .select("offering_id,status")
-          .eq("seller_id", user.id)
-          .in("offering_id", ids),
-      ]);
+      const { data: resp } = await supabase
+        .from("marketplace_responses")
+        .select("offering_id")
+        .eq("receiver_id", user.id)
+        .in("offering_id", ids);
       const s: Record<string, Stats> = {};
-      list.forEach((o) => (s[o.id] = { responses: 0, active_orders: 0, completed_orders: 0 }));
+      list.forEach((o) => (s[o.id] = { responses: 0 }));
       (resp || []).forEach((r: any) => { if (s[r.offering_id]) s[r.offering_id].responses += 1; });
-      (orders || []).forEach((o: any) => {
-        if (!s[o.offering_id]) return;
-        if (o.status === "completed") s[o.offering_id].completed_orders += 1;
-        else if (o.status === "pending" || o.status === "paid") s[o.offering_id].active_orders += 1;
-      });
       setStats(s);
     } else {
       setStats({});
@@ -112,8 +98,8 @@ export default function SkillsMarketplaceMine() {
         <FloatingHowItWorks title="How Skills Marketplace Mine works" steps={[
           { title: 'Browse listings', desc: 'Explore items, services or offers.' },
           { title: 'Open a detail', desc: 'Review price, seller and terms.' },
-          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
-          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+          { title: 'Deal directly', desc: 'Chat is unlocked with 1 credit; payment is agreed and paid directly between the two of you.' },
+          { title: 'Review', desc: 'Leave a review after the job and get notifications.' },
         ]} />
         <div className="container mx-auto px-4 py-16 max-w-xl text-center">
         <h1 className="text-2xl font-bold mb-2">Sign in to manage your offerings</h1>
@@ -137,9 +123,6 @@ export default function SkillsMarketplaceMine() {
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
-          <Button asChild variant="outline" className="gap-2">
-            <Link to="/skills-marketplace/orders"><ListOrdered className="h-4 w-4" /> My Orders</Link>
-          </Button>
           <Button asChild className="gap-2">
             <Link to="/skills-marketplace/new"><Plus className="h-4 w-4" /> New offering</Link>
           </Button>
@@ -155,7 +138,7 @@ export default function SkillsMarketplaceMine() {
       ) : (
         <div className="space-y-3">
           {offerings.map((o) => {
-            const st = stats[o.id] || { responses: 0, active_orders: 0, completed_orders: 0 };
+            const st = stats[o.id] || { responses: 0 };
             return (
               <Card key={o.id}>
                 <CardHeader className="pb-3">
@@ -189,20 +172,11 @@ export default function SkillsMarketplaceMine() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-3 gap-2 mb-3 text-center">
-                    <div className="rounded bg-muted/50 p-2">
-                      <div className="text-xs text-muted-foreground inline-flex items-center gap-1 justify-center">
-                        <MessageSquare className="h-3 w-3" /> Messages
-                      </div>
-                      <div className="font-semibold">{st.responses}</div>
-                    </div>
-                    <div className="rounded bg-muted/50 p-2">
-                      <div className="text-xs text-muted-foreground">Active orders</div>
-                      <div className="font-semibold">{st.active_orders}</div>
-                    </div>
-                    <div className="rounded bg-muted/50 p-2">
-                      <div className="text-xs text-muted-foreground">Completed</div>
-                      <div className="font-semibold">{st.completed_orders}</div>
+                  <div className="mb-3">
+                    <div className="inline-flex items-center gap-2 rounded bg-muted/50 px-3 py-2 text-sm">
+                      <MessageSquare className="h-3.5 w-3.5 text-muted-foreground" />
+                      <span className="text-muted-foreground">Messages</span>
+                      <span className="font-semibold">{st.responses}</span>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -211,11 +185,6 @@ export default function SkillsMarketplaceMine() {
                     </Button>
                     <Button size="sm" variant="outline" asChild className="gap-1">
                       <Link to={`/skills-marketplace/${o.id}/edit`}><Pencil className="h-3.5 w-3.5" /> Edit</Link>
-                    </Button>
-                    <Button size="sm" variant="outline" asChild className="gap-1">
-                      <Link to={`/skills-marketplace/orders`}>
-                        <ListOrdered className="h-3.5 w-3.5" /> Orders
-                      </Link>
                     </Button>
                     <Button size="sm" variant="destructive" onClick={() => remove(o)} className="gap-1 ml-auto">
                       <Trash2 className="h-3.5 w-3.5" /> Delete
