@@ -49,7 +49,10 @@ const REASON_LABELS: Record<string, string> = { manual_add: "Manual add",
   refund: "Credit refund",
   promo_code: "Promo code",
   referral_bonus: "Referral bonus",
+  skills_marketplace_contact_unlock: "Skills Marketplace – chat unlock",
+  skills_marketplace_publish: "Skills Marketplace – publish offering",
   unknown_update: "Unknown change" };
+
 
 function prettyReason(reason: string | null): string {
   if (!reason) return "—";
