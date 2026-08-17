@@ -947,11 +947,52 @@ const COOKING_RECIPES: Recipe[] = [
 
 type ActiveView = "hub" | "nutrition-calc" | "cuisine-converter" | "dietary";
 
-const NEW_AI_TOOLS = [
-  { id: "nutrition-calc" as ActiveView, icon: Calculator, label: "AI Nutrition Calculator", desc: "Full nutritional breakdown of any recipe", color: "from-green-500 to-emerald-600", cost: "3 Credits", isNew: false },
-  { id: "cuisine-converter" as ActiveView, icon: Globe, label: "AI Cuisine Converter", desc: "Transform recipes into any cuisine style", color: "from-violet-500 to-purple-600", cost: "3 Credits", isNew: false },
-  { id: "dietary" as ActiveView, icon: ShieldCheck, label: "AI Dietary Advisor", desc: "Allergen & nutrient analysis", color: "from-emerald-500 to-lime-600", cost: "3 Credits", isNew: true },
+type CookingTool = {
+  label: string;
+  desc: string;
+  cost: string;
+  icon: typeof Sparkles;
+  color: string;
+  path?: string;
+  view?: Exclude<ActiveView, "hub">;
+};
+
+const TOOL_COLLECTIONS: { title: string; subtitle: string; icon: typeof Sparkles; accent: string; tools: CookingTool[] }[] = [
+  {
+    title: "Signature Kitchen",
+    subtitle: "Create recipes and plan every service",
+    icon: ChefHat,
+    accent: "from-orange-500 to-red-600",
+    tools: [
+      { label: "Recipe Generator", desc: "AI crafts recipes from your ingredients", cost: "3 Credits", icon: Sparkles, color: "from-orange-500 to-red-500", path: "/recipe-generator" },
+      { label: "Meal Planner", desc: "Personalised weekly meal plan", cost: "5 Credits", icon: Calendar, color: "from-green-500 to-emerald-500", path: "/meal-planner" },
+      { label: "AI Chef Chat", desc: "Your private chef, on demand", cost: "3 Credits", icon: MessageCircle, color: "from-yellow-500 to-orange-500", path: "/chef-chat" },
+    ],
+  },
+  {
+    title: "Nutrition Suite",
+    subtitle: "Precision analysis of every plate",
+    icon: ShieldCheck,
+    accent: "from-emerald-500 to-teal-600",
+    tools: [
+      { label: "Food Scanner", desc: "Scan a dish for full nutrition data", cost: "3 Credits", icon: Camera, color: "from-blue-500 to-cyan-500", path: "/food-scanner" },
+      { label: "AI Nutrition Calculator", desc: "Complete breakdown of any recipe", cost: "3 Credits", icon: Calculator, color: "from-green-500 to-emerald-600", view: "nutrition-calc" },
+      { label: "AI Dietary Advisor", desc: "Allergen & nutrient analysis", cost: "3 Credits", icon: ShieldCheck, color: "from-emerald-500 to-lime-600", view: "dietary" },
+    ],
+  },
+  {
+    title: "Fine Dining Lounge",
+    subtitle: "Explore cuisines, menus and pairings",
+    icon: Wine,
+    accent: "from-violet-500 to-rose-600",
+    tools: [
+      { label: "AI Cuisine Converter", desc: "Transform recipes into any cuisine", cost: "3 Credits", icon: Globe, color: "from-violet-500 to-purple-600", view: "cuisine-converter" },
+      { label: "Menu Analyzer", desc: "Decode any restaurant menu", cost: "2 Credits", icon: Store, color: "from-purple-500 to-pink-500", path: "/restaurant-analyzer" },
+      { label: "Wine Pairing", desc: "The perfect bottle for your dish", cost: "3 Credits", icon: Wine, color: "from-red-500 to-rose-500", path: "/wine-pairing" },
+    ],
+  },
 ];
+
 
 const Cooking = () => {
   const { toast } = useToast();
