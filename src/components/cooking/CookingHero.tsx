@@ -14,7 +14,7 @@ export default function CookingHero() {
 
   const heroStats = [
     { label: "Recipes", value: "25+" },
-    { label: "AI Tools", value: "12" },
+    { label: "AI Tools", value: "9" },
     { label: "Active Chefs", value: loading ? "—" : (stats.credits || 0).toString() },
     { label: "Meals Cooked", value: loading ? "—" : (stats.logs || 0).toString() },
   ];
