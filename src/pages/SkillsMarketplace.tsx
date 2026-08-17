@@ -295,51 +295,76 @@ function SkillsMarketplaceContent() {
         </div>
       </section>
 
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="relative">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-primary/[0.07] to-transparent" />
+        <div className="container relative mx-auto px-4 py-10 max-w-7xl">
       <SEO title="Skills Marketplace — Hire microservices" description="Browse services by category for free. Publishing an offering costs 2 credits." canonical="/marketplace" />
 
 
-      <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
-        <div>
-          <h2 className="text-2xl md:text-3xl font-bold">Browse offerings</h2>
-          <p className="text-muted-foreground mt-1">
-            Pick a category folder or search across all services.
-          </p>
-        </div>
-        <div className="flex gap-2 flex-wrap">
-          {user && (
-            <Button variant="outline" onClick={() => navigate("/skills-marketplace/mine")} className="gap-2">
-              My offerings
+      <header className="mb-8 rounded-3xl border border-border/60 bg-card/70 backdrop-blur-xl p-6 md:p-8 shadow-[0_18px_60px_-32px_hsl(var(--primary)/0.4)]">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+          <div className="space-y-2">
+            <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
+              <Sparkles className="h-3.5 w-3.5" /> Free to browse
+            </span>
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+              Browse offerings
+            </h2>
+            <p className="text-muted-foreground max-w-md">
+              Pick a category folder or search across all services.
+            </p>
+          </div>
+          <div className="flex gap-2 flex-wrap md:justify-end">
+            {user && (
+              <Button variant="outline" onClick={() => navigate("/skills-marketplace/mine")} className="gap-2 rounded-full">
+                My offerings
+              </Button>
+            )}
+            {user && (
+              <Button variant="outline" onClick={() => navigate("/skills-marketplace/orders")} className="gap-2 rounded-full">
+                My orders
+              </Button>
+            )}
+            <Button
+              onClick={() => (user ? navigate("/skills-marketplace/new") : navigate("/auth"))}
+              className="gap-2 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg hover:opacity-90"
+            >
+              <Plus className="h-4 w-4" /> Post an offering · 2 credits
             </Button>
-          )}
-          {user && (
-            <Button variant="outline" onClick={() => navigate("/skills-marketplace/orders")} className="gap-2">
-              My orders
-            </Button>
-          )}
-          <Button
-            onClick={() => (user ? navigate("/skills-marketplace/new") : navigate("/auth"))}
-            className="gap-2"
-          >
-            <Plus className="h-4 w-4" /> Post an offering · 2 credits
-          </Button>
+          </div>
         </div>
       </header>
 
       {!category ? (
         <>
-          <h2 className="text-lg font-semibold mb-3">Categories</h2>
+          <div className="flex items-center gap-3 mb-4">
+            <h2 className="text-lg font-semibold">Categories</h2>
+            <div className="h-px flex-1 bg-gradient-to-r from-primary/40 to-transparent" />
+          </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {CATEGORY_FOLDERS.map((f) => (
-              <button key={f.value} onClick={() => setCategory(f.value)} className="text-left">
-                <Card className="h-full hover:shadow-lg hover:border-primary/40 transition-all">
-                  <CardContent className="p-5 space-y-2">
-                    <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <f.icon className="h-5 w-5 text-primary" />
+            {CATEGORY_FOLDERS.map((f, i) => (
+              <button key={f.value} onClick={() => setCategory(f.value)} className="text-left group/cat">
+                <Card className="relative h-full overflow-hidden rounded-2xl border-border/60 bg-card/70 backdrop-blur-sm transition-all duration-300 group-hover/cat:-translate-y-1.5 group-hover/cat:border-primary/40 group-hover/cat:shadow-[0_18px_45px_-20px_hsl(var(--primary)/0.5)]">
+                  <div
+                    className={`absolute inset-0 opacity-60 transition-opacity duration-300 group-hover/cat:opacity-100 ${
+                      i % 3 === 0
+                        ? "bg-gradient-to-br from-primary/10 via-transparent to-accent/10"
+                        : i % 3 === 1
+                        ? "bg-gradient-to-tr from-accent/10 via-transparent to-primary/10"
+                        : "bg-gradient-to-b from-primary/10 to-transparent"
+                    }`}
+                  />
+                  <span className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-primary/10 blur-2xl" />
+                  <CardContent className="relative p-5 space-y-2.5">
+                    <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md transition-transform duration-300 group-hover/cat:scale-110 group-hover/cat:rotate-3">
+                      <f.icon className="h-5 w-5 text-primary-foreground" />
                     </div>
-                    <div className="font-semibold">{f.label}</div>
+                    <div className="font-semibold flex items-center gap-1.5">
+                      {f.label}
+                      <ArrowRight className="h-3.5 w-3.5 opacity-0 -translate-x-1 transition-all duration-300 text-primary group-hover/cat:opacity-100 group-hover/cat:translate-x-0" />
+                    </div>
                     <p className="text-xs text-muted-foreground line-clamp-2">{f.desc}</p>
-                    <Badge variant="secondary">
+                    <Badge variant="secondary" className="rounded-full bg-background/80 backdrop-blur">
                       {loading ? "…" : `${counts[f.value] || 0} offering${(counts[f.value] || 0) === 1 ? "" : "s"}`}
                     </Badge>
                   </CardContent>
@@ -350,12 +375,14 @@ function SkillsMarketplaceContent() {
         </>
       ) : (
         <>
-          <div className="flex items-center gap-3 mb-4">
-            <Button variant="ghost" className="gap-2" onClick={() => setCategory(null)}>
+          <div className="flex items-center gap-3 mb-5">
+            <Button variant="ghost" className="gap-2 rounded-full" onClick={() => setCategory(null)}>
               <ArrowLeft className="h-4 w-4" /> All categories
             </Button>
             <h2 className="text-xl font-semibold capitalize">{activeFolder?.label ?? category}</h2>
+            <div className="h-px flex-1 bg-gradient-to-r from-primary/40 to-transparent" />
           </div>
+
 
           <Tabs defaultValue="offerings" className="w-full">
             <TabsList className="mb-4">
