@@ -8,6 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Send, Coffee, Loader2, Check, AlertCircle, RotateCcw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { CoffeeGiftBar } from "./CoffeeGiftBar";
+
 
 interface CoffeeChatProps {
   matchId: string | null;
