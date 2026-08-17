@@ -1,18 +1,9 @@
-import { useLiveStats } from "@/hooks/useLiveStats";
 import coffeeHeroAsset from "@/assets/coffee-hero.mp4.asset.json";
 import { Coffee } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-const statQueries = [
-  { key: "cafes", table: "coffee_cafes" },
-  { key: "checkins", table: "coffee_checkins" },
-  { key: "reviews", table: "coffee_reviews" },
-  { key: "matches", table: "coffee_matches" },
-];
-
-
 export const CoffeeHero = () => {
-  const { stats, loading } = useLiveStats(statQueries);
+
 
   return (
     <>
