@@ -17,11 +17,11 @@ serve(async (req) => {
   );
 
   try {
-    // Best-effort update. If schema/column doesn't exist yet, silently return ok.
+    // Mark listings past their 60-day window as expired.
     const { data, error } = await supabase
-      .from("property_listings")
+      .from("properties")
       .update({ status: "expired" })
-      .lt("expires_at", new Date().toISOString())
+      .lt("listing_expires_at", new Date().toISOString())
       .neq("status", "expired")
       .select("id");
 
