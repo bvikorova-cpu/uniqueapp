@@ -284,6 +284,16 @@ function SkillsMarketplaceContent() {
             </div>
             <div className="flex flex-col sm:flex-row gap-2 sm:flex-wrap sm:justify-end">
               {user && (
+                <Button variant="outline" onClick={() => setMessagesOpen(true)} className="gap-2 w-full sm:w-auto relative">
+                  <MessageCircle className="h-4 w-4" /> Messages
+                  {skillUnread > 0 && (
+                    <Badge className="bg-red-500 hover:bg-red-500 text-white h-5 min-w-5 px-1 text-[10px]">
+                      {skillUnread > 9 ? "9+" : skillUnread}
+                    </Badge>
+                  )}
+                </Button>
+              )}
+              {user && (
                 <Button variant="outline" onClick={() => navigate("/skills-marketplace/mine")} className="w-full sm:w-auto">
                   My offerings
                 </Button>
