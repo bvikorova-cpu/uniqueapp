@@ -39,6 +39,8 @@ export function PropertyCard({ property, onViewDetails }: PropertyCardProps) {
   const { user } = useAuth();
   const [favorited, setFavorited] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
+  const [viewsCount, setViewsCount] = useState(property.views_count || 0);
+
 
   const primaryImage = property.property_images?.find(img => img.is_primary)?.image_url
     || property.property_images?.[0]?.image_url
@@ -81,22 +83,23 @@ export function PropertyCard({ property, onViewDetails }: PropertyCardProps) {
 
   const handleView = async () => {
     try {
-      const { data: currentProperty } = await supabase
-        .from('properties')
-        .select('views_count')
-        .eq('id', property.id)
-        .single();
-      if (currentProperty) {
-        await supabase
-          .from('properties')
-          .update({ views_count: (currentProperty.views_count || 0) + 1 })
-          .eq('id', property.id);
+      let key = localStorage.getItem("property_viewer_key");
+      if (!key) {
+        key = crypto.randomUUID();
+        localStorage.setItem("property_viewer_key", key);
       }
+      const { data, error } = await supabase.rpc("property_register_view", {
+        _property_id: property.id,
+        _viewer_key: key,
+      });
+      if (error) throw error;
+      if (typeof data === "number") setViewsCount(data);
     } catch (error) {
-      console.error('Error incrementing views:', error);
+      console.error('Error registering view:', error);
     }
     onViewDetails(property.id);
   };
+
 
   return (
     <>
@@ -116,7 +119,7 @@ export function PropertyCard({ property, onViewDetails }: PropertyCardProps) {
         />
         <div className="absolute bottom-2 right-2 bg-black/70 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-1 text-white text-sm">
           <Eye className="h-3 w-3" />
-          <span>{property.views_count}</span>
+          <span>{viewsCount}</span>
         </div>
       </div>
 

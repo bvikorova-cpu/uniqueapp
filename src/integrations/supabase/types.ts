@@ -49083,6 +49083,38 @@ export type Database = {
           },
         ]
       }
+      property_views: {
+        Row: {
+          created_at: string
+          id: string
+          property_id: string
+          viewer_id: string | null
+          viewer_key: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          property_id: string
+          viewer_id?: string | null
+          viewer_key: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          property_id?: string
+          viewer_id?: string | null
+          viewer_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_views_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_virtual_tour_purchases: {
         Row: {
           amount_paid: number
@@ -70095,6 +70127,10 @@ export type Database = {
           p_status: string
         }
         Returns: undefined
+      }
+      property_register_view: {
+        Args: { _property_id: string; _viewer_key: string }
+        Returns: number
       }
       purchase_battle_cosmetic: {
         Args: { _code: string; _module?: string }
