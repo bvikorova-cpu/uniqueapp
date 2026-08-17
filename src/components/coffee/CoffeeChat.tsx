@@ -346,7 +346,10 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
           </div>
         </div>
 
+        <CoffeeGiftBar matchId={matchId} />
+
         <div className="p-3 border-t flex gap-2">
+
           <Input
             placeholder="Type a message..."
             value={input}
