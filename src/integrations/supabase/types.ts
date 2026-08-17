@@ -56180,6 +56180,38 @@ export type Database = {
         }
         Relationships: []
       }
+      skill_contact_unlocks: {
+        Row: {
+          buyer_id: string
+          created_at: string
+          credits_spent: number
+          id: string
+          offering_id: string
+        }
+        Insert: {
+          buyer_id: string
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          offering_id: string
+        }
+        Update: {
+          buyer_id?: string
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          offering_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skill_contact_unlocks_offering_id_fkey"
+            columns: ["offering_id"]
+            isOneToOne: false
+            referencedRelation: "skill_offerings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       skill_matches: {
         Row: {
           created_at: string
@@ -69727,6 +69759,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_skill_contact_unlock: {
+        Args: { _offering_id: string; _user_id: string }
+        Returns: boolean
+      }
       has_time_capsule_access: {
         Args: { p_service_type: string; p_user_id: string }
         Returns: boolean
@@ -70483,6 +70519,7 @@ export type Database = {
         Args: { p_subject?: string; p_user_id: string }
         Returns: number
       }
+      unlock_skill_contact: { Args: { _offering_id: string }; Returns: Json }
       update_battle_stats: {
         Args: { loser_id: string; winner_id: string }
         Returns: undefined
