@@ -36,8 +36,10 @@ export function PropertyDetailDialog({ property, open, onOpenChange }: PropertyD
 
   const handleContact = (type: "contact" | "viewing" = "contact") => {
     setInquiryType(type);
+    onOpenChange(false);
     setContactDialogOpen(true);
   };
+
 
   const handleShare = () => { if (navigator.share) {
       navigator.share({
