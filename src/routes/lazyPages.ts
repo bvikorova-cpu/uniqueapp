@@ -97,6 +97,7 @@ export const WinePairing = lazy(() => import("@/pages/WinePairing"));
 
 // Kids
 export const KidsHomework = lazy(() => import("@/pages/KidsHomework"));
+export const KidsPuzzles = lazy(() => import("@/pages/KidsPuzzles"));
 export const KidsStoryCreator = lazy(() => import("@/pages/KidsStoryCreator"));
 export const KidsStoryPricing = lazy(() => import("@/pages/KidsStoryPricing"));
 export const KidsScienceLab = lazy(() => import("@/pages/KidsScienceLab"));

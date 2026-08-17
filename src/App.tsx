@@ -178,6 +178,7 @@ import { ResetPassword,
   AIClone,
   
   KidsHomework,
+  KidsPuzzles,
   
   KidsStoryCreator,
   KidsStoryPricing,
