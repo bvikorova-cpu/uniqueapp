@@ -56248,42 +56248,54 @@ export type Database = {
       skill_offerings: {
         Row: {
           category: Database["public"]["Enums"]["skill_category"]
+          completed_jobs: number
           created_at: string
           description: string
           escrow_status: string | null
+          featured_until: string | null
           id: string
           image_url: string | null
           is_active: boolean | null
           location: string | null
+          premium_until: string | null
           price_per_hour: number | null
+          region: string | null
           title: string
           updated_at: string
           user_id: string
         }
         Insert: {
           category: Database["public"]["Enums"]["skill_category"]
+          completed_jobs?: number
           created_at?: string
           description: string
           escrow_status?: string | null
+          featured_until?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
           location?: string | null
+          premium_until?: string | null
           price_per_hour?: number | null
+          region?: string | null
           title: string
           updated_at?: string
           user_id: string
         }
         Update: {
           category?: Database["public"]["Enums"]["skill_category"]
+          completed_jobs?: number
           created_at?: string
           description?: string
           escrow_status?: string | null
+          featured_until?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
           location?: string | null
+          premium_until?: string | null
           price_per_hour?: number | null
+          region?: string | null
           title?: string
           updated_at?: string
           user_id?: string
@@ -56359,6 +56371,95 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      skill_request_bids: {
+        Row: {
+          created_at: string
+          credits_spent: number
+          id: string
+          message: string
+          price_eur: number | null
+          provider_id: string
+          request_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          message: string
+          price_eur?: number | null
+          provider_id: string
+          request_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          message?: string
+          price_eur?: number | null
+          provider_id?: string
+          request_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skill_request_bids_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "skill_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      skill_requests: {
+        Row: {
+          bids_count: number
+          budget_eur: number | null
+          category: Database["public"]["Enums"]["skill_category"]
+          created_at: string
+          deadline: string | null
+          description: string
+          id: string
+          is_open: boolean
+          location: string | null
+          region: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bids_count?: number
+          budget_eur?: number | null
+          category: Database["public"]["Enums"]["skill_category"]
+          created_at?: string
+          deadline?: string | null
+          description: string
+          id?: string
+          is_open?: boolean
+          location?: string | null
+          region?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bids_count?: number
+          budget_eur?: number | null
+          category?: Database["public"]["Enums"]["skill_category"]
+          created_at?: string
+          deadline?: string | null
+          description?: string
+          id?: string
+          is_open?: boolean
+          location?: string | null
+          region?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       skill_service_orders: {
         Row: {
@@ -67722,6 +67823,7 @@ export type Database = {
         }[]
       }
       accept_pet_trade: { Args: { p_trade_id: string }; Returns: Json }
+      accept_skill_bid: { Args: { _bid_id: string }; Returns: Json }
       acquire_cosmetic_item: { Args: { _item_id: string }; Returns: Json }
       activate_user_theme: {
         Args: { p_theme_id: string; p_user_id: string }
@@ -70198,6 +70300,18 @@ export type Database = {
         }
         Returns: string
       }
+      publish_skill_request: {
+        Args: {
+          _budget_eur?: number
+          _category: Database["public"]["Enums"]["skill_category"]
+          _deadline?: string
+          _description: string
+          _location?: string
+          _region?: string
+          _title: string
+        }
+        Returns: string
+      }
       purchase_battle_cosmetic: {
         Args: { _code: string; _module?: string }
         Returns: Json
@@ -70432,6 +70546,14 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      skill_top_listing: {
+        Args: { _days: number; _offering_id: string; _tier?: string }
+        Returns: {
+          credits_remaining: number
+          promoted_until: string
+          tier: string
+        }[]
+      }
       snapshot_weekly_xp_winners: { Args: never; Returns: number }
       spend_ai_credits: {
         Args: { _amount: number; _reason: string; _source?: string }
@@ -70493,6 +70615,10 @@ export type Database = {
       }
       submit_iq_tournament_match_score: {
         Args: { _match_id: string; _score: number }
+        Returns: Json
+      }
+      submit_skill_bid: {
+        Args: { _message: string; _price_eur?: number; _request_id: string }
         Returns: Json
       }
       suggest_friends: {

@@ -7,14 +7,20 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  Plus, Search, MapPin, Euro, Star, ArrowLeft, Hammer, Wrench, Sparkles,
-  Leaf, Laptop, GraduationCap, Palette, Boxes,
+  Plus, Search, MapPin, Euro, ArrowLeft, Hammer, Wrench, Sparkles,
+  Leaf, Laptop, GraduationCap, Palette, Boxes, Crown, Flame,
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
+import { SKILL_REGIONS, regionLabel } from "@/components/skills/skillRegions";
+import { SkillRequestsBoard } from "@/components/skills/SkillRequestsBoard";
+import { SkillPromoteDialog } from "@/components/skills/SkillPromoteDialog";
+import { ProviderTrustBadges } from "@/components/skills/ProviderTrustBadges";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
 
 const HERO_VIDEO_URL = "/__l5e/assets-v1/1fc3d14b-b578-456c-bf84-eef5461ab4d5/skills-marketplace-hero.mp4";
 const HERO_VIDEO_SECONDS = 10;
@@ -38,9 +44,15 @@ type Offering = {
   category: string;
   price_per_hour: number | null;
   location: string | null;
+  region: string | null;
   image_url: string | null;
   created_at: string;
+  featured_until: string | null;
+  premium_until: string | null;
+  completed_jobs: number | null;
 };
+
+const isActive = (until?: string | null) => !!until && new Date(until).getTime() > Date.now();
 
 function SkillsMarketplaceContent() {
   const { user } = useAuth();
@@ -50,8 +62,12 @@ function SkillsMarketplaceContent() {
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [location, setLocation] = useState("");
+  const [region, setRegion] = useState("all");
   const [sort, setSort] = useState("newest");
+  const [promoteId, setPromoteId] = useState<string | null>(null);
+  const [verified, setVerified] = useState<Record<string, { isVerified: boolean; tier: string | null }>>({});
   const [sellerStats, setSellerStats] = useState<Record<string, { avg: number; count: number }>>({});
+
 
   const category = params.get("category");
   const setCategory = (value: string | null) => {
@@ -67,10 +83,12 @@ function SkillsMarketplaceContent() {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from("skill_offerings")
-        .select("id,user_id,title,description,category,price_per_hour,location,image_url,created_at")
+        .select("id,user_id,title,description,category,price_per_hour,location,region,image_url,created_at,featured_until,premium_until,completed_jobs")
         .eq("is_active", true)
+        .order("premium_until", { ascending: false, nullsFirst: false })
+        .order("featured_until", { ascending: false, nullsFirst: false })
         .order("created_at", { ascending: false })
         .limit(200);
       const list = (data as Offering[]) || [];
@@ -91,7 +109,18 @@ function SkillsMarketplaceContent() {
         const stats: Record<string, { avg: number; count: number }> = {};
         Object.entries(agg).forEach(([k, v]) => (stats[k] = { avg: v.sum / v.count, count: v.count }));
         setSellerStats(stats);
+
+        const { data: profs } = await (supabase as any)
+          .from("profiles")
+          .select("id, is_verified, verification_tier")
+          .in("id", sellerIds);
+        const vmap: Record<string, { isVerified: boolean; tier: string | null }> = {};
+        (profs || []).forEach((p: any) => {
+          vmap[p.id] = { isVerified: !!p.is_verified, tier: p.verification_tier ?? null };
+        });
+        setVerified(vmap);
       }
+
       setLoading(false);
     })();
   }, []);
@@ -115,6 +144,7 @@ function SkillsMarketplaceContent() {
       const term = location.toLowerCase();
       list = list.filter((o) => (o.location || "").toLowerCase().includes(term));
     }
+    if (region !== "all") list = list.filter((o) => o.region === region);
     if (sort === "price_asc") list = [...list].sort((a, b) => (a.price_per_hour ?? 0) - (b.price_per_hour ?? 0));
     if (sort === "price_desc") list = [...list].sort((a, b) => (b.price_per_hour ?? 0) - (a.price_per_hour ?? 0));
     if (sort === "top_rated")
@@ -122,9 +152,84 @@ function SkillsMarketplaceContent() {
         (a, b) => (sellerStats[b.user_id]?.avg ?? 0) - (sellerStats[a.user_id]?.avg ?? 0),
       );
     return list;
-  }, [offerings, q, category, location, sort, sellerStats]);
+  }, [offerings, q, category, location, region, sort, sellerStats]);
+
+  const premiumList = useMemo(() => filtered.filter((o) => isActive(o.premium_until)), [filtered]);
+  const standardList = useMemo(() => filtered.filter((o) => !isActive(o.premium_until)), [filtered]);
+
 
   const activeFolder = CATEGORY_FOLDERS.find((f) => f.value === category);
+
+  const renderCard = (o: Offering) => {
+    const premium = isActive(o.premium_until);
+    const top = isActive(o.featured_until);
+    return (
+      <div key={o.id} className="relative">
+        <Link to={`/skills-marketplace/${o.id}`} className="group block h-full">
+          <Card className={`h-full overflow-hidden hover:shadow-lg transition-shadow ${premium ? "border-amber-400/60 ring-1 ring-amber-400/30" : top ? "border-primary/50" : ""}`}>
+            {o.image_url && (
+              <div className="aspect-video overflow-hidden bg-muted">
+                <img src={o.image_url} alt={o.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+              </div>
+            )}
+            <CardHeader className="pb-2">
+              <div className="flex items-start justify-between gap-2">
+                <CardTitle className="text-lg line-clamp-2">{o.title}</CardTitle>
+                <div className="flex flex-col items-end gap-1 shrink-0">
+                  {premium && (
+                    <Badge className="gap-1 bg-amber-500 text-amber-50 hover:bg-amber-500">
+                      <Crown className="h-3 w-3" /> Premium
+                    </Badge>
+                  )}
+                  {!premium && top && (
+                    <Badge className="gap-1"><Flame className="h-3 w-3" /> Top</Badge>
+                  )}
+                  <Badge variant="secondary" className="capitalize">{o.category}</Badge>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <p className="text-sm text-muted-foreground line-clamp-3">{o.description}</p>
+              <ProviderTrustBadges
+                trust={{
+                  isVerified: verified[o.user_id]?.isVerified,
+                  verificationTier: verified[o.user_id]?.tier,
+                  completedJobs: o.completed_jobs,
+                  rating: sellerStats[o.user_id] ?? null,
+                }}
+              />
+              <div className="flex items-center justify-between text-sm pt-2 gap-2 flex-wrap">
+                {regionLabel(o.region) && (
+                  <span className="text-xs text-muted-foreground">{regionLabel(o.region)}</span>
+                )}
+                {o.location && (
+                  <span className="flex items-center gap-1 text-muted-foreground">
+                    <MapPin className="h-3.5 w-3.5" /> {o.location}
+                  </span>
+                )}
+                {o.price_per_hour != null && (
+                  <span className="flex items-center gap-1 font-semibold text-primary ml-auto">
+                    <Euro className="h-3.5 w-3.5" /> {o.price_per_hour}/hr
+                  </span>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
+        {user?.id === o.user_id && (
+          <Button
+            size="sm"
+            variant="secondary"
+            className="absolute top-2 left-2 gap-1 shadow"
+            onClick={(e) => { e.preventDefault(); setPromoteId(o.id); }}
+          >
+            <Flame className="h-3.5 w-3.5" /> Promote
+          </Button>
+        )}
+      </div>
+    );
+  };
+
 
   return (
     <>
@@ -226,84 +331,92 @@ function SkillsMarketplaceContent() {
             <h2 className="text-xl font-semibold capitalize">{activeFolder?.label ?? category}</h2>
           </div>
 
-          <Card className="mb-6">
-            <CardContent className="p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-              <div className="relative md:col-span-2">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search services…" className="pl-9" />
-              </div>
-              <Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" />
-              <div className="md:col-span-3 flex items-center justify-between gap-2 flex-wrap">
-                <p className="text-sm text-muted-foreground">{filtered.length} result{filtered.length === 1 ? "" : "s"}</p>
-                <Select value={sort} onValueChange={setSort}>
-                  <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="newest">Newest</SelectItem>
-                    <SelectItem value="price_asc">Price: low to high</SelectItem>
-                    <SelectItem value="price_desc">Price: high to low</SelectItem>
-                    <SelectItem value="top_rated">Top rated providers</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
+          <Tabs defaultValue="offerings" className="w-full">
+            <TabsList className="mb-4">
+              <TabsTrigger value="offerings">Offerings</TabsTrigger>
+              <TabsTrigger value="requests">Customer requests</TabsTrigger>
+            </TabsList>
 
-          {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-64 w-full" />)}
-            </div>
-          ) : filtered.length === 0 ? (
-            <Card><CardContent className="p-12 text-center text-muted-foreground">
-              No offerings in this category yet. Be the first to{" "}
-              <Link to="/skills-marketplace/new" className="text-primary underline">post one</Link>.
-            </CardContent></Card>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filtered.map((o) => (
-                <Link to={`/skills-marketplace/${o.id}`} key={o.id} className="group">
-                  <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow">
-                    {o.image_url && (
-                      <div className="aspect-video overflow-hidden bg-muted">
-                        <img src={o.image_url} alt={o.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+            <TabsContent value="offerings" className="space-y-6">
+              <Card>
+                <CardContent className="p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="relative md:col-span-2">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search services…" className="pl-9" />
+                  </div>
+                  <Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="City / area" />
+                  <Select value={region} onValueChange={setRegion}>
+                    <SelectTrigger><SelectValue placeholder="Region" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All regions</SelectItem>
+                      {SKILL_REGIONS.map((r) => <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                  <div className="md:col-span-2 flex items-center justify-between gap-2 flex-wrap">
+                    <p className="text-sm text-muted-foreground">{filtered.length} result{filtered.length === 1 ? "" : "s"}</p>
+                    <Select value={sort} onValueChange={setSort}>
+                      <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="newest">Newest</SelectItem>
+                        <SelectItem value="price_asc">Price: low to high</SelectItem>
+                        <SelectItem value="price_desc">Price: high to low</SelectItem>
+                        <SelectItem value="top_rated">Top rated providers</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {loading ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-64 w-full" />)}
+                </div>
+              ) : filtered.length === 0 ? (
+                <Card><CardContent className="p-12 text-center text-muted-foreground">
+                  No offerings in this category yet. Be the first to{" "}
+                  <Link to="/skills-marketplace/new" className="text-primary underline">post one</Link>.
+                </CardContent></Card>
+              ) : (
+                <div className="space-y-8">
+                  {premiumList.length > 0 && (
+                    <section>
+                      <h3 className="flex items-center gap-2 text-lg font-semibold mb-3">
+                        <Crown className="h-5 w-5 text-amber-500" /> Premium providers
+                      </h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {premiumList.map(renderCard)}
                       </div>
+                    </section>
+                  )}
+                  <section>
+                    {premiumList.length > 0 && (
+                      <h3 className="text-lg font-semibold mb-3">Standard &amp; Top offerings</h3>
                     )}
-                    <CardHeader className="pb-2">
-                      <div className="flex items-start justify-between gap-2">
-                        <CardTitle className="text-lg line-clamp-2">{o.title}</CardTitle>
-                        <Badge variant="secondary" className="capitalize shrink-0">{o.category}</Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <p className="text-sm text-muted-foreground line-clamp-3">{o.description}</p>
-                      <div className="flex items-center justify-between text-sm pt-2 gap-2 flex-wrap">
-                        {o.location && (
-                          <span className="flex items-center gap-1 text-muted-foreground">
-                            <MapPin className="h-3.5 w-3.5" /> {o.location}
-                          </span>
-                        )}
-                        {sellerStats[o.user_id] && (
-                          <span className="flex items-center gap-1 text-muted-foreground">
-                            <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
-                            {sellerStats[o.user_id].avg.toFixed(1)} ({sellerStats[o.user_id].count})
-                          </span>
-                        )}
-                        {o.price_per_hour != null && (
-                          <span className="flex items-center gap-1 font-semibold text-primary ml-auto">
-                            <Euro className="h-3.5 w-3.5" /> {o.price_per_hour}/hr
-                          </span>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </div>
-          )}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {standardList.map(renderCard)}
+                    </div>
+                  </section>
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="requests">
+              <SkillRequestsBoard category={category} />
+            </TabsContent>
+          </Tabs>
         </>
       )}
+
+      <SkillPromoteDialog
+        offeringId={promoteId}
+        open={!!promoteId}
+        onOpenChange={(v) => !v && setPromoteId(null)}
+        onPromoted={() => window.location.reload()}
+      />
     </div>
     </>
   );
+
 }
 
 export default function SkillsMarketplace() {
