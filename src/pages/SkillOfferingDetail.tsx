@@ -140,14 +140,21 @@ export default function SkillOfferingDetail() {
     const { data, error } = await supabase.rpc("unlock_skill_contact", { _offering_id: offering.id });
     setUnlocking(false);
     if (error) {
-      const insufficient = /credit/i.test(error.message);
+      const msg = error.message || "";
+      const rateLimited = msg.includes("RATE_LIMIT");
+      const insufficient = /INSUFFICIENT_CREDITS/i.test(msg);
       toast({
-        title: insufficient ? "Not enough credits" : "Could not unlock chat",
-        description: insufficient ? "You need 1 credit to unlock the chat with this provider." : error.message,
+        title: rateLimited ? "Daily limit reached" : insufficient ? "Not enough credits" : "Could not unlock chat",
+        description: rateLimited
+          ? "You can unlock up to 20 new providers per day. Try again tomorrow."
+          : insufficient
+            ? "You need 1 credit to unlock the chat with this provider."
+            : msg,
         variant: "destructive",
       });
       return;
     }
+
     setUnlocked(true);
     const charged = (data as any)?.charged ?? 0;
     toast({
@@ -170,9 +177,24 @@ export default function SkillOfferingDetail() {
       message: message.trim() });
     setSending(false);
     if (error) {
-      toast({ title: "Could not send", description: error.message, variant: "destructive" });
+      const msg = error.message || "";
+      if (msg.includes("RATE_LIMIT")) {
+        toast({
+          title: "Slow down",
+          description: "Anti-spam limit: max 5 messages per minute, 15 per conversation per hour and 60 per day.",
+          variant: "destructive",
+        });
+      } else if (msg.includes("DUPLICATE_MESSAGE")) {
+        toast({ title: "Duplicate message", description: "You already sent this exact message a moment ago.", variant: "destructive" });
+      } else if (/row-level security/i.test(msg)) {
+        toast({ title: "Chat locked", description: "Unlock the chat with 1 credit first.", variant: "destructive" });
+        setUnlocked(false);
+      } else {
+        toast({ title: "Could not send", description: msg, variant: "destructive" });
+      }
       return;
     }
+
     setMessage("");
     toast({ title: "Message sent", description: "The provider will reply in their inbox." });
   };
@@ -335,6 +357,10 @@ export default function SkillOfferingDetail() {
                       <Button onClick={unlockContact} disabled={unlocking} className="gap-2">
                         <Send className="h-4 w-4" /> {unlocking ? "Unlocking…" : "Unlock chat for 1 credit"}
                       </Button>
+                      <p className="text-xs text-muted-foreground">
+                        Max 20 new contacts per day.{" "}
+                        <Link to="/credits/history" className="text-primary hover:underline">Credit history</Link>
+                      </p>
                     </div>
                   ) : (
                     <>
@@ -348,7 +374,10 @@ export default function SkillOfferingDetail() {
                       <Button variant="outline" onClick={sendMessage} disabled={sending} className="gap-2">
                         <Send className="h-4 w-4" /> {sending ? "Sending…" : "Send message"}
                       </Button>
-                      <p className="text-xs text-muted-foreground">Chat unlocked — further messages are free.</p>
+                      <p className="text-xs text-muted-foreground">
+                        Chat unlocked — further messages are free. Anti-spam: max 5 messages/minute, 15 per conversation/hour, 60/day.{" "}
+                        <Link to="/credits/history" className="text-primary hover:underline">Credit history</Link>
+                      </p>
                     </>
                   )}
                 </div>
