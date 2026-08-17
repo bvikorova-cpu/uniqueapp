@@ -43,6 +43,7 @@ export const CoffeeSwipeDeck = () => {
   const [index, setIndex] = useState(0);
   const [busy, setBusy] = useState(false);
   const [chatMatchId, setChatMatchId] = useState<string | null>(null);
+  const [chatPeer, setChatPeer] = useState<{ name: string; avatar: string | null } | null>(null);
 
   const { data: candidates = [], isLoading, refetch } = useQuery({
     queryKey: ["coffee-candidates"],
@@ -80,6 +81,10 @@ export const CoffeeSwipeDeck = () => {
         window.dispatchEvent(new Event("ai-credits-updated"));
         queryClient.invalidateQueries({ queryKey: ["coffee-chats"] });
         setChatMatchId(data.match_id as string);
+        setChatPeer({
+          name: resolveName(current.full_name, current.username, current.email),
+          avatar: current.avatar_url ?? null,
+        });
         toast.success("Chat opened ☕", { description: `-${LIKE_COST} credits` });
       }
     } catch (e: any) {
@@ -203,6 +208,8 @@ export const CoffeeSwipeDeck = () => {
 
       <CoffeeChat
         matchId={chatMatchId}
+        peerName={chatPeer?.name}
+        peerAvatar={chatPeer?.avatar}
         open={!!chatMatchId}
         onOpenChange={(o) => {
           if (!o) setChatMatchId(null);

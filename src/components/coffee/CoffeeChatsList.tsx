@@ -26,6 +26,7 @@ function resolveName(fullName: string | null, username: string | null, email: st
 /** Open coffee chats created by right-swipes (✓). */
 export const CoffeeChatsList = () => {
   const [chatMatchId, setChatMatchId] = useState<string | null>(null);
+  const activeChat = chats.find((c) => c.matchId === chatMatchId);
 
   const { data: chats = [], isLoading } = useQuery({
     queryKey: ["coffee-chats"],
@@ -110,6 +111,8 @@ export const CoffeeChatsList = () => {
 
       <CoffeeChat
         matchId={chatMatchId}
+        peerName={activeChat?.name}
+        peerAvatar={activeChat?.avatar}
         open={!!chatMatchId}
         onOpenChange={(o) => {
           if (!o) setChatMatchId(null);
