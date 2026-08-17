@@ -113,7 +113,7 @@ function SkillsMarketplaceContent() {
         setSellerStats(stats);
 
         const { data: profs } = await (supabase as any)
-          .from("profiles")
+          .from("public_profiles")
           .select("id, is_verified, verification_tier")
           .in("id", sellerIds);
         const vmap: Record<string, { isVerified: boolean; tier: string | null }> = {};

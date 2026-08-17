@@ -35,7 +35,7 @@ export default function SkillsMarketplaceProvider() {
     (async () => {
       setLoading(true);
       const [{ data: p }, { data: o }, { data: r }] = await Promise.all([
-        supabase.from("profiles").select("id,full_name,avatar_url,bio,location").eq("id", userId).maybeSingle(),
+        supabase.from("public_profiles").select("id,full_name,avatar_url,bio,location").eq("id", userId).maybeSingle(),
         supabase
           .from("skill_offerings")
           .select("id,title,description,category,price_per_hour,location,image_url,is_active,featured_at,featured_until,premium_at,premium_until")

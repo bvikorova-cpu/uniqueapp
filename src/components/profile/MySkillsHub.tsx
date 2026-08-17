@@ -60,7 +60,7 @@ export const MySkillsHub = ({ userId, isOwnProfile }: MySkillsHubProps) => {
 
       // Load skill swap profile data
       const { data: profileData } = await supabase
-        .from("profiles")
+        .from("public_profiles")
         .select("skills_offered, skills_wanted, completed_exchanges, rating_average")
         .eq("id", userId)
         .single();

@@ -72,7 +72,7 @@ export function MyOrders({ userId }: MyOrdersProps) {
 
     // Fetch profiles
     const { data: profiles } = await supabase
-      .from("profiles")
+      .from("public_profiles")
       .select("id, full_name, avatar_url")
       .in("id", allUserIds);
 

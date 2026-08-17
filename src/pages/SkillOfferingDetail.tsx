@@ -52,7 +52,7 @@ export default function SkillOfferingDetail() {
       setOffering(o as Offering | null);
       if (o) {
         const { data: p } = await supabase
-          .from("profiles")
+          .from("public_profiles")
           .select("id,full_name,avatar_url")
           .eq("id", o.user_id)
           .maybeSingle();

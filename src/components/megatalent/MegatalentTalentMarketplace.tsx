@@ -51,7 +51,7 @@ const MegatalentTalentMarketplace = ({ category }: { category?: string }) => {
     const rows = (data || []) as Listing[];
     if (rows.length) {
       const uids = [...new Set(rows.map((r) => r.seller_id))];
-      const { data: profs } = await supabase.from("profiles").select("id, full_name").in("id", uids);
+      const { data: profs } = await supabase.from("public_profiles").select("id, full_name").in("id", uids);
       const map: Record<string, string> = {};
       (profs || []).forEach((p: any) => (map[p.id] = p.full_name || "Anonymous"));
       rows.forEach((r) => (r.seller_name = map[r.seller_id] || "Anonymous"));
