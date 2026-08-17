@@ -7,6 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Sparkles, ArrowRightLeft, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { PromotionBadge } from "@/components/skills/PromotionBadge";
+
 
 interface SkillOffering {
   id: string;
@@ -15,7 +17,10 @@ interface SkillOffering {
   category: string;
   price_per_hour: number | null;
   is_active: boolean | null;
+  featured_until: string | null;
+  premium_until: string | null;
 }
+
 
 interface SkillSwapProfile {
   skills_offered: string[] | null;
@@ -44,11 +49,12 @@ export const MySkillsHub = ({ userId, isOwnProfile }: MySkillsHubProps) => {
       // Load marketplace offerings
       const { data: offeringsData } = await supabase
         .from("skill_offerings")
-        .select("id, title, description, category, price_per_hour, is_active")
+        .select("id, title, description, category, price_per_hour, is_active, featured_until, premium_until")
         .eq("user_id", userId)
         .order("created_at", { ascending: false });
 
       setOfferings(offeringsData || []);
+
 
       // Load skill swap profile data
       const { data: profileData } = await supabase
@@ -111,12 +117,15 @@ export const MySkillsHub = ({ userId, isOwnProfile }: MySkillsHubProps) => {
             )}
             <div className="grid gap-4 md:grid-cols-2">
               {offerings.map((offering) => (
-                <Card key={offering.id} className="p-4">
-                  <div className="flex items-start justify-between mb-2">
+              <Card key={offering.id} className="p-4">
+                  <div className="flex items-start justify-between mb-2 gap-2">
                     <h3 className="font-semibold">{offering.title}</h3>
-                    <Badge variant={offering.is_active ? "default" : "secondary"}>
-                      {offering.is_active ? "Active" : "Inactive"}
-                    </Badge>
+                    <div className="flex flex-col items-end gap-1">
+                      <Badge variant={offering.is_active ? "default" : "secondary"}>
+                        {offering.is_active ? "Active" : "Inactive"}
+                      </Badge>
+                      <PromotionBadge featuredUntil={offering.featured_until} premiumUntil={offering.premium_until} size="xs" />
+                    </div>
                   </div>
                   <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                     {offering.description}
@@ -130,6 +139,7 @@ export const MySkillsHub = ({ userId, isOwnProfile }: MySkillsHubProps) => {
                     </div>
                   </div>
                 </Card>
+
               ))}
             </div>
           </>

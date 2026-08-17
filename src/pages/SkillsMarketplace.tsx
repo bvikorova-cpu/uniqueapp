@@ -18,6 +18,9 @@ import { SKILL_REGIONS, regionLabel } from "@/components/skills/skillRegions";
 import { SkillRequestsBoard } from "@/components/skills/SkillRequestsBoard";
 import { SkillPromoteDialog } from "@/components/skills/SkillPromoteDialog";
 import { ProviderTrustBadges } from "@/components/skills/ProviderTrustBadges";
+import { PromotionBadge } from "@/components/skills/PromotionBadge";
+
+
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
@@ -175,17 +178,11 @@ function SkillsMarketplaceContent() {
             <CardHeader className="pb-2">
               <div className="flex items-start justify-between gap-2">
                 <CardTitle className="text-lg line-clamp-2">{o.title}</CardTitle>
-                <div className="flex flex-col items-end gap-1 shrink-0">
-                  {premium && (
-                    <Badge className="gap-1 bg-amber-500 text-amber-50 hover:bg-amber-500">
-                      <Crown className="h-3 w-3" /> Premium
-                    </Badge>
-                  )}
-                  {!premium && top && (
-                    <Badge className="gap-1"><Flame className="h-3 w-3" /> Top</Badge>
-                  )}
+              <div className="flex flex-col items-end gap-1 shrink-0">
+                  <PromotionBadge featuredUntil={o.featured_until} premiumUntil={o.premium_until} />
                   <Badge variant="secondary" className="capitalize">{o.category}</Badge>
                 </div>
+
               </div>
             </CardHeader>
             <CardContent className="space-y-2">
