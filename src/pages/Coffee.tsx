@@ -5,12 +5,12 @@ import { Card } from "@/components/ui/card";
 import { CoffeeHero } from "@/components/coffee/CoffeeHero";
 import { toast } from "sonner";
 import {
-  MapPin, Users, Trophy, Star, Flame, Award, Loader2
+  MapPin, Users, Trophy, Star, Flame, Award
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
-import { useState } from "react";
+
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const NAV_ITEMS = [
