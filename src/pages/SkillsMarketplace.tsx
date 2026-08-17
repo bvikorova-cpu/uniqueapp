@@ -44,9 +44,15 @@ type Offering = {
   category: string;
   price_per_hour: number | null;
   location: string | null;
+  region: string | null;
   image_url: string | null;
   created_at: string;
+  featured_until: string | null;
+  premium_until: string | null;
+  completed_jobs: number | null;
 };
+
+const isActive = (until?: string | null) => !!until && new Date(until).getTime() > Date.now();
 
 function SkillsMarketplaceContent() {
   const { user } = useAuth();
@@ -56,8 +62,12 @@ function SkillsMarketplaceContent() {
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [location, setLocation] = useState("");
+  const [region, setRegion] = useState("all");
   const [sort, setSort] = useState("newest");
+  const [promoteId, setPromoteId] = useState<string | null>(null);
+  const [verified, setVerified] = useState<Record<string, { isVerified: boolean; tier: string | null }>>({});
   const [sellerStats, setSellerStats] = useState<Record<string, { avg: number; count: number }>>({});
+
 
   const category = params.get("category");
   const setCategory = (value: string | null) => {
