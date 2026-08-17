@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { CoffeeHero } from "@/components/coffee/CoffeeHero";
 import { toast } from "sonner";
 import {
-  MapPin, Users, Trophy, Star, Flame, Award
+  MapPin, Users
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -60,7 +60,7 @@ const Coffee = () => {
 
 
         {/* Quick Navigation */}
-        <div className="grid grid-cols-3 gap-3 mb-8">
+        <div className="grid grid-cols-2 gap-3 mb-8">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             return (
