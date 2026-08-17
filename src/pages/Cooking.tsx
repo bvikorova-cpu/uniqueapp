@@ -14,17 +14,9 @@ import { useUserRecipes, UserRecipe } from "@/hooks/useUserRecipes";
 import { useAICredits } from "@/hooks/useAICredits";
 import { motion } from "framer-motion";
 import CookingHero from "@/components/cooking/CookingHero";
-import AIIngredientSubstitution from "@/components/cooking/AIIngredientSubstitution";
 import AINutritionCalculator from "@/components/cooking/AINutritionCalculator";
 import AICuisineConverter from "@/components/cooking/AICuisineConverter";
-import AIPlatingCoach from "@/components/cooking/AIPlatingCoach";
-import AILeftoverTransformer from "@/components/cooking/AILeftoverTransformer";
-import AICookingTimer from "@/components/cooking/AICookingTimer";
-import AIRecipeVideoGenerator from "@/components/cooking/AIRecipeVideoGenerator";
-import SocialRecipeFeed from "@/components/cooking/SocialRecipeFeed";
 import AIDietaryAdvisor from "@/components/cooking/AIDietaryAdvisor";
-import WeeklyCookingChallenge from "@/components/cooking/WeeklyCookingChallenge";
-import AIKitchenInventory from "@/components/cooking/AIKitchenInventory";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 import grilledChickenSalad from "@/assets/recipes/grilled-chicken-salad.jpg";
@@ -953,20 +945,12 @@ const COOKING_RECIPES: Recipe[] = [
     tags: ["french", "flambé", "elegant"] },
 ];
 
-type ActiveView = "hub" | "substitution" | "nutrition-calc" | "cuisine-converter" | "plating" | "leftover" | "timer" | "video-gen" | "social-feed" | "dietary" | "challenge" | "inventory";
+type ActiveView = "hub" | "nutrition-calc" | "cuisine-converter" | "dietary";
 
 const NEW_AI_TOOLS = [
-  { id: "substitution" as ActiveView, icon: Repeat, label: "AI Ingredient Substitution", desc: "Find perfect swaps for any ingredient", color: "from-teal-500 to-cyan-600", cost: "3 Credits", isNew: false },
   { id: "nutrition-calc" as ActiveView, icon: Calculator, label: "AI Nutrition Calculator", desc: "Full nutritional breakdown of any recipe", color: "from-green-500 to-emerald-600", cost: "3 Credits", isNew: false },
   { id: "cuisine-converter" as ActiveView, icon: Globe, label: "AI Cuisine Converter", desc: "Transform recipes into any cuisine style", color: "from-violet-500 to-purple-600", cost: "3 Credits", isNew: false },
-  { id: "plating" as ActiveView, icon: Palette, label: "AI Plating Coach", desc: "Michelin-level food presentation tips", color: "from-pink-500 to-rose-600", cost: "3 Credits", isNew: false },
-  { id: "leftover" as ActiveView, icon: Recycle, label: "AI Leftover Transformer", desc: "Turn leftovers into exciting new meals", color: "from-amber-500 to-yellow-600", cost: "3 Credits", isNew: false },
-  { id: "timer" as ActiveView, icon: Timer, label: "AI Cooking Timer", desc: "Smart multi-step timers with alerts", color: "from-blue-500 to-indigo-600", cost: "3 Credits", isNew: true },
-  { id: "video-gen" as ActiveView, icon: Video, label: "AI Recipe Video Script", desc: "Professional video production plans", color: "from-red-500 to-pink-600", cost: "5 Credits", isNew: true },
-  { id: "social-feed" as ActiveView, icon: Heart, label: "Social Recipe Feed", desc: "Share & discover community recipes", color: "from-pink-500 to-orange-600", cost: "Free", isNew: true },
   { id: "dietary" as ActiveView, icon: ShieldCheck, label: "AI Dietary Advisor", desc: "Allergen & nutrient analysis", color: "from-emerald-500 to-lime-600", cost: "3 Credits", isNew: true },
-  { id: "challenge" as ActiveView, icon: Trophy, label: "Weekly Cooking Challenge", desc: "Compete & earn XP on the leaderboard", color: "from-yellow-500 to-orange-600", cost: "Free", isNew: true },
-  { id: "inventory" as ActiveView, icon: Package, label: "AI Kitchen Inventory", desc: "Smart shopping lists & meal plans", color: "from-cyan-500 to-blue-600", cost: "3 Credits", isNew: true },
 ];
 
 const Cooking = () => {
@@ -1077,17 +1061,9 @@ const Cooking = () => {
         ]} />
         <div className="min-h-screen flex flex-col bg-background">
         <main className="flex-1 container mx-auto px-4 py-20">
-          {activeView === "substitution" && <AIIngredientSubstitution onBack={back} />}
           {activeView === "nutrition-calc" && <AINutritionCalculator onBack={back} />}
           {activeView === "cuisine-converter" && <AICuisineConverter onBack={back} />}
-          {activeView === "plating" && <AIPlatingCoach onBack={back} />}
-          {activeView === "leftover" && <AILeftoverTransformer onBack={back} />}
-          {activeView === "timer" && <AICookingTimer onBack={back} />}
-          {activeView === "video-gen" && <AIRecipeVideoGenerator onBack={back} />}
-          {activeView === "social-feed" && <SocialRecipeFeed onBack={back} />}
           {activeView === "dietary" && <AIDietaryAdvisor onBack={back} />}
-          {activeView === "challenge" && <WeeklyCookingChallenge onBack={back} />}
-          {activeView === "inventory" && <AIKitchenInventory onBack={back} />}
         </main>
       </div>
       </>
