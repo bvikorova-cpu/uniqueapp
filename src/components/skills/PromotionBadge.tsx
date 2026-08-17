@@ -7,12 +7,16 @@ function fmtDate(d?: string | null) {
 }
 
 export function PromotionBadge({
+  featuredAt,
   featuredUntil,
+  premiumAt,
   premiumUntil,
   showDates = true,
   size = "sm",
 }: {
+  featuredAt?: string | null;
   featuredUntil?: string | null;
+  premiumAt?: string | null;
   premiumUntil?: string | null;
   showDates?: boolean;
   size?: "sm" | "xs";
@@ -31,7 +35,7 @@ export function PromotionBadge({
         </Badge>
         {showDates && (
           <span className={`${textClass} text-muted-foreground mt-0.5`}>
-            until {fmtDate(premiumUntil)}
+            {fmtDate(premiumAt)} – {fmtDate(premiumUntil)}
           </span>
         )}
       </div>
@@ -44,7 +48,7 @@ export function PromotionBadge({
         <Badge className="gap-1"><Flame className="h-3 w-3" /> Top</Badge>
         {showDates && (
           <span className={`${textClass} text-muted-foreground mt-0.5`}>
-            until {fmtDate(featuredUntil)}
+            {fmtDate(featuredAt)} – {fmtDate(featuredUntil)}
           </span>
         )}
       </div>
