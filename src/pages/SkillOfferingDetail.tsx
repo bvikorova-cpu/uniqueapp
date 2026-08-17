@@ -40,6 +40,9 @@ export default function SkillOfferingDetail() {
   const [hours, setHours] = useState<number>(1);
   const [orderNote, setOrderNote] = useState("");
   const [ordering, setOrdering] = useState(false);
+  const [unlocked, setUnlocked] = useState(false);
+  const [unlocking, setUnlocking] = useState(false);
+
 
   const orderAndPay = async () => {
     if (!user) { navigate("/auth"); return; }
