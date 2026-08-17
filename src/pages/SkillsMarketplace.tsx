@@ -11,7 +11,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Plus, Search, MapPin, Euro, ArrowLeft, Hammer, Wrench, Sparkles,
-  Leaf, Laptop, GraduationCap, Palette, Boxes, Crown, Flame, ChevronRight,
+  Leaf, Laptop, GraduationCap, Palette, Boxes, Crown, Flame, ChevronRight, MessageCircle,
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { SKILL_REGIONS, regionLabel } from "@/components/skills/skillRegions";
