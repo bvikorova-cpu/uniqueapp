@@ -70151,6 +70151,17 @@ export type Database = {
           tier: string
         }[]
       }
+      publish_skill_offering: {
+        Args: {
+          _category: Database["public"]["Enums"]["skill_category"]
+          _description: string
+          _image_url?: string
+          _location?: string
+          _price_per_hour: number
+          _title: string
+        }
+        Returns: string
+      }
       purchase_battle_cosmetic: {
         Args: { _code: string; _module?: string }
         Returns: Json

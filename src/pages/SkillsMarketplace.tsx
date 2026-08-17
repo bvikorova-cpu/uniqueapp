@@ -138,7 +138,7 @@ function SkillsMarketplaceContent() {
           { title: 'Order & review', desc: 'Contact the provider, order the service and leave a review.' },
         ]} />
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <SEO title="Skills Marketplace — Hire & offer microservices" description="Browse microservice offerings by category. Publish your own skills for 2 credits — no commission." />
+      <SEO title="Skills Marketplace — Hire microservices" description="Browse services by category. Access costs €1 monthly and publishing an offering costs 2 credits." canonical="/marketplace" />
 
       <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
         <div>

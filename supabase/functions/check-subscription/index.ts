@@ -141,7 +141,7 @@ serve(async (req) => {
       }
     }
 
-    // Skill Swap now uses a standard €1/month Stripe subscription — falls through to generic check below.
+    // Skills Marketplace and Skill Swap are distinct subscriptions.
 
     const cloneTiers = new Set(["clone", "clone_basic", "clone_advanced", "clone_celebrity"]);
     if (cloneTiers.has(tier)) {
@@ -193,7 +193,9 @@ serve(async (req) => {
         // If tier has no specific list, ANY active subscription grants access
         // (useful while products are being mapped). Otherwise must match product
         // or exact price ID.
-        if (allowedProducts.length === 0 || allowedProducts.includes(productId) || allowedPriceIds.includes(priceId)) {
+        const metadataProduct = (sub.metadata?.product || sub.metadata?.type || "").toString();
+        const marketplaceMetadataMatch = tier === "skills_marketplace" && metadataProduct === "skills_marketplace";
+        if (marketplaceMetadataMatch || (tier !== "skills_marketplace" && (allowedProducts.length === 0 || allowedProducts.includes(productId) || allowedPriceIds.includes(priceId)))) {
           matchedProduct = productId;
           // Stripe moved current_period_end onto subscription items in newer API
           // versions; fall back safely so we never build an invalid Date.
@@ -211,6 +213,23 @@ serve(async (req) => {
         }
       }
       if (hasAccess) break;
+    }
+
+    // Keep the DB membership synchronized so listing RLS can enforce paid entry.
+    if (tier === "skills_marketplace") {
+      if (hasAccess) {
+        await supabaseClient.from("marketplace_subscriptions").upsert({
+          user_id: user.id,
+          status: "active",
+          started_at: new Date().toISOString(),
+          expires_at: subscriptionEnd,
+        }, { onConflict: "user_id" });
+      } else {
+        await supabaseClient
+          .from("marketplace_subscriptions")
+          .update({ status: "expired" })
+          .eq("user_id", user.id);
+      }
     }
 
     // ─── Home Decor: keep the decor_subscriptions row in sync with Stripe ───

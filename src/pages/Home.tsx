@@ -74,7 +74,7 @@ const Home = () => {
     { name: "Dating", path: "/dating", keywords: ["dating", "love", "friendships"] },
     { name: "First Aid", path: "/first-aid", keywords: ["first aid", "health", "help"] },
     { name: "Fit & Slim", path: "/fit-slim", keywords: ["fit", "slim", "exercise", "healthy recipes"] },
-    { name: "Skills Marketplace", path: "/skills-marketplace", keywords: ["services", "marketplace", "skills marketplace"] },
+    { name: "Skills Marketplace", path: "/marketplace", keywords: ["services", "marketplace", "skills marketplace"] },
     { name: "Bazaar", path: "/bazaar", keywords: ["bazaar", "sell", "buy"] },
     { name: "Referral Program", path: "/referral", keywords: ["referral", "rewards", "friend"] },
     { name: "Games", path: "/games", keywords: ["games", "entertainment"] },

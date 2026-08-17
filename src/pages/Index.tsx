@@ -65,7 +65,7 @@ const services = [
   { title: "Social Wall", icon: Users, path: "/wall", badge: "Social", gradient: "from-teal-500 to-cyan-500", category: "social" },
   { title: "Live Streaming", icon: Video, path: "/livestream", badge: "Entertainment", gradient: "from-indigo-500 to-purple-500", category: "entertainment" },
   { title: "Comedy Club", icon: Mic, path: "/comedy-club", badge: "Entertainment", gradient: "from-fuchsia-500 to-pink-500", category: "entertainment" },
-  { title: "Marketplace", icon: ShoppingBag, path: "/marketplace", badge: "Shopping", gradient: "from-violet-500 to-purple-500", category: "shopping" },
+  { title: "Skills Marketplace", icon: Briefcase, path: "/marketplace", badge: "€1 entry", gradient: "from-violet-500 to-purple-500", category: "shopping" },
   { title: "AI Services", icon: Brain, path: "/psychologist", badge: "Wellness", gradient: "from-emerald-500 to-teal-500", category: "wellness" },
   { title: "IQ Platform", icon: Brain, path: "/iq-platform", badge: "Intelligence", gradient: "from-blue-600 to-indigo-600", category: "learning" },
   { title: "Shadow Arena", icon: Ghost, path: "/shadow-arena", badge: "Horror", gradient: "from-purple-600 to-fuchsia-600", category: "entertainment" },

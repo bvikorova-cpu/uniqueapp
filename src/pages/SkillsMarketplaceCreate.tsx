@@ -58,22 +58,6 @@ function SkillsMarketplaceCreateForm() {
     }
     setSubmitting(true);
     try {
-      // 1) Charge the flat opening fee (atomic, writes the credits ledger row)
-      const { data: newBalance, error: creditError } = await supabase.rpc("deduct_ai_credits_atomic", {
-        _user_id: user.id,
-        _amount: OFFERING_CREDIT_COST,
-      });
-      if (creditError) {
-        toast({
-          title: "Not enough credits",
-          description: `Opening an offering costs ${OFFERING_CREDIT_COST} credits. Top up and try again.`,
-          variant: "destructive",
-        });
-        setSubmitting(false);
-        return;
-      }
-      if (typeof newBalance === "number") setBalance(newBalance);
-
       let image_url: string | null = null;
       if (imageFile) {
         const path = `${user.id}/${Date.now()}-${imageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, "_")}`;
@@ -83,21 +67,18 @@ function SkillsMarketplaceCreateForm() {
         image_url = data.publicUrl;
       }
 
-      const { data, error } = await supabase
-        .from("skill_offerings")
-        .insert({ user_id: user.id,
-          title: parsed.data.title,
-          description: parsed.data.description,
-          category: parsed.data.category,
-          price_per_hour: parsed.data.price_per_hour,
-          location: parsed.data.location || null,
-          image_url,
-          is_active: true })
-        .select("id")
-        .single();
+      const { data, error } = await supabase.rpc("publish_skill_offering", {
+        _title: parsed.data.title,
+        _description: parsed.data.description,
+        _category: parsed.data.category,
+        _price_per_hour: parsed.data.price_per_hour,
+        _location: parsed.data.location || null,
+        _image_url: image_url,
+      });
       if (error) throw error;
+      setBalance((current) => current === null ? current : current - OFFERING_CREDIT_COST);
       toast({ title: "Offering published", description: `${OFFERING_CREDIT_COST} credits used · 0% commission.` });
-      navigate(`/skills-marketplace/${data.id}`);
+      navigate(`/skills-marketplace/${data}`);
     } catch (err: any) {
       toast({ title: "Could not publish", description: err?.message ?? "Try again", variant: "destructive" });
     } finally {
