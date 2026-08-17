@@ -16,6 +16,9 @@ import { SEO } from "@/components/SEO";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
+const HERO_VIDEO_URL = "/__l5e/assets-v1/1fc3d14b-b578-456c-bf84-eef5461ab4d5/skills-marketplace-hero.mp4";
+const HERO_VIDEO_SECONDS = 10;
+
 const CATEGORY_FOLDERS = [
   { value: "construction", label: "Construction", icon: Hammer, desc: "Building, renovations, assembly" },
   { value: "repairs", label: "Repairs", icon: Wrench, desc: "Fixing, plumbing, electrics" },
