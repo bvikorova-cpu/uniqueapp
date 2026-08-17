@@ -385,30 +385,32 @@ function SkillsMarketplaceContent() {
 
 
           <Tabs defaultValue="offerings" className="w-full">
-            <TabsList className="mb-4">
-              <TabsTrigger value="offerings">Offerings</TabsTrigger>
-              <TabsTrigger value="requests">Customer requests</TabsTrigger>
+            <TabsList className="mb-5 rounded-full bg-muted/60 backdrop-blur p-1">
+              <TabsTrigger value="offerings" className="rounded-full data-[state=active]:bg-background data-[state=active]:shadow">Offerings</TabsTrigger>
+              <TabsTrigger value="requests" className="rounded-full data-[state=active]:bg-background data-[state=active]:shadow">Customer requests</TabsTrigger>
             </TabsList>
 
             <TabsContent value="offerings" className="space-y-6">
-              <Card>
+              <Card className="rounded-2xl border-border/60 bg-card/70 backdrop-blur-xl shadow-sm">
                 <CardContent className="p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div className="relative md:col-span-2">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search services…" className="pl-9" />
+                    <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search services…" className="pl-9 rounded-full bg-background/70" />
                   </div>
-                  <Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="City / area" />
+                  <Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="City / area" className="rounded-full bg-background/70" />
                   <Select value={region} onValueChange={setRegion}>
-                    <SelectTrigger><SelectValue placeholder="Region" /></SelectTrigger>
+                    <SelectTrigger className="rounded-full bg-background/70"><SelectValue placeholder="Region" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All regions</SelectItem>
                       {SKILL_REGIONS.map((r) => <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>)}
                     </SelectContent>
                   </Select>
                   <div className="md:col-span-2 flex items-center justify-between gap-2 flex-wrap">
-                    <p className="text-sm text-muted-foreground">{filtered.length} result{filtered.length === 1 ? "" : "s"}</p>
+                    <p className="text-sm text-muted-foreground">
+                      <span className="font-semibold text-foreground">{filtered.length}</span> result{filtered.length === 1 ? "" : "s"}
+                    </p>
                     <Select value={sort} onValueChange={setSort}>
-                      <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="w-48 rounded-full bg-background/70"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="newest">Newest</SelectItem>
                         <SelectItem value="price_asc">Price: low to high</SelectItem>
@@ -421,31 +423,44 @@ function SkillsMarketplaceContent() {
               </Card>
 
               {loading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-64 w-full" />)}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-72 w-full rounded-2xl" />)}
                 </div>
               ) : filtered.length === 0 ? (
-                <Card><CardContent className="p-12 text-center text-muted-foreground">
-                  No offerings in this category yet. Be the first to{" "}
-                  <Link to="/skills-marketplace/new" className="text-primary underline">post one</Link>.
-                </CardContent></Card>
+                <Card className="rounded-2xl border-dashed border-primary/30 bg-card/60 backdrop-blur">
+                  <CardContent className="p-12 text-center space-y-3">
+                    <div className="mx-auto h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md">
+                      <Sparkles className="h-6 w-6 text-primary-foreground" />
+                    </div>
+                    <p className="text-muted-foreground">
+                      No offerings in this category yet. Be the first to{" "}
+                      <Link to="/skills-marketplace/new" className="text-primary font-medium underline">post one</Link>.
+                    </p>
+                  </CardContent>
+                </Card>
               ) : (
-                <div className="space-y-8">
+                <div className="space-y-10">
                   {premiumList.length > 0 && (
                     <section>
-                      <h3 className="flex items-center gap-2 text-lg font-semibold mb-3">
-                        <Crown className="h-5 w-5 text-amber-500" /> Premium providers
-                      </h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="flex items-center gap-3 mb-4">
+                        <h3 className="flex items-center gap-2 text-lg font-semibold">
+                          <Crown className="h-5 w-5 text-accent" /> Premium providers
+                        </h3>
+                        <div className="h-px flex-1 bg-gradient-to-r from-accent/50 to-transparent" />
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                         {premiumList.map(renderCard)}
                       </div>
                     </section>
                   )}
                   <section>
                     {premiumList.length > 0 && (
-                      <h3 className="text-lg font-semibold mb-3">Standard &amp; Top offerings</h3>
+                      <div className="flex items-center gap-3 mb-4">
+                        <h3 className="text-lg font-semibold">Standard &amp; Top offerings</h3>
+                        <div className="h-px flex-1 bg-gradient-to-r from-primary/40 to-transparent" />
+                      </div>
                     )}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                       {standardList.map(renderCard)}
                     </div>
                   </section>
@@ -466,9 +481,11 @@ function SkillsMarketplaceContent() {
         onOpenChange={(v) => !v && setPromoteId(null)}
         onPromoted={() => window.location.reload()}
       />
-    </div>
+        </div>
+      </div>
     </>
   );
+
 
 }
 
