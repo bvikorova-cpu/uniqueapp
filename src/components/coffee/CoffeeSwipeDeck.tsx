@@ -15,12 +15,22 @@ const LIKE_COST = 2;
 interface Candidate {
   user_id: string;
   full_name: string | null;
+  username: string | null;
+  email: string | null;
   avatar_url: string | null;
   bio: string | null;
   favorite_coffee_types: string[] | null;
   preferred_atmosphere: string[] | null;
   budget_preference: string | null;
   total_checkins: number | null;
+}
+
+/** Resolve a real display name from profile fields. */
+function resolveName(fullName: string | null, username: string | null, email: string | null): string {
+  if (fullName?.trim()) return fullName.trim();
+  if (username?.trim()) return username.trim();
+  if (email?.includes("@")) return email.split("@")[0];
+  return "Coffee buddy";
 }
 
 /**
@@ -106,7 +116,7 @@ export const CoffeeSwipeDeck = () => {
     );
   }
 
-  const name = current.full_name || "Coffee lover";
+  const name = resolveName(current.full_name, current.username, current.email);
 
   return (
     <div className="max-w-md mx-auto">

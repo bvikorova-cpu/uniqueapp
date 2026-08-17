@@ -68094,11 +68094,13 @@ export type Database = {
           avatar_url: string
           bio: string
           budget_preference: string
+          email: string
           favorite_coffee_types: string[]
           full_name: string
           preferred_atmosphere: string[]
           total_checkins: number
           user_id: string
+          username: string
         }[]
       }
       coffee_send_gift: {

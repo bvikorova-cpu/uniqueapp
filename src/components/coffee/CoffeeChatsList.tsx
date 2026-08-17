@@ -15,6 +15,14 @@ interface ChatRow {
   createdAt: string;
 }
 
+/** Resolve a real display name from profile fields. */
+function resolveName(fullName: string | null, username: string | null, email: string | null): string {
+  if (fullName?.trim()) return fullName.trim();
+  if (username?.trim()) return username.trim();
+  if (email?.includes("@")) return email.split("@")[0];
+  return "Coffee buddy";
+}
+
 /** Open coffee chats created by right-swipes (✓). */
 export const CoffeeChatsList = () => {
   const [chatMatchId, setChatMatchId] = useState<string | null>(null);
@@ -42,15 +50,18 @@ export const CoffeeChatsList = () => {
 
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("id,full_name,avatar_url")
+        .select("id,full_name,username,email,avatar_url")
         .in("id", rows.map((r) => r.otherId));
 
       const byId = new Map((profiles ?? []).map((p: any) => [p.id, p]));
-      return rows.map((r) => ({
-        ...r,
-        name: byId.get(r.otherId)?.full_name || "Coffee lover",
-        avatar: byId.get(r.otherId)?.avatar_url ?? null,
-      }));
+      return rows.map((r) => {
+        const p = byId.get(r.otherId);
+        return {
+          ...r,
+          name: resolveName(p?.full_name, p?.username, p?.email),
+          avatar: p?.avatar_url ?? null,
+        };
+      });
     },
   });
 
