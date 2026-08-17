@@ -8,6 +8,7 @@ import { useAICredits } from "@/hooks/useAICredits";
 import { toast } from "@/hooks/use-toast";
 import { useEffect, useRef } from "react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import AiMarkdown from "@/components/common/AiMarkdown";
 
 interface TimerItem {
   label: string;
@@ -138,7 +139,7 @@ export default function AICookingTimer({ onBack }: Props) {
       {result && (
         <Card className="p-6 bg-card/80 backdrop-blur-xl border-blue-500/30">
           <h3 className="font-bold text-lg mb-3 flex items-center gap-2"><Timer className="h-5 w-5 text-blue-400" /> Cooking Timeline</h3>
-          <div className="whitespace-pre-line text-sm text-muted-foreground leading-relaxed">{result}</div>
+          <AiMarkdown content={result} className="overflow-x-auto" />
         </Card>
       )}
     </div>
