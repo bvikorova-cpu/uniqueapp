@@ -114,10 +114,25 @@ export default function SkillOfferingDetail() {
           .eq("id", o.user_id)
           .maybeSingle();
         setSeller(p as Profile | null);
+        setSeller(p as Profile | null);
+        if (user) {
+          if (o.user_id === user.id) {
+            setUnlocked(true);
+          } else {
+            const { data: u } = await supabase
+              .from("skill_contact_unlocks")
+              .select("id")
+              .eq("offering_id", o.id)
+              .eq("buyer_id", user.id)
+              .maybeSingle();
+            setUnlocked(!!u);
+          }
+        }
       }
       setLoading(false);
     })();
-  }, [id]);
+  }, [id, user?.id]);
+
 
   const unlockContact = async () => {
     if (!user || !offering) { navigate("/auth"); return; }
