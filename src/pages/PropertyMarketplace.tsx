@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Building2, MapPin, Maximize2, Plus, Loader2, MessageSquare, Heart, Globe2,
   ShieldCheck, Sparkles, Coins, Search, KeyRound,
@@ -46,6 +47,9 @@ export default function PropertyMarketplace() {
   });
 
   usePropertyExpiration();
+
+  const premiumListings = properties.filter((p) => p.is_premium);
+  const standardListings = properties.filter((p) => !p.is_premium);
 
   useEffect(() => {
     checkAuth();
@@ -89,6 +93,7 @@ export default function PropertyMarketplace() {
       if (f.rooms) query = query.gte("rooms", parseInt(f.rooms));
       if (f.propertyType && f.propertyType !== "any") query = query.eq("property_type", f.propertyType);
       const { data, error } = await query
+        .order("is_premium", { ascending: false })
         .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false })
         .limit(60);
@@ -306,18 +311,50 @@ export default function PropertyMarketplace() {
               <div className="flex justify-center items-center py-20">
                 <Loader2 className="h-12 w-12 animate-spin text-primary" />
               </div>
-            ) : properties.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {properties.map((property) => (
-                  <PropertyCard key={property.id} property={property} onViewDetails={handleViewProperty} />
-                ))}
-              </div>
             ) : (
-              <Card className="p-12 text-center backdrop-blur-xl bg-card/80">
-                <Building2 className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                <p className="text-xl text-muted-foreground">No properties found</p>
-                <p className="text-sm text-muted-foreground mt-2">Try adjusting your search filters</p>
-              </Card>
+              <Tabs defaultValue="standard" className="w-full">
+                <TabsList className="mb-6">
+                  <TabsTrigger value="standard">
+                    Standard &amp; Top <span className="ml-2 text-xs opacity-70">{standardListings.length}</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="premium">
+                    <Sparkles className="h-3.5 w-3.5 mr-1.5" /> Premium
+                    <span className="ml-2 text-xs opacity-70">{premiumListings.length}</span>
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="standard">
+                  {standardListings.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {standardListings.map((property) => (
+                        <PropertyCard key={property.id} property={property} onViewDetails={handleViewProperty} />
+                      ))}
+                    </div>
+                  ) : (
+                    <Card className="p-12 text-center backdrop-blur-xl bg-card/80">
+                      <Building2 className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-xl text-muted-foreground">No properties found</p>
+                      <p className="text-sm text-muted-foreground mt-2">Try adjusting your search filters</p>
+                    </Card>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="premium">
+                  {premiumListings.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {premiumListings.map((property) => (
+                        <PropertyCard key={property.id} property={property} onViewDetails={handleViewProperty} />
+                      ))}
+                    </div>
+                  ) : (
+                    <Card className="p-12 text-center backdrop-blur-xl bg-card/80">
+                      <Sparkles className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-xl text-muted-foreground">No Premium listings yet</p>
+                      <p className="text-sm text-muted-foreground mt-2">Premium promotion costs 100 credits for 30 days.</p>
+                    </Card>
+                  )}
+                </TabsContent>
+              </Tabs>
             )}
           </div>
 
