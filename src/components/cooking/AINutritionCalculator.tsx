@@ -101,7 +101,7 @@ Recipe/meal to analyse: ${input}`,
       {result && (
         <Card className="p-6 bg-card/80 backdrop-blur-xl border-green-500/30">
           <h3 className="font-bold text-lg mb-3 flex items-center gap-2"><Calculator className="h-5 w-5 text-green-400" /> Nutritional Breakdown</h3>
-          <div className="whitespace-pre-line text-sm text-muted-foreground leading-relaxed">{result}</div>
+          <AiMarkdown content={result} className="overflow-x-auto" />
         </Card>
       )}
     </div>
