@@ -105,11 +105,15 @@ export function PropertyCard({ property, onViewDetails }: PropertyCardProps) {
     <>
       <FloatingHowItWorks title={"Property Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Property Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Property Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group">
-      {property.is_featured && (
+      {property.is_premium ? (
+        <Badge className="absolute top-4 right-4 z-10 bg-gradient-to-r from-violet-600 to-fuchsia-600">
+          PREMIUM
+        </Badge>
+      ) : property.is_featured ? (
         <Badge className="absolute top-4 right-4 z-10 bg-gradient-to-r from-amber-500 to-orange-500">
           TOP
         </Badge>
-      )}
+      ) : null}
 
       
       <div className="relative h-48 overflow-hidden">
