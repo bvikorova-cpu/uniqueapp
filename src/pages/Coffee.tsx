@@ -16,8 +16,8 @@ import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const NAV_ITEMS = [
   { icon: MapPin, label: "Check-ins & Reviews", path: "/coffee/checkins" },
   { icon: Users, label: "Coffee Buddy", path: "/coffee/buddy" },
-  { icon: Trophy, label: "Leaderboard", path: "/coffee/leaderboard" },
 ];
+
 
 const CREDIT_ITEMS = [
   { name: "Swipe ✓ (open chat)", cost: "2 credits", desc: "Opens a private coffee chat with that person. Swiping ✗ is always free." },
@@ -58,25 +58,6 @@ const Coffee = () => {
 
         <HeroRewardedAd sectionKey="page_coffee" />
 
-        {/* Engagement Row */}
-        <div className="grid grid-cols-3 gap-3 mb-8">
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl border-amber-500/20 text-center">
-            <Flame className="h-5 w-5 text-amber-400 mx-auto mb-1" />
-            <p className="text-lg sm:text-2xl font-black">{profile?.total_checkins || 0}</p>
-            <p className="text-[10px] sm:text-xs text-muted-foreground">Check-ins</p>
-          </Card>
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl border-amber-500/20 text-center">
-            <Star className="h-5 w-5 text-yellow-400 mx-auto mb-1" />
-            <p className="text-lg sm:text-2xl font-black">{profile?.total_points || 0}</p>
-            <p className="text-[10px] sm:text-xs text-muted-foreground">Points</p>
-          </Card>
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl border-amber-500/20 text-center">
-            <Award className="h-5 w-5 text-purple-400 mx-auto mb-1" />
-            <p className="text-lg sm:text-2xl font-black">{profile?.total_reviews || 0}</p>
-            <p className="text-[10px] sm:text-xs text-muted-foreground">Reviews</p>
-          </Card>
-
-        </div>
 
         {/* Quick Navigation */}
         <div className="grid grid-cols-3 gap-3 mb-8">
