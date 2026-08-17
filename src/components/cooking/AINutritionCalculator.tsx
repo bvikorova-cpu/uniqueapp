@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAICredits } from "@/hooks/useAICredits";
 import { toast } from "@/hooks/use-toast";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import AiMarkdown from "@/components/common/AiMarkdown";
 
 interface Props { onBack: () => void; }
 
@@ -24,7 +25,49 @@ export default function AINutritionCalculator({ onBack }: Props) {
       const ok = await spendCredit("custom_generation", "AI Nutrition Calculator");
       if (!ok) throw new Error("Failed to use credit");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
-        body: { type: "cooking_ai", prompt: `You are a certified nutritionist. Calculate the complete nutritional breakdown for the recipe or meal described. Include: 1) Total calories per serving, 2) Macros (protein, carbs, fat in grams), 3) Fiber, sugar, sodium, 4) Key vitamins and minerals, 5) Glycemic index estimate, 6) Healthier modifications to reduce calories/increase nutrients, 7) Comparison to daily recommended intake (%). Recipe/meal: ${input}` } });
+        body: {
+          type: "cooking_ai",
+          prompt: `You are a certified clinical nutritionist. Produce an exhaustive nutritional analysis in clean markdown (use ## and ### headings, bullet lists and markdown tables — never raw text walls). Use metric units only.
+
+Structure it exactly like this:
+## Overview
+Recognised dish/meal, serving size in grams, number of servings, and stated assumptions (cooking method, added fat, etc.).
+
+## Per-ingredient breakdown
+A markdown table: Ingredient | Amount (g/ml) | kcal | Protein (g) | Carbs (g) | Fat (g).
+
+## Total nutrition per serving
+A markdown table with: kcal, protein, carbs (of which sugars), fibre, fat (of which saturated), sodium, cholesterol, water content. Add the % of a 2000 kcal daily reference intake for each row.
+
+## Macro split
+Percentages of calories from protein / carbs / fat, plus protein quality note and whether the split fits a balanced, low-carb or high-protein pattern.
+
+## Vitamins & minerals
+Table of the key micronutrients with amount and %DV (vitamin A, C, D, E, K, B6, B12, folate, calcium, iron, magnesium, potassium, zinc, selenium).
+
+## Glycemic impact
+Estimated glycemic index and glycemic load, expected blood-sugar curve, and pairing advice to flatten it.
+
+## Health score
+A score out of 100 with a short justification, plus **Strengths** and **Weaknesses** bullet lists.
+
+## Suitability
+Bullets for: weight loss, muscle gain, diabetes, heart health, keto, vegetarian/vegan, gluten-free, kids, athletes — each with a clear yes/no/adjust and why.
+
+## Allergens & sensitivities
+Bullet list of likely allergens and hidden sources.
+
+## Smarter modifications
+At least 5 concrete swaps with the exact kcal/macro change each one produces.
+
+## Activity equivalent
+Minutes of walking, running, cycling and swimming needed to burn this serving.
+
+## Verdict
+2-3 sentence practical summary.
+
+Recipe/meal to analyse: ${input}`,
+        } });
       if (error) throw error;
       setResult(data?.message || data?.text || "No result");
     } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); }
@@ -58,7 +101,7 @@ export default function AINutritionCalculator({ onBack }: Props) {
       {result && (
         <Card className="p-6 bg-card/80 backdrop-blur-xl border-green-500/30">
           <h3 className="font-bold text-lg mb-3 flex items-center gap-2"><Calculator className="h-5 w-5 text-green-400" /> Nutritional Breakdown</h3>
-          <div className="whitespace-pre-line text-sm text-muted-foreground leading-relaxed">{result}</div>
+          <AiMarkdown content={result} className="overflow-x-auto" />
         </Card>
       )}
     </div>
