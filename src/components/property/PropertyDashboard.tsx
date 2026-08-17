@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Video, Eye, Calendar, Loader2, Plus, Trash2, MessageCircle } from "lucide-react";
+import { Video, Eye, Calendar, Loader2, Trash2, MessageCircle } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,8 +36,6 @@ interface Property {
 export function PropertyDashboard() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedProperty, setSelectedProperty] = useState<string | null>(null);
-  const [uploaderOpen, setUploaderOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Property | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [inboxOpen, setInboxOpen] = useState(false);
@@ -85,11 +83,6 @@ export function PropertyDashboard() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleAddVirtualTour = (propertyId: string) => {
-    setSelectedProperty(propertyId);
-    setUploaderOpen(true);
   };
 
   const handleDelete = async () => {
