@@ -326,17 +326,33 @@ export default function SkillOfferingDetail() {
                   <h4 className="font-semibold inline-flex items-center gap-2">
                     <Send className="h-4 w-4" /> Or contact the provider first
                   </h4>
-                  <Textarea
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Describe what you need, when, and where…"
-                    rows={4}
-                    maxLength={1000}
-                  />
-                  <Button variant="outline" onClick={sendMessage} disabled={sending} className="gap-2">
-                    <Send className="h-4 w-4" /> {sending ? "Sending…" : "Send message"}
-                  </Button>
+                  {!unlocked ? (
+                    <div className="rounded-lg border border-dashed p-4 space-y-3 text-center">
+                      <p className="text-sm text-muted-foreground">
+                        Unlock the chat with this provider for <span className="font-semibold text-foreground">1 credit</span> (one-time).
+                        All further messages in this conversation are free.
+                      </p>
+                      <Button onClick={unlockContact} disabled={unlocking} className="gap-2">
+                        <Send className="h-4 w-4" /> {unlocking ? "Unlocking…" : "Unlock chat for 1 credit"}
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      <Textarea
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        placeholder="Describe what you need, when, and where…"
+                        rows={4}
+                        maxLength={1000}
+                      />
+                      <Button variant="outline" onClick={sendMessage} disabled={sending} className="gap-2">
+                        <Send className="h-4 w-4" /> {sending ? "Sending…" : "Send message"}
+                      </Button>
+                      <p className="text-xs text-muted-foreground">Chat unlocked — further messages are free.</p>
+                    </>
+                  )}
                 </div>
+
               </div>
             )}
           </CardContent>
