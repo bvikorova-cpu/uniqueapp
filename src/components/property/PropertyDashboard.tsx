@@ -201,10 +201,43 @@ export function PropertyDashboard() {
                   Add Virtual Tour
                 </Button>
               )}
+
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full text-destructive hover:text-destructive hover:bg-destructive/10"
+                onClick={() => setDeleteTarget(property)}
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete listing
+              </Button>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      <AlertDialog open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this listing?</AlertDialogTitle>
+            <AlertDialogDescription>
+              "{deleteTarget?.title}" will be permanently removed along with its photos.
+              Credits already spent on publishing are not refunded.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => { e.preventDefault(); handleDelete(); }}
+              disabled={deleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Trash2 className="h-4 w-4 mr-2" />}
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {selectedProperty && (
         <VirtualTourUploader
