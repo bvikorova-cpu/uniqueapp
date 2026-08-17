@@ -12,7 +12,6 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Coins } from "lucide-react";
-import { SkillsAccessGate } from "@/components/skills/SkillsAccessGate";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const CATEGORIES = ["construction", "repairs", "cleaning", "gardening", "technology", "teaching", "creative", "other"] as const;
@@ -161,8 +160,6 @@ function SkillsMarketplaceCreateForm() {
 
 export default function SkillsMarketplaceCreate() {
   return (
-    <SkillsAccessGate>
       <SkillsMarketplaceCreateForm />
-    </SkillsAccessGate>
   );
 }

@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { toast } from "sonner";
-import { SkillsAccessGate } from "@/components/skills/SkillsAccessGate";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
@@ -277,8 +276,6 @@ function SkillsMarketplaceContent() {
 
 export default function SkillsMarketplace() {
   return (
-    <SkillsAccessGate>
       <SkillsMarketplaceContent />
-    </SkillsAccessGate>
   );
 }
