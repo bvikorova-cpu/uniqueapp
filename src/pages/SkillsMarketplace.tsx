@@ -13,7 +13,6 @@ import {
   Leaf, Laptop, GraduationCap, Palette, Boxes,
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
-import { toast } from "sonner";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
