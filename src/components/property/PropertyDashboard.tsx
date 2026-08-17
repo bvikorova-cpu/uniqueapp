@@ -72,6 +72,9 @@ export function PropertyDashboard() {
           views_count,
           virtual_tour_url,
           listing_expires_at,
+          is_featured,
+          featured_until,
+
           property_images (image_url)
         `)
         .eq('user_id', user.id)
