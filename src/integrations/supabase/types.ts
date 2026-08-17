@@ -48318,11 +48318,13 @@ export type Database = {
           floor: number | null
           id: string
           is_featured: boolean | null
+          is_premium: boolean
           latitude: number | null
           listing_expires_at: string | null
           listing_type: string
           location: string
           longitude: number | null
+          premium_until: string | null
           price: number
           property_type: string | null
           rooms: number | null
@@ -48351,11 +48353,13 @@ export type Database = {
           floor?: number | null
           id?: string
           is_featured?: boolean | null
+          is_premium?: boolean
           latitude?: number | null
           listing_expires_at?: string | null
           listing_type?: string
           location: string
           longitude?: number | null
+          premium_until?: string | null
           price: number
           property_type?: string | null
           rooms?: number | null
@@ -48384,11 +48388,13 @@ export type Database = {
           floor?: number | null
           id?: string
           is_featured?: boolean | null
+          is_premium?: boolean
           latitude?: number | null
           listing_expires_at?: string | null
           listing_type?: string
           location?: string
           longitude?: number | null
+          premium_until?: string | null
           price?: number
           property_type?: string | null
           rooms?: number | null
@@ -70137,13 +70143,22 @@ export type Database = {
         Args: { _property_id: string; _viewer_key: string }
         Returns: number
       }
-      property_top_listing: {
-        Args: { _days: number; _property_id: string }
-        Returns: {
-          credits_remaining: number
-          featured_until: string
-        }[]
-      }
+      property_top_listing:
+        | {
+            Args: { _days: number; _property_id: string }
+            Returns: {
+              credits_remaining: number
+              featured_until: string
+            }[]
+          }
+        | {
+            Args: { _days: number; _property_id: string; _tier?: string }
+            Returns: {
+              credits_remaining: number
+              featured_until: string
+              tier: string
+            }[]
+          }
       purchase_battle_cosmetic: {
         Args: { _code: string; _module?: string }
         Returns: Json
