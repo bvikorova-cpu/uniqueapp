@@ -4,14 +4,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Plus, Search, MapPin, Euro, ArrowLeft, Hammer, Wrench, Sparkles,
-  Leaf, Laptop, GraduationCap, Palette, Boxes, Crown, Flame, ArrowRight,
+  Leaf, Laptop, GraduationCap, Palette, Boxes, Crown, Flame, ChevronRight,
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { SKILL_REGIONS, regionLabel } from "@/components/skills/skillRegions";
@@ -20,10 +20,7 @@ import { SkillPromoteDialog } from "@/components/skills/SkillPromoteDialog";
 import { ProviderTrustBadges } from "@/components/skills/ProviderTrustBadges";
 import { PromotionBadge } from "@/components/skills/PromotionBadge";
 
-
-
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-
 
 const HERO_VIDEO_URL = "/__l5e/assets-v1/1fc3d14b-b578-456c-bf84-eef5461ab4d5/skills-marketplace-hero.mp4";
 const HERO_VIDEO_SECONDS = 10;
@@ -73,7 +70,6 @@ function SkillsMarketplaceContent() {
   const [verified, setVerified] = useState<Record<string, { isVerified: boolean; tier: string | null }>>({});
   const [sellerStats, setSellerStats] = useState<Record<string, { avg: number; count: number }>>({});
 
-
   const category = params.get("category");
   const setCategory = (value: string | null) => {
     const next = new URLSearchParams(params);
@@ -81,9 +77,6 @@ function SkillsMarketplaceContent() {
     else next.delete("category");
     setParams(next, { replace: true });
   };
-
-
-
 
   useEffect(() => {
     (async () => {
@@ -162,7 +155,6 @@ function SkillsMarketplaceContent() {
   const premiumList = useMemo(() => filtered.filter((o) => isActive(o.premium_until)), [filtered]);
   const standardList = useMemo(() => filtered.filter((o) => !isActive(o.premium_until)), [filtered]);
 
-
   const activeFolder = CATEGORY_FOLDERS.find((f) => f.value === category);
 
   const renderCard = (o: Offering) => {
@@ -174,47 +166,42 @@ function SkillsMarketplaceContent() {
       <div key={o.id} className="relative group/card">
         <Link to={`/skills-marketplace/${o.id}`} className="block h-full">
           <Card
-            className={`h-full overflow-hidden rounded-2xl border bg-card/70 backdrop-blur-sm transition-all duration-300 group-hover/card:-translate-y-1 ${
-              premium
-                ? "border-accent/50 shadow-[0_10px_40px_-16px_hsl(var(--accent)/0.55)]"
-                : top
-                ? "border-primary/40 shadow-[0_10px_40px_-18px_hsl(var(--primary)/0.45)]"
-                : "border-border/60 hover:border-primary/30 hover:shadow-xl"
+            className={`h-full overflow-hidden rounded-lg bg-card transition-shadow duration-200 hover:shadow-md ${
+              premium ? "border-accent/60" : top ? "border-primary/50" : "border-border"
             }`}
           >
-            <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-primary/15 via-muted to-accent/15">
-              {o.image_url ? (
-                <img
-                  src={o.image_url}
-                  alt={o.title}
-                  loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-[1.06]"
-                />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Icon className="h-10 w-10 text-primary/50" />
+            <div className="flex gap-4 p-4">
+              <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-muted">
+                {o.image_url ? (
+                  <img src={o.image_url} alt={o.title} loading="lazy" className="h-full w-full object-cover" />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center">
+                    <Icon className="h-7 w-7 text-muted-foreground" />
+                  </div>
+                )}
+              </div>
+              <div className="min-w-0 flex-1 space-y-1.5">
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="font-semibold leading-snug line-clamp-2 group-hover/card:underline">{o.title}</h3>
+                  {o.price_per_hour != null && (
+                    <span className="shrink-0 flex items-center gap-0.5 text-sm font-semibold text-primary">
+                      <Euro className="h-3.5 w-3.5" />{o.price_per_hour}/hr
+                    </span>
+                  )}
                 </div>
-              )}
-              <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-card via-card/60 to-transparent" />
-              <div className="absolute top-2 right-2 flex flex-col items-end gap-1">
-                <PromotionBadge
-                  featuredAt={o.featured_at}
-                  featuredUntil={o.featured_until}
-                  premiumAt={o.premium_at}
-                  premiumUntil={o.premium_until}
-                />
-                <Badge variant="secondary" className="capitalize backdrop-blur bg-background/80">
-                  {o.category}
-                </Badge>
+                <p className="text-sm text-muted-foreground line-clamp-2">{o.description}</p>
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                  <span className="capitalize">{o.category}</span>
+                  {regionLabel(o.region) && <span>{regionLabel(o.region)}</span>}
+                  {o.location && (
+                    <span className="flex items-center gap-1">
+                      <MapPin className="h-3.5 w-3.5" /> {o.location}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
-            <CardHeader className="pb-2 pt-4">
-              <CardTitle className="text-lg leading-snug line-clamp-2 group-hover/card:text-primary transition-colors">
-                {o.title}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <p className="text-sm text-muted-foreground line-clamp-3">{o.description}</p>
+            <div className="flex flex-wrap items-center gap-2 border-t border-border px-4 py-2.5">
               <ProviderTrustBadges
                 trust={{
                   isVerified: verified[o.user_id]?.isVerified,
@@ -223,29 +210,22 @@ function SkillsMarketplaceContent() {
                   rating: sellerStats[o.user_id] ?? null,
                 }}
               />
-              <div className="flex items-center justify-between gap-2 flex-wrap pt-3 border-t border-border/50 text-sm">
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  {regionLabel(o.region) && <span>{regionLabel(o.region)}</span>}
-                  {o.location && (
-                    <span className="flex items-center gap-1">
-                      <MapPin className="h-3.5 w-3.5" /> {o.location}
-                    </span>
-                  )}
-                </div>
-                {o.price_per_hour != null && (
-                  <span className="ml-auto flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 font-semibold text-primary">
-                    <Euro className="h-3.5 w-3.5" /> {o.price_per_hour}/hr
-                  </span>
-                )}
+              <div className="ml-auto">
+                <PromotionBadge
+                  featuredAt={o.featured_at}
+                  featuredUntil={o.featured_until}
+                  premiumAt={o.premium_at}
+                  premiumUntil={o.premium_until}
+                />
               </div>
-            </CardContent>
+            </div>
           </Card>
         </Link>
         {user?.id === o.user_id && (
           <Button
             size="sm"
-            variant="secondary"
-            className="absolute top-2 left-2 gap-1 shadow-lg backdrop-blur bg-background/85"
+            variant="outline"
+            className="absolute top-2 right-2 gap-1 bg-background"
             onClick={(e) => { e.preventDefault(); setPromoteId(o.id); }}
           >
             <Flame className="h-3.5 w-3.5" /> Promote
@@ -254,8 +234,6 @@ function SkillsMarketplaceContent() {
       </div>
     );
   };
-
-
 
   return (
     <>
@@ -295,200 +273,163 @@ function SkillsMarketplaceContent() {
         </div>
       </section>
 
-      <div className="relative">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-primary/[0.07] to-transparent" />
-        <div className="container relative mx-auto px-4 py-10 max-w-7xl">
-      <SEO title="Skills Marketplace — Hire microservices" description="Browse services by category for free. Publishing an offering costs 2 credits." canonical="/marketplace" />
+      <div className="bg-muted/30">
+        <div className="container mx-auto px-4 py-8 max-w-6xl">
+          <SEO title="Skills Marketplace — Hire microservices" description="Browse services by category for free. Publishing an offering costs 2 credits." canonical="/marketplace" />
 
-
-      <header className="mb-8 rounded-3xl border border-border/60 bg-card/70 backdrop-blur-xl p-6 md:p-8 shadow-[0_18px_60px_-32px_hsl(var(--primary)/0.4)]">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
-          <div className="space-y-2">
-            <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
-              <Sparkles className="h-3.5 w-3.5" /> Free to browse
-            </span>
-            <h2 className="text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
-              Browse offerings
-            </h2>
-            <p className="text-muted-foreground max-w-md">
-              Pick a category folder or search across all services.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-2 sm:flex-wrap sm:justify-end">
-            {user && (
-              <Button variant="outline" onClick={() => navigate("/skills-marketplace/mine")} className="gap-2 rounded-full w-full sm:w-auto">
-                My offerings
+          <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight">Browse offerings</h2>
+              <p className="text-sm text-muted-foreground">Free to browse — pick a category or search all services.</p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2 sm:flex-wrap sm:justify-end">
+              {user && (
+                <Button variant="outline" onClick={() => navigate("/skills-marketplace/mine")} className="w-full sm:w-auto">
+                  My offerings
+                </Button>
+              )}
+              {user && (
+                <Button variant="outline" onClick={() => navigate("/skills-marketplace/orders")} className="w-full sm:w-auto">
+                  My orders
+                </Button>
+              )}
+              <Button
+                onClick={() => (user ? navigate("/skills-marketplace/new") : navigate("/auth"))}
+                className="gap-2 w-full sm:w-auto"
+              >
+                <Plus className="h-4 w-4" />
+                <span className="sm:hidden">Post offering · 2 cr</span>
+                <span className="hidden sm:inline">Post an offering · 2 credits</span>
               </Button>
-            )}
-            {user && (
-              <Button variant="outline" onClick={() => navigate("/skills-marketplace/orders")} className="gap-2 rounded-full w-full sm:w-auto">
-                My orders
-              </Button>
-            )}
-            <Button
-              onClick={() => (user ? navigate("/skills-marketplace/new") : navigate("/auth"))}
-              className="gap-2 rounded-full w-full sm:w-auto bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg hover:opacity-90"
-            >
-              <Plus className="h-4 w-4" />
-              <span className="sm:hidden">Post offering · 2 cr</span>
-              <span className="hidden sm:inline">Post an offering · 2 credits</span>
-            </Button>
-          </div>
-        </div>
-      </header>
+            </div>
+          </header>
 
-      {!category ? (
-        <>
-          <div className="flex items-center gap-3 mb-4">
-            <h2 className="text-lg font-semibold">Categories</h2>
-            <div className="h-px flex-1 bg-gradient-to-r from-primary/40 to-transparent" />
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {CATEGORY_FOLDERS.map((f, i) => (
-              <button key={f.value} onClick={() => setCategory(f.value)} className="text-left group/cat">
-                <Card className="relative h-full overflow-hidden rounded-2xl border-border/60 bg-card/70 backdrop-blur-sm transition-all duration-300 group-hover/cat:-translate-y-1.5 group-hover/cat:border-primary/40 group-hover/cat:shadow-[0_18px_45px_-20px_hsl(var(--primary)/0.5)]">
-                  <div
-                    className={`absolute inset-0 opacity-60 transition-opacity duration-300 group-hover/cat:opacity-100 ${
-                      i % 3 === 0
-                        ? "bg-gradient-to-br from-primary/10 via-transparent to-accent/10"
-                        : i % 3 === 1
-                        ? "bg-gradient-to-tr from-accent/10 via-transparent to-primary/10"
-                        : "bg-gradient-to-b from-primary/10 to-transparent"
-                    }`}
-                  />
-                  <span className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-primary/10 blur-2xl" />
-                  <CardContent className="relative p-5 space-y-2.5">
-                    <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md transition-transform duration-300 group-hover/cat:scale-110 group-hover/cat:rotate-3">
-                      <f.icon className="h-5 w-5 text-primary-foreground" />
+          {!category ? (
+            <>
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Categories</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {CATEGORY_FOLDERS.map((f) => (
+                  <button
+                    key={f.value}
+                    onClick={() => setCategory(f.value)}
+                    className="group flex items-center gap-3 rounded-lg border border-border bg-card p-4 text-left transition-colors hover:border-primary/50 hover:bg-accent/5"
+                  >
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary/10">
+                      <f.icon className="h-5 w-5 text-primary" />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-medium">{f.label}</span>
+                      <span className="block text-xs text-muted-foreground truncate">{f.desc}</span>
+                      <span className="mt-0.5 block text-xs text-muted-foreground">
+                        {loading ? "…" : `${counts[f.value] || 0} offering${(counts[f.value] || 0) === 1 ? "" : "s"}`}
+                      </span>
+                    </span>
+                    <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="mb-4 flex items-center gap-2">
+                <Button variant="ghost" size="sm" className="gap-2" onClick={() => setCategory(null)}>
+                  <ArrowLeft className="h-4 w-4" /> All categories
+                </Button>
+                <h2 className="text-lg font-semibold capitalize">{activeFolder?.label ?? category}</h2>
+              </div>
+
+              <Tabs defaultValue="offerings" className="w-full">
+                <TabsList className="mb-4">
+                  <TabsTrigger value="offerings">Offerings</TabsTrigger>
+                  <TabsTrigger value="requests">Customer requests</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="offerings" className="space-y-5">
+                  <div className="rounded-lg border border-border bg-card p-3 grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div className="relative md:col-span-2">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search services…" className="pl-9" />
                     </div>
-                    <div className="font-semibold flex items-center gap-1.5">
-                      {f.label}
-                      <ArrowRight className="h-3.5 w-3.5 opacity-0 -translate-x-1 transition-all duration-300 text-primary group-hover/cat:opacity-100 group-hover/cat:translate-x-0" />
-                    </div>
-                    <p className="text-xs text-muted-foreground line-clamp-2">{f.desc}</p>
-                    <Badge variant="secondary" className="rounded-full bg-background/80 backdrop-blur">
-                      {loading ? "…" : `${counts[f.value] || 0} offering${(counts[f.value] || 0) === 1 ? "" : "s"}`}
-                    </Badge>
-                  </CardContent>
-                </Card>
-              </button>
-            ))}
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="flex items-center gap-3 mb-5">
-            <Button variant="ghost" className="gap-2 rounded-full" onClick={() => setCategory(null)}>
-              <ArrowLeft className="h-4 w-4" /> All categories
-            </Button>
-            <h2 className="text-xl font-semibold capitalize">{activeFolder?.label ?? category}</h2>
-            <div className="h-px flex-1 bg-gradient-to-r from-primary/40 to-transparent" />
-          </div>
-
-
-          <Tabs defaultValue="offerings" className="w-full">
-            <TabsList className="mb-5 rounded-full bg-muted/60 backdrop-blur p-1">
-              <TabsTrigger value="offerings" className="rounded-full data-[state=active]:bg-background data-[state=active]:shadow">Offerings</TabsTrigger>
-              <TabsTrigger value="requests" className="rounded-full data-[state=active]:bg-background data-[state=active]:shadow">Customer requests</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="offerings" className="space-y-6">
-              <Card className="rounded-2xl border-border/60 bg-card/70 backdrop-blur-xl shadow-sm">
-                <CardContent className="p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <div className="relative md:col-span-2">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search services…" className="pl-9 rounded-full bg-background/70" />
-                  </div>
-                  <Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="City / area" className="rounded-full bg-background/70" />
-                  <Select value={region} onValueChange={setRegion}>
-                    <SelectTrigger className="rounded-full bg-background/70"><SelectValue placeholder="Region" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All regions</SelectItem>
-                      {SKILL_REGIONS.map((r) => <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                  <div className="md:col-span-2 flex items-center justify-between gap-2 flex-wrap">
-                    <p className="text-sm text-muted-foreground">
-                      <span className="font-semibold text-foreground">{filtered.length}</span> result{filtered.length === 1 ? "" : "s"}
-                    </p>
-                    <Select value={sort} onValueChange={setSort}>
-                      <SelectTrigger className="w-48 rounded-full bg-background/70"><SelectValue /></SelectTrigger>
+                    <Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="City / area" />
+                    <Select value={region} onValueChange={setRegion}>
+                      <SelectTrigger><SelectValue placeholder="Region" /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="newest">Newest</SelectItem>
-                        <SelectItem value="price_asc">Price: low to high</SelectItem>
-                        <SelectItem value="price_desc">Price: high to low</SelectItem>
-                        <SelectItem value="top_rated">Top rated providers</SelectItem>
+                        <SelectItem value="all">All regions</SelectItem>
+                        {SKILL_REGIONS.map((r) => <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>)}
                       </SelectContent>
                     </Select>
+                    <div className="md:col-span-2 flex items-center justify-between gap-2 flex-wrap">
+                      <p className="text-sm text-muted-foreground">
+                        <span className="font-semibold text-foreground">{filtered.length}</span> result{filtered.length === 1 ? "" : "s"}
+                      </p>
+                      <Select value={sort} onValueChange={setSort}>
+                        <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="newest">Newest</SelectItem>
+                          <SelectItem value="price_asc">Price: low to high</SelectItem>
+                          <SelectItem value="price_desc">Price: high to low</SelectItem>
+                          <SelectItem value="top_rated">Top rated providers</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
 
-              {loading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                  {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-72 w-full rounded-2xl" />)}
-                </div>
-              ) : filtered.length === 0 ? (
-                <Card className="rounded-2xl border-dashed border-primary/30 bg-card/60 backdrop-blur">
-                  <CardContent className="p-12 text-center space-y-3">
-                    <div className="mx-auto h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md">
-                      <Sparkles className="h-6 w-6 text-primary-foreground" />
+                  {loading ? (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-40 w-full rounded-lg" />)}
                     </div>
-                    <p className="text-muted-foreground">
-                      No offerings in this category yet. Be the first to{" "}
-                      <Link to="/skills-marketplace/new" className="text-primary font-medium underline">post one</Link>.
-                    </p>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="space-y-10">
-                  {premiumList.length > 0 && (
-                    <section>
-                      <div className="flex items-center gap-3 mb-4">
-                        <h3 className="flex items-center gap-2 text-lg font-semibold">
-                          <Crown className="h-5 w-5 text-accent" /> Premium providers
-                        </h3>
-                        <div className="h-px flex-1 bg-gradient-to-r from-accent/50 to-transparent" />
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                        {premiumList.map(renderCard)}
-                      </div>
-                    </section>
+                  ) : filtered.length === 0 ? (
+                    <Card className="rounded-lg border-dashed">
+                      <CardContent className="p-10 text-center">
+                        <p className="text-muted-foreground">
+                          No offerings in this category yet. Be the first to{" "}
+                          <Link to="/skills-marketplace/new" className="text-primary font-medium underline">post one</Link>.
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    <div className="space-y-8">
+                      {premiumList.length > 0 && (
+                        <section>
+                          <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                            <Crown className="h-4 w-4 text-accent" /> Premium providers
+                          </h3>
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            {premiumList.map(renderCard)}
+                          </div>
+                        </section>
+                      )}
+                      <section>
+                        {premiumList.length > 0 && (
+                          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                            Standard &amp; Top offerings
+                          </h3>
+                        )}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          {standardList.map(renderCard)}
+                        </div>
+                      </section>
+                    </div>
                   )}
-                  <section>
-                    {premiumList.length > 0 && (
-                      <div className="flex items-center gap-3 mb-4">
-                        <h3 className="text-lg font-semibold">Standard &amp; Top offerings</h3>
-                        <div className="h-px flex-1 bg-gradient-to-r from-primary/40 to-transparent" />
-                      </div>
-                    )}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                      {standardList.map(renderCard)}
-                    </div>
-                  </section>
-                </div>
-              )}
-            </TabsContent>
+                </TabsContent>
 
-            <TabsContent value="requests">
-              <SkillRequestsBoard category={category} />
-            </TabsContent>
-          </Tabs>
-        </>
-      )}
+                <TabsContent value="requests">
+                  <SkillRequestsBoard category={category} />
+                </TabsContent>
+              </Tabs>
+            </>
+          )}
 
-      <SkillPromoteDialog
-        offeringId={promoteId}
-        open={!!promoteId}
-        onOpenChange={(v) => !v && setPromoteId(null)}
-        onPromoted={() => window.location.reload()}
-      />
+          <SkillPromoteDialog
+            offeringId={promoteId}
+            open={!!promoteId}
+            onOpenChange={(v) => !v && setPromoteId(null)}
+            onPromoted={() => window.location.reload()}
+          />
         </div>
       </div>
     </>
   );
-
-
 }
 
 export default function SkillsMarketplace() {
