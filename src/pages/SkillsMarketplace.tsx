@@ -435,6 +435,9 @@ function SkillsMarketplaceContent() {
             onOpenChange={(v) => !v && setPromoteId(null)}
             onPromoted={() => window.location.reload()}
           />
+
+          <SkillConversationsDialog open={messagesOpen} onOpenChange={setMessagesOpen} />
+
         </div>
       </div>
     </>
