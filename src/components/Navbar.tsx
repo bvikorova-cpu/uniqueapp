@@ -236,7 +236,7 @@ const Navbar = () => {
       category: "Marketplaces & Commerce",
       items: [
         { path: "/property-marketplace", label: "Property Marketplace", icon: Building2 },
-        { path: "/marketplace", label: "Skills Marketplace", icon: Briefcase },
+        { path: "/skills-marketplace", label: "Skills Marketplace", icon: Briefcase },
         
         { path: "/bazaar", label: "Bazaar", icon: Store },
         { path: "/coupon-marketplace", label: "Coupon Marketplace", icon: Ticket },
