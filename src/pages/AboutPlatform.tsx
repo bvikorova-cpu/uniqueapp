@@ -244,7 +244,7 @@ const CATEGORIES: Category[] = [
         blurb: "Hire freelancers or sell skills with responses and subscriptions.",
         features: ["Skill listings", "Responses", "Notifications", "Subscriptions", "Portfolio uploads", "Reviews"],
         details: "Hire freelancers or sell your skills — design, writing, coding, marketing, voice, music, more. Sellers need Stripe Connect to list. Buyers post requests; sellers respond with quotes. Escrow holds payment until delivery confirmation. Star reviews build seller reputation.",
-        pricing: "€1/month entry • 2 credits per published offering • 0% listing commission",
+        pricing: "Free access • 2 credits per published offering • 0% listing commission",
         capabilities: ["Skill listings with packages", "Buyer request board", "Quote responses", "Escrow on every order", "Portfolio uploads", "Star reviews", "Subscription gigs (recurring)", "Notification center", "Stripe Connect required", "Dispute resolution"] },
       { path: "/bazaar", title: "Bazaar", icon: Store,
         blurb: "Marketplace with escrow, disputes, reviews and ratings.",
