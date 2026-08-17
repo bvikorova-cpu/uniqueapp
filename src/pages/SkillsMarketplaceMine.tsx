@@ -10,6 +10,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, Plus, Pencil, Trash2, Eye, MessageSquare, Euro } from "lucide-react";
 import { PromotionBadge } from "@/components/skills/PromotionBadge";
+import { SkillConversationsDialog } from "@/components/skills/SkillConversationsDialog";
+import { useSkillUnread } from "@/hooks/useSkillUnread";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type Offering = {
