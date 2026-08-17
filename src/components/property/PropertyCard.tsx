@@ -119,7 +119,7 @@ export function PropertyCard({ property, onViewDetails }: PropertyCardProps) {
         />
         <div className="absolute bottom-2 right-2 bg-black/70 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-1 text-white text-sm">
           <Eye className="h-3 w-3" />
-          <span>{property.views_count}</span>
+          <span>{viewsCount}</span>
         </div>
       </div>
 
