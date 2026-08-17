@@ -70143,22 +70143,14 @@ export type Database = {
         Args: { _property_id: string; _viewer_key: string }
         Returns: number
       }
-      property_top_listing:
-        | {
-            Args: { _days: number; _property_id: string }
-            Returns: {
-              credits_remaining: number
-              featured_until: string
-            }[]
-          }
-        | {
-            Args: { _days: number; _property_id: string; _tier?: string }
-            Returns: {
-              credits_remaining: number
-              featured_until: string
-              tier: string
-            }[]
-          }
+      property_top_listing: {
+        Args: { _days: number; _property_id: string; _tier?: string }
+        Returns: {
+          credits_remaining: number
+          featured_until: string
+          tier: string
+        }[]
+      }
       purchase_battle_cosmetic: {
         Args: { _code: string; _module?: string }
         Returns: Json
