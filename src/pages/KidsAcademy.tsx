@@ -1,4 +1,7 @@
+import { Link } from "react-router-dom";
+import { Puzzle as PuzzleIcon } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import { Button } from "@/components/ui/button";
 import { KidsCollectibles } from "@/components/kids/academy/KidsCollectibles";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
