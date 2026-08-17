@@ -13,6 +13,9 @@ import { CoffeeGiftBar } from "./CoffeeGiftBar";
 
 interface CoffeeChatProps {
   matchId: string | null;
+  /** Real display name of the other person (shown in the header). */
+  peerName?: string | null;
+  peerAvatar?: string | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -31,7 +34,7 @@ interface Message {
 
 const PAGE_SIZE = 50;
 
-export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => {
+export const CoffeeChat = ({ matchId, peerName, peerAvatar, open, onOpenChange }: CoffeeChatProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [input, setInput] = useState('');
@@ -264,8 +267,12 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
       <DialogContent className="max-w-lg p-0 gap-0 h-[600px] flex flex-col">
         <DialogHeader className="p-4 border-b">
           <DialogTitle className="flex items-center gap-2">
-            <Coffee className="h-5 w-5 text-amber-400" />
-            Coffee Buddy Chat
+            {peerAvatar ? (
+              <img src={peerAvatar} alt={peerName ?? 'Chat partner'} className="h-6 w-6 rounded-full object-cover" />
+            ) : (
+              <Coffee className="h-5 w-5 text-amber-400" />
+            )}
+            <span className="truncate">{peerName?.trim() || 'Coffee Buddy Chat'}</span>
           </DialogTitle>
         </DialogHeader>
 

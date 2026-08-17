@@ -65,6 +65,8 @@ export const CoffeeChatsList = () => {
     },
   });
 
+  const activeChat = chats.find((c) => c.matchId === chatMatchId);
+
   if (isLoading) {
     return (
       <div className="flex justify-center py-12">
@@ -110,6 +112,8 @@ export const CoffeeChatsList = () => {
 
       <CoffeeChat
         matchId={chatMatchId}
+        peerName={activeChat?.name}
+        peerAvatar={activeChat?.avatar}
         open={!!chatMatchId}
         onOpenChange={(o) => {
           if (!o) setChatMatchId(null);
