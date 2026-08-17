@@ -253,7 +253,7 @@ serve(async (req) => {
     };
 
     // Charge only after a successful, readable analysis.
-    const creditDenied = await deductAICredits(user.id, 10, "scan-food");
+    const creditDenied = await deductAICredits(user.id, 3, "scan-food");
     if (creditDenied) return creditDenied;
 
     return jsonResponse({ success: true, scan, result: scan, data: scan, analysis: scan });
