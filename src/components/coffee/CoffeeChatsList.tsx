@@ -50,15 +50,18 @@ export const CoffeeChatsList = () => {
 
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("id,full_name,avatar_url")
+        .select("id,full_name,username,email,avatar_url")
         .in("id", rows.map((r) => r.otherId));
 
       const byId = new Map((profiles ?? []).map((p: any) => [p.id, p]));
-      return rows.map((r) => ({
-        ...r,
-        name: byId.get(r.otherId)?.full_name || "Coffee lover",
-        avatar: byId.get(r.otherId)?.avatar_url ?? null,
-      }));
+      return rows.map((r) => {
+        const p = byId.get(r.otherId);
+        return {
+          ...r,
+          name: resolveName(p?.full_name, p?.username, p?.email),
+          avatar: p?.avatar_url ?? null,
+        };
+      });
     },
   });
 
