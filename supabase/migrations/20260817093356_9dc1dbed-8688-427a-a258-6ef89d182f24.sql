@@ -1,0 +1,2 @@
+ALTER TABLE public.properties DROP CONSTRAINT properties_property_type_check;
+ALTER TABLE public.properties ADD CONSTRAINT properties_property_type_check CHECK (property_type = ANY (ARRAY['apartment'::text,'house'::text,'villa'::text,'studio'::text,'commercial'::text,'land'::text]));
