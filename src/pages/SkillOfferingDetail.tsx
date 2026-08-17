@@ -140,14 +140,21 @@ export default function SkillOfferingDetail() {
     const { data, error } = await supabase.rpc("unlock_skill_contact", { _offering_id: offering.id });
     setUnlocking(false);
     if (error) {
-      const insufficient = /credit/i.test(error.message);
+      const msg = error.message || "";
+      const rateLimited = msg.includes("RATE_LIMIT");
+      const insufficient = /INSUFFICIENT_CREDITS/i.test(msg);
       toast({
-        title: insufficient ? "Not enough credits" : "Could not unlock chat",
-        description: insufficient ? "You need 1 credit to unlock the chat with this provider." : error.message,
+        title: rateLimited ? "Daily limit reached" : insufficient ? "Not enough credits" : "Could not unlock chat",
+        description: rateLimited
+          ? "You can unlock up to 20 new providers per day. Try again tomorrow."
+          : insufficient
+            ? "You need 1 credit to unlock the chat with this provider."
+            : msg,
         variant: "destructive",
       });
       return;
     }
+
     setUnlocked(true);
     const charged = (data as any)?.charged ?? 0;
     toast({
