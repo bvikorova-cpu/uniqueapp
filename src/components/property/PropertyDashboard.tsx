@@ -220,23 +220,14 @@ export function PropertyDashboard() {
                 </div>
               )}
 
-              {property.virtual_tour_url ? (
+              {property.virtual_tour_url && (
                 <div className="flex items-center gap-2 text-sm text-green-600">
                   <Video className="h-4 w-4" />
                   Virtual tour active
                 </div>
-              ) : (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full"
-                  onClick={() => handleAddVirtualTour(property.id)}
-                  disabled={property.status !== 'active'}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Virtual Tour
-                </Button>
               )}
+
+
 
               <Button
                 variant="ghost"
