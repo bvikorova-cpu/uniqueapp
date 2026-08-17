@@ -157,7 +157,7 @@ export const MySkillsHub = ({ userId, isOwnProfile }: MySkillsHubProps) => {
               </div>
             </div>
             {isOwnProfile && (
-              <Button variant="outline" onClick={() => navigate("/skill-swap/profile/edit")}>
+              <Button variant="outline" onClick={() => navigate("/marketplace")}>
                 Edit Skills
               </Button>
             )}
@@ -200,7 +200,7 @@ export const MySkillsHub = ({ userId, isOwnProfile }: MySkillsHubProps) => {
 
         {isOwnProfile && (
           <div className="flex justify-center">
-            <Button onClick={() => navigate("/skill-swap")}>
+            <Button onClick={() => navigate("/marketplace")}>
               <ArrowRightLeft className="h-4 w-4 mr-2" />
               Go to Skill Swap
             </Button>
