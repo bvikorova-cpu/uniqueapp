@@ -160,6 +160,77 @@ function SkillsMarketplaceContent() {
 
   const activeFolder = CATEGORY_FOLDERS.find((f) => f.value === category);
 
+  const renderCard = (o: Offering) => {
+    const premium = isActive(o.premium_until);
+    const top = isActive(o.featured_until);
+    return (
+      <div key={o.id} className="relative">
+        <Link to={`/skills-marketplace/${o.id}`} className="group block h-full">
+          <Card className={`h-full overflow-hidden hover:shadow-lg transition-shadow ${premium ? "border-amber-400/60 ring-1 ring-amber-400/30" : top ? "border-primary/50" : ""}`}>
+            {o.image_url && (
+              <div className="aspect-video overflow-hidden bg-muted">
+                <img src={o.image_url} alt={o.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+              </div>
+            )}
+            <CardHeader className="pb-2">
+              <div className="flex items-start justify-between gap-2">
+                <CardTitle className="text-lg line-clamp-2">{o.title}</CardTitle>
+                <div className="flex flex-col items-end gap-1 shrink-0">
+                  {premium && (
+                    <Badge className="gap-1 bg-amber-500 text-amber-50 hover:bg-amber-500">
+                      <Crown className="h-3 w-3" /> Premium
+                    </Badge>
+                  )}
+                  {!premium && top && (
+                    <Badge className="gap-1"><Flame className="h-3 w-3" /> Top</Badge>
+                  )}
+                  <Badge variant="secondary" className="capitalize">{o.category}</Badge>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <p className="text-sm text-muted-foreground line-clamp-3">{o.description}</p>
+              <ProviderTrustBadges
+                trust={{
+                  isVerified: verified[o.user_id]?.isVerified,
+                  verificationTier: verified[o.user_id]?.tier,
+                  completedJobs: o.completed_jobs,
+                  rating: sellerStats[o.user_id] ?? null,
+                }}
+              />
+              <div className="flex items-center justify-between text-sm pt-2 gap-2 flex-wrap">
+                {regionLabel(o.region) && (
+                  <span className="text-xs text-muted-foreground">{regionLabel(o.region)}</span>
+                )}
+                {o.location && (
+                  <span className="flex items-center gap-1 text-muted-foreground">
+                    <MapPin className="h-3.5 w-3.5" /> {o.location}
+                  </span>
+                )}
+                {o.price_per_hour != null && (
+                  <span className="flex items-center gap-1 font-semibold text-primary ml-auto">
+                    <Euro className="h-3.5 w-3.5" /> {o.price_per_hour}/hr
+                  </span>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
+        {user?.id === o.user_id && (
+          <Button
+            size="sm"
+            variant="secondary"
+            className="absolute top-2 left-2 gap-1 shadow"
+            onClick={(e) => { e.preventDefault(); setPromoteId(o.id); }}
+          >
+            <Flame className="h-3.5 w-3.5" /> Promote
+          </Button>
+        )}
+      </div>
+    );
+  };
+
+
   return (
     <>
       <FloatingHowItWorks title="How Skills Marketplace works" steps={[
