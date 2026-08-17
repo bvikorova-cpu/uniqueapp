@@ -116,7 +116,7 @@ export const CoffeeSwipeDeck = () => {
     );
   }
 
-  const name = current.full_name || "Coffee lover";
+  const name = resolveName(current.full_name, current.username, current.email);
 
   return (
     <div className="max-w-md mx-auto">
