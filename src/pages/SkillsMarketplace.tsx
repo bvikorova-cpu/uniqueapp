@@ -19,6 +19,8 @@ import { SkillRequestsBoard } from "@/components/skills/SkillRequestsBoard";
 import { SkillPromoteDialog } from "@/components/skills/SkillPromoteDialog";
 import { ProviderTrustBadges } from "@/components/skills/ProviderTrustBadges";
 import { PromotionBadge } from "@/components/skills/PromotionBadge";
+import { SkillConversationsDialog } from "@/components/skills/SkillConversationsDialog";
+import { useSkillUnread } from "@/hooks/useSkillUnread";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
