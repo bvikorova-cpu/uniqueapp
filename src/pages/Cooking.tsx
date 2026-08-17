@@ -987,38 +987,8 @@ const Cooking = () => {
   const recipes = allRecipes;
   const totalRecipes = recipes.length;
 
-  const aiFeatures = [
-    { icon: Sparkles,
-      title: "Recipe Generator",
-      description: "AI generates recipes from your ingredients",
-      path: "/recipe-generator",
-      color: "from-orange-500 to-red-500" },
-    { icon: Calendar,
-      title: "Meal Planner",
-      description: "Personalized weekly meal plan",
-      path: "/meal-planner",
-      color: "from-green-500 to-emerald-500" },
-    { icon: Camera,
-      title: "Food Scanner",
-      description: "Scan food and get nutritional info",
-      path: "/food-scanner",
-      color: "from-blue-500 to-cyan-500" },
-    { icon: Store,
-      title: "Menu Analyzer",
-      description: "Analyze restaurant menus",
-      path: "/restaurant-analyzer",
-      color: "from-purple-500 to-pink-500" },
-    { icon: MessageCircle,
-      title: "AI Chef Chat",
-      description: "Chat with AI chef",
-      path: "/chef-chat",
-      color: "from-yellow-500 to-orange-500" },
-    { icon: Wine,
-      title: "Wine Pairing",
-      description: "Find perfect wine for your food",
-      path: "/wine-pairing",
-      color: "from-red-500 to-rose-500" },
-  ];
+
+
 
   const filteredRecipes = useMemo(() => {
     return recipes.filter((recipe) => {
