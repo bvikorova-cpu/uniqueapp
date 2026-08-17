@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Video, Eye, Calendar, Loader2, Plus, Trash2, MessageCircle } from "lucide-react";
+import { Video, Eye, Calendar, Loader2, Trash2, MessageCircle } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,7 +15,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { VirtualTourUploader } from "./VirtualTourUploader";
 import { PropertyConversationsDialog } from "./PropertyConversationsDialog";
 import { usePropertyUnread } from "@/hooks/usePropertyUnread";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -37,8 +36,6 @@ interface Property {
 export function PropertyDashboard() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedProperty, setSelectedProperty] = useState<string | null>(null);
-  const [uploaderOpen, setUploaderOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Property | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [inboxOpen, setInboxOpen] = useState(false);
@@ -86,11 +83,6 @@ export function PropertyDashboard() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleAddVirtualTour = (propertyId: string) => {
-    setSelectedProperty(propertyId);
-    setUploaderOpen(true);
   };
 
   const handleDelete = async () => {
@@ -220,23 +212,14 @@ export function PropertyDashboard() {
                 </div>
               )}
 
-              {property.virtual_tour_url ? (
+              {property.virtual_tour_url && (
                 <div className="flex items-center gap-2 text-sm text-green-600">
                   <Video className="h-4 w-4" />
                   Virtual tour active
                 </div>
-              ) : (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full"
-                  onClick={() => handleAddVirtualTour(property.id)}
-                  disabled={property.status !== 'active'}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Virtual Tour
-                </Button>
               )}
+
+
 
               <Button
                 variant="ghost"
@@ -275,14 +258,6 @@ export function PropertyDashboard() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {selectedProperty && (
-        <VirtualTourUploader
-          open={uploaderOpen}
-          onOpenChange={setUploaderOpen}
-          propertyId={selectedProperty}
-          onSuccess={loadProperties}
-        />
-      )}
     </>
   );
 }
