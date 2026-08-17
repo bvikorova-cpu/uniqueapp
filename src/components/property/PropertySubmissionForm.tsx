@@ -24,7 +24,9 @@ export default function PropertySubmissionForm() {
   const [balance, setBalance] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     title: "", description: "", price: "", location: "", propertyType: "", area: "", rooms: "",
+    contactName: "", contactPhone: "", contactEmail: "",
   });
+
   const [images, setImages] = useState<File[]>([]);
 
   useEffect(() => {
