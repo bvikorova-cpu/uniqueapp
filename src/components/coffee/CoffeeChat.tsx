@@ -8,6 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Send, Coffee, Loader2, Check, AlertCircle, RotateCcw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { CoffeeGiftBar } from "./CoffeeGiftBar";
+
 
 interface CoffeeChatProps {
   matchId: string | null;
@@ -346,7 +348,10 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
           </div>
         </div>
 
+        <CoffeeGiftBar matchId={matchId} />
+
         <div className="p-3 border-t flex gap-2">
+
           <Input
             placeholder="Type a message..."
             value={input}
