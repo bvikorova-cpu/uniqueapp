@@ -301,53 +301,28 @@ export default function SkillOfferingDetail() {
               </div>
             ) : (
               <div className="space-y-6">
-                {offering.price_per_hour != null && offering.price_per_hour > 0 && (
-                  <div className="rounded-lg border p-4 space-y-3">
-                    <h4 className="font-semibold inline-flex items-center gap-2">
-                      <ShoppingCart className="h-4 w-4" /> Order this service
-                    </h4>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="text-xs text-muted-foreground">Hours</label>
-                        <Input
-                          type="number"
-                          min={0.5}
-                          step={0.5}
-                          value={hours}
-                          onChange={(e) => setHours(Math.max(0.5, Number(e.target.value) || 0))}
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs text-muted-foreground">Total</label>
-                        <div className="h-10 flex items-center px-3 rounded-md bg-muted font-semibold">
-                          € {(hours * (offering.price_per_hour ?? 0)).toFixed(2)}
-                        </div>
-                      </div>
-                    </div>
-                    <Textarea
-                      value={orderNote}
-                      onChange={(e) => setOrderNote(e.target.value)}
-                      placeholder="Optional note for the provider (deadline, details…)"
-                      rows={3}
-                      maxLength={500}
-                    />
-                    <Button onClick={orderAndPay} disabled={ordering} className="w-full gap-2">
-                      <ShoppingCart className="h-4 w-4" />
-                      {ordering ? "Redirecting to checkout…" : `Order & pay € ${(hours * (offering.price_per_hour ?? 0)).toFixed(2)}`}
-                    </Button>
-                    <p className="text-xs text-muted-foreground">
-                      Secure payment via Stripe. You can track this order in{" "}
-                      <Link to="/skills-marketplace/orders" className="text-primary hover:underline inline-flex items-center gap-1">
-                        <ListOrdered className="h-3 w-3" /> My Orders
-                      </Link>.
+                <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-2">
+                  <h4 className="font-semibold inline-flex items-center gap-2">
+                    <Euro className="h-4 w-4" /> How payment works
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    Payment is arranged <span className="font-semibold text-foreground">directly between you and the provider</span> (cash,
+                    bank transfer or any method you agree on). The platform takes no commission from the job — you only pay credits
+                    to unlock the chat.
+                  </p>
+                  {offering.price_per_hour != null && offering.price_per_hour > 0 && (
+                    <p className="text-sm">
+                      Listed rate: <span className="font-semibold">€ {offering.price_per_hour} / hour</span> — agree the final
+                      price in the chat.
                     </p>
-                  </div>
-                )}
+                  )}
+                </div>
 
                 <div className="space-y-3">
                   <h4 className="font-semibold inline-flex items-center gap-2">
-                    <Send className="h-4 w-4" /> Or contact the provider first
+                    <Send className="h-4 w-4" /> Contact the provider
                   </h4>
+
                   {!unlocked ? (
                     <div className="rounded-lg border border-dashed p-4 space-y-3 text-center">
                       <p className="text-sm text-muted-foreground">
