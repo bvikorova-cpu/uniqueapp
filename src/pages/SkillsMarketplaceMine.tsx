@@ -208,6 +208,8 @@ export default function SkillsMarketplaceMine() {
           })}
         </div>
       )}
+
+      <SkillConversationsDialog open={messagesOpen} onOpenChange={setMessagesOpen} />
     </div>
   );
 }
