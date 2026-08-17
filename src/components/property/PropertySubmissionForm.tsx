@@ -33,6 +33,7 @@ export default function PropertySubmissionForm() {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
+      setFormData((prev) => ({ ...prev, contactEmail: prev.contactEmail || user.email || "" }));
       const { data } = await supabase
         .from("ai_credits")
         .select("credits_remaining")
@@ -41,6 +42,7 @@ export default function PropertySubmissionForm() {
       setBalance(data?.credits_remaining ?? 0);
     })();
   }, []);
+
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
