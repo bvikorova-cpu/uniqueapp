@@ -10809,6 +10809,74 @@ export type Database = {
           },
         ]
       }
+      coffee_gifts_catalog: {
+        Row: {
+          created_at: string
+          credit_cost: number
+          icon: string
+          id: string
+          is_active: boolean
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          credit_cost?: number
+          icon?: string
+          id?: string
+          is_active?: boolean
+          name: string
+        }
+        Update: {
+          created_at?: string
+          credit_cost?: number
+          icon?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+        }
+        Relationships: []
+      }
+      coffee_gifts_sent: {
+        Row: {
+          created_at: string
+          credits_spent: number
+          gift_id: string
+          id: string
+          match_id: string | null
+          message: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_spent: number
+          gift_id: string
+          id?: string
+          match_id?: string | null
+          message?: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_spent?: number
+          gift_id?: string
+          id?: string
+          match_id?: string | null
+          message?: string | null
+          recipient_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coffee_gifts_sent_gift_id_fkey"
+            columns: ["gift_id"]
+            isOneToOne: false
+            referencedRelation: "coffee_gifts_catalog"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coffee_match_messages: {
         Row: {
           created_at: string
@@ -10998,6 +11066,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      coffee_swipes: {
+        Row: {
+          created_at: string
+          id: string
+          liked: boolean
+          target_user_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          liked: boolean
+          target_user_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          liked?: boolean
+          target_user_id?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       collaborative_posts: {
         Row: {
@@ -67996,6 +68088,27 @@ export type Database = {
       cleanup_old_jobs: { Args: never; Returns: number }
       cleanup_rate_limit_buckets: { Args: never; Returns: undefined }
       cleanup_rate_limits: { Args: never; Returns: undefined }
+      coffee_discover_candidates: {
+        Args: { _limit?: number }
+        Returns: {
+          avatar_url: string
+          bio: string
+          budget_preference: string
+          favorite_coffee_types: string[]
+          full_name: string
+          preferred_atmosphere: string[]
+          total_checkins: number
+          user_id: string
+        }[]
+      }
+      coffee_send_gift: {
+        Args: { _gift_id: string; _match_id: string; _message?: string }
+        Returns: Json
+      }
+      coffee_swipe: {
+        Args: { _cost?: number; _liked: boolean; _target_user_id: string }
+        Returns: Json
+      }
       complete_async_job: {
         Args: { _error?: string; _id: number; _success: boolean }
         Returns: undefined
