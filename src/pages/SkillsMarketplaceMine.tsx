@@ -37,6 +37,8 @@ export default function SkillsMarketplaceMine() {
   const [offerings, setOfferings] = useState<Offering[]>([]);
   const [stats, setStats] = useState<Record<string, Stats>>({});
   const [loading, setLoading] = useState(true);
+  const [messagesOpen, setMessagesOpen] = useState(false);
+  const { totalUnread: skillUnread } = useSkillUnread({ notifyToasts: false });
 
   const load = async () => {
     if (!user) return;
