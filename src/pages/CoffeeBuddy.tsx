@@ -1,9 +1,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { BuddyMatches } from '@/components/coffee/BuddyMatches';
-import { CoffeeEvents } from '@/components/coffee/CoffeeEvents';
 import { CoffeePreferences } from '@/components/coffee/CoffeePreferences';
-import { Users, Calendar, Settings, Coffee } from 'lucide-react';
+import { Users, Settings, Coffee } from 'lucide-react';
 
 const CoffeeBuddy = () => { return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -48,12 +47,9 @@ const CoffeeBuddy = () => { return (
 
 
       <Tabs defaultValue="matches" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 bg-card/80 backdrop-blur-xl border border-amber-500/20">
+        <TabsList className="grid w-full grid-cols-2 bg-card/80 backdrop-blur-xl border border-amber-500/20">
           <TabsTrigger value="matches" className="data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400 gap-1 text-xs sm:text-sm">
             <Users className="h-3 w-3 sm:h-4 sm:w-4" />Matches
-          </TabsTrigger>
-          <TabsTrigger value="events" className="data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400 gap-1 text-xs sm:text-sm">
-            <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />Events
           </TabsTrigger>
           <TabsTrigger value="preferences" className="data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400 gap-1 text-xs sm:text-sm">
             <Settings className="h-3 w-3 sm:h-4 sm:w-4" />Preferences
@@ -62,10 +58,6 @@ const CoffeeBuddy = () => { return (
 
         <TabsContent value="matches" className="mt-6">
           <BuddyMatches />
-        </TabsContent>
-
-        <TabsContent value="events" className="mt-6">
-          <CoffeeEvents />
         </TabsContent>
 
         <TabsContent value="preferences" className="mt-6">
