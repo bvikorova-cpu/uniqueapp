@@ -128,13 +128,14 @@ function SkillsMarketplaceContent() {
   return (
     <>
       <FloatingHowItWorks title="How Skills Marketplace works" steps={[
-          { title: 'Entry pass', desc: 'Access to the Skills section costs €1/month, cancel anytime.' },
+          { title: 'Free access', desc: 'Browsing the Skills section is free — no entry fee.' },
           { title: 'Pick a category', desc: 'Open a category folder and browse offerings inside it.' },
           { title: 'Publish an offering', desc: 'Opening your own offering costs 2 credits — no commission.' },
           { title: 'Order & review', desc: 'Contact the provider, order the service and leave a review.' },
         ]} />
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <SEO title="Skills Marketplace — Hire microservices" description="Browse services by category. Access costs €1 monthly and publishing an offering costs 2 credits." canonical="/marketplace" />
+      <SEO title="Skills Marketplace — Hire microservices" description="Browse services by category for free. Publishing an offering costs 2 credits." canonical="/marketplace" />
+
 
       <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
         <div>
