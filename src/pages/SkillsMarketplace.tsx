@@ -60,12 +60,8 @@ function SkillsMarketplaceContent() {
     setParams(next, { replace: true });
   };
 
-  useEffect(() => {
-    if (params.get("entry") === "success") {
-      toast.success("Access active", { description: "Your €1/month Skills pass is live." });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+
 
   useEffect(() => {
     (async () => {
