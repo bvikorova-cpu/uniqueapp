@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import { Badge } from "@/components/ui/badge";
 import { Check, X, Coffee, Loader2, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
@@ -120,14 +120,19 @@ export const CoffeeSwipeDeck = () => {
         >
           <Card className="overflow-hidden bg-card/80 backdrop-blur-xl border-amber-500/30">
             <div className="relative h-72 bg-gradient-to-br from-amber-500/25 via-amber-700/15 to-background flex items-center justify-center">
-              {current.avatar_url ? (
-                <img src={current.avatar_url} alt={`${name} profile photo`} className="h-full w-full object-cover" />
-              ) : (
-                <Avatar className="h-28 w-28">
-                  <AvatarImage src={undefined} alt={name} />
-                  <AvatarFallback className="text-3xl">{name.charAt(0)}</AvatarFallback>
-                </Avatar>
-              )}
+              <img
+                src={
+                  current.avatar_url ||
+                  `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(current.user_id)}&backgroundColor=ffd5a3,f7c98b`
+                }
+                alt={`${name} profile photo`}
+                loading="lazy"
+                className="h-full w-full object-cover"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(current.user_id)}`;
+                }}
+              />
+
               <Badge className="absolute top-3 right-3 bg-amber-500/90 text-white border-0">
                 ☕ {current.total_checkins ?? 0} check-ins
               </Badge>
