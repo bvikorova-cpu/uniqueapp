@@ -1119,58 +1119,71 @@ const Cooking = () => {
           </motion.div>
         </div>
 
-        {/* NEW AI Tools */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }} className="mb-10">
-          <div className="flex items-center justify-center mb-6">
-            <div className="relative px-6 py-3 rounded-2xl border-2 border-orange-500/40 bg-gradient-to-r from-orange-500/10 via-red-500/5 to-orange-500/10 backdrop-blur-xl shadow-lg shadow-orange-500/10">
-              <h2 className="relative text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent flex items-center gap-2">
-                🍳 AI Cooking Tools <span className="text-base font-bold text-primary/80">({aiFeatures.length + NEW_AI_TOOLS.length})</span>
-              </h2>
-            </div>
+        {/* Luxury Tool Collections */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }} className="mb-12">
+          <div className="text-center mb-8">
+            <p className="text-[11px] tracking-[0.35em] uppercase text-muted-foreground mb-2">Culinary Atelier</p>
+            <h2 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 bg-clip-text text-transparent">
+              AI Cooking Collections
+            </h2>
+            <div className="mx-auto mt-3 h-px w-32 bg-gradient-to-r from-transparent via-amber-500/60 to-transparent" />
+            <p className="text-sm text-muted-foreground mt-3">{TOOL_COLLECTIONS.reduce((n, c) => n + c.tools.length, 0)} curated tools, organised in {TOOL_COLLECTIONS.length} suites</p>
           </div>
 
-          {/* Original AI Tools */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-4">
-            {aiFeatures.map((feature, idx) => (
-              <motion.div key={idx} initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 0.3 + idx * 0.04, type: "spring", stiffness: 200 }}>
-                <Card className="bg-card/80 backdrop-blur-xl border-border/60 hover:border-orange-500/50 cursor-pointer transition-all duration-300 hover:scale-[1.04] hover:shadow-xl hover:shadow-orange-500/10 group active:scale-[0.97] relative overflow-hidden" onClick={() => navigate(feature.path)}>
-                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-20 transition-opacity`} />
-                  <CardContent className="p-4 text-center relative z-10">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:scale-110 transition-transform`}>
-                      <feature.icon className="h-6 w-6 text-white" />
+          <div className="space-y-6">
+            {TOOL_COLLECTIONS.map((collection, ci) => (
+              <motion.section
+                key={collection.title}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 + ci * 0.08 }}
+                className="relative rounded-3xl p-[1px] bg-gradient-to-br from-amber-500/40 via-border/40 to-amber-500/20 overflow-hidden"
+              >
+                <div className="rounded-3xl bg-card/85 backdrop-blur-xl p-5 md:p-7">
+                  <div className={`absolute -top-24 -right-16 h-56 w-56 rounded-full blur-3xl opacity-20 bg-gradient-to-br ${collection.accent} pointer-events-none`} />
+                  <div className="relative flex items-center gap-4 mb-6">
+                    <div className={`h-12 w-12 shrink-0 rounded-2xl bg-gradient-to-br ${collection.accent} flex items-center justify-center shadow-lg`}>
+                      <collection.icon className="h-6 w-6 text-white" />
                     </div>
-                    <h3 className="font-bold text-xs mb-1">{feature.title}</h3>
-                    <p className="text-[10px] text-muted-foreground line-clamp-2">{feature.description}</p>
-                    <span className="inline-block mt-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary">3 Credits</span>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* New AI Tools */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {NEW_AI_TOOLS.map((tool, i) => (
-              <motion.div key={tool.id} initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 0.5 + i * 0.04, type: "spring", stiffness: 200 }}>
-                <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/60 cursor-pointer hover:scale-[1.04] hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 active:scale-[0.97] group relative overflow-hidden" onClick={() => setActiveView(tool.id)}>
-                  <div className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-20 transition-opacity`} />
-                  <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.7 + i * 0.04, type: "spring" }}
-                    className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-accent text-accent-foreground text-[10px] font-bold z-10 animate-pulse">NEW</motion.span>
-                  <div className="flex items-start gap-3 relative z-10">
-                    <div className={`p-2.5 rounded-xl bg-gradient-to-br ${tool.color} group-hover:scale-110 transition-transform`}>
-                      <tool.icon className="h-6 w-6 text-white" />
+                    <div className="min-w-0">
+                      <h3 className="text-lg md:text-xl font-black tracking-tight">{collection.title}</h3>
+                      <p className="text-xs text-muted-foreground">{collection.subtitle}</p>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-sm truncate">{tool.label}</h3>
-                      <p className="text-xs text-muted-foreground mt-0.5">{tool.desc}</p>
-                      <span className="inline-block mt-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary">{tool.cost}</span>
-                    </div>
+                    <span className="ml-auto text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full border border-amber-500/40 text-amber-600 dark:text-amber-400">
+                      {collection.tools.length} Tools
+                    </span>
                   </div>
-                </Card>
-              </motion.div>
+
+                  <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {collection.tools.map((tool, i) => (
+                      <motion.button
+                        key={tool.label}
+                        type="button"
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.35 + ci * 0.08 + i * 0.03 }}
+                        onClick={() => (tool.path ? navigate(tool.path) : setActiveView(tool.view!))}
+                        className="group text-left rounded-2xl border border-border/60 bg-background/60 p-4 transition-all duration-300 hover:border-amber-500/50 hover:shadow-lg hover:shadow-amber-500/10 hover:-translate-y-0.5 active:scale-[0.98]"
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className={`p-2.5 rounded-xl bg-gradient-to-br ${tool.color} shadow-md group-hover:scale-110 transition-transform`}>
+                            <tool.icon className="h-5 w-5 text-white" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-bold text-sm leading-tight">{tool.label}</h4>
+                            <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2">{tool.desc}</p>
+                            <span className="inline-block mt-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">{tool.cost}</span>
+                          </div>
+                        </div>
+                      </motion.button>
+                    ))}
+                  </div>
+                </div>
+              </motion.section>
             ))}
           </div>
         </motion.div>
+
 
         {/* Search & Add */}
         <div className="max-w-2xl mx-auto mb-8">
