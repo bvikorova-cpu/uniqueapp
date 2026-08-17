@@ -83,10 +83,12 @@ function SkillsMarketplaceContent() {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from("skill_offerings")
-        .select("id,user_id,title,description,category,price_per_hour,location,image_url,created_at")
+        .select("id,user_id,title,description,category,price_per_hour,location,region,image_url,created_at,featured_until,premium_until,completed_jobs")
         .eq("is_active", true)
+        .order("premium_until", { ascending: false, nullsFirst: false })
+        .order("featured_until", { ascending: false, nullsFirst: false })
         .order("created_at", { ascending: false })
         .limit(200);
       const list = (data as Offering[]) || [];
@@ -107,7 +109,18 @@ function SkillsMarketplaceContent() {
         const stats: Record<string, { avg: number; count: number }> = {};
         Object.entries(agg).forEach(([k, v]) => (stats[k] = { avg: v.sum / v.count, count: v.count }));
         setSellerStats(stats);
+
+        const { data: profs } = await (supabase as any)
+          .from("profiles")
+          .select("id, is_verified, verification_tier")
+          .in("id", sellerIds);
+        const vmap: Record<string, { isVerified: boolean; tier: string | null }> = {};
+        (profs || []).forEach((p: any) => {
+          vmap[p.id] = { isVerified: !!p.is_verified, tier: p.verification_tier ?? null };
+        });
+        setVerified(vmap);
       }
+
       setLoading(false);
     })();
   }, []);
