@@ -56252,11 +56252,13 @@ export type Database = {
           created_at: string
           description: string
           escrow_status: string | null
+          featured_at: string | null
           featured_until: string | null
           id: string
           image_url: string | null
           is_active: boolean | null
           location: string | null
+          premium_at: string | null
           premium_until: string | null
           price_per_hour: number | null
           region: string | null
@@ -56270,11 +56272,13 @@ export type Database = {
           created_at?: string
           description: string
           escrow_status?: string | null
+          featured_at?: string | null
           featured_until?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
           location?: string | null
+          premium_at?: string | null
           premium_until?: string | null
           price_per_hour?: number | null
           region?: string | null
@@ -56288,11 +56292,13 @@ export type Database = {
           created_at?: string
           description?: string
           escrow_status?: string | null
+          featured_at?: string | null
           featured_until?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
           location?: string | null
+          premium_at?: string | null
           premium_until?: string | null
           price_per_hour?: number | null
           region?: string | null
