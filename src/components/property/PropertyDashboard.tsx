@@ -266,14 +266,6 @@ export function PropertyDashboard() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {selectedProperty && (
-        <VirtualTourUploader
-          open={uploaderOpen}
-          onOpenChange={setUploaderOpen}
-          propertyId={selectedProperty}
-          onSuccess={loadProperties}
-        />
-      )}
     </>
   );
 }
