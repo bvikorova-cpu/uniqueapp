@@ -31,6 +31,8 @@ interface Property {
   listing_expires_at: string | null;
   is_featured?: boolean | null;
   featured_until?: string | null;
+  is_premium?: boolean | null;
+  premium_until?: string | null;
   property_images: Array<{
     image_url: string;
   }>;
@@ -74,6 +76,8 @@ export function PropertyDashboard() {
           listing_expires_at,
           is_featured,
           featured_until,
+          is_premium,
+          premium_until,
 
           property_images (image_url)
         `)
@@ -228,6 +232,12 @@ export function PropertyDashboard() {
 
 
 
+              {property.premium_until && new Date(property.premium_until) > new Date() ? (
+                <div className="flex items-center gap-2 text-sm font-bold text-fuchsia-600">
+                  <Crown className="h-4 w-4" />
+                  PREMIUM until {new Date(property.premium_until).toLocaleDateString()}
+                </div>
+              ) : null}
               {property.featured_until && new Date(property.featured_until) > new Date() ? (
                 <div className="flex items-center gap-2 text-sm font-bold text-amber-600">
                   <Crown className="h-4 w-4" />
@@ -242,7 +252,7 @@ export function PropertyDashboard() {
                 onClick={() => setTopTarget(property)}
               >
                 <Crown className="h-4 w-4 mr-2" />
-                {property.featured_until && new Date(property.featured_until) > new Date() ? "Extend TOP" : "Top this listing"}
+                Promote listing (Top / Premium)
               </Button>
 
               <Button
@@ -265,6 +275,7 @@ export function PropertyDashboard() {
         propertyId={topTarget?.id ?? null}
         propertyTitle={topTarget?.title}
         featuredUntil={topTarget?.featured_until ?? null}
+        premiumUntil={topTarget?.premium_until ?? null}
         onSuccess={() => loadProperties()}
       />
 
