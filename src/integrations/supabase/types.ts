@@ -48313,6 +48313,7 @@ export type Database = {
           contact_phone: string | null
           created_at: string | null
           description: string | null
+          featured_until: string | null
           features: string[] | null
           floor: number | null
           id: string
@@ -48345,6 +48346,7 @@ export type Database = {
           contact_phone?: string | null
           created_at?: string | null
           description?: string | null
+          featured_until?: string | null
           features?: string[] | null
           floor?: number | null
           id?: string
@@ -48377,6 +48379,7 @@ export type Database = {
           contact_phone?: string | null
           created_at?: string | null
           description?: string | null
+          featured_until?: string | null
           features?: string[] | null
           floor?: number | null
           id?: string
@@ -68485,6 +68488,7 @@ export type Database = {
       expire_featured_listings: { Args: never; Returns: undefined }
       expire_old_job_listings: { Args: never; Returns: number }
       expire_old_property_listings: { Args: never; Returns: number }
+      expire_property_features: { Args: never; Returns: number }
       expire_verifications: { Args: never; Returns: number }
       f_unaccent: { Args: { "": string }; Returns: string }
       fail_job: {
@@ -70132,6 +70136,13 @@ export type Database = {
       property_register_view: {
         Args: { _property_id: string; _viewer_key: string }
         Returns: number
+      }
+      property_top_listing: {
+        Args: { _days: number; _property_id: string }
+        Returns: {
+          credits_remaining: number
+          featured_until: string
+        }[]
       }
       purchase_battle_cosmetic: {
         Args: { _code: string; _module?: string }
