@@ -48,9 +48,10 @@ export const CoffeeChatsList = () => {
       }));
       if (rows.length === 0) return [];
 
+      // `profiles` is RLS-restricted to the own row — read peers from the public view.
       const { data: profiles } = await supabase
-        .from("profiles")
-        .select("id,full_name,username,email,avatar_url")
+        .from("public_profiles")
+        .select("id,full_name,username,avatar_url")
         .in("id", rows.map((r) => r.otherId));
 
       const byId = new Map((profiles ?? []).map((p: any) => [p.id, p]));
@@ -58,10 +59,11 @@ export const CoffeeChatsList = () => {
         const p = byId.get(r.otherId);
         return {
           ...r,
-          name: resolveName(p?.full_name, p?.username, p?.email),
+          name: resolveName(p?.full_name ?? null, p?.username ?? null),
           avatar: p?.avatar_url ?? null,
         };
       });
+
     },
   });
 
