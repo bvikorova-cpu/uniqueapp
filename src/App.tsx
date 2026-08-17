@@ -422,10 +422,6 @@ import { ResetPassword,
   CrystalMarketplace,
   PhobiaTrading,
   SecretSanta,
-  SkillSwap,
-  SkillSwapProfile,
-  SkillSwapSettings,
-  SkillSwapDashboard,
   AnonymousDate,
   LieDetector,
   IQPlatform,
@@ -907,10 +903,9 @@ const App = () => {
                         <Route path="/guess-age" element={<GuessAge />} />
                         <Route path="/face-insight" element={<FaceInsight />} />
 
-                        <Route path="/skill-swap" element={<SkillSwap />} />
-                        <Route path="/skill-swap/dashboard" element={<ProtectedRoute><SkillSwapDashboard /></ProtectedRoute>} />
-                        <Route path="/skill-swap/profile/:userId" element={<ProtectedRoute><SkillSwapProfile /></ProtectedRoute>} />
-                        <Route path="/skill-swap/profile/edit" element={<ProtectedRoute><SkillSwapSettings /></ProtectedRoute>} />
+                        <Route path="/skill-swap" element={<Navigate to="/marketplace" replace />} />
+                        <Route path="/skill-swap/*" element={<Navigate to="/marketplace" replace />} />
+
                        <Route path="/skills-marketplace" element={<Navigate to="/marketplace" replace />} />
                        <Route path="/skills-marketplace/new" element={<ProtectedRoute><SkillsMarketplaceCreate /></ProtectedRoute>} />
                        <Route path="/skills-marketplace/orders" element={<ProtectedRoute><SkillsMarketplaceOrders /></ProtectedRoute>} />

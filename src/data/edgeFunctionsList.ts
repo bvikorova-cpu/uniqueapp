@@ -328,8 +328,6 @@ export const EDGE_FUNCTIONS: string[] = [
   "send-stream-gift",
   "service-availability-slots",
   "shadow-arena-router",
-  "skill-swap-ai",
-  "skill-swap-parity",
   "stock-ai-tags",
   "stock-content-ai",
   "stock-similar-search",

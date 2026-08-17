@@ -52,10 +52,6 @@ export const ComedyLiveViewer = lazy(() => import("@/pages/ComedyLiveViewer"));
 // Dating & Social
 export const Dating = lazy(() => import("@/pages/Dating"));
 export const AnonymousDate = lazy(() => import("@/pages/AnonymousDate"));
-export const SkillSwap = lazy(() => import("@/pages/SkillSwap"));
-export const SkillSwapDashboard = lazy(() => import("@/pages/SkillSwapDashboard"));
-export const SkillSwapProfile = lazy(() => import("@/pages/SkillSwapProfile"));
-export const SkillSwapSettings = lazy(() => import("@/pages/SkillSwapSettings"));
 
 // Marketplace & E-commerce
 export const Marketplace = lazy(() => import("@/pages/Marketplace"));
