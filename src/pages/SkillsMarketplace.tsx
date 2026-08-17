@@ -134,15 +134,45 @@ function SkillsMarketplaceContent() {
           { title: 'Publish an offering', desc: 'Opening your own offering costs 2 credits — no commission.' },
           { title: 'Order & review', desc: 'Contact the provider, order the service and leave a review.' },
         ]} />
+      <section className="relative overflow-hidden border-b border-border/40">
+        <video
+          src={HERO_VIDEO_URL}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+          onTimeUpdate={(e) => {
+            const v = e.currentTarget;
+            if (v.currentTime >= HERO_VIDEO_SECONDS) v.currentTime = 0;
+          }}
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-background/90 via-background/75 to-accent/20" />
+        <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary/20 blur-3xl" />
+        <div className="container relative mx-auto px-4 py-16 md:py-20 max-w-7xl text-center">
+          <Badge variant="outline" className="mb-5 border-primary/40 bg-background/60 backdrop-blur px-4 py-1.5 text-xs tracking-[0.2em] uppercase">
+            <Sparkles className="w-3.5 h-3.5 mr-2" /> Skills Marketplace
+          </Badge>
+          <h1 className="text-4xl md:text-6xl font-black leading-[1.05] bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+            Find someone to get the job done
+          </h1>
+          <p className="mt-5 max-w-2xl mx-auto text-base md:text-lg text-muted-foreground">
+            Browse services by category for free — or offer your own skills. Publishing an offering costs 2 credits.
+          </p>
+        </div>
+      </section>
+
       <div className="container mx-auto px-4 py-8 max-w-7xl">
       <SEO title="Skills Marketplace — Hire microservices" description="Browse services by category for free. Publishing an offering costs 2 credits." canonical="/marketplace" />
 
 
       <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl md:text-4xl font-bold">Skills Marketplace</h1>
+          <h2 className="text-2xl md:text-3xl font-bold">Browse offerings</h2>
           <p className="text-muted-foreground mt-1">
-            Find someone to get the job done — or offer your own skills. Publishing an offering costs 2 credits.
+            Pick a category folder or search across all services.
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
