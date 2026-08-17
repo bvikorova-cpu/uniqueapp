@@ -7,14 +7,20 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  Plus, Search, MapPin, Euro, Star, ArrowLeft, Hammer, Wrench, Sparkles,
-  Leaf, Laptop, GraduationCap, Palette, Boxes,
+  Plus, Search, MapPin, Euro, ArrowLeft, Hammer, Wrench, Sparkles,
+  Leaf, Laptop, GraduationCap, Palette, Boxes, Crown, Flame,
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
+import { SKILL_REGIONS, regionLabel } from "@/components/skills/skillRegions";
+import { SkillRequestsBoard } from "@/components/skills/SkillRequestsBoard";
+import { SkillPromoteDialog } from "@/components/skills/SkillPromoteDialog";
+import { ProviderTrustBadges } from "@/components/skills/ProviderTrustBadges";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
 
 const HERO_VIDEO_URL = "/__l5e/assets-v1/1fc3d14b-b578-456c-bf84-eef5461ab4d5/skills-marketplace-hero.mp4";
 const HERO_VIDEO_SECONDS = 10;
