@@ -72,9 +72,10 @@ const Coffee = () => {
           </Card>
           <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl border-amber-500/20 text-center">
             <Award className="h-5 w-5 text-purple-400 mx-auto mb-1" />
-            <p className="text-lg sm:text-2xl font-black capitalize">{profile?.subscription_tier || "Free"}</p>
-            <p className="text-[10px] sm:text-xs text-muted-foreground">Tier</p>
+            <p className="text-lg sm:text-2xl font-black">{profile?.total_reviews || 0}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">Reviews</p>
           </Card>
+
         </div>
 
         {/* Quick Navigation */}
