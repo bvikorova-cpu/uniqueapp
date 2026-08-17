@@ -21,7 +21,7 @@ export default function SellerReviewsList({ sellerId }: Props) {
     if (ids.length === 0) return;
     (async () => {
       const { data } = await supabase
-        .from("profiles")
+        .from("public_profiles")
         .select("id,full_name,avatar_url")
         .in("id", ids);
       const map: Record<string, Profile> = {};

@@ -66,7 +66,7 @@ export default function OrderConversation({ offeringId, orderId, otherUserId }: 
     const ids = [...new Set(messages.map((m) => m.sender_id))];
     if (ids.length === 0) return;
     (async () => {
-      const { data } = await supabase.from("profiles").select("id,full_name,avatar_url").in("id", ids);
+      const { data } = await supabase.from("public_profiles").select("id,full_name,avatar_url").in("id", ids);
       const map: any = {};
       (data || []).forEach((p: any) => (map[p.id] = p));
       setProfiles(map);

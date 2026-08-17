@@ -82,7 +82,7 @@ export function SkillRequestsBoard({ category }: { category?: string | null }) {
 
     const ids = [...new Set(list.map((r) => r.user_id))];
     if (ids.length) {
-      const { data: profs } = await supabase.from("profiles").select("id, full_name, username").in("id", ids);
+      const { data: profs } = await supabase.from("public_profiles").select("id, full_name, username").in("id", ids);
       const map: Record<string, string> = {};
       (profs || []).forEach((p: any) => { map[p.id] = p.full_name || p.username || "User"; });
       setNames(map);
@@ -183,7 +183,7 @@ export function SkillRequestsBoard({ category }: { category?: string | null }) {
     setInboxBids(list);
     const ids = [...new Set(list.map((b) => b.provider_id))].filter((id) => !names[id]);
     if (ids.length) {
-      const { data: profs } = await supabase.from("profiles").select("id, full_name, username").in("id", ids);
+      const { data: profs } = await supabase.from("public_profiles").select("id, full_name, username").in("id", ids);
       setNames((prev) => {
         const next = { ...prev };
         (profs || []).forEach((p: any) => { next[p.id] = p.full_name || p.username || "User"; });

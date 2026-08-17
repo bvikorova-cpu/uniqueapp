@@ -228,7 +228,7 @@ const Marketplace = () => {
     }
     const userIds = [...new Set(rows.map(o => o.user_id))];
     const { data: profilesData } = await supabase
-      .from("profiles")
+      .from("public_profiles")
       .select("id, full_name, avatar_url")
       .in("id", userIds);
     const merged = rows.map(o => ({ ...o,

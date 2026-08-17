@@ -85,7 +85,7 @@ export function useSkillUnread({ notifyToasts = false }: Options = {}) {
         ? supabase.from("skill_offerings").select("id, title").in("id", offeringIds)
         : Promise.resolve({ data: [] as any[] }),
       userIds.length
-        ? supabase.from("profiles").select("id, full_name, username").in("id", userIds)
+        ? supabase.from("public_profiles").select("id, full_name, username").in("id", userIds)
         : Promise.resolve({ data: [] as any[] }),
     ]);
 
