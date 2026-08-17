@@ -116,6 +116,28 @@ export default function SkillOfferingDetail() {
     })();
   }, [id]);
 
+  const unlockContact = async () => {
+    if (!user || !offering) { navigate("/auth"); return; }
+    setUnlocking(true);
+    const { data, error } = await supabase.rpc("unlock_skill_contact", { _offering_id: offering.id });
+    setUnlocking(false);
+    if (error) {
+      const insufficient = /credit/i.test(error.message);
+      toast({
+        title: insufficient ? "Not enough credits" : "Could not unlock chat",
+        description: insufficient ? "You need 1 credit to unlock the chat with this provider." : error.message,
+        variant: "destructive",
+      });
+      return;
+    }
+    setUnlocked(true);
+    const charged = (data as any)?.charged ?? 0;
+    toast({
+      title: "Chat unlocked",
+      description: charged ? "1 credit was used. All further messages in this chat are free." : "Chat is already unlocked — messages are free.",
+    });
+  };
+
   const sendMessage = async () => {
     if (!user) { navigate("/auth"); return; }
     if (!offering) return;
@@ -136,6 +158,7 @@ export default function SkillOfferingDetail() {
     setMessage("");
     toast({ title: "Message sent", description: "The provider will reply in their inbox." });
   };
+
 
   const deleteOffering = async () => {
     if (!offering || !user || offering.user_id !== user.id) return;
