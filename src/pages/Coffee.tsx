@@ -124,39 +124,34 @@ const Coffee = () => {
           })}
         </div>
 
-        {/* Pricing */}
+        {/* Credit pricing */}
         <div className="mb-8">
-          <h2 className="text-xl sm:text-2xl font-black mb-4 text-center">Subscription Plans</h2>
+          <h2 className="text-xl sm:text-2xl font-black mb-4 text-center">Credit Pricing</h2>
           <div className="grid sm:grid-cols-3 gap-4">
-            {PLANS.map((plan) => (
-              <Card key={plan.tier} className={`p-5 ${plan.highlight ? "border-amber-500 shadow-lg shadow-amber-500/10" : "border-amber-500/20"} bg-card/80 backdrop-blur-xl`}>
-                <h3 className="text-lg font-bold">{plan.name}</h3>
-                <p className="text-2xl font-black text-amber-400 mb-3">{plan.price}</p>
-                <ul className="space-y-2 mb-4">
-                  {plan.features.map((f, j) => (
-                    <li key={j} className="flex items-center gap-2 text-sm">
-                      <Star className="h-3 w-3 text-amber-400 flex-shrink-0" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Button 
-                  className={`w-full ${plan.highlight ? "bg-gradient-to-r from-amber-600 to-amber-800" : ""}`} 
-                  variant={plan.highlight ? "default" : "outline"}
-                  disabled={subscribingTier === plan.tier}
-                  onClick={() => handleSubscribe(plan.tier)}
-                >
-                  {subscribingTier === plan.tier ? (
-                    <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Processing...</>
-                  ) : plan.tier === "free" ? "Get Started" : "Subscribe"}
-                </Button>
+            {CREDIT_ITEMS.map((item) => (
+              <Card key={item.name} className="p-5 bg-card/80 backdrop-blur-xl border-amber-500/20">
+                <h3 className="text-lg font-bold">{item.name}</h3>
+                <p className="text-2xl font-black text-amber-400 mb-2">{item.cost}</p>
+                <p className="text-sm text-muted-foreground">{item.desc}</p>
               </Card>
             ))}
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center mt-5">
+            <Button
+              className="bg-gradient-to-r from-amber-600 to-amber-800"
+              onClick={() => navigate("/coffee/buddy")}
+            >
+              Start swiping ☕
+            </Button>
+            <Button variant="outline" onClick={() => navigate("/ai-credits-store")}>
+              Get credits
+            </Button>
           </div>
         </div>
       </div>
     </div>
   );
 };
+
 
 export default Coffee;
