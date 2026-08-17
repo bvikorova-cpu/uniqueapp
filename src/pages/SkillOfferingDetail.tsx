@@ -40,6 +40,9 @@ export default function SkillOfferingDetail() {
   const [hours, setHours] = useState<number>(1);
   const [orderNote, setOrderNote] = useState("");
   const [ordering, setOrdering] = useState(false);
+  const [unlocked, setUnlocked] = useState(false);
+  const [unlocking, setUnlocking] = useState(false);
+
 
   const orderAndPay = async () => {
     if (!user) { navigate("/auth"); return; }
@@ -111,10 +114,47 @@ export default function SkillOfferingDetail() {
           .eq("id", o.user_id)
           .maybeSingle();
         setSeller(p as Profile | null);
+        setSeller(p as Profile | null);
+        if (user) {
+          if (o.user_id === user.id) {
+            setUnlocked(true);
+          } else {
+            const { data: u } = await supabase
+              .from("skill_contact_unlocks")
+              .select("id")
+              .eq("offering_id", o.id)
+              .eq("buyer_id", user.id)
+              .maybeSingle();
+            setUnlocked(!!u);
+          }
+        }
       }
       setLoading(false);
     })();
-  }, [id]);
+  }, [id, user?.id]);
+
+
+  const unlockContact = async () => {
+    if (!user || !offering) { navigate("/auth"); return; }
+    setUnlocking(true);
+    const { data, error } = await supabase.rpc("unlock_skill_contact", { _offering_id: offering.id });
+    setUnlocking(false);
+    if (error) {
+      const insufficient = /credit/i.test(error.message);
+      toast({
+        title: insufficient ? "Not enough credits" : "Could not unlock chat",
+        description: insufficient ? "You need 1 credit to unlock the chat with this provider." : error.message,
+        variant: "destructive",
+      });
+      return;
+    }
+    setUnlocked(true);
+    const charged = (data as any)?.charged ?? 0;
+    toast({
+      title: "Chat unlocked",
+      description: charged ? "1 credit was used. All further messages in this chat are free." : "Chat is already unlocked — messages are free.",
+    });
+  };
 
   const sendMessage = async () => {
     if (!user) { navigate("/auth"); return; }
@@ -136,6 +176,7 @@ export default function SkillOfferingDetail() {
     setMessage("");
     toast({ title: "Message sent", description: "The provider will reply in their inbox." });
   };
+
 
   const deleteOffering = async () => {
     if (!offering || !user || offering.user_id !== user.id) return;
@@ -285,17 +326,33 @@ export default function SkillOfferingDetail() {
                   <h4 className="font-semibold inline-flex items-center gap-2">
                     <Send className="h-4 w-4" /> Or contact the provider first
                   </h4>
-                  <Textarea
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Describe what you need, when, and where…"
-                    rows={4}
-                    maxLength={1000}
-                  />
-                  <Button variant="outline" onClick={sendMessage} disabled={sending} className="gap-2">
-                    <Send className="h-4 w-4" /> {sending ? "Sending…" : "Send message"}
-                  </Button>
+                  {!unlocked ? (
+                    <div className="rounded-lg border border-dashed p-4 space-y-3 text-center">
+                      <p className="text-sm text-muted-foreground">
+                        Unlock the chat with this provider for <span className="font-semibold text-foreground">1 credit</span> (one-time).
+                        All further messages in this conversation are free.
+                      </p>
+                      <Button onClick={unlockContact} disabled={unlocking} className="gap-2">
+                        <Send className="h-4 w-4" /> {unlocking ? "Unlocking…" : "Unlock chat for 1 credit"}
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      <Textarea
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        placeholder="Describe what you need, when, and where…"
+                        rows={4}
+                        maxLength={1000}
+                      />
+                      <Button variant="outline" onClick={sendMessage} disabled={sending} className="gap-2">
+                        <Send className="h-4 w-4" /> {sending ? "Sending…" : "Send message"}
+                      </Button>
+                      <p className="text-xs text-muted-foreground">Chat unlocked — further messages are free.</p>
+                    </>
+                  )}
                 </div>
+
               </div>
             )}
           </CardContent>
