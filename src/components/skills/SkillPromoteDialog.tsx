@@ -19,7 +19,7 @@ export function SkillPromoteDialog({
   onOpenChange,
   onPromoted,
 }: {
-  offeringId: string;
+  offeringId: string | null;
   open: boolean;
   onOpenChange: (v: boolean) => void;
   onPromoted?: () => void;
