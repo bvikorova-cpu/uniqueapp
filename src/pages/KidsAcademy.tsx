@@ -17,7 +17,12 @@ const KidsAcademy = () => {
       <FloatingHowItWorks title={__HIW_KIDSACADEMY.title} intro={__HIW_KIDSACADEMY.intro} steps={__HIW_KIDSACADEMY.steps} />
       <Navbar />
       <main className="container mx-auto px-4 py-6 mt-16">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-6xl mx-auto space-y-4">
+          <Button asChild variant="outline" className="gap-2">
+            <Link to="/kids-puzzles">
+              <PuzzleIcon className="h-4 w-4" /> Kids Puzzles — collect pieces for 1 credit
+            </Link>
+          </Button>
           <KidsCollectibles />
         </div>
       </main>
