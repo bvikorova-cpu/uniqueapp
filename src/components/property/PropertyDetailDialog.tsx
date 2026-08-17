@@ -36,8 +36,10 @@ export function PropertyDetailDialog({ property, open, onOpenChange }: PropertyD
 
   const handleContact = (type: "contact" | "viewing" = "contact") => {
     setInquiryType(type);
+    onOpenChange(false);
     setContactDialogOpen(true);
   };
+
 
   const handleShare = () => { if (navigator.share) {
       navigator.share({
@@ -70,6 +72,7 @@ export function PropertyDetailDialog({ property, open, onOpenChange }: PropertyD
   ];
 
   return (
+    <>
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
@@ -237,7 +240,7 @@ export function PropertyDetailDialog({ property, open, onOpenChange }: PropertyD
 
         {/* Contact Buttons */}
         <div className="flex flex-wrap gap-3 pt-4 border-t">
-          <Button onClick={() => setChatOpen(true)} className="flex-1 min-w-[180px]" size="lg" disabled={!!user && user.id === property.user_id}>
+          <Button onClick={() => { onOpenChange(false); setChatOpen(true); }} className="flex-1 min-w-[180px]" size="lg" disabled={!!user && user.id === property.user_id}>
             <MessageCircle className="h-4 w-4 mr-2" />
             Message Seller
           </Button>
@@ -250,22 +253,24 @@ export function PropertyDetailDialog({ property, open, onOpenChange }: PropertyD
             Request Viewing
           </Button>
         </div>
-
-        <ContactSellerDialog 
-          open={contactDialogOpen}
-          onOpenChange={setContactDialogOpen}
-          propertyId={property.id}
-          propertyTitle={property.title}
-          inquiryType={inquiryType}
-        />
-        <PropertyChatDialog
-          open={chatOpen}
-          onOpenChange={setChatOpen}
-          propertyId={property.id}
-          propertyTitle={property.title}
-          sellerId={property.user_id}
-        />
       </DialogContent>
     </Dialog>
+
+      <ContactSellerDialog
+        open={contactDialogOpen}
+        onOpenChange={setContactDialogOpen}
+        propertyId={property.id}
+        propertyTitle={property.title}
+        inquiryType={inquiryType}
+      />
+      <PropertyChatDialog
+        open={chatOpen}
+        onOpenChange={setChatOpen}
+        propertyId={property.id}
+        propertyTitle={property.title}
+        sellerId={property.user_id}
+      />
+    </>
   );
 }
+
