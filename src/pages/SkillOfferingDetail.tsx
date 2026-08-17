@@ -357,6 +357,10 @@ export default function SkillOfferingDetail() {
                       <Button onClick={unlockContact} disabled={unlocking} className="gap-2">
                         <Send className="h-4 w-4" /> {unlocking ? "Unlocking…" : "Unlock chat for 1 credit"}
                       </Button>
+                      <p className="text-xs text-muted-foreground">
+                        Max 20 new contacts per day.{" "}
+                        <Link to="/credits/history" className="text-primary hover:underline">Credit history</Link>
+                      </p>
                     </div>
                   ) : (
                     <>
@@ -370,7 +374,13 @@ export default function SkillOfferingDetail() {
                       <Button variant="outline" onClick={sendMessage} disabled={sending} className="gap-2">
                         <Send className="h-4 w-4" /> {sending ? "Sending…" : "Send message"}
                       </Button>
-                      <p className="text-xs text-muted-foreground">Chat unlocked — further messages are free.</p>
+                      <p className="text-xs text-muted-foreground">
+                        Chat unlocked — further messages are free. Anti-spam: max 5 messages/minute, 15 per conversation/hour, 60/day.{" "}
+                        <Link to="/credits/history" className="text-primary hover:underline">Credit history</Link>
+                      </p>
+                    </>
+                  )}
+
                     </>
                   )}
                 </div>
