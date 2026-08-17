@@ -10,6 +10,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, Plus, Pencil, Trash2, Eye, MessageSquare, Euro } from "lucide-react";
 import { PromotionBadge } from "@/components/skills/PromotionBadge";
+import { SkillConversationsDialog } from "@/components/skills/SkillConversationsDialog";
+import { useSkillUnread } from "@/hooks/useSkillUnread";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type Offering = {
@@ -37,6 +39,8 @@ export default function SkillsMarketplaceMine() {
   const [offerings, setOfferings] = useState<Offering[]>([]);
   const [stats, setStats] = useState<Record<string, Stats>>({});
   const [loading, setLoading] = useState(true);
+  const [messagesOpen, setMessagesOpen] = useState(false);
+  const { totalUnread: skillUnread } = useSkillUnread({ notifyToasts: false });
 
   const load = async () => {
     if (!user) return;
@@ -123,6 +127,14 @@ export default function SkillsMarketplaceMine() {
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
+          <Button variant="outline" onClick={() => setMessagesOpen(true)} className="gap-2">
+            <MessageSquare className="h-4 w-4" /> Messages
+            {skillUnread > 0 && (
+              <Badge className="bg-red-500 hover:bg-red-500 text-white h-5 min-w-5 px-1 text-[10px]">
+                {skillUnread > 9 ? "9+" : skillUnread}
+              </Badge>
+            )}
+          </Button>
           <Button asChild className="gap-2">
             <Link to="/skills-marketplace/new"><Plus className="h-4 w-4" /> New offering</Link>
           </Button>
@@ -196,6 +208,8 @@ export default function SkillsMarketplaceMine() {
           })}
         </div>
       )}
+
+      <SkillConversationsDialog open={messagesOpen} onOpenChange={setMessagesOpen} />
     </div>
   );
 }

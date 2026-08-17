@@ -11,7 +11,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Plus, Search, MapPin, Euro, ArrowLeft, Hammer, Wrench, Sparkles,
-  Leaf, Laptop, GraduationCap, Palette, Boxes, Crown, Flame, ChevronRight,
+  Leaf, Laptop, GraduationCap, Palette, Boxes, Crown, Flame, ChevronRight, MessageCircle,
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { SKILL_REGIONS, regionLabel } from "@/components/skills/skillRegions";
@@ -19,6 +19,8 @@ import { SkillRequestsBoard } from "@/components/skills/SkillRequestsBoard";
 import { SkillPromoteDialog } from "@/components/skills/SkillPromoteDialog";
 import { ProviderTrustBadges } from "@/components/skills/ProviderTrustBadges";
 import { PromotionBadge } from "@/components/skills/PromotionBadge";
+import { SkillConversationsDialog } from "@/components/skills/SkillConversationsDialog";
+import { useSkillUnread } from "@/hooks/useSkillUnread";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
@@ -69,6 +71,8 @@ function SkillsMarketplaceContent() {
   const [promoteId, setPromoteId] = useState<string | null>(null);
   const [verified, setVerified] = useState<Record<string, { isVerified: boolean; tier: string | null }>>({});
   const [sellerStats, setSellerStats] = useState<Record<string, { avg: number; count: number }>>({});
+  const [messagesOpen, setMessagesOpen] = useState(false);
+  const { totalUnread: skillUnread } = useSkillUnread({ notifyToasts: false });
 
   const category = params.get("category");
   const setCategory = (value: string | null) => {
@@ -284,6 +288,16 @@ function SkillsMarketplaceContent() {
             </div>
             <div className="flex flex-col sm:flex-row gap-2 sm:flex-wrap sm:justify-end">
               {user && (
+                <Button variant="outline" onClick={() => setMessagesOpen(true)} className="gap-2 w-full sm:w-auto relative">
+                  <MessageCircle className="h-4 w-4" /> Messages
+                  {skillUnread > 0 && (
+                    <Badge className="bg-red-500 hover:bg-red-500 text-white h-5 min-w-5 px-1 text-[10px]">
+                      {skillUnread > 9 ? "9+" : skillUnread}
+                    </Badge>
+                  )}
+                </Button>
+              )}
+              {user && (
                 <Button variant="outline" onClick={() => navigate("/skills-marketplace/mine")} className="w-full sm:w-auto">
                   My offerings
                 </Button>
@@ -421,6 +435,9 @@ function SkillsMarketplaceContent() {
             onOpenChange={(v) => !v && setPromoteId(null)}
             onPromoted={() => window.location.reload()}
           />
+
+          <SkillConversationsDialog open={messagesOpen} onOpenChange={setMessagesOpen} />
+
         </div>
       </div>
     </>
