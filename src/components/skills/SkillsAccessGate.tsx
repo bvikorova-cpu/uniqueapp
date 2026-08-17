@@ -10,7 +10,7 @@ import { Check, Lock } from "lucide-react";
 import { toast } from "sonner";
 
 /**
- * €1/month entry pass for the Skills area (shared with Skill Swap).
+ * €1/month entry pass for Skills Marketplace only.
  * Wraps Skills Marketplace pages — no access without an active pass.
  */
 export function SkillsAccessGate({ children }: { children: React.ReactNode }) {
@@ -27,7 +27,9 @@ export function SkillsAccessGate({ children }: { children: React.ReactNode }) {
       return;
     }
     try {
-      const { data, error } = await supabase.functions.invoke("check-skill-swap-subscription");
+      const { data, error } = await supabase.functions.invoke("check-subscription", {
+        body: { tier: "skills_marketplace" },
+      });
       if (error) throw error;
       setHasAccess(Boolean(data?.subscribed ?? data?.hasSubscription));
     } catch (e) {
@@ -53,9 +55,9 @@ export function SkillsAccessGate({ children }: { children: React.ReactNode }) {
       const origin = window.location.origin;
       const { data, error } = await supabase.functions.invoke("create-checkout", {
         body: {
-          product: "skill_swap",
-          successUrl: `${origin}/skills-marketplace?entry=success&session_id={CHECKOUT_SESSION_ID}`,
-          cancelUrl: `${origin}/skills-marketplace?entry=canceled`,
+          product: "skills_marketplace",
+          successUrl: `${origin}/marketplace?entry=success&session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: `${origin}/marketplace?entry=canceled`,
         },
       });
       if (error) throw error;
@@ -101,7 +103,7 @@ export function SkillsAccessGate({ children }: { children: React.ReactNode }) {
               "Browse every offering across all categories",
               "Contact providers and order services",
               "Publish your own offerings (2 credits per offering)",
-              "0% commission on swaps",
+              "0% listing commission",
             ].map((t) => (
               <li key={t} className="flex items-start gap-2">
                 <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />

@@ -194,7 +194,8 @@ const DEFAULT_PATHS: Record<string, { success: string; cancel: string }> = {
   challenge_pro: { success: "/eco-challenge?payment=success&challenge_pro=1&session_id={CHECKOUT_SESSION_ID}", cancel: "/eco-challenge?payment=canceled" },
   challenge_top: { success: "/eco-challenge?payment=success&challenge_pro=1&session_id={CHECKOUT_SESSION_ID}", cancel: "/eco-challenge?payment=canceled" },
   exclusive: { success: "/exclusive?success=true&session_id={CHECKOUT_SESSION_ID}", cancel: "/exclusive?canceled=true" },
-  skill_swap: { success: "/skill-swap?subscribed=true&session_id={CHECKOUT_SESSION_ID}", cancel: "/skill-swap?subscribed=canceled" } };
+  skill_swap: { success: "/skill-swap?subscribed=true&session_id={CHECKOUT_SESSION_ID}", cancel: "/skill-swap?subscribed=canceled" },
+  skills_marketplace: { success: "/marketplace?entry=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/marketplace?entry=canceled" } };
 
 const CLONE_PRODUCTS: Record<string, { amount: number; mode: "payment" | "subscription"; name: string; metadata: Record<string, string> }> = {
   clone_basic: {
@@ -2923,6 +2924,7 @@ async function handler(req: Request): Promise<Response> {
         shadow_battle_join:      { amount: 199,  mode: "payment",      name: "Join Shadow Battle" },
         shadow_gift:             { amount: 299,  mode: "payment",      name: "Shadow Gift" },
         skill_swap:              { amount: 100,  mode: "subscription", name: "Skill Swap — Monthly (€1/mo)", interval: "month" },
+        skills_marketplace:      { amount: 100,  mode: "subscription", name: "Skills Marketplace — Monthly (€1/mo)", interval: "month" },
         sports:                  { amount: 999,  mode: "subscription", name: "Sports Premium" },
         subscription:            { amount: 999,  mode: "subscription", name: "Premium Subscription" },
         quantum_profiles:        { amount: 1299, mode: "subscription", name: "Quantum Profiles" },

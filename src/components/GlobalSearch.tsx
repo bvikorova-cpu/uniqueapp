@@ -111,7 +111,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "77", title: "Monetization Ideas", category: "Career", path: "/monetization-ideas" },
   
   // Marketplace & Commerce
-  { id: "78", title: "Marketplace", category: "Commerce", path: "/marketplace" },
+  { id: "78", title: "Skills Marketplace", description: "Services by category", category: "Commerce", path: "/marketplace" },
   { id: "79", title: "Bazaar", category: "Commerce", path: "/bazaar" },
   { id: "80", title: "Auctions", category: "Commerce", path: "/auction" },
   { id: "81", title: "Secret Santa", category: "Commerce", path: "/secret-santa" },
