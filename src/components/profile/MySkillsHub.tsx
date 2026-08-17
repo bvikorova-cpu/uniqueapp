@@ -17,7 +17,9 @@ interface SkillOffering {
   category: string;
   price_per_hour: number | null;
   is_active: boolean | null;
+  featured_at: string | null;
   featured_until: string | null;
+  premium_at: string | null;
   premium_until: string | null;
 }
 
@@ -49,7 +51,7 @@ export const MySkillsHub = ({ userId, isOwnProfile }: MySkillsHubProps) => {
       // Load marketplace offerings
       const { data: offeringsData } = await supabase
         .from("skill_offerings")
-        .select("id, title, description, category, price_per_hour, is_active, featured_until, premium_until")
+        .select("id, title, description, category, price_per_hour, is_active, featured_at, featured_until, premium_at, premium_until")
         .eq("user_id", userId)
         .order("created_at", { ascending: false });
 
@@ -124,7 +126,13 @@ export const MySkillsHub = ({ userId, isOwnProfile }: MySkillsHubProps) => {
                       <Badge variant={offering.is_active ? "default" : "secondary"}>
                         {offering.is_active ? "Active" : "Inactive"}
                       </Badge>
-                      <PromotionBadge featuredUntil={offering.featured_until} premiumUntil={offering.premium_until} size="xs" />
+                      <PromotionBadge
+                        featuredAt={offering.featured_at}
+                        featuredUntil={offering.featured_until}
+                        premiumAt={offering.premium_at}
+                        premiumUntil={offering.premium_until}
+                        size="xs"
+                      />
                     </div>
                   </div>
                   <p className="text-sm text-muted-foreground line-clamp-2 mb-3">

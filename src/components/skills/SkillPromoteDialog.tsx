@@ -37,9 +37,11 @@ export function SkillPromoteDialog({
       });
       if (error) throw error;
       const row = Array.isArray(data) ? data[0] : data;
+      const start = new Date().toLocaleDateString();
+      const end = new Date(row.promoted_until).toLocaleDateString();
       toast({
         title: tier === "premium" ? "PREMIUM activated" : "TOP activated",
-        description: `Active until ${new Date(row.promoted_until).toLocaleDateString()} · ${row.credits_remaining} credits left.`,
+        description: `Active ${start} – ${end} · ${row.credits_remaining} credits left.`,
       });
       onPromoted?.();
       onOpenChange(false);

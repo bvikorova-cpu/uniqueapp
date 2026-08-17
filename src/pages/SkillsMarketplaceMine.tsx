@@ -20,7 +20,9 @@ type Offering = {
   location: string | null;
   is_active: boolean;
   created_at: string;
+  featured_at: string | null;
   featured_until: string | null;
+  premium_at: string | null;
   premium_until: string | null;
 };
 
@@ -43,7 +45,7 @@ export default function SkillsMarketplaceMine() {
     setLoading(true);
     const { data, error } = await supabase
       .from("skill_offerings")
-      .select("id,title,category,price_per_hour,location,is_active,created_at,featured_until,premium_until")
+      .select("id,title,category,price_per_hour,location,is_active,created_at,featured_at,featured_until,premium_at,premium_until")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
@@ -173,7 +175,13 @@ export default function SkillsMarketplaceMine() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <PromotionBadge featuredUntil={o.featured_until} premiumUntil={o.premium_until} size="xs" />
+                      <PromotionBadge
+                        featuredAt={o.featured_at}
+                        featuredUntil={o.featured_until}
+                        premiumAt={o.premium_at}
+                        premiumUntil={o.premium_until}
+                        size="xs"
+                      />
                       <span className="text-xs text-muted-foreground">{o.is_active ? "Active" : "Paused"}</span>
                       <Switch checked={o.is_active} onCheckedChange={() => toggleActive(o)} />
                     </div>

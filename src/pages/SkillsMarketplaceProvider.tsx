@@ -17,7 +17,8 @@ type Profile = { id: string; full_name: string | null; avatar_url: string | null
 type Offering = {
   id: string; title: string; description: string; category: string;
   price_per_hour: number | null; location: string | null; image_url: string | null; is_active: boolean;
-  featured_until: string | null; premium_until: string | null;
+  featured_at: string | null; featured_until: string | null;
+  premium_at: string | null; premium_until: string | null;
 };
 
 
@@ -37,7 +38,7 @@ export default function SkillsMarketplaceProvider() {
         supabase.from("profiles").select("id,full_name,avatar_url,bio,location").eq("id", userId).maybeSingle(),
         supabase
           .from("skill_offerings")
-          .select("id,title,description,category,price_per_hour,location,image_url,is_active,featured_until,premium_until")
+          .select("id,title,description,category,price_per_hour,location,image_url,is_active,featured_at,featured_until,premium_at,premium_until")
           .eq("user_id", userId)
           .eq("is_active", true)
           .order("premium_until", { ascending: false, nullsFirst: false })
@@ -125,7 +126,12 @@ export default function SkillsMarketplaceProvider() {
                       <Link to={`/skills-marketplace/${o.id}`} className="hover:underline">{o.title}</Link>
                     </CardTitle>
                   </div>
-                  <PromotionBadge featuredUntil={o.featured_until} premiumUntil={o.premium_until} />
+                  <PromotionBadge
+                    featuredAt={o.featured_at}
+                    featuredUntil={o.featured_until}
+                    premiumAt={o.premium_at}
+                    premiumUntil={o.premium_until}
+                  />
                 </div>
               </CardHeader>
               <CardContent className="pt-0">
