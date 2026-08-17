@@ -24,13 +24,16 @@ export default function PropertySubmissionForm() {
   const [balance, setBalance] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     title: "", description: "", price: "", location: "", propertyType: "", area: "", rooms: "",
+    contactName: "", contactPhone: "", contactEmail: "",
   });
+
   const [images, setImages] = useState<File[]>([]);
 
   useEffect(() => {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
+      setFormData((prev) => ({ ...prev, contactEmail: prev.contactEmail || user.email || "" }));
       const { data } = await supabase
         .from("ai_credits")
         .select("credits_remaining")
@@ -39,6 +42,7 @@ export default function PropertySubmissionForm() {
       setBalance(data?.credits_remaining ?? 0);
     })();
   }, []);
+
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -51,6 +55,15 @@ export default function PropertySubmissionForm() {
       toast.error("Please fill in all required fields");
       return;
     }
+    if (!formData.contactName.trim() || !formData.contactPhone.trim() || !formData.contactEmail.trim()) {
+      toast.error("Contact details required", { description: "Buyers need your name, phone number and email." });
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.contactEmail.trim())) {
+      toast.error("Please enter a valid contact email");
+      return;
+    }
+
     const priceNum = parseFloat(formData.price);
     if (!Number.isFinite(priceNum) || priceNum <= 0 || priceNum > 100_000_000) {
       toast.error("Invalid price");
@@ -96,8 +109,12 @@ export default function PropertySubmissionForm() {
           property_type: formData.propertyType || "apartment",
           area_sqm: formData.area ? parseInt(formData.area) : 50,
           rooms: formData.rooms ? parseInt(formData.rooms) : undefined,
+          contact_name: formData.contactName.trim().slice(0, 120),
+          contact_phone: formData.contactPhone.trim().slice(0, 40),
+          contact_email: formData.contactEmail.trim().slice(0, 160),
           status: "active",
           listing_expires_at: expiresAt,
+
         } as any)
         .select().single();
 
@@ -216,6 +233,31 @@ export default function PropertySubmissionForm() {
                       <Input id="rooms" type="number" value={formData.rooms} onChange={(e) => handleInputChange("rooms", e.target.value)} placeholder="3" />
                     </div>
                   </div>
+
+                  <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 space-y-4">
+                    <div>
+                      <h3 className="font-bold text-sm">Contact details for buyers *</h3>
+                      <p className="text-xs text-muted-foreground">
+                        Shown on your listing so buyers can call or email you. They can also chat with you
+                        inside the app — replies appear in “My Properties → Messages”.
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="contactName">Contact name *</Label>
+                        <Input id="contactName" value={formData.contactName} onChange={(e) => handleInputChange("contactName", e.target.value)} placeholder="Your name" required />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="contactPhone">Phone number *</Label>
+                        <Input id="contactPhone" type="tel" value={formData.contactPhone} onChange={(e) => handleInputChange("contactPhone", e.target.value)} placeholder="+000 000 000 000" required />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="contactEmail">Email *</Label>
+                        <Input id="contactEmail" type="email" value={formData.contactEmail} onChange={(e) => handleInputChange("contactEmail", e.target.value)} placeholder="you@example.com" required />
+                      </div>
+                    </div>
+                  </div>
+
 
                   <div className="space-y-2">
                     <Label htmlFor="images">Photos (max {MAX_IMAGES})</Label>

@@ -238,7 +238,28 @@ export function PropertyDetailDialog({ property, open, onOpenChange }: PropertyD
           </div>
         </div>
 
+        {/* Owner contact */}
+        {(property.contact_name || property.contact_phone || property.contact_email) && (
+          <div className="py-4 border-t">
+            <h3 className="text-xl font-semibold mb-3">Contact the owner</h3>
+            <div className="space-y-2 text-sm">
+              {property.contact_name && <p className="font-semibold">{property.contact_name}</p>}
+              {property.contact_phone && (
+                <a href={`tel:${property.contact_phone}`} className="flex items-center gap-2 text-primary hover:underline">
+                  <Phone className="h-4 w-4" /> {property.contact_phone}
+                </a>
+              )}
+              {property.contact_email && (
+                <a href={`mailto:${property.contact_email}`} className="flex items-center gap-2 text-primary hover:underline break-all">
+                  <Mail className="h-4 w-4" /> {property.contact_email}
+                </a>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Contact Buttons */}
+
         <div className="flex flex-wrap gap-3 pt-4 border-t">
           <Button onClick={() => { onOpenChange(false); setChatOpen(true); }} className="flex-1 min-w-[180px]" size="lg" disabled={!!user && user.id === property.user_id}>
             <MessageCircle className="h-4 w-4 mr-2" />
