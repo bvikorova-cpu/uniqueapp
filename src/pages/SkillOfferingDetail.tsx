@@ -177,9 +177,24 @@ export default function SkillOfferingDetail() {
       message: message.trim() });
     setSending(false);
     if (error) {
-      toast({ title: "Could not send", description: error.message, variant: "destructive" });
+      const msg = error.message || "";
+      if (msg.includes("RATE_LIMIT")) {
+        toast({
+          title: "Slow down",
+          description: "Anti-spam limit: max 5 messages per minute, 15 per conversation per hour and 60 per day.",
+          variant: "destructive",
+        });
+      } else if (msg.includes("DUPLICATE_MESSAGE")) {
+        toast({ title: "Duplicate message", description: "You already sent this exact message a moment ago.", variant: "destructive" });
+      } else if (/row-level security/i.test(msg)) {
+        toast({ title: "Chat locked", description: "Unlock the chat with 1 credit first.", variant: "destructive" });
+        setUnlocked(false);
+      } else {
+        toast({ title: "Could not send", description: msg, variant: "destructive" });
+      }
       return;
     }
+
     setMessage("");
     toast({ title: "Message sent", description: "The provider will reply in their inbox." });
   };
