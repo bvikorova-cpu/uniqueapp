@@ -39,6 +39,8 @@ export function PropertyCard({ property, onViewDetails }: PropertyCardProps) {
   const { user } = useAuth();
   const [favorited, setFavorited] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
+  const [viewsCount, setViewsCount] = useState(property.views_count || 0);
+
 
   const primaryImage = property.property_images?.find(img => img.is_primary)?.image_url
     || property.property_images?.[0]?.image_url
