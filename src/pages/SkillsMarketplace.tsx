@@ -144,6 +144,7 @@ function SkillsMarketplaceContent() {
       const term = location.toLowerCase();
       list = list.filter((o) => (o.location || "").toLowerCase().includes(term));
     }
+    if (region !== "all") list = list.filter((o) => o.region === region);
     if (sort === "price_asc") list = [...list].sort((a, b) => (a.price_per_hour ?? 0) - (b.price_per_hour ?? 0));
     if (sort === "price_desc") list = [...list].sort((a, b) => (b.price_per_hour ?? 0) - (a.price_per_hour ?? 0));
     if (sort === "top_rated")
@@ -151,7 +152,11 @@ function SkillsMarketplaceContent() {
         (a, b) => (sellerStats[b.user_id]?.avg ?? 0) - (sellerStats[a.user_id]?.avg ?? 0),
       );
     return list;
-  }, [offerings, q, category, location, sort, sellerStats]);
+  }, [offerings, q, category, location, region, sort, sellerStats]);
+
+  const premiumList = useMemo(() => filtered.filter((o) => isActive(o.premium_until)), [filtered]);
+  const standardList = useMemo(() => filtered.filter((o) => !isActive(o.premium_until)), [filtered]);
+
 
   const activeFolder = CATEGORY_FOLDERS.find((f) => f.value === category);
 
