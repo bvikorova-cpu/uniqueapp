@@ -37,6 +37,8 @@ export function PropertyDashboard() {
   const [loading, setLoading] = useState(true);
   const [selectedProperty, setSelectedProperty] = useState<string | null>(null);
   const [uploaderOpen, setUploaderOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Property | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
