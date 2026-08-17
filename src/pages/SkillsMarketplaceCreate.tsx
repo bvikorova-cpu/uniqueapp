@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,11 +9,15 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Coins } from "lucide-react";
+import { SkillsAccessGate } from "@/components/skills/SkillsAccessGate";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const CATEGORIES = ["construction", "repairs", "cleaning", "gardening", "technology", "teaching", "creative", "other"] as const;
+
+const OFFERING_CREDIT_COST = 2;
 
 const Schema = z.object({ title: z.string().trim().min(5, "At least 5 characters").max(120),
   description: z.string().trim().min(20, "At least 20 characters").max(2000),
@@ -21,13 +25,24 @@ const Schema = z.object({ title: z.string().trim().min(5, "At least 5 characters
   price_per_hour: z.coerce.number().min(1, "Min 1 €").max(10000),
   location: z.string().trim().max(120).optional().or(z.literal("")) });
 
-export default function SkillsMarketplaceCreate() {
+function SkillsMarketplaceCreateForm() {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [form, setForm] = useState({ title: "", description: "", category: "other" as typeof CATEGORIES[number], price_per_hour: "", location: "" });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [balance, setBalance] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("ai_credits")
+      .select("credits_remaining")
+      .eq("user_id", user.id)
+      .maybeSingle()
+      .then(({ data }) => setBalance(data?.credits_remaining ?? 0));
+  }, [user]);
 
   if (!user) {
     navigate("/auth");
@@ -43,6 +58,22 @@ export default function SkillsMarketplaceCreate() {
     }
     setSubmitting(true);
     try {
+      // 1) Charge the flat opening fee (atomic, writes the credits ledger row)
+      const { data: newBalance, error: creditError } = await supabase.rpc("deduct_ai_credits_atomic", {
+        _user_id: user.id,
+        _amount: OFFERING_CREDIT_COST,
+      });
+      if (creditError) {
+        toast({
+          title: "Not enough credits",
+          description: `Opening an offering costs ${OFFERING_CREDIT_COST} credits. Top up and try again.`,
+          variant: "destructive",
+        });
+        setSubmitting(false);
+        return;
+      }
+      if (typeof newBalance === "number") setBalance(newBalance);
+
       let image_url: string | null = null;
       if (imageFile) {
         const path = `${user.id}/${Date.now()}-${imageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, "_")}`;
@@ -65,7 +96,7 @@ export default function SkillsMarketplaceCreate() {
         .select("id")
         .single();
       if (error) throw error;
-      toast({ title: "Offering published" });
+      toast({ title: "Offering published", description: `${OFFERING_CREDIT_COST} credits used · 0% commission.` });
       navigate(`/skills-marketplace/${data.id}`);
     } catch (err: any) {
       toast({ title: "Could not publish", description: err?.message ?? "Try again", variant: "destructive" });
@@ -77,17 +108,28 @@ export default function SkillsMarketplaceCreate() {
   return (
     <>
       <FloatingHowItWorks title="How Skills Marketplace Create works" steps={[
-          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
-          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
-          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
-          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+          { title: 'Pick a category', desc: 'Choose the category your offering belongs to.' },
+          { title: 'Describe the service', desc: 'Title, description, hourly price in EUR and optional location.' },
+          { title: `Pay ${OFFERING_CREDIT_COST} credits`, desc: 'Opening an offering costs 2 credits — no commission on the job.' },
+          { title: 'Get orders', desc: 'Buyers contact you, order and review your work.' },
         ]} />
       <div className="container mx-auto px-4 py-8 max-w-2xl">
       <Button variant="ghost" onClick={() => navigate("/skills-marketplace")} className="mb-4 gap-2">
         <ArrowLeft className="h-4 w-4" /> Back to marketplace
       </Button>
       <Card>
-        <CardHeader><CardTitle>Post a new offering</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle>Post a new offering</CardTitle>
+          <div className="flex items-center justify-between gap-2 flex-wrap pt-2">
+            <p className="text-sm text-muted-foreground">
+              Flat fee {OFFERING_CREDIT_COST} credits · 0% commission
+            </p>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline">{balance === null ? "—" : `${balance} credits`}</Badge>
+              <Button variant="outline" size="sm" onClick={() => navigate("/ai-credits")}>Top up</Button>
+            </div>
+          </div>
+        </CardHeader>
         <CardContent>
           <form onSubmit={submit} className="space-y-4">
             <div>
@@ -121,13 +163,25 @@ export default function SkillsMarketplaceCreate() {
               <Label>Cover image (optional)</Label>
               <Input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] ?? null)} />
             </div>
-            <Button type="submit" disabled={submitting} className="w-full">
-              {submitting ? "Publishing…" : "Publish offering"}
+            <Button type="submit" disabled={submitting} className="w-full gap-2">
+              <Coins className="h-4 w-4" />
+              {submitting ? "Publishing…" : `Publish offering · ${OFFERING_CREDIT_COST} credits`}
             </Button>
+            <p className="text-xs text-muted-foreground text-center">
+              {OFFERING_CREDIT_COST} credits are deducted once when publishing. No commission on your job.
+            </p>
           </form>
         </CardContent>
       </Card>
     </div>
     </>
     );
+}
+
+export default function SkillsMarketplaceCreate() {
+  return (
+    <SkillsAccessGate>
+      <SkillsMarketplaceCreateForm />
+    </SkillsAccessGate>
+  );
 }
