@@ -18,6 +18,9 @@ import { SKILL_REGIONS, regionLabel } from "@/components/skills/skillRegions";
 import { SkillRequestsBoard } from "@/components/skills/SkillRequestsBoard";
 import { SkillPromoteDialog } from "@/components/skills/SkillPromoteDialog";
 import { ProviderTrustBadges } from "@/components/skills/ProviderTrustBadges";
+import { PromotionBadge } from "@/components/skills/PromotionBadge";
+
+
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
@@ -47,7 +50,9 @@ type Offering = {
   region: string | null;
   image_url: string | null;
   created_at: string;
+  featured_at: string | null;
   featured_until: string | null;
+  premium_at: string | null;
   premium_until: string | null;
   completed_jobs: number | null;
 };
@@ -85,7 +90,7 @@ function SkillsMarketplaceContent() {
       setLoading(true);
       const { data } = await (supabase as any)
         .from("skill_offerings")
-        .select("id,user_id,title,description,category,price_per_hour,location,region,image_url,created_at,featured_until,premium_until,completed_jobs")
+        .select("id,user_id,title,description,category,price_per_hour,location,region,image_url,created_at,featured_at,featured_until,premium_at,premium_until,completed_jobs")
         .eq("is_active", true)
         .order("premium_until", { ascending: false, nullsFirst: false })
         .order("featured_until", { ascending: false, nullsFirst: false })
@@ -175,17 +180,16 @@ function SkillsMarketplaceContent() {
             <CardHeader className="pb-2">
               <div className="flex items-start justify-between gap-2">
                 <CardTitle className="text-lg line-clamp-2">{o.title}</CardTitle>
-                <div className="flex flex-col items-end gap-1 shrink-0">
-                  {premium && (
-                    <Badge className="gap-1 bg-amber-500 text-amber-50 hover:bg-amber-500">
-                      <Crown className="h-3 w-3" /> Premium
-                    </Badge>
-                  )}
-                  {!premium && top && (
-                    <Badge className="gap-1"><Flame className="h-3 w-3" /> Top</Badge>
-                  )}
+              <div className="flex flex-col items-end gap-1 shrink-0">
+                  <PromotionBadge
+                    featuredAt={o.featured_at}
+                    featuredUntil={o.featured_until}
+                    premiumAt={o.premium_at}
+                    premiumUntil={o.premium_until}
+                  />
                   <Badge variant="secondary" className="capitalize">{o.category}</Badge>
                 </div>
+
               </div>
             </CardHeader>
             <CardContent className="space-y-2">

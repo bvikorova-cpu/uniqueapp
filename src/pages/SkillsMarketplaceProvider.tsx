@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, Star, MapPin, Euro, Briefcase } from "lucide-react";
 import SellerReviewsList from "@/components/skills/SellerReviewsList";
 import { SEO } from "@/components/SEO";
+import { PromotionBadge } from "@/components/skills/PromotionBadge";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type Profile = { id: string; full_name: string | null; avatar_url: string | null; bio: string | null; location: string | null };
@@ -16,7 +17,10 @@ type Profile = { id: string; full_name: string | null; avatar_url: string | null
 type Offering = {
   id: string; title: string; description: string; category: string;
   price_per_hour: number | null; location: string | null; image_url: string | null; is_active: boolean;
+  featured_at: string | null; featured_until: string | null;
+  premium_at: string | null; premium_until: string | null;
 };
+
 
 export default function SkillsMarketplaceProvider() {
   const { userId } = useParams<{ userId: string }>();
@@ -34,10 +38,13 @@ export default function SkillsMarketplaceProvider() {
         supabase.from("profiles").select("id,full_name,avatar_url,bio,location").eq("id", userId).maybeSingle(),
         supabase
           .from("skill_offerings")
-          .select("id,title,description,category,price_per_hour,location,image_url,is_active")
+          .select("id,title,description,category,price_per_hour,location,image_url,is_active,featured_at,featured_until,premium_at,premium_until")
           .eq("user_id", userId)
           .eq("is_active", true)
+          .order("premium_until", { ascending: false, nullsFirst: false })
+          .order("featured_until", { ascending: false, nullsFirst: false })
           .order("created_at", { ascending: false }),
+
         supabase.from("seller_reviews").select("rating").eq("seller_id", userId).eq("is_hidden", false),
       ]);
       setProfile(p as Profile | null);
@@ -112,10 +119,20 @@ export default function SkillsMarketplaceProvider() {
                 </Link>
               )}
               <CardHeader className="pb-2">
-                <Badge variant="secondary" className="capitalize w-fit mb-1">{o.category}</Badge>
-                <CardTitle className="text-base line-clamp-2">
-                  <Link to={`/skills-marketplace/${o.id}`} className="hover:underline">{o.title}</Link>
-                </CardTitle>
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <Badge variant="secondary" className="capitalize w-fit mb-1">{o.category}</Badge>
+                    <CardTitle className="text-base line-clamp-2">
+                      <Link to={`/skills-marketplace/${o.id}`} className="hover:underline">{o.title}</Link>
+                    </CardTitle>
+                  </div>
+                  <PromotionBadge
+                    featuredAt={o.featured_at}
+                    featuredUntil={o.featured_until}
+                    premiumAt={o.premium_at}
+                    premiumUntil={o.premium_until}
+                  />
+                </div>
               </CardHeader>
               <CardContent className="pt-0">
                 <p className="text-sm text-muted-foreground line-clamp-2 mb-2">{o.description}</p>
@@ -125,6 +142,7 @@ export default function SkillsMarketplaceProvider() {
                   </p>
                 )}
               </CardContent>
+
             </Card>
           ))}
         </div>
