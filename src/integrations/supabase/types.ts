@@ -48308,6 +48308,9 @@ export type Database = {
           bathrooms: number | null
           bedrooms: number | null
           city: string
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
           created_at: string | null
           description: string | null
           features: string[] | null
@@ -48337,6 +48340,9 @@ export type Database = {
           bathrooms?: number | null
           bedrooms?: number | null
           city: string
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           created_at?: string | null
           description?: string | null
           features?: string[] | null
@@ -48366,6 +48372,9 @@ export type Database = {
           bathrooms?: number | null
           bedrooms?: number | null
           city?: string
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           created_at?: string | null
           description?: string | null
           features?: string[] | null
