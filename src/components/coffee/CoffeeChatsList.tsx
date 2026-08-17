@@ -15,6 +15,14 @@ interface ChatRow {
   createdAt: string;
 }
 
+/** Resolve a real display name from profile fields. */
+function resolveName(fullName: string | null, username: string | null, email: string | null): string {
+  if (fullName?.trim()) return fullName.trim();
+  if (username?.trim()) return username.trim();
+  if (email?.includes("@")) return email.split("@")[0];
+  return "Coffee buddy";
+}
+
 /** Open coffee chats created by right-swipes (✓). */
 export const CoffeeChatsList = () => {
   const [chatMatchId, setChatMatchId] = useState<string | null>(null);
