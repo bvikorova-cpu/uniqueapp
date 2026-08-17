@@ -24,6 +24,9 @@ import lentilSoup from "@/assets/recipes/lentil-soup.jpg";
 import bakedCodLemon from "@/assets/recipes/baked-cod-lemon.jpg";
 import spinachQuiche from "@/assets/recipes/spinach-quiche.jpg";
 import chiaPuddingMango from "@/assets/recipes/chia-pudding-mango.jpg";
+import eggsBenedict from "@/assets/recipes/eggs-benedict.jpg";
+import brazilianFeijoada from "@/assets/recipes/brazilian-feijoada.jpg";
+import greekMoussaka from "@/assets/recipes/greek-moussaka.jpg";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { toast } from "sonner";
@@ -368,7 +371,7 @@ const COOKING_RECIPES: Recipe[] = [
     time: "30 min",
     servings: 2,
     calories: 490,
-    image_url: "https://images.unsplash.com/photo-1608039829572-9b5bfcc4e0d4?w=800",
+    image_url: eggsBenedict,
     description:
       "Perfectly poached eggs on toasted English muffins with Canadian bacon, topped with silky, buttery hollandaise sauce.",
     ingredients: [
@@ -607,7 +610,7 @@ const COOKING_RECIPES: Recipe[] = [
     time: "240 min",
     servings: 8,
     calories: 580,
-    image_url: "https://images.unsplash.com/photo-1601409751051-c45a6cb4f2e6?w=800",
+    image_url: brazilianFeijoada,
     description:
       "Brazil's national dish: a hearty black bean stew with assorted smoked and cured meats, served with rice and farofa.",
     ingredients: [
@@ -645,7 +648,7 @@ const COOKING_RECIPES: Recipe[] = [
     time: "120 min",
     servings: 8,
     calories: 520,
-    image_url: "https://images.unsplash.com/photo-1544378730-8b5104b38712?w=800",
+    image_url: greekMoussaka,
     description:
       "Layers of spiced lamb, silky eggplant, and rich béchamel baked until golden—Greece's beloved casserole.",
     ingredients: [
