@@ -89,6 +89,35 @@ export function PropertyDashboard() {
     setUploaderOpen(true);
   };
 
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Please sign in again.");
+
+      await supabase.from('property_images').delete().eq('property_id', deleteTarget.id);
+
+      const { error } = await supabase
+        .from('properties')
+        .delete()
+        .eq('id', deleteTarget.id)
+        .eq('user_id', user.id);
+      if (error) throw error;
+
+      setProperties((prev) => prev.filter((p) => p.id !== deleteTarget.id));
+      toast({ title: "Listing deleted", description: "Your listing was removed. Credits already spent are not refunded." });
+      setDeleteTarget(null);
+    } catch (error: any) {
+      console.error('Error deleting property:', error);
+      toast({ variant: "destructive", title: "Delete failed", description: error?.message || "Could not delete this listing." });
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+
+
   if (loading) {
     return (
     <>
