@@ -109,8 +109,12 @@ export default function PropertySubmissionForm() {
           property_type: formData.propertyType || "apartment",
           area_sqm: formData.area ? parseInt(formData.area) : 50,
           rooms: formData.rooms ? parseInt(formData.rooms) : undefined,
+          contact_name: formData.contactName.trim().slice(0, 120),
+          contact_phone: formData.contactPhone.trim().slice(0, 40),
+          contact_email: formData.contactEmail.trim().slice(0, 160),
           status: "active",
           listing_expires_at: expiresAt,
+
         } as any)
         .select().single();
 
