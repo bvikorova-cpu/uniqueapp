@@ -234,6 +234,31 @@ export default function PropertySubmissionForm() {
                     </div>
                   </div>
 
+                  <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 space-y-4">
+                    <div>
+                      <h3 className="font-bold text-sm">Contact details for buyers *</h3>
+                      <p className="text-xs text-muted-foreground">
+                        Shown on your listing so buyers can call or email you. They can also chat with you
+                        inside the app — replies appear in “My Properties → Messages”.
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="contactName">Contact name *</Label>
+                        <Input id="contactName" value={formData.contactName} onChange={(e) => handleInputChange("contactName", e.target.value)} placeholder="Your name" required />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="contactPhone">Phone number *</Label>
+                        <Input id="contactPhone" type="tel" value={formData.contactPhone} onChange={(e) => handleInputChange("contactPhone", e.target.value)} placeholder="+000 000 000 000" required />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="contactEmail">Email *</Label>
+                        <Input id="contactEmail" type="email" value={formData.contactEmail} onChange={(e) => handleInputChange("contactEmail", e.target.value)} placeholder="you@example.com" required />
+                      </div>
+                    </div>
+                  </div>
+
+
                   <div className="space-y-2">
                     <Label htmlFor="images">Photos (max {MAX_IMAGES})</Label>
                     <div className="border-2 border-dashed border-border rounded-xl p-6 text-center">
