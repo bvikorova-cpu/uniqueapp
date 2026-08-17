@@ -853,6 +853,21 @@ ${recipientName ? `Recipient's name: ${recipientName}` : ""}
 ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
     }
 
+    // Cooking tools render the answer with a markdown renderer — enforce clean,
+    // properly structured markdown so users never see raw ** or --- soup.
+    if (type === "cooking_ai" || type === "cooking_video" || type === "chef_chat" || type === "wine_pairing") {
+      systemPrompt += `
+
+FORMATTING RULES (strict):
+- Reply in clean GitHub-flavoured markdown only.
+- Structure the answer with "## " section headings and "### " sub-headings. Never label sections as "1)", "2)" or with bare **bold** lines.
+- Use "- " bullet lists, numbered lists for real step-by-step instructions, and markdown tables for any comparison or data.
+- Use **bold** only for short inline emphasis inside a sentence. Never wrap a whole heading or paragraph in asterisks.
+- Never output "---" horizontal dividers, no emoji spam, no preamble like "Sure!" or "As a chef...". Start directly with the first "## " heading.
+- Keep lines short and mobile-friendly (max ~2 sentences per bullet). Metric units and EUR (€) only.
+- Finish every section you start — never cut off mid-sentence.`;
+    }
+
     console.log("Generating with OpenAI, type:", type || "message", "style:", style);
 
     const maxTokens = (() => {
