@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Video, Eye, Calendar, Loader2, Trash2, MessageCircle } from "lucide-react";
+import { Video, Eye, Calendar, Loader2, Trash2, MessageCircle, Crown } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,6 +16,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { PropertyConversationsDialog } from "./PropertyConversationsDialog";
+import { PropertyTopDialog } from "./PropertyTopDialog";
 import { usePropertyUnread } from "@/hooks/usePropertyUnread";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
@@ -28,6 +29,8 @@ interface Property {
   views_count: number;
   virtual_tour_url: string | null;
   listing_expires_at: string | null;
+  is_featured?: boolean | null;
+  featured_until?: string | null;
   property_images: Array<{
     image_url: string;
   }>;
@@ -39,6 +42,7 @@ export function PropertyDashboard() {
   const [deleteTarget, setDeleteTarget] = useState<Property | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [inboxOpen, setInboxOpen] = useState(false);
+  const [topTarget, setTopTarget] = useState<Property | null>(null);
   const { totalUnread } = usePropertyUnread({ notifyToasts: false });
   const { toast } = useToast();
 
@@ -68,6 +72,9 @@ export function PropertyDashboard() {
           views_count,
           virtual_tour_url,
           listing_expires_at,
+          is_featured,
+          featured_until,
+
           property_images (image_url)
         `)
         .eq('user_id', user.id)
@@ -221,6 +228,23 @@ export function PropertyDashboard() {
 
 
 
+              {property.featured_until && new Date(property.featured_until) > new Date() ? (
+                <div className="flex items-center gap-2 text-sm font-bold text-amber-600">
+                  <Crown className="h-4 w-4" />
+                  TOP until {new Date(property.featured_until).toLocaleDateString()}
+                </div>
+              ) : null}
+
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full border-amber-500/40 text-amber-600 hover:bg-amber-500/10"
+                onClick={() => setTopTarget(property)}
+              >
+                <Crown className="h-4 w-4 mr-2" />
+                {property.featured_until && new Date(property.featured_until) > new Date() ? "Extend TOP" : "Top this listing"}
+              </Button>
+
               <Button
                 variant="ghost"
                 size="sm"
@@ -234,6 +258,15 @@ export function PropertyDashboard() {
           </Card>
         ))}
       </div>
+
+      <PropertyTopDialog
+        open={!!topTarget}
+        onOpenChange={(o) => !o && setTopTarget(null)}
+        propertyId={topTarget?.id ?? null}
+        propertyTitle={topTarget?.title}
+        featuredUntil={topTarget?.featured_until ?? null}
+        onSuccess={() => loadProperties()}
+      />
 
       <AlertDialog open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)}>
         <AlertDialogContent>
