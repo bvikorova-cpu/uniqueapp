@@ -49536,6 +49536,36 @@ export type Database = {
         }
         Relationships: []
       }
+      puzzle_piece_collection: {
+        Row: {
+          copies: number
+          created_at: string
+          id: string
+          piece_index: number
+          puzzle_slug: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          copies?: number
+          created_at?: string
+          id?: string
+          piece_index: number
+          puzzle_slug: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          copies?: number
+          created_at?: string
+          id?: string
+          piece_index?: number
+          puzzle_slug?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       pwa_install_events: {
         Row: {
           created_at: string
@@ -70363,6 +70393,14 @@ export type Database = {
           _user_id: string
         }
         Returns: undefined
+      }
+      puzzle_draw_piece: {
+        Args: { _puzzle_slug: string; _total_pieces: number }
+        Returns: Json
+      }
+      puzzle_keep_piece: {
+        Args: { _piece_index: number; _puzzle_slug: string }
+        Returns: Json
       }
       recompute_affiliate_tier: {
         Args: { _user_id: string }
