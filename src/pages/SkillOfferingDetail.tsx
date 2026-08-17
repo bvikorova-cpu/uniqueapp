@@ -380,9 +380,6 @@ export default function SkillOfferingDetail() {
                       </p>
                     </>
                   )}
-
-                    </>
-                  )}
                 </div>
 
               </div>
