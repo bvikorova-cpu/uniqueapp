@@ -21,6 +21,8 @@ interface Property {
   bedrooms: number | null;
   property_type: string;
   is_featured: boolean;
+  is_premium?: boolean | null;
+
   views_count: number;
   status: string;
   listing_expires_at: string | null;
