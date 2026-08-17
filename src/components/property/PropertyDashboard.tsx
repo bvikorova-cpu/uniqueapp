@@ -15,7 +15,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { VirtualTourUploader } from "./VirtualTourUploader";
 import { PropertyConversationsDialog } from "./PropertyConversationsDialog";
 import { usePropertyUnread } from "@/hooks/usePropertyUnread";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
