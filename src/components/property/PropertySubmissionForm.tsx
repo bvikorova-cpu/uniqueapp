@@ -106,7 +106,7 @@ export default function PropertySubmissionForm() {
       // 3) Upload photos
       await Promise.all(images.map(async (image, idx) => {
         const fileExt = (image.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
-        const fileName = `${property.id}/${crypto.randomUUID()}.${fileExt}`;
+        const fileName = `${user.id}/${property.id}/${crypto.randomUUID()}.${fileExt}`;
         const { error: uploadError } = await supabase.storage.from("property-images").upload(fileName, image, { contentType: image.type });
         if (uploadError) throw uploadError;
         const { data: { publicUrl } } = supabase.storage.from("property-images").getPublicUrl(fileName);
