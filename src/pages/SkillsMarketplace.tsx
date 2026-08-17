@@ -314,22 +314,24 @@ function SkillsMarketplaceContent() {
               Pick a category folder or search across all services.
             </p>
           </div>
-          <div className="flex gap-2 flex-wrap md:justify-end">
+          <div className="flex flex-col sm:flex-row gap-2 sm:flex-wrap sm:justify-end">
             {user && (
-              <Button variant="outline" onClick={() => navigate("/skills-marketplace/mine")} className="gap-2 rounded-full">
+              <Button variant="outline" onClick={() => navigate("/skills-marketplace/mine")} className="gap-2 rounded-full w-full sm:w-auto">
                 My offerings
               </Button>
             )}
             {user && (
-              <Button variant="outline" onClick={() => navigate("/skills-marketplace/orders")} className="gap-2 rounded-full">
+              <Button variant="outline" onClick={() => navigate("/skills-marketplace/orders")} className="gap-2 rounded-full w-full sm:w-auto">
                 My orders
               </Button>
             )}
             <Button
               onClick={() => (user ? navigate("/skills-marketplace/new") : navigate("/auth"))}
-              className="gap-2 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg hover:opacity-90"
+              className="gap-2 rounded-full w-full sm:w-auto bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg hover:opacity-90"
             >
-              <Plus className="h-4 w-4" /> Post an offering · 2 credits
+              <Plus className="h-4 w-4" />
+              <span className="sm:hidden">Post offering · 2 cr</span>
+              <span className="hidden sm:inline">Post an offering · 2 credits</span>
             </Button>
           </div>
         </div>
