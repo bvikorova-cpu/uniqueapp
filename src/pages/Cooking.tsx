@@ -1213,47 +1213,6 @@ const Cooking = () => {
           </div>
         </div>
 
-        <div className="mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20">
-                <Sparkles className="h-6 w-6 text-orange-400" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-foreground">AI Cooking Tools</h2>
-                <p className="text-muted-foreground text-sm">{aiFeatures.length + NEW_AI_TOOLS.length} powerful AI-powered features at your fingertips</p>
-              </div>
-            </div>
-            <Button
-              onClick={() => navigate("/cooking-ai")}
-              className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
-            >
-              View All Tools
-            </Button>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {aiFeatures.map((feature, idx) => (
-              <Card
-                key={idx}
-                className="bg-card/50 backdrop-blur-sm border-border/50 hover:border-orange-500/50 cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-lg hover:shadow-orange-500/10 group"
-                onClick={() => navigate(feature.path)}
-              >
-                <CardContent className="p-4 text-center">
-                  <div
-                    className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:scale-110 transition-transform`}
-                  >
-                    <feature.icon className="h-7 w-7 text-white" />
-                  </div>
-                  <h3 className="font-semibold text-sm mb-1">{feature.title}</h3>
-                  <p className="text-xs text-muted-foreground line-clamp-2">{feature.description}</p>
-                  <Badge className="mt-2 bg-orange-500/20 text-orange-400 border-orange-500/30 text-xs">AI Powered</Badge>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-
         <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="mb-8">
           <TabsList className="w-full justify-start overflow-x-auto flex-nowrap h-auto gap-1 sm:gap-2 bg-transparent p-1">
             {categories.map((category) => (
