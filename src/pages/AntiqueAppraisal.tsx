@@ -149,24 +149,26 @@ const AntiqueAppraisal = () => {
         <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-center antique-gold-text">
           Antique Identification
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-          {tools.map((tool, i) => (
-            <motion.div key={`${tool.id}-${i}`} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.6 + i * 0.05, type: "spring" }}
-              whileHover={{ scale: 1.04, y: -4 }} whileTap={{ scale: 0.97 }}>
-              <Card
-                className="antique-frame rounded-md p-4 sm:p-5 cursor-pointer transition-all h-full"
-                onClick={() => setActiveView(tool.id)}
-              >
-                <tool.icon className={`h-7 w-7 sm:h-8 sm:w-8 ${tool.color} mb-2`} />
-                <h3 className="font-bold text-sm sm:text-base antique-display">{tool.title}</h3>
-                <p className="text-xs text-muted-foreground mt-1">{tool.desc}</p>
-                <span className="antique-seal text-[10px] sm:text-xs px-2.5 py-1 rounded-full mt-3 inline-block tracking-wider">
-                  {tool.cost}
-                </span>
-              </Card>
-            </motion.div>
-          ))}
+        <div className="flex justify-center">
+          <div className="grid grid-cols-1 gap-3 sm:gap-4 max-w-sm w-full">
+            {tools.map((tool, i) => (
+              <motion.div key={`${tool.id}-${i}`} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.6 + i * 0.05, type: "spring" }}
+                whileHover={{ scale: 1.04, y: -4 }} whileTap={{ scale: 0.97 }}>
+                <Card
+                  className="antique-frame rounded-md p-4 sm:p-5 cursor-pointer transition-all h-full text-center"
+                  onClick={() => setActiveView(tool.id)}
+                >
+                  <tool.icon className={`h-7 w-7 sm:h-8 sm:w-8 ${tool.color} mb-2 mx-auto`} />
+                  <h3 className="font-bold text-sm sm:text-base antique-display">{tool.title}</h3>
+                  <p className="text-xs text-muted-foreground mt-1">{tool.desc}</p>
+                  <span className="antique-seal text-[10px] sm:text-xs px-2.5 py-1 rounded-full mt-3 inline-block tracking-wider">
+                    {tool.cost}
+                  </span>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
