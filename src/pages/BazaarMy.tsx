@@ -109,7 +109,7 @@ export default function BazaarMy() {
     } finally { setBusy(false); }
   };
 
-  const patch = async (it: Item, values: Record<string, any>, msg: string) => {
+  const patch = async (it: Item, values: { is_active?: boolean; is_sold?: boolean }, msg: string) => {
     const { error } = await supabase.from("bazaar_items").update(values).eq("id", it.id);
     if (error) { toast({ title: "Action failed", description: error.message, variant: "destructive" }); return; }
     toast({ title: msg });
