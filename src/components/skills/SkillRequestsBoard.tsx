@@ -122,7 +122,7 @@ export function SkillRequestsBoard({ category }: { category?: string | null }) {
         _deadline: form.deadline || null,
       });
       if (error) throw error;
-      toast({ title: "Request published", description: "Providers can now send you offers." });
+      toast({ title: "Request published", description: "2 credits used. Providers can now send you offers." });
       setCreateOpen(false);
       setForm({ title: "", description: "", category: category || "other", region: "city", location: "", budget: "", deadline: "" });
       load();
