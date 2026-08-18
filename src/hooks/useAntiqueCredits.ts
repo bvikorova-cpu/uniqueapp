@@ -26,8 +26,15 @@ export const useAntiqueCredits = () => {
 
   const identifyAntique = useMutation({
     mutationFn: async ({ imageUrl, analysisType }: { imageUrl: string; analysisType: string }) => {
-      const { data, error } = await supabase.functions.invoke('identify-antique', {
-        body: { imageUrl, analysisType }
+      // Call the deployed vision router directly. The legacy identify-antique
+      // alias is handled by two app-wide proxy layers and can be routed to the
+      // text generator when the later alias patch has not loaded yet.
+      const { data, error } = await supabase.functions.invoke('universal-vision-analyzer', {
+        body: {
+          task: 'antique_identify',
+          imageUrl,
+          analysisType,
+        }
       });
       
       if (error) throw error;
