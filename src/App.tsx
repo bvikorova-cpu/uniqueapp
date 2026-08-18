@@ -13,6 +13,7 @@ const UniAssistant = lazy(() => import("@/components/assistant/UniAssistant"));
 const GoogleTranslateWidget = lazy(() => import("@/components/GoogleTranslateWidget"));
 const BazaarCreate = lazy(() => import("@/pages/BazaarCreate"));
 const BazaarSavedSearches = lazy(() => import("@/pages/BazaarSavedSearches"));
+const BazaarMessages = lazy(() => import("@/pages/BazaarMessages"));
 const InvestmentPortfolio = lazy(() => import("@/pages/InvestmentPortfolio"));
 const SkillsMarketplace = lazy(() => import("@/pages/SkillsMarketplace"));
 const SkillsMarketplaceCreate = lazy(() => import("@/pages/SkillsMarketplaceCreate"));
@@ -732,6 +733,7 @@ const App = () => {
                         <Route path="/fit-slim" element={<FitSlim />} />
                         <Route path="/marketplace" element={<SkillsMarketplace />} />
                         <Route path="/bazaar" element={<Bazaar />} />
+                        <Route path="/bazaar/messages" element={<ProtectedRoute><BazaarMessages /></ProtectedRoute>} />
                         <Route path="/coupon-marketplace" element={<CouponMarketplace />} />
                         <Route path="/coupons/season/:slug" element={<CouponSeasonalHub />} />
                         <Route path="/coupons/:brand" element={<CouponBrandPage />} />
