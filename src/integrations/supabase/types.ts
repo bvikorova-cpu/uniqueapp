@@ -62026,6 +62026,38 @@ export type Database = {
           },
         ]
       }
+      user_card_trash: {
+        Row: {
+          category_slug: string
+          collectible_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          category_slug: string
+          collectible_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          category_slug?: string
+          collectible_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_card_trash_collectible_id_fkey"
+            columns: ["collectible_id"]
+            isOneToOne: false
+            referencedRelation: "card_collectibles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_castle_certificates: {
         Row: {
           castle_id: string
@@ -68211,6 +68243,8 @@ export type Database = {
           user_id: string
         }[]
       }
+      card_trash_add: { Args: { _collectible_id: string }; Returns: string }
+      card_trash_recycle: { Args: { _trash_ids: string[] }; Returns: Json }
       challenge_monthly_prize_pool_cents: { Args: never; Returns: number }
       challenge_period_key: { Args: { _type: string }; Returns: string }
       challenge_tier: { Args: { _user_id: string }; Returns: string }
