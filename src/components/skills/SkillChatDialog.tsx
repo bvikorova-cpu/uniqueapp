@@ -35,6 +35,8 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const markRead = async () => {
