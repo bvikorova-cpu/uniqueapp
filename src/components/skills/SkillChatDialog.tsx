@@ -56,7 +56,7 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
     const fetchMessages = async (initial = false) => {
       const { data } = await supabase
         .from("marketplace_responses")
-        .select("id, sender_id, receiver_id, message, created_at")
+        .select("id, sender_id, receiver_id, message, created_at, attachment_path, attachment_type")
         .eq("offering_id", offeringId)
         .or(`sender_id.eq.${otherId},receiver_id.eq.${otherId}`)
         .order("created_at", { ascending: true });
@@ -115,7 +115,7 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
       sender_id: user.id,
       receiver_id: otherId,
       message: trimmed,
-    }).select("id, sender_id, receiver_id, message, created_at").maybeSingle();
+    }).select("id, sender_id, receiver_id, message, created_at, attachment_path, attachment_type").maybeSingle();
     setSending(false);
     if (error) {
       const msg = error.message || "";
