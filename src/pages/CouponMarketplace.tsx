@@ -32,7 +32,6 @@ import { StoreReputationView } from "@/components/coupon/views/StoreReputationVi
 import { PriceHistoryView } from "@/components/coupon/views/PriceHistoryView";
 import { NegotiationBotView } from "@/components/coupon/views/NegotiationBotView";
 import { WishlistAlertsView } from "@/components/coupon/views/WishlistAlertsView";
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const CATEGORY_FOLDERS = [
   { value: "food", label: "Food & Dining", icon: Store, desc: "Restaurants, delivery, cafés" },
@@ -355,20 +354,9 @@ export default function CouponMarketplace() {
         canonical="/coupon-marketplace"
       />
 
-      <FloatingHowItWorks
-        title="How Coupon Marketplace works"
-        steps={[
-          { title: "Browse for free", desc: "Search coupons, gift cards and vouchers by category, store or city." },
-          { title: "Post for 2 credits", desc: "Publish your own coupon listing. Contact details are hidden automatically." },
-          { title: "Unlock the chat for 2 credits", desc: "The first message to a seller costs 2 credits, then chat freely." },
-          { title: "Deal directly", desc: "You agree on price and payment between yourselves — the platform takes no commission." },
-          { title: "Promote if you want", desc: "TOP: 7 days / 15 cr, 14 days / 25 cr, 30 days / 45 cr. PREMIUM: 30 days / 100 cr." },
-        ]}
-      />
-
       <div className="min-h-screen bg-background pb-12 pt-16 sm:pt-20">
         <div className="container mx-auto max-w-7xl px-3 sm:px-4">
-          <CouponHero couponCount={coupons.length} sellerCount={sellerCount} />
+          <CouponHero couponCount={coupons.length} />
 
           <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -492,8 +480,8 @@ export default function CouponMarketplace() {
             <h2 className="mb-1 text-2xl font-bold tracking-tight">AI coupon tools</h2>
             <p className="mb-4 text-sm text-muted-foreground">Each tool costs credits and runs on real listing data.</p>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {AI_TOOLS.map((t) => (
-                <MarketplaceToolCard key={t.id} {...t} onClick={() => setActiveView(t.id)} />
+              {AI_TOOLS.map((t, i) => (
+                <MarketplaceToolCard key={t.id} tool={t} index={i} onSelect={() => setActiveView(t.id)} />
               ))}
             </div>
           </section>
