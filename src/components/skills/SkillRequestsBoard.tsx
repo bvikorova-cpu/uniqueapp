@@ -263,7 +263,7 @@ export function SkillRequestsBoard({ category }: { category?: string | null }) {
               </div>
               <DialogFooter>
                 <Button onClick={submitRequest} disabled={saving} className="gap-2">
-                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />} Publish request
+                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />} Publish request (2 credits)
                 </Button>
               </DialogFooter>
             </DialogContent>
