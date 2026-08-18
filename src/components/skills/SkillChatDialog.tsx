@@ -7,6 +7,7 @@ import { Loader2, Send, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { ChatAttachmentPicker, ChatAttachmentView, uploadChatMedia } from "@/components/chat/ChatAttachment";
 
 interface Msg {
   id: string;
@@ -14,7 +15,10 @@ interface Msg {
   receiver_id: string;
   message: string;
   created_at: string;
+  attachment_path?: string | null;
+  attachment_type?: string | null;
 }
+
 
 interface Props {
   open: boolean;
@@ -31,6 +35,8 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const markRead = async () => {
@@ -52,7 +58,7 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
     const fetchMessages = async (initial = false) => {
       const { data } = await supabase
         .from("marketplace_responses")
-        .select("id, sender_id, receiver_id, message, created_at")
+        .select("id, sender_id, receiver_id, message, created_at, attachment_path, attachment_type")
         .eq("offering_id", offeringId)
         .or(`sender_id.eq.${otherId},receiver_id.eq.${otherId}`)
         .order("created_at", { ascending: true });
@@ -104,14 +110,32 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
   const send = async () => {
     if (!user) { toast.error("Please sign in"); return; }
     const trimmed = content.trim();
-    if (trimmed.length < 5) { toast.error("Message is too short"); return; }
+    if (!file && trimmed.length < 5) { toast.error("Message is too short"); return; }
     setSending(true);
+
+    let attachment_path: string | null = null;
+    let attachment_type: string | null = null;
+    if (file) {
+      try {
+        attachment_path = await uploadChatMedia(file, user.id);
+        attachment_type = file.type;
+      } catch (e: any) {
+        setSending(false);
+        toast.error(e?.message || "Upload failed");
+        return;
+      }
+    }
+
+    const body = trimmed || (file?.type.startsWith("video/") ? `🎬 ${file.name}` : `📷 ${file?.name ?? "photo"}`);
+
     const { data: inserted, error } = await supabase.from("marketplace_responses").insert({
       offering_id: offeringId,
       sender_id: user.id,
       receiver_id: otherId,
-      message: trimmed,
-    }).select("id, sender_id, receiver_id, message, created_at").maybeSingle();
+      message: body,
+      attachment_path,
+      attachment_type,
+    }).select("id, sender_id, receiver_id, message, created_at, attachment_path, attachment_type").maybeSingle();
     setSending(false);
     if (error) {
       const msg = error.message || "";
@@ -131,8 +155,9 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
       setMessages((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m]));
     }
     setContent("");
-
+    setFile(null);
   };
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -157,6 +182,9 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
                   <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
                     <div className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${mine ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
                       <p className="whitespace-pre-wrap break-words">{m.message}</p>
+                      {m.attachment_path && (
+                        <ChatAttachmentView path={m.attachment_path} type={m.attachment_type} />
+                      )}
                       <p className={`text-[10px] mt-1 ${mine ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
                         {new Date(m.created_at).toLocaleString()}
                       </p>
@@ -168,7 +196,8 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
           )}
         </ScrollArea>
 
-        <div className="flex gap-2">
+        <div className="relative flex gap-2">
+          <ChatAttachmentPicker file={file} onFileChange={setFile} disabled={sending} />
           <Textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
@@ -177,10 +206,11 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
             disabled={sending}
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
           />
-          <Button onClick={send} disabled={sending || content.trim().length < 5}>
+          <Button onClick={send} disabled={sending || (!file && content.trim().length < 5)}>
             {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           </Button>
         </div>
+
       </DialogContent>
     </Dialog>
   );

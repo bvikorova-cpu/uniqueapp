@@ -7,6 +7,7 @@ import { Loader2, Send, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { ChatAttachmentPicker, ChatAttachmentView, uploadChatMedia } from "@/components/chat/ChatAttachment";
 
 interface Msg {
   id: string;
@@ -15,7 +16,10 @@ interface Msg {
   seller_id: string;
   content: string;
   created_at: string;
+  attachment_path?: string | null;
+  attachment_type?: string | null;
 }
+
 
 interface Props {
   open: boolean;
@@ -33,6 +37,8 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const buyerId = buyerIdOverride ?? (user?.id && user.id !== sellerId ? user.id : null);
@@ -106,13 +112,31 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
     if (!user) { toast.error("Please sign in to message the seller"); return; }
     if (!buyerId) { toast.error("You can't message your own listing"); return; }
     const trimmed = content.trim();
-    if (!trimmed) return;
+    if (!trimmed && !file) return;
     setSending(true);
+
+    let attachment_path: string | null = null;
+    let attachment_type: string | null = null;
+    if (file) {
+      try {
+        attachment_path = await uploadChatMedia(file, user.id);
+        attachment_type = file.type;
+      } catch (e: any) {
+        setSending(false);
+        toast.error(e?.message || "Upload failed");
+        return;
+      }
+    }
+
+    const body = trimmed || (file?.type.startsWith("video/") ? `🎬 ${file.name}` : `📷 ${file?.name ?? "photo"}`);
+
     const { data: inserted, error } = await supabase.from("property_messages").insert({ property_id: propertyId,
       buyer_id: buyerId,
       seller_id: sellerId,
       sender_id: user.id,
-      content: trimmed }).select("*").maybeSingle();
+      content: body,
+      attachment_path,
+      attachment_type }).select("*").maybeSingle();
     setSending(false);
     if (error) { toast.error(error.message); return; }
     if (inserted) {
@@ -120,7 +144,9 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
       setMessages((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m]));
     }
     setContent("");
+    setFile(null);
   };
+
 
 
   return (
@@ -144,6 +170,9 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
                   <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
                     <div className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${mine ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
                       <p className="whitespace-pre-wrap break-words">{m.content}</p>
+                      {m.attachment_path && (
+                        <ChatAttachmentView path={m.attachment_path} type={m.attachment_type} />
+                      )}
                       <p className={`text-[10px] mt-1 ${mine ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
                         {new Date(m.created_at).toLocaleString()}
                       </p>
@@ -155,7 +184,8 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
           )}
         </ScrollArea>
 
-        <div className="flex gap-2">
+        <div className="relative flex gap-2">
+          <ChatAttachmentPicker file={file} onFileChange={setFile} disabled={!buyerId || sending} />
           <Textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
@@ -164,10 +194,11 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
             disabled={!buyerId || sending}
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
           />
-          <Button onClick={send} disabled={!buyerId || sending || !content.trim()}>
+          <Button onClick={send} disabled={!buyerId || sending || (!file && !content.trim())}>
             {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           </Button>
         </div>
+
       </DialogContent>
     </Dialog>
   );
