@@ -336,13 +336,13 @@ export default function Bazaar() {
         <div className="absolute -top-24 -right-24 h-96 w-96 animate-pulse rounded-full bg-primary/25 blur-3xl" />
         <div className="absolute -bottom-28 -left-20 h-80 w-80 animate-pulse rounded-full bg-accent/25 blur-3xl" />
         <div className="container relative mx-auto max-w-7xl px-4 py-16 text-center md:py-20">
-          <Badge variant="outline" className="mb-5 border-primary/40 bg-background/60 px-4 py-1.5 text-xs uppercase tracking-[0.2em] backdrop-blur">
+          <Badge variant="outline" className="mb-5 border-white/40 bg-black/30 px-4 py-1.5 text-xs uppercase tracking-[0.2em] text-white backdrop-blur">
             <Sparkles className="mr-2 h-3.5 w-3.5" /> Bazaar
           </Badge>
-          <h1 className="bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-4xl font-black leading-[1.05] text-transparent md:text-6xl">
+          <h1 className="bg-gradient-to-r from-white via-primary-foreground to-white/90 bg-clip-text text-4xl font-black leading-[1.05] text-transparent drop-shadow-lg md:text-6xl">
             Sell anything. Find everything.
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-base text-muted-foreground md:text-lg">
+          <p className="mx-auto mt-5 max-w-2xl text-base text-white/90 drop-shadow md:text-lg">
             Browsing is free. Publishing a listing costs 2 credits and the first message to a seller costs 2 credits —
             then you deal directly, with zero commission.
           </p>
