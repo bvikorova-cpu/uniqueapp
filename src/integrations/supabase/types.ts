@@ -70606,6 +70606,7 @@ export type Database = {
       rotate_my_brand_api_key: { Args: never; Returns: string }
       rotate_mystery_events: { Args: never; Returns: undefined }
       rotate_seasonal_missions: { Args: never; Returns: Json }
+      scrub_contact_info: { Args: { _t: string }; Returns: string }
       search_posts: {
         Args: { _limit?: number; _q: string }
         Returns: {
