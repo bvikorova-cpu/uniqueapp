@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Check, X, Loader2, Sparkles, Library, Coins, Crown, Lock, Trophy } from "lucide-react";
+import { Check, X, Loader2, Sparkles, Library, Coins, Crown, Lock, Trophy, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { CardCollectionLeaderboard } from "./CardCollectionLeaderboard";
 import { CardDetailModal } from "./CardDetailModal";
+import { CardTrashBin } from "./CardTrashBin";
 import { getCategoryCover } from "./categoryCovers";
 import { getCategoryBlurb } from "./categoryBlurbs";
 
@@ -360,9 +361,10 @@ export const CardCategoryCollection = ({ category }: Props) => {
       </Card>
 
       <Tabs defaultValue="draw">
-        <TabsList className="grid grid-cols-3 w-full">
+        <TabsList className="grid grid-cols-2 sm:grid-cols-4 w-full h-auto">
           <TabsTrigger value="draw" className="gap-2"><Sparkles className="h-4 w-4" /> Draw</TabsTrigger>
           <TabsTrigger value="album" className="gap-2"><Library className="h-4 w-4" /> Album</TabsTrigger>
+          <TabsTrigger value="trash" className="gap-2"><Trash2 className="h-4 w-4" /> Discarded</TabsTrigger>
           <TabsTrigger value="ranking" className="gap-2"><Trophy className="h-4 w-4" /> Ranking</TabsTrigger>
         </TabsList>
 
@@ -437,7 +439,7 @@ export const CardCategoryCollection = ({ category }: Props) => {
                     </Button>
                   </div>
                   <p className="text-center text-[11px] text-muted-foreground mt-3">
-                    ✓ keeps the card · ✗ releases it back into the pool
+                    ✓ keeps the card in your album · ✗ moves it to your discarded cards (10 discarded = +1 credit)
                   </p>
                 </motion.div>
               ) : (
@@ -530,6 +532,10 @@ export const CardCategoryCollection = ({ category }: Props) => {
               )}
             </>
           )}
+        </TabsContent>
+
+        <TabsContent value="trash" className="pt-4">
+          <CardTrashBin category={slug} />
         </TabsContent>
 
         <TabsContent value="ranking" className="pt-4">
