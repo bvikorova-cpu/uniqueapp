@@ -331,7 +331,7 @@ export default function Bazaar() {
           className="absolute inset-0 h-full w-full object-cover"
           src={bazaarHeroAsset.url}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
 
         <div className="absolute -top-24 -right-24 h-96 w-96 animate-pulse rounded-full bg-primary/25 blur-3xl" />
         <div className="absolute -bottom-28 -left-20 h-80 w-80 animate-pulse rounded-full bg-accent/25 blur-3xl" />
