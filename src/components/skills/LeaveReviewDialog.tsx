@@ -15,7 +15,7 @@ interface Props {
 }
 
 export default function LeaveReviewDialog({ open, onOpenChange, sellerId, sellerName, onSubmitted }: Props) {
-  const { submitReview } = useSellerReviews(sellerId);
+  const { submitReviewAsync } = useSellerReviews(sellerId);
   const [rating, setRating] = useState(5);
   const [hover, setHover] = useState(0);
   const [comment, setComment] = useState("");
