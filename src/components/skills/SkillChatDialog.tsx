@@ -48,23 +48,26 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
     if (!open || !user) return;
     let cancelled = false;
     setLoading(true);
-    supabase
-      .from("marketplace_responses")
-      .select("id, sender_id, receiver_id, message, created_at")
-      .eq("offering_id", offeringId)
-      .or(`sender_id.eq.${otherId},receiver_id.eq.${otherId}`)
-      .order("created_at", { ascending: true })
-      .then(({ data }) => {
-        if (cancelled) return;
-        const rows = ((data || []) as Msg[]).filter(
-          (m) =>
-            (m.sender_id === user.id && m.receiver_id === otherId) ||
-            (m.sender_id === otherId && m.receiver_id === user.id),
-        );
-        setMessages(rows);
-        setLoading(false);
-        markRead();
-      });
+
+    const fetchMessages = async (initial = false) => {
+      const { data } = await supabase
+        .from("marketplace_responses")
+        .select("id, sender_id, receiver_id, message, created_at")
+        .eq("offering_id", offeringId)
+        .or(`sender_id.eq.${otherId},receiver_id.eq.${otherId}`)
+        .order("created_at", { ascending: true });
+      if (cancelled) return;
+      const rows = ((data || []) as Msg[]).filter(
+        (m) =>
+          (m.sender_id === user.id && m.receiver_id === otherId) ||
+          (m.sender_id === otherId && m.receiver_id === user.id),
+      );
+      setMessages((prev) => (prev.length === rows.length && prev.every((p, i) => p.id === rows[i]?.id) ? prev : rows));
+      if (initial) setLoading(false);
+      markRead();
+    };
+
+    fetchMessages(true);
 
     const channel = supabase
       .channel(`skillmsg-${offeringId}-${otherId}`)
@@ -83,12 +86,16 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
       )
       .subscribe();
 
+    const poll = window.setInterval(() => fetchMessages(), 4000);
+
     return () => {
       cancelled = true;
+      window.clearInterval(poll);
       supabase.removeChannel(channel);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, user, offeringId, otherId]);
+
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
