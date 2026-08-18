@@ -5,7 +5,7 @@ import { Upload, Search, Sparkles } from "lucide-react";
 import { useAntiqueCredits } from "@/hooks/useAntiqueCredits";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import ReactMarkdown from "react-markdown";
+import { AiMarkdown } from "@/components/common/AiMarkdown";
 
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -108,7 +108,7 @@ export const AntiqueAnalyze = () => {
               {analysisResult ? (
                 <div className="prose prose-sm dark:prose-invert max-w-none">
                   {typeof analysisResult === 'string' ? (
-                    <ReactMarkdown>{analysisResult}</ReactMarkdown>
+                    <AiMarkdown content={analysisResult} />
                   ) : (
                     <pre className="bg-muted p-4 rounded-lg overflow-auto text-sm">
                       {JSON.stringify(analysisResult, null, 2)}
