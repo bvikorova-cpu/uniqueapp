@@ -175,7 +175,7 @@ export default function AuctionMy() {
                         <Button size="sm" variant="secondary" className="gap-1" onClick={() => setPromoteId(r.id)}>
                           <Rocket className="h-3.5 w-3.5" /> Promote
                         </Button>
-                        <Button size="sm" variant="ghost" className="gap-1 text-destructive" onClick={() => setDeleting(r)}>
+                        <Button size="sm" variant="destructive" className="gap-1.5" onClick={() => setDeleting(r)}>
                           <Trash2 className="h-3.5 w-3.5" /> Delete
                         </Button>
                       </div>
