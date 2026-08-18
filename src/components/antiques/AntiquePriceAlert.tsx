@@ -34,11 +34,11 @@ export const AntiquePriceAlert = () => {
       if (error) throw error;
       const { data: { publicUrl } } = supabase.storage.from('antiques').getPublicUrl(fileName);
 
-      const { data, error: fnError } = await supabase.functions.invoke('antique-price-alert', {
-        body: { imageUrl: publicUrl, targetPrice: targetPrice ? parseFloat(targetPrice) : null }
+      const { data, error: fnError } = await supabase.functions.invoke('universal-vision-analyzer', {
+        body: { task: 'antique_price_alert', imageUrl: publicUrl, extras: { targetPrice: targetPrice ? parseFloat(targetPrice) : null } }
       });
       if (fnError) throw fnError;
-      setResult(data.analysis);
+      setResult(data?.result ?? data?.text ?? "");
       toast.success("Price alert analysis complete!");
     } catch (err: any) {
       toast.error(err.message || "Error analyzing");

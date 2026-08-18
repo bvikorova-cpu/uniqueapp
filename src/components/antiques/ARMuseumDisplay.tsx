@@ -31,11 +31,11 @@ export const ARMuseumDisplay = () => {
       const { error } = await supabase.storage.from('antiques').upload(fileName, selectedFile);
       if (error) throw error;
       const { data: { publicUrl } } = supabase.storage.from('antiques').getPublicUrl(fileName);
-      const { data, error: fnError } = await supabase.functions.invoke('antique-museum-display', {
-        body: { imageUrl: publicUrl }
+      const { data, error: fnError } = await supabase.functions.invoke('universal-vision-analyzer', {
+        body: { task: 'antique_museum', imageUrl: publicUrl }
       });
       if (fnError) throw fnError;
-      setResult(data.analysis);
+      setResult(data?.result ?? data?.text ?? "");
       toast.success("Museum display analysis complete!");
     } catch (err: any) {
       toast.error(err.message || "Error analyzing");
