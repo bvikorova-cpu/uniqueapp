@@ -112,13 +112,31 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
     if (!user) { toast.error("Please sign in to message the seller"); return; }
     if (!buyerId) { toast.error("You can't message your own listing"); return; }
     const trimmed = content.trim();
-    if (!trimmed) return;
+    if (!trimmed && !file) return;
     setSending(true);
+
+    let attachment_path: string | null = null;
+    let attachment_type: string | null = null;
+    if (file) {
+      try {
+        attachment_path = await uploadChatMedia(file, user.id);
+        attachment_type = file.type;
+      } catch (e: any) {
+        setSending(false);
+        toast.error(e?.message || "Upload failed");
+        return;
+      }
+    }
+
+    const body = trimmed || (file?.type.startsWith("video/") ? `🎬 ${file.name}` : `📷 ${file?.name ?? "photo"}`);
+
     const { data: inserted, error } = await supabase.from("property_messages").insert({ property_id: propertyId,
       buyer_id: buyerId,
       seller_id: sellerId,
       sender_id: user.id,
-      content: trimmed }).select("*").maybeSingle();
+      content: body,
+      attachment_path,
+      attachment_type }).select("*").maybeSingle();
     setSending(false);
     if (error) { toast.error(error.message); return; }
     if (inserted) {
@@ -126,7 +144,9 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
       setMessages((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m]));
     }
     setContent("");
+    setFile(null);
   };
+
 
 
   return (
