@@ -19,6 +19,7 @@ import { PromotionBadge } from "@/components/skills/PromotionBadge";
 import { BazaarPromoteDialog } from "@/components/bazaar/BazaarPromoteDialog";
 import { BazaarChatDialog } from "@/components/bazaar/BazaarChatDialog";
 import { useToast } from "@/hooks/use-toast";
+import { useBazaarUnread } from "@/hooks/useSimpleUnread";
 import bazaarHeroAsset from "@/assets/bazaar-hero-v2.mp4.asset.json";
 
 const CATEGORY_FOLDERS = [
@@ -356,6 +357,16 @@ export default function Bazaar() {
             </Button>
             <Button size="lg" variant="outline" className="gap-2 border-white/40 bg-black/30 text-white backdrop-blur hover:bg-white/10 hover:text-white" onClick={() => (user ? navigate("/bazaar/messages") : navigate("/auth"))}>
               <MessageCircle className="h-4 w-4" /> Messages
+                {bazaarUnread > 0 && (
+                  <span className="ml-1 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-destructive px-1.5 text-[11px] font-bold text-destructive-foreground">
+                    {bazaarUnread > 9 ? "9+" : bazaarUnread}
+                  </span>
+                )}
+              {bazaarUnread > 0 && (
+                <span className="ml-1 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-destructive px-1.5 text-[11px] font-bold text-destructive-foreground">
+                  {bazaarUnread > 9 ? "9+" : bazaarUnread}
+                </span>
+              )}
             </Button>
             {user && (
               <Button size="lg" variant="outline" className="gap-2 border-white/40 bg-black/30 text-white backdrop-blur hover:bg-white/10 hover:text-white" onClick={() => navigate("/bazaar/saved-searches")}>

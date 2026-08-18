@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { useToast } from "@/hooks/use-toast";
+import { useCouponUnread } from "@/hooks/useSimpleUnread";
 import { PromotionBadge } from "@/components/skills/PromotionBadge";
 import { CouponHero } from "@/components/coupon/CouponHero";
 import { CouponPromoteDialog } from "@/components/coupon/CouponPromoteDialog";
@@ -319,6 +320,11 @@ export default function CouponMarketplace() {
             <div className="flex flex-col gap-2 sm:flex-row">
               <Button variant="outline" className="w-full gap-2 sm:w-auto" onClick={() => (user ? navigate("/coupon-marketplace/messages") : navigate("/auth"))}>
                 <MessageCircle className="h-4 w-4" /> Messages
+                {couponUnread > 0 && (
+                  <span className="ml-1 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-destructive px-1.5 text-[11px] font-bold text-destructive-foreground">
+                    {couponUnread > 9 ? "9+" : couponUnread}
+                  </span>
+                )}
               </Button>
               <Button className="w-full gap-2 sm:w-auto" onClick={() => (user ? navigate("/coupon-marketplace/create") : navigate("/auth"))}>
                 <Plus className="h-4 w-4" />
