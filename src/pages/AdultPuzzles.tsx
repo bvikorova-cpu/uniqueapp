@@ -80,7 +80,7 @@ const AdultPuzzles = () => {
                   <div>
                     <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Adult Puzzles</h1>
                     <p className="text-xs sm:text-sm text-muted-foreground">
-                      {ADULT_PUZZLES.length} puzzles · 64 to 400 pieces · {ADULT_PIECE_COST} credit per piece · ✓ keep or ✗ release
+                      {ADULT_PUZZLES.length} puzzles · 64 to 400 pieces · {ADULT_PIECE_COST} credit per piece · ✓ keep or ✗ scrap · 10 scraps = 1 credit
                     </p>
                   </div>
                 </div>

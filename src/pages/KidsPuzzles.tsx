@@ -66,7 +66,7 @@ const KidsPuzzles = () => {
                   <div>
                     <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Kids Puzzles</h1>
                     <p className="text-xs sm:text-sm text-muted-foreground">
-                      {KIDS_PUZZLES.length} illustrated puzzles · 16 to 144 pieces · {PIECE_COST} credit per piece · ✓ keep or ✗ release
+                      {KIDS_PUZZLES.length} illustrated puzzles · 16 to 144 pieces · {PIECE_COST} credit per piece · ✓ keep or ✗ scrap · 10 scraps = 1 credit
                     </p>
                   </div>
                 </div>
