@@ -198,7 +198,6 @@ export default function CouponMarketplace() {
   const premiumList = useMemo(() => filtered.filter((c) => isActive(c.premium_until)), [filtered]);
   const standardList = useMemo(() => filtered.filter((c) => !isActive(c.premium_until)), [filtered]);
   const activeFolder = CATEGORY_FOLDERS.find((f) => f.value === category);
-  const sellerCount = useMemo(() => new Set(coupons.map((c) => c.user_id)).size, [coupons]);
 
   const unlockContact = async (coupon: Coupon) => {
     if (!user) { navigate("/auth"); return; }
