@@ -62,5 +62,6 @@ export const useSellerReviews = (sellerId?: string) => {
     avgRating,
     count: reviews.length,
     submitReview: submitReview.mutate,
+    submitReviewAsync: submitReview.mutateAsync,
     deleteReview: deleteReview.mutate };
 };
