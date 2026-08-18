@@ -1,14 +1,7 @@
-import { GraduationCap, Users, BookOpen, Award, Sparkles, Play, Star } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import heroVideo from "@/assets/tutorial-hero-generated.mp4.asset.json";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
-
-const stats = [
-  { label: "Courses", icon: BookOpen, value: "1.8K+", color: "from-violet-500 to-purple-600" },
-  { label: "Quiz Attempts", icon: Star, value: "—", color: "from-amber-500 to-orange-600" },
-  { label: "Enrollments", icon: Award, value: "—", color: "from-emerald-500 to-teal-600" },
-  { label: "AI Tutor", icon: GraduationCap, value: "24/7", color: "from-rose-500 to-pink-600" },
-];
 
 export function TutorialHero() {
   return (
