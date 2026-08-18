@@ -11,12 +11,12 @@ import ReactMarkdown from "react-markdown";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const analysisOptions = [
-  { type: 'basic', name: 'Basic Identification', icon: Search, credits: 3, description: 'Identify the item, period, and style', color: 'text-blue-500' },
-  { type: 'valuation', name: 'Market Valuation', icon: TrendingUp, credits: 10, description: 'Estimate current market value', color: 'text-green-500' },
-  { type: 'expert', name: 'Expert Report', icon: Sparkles, credits: 15, description: 'Complete analysis with history & value', color: 'text-purple-500', premium: true },
-  { type: 'authenticity', name: 'Authenticity Check', icon: Shield, credits: 20, description: 'Verify authenticity & detect fakes', color: 'text-red-500', premium: true },
-  { type: 'history', name: 'Historical Story', icon: BookOpen, credits: 3, description: 'AI-generated historical narrative', color: 'text-amber-500' },
-  { type: 'restoration', name: 'Restoration Advice', icon: Wrench, credits: 3, description: 'Care and restoration recommendations', color: 'text-cyan-500' },
+  { type: 'basic', name: 'Basic Identification', icon: Search, credits: 3, description: 'Identify the item, period, and style', color: 'text-primary' },
+  { type: 'valuation', name: 'Market Valuation', icon: TrendingUp, credits: 10, description: 'Estimate current market value', color: 'text-primary' },
+  { type: 'expert', name: 'Expert Report', icon: Sparkles, credits: 15, description: 'Complete analysis with history & value', color: 'text-primary', premium: true },
+  { type: 'authenticity', name: 'Authenticity Check', icon: Shield, credits: 20, description: 'Verify authenticity & detect fakes', color: 'text-primary', premium: true },
+  { type: 'history', name: 'Historical Story', icon: BookOpen, credits: 3, description: 'AI-generated historical narrative', color: 'text-primary' },
+  { type: 'restoration', name: 'Restoration Advice', icon: Wrench, credits: 3, description: 'Care and restoration recommendations', color: 'text-primary' },
 ];
 
 export const AntiqueAnalyze = () => {
@@ -83,21 +83,21 @@ export const AntiqueAnalyze = () => {
             <motion.div key={option.type} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: i * 0.05, type: "spring" }}>
               <Card
-                className={`cursor-pointer transition-all hover:shadow-lg ${
-                  analysisType === option.type ? 'border-primary ring-2 ring-primary' : ''
+                className={`antique-frame rounded-md cursor-pointer transition-all ${
+                  analysisType === option.type ? 'ring-2 ring-primary' : ''
                 }`}
                 onClick={() => setAnalysisType(option.type)}
               >
                 <CardHeader className="p-3 sm:p-4">
                   <Icon className={`w-6 h-6 mb-2 ${option.color}`} />
-                  <CardTitle className="text-sm flex items-center gap-2">
+                  <CardTitle className="text-sm flex items-center gap-2 antique-display">
                     {option.name}
                     {option.premium && <Badge variant="secondary" className="text-[10px]">Premium</Badge>}
                   </CardTitle>
                   <CardDescription className="text-xs">{option.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="p-3 pt-0">
-                  <p className="text-xs font-bold text-primary">{option.credits} credits</p>
+                  <p className="text-xs font-bold text-primary tracking-wider">{option.credits} credits</p>
                 </CardContent>
               </Card>
             </motion.div>
@@ -107,8 +107,8 @@ export const AntiqueAnalyze = () => {
 
       {/* Upload & Result */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="bg-card/80 backdrop-blur-xl">
-          <CardHeader><CardTitle>Upload Antique Photo</CardTitle></CardHeader>
+        <Card className="antique-frame rounded-md">
+          <CardHeader><CardTitle className="antique-display uppercase tracking-widest text-base">Upload Antique Photo</CardTitle></CardHeader>
           <CardContent>
             <div className="aspect-square bg-muted rounded-lg flex items-center justify-center overflow-hidden">
               {previewUrl ? (
@@ -133,8 +133,8 @@ export const AntiqueAnalyze = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-card/80 backdrop-blur-xl">
-          <CardHeader><CardTitle>Analysis Result</CardTitle></CardHeader>
+        <Card className="antique-frame rounded-md">
+          <CardHeader><CardTitle className="antique-display uppercase tracking-widest text-base">Analysis Result</CardTitle></CardHeader>
           <CardContent>
             <div className="min-h-[400px]">
               {analysisResult ? (

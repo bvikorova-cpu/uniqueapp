@@ -17,6 +17,7 @@ import heroVideo from "@/assets/antique-hero.mp4.asset.json";
 import { AntiqueAnalyze } from "@/components/antiques/AntiqueAnalyze";
 import { AntiqueCollection } from "@/components/antiques/AntiqueCollection";
 import { AntiqueCreditsShop } from "@/components/antiques/AntiqueCreditsShop";
+import { loadGoogleFont } from "@/utils/lazyFonts";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ActiveView = "hub" | "analyze" | "collection" | "credits";
@@ -25,6 +26,8 @@ const AntiqueAppraisal = () => {
   const [activeView, setActiveView] = useState<ActiveView>("hub");
   const [stats, setStats] = useState({ appraisals: 0, collections: 0, authenticity: 0, value: 0 });
   const { credits } = useAntiqueCredits();
+
+  useEffect(() => { loadGoogleFont("gothic"); }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -70,7 +73,7 @@ const AntiqueAppraisal = () => {
   }, []);
 
   const tools = [
-    { id: "analyze" as ActiveView, icon: Search, title: "Antique Identification", desc: "Item, period & style", cost: "3 Credits", color: "text-blue-500" },
+    { id: "analyze" as ActiveView, icon: Search, title: "Antique Identification", desc: "Item, period & style", cost: "3 Credits", color: "text-primary" },
   ];
 
 
@@ -92,7 +95,7 @@ const AntiqueAppraisal = () => {
           { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
           { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
         ]} />
-        <div className="min-h-screen bg-background">
+        <div className="antique-skin min-h-screen">
         <Navbar />
         <div className="container mx-auto px-3 sm:px-4 pt-20 pb-8 max-w-6xl">
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
@@ -100,7 +103,7 @@ const AntiqueAppraisal = () => {
               <Button variant="ghost" onClick={() => setActiveView("hub")} className="gap-2">
                 <ArrowLeft className="w-4 h-4" /> Back
               </Button>
-              <Badge variant="outline" className="text-xs">{viewLabels[activeView]}</Badge>
+              <Badge variant="outline" className="text-xs antique-display border-primary/40">{viewLabels[activeView]}</Badge>
             </div>
             {activeView === "analyze" && <AntiqueAnalyze />}
             {activeView === "collection" && <AntiqueCollection />}
@@ -113,7 +116,7 @@ const AntiqueAppraisal = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="antique-skin min-h-screen">
       <Navbar />
 
       {/* Cinematic Video Hero */}
@@ -121,22 +124,22 @@ const AntiqueAppraisal = () => {
         <video
           src={heroVideo.url}
           autoPlay muted loop playsInline
-          className="absolute inset-0 w-full h-full object-cover brightness-[1.3] saturate-[1.2]"
+          className="antique-sepia absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
 
         <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, type: "spring" }}>
-            <p className="text-xs sm:text-sm font-semibold tracking-wider uppercase text-cyan-300 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
-              🏺 AI-Powered Antique Hub
+            <p className="text-xs sm:text-sm font-semibold tracking-wider uppercase text-amber-200 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+              ⚜ Cabinet of Curiosities — Est. MCMXXVII
             </p>
-            <h1 className="text-4xl sm:text-6xl md:text-7xl font-black mt-1">
-              <span className="bg-gradient-to-r from-cyan-200 via-teal-300 to-emerald-300 bg-clip-text text-transparent drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)]">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold mt-1 tracking-widest">
+              <span className="bg-gradient-to-r from-amber-100 via-yellow-200 to-amber-300 bg-clip-text text-transparent drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)]">
                 Antique Appraisal
               </span>
             </h1>
             <p className="text-sm sm:text-lg text-white mt-2 max-w-xl drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
-              AI identification, valuation, authenticity & provenance tracking
+              Connoisseur-grade identification, valuation & provenance — appraised by AI, presented as in an old auction catalogue
             </p>
           </motion.div>
 
@@ -147,10 +150,10 @@ const AntiqueAppraisal = () => {
           >
             {statItems.map((s, i) => (
               <motion.div key={i} initial={{ scale: 0.8 }} animate={{ scale: 1 }} transition={{ delay: 0.4 + i * 0.1, type: "spring" }}
-                className="bg-black/40 backdrop-blur-xl rounded-xl p-2 sm:p-3 border border-white/10 text-center">
-                <s.icon className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-400 mx-auto mb-1" />
-                <p className="text-lg sm:text-2xl font-black text-white">{s.value}</p>
-                <p className="text-[10px] sm:text-xs text-white/60">{s.label}</p>
+                className="antique-frame rounded-md p-2 sm:p-3 text-center bg-black/30">
+                <s.icon className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600 mx-auto mb-1" />
+                <p className="text-lg sm:text-2xl font-bold antique-display text-foreground">{s.value}</p>
+                <p className="text-[10px] sm:text-xs uppercase tracking-widest text-muted-foreground">{s.label}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -161,31 +164,32 @@ const AntiqueAppraisal = () => {
         {/* Engagement Row — single Credits balance card (other stats live in hero overlay) */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
           className="flex justify-center mb-8">
-          <Card className="p-4 bg-card/80 backdrop-blur-xl text-center border-cyan-500/20 min-w-[200px]">
-            <Flame className="h-6 w-6 text-orange-500 mx-auto mb-1" />
-            <p className="text-2xl font-black">{credits?.credits_remaining || 0}</p>
-            <p className="text-xs text-muted-foreground">Credits Available</p>
+          <Card className="antique-frame p-5 rounded-md text-center min-w-[220px]">
+            <Flame className="h-6 w-6 text-primary mx-auto mb-1" />
+            <p className="text-3xl font-bold antique-display">{credits?.credits_remaining || 0}</p>
+            <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Credits Available</p>
           </Card>
         </motion.div>
 
         {/* Quick Actions */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
           className="flex justify-center gap-3 flex-wrap mb-8">
-          <Button variant="outline" className="gap-2 bg-card/60 backdrop-blur-sm border-border/50 hover:border-cyan-500/30"
+          <Button variant="outline" className="gap-2 antique-display uppercase tracking-widest text-xs bg-card/70 border-primary/40 hover:bg-primary/10"
             onClick={() => setActiveView("credits")}>
-            <Coins className="w-4 h-4 text-cyan-500" /> Buy Credits
+            <Coins className="w-4 h-4 text-primary" /> Buy Credits
           </Button>
-          <Button variant="outline" className="gap-2 bg-card/60 backdrop-blur-sm border-border/50 hover:border-cyan-500/30"
+          <Button variant="outline" className="gap-2 antique-display uppercase tracking-widest text-xs bg-card/70 border-primary/40 hover:bg-primary/10"
             onClick={() => setActiveView("collection")}>
-            <HistoryIcon className="w-4 h-4 text-cyan-500" /> My Collection
+            <HistoryIcon className="w-4 h-4 text-primary" /> My Collection
           </Button>
         </motion.div>
 
         {/* Tools Grid */}
-        <h2 className="text-2xl sm:text-3xl font-black mb-4">
-          <span className="bg-gradient-to-r from-cyan-400 via-teal-500 to-emerald-500 bg-clip-text text-transparent">
-            Antique Identification
-          </span>
+        <div className="antique-rule mb-5">
+          <span className="text-xs sm:text-sm uppercase tracking-[0.3em] antique-display">Appraisal Cabinet</span>
+        </div>
+        <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-center antique-gold-text">
+          Antique Identification
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
           {tools.map((tool, i) => (
@@ -193,13 +197,13 @@ const AntiqueAppraisal = () => {
               transition={{ delay: 0.6 + i * 0.05, type: "spring" }}
               whileHover={{ scale: 1.04, y: -4 }} whileTap={{ scale: 0.97 }}>
               <Card
-                className="p-4 sm:p-5 cursor-pointer bg-card/80 backdrop-blur-xl hover:border-cyan-500/40 transition-all h-full"
+                className="antique-frame rounded-md p-4 sm:p-5 cursor-pointer transition-all h-full"
                 onClick={() => setActiveView(tool.id)}
               >
                 <tool.icon className={`h-7 w-7 sm:h-8 sm:w-8 ${tool.color} mb-2`} />
-                <h3 className="font-bold text-sm sm:text-base">{tool.title}</h3>
+                <h3 className="font-bold text-sm sm:text-base antique-display">{tool.title}</h3>
                 <p className="text-xs text-muted-foreground mt-1">{tool.desc}</p>
-                <span className="text-[10px] sm:text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full mt-2 inline-block">
+                <span className="antique-seal text-[10px] sm:text-xs px-2.5 py-1 rounded-full mt-3 inline-block tracking-wider">
                   {tool.cost}
                 </span>
               </Card>
