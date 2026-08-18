@@ -51,7 +51,6 @@ const coreModules = [
   { title: "Beauty Studio", description: "AI makeup, skincare, nail art & celebrity look matching", icon: Star, path: "/beauty-studio", badge: "✨ 8 AI Tools", gradient: "from-rose-600 to-pink-600", featured: true, category: "creative" },
   { title: "Photo Restoration", description: "AI colorization & enhance old photos", icon: Camera, path: "/photo-restoration", badge: "1 Credit", gradient: "from-amber-600 to-yellow-600", category: "creative" },
   { title: "Antique Appraisal", description: "AI identification & valuation", icon: Gem, path: "/antique-appraisal", badge: "3-20 Credits", gradient: "from-orange-600 to-amber-600", category: "creative" },
-  { title: "Collectibles", description: "Mystery boxes & AI item generator", icon: Crown, path: "/collectibles", badge: "10 Credits", gradient: "from-violet-600 to-purple-600", category: "entertainment" },
   { title: "Dream Journal", description: "AI dream analysis & mood tracking", icon: Brain, path: "/dream-journal", badge: "Wellness", gradient: "from-blue-600 to-indigo-600", category: "wellness" },
   { title: "Fashion Studio", description: "AI fashion generator & design challenges", icon: Shirt, path: "/fashion-studio", badge: "Creative", gradient: "from-fuchsia-600 to-pink-600", category: "creative" },
 ];
