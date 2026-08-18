@@ -58,10 +58,10 @@ export default function AuctionCreate() {
       for (let i = 0; i < photos.length; i++) {
         const file = photos[i].file;
         const ext = file.name.split(".").pop();
-        const name = `${user.id}/${Date.now()}-${i}.${ext}`;
-        const { error: upErr } = await supabase.storage.from("auction_images").upload(name, file);
+        const name = `${user.id}/auction-${Date.now()}-${i}.${ext}`;
+        const { error: upErr } = await supabase.storage.from("bazaar_images").upload(name, file);
         if (upErr) throw upErr;
-        const { data: { publicUrl } } = supabase.storage.from("auction_images").getPublicUrl(name);
+        const { data: { publicUrl } } = supabase.storage.from("bazaar_images").getPublicUrl(name);
         urls.push(publicUrl);
       }
 

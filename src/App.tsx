@@ -14,6 +14,9 @@ const GoogleTranslateWidget = lazy(() => import("@/components/GoogleTranslateWid
 const BazaarCreate = lazy(() => import("@/pages/BazaarCreate"));
 const BazaarSavedSearches = lazy(() => import("@/pages/BazaarSavedSearches"));
 const BazaarMy = lazy(() => import("@/pages/BazaarMy"));
+const AuctionCreate = lazy(() => import("@/pages/AuctionCreate"));
+const AuctionMy = lazy(() => import("@/pages/AuctionMy"));
+const AuctionMessages = lazy(() => import("@/pages/AuctionMessages"));
 const CouponMy = lazy(() => import("@/pages/CouponMy"));
 const BazaarMessages = lazy(() => import("@/pages/BazaarMessages"));
 const InvestmentPortfolio = lazy(() => import("@/pages/InvestmentPortfolio"));
@@ -803,6 +806,9 @@ const App = () => {
                         <Route path="/gift/canceled" element={<GiftSuccess />} />
                         <Route path="/gift/history" element={<ProtectedRoute><GiftHistory /></ProtectedRoute>} />
                         <Route path="/auction" element={<Auction />} />
+                        <Route path="/auction/create" element={<ProtectedRoute><AuctionCreate /></ProtectedRoute>} />
+                        <Route path="/auction/my" element={<ProtectedRoute><AuctionMy /></ProtectedRoute>} />
+                        <Route path="/auction/messages" element={<ProtectedRoute><AuctionMessages /></ProtectedRoute>} />
                         <Route path="/my-auctions" element={<ProtectedRoute><MyAuctions /></ProtectedRoute>} />
                         <Route path="/ai-generation" element={<ProtectedRoute><AIGeneration /></ProtectedRoute>} />
                         <Route path="/best-friend" element={<BestFriend />} />
