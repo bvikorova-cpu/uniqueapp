@@ -108,13 +108,31 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
   const send = async () => {
     if (!user) { toast.error("Please sign in"); return; }
     const trimmed = content.trim();
-    if (trimmed.length < 5) { toast.error("Message is too short"); return; }
+    if (!file && trimmed.length < 5) { toast.error("Message is too short"); return; }
     setSending(true);
+
+    let attachment_path: string | null = null;
+    let attachment_type: string | null = null;
+    if (file) {
+      try {
+        attachment_path = await uploadChatMedia(file, user.id);
+        attachment_type = file.type;
+      } catch (e: any) {
+        setSending(false);
+        toast.error(e?.message || "Upload failed");
+        return;
+      }
+    }
+
+    const body = trimmed || (file?.type.startsWith("video/") ? `🎬 ${file.name}` : `📷 ${file?.name ?? "photo"}`);
+
     const { data: inserted, error } = await supabase.from("marketplace_responses").insert({
       offering_id: offeringId,
       sender_id: user.id,
       receiver_id: otherId,
-      message: trimmed,
+      message: body,
+      attachment_path,
+      attachment_type,
     }).select("id, sender_id, receiver_id, message, created_at, attachment_path, attachment_type").maybeSingle();
     setSending(false);
     if (error) {
@@ -135,8 +153,9 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
       setMessages((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m]));
     }
     setContent("");
-
+    setFile(null);
   };
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
