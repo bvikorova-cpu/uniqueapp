@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { maskContactInfo } from "@/lib/contactMask";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -143,7 +144,7 @@ export function PropertyCard({ property, onViewDetails }: PropertyCardProps) {
             </Button>
           </div>
         </div>
-        <CardTitle className="text-xl">{property.title}</CardTitle>
+        <CardTitle className="text-xl">{maskContactInfo(property.title)}</CardTitle>
         <CardDescription className="flex items-center gap-1">
           <MapPin className="h-4 w-4" />
           {property.city}
