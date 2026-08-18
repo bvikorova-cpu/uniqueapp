@@ -28,6 +28,26 @@ import worldMap from "@/assets/puzzles/puzzle-world-map.jpg";
 import dinoValley from "@/assets/puzzles/puzzle-dino-valley.jpg";
 import coralCity from "@/assets/puzzles/puzzle-coral-city.jpg";
 import skiResort from "@/assets/puzzles/puzzle-ski-resort.jpg";
+import santa from "@/assets/puzzles/puzzle-santa.jpg";
+import christmas from "@/assets/puzzles/puzzle-christmas.jpg";
+import halloween from "@/assets/puzzles/puzzle-halloween.jpg";
+import easter from "@/assets/puzzles/puzzle-easter.jpg";
+import birthday from "@/assets/puzzles/puzzle-birthday.jpg";
+import dolls from "@/assets/puzzles/puzzle-dolls.jpg";
+import fashion from "@/assets/puzzles/puzzle-fashion.jpg";
+import beauty from "@/assets/puzzles/puzzle-beauty.jpg";
+import babyAnimals from "@/assets/puzzles/puzzle-baby-animals.jpg";
+import superheroes from "@/assets/puzzles/puzzle-superheroes.jpg";
+import princess from "@/assets/puzzles/puzzle-princess.jpg";
+import ballet from "@/assets/puzzles/puzzle-ballet.jpg";
+import ponies from "@/assets/puzzles/puzzle-ponies.jpg";
+import mechs from "@/assets/puzzles/puzzle-mechs.jpg";
+import raceCars from "@/assets/puzzles/puzzle-race-cars.jpg";
+import spaceStation from "@/assets/puzzles/puzzle-space-station.jpg";
+import autumn from "@/assets/puzzles/puzzle-autumn.jpg";
+import beach from "@/assets/puzzles/puzzle-beach.jpg";
+import bakery from "@/assets/puzzles/puzzle-bakery.jpg";
+import fairyGarden from "@/assets/puzzles/puzzle-fairy-garden.jpg";
 
 export interface KidsPuzzle {
   slug: string;
