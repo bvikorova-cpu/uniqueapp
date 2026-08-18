@@ -71,35 +71,8 @@ export const AntiqueAnalyze = () => {
           { title: 'Iterate', desc: 'Repeat or level up anytime.' },
         ]} />
       <div className="space-y-6">
-      {/* Analysis Type Selection */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-        {analysisOptions.map((option, i) => {
-          const Icon = option.icon;
-          return (
-            <motion.div key={option.type} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.05, type: "spring" }}>
-              <Card
-                className={`antique-frame rounded-md cursor-pointer transition-all ${
-                  analysisType === option.type ? 'ring-2 ring-primary' : ''
-                }`}
-                onClick={() => setAnalysisType(option.type)}
-              >
-                <CardHeader className="p-3 sm:p-4">
-                  <Icon className={`w-6 h-6 mb-2 ${option.color}`} />
-                  <CardTitle className="text-sm flex items-center gap-2 antique-display">
-                    {option.name}
-                    {option.premium && <Badge variant="secondary" className="text-[10px]">Premium</Badge>}
-                  </CardTitle>
-                  <CardDescription className="text-xs">{option.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="p-3 pt-0">
-                  <p className="text-xs font-bold text-primary tracking-wider">{option.credits} credits</p>
-                </CardContent>
-              </Card>
-            </motion.div>
-          );
-        })}
-      </div>
+
+
 
       {/* Upload & Result */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
