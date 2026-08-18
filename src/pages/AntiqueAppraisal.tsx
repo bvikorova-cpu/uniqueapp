@@ -17,19 +17,9 @@ import heroVideo from "@/assets/antique-hero.mp4.asset.json";
 import { AntiqueAnalyze } from "@/components/antiques/AntiqueAnalyze";
 import { AntiqueCollection } from "@/components/antiques/AntiqueCollection";
 import { AntiqueCreditsShop } from "@/components/antiques/AntiqueCreditsShop";
-import { ProvenanceTracker } from "@/components/antiques/ProvenanceTracker";
-import { ForgeryDetection } from "@/components/antiques/ForgeryDetection";
-import { MarketValueTrends } from "@/components/antiques/MarketValueTrends";
-import { ARMuseumDisplay } from "@/components/antiques/ARMuseumDisplay";
-import { AntiqueBatchAppraisal } from "@/components/antiques/AntiqueBatchAppraisal";
-import { AntiqueSocialFeed } from "@/components/antiques/AntiqueSocialFeed";
-import { AntiquePriceAlert } from "@/components/antiques/AntiquePriceAlert";
-import { AntiqueCertificate } from "@/components/antiques/AntiqueCertificate";
-import { AntiqueARTryInRoom } from "@/components/antiques/AntiqueARTryInRoom";
-import { AntiqueExpertMarketplace } from "@/components/antiques/AntiqueExpertMarketplace";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-type ActiveView = "hub" | "analyze" | "collection" | "credits" | "provenance" | "forgery" | "market-trends" | "ar-museum" | "batch" | "social" | "price-alert" | "certificate" | "ar-room" | "expert-marketplace";
+type ActiveView = "hub" | "analyze" | "collection" | "credits";
 
 const AntiqueAppraisal = () => {
   const [activeView, setActiveView] = useState<ActiveView>("hub");
@@ -80,23 +70,9 @@ const AntiqueAppraisal = () => {
   }, []);
 
   const tools = [
-    { id: "analyze" as ActiveView, icon: Search, title: "Basic Identification", desc: "Item, period & style", cost: "3 Credits", color: "text-blue-500" },
-    { id: "analyze" as ActiveView, icon: TrendingUp, title: "Market Valuation", desc: "Current market value", cost: "10 Credits", color: "text-green-500" },
-    { id: "analyze" as ActiveView, icon: Sparkles, title: "Expert Report", desc: "Full analysis & history", cost: "15 Credits", color: "text-purple-500" },
-    { id: "analyze" as ActiveView, icon: Shield, title: "Authenticity Check", desc: "Verify & detect fakes", cost: "20 Credits", color: "text-red-500" },
-    { id: "analyze" as ActiveView, icon: BookOpen, title: "Historical Story", desc: "AI historical narrative", cost: "3 Credits", color: "text-amber-500" },
-    { id: "analyze" as ActiveView, icon: Wrench, title: "Restoration Advice", desc: "Care recommendations", cost: "3 Credits", color: "text-cyan-500" },
-    { id: "provenance" as ActiveView, icon: Map, title: "Provenance Tracker", desc: "Trace ownership history", cost: "8 Credits", color: "text-emerald-500" },
-    { id: "forgery" as ActiveView, icon: Eye, title: "Forgery Detection", desc: "AI deep fake analysis", cost: "10 Credits", color: "text-rose-500" },
-    { id: "market-trends" as ActiveView, icon: BarChart3, title: "Market Trends", desc: "Price charts & data", cost: "5 Credits", color: "text-indigo-500" },
-    { id: "ar-museum" as ActiveView, icon: Crown, title: "AR Museum Display", desc: "Virtual museum view", cost: "6 Credits", color: "text-yellow-500" },
-    { id: "batch" as ActiveView, icon: Layers, title: "Batch Appraisal", desc: "Analyze multiple items", cost: "12 Credits", color: "text-teal-500" },
-    { id: "social" as ActiveView, icon: MessageSquare, title: "Social Feed", desc: "Community rare finds", cost: "Free", color: "text-pink-500" },
-    { id: "price-alert" as ActiveView, icon: Bell, title: "Price Alert", desc: "Market monitoring AI", cost: "5 Credits", color: "text-orange-500" },
-    { id: "certificate" as ActiveView, icon: Award, title: "AI Certificate", desc: "Digital authenticity cert", cost: "15 Credits", color: "text-sky-500" },
-    { id: "ar-room" as ActiveView, icon: Camera, title: "AR Try-In-Room", desc: "Visualize in your space", cost: "8 Credits", color: "text-violet-500" },
-    { id: "expert-marketplace" as ActiveView, icon: Users, title: "Expert Marketplace", desc: "Connect with dealers", cost: "10 Credits", color: "text-lime-500" },
+    { id: "analyze" as ActiveView, icon: Search, title: "Antique Identification", desc: "Item, period & style", cost: "3 Credits", color: "text-blue-500" },
   ];
+
 
   const statItems = [
     { label: "Appraisals", value: stats.appraisals, icon: Search },
@@ -105,12 +81,7 @@ const AntiqueAppraisal = () => {
     { label: "Est. Value", value: `€${stats.value}`, icon: TrendingUp },
   ];
 
-  const viewLabels: Record<string, string> = { analyze: "New Analysis", collection: "My Collection", credits: "Buy Credits",
-    provenance: "Provenance Tracker", forgery: "Forgery Detection",
-    "market-trends": "Market Trends", "ar-museum": "AR Museum Display",
-    batch: "Batch Appraisal", social: "Social Feed", "price-alert": "Price Alert",
-    certificate: "AI Certificate", "ar-room": "AR Try-In-Room",
-    "expert-marketplace": "Expert Marketplace" };
+  const viewLabels: Record<string, string> = { analyze: "Antique Identification", collection: "My Collection", credits: "Buy Credits" };
 
   if (activeView !== "hub") {
     return (
@@ -134,16 +105,6 @@ const AntiqueAppraisal = () => {
             {activeView === "analyze" && <AntiqueAnalyze />}
             {activeView === "collection" && <AntiqueCollection />}
             {activeView === "credits" && <AntiqueCreditsShop />}
-            {activeView === "provenance" && <ProvenanceTracker />}
-            {activeView === "forgery" && <ForgeryDetection />}
-            {activeView === "market-trends" && <MarketValueTrends />}
-            {activeView === "ar-museum" && <ARMuseumDisplay />}
-            {activeView === "batch" && <AntiqueBatchAppraisal />}
-            {activeView === "social" && <AntiqueSocialFeed />}
-            {activeView === "price-alert" && <AntiquePriceAlert />}
-            {activeView === "certificate" && <AntiqueCertificate />}
-            {activeView === "ar-room" && <AntiqueARTryInRoom />}
-            {activeView === "expert-marketplace" && <AntiqueExpertMarketplace />}
           </motion.div>
         </div>
       </div>
@@ -223,7 +184,7 @@ const AntiqueAppraisal = () => {
         {/* Tools Grid */}
         <h2 className="text-2xl sm:text-3xl font-black mb-4">
           <span className="bg-gradient-to-r from-cyan-400 via-teal-500 to-emerald-500 bg-clip-text text-transparent">
-            Appraisal Tools
+            Antique Identification
           </span>
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
