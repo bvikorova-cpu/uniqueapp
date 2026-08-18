@@ -13,6 +13,8 @@ const UniAssistant = lazy(() => import("@/components/assistant/UniAssistant"));
 const GoogleTranslateWidget = lazy(() => import("@/components/GoogleTranslateWidget"));
 const BazaarCreate = lazy(() => import("@/pages/BazaarCreate"));
 const BazaarSavedSearches = lazy(() => import("@/pages/BazaarSavedSearches"));
+const BazaarMy = lazy(() => import("@/pages/BazaarMy"));
+const CouponMy = lazy(() => import("@/pages/CouponMy"));
 const BazaarMessages = lazy(() => import("@/pages/BazaarMessages"));
 const InvestmentPortfolio = lazy(() => import("@/pages/InvestmentPortfolio"));
 const SkillsMarketplace = lazy(() => import("@/pages/SkillsMarketplace"));
