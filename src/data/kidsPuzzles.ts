@@ -4,6 +4,11 @@ import seaBuddies from "@/assets/puzzles/puzzle-sea-buddies.jpg";
 import unicornCastle from "@/assets/puzzles/puzzle-unicorn-castle.jpg";
 import farmFriends from "@/assets/puzzles/puzzle-farm-friends.jpg";
 import robotCity from "@/assets/puzzles/puzzle-robot-city.jpg";
+import rainforest from "@/assets/puzzles/puzzle-rainforest.jpg";
+import dragonTown from "@/assets/puzzles/puzzle-dragon-town.jpg";
+import futureCity from "@/assets/puzzles/puzzle-future-city.jpg";
+import deepSpace from "@/assets/puzzles/puzzle-deep-space.jpg";
+import sunkenShip from "@/assets/puzzles/puzzle-sunken-ship.jpg";
 
 export interface KidsPuzzle {
   slug: string;
@@ -14,10 +19,20 @@ export interface KidsPuzzle {
   image: string;
   rows: number;
   cols: number;
+  /** Recommended age range shown on the card. */
+  age: string;
+  /** Difficulty group used for filtering. */
+  level: "little" | "big" | "expert";
 }
 
 /** Cost in AI credits for one puzzle-piece draw. */
 export const PIECE_COST = 1;
+
+export const PUZZLE_LEVELS: { id: KidsPuzzle["level"]; label: string; hint: string }[] = [
+  { id: "little", label: "Little kids", hint: "16–25 pieces · ages 4–7" },
+  { id: "big", label: "Bigger kids", hint: "36–64 pieces · ages 8–11" },
+  { id: "expert", label: "Experts", hint: "81–144 pieces · ages 12+" },
+];
 
 export const KIDS_PUZZLES: KidsPuzzle[] = [
   {
@@ -29,6 +44,8 @@ export const KIDS_PUZZLES: KidsPuzzle[] = [
     image: dinoJungle,
     rows: 4,
     cols: 4,
+    age: "Ages 4–6",
+    level: "little",
   },
   {
     slug: "space-kids",
@@ -39,6 +56,8 @@ export const KIDS_PUZZLES: KidsPuzzle[] = [
     image: spaceKids,
     rows: 4,
     cols: 4,
+    age: "Ages 4–6",
+    level: "little",
   },
   {
     slug: "sea-buddies",
@@ -49,6 +68,8 @@ export const KIDS_PUZZLES: KidsPuzzle[] = [
     image: seaBuddies,
     rows: 5,
     cols: 5,
+    age: "Ages 5–7",
+    level: "little",
   },
   {
     slug: "unicorn-castle",
@@ -59,6 +80,8 @@ export const KIDS_PUZZLES: KidsPuzzle[] = [
     image: unicornCastle,
     rows: 5,
     cols: 5,
+    age: "Ages 5–7",
+    level: "little",
   },
   {
     slug: "farm-friends",
@@ -69,6 +92,8 @@ export const KIDS_PUZZLES: KidsPuzzle[] = [
     image: farmFriends,
     rows: 6,
     cols: 6,
+    age: "Ages 7–9",
+    level: "big",
   },
   {
     slug: "robot-city",
@@ -79,6 +104,68 @@ export const KIDS_PUZZLES: KidsPuzzle[] = [
     image: robotCity,
     rows: 6,
     cols: 6,
+    age: "Ages 7–9",
+    level: "big",
+  },
+  {
+    slug: "rainforest",
+    title: "Rainforest Falls",
+    tagline: "Toucans, monkeys and a jaguar hidden in the jungle canopy.",
+    emoji: "🦜",
+    gradient: "from-green-500 to-emerald-600",
+    image: rainforest,
+    rows: 7,
+    cols: 7,
+    age: "Ages 8–10",
+    level: "big",
+  },
+  {
+    slug: "dragon-town",
+    title: "Dragon Town",
+    tagline: "A busy medieval market square with dragons over the castle.",
+    emoji: "🐉",
+    gradient: "from-orange-500 to-red-600",
+    image: dragonTown,
+    rows: 8,
+    cols: 8,
+    age: "Ages 9–11",
+    level: "big",
+  },
+  {
+    slug: "future-city",
+    title: "Neon Future City",
+    tagline: "Flying cars and neon towers in a night skyline.",
+    emoji: "🌃",
+    gradient: "from-sky-500 to-indigo-600",
+    image: futureCity,
+    rows: 9,
+    cols: 9,
+    age: "Ages 11+",
+    level: "expert",
+  },
+  {
+    slug: "deep-space",
+    title: "Deep Space Atlas",
+    tagline: "Planets, comets, nebulae and astronauts across the solar system.",
+    emoji: "🪐",
+    gradient: "from-slate-700 to-purple-700",
+    image: deepSpace,
+    rows: 10,
+    cols: 10,
+    age: "Ages 12+",
+    level: "expert",
+  },
+  {
+    slug: "sunken-ship",
+    title: "Sunken Treasure City",
+    tagline: "A shipwreck, divers and coral ruins full of tiny details.",
+    emoji: "🏴‍☠️",
+    gradient: "from-teal-600 to-blue-800",
+    image: sunkenShip,
+    rows: 12,
+    cols: 12,
+    age: "Ages 12+",
+    level: "expert",
   },
 ];
 
