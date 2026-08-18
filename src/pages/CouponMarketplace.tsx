@@ -70,6 +70,7 @@ export default function CouponMarketplace() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { unread: couponUnread } = useCouponUnread();
   const [params, setParams] = useSearchParams();
 
   const [coupons, setCoupons] = useState<Coupon[]>([]);

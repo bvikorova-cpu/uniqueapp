@@ -57,6 +57,7 @@ export default function Bazaar() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { unread: bazaarUnread } = useBazaarUnread();
   const [params, setParams] = useSearchParams();
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
