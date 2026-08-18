@@ -24,7 +24,7 @@ export default function LeaveReviewDialog({ open, onOpenChange, sellerId, seller
   const submit = async () => {
     setSubmitting(true);
     try {
-      await submitReview.mutateAsync({ rating, comment: comment.trim() || undefined });
+      await submitReviewAsync({ rating, comment: comment.trim() || undefined });
       await onSubmitted?.();
       onOpenChange(false);
       setComment("");
