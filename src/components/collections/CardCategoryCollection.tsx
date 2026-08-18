@@ -312,6 +312,19 @@ export const CardCategoryCollection = ({ category }: Props) => {
         </p>
       </Card>
 
+      <Card className="p-4 sm:p-5 border border-primary/20 bg-card/80">
+        <div className="flex items-center gap-2 mb-3">
+          <Info className="h-4 w-4 text-primary" />
+          <h3 className="font-bold text-sm">How it works</h3>
+        </div>
+        <ol className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-muted-foreground">
+          <li className="flex gap-2"><span className="font-black text-primary">1.</span><span><strong className="text-foreground">Draw</strong> — every draw costs {DRAW_COST} AI credit and reveals one random card.</span></li>
+          <li className="flex gap-2"><span className="font-black text-primary">2.</span><span><strong className="text-foreground">Keep ✓</strong> — add the card to your album; duplicates stack up.</span></li>
+          <li className="flex gap-2"><span className="font-black text-primary">3.</span><span><strong className="text-foreground">Discard ✗</strong> — move the card to your Discarded bin instead of keeping it.</span></li>
+          <li className="flex gap-2"><span className="font-black text-primary">4.</span><span><strong className="text-foreground">Recycle</strong> — recycle exactly 10 discarded cards for 1 AI credit back.</span></li>
+        </ol>
+      </Card>
+
       {/* ── Prime card: reward for a completed set ─────────────────────────── */}
       <Card className={`relative overflow-hidden p-4 sm:p-6 border-2 ${prime?.complete ? "border-amber-400/70 bg-gradient-to-br from-amber-500/15 via-yellow-400/10 to-amber-600/15" : "border-border/30 bg-card/70"}`}>
         <div className="flex flex-wrap items-center gap-3">
