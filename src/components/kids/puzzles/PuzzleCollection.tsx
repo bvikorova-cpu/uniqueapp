@@ -96,8 +96,23 @@ export const PuzzleCollection = ({ puzzle, onBack }: Props) => {
     if (current === null) return;
     setExitDir(keep ? "right" : "left");
     if (!keep) {
-      setTimeout(() => { setCurrent(null); setExitDir(null); }, 250);
-      toast("Piece released — it stays in the box.", { icon: "🗑️" });
+      const idx = current;
+      setDeciding(true);
+      try {
+        const { error } = await (supabase as any).rpc("puzzle_trash_add", {
+          _puzzle_slug: slug,
+          _piece_index: idx,
+        });
+        if (error) throw error;
+        toast("Piece sent to your scrap box — recycle 10 for 1 credit.", { icon: "🗑️" });
+        queryClient.invalidateQueries({ queryKey: ["puzzle-trash", slug] });
+        setTimeout(() => { setCurrent(null); setExitDir(null); }, 250);
+      } catch (e) {
+        toast.error(e instanceof Error ? e.message : "Could not scrap the piece.");
+        setExitDir(null);
+      } finally {
+        setDeciding(false);
+      }
       return;
     }
     setDeciding(true);
