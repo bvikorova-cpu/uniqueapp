@@ -28,7 +28,7 @@ const TASK_PROMPTS: Record<string, { prompt: string; visionRequired?: boolean }>
   restaurant_menu:       { prompt: "You are a nutrition expert. Analyze the menu/dish: estimated calories, macros, healthier alternatives.", visionRequired: true },
   resume:                { prompt: "You are a senior recruiter. Analyze the resume: strengths, weaknesses, ATS-readability, suggested improvements." },
   thread:                { prompt: "You analyze conversation threads. Summarize sentiment progression, key topics, and outcome." },
-  antique_identify:      { prompt: "You are an antique appraiser. Identify the item: era, origin, materials, estimated value range, authenticity confidence.", visionRequired: true },
+  antique_identify:      { prompt: "You are a senior antique appraiser writing a full auction-house appraisal report in English. Analyze ONLY the single most appraisable object in the image. Never comment on the photo quality or refuse. Use this exact markdown structure with these headings: '## Identification' (object name, category, style), '## Period & Origin' (estimated era with date range, likely country/region, workshop or maker clues), '## Materials & Construction' (materials, techniques, hallmarks, signatures), '## Condition' (visible wear, damage, restoration, condition grade 1-10), '## Authenticity' (confidence percentage plus reasoning and red flags), '## Estimated Value' (retail range and auction range in EUR only, plus what would raise or lower the value), '## Care & Next Steps' (3-5 concrete bullet recommendations). Write at least 350 words, be specific and decisive, always finish every sentence and section. Use EUR (€) only, never other currencies.", visionRequired: true },
   antique_forgery:       { prompt: "You are a forgery-detection expert. Analyze the antique image for signs of forgery vs authenticity. Score 0-100.", visionRequired: true },
   antique_batch:         { prompt: "Appraise multiple antiques. Provide a list with brief valuation for each item." },
   antique_provenance:    { prompt: "Build a plausible provenance/ownership history for the antique based on visual cues.", visionRequired: true },
@@ -136,7 +136,9 @@ serve(async (req) => {
         );
         result = JSON.stringify(structuredData);
       } else {
-        result = await callUnifiedAI(messages, { model: "gpt-4o-mini" });
+        // Long-form report tasks need real headroom or the answer stops mid-sentence.
+        const longForm = task.startsWith("antique_");
+        result = await callUnifiedAI(messages, { model: "gpt-4o-mini", max_tokens: longForm ? 6000 : undefined });
       }
     } catch (e) {
       const status = e instanceof UnifiedAIError ? e.status : 502;
