@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import {
   Plus, Search, MapPin, Euro, ArrowLeft, Sparkles, Crown, Flame, ChevronRight, MessageCircle,
   Smartphone, Shirt, Home, Dumbbell, Palette, Car, Gem, Boxes, Lock, Loader2, Gavel, Clock,
-  Settings2,
+  Settings2, ShoppingBag,
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { PromotionBadge } from "@/components/skills/PromotionBadge";
@@ -85,6 +85,7 @@ export default function Auction() {
   const [unlocked, setUnlocked] = useState<Set<string>>(new Set());
   const [unlocking, setUnlocking] = useState(false);
   const [chatItem, setChatItem] = useState<Item | null>(null);
+  const [buyIntent, setBuyIntent] = useState("");
   const [bidAmount, setBidAmount] = useState("");
   const [bidding, setBidding] = useState(false);
   const [reload, setReload] = useState(0);
@@ -611,6 +612,7 @@ export default function Auction() {
           auctionTitle={chatItem.title}
           otherId={chatItem.user_id}
           otherName={names[chatItem.user_id]?.name}
+          initialMessage={buyIntent || undefined}
         />
       )}
     </>
