@@ -37,6 +37,8 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const buyerId = buyerIdOverride ?? (user?.id && user.id !== sellerId ? user.id : null);
