@@ -1,23 +1,18 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Upload, Sparkles, Search, Shield, BookOpen, TrendingUp, Wrench } from "lucide-react";
+import { Upload, Search, Sparkles } from "lucide-react";
 import { useAntiqueCredits } from "@/hooks/useAntiqueCredits";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
+
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const analysisOptions = [
-  { type: 'basic', name: 'Basic Identification', icon: Search, credits: 5, description: 'Identify the item, period, and style', color: 'text-primary' },
-  { type: 'valuation', name: 'Market Valuation', icon: TrendingUp, credits: 10, description: 'Estimate current market value', color: 'text-primary' },
-  { type: 'expert', name: 'Expert Report', icon: Sparkles, credits: 15, description: 'Complete analysis with history & value', color: 'text-primary', premium: true },
-  { type: 'authenticity', name: 'Authenticity Check', icon: Shield, credits: 20, description: 'Verify authenticity & detect fakes', color: 'text-primary', premium: true },
-  { type: 'history', name: 'Historical Story', icon: BookOpen, credits: 3, description: 'AI-generated historical narrative', color: 'text-primary' },
-  { type: 'restoration', name: 'Restoration Advice', icon: Wrench, credits: 3, description: 'Care and restoration recommendations', color: 'text-primary' },
+  { type: 'basic', name: 'Antique Identification', icon: Search, credits: 5, description: 'Identify the item, period, and style', color: 'text-primary' },
 ];
+
 
 export const AntiqueAnalyze = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -75,35 +70,8 @@ export const AntiqueAnalyze = () => {
           { title: 'Iterate', desc: 'Repeat or level up anytime.' },
         ]} />
       <div className="space-y-6">
-      {/* Analysis Type Selection */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-        {analysisOptions.map((option, i) => {
-          const Icon = option.icon;
-          return (
-            <motion.div key={option.type} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.05, type: "spring" }}>
-              <Card
-                className={`antique-frame rounded-md cursor-pointer transition-all ${
-                  analysisType === option.type ? 'ring-2 ring-primary' : ''
-                }`}
-                onClick={() => setAnalysisType(option.type)}
-              >
-                <CardHeader className="p-3 sm:p-4">
-                  <Icon className={`w-6 h-6 mb-2 ${option.color}`} />
-                  <CardTitle className="text-sm flex items-center gap-2 antique-display">
-                    {option.name}
-                    {option.premium && <Badge variant="secondary" className="text-[10px]">Premium</Badge>}
-                  </CardTitle>
-                  <CardDescription className="text-xs">{option.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="p-3 pt-0">
-                  <p className="text-xs font-bold text-primary tracking-wider">{option.credits} credits</p>
-                </CardContent>
-              </Card>
-            </motion.div>
-          );
-        })}
-      </div>
+
+
 
       {/* Upload & Result */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
