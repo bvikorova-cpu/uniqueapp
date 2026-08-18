@@ -354,15 +354,13 @@ export default function Bazaar() {
             >
               <Plus className="h-4 w-4" /> Post a listing · 2 credits
             </Button>
+            <Button size="lg" variant="outline" className="gap-2 border-white/40 bg-black/30 text-white backdrop-blur hover:bg-white/10 hover:text-white" onClick={() => (user ? navigate("/bazaar/messages") : navigate("/auth"))}>
+              <MessageCircle className="h-4 w-4" /> Messages
+            </Button>
             {user && (
-              <>
-                <Button size="lg" variant="outline" className="gap-2 border-white/40 bg-black/30 text-white backdrop-blur hover:bg-white/10 hover:text-white" onClick={() => navigate("/bazaar/messages")}>
-                  <MessageCircle className="h-4 w-4" /> Messages
-                </Button>
-                <Button size="lg" variant="outline" className="gap-2 border-white/40 bg-black/30 text-white backdrop-blur hover:bg-white/10 hover:text-white" onClick={() => navigate("/bazaar/saved-searches")}>
-                  Saved searches
-                </Button>
-              </>
+              <Button size="lg" variant="outline" className="gap-2 border-white/40 bg-black/30 text-white backdrop-blur hover:bg-white/10 hover:text-white" onClick={() => navigate("/bazaar/saved-searches")}>
+                Saved searches
+              </Button>
             )}
           </div>
         </div>
