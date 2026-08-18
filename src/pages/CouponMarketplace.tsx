@@ -12,8 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   Plus, Search, MapPin, Euro, ArrowLeft, Crown, Flame, ChevronRight, MessageCircle, Lock, Loader2,
-  Trash2, Store, Gift, Sparkles, Zap, Star, Package, Ticket, Tag, Clock, DollarSign, ShieldAlert,
-  Target, Wand2, Bell, Building2, TrendingUp, MessageSquare, Heart,
+  Trash2, Store, Gift, Sparkles, Zap, Star, Package, Ticket, Tag, Clock,
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { useToast } from "@/hooks/use-toast";
@@ -21,17 +20,6 @@ import { PromotionBadge } from "@/components/skills/PromotionBadge";
 import { CouponHero } from "@/components/coupon/CouponHero";
 import { CouponPromoteDialog } from "@/components/coupon/CouponPromoteDialog";
 import { CouponChatDialog } from "@/components/coupon/CouponChatDialog";
-import { MarketplaceToolCard } from "@/components/marketplace/MarketplaceToolCard";
-import { CouponValuatorView } from "@/components/coupon/views/CouponValuatorView";
-import { FraudScannerView } from "@/components/coupon/views/FraudScannerView";
-import { DealMatcherView } from "@/components/coupon/views/DealMatcherView";
-import { ListingWriterView } from "@/components/coupon/views/ListingWriterView";
-import { ExpiryAlertView } from "@/components/coupon/views/ExpiryAlertView";
-import { BundleBuilderView } from "@/components/coupon/views/BundleBuilderView";
-import { StoreReputationView } from "@/components/coupon/views/StoreReputationView";
-import { PriceHistoryView } from "@/components/coupon/views/PriceHistoryView";
-import { NegotiationBotView } from "@/components/coupon/views/NegotiationBotView";
-import { WishlistAlertsView } from "@/components/coupon/views/WishlistAlertsView";
 
 const CATEGORY_FOLDERS = [
   { value: "food", label: "Food & Dining", icon: Store, desc: "Restaurants, delivery, cafés" },
@@ -50,19 +38,6 @@ const COUPON_TYPES: Record<string, string> = {
   cashback: "Cashback",
   bogo: "Buy one get one",
 };
-
-const AI_TOOLS = [
-  { id: "coupon-valuator", title: "AI Coupon Valuator", description: "Fair market price & expiry risk for any coupon", icon: DollarSign, badge: "3 CR", gradient: "bg-gradient-to-r from-purple-600 to-amber-500", features: ["Fair value range", "Expiry risk score", "Demand analysis"] },
-  { id: "fraud-scanner", title: "AI Fraud Scanner", description: "Detect fake coupons, expired codes & scam patterns", icon: ShieldAlert, badge: "4 CR", gradient: "bg-gradient-to-r from-red-500 to-orange-600", features: ["Trust score 0-100", "Red flag detection", "Safety verdict"] },
-  { id: "deal-matcher", title: "AI Deal Matcher", description: "Find the best deals for your shopping habits", icon: Target, badge: "3 CR", gradient: "bg-gradient-to-r from-emerald-500 to-teal-600", features: ["Personal picks", "Savings estimate", "Store ranking"] },
-  { id: "listing-writer", title: "AI Listing Writer", description: "Write coupon listings that actually sell", icon: Wand2, badge: "3 CR", gradient: "bg-gradient-to-r from-violet-500 to-pink-600", features: ["SEO titles", "Trust copy", "Urgency triggers"] },
-  { id: "expiry-alert", title: "AI Expiry Alerts", description: "Track expiry dates and use coupons in time", icon: Bell, badge: "3 CR", gradient: "bg-gradient-to-r from-red-500 to-yellow-500", features: ["Priority ranking", "Usage schedule", "Value at risk"] },
-  { id: "bundle-builder", title: "Bundle Builder", description: "AI-optimised bundles for maximum savings", icon: Package, badge: "4 CR", gradient: "bg-gradient-to-r from-blue-500 to-cyan-500", features: ["Bundle pricing", "Cross-sell match", "Marketing copy"] },
-  { id: "store-reputation", title: "Store Reputation", description: "Trust & reliability analysis for any store", icon: Building2, badge: "3 CR", gradient: "bg-gradient-to-r from-amber-500 to-orange-600", features: ["Trust score", "Fraud risk", "Redemption ease"] },
-  { id: "price-history", title: "Price History", description: "Market trends & best time to buy or sell", icon: TrendingUp, badge: "3 CR", gradient: "bg-gradient-to-r from-green-500 to-emerald-600", features: ["Seasonal patterns", "Predictions", "Grading"] },
-  { id: "negotiation-bot", title: "AI Negotiation Bot", description: "Price negotiation strategies & ready scripts", icon: MessageSquare, badge: "4 CR", gradient: "bg-gradient-to-r from-indigo-500 to-purple-600", features: ["Opening scripts", "Counter offers", "Psychology"] },
-  { id: "wishlist-alerts", title: "Wishlist & Price Drops", description: "Smart tracking for your favourite stores", icon: Heart, badge: "3 CR", gradient: "bg-gradient-to-r from-pink-500 to-rose-600", features: ["Drop patterns", "Budget split", "Projections"] },
-];
 
 type Coupon = {
   id: string;
@@ -96,7 +71,6 @@ export default function CouponMarketplace() {
   const { toast } = useToast();
   const [params, setParams] = useSearchParams();
 
-  const [activeView, setActiveView] = useState<string | null>(null);
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
@@ -231,28 +205,6 @@ export default function CouponMarketplace() {
     setDetail(null);
     setReload((r) => r + 1);
   };
-
-  if (activeView) {
-    const views: Record<string, JSX.Element> = {
-      "coupon-valuator": <CouponValuatorView onBack={() => setActiveView(null)} />,
-      "fraud-scanner": <FraudScannerView onBack={() => setActiveView(null)} />,
-      "deal-matcher": <DealMatcherView onBack={() => setActiveView(null)} />,
-      "listing-writer": <ListingWriterView onBack={() => setActiveView(null)} />,
-      "expiry-alert": <ExpiryAlertView onBack={() => setActiveView(null)} />,
-      "bundle-builder": <BundleBuilderView onBack={() => setActiveView(null)} />,
-      "store-reputation": <StoreReputationView onBack={() => setActiveView(null)} />,
-      "price-history": <PriceHistoryView onBack={() => setActiveView(null)} />,
-      "negotiation-bot": <NegotiationBotView onBack={() => setActiveView(null)} />,
-      "wishlist-alerts": <WishlistAlertsView onBack={() => setActiveView(null)} />,
-    };
-    if (views[activeView]) {
-      return (
-        <div className="min-h-screen bg-background pb-12 pt-16 sm:pt-20">
-          <div className="container mx-auto max-w-7xl px-3 sm:px-4">{views[activeView]}</div>
-        </div>
-      );
-    }
-  }
 
   const renderCard = (c: Coupon) => {
     const premium = isActive(c.premium_until);
@@ -475,15 +427,6 @@ export default function CouponMarketplace() {
             </>
           )}
 
-          <section className="mt-12">
-            <h2 className="mb-1 text-2xl font-bold tracking-tight">AI coupon tools</h2>
-            <p className="mb-4 text-sm text-muted-foreground">Each tool costs credits and runs on real listing data.</p>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {AI_TOOLS.map((t, i) => (
-                <MarketplaceToolCard key={t.id} tool={t} index={i} onSelect={() => setActiveView(t.id)} />
-              ))}
-            </div>
-          </section>
         </div>
       </div>
 
