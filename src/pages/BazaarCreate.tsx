@@ -47,7 +47,7 @@ export default function BazaarCreate() {
       for (let i = 0; i < photos.length; i++) {
         const file = photos[i].file;
         const ext = file.name.split(".").pop();
-        const name = `${user.id}-${Date.now()}-${i}.${ext}`;
+        const name = `${user.id}/${Date.now()}-${i}.${ext}`;
         const { error: upErr } = await supabase.storage.from("bazaar_images").upload(name, file);
         if (upErr) throw upErr;
         const { data: { publicUrl } } = supabase.storage.from("bazaar_images").getPublicUrl(name);
