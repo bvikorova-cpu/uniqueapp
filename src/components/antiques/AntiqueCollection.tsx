@@ -47,12 +47,12 @@ export const AntiqueCollection = () => {
       {items.map((item, i) => (
         <motion.div key={item.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.05 }}>
-          <Card className="bg-card/80 backdrop-blur-xl overflow-hidden">
+          <Card className="antique-frame rounded-md overflow-hidden">
             {item.image_url && (
               <img src={item.image_url} alt="Antique" className="w-full h-48 object-cover" />
             )}
             <CardHeader className="p-3">
-              <CardTitle className="text-sm capitalize">{item.analysis_type} Analysis</CardTitle>
+              <CardTitle className="text-sm capitalize antique-display">{item.analysis_type} Analysis</CardTitle>
               <p className="text-xs text-muted-foreground">{new Date(item.created_at).toLocaleDateString()}</p>
             </CardHeader>
           </Card>
