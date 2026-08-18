@@ -919,3 +919,98 @@ body[data-scroll-locked] [data-floating-hiw],
 body:has([data-state="open"][role="dialog"]) [data-floating-hiw] {
   display: none !important;
 }
+
+/* ============================================================
+   Antique skin — parchment, sepia ink & gold leaf.
+   Scoped token overrides for the Antique Appraisal section only.
+   Fonts (Cinzel + Crimson Pro) are lazy-loaded via lazyFonts "gothic".
+   ============================================================ */
+.antique-skin {
+  --background: 40 44% 94%;
+  --foreground: 28 40% 14%;
+  --card: 38 48% 91%;
+  --card-foreground: 28 40% 14%;
+  --popover: 38 48% 93%;
+  --popover-foreground: 28 40% 14%;
+  --primary: 34 62% 34%;
+  --primary-foreground: 40 60% 96%;
+  --secondary: 36 34% 84%;
+  --secondary-foreground: 28 40% 18%;
+  --muted: 37 30% 86%;
+  --muted-foreground: 30 22% 38%;
+  --accent: 42 72% 48%;
+  --accent-foreground: 28 45% 14%;
+  --border: 33 34% 70%;
+  --input: 33 34% 70%;
+  --ring: 42 72% 48%;
+  --antique-gold: 42 74% 52%;
+  --antique-ink: 28 40% 14%;
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--background));
+  background-image:
+    radial-gradient(ellipse at 15% 0%, hsl(42 60% 86% / 0.9), transparent 60%),
+    radial-gradient(ellipse at 85% 100%, hsl(28 40% 74% / 0.55), transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.16'/%3E%3C/svg%3E");
+  font-family: "Crimson Pro", Georgia, "Times New Roman", serif;
+}
+
+.antique-skin h1,
+.antique-skin h2,
+.antique-skin h3,
+.antique-skin .antique-display {
+  font-family: "Cinzel", Georgia, serif;
+  letter-spacing: 0.04em;
+}
+
+.antique-skin .antique-gold-text {
+  background-image: linear-gradient(100deg, hsl(36 55% 34%), hsl(44 82% 56%), hsl(30 50% 30%));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Gilded frame with double rule, like a museum label plate */
+.antique-frame {
+  position: relative;
+  border: 1px solid hsl(var(--antique-gold) / 0.55);
+  box-shadow:
+    inset 0 0 0 1px hsl(38 40% 98% / 0.55),
+    inset 0 0 24px hsl(30 40% 40% / 0.12),
+    0 10px 30px -12px hsl(28 40% 20% / 0.35);
+  background-image: linear-gradient(160deg, hsl(40 50% 95% / 0.9), hsl(36 38% 88% / 0.9));
+}
+.antique-frame::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  pointer-events: none;
+  border: 1px solid hsl(var(--antique-gold) / 0.3);
+  border-radius: inherit;
+}
+
+/* Ornamental divider (fleuron) */
+.antique-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: hsl(var(--antique-gold));
+}
+.antique-rule::before,
+.antique-rule::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, hsl(var(--antique-gold) / 0.7), transparent);
+}
+
+/* Wax-seal style badge */
+.antique-seal {
+  background-image: radial-gradient(circle at 35% 30%, hsl(6 58% 46%), hsl(4 62% 32%));
+  color: hsl(40 60% 94%);
+  box-shadow: 0 4px 12px -4px hsl(4 60% 20% / 0.6), inset 0 1px 0 hsl(20 60% 70% / 0.5);
+}
+
+/* Sepia treatment for the hero footage */
+.antique-sepia {
+  filter: sepia(0.62) contrast(1.05) saturate(0.85) brightness(0.95);
+}
