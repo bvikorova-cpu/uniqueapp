@@ -2758,6 +2758,38 @@ export type Database = {
           },
         ]
       }
+      auction_contact_unlocks: {
+        Row: {
+          auction_id: string
+          buyer_id: string
+          created_at: string
+          id: string
+          seller_id: string
+        }
+        Insert: {
+          auction_id: string
+          buyer_id: string
+          created_at?: string
+          id?: string
+          seller_id: string
+        }
+        Update: {
+          auction_id?: string
+          buyer_id?: string
+          created_at?: string
+          id?: string
+          seller_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auction_contact_unlocks_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "auction_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       auction_escrow: {
         Row: {
           amount: number
@@ -2834,10 +2866,16 @@ export type Database = {
           description: string
           ends_at: string
           escrow_status: string | null
+          featured_at: string | null
+          featured_until: string | null
           id: string
           image_url: string | null
+          image_urls: string[] | null
           is_active: boolean | null
+          location: string | null
           paid_at: string | null
+          premium_at: string | null
+          premium_until: string | null
           shipped_at: string | null
           starting_price: number
           stripe_session_id: string | null
@@ -2856,10 +2894,16 @@ export type Database = {
           description: string
           ends_at: string
           escrow_status?: string | null
+          featured_at?: string | null
+          featured_until?: string | null
           id?: string
           image_url?: string | null
+          image_urls?: string[] | null
           is_active?: boolean | null
+          location?: string | null
           paid_at?: string | null
+          premium_at?: string | null
+          premium_until?: string | null
           shipped_at?: string | null
           starting_price: number
           stripe_session_id?: string | null
@@ -2878,10 +2922,16 @@ export type Database = {
           description?: string
           ends_at?: string
           escrow_status?: string | null
+          featured_at?: string | null
+          featured_until?: string | null
           id?: string
           image_url?: string | null
+          image_urls?: string[] | null
           is_active?: boolean | null
+          location?: string | null
           paid_at?: string | null
+          premium_at?: string | null
+          premium_until?: string | null
           shipped_at?: string | null
           starting_price?: number
           stripe_session_id?: string | null
@@ -2891,6 +2941,50 @@ export type Database = {
           winner_id?: string | null
         }
         Relationships: []
+      }
+      auction_messages: {
+        Row: {
+          attachment_path: string | null
+          attachment_type: string | null
+          auction_id: string
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          receiver_id: string
+          sender_id: string
+        }
+        Insert: {
+          attachment_path?: string | null
+          attachment_type?: string | null
+          auction_id: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          receiver_id: string
+          sender_id: string
+        }
+        Update: {
+          attachment_path?: string | null
+          attachment_type?: string | null
+          auction_id?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          receiver_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auction_messages_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "auction_items"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       auction_photos: {
         Row: {
@@ -68223,6 +68317,14 @@ export type Database = {
         }
         Returns: undefined
       }
+      auction_top_listing: {
+        Args: { _days: number; _item_id: string; _tier?: string }
+        Returns: {
+          credits_remaining: number
+          promoted_until: string
+          tier: string
+        }[]
+      }
       auto_release_coupon_escrow: { Args: never; Returns: number }
       auto_release_stale_brand_escrows: { Args: never; Returns: number }
       award_brain_duel_credits: {
@@ -70097,6 +70199,10 @@ export type Database = {
         Args: { _job_id: string; _user_id: string }
         Returns: boolean
       }
+      has_auction_contact_unlock: {
+        Args: { _auction_id: string; _user_id: string }
+        Returns: boolean
+      }
       has_bazaar_contact_unlock: {
         Args: { _item_id: string; _user_id: string }
         Returns: boolean
@@ -70569,6 +70675,20 @@ export type Database = {
           tier: string
         }[]
       }
+      publish_auction_item: {
+        Args: {
+          _buyout_price?: number
+          _category: string
+          _condition?: string
+          _description: string
+          _duration_hours?: number
+          _image_urls?: string[]
+          _location?: string
+          _starting_price: number
+          _title: string
+        }
+        Returns: string
+      }
       publish_bazaar_item: {
         Args: {
           _category: string
@@ -70965,6 +71085,7 @@ export type Database = {
       }
       track_challenge_action: { Args: { _action: string }; Returns: Json }
       trim_user_feed_cache: { Args: never; Returns: undefined }
+      unlock_auction_contact: { Args: { _auction_id: string }; Returns: Json }
       unlock_bazaar_contact: { Args: { _item_id: string }; Returns: Json }
       unlock_coupon_contact: { Args: { _coupon_id: string }; Returns: Json }
       unlock_homework_achievements: {
