@@ -130,7 +130,9 @@ export function SkillRequestsBoard({ category }: { category?: string | null }) {
       const msg = String(err?.message || "");
       toast({
         title: "Could not publish",
-        description: msg.includes("DAILY_LIMIT") ? "Max 10 requests per day." : msg || "Try again",
+        description: msg.includes("INSUFFICIENT_CREDITS")
+          ? "You need 2 credits to publish a request."
+          : msg.includes("DAILY_LIMIT") ? "Max 10 requests per day." : msg || "Try again",
         variant: "destructive",
       });
     } finally {
