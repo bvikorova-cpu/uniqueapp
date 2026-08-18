@@ -65,6 +65,7 @@ function SkillsMarketplaceContent() {
   const [offerings, setOfferings] = useState<Offering[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
+  const [debouncedQ, setDebouncedQ] = useState("");
   const [location, setLocation] = useState("");
   const [region, setRegion] = useState("all");
   const [sort, setSort] = useState("newest");
