@@ -118,7 +118,10 @@ const KidsPuzzles = () => {
                         </Badge>
                       </div>
                       <div className="p-4 space-y-2">
-                        <h3 className="font-extrabold text-base">{p.emoji} {p.title}</h3>
+                        <div className="flex items-center justify-between gap-2">
+                          <h3 className="font-extrabold text-base">{p.emoji} {p.title}</h3>
+                          <Badge variant="secondary" className="shrink-0 text-[10px]">{p.age}</Badge>
+                        </div>
                         <p className="text-xs text-muted-foreground">{p.tagline}</p>
                         <Progress value={pct} className="h-1.5" />
                         <p className="text-[11px] text-muted-foreground">
