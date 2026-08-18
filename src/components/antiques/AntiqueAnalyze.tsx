@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Upload, Sparkles, Search, Shield, BookOpen, TrendingUp, Wrench } from "lucide-react";
+import { Upload, Search } from "lucide-react";
 import { useAntiqueCredits } from "@/hooks/useAntiqueCredits";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
+
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const analysisOptions = [
