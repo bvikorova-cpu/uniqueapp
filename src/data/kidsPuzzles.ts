@@ -9,6 +9,25 @@ import dragonTown from "@/assets/puzzles/puzzle-dragon-town.jpg";
 import futureCity from "@/assets/puzzles/puzzle-future-city.jpg";
 import deepSpace from "@/assets/puzzles/puzzle-deep-space.jpg";
 import sunkenShip from "@/assets/puzzles/puzzle-sunken-ship.jpg";
+import safari from "@/assets/puzzles/puzzle-safari.jpg";
+import kittens from "@/assets/puzzles/puzzle-kittens.jpg";
+import trucks from "@/assets/puzzles/puzzle-trucks.jpg";
+import circus from "@/assets/puzzles/puzzle-circus.jpg";
+import winter from "@/assets/puzzles/puzzle-winter.jpg";
+import candy from "@/assets/puzzles/puzzle-candy.jpg";
+import fireStation from "@/assets/puzzles/puzzle-firestation.jpg";
+import puppies from "@/assets/puzzles/puzzle-puppies.jpg";
+import school from "@/assets/puzzles/puzzle-school.jpg";
+import bugs from "@/assets/puzzles/puzzle-bugs.jpg";
+import pirateIsland from "@/assets/puzzles/puzzle-pirate-island.jpg";
+import funfair from "@/assets/puzzles/puzzle-funfair.jpg";
+import trainStation from "@/assets/puzzles/puzzle-train-station.jpg";
+import knights from "@/assets/puzzles/puzzle-knights.jpg";
+import stadium from "@/assets/puzzles/puzzle-stadium.jpg";
+import worldMap from "@/assets/puzzles/puzzle-world-map.jpg";
+import dinoValley from "@/assets/puzzles/puzzle-dino-valley.jpg";
+import coralCity from "@/assets/puzzles/puzzle-coral-city.jpg";
+import skiResort from "@/assets/puzzles/puzzle-ski-resort.jpg";
 
 export interface KidsPuzzle {
   slug: string;
