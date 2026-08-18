@@ -14,7 +14,8 @@ import { PuzzleCollection } from "@/components/kids/puzzles/PuzzleCollection";
 const HIW_STEPS = [
   { title: "Pick a puzzle", desc: "Choose one of the illustrated kids puzzles." },
   { title: "Draw a piece", desc: `Every draw costs ${PIECE_COST} AI credit and reveals a random puzzle piece.` },
-  { title: "Keep or release", desc: "Tap ✓ to snap the piece into your board or ✗ to put it back in the box." },
+  { title: "Keep or recycle", desc: "Tap ✓ to snap the piece into your board or ✗ to move it to the Scrap box." },
+  { title: "Recycle for credits", desc: "Recycle 10 pieces from your Scrap box and get 1 AI credit back." },
   { title: "Complete the picture", desc: "Collect every piece to reveal the whole artwork on your board." },
 ];
 
@@ -65,7 +66,7 @@ const KidsPuzzles = () => {
                   <div>
                     <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Kids Puzzles</h1>
                     <p className="text-xs sm:text-sm text-muted-foreground">
-                      {KIDS_PUZZLES.length} illustrated puzzles · 16 to 144 pieces · {PIECE_COST} credit per piece · ✓ keep or ✗ release
+                      {KIDS_PUZZLES.length} illustrated puzzles · 16 to 144 pieces · {PIECE_COST} credit per piece · ✓ keep or ✗ scrap · 10 scraps = 1 credit
                     </p>
                   </div>
                 </div>
