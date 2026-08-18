@@ -47,14 +47,17 @@ export const AntiqueAnalyze = () => {
       const { data: { publicUrl } } = supabase.storage.from('antiques').getPublicUrl(fileName);
       identifyAntique({ imageUrl: publicUrl, analysisType }, {
         onSuccess: (data: any) => {
-          setAnalysisResult(data.analysisResult);
+          const result = data?.analysisResult ?? data?.result ?? data?.text ?? null;
+          if (!result) { toast.error("No analysis returned, please try again"); return; }
+          setAnalysisResult(result);
           toast.success("Analysis complete!");
           supabase.from('antiques').insert({
             user_id: user.id, image_url: publicUrl, analysis_type: analysisType,
-            analysis_result: data.analysisResult, credits_used: data.creditsUsed
+            analysis_result: result, credits_used: data?.creditsCharged ?? data?.creditsUsed ?? selected?.credits ?? 3
           });
         }
       });
+
     } catch (error) {
       console.error('Error:', error);
       toast.error("Error uploading photo");
