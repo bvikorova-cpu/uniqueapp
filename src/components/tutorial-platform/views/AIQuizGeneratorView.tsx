@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTutorialAICredits } from "@/hooks/useTutorialAICredits";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
+import { AiMarkdown } from "@/components/common/AiMarkdown";
 
 const CREDITS_COST = 5;
 
