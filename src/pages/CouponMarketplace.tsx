@@ -328,6 +328,11 @@ export default function CouponMarketplace() {
                   </span>
                 )}
               </Button>
+              {user && (
+                <Button variant="outline" className="w-full gap-2 sm:w-auto" onClick={() => navigate("/coupon-marketplace/my")}>
+                  <Settings2 className="h-4 w-4" /> My coupons
+                </Button>
+              )}
               <Button className="w-full gap-2 sm:w-auto" onClick={() => (user ? navigate("/coupon-marketplace/create") : navigate("/auth"))}>
                 <Plus className="h-4 w-4" />
                 <span className="sm:hidden">Post · 2 cr</span>
