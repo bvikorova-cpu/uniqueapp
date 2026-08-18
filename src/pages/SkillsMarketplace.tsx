@@ -170,10 +170,14 @@ function SkillsMarketplaceContent() {
   const filtered = useMemo(() => {
     let list = offerings;
     if (category) list = list.filter((o) => o.category === category);
-    if (q.trim()) {
-      const term = q.toLowerCase();
+    // For 1-character terms the server query is skipped, so filter locally.
+    if (q.trim() && q.trim().length < 2) {
+      const term = q.trim().toLowerCase();
       list = list.filter(
-        (o) => o.title.toLowerCase().includes(term) || o.description.toLowerCase().includes(term),
+        (o) =>
+          o.title.toLowerCase().includes(term) ||
+          o.description.toLowerCase().includes(term) ||
+          (o.location || "").toLowerCase().includes(term),
       );
     }
     if (location.trim()) {
