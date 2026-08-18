@@ -113,7 +113,7 @@ export const KidsCollectibles = () => {
             Kids Collectibles
           </h1>
           <p className="mt-1 text-xs sm:text-sm text-muted-foreground max-w-xl">
-            16 magical card sets · {CARDS_PER_SET} cards each · 2,400 cards to collect
+            16 magical card sets · {CARDS_PER_SET} cards each · {DRAW_COST} credit per draw · ✓ keep or ✗ discard · 10 discards = 1 credit
           </p>
         </div>
       </div>
