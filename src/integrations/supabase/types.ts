@@ -38070,6 +38070,8 @@ export type Database = {
       }
       marketplace_responses: {
         Row: {
+          attachment_path: string | null
+          attachment_type: string | null
           commission_amount: number | null
           created_at: string | null
           escrow_released_at: string | null
@@ -38086,6 +38088,8 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          attachment_path?: string | null
+          attachment_type?: string | null
           commission_amount?: number | null
           created_at?: string | null
           escrow_released_at?: string | null
@@ -38102,6 +38106,8 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          attachment_path?: string | null
+          attachment_type?: string | null
           commission_amount?: number | null
           created_at?: string | null
           escrow_released_at?: string | null
@@ -48758,6 +48764,8 @@ export type Database = {
       }
       property_messages: {
         Row: {
+          attachment_path: string | null
+          attachment_type: string | null
           buyer_id: string
           content: string
           created_at: string
@@ -48768,6 +48776,8 @@ export type Database = {
           sender_id: string
         }
         Insert: {
+          attachment_path?: string | null
+          attachment_type?: string | null
           buyer_id: string
           content: string
           created_at?: string
@@ -48778,6 +48788,8 @@ export type Database = {
           sender_id: string
         }
         Update: {
+          attachment_path?: string | null
+          attachment_type?: string | null
           buyer_id?: string
           content?: string
           created_at?: string
