@@ -27,16 +27,21 @@ interface Props {
   auctionTitle: string;
   otherId: string;
   otherName?: string;
+  initialMessage?: string;
 }
 
-export function AuctionChatDialog({ open, onOpenChange, auctionId, auctionTitle, otherId, otherName }: Props) {
+export function AuctionChatDialog({ open, onOpenChange, auctionId, auctionTitle, otherId, otherName, initialMessage }: Props) {
   const { user } = useAuth();
   const [messages, setMessages] = useState<Msg[]>([]);
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(initialMessage ?? "");
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (open && initialMessage) setContent(initialMessage);
+  }, [open, initialMessage]);
 
   const markRead = async () => {
     if (!user) return;
