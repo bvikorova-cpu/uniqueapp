@@ -73,8 +73,9 @@ function SkillsMarketplaceContent() {
   const [promoteId, setPromoteId] = useState<string | null>(null);
   const [verified, setVerified] = useState<Record<string, { isVerified: boolean; tier: string | null }>>({});
   const [sellerStats, setSellerStats] = useState<Record<string, { avg: number; count: number }>>({});
-  const [messagesOpen, setMessagesOpen] = useState(false);
+  const [messagesOpen, setMessagesOpen] = useState(params.get("messages") === "1");
   const { totalUnread: skillUnread } = useSkillUnread({ notifyToasts: false });
+
 
   const category = params.get("category");
   const setCategory = (value: string | null) => {
