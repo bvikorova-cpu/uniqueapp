@@ -20,7 +20,9 @@ const HIW_STEPS = [
 
 const KidsPuzzles = () => {
   const [active, setActive] = useState<string | null>(null);
+  const [level, setLevel] = useState<KidsPuzzle["level"] | "all">("all");
   const puzzle = KIDS_PUZZLES.find((p) => p.slug === active) ?? null;
+  const visible = level === "all" ? KIDS_PUZZLES : KIDS_PUZZLES.filter((p) => p.level === level);
 
   const { data: progress = {} } = useQuery({
     queryKey: ["puzzle-progress"],
@@ -63,14 +65,37 @@ const KidsPuzzles = () => {
                   <div>
                     <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Kids Puzzles</h1>
                     <p className="text-xs sm:text-sm text-muted-foreground">
-                      {KIDS_PUZZLES.length} illustrated puzzles · {PIECE_COST} credit per piece · ✓ keep or ✗ release
+                      {KIDS_PUZZLES.length} illustrated puzzles · 16 to 144 pieces · {PIECE_COST} credit per piece · ✓ keep or ✗ release
                     </p>
                   </div>
                 </div>
               </Card>
 
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant={level === "all" ? "default" : "outline"}
+                  size="sm"
+                  className="rounded-full"
+                  onClick={() => setLevel("all")}
+                >
+                  All ages
+                </Button>
+                {PUZZLE_LEVELS.map((l) => (
+                  <Button
+                    key={l.id}
+                    variant={level === l.id ? "default" : "outline"}
+                    size="sm"
+                    className="rounded-full"
+                    onClick={() => setLevel(l.id)}
+                    title={l.hint}
+                  >
+                    {l.label}
+                  </Button>
+                ))}
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {KIDS_PUZZLES.map((p) => {
+                {visible.map((p) => {
                   const total = totalPieces(p);
                   const ownedCount = progress[p.slug] ?? 0;
                   const pct = Math.min(Math.round((ownedCount / total) * 100), 100);
