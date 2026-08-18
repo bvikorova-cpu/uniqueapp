@@ -13,6 +13,8 @@ const UniAssistant = lazy(() => import("@/components/assistant/UniAssistant"));
 const GoogleTranslateWidget = lazy(() => import("@/components/GoogleTranslateWidget"));
 const BazaarCreate = lazy(() => import("@/pages/BazaarCreate"));
 const BazaarSavedSearches = lazy(() => import("@/pages/BazaarSavedSearches"));
+const BazaarMy = lazy(() => import("@/pages/BazaarMy"));
+const CouponMy = lazy(() => import("@/pages/CouponMy"));
 const BazaarMessages = lazy(() => import("@/pages/BazaarMessages"));
 const InvestmentPortfolio = lazy(() => import("@/pages/InvestmentPortfolio"));
 const SkillsMarketplace = lazy(() => import("@/pages/SkillsMarketplace"));
@@ -742,6 +744,7 @@ const App = () => {
                         <Route path="/coupons/season/:slug" element={<CouponSeasonalHub />} />
                         <Route path="/coupons/:brand" element={<CouponBrandPage />} />
                         <Route path="/coupons/my" element={<ProtectedRoute><CouponsMy /></ProtectedRoute>} />
+                        <Route path="/coupon-marketplace/my" element={<ProtectedRoute><CouponMy /></ProtectedRoute>} />
                         <Route path="/admin/coupon-disputes" element={<ProtectedRoute requireAdmin={true}><AdminCouponDisputes /></ProtectedRoute>} />
                         <Route path="/admin/megatalent-moderation" element={<ProtectedRoute requireAdmin={true}><AdminMegatalentModeration /></ProtectedRoute>} />
                         <Route path="/admin/megatalent-payouts" element={<ProtectedRoute requireAdmin={true}><AdminMegatalentPayouts /></ProtectedRoute>} />
@@ -956,6 +959,7 @@ const App = () => {
                         <Route path="/promotions/success" element={<PromotionsSuccess />} />
                         <Route path="/promotions/mine" element={<MyPromotions />} />
                         <Route path="/bazaar/saved-searches" element={<BazaarSavedSearches />} />
+                        <Route path="/bazaar/my" element={<ProtectedRoute><BazaarMy /></ProtectedRoute>} />
                         <Route path="/investment/portfolio" element={<InvestmentPortfolio />} />
                         <Route path="/lie-detector" element={<LieDetector />} />
                         <Route path="/verify-report" element={<VerifyReport />} />
