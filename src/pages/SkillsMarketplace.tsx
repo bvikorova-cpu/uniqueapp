@@ -157,7 +157,8 @@ function SkillsMarketplaceContent() {
 
       setLoading(false);
     })();
-  }, []);
+    return () => { cancelled = true; };
+  }, [debouncedQ, category, region]);
 
   const counts = useMemo(() => {
     const c: Record<string, number> = {};
