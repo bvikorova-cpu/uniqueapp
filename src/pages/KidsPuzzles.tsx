@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Coins, Puzzle as PuzzleIcon, Sparkles } from "lucide-react";
+import { Coins, Info, Puzzle as PuzzleIcon, Sparkles } from "lucide-react";
 import { KIDS_PUZZLES, PIECE_COST, PUZZLE_LEVELS, totalPieces, type KidsPuzzle } from "@/data/kidsPuzzles";
 import { PuzzleCollection } from "@/components/kids/puzzles/PuzzleCollection";
 
