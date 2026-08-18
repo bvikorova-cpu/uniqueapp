@@ -211,7 +211,6 @@ export const FaceInsight = lazy(() => import("@/pages/FaceInsight"));
 
 export const PastLife = lazy(() => import("@/pages/PastLife"));
 export const AntiqueAppraisal = lazy(() => import("@/pages/AntiqueAppraisal"));
-export const Collectibles = lazy(() => import("@/pages/Collectibles"));
 
 // Streaming & Live
 export const LiveStream = lazy(() => import("@/pages/LiveStream"));

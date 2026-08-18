@@ -41,7 +41,6 @@ const coreModules = [
   { name: "Beauty Studio", path: "/beauty-studio", icon: Star, color: "text-rose-500" },
   { name: "Photo Restoration", path: "/photo-restoration", icon: RotateCcw, color: "text-amber-500" },
   { name: "Antique Appraisal", path: "/antique-appraisal", icon: Gem, color: "text-orange-500" },
-  { name: "Collectibles", path: "/collectibles", icon: Crown, color: "text-violet-500" },
   { name: "Dream Journal", path: "/dream-journal", icon: Brain, color: "text-blue-500" },
   { name: "Fashion Studio", path: "/fashion-studio", icon: Palette, color: "text-fuchsia-500" },
 ];
