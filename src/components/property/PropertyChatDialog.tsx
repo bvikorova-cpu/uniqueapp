@@ -7,7 +7,7 @@ import { Loader2, Send, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { ChatAttachmentPicker, ChatAttachmentView, uploadChatMedia } from "@/components/chat/ChatAttachment";
+import { ChatAttachmentPicker, ChatAttachmentPreview, ChatAttachmentView, uploadChatMedia } from "@/components/chat/ChatAttachment";
 import { maskContactInfo } from "@/lib/contactMask";
 
 interface Msg {
@@ -187,6 +187,7 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
           )}
         </ScrollArea>
 
+        <ChatAttachmentPreview file={file} onRemove={() => setFile(null)} />
         <div className="relative flex gap-2">
           <ChatAttachmentPicker file={file} onFileChange={setFile} disabled={!buyerId || sending} />
           <Textarea

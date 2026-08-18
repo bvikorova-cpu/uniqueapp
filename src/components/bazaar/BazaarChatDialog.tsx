@@ -7,7 +7,7 @@ import { Loader2, MessageCircle, Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { ChatAttachmentPicker, ChatAttachmentView, uploadChatMedia } from "@/components/chat/ChatAttachment";
+import { ChatAttachmentPicker, ChatAttachmentPreview, ChatAttachmentView, uploadChatMedia } from "@/components/chat/ChatAttachment";
 import { maskContactInfo } from "@/lib/contactMask";
 
 interface Msg {
@@ -191,6 +191,7 @@ export function BazaarChatDialog({ open, onOpenChange, itemId, itemTitle, otherI
           )}
         </ScrollArea>
 
+        <ChatAttachmentPreview file={file} onRemove={() => setFile(null)} />
         <div className="flex items-end gap-2">
           <ChatAttachmentPicker file={file} onFileChange={setFile} disabled={sending} />
           <Textarea
