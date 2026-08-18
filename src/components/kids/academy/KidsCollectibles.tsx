@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Download, Loader2, Sparkles } from "lucide-react";
+import { Download, Info, Loader2, Sparkles } from "lucide-react";
 import { downloadCardImage } from "@/lib/downloadCardImage";
 import { getCategoryCover } from "@/components/collections/categoryCovers";
 import { getCategoryBlurb } from "@/components/collections/categoryBlurbs";
@@ -34,6 +34,14 @@ export const KIDS_CARD_SLUGS = [
 ] as const;
 
 const CARDS_PER_SET = 150;
+const DRAW_COST = 1;
+const HIW_STEPS = [
+  { title: "Pick a set", desc: "Choose one of the 16 magical kids card sets." },
+  { title: "Draw a card", desc: `Every draw costs ${DRAW_COST} AI credit and reveals one random card.` },
+  { title: "Keep or discard", desc: "Tap ✓ to add the card to your album, or ✗ to move it to your discarded-cards bin." },
+  { title: "Recycle for credits", desc: "Recycle exactly 10 discarded cards and get 1 AI credit back." },
+  { title: "Complete the set", desc: `Collect all ${CARDS_PER_SET} cards to unlock the shiny golden Prime card for free.` },
+];
 
 interface KidsCategory {
   slug: string;
@@ -105,12 +113,29 @@ export const KidsCollectibles = () => {
             Kids Collectibles
           </h1>
           <p className="mt-1 text-xs sm:text-sm text-muted-foreground max-w-xl">
-            16 magical card sets · {CARDS_PER_SET} cards each · 2,400 cards to collect
+            16 magical card sets · {CARDS_PER_SET} cards each · {DRAW_COST} credit per draw · ✓ keep or ✗ discard · 10 discards = 1 credit
           </p>
         </div>
       </div>
 
       <HeroRewardedAd sectionKey="kids_collectibles" />
+
+      <Card className="p-4 sm:p-5 border border-primary/20 bg-card/80">
+        <div className="flex items-center gap-2 mb-3">
+          <Info className="h-4 w-4 text-primary" />
+          <h2 className="font-bold text-sm">How it works</h2>
+        </div>
+        <ol className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-muted-foreground">
+          {HIW_STEPS.map((s, i) => (
+            <li key={i} className="flex gap-2">
+              <span className="font-black text-primary">{i + 1}.</span>
+              <span>
+                <strong className="text-foreground">{s.title}</strong> — {s.desc}
+              </span>
+            </li>
+          ))}
+        </ol>
+      </Card>
 
       {isLoading ? (
         <div className="flex justify-center py-10">

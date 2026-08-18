@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Check, X, Loader2, Sparkles, Library, Coins, Crown, Lock, Trophy, Trash2 } from "lucide-react";
+import { Check, X, Loader2, Sparkles, Library, Coins, Crown, Lock, Trophy, Trash2, Info } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { CardCollectionLeaderboard } from "./CardCollectionLeaderboard";
@@ -310,6 +310,19 @@ export const CardCategoryCollection = ({ category }: Props) => {
         <p className="text-[11px] text-muted-foreground mt-2">
           {totalOwned} card{totalOwned === 1 ? "" : "s"} collected in total (including duplicates)
         </p>
+      </Card>
+
+      <Card className="p-4 sm:p-5 border border-primary/20 bg-card/80">
+        <div className="flex items-center gap-2 mb-3">
+          <Info className="h-4 w-4 text-primary" />
+          <h3 className="font-bold text-sm">How it works</h3>
+        </div>
+        <ol className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-muted-foreground">
+          <li className="flex gap-2"><span className="font-black text-primary">1.</span><span><strong className="text-foreground">Draw</strong> — every draw costs {DRAW_COST} AI credit and reveals one random card.</span></li>
+          <li className="flex gap-2"><span className="font-black text-primary">2.</span><span><strong className="text-foreground">Keep ✓</strong> — add the card to your album; duplicates stack up.</span></li>
+          <li className="flex gap-2"><span className="font-black text-primary">3.</span><span><strong className="text-foreground">Discard ✗</strong> — move the card to your Discarded bin instead of keeping it.</span></li>
+          <li className="flex gap-2"><span className="font-black text-primary">4.</span><span><strong className="text-foreground">Recycle</strong> — recycle exactly 10 discarded cards for 1 AI credit back.</span></li>
+        </ol>
       </Card>
 
       {/* ── Prime card: reward for a completed set ─────────────────────────── */}
