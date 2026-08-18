@@ -7,6 +7,7 @@ import { Loader2, Send, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { ChatAttachmentPicker, ChatAttachmentView, uploadChatMedia } from "@/components/chat/ChatAttachment";
 
 interface Msg {
   id: string;
@@ -14,7 +15,10 @@ interface Msg {
   receiver_id: string;
   message: string;
   created_at: string;
+  attachment_path?: string | null;
+  attachment_type?: string | null;
 }
+
 
 interface Props {
   open: boolean;
