@@ -101,14 +101,44 @@ export function ChatAttachmentPicker({ file, onFileChange, disabled }: PickerPro
       >
         <ImagePlus className="h-4 w-4" />
       </Button>
-      {file && (
-        <div className="absolute -top-9 left-0 flex max-w-full items-center gap-2 rounded-full bg-muted px-3 py-1 text-xs">
-          <span className="truncate max-w-[180px]">{file.name}</span>
-          <button type="button" onClick={() => onFileChange(null)} aria-label="Remove attachment">
-            <X className="h-3 w-3" />
-          </button>
-        </div>
-      )}
     </>
   );
 }
+
+/** Local thumbnail preview of the selected file, shown before sending. */
+export function ChatAttachmentPreview({ file, onRemove }: { file: File | null; onRemove: () => void }) {
+  const [url, setUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!file) {
+      setUrl(null);
+      return;
+    }
+    const objectUrl = URL.createObjectURL(file);
+    setUrl(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [file]);
+
+  if (!file || !url) return null;
+  const isVideo = file.type.startsWith("video/");
+
+  return (
+    <div className="mb-2 flex items-center gap-3 rounded-xl border border-border/60 bg-muted/50 p-2">
+      {isVideo ? (
+        <video src={url} className="h-20 w-20 rounded-lg object-cover" muted playsInline controls={false} />
+      ) : (
+        <img src={url} alt={`Preview of ${file.name}`} className="h-20 w-20 rounded-lg object-cover" />
+      )}
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-xs font-medium">{file.name}</p>
+        <p className="text-[11px] text-muted-foreground">
+          {(file.size / (1024 * 1024)).toFixed(1)} MB · {isVideo ? "Video" : "Photo"}
+        </p>
+      </div>
+      <Button type="button" variant="ghost" size="icon" onClick={onRemove} aria-label="Remove attachment">
+        <X className="h-4 w-4" />
+      </Button>
+    </div>
+  );
+}
+
