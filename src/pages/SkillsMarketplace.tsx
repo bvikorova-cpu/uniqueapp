@@ -65,6 +65,7 @@ function SkillsMarketplaceContent() {
   const [offerings, setOfferings] = useState<Offering[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
+  const [debouncedQ, setDebouncedQ] = useState("");
   const [location, setLocation] = useState("");
   const [region, setRegion] = useState("all");
   const [sort, setSort] = useState("newest");
@@ -83,16 +84,48 @@ function SkillsMarketplaceContent() {
   };
 
   useEffect(() => {
+    const t = setTimeout(() => setDebouncedQ(q.trim()), 300);
+    return () => clearTimeout(t);
+  }, [q]);
+
+  useEffect(() => {
+    let cancelled = false;
     (async () => {
       setLoading(true);
-      const { data } = await (supabase as any)
+      const term = debouncedQ;
+      let providerIds: string[] = [];
+      if (term.length >= 2) {
+        const { data: matchedProfiles } = await (supabase as any)
+          .from("public_profiles")
+          .select("id")
+          .or(`full_name.ilike.%${term}%,username.ilike.%${term}%`)
+          .limit(50);
+        providerIds = ((matchedProfiles as any[]) || []).map((p) => p.id);
+      }
+
+      let query = (supabase as any)
         .from("skill_offerings")
         .select("id,user_id,title,description,category,price_per_hour,location,region,image_url,created_at,featured_at,featured_until,premium_at,premium_until,completed_jobs")
-        .eq("is_active", true)
+        .eq("is_active", true);
+      if (category) query = query.eq("category", category);
+      if (region !== "all") query = query.eq("region", region);
+      if (term.length >= 2) {
+        const esc = term.replace(/[%,()]/g, " ");
+        const ors = [
+          `title.ilike.%${esc}%`,
+          `description.ilike.%${esc}%`,
+          `location.ilike.%${esc}%`,
+          `category.ilike.%${esc}%`,
+        ];
+        if (providerIds.length) ors.push(`user_id.in.(${providerIds.join(",")})`);
+        query = query.or(ors.join(","));
+      }
+      const { data } = await query
         .order("premium_until", { ascending: false, nullsFirst: false })
         .order("featured_until", { ascending: false, nullsFirst: false })
         .order("created_at", { ascending: false })
         .limit(200);
+      if (cancelled) return;
       const list = (data as Offering[]) || [];
       setOfferings(list);
       const sellerIds = [...new Set(list.map((o) => o.user_id))];
@@ -125,7 +158,8 @@ function SkillsMarketplaceContent() {
 
       setLoading(false);
     })();
-  }, []);
+    return () => { cancelled = true; };
+  }, [debouncedQ, category, region]);
 
   const counts = useMemo(() => {
     const c: Record<string, number> = {};
@@ -136,10 +170,14 @@ function SkillsMarketplaceContent() {
   const filtered = useMemo(() => {
     let list = offerings;
     if (category) list = list.filter((o) => o.category === category);
-    if (q.trim()) {
-      const term = q.toLowerCase();
+    // For 1-character terms the server query is skipped, so filter locally.
+    if (q.trim() && q.trim().length < 2) {
+      const term = q.trim().toLowerCase();
       list = list.filter(
-        (o) => o.title.toLowerCase().includes(term) || o.description.toLowerCase().includes(term),
+        (o) =>
+          o.title.toLowerCase().includes(term) ||
+          o.description.toLowerCase().includes(term) ||
+          (o.location || "").toLowerCase().includes(term),
       );
     }
     if (location.trim()) {
