@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, MapPin, Euro, Trash2, Send, Calendar, ListOrdered, Pencil } from "lucide-react";
 import SellerReviewsList from "@/components/skills/SellerReviewsList";
+import { maskContactInfo } from "@/lib/contactMask";
 
 type Offering = {
   id: string;
@@ -91,7 +92,7 @@ export default function SkillOfferingDetail() {
         description: rateLimited
           ? "You can unlock up to 20 new providers per day. Try again tomorrow."
           : insufficient
-            ? "You need 1 credit to unlock the chat with this provider."
+            ? "You need 2 credits to unlock the contact with this provider."
             : msg,
         variant: "destructive",
       });
@@ -102,7 +103,7 @@ export default function SkillOfferingDetail() {
     const charged = (data as any)?.charged ?? 0;
     toast({
       title: "Chat unlocked",
-      description: charged ? "1 credit was used. All further messages in this chat are free." : "Chat is already unlocked — messages are free.",
+      description: charged ? "2 credits were used. All further messages in this chat are free." : "Chat is already unlocked — messages are free.",
     });
   };
 
@@ -130,7 +131,7 @@ export default function SkillOfferingDetail() {
       } else if (msg.includes("DUPLICATE_MESSAGE")) {
         toast({ title: "Duplicate message", description: "You already sent this exact message a moment ago.", variant: "destructive" });
       } else if (/row-level security/i.test(msg)) {
-        toast({ title: "Chat locked", description: "Unlock the chat with 1 credit first.", variant: "destructive" });
+        toast({ title: "Chat locked", description: "Unlock the contact with 2 credits first.", variant: "destructive" });
         setUnlocked(false);
       } else {
         toast({ title: "Could not send", description: msg, variant: "destructive" });
@@ -193,7 +194,7 @@ export default function SkillOfferingDetail() {
                   <Calendar className="h-3.5 w-3.5" /> {new Date(offering.created_at).toLocaleDateString()}
                 </span>
               </div>
-              <CardTitle className="text-2xl md:text-3xl">{offering.title}</CardTitle>
+              <CardTitle className="text-2xl md:text-3xl">{maskContactInfo(offering.title)}</CardTitle>
             </div>
             {offering.price_per_hour != null && (
               <div className="text-right">
@@ -206,7 +207,7 @@ export default function SkillOfferingDetail() {
           </div>
         </CardHeader>
         <CardContent>
-          <p className="whitespace-pre-wrap text-foreground/90 leading-relaxed">{offering.description}</p>
+          <p className="whitespace-pre-wrap text-foreground/90 leading-relaxed">{unlocked ? offering.description : maskContactInfo(offering.description)}</p>
         </CardContent>
       </Card>
 
@@ -251,7 +252,7 @@ export default function SkillOfferingDetail() {
                   <p className="text-sm text-muted-foreground">
                     Payment is arranged <span className="font-semibold text-foreground">directly between you and the provider</span> (cash,
                     bank transfer or any method you agree on). The platform takes no commission from the job — you only pay credits
-                    to unlock the chat.
+                    to unlock the contact.
                   </p>
                   {offering.price_per_hour != null && offering.price_per_hour > 0 && (
                     <p className="text-sm">
@@ -269,11 +270,11 @@ export default function SkillOfferingDetail() {
                   {!unlocked ? (
                     <div className="rounded-lg border border-dashed p-4 space-y-3 text-center">
                       <p className="text-sm text-muted-foreground">
-                        Unlock the chat with this provider for <span className="font-semibold text-foreground">1 credit</span> (one-time).
+                        Unlock the chat with this provider for <span className="font-semibold text-foreground">2 credits</span> (one-time).
                         All further messages in this conversation are free.
                       </p>
                       <Button onClick={unlockContact} disabled={unlocking} className="gap-2">
-                        <Send className="h-4 w-4" /> {unlocking ? "Unlocking…" : "Unlock chat for 1 credit"}
+                        <Send className="h-4 w-4" /> {unlocking ? "Unlocking…" : "Unlock contact for 2 credits"}
                       </Button>
                       <p className="text-xs text-muted-foreground">
                         Max 20 new contacts per day.{" "}

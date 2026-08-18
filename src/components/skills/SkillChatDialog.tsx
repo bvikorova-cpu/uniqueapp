@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { ChatAttachmentPicker, ChatAttachmentView, uploadChatMedia } from "@/components/chat/ChatAttachment";
 import LeaveReviewDialog from "@/components/skills/LeaveReviewDialog";
+import { maskContactInfo } from "@/lib/contactMask";
 
 
 interface Msg {
@@ -201,7 +202,7 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
       } else if (msg.includes("DUPLICATE_MESSAGE")) {
         toast.error("You already sent this exact message");
       } else if (/row-level security/i.test(msg)) {
-        toast.error("Chat locked — unlock the chat with 1 credit first");
+        toast.error("Chat locked — unlock the contact with 2 credits first");
       } else {
         toast.error(msg);
       }
@@ -233,12 +234,14 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
             <p className="text-sm text-muted-foreground text-center py-12">No messages yet — say hello!</p>
           ) : (
             <div className="space-y-2">
-              {messages.map((m) => {
+              {messages.map((m, i) => {
                 const mine = m.sender_id === user?.id;
+                // Contact details stay hidden in the opening messages of a conversation
+                const body = i < 3 ? maskContactInfo(m.message) : m.message;
                 return (
                   <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
                     <div className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${mine ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
-                      <p className="whitespace-pre-wrap break-words">{m.message}</p>
+                      <p className="whitespace-pre-wrap break-words">{body}</p>
                       {m.attachment_path && (
                         <ChatAttachmentView path={m.attachment_path} type={m.attachment_type} />
                       )}
