@@ -233,7 +233,7 @@ export function SkillRequestsBoard({ category }: { category?: string | null }) {
             <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>What do you need done?</DialogTitle>
-                <DialogDescription>Providers will send you price offers you can accept.</DialogDescription>
+                <DialogDescription>Publishing a request costs 2 credits. Providers will send you price offers you can accept.</DialogDescription>
               </DialogHeader>
               <div className="space-y-3">
                 <Input placeholder="e.g. Paint a 60 m² flat"
