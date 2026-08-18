@@ -227,13 +227,17 @@ export const CardCategoryCollection = ({ category }: Props) => {
   const decide = async (keep: boolean) => {
     if (!current) return;
     setExitDir(keep ? "right" : "left");
-    if (!keep) {
-      setTimeout(() => { setCurrent(null); setExitDir(null); }, 250);
-      toast("Card released — it stays in the pool.", { icon: "🗑️" });
-      return;
-    }
     setDeciding(true);
     try {
+      if (!keep) {
+        // Rejected cards are not lost — they move to the recycle bin.
+        const { error } = await (supabase as any).rpc("card_trash_add", { _collectible_id: current.id });
+        if (error) throw error;
+        toast("Moved to your discarded cards — recycle 10 of them for 1 credit.", { icon: "🗑️" });
+        queryClient.invalidateQueries({ queryKey: ["card-trash"] });
+        setTimeout(() => { setCurrent(null); setExitDir(null); }, 250);
+        return;
+      }
       const { data, error } = await supabase.functions.invoke("hero-card-draw", {
         body: { scope: "collection", action: "keep", collectibleId: current.id },
       });
@@ -249,6 +253,7 @@ export const CardCategoryCollection = ({ category }: Props) => {
       setDeciding(false);
     }
   };
+
 
   const claimPrime = async () => {
     setClaiming(true);
