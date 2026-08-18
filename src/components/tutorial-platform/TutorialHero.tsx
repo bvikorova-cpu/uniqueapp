@@ -1,14 +1,7 @@
-import { GraduationCap, Users, BookOpen, Award, Sparkles, Play, Star } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import heroVideo from "@/assets/tutorial-hero-generated.mp4.asset.json";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
-
-const stats = [
-  { label: "Courses", icon: BookOpen, value: "1.8K+", color: "from-violet-500 to-purple-600" },
-  { label: "Quiz Attempts", icon: Star, value: "—", color: "from-amber-500 to-orange-600" },
-  { label: "Enrollments", icon: Award, value: "—", color: "from-emerald-500 to-teal-600" },
-  { label: "AI Tutor", icon: GraduationCap, value: "24/7", color: "from-rose-500 to-pink-600" },
-];
 
 export function TutorialHero() {
   return (
@@ -75,28 +68,6 @@ export function TutorialHero() {
         </div>
       </motion.div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
-        {stats.map((stat, i) => {
-          const Icon = stat.icon;
-          return (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.3 + i * 0.08 }}
-            >
-              <div className="bg-card border rounded-xl p-3 md:p-4 text-center hover:shadow-lg hover:border-violet-500/20 transition-all group">
-                <div className={`w-9 h-9 mx-auto mb-2 rounded-lg bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
-                  <Icon className="h-4 w-4 text-white" />
-                </div>
-                <p className="text-lg md:text-2xl font-black">{stat.value}</p>
-                <p className="text-[10px] md:text-xs text-muted-foreground font-medium">{stat.label}</p>
-              </div>
-            </motion.div>
-          );
-        })}
-      </div>
     </div>
     </>
   );
