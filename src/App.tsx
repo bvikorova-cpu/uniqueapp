@@ -959,6 +959,7 @@ const App = () => {
                         <Route path="/promotions/success" element={<PromotionsSuccess />} />
                         <Route path="/promotions/mine" element={<MyPromotions />} />
                         <Route path="/bazaar/saved-searches" element={<BazaarSavedSearches />} />
+                        <Route path="/bazaar/my" element={<ProtectedRoute><BazaarMy /></ProtectedRoute>} />
                         <Route path="/investment/portfolio" element={<InvestmentPortfolio />} />
                         <Route path="/lie-detector" element={<LieDetector />} />
                         <Route path="/verify-report" element={<VerifyReport />} />
