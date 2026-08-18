@@ -322,7 +322,15 @@ export default function Bazaar() {
       />
 
       <section className="relative overflow-hidden border-b border-border/40">
-        <img src={bazaarHero} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-40" />
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover opacity-50"
+          src={bazaarHeroAsset.url}
+        />
         <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/90 to-accent/20 backdrop-blur-[2px]" />
 
         <div className="absolute -top-24 -right-24 h-96 w-96 animate-pulse rounded-full bg-primary/25 blur-3xl" />
