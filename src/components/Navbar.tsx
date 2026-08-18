@@ -232,6 +232,7 @@ const Navbar = () => {
         { path: "/cooking", label: "Cooking", icon: ChefHat },
         { path: "/coffee", label: "Coffee Community", icon: Coffee },
         { path: "/virtual-pet", label: "Virtual Pet", icon: PawPrint },
+        { path: "/adult-puzzles", label: "Adult Puzzles", icon: Puzzle },
       ] },
     {
       category: "Marketplaces & Commerce",

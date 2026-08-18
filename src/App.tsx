@@ -179,6 +179,7 @@ import { ResetPassword,
   
   KidsHomework,
   KidsPuzzles,
+  AdultPuzzles,
   
   KidsStoryCreator,
   KidsStoryPricing,
@@ -975,6 +976,7 @@ const App = () => {
                         <Route path="/kids" element={<Navigate to="/kids-academy" replace />} />
                         <Route path="/kids-academy" element={<KidsAcademy />} />
                         <Route path="/kids-puzzles" element={<KidsPuzzles />} />
+                        <Route path="/adult-puzzles" element={<AdultPuzzles />} />
                         <Route path="/photo-restoration" element={<PhotoRestoration />} />
                         <Route path="/antique-appraisal" element={<AntiqueAppraisal />} />
                         <Route path="/teen-career-counselor" element={<TeenCareerCounselor />} />
