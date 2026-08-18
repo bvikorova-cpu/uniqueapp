@@ -179,6 +179,7 @@ import { ResetPassword,
   
   KidsHomework,
   KidsPuzzles,
+  AdultPuzzles,
   
   KidsStoryCreator,
   KidsStoryPricing,
