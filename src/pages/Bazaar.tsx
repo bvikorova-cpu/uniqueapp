@@ -370,6 +370,11 @@ export default function Bazaar() {
               )}
             </Button>
             {user && (
+              <Button size="lg" variant="outline" className="gap-2 border-white/40 bg-black/30 text-white backdrop-blur hover:bg-white/10 hover:text-white" onClick={() => navigate("/bazaar/my")}>
+                <Settings2 className="h-4 w-4" /> My listings
+              </Button>
+            )}
+            {user && (
               <Button size="lg" variant="outline" className="gap-2 border-white/40 bg-black/30 text-white backdrop-blur hover:bg-white/10 hover:text-white" onClick={() => navigate("/bazaar/saved-searches")}>
                 Saved searches
               </Button>
