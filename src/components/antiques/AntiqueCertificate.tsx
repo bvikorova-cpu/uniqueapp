@@ -34,11 +34,11 @@ export const AntiqueCertificate = () => {
       if (error) throw error;
       const { data: { publicUrl } } = supabase.storage.from('antiques').getPublicUrl(fileName);
 
-      const { data, error: fnError } = await supabase.functions.invoke('antique-certificate', {
-        body: { imageUrl: publicUrl, itemName: itemName || "Antique Item" }
+      const { data, error: fnError } = await supabase.functions.invoke('universal-vision-analyzer', {
+        body: { task: 'antique_certificate', imageUrl: publicUrl, extras: { itemName: itemName || "Antique Item" } }
       });
       if (fnError) throw fnError;
-      setResult(data.analysis);
+      setResult(data?.result ?? data?.text ?? "");
       toast.success("Certificate generated!");
     } catch (err: any) {
       toast.error(err.message || "Error generating certificate");

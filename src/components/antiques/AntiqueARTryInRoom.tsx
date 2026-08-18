@@ -44,11 +44,11 @@ export const AntiqueARTryInRoom = () => {
 
       const [antiqueUrl, roomUrl] = await Promise.all([uploadFile(antiqueFile), uploadFile(roomFile)]);
 
-      const { data, error: fnError } = await supabase.functions.invoke('antique-ar-room', {
-        body: { antiqueImageUrl: antiqueUrl, roomImageUrl: roomUrl }
+      const { data, error: fnError } = await supabase.functions.invoke('universal-vision-analyzer', {
+        body: { task: 'antique_ar', imageUrl: antiqueUrl, extras: { roomImageUrl: roomUrl } }
       });
       if (fnError) throw fnError;
-      setResult(data.analysis);
+      setResult(data?.result ?? data?.text ?? "");
       toast.success("AR room analysis complete!");
     } catch (err: any) {
       toast.error(err.message || "Error analyzing");

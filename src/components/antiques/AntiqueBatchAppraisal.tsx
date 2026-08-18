@@ -48,11 +48,11 @@ export const AntiqueBatchAppraisal = () => {
         if (error) throw error;
         const { data: { publicUrl } } = supabase.storage.from('antiques').getPublicUrl(fileName);
 
-        const { data, error: fnError } = await supabase.functions.invoke('antique-batch-appraisal', {
-          body: { imageUrl: publicUrl }
+        const { data, error: fnError } = await supabase.functions.invoke('universal-vision-analyzer', {
+          body: { task: 'antique_batch', imageUrl: publicUrl }
         });
         if (fnError) throw fnError;
-        batchResults.push(data.analysis);
+        batchResults.push(data?.result ?? data?.text ?? "");
       }
 
       setResults(batchResults);

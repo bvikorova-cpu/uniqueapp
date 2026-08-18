@@ -34,11 +34,11 @@ export const AntiqueExpertMarketplace = () => {
       if (error) throw error;
       const { data: { publicUrl } } = supabase.storage.from('antiques').getPublicUrl(fileName);
 
-      const { data, error: fnError } = await supabase.functions.invoke('antique-expert-consult', {
-        body: { imageUrl: publicUrl, question: question || "Please provide a comprehensive expert opinion on this antique." }
+      const { data, error: fnError } = await supabase.functions.invoke('universal-vision-analyzer', {
+        body: { task: 'antique_consult', imageUrl: publicUrl, prompt: question || "Please provide a comprehensive expert opinion on this antique." }
       });
       if (fnError) throw fnError;
-      setResult(data.analysis);
+      setResult(data?.result ?? data?.text ?? "");
       toast.success("Expert consultation complete!");
     } catch (err: any) {
       toast.error(err.message || "Error during consultation");
