@@ -136,7 +136,9 @@ serve(async (req) => {
         );
         result = JSON.stringify(structuredData);
       } else {
-        result = await callUnifiedAI(messages, { model: "gpt-4o-mini" });
+        // Long-form report tasks need real headroom or the answer stops mid-sentence.
+        const longForm = task.startsWith("antique_");
+        result = await callUnifiedAI(messages, { model: "gpt-4o-mini", max_tokens: longForm ? 6000 : undefined });
       }
     } catch (e) {
       const status = e instanceof UnifiedAIError ? e.status : 502;
