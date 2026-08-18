@@ -144,6 +144,9 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
                   <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
                     <div className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${mine ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
                       <p className="whitespace-pre-wrap break-words">{m.content}</p>
+                      {m.attachment_path && (
+                        <ChatAttachmentView path={m.attachment_path} type={m.attachment_type} />
+                      )}
                       <p className={`text-[10px] mt-1 ${mine ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
                         {new Date(m.created_at).toLocaleString()}
                       </p>
@@ -155,7 +158,8 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
           )}
         </ScrollArea>
 
-        <div className="flex gap-2">
+        <div className="relative flex gap-2">
+          <ChatAttachmentPicker file={file} onFileChange={setFile} disabled={!buyerId || sending} />
           <Textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
@@ -164,10 +168,11 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
             disabled={!buyerId || sending}
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
           />
-          <Button onClick={send} disabled={!buyerId || sending || !content.trim()}>
+          <Button onClick={send} disabled={!buyerId || sending || (!file && !content.trim())}>
             {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           </Button>
         </div>
+
       </DialogContent>
     </Dialog>
   );
