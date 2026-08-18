@@ -1,5 +1,5 @@
 import { GraduationCap, Users, BookOpen, Award, Sparkles, Play, Star } from "lucide-react";
-import heroVideo from "@/assets/education-hero.mp4.asset.json";
+import heroVideo from "@/assets/tutorial-hero-generated.mp4.asset.json";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
