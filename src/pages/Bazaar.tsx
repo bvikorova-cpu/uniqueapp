@@ -322,8 +322,9 @@ export default function Bazaar() {
       />
 
       <section className="relative overflow-hidden border-b border-border/40">
-        <img src={bazaarHero} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-br from-background/92 via-background/75 to-accent/25" />
+        <img src={bazaarHero} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-40" />
+        <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/90 to-accent/20 backdrop-blur-[2px]" />
+
         <div className="absolute -top-24 -right-24 h-96 w-96 animate-pulse rounded-full bg-primary/25 blur-3xl" />
         <div className="absolute -bottom-28 -left-20 h-80 w-80 animate-pulse rounded-full bg-accent/25 blur-3xl" />
         <div className="container relative mx-auto max-w-7xl px-4 py-16 text-center md:py-20">
