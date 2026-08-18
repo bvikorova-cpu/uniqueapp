@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Coins, Puzzle as PuzzleIcon, Sparkles } from "lucide-react";
+import { Coins, Info, Puzzle as PuzzleIcon, Sparkles } from "lucide-react";
 import { KIDS_PUZZLES, PIECE_COST, PUZZLE_LEVELS, totalPieces, type KidsPuzzle } from "@/data/kidsPuzzles";
 import { PuzzleCollection } from "@/components/kids/puzzles/PuzzleCollection";
 
@@ -69,6 +69,23 @@ const KidsPuzzles = () => {
                     </p>
                   </div>
                 </div>
+              </Card>
+
+              <Card className="p-4 sm:p-5 border border-primary/20 bg-card/80">
+                <div className="flex items-center gap-2 mb-3">
+                  <Info className="h-4 w-4 text-primary" />
+                  <h2 className="font-bold text-sm">How it works</h2>
+                </div>
+                <ol className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-muted-foreground">
+                  {HIW_STEPS.map((s, i) => (
+                    <li key={i} className="flex gap-2">
+                      <span className="font-black text-primary">{i + 1}.</span>
+                      <span>
+                        <strong className="text-foreground">{s.title}</strong> — {s.desc}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
               </Card>
 
               <div className="flex flex-wrap gap-2">
