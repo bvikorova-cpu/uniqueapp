@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Coins, Puzzle as PuzzleIcon, Sparkles } from "lucide-react";
-import { KIDS_PUZZLES, PIECE_COST, totalPieces } from "@/data/kidsPuzzles";
+import { KIDS_PUZZLES, PIECE_COST, PUZZLE_LEVELS, totalPieces, type KidsPuzzle } from "@/data/kidsPuzzles";
 import { PuzzleCollection } from "@/components/kids/puzzles/PuzzleCollection";
 
 const HIW_STEPS = [
@@ -20,7 +20,9 @@ const HIW_STEPS = [
 
 const KidsPuzzles = () => {
   const [active, setActive] = useState<string | null>(null);
+  const [level, setLevel] = useState<KidsPuzzle["level"] | "all">("all");
   const puzzle = KIDS_PUZZLES.find((p) => p.slug === active) ?? null;
+  const visible = level === "all" ? KIDS_PUZZLES : KIDS_PUZZLES.filter((p) => p.level === level);
 
   const { data: progress = {} } = useQuery({
     queryKey: ["puzzle-progress"],
@@ -63,14 +65,37 @@ const KidsPuzzles = () => {
                   <div>
                     <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Kids Puzzles</h1>
                     <p className="text-xs sm:text-sm text-muted-foreground">
-                      {KIDS_PUZZLES.length} illustrated puzzles · {PIECE_COST} credit per piece · ✓ keep or ✗ release
+                      {KIDS_PUZZLES.length} illustrated puzzles · 16 to 144 pieces · {PIECE_COST} credit per piece · ✓ keep or ✗ release
                     </p>
                   </div>
                 </div>
               </Card>
 
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant={level === "all" ? "default" : "outline"}
+                  size="sm"
+                  className="rounded-full"
+                  onClick={() => setLevel("all")}
+                >
+                  All ages
+                </Button>
+                {PUZZLE_LEVELS.map((l) => (
+                  <Button
+                    key={l.id}
+                    variant={level === l.id ? "default" : "outline"}
+                    size="sm"
+                    className="rounded-full"
+                    onClick={() => setLevel(l.id)}
+                    title={l.hint}
+                  >
+                    {l.label}
+                  </Button>
+                ))}
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {KIDS_PUZZLES.map((p) => {
+                {visible.map((p) => {
                   const total = totalPieces(p);
                   const ownedCount = progress[p.slug] ?? 0;
                   const pct = Math.min(Math.round((ownedCount / total) * 100), 100);
@@ -93,7 +118,10 @@ const KidsPuzzles = () => {
                         </Badge>
                       </div>
                       <div className="p-4 space-y-2">
-                        <h3 className="font-extrabold text-base">{p.emoji} {p.title}</h3>
+                        <div className="flex items-center justify-between gap-2">
+                          <h3 className="font-extrabold text-base">{p.emoji} {p.title}</h3>
+                          <Badge variant="secondary" className="shrink-0 text-[10px]">{p.age}</Badge>
+                        </div>
                         <p className="text-xs text-muted-foreground">{p.tagline}</p>
                         <Progress value={pct} className="h-1.5" />
                         <p className="text-[11px] text-muted-foreground">
