@@ -41,8 +41,10 @@ interface Notification {
 
 export const useRealTimeNotifications = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+
 
   useEffect(() => {
     if (!user) return;
