@@ -14844,6 +14844,38 @@ export type Database = {
         }
         Relationships: []
       }
+      coupon_contact_unlocks: {
+        Row: {
+          buyer_id: string
+          coupon_id: string
+          created_at: string
+          id: string
+          seller_id: string
+        }
+        Insert: {
+          buyer_id: string
+          coupon_id: string
+          created_at?: string
+          id?: string
+          seller_id: string
+        }
+        Update: {
+          buyer_id?: string
+          coupon_id?: string
+          created_at?: string
+          id?: string
+          seller_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_contact_unlocks_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupon_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coupon_daily_deal: {
         Row: {
           coupon_id: string
@@ -14984,6 +15016,8 @@ export type Database = {
           description: string | null
           discount_code: string | null
           expiry_date: string | null
+          featured_at: string | null
+          featured_until: string | null
           geo_city: string | null
           geo_lat: number | null
           geo_lon: number | null
@@ -14993,7 +15027,10 @@ export type Database = {
           is_active: boolean | null
           is_digital: boolean | null
           is_sold: boolean | null
+          location: string | null
           original_value: number
+          premium_at: string | null
+          premium_until: string | null
           selling_price: number
           store_name: string
           tags: string[]
@@ -15011,6 +15048,8 @@ export type Database = {
           description?: string | null
           discount_code?: string | null
           expiry_date?: string | null
+          featured_at?: string | null
+          featured_until?: string | null
           geo_city?: string | null
           geo_lat?: number | null
           geo_lon?: number | null
@@ -15020,7 +15059,10 @@ export type Database = {
           is_active?: boolean | null
           is_digital?: boolean | null
           is_sold?: boolean | null
+          location?: string | null
           original_value: number
+          premium_at?: string | null
+          premium_until?: string | null
           selling_price: number
           store_name: string
           tags?: string[]
@@ -15038,6 +15080,8 @@ export type Database = {
           description?: string | null
           discount_code?: string | null
           expiry_date?: string | null
+          featured_at?: string | null
+          featured_until?: string | null
           geo_city?: string | null
           geo_lat?: number | null
           geo_lon?: number | null
@@ -15047,7 +15091,10 @@ export type Database = {
           is_active?: boolean | null
           is_digital?: boolean | null
           is_sold?: boolean | null
+          location?: string | null
           original_value?: number
+          premium_at?: string | null
+          premium_until?: string | null
           selling_price?: number
           store_name?: string
           tags?: string[]
@@ -15087,6 +15134,8 @@ export type Database = {
       }
       coupon_messages: {
         Row: {
+          attachment_path: string | null
+          attachment_type: string | null
           coupon_id: string
           created_at: string | null
           id: string
@@ -15096,6 +15145,8 @@ export type Database = {
           sender_id: string
         }
         Insert: {
+          attachment_path?: string | null
+          attachment_type?: string | null
           coupon_id: string
           created_at?: string | null
           id?: string
@@ -15105,6 +15156,8 @@ export type Database = {
           sender_id: string
         }
         Update: {
+          attachment_path?: string | null
+          attachment_type?: string | null
           coupon_id?: string
           created_at?: string | null
           id?: string
@@ -68575,6 +68628,8 @@ export type Database = {
           description: string | null
           discount_code: string | null
           expiry_date: string | null
+          featured_at: string | null
+          featured_until: string | null
           geo_city: string | null
           geo_lat: number | null
           geo_lon: number | null
@@ -68584,7 +68639,10 @@ export type Database = {
           is_active: boolean | null
           is_digital: boolean | null
           is_sold: boolean | null
+          location: string | null
           original_value: number
+          premium_at: string | null
+          premium_until: string | null
           selling_price: number
           store_name: string
           tags: string[]
@@ -68618,6 +68676,14 @@ export type Database = {
           hot_score: number
           id: string
           upvotes: number
+        }[]
+      }
+      coupon_top_listing: {
+        Args: { _coupon_id: string; _days: number; _tier?: string }
+        Returns: {
+          credits_remaining: number
+          promoted_until: string
+          tier: string
         }[]
       }
       coupon_trending_stores: {
@@ -69722,19 +69788,26 @@ export type Database = {
       get_public_coupon_listings: {
         Args: never
         Returns: {
+          balance_confirmed: boolean
           category: string
           coupon_type: string
           created_at: string
           description: string
           expiry_date: string
+          featured_at: string
+          featured_until: string
           id: string
           image_url: string
           is_active: boolean
           is_digital: boolean
           is_sold: boolean
+          location: string
           original_value: number
+          premium_at: string
+          premium_until: string
           selling_price: number
           store_name: string
+          tags: string[]
           terms_conditions: string
           title: string
           updated_at: string
@@ -70030,6 +70103,10 @@ export type Database = {
       }
       has_confession_access: {
         Args: { service_type_param: string; user_id_param: string }
+        Returns: boolean
+      }
+      has_coupon_contact_unlock: {
+        Args: { _coupon_id: string; _user_id: string }
         Returns: boolean
       }
       has_holographic_access: {
@@ -70505,6 +70582,23 @@ export type Database = {
         }
         Returns: string
       }
+      publish_coupon_listing: {
+        Args: {
+          _category?: string
+          _coupon_type?: string
+          _description: string
+          _discount_code?: string
+          _expiry_date?: string
+          _image_url?: string
+          _location?: string
+          _original_value: number
+          _selling_price: number
+          _store_name: string
+          _terms_conditions?: string
+          _title: string
+        }
+        Returns: string
+      }
       publish_skill_offering: {
         Args: {
           _category: Database["public"]["Enums"]["skill_category"]
@@ -70872,6 +70966,7 @@ export type Database = {
       track_challenge_action: { Args: { _action: string }; Returns: Json }
       trim_user_feed_cache: { Args: never; Returns: undefined }
       unlock_bazaar_contact: { Args: { _item_id: string }; Returns: Json }
+      unlock_coupon_contact: { Args: { _coupon_id: string }; Returns: Json }
       unlock_homework_achievements: {
         Args: { p_subject?: string; p_user_id: string }
         Returns: number

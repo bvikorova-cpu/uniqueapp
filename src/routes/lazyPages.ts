@@ -62,6 +62,8 @@ export const PropertyMarketplace = lazy(() => import("@/pages/PropertyMarketplac
 export const PropertySubmission = lazy(() => import("@/pages/PropertySubmission"));
 export const MyProperties = lazy(() => import("@/pages/MyProperties"));
 export const CouponMarketplace = lazy(() => import("@/pages/CouponMarketplace"));
+export const CouponCreate = lazy(() => import("@/pages/CouponCreate"));
+export const CouponMessages = lazy(() => import("@/pages/CouponMessages"));
 export const CouponBrandPage = lazy(() => import("@/pages/CouponBrandPage"));
 export const AdminCouponDisputes = lazy(() => import("@/pages/AdminCouponDisputes"));
 

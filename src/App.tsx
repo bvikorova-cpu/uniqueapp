@@ -253,6 +253,8 @@ import { ResetPassword,
   MyProperties,
   StockContentLibrary,
   CouponMarketplace,
+  CouponCreate,
+  CouponMessages,
   CouponBrandPage,
   AdminCouponDisputes,
   Education,
@@ -735,6 +737,8 @@ const App = () => {
                         <Route path="/bazaar" element={<Bazaar />} />
                         <Route path="/bazaar/messages" element={<ProtectedRoute><BazaarMessages /></ProtectedRoute>} />
                         <Route path="/coupon-marketplace" element={<CouponMarketplace />} />
+                        <Route path="/coupon-marketplace/create" element={<CouponCreate />} />
+                        <Route path="/coupon-marketplace/messages" element={<CouponMessages />} />
                         <Route path="/coupons/season/:slug" element={<CouponSeasonalHub />} />
                         <Route path="/coupons/:brand" element={<CouponBrandPage />} />
                         <Route path="/coupons/my" element={<ProtectedRoute><CouponsMy /></ProtectedRoute>} />
