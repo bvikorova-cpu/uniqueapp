@@ -11,7 +11,7 @@ import ReactMarkdown from "react-markdown";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const analysisOptions = [
-  { type: 'basic', name: 'Basic Identification', icon: Search, credits: 3, description: 'Identify the item, period, and style', color: 'text-primary' },
+  { type: 'basic', name: 'Basic Identification', icon: Search, credits: 5, description: 'Identify the item, period, and style', color: 'text-primary' },
   { type: 'valuation', name: 'Market Valuation', icon: TrendingUp, credits: 10, description: 'Estimate current market value', color: 'text-primary' },
   { type: 'expert', name: 'Expert Report', icon: Sparkles, credits: 15, description: 'Complete analysis with history & value', color: 'text-primary', premium: true },
   { type: 'authenticity', name: 'Authenticity Check', icon: Shield, credits: 20, description: 'Verify authenticity & detect fakes', color: 'text-primary', premium: true },
@@ -53,7 +53,7 @@ export const AntiqueAnalyze = () => {
           toast.success("Analysis complete!");
           supabase.from('antiques').insert({
             user_id: user.id, image_url: publicUrl, analysis_type: analysisType,
-            analysis_result: result, credits_used: data?.creditsCharged ?? data?.creditsUsed ?? selected?.credits ?? 3
+            analysis_result: result, credits_used: data?.creditsCharged ?? data?.creditsUsed ?? selected?.credits ?? 5
           });
         }
       });
@@ -126,7 +126,7 @@ export const AntiqueAnalyze = () => {
             </div>
             {selectedFile && (
               <Button className="w-full mt-4" onClick={handleAnalyze}
-                disabled={isIdentifying || !credits || credits.credits_remaining < (selected?.credits || 3)}>
+                disabled={isIdentifying || !credits || credits.credits_remaining < (selected?.credits || 5)}>
                 {isIdentifying ? "Analyzing..." : `Analyze (${selected?.credits} credits)`}
               </Button>
             )}
