@@ -122,7 +122,7 @@ export function SkillRequestsBoard({ category }: { category?: string | null }) {
         _deadline: form.deadline || null,
       });
       if (error) throw error;
-      toast({ title: "Request published", description: "Providers can now send you offers." });
+      toast({ title: "Request published", description: "2 credits used. Providers can now send you offers." });
       setCreateOpen(false);
       setForm({ title: "", description: "", category: category || "other", region: "city", location: "", budget: "", deadline: "" });
       load();
@@ -130,7 +130,9 @@ export function SkillRequestsBoard({ category }: { category?: string | null }) {
       const msg = String(err?.message || "");
       toast({
         title: "Could not publish",
-        description: msg.includes("DAILY_LIMIT") ? "Max 10 requests per day." : msg || "Try again",
+        description: msg.includes("INSUFFICIENT_CREDITS")
+          ? "You need 2 credits to publish a request."
+          : msg.includes("DAILY_LIMIT") ? "Max 10 requests per day." : msg || "Try again",
         variant: "destructive",
       });
     } finally {
@@ -231,7 +233,7 @@ export function SkillRequestsBoard({ category }: { category?: string | null }) {
             <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>What do you need done?</DialogTitle>
-                <DialogDescription>Providers will send you price offers you can accept.</DialogDescription>
+                <DialogDescription>Publishing a request costs 2 credits. Providers will send you price offers you can accept.</DialogDescription>
               </DialogHeader>
               <div className="space-y-3">
                 <Input placeholder="e.g. Paint a 60 m² flat"
@@ -261,7 +263,7 @@ export function SkillRequestsBoard({ category }: { category?: string | null }) {
               </div>
               <DialogFooter>
                 <Button onClick={submitRequest} disabled={saving} className="gap-2">
-                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />} Publish request
+                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />} Publish request (2 credits)
                 </Button>
               </DialogFooter>
             </DialogContent>
