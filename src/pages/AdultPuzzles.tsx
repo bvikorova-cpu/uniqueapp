@@ -21,7 +21,8 @@ import { PuzzleCollection } from "@/components/kids/puzzles/PuzzleCollection";
 const HIW_STEPS = [
   { title: "Pick a puzzle", desc: "Choose from 60+ adult puzzles — landscapes, cities, animals, art and more." },
   { title: "Draw a piece", desc: `Every draw costs ${ADULT_PIECE_COST} AI credit and reveals a random puzzle piece.` },
-  { title: "Keep or release", desc: "Tap ✓ to snap the piece into your board or ✗ to put it back in the box." },
+  { title: "Keep or recycle", desc: "Tap ✓ to snap the piece into your board or ✗ to move it to the Scrap box." },
+  { title: "Recycle for credits", desc: "Recycle 10 pieces from your Scrap box and get 1 AI credit back." },
   { title: "Complete the picture", desc: "Collect every piece — up to 400 — to reveal the full artwork." },
 ];
 
