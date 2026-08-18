@@ -51,7 +51,7 @@ export default function CreateMedicalCampaign() { const navigate = useNavigate()
       }
 
       const fileExt = file.name.split('.').pop();
-      const fileName = `proof-${session.user.id}-${Date.now()}.${fileExt}`;
+      const fileName = `${session.user.id}/proof-${Date.now()}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
         .from('bazaar_images')
@@ -178,7 +178,7 @@ export default function CreateMedicalCampaign() { const navigate = useNavigate()
       }
 
       const fileExt = file.name.split('.').pop();
-      const fileName = `${session.user.id}-${Date.now()}.${fileExt}`;
+      const fileName = `${session.user.id}/${Date.now()}.${fileExt}`;
 
       const { error: uploadError, data } = await supabase.storage
         .from('bazaar_images')
