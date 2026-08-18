@@ -15,7 +15,7 @@ interface Props {
 }
 
 export default function LeaveReviewDialog({ open, onOpenChange, sellerId, sellerName, onSubmitted }: Props) {
-  const { submitReview } = useSellerReviews(sellerId);
+  const { submitReviewAsync } = useSellerReviews(sellerId);
   const [rating, setRating] = useState(5);
   const [hover, setHover] = useState(0);
   const [comment, setComment] = useState("");
@@ -24,15 +24,18 @@ export default function LeaveReviewDialog({ open, onOpenChange, sellerId, seller
   const submit = async () => {
     setSubmitting(true);
     try {
-      submitReview({ rating, comment: comment.trim() || undefined });
-      onSubmitted?.();
+      await submitReviewAsync({ rating, comment: comment.trim() || undefined });
+      await onSubmitted?.();
       onOpenChange(false);
       setComment("");
       setRating(5);
+    } catch {
+      // error toast handled by the hook
     } finally {
       setSubmitting(false);
     }
   };
+
 
   return (
     <>

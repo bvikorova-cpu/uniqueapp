@@ -57012,6 +57012,41 @@ export type Database = {
         }
         Relationships: []
       }
+      skill_task_completions: {
+        Row: {
+          buyer_id: string
+          completed_at: string
+          id: string
+          offering_id: string
+          provider_id: string
+          reviewed: boolean
+        }
+        Insert: {
+          buyer_id: string
+          completed_at?: string
+          id?: string
+          offering_id: string
+          provider_id: string
+          reviewed?: boolean
+        }
+        Update: {
+          buyer_id?: string
+          completed_at?: string
+          id?: string
+          offering_id?: string
+          provider_id?: string
+          reviewed?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skill_task_completions_offering_id_fkey"
+            columns: ["offering_id"]
+            isOneToOne: false
+            referencedRelation: "skill_offerings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       smoke_test_route_results: {
         Row: {
           console_errors: Json | null

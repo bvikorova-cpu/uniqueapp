@@ -3,11 +3,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Loader2, Send, MessageCircle } from "lucide-react";
+import { Loader2, Send, MessageCircle, CheckCircle2, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { ChatAttachmentPicker, ChatAttachmentView, uploadChatMedia } from "@/components/chat/ChatAttachment";
+import LeaveReviewDialog from "@/components/skills/LeaveReviewDialog";
+
 
 interface Msg {
   id: string;
@@ -36,8 +38,63 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const [ownerId, setOwnerId] = useState<string | null>(null);
+  const [completion, setCompletion] = useState<{ id: string; reviewed: boolean } | null>(null);
+  const [completing, setCompleting] = useState(false);
+  const [reviewOpen, setReviewOpen] = useState(false);
+
+  // The buyer is the participant who does NOT own the listing
+  const isBuyer = !!ownerId && !!user && ownerId !== user.id && ownerId === otherId;
 
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open || !user) return;
+    let cancelled = false;
+    (async () => {
+      const { data: offering } = await supabase
+        .from("skill_offerings")
+        .select("user_id")
+        .eq("id", offeringId)
+        .maybeSingle();
+      if (cancelled) return;
+      setOwnerId((offering as any)?.user_id ?? null);
+
+      const buyerId = (offering as any)?.user_id === user.id ? otherId : user.id;
+      const { data: comp } = await supabase
+        .from("skill_task_completions")
+        .select("id, reviewed")
+        .eq("offering_id", offeringId)
+        .eq("buyer_id", buyerId)
+        .maybeSingle();
+      if (cancelled) return;
+      setCompletion(comp ? { id: (comp as any).id, reviewed: !!(comp as any).reviewed } : null);
+    })();
+    return () => { cancelled = true; };
+  }, [open, user, offeringId, otherId]);
+
+  const markCompleted = async () => {
+    if (!user || !ownerId) return;
+    setCompleting(true);
+    const { data, error } = await supabase
+      .from("skill_task_completions")
+      .insert({ offering_id: offeringId, buyer_id: user.id, provider_id: ownerId })
+      .select("id, reviewed")
+      .maybeSingle();
+    setCompleting(false);
+    if (error) { toast.error(error.message); return; }
+    setCompletion(data ? { id: (data as any).id, reviewed: false } : null);
+    toast.success("Task marked as completed — you can now leave a review");
+    setReviewOpen(true);
+  };
+
+  const onReviewed = async () => {
+    if (completion) {
+      await supabase.from("skill_task_completions").update({ reviewed: true }).eq("id", completion.id);
+      setCompletion({ ...completion, reviewed: true });
+    }
+  };
+
 
   const markRead = async () => {
     if (!user) return;
@@ -195,6 +252,43 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
             </div>
           )}
         </ScrollArea>
+
+        {isBuyer && (
+          <div className="flex items-center gap-2 rounded-lg border bg-muted/40 p-2">
+            {!completion ? (
+              <>
+                <p className="text-xs text-muted-foreground flex-1">Job done? Mark it completed and rate the provider.</p>
+                <Button size="sm" variant="secondary" onClick={markCompleted} disabled={completing}>
+                  {completing ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4 mr-1" />}
+                  Task completed
+                </Button>
+              </>
+            ) : (
+              <>
+                <p className="text-xs text-muted-foreground flex-1 flex items-center gap-1">
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  {completion.reviewed ? "Completed · review submitted" : "Completed — leave your review"}
+                </p>
+                <Button size="sm" variant={completion.reviewed ? "outline" : "default"} onClick={() => setReviewOpen(true)}>
+                  <Star className="h-4 w-4 mr-1" />
+                  {completion.reviewed ? "Edit review" : "Leave review"}
+                </Button>
+              </>
+            )}
+          </div>
+        )}
+
+        {ownerId && (
+          <LeaveReviewDialog
+            open={reviewOpen}
+            onOpenChange={setReviewOpen}
+            sellerId={ownerId}
+            sellerName={otherName}
+            onSubmitted={onReviewed}
+          />
+        )}
+
+
 
         <div className="relative flex gap-2">
           <ChatAttachmentPicker file={file} onFileChange={setFile} disabled={sending} />
