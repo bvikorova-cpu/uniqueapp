@@ -55,19 +55,23 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
     const effectiveBuyer = buyerId ?? user.id;
     let cancelled = false;
     setLoading(true);
-    supabase
-      .from("property_messages")
-      .select("*")
-      .eq("property_id", propertyId)
-      .eq("buyer_id", effectiveBuyer)
-      .eq("seller_id", sellerId)
-      .order("created_at", { ascending: true })
-      .then(({ data }) => {
-        if (cancelled) return;
-        setMessages((data || []) as Msg[]);
-        setLoading(false);
-        markRead();
-      });
+
+    const fetchMessages = async (initial = false) => {
+      const { data } = await supabase
+        .from("property_messages")
+        .select("*")
+        .eq("property_id", propertyId)
+        .eq("buyer_id", effectiveBuyer)
+        .eq("seller_id", sellerId)
+        .order("created_at", { ascending: true });
+      if (cancelled) return;
+      const rows = (data || []) as Msg[];
+      setMessages((prev) => (prev.length === rows.length && prev.every((p, i) => p.id === rows[i]?.id) ? prev : rows));
+      if (initial) setLoading(false);
+      markRead();
+    };
+
+    fetchMessages(true);
 
     const channel = supabase
       .channel(`pmsg-${propertyId}-${effectiveBuyer}`)
@@ -84,8 +88,11 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
       )
       .subscribe();
 
+    const poll = window.setInterval(() => fetchMessages(), 4000);
+
     return () => {
       cancelled = true;
+      window.clearInterval(poll);
       supabase.removeChannel(channel);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -101,15 +108,20 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
     const trimmed = content.trim();
     if (!trimmed) return;
     setSending(true);
-    const { error } = await supabase.from("property_messages").insert({ property_id: propertyId,
+    const { data: inserted, error } = await supabase.from("property_messages").insert({ property_id: propertyId,
       buyer_id: buyerId,
       seller_id: sellerId,
       sender_id: user.id,
-      content: trimmed });
+      content: trimmed }).select("*").maybeSingle();
     setSending(false);
     if (error) { toast.error(error.message); return; }
+    if (inserted) {
+      const m = inserted as Msg;
+      setMessages((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m]));
+    }
     setContent("");
   };
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
