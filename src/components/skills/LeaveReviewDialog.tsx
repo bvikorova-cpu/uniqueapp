@@ -24,15 +24,18 @@ export default function LeaveReviewDialog({ open, onOpenChange, sellerId, seller
   const submit = async () => {
     setSubmitting(true);
     try {
-      submitReview({ rating, comment: comment.trim() || undefined });
-      onSubmitted?.();
+      await submitReview.mutateAsync({ rating, comment: comment.trim() || undefined });
+      await onSubmitted?.();
       onOpenChange(false);
       setComment("");
       setRating(5);
+    } catch {
+      // error toast handled by the hook
     } finally {
       setSubmitting(false);
     }
   };
+
 
   return (
     <>
