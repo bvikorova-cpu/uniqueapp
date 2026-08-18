@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { maskContactInfo } from "@/lib/contactMask";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -288,7 +289,7 @@ export function SkillRequestsBoard({ category }: { category?: string | null }) {
               <Card key={r.id} className="h-full">
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between gap-2">
-                    <CardTitle className="text-lg line-clamp-2">{r.title}</CardTitle>
+                    <CardTitle className="text-lg line-clamp-2">{maskContactInfo(r.title)}</CardTitle>
                     <div className="flex flex-col items-end gap-1 shrink-0">
                       <Badge variant="secondary" className="capitalize">{r.category}</Badge>
                       {!r.is_open && <Badge variant="outline">Closed</Badge>}
@@ -297,7 +298,7 @@ export function SkillRequestsBoard({ category }: { category?: string | null }) {
                   <p className="text-xs text-muted-foreground">by {names[r.user_id] || "User"}</p>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <p className="text-sm text-muted-foreground line-clamp-3">{r.description}</p>
+                  <p className="text-sm text-muted-foreground line-clamp-3">{maskContactInfo(r.description)}</p>
                   <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
                     {regionLabel(r.region) && <span>{regionLabel(r.region)}</span>}
                     {r.location && <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5" />{r.location}</span>}

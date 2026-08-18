@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { ChatAttachmentPicker, ChatAttachmentView, uploadChatMedia } from "@/components/chat/ChatAttachment";
+import { maskContactInfo } from "@/lib/contactMask";
 
 interface Msg {
   id: string;
@@ -164,12 +165,14 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
             <p className="text-sm text-muted-foreground text-center py-12">No messages yet — say hello!</p>
           ) : (
             <div className="space-y-2">
-              {messages.map((m) => {
+              {messages.map((m, i) => {
                 const mine = m.sender_id === user?.id;
+                // Contact details stay hidden in the opening messages of a conversation
+                const body = i < 3 ? maskContactInfo(m.content) : m.content;
                 return (
                   <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
                     <div className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${mine ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
-                      <p className="whitespace-pre-wrap break-words">{m.content}</p>
+                      <p className="whitespace-pre-wrap break-words">{body}</p>
                       {m.attachment_path && (
                         <ChatAttachmentView path={m.attachment_path} type={m.attachment_type} />
                       )}

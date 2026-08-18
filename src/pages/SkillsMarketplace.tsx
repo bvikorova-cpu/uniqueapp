@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { maskContactInfo } from "@/lib/contactMask";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -224,14 +225,14 @@ function SkillsMarketplaceContent() {
               </div>
               <div className="min-w-0 flex-1 space-y-1.5">
                 <div className="flex items-start justify-between gap-2">
-                  <h3 className="font-semibold leading-snug line-clamp-2 group-hover/card:underline">{o.title}</h3>
+                  <h3 className="font-semibold leading-snug line-clamp-2 group-hover/card:underline">{maskContactInfo(o.title)}</h3>
                   {o.price_per_hour != null && (
                     <span className="shrink-0 flex items-center gap-0.5 text-sm font-semibold text-primary">
                       <Euro className="h-3.5 w-3.5" />{o.price_per_hour}/hr
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-muted-foreground line-clamp-2">{o.description}</p>
+                <p className="text-sm text-muted-foreground line-clamp-2">{maskContactInfo(o.description)}</p>
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                   <span className="capitalize">{o.category}</span>
                   {regionLabel(o.region) && <span>{regionLabel(o.region)}</span>}
@@ -283,7 +284,7 @@ function SkillsMarketplaceContent() {
           { title: 'Free access', desc: 'Browsing the Skills section is free — no entry fee.' },
           { title: 'Pick a category', desc: 'Open a category folder and browse offerings inside it.' },
           { title: 'Publish an offering', desc: 'Opening your own offering costs 2 credits — no commission.' },
-          { title: 'Deal directly', desc: 'Unlock the chat for 1 credit, agree the price and pay the provider directly — no commission.' },
+          { title: 'Deal directly', desc: 'Unlock the contact for 2 credits, agree the price and pay the provider directly — no commission.' },
         ]} />
       <section className="relative overflow-hidden border-b border-border/40">
         <video

@@ -1,3 +1,4 @@
+import { maskContactInfo } from "@/lib/contactMask";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -78,7 +79,7 @@ export function PropertyDetailDialog({ property, open, onOpenChange }: PropertyD
         <DialogHeader>
           <div className="flex items-start justify-between">
             <div>
-              <DialogTitle className="text-3xl font-bold">{property.title}</DialogTitle>
+              <DialogTitle className="text-3xl font-bold">{maskContactInfo(property.title)}</DialogTitle>
               <div className="flex items-center gap-2 mt-2 text-muted-foreground">
                 <MapPin className="h-4 w-4" />
                 <span>{property.city}</span>
@@ -177,7 +178,7 @@ export function PropertyDetailDialog({ property, open, onOpenChange }: PropertyD
         <div className="py-4">
           <h3 className="text-xl font-semibold mb-3">Description</h3>
           <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
-            {property.description}
+            {maskContactInfo(property.description)}
           </p>
         </div>
 
