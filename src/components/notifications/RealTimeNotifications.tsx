@@ -1,10 +1,35 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Bell, Heart, MessageCircle, UserPlus, AtSign } from "lucide-react";
 import { playNotificationChime } from "@/lib/notificationChime";
+import { playMessageChime } from "@/lib/messageChime";
+import { getNotificationRoute } from "@/utils/notificationRoutes";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+
+// Notification types that represent an incoming message and must alert instantly
+const MESSAGE_TYPES = [
+  "message",
+  "new_message",
+  "direct_message",
+  "dating_message",
+  "group_message",
+  "coffee_message",
+  "creator_message",
+  "bazaar_message",
+  "bazaar_order",
+  "property_message",
+  "skill_message",
+  "story_reply",
+  "paid_dm",
+];
+
+const isMessageType = (t?: string | null) => {
+  const type = (t || "").toLowerCase();
+  return MESSAGE_TYPES.includes(type) || type.includes("message") || type.includes("_dm");
+};
 
 interface Notification {
   id: string;
