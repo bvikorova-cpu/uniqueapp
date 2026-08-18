@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import {
   Plus, Search, MapPin, Euro, ArrowLeft, Sparkles, Crown, Flame, ChevronRight, MessageCircle,
   Smartphone, Shirt, Home, Dumbbell, Palette, Car, Gem, Boxes, Lock, Loader2, Gavel, Clock,
-  Settings2,
+  Settings2, ShoppingBag,
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { PromotionBadge } from "@/components/skills/PromotionBadge";
@@ -85,6 +85,7 @@ export default function Auction() {
   const [unlocked, setUnlocked] = useState<Set<string>>(new Set());
   const [unlocking, setUnlocking] = useState(false);
   const [chatItem, setChatItem] = useState<Item | null>(null);
+  const [buyIntent, setBuyIntent] = useState("");
   const [bidAmount, setBidAmount] = useState("");
   const [bidding, setBidding] = useState(false);
   const [reload, setReload] = useState(0);
@@ -565,16 +566,30 @@ export default function Auction() {
                     </Button>
                   </>
                 ) : (
-                  <Button className="flex-1 gap-2" variant="outline" disabled={unlocking} onClick={() => unlockContact(detail)}>
-                    {unlocking ? <Loader2 className="h-4 w-4 animate-spin" /> : detailUnlocked ? <MessageCircle className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
-                    {detailUnlocked ? "Message seller" : "Message seller · 2 credits"}
-                  </Button>
+                  <>
+                    <Button
+                      className="flex-1 gap-2"
+                      disabled={unlocking}
+                      onClick={() => {
+                        setBuyIntent(
+                          `Hi, I would like to buy "${detail.title}"${detail.buyout_price ? ` for €${Number(detail.buyout_price).toFixed(0)}` : ""}. Can we agree on the details?`,
+                        );
+                        unlockContact(detail);
+                      }}
+                    >
+                      {unlocking ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShoppingBag className="h-4 w-4" />} Buy
+                    </Button>
+                    <Button className="flex-1 gap-2" variant="outline" disabled={unlocking} onClick={() => { setBuyIntent(""); unlockContact(detail); }}>
+                      {unlocking ? <Loader2 className="h-4 w-4 animate-spin" /> : detailUnlocked ? <MessageCircle className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
+                      {detailUnlocked ? "Message seller" : "Message seller · 2 credits"}
+                    </Button>
+                  </>
                 )}
               </div>
-              {!detailUnlocked && user?.id !== detail.user_id && (
+              {user?.id !== detail.user_id && (
                 <p className="text-xs text-muted-foreground">
-                  Bidding is free. Contact details stay hidden until you unlock the chat for 2 credits — then you deal
-                  directly, with no commission.
+                  Bidding is free. Buying happens directly with the seller in chat — no platform payment, no commission.
+                  {!detailUnlocked ? " Contact details stay hidden until you unlock the chat for 2 credits." : ""}
                 </p>
               )}
             </>
@@ -597,6 +612,7 @@ export default function Auction() {
           auctionTitle={chatItem.title}
           otherId={chatItem.user_id}
           otherName={names[chatItem.user_id]?.name}
+          initialMessage={buyIntent || undefined}
         />
       )}
     </>
