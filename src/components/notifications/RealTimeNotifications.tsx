@@ -69,12 +69,43 @@ export const useRealTimeNotifications = () => {
             mention: <AtSign className="h-4 w-4 text-purple-500" />,
             message: <Bell className="h-4 w-4 text-yellow-500" /> };
 
-          // Play distinct notification chime (different from message chime)
-          if (newNotification.type !== "message") {
+          const messageAlert = isMessageType(newNotification.type);
+          const route = getNotificationRoute(newNotification);
+          const title = newNotification.title || (messageAlert ? "New message" : "New notification");
+          const body = newNotification.message || newNotification.content || "";
+
+          // Play the message chime for incoming messages, generic chime otherwise
+          if (messageAlert) {
+            playMessageChime();
+          } else {
             playNotificationChime();
           }
 
-          toast(newNotification.message || "New notification", { icon: icons[newNotification.type] || <Bell className="h-4 w-4" /> });
+          if (messageAlert) {
+            toast(title, {
+              description: body || undefined,
+              icon: <MessageCircle className="h-4 w-4 text-primary" />,
+              duration: 8000,
+              action: {
+                label: "Open",
+                onClick: () => navigate(route) },
+            });
+
+            // Native OS/PWA alert when the app is not in the foreground
+            try {
+              if (typeof window !== "undefined" && "Notification" in window &&
+                  Notification.permission === "granted" && document.visibilityState !== "visible") {
+                const n = new Notification(title, { body, tag: `msg-${newNotification.id}`, icon: "/icon-192.png" });
+                n.onclick = () => { window.focus(); window.location.href = route; };
+              }
+            } catch { /* notifications unsupported */ }
+          } else {
+            toast(body || title, {
+              icon: icons[newNotification.type] || <Bell className="h-4 w-4" />,
+              action: { label: "View", onClick: () => navigate(route) },
+            });
+          }
+
 
           setNotifications((prev) => [newNotification, ...prev]);
           setUnreadCount((prev) => prev + 1);
