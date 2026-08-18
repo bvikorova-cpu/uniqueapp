@@ -253,6 +253,43 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
           )}
         </ScrollArea>
 
+        {isBuyer && (
+          <div className="flex items-center gap-2 rounded-lg border bg-muted/40 p-2">
+            {!completion ? (
+              <>
+                <p className="text-xs text-muted-foreground flex-1">Job done? Mark it completed and rate the provider.</p>
+                <Button size="sm" variant="secondary" onClick={markCompleted} disabled={completing}>
+                  {completing ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4 mr-1" />}
+                  Task completed
+                </Button>
+              </>
+            ) : (
+              <>
+                <p className="text-xs text-muted-foreground flex-1 flex items-center gap-1">
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  {completion.reviewed ? "Completed · review submitted" : "Completed — leave your review"}
+                </p>
+                <Button size="sm" variant={completion.reviewed ? "outline" : "default"} onClick={() => setReviewOpen(true)}>
+                  <Star className="h-4 w-4 mr-1" />
+                  {completion.reviewed ? "Edit review" : "Leave review"}
+                </Button>
+              </>
+            )}
+          </div>
+        )}
+
+        {ownerId && (
+          <LeaveReviewDialog
+            open={reviewOpen}
+            onOpenChange={setReviewOpen}
+            sellerId={ownerId}
+            sellerName={otherName}
+            onSubmitted={onReviewed}
+          />
+        )}
+
+
+
         <div className="relative flex gap-2">
           <ChatAttachmentPicker file={file} onFileChange={setFile} disabled={sending} />
           <Textarea
