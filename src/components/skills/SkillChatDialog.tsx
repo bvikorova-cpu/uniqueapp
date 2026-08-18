@@ -38,8 +38,63 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const [ownerId, setOwnerId] = useState<string | null>(null);
+  const [completion, setCompletion] = useState<{ id: string; reviewed: boolean } | null>(null);
+  const [completing, setCompleting] = useState(false);
+  const [reviewOpen, setReviewOpen] = useState(false);
+
+  // The buyer is the participant who does NOT own the listing
+  const isBuyer = !!ownerId && !!user && ownerId !== user.id && ownerId === otherId;
 
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open || !user) return;
+    let cancelled = false;
+    (async () => {
+      const { data: offering } = await supabase
+        .from("skill_offerings")
+        .select("user_id")
+        .eq("id", offeringId)
+        .maybeSingle();
+      if (cancelled) return;
+      setOwnerId((offering as any)?.user_id ?? null);
+
+      const buyerId = (offering as any)?.user_id === user.id ? otherId : user.id;
+      const { data: comp } = await supabase
+        .from("skill_task_completions")
+        .select("id, reviewed")
+        .eq("offering_id", offeringId)
+        .eq("buyer_id", buyerId)
+        .maybeSingle();
+      if (cancelled) return;
+      setCompletion(comp ? { id: (comp as any).id, reviewed: !!(comp as any).reviewed } : null);
+    })();
+    return () => { cancelled = true; };
+  }, [open, user, offeringId, otherId]);
+
+  const markCompleted = async () => {
+    if (!user || !ownerId) return;
+    setCompleting(true);
+    const { data, error } = await supabase
+      .from("skill_task_completions")
+      .insert({ offering_id: offeringId, buyer_id: user.id, provider_id: ownerId })
+      .select("id, reviewed")
+      .maybeSingle();
+    setCompleting(false);
+    if (error) { toast.error(error.message); return; }
+    setCompletion(data ? { id: (data as any).id, reviewed: false } : null);
+    toast.success("Task marked as completed — you can now leave a review");
+    setReviewOpen(true);
+  };
+
+  const onReviewed = async () => {
+    if (completion) {
+      await supabase.from("skill_task_completions").update({ reviewed: true }).eq("id", completion.id);
+      setCompletion({ ...completion, reviewed: true });
+    }
+  };
+
 
   const markRead = async () => {
     if (!user) return;
