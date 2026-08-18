@@ -744,6 +744,7 @@ const App = () => {
                         <Route path="/coupons/season/:slug" element={<CouponSeasonalHub />} />
                         <Route path="/coupons/:brand" element={<CouponBrandPage />} />
                         <Route path="/coupons/my" element={<ProtectedRoute><CouponsMy /></ProtectedRoute>} />
+                        <Route path="/coupon-marketplace/my" element={<ProtectedRoute><CouponMy /></ProtectedRoute>} />
                         <Route path="/admin/coupon-disputes" element={<ProtectedRoute requireAdmin={true}><AdminCouponDisputes /></ProtectedRoute>} />
                         <Route path="/admin/megatalent-moderation" element={<ProtectedRoute requireAdmin={true}><AdminMegatalentModeration /></ProtectedRoute>} />
                         <Route path="/admin/megatalent-payouts" element={<ProtectedRoute requireAdmin={true}><AdminMegatalentPayouts /></ProtectedRoute>} />
