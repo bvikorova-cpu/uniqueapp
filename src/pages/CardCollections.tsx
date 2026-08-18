@@ -94,7 +94,8 @@ const CardCollections = () => {
           steps={[
             { title: "Pick a collection", desc: "Fifty themed collections, each with 150 fixed cards — mythic beasts, duel stats, personality archetypes, memes, daily quests, lifehacks, world facts, seasonal series, racehorses and seven sports sets (football, basketball, ice hockey, tennis, American football, baseball, golf) plus beauty icons, fashion couture, royal princesses, storybook folk plus five motorsport race sets (grand prix cars, rally, endurance hypercars, drift and superbikes) plus sixteen Kids Collectibles sets for younger collectors — ten hand-drawn cartoon sets and six cinematic 3D animated-movie sets." },
             { title: "Draw a card", desc: `Every draw costs ${DRAW_COST} AI credit and reveals one card from that collection — cards you already own can appear again.` },
-            { title: "Decide ✓ or ✗", desc: "Tap ✓ to add the card to your album (duplicates stack up), or ✗ to release it back into the pool." },
+            { title: "Decide ✓ or ✗", desc: "Tap ✓ to add the card to your album (duplicates stack up), or ✗ to move it to your discarded-cards bin." },
+            { title: "Recycle for credits", desc: "Recycle exactly 10 discarded cards from your bin and get 1 AI credit back — the recycled cards are destroyed permanently." },
             { title: "Chase rarities", desc: "Cards come as Common, Rare, Epic, Legendary and one single Mythic card per collection — the Mythic is the hardest to ever see." },
             { title: "Complete a set", desc: `Own at least one copy of all ${CARDS_PER_CATEGORY} cards in a collection to unlock its exclusive golden Prime card for free.` },
             { title: "Climb the ranking", desc: "Every collection has its own live leaderboard, plus a global cross-collection ranking of the biggest collectors." },
