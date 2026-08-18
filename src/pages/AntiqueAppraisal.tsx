@@ -15,16 +15,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import heroVideo from "@/assets/antique-hero.mp4.asset.json";
 import { AntiqueAnalyze } from "@/components/antiques/AntiqueAnalyze";
-import { AntiqueCollection } from "@/components/antiques/AntiqueCollection";
 import { AntiqueCreditsShop } from "@/components/antiques/AntiqueCreditsShop";
 import { loadGoogleFont } from "@/utils/lazyFonts";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-type ActiveView = "hub" | "analyze" | "collection" | "credits";
+type ActiveView = "hub" | "analyze" | "credits";
 
 const AntiqueAppraisal = () => {
   const [activeView, setActiveView] = useState<ActiveView>("hub");
-  const [stats, setStats] = useState({ appraisals: 0, collections: 0, authenticity: 0, value: 0 });
   const { credits } = useAntiqueCredits();
 
   useEffect(() => { loadGoogleFont("gothic"); }, []);
@@ -56,35 +54,14 @@ const AntiqueAppraisal = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const loadStats = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      const [a, c] = await Promise.all([
-        supabase.from("antiques").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-        (supabase as any).from("antique_collections").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-      ]);
-      setStats({ appraisals: a.count || 0,
-        collections: c.count || 0,
-        authenticity: Math.floor((a.count || 0) * 0.85),
-        value: (a.count || 0) * 125 });
-    };
-    loadStats();
-  }, []);
 
   const tools = [
     { id: "analyze" as ActiveView, icon: Search, title: "Antique Identification", desc: "Item, period & style", cost: "3 Credits", color: "text-primary" },
   ];
 
 
-  const statItems = [
-    { label: "Appraisals", value: stats.appraisals, icon: Search },
-    { label: "Collections", value: stats.collections, icon: Package },
-    { label: "Verified", value: stats.authenticity, icon: Shield },
-    { label: "Est. Value", value: `€${stats.value}`, icon: TrendingUp },
-  ];
 
-  const viewLabels: Record<string, string> = { analyze: "Antique Identification", collection: "My Collection", credits: "Buy Credits" };
+  const viewLabels: Record<string, string> = { analyze: "Antique Identification", credits: "Buy Credits" };
 
   if (activeView !== "hub") {
     return (
@@ -106,7 +83,6 @@ const AntiqueAppraisal = () => {
               <Badge variant="outline" className="text-xs antique-display border-primary/40">{viewLabels[activeView]}</Badge>
             </div>
             {activeView === "analyze" && <AntiqueAnalyze />}
-            {activeView === "collection" && <AntiqueCollection />}
             {activeView === "credits" && <AntiqueCreditsShop />}
           </motion.div>
         </div>
@@ -143,20 +119,6 @@ const AntiqueAppraisal = () => {
             </p>
           </motion.div>
 
-          {/* Stats Overlay */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, type: "spring" }}
-            className="grid grid-cols-4 gap-2 sm:gap-4 mt-4 max-w-2xl"
-          >
-            {statItems.map((s, i) => (
-              <motion.div key={i} initial={{ scale: 0.8 }} animate={{ scale: 1 }} transition={{ delay: 0.4 + i * 0.1, type: "spring" }}
-                className="antique-frame rounded-md p-2 sm:p-3 text-center bg-black/30">
-                <s.icon className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600 mx-auto mb-1" />
-                <p className="text-lg sm:text-2xl font-bold antique-display text-foreground">{s.value}</p>
-                <p className="text-[10px] sm:text-xs uppercase tracking-widest text-muted-foreground">{s.label}</p>
-              </motion.div>
-            ))}
-          </motion.div>
         </div>
       </div>
 
@@ -177,10 +139,6 @@ const AntiqueAppraisal = () => {
           <Button variant="outline" className="gap-2 antique-display uppercase tracking-widest text-xs bg-card/70 border-primary/40 hover:bg-primary/10"
             onClick={() => setActiveView("credits")}>
             <Coins className="w-4 h-4 text-primary" /> Buy Credits
-          </Button>
-          <Button variant="outline" className="gap-2 antique-display uppercase tracking-widest text-xs bg-card/70 border-primary/40 hover:bg-primary/10"
-            onClick={() => setActiveView("collection")}>
-            <HistoryIcon className="w-4 h-4 text-primary" /> My Collection
           </Button>
         </motion.div>
 
