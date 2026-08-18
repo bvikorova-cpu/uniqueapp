@@ -56,7 +56,7 @@ const AntiqueAppraisal = () => {
 
 
   const tools = [
-    { id: "analyze" as ActiveView, icon: Search, title: "Antique Identification", desc: "Item, period & style", cost: "3 Credits", color: "text-primary" },
+    { id: "analyze" as ActiveView, icon: Search, title: "Antique Identification", desc: "Item, period & style", cost: "5 Credits", color: "text-primary" },
   ];
 
 
