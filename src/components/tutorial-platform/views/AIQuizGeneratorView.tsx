@@ -127,8 +127,8 @@ export function AIQuizGeneratorView({ onBack }: Props) {
               </Button>
             </CardHeader>
             <CardContent>
-              <div className="prose prose-sm max-w-none whitespace-pre-wrap text-sm bg-muted/50 rounded-xl p-5 border">
-                {typeof quiz === 'string' ? quiz : JSON.stringify(quiz, null, 2)}
+              <div className="bg-muted/50 rounded-xl p-5 border">
+                <AiMarkdown content={typeof quiz === 'string' ? quiz : JSON.stringify(quiz, null, 2)} />
               </div>
             </CardContent>
           </Card>
