@@ -120,7 +120,6 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "85", title: "Stock Content Library", category: "Commerce", path: "/stock-content-library" },
   { id: "86", title: "Coupon Marketplace", category: "Commerce", path: "/coupon-marketplace" },
   { id: "87", title: "Shop", category: "Commerce", path: "/shop" },
-  { id: "88", title: "Collectibles", category: "Commerce", path: "/collectibles" },
   { id: "89", title: "Crystal Marketplace", category: "Commerce", path: "/crystal-marketplace" },
   
   // Talent & Influencer

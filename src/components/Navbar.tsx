@@ -243,7 +243,6 @@ const Navbar = () => {
         { path: "/bazaar", label: "Bazaar", icon: Store },
         { path: "/coupon-marketplace", label: "Coupon Marketplace", icon: Ticket },
         { path: "/auction", label: "Online Auctions", icon: Gavel },
-        { path: "/collectibles", label: "Collectibles", icon: Sparkles },
         { path: "/antique-appraisal", label: "Antique Appraisal", icon: Gem },
       ] },
     {

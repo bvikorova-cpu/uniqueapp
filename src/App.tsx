@@ -1068,7 +1068,6 @@ const App = () => {
                         <Route path="/sponsor-dashboard" element={<ProtectedRoute><SponsorDashboard /></ProtectedRoute>} />
                         <Route path="/brain-duel" element={<ProtectedRoute><BrainDuel /></ProtectedRoute>} />
                         <Route path="/brain-duel/hub" element={<ProtectedRoute><BrainDuelHub /></ProtectedRoute>} />
-                        <Route path="/collectibles" element={<Collectibles />} />
                         <Route path="/fashion-studio" element={<FashionStudio />} />
                         <Route path="/nutrition-hub" element={<NutritionHub />} />
                         <Route path="/nutrition-subscriptions" element={<NutritionSubscriptions />} />
