@@ -375,14 +375,21 @@ export default function Bazaar() {
               <h2 className="text-2xl font-bold tracking-tight">Browse listings</h2>
               <p className="text-sm text-muted-foreground">Free to browse — pick a category or search everything.</p>
             </div>
-            <Button
-              onClick={() => (user ? navigate("/bazaar/create") : navigate("/auth"))}
-              className="w-full gap-2 sm:w-auto"
-            >
-              <Plus className="h-4 w-4" />
-              <span className="sm:hidden">Post · 2 cr</span>
-              <span className="hidden sm:inline">Post a listing · 2 credits</span>
-            </Button>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              {user && (
+                <Button variant="outline" className="w-full gap-2 sm:w-auto" onClick={() => navigate("/bazaar/messages")}>
+                  <MessageCircle className="h-4 w-4" /> Messages
+                </Button>
+              )}
+              <Button
+                onClick={() => (user ? navigate("/bazaar/create") : navigate("/auth"))}
+                className="w-full gap-2 sm:w-auto"
+              >
+                <Plus className="h-4 w-4" />
+                <span className="sm:hidden">Post · 2 cr</span>
+                <span className="hidden sm:inline">Post a listing · 2 credits</span>
+              </Button>
+            </div>
           </header>
 
           {!category ? (
