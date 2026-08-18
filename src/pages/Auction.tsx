@@ -154,7 +154,7 @@ const Auction = () => {
       const endsAt = new Date(); endsAt.setHours(endsAt.getHours() + parseInt(duration));
       let firstImageUrl = null; const uploadedPhotos: string[] = [];
       for (const file of imageFiles) {
-        const fileName = `${user.id}-${Date.now()}-${Math.random()}.${file.name.split('.').pop()}`;
+        const fileName = `${user.id}/${Date.now()}-${Math.random()}.${file.name.split('.').pop()}`;
         const { error: uploadError } = await supabase.storage.from('bazaar_images').upload(fileName, file);
         if (uploadError) throw uploadError;
         const { data: { publicUrl } } = supabase.storage.from('bazaar_images').getPublicUrl(fileName);

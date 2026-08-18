@@ -118,7 +118,7 @@ export default function CreateCrisisCampaign() { const navigate = useNavigate();
       }
 
       const fileExt = file.name.split('.').pop();
-      const fileName = `crisis-proof-${session.user.id}-${Date.now()}.${fileExt}`;
+      const fileName = `${session.user.id}/crisis-proof-${Date.now()}.${fileExt}`;
 
       const { data, error } = await supabase.storage
         .from('campaign-images')

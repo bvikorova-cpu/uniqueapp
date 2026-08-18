@@ -57,7 +57,7 @@ export default function CreateDreamCampaign() { const navigate = useNavigate();
       }
 
       const fileExt = file.name.split('.').pop();
-      const fileName = `dream-${session.user.id}-${Date.now()}.${fileExt}`;
+      const fileName = `${session.user.id}/dream-${Date.now()}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
         .from('bazaar_images')
