@@ -141,8 +141,8 @@ export function getNotificationRoute(n: NotifLike): string {
     dating_super_like: "/dating",
     forum_comment: "/megaforum",
     forum_like: "/megaforum",
-    bazaar_message: "/bazaar",
-    bazaar_order: "/bazaar",
+    bazaar_message: "/bazaar/messages",
+    bazaar_order: "/bazaar/messages",
     creator_message: "/influ-king",
     creator_gift: "/influencer/earnings",
 
