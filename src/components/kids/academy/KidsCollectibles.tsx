@@ -5,13 +5,22 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Download, Loader2, Sparkles } from "lucide-react";
+import { Download, Info, Loader2, Sparkles } from "lucide-react";
 import { downloadCardImage } from "@/lib/downloadCardImage";
 import { getCategoryCover } from "@/components/collections/categoryCovers";
 import { getCategoryBlurb } from "@/components/collections/categoryBlurbs";
 import heroVideo from "@/assets/kids-collectibles-hero.mp4.asset.json";
 import { useCardArtPrewarm } from "@/hooks/useCardArtPrewarm";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+
+const DRAW_COST = 1;
+const HIW_STEPS = [
+  { title: "Pick a set", desc: "Choose one of the 16 magical kids card sets." },
+  { title: "Draw a card", desc: `Every draw costs ${DRAW_COST} AI credit and reveals one random card.` },
+  { title: "Keep or discard", desc: "Tap ✓ to add the card to your album, or ✗ to move it to your discarded-cards bin." },
+  { title: "Recycle for credits", desc: "Recycle exactly 10 discarded cards and get 1 AI credit back." },
+  { title: "Complete the set", desc: `Collect all ${CARDS_PER_SET} cards to unlock the shiny golden Prime card for free.` },
+];
 
 /** Slugs that belong to the kid-friendly cartoon collectible sets. */
 export const KIDS_CARD_SLUGS = [
