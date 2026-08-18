@@ -49566,6 +49566,30 @@ export type Database = {
         }
         Relationships: []
       }
+      puzzle_piece_trash: {
+        Row: {
+          created_at: string
+          id: string
+          piece_index: number
+          puzzle_slug: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          piece_index: number
+          puzzle_slug: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          piece_index?: number
+          puzzle_slug?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       pwa_install_events: {
         Row: {
           created_at: string
@@ -70436,6 +70460,11 @@ export type Database = {
         Args: { _piece_index: number; _puzzle_slug: string }
         Returns: Json
       }
+      puzzle_trash_add: {
+        Args: { _piece_index: number; _puzzle_slug: string }
+        Returns: string
+      }
+      puzzle_trash_recycle: { Args: { _trash_ids: string[] }; Returns: Json }
       recompute_affiliate_tier: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["affiliate_tier"]

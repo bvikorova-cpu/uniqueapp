@@ -10,6 +10,7 @@ import { Check, X, Loader2, Sparkles, Coins, ArrowLeft, PartyPopper } from "luci
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { KidsPuzzle, PIECE_COST, pieceStyle, totalPieces } from "@/data/kidsPuzzles";
+import { PuzzleTrashBin } from "@/components/kids/puzzles/PuzzleTrashBin";
 
 interface Props {
   puzzle: KidsPuzzle;
@@ -96,8 +97,23 @@ export const PuzzleCollection = ({ puzzle, onBack }: Props) => {
     if (current === null) return;
     setExitDir(keep ? "right" : "left");
     if (!keep) {
-      setTimeout(() => { setCurrent(null); setExitDir(null); }, 250);
-      toast("Piece released — it stays in the box.", { icon: "🗑️" });
+      const idx = current;
+      setDeciding(true);
+      try {
+        const { error } = await (supabase as any).rpc("puzzle_trash_add", {
+          _puzzle_slug: slug,
+          _piece_index: idx,
+        });
+        if (error) throw error;
+        toast("Piece sent to your scrap box — recycle 10 for 1 credit.", { icon: "🗑️" });
+        queryClient.invalidateQueries({ queryKey: ["puzzle-trash", slug] });
+        setTimeout(() => { setCurrent(null); setExitDir(null); }, 250);
+      } catch (e) {
+        toast.error(e instanceof Error ? e.message : "Could not scrap the piece.");
+        setExitDir(null);
+      } finally {
+        setDeciding(false);
+      }
       return;
     }
     setDeciding(true);
@@ -165,9 +181,10 @@ export const PuzzleCollection = ({ puzzle, onBack }: Props) => {
       )}
 
       <Tabs defaultValue="draw">
-        <TabsList className="w-full grid grid-cols-2">
+        <TabsList className="w-full grid grid-cols-3">
           <TabsTrigger value="draw">Draw a piece</TabsTrigger>
           <TabsTrigger value="board">My board</TabsTrigger>
+          <TabsTrigger value="scrap">Scrap box</TabsTrigger>
         </TabsList>
 
         <TabsContent value="draw" className="pt-4">
@@ -195,7 +212,7 @@ export const PuzzleCollection = ({ puzzle, onBack }: Props) => {
                     <div className="mt-3 text-center">
                       <p className="font-black">Piece #{current + 1}</p>
                       <p className="text-[11px] text-muted-foreground">
-                        {owned[current] ? `You already own this one (×${owned[current]})` : "A brand-new piece!"}
+                        {owned[current] ? "Already on your board — send it to the scrap box" : "A brand-new piece!"}
                       </p>
                     </div>
                   </Card>
@@ -213,7 +230,7 @@ export const PuzzleCollection = ({ puzzle, onBack }: Props) => {
                     </Button>
                     <Button
                       size="icon"
-                      disabled={deciding}
+                      disabled={deciding || !!owned[current]}
                       onClick={() => decide(true)}
                       className="h-16 w-16 rounded-full bg-gradient-to-br from-emerald-500 to-green-600"
                       aria-label="Keep this puzzle piece"
@@ -222,7 +239,7 @@ export const PuzzleCollection = ({ puzzle, onBack }: Props) => {
                     </Button>
                   </div>
                   <p className="text-center text-[11px] text-muted-foreground mt-3">
-                    ✓ snaps the piece into your board · ✗ puts it back in the box
+                    ✓ snaps the piece into your board · ✗ sends it to the scrap box (10 scrapped = +1 credit)
                   </p>
                 </motion.div>
               ) : (
@@ -284,6 +301,10 @@ export const PuzzleCollection = ({ puzzle, onBack }: Props) => {
               </p>
             </Card>
           )}
+        </TabsContent>
+
+        <TabsContent value="scrap" className="pt-4">
+          <PuzzleTrashBin puzzle={puzzle} />
         </TabsContent>
       </Tabs>
     </div>
