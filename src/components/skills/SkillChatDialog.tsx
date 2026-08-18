@@ -99,12 +99,12 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
     const trimmed = content.trim();
     if (trimmed.length < 5) { toast.error("Message is too short"); return; }
     setSending(true);
-    const { error } = await supabase.from("marketplace_responses").insert({
+    const { data: inserted, error } = await supabase.from("marketplace_responses").insert({
       offering_id: offeringId,
       sender_id: user.id,
       receiver_id: otherId,
       message: trimmed,
-    });
+    }).select("id, sender_id, receiver_id, message, created_at").maybeSingle();
     setSending(false);
     if (error) {
       const msg = error.message || "";
@@ -119,7 +119,12 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
       }
       return;
     }
+    if (inserted) {
+      const m = inserted as Msg;
+      setMessages((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m]));
+    }
     setContent("");
+
   };
 
   return (
