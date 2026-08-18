@@ -19,7 +19,7 @@ import { PromotionBadge } from "@/components/skills/PromotionBadge";
 import { BazaarPromoteDialog } from "@/components/bazaar/BazaarPromoteDialog";
 import { BazaarChatDialog } from "@/components/bazaar/BazaarChatDialog";
 import { useToast } from "@/hooks/use-toast";
-import bazaarHero from "@/assets/bazaar-hero.jpg";
+import bazaarHeroAsset from "@/assets/bazaar-hero.mp4.asset.json";
 
 const CATEGORY_FOLDERS = [
   { value: "electronics", label: "Electronics", icon: Smartphone, desc: "Phones, computers, audio" },
