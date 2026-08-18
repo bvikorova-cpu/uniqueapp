@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import {
   Plus, Search, MapPin, Euro, ArrowLeft, Crown, Flame, ChevronRight, MessageCircle, Lock, Loader2,
   Trash2, Store, Gift, Sparkles, Zap, Star, Package, Ticket, Tag, Clock,
+  Settings2,
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { useToast } from "@/hooks/use-toast";

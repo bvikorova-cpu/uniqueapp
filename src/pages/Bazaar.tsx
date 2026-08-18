@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import {
   Plus, Search, MapPin, Euro, ArrowLeft, Sparkles, Crown, Flame, ChevronRight, MessageCircle,
   Smartphone, Shirt, Home, Dumbbell, BookOpen, Car, Gamepad2, Boxes, Lock, Loader2, Trash2,
+  Settings2,
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { PromotionBadge } from "@/components/skills/PromotionBadge";
