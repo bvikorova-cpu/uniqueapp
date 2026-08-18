@@ -31,7 +31,7 @@ export const AntiqueCollection = () => {
           { title: 'Review results', desc: 'Progress and history are saved.' },
           { title: 'Iterate', desc: 'Repeat or level up anytime.' },
         ]} />
-        <Card className="bg-card/80 backdrop-blur-xl">
+        <Card className="antique-frame rounded-md">
         <CardContent className="text-center py-12">
           <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
           <p className="text-muted-foreground">Your analyzed antiques will appear here</p>
