@@ -3853,6 +3853,38 @@ export type Database = {
           },
         ]
       }
+      bazaar_contact_unlocks: {
+        Row: {
+          buyer_id: string
+          created_at: string
+          id: string
+          item_id: string
+          seller_id: string
+        }
+        Insert: {
+          buyer_id: string
+          created_at?: string
+          id?: string
+          item_id: string
+          seller_id: string
+        }
+        Update: {
+          buyer_id?: string
+          created_at?: string
+          id?: string
+          item_id?: string
+          seller_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bazaar_contact_unlocks_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "bazaar_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bazaar_disputes: {
         Row: {
           admin_id: string | null
@@ -4057,6 +4089,8 @@ export type Database = {
           condition: string
           created_at: string | null
           description: string | null
+          featured_at: string | null
+          featured_until: string | null
           id: string
           image_url: string | null
           image_urls: string[]
@@ -4064,6 +4098,8 @@ export type Database = {
           is_sold: boolean
           listing_type: string
           location: string
+          premium_at: string | null
+          premium_until: string | null
           price: number
           shipping_method: string | null
           shipping_options: Json | null
@@ -4082,6 +4118,8 @@ export type Database = {
           condition: string
           created_at?: string | null
           description?: string | null
+          featured_at?: string | null
+          featured_until?: string | null
           id?: string
           image_url?: string | null
           image_urls?: string[]
@@ -4089,6 +4127,8 @@ export type Database = {
           is_sold?: boolean
           listing_type?: string
           location: string
+          premium_at?: string | null
+          premium_until?: string | null
           price: number
           shipping_method?: string | null
           shipping_options?: Json | null
@@ -4107,6 +4147,8 @@ export type Database = {
           condition?: string
           created_at?: string | null
           description?: string | null
+          featured_at?: string | null
+          featured_until?: string | null
           id?: string
           image_url?: string | null
           image_urls?: string[]
@@ -4114,6 +4156,8 @@ export type Database = {
           is_sold?: boolean
           listing_type?: string
           location?: string
+          premium_at?: string | null
+          premium_until?: string | null
           price?: number
           shipping_method?: string | null
           shipping_options?: Json | null
@@ -4164,6 +4208,8 @@ export type Database = {
       }
       bazaar_messages: {
         Row: {
+          attachment_path: string | null
+          attachment_type: string | null
           created_at: string | null
           id: string
           is_read: boolean | null
@@ -4173,6 +4219,8 @@ export type Database = {
           sender_id: string
         }
         Insert: {
+          attachment_path?: string | null
+          attachment_type?: string | null
           created_at?: string | null
           id?: string
           is_read?: boolean | null
@@ -4182,6 +4230,8 @@ export type Database = {
           sender_id: string
         }
         Update: {
+          attachment_path?: string | null
+          attachment_type?: string | null
           created_at?: string | null
           id?: string
           is_read?: boolean | null
@@ -68207,6 +68257,14 @@ export type Database = {
         Args: { p_item_id: string; p_plan: string }
         Returns: Json
       }
+      bazaar_top_listing: {
+        Args: { _days: number; _item_id: string; _tier?: string }
+        Returns: {
+          credits_remaining: number
+          promoted_until: string
+          tier: string
+        }[]
+      }
       brain_duel_activate_combo: {
         Args: {
           _combo_type: string
@@ -69966,6 +70024,10 @@ export type Database = {
         Args: { _job_id: string; _user_id: string }
         Returns: boolean
       }
+      has_bazaar_contact_unlock: {
+        Args: { _item_id: string; _user_id: string }
+        Returns: boolean
+      }
       has_confession_access: {
         Args: { service_type_param: string; user_id_param: string }
         Returns: boolean
@@ -70430,6 +70492,19 @@ export type Database = {
           tier: string
         }[]
       }
+      publish_bazaar_item: {
+        Args: {
+          _category: string
+          _condition?: string
+          _description: string
+          _image_urls?: string[]
+          _listing_type?: string
+          _location?: string
+          _price: number
+          _title: string
+        }
+        Returns: string
+      }
       publish_skill_offering: {
         Args: {
           _category: Database["public"]["Enums"]["skill_category"]
@@ -70796,6 +70871,7 @@ export type Database = {
       }
       track_challenge_action: { Args: { _action: string }; Returns: Json }
       trim_user_feed_cache: { Args: never; Returns: undefined }
+      unlock_bazaar_contact: { Args: { _item_id: string }; Returns: Json }
       unlock_homework_achievements: {
         Args: { p_subject?: string; p_user_id: string }
         Returns: number
