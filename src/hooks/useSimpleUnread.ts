@@ -17,7 +17,7 @@ export function useSimpleUnread(table: "bazaar_messages" | "coupon_messages" | "
       setUnread(0);
       return;
     }
-    const { count } = await supabase
+    const { count } = await (supabase as any)
       .from(table)
       .select("id", { count: "exact", head: true })
       .eq("receiver_id", user.id)
@@ -59,3 +59,4 @@ export function useSimpleUnread(table: "bazaar_messages" | "coupon_messages" | "
 
 export const useBazaarUnread = () => useSimpleUnread("bazaar_messages");
 export const useCouponUnread = () => useSimpleUnread("coupon_messages");
+export const useAuctionUnread = () => useSimpleUnread("auction_messages");
