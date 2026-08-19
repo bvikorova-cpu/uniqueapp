@@ -945,6 +945,91 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
                       </div>
                     )}
 
+                    {/* ---- Quiz builder ---- */}
+                    <div className="rounded-lg border border-purple-500/30 bg-purple-500/5 p-3 space-y-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <p className="text-sm font-semibold flex items-center gap-2">
+                          <BookOpen className="w-4 h-4 text-purple-500" />
+                          Lesson quiz
+                          <Badge variant="outline" className="text-[10px]">{(mod.quiz || []).length} questions</Badge>
+                        </p>
+                        <Button type="button" size="sm" variant="secondary" onClick={() => addQuestion(mod.id)}>
+                          <Plus className="w-4 h-4 mr-1" />Add question
+                        </Button>
+                      </div>
+
+                      {(mod.quiz || []).length === 0 ? (
+                        <p className="text-xs text-muted-foreground">
+                          No quiz yet. Add questions with 2–4 answers and mark the correct one — students take it after this lesson.
+                        </p>
+                      ) : (
+                        <>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground">Passing score %</span>
+                            <Input
+                              type="number"
+                              min={0}
+                              max={100}
+                              value={mod.quizPassing ?? 70}
+                              onChange={(e) => updateModule(mod.id, { quizPassing: parseInt(e.target.value) || 0 })}
+                              className="h-8 w-20"
+                            />
+                          </div>
+                          {(mod.quiz || []).map((q, qi) => (
+                            <div key={qi} className="rounded-md border bg-background/70 p-3 space-y-2">
+                              <div className="flex items-start gap-2">
+                                <span className="text-xs font-bold text-muted-foreground mt-2">Q{qi + 1}</span>
+                                <Textarea
+                                  value={q.question}
+                                  onChange={(e) => updateQuestion(mod.id, qi, { question: e.target.value })}
+                                  placeholder="Question text"
+                                  rows={2}
+                                  className="flex-1"
+                                />
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7 text-red-500"
+                                  onClick={() => removeQuestion(mod.id, qi)}
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </Button>
+                              </div>
+                              <div className="grid gap-2 sm:grid-cols-2">
+                                {[0, 1, 2, 3].map((oi) => (
+                                  <label key={oi} className="flex items-center gap-2">
+                                    <input
+                                      type="radio"
+                                      name={`correct-${mod.id}-${qi}`}
+                                      checked={q.correct === oi}
+                                      onChange={() => updateQuestion(mod.id, qi, { correct: oi })}
+                                      aria-label={`Mark answer ${oi + 1} as correct`}
+                                    />
+                                    <Input
+                                      value={q.options?.[oi] ?? ""}
+                                      onChange={(e) => updateOption(mod.id, qi, oi, e.target.value)}
+                                      placeholder={`Answer ${oi + 1}${oi > 1 ? " (optional)" : ""}`}
+                                      className="h-8"
+                                    />
+                                  </label>
+                                ))}
+                              </div>
+                              <Input
+                                value={q.explanation || ""}
+                                onChange={(e) => updateQuestion(mod.id, qi, { explanation: e.target.value })}
+                                placeholder="Explanation shown after answering (optional)"
+                                className="h-8"
+                              />
+                            </div>
+                          ))}
+                          <p className="text-[11px] text-muted-foreground">
+                            Select the radio button next to the correct answer. Empty answer fields are ignored.
+                          </p>
+                        </>
+                      )}
+                    </div>
+
                     <div className="grid grid-cols-2 gap-2">
                       <Input
                         value={mod.duration}
