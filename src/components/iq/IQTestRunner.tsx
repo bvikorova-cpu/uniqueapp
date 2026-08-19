@@ -58,6 +58,25 @@ export default function IQTestRunner({ open, onClose, category, title, timeLimit
     reset();
     (async () => {
       setLoading(true);
+      // Charge credits for starting an IQ test
+      const { data: spend, error: spendError } = await supabase.rpc("spend_ai_credits" as any, {
+        _amount: IQ_TEST_CREDIT_COST,
+        _reason: `iq_test:${category}`,
+        _source: "iq_platform" });
+      if (spendError || !(spend as any)?.ok) {
+        setLoading(false);
+        toast({
+          title: (spend as any)?.error === "insufficient" ? "Not enough credits" : "Cannot start test",
+          description: (spend as any)?.error === "insufficient"
+            ? `You need ${IQ_TEST_CREDIT_COST} credits to start this test.`
+            : (spendError?.message ?? "Credit charge failed"),
+          variant: "destructive",
+        });
+        onClose();
+        return;
+      }
+      qc.invalidateQueries({ queryKey: ["ai-credits"] });
+
       const { data, error } = await supabase.rpc("start_iq_test", { _category: category });
       setLoading(false);
       if (error) {
@@ -74,6 +93,7 @@ export default function IQTestRunner({ open, onClose, category, title, timeLimit
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, category]);
+
 
   // Countdown
   useEffect(() => {
