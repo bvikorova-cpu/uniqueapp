@@ -68,8 +68,10 @@ const TutorialPlatform = () => {
           <>
             <TutorialHero />
             <HeroRewardedAd sectionKey="page_tutorialplatform" />
+            <TutorialHowTo />
             <TutorialToolGrid onToolSelect={handleToolSelect} />
           </>
+
         );
     }
   };
