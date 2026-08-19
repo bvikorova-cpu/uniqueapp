@@ -56,17 +56,18 @@ const todayISO = () => new Date().toISOString().slice(0, 10);
 const currentMonthKey = () => new Date().toISOString().slice(0, 7);
 
 const HIW_STEPS = [
-  { title: "1. See today's challenge", desc: "A new healthy lifestyle task appears every day — run, workout, healthy meal, hydration, sleep, stretching." },
+  { title: "1. No daily obligation", desc: "You do NOT have to post every day, and there is not a new challenge every day. The only rule: add at least ONE photo or video of your healthy action between the first and the last day of each calendar month." },
   { title: "2. Do it in real life", desc: "Complete the action. Snap a photo of your smartwatch showing km, your healthy plate, your workout setup, or a short clip." },
-  { title: "3. Submit your proof", desc: "Add a short description (min 10 chars), upload up to 4 photos or 1 video (≤50 MB). Strict limit: 1 submission per user per day (enforced by the database)." },
-  { title: "4. Earn XP for each valid day", desc: "Every accepted submission credits +XP shown on today's card (default +50 XP). A day only counts once — extra tries the same day are blocked." },
+  { title: "3. Submit your proof", desc: "Add a short description (min 10 chars), upload up to 4 photos or 1 video (≤50 MB). You can post on any day you want, maximum 1 submission per day." },
+  { title: "4. Earn XP for every valid submission", desc: "Every accepted submission credits +XP (default +50 XP). The same day counts only once — extra tries on the same day are blocked." },
   { title: "5. Vote & comment", desc: "Only registered users can vote and comment. You can't vote for yourself. One vote per submission. Comments follow the same registered-only rule as votes and can be deleted by their author." },
-  { title: "6. Climb the leaderboard", desc: "Monthly ranking = number of days completed this calendar month (UTC). Ties are broken by total votes received on your submissions that month." },
+  { title: "6. Climb the leaderboard", desc: "Monthly ranking = number of days with an accepted submission in this calendar month (UTC). One submission per month keeps you in the race; more submissions rank you higher. Ties are broken by total votes that month." },
   { title: "7. Win the monthly prize", desc: "Participation requires a paid plan — PRO (€3/mo) or TOP (€5/mo); there is no free entry. On the 1st of the next month the top healthy hero receives 200,000 XP (PRO) or 500,000 XP (TOP) + a champion badge. Only one winner per month." },
   { title: "8. Boost your submission", desc: "Optional: spend 5 credits to pin your submission for 24 hours at the top of the feed. Boost does not add votes — only visibility." },
   { title: "9. Fair play & moderation", desc: "Duplicate accounts, fake proof, offensive content or spam get hidden by admins and disqualified from the monthly prize." },
-  { title: "10. Sponsors welcome", desc: "Fitness brands, gyms and nutrition companies can sponsor a daily challenge — logo appears on the daily card and in the feed." },
+  { title: "10. Sponsors welcome", desc: "Fitness brands, gyms and nutrition companies can sponsor a challenge — logo appears on the challenge card and in the feed." },
 ];
+
 
 const msUntilMonthEnd = () => {
   const now = new Date();
@@ -210,11 +211,12 @@ export default function HealthyChallenge() {
     if (!challenge || challenge.id === "fallback") { toast({ title: "No active challenge yet", description: "Admin has not created today's challenge.", variant: "destructive" }); return; }
     if (description.trim().length < 10) { toast({ title: "Describe your effort (min 10 chars)", variant: "destructive" }); return; }
     if (mySubmissionToday) { toast({
-        title: "⚠️ Daily limit reached",
-        description: "You have already submitted your proof for today. Only 1 submission per day is allowed. Come back tomorrow for a new challenge!",
+        title: "Already submitted today",
+        description: "Only 1 submission per day is allowed. Your monthly minimum (1 proof per calendar month) is already met — you can post again tomorrow.",
         variant: "destructive" });
       return;
     }
+
     setUploading(true);
     try {
       const { images, video } = await uploadMedia();
@@ -227,9 +229,10 @@ export default function HealthyChallenge() {
       if (error) { // Postgres unique_violation (user already submitted today, race-safe)
         if ((error as any).code === "23505") {
           toast({
-            title: "⚠️ Daily limit reached",
-            description: "You have already submitted your proof for today. Only 1 submission per day is allowed.",
+            title: "Already submitted today",
+            description: "Only 1 submission per day is allowed. You can add your next proof tomorrow.",
             variant: "destructive" });
+
           await loadAll();
           return;
         }
@@ -255,7 +258,7 @@ export default function HealthyChallenge() {
       } catch (pinErr) {
         console.warn("TOP auto-pin failed", pinErr);
       }
-      toast({ title: "💪 Submitted!", description: `Day ${myMonthDays + 1} of this month completed.` });
+      toast({ title: "💪 Submitted!", description: myMonthDays === 0 ? "Monthly requirement met — at least 1 proof this month. ✅" : `${myMonthDays + 1} days with proof this month.` });
       setDescription(""); setFiles([]); setVideoFile(null);
       await loadAll();
     } catch (e: any) {
@@ -345,14 +348,15 @@ export default function HealthyChallenge() {
             💪 HEALTHY <span className="text-orange-300">CHALLENGE</span>
           </h1>
           <p className="text-sm sm:text-base text-white/85 font-semibold mt-2 drop-shadow max-w-xl">
-            One healthy action a day. Post proof — km, meals, workouts. Paid entry only — <b className="text-yellow-300">PRO €3/mo (200,000 XP)</b> or <b className="text-pink-300">TOP €5/mo (500,000 XP)</b>.
+            At least 1 photo or video per month — no daily posting required. Paid entry only — <b className="text-yellow-300">PRO €3/mo (200,000 XP)</b> or <b className="text-pink-300">TOP €5/mo (500,000 XP)</b>.
           </p>
+
           <p className="text-xs sm:text-sm text-white/70 font-medium mt-1.5 italic max-w-xl">
             🌍 A global fight against overweight and obesity — one healthy step at a time.
           </p>
           <div className="mt-3 flex flex-wrap gap-2 text-xs">
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Trophy className="w-3.5 h-3.5" /> PRO 200k · TOP 500k</div>
-            <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Calendar className="w-3.5 h-3.5" /> Daily challenge</div>
+            <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Calendar className="w-3.5 h-3.5" /> Min. 1× per month</div>
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Activity className="w-3.5 h-3.5" /> Run · Eat · Train</div>
             <div className="flex items-center gap-1.5 bg-yellow-500/20 border border-yellow-300/40 rounded-full px-2.5 py-1 text-yellow-100" title="Time left until this month's champion is auto-crowned"><Timer className="w-3.5 h-3.5" /> Month ends in {countdown}</div>
           </div>
@@ -360,7 +364,7 @@ export default function HealthyChallenge() {
 
         <ChallengeProUpsell accent="orange" />
 
-        <FloatingHowItWorks title="How Healthy Challenge works" intro="Small daily healthy actions compound into a stronger you." steps={HIW_STEPS} />
+        <FloatingHowItWorks title="How Healthy Challenge works" intro="No daily duty — just at least one healthy proof between the first and last day of each month." steps={HIW_STEPS} />
 
         <Tabs defaultValue="today" className="w-full">
           <TabsList className="grid grid-cols-4 w-full mb-4">
@@ -401,8 +405,9 @@ export default function HealthyChallenge() {
                     <div className="flex items-center gap-3">
                       <Sparkles className="w-6 h-6 text-orange-600" />
                       <div className="flex-1">
-                        <p className="font-semibold">✅ Submitted for today</p>
-                        <p className="text-sm text-muted-foreground">{mySubmissionToday.votes_count} votes · Day {myMonthDays} of {daysInMonth} this month</p>
+                        <p className="font-semibold">✅ Submitted today — monthly requirement met</p>
+                        <p className="text-sm text-muted-foreground">{mySubmissionToday.votes_count} votes · {myMonthDays} day{myMonthDays === 1 ? "" : "s"} with proof this month (minimum 1)</p>
+
                       </div>
                       {!mySubmissionToday.boosted_until && (
                         <Button size="sm" variant="outline" onClick={boostMine}>🚀 Boost 24h (5 credits)</Button>
@@ -417,8 +422,9 @@ export default function HealthyChallenge() {
                     <div className="flex items-start gap-2 rounded-lg border border-orange-300/60 bg-orange-100/60 dark:border-orange-800 dark:bg-orange-900/20 p-3 text-xs">
                       <AlertCircle className="w-4 h-4 mt-0.5 text-orange-600 shrink-0" />
                       <p>
-                        <b>Daily limit:</b> only <b>1 submission per user per day</b> is allowed. This is enforced by the database — extra attempts today will be automatically rejected. A new challenge unlocks tomorrow.
+                        <b>Monthly rule:</b> you must add <b>at least 1 photo or video per calendar month</b> (between the 1st and the last day). Posting every day is optional — but only <b>1 submission per day</b> is allowed. {myMonthDays > 0 ? "You already met this month's minimum." : "You have no submission this month yet."}
                       </p>
+
                     </div>
                     <Textarea placeholder="Describe your healthy action — activity, km, meal, duration..." value={description} onChange={(e) => setDescription(e.target.value)} rows={3} maxLength={500} />
                     <div className="flex flex-wrap gap-2">
