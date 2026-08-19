@@ -25,6 +25,7 @@ import { CourseChatDialog } from "@/components/tutorial-platform/CourseChatDialo
 interface Course {
   id: string;
   creator_id: string;
+  thumbnail_url?: string | null;
   title: string;
   description: string;
   category: string;
@@ -218,7 +219,16 @@ export default function CourseDetailPage() {
       <section className="bg-gradient-to-b from-primary/10 to-background py-16">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
+              <div className="lg:col-span-2">
+                {course.thumbnail_url && (
+                  <div className="mb-6 aspect-video max-h-[420px] overflow-hidden rounded-lg border bg-muted">
+                    <img
+                      src={course.thumbnail_url}
+                      alt={`${course.title} course cover`}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                )}
               <div className="flex gap-2 mb-4">
                 <Badge>{course.category}</Badge>
                 <Badge variant="outline">{course.difficulty_level}</Badge>
@@ -252,9 +262,13 @@ export default function CourseDetailPage() {
             <div className="lg:col-span-1">
               <Card className="sticky top-4">
                 <CardHeader>
-                  <div className="aspect-video bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-lg flex items-center justify-center mb-4">
-                    <Play className="h-16 w-16 text-primary" />
-                  </div>
+                   <div className="aspect-video bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-lg flex items-center justify-center mb-4 overflow-hidden">
+                     {course.thumbnail_url ? (
+                       <img src={course.thumbnail_url} alt="" className="h-full w-full object-cover" />
+                     ) : (
+                       <Play className="h-16 w-16 text-primary" />
+                     )}
+                   </div>
                   <CardTitle className="text-3xl">€{course.price.toFixed(2)}</CardTitle>
                   <CardDescription>Pay the creator directly • Lifetime access</CardDescription>
                 </CardHeader>
@@ -276,10 +290,10 @@ export default function CourseDetailPage() {
                         onClick={handleRequestAccess}
                         disabled={purchasing || isInstructor}
                       >
-                        {purchasing ? "Opening chat..." : "Message creator / Request access · 3 CR"}
+                         {purchasing ? "Opening chat..." : "Request access · 3 CR"}
                       </Button>
                       <p className="text-xs text-muted-foreground text-center">
-                        Sending your first message costs 3 credits (once per course). Payment for the course itself is arranged directly with the creator — once they confirm it, they grant you access and the course appears in your library.
+                         Review the course description, full curriculum and free preview lesson before requesting access. Your first message costs 3 credits once per course; course payment is arranged directly with the creator.
                       </p>
 
                     </>
@@ -332,9 +346,9 @@ export default function CourseDetailPage() {
           <TabsContent value="curriculum" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>Course Curriculum</CardTitle>
+                 <CardTitle>Course Preview & Curriculum</CardTitle>
                 <CardDescription>
-                  {course.total_lessons} lessons • {course.duration_minutes} minutes
+                   See every lesson before requesting access. The first lesson is available as a free preview.
                 </CardDescription>
               </CardHeader>
               <CardContent>

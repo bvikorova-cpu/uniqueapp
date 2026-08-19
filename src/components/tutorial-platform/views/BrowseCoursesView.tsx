@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Search, Users, Star, GraduationCap, Clock, BookOpen, TrendingUp, Sparkles, Filter, Loader2, MessageCircle } from "lucide-react";
+import { ArrowLeft, Search, Users, Star, GraduationCap, Clock, BookOpen, Sparkles, Filter, Loader2, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
@@ -247,11 +247,10 @@ export function BrowseCoursesView({ onBack }: Props) {
                         Open course
                       </Button>
                     ) : (
-                      <Button size="sm" className="text-xs" onClick={() => requestAccess(course)}>
-                        <MessageCircle className="mr-1 h-3 w-3" />
-                        Request access · 3 CR
+                      <Button size="sm" className="text-xs" onClick={() => navigate(`/tutorial-course/${course.id}`)}>
+                        <Eye className="mr-1 h-3 w-3" />
+                        View course
                       </Button>
-
                     )}
                   </div>
                 </div>
