@@ -47,16 +47,33 @@ export function AICertificateDesignerView({ onBack }: Props) {
     }
   };
 
-  // Keep only one short, clean line from the AI output (no markdown, no long essay).
-  const shortCitation = (() => {
-    if (!certificate) return "";
-    const clean = certificate
-      .replace(/[#*_>`-]/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-    const sentence = clean.split(/(?<=[.!?])\s/)[0] || clean;
-    return sentence.length > 160 ? sentence.slice(0, 157).trimEnd() + "…" : sentence;
-  })();
+  const downloadPdf = async () => {
+    const el = certRef.current;
+    if (!el) return;
+    try {
+      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+        import("html2canvas"),
+        import("jspdf"),
+      ]);
+      const canvas = await html2canvas(el, { scale: 2, backgroundColor: "#ffffff", useCORS: true });
+      const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+      const pw = pdf.internal.pageSize.getWidth();
+      const ph = pdf.internal.pageSize.getHeight();
+      const margin = 10;
+      const maxW = pw - margin * 2;
+      const maxH = ph - margin * 2;
+      const ratio = Math.min(maxW / canvas.width, maxH / canvas.height);
+      const w = canvas.width * ratio;
+      const h = canvas.height * ratio;
+      pdf.addImage(canvas.toDataURL("image/jpeg", 0.95), "JPEG", (pw - w) / 2, (ph - h) / 2, w, h);
+      pdf.save(`Certificate_${studentName.replace(/\s+/g, "_") || "Student"}.pdf`);
+      toast({ description: "Certificate PDF downloaded" });
+    } catch (e: any) {
+      toast({ title: "Download failed", description: e?.message || "Try again", variant: "destructive" });
+    }
+  };
+
+
 
 
 
