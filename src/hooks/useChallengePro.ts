@@ -45,17 +45,34 @@ export function useChallengePro() {
   }, [user?.id, refresh]);
 
   const subscribe = useCallback(async (target: "pro" | "top" = "pro") => {
+    if (!user) {
+      toast.error("Please sign in first to subscribe.");
+      return;
+    }
     setCheckingOut(true);
+    // Open the tab synchronously so mobile/iframe popup blockers don't kill it.
+    const tab = window.open("", "_blank");
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
         body: { product: target === "top" ? "challenge_top" : "challenge_pro" } });
       if (error) throw error;
       const url = (data as any)?.url;
-      if (url) window.location.href = url;
+      if (!url) throw new Error("Checkout URL was not returned.");
+      if (tab) {
+        tab.location.href = url;
+      } else {
+        // Popup blocked — break out of the preview iframe.
+        (window.top ?? window).location.href = url;
+      }
+    } catch (e: any) {
+      tab?.close();
+      console.error("challenge checkout failed", e);
+      toast.error(e?.message || "Could not open Stripe checkout. Please try again.");
     } finally {
       setCheckingOut(false);
     }
-  }, []);
+  }, [user?.id]);
+
 
   useEffect(() => { refresh(); }, [refresh]);
 
