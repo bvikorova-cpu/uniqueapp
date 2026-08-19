@@ -43,17 +43,20 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
 
   useEffect(() => {
     if (isOpen) {
+      setLoading(true);
+      setQuestions([]);
+      setCurrentQuestionIndex(0);
+      setAnswers({});
+      setShowResults(false);
       loadQuestions();
     }
-  }, [isOpen]);
+  }, [isOpen, quiz.id]);
 
   const loadQuestions = async () => {
     try {
-      const { data, error } = await (supabase as any)
-        .from("quiz_questions_public")
-        .select("*")
-        .eq("quiz_id", quiz.id)
-        .order("order_index", { ascending: true });
+      const { data, error } = await (supabase as any).rpc("get_quiz_questions_public", {
+        _quiz_id: quiz.id,
+      });
 
       if (error) throw error;
       setQuestions((data as Question[]) || []);
