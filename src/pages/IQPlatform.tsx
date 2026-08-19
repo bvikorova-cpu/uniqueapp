@@ -18,12 +18,11 @@ import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const IQPlatform = () => {
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("tests");
   const [cooldowns, setCooldowns] = useState<Record<string, number>>({});
   const [runner, setRunner] = useState<{ category: string; title: string; timeLimit: number } | null>(null);
   const { toast } = useToast();
   const { data: stats } = useIQUserStats();
-  const { data: counts } = useIQGlobalCounts();
 
   const testCategories = [
     { id: "beginner", title: "Beginner IQ Test", description: "Perfect for first-time test takers", difficulty: "Beginner", questions: 30, timeLimit: 30, credits: 10, icon: Target },
@@ -40,8 +39,6 @@ const IQPlatform = () => {
     { id: "memory",    title: "Working Memory",      desc: "Recall & sequencing",      icon: Zap,      credits: 8 },
     { id: "pattern",   title: "Pattern Recognition", desc: "Visual abstract logic",    icon: LineChart, credits: 8 },
   ];
-
-  useEffect(() => { trackIQEvent("iq_view"); }, []);
 
   useEffect(() => {
     if (activeTab !== "tests") return;
