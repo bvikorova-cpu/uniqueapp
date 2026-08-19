@@ -136,12 +136,7 @@ const IQPlatform = () => {
           { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
         ]} />
       <div className="container mx-auto p-3 sm:p-4 md:p-6 space-y-6 mt-16 sm:mt-20">
-      <IQPlatformHero
-        totalTests={counts?.totalTests ?? 0}
-        totalUsers={counts?.totalUsers ?? 0}
-        userIQ={stats?.best_iq ?? null}
-        streak={stats?.current_streak ?? 0}
-      />
+      <IQPlatformHero streak={stats?.current_streak ?? 0} />
       <HeroRewardedAd sectionKey="page_iqplatform" />
 
       <div className="flex justify-end">
