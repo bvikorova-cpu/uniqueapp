@@ -16,7 +16,7 @@ interface Props { onBack: () => void; }
 
 export function AICertificateDesignerView({ onBack }: Props) {
   const { toast } = useToast();
-  const { credits, isDeducting, checkAndDeduct } = useTutorialAICredits();
+  const { credits, isDeducting, checkAndDeduct, refund } = useTutorialAICredits();
   const [studentName, setStudentName] = useState("");
   const [courseName, setCourseName] = useState("");
   const [style, setStyle] = useState("classic");
@@ -40,6 +40,7 @@ export function AICertificateDesignerView({ onBack }: Props) {
       setCertificate(data.result);
       toast({ title: "Certificate Designed!", description: "5 credits used" });
     } catch (err: any) {
+      await refund(CREDITS_COST);
       toast({ title: "Error", description: err.message || "Failed", variant: "destructive" });
     } finally {
       setLoading(false);

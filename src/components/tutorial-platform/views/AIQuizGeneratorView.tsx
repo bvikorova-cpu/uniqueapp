@@ -16,7 +16,7 @@ interface Props { onBack: () => void; }
 
 export function AIQuizGeneratorView({ onBack }: Props) {
   const { toast } = useToast();
-  const { credits, isLoading: creditsLoading, isDeducting, checkAndDeduct } = useTutorialAICredits();
+  const { credits, isLoading: creditsLoading, isDeducting, checkAndDeduct, refund } = useTutorialAICredits();
   const [topic, setTopic] = useState("");
   const [numQuestions, setNumQuestions] = useState("5");
   const [difficulty, setDifficulty] = useState("medium");
@@ -42,6 +42,7 @@ export function AIQuizGeneratorView({ onBack }: Props) {
       setQuiz(data.result);
       toast({ title: "Quiz Generated!", description: `${numQuestions} questions created (${CREDITS_COST} credits used)` });
     } catch (err: any) {
+      await refund(CREDITS_COST);
       toast({ title: "Error", description: err.message || "Failed to generate quiz", variant: "destructive" });
     } finally {
       setLoading(false);
