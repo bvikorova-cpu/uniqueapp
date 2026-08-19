@@ -17,6 +17,7 @@ import { toast } from "sonner";
 interface Course {
   id: string;
   title: string;
+  thumbnail_url?: string | null;
   category: string;
   price: number;
   total_enrollments: number;
@@ -195,8 +196,17 @@ export function BrowseCoursesView({ onBack }: Props) {
               transition={{ delay: i * 0.05 }}
             >
               <Card className="overflow-hidden hover:shadow-xl transition-all group border-violet-500/10 hover:border-violet-500/30">
-                <div className="h-32 bg-gradient-to-br from-violet-500/15 via-purple-500/10 to-rose-500/10 flex items-center justify-center relative">
+                <div className="h-32 bg-gradient-to-br from-violet-500/15 via-purple-500/10 to-rose-500/10 flex items-center justify-center relative overflow-hidden">
                   <GraduationCap className="w-12 h-12 text-violet-500/20 group-hover:scale-110 transition-transform" />
+                   {course.thumbnail_url && (
+                     <img
+                       src={course.thumbnail_url}
+                       alt={`${course.title} course cover`}
+                       className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                       loading="lazy"
+                       onError={(event) => { event.currentTarget.style.display = "none"; }}
+                     />
+                   )}
                   {course.difficulty_level && (
                     <Badge className="absolute top-2 right-2 text-[10px]" variant="secondary">{course.difficulty_level}</Badge>
                   )}
