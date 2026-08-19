@@ -291,6 +291,7 @@ export default function CourseLearnPage() {
       {/* Lesson Player Modal */}
       {currentLesson && (
         <LessonPlayer
+          key={currentLesson.id}
           isOpen={isPlayerOpen}
           onClose={() => setIsPlayerOpen(false)}
           lessonTitle={currentLesson.title}
