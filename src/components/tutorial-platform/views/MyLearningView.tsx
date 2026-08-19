@@ -136,7 +136,7 @@ export function MyLearningView({ onBack }: Props) {
           <div className="mt-2 flex flex-wrap gap-2 text-xs text-muted-foreground">
             {r.course?.category && <Badge variant="outline">{r.course.category}</Badge>}
             <Badge variant="outline">{r.course?.total_lessons ?? 0} lessons</Badge>
-            {r.status === "enrolled" && <Badge variant="outline">{r.progress}% done</Badge>}
+            
           </div>
         </div>
       </div>
