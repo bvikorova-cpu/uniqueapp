@@ -16113,8 +16113,12 @@ export type Database = {
           description: string
           difficulty_level: string | null
           duration_minutes: number | null
+          featured_at: string | null
+          featured_until: string | null
           id: string
           is_published: boolean | null
+          premium_at: string | null
+          premium_until: string | null
           price: number
           thumbnail_url: string | null
           title: string
@@ -16130,8 +16134,12 @@ export type Database = {
           description: string
           difficulty_level?: string | null
           duration_minutes?: number | null
+          featured_at?: string | null
+          featured_until?: string | null
           id?: string
           is_published?: boolean | null
+          premium_at?: string | null
+          premium_until?: string | null
           price: number
           thumbnail_url?: string | null
           title: string
@@ -16147,8 +16155,12 @@ export type Database = {
           description?: string
           difficulty_level?: string | null
           duration_minutes?: number | null
+          featured_at?: string | null
+          featured_until?: string | null
           id?: string
           is_published?: boolean | null
+          premium_at?: string | null
+          premium_until?: string | null
           price?: number
           thumbnail_url?: string | null
           title?: string
@@ -68893,6 +68905,14 @@ export type Database = {
           didnt_work: number
           success_pct: number
           worked: number
+        }[]
+      }
+      course_top_listing: {
+        Args: { _course_id: string; _days: number; _tier?: string }
+        Returns: {
+          credits_remaining: number
+          promoted_until: string
+          tier: string
         }[]
       }
       create_guild: {
