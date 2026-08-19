@@ -4,12 +4,15 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Search, Users, Star, GraduationCap, Clock, BookOpen, TrendingUp, Sparkles, Filter, Loader2 } from "lucide-react";
+import { ArrowLeft, Search, Users, Star, GraduationCap, Clock, BookOpen, TrendingUp, Sparkles, Filter, Loader2, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
+import { CourseChatDialog } from "../CourseChatDialog";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 interface Course {
   id: string;
@@ -30,6 +33,9 @@ interface Props { onBack: () => void; }
 
 export function BrowseCoursesView({ onBack }: Props) {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [chatCourse, setChatCourse] = useState<Course | null>(null);
+  const [enrolled, setEnrolled] = useState<Set<string>>(new Set());
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [level, setLevel] = useState("all");
@@ -41,6 +47,35 @@ export function BrowseCoursesView({ onBack }: Props) {
   useEffect(() => {
     loadCourses();
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const { data } = await supabase
+        .from("course_enrollments")
+        .select("course_id")
+        .eq("user_id", user.id);
+      setEnrolled(new Set(((data || []) as any[]).map((e) => e.course_id)));
+    })();
+  }, [user]);
+
+  const requestAccess = async (course: Course) => {
+    if (!user) {
+      toast.error("Please sign in to request access");
+      return;
+    }
+    if (course.creator_id === user.id) {
+      toast.info("This is your own course");
+      return;
+    }
+    await (supabase as any)
+      .from("course_access_requests")
+      .upsert(
+        { course_id: course.id, buyer_id: user.id, creator_id: course.creator_id },
+        { onConflict: "course_id,buyer_id", ignoreDuplicates: true },
+      );
+    setChatCourse(course);
+  };
 
   const loadCourses = async () => {
     try {
@@ -184,15 +219,33 @@ export function BrowseCoursesView({ onBack }: Props) {
                     <span className="text-lg font-black bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
                       {course.price > 0 ? `€${Number(course.price).toFixed(2)}` : 'Free'}
                     </span>
-                    <Button size="sm" className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-xs" onClick={() => navigate(`/tutorial-course/${course.id}`)}>
-                      Enroll Now
-                    </Button>
+                    {enrolled.has(course.id) ? (
+                      <Button size="sm" className="text-xs" onClick={() => navigate(`/tutorial-course/${course.id}`)}>
+                        Open course
+                      </Button>
+                    ) : (
+                      <Button size="sm" className="text-xs" onClick={() => requestAccess(course)}>
+                        <MessageCircle className="mr-1 h-3 w-3" />
+                        Request access
+                      </Button>
+                    )}
                   </div>
                 </div>
               </Card>
             </motion.div>
           ))}
         </div>
+      )}
+      {chatCourse && (
+        <CourseChatDialog
+          open={!!chatCourse}
+          onOpenChange={(o) => !o && setChatCourse(null)}
+          courseId={chatCourse.id}
+          courseTitle={chatCourse.title}
+          coursePrice={chatCourse.price}
+          otherId={chatCourse.creator_id}
+          prefillInterest
+        />
       )}
     </div>
     </>
