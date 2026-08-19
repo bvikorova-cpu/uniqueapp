@@ -204,6 +204,17 @@ export default function CourseDetailPage() {
       )}
       {/* Course Header */}
       <section className="bg-gradient-to-b from-primary/10 to-background py-16">
+        <div className="container mx-auto px-4 pb-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate("/courses")}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to courses
+          </Button>
+        </div>
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2">
