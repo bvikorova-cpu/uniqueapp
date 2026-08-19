@@ -138,17 +138,6 @@ const Navbar = () => {
     { path: "/teen-career-counselor", label: "Career Counselor (13-18y)", icon: Briefcase },
   ];
 
-  const fundraisingServices = [
-    { path: "/fundraising", label: "Fundraising Hub", icon: Heart },
-    { path: "/fundraising/medical", label: "Medical Fundraising (6%)", icon: Heart },
-    { path: "/fundraising/dream", label: "Dream Maker (7%)", icon: Sparkles },
-    { path: "/fundraising/hero", label: "Community Hero (5%)", icon: Shield },
-    { path: "/fundraising/pet", label: "Pet Rescue (6%)", icon: PawPrint },
-    { path: "/fundraising/student", label: "Student Support (5%)", icon: GraduationCap },
-    { path: "/fundraising/crisis", label: "Crisis Relief (8%)", icon: AlertTriangle },
-    { path: "/fundraising/talent", label: "Talent Sponsorship (10%)", icon: Star },
-  ];
-
   const otherServiceGroups: { category: string; items: { path: string; label: string; icon: any }[] }[] = [
     {
       category: "AI Tools & Studios",
@@ -270,7 +259,6 @@ const Navbar = () => {
   const isLearningServiceActive = learningServices.some(item => location.pathname === item.path);
   const isBrandArenaActive = brandArenaServices.some(item => location.pathname === item.path) || location.pathname.startsWith('/brand-battle');
   const isKidsAcademyServiceActive = kidsAcademyServices.some(item => location.pathname === item.path) || location.pathname.startsWith('/kids');
-  const isFundraisingServiceActive = fundraisingServices.some(item => location.pathname === item.path) || location.pathname.startsWith('/fundraising');
     const isChallengeServiceActive = challengeServices.some(item => location.pathname === item.path);
     const isOtherServiceActive = otherServices.some(item => location.pathname === item.path);
 
@@ -456,29 +444,6 @@ const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
             
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant={isFundraisingServiceActive ? "premium" : "ghost"}>
-                  <Heart className="h-4 w-4" />
-                  Fundraising
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 max-h-96 overflow-y-auto bg-popover/95 backdrop-blur-xl border-border/50 shadow-[0_8px_40px_hsl(var(--primary)/0.08)]">
-                {fundraisingServices.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = location.pathname === item.path;
-                  
-                  return (
-                    <DropdownMenuItem key={item.path} asChild>
-                      <Link to={item.path} className="w-full cursor-pointer">
-                        <Icon className="h-4 w-4 mr-2" />
-                        {item.label}
-                      </Link>
-                    </DropdownMenuItem>
-                  );
-                })}
-              </DropdownMenuContent>
-            </DropdownMenu>
             
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -850,29 +815,6 @@ const Navbar = () => {
               })}
             </div>
             
-            {/* Fundraising Section */}
-            <div className="pt-2 pb-1">
-              <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground">
-                Fundraising
-              </div>
-              {fundraisingServices.map((item) => {
-                const Icon = item.icon;
-                const isActive = location.pathname === item.path;
-                
-                return (
-                  <Link key={item.path} to={item.path} onClick={() => setIsMenuOpen(false)}>
-                    <Button
-                      variant={isActive ? "premium" : "ghost"}
-                      className="w-full justify-start text-sm py-2"
-                      size="sm"
-                    >
-                      <Icon className="h-4 w-4" />
-                      {item.label}
-                    </Button>
-                  </Link>
-                );
-              })}
-            </div>
             
             {/* Other Services Section */}
             <div className="pt-2 pb-1">

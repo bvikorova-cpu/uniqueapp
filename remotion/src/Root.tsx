@@ -9,7 +9,6 @@ import { DiscoverFilm, DISCOVER_DURATION } from "./DiscoverFilm";
 import { KidsFilm, KIDS_DURATION } from "./KidsFilm";
 import { LearningFilm, LEARNING_DURATION } from "./LearningFilm";
 import { ArenaFilm, ARENA_DURATION } from "./ArenaFilm";
-import { FundraisingFilm, FUNDRAISING_DURATION } from "./FundraisingFilm";
 import { AIToolsFilm, AITOOLS_DURATION } from "./AIToolsFilm";
 import { MysticalFilm, MYSTICAL_DURATION } from "./MysticalFilm";
 import { SocialFilm, SOCIAL_DURATION } from "./SocialFilm";
@@ -101,14 +100,6 @@ export const RemotionRoot = () => (
       id="arena-film"
       component={ArenaFilm}
       durationInFrames={ARENA_DURATION}
-      fps={30}
-      width={1080}
-      height={1920}
-    />
-    <Composition
-      id="fundraising-film"
-      component={FundraisingFilm}
-      durationInFrames={FUNDRAISING_DURATION}
       fps={30}
       width={1080}
       height={1920}

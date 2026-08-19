@@ -92,9 +92,6 @@ export function getNotificationRoute(n: NotifLike): string {
     brand_collab_accepted: "/brand-dashboard",
     brand_collab_payout: "/brand-dashboard",
 
-    // Fundraising
-    fundraising_donation: "/fundraising",
-    campaign_donation: "/fundraising",
 
     // Groups / Pages / Events
     group_invite: "/wall/groups",

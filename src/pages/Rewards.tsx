@@ -59,7 +59,6 @@ const RewardsGuilds = lazy(() => import("@/components/rewards/RewardsGuilds"));
 const RewardsQuestPath = lazy(() => import("@/components/rewards/RewardsQuestPath"));
 const RewardsCosmetics = lazy(() => import("@/components/rewards/RewardsCosmetics"));
 const RewardsYearWrapped = lazy(() => import("@/components/rewards/RewardsYearWrapped"));
-const RewardsDonateXP = lazy(() => import("@/components/rewards/RewardsDonateXP"));
 
 const TABS = [
   { id: "overview", icon: Home, label: "Overview" },
@@ -72,7 +71,6 @@ const TABS = [
   { id: "quest-path", icon: Map, label: "Quest Path" },
   { id: "cosmetics", icon: SparklesIcon, label: "Cosmetics" },
   { id: "wrapped", icon: PartyPopper, label: "Wrapped" },
-  { id: "donate-xp", icon: Heart, label: "Donate XP" },
   { id: "ai-tools", icon: Wand2, label: "AI Tools" },
   { id: "tiers", icon: Layers, label: "Tiers" },
   { id: "spin", icon: Disc3, label: "Lucky Spin" },
@@ -340,7 +338,6 @@ export default function Rewards() {
               {activeView === "quest-path" && <RewardsQuestPath />}
               {activeView === "cosmetics" && <RewardsCosmetics />}
               {activeView === "wrapped" && <RewardsYearWrapped />}
-              {activeView === "donate-xp" && <RewardsDonateXP />}
             </Suspense>
           </ErrorBoundary>
         </div>

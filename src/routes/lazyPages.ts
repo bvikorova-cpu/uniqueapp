@@ -335,37 +335,6 @@ export const CrystalEnergyNetwork = lazy(() => import("@/pages/CrystalEnergyNetw
 export const CrystalMarketplace = lazy(() => import("@/pages/CrystalMarketplace"));
 export const PhobiaTrading = lazy(() => import("@/pages/PhobiaTrading"));
 
-// Fundraising
-export const FundraisingHub = lazy(() => import("@/pages/fundraising/FundraisingHub"));
-export const MedicalFundraising = lazy(() => import("@/pages/fundraising/MedicalFundraising"));
-export const MedicalDetail = lazy(() => import("@/pages/fundraising/MedicalDetail"));
-export const CreateMedicalCampaign = lazy(() => import("@/pages/fundraising/CreateMedicalCampaign"));
-export const DonationReceipt = lazy(() => import("@/pages/fundraising/DonationReceipt"));
-export const FundraisingDashboard = lazy(() => import("@/pages/fundraising/FundraisingDashboard"));
-export const DonorDashboard = lazy(() => import("@/pages/fundraising/DonorDashboard"));
-export const RecurringDonationsHub = lazy(() => import("@/pages/fundraising/RecurringDonationsHub"));
-export const EmbedCampaignWidget = lazy(() => import("@/pages/fundraising/EmbedCampaignWidget"));
-export const EmbedBuilder = lazy(() => import("@/pages/fundraising/EmbedBuilder"));
-export const CampaignDashboard = lazy(() => import("@/pages/fundraising/CampaignDashboard"));
-export const EditCampaign = lazy(() => import("@/pages/fundraising/EditCampaign"));
-export const DreamMaker = lazy(() => import("@/pages/fundraising/DreamMaker"));
-export const CreateDreamCampaign = lazy(() => import("@/pages/fundraising/CreateDreamCampaign"));
-export const DreamDetail = lazy(() => import("@/pages/fundraising/DreamDetail"));
-export const CommunityHero = lazy(() => import("@/pages/fundraising/CommunityHero"));
-export const CreateHeroCampaign = lazy(() => import("@/pages/fundraising/CreateHeroCampaign"));
-export const HeroDetail = lazy(() => import("@/pages/fundraising/HeroDetail"));
-export const PetRescue = lazy(() => import("@/pages/fundraising/PetRescue"));
-export const CreatePetCampaign = lazy(() => import("@/pages/fundraising/CreatePetCampaign"));
-export const PetDetail = lazy(() => import("@/pages/fundraising/PetDetail"));
-export const StudentSupport = lazy(() => import("@/pages/fundraising/StudentSupport"));
-export const CreateStudentCampaign = lazy(() => import("@/pages/fundraising/CreateStudentCampaign"));
-export const StudentDetail = lazy(() => import("@/pages/fundraising/StudentDetail"));
-export const CrisisRelief = lazy(() => import("@/pages/fundraising/CrisisRelief"));
-export const CreateCrisisCampaign = lazy(() => import("@/pages/fundraising/CreateCrisisCampaign"));
-export const CrisisDetail = lazy(() => import("@/pages/fundraising/CrisisDetail"));
-export const TalentSponsorship = lazy(() => import("@/pages/fundraising/TalentSponsorship"));
-export const CreateTalentCampaign = lazy(() => import("@/pages/fundraising/CreateTalentCampaign"));
-export const TalentDetail = lazy(() => import("@/pages/fundraising/TalentDetail"));
 
 // Home Decor
 
@@ -387,9 +356,6 @@ export const AdminVerifications = lazy(() => import("@/pages/AdminVerifications"
 export const AdminBazaarTrust = lazy(() => import("@/pages/AdminBazaarTrust"));
 export const AdminWithdrawals = lazy(() => import("@/pages/AdminWithdrawals"));
 export const AdminPaymentDashboard = lazy(() => import("@/pages/AdminPaymentDashboard"));
-export const CampaignApprovals = lazy(() => import("@/pages/admin/CampaignApprovals"));
-export const WithdrawalRequests = lazy(() => import("@/pages/admin/WithdrawalRequests"));
-export const CampaignSuccess = lazy(() => import("@/pages/fundraising/CampaignSuccess"));
 export const AdminPwaStats = lazy(() => import("@/pages/admin/AdminPwaStats"));
 
 
