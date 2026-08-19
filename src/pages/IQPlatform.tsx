@@ -164,52 +164,6 @@ const IQPlatform = () => {
               </CardHeader>
             </Link>
           </Card>
-          <IQQuickLauncher />
-
-          <div className="grid md:grid-cols-2 gap-4">
-            <div id="iq-daily-section"><IQDailyChallenge /></div>
-            <div id="iq-friends-section"><IQFriends /></div>
-            <IQFriendCompare />
-            <IQNotificationSettings />
-            <IQDailyStreak />
-          </div>
-          <IQGlobalEventFeed />
-          <IQBattlePass />
-          <IQAICoach />
-          <IQReferral />
-          <IQPromoCode />
-          <IQSubscription />
-          <IQPublicProfileSettings />
-          <IQLeaguesSection userIQ={stats?.best_iq ?? null} />
-          <IQBrainStreaks currentStreak={stats?.current_streak ?? 0} />
-          <IQTrainingPlan />
-          <IQAchievements />
-          <IQCertificate />
-          <IQToolsGrid />
-
-          <Card className="bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border-blue-500/20">
-            <CardHeader className="p-4 sm:p-6">
-              <CardTitle className="text-lg">How It Works</CardTitle>
-              <CardDescription className="text-xs">Your complete guide to the IQ Platform</CardDescription>
-            </CardHeader>
-            <CardContent className="p-4 sm:p-6">
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                {[
-                  { icon: Brain, title: "1. Take Tests", desc: "Choose from 4 difficulty levels" },
-                  { icon: Zap, title: "2. Use AI Tools", desc: "8+ AI-powered cognitive tools" },
-                  { icon: Users, title: "3. Compete", desc: "Duels, tournaments & leagues" },
-                  { icon: Trophy, title: "4. Climb Ranks", desc: "Rise through 8 league tiers" },
-                ].map((step, i) => (
-                  <div key={i} className="text-center space-y-2 p-4 bg-background/50 rounded-lg">
-                    <step.icon className="h-10 w-10 text-blue-500 mx-auto" />
-                    <h3 className="font-semibold text-sm">{step.title}</h3>
-                    <p className="text-xs text-muted-foreground">{step.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         <TabsContent value="tests" className="space-y-6">
           <div>
