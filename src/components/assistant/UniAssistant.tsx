@@ -481,11 +481,12 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     </button>
   );
 
-  const fab = (
+  const fab = overlayOpen && !docked && !open ? null : (
     <div className={cn(
-      "flex flex-col items-end gap-2",
+      "flex flex-col items-start gap-2",
       docked && "hidden md:flex",
-      !docked && "fixed bottom-28 right-4 md:bottom-24 md:right-6 z-[9991]"
+      !docked && "fixed bottom-24 left-3 md:bottom-24 md:left-6 z-[9991]",
+      !docked && overlayOpen && "hidden"
     )}>
       {uniButton}
     </div>
