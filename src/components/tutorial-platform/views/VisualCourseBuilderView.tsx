@@ -286,9 +286,10 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
   // Always-unique module ids (Date.now() alone can collide and make two
   // modules share state, which leaked uploads between lessons).
   const nextId = () => {
-    setIdSeed(s => s + 1);
-    return Date.now() * 1000 + idSeed + 1;
+    idSeedRef.current += 1;
+    return Date.now() * 1000 + idSeedRef.current;
   };
+
 
   const addModule = () => {
     if (!newTitle.trim()) return;
