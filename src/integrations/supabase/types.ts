@@ -70060,6 +70060,16 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_quiz_questions_public: {
+        Args: { _quiz_id: string }
+        Returns: {
+          id: string
+          options: Json
+          order_index: number
+          question: string
+          quiz_id: string
+        }[]
+      }
       get_random_questions: {
         Args: { p_count: number; p_difficulty: string }
         Returns: {

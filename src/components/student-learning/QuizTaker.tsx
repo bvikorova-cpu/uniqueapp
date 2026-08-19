@@ -19,7 +19,7 @@ interface Quiz {
 interface Question {
   id: string;
   question: string;
-  options: any;
+  options: string[] | { options?: string[] };
   order_index: number;
 }
 
@@ -43,17 +43,20 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
 
   useEffect(() => {
     if (isOpen) {
+      setLoading(true);
+      setQuestions([]);
+      setCurrentQuestionIndex(0);
+      setAnswers({});
+      setShowResults(false);
       loadQuestions();
     }
-  }, [isOpen]);
+  }, [isOpen, quiz.id]);
 
   const loadQuestions = async () => {
     try {
-      const { data, error } = await (supabase as any)
-        .from("quiz_questions_public")
-        .select("*")
-        .eq("quiz_id", quiz.id)
-        .order("order_index", { ascending: true });
+      const { data, error } = await (supabase as any).rpc("get_quiz_questions_public", {
+        _quiz_id: quiz.id,
+      });
 
       if (error) throw error;
       setQuestions((data as Question[]) || []);
@@ -173,6 +176,9 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
   }
 
   const currentQuestion = questions[currentQuestionIndex];
+  const currentOptions = Array.isArray(currentQuestion.options)
+    ? currentQuestion.options
+    : currentQuestion.options?.options ?? [];
   const progressPercentage = ((currentQuestionIndex + 1) / questions.length) * 100;
   const allAnswered = questions.every((q) => answers[q.id]);
 
@@ -296,7 +302,7 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
                   }
                   className="space-y-3"
                 >
-                  {currentQuestion.options?.options?.map((option: string, index: number) => (
+                  {currentOptions.map((option, index) => (
                     <div
                       key={index}
                       className="flex items-center space-x-3 border rounded-lg p-4 hover:bg-muted/50 transition-colors"
