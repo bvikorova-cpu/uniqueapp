@@ -9,6 +9,7 @@ import { AIQuizGeneratorView } from "@/components/tutorial-platform/views/AIQuiz
 import { AITutorChatView } from "@/components/tutorial-platform/views/AITutorChatView";
 import { AICertificateDesignerView } from "@/components/tutorial-platform/views/AICertificateDesignerView";
 import { VisualCourseBuilderView } from "@/components/tutorial-platform/views/VisualCourseBuilderView";
+import { MyCoursesView } from "@/components/tutorial-platform/views/MyCoursesView";
 import { CourseMessagesView } from "@/components/tutorial-platform/views/CourseMessagesView";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -17,6 +18,7 @@ const TutorialPlatform = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [activeView, setActiveView] = useState("dashboard");
+  const [editCourseId, setEditCourseId] = useState<string | null>(null);
 
   useEffect(() => {
     if (searchParams.get("view") === "messages") setActiveView("messages");
@@ -30,6 +32,7 @@ const TutorialPlatform = () => {
 
   const handleToolSelect = (tool: string) => {
     if (tool === "create") {
+      setEditCourseId(null);
       setActiveView("course-builder");
     } else {
       setActiveView(tool);
@@ -39,11 +42,22 @@ const TutorialPlatform = () => {
   const renderView = () => {
     switch (activeView) {
       case "browse": return <BrowseCoursesView onBack={() => setActiveView("dashboard")} />;
-      case "my-courses": return <BrowseCoursesView onBack={() => setActiveView("dashboard")} />;
+      case "my-courses": return (
+        <MyCoursesView
+          onBack={() => setActiveView("dashboard")}
+          onEdit={(id) => { setEditCourseId(id); setActiveView("course-builder"); }}
+          onCreate={() => { setEditCourseId(null); setActiveView("course-builder"); }}
+        />
+      );
       case "ai-quiz": return <AIQuizGeneratorView onBack={() => setActiveView("dashboard")} />;
       case "ai-tutor": return <AITutorChatView onBack={() => setActiveView("dashboard")} />;
       case "ai-certificate": return <AICertificateDesignerView onBack={() => setActiveView("dashboard")} />;
-      case "course-builder": return <VisualCourseBuilderView onBack={() => setActiveView("dashboard")} />;
+      case "course-builder": return (
+        <VisualCourseBuilderView
+          courseId={editCourseId}
+          onBack={() => { setEditCourseId(null); setActiveView(editCourseId ? "my-courses" : "dashboard"); }}
+        />
+      );
       case "messages": return <CourseMessagesView onBack={() => setActiveView("dashboard")} />;
       default:
         return (

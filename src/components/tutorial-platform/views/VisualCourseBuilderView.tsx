@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -105,6 +105,10 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
   const [dragId, setDragId] = useState<number | null>(null);
   const [uploadingId, setUploadingId] = useState<number | null>(null);
   const [uploadingDocId, setUploadingDocId] = useState<number | null>(null);
+  const [uploadingHero, setUploadingHero] = useState(false);
+  const [heroUrl, setHeroUrl] = useState<string>("");
+  const idSeedRef = useRef(0);
+
 
 
   const updateModule = (id: number, patch: Partial<Module>) =>
@@ -187,6 +191,45 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
     }
   };
 
+  // Course hero / cover image
+  const handleHeroUpload = async (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "Please select an image file", variant: "destructive" });
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast({ title: "Image is too large (max 10 MB)", variant: "destructive" });
+      return;
+    }
+    setUploadingHero(true);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) {
+        toast({ title: "Please sign in to upload images", variant: "destructive" });
+        return;
+      }
+      const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+      const path = `${auth.user.id}/hero-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("course-files")
+        .upload(path, file, { contentType: file.type, upsert: false });
+      if (upErr) throw upErr;
+      const { data: signed, error: signErr } = await supabase.storage
+        .from("course-files")
+        .createSignedUrl(path, 60 * 60 * 24 * 365 * 5);
+      if (signErr || !signed?.signedUrl) throw signErr || new Error("Could not create image link");
+      setHeroUrl(signed.signedUrl);
+      toast({ title: "Cover image uploaded ✅" });
+    } catch (e: any) {
+      console.error(e);
+      toast({ title: "Upload failed", description: e.message, variant: "destructive" });
+    } finally {
+      setUploadingHero(false);
+    }
+  };
+
+
+
   const onDragStart = (id: number) => setDragId(id);
 
   const onDragOver = (e: React.DragEvent, overId: number) => {
@@ -250,6 +293,7 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
         setDifficulty(course.difficulty_level || "beginner");
         setPrice(String(course.price ?? 0));
         setWasPublished(!!course.is_published);
+        setHeroUrl(course.thumbnail_url || "");
         const mapped: Module[] = (lessons || []).map((l: any, i: number) => ({
           id: Date.now() + i,
           title: l.title || `Module ${i + 1}`,
@@ -283,16 +327,40 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
     }
   };
 
+  // Always-unique module ids (Date.now() alone can collide and make two
+  // modules share state, which leaked uploads between lessons).
+  const nextId = () => {
+    idSeedRef.current += 1;
+    return Date.now() * 1000 + idSeedRef.current;
+  };
+
+
   const addModule = () => {
     if (!newTitle.trim()) return;
-    const id = Date.now();
+    const id = nextId();
     setModules(prev => [...prev, { id, title: newTitle, type: newType, duration: "10 min" }]);
     setExpandedId(id);
     setNewTitle("");
   };
 
   const removeModule = (id: number) => setModules(prev => prev.filter(m => m.id !== id));
-  const duplicateModule = (mod: Module) => setModules(prev => [...prev, { ...mod, id: Date.now(), title: `${mod.title} (Copy)` }]);
+  // Duplicate structure only — never copy the uploaded video/document of another lesson.
+  const duplicateModule = (mod: Module) =>
+    setModules(prev => [
+      ...prev,
+      {
+        id: nextId(),
+        title: `${mod.title} (Copy)`,
+        type: mod.type,
+        duration: mod.duration,
+        description: mod.description,
+        content: mod.content,
+        video_url: undefined,
+        attachment_url: undefined,
+        attachment_name: undefined,
+      },
+    ]);
+
 
   const totalDuration = modules.reduce((sum, m) => sum + (parseInt(m.duration) || 0), 0);
 
@@ -346,6 +414,7 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
             price: parseFloat(price) || 0,
             duration_minutes: totalDuration,
             total_lessons: modules.length,
+            thumbnail_url: heroUrl || null,
             is_published: publish ? true : wasPublished,
           })
           .eq("id", courseId);
@@ -389,6 +458,7 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
               price: parseFloat(price) || 0,
               duration_minutes: totalDuration,
               total_lessons: modules.length,
+              thumbnail_url: heroUrl || null,
             },
             lessons: lessonRows,
           },
@@ -432,6 +502,7 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
           price: parseFloat(price) || 0,
           duration_minutes: totalDuration,
           total_lessons: modules.length,
+          thumbnail_url: heroUrl || null,
           is_published: false,
         })
         .select()
@@ -504,7 +575,58 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
             </select>
             <Input type="number" step="0.01" placeholder="Price €" value={price} onChange={e => setPrice(e.target.value)} />
           </div>
+
+          {/* Hero / cover image */}
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-muted-foreground">Course cover image (hero)</p>
+            {heroUrl ? (
+              <div className="relative rounded-lg overflow-hidden border aspect-video bg-muted">
+                <img src={heroUrl} alt="Course cover" className="w-full h-full object-cover" />
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="destructive"
+                  className="absolute top-2 right-2"
+                  onClick={() => setHeroUrl("")}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+            ) : (
+              <div className="rounded-lg border border-dashed aspect-video flex items-center justify-center text-xs text-muted-foreground">
+                No cover image yet
+              </div>
+            )}
+            <div className="flex items-center gap-2 flex-wrap">
+              <input
+                id="course-hero-file"
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  e.target.value = "";
+                  if (f) handleHeroUpload(f);
+                }}
+              />
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                disabled={uploadingHero}
+                onClick={() => document.getElementById("course-hero-file")?.click()}
+              >
+                {uploadingHero ? (
+                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Uploading…</>
+                ) : (
+                  <><Upload className="w-4 h-4 mr-2" />{heroUrl ? "Replace cover image" : "Upload cover image"}</>
+                )}
+              </Button>
+              <span className="text-xs text-muted-foreground">JPG/PNG/WebP, max 10 MB</span>
+            </div>
+          </div>
         </Card>
+
 
         <div className="flex items-center gap-3 mb-2">
           <Badge variant="outline"><BookOpen className="w-3 h-3 mr-1" />{modules.length} modules</Badge>

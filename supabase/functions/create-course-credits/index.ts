@@ -97,6 +97,7 @@ serve(async (req) => {
         price: Number(course.price) || 0,
         duration_minutes: Number(course.duration_minutes) || 0,
         total_lessons: Number(course.total_lessons) || lessons.length,
+        thumbnail_url: course.thumbnail_url || null,
         is_published: !!publish,
       })
       .select()
