@@ -79,32 +79,28 @@ export default function CourseLearnPage() {
   const [nameInput, setNameInput] = useState("");
   const [certificateHtml, setCertificateHtml] = useState<string | null>(null);
   const { generateCertificate, isGenerating } = useCertificate();
-  const certRef = useRef<HTMLDivElement>(null);
+  const certRef = useRef<CertificatePreviewHandle>(null);
   const [exporting, setExporting] = useState(false);
 
   const captureCertificate = async (): Promise<Blob | null> => {
-    if (!certRef.current) return null;
-    const [{ default: html2canvas }] = await Promise.all([import("html2canvas")]);
-    const canvas = await html2canvas(certRef.current, { scale: 2, backgroundColor: "#ffffff", useCORS: true });
+    const canvas = await certRef.current?.capture();
+    if (!canvas) return null;
     return await new Promise((resolve) => canvas.toBlob((b) => resolve(b), "image/png"));
   };
 
   const downloadCertificatePdf = async () => {
     setExporting(true);
     try {
-      if (!certRef.current) throw new Error("Certificate not ready");
-      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
-        import("html2canvas"),
-        import("jspdf"),
-      ]);
-      const canvas = await html2canvas(certRef.current, { scale: 2, backgroundColor: "#ffffff", useCORS: true });
+      const canvas = await certRef.current?.capture();
+      if (!canvas) throw new Error("Certificate not ready");
+      const { default: jsPDF } = await import("jspdf");
       const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
       const pageW = pdf.internal.pageSize.getWidth();
       const pageH = pdf.internal.pageSize.getHeight();
       const ratio = Math.min(pageW / canvas.width, pageH / canvas.height);
       const w = canvas.width * ratio;
       const h = canvas.height * ratio;
-      pdf.addImage(canvas.toDataURL("image/png"), "PNG", (pageW - w) / 2, (pageH - h) / 2, w, h);
+      pdf.addImage(canvas.toDataURL("image/jpeg", 0.95), "JPEG", (pageW - w) / 2, (pageH - h) / 2, w, h);
       pdf.save(`Certificate_${(course?.title || "Course").replace(/[^a-z0-9]/gi, "_")}.pdf`);
       toast({ title: "Certificate downloaded", description: "Saved as PDF." });
     } catch (e: any) {
@@ -113,6 +109,7 @@ export default function CourseLearnPage() {
       setExporting(false);
     }
   };
+
 
   const shareCertificateImage = async () => {
     setExporting(true);
