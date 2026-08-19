@@ -163,7 +163,7 @@ const IQBrainLab = () => {
         intro="100+ brain-training mini-games across puzzles, memory, focus, math and logic."
         steps={[
           { title: "Pick a category", desc: "Use the tabs — Puzzles, Memory, Focus, Math, Logic and more." },
-          { title: "Play a mini-game", desc: "Each game is short and tracks your best score." },
+          { title: "Unlock a mini-game", desc: "Each game costs 1 credit to play. Click Play to unlock." },
           { title: "Beat your best", desc: "Scores update your IQ profile and unlock achievements." },
           { title: "Track progress", desc: "Stats tab shows history and improvement over time." },
         ]}
