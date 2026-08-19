@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Palette, Plus, GripVertical, Video, FileText, BookOpen, Trash2, Copy, Clock, Save, Loader2, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowLeft, Palette, Plus, GripVertical, Video, FileText, BookOpen, Trash2, Copy, Clock, Save, Loader2, ChevronDown, ChevronUp, Upload } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
@@ -76,7 +76,17 @@ export function normalizeVideoUrl(input: string): { url: string | null; error?: 
     return { url: `https://player.vimeo.com/video/${idSeg}` };
   }
 
+  // Uploaded file (Supabase Storage signed/public URL)
+  if (parsed.pathname.includes("/storage/v1/object/")) {
+    return { url: raw };
+  }
+
   return { url: null, error: "Only YouTube and Vimeo links are supported" };
+}
+
+/** True when the URL points to an uploaded video file (not an embed). */
+export function isDirectVideoFile(url: string) {
+  return url.includes("/storage/v1/object/") || /\.(mp4|webm|mov|m4v)(\?|$)/i.test(url);
 }
 
 export function VisualCourseBuilderView({ onBack }: Props) {
@@ -88,9 +98,52 @@ export function VisualCourseBuilderView({ onBack }: Props) {
   const [saving, setSaving] = useState(false);
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [dragId, setDragId] = useState<number | null>(null);
+  const [uploadingId, setUploadingId] = useState<number | null>(null);
 
   const updateModule = (id: number, patch: Partial<Module>) =>
     setModules(prev => prev.map(m => (m.id === id ? { ...m, ...patch } : m)));
+
+  const MAX_VIDEO_BYTES = 500 * 1024 * 1024; // 500 MB
+
+  const handleVideoUpload = async (moduleId: number, file: File) => {
+    if (!file.type.startsWith("video/")) {
+      toast({ title: "Please select a video file", variant: "destructive" });
+      return;
+    }
+    if (file.size > MAX_VIDEO_BYTES) {
+      toast({ title: "Video is too large (max 500 MB)", variant: "destructive" });
+      return;
+    }
+    setUploadingId(moduleId);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) {
+        toast({ title: "Please sign in to upload videos", variant: "destructive" });
+        return;
+      }
+      const ext = file.name.split(".").pop()?.toLowerCase() || "mp4";
+      const path = `${auth.user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("course-videos")
+        .upload(path, file, { contentType: file.type, upsert: false });
+      if (upErr) throw upErr;
+
+      // Long-lived signed URL (private bucket)
+      const { data: signed, error: signErr } = await supabase.storage
+        .from("course-videos")
+        .createSignedUrl(path, 60 * 60 * 24 * 365 * 5);
+      if (signErr || !signed?.signedUrl) throw signErr || new Error("Could not create video link");
+
+      updateModule(moduleId, { video_url: signed.signedUrl, type: "video" });
+      toast({ title: "Video uploaded ✅" });
+    } catch (e: any) {
+      console.error(e);
+      toast({ title: "Upload failed", description: e.message, variant: "destructive" });
+    } finally {
+      setUploadingId(null);
+    }
+  };
+
 
   const onDragStart = (id: number) => setDragId(id);
   const onDragOver = (e: React.DragEvent, overId: number) => {
@@ -310,9 +363,43 @@ export function VisualCourseBuilderView({ onBack }: Props) {
                       }}
                       placeholder="Video URL (YouTube/Vimeo, optional)"
                     />
+                    <div className="flex items-center gap-2">
+                      <input
+                        id={`video-file-${mod.id}`}
+                        type="file"
+                        accept="video/mp4,video/webm,video/quicktime,video/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0];
+                          e.target.value = "";
+                          if (f) handleVideoUpload(mod.id, f);
+                        }}
+                      />
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        disabled={uploadingId === mod.id}
+                        onClick={() => document.getElementById(`video-file-${mod.id}`)?.click()}
+                      >
+                        {uploadingId === mod.id ? (
+                          <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Uploading…</>
+                        ) : (
+                          <><Upload className="w-4 h-4 mr-2" />Upload video from device</>
+                        )}
+                      </Button>
+                      <span className="text-xs text-muted-foreground">MP4/WebM/MOV, max 500 MB</span>
+                    </div>
                     {(() => {
                       const { url } = normalizeVideoUrl(mod.video_url || "");
                       if (!url) return null;
+                      if (isDirectVideoFile(url)) {
+                        return (
+                          <div className="rounded-md overflow-hidden border bg-black aspect-video">
+                            <video src={url} controls className="w-full h-full" preload="metadata" />
+                          </div>
+                        );
+                      }
                       return (
                         <div className="rounded-md overflow-hidden border bg-black aspect-video">
                           <iframe
