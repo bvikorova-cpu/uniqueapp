@@ -201,14 +201,19 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
       } catch { /* ignore */ }
 
       setPhase("claimed");
+      // Server enforces a 10s anti-fraud gap between claims — mirror it in the UI.
+      startCooldown(10);
       toast({ title: "+5 XP earned! ✨",
         description: "Watch another video to earn more — no daily limit!" });
     } catch (e) { toast({
         title: "Could not claim XP",
         description: e instanceof Error ? e.message : "Please try again.",
         variant: "destructive" });
+    } finally {
+      setIsClaiming(false);
     }
   };
+
 
   return (
     <>
