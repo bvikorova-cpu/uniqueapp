@@ -275,11 +275,12 @@ export default function CourseDetailPage() {
                         onClick={handleRequestAccess}
                         disabled={purchasing || isInstructor}
                       >
-                        {purchasing ? "Opening chat..." : "Message creator / Request access"}
+                        {purchasing ? "Opening chat..." : "Message creator / Request access · 3 CR"}
                       </Button>
                       <p className="text-xs text-muted-foreground text-center">
-                        Payment is arranged directly with the creator. Once they confirm it, they grant you access and the course appears in your library.
+                        Sending your first message costs 3 credits (once per course). Payment for the course itself is arranged directly with the creator — once they confirm it, they grant you access and the course appears in your library.
                       </p>
+
                     </>
                   )}
                   
