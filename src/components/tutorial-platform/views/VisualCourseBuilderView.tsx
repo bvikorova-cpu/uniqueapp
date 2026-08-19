@@ -10,6 +10,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
+export interface BuilderQuizQuestion {
+  question: string;
+  options: string[];
+  correct: number;
+  explanation?: string;
+}
+
 interface Module {
   id: number;
   title: string;
@@ -20,6 +27,8 @@ interface Module {
   content?: string;
   attachment_url?: string;
   attachment_name?: string;
+  quiz?: BuilderQuizQuestion[];
+  quizPassing?: number;
 }
 
 const initialModules: Module[] = [
