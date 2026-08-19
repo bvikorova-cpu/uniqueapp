@@ -61,19 +61,12 @@ export function ChallengeRulesDialog({
             </section>
 
             <section className="space-y-1.5">
-              <h3 className="text-sm font-bold text-foreground">3. Prize payout</h3>
-              <ul className="list-disc pl-5 space-y-1">
-                <li>AI credits are credited to the winner's account automatically.</li>
-                <li>
-                  The cash prize is paid out via supported payment methods (e.g. Stripe / PayPal).
-                  Payout is conditional on the winner's cooperation with identity verification
-                  (KYC/AML) where required by the payment provider.
-                </li>
-                <li>
-                  The cash prize is paid once it reaches a minimum of <strong>€10</strong>. If the
-                  amount is lower, it rolls over to the following month.
-                </li>
-              </ul>
+              <h3 className="text-sm font-bold text-foreground">3. Protection against manipulation</h3>
+              <p>
+                The use of bots, purchasing votes, or creating fake accounts for the purpose of voting
+                is strictly prohibited. The operator reserves the right to cancel such votes and
+                disqualify the offending user.
+              </p>
             </section>
 
             <section className="space-y-1.5">
