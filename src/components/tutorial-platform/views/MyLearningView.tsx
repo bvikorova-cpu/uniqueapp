@@ -142,7 +142,7 @@ export function MyLearningView({ onBack }: Props) {
       </div>
       <div className="mt-3 grid grid-cols-2 gap-2 sm:flex">
         {(r.status === "enrolled" || r.status === "granted") && (
-          <Button size="sm" onClick={() => navigate(`/course-learn/${r.courseId}`)}>
+          <Button size="sm" onClick={() => navigate(`/tutorial-course/${r.courseId}/learn`)}>
             <PlayCircle className="mr-2 h-4 w-4" />Start learning
           </Button>
         )}
@@ -223,7 +223,7 @@ export function MyLearningView({ onBack }: Props) {
           onOpenChange={(o) => { if (!o) { setChat(null); load(); } }}
           courseId={chat.courseId}
           courseTitle={chat.title}
-          creatorId={chat.creatorId}
+          otherId={chat.creatorId}
         />
       )}
     </>
