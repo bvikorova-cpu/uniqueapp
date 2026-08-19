@@ -1,42 +1,14 @@
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
-import { Brain, Trophy, Users, Flame, Zap, GraduationCap } from "lucide-react";
+import { Flame, GraduationCap } from "lucide-react";
 import heroVideo from "@/assets/iq-platform-hero.mp4.asset.json";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-function getWeeklyTimeLeft() {
-  const now = new Date();
-  const endOfWeek = new Date(now);
-  endOfWeek.setDate(now.getDate() + (7 - now.getDay()));
-  endOfWeek.setHours(23, 59, 59, 999);
-  const diff = endOfWeek.getTime() - now.getTime();
-  const days = Math.floor(diff / 86400000);
-  const hours = Math.floor((diff % 86400000) / 3600000);
-  return { days, hours };
-}
-
 interface IQPlatformHeroProps {
-  totalTests: number;
-  totalUsers: number;
-  userIQ: number | null;
   streak: number;
 }
 
-export default function IQPlatformHero({ totalTests, totalUsers, userIQ, streak }: IQPlatformHeroProps) {
-  const [timeLeft, setTimeLeft] = useState(getWeeklyTimeLeft());
-
-  useEffect(() => {
-    const timer = setInterval(() => setTimeLeft(getWeeklyTimeLeft()), 60000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const statCards = [
-    { value: userIQ ? `${userIQ}` : "—", label: "Your IQ", icon: Brain, accent: "from-blue-500/20 to-cyan-500/10", iconColor: "text-blue-400" },
-    { value: `${timeLeft.days}d ${timeLeft.hours}h`, label: "Tournament Ends", icon: Trophy, accent: "from-amber-500/20 to-yellow-500/10", iconColor: "text-amber-400" },
-    { value: totalUsers > 0 ? totalUsers.toLocaleString() : "—", label: "Active Users", icon: Users, accent: "from-emerald-500/20 to-green-500/10", iconColor: "text-emerald-400" },
-    { value: totalTests > 0 ? totalTests.toLocaleString() : "—", label: "Tests Taken", icon: Zap, accent: "from-purple-500/20 to-violet-500/10", iconColor: "text-purple-400" },
-  ];
+export default function IQPlatformHero({ streak }: IQPlatformHeroProps) {
 
   return (
     <div className="space-y-4 mb-8">
@@ -87,28 +59,12 @@ export default function IQPlatformHero({ totalTests, totalUsers, userIQ, streak 
               🧠 IQ <span className="text-blue-400">PLATFORM</span>
             </h1>
             <p className="text-sm sm:text-base text-white/80 font-semibold mt-1 drop-shadow">
-              Test your intelligence, train your brain, compete in leagues & climb the ranks
+              Test your intelligence and train your brain with AI-powered tools
             </p>
           </motion.div>
         </div>
       </motion.div>
 
-      {/* Stat Cards Below Video */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {statCards.map((item, i) => (
-          <motion.div
-            key={item.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 * i + 0.4 }}
-            className={`rounded-xl bg-gradient-to-br ${item.accent} bg-card/80 backdrop-blur-md border border-border/30 p-3 sm:p-4 text-center`}
-          >
-            <item.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${item.iconColor} mx-auto mb-1`} />
-            <p className="text-lg sm:text-2xl font-black">{item.value}</p>
-            <p className="text-[10px] sm:text-xs text-muted-foreground">{item.label}</p>
-          </motion.div>
-        ))}
-      </div>
     </div>
   );
 }

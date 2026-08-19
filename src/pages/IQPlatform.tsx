@@ -2,61 +2,28 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Brain, Trophy, LineChart, Zap, Users, Target, BarChart3, Medal, FlaskConical, ArrowRight } from "lucide-react";
-import { IQCreditsDisplay } from "@/components/iq/IQCreditsDisplay";
+import { Brain, Trophy, LineChart, Zap, Target, BarChart3, Medal, FlaskConical, ArrowRight } from "lucide-react";
+
+
 import IQPlatformHero from "@/components/iq/IQPlatformHero";
 import IQToolsGrid from "@/components/iq/IQToolsGrid";
-import IQLeaguesSection from "@/components/iq/IQLeaguesSection";
-import IQBrainStreaks from "@/components/iq/IQBrainStreaks";
-import IQTournaments from "@/components/iq/IQTournaments";
-import IQDuels from "@/components/iq/IQDuels";
-import IQProgressCharts from "@/components/iq/IQProgressCharts";
-import IQAchievements from "@/components/iq/IQAchievements";
-import IQGlobalLeaderboard from "@/components/iq/IQGlobalLeaderboard";
-import IQCountryLeaderboard from "@/components/iq/IQCountryLeaderboard";
-import IQPerformanceInsights from "@/components/iq/IQPerformanceInsights";
-import IQGoals from "@/components/iq/IQGoals";
-import IQWeeklyRecap from "@/components/iq/IQWeeklyRecap";
-import IQMilestones from "@/components/iq/IQMilestones";
-import IQFriendCompare from "@/components/iq/IQFriendCompare";
-import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
-import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
-import IQFriends from "@/components/iq/IQFriends";
-import IQNotificationSettings from "@/components/iq/IQNotificationSettings";
-import IQQuickLauncher from "@/components/iq/IQQuickLauncher";
-import IQDailyStreak from "@/components/iq/IQDailyStreak";
-import IQGlobalEventFeed from "@/components/iq/IQGlobalEventFeed";
-import IQBattlePass from "@/components/iq/IQBattlePass";
-import IQAICoach from "@/components/iq/IQAICoach";
-import IQHallOfFame from "@/components/iq/IQHallOfFame";
-import IQReferral from "@/components/iq/IQReferral";
-import IQPromoCode from "@/components/iq/IQPromoCode";
-import IQSubscription from "@/components/iq/IQSubscription";
-import IQPublicProfileSettings from "@/components/iq/IQPublicProfileSettings";
-import IQNotificationsBell from "@/components/iq/IQNotificationsBell";
-import { trackIQEvent } from "@/lib/iqAnalytics";
-import IQCertificate from "@/components/iq/IQCertificate";
-import IQFriendChallenge from "@/components/iq/IQFriendChallenge";
-import IQShareableCard from "@/components/iq/IQShareableCard";
-import IQTestHistory from "@/components/iq/IQTestHistory";
 import IQTestRunner from "@/components/iq/IQTestRunner";
-import IQLiveSpectatorLobby from "@/components/iq/IQLiveSpectatorLobby";
+import IQNotificationsBell from "@/components/iq/IQNotificationsBell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useIQUserStats, useIQGlobalCounts } from "@/hooks/useIQUserStats";
+import { useIQUserStats } from "@/hooks/useIQUserStats";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const IQPlatform = () => {
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("tests");
   const [cooldowns, setCooldowns] = useState<Record<string, number>>({});
   const [runner, setRunner] = useState<{ category: string; title: string; timeLimit: number } | null>(null);
   const { toast } = useToast();
   const { data: stats } = useIQUserStats();
-  const { data: counts } = useIQGlobalCounts();
 
   const testCategories = [
     { id: "beginner", title: "Beginner IQ Test", description: "Perfect for first-time test takers", difficulty: "Beginner", questions: 30, timeLimit: 30, credits: 10, icon: Target },
@@ -73,8 +40,6 @@ const IQPlatform = () => {
     { id: "memory",    title: "Working Memory",      desc: "Recall & sequencing",      icon: Zap,      credits: 8 },
     { id: "pattern",   title: "Pattern Recognition", desc: "Visual abstract logic",    icon: LineChart, credits: 8 },
   ];
-
-  useEffect(() => { trackIQEvent("iq_view"); }, []);
 
   useEffect(() => {
     if (activeTab !== "tests") return;
@@ -136,30 +101,39 @@ const IQPlatform = () => {
           { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
         ]} />
       <div className="container mx-auto p-3 sm:p-4 md:p-6 space-y-6 mt-16 sm:mt-20">
-      <IQPlatformHero
-        totalTests={counts?.totalTests ?? 0}
-        totalUsers={counts?.totalUsers ?? 0}
-        userIQ={stats?.best_iq ?? null}
-        streak={stats?.current_streak ?? 0}
-      />
+      <IQPlatformHero streak={stats?.current_streak ?? 0} />
       <HeroRewardedAd sectionKey="page_iqplatform" />
 
-      <div className="flex items-center justify-between gap-2">
-        <IQCreditsDisplay />
+      <div className="flex justify-end">
         <IQNotificationsBell />
       </div>
 
+      <Card className="bg-gradient-to-br from-primary/15 via-purple-500/10 to-pink-500/10 border-primary/30 hover:border-primary/60 transition-colors">
+        <Link to="/iq-platform/lab" className="block">
+          <CardHeader className="p-4 sm:p-6">
+            <div className="flex items-start gap-4">
+              <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-pink-500 text-white">
+                <FlaskConical className="h-6 w-6" />
+              </div>
+              <div className="flex-1">
+                <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
+                  Brain Lab <Badge className="bg-primary/20 text-primary border-primary/30">100+ tools</Badge>
+                </CardTitle>
+                <CardDescription className="text-xs sm:text-sm mt-1">
+                  Puzzles · Memory · Focus · Math · Logic · Goals · Analytics — all in one place.
+                </CardDescription>
+              </div>
+              <ArrowRight className="h-5 w-5 text-primary self-center" />
+            </div>
+          </CardHeader>
+        </Link>
+      </Card>
+
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 sm:grid-cols-8 gap-1 h-auto p-1.5 bg-muted/50 rounded-xl">
+        <TabsList className="grid w-full grid-cols-2 gap-1 h-auto p-1.5 bg-muted/50 rounded-xl">
           {[
-            { value: "overview", label: "Overview", icon: Brain },
             { value: "tests", label: "IQ Tests", icon: Target },
             { value: "tools", label: "AI Tools", icon: Zap },
-            { value: "duels", label: "Duels", icon: Users },
-            { value: "tournaments", label: "Tournaments", icon: Trophy },
-            { value: "leaderboard", label: "Leaderboard", icon: Medal },
-            { value: "progress", label: "Progress", icon: BarChart3 },
-            { value: "results", label: "Results", icon: LineChart },
           ].map(tab => (
             <TabsTrigger key={tab.value} value={tab.value} className="text-[9px] sm:text-xs py-2 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
               <tab.icon className="h-3 w-3 sm:h-4 sm:w-4 mr-0.5 sm:mr-1" />
@@ -168,74 +142,6 @@ const IQPlatform = () => {
             </TabsTrigger>
           ))}
         </TabsList>
-
-        <TabsContent value="overview" className="space-y-6">
-          <Card className="bg-gradient-to-br from-primary/15 via-purple-500/10 to-pink-500/10 border-primary/30 hover:border-primary/60 transition-colors">
-            <Link to="/iq-platform/lab" className="block">
-              <CardHeader className="p-4 sm:p-6">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-pink-500 text-white">
-                    <FlaskConical className="h-6 w-6" />
-                  </div>
-                  <div className="flex-1">
-                    <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
-                      Brain Lab <Badge className="bg-primary/20 text-primary border-primary/30">100+ tools</Badge>
-                    </CardTitle>
-                    <CardDescription className="text-xs sm:text-sm mt-1">
-                      Puzzles · Memory · Focus · Math · Logic · Goals · Analytics — all in one place.
-                    </CardDescription>
-                  </div>
-                  <ArrowRight className="h-5 w-5 text-primary self-center" />
-                </div>
-              </CardHeader>
-            </Link>
-          </Card>
-          <IQQuickLauncher />
-
-          <div className="grid md:grid-cols-2 gap-4">
-            <div id="iq-daily-section"><IQDailyChallenge /></div>
-            <div id="iq-friends-section"><IQFriends /></div>
-            <IQFriendCompare />
-            <IQNotificationSettings />
-            <IQDailyStreak />
-          </div>
-          <IQGlobalEventFeed />
-          <IQBattlePass />
-          <IQAICoach />
-          <IQReferral />
-          <IQPromoCode />
-          <IQSubscription />
-          <IQPublicProfileSettings />
-          <IQLeaguesSection userIQ={stats?.best_iq ?? null} />
-          <IQBrainStreaks currentStreak={stats?.current_streak ?? 0} />
-          <IQTrainingPlan />
-          <IQAchievements />
-          <IQCertificate />
-          <IQToolsGrid />
-
-          <Card className="bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border-blue-500/20">
-            <CardHeader className="p-4 sm:p-6">
-              <CardTitle className="text-lg">How It Works</CardTitle>
-              <CardDescription className="text-xs">Your complete guide to the IQ Platform</CardDescription>
-            </CardHeader>
-            <CardContent className="p-4 sm:p-6">
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                {[
-                  { icon: Brain, title: "1. Take Tests", desc: "Choose from 4 difficulty levels" },
-                  { icon: Zap, title: "2. Use AI Tools", desc: "8+ AI-powered cognitive tools" },
-                  { icon: Users, title: "3. Compete", desc: "Duels, tournaments & leagues" },
-                  { icon: Trophy, title: "4. Climb Ranks", desc: "Rise through 8 league tiers" },
-                ].map((step, i) => (
-                  <div key={i} className="text-center space-y-2 p-4 bg-background/50 rounded-lg">
-                    <step.icon className="h-10 w-10 text-blue-500 mx-auto" />
-                    <h3 className="font-semibold text-sm">{step.title}</h3>
-                    <p className="text-xs text-muted-foreground">{step.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         <TabsContent value="tests" className="space-y-6">
           <div>
@@ -319,34 +225,6 @@ const IQPlatform = () => {
         </TabsContent>
 
         <TabsContent value="tools"><IQToolsGrid /></TabsContent>
-        <TabsContent value="duels" className="space-y-6">
-          <IQLiveSpectatorLobby />
-          <IQFriendChallenge />
-          <IQDuels />
-        </TabsContent>
-        <TabsContent value="tournaments" className="space-y-6">
-          <IQTournaments />
-          <IQHallOfFame />
-        </TabsContent>
-        <TabsContent value="leaderboard" className="space-y-6">
-          <IQGlobalLeaderboard />
-          <IQCountryLeaderboard />
-        </TabsContent>
-        <TabsContent value="progress" className="space-y-6">
-          <IQWeeklyRecap />
-          <IQMilestones />
-          <IQGoals />
-          <IQPerformanceInsights />
-          <IQProgressCharts />
-          <IQShareableCard />
-          <IQAchievements />
-          <IQCertificate />
-        </TabsContent>
-
-        <TabsContent value="results" className="space-y-4">
-          <IQProgressCharts />
-          <IQTestHistory />
-        </TabsContent>
       </Tabs>
 
       <Card>
@@ -358,15 +236,7 @@ const IQPlatform = () => {
             <ul className="list-disc list-inside space-y-2 pl-2">
               <li><strong>IQ Tests:</strong> 4 difficulty levels (30-60 questions, 30-75 min). Detailed score breakdowns & percentile rankings.</li>
               <li><strong>8+ AI Tools:</strong> Brain Training, IQ Predictor, Cognitive Report, Study Coach, Certificate Generator & more.</li>
-              <li><strong>Live Duels:</strong> Challenge other players in real-time IQ battles across 4 modes.</li>
-              <li><strong>Weekly Tournaments:</strong> Compete for prize pools and credit rewards.</li>
-              <li><strong>IQ Leagues:</strong> 8-tier ranking system from Bronze to Legend based on your IQ score.</li>
-              <li><strong>Brain Streaks:</strong> Daily training streaks with bonus credit rewards.</li>
-              <li><strong>Progress Charts:</strong> Visual tracking with line charts, bar charts & radar profiles.</li>
-              <li><strong>Achievements:</strong> 12 unlockable badges for cognitive milestones.</li>
-              <li><strong>Global Leaderboard:</strong> Worldwide rankings for top performers.</li>
-              <li><strong>Daily Challenge:</strong> One free brain question every day.</li>
-              <li><strong>IQ Certificate:</strong> AI-generated professional certificate with cognitive breakdown.</li>
+              <li><strong>Brain Lab:</strong> 100+ puzzles, memory, focus, math, logic and analytics tools.</li>
             </ul>
           </div>
         </CardContent>
