@@ -215,7 +215,7 @@ export default function EcoChallenge() {
       return;
     }
     if (!user) { toast({ title: "Sign in required", variant: "destructive" }); return; }
-    if (!challenge || challenge.id === "fallback") { toast({ title: "No active challenge yet", description: "Admin has not created today's challenge.", variant: "destructive" }); return; }
+    if (!challenge) { toast({ title: "Loading…", description: "Please try again in a second.", variant: "destructive" }); return; }
     if (description.trim().length < 10) { toast({ title: "Describe your good deed (min 10 chars)", variant: "destructive" }); return; }
     if (mySubmissionToday) { toast({
         title: "Already submitted today",
