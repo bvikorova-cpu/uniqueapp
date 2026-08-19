@@ -19,9 +19,33 @@ interface Quiz {
 interface Question {
   id: string;
   question: string;
-  options: string[] | { options?: string[] };
+  options: string[];
   order_index: number;
 }
+
+const normalizeOptions = (value: unknown): string[] => {
+  if (Array.isArray(value)) {
+    return value.map(String).map((option) => option.trim()).filter(Boolean);
+  }
+
+  if (value && typeof value === "object" && "options" in value) {
+    return normalizeOptions((value as { options?: unknown }).options);
+  }
+
+  if (typeof value === "string") {
+    try {
+      return normalizeOptions(JSON.parse(value));
+    } catch {
+      return value
+        .replace(/^\[|\]$/g, "")
+        .split(/[,\n]/)
+        .map((option) => option.trim().replace(/^['"]|['"]$/g, ""))
+        .filter(Boolean);
+    }
+  }
+
+  return [];
+};
 
 interface QuizTakerProps {
   isOpen: boolean;
@@ -61,7 +85,11 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
         .order("order_index", { ascending: true });
 
       if (error) throw error;
-      setQuestions((data as Question[] | null) ?? []);
+      const loadedQuestions = (data ?? []).map((question) => ({
+        ...question,
+        options: normalizeOptions(question.options),
+      }));
+      setQuestions(loadedQuestions);
     } catch (error: any) { toast({
         title: "Error",
         description: error.message,
@@ -178,15 +206,13 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
   }
 
   const currentQuestion = questions[currentQuestionIndex];
-  const currentOptions = Array.isArray(currentQuestion.options)
-    ? currentQuestion.options
-    : currentQuestion.options?.options ?? [];
+  const currentOptions = currentQuestion.options;
   const progressPercentage = ((currentQuestionIndex + 1) / questions.length) * 100;
   const allAnswered = questions.every((q) => answers[q.id]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[calc(100vw-1rem)] max-w-3xl max-h-[90dvh] overflow-x-hidden overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle>{quiz.title}</DialogTitle>
         </DialogHeader>
@@ -279,7 +305,7 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
           <div className="space-y-6">
             {/* Progress */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between gap-3 text-sm">
                 <span className="font-medium">
                   Question {currentQuestionIndex + 1} of {questions.length}
                 </span>
@@ -291,7 +317,7 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
             </div>
 
             {/* Question */}
-            <Card>
+            <Card className="min-w-0">
               <CardContent className="pt-6">
                 <h3 className="text-lg font-semibold mb-4">
                   {currentQuestion.question}
@@ -306,13 +332,13 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
                 >
                   {currentOptions.map((option, index) => (
                     <div
-                      key={index}
-                      className="flex items-center space-x-3 border rounded-lg p-4 hover:bg-muted/50 transition-colors"
+                      key={`${currentQuestion.id}-${index}`}
+                      className="flex min-w-0 items-center gap-3 border rounded-lg p-3 sm:p-4 hover:bg-muted/50 transition-colors"
                     >
-                      <RadioGroupItem value={option} id={`option-${index}`} />
+                      <RadioGroupItem value={option} id={`${currentQuestion.id}-option-${index}`} />
                       <Label
-                        htmlFor={`option-${index}`}
-                        className="flex-1 cursor-pointer"
+                        htmlFor={`${currentQuestion.id}-option-${index}`}
+                        className="min-w-0 flex-1 cursor-pointer break-words"
                       >
                         {option}
                       </Label>
@@ -323,7 +349,7 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
             </Card>
 
             {/* Navigation */}
-            <div className="flex items-center justify-between gap-3">
+            <div className="grid grid-cols-2 gap-3 sm:flex sm:items-center sm:justify-between">
               <Button
                 variant="outline"
                 onClick={handlePrevious}
@@ -332,7 +358,7 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
                 Previous
               </Button>
 
-              <div className="text-sm text-muted-foreground">
+              <div className="col-span-2 row-start-1 text-center text-sm text-muted-foreground sm:col-auto sm:row-auto">
                 {!allAnswered && "Answer all questions to submit"}
               </div>
 
@@ -345,7 +371,7 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
                 <Button
                   onClick={handleSubmit}
                   disabled={!allAnswered}
-                  className="min-w-[120px]"
+                  className="min-w-0"
                 >
                   <Award className="mr-2 h-4 w-4" />
                   Submit Quiz
