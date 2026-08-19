@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Puzzle, Brain, Zap, Calculator, Users, User, BarChart3, Target, Database } from "lucide-react";
+import { ArrowLeft, Puzzle, Brain, Zap, Calculator } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import BrainLabGameGate from "@/components/iq/BrainLabGameGate";
 
 // Puzzles & Games
 import IQHanoi from "@/components/iq/IQHanoi";
@@ -143,7 +144,13 @@ const CATEGORIES = [
 ];
 
 const Grid = ({ children }: { children: React.ReactNode }) => (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{children}</div>
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    {Array.isArray(children)
+      ? children.map((child, i) => (
+          <BrainLabGameGate key={i}>{child}</BrainLabGameGate>
+        ))
+      : children}
+  </div>
 );
 
 const IQBrainLab = () => {
@@ -156,7 +163,7 @@ const IQBrainLab = () => {
         intro="100+ brain-training mini-games across puzzles, memory, focus, math and logic."
         steps={[
           { title: "Pick a category", desc: "Use the tabs — Puzzles, Memory, Focus, Math, Logic and more." },
-          { title: "Play a mini-game", desc: "Each game is short and tracks your best score." },
+          { title: "Unlock a mini-game", desc: "Each game costs 1 credit to play. Click Play to unlock." },
           { title: "Beat your best", desc: "Scores update your IQ profile and unlock achievements." },
           { title: "Track progress", desc: "Stats tab shows history and improvement over time." },
         ]}
