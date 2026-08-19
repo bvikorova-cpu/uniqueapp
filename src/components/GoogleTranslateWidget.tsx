@@ -22,6 +22,7 @@ interface GoogleTranslateWidgetProps {
  * Hidden visually on mobile until tapped, so it never blocks the feed.
  */
 export default function GoogleTranslateWidget({ docked = false }: GoogleTranslateWidgetProps) {
+  const overlayOpen = useOverlayOpen();
   const [isMobileViewport, setIsMobileViewport] = useState(() => {
     if (typeof window === "undefined") return false;
     return window.innerWidth < 768;
