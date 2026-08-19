@@ -140,11 +140,6 @@ const CATEGORIES = [
   { id: "memory", label: "Memory & Attention", icon: Brain, desc: "Recall, focus, visual search" },
   { id: "speed", label: "Speed & Focus", icon: Zap, desc: "Reaction, Stroop, Schulte" },
   { id: "math", label: "Math & Logic", icon: Calculator, desc: "Equations, sequences, syllogisms" },
-  { id: "social", label: "Social & Clans", icon: Users, desc: "Duels, clans, mentor chat" },
-  { id: "profile", label: "Profile", icon: User, desc: "Avatar, theme, nickname, bio" },
-  { id: "analytics", label: "Analytics", icon: BarChart3, desc: "Skill radar, history, time" },
-  { id: "goals", label: "Goals", icon: Target, desc: "Habits, journal, milestones" },
-  { id: "data", label: "Data", icon: Database, desc: "Export / import / reset / share" },
 ];
 
 const Grid = ({ children }: { children: React.ReactNode }) => (
