@@ -230,7 +230,9 @@ export function VisualCourseBuilderView({ onBack }: Props) {
 
   const addModule = () => {
     if (!newTitle.trim()) return;
-    setModules(prev => [...prev, { id: Date.now(), title: newTitle, type: newType, duration: "10 min" }]);
+    const id = Date.now();
+    setModules(prev => [...prev, { id, title: newTitle, type: newType, duration: "10 min" }]);
+    setExpandedId(id);
     setNewTitle("");
   };
 
