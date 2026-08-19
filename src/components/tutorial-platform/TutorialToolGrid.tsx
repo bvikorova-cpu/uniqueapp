@@ -55,7 +55,18 @@ export function TutorialToolGrid({ onToolSelect }: Props) {
                 transition={{ duration: 0.35, delay: i * 0.05 }}
                 className={`group relative overflow-hidden rounded-3xl border border-border/60 bg-card/60 p-5 text-left backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/15 ${tool.span ?? ""}`}
               >
+                <img
+                  src={tool.img}
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  width={768}
+                  height={512}
+                  className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-25 mix-blend-luminosity transition-all duration-500 group-hover:scale-105 group-hover:opacity-40"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/40" />
                 <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-primary/15 blur-2xl transition-opacity duration-300 group-hover:bg-primary/30" />
+
 
                 {tool.id === "messages" && unread > 0 && (
                   <span className="absolute right-3 top-3 flex h-6 min-w-6 items-center justify-center rounded-full bg-destructive px-1.5 text-[11px] font-bold text-destructive-foreground">
