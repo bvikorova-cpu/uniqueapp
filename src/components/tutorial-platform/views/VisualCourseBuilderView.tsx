@@ -574,12 +574,18 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
         if (upErr) throw upErr;
         if (!updatedCourse) throw new Error("Course could not be updated. Please confirm that you own this course.");
 
-        const { error: delErr } = await supabase.from("course_lessons").delete().eq("course_id", courseId);
-        if (delErr) throw delErr;
+        // Keep existing lesson rows (so student progress is not lost):
+        // update by order_index, insert missing, delete surplus.
+        const { data: existingLessons, error: exErr } = await supabase
+          .from("course_lessons")
+          .select("id, order_index")
+          .eq("course_id", courseId)
+          .order("order_index", { ascending: true });
+        if (exErr) throw exErr;
 
-        const { error: insErr } = await supabase.from("course_lessons").insert(
-          lessonRows.map((m, i) => ({
-            course_id: courseId,
+        for (let i = 0; i < lessonRows.length; i++) {
+          const m = lessonRows[i];
+          const payload = {
             title: m.title,
             description: m.description,
             video_url: m.video_url,
@@ -589,13 +595,43 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
             duration_minutes: m.duration_minutes,
             order_index: i,
             is_preview: i === 0,
-          }))
-        );
-        if (insErr) throw insErr;
+          };
+          const existing = (existingLessons || []).find((l: any) => l.order_index === i);
+          if (existing) {
+            const { error } = await supabase.from("course_lessons").update(payload).eq("id", existing.id);
+            if (error) throw error;
+          } else {
+            const { error } = await supabase.from("course_lessons").insert({ course_id: courseId, ...payload });
+            if (error) throw error;
+          }
+        }
+        const surplus = (existingLessons || []).filter((l: any) => l.order_index >= lessonRows.length);
+        for (const l of surplus) {
+          const { error } = await supabase.from("course_lessons").delete().eq("id", l.id);
+          if (error) throw error;
+        }
 
         await persistQuizzes(courseId, modules);
 
-        toast({ title: "Changes saved ✅" });
+        // Verify what actually landed in the database
+        const { data: verifyLessons } = await supabase
+          .from("course_lessons")
+          .select("id")
+          .eq("course_id", courseId);
+        const savedLessons = verifyLessons?.length ?? 0;
+        let savedQuizzes = 0;
+        if (verifyLessons?.length) {
+          const { data: vq } = await supabase
+            .from("course_quizzes")
+            .select("id")
+            .in("lesson_id", verifyLessons.map((l: any) => l.id));
+          savedQuizzes = vq?.length ?? 0;
+        }
+
+        toast({
+          title: "Changes saved ✅",
+          description: `${savedLessons} lesson(s) and ${savedQuizzes} quiz(zes) stored.`,
+        });
         onBack();
         return;
       }
