@@ -258,7 +258,7 @@ export default function HealthyChallenge() {
       } catch (pinErr) {
         console.warn("TOP auto-pin failed", pinErr);
       }
-      toast({ title: "💪 Submitted!", description: `Day ${myMonthDays + 1} of this month completed.` });
+      toast({ title: "💪 Submitted!", description: myMonthDays === 0 ? "Monthly requirement met — at least 1 proof this month. ✅" : `${myMonthDays + 1} days with proof this month.` });
       setDescription(""); setFiles([]); setVideoFile(null);
       await loadAll();
     } catch (e: any) {
