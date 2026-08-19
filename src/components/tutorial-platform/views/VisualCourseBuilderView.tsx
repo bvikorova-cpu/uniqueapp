@@ -76,7 +76,17 @@ export function normalizeVideoUrl(input: string): { url: string | null; error?: 
     return { url: `https://player.vimeo.com/video/${idSeg}` };
   }
 
+  // Uploaded file (Supabase Storage signed/public URL)
+  if (parsed.pathname.includes("/storage/v1/object/")) {
+    return { url: raw };
+  }
+
   return { url: null, error: "Only YouTube and Vimeo links are supported" };
+}
+
+/** True when the URL points to an uploaded video file (not an embed). */
+export function isDirectVideoFile(url: string) {
+  return url.includes("/storage/v1/object/") || /\.(mp4|webm|mov|m4v)(\?|$)/i.test(url);
 }
 
 export function VisualCourseBuilderView({ onBack }: Props) {
