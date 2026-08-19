@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ToastAction } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
+import { useOverlayOpen } from "@/hooks/useOverlayOpen";
 
 type Turn = { role: "user" | "assistant"; content: string };
 
