@@ -27,6 +27,8 @@ interface Course {
   total_lessons: number;
   description: string;
   is_published: boolean;
+  featured_until?: string | null;
+  premium_until?: string | null;
 }
 
 interface Props { onBack: () => void; }
@@ -98,12 +100,15 @@ export function BrowseCoursesView({ onBack }: Props) {
     }
   };
 
+  const isLive = (d?: string | null) => !!d && new Date(d).getTime() > Date.now();
+  const rank = (c: Course) => (isLive(c.premium_until) ? 0 : isLive(c.featured_until) ? 1 : 2);
+
   const filtered = courses.filter(c => {
     const matchSearch = c.title.toLowerCase().includes(search.toLowerCase());
     const matchCat = category === "all" || c.category === category;
     const matchLevel = level === "all" || c.difficulty_level === level;
     return matchSearch && matchCat && matchLevel;
-  });
+  }).sort((a, b) => rank(a) - rank(b));
 
   // Top 3 by enrollments are "hot"
   const topIds = new Set(courses.slice(0, 3).map(c => c.id));
@@ -195,7 +200,15 @@ export function BrowseCoursesView({ onBack }: Props) {
                   {course.difficulty_level && (
                     <Badge className="absolute top-2 right-2 text-[10px]" variant="secondary">{course.difficulty_level}</Badge>
                   )}
-                  {topIds.has(course.id) && (
+                  {isLive(course.premium_until) ? (
+                    <Badge className="absolute top-2 left-2 text-[10px] bg-gradient-to-r from-amber-500 to-yellow-500 text-white border-0">
+                      Premium
+                    </Badge>
+                  ) : isLive(course.featured_until) ? (
+                    <Badge className="absolute top-2 left-2 text-[10px] bg-gradient-to-r from-violet-500 to-purple-600 text-white border-0">
+                      Top
+                    </Badge>
+                  ) : topIds.has(course.id) && (
                     <Badge className="absolute top-2 left-2 text-[10px] bg-gradient-to-r from-orange-500 to-red-500 text-white border-0">
                       🔥 Trending
                     </Badge>
