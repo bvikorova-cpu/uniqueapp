@@ -231,8 +231,10 @@ export default function GoogleTranslateWidget({ docked = false }: GoogleTranslat
     );
   }
 
+  if (overlayOpen) return null;
+
   return (
-    <div className="fixed bottom-[calc(14rem+env(safe-area-inset-bottom))] right-4 md:bottom-24 md:right-6 z-[9992] flex items-center gap-2">
+    <div className="fixed bottom-[calc(9rem+env(safe-area-inset-bottom))] left-3 md:bottom-24 md:left-6 z-[9992] flex items-center gap-2">
       {picker}
       {button}
     </div>
