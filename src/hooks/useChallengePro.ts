@@ -80,6 +80,21 @@ export function useChallengePro(challenge: ChallengeKind = "eco") {
 
   useEffect(() => { refresh(); }, [refresh]);
 
+  // If the DB has no active row, verify once against Stripe (covers payments
+  // that completed but were never synced back).
+  useEffect(() => {
+    if (!user || loading || tier) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        await supabase.functions.invoke("sync-challenge-pro");
+        if (!cancelled) await refresh();
+      } catch { /* ignore */ }
+    })();
+    return () => { cancelled = true; };
+  }, [user?.id, challenge, loading, tier]);
+
+
   useEffect(() => {
     if (!user) return;
     const params = new URLSearchParams(window.location.search);
