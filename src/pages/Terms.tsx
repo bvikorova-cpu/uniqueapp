@@ -177,7 +177,7 @@ const Terms = () => {
               </ul>
             </LegalSection>
 
-            <LegalSection id="ip" number="§9" title="Intellectual Property">
+            <LegalSection id="ip" number="§10" title="Intellectual Property">
               <p><strong>9.1.</strong> The UNIQUE brand, code, and design are owned exclusively by the Operator.</p>
               <p><strong>9.2.</strong> AI-generated content is owned by the User who generated it (subject to §4).</p>
               <p><strong>9.3.</strong> DMCA notices are handled per the <Link to="/legal/community" className="text-amber-400 underline">DMCA Policy</Link>.</p>
