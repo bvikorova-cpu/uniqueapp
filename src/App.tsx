@@ -272,7 +272,6 @@ import { ResetPassword,
   CertificationPrograms,
   CourseLearning,
   GenericLearning,
-  CoursesHub,
   CourseDetailPage,
   CourseLearnPage,
   BecomeCreator,
@@ -1010,24 +1009,24 @@ const App = () => {
                         <Route path="/interactive-workshops" element={<InteractiveWorkshops />} />
                         <Route path="/certification-programs" element={<CertificationPrograms />} />
                         <Route path="/certification-learn/:certificationId" element={<CourseLearning />} />
-                        <Route path="/language-learning" element={<Navigate to="/courses-hub" replace />} />
+                        <Route path="/language-learning" element={<Navigate to="/tutorial-platform?view=browse" replace />} />
                         <Route path="/language/:contentId" element={<GenericLearning />} />
                         <Route path="/fitness/:contentId" element={<GenericLearning />} />
-                        <Route path="/digital-marketing" element={<Navigate to="/courses-hub" replace />} />
+                        <Route path="/digital-marketing" element={<Navigate to="/tutorial-platform?view=browse" replace />} />
                         <Route path="/marketing/:contentId" element={<GenericLearning />} />
-                        <Route path="/photography" element={<Navigate to="/courses-hub" replace />} />
+                        <Route path="/photography" element={<Navigate to="/tutorial-platform?view=browse" replace />} />
                         <Route path="/photography/:contentId" element={<GenericLearning />} />
-                        <Route path="/culinary-arts" element={<Navigate to="/courses-hub" replace />} />
+                        <Route path="/culinary-arts" element={<Navigate to="/tutorial-platform?view=browse" replace />} />
                         <Route path="/culinary/:contentId" element={<GenericLearning />} />
-                        <Route path="/music-production" element={<Navigate to="/courses-hub" replace />} />
+                        <Route path="/music-production" element={<Navigate to="/tutorial-platform?view=browse" replace />} />
                         <Route path="/music/:contentId" element={<GenericLearning />} />
-                        <Route path="/graphic-design" element={<Navigate to="/courses-hub" replace />} />
+                        <Route path="/graphic-design" element={<Navigate to="/tutorial-platform?view=browse" replace />} />
                         <Route path="/design/:contentId" element={<GenericLearning />} />
-                        <Route path="/public-speaking" element={<Navigate to="/courses-hub" replace />} />
+                        <Route path="/public-speaking" element={<Navigate to="/tutorial-platform?view=browse" replace />} />
                         <Route path="/speaking/:contentId" element={<GenericLearning />} />
-                        <Route path="/financial-investment" element={<Navigate to="/courses-hub" replace />} />
+                        <Route path="/financial-investment" element={<Navigate to="/tutorial-platform?view=browse" replace />} />
                         <Route path="/investment/:contentId" element={<GenericLearning />} />
-                        <Route path="/creative-writing" element={<Navigate to="/courses-hub" replace />} />
+                        <Route path="/creative-writing" element={<Navigate to="/tutorial-platform?view=browse" replace />} />
                         <Route path="/writing/:contentId" element={<GenericLearning />} />
                         <Route path="/creative-forge" element={<ProtectedRoute><CreativeForge /></ProtectedRoute>} />
                         <Route path="/coloring-pages" element={<KidsGoldPassGate moduleName="Coloring Pages" redirectPath="/coloring-pages"><KidsParentalGateGuard featureName="Coloring Pages" storageKey="pg_coloring"><ColoringPages /></KidsParentalGateGuard></KidsGoldPassGate>} />
@@ -1208,7 +1207,7 @@ const App = () => {
                         <Route path="/tipster-dashboard" element={<ProtectedRoute><TipsterDashboard /></ProtectedRoute>} />
                         <Route path="/admin/sports-matches" element={<ProtectedRoute requireAdmin={true}><AdminSportsMatches /></ProtectedRoute>} />
                         {/* Learning aliases */}
-                        <Route path="/courses" element={<CoursesHub />} />
+                        <Route path="/courses" element={<Navigate to="/tutorial-platform?view=browse" replace />} />
                         <Route path="/my-learning" element={<ProtectedRoute><MyLearning /></ProtectedRoute>} />
                         <Route path="/course-creator" element={<ProtectedRoute><TutorialPlatform /></ProtectedRoute>} />
                         {/* Verification alias */}

@@ -248,7 +248,7 @@ export default function MyLearning() {
                 <div className="col-span-full text-center py-12">
                   <BookOpen className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p className="text-muted-foreground">No courses in progress</p>
-                  <Button onClick={() => navigate("/courses")} className="mt-4">
+                  <Button onClick={() => navigate("/tutorial-platform?view=browse")} className="mt-4">
                     Browse Courses
                   </Button>
                 </div>

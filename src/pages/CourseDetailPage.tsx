@@ -108,7 +108,7 @@ export default function CourseDetailPage() {
         title: "Error",
         description: error.message,
         variant: "destructive" });
-      navigate("/courses");
+      navigate("/tutorial-platform?view=browse");
     } finally {
       setLoading(false);
     }
@@ -208,7 +208,7 @@ export default function CourseDetailPage() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => navigate("/courses")}
+            onClick={() => navigate("/tutorial-platform?view=browse")}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />

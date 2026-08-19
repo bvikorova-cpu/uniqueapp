@@ -92,7 +92,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   
   // Education & Learning
   { id: "52", title: "Education", category: "Education", path: "/education" },
-  { id: "53", title: "Courses Hub", category: "Education", path: "/courses-hub" },
+  { id: "53", title: "Browse Courses", category: "Education", path: "/tutorial-platform?view=browse" },
   { id: "54", title: "Premium Courses", category: "Education", path: "/premium-courses" },
   { id: "55", title: "ProClasses", category: "Education", path: "/proclasses" },
   { id: "56", title: "Interactive Workshops", category: "Education", path: "/interactive-workshops" },
