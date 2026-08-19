@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { LessonPlayer } from "@/components/course-creator/LessonPlayer";
 import { QuizTaker } from "@/components/student-learning/QuizTaker";
-import { CertificatePreview } from "@/components/student-learning/CertificatePreview";
+import { CertificatePreview, type CertificatePreviewHandle } from "@/components/student-learning/CertificatePreview";
 
 import { useCertificate } from "@/hooks/useCertificate";
 import { BookOpen,
