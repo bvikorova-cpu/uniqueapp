@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -19,6 +19,7 @@ export function useChallengePro(challenge: ChallengeKind = "eco") {
   const [activeUntil, setActiveUntil] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [checkingOut, setCheckingOut] = useState(false);
+  const autoSyncedRef = useRef<string | null>(null);
 
   const refresh = useCallback(async () => {
     if (!user) { setTier(null); setActiveUntil(null); setLoading(false); return; }
@@ -84,6 +85,9 @@ export function useChallengePro(challenge: ChallengeKind = "eco") {
   // that completed but were never synced back).
   useEffect(() => {
     if (!user || loading || tier) return;
+    const key = `${user.id}:${challenge}`;
+    if (autoSyncedRef.current === key) return;
+    autoSyncedRef.current = key;
     let cancelled = false;
     (async () => {
       try {
