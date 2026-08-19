@@ -43,6 +43,9 @@ interface Lesson {
   duration_minutes: number;
   order_index: number;
   is_preview: boolean;
+  content?: string | null;
+  attachment_url?: string | null;
+  attachment_name?: string | null;
 }
 
 export default function CourseDetailPage() {
@@ -189,6 +192,10 @@ export default function CourseDetailPage() {
           lessonTitle={selectedLesson.title}
           videoUrl={selectedLesson.video_url || ""}
           description={selectedLesson.description || ""}
+          content={selectedLesson.content}
+          attachmentUrl={selectedLesson.attachment_url}
+          attachmentName={selectedLesson.attachment_name}
+          hasAccess={isEnrolled || isInstructor}
         />
       )}
       {course && (

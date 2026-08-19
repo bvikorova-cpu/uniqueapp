@@ -310,6 +310,7 @@ export default function CourseLearnPage() {
           content={currentLesson.content}
           attachmentUrl={currentLesson.attachment_url}
           attachmentName={currentLesson.attachment_name}
+          hasAccess
         />
       )}
 
