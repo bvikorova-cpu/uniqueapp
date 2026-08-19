@@ -464,6 +464,15 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
     }
   };
 
+  if (loading) {
+    return (
+      <div>
+        <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
+        <div className="py-20 flex justify-center"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>
+      </div>
+    );
+  }
+
   return (
     <>
       <FloatingHowItWorks title={"Visual Course Builder View - How it works"} steps={[{ title: 'Open', desc: 'Access the Visual Course Builder View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Visual Course Builder View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
@@ -475,10 +484,13 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
             <Palette className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="text-2xl font-black">Visual Course Builder</h2>
-            <p className="text-sm text-muted-foreground">Create and publish your course</p>
+            <h2 className="text-2xl font-black">{isEdit ? "Edit Course" : "Visual Course Builder"}</h2>
+            <p className="text-sm text-muted-foreground">
+              {isEdit ? "Update your course details, modules and files — editing is free" : "Create and publish your course"}
+            </p>
           </div>
         </div>
+
 
         <Card className="p-4 mb-4 space-y-3">
           <Input placeholder="Course name *" value={title} onChange={e => setTitle(e.target.value)} />
