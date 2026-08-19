@@ -335,12 +335,6 @@ export default function CourseDetailPage() {
             <TabsTrigger value="curriculum" className="whitespace-nowrap px-4 py-2">Curriculum</TabsTrigger>
             <TabsTrigger value="about" className="whitespace-nowrap px-4 py-2">About</TabsTrigger>
             <TabsTrigger value="reviews" className="whitespace-nowrap px-4 py-2">Reviews</TabsTrigger>
-            <TabsTrigger value="discussion" className="whitespace-nowrap px-4 py-2">Discussion</TabsTrigger>
-            <TabsTrigger value="leaderboard" className="whitespace-nowrap px-4 py-2">Leaderboard</TabsTrigger>
-            <TabsTrigger value="live-lessons" className="whitespace-nowrap px-4 py-2">
-              <Video className="w-4 h-4 mr-2 flex-shrink-0" />
-              Live Lessons
-            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="curriculum" className="mt-6">
