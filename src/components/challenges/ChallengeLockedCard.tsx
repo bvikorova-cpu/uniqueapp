@@ -8,8 +8,8 @@ import { useChallengePro } from "@/hooks/useChallengePro";
  * Participation in the Eco / Healthy Challenge is subscription-only.
  * There is no free tier — users must hold PRO (€3/mo) or TOP (€5/mo).
  */
-export function ChallengeLockedCard({ accent = "emerald" }: { accent?: "emerald" | "orange" }) {
-  const { subscribe, checkingOut } = useChallengePro();
+export function ChallengeLockedCard({ accent = "emerald", challenge = "eco" }: { accent?: "emerald" | "orange"; challenge?: "eco" | "healthy" }) {
+  const { subscribe, checkingOut } = useChallengePro(challenge);
   const [target, setTarget] = useState<"pro" | "top" | null>(null);
 
   const go = (t: "pro" | "top") => {
@@ -28,7 +28,8 @@ export function ChallengeLockedCard({ accent = "emerald" }: { accent?: "emerald"
         <div>
           <p className="font-bold text-lg">Subscription required</p>
           <p className="text-sm text-white/80 mt-1">
-            Participation is paid only — there is no free entry. Choose PRO (€3/mo) or TOP (€5/mo) to submit
+            Participation is paid only — there is no free entry. This {challenge === "healthy" ? "Healthy" : "Eco"} Challenge plan is
+            separate from the other challenge. Choose PRO (€3/mo) or TOP (€5/mo) to submit
             your daily proof, appear in the feed and compete for the monthly prize.
           </p>
         </div>
