@@ -70970,6 +70970,7 @@ export type Database = {
         Args: { _actor: string; _escrow_id: string }
         Returns: Json
       }
+      request_course_access: { Args: { p_course_id: string }; Returns: Json }
       reset_best_friend_monthly_messages: { Args: never; Returns: undefined }
       reset_psychology_monthly_messages: { Args: never; Returns: undefined }
       resolve_report: {

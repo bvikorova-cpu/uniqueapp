@@ -226,8 +226,9 @@ export function BrowseCoursesView({ onBack }: Props) {
                     ) : (
                       <Button size="sm" className="text-xs" onClick={() => requestAccess(course)}>
                         <MessageCircle className="mr-1 h-3 w-3" />
-                        Request access
+                        Request access · 3 CR
                       </Button>
+
                     )}
                   </div>
                 </div>
