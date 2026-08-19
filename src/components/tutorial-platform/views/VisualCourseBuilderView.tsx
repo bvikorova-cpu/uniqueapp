@@ -293,6 +293,7 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
         setDifficulty(course.difficulty_level || "beginner");
         setPrice(String(course.price ?? 0));
         setWasPublished(!!course.is_published);
+        setHeroUrl(course.thumbnail_url || "");
         const mapped: Module[] = (lessons || []).map((l: any, i: number) => ({
           id: Date.now() + i,
           title: l.title || `Module ${i + 1}`,
@@ -413,6 +414,7 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
             price: parseFloat(price) || 0,
             duration_minutes: totalDuration,
             total_lessons: modules.length,
+            thumbnail_url: heroUrl || null,
             is_published: publish ? true : wasPublished,
           })
           .eq("id", courseId);
@@ -456,6 +458,7 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
               price: parseFloat(price) || 0,
               duration_minutes: totalDuration,
               total_lessons: modules.length,
+              thumbnail_url: heroUrl || null,
             },
             lessons: lessonRows,
           },
@@ -499,6 +502,7 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
           price: parseFloat(price) || 0,
           duration_minutes: totalDuration,
           total_lessons: modules.length,
+          thumbnail_url: heroUrl || null,
           is_published: false,
         })
         .select()
