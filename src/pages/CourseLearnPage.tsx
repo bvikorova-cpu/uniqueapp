@@ -35,6 +35,9 @@ interface Lesson {
   video_url: string;
   duration_minutes: number;
   order_index: number;
+  content?: string | null;
+  attachment_url?: string | null;
+  attachment_name?: string | null;
 }
 
 interface LessonProgress {
