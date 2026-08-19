@@ -619,6 +619,8 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
           return;
         }
 
+        if (data?.courseId) await persistQuizzes(data.courseId, modules);
+
         toast({ title: "Course published 🎉", description: `15 credits used. Remaining: ${data?.credits_remaining ?? 0}` });
         navigate(`/tutorial-course/${data.courseId}`);
         return;
