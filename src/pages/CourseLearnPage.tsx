@@ -424,10 +424,10 @@ export default function CourseLearnPage() {
       </section>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
+      <div className="container mx-auto px-4 py-8 max-w-full overflow-x-hidden">
+        <div className="grid lg:grid-cols-3 gap-8 min-w-0">
           {/* Lesson List Sidebar */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 min-w-0">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -479,7 +479,7 @@ export default function CourseLearnPage() {
           </div>
 
           {/* Current Lesson Content */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 min-w-0">
             {currentLesson ? (
               <div className="space-y-6">
                 {/* Lesson Header */}
@@ -584,7 +584,7 @@ export default function CourseLearnPage() {
                             </p>
                             
                             {/* Certificate Preview (auto-scaled, mobile safe) */}
-                            <div className="max-w-4xl mx-auto">
+                            <div className="max-w-4xl mx-auto w-full min-w-0 overflow-hidden">
                               <CertificatePreview ref={certRef} html={certificateHtml} />
                             </div>
 
