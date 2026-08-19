@@ -241,25 +241,35 @@ export default function CourseLearnPage() {
     return Math.round((completed / lessons.length) * 100);
   };
 
-  const handleGenerateCertificate = () => {
-    if (!studentName) {
-      setShowNamePrompt(true);
-    } else {
+  const issueCertificate = async (name: string) => {
+    if (!course) return;
+    const result = await generateCertificate(courseId!, course.title, name);
+    if (result?.certificateHtml) {
+      setCertificateHtml(result.certificateHtml);
       setShowCertificate(true);
     }
+  };
+
+  const handleGenerateCertificate = async () => {
+    if (!studentName) {
+      setNameInput((prev) => prev || "");
+      setShowNamePrompt(true);
+      return;
+    }
+    if (certificateHtml) {
+      setShowCertificate(true);
+      return;
+    }
+    await issueCertificate(studentName);
   };
 
   const handleNameSubmit = async () => {
     if (nameInput.trim() && course) {
       setStudentName(nameInput.trim());
       setShowNamePrompt(false);
-      
-      const result = await generateCertificate(courseId!, course.title, nameInput.trim());
-      if (result?.certificateHtml) {
-        setCertificateHtml(result.certificateHtml);
-        setShowCertificate(true);
-      }
+      await issueCertificate(nameInput.trim());
     }
+
   };
 
   if (loading) {
