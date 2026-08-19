@@ -4,19 +4,18 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Search, Users, Star, GraduationCap, Clock, BookOpen, TrendingUp, Sparkles, Filter, Loader2, MessageCircle } from "lucide-react";
+import { ArrowLeft, Search, Users, Star, GraduationCap, Clock, BookOpen, Sparkles, Filter, Loader2, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
-import { CourseChatDialog } from "../CourseChatDialog";
 import { useAuth } from "@/contexts/AuthContext";
-import { toast } from "sonner";
 
 interface Course {
   id: string;
   title: string;
+  thumbnail_url?: string | null;
   category: string;
   price: number;
   total_enrollments: number;
@@ -36,7 +35,6 @@ interface Props { onBack: () => void; }
 export function BrowseCoursesView({ onBack }: Props) {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [chatCourse, setChatCourse] = useState<Course | null>(null);
   const [enrolled, setEnrolled] = useState<Set<string>>(new Set());
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
@@ -60,24 +58,6 @@ export function BrowseCoursesView({ onBack }: Props) {
       setEnrolled(new Set(((data || []) as any[]).map((e) => e.course_id)));
     })();
   }, [user]);
-
-  const requestAccess = async (course: Course) => {
-    if (!user) {
-      toast.error("Please sign in to request access");
-      return;
-    }
-    if (course.creator_id === user.id) {
-      toast.info("This is your own course");
-      return;
-    }
-    await (supabase as any)
-      .from("course_access_requests")
-      .upsert(
-        { course_id: course.id, buyer_id: user.id, creator_id: course.creator_id },
-        { onConflict: "course_id,buyer_id", ignoreDuplicates: true },
-      );
-    setChatCourse(course);
-  };
 
   const loadCourses = async () => {
     try {
@@ -195,8 +175,17 @@ export function BrowseCoursesView({ onBack }: Props) {
               transition={{ delay: i * 0.05 }}
             >
               <Card className="overflow-hidden hover:shadow-xl transition-all group border-violet-500/10 hover:border-violet-500/30">
-                <div className="h-32 bg-gradient-to-br from-violet-500/15 via-purple-500/10 to-rose-500/10 flex items-center justify-center relative">
+                <div className="h-32 bg-gradient-to-br from-violet-500/15 via-purple-500/10 to-rose-500/10 flex items-center justify-center relative overflow-hidden">
                   <GraduationCap className="w-12 h-12 text-violet-500/20 group-hover:scale-110 transition-transform" />
+                   {course.thumbnail_url && (
+                     <img
+                       src={course.thumbnail_url}
+                       alt={`${course.title} course cover`}
+                       className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                       loading="lazy"
+                       onError={(event) => { event.currentTarget.style.display = "none"; }}
+                     />
+                   )}
                   {course.difficulty_level && (
                     <Badge className="absolute top-2 right-2 text-[10px]" variant="secondary">{course.difficulty_level}</Badge>
                   )}
@@ -237,11 +226,10 @@ export function BrowseCoursesView({ onBack }: Props) {
                         Open course
                       </Button>
                     ) : (
-                      <Button size="sm" className="text-xs" onClick={() => requestAccess(course)}>
-                        <MessageCircle className="mr-1 h-3 w-3" />
-                        Request access · 3 CR
+                      <Button size="sm" className="text-xs" onClick={() => navigate(`/tutorial-course/${course.id}`)}>
+                        <Eye className="mr-1 h-3 w-3" />
+                        View course
                       </Button>
-
                     )}
                   </div>
                 </div>
@@ -249,17 +237,6 @@ export function BrowseCoursesView({ onBack }: Props) {
             </motion.div>
           ))}
         </div>
-      )}
-      {chatCourse && (
-        <CourseChatDialog
-          open={!!chatCourse}
-          onOpenChange={(o) => !o && setChatCourse(null)}
-          courseId={chatCourse.id}
-          courseTitle={chatCourse.title}
-          coursePrice={chatCourse.price}
-          otherId={chatCourse.creator_id}
-          prefillInterest
-        />
       )}
     </div>
     </>
