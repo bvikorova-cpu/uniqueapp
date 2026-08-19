@@ -384,7 +384,7 @@ export function VisualCourseBuilderView({ onBack }: Props) {
 
         <Card className="p-4 mb-4 space-y-3">
           <Input placeholder="Course name *" value={title} onChange={e => setTitle(e.target.value)} />
-          <Textarea placeholder="Popis kurzu *" value={description} onChange={e => setDescription(e.target.value)} rows={3} />
+          <Textarea placeholder="Course description *" value={description} onChange={e => setDescription(e.target.value)} rows={3} />
           <div className="grid grid-cols-3 gap-2">
             <Input placeholder="Category" value={category} onChange={e => setCategory(e.target.value)} />
             <select value={difficulty} onChange={e => setDifficulty(e.target.value)} className="rounded-md border bg-background px-2 text-sm">
@@ -392,12 +392,12 @@ export function VisualCourseBuilderView({ onBack }: Props) {
               <option value="intermediate">Intermediate</option>
               <option value="advanced">Advanced</option>
             </select>
-            <Input type="number" step="0.01" placeholder="Cena €" value={price} onChange={e => setPrice(e.target.value)} />
+            <Input type="number" step="0.01" placeholder="Price €" value={price} onChange={e => setPrice(e.target.value)} />
           </div>
         </Card>
 
         <div className="flex items-center gap-3 mb-2">
-          <Badge variant="outline"><BookOpen className="w-3 h-3 mr-1" />{modules.length} modulov</Badge>
+          <Badge variant="outline"><BookOpen className="w-3 h-3 mr-1" />{modules.length} modules</Badge>
           <Badge variant="outline"><Clock className="w-3 h-3 mr-1" />{totalDuration} min</Badge>
         </div>
         <p className="text-xs text-muted-foreground mb-4">
@@ -579,7 +579,7 @@ export function VisualCourseBuilderView({ onBack }: Props) {
                       <Input
                         value={mod.duration}
                         onChange={(e) => updateModule(mod.id, { duration: e.target.value })}
-                        placeholder="Trvanie (napr. 10 min)"
+                        placeholder="Duration (e.g. 10 min)"
                       />
                       <select
                         value={mod.type}
