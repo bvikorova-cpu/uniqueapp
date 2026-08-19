@@ -575,7 +575,58 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
             </select>
             <Input type="number" step="0.01" placeholder="Price €" value={price} onChange={e => setPrice(e.target.value)} />
           </div>
+
+          {/* Hero / cover image */}
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-muted-foreground">Course cover image (hero)</p>
+            {heroUrl ? (
+              <div className="relative rounded-lg overflow-hidden border aspect-video bg-muted">
+                <img src={heroUrl} alt="Course cover" className="w-full h-full object-cover" />
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="destructive"
+                  className="absolute top-2 right-2"
+                  onClick={() => setHeroUrl("")}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+            ) : (
+              <div className="rounded-lg border border-dashed aspect-video flex items-center justify-center text-xs text-muted-foreground">
+                No cover image yet
+              </div>
+            )}
+            <div className="flex items-center gap-2 flex-wrap">
+              <input
+                id="course-hero-file"
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  e.target.value = "";
+                  if (f) handleHeroUpload(f);
+                }}
+              />
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                disabled={uploadingHero}
+                onClick={() => document.getElementById("course-hero-file")?.click()}
+              >
+                {uploadingHero ? (
+                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Uploading…</>
+                ) : (
+                  <><Upload className="w-4 h-4 mr-2" />{heroUrl ? "Replace cover image" : "Upload cover image"}</>
+                )}
+              </Button>
+              <span className="text-xs text-muted-foreground">JPG/PNG/WebP, max 10 MB</span>
+            </div>
+          </div>
         </Card>
+
 
         <div className="flex items-center gap-3 mb-2">
           <Badge variant="outline"><BookOpen className="w-3 h-3 mr-1" />{modules.length} modules</Badge>
