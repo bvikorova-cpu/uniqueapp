@@ -105,6 +105,10 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
   const [dragId, setDragId] = useState<number | null>(null);
   const [uploadingId, setUploadingId] = useState<number | null>(null);
   const [uploadingDocId, setUploadingDocId] = useState<number | null>(null);
+  const [uploadingHero, setUploadingHero] = useState(false);
+  const [heroUrl, setHeroUrl] = useState<string>("");
+  const idSeedRef = useRef(0);
+
 
 
   const updateModule = (id: number, patch: Partial<Module>) =>
