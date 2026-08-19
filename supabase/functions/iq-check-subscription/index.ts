@@ -59,7 +59,11 @@ serve(async (req) => {
 
     const item = sub.items.data[0];
     const tier = tierFromAmount(item?.price?.unit_amount);
-    const periodEnd = new Date((sub as any).current_period_end * 1000).toISOString();
+    const periodEndTs = (sub as any).current_period_end ??
+      (item as any)?.current_period_end ?? null;
+    const periodEnd = typeof periodEndTs === "number" && Number.isFinite(periodEndTs)
+      ? new Date(periodEndTs * 1000).toISOString()
+      : null;
 
     await admin.from("iq_subscriptions").upsert({ user_id: user.id,
       tier,
