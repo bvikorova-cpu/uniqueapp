@@ -144,7 +144,13 @@ const CATEGORIES = [
 ];
 
 const Grid = ({ children }: { children: React.ReactNode }) => (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{children}</div>
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    {Array.isArray(children)
+      ? children.map((child, i) => (
+          <BrainLabGameGate key={i}>{child}</BrainLabGameGate>
+        ))
+      : children}
+  </div>
 );
 
 const IQBrainLab = () => {
