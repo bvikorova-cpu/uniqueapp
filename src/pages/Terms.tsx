@@ -189,10 +189,10 @@ const Terms = () => {
               <p><strong>11.3.</strong> Pending payouts above minimum threshold are processed within 30 days of termination.</p>
             </LegalSection>
 
-            <LegalSection id="liability" number="§11" title="Limitation of Liability">
-              <p><strong>11.1.</strong> The platform is provided "as is" without warranties.</p>
-              <p><strong>11.2.</strong> Maximum aggregate liability is limited to fees paid in the past 12 months.</p>
-              <p><strong>11.3.</strong> No liability for indirect, consequential, or punitive damages.</p>
+            <LegalSection id="liability" number="§12" title="Limitation of Liability">
+              <p><strong>12.1.</strong> The platform is provided "as is" without warranties.</p>
+              <p><strong>12.2.</strong> Maximum aggregate liability is limited to fees paid in the past 12 months.</p>
+              <p><strong>12.3.</strong> No liability for indirect, consequential, or punitive damages.</p>
             </LegalSection>
 
             <LegalSection id="law" number="§12" title="Governing Law & Disputes">
