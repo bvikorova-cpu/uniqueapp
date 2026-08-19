@@ -11,7 +11,9 @@ export type ChallengeTier = "pro" | "top" | null;
  * - TOP: everything in PRO + 500,000 XP monthly + 1,000,000 ai_credits monthly
  *        (non-cashable) + TOP badge + submissions auto-pinned to top of feed.
  */
-export function useChallengePro() {
+export type ChallengeKind = "eco" | "healthy";
+
+export function useChallengePro(challenge: ChallengeKind = "eco") {
   const { user } = useAuth();
   const [tier, setTier] = useState<ChallengeTier>(null);
   const [activeUntil, setActiveUntil] = useState<string | null>(null);
@@ -25,6 +27,7 @@ export function useChallengePro() {
       .from("challenge_pro_subscribers")
       .select("active_until, tier")
       .eq("user_id", user.id)
+      .eq("challenge", challenge)
       .maybeSingle();
     const until = (data as any)?.active_until as string | null | undefined;
     const rawTier = ((data as any)?.tier as string | null | undefined) ?? "pro";
@@ -32,7 +35,7 @@ export function useChallengePro() {
     setTier(active ? ((rawTier === "top" ? "top" : "pro") as ChallengeTier) : null);
     setActiveUntil(until ?? null);
     setLoading(false);
-  }, [user?.id]);
+  }, [user?.id, challenge]);
 
   /** Force a Stripe → DB re-sync (call after checkout success). */
   const syncFromStripe = useCallback(async () => {
@@ -55,7 +58,7 @@ export function useChallengePro() {
     const tab = window.open("", "_blank");
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { product: target === "top" ? "challenge_top" : "challenge_pro" } });
+        body: { product: `${target === "top" ? "challenge_top" : "challenge_pro"}_${challenge}` } });
       if (error) throw error;
       const url = (data as any)?.url;
       if (!url) throw new Error("Checkout URL was not returned.");
@@ -72,7 +75,7 @@ export function useChallengePro() {
     } finally {
       setCheckingOut(false);
     }
-  }, [user?.id]);
+  }, [user?.id, challenge]);
 
 
   useEffect(() => { refresh(); }, [refresh]);
@@ -100,7 +103,7 @@ export function useChallengePro() {
  * Fetch tier map for a list of user IDs, so feeds & leaderboards can render
  * the correct PRO / TOP badge next to each name.
  */
-export function useChallengeProSet(userIds: string[]) {
+export function useChallengeProSet(userIds: string[], challenge: ChallengeKind = "eco") {
   const [tierMap, setTierMap] = useState<Map<string, "pro" | "top">>(new Map());
 
   useEffect(() => {
@@ -111,6 +114,7 @@ export function useChallengeProSet(userIds: string[]) {
       const { data } = await supabase
         .from("challenge_pro_subscribers")
         .select("user_id, active_until, tier")
+        .eq("challenge", challenge)
         .in("user_id", ids);
       if (cancelled) return;
       const now = Date.now();
@@ -123,7 +127,7 @@ export function useChallengeProSet(userIds: string[]) {
       setTierMap(next);
     })();
     return () => { cancelled = true; };
-  }, [userIds.join(",")]);
+  }, [userIds.join(","), challenge]);
 
   // Back-compat: existing callers use `.has(id)` — return a Set-like proxy
   const proSet = { has: (id: string) => tierMap.has(id),

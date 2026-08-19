@@ -9441,6 +9441,7 @@ export type Database = {
       challenge_pro_subscribers: {
         Row: {
           active_until: string
+          challenge: string
           created_at: string
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
@@ -9451,6 +9452,7 @@ export type Database = {
         }
         Insert: {
           active_until: string
+          challenge?: string
           created_at?: string
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
@@ -9461,6 +9463,7 @@ export type Database = {
         }
         Update: {
           active_until?: string
+          challenge?: string
           created_at?: string
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null

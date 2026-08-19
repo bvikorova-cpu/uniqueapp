@@ -193,6 +193,10 @@ const DEFAULT_PATHS: Record<string, { success: string; cancel: string }> = {
   quantum_entanglement: { success: "/quantum-social?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/quantum-social?payment=canceled" },
   challenge_pro: { success: "/eco-challenge?payment=success&challenge_pro=1&session_id={CHECKOUT_SESSION_ID}", cancel: "/eco-challenge?payment=canceled" },
   challenge_top: { success: "/eco-challenge?payment=success&challenge_pro=1&session_id={CHECKOUT_SESSION_ID}", cancel: "/eco-challenge?payment=canceled" },
+  challenge_pro_eco: { success: "/eco-challenge?payment=success&challenge_pro=1&session_id={CHECKOUT_SESSION_ID}", cancel: "/eco-challenge?payment=canceled" },
+  challenge_top_eco: { success: "/eco-challenge?payment=success&challenge_pro=1&session_id={CHECKOUT_SESSION_ID}", cancel: "/eco-challenge?payment=canceled" },
+  challenge_pro_healthy: { success: "/healthy-challenge?payment=success&challenge_pro=1&session_id={CHECKOUT_SESSION_ID}", cancel: "/healthy-challenge?payment=canceled" },
+  challenge_top_healthy: { success: "/healthy-challenge?payment=success&challenge_pro=1&session_id={CHECKOUT_SESSION_ID}", cancel: "/healthy-challenge?payment=canceled" },
   exclusive: { success: "/exclusive?success=true&session_id={CHECKOUT_SESSION_ID}", cancel: "/exclusive?canceled=true" },
   skill_swap: { success: "/skill-swap?subscribed=true&session_id={CHECKOUT_SESSION_ID}", cancel: "/skill-swap?subscribed=canceled" },
   skills_marketplace: { success: "/marketplace?entry=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/marketplace?entry=canceled" } };
@@ -2953,7 +2957,11 @@ async function handler(req: Request): Promise<Response> {
         dating_monthly:          { amount: 200,  mode: "subscription", name: "Dating Premium (Monthly)" },
         dating_yearly:           { amount: 2000, mode: "subscription", name: "Dating Premium (Yearly)" },
         challenge_pro:           { amount: 300,  mode: "subscription", name: "Challenge PRO (Eco + Healthy)" },
-        challenge_top:           { amount: 500,  mode: "subscription", name: "Challenge TOP (Eco + Healthy)" } };
+        challenge_top:           { amount: 500,  mode: "subscription", name: "Challenge TOP (Eco + Healthy)" },
+        challenge_pro_eco:       { amount: 300,  mode: "subscription", name: "Eco Challenge PRO" },
+        challenge_top_eco:       { amount: 500,  mode: "subscription", name: "Eco Challenge TOP" },
+        challenge_pro_healthy:   { amount: 300,  mode: "subscription", name: "Healthy Challenge PRO" },
+        challenge_top_healthy:   { amount: 500,  mode: "subscription", name: "Healthy Challenge TOP" } };
 
       const def = PRODUCT_DEFAULTS[productKey];
 

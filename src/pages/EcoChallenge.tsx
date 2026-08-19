@@ -308,8 +308,8 @@ export default function EcoChallenge() {
     () => [...submissions.map((s) => s.user_id), ...leaderboard.map((r) => r.user_id)],
     [submissions, leaderboard],
   );
-  const proSet = useChallengeProSet(proUserIds);
-  const { isPro, loading: proLoading } = useChallengePro();
+  const proSet = useChallengeProSet(proUserIds, "eco");
+  const { isPro, loading: proLoading } = useChallengePro("eco");
 
   const [countdown, setCountdown] = useState<string>(fmtCountdown(msUntilMonthEnd()));
   useEffect(() => {
@@ -370,7 +370,7 @@ export default function EcoChallenge() {
           </div>
         </div>
 
-        <ChallengeProUpsell accent="emerald" />
+        <ChallengeProUpsell accent="emerald" challenge="eco" />
 
         <FloatingHowItWorks title="How Eco Challenge works" intro="No daily duty — just at least one eco proof between the first and last day of each month." steps={HIW_STEPS} />
 
@@ -407,7 +407,7 @@ export default function EcoChallenge() {
 
             {user ? (
               !proLoading && !isPro ? (
-                <ChallengeLockedCard accent="emerald" />
+                <ChallengeLockedCard accent="emerald" challenge="eco" />
               ) : mySubmissionToday ? (
                 <Card className="bg-green-100/50 dark:bg-green-900/20 border-green-300">
                   <CardContent className="pt-6">

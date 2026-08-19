@@ -21,12 +21,14 @@ import { ChallengeRulesDialog } from "./ChallengeRulesDialog";
 export function ChallengeProUpsell({
   accent = "emerald",
   sectionName,
+  challenge,
 }: {
   accent?: "emerald" | "orange";
   sectionName?: string;
+  challenge?: "eco" | "healthy";
 }) {
   const section = sectionName ?? (accent === "orange" ? "Healthy Challenge" : "Eco Challenge");
-  const { tier, isPro, isTop, activeUntil, loading, subscribe, checkingOut } = useChallengePro();
+  const { tier, isPro, isTop, activeUntil, loading, subscribe, checkingOut } = useChallengePro(challenge ?? (accent === "orange" ? "healthy" : "eco"));
   const [openingPortal, setOpeningPortal] = useState(false);
   const [selectedTarget, setSelectedTarget] = useState<"pro" | "top" | null>(null);
 

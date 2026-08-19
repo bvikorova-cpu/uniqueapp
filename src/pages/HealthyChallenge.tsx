@@ -300,8 +300,8 @@ export default function HealthyChallenge() {
     () => [...submissions.map((s) => s.user_id), ...leaderboard.map((r) => r.user_id)],
     [submissions, leaderboard],
   );
-  const proSet = useChallengeProSet(proUserIds);
-  const { isPro, loading: proLoading } = useChallengePro();
+  const proSet = useChallengeProSet(proUserIds, "healthy");
+  const { isPro, loading: proLoading } = useChallengePro("healthy");
 
   const [countdown, setCountdown] = useState<string>(fmtCountdown(msUntilMonthEnd()));
   useEffect(() => {
@@ -362,7 +362,7 @@ export default function HealthyChallenge() {
           </div>
         </div>
 
-        <ChallengeProUpsell accent="orange" />
+        <ChallengeProUpsell accent="orange" challenge="healthy" />
 
         <FloatingHowItWorks title="How Healthy Challenge works" intro="No daily duty — just at least one healthy proof between the first and last day of each month." steps={HIW_STEPS} />
 
@@ -398,7 +398,7 @@ export default function HealthyChallenge() {
 
             {user ? (
               !proLoading && !isPro ? (
-                <ChallengeLockedCard accent="orange" />
+                <ChallengeLockedCard accent="orange" challenge="healthy" />
               ) : mySubmissionToday ? (
                 <Card className="bg-orange-100/50 dark:bg-orange-900/20 border-orange-300">
                   <CardContent className="pt-6">
