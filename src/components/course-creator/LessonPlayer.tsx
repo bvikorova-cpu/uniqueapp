@@ -90,8 +90,10 @@ export function LessonPlayer({ isOpen,
                   className="absolute top-0 left-0 w-full h-full rounded-lg"
                   controls
                   controlsList="nodownload"
+                  playsInline
+                  preload="metadata"
+                  src={embedUrl}
                 >
-                  <source src={embedUrl} type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
               ) : (
