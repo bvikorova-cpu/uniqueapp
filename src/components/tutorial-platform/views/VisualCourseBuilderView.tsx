@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -28,7 +28,7 @@ const initialModules: Module[] = [
   { id: 3, title: "Hands-On Exercise", type: "document", duration: "20 min" },
 ];
 
-interface Props { onBack: () => void; }
+interface Props { onBack: () => void; courseId?: string | null; }
 
 /**
  * Validate & normalize a video URL.
@@ -92,17 +92,20 @@ export function isDirectVideoFile(url: string) {
   return url.includes("/storage/v1/object/") || /\.(mp4|webm|mov|m4v)(\?|$)/i.test(url);
 }
 
-export function VisualCourseBuilderView({ onBack }: Props) {
+export function VisualCourseBuilderView({ onBack, courseId }: Props) {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [modules, setModules] = useState<Module[]>(initialModules);
+  const isEdit = !!courseId;
+  const [modules, setModules] = useState<Module[]>(isEdit ? [] : initialModules);
   const [newTitle, setNewTitle] = useState("");
   const [newType, setNewType] = useState("video");
   const [saving, setSaving] = useState(false);
-  const [expandedId, setExpandedId] = useState<number | null>(initialModules[0]?.id ?? null);
+  const [loading, setLoading] = useState(isEdit);
+  const [expandedId, setExpandedId] = useState<number | null>(isEdit ? null : (initialModules[0]?.id ?? null));
   const [dragId, setDragId] = useState<number | null>(null);
   const [uploadingId, setUploadingId] = useState<number | null>(null);
   const [uploadingDocId, setUploadingDocId] = useState<number | null>(null);
+
 
   const updateModule = (id: number, patch: Partial<Module>) =>
     setModules(prev => prev.map(m => (m.id === id ? { ...m, ...patch } : m)));
@@ -218,6 +221,58 @@ export function VisualCourseBuilderView({ onBack }: Props) {
   const [category, setCategory] = useState("Technology");
   const [difficulty, setDifficulty] = useState("beginner");
   const [price, setPrice] = useState("29.99");
+  const [wasPublished, setWasPublished] = useState(false);
+
+  // Load existing course when editing
+  useEffect(() => {
+    if (!courseId) return;
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      try {
+        const { data: course, error } = await supabase
+          .from("courses")
+          .select("*")
+          .eq("id", courseId)
+          .maybeSingle();
+        if (error) throw error;
+        if (!course) throw new Error("Course not found");
+        const { data: lessons, error: lErr } = await supabase
+          .from("course_lessons")
+          .select("*")
+          .eq("course_id", courseId)
+          .order("order_index", { ascending: true });
+        if (lErr) throw lErr;
+        if (cancelled) return;
+        setTitle(course.title || "");
+        setDescription(course.description || "");
+        setCategory(course.category || "Technology");
+        setDifficulty(course.difficulty_level || "beginner");
+        setPrice(String(course.price ?? 0));
+        setWasPublished(!!course.is_published);
+        const mapped: Module[] = (lessons || []).map((l: any, i: number) => ({
+          id: Date.now() + i,
+          title: l.title || `Module ${i + 1}`,
+          type: l.video_url ? "video" : "document",
+          duration: `${l.duration_minutes ?? 10} min`,
+          description: l.description || undefined,
+          video_url: l.video_url || undefined,
+          content: l.content || undefined,
+          attachment_url: l.attachment_url || undefined,
+          attachment_name: l.attachment_name || undefined,
+        }));
+        setModules(mapped);
+        setExpandedId(mapped[0]?.id ?? null);
+      } catch (e: any) {
+        toast({ title: "Could not load course", description: e.message, variant: "destructive" });
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [courseId]);
+
+
 
   const getIcon = (type: string) => {
     switch (type) {
@@ -278,6 +333,49 @@ export function VisualCourseBuilderView({ onBack }: Props) {
           duration_minutes: parseInt(m.duration) || 10,
         });
       }
+
+      // ---- EDIT MODE: update existing course, no credit charge ----
+      if (courseId) {
+        const { error: upErr } = await supabase
+          .from("courses")
+          .update({
+            title,
+            description,
+            category,
+            difficulty_level: difficulty,
+            price: parseFloat(price) || 0,
+            duration_minutes: totalDuration,
+            total_lessons: modules.length,
+            is_published: publish ? true : wasPublished,
+          })
+          .eq("id", courseId);
+        if (upErr) throw upErr;
+
+        const { error: delErr } = await supabase.from("course_lessons").delete().eq("course_id", courseId);
+        if (delErr) throw delErr;
+
+        const { error: insErr } = await supabase.from("course_lessons").insert(
+          lessonRows.map((m, i) => ({
+            course_id: courseId,
+            title: m.title,
+            description: m.description,
+            video_url: m.video_url,
+            content: m.content,
+            attachment_url: m.attachment_url,
+            attachment_name: m.attachment_name,
+            duration_minutes: m.duration_minutes,
+            order_index: i,
+            is_preview: i === 0,
+          }))
+        );
+        if (insErr) throw insErr;
+
+        toast({ title: "Course updated ✅" });
+        navigate(`/tutorial-course/${courseId}`);
+        return;
+      }
+
+
 
       if (publish) {
         const { data, error } = await supabase.functions.invoke("create-course-credits", {
@@ -366,6 +464,15 @@ export function VisualCourseBuilderView({ onBack }: Props) {
     }
   };
 
+  if (loading) {
+    return (
+      <div>
+        <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
+        <div className="py-20 flex justify-center"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>
+      </div>
+    );
+  }
+
   return (
     <>
       <FloatingHowItWorks title={"Visual Course Builder View - How it works"} steps={[{ title: 'Open', desc: 'Access the Visual Course Builder View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Visual Course Builder View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
@@ -377,10 +484,13 @@ export function VisualCourseBuilderView({ onBack }: Props) {
             <Palette className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="text-2xl font-black">Visual Course Builder</h2>
-            <p className="text-sm text-muted-foreground">Create and publish your course</p>
+            <h2 className="text-2xl font-black">{isEdit ? "Edit Course" : "Visual Course Builder"}</h2>
+            <p className="text-sm text-muted-foreground">
+              {isEdit ? "Update your course details, modules and files — editing is free" : "Create and publish your course"}
+            </p>
           </div>
         </div>
+
 
         <Card className="p-4 mb-4 space-y-3">
           <Input placeholder="Course name *" value={title} onChange={e => setTitle(e.target.value)} />
