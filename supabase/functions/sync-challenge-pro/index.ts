@@ -44,7 +44,9 @@ serve(async (req) => {
     }
     const customerId = customers.data[0].id;
 
-    const subs = await stripe.subscriptions.list({ customer: customerId, status: "active", limit: 50 });
+    const subs = await stripe.subscriptions.list({ customer: customerId, status: "active", limit: 50, expand: ["data.items.data.price.product"] });
+    log("active subs", { count: subs.data.length });
+
 
     type Entry = { end: number; start: number; subId: string };
     const CHALLENGES = ["eco", "healthy"] as const;
