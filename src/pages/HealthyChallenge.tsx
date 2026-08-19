@@ -221,7 +221,7 @@ export default function HealthyChallenge() {
     try {
       const { images, video } = await uploadMedia();
       const { error } = await (supabase as any).from("healthy_submissions").insert({ user_id: user.id,
-        challenge_id: challenge.id,
+        challenge_id: challenge.id === "fallback" ? null : challenge.id,
         challenge_date: challenge.challenge_date,
         description: description.trim(),
         image_urls: images,
