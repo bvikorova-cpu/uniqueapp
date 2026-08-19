@@ -122,39 +122,31 @@ export function AICertificateDesignerView({ onBack }: Props) {
         </Card>
 
         {certificate && (
-          <Card className="border-amber-500/20 shadow-xl">
+          <Card className="shadow-xl">
             <CardContent className="pt-6">
-              <div className="border-4 border-double border-amber-500/40 rounded-2xl p-6 md:p-10 bg-gradient-to-br from-amber-50/60 to-amber-100/30 dark:from-amber-950/30 dark:to-amber-900/10 text-center space-y-3 relative overflow-hidden">
-                {/* Decorative corners */}
-                <div className="absolute top-3 left-3"><Star className="w-5 h-5 text-amber-400/30" /></div>
-                <div className="absolute top-3 right-3"><Star className="w-5 h-5 text-amber-400/30" /></div>
-                <div className="absolute bottom-3 left-3"><Star className="w-5 h-5 text-amber-400/30" /></div>
-                <div className="absolute bottom-3 right-3"><Star className="w-5 h-5 text-amber-400/30" /></div>
-                
-                <Award className="w-16 h-16 text-amber-500 mx-auto drop-shadow-lg" />
-                <h3 className="text-2xl md:text-3xl font-serif font-bold">Certificate of Completion</h3>
-                <p className="text-muted-foreground text-sm">This certifies that</p>
-                <p className="text-2xl md:text-3xl font-black bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">{studentName}</p>
-                <p className="text-muted-foreground text-sm">has successfully completed</p>
-                <p className="text-lg md:text-xl font-bold">{courseName}</p>
-                <p className="text-sm text-muted-foreground mt-4">{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                {shortCitation && (
-                  <p className="text-sm italic text-muted-foreground max-w-xl mx-auto mt-3">"{shortCitation}"</p>
+              <div ref={certRef} className={`rounded-2xl p-6 md:p-10 text-center space-y-3 relative overflow-hidden ${theme.frame} ${theme.bg}`}>
+                {theme.corners && (
+                  <>
+                    <div className="absolute top-3 left-3"><Star className={`w-5 h-5 ${theme.cornerColor}`} /></div>
+                    <div className="absolute top-3 right-3"><Star className={`w-5 h-5 ${theme.cornerColor}`} /></div>
+                    <div className="absolute bottom-3 left-3"><Star className={`w-5 h-5 ${theme.cornerColor}`} /></div>
+                    <div className="absolute bottom-3 right-3"><Star className={`w-5 h-5 ${theme.cornerColor}`} /></div>
+                  </>
                 )}
+
+                <Award className={`w-16 h-16 mx-auto drop-shadow-lg ${theme.icon}`} />
+                <h3 className={`text-2xl md:text-3xl font-bold ${theme.heading}`}>{theme.title}</h3>
+                <p className="text-muted-foreground text-sm">This certifies that</p>
+                <p className={`text-2xl md:text-3xl font-black ${theme.name}`}>{studentName}</p>
+                <p className="text-muted-foreground text-sm">has successfully completed</p>
+                <p className={`text-lg md:text-xl font-bold ${theme.course}`}>{courseName}</p>
+                <p className="text-sm text-muted-foreground mt-4">{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                <p className="text-xs text-muted-foreground pt-2">Issued by Unique Tutorial Platform</p>
               </div>
-              <Button className="w-full mt-4 h-11" variant="outline" onClick={() => {
-                const content = `===== CERTIFICATE OF COMPLETION =====\n\nAwarded to: ${studentName}\nCourse: ${courseName}\nStyle: ${style}\nDate: ${new Date().toLocaleDateString()}\n\n${shortCitation}\n\nIssued by Unique Tutorial Platform\n`;
-                const blob = new Blob([content], { type: "text/plain" });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = `Certificate_${studentName.replace(/\s+/g, "_") || "Student"}.txt`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                toast({ description: "Certificate downloaded" });
-              }}><Download className="w-4 h-4 mr-2" />Download Certificate</Button>
+              <Button className="w-full mt-4 h-11" variant="outline" onClick={downloadPdf}>
+                <Download className="w-4 h-4 mr-2" />Download PDF
+              </Button>
+
 
             </CardContent>
           </Card>
