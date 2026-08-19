@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Pencil, Trash2, Eye, Loader2, GraduationCap, Plus } from "lucide-react";
+import { ArrowLeft, Pencil, Trash2, Eye, Loader2, GraduationCap, Plus, Rocket, Flame, Crown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
+import { CoursePromoteDialog } from "../CoursePromoteDialog";
 
 interface Props {
   onBack: () => void;
@@ -22,6 +23,8 @@ interface CourseRow {
   price: number | null;
   is_published: boolean | null;
   total_lessons: number | null;
+  featured_until: string | null;
+  premium_until: string | null;
   created_at: string;
 }
 
@@ -31,6 +34,9 @@ export function MyCoursesView({ onBack, onEdit, onCreate }: Props) {
   const [loading, setLoading] = useState(true);
   const [courses, setCourses] = useState<CourseRow[]>([]);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [promoteId, setPromoteId] = useState<string | null>(null);
+
+  const isLive = (d: string | null) => !!d && new Date(d).getTime() > Date.now();
 
   const load = async () => {
     setLoading(true);
@@ -42,7 +48,7 @@ export function MyCoursesView({ onBack, onEdit, onCreate }: Props) {
       }
       const { data, error } = await supabase
         .from("courses")
-        .select("id,title,description,category,price,is_published,total_lessons,created_at")
+        .select("id,title,description,category,price,is_published,total_lessons,featured_until,premium_until,created_at")
         .eq("creator_id", user.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -135,6 +141,12 @@ export function MyCoursesView({ onBack, onEdit, onCreate }: Props) {
                         <Badge variant={course.is_published ? "default" : "outline"}>
                           {course.is_published ? "Published" : "Draft"}
                         </Badge>
+                        {isLive(course.premium_until) && (
+                          <Badge className="gap-1"><Crown className="h-3 w-3" /> Premium</Badge>
+                        )}
+                        {isLive(course.featured_until) && (
+                          <Badge variant="secondary" className="gap-1"><Flame className="h-3 w-3" /> Top</Badge>
+                        )}
                       </div>
                       <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{course.description}</p>
                       <div className="flex gap-2 mt-2 flex-wrap text-xs text-muted-foreground">
@@ -151,6 +163,9 @@ export function MyCoursesView({ onBack, onEdit, onCreate }: Props) {
                     <Button size="sm" variant="outline" onClick={() => navigate(`/tutorial-course/${course.id}`)}>
                       <Eye className="w-4 h-4 mr-2" />View
                     </Button>
+                    <Button size="sm" variant="outline" onClick={() => setPromoteId(course.id)}>
+                      <Rocket className="w-4 h-4 mr-2" />Promote
+                    </Button>
                     <Button size="sm" variant="outline" disabled={busyId === course.id} onClick={() => togglePublish(course)}>
                       {course.is_published ? "Unpublish" : "Publish"}
                     </Button>
@@ -164,6 +179,12 @@ export function MyCoursesView({ onBack, onEdit, onCreate }: Props) {
           )}
         </div>
       </div>
+      <CoursePromoteDialog
+        courseId={promoteId}
+        open={!!promoteId}
+        onOpenChange={(o) => !o && setPromoteId(null)}
+        onPromoted={load}
+      />
     </>
   );
 }
