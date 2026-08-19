@@ -17,6 +17,9 @@ interface Module {
   duration: string;
   description?: string;
   video_url?: string;
+  content?: string;
+  attachment_url?: string;
+  attachment_name?: string;
 }
 
 const initialModules: Module[] = [
@@ -99,6 +102,7 @@ export function VisualCourseBuilderView({ onBack }: Props) {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [dragId, setDragId] = useState<number | null>(null);
   const [uploadingId, setUploadingId] = useState<number | null>(null);
+  const [uploadingDocId, setUploadingDocId] = useState<number | null>(null);
 
   const updateModule = (id: number, patch: Partial<Module>) =>
     setModules(prev => prev.map(m => (m.id === id ? { ...m, ...patch } : m)));
@@ -144,8 +148,44 @@ export function VisualCourseBuilderView({ onBack }: Props) {
     }
   };
 
+  const MAX_DOC_BYTES = 50 * 1024 * 1024; // 50 MB
+
+  const handleDocUpload = async (moduleId: number, file: File) => {
+    if (file.size > MAX_DOC_BYTES) {
+      toast({ title: "File is too large (max 50 MB)", variant: "destructive" });
+      return;
+    }
+    setUploadingDocId(moduleId);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) {
+        toast({ title: "Please sign in to upload files", variant: "destructive" });
+        return;
+      }
+      const safeName = file.name.replace(/[^A-Za-z0-9._-]/g, "_");
+      const path = `${auth.user.id}/${Date.now()}-${safeName}`;
+      const { error: upErr } = await supabase.storage
+        .from("course-files")
+        .upload(path, file, { contentType: file.type || "application/octet-stream", upsert: false });
+      if (upErr) throw upErr;
+
+      const { data: signed, error: signErr } = await supabase.storage
+        .from("course-files")
+        .createSignedUrl(path, 60 * 60 * 24 * 365 * 5);
+      if (signErr || !signed?.signedUrl) throw signErr || new Error("Could not create file link");
+
+      updateModule(moduleId, { attachment_url: signed.signedUrl, attachment_name: file.name });
+      toast({ title: "Document uploaded ✅" });
+    } catch (e: any) {
+      console.error(e);
+      toast({ title: "Upload failed", description: e.message, variant: "destructive" });
+    } finally {
+      setUploadingDocId(null);
+    }
+  };
 
   const onDragStart = (id: number) => setDragId(id);
+
   const onDragOver = (e: React.DragEvent, overId: number) => {
     e.preventDefault();
     if (dragId === null || dragId === overId) return;
@@ -246,6 +286,9 @@ export function VisualCourseBuilderView({ onBack }: Props) {
           title: m.title,
           description: m.description || null,
           video_url: normalizedUrl,
+          content: m.content || null,
+          attachment_url: m.attachment_url || null,
+          attachment_name: m.attachment_name || null,
           duration_minutes: parseInt(m.duration) || 10,
           order_index: i,
           is_preview: i === 0 });
@@ -413,6 +456,62 @@ export function VisualCourseBuilderView({ onBack }: Props) {
                         </div>
                       );
                     })()}
+
+                    <Textarea
+                      value={mod.content || ""}
+                      onChange={(e) => updateModule(mod.id, { content: e.target.value })}
+                      placeholder="Lesson text / notes (optional) — students see this in the lesson"
+                      rows={4}
+                    />
+
+                    <div className="flex flex-wrap items-center gap-2">
+                      <input
+                        id={`doc-file-${mod.id}`}
+                        type="file"
+                        accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.zip,image/*,application/pdf"
+                        className="hidden"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0];
+                          e.target.value = "";
+                          if (f) handleDocUpload(mod.id, f);
+                        }}
+                      />
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        disabled={uploadingDocId === mod.id}
+                        onClick={() => document.getElementById(`doc-file-${mod.id}`)?.click()}
+                      >
+                        {uploadingDocId === mod.id ? (
+                          <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Uploading…</>
+                        ) : (
+                          <><FileText className="w-4 h-4 mr-2" />Upload document</>
+                        )}
+                      </Button>
+                      <span className="text-xs text-muted-foreground">PDF/DOC/PPT/XLS/TXT/ZIP/image, max 50 MB</span>
+                    </div>
+                    {mod.attachment_url && (
+                      <div className="flex items-center justify-between gap-2 rounded-md border bg-muted/40 px-3 py-2">
+                        <a
+                          href={mod.attachment_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm underline truncate"
+                        >
+                          {mod.attachment_name || "Attached document"}
+                        </a>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 text-red-500"
+                          onClick={() => updateModule(mod.id, { attachment_url: undefined, attachment_name: undefined })}
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    )}
+
                     <div className="grid grid-cols-2 gap-2">
                       <Input
                         value={mod.duration}

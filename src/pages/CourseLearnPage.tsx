@@ -35,6 +35,9 @@ interface Lesson {
   video_url: string;
   duration_minutes: number;
   order_index: number;
+  content?: string | null;
+  attachment_url?: string | null;
+  attachment_name?: string | null;
 }
 
 interface LessonProgress {
@@ -293,6 +296,9 @@ export default function CourseLearnPage() {
           lessonTitle={currentLesson.title}
           videoUrl={currentLesson.video_url}
           description={currentLesson.description}
+          content={currentLesson.content}
+          attachmentUrl={currentLesson.attachment_url}
+          attachmentName={currentLesson.attachment_name}
         />
       )}
 

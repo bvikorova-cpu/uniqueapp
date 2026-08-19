@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Play, X, ExternalLink } from "lucide-react";
+import { Play, X, ExternalLink, FileText, Download } from "lucide-react";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface LessonPlayerProps {
@@ -11,13 +11,19 @@ interface LessonPlayerProps {
   lessonTitle: string;
   videoUrl: string;
   description?: string;
+  content?: string | null;
+  attachmentUrl?: string | null;
+  attachmentName?: string | null;
 }
 
 export function LessonPlayer({ isOpen,
   onClose,
   lessonTitle,
   videoUrl,
-  description }: LessonPlayerProps) {
+  description,
+  content,
+  attachmentUrl,
+  attachmentName }: LessonPlayerProps) {
   const [embedUrl, setEmbedUrl] = useState<string>("");
   const [videoType, setVideoType] = useState<"youtube" | "vimeo" | "direct">("direct");
 
@@ -109,7 +115,7 @@ export function LessonPlayer({ isOpen,
             </div>
           )}
 
-          {!embedUrl && (
+          {!embedUrl && videoUrl && (
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <Play className="h-16 w-16 text-muted-foreground mb-4" />
@@ -136,9 +142,36 @@ export function LessonPlayer({ isOpen,
               </CardContent>
             </Card>
           )}
+
+          {/* Lesson text */}
+          {content && (
+            <Card>
+              <CardContent className="pt-6">
+                <h4 className="font-semibold mb-2">Lesson content</h4>
+                <p className="text-sm whitespace-pre-wrap text-muted-foreground">{content}</p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Attachment */}
+          {attachmentUrl && (
+            <Card>
+              <CardContent className="pt-6 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 min-w-0">
+                  <FileText className="h-4 w-4 shrink-0" />
+                  <span className="text-sm truncate">{attachmentName || "Lesson document"}</span>
+                </div>
+                <Button variant="outline" size="sm" onClick={() => window.open(attachmentUrl, "_blank")}>
+                  <Download className="mr-2 h-4 w-4" />
+                  Open
+                </Button>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </DialogContent>
     </Dialog>
     </>
     );
 }
+
