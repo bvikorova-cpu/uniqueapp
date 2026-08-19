@@ -229,9 +229,10 @@ export default function HealthyChallenge() {
       if (error) { // Postgres unique_violation (user already submitted today, race-safe)
         if ((error as any).code === "23505") {
           toast({
-            title: "⚠️ Daily limit reached",
-            description: "You have already submitted your proof for today. Only 1 submission per day is allowed.",
+            title: "Already submitted today",
+            description: "Only 1 submission per day is allowed. You can add your next proof tomorrow.",
             variant: "destructive" });
+
           await loadAll();
           return;
         }
