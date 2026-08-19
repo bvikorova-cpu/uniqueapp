@@ -195,11 +195,11 @@ const Terms = () => {
               <p><strong>12.3.</strong> No liability for indirect, consequential, or punitive damages.</p>
             </LegalSection>
 
-            <LegalSection id="law" number="§12" title="Governing Law & Disputes">
-              <p><strong>12.1.</strong> UNIQUE operates as a global platform and complies with applicable international privacy and consumer protection standards.</p>
-              <p><strong>12.2.</strong> Disputes are first addressed through good-faith negotiation, then through binding arbitration under the rules of the International Chamber of Commerce (ICC), with proceedings conducted online in English.</p>
-              <p><strong>12.3.</strong> Mandatory consumer protection rights granted to you by the laws of your jurisdiction are not affected by these terms.</p>
-              <p><strong>12.4.</strong> Where local law requires, users may also bring claims in the competent courts of their jurisdiction.</p>
+            <LegalSection id="law" number="§13" title="Governing Law & Disputes">
+              <p><strong>13.1.</strong> UNIQUE operates as a global platform and complies with applicable international privacy and consumer protection standards.</p>
+              <p><strong>13.2.</strong> Disputes are first addressed through good-faith negotiation, then through binding arbitration under the rules of the International Chamber of Commerce (ICC), with proceedings conducted online in English.</p>
+              <p><strong>13.3.</strong> Mandatory consumer protection rights granted to you by the laws of your jurisdiction are not affected by these terms.</p>
+              <p><strong>13.4.</strong> Where local law requires, users may also bring claims in the competent courts of their jurisdiction.</p>
             </LegalSection>
 
             <LegalSection id="changes" number="§13" title="Changes to Terms">
