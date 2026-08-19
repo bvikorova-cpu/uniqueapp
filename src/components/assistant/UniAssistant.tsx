@@ -19,6 +19,7 @@ interface UniAssistantProps {
 }
 
 export function UniAssistant({ docked = false }: UniAssistantProps) {
+  const overlayOpen = useOverlayOpen();
   const [open, setOpen] = useState(false);
   const [listening, setListening] = useState(false);
   const [thinking, setThinking] = useState(false);
