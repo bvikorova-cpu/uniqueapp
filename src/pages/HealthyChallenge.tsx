@@ -364,7 +364,7 @@ export default function HealthyChallenge() {
 
         <ChallengeProUpsell accent="orange" />
 
-        <FloatingHowItWorks title="How Healthy Challenge works" intro="Small daily healthy actions compound into a stronger you." steps={HIW_STEPS} />
+        <FloatingHowItWorks title="How Healthy Challenge works" intro="No daily duty — just at least one healthy proof between the first and last day of each month." steps={HIW_STEPS} />
 
         <Tabs defaultValue="today" className="w-full">
           <TabsList className="grid grid-cols-4 w-full mb-4">
