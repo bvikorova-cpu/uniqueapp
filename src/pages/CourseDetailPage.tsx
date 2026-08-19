@@ -8,9 +8,6 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { LessonPlayer } from "@/components/course-creator/LessonPlayer";
 import { CourseReviews } from "@/components/courses/CourseReviews";
-import { CourseDiscussion } from "@/components/courses/CourseDiscussion";
-import { CourseLeaderboard } from "@/components/courses/CourseLeaderboard";
-import { LiveLessonRoom } from "@/components/courses/LiveLessonRoom";
 import { Play,
   Clock,
   Users,
@@ -59,8 +56,6 @@ export default function CourseDetailPage() {
   const [isInstructor, setIsInstructor] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
-  const [liveLessons, setLiveLessons] = useState<any[]>([]);
-  const [selectedLiveLesson, setSelectedLiveLesson] = useState<any>(null);
   const [chatOpen, setChatOpen] = useState(false);
 
   useEffect(() => {
@@ -93,15 +88,6 @@ export default function CourseDetailPage() {
         .order("order_index", { ascending: true });
 
       setLessons(lessonsData || []);
-
-      // Load live lessons
-      const { data: liveLessonsData } = await supabase
-        .from("live_lessons")
-        .select("*")
-        .eq("course_id", courseId)
-        .order("scheduled_at", { ascending: true });
-
-      setLiveLessons(liveLessonsData || []);
 
       // Check if user is enrolled
       if (user) {
@@ -335,12 +321,6 @@ export default function CourseDetailPage() {
             <TabsTrigger value="curriculum" className="whitespace-nowrap px-4 py-2">Curriculum</TabsTrigger>
             <TabsTrigger value="about" className="whitespace-nowrap px-4 py-2">About</TabsTrigger>
             <TabsTrigger value="reviews" className="whitespace-nowrap px-4 py-2">Reviews</TabsTrigger>
-            <TabsTrigger value="discussion" className="whitespace-nowrap px-4 py-2">Discussion</TabsTrigger>
-            <TabsTrigger value="leaderboard" className="whitespace-nowrap px-4 py-2">Leaderboard</TabsTrigger>
-            <TabsTrigger value="live-lessons" className="whitespace-nowrap px-4 py-2">
-              <Video className="w-4 h-4 mr-2 flex-shrink-0" />
-              Live Lessons
-            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="curriculum" className="mt-6">
@@ -418,105 +398,6 @@ export default function CourseDetailPage() {
             <CourseReviews courseId={courseId!} userHasAccess={isEnrolled} />
           </TabsContent>
 
-          <TabsContent value="discussion" className="mt-6">
-            <CourseDiscussion 
-              courseId={courseId!} 
-              userHasAccess={isEnrolled}
-              isInstructor={isInstructor}
-            />
-          </TabsContent>
-
-          <TabsContent value="leaderboard" className="mt-6">
-            <CourseLeaderboard courseId={courseId!} />
-          </TabsContent>
-
-          <TabsContent value="live-lessons" className="mt-6">
-            {selectedLiveLesson ? (
-              <div>
-                <Button
-                  variant="outline"
-                  className="mb-4"
-                  onClick={() => setSelectedLiveLesson(null)}
-                >
-                  ← Back to Schedule
-                </Button>
-                <LiveLessonRoom
-                  lessonId={selectedLiveLesson.id}
-                  lessonTitle={selectedLiveLesson.title}
-                  isInstructor={isInstructor}
-                />
-              </div>
-            ) : (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Live Lessons</CardTitle>
-                  <CardDescription>
-                    Interactive real-time classes with screen sharing, whiteboard, and breakout rooms
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {liveLessons.length === 0 ? (
-                    <div className="text-center py-12 text-muted-foreground">
-                      <Video className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                      <p>No live lessons scheduled yet</p>
-                      {isInstructor && (
-                        <p className="text-sm mt-2">
-                          Schedule your first live lesson to engage with students in real-time
-                        </p>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {liveLessons.map((lesson) => (
-                        <div
-                          key={lesson.id}
-                          className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
-                        >
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <h4 className="font-semibold">{lesson.title}</h4>
-                              <Badge
-                                variant={
-                                  lesson.status === "live"
-                                    ? "default"
-                                    : lesson.status === "scheduled"
-                                    ? "secondary"
-                                    : "outline"
-                                }
-                              >
-                                {lesson.status}
-                              </Badge>
-                            </div>
-                            {lesson.description && (
-                              <p className="text-sm text-muted-foreground mb-2">
-                                {lesson.description}
-                              </p>
-                            )}
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                              <span>
-                                {new Date(lesson.scheduled_at).toLocaleString()}
-                              </span>
-                              <span>{lesson.duration_minutes} minutes</span>
-                              <span>Max {lesson.max_participants} participants</span>
-                            </div>
-                          </div>
-                          {(isEnrolled || isInstructor) && lesson.status !== "ended" && (
-                            <Button
-                              onClick={() => setSelectedLiveLesson(lesson)}
-                              variant={lesson.status === "live" ? "default" : "outline"}
-                            >
-                              <Video className="w-4 h-4 mr-2" />
-                              {lesson.status === "live" ? "Join Now" : "Enter Room"}
-                            </Button>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
         </Tabs>
       </section>
     </div>
