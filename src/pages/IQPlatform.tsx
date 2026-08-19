@@ -236,15 +236,7 @@ const IQPlatform = () => {
             <ul className="list-disc list-inside space-y-2 pl-2">
               <li><strong>IQ Tests:</strong> 4 difficulty levels (30-60 questions, 30-75 min). Detailed score breakdowns & percentile rankings.</li>
               <li><strong>8+ AI Tools:</strong> Brain Training, IQ Predictor, Cognitive Report, Study Coach, Certificate Generator & more.</li>
-              <li><strong>Live Duels:</strong> Challenge other players in real-time IQ battles across 4 modes.</li>
-              <li><strong>Weekly Tournaments:</strong> Compete for prize pools and credit rewards.</li>
-              <li><strong>IQ Leagues:</strong> 8-tier ranking system from Bronze to Legend based on your IQ score.</li>
-              <li><strong>Brain Streaks:</strong> Daily training streaks with bonus credit rewards.</li>
-              <li><strong>Progress Charts:</strong> Visual tracking with line charts, bar charts & radar profiles.</li>
-              <li><strong>Achievements:</strong> 12 unlockable badges for cognitive milestones.</li>
-              <li><strong>Global Leaderboard:</strong> Worldwide rankings for top performers.</li>
-              <li><strong>Daily Challenge:</strong> One free brain question every day.</li>
-              <li><strong>IQ Certificate:</strong> AI-generated professional certificate with cognitive breakdown.</li>
+              <li><strong>Brain Lab:</strong> 100+ puzzles, memory, focus, math, logic and analytics tools.</li>
             </ul>
           </div>
         </CardContent>
