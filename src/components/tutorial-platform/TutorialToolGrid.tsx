@@ -73,7 +73,7 @@ export function TutorialToolGrid({ onToolSelect }: Props) {
                     {unread}
                   </span>
                 )}
-                {tool.ai && (
+                {tool.credits && (
                   <Badge className="absolute right-3 top-3 border-0 bg-primary/15 px-2 py-0.5 text-[10px] font-bold text-primary">
                     <Sparkles className="mr-1 h-3 w-3" />
                     {tool.credits} CR
