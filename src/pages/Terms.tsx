@@ -202,10 +202,10 @@ const Terms = () => {
               <p><strong>13.4.</strong> Where local law requires, users may also bring claims in the competent courts of their jurisdiction.</p>
             </LegalSection>
 
-            <LegalSection id="changes" number="§13" title="Changes to Terms">
-              <p><strong>13.1.</strong> We may update these terms at any time.</p>
-              <p><strong>13.2.</strong> Material changes notified by email and in-app banner 30 days before effect.</p>
-              <p><strong>13.3.</strong> Continued use after effective date constitutes acceptance.</p>
+            <LegalSection id="changes" number="§14" title="Changes to Terms">
+              <p><strong>14.1.</strong> We may update these terms at any time.</p>
+              <p><strong>14.2.</strong> Material changes notified by email and in-app banner 30 days before effect.</p>
+              <p><strong>14.3.</strong> Continued use after effective date constitutes acceptance.</p>
             </LegalSection>
 
 
