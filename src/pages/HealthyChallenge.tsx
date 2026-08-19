@@ -422,8 +422,9 @@ export default function HealthyChallenge() {
                     <div className="flex items-start gap-2 rounded-lg border border-orange-300/60 bg-orange-100/60 dark:border-orange-800 dark:bg-orange-900/20 p-3 text-xs">
                       <AlertCircle className="w-4 h-4 mt-0.5 text-orange-600 shrink-0" />
                       <p>
-                        <b>Daily limit:</b> only <b>1 submission per user per day</b> is allowed. This is enforced by the database — extra attempts today will be automatically rejected. A new challenge unlocks tomorrow.
+                        <b>Monthly rule:</b> you must add <b>at least 1 photo or video per calendar month</b> (between the 1st and the last day). Posting every day is optional — but only <b>1 submission per day</b> is allowed. {myMonthDays > 0 ? "You already met this month's minimum." : "You have no submission this month yet."}
                       </p>
+
                     </div>
                     <Textarea placeholder="Describe your healthy action — activity, km, meal, duration..." value={description} onChange={(e) => setDescription(e.target.value)} rows={3} maxLength={500} />
                     <div className="flex flex-wrap gap-2">
