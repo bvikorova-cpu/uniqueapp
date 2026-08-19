@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Play, ExternalLink, FileText, Download } from "lucide-react";
+import { Play, ExternalLink, FileText, Download, Lock } from "lucide-react";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface LessonPlayerProps {
@@ -170,16 +170,18 @@ export function LessonPlayer({ isOpen,
 
           {/* Nothing to show */}
           {!videoUrl && !description && !content && !attachmentUrl && (
-            <Card>
+            <Card className="border-primary/30 bg-primary/5">
               <CardContent className="flex flex-col items-center justify-center py-10 text-center">
-                <FileText className="h-10 w-10 text-muted-foreground mb-3" />
-                <p className="font-semibold">No preview content yet</p>
-                <p className="text-sm text-muted-foreground">
-                  This lesson has no video, text or document added by the creator.
+                <Lock className="h-10 w-10 text-primary mb-3" />
+                <p className="font-semibold">Preview not shared for this lesson</p>
+                <p className="text-sm text-muted-foreground max-w-sm mt-1">
+                  The creator keeps this lesson's materials for enrolled students. The full
+                  video, text and documents unlock right after you get access to the course.
                 </p>
               </CardContent>
             </Card>
           )}
+
         </div>
       </DialogContent>
     </Dialog>
