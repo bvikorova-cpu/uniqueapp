@@ -9,6 +9,7 @@ import { AIQuizGeneratorView } from "@/components/tutorial-platform/views/AIQuiz
 import { AITutorChatView } from "@/components/tutorial-platform/views/AITutorChatView";
 import { AICertificateDesignerView } from "@/components/tutorial-platform/views/AICertificateDesignerView";
 import { VisualCourseBuilderView } from "@/components/tutorial-platform/views/VisualCourseBuilderView";
+import { CourseMessagesView } from "@/components/tutorial-platform/views/CourseMessagesView";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const TutorialPlatform = () => {
@@ -18,6 +19,7 @@ const TutorialPlatform = () => {
   const [activeView, setActiveView] = useState("dashboard");
 
   useEffect(() => {
+    if (searchParams.get("view") === "messages") setActiveView("messages");
     const enrollStatus = searchParams.get("enrolled");
     if (enrollStatus === "success") {
       toast({ title: "Enrollment Successful!", description: "Your course is now available in 'My Enrollments'" });
@@ -42,6 +44,7 @@ const TutorialPlatform = () => {
       case "ai-tutor": return <AITutorChatView onBack={() => setActiveView("dashboard")} />;
       case "ai-certificate": return <AICertificateDesignerView onBack={() => setActiveView("dashboard")} />;
       case "course-builder": return <VisualCourseBuilderView onBack={() => setActiveView("dashboard")} />;
+      case "messages": return <CourseMessagesView onBack={() => setActiveView("dashboard")} />;
       default:
         return (
           <>
