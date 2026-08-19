@@ -155,14 +155,25 @@ export function CourseChatDialog({
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages]);
 
-  const ensureRequest = async () => {
-    if (!user || !creatorId || creatorId === user.id || request) return;
-    const { data } = await (supabase as any)
-      .from("course_access_requests")
-      .insert({ course_id: courseId, buyer_id: user.id, creator_id: creatorId })
-      .select("id, status")
-      .maybeSingle();
-    if (data) setRequest({ id: data.id, status: data.status });
+  /**
+   * Buyers pay 3 credits once per course to open the access request.
+   * Returns false when the charge failed (no message is sent in that case).
+   */
+  const ensureRequest = async (): Promise<boolean> => {
+    if (!user || !creatorId || creatorId === user.id || request) return true;
+    const { data, error } = await (supabase as any).rpc("request_course_access", { p_course_id: courseId });
+    if (error) {
+      const msg = String(error.message || "");
+      if (/INSUFFICIENT|credits/i.test(msg)) {
+        toast.error("Not enough credits — buying a course costs 3 credits");
+      } else {
+        toast.error(msg || "Could not create the access request");
+      }
+      return false;
+    }
+    if (data?.request_id) setRequest({ id: data.request_id, status: data.status ?? "pending" });
+    if (data?.charged) toast.success("3 credits used — access request sent to the creator");
+    return true;
   };
 
   const send = async () => {
@@ -176,6 +187,13 @@ export function CourseChatDialog({
       return;
     }
     setSending(true);
+
+    // Charge the 3-credit buyer fee before the first message goes out.
+    const ok = await ensureRequest();
+    if (!ok) {
+      setSending(false);
+      return;
+    }
 
     let attachment_path: string | null = null;
     let attachment_type: string | null = null;
@@ -206,8 +224,8 @@ export function CourseChatDialog({
     }
     setContent("");
     setFile(null);
-    await ensureRequest();
   };
+
 
   const grantAccess = async () => {
     if (!request) return;
