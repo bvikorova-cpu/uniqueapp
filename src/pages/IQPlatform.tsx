@@ -225,34 +225,6 @@ const IQPlatform = () => {
         </TabsContent>
 
         <TabsContent value="tools"><IQToolsGrid /></TabsContent>
-        <TabsContent value="duels" className="space-y-6">
-          <IQLiveSpectatorLobby />
-          <IQFriendChallenge />
-          <IQDuels />
-        </TabsContent>
-        <TabsContent value="tournaments" className="space-y-6">
-          <IQTournaments />
-          <IQHallOfFame />
-        </TabsContent>
-        <TabsContent value="leaderboard" className="space-y-6">
-          <IQGlobalLeaderboard />
-          <IQCountryLeaderboard />
-        </TabsContent>
-        <TabsContent value="progress" className="space-y-6">
-          <IQWeeklyRecap />
-          <IQMilestones />
-          <IQGoals />
-          <IQPerformanceInsights />
-          <IQProgressCharts />
-          <IQShareableCard />
-          <IQAchievements />
-          <IQCertificate />
-        </TabsContent>
-
-        <TabsContent value="results" className="space-y-4">
-          <IQProgressCharts />
-          <IQTestHistory />
-        </TabsContent>
       </Tabs>
 
       <Card>
