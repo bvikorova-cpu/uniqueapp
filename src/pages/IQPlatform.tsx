@@ -108,17 +108,32 @@ const IQPlatform = () => {
         <IQNotificationsBell />
       </div>
 
+      <Card className="bg-gradient-to-br from-primary/15 via-purple-500/10 to-pink-500/10 border-primary/30 hover:border-primary/60 transition-colors">
+        <Link to="/iq-platform/lab" className="block">
+          <CardHeader className="p-4 sm:p-6">
+            <div className="flex items-start gap-4">
+              <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-pink-500 text-white">
+                <FlaskConical className="h-6 w-6" />
+              </div>
+              <div className="flex-1">
+                <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
+                  Brain Lab <Badge className="bg-primary/20 text-primary border-primary/30">100+ tools</Badge>
+                </CardTitle>
+                <CardDescription className="text-xs sm:text-sm mt-1">
+                  Puzzles · Memory · Focus · Math · Logic · Goals · Analytics — all in one place.
+                </CardDescription>
+              </div>
+              <ArrowRight className="h-5 w-5 text-primary self-center" />
+            </div>
+          </CardHeader>
+        </Link>
+      </Card>
+
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 sm:grid-cols-8 gap-1 h-auto p-1.5 bg-muted/50 rounded-xl">
+        <TabsList className="grid w-full grid-cols-2 gap-1 h-auto p-1.5 bg-muted/50 rounded-xl">
           {[
-            { value: "overview", label: "Overview", icon: Brain },
             { value: "tests", label: "IQ Tests", icon: Target },
             { value: "tools", label: "AI Tools", icon: Zap },
-            { value: "duels", label: "Duels", icon: Users },
-            { value: "tournaments", label: "Tournaments", icon: Trophy },
-            { value: "leaderboard", label: "Leaderboard", icon: Medal },
-            { value: "progress", label: "Progress", icon: BarChart3 },
-            { value: "results", label: "Results", icon: LineChart },
           ].map(tab => (
             <TabsTrigger key={tab.value} value={tab.value} className="text-[9px] sm:text-xs py-2 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
               <tab.icon className="h-3 w-3 sm:h-4 sm:w-4 mr-0.5 sm:mr-1" />
@@ -128,7 +143,7 @@ const IQPlatform = () => {
           ))}
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-6">
+        <TabsContent value="tests" className="space-y-6">
           <Card className="bg-gradient-to-br from-primary/15 via-purple-500/10 to-pink-500/10 border-primary/30 hover:border-primary/60 transition-colors">
             <Link to="/iq-platform/lab" className="block">
               <CardHeader className="p-4 sm:p-6">
