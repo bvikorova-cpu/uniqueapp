@@ -87,7 +87,6 @@ const services = [
   { title: "Cooking AI", icon: ChefHat, path: "/cooking-ai", badge: "Recipes", gradient: "from-orange-500 to-amber-500", category: "creative" },
   
   { title: "Food Scanner", icon: Camera, path: "/food-scanner", badge: "Nutrition", gradient: "from-lime-500 to-green-500", category: "wellness" },
-  { title: "Fundraising", icon: Heart, path: "/fundraising", badge: "Charity", gradient: "from-blue-500 to-indigo-500", category: "social" },
   { title: "Future Face", icon: Sparkles, path: "/future-face", badge: "Age AI", gradient: "from-cyan-500 to-blue-500", category: "creative" },
   
   { title: "Megatalent", icon: Star, path: "/megatalent", badge: "Talent", gradient: "from-yellow-500 to-amber-500", category: "entertainment" },
@@ -216,7 +215,7 @@ const Index = () => {
     <>
       <SEO
         title="Unique - All-in-one social platform with AI, marketplace & games"
-        description="Join Unique: AI tools, marketplace, dating, jobs, games, fundraising and creator monetization in one social platform."
+        description="Join Unique: AI tools, marketplace, dating, jobs, games and creator monetization in one social platform."
         canonical="/"
         jsonLd={{
           "@context": "https://schema.org",
