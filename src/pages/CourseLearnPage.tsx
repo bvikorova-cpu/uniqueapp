@@ -303,14 +303,36 @@ export default function CourseLearnPage() {
     return Math.round((completed / lessons.length) * 100);
   };
 
+  const CERT_CREDIT_COST = 3;
+
   const issueCertificate = async (name: string) => {
     if (!course) return;
+    // Charge 3 credits for issuing the certificate (unified ai_credits + ledger).
+    try {
+      const { data, error } = await (supabase as any).rpc("spend_ai_credits", {
+        _amount: CERT_CREDIT_COST,
+        _reason: `course_certificate:${course.title}`,
+        _source: "course_certificate" });
+      if (error) throw error;
+      if (!(data as any)?.ok) {
+        toast({
+          title: "Not enough credits",
+          description: `Issuing a certificate costs ${CERT_CREDIT_COST} credits. Please top up.`,
+          variant: "destructive" });
+        navigate("/ai-credits");
+        return;
+      }
+    } catch (e: any) {
+      toast({ title: "Credit error", description: e?.message || "Could not deduct credits", variant: "destructive" });
+      return;
+    }
     const result = await generateCertificate(courseId!, course.title, name);
     if (result?.certificateHtml) {
       setCertificateHtml(result.certificateHtml);
       setShowCertificate(true);
     }
   };
+
 
   const handleGenerateCertificate = async () => {
     if (!studentName) {
@@ -657,8 +679,9 @@ export default function CourseLearnPage() {
                           </p>
                           <Button size="lg" onClick={handleGenerateCertificate}>
                             <Award className="mr-2 h-5 w-5" />
-                            Get Your Certificate
+                            Get Your Certificate (3 credits)
                           </Button>
+
                         </CardContent>
                       </Card>
                     );

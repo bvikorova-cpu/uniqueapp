@@ -3,6 +3,8 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
 import { TutorialHero } from "@/components/tutorial-platform/TutorialHero";
+import { TutorialHowTo } from "@/components/tutorial-platform/TutorialHowTo";
+
 import { TutorialToolGrid } from "@/components/tutorial-platform/TutorialToolGrid";
 import { BrowseCoursesView } from "@/components/tutorial-platform/views/BrowseCoursesView";
 import { AIQuizGeneratorView } from "@/components/tutorial-platform/views/AIQuizGeneratorView";
@@ -68,8 +70,10 @@ const TutorialPlatform = () => {
           <>
             <TutorialHero />
             <HeroRewardedAd sectionKey="page_tutorialplatform" />
+            <TutorialHowTo />
             <TutorialToolGrid onToolSelect={handleToolSelect} />
           </>
+
         );
     }
   };

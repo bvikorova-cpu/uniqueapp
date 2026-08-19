@@ -6,7 +6,19 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 export function TutorialHero() {
   return (
     <>
-      <FloatingHowItWorks title={"Tutorial Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Tutorial Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Tutorial Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <FloatingHowItWorks
+        title={"Tutorial & Course Platform - How it works"}
+        intro={"Learn from AI-powered courses or publish your own. Sellers keep 100% of every course sale."}
+        steps={[
+          { title: 'Browse courses', desc: 'Open Browse Courses, filter by topic and open a course you like.' },
+          { title: 'Request access', desc: 'Send an access request (3 credits). Payment for the course is arranged directly with the creator, outside the platform.' },
+          { title: 'Learn', desc: 'Watch lessons, complete quizzes and track your progress in My Learning.' },
+          { title: 'Get certified', desc: 'Finish all lessons, then issue your certificate for 3 credits and download it as PDF or share it as an image.' },
+          { title: 'Create & publish', desc: 'Use Create Course to build modules, lessons, videos and quizzes. Publishing costs 15 credits.' },
+          { title: 'Earn 100%', desc: 'You keep 100% of the price you charge for your courses - the platform takes no commission.' },
+        ]}
+      />
+
 
       <motion.section
         initial={{ opacity: 0, y: 12 }}
