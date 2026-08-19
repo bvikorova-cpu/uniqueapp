@@ -59,7 +59,7 @@ export default function IQPlatformHero({ streak }: IQPlatformHeroProps) {
               🧠 IQ <span className="text-blue-400">PLATFORM</span>
             </h1>
             <p className="text-sm sm:text-base text-white/80 font-semibold mt-1 drop-shadow">
-              Test your intelligence, train your brain, compete in leagues & climb the ranks
+              Test your intelligence and train your brain with AI-powered tools
             </p>
           </motion.div>
         </div>
