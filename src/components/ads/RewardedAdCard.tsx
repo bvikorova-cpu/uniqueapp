@@ -233,8 +233,12 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
           </div>
 
           {phase === "idle" && (
-            <Button onClick={startWatch} size="sm" className="bg-gradient-to-r from-primary to-accent text-white">
-              <Play className="w-4 h-4 mr-1" /> Watch Ad
+            <Button onClick={startWatch} disabled={cooldown > 0} size="sm" className="bg-gradient-to-r from-primary to-accent text-white">
+              {cooldown > 0 ? (
+                <><Clock className="w-4 h-4 mr-1" /> Wait {cooldown}s</>
+              ) : (
+                <><Play className="w-4 h-4 mr-1" /> Watch Ad</>
+              )}
             </Button>
           )}
           {phase === "watching" && (
@@ -243,15 +247,29 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
             </Button>
           )}
           {phase === "ready" && (
-            <Button onClick={claim} size="sm" className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
-              <Sparkles className="w-4 h-4 mr-1" /> Claim 5 XP
+            <Button
+              onClick={claim}
+              disabled={isClaiming || cooldown > 0}
+              size="sm"
+              className="bg-gradient-to-r from-green-500 to-emerald-500 text-white"
+            >
+              {cooldown > 0 ? (
+                <><Clock className="w-4 h-4 mr-1" /> Claim in {cooldown}s</>
+              ) : (
+                <><Sparkles className="w-4 h-4 mr-1" /> {isClaiming ? "Claiming…" : "Claim 5 XP"}</>
+              )}
             </Button>
           )}
           {phase === "claimed" && (
-            <Button onClick={() => setPhase("idle")} size="sm" variant="outline">
-              <Check className="w-4 h-4 mr-1" /> Watch another
+            <Button onClick={() => setPhase("idle")} disabled={cooldown > 0} size="sm" variant="outline">
+              {cooldown > 0 ? (
+                <><Clock className="w-4 h-4 mr-1" /> Next in {cooldown}s</>
+              ) : (
+                <><Check className="w-4 h-4 mr-1" /> Watch another</>
+              )}
             </Button>
           )}
+
         </div>
 
         {phase === "watching" && (
