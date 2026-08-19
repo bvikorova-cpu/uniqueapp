@@ -283,16 +283,39 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
     }
   };
 
+  // Always-unique module ids (Date.now() alone can collide and make two
+  // modules share state, which leaked uploads between lessons).
+  const nextId = () => {
+    setIdSeed(s => s + 1);
+    return Date.now() * 1000 + idSeed + 1;
+  };
+
   const addModule = () => {
     if (!newTitle.trim()) return;
-    const id = Date.now();
+    const id = nextId();
     setModules(prev => [...prev, { id, title: newTitle, type: newType, duration: "10 min" }]);
     setExpandedId(id);
     setNewTitle("");
   };
 
   const removeModule = (id: number) => setModules(prev => prev.filter(m => m.id !== id));
-  const duplicateModule = (mod: Module) => setModules(prev => [...prev, { ...mod, id: Date.now(), title: `${mod.title} (Copy)` }]);
+  // Duplicate structure only — never copy the uploaded video/document of another lesson.
+  const duplicateModule = (mod: Module) =>
+    setModules(prev => [
+      ...prev,
+      {
+        id: nextId(),
+        title: `${mod.title} (Copy)`,
+        type: mod.type,
+        duration: mod.duration,
+        description: mod.description,
+        content: mod.content,
+        video_url: undefined,
+        attachment_url: undefined,
+        attachment_name: undefined,
+      },
+    ]);
+
 
   const totalDuration = modules.reduce((sum, m) => sum + (parseInt(m.duration) || 0), 0);
 
