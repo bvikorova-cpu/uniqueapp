@@ -80,17 +80,13 @@ export function LessonPlayer({ isOpen,
           { title: 'Iterate', desc: 'Repeat or level up anytime.' },
         ]} />
       <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[95vw] max-w-5xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            <span>{lessonTitle}</span>
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
-          </DialogTitle>
+          <DialogTitle className="pr-8 text-left break-words">{lessonTitle}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
+
           {/* Video Player */}
           {embedUrl && (
             <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
