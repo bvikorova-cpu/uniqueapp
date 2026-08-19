@@ -296,6 +296,9 @@ export default function CourseLearnPage() {
           lessonTitle={currentLesson.title}
           videoUrl={currentLesson.video_url}
           description={currentLesson.description}
+          content={currentLesson.content}
+          attachmentUrl={currentLesson.attachment_url}
+          attachmentName={currentLesson.attachment_name}
         />
       )}
 
