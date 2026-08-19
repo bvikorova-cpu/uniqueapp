@@ -88,10 +88,11 @@ serve(async (req) => {
       if (!kind) {
         // Fallback: derive from the product name on the price.
         const prod = item?.price?.product;
-        const name = String(
+        const resolved =
           (typeof prod === "object" && prod && (prod as any).name) ||
-          item?.price?.nickname || "",
-        ).toLowerCase();
+          (typeof prod === "string" ? await productName(prod) : "") ||
+          item?.price?.nickname || "";
+        const name = String(resolved).toLowerCase();
         if (name.includes("challenge")) {
           const t = name.includes("top") ? "top" : "pro";
           if (name.includes("eco")) kind = `challenge_${t}_eco`;
