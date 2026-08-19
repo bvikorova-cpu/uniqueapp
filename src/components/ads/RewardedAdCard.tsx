@@ -170,12 +170,14 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
       if (bodyErr || error) {
         if (isRateLimited || /too fast/i.test(bodyErr ?? "")) {
           const wait = retryAfter ?? 10;
+          startCooldown(wait);
           toast({
             title: "Slow down ⏱️",
-            description: `Please wait ${wait}s before claiming again.` });
-          setPhase("idle");
+            description: `Claim unlocks again in ${wait}s — the countdown is on the button.` });
+          setPhase("ready");
           return;
         }
+
         toast({
           title: "Couldn't claim XP",
           description: bodyErr || error?.message || "Please try again in a moment.",
