@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Brain, Trophy, LineChart, Zap, Users, Target, BarChart3, Medal, FlaskConical, ArrowRight } from "lucide-react";
-import { IQCreditsDisplay } from "@/components/iq/IQCreditsDisplay";
+
 import IQPlatformHero from "@/components/iq/IQPlatformHero";
 import IQToolsGrid from "@/components/iq/IQToolsGrid";
 import IQLeaguesSection from "@/components/iq/IQLeaguesSection";
@@ -144,8 +144,7 @@ const IQPlatform = () => {
       />
       <HeroRewardedAd sectionKey="page_iqplatform" />
 
-      <div className="flex items-center justify-between gap-2">
-        <IQCreditsDisplay />
+      <div className="flex justify-end">
         <IQNotificationsBell />
       </div>
 
