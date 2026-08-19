@@ -99,7 +99,7 @@ export function VisualCourseBuilderView({ onBack }: Props) {
   const [newTitle, setNewTitle] = useState("");
   const [newType, setNewType] = useState("video");
   const [saving, setSaving] = useState(false);
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [expandedId, setExpandedId] = useState<number | null>(initialModules[0]?.id ?? null);
   const [dragId, setDragId] = useState<number | null>(null);
   const [uploadingId, setUploadingId] = useState<number | null>(null);
   const [uploadingDocId, setUploadingDocId] = useState<number | null>(null);
@@ -230,7 +230,9 @@ export function VisualCourseBuilderView({ onBack }: Props) {
 
   const addModule = () => {
     if (!newTitle.trim()) return;
-    setModules(prev => [...prev, { id: Date.now(), title: newTitle, type: newType, duration: "10 min" }]);
+    const id = Date.now();
+    setModules(prev => [...prev, { id, title: newTitle, type: newType, duration: "10 min" }]);
+    setExpandedId(id);
     setNewTitle("");
   };
 
@@ -257,32 +259,16 @@ export function VisualCourseBuilderView({ onBack }: Props) {
         return;
       }
 
-      const { data: course, error: courseErr } = await supabase
-        .from("courses")
-        .insert({ creator_id: user.id,
-          title,
-          description,
-          category,
-          difficulty_level: difficulty,
-          price: parseFloat(price) || 0,
-          duration_minutes: totalDuration,
-          total_lessons: modules.length,
-          is_published: publish })
-        .select()
-        .single();
-
-      if (courseErr) throw courseErr;
-
       const lessonRows: any[] = [];
       for (let i = 0; i < modules.length; i++) {
         const m = modules[i];
         const { url: normalizedUrl, error: urlErr } = normalizeVideoUrl(m.video_url || "");
         if (urlErr) {
-          toast({ title: `Modul ${i + 1}: ${urlErr}`, variant: "destructive" });
+          toast({ title: `Module ${i + 1}: ${urlErr}`, variant: "destructive" });
           setSaving(false);
           return;
         }
-        lessonRows.push({ course_id: course.id,
+        lessonRows.push({
           title: m.title,
           description: m.description || null,
           video_url: normalizedUrl,
@@ -290,13 +276,87 @@ export function VisualCourseBuilderView({ onBack }: Props) {
           attachment_url: m.attachment_url || null,
           attachment_name: m.attachment_name || null,
           duration_minutes: parseInt(m.duration) || 10,
-          order_index: i,
-          is_preview: i === 0 });
+        });
       }
-      const { error: lessonsErr } = await supabase.from("course_lessons").insert(lessonRows);
+
+      if (publish) {
+        const { data, error } = await supabase.functions.invoke("create-course-credits", {
+          body: {
+            publish: true,
+            course: {
+              title,
+              description,
+              category,
+              difficulty_level: difficulty,
+              price: parseFloat(price) || 0,
+              duration_minutes: totalDuration,
+              total_lessons: modules.length,
+            },
+            lessons: lessonRows,
+          },
+        });
+
+        if (error) {
+          const msg = error?.message || "";
+          if (/402|insufficient|credits/i.test(msg) || data?.cost) {
+            toast({
+              title: "Not enough credits",
+              description: `Publishing a course costs 15 credits. You have ${data?.credits_remaining ?? 0} credits.`,
+              variant: "destructive",
+            });
+          } else {
+            toast({ title: "Publishing failed", description: msg || "Unknown error", variant: "destructive" });
+          }
+          setSaving(false);
+          return;
+        }
+
+        if (data?.error) {
+          toast({ title: "Publishing failed", description: data.error, variant: "destructive" });
+          setSaving(false);
+          return;
+        }
+
+        toast({ title: "Course published 🎉", description: `15 credits used. Remaining: ${data?.credits_remaining ?? 0}` });
+        navigate(`/tutorial-course/${data.courseId}`);
+        return;
+      }
+
+      // Draft save – no credit charge
+      const { data: course, error: courseErr } = await supabase
+        .from("courses")
+        .insert({
+          creator_id: user.id,
+          title,
+          description,
+          category,
+          difficulty_level: difficulty,
+          price: parseFloat(price) || 0,
+          duration_minutes: totalDuration,
+          total_lessons: modules.length,
+          is_published: false,
+        })
+        .select()
+        .single();
+
+      if (courseErr) throw courseErr;
+
+      const fullLessonRows = lessonRows.map((m, i) => ({
+        course_id: course.id,
+        title: m.title,
+        description: m.description,
+        video_url: m.video_url,
+        content: m.content,
+        attachment_url: m.attachment_url,
+        attachment_name: m.attachment_name,
+        duration_minutes: m.duration_minutes,
+        order_index: i,
+        is_preview: i === 0,
+      }));
+      const { error: lessonsErr } = await supabase.from("course_lessons").insert(fullLessonRows);
       if (lessonsErr) throw lessonsErr;
 
-      toast({ title: publish ? "Course published 🎉" : "Course saved as draft" });
+      toast({ title: "Course saved as draft" });
       navigate(`/tutorial-course/${course.id}`);
     } catch (e: any) {
       console.error(e);
@@ -336,10 +396,13 @@ export function VisualCourseBuilderView({ onBack }: Props) {
           </div>
         </Card>
 
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-3 mb-2">
           <Badge variant="outline"><BookOpen className="w-3 h-3 mr-1" />{modules.length} modulov</Badge>
           <Badge variant="outline"><Clock className="w-3 h-3 mr-1" />{totalDuration} min</Badge>
         </div>
+        <p className="text-xs text-muted-foreground mb-4">
+          Click a module to expand it. Inside you can write lesson text, upload a video from your device, and attach documents (PDF, DOC, images, etc.).
+        </p>
 
         <div className="space-y-2 mb-4">
           {modules.map((mod, i) => {
@@ -549,15 +612,21 @@ export function VisualCourseBuilderView({ onBack }: Props) {
           </CardContent>
         </Card>
 
-        <div className="flex gap-2">
-          <Button variant="outline" className="flex-1" onClick={() => saveCourse(false)} disabled={saving}>
-            {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-            Save draft
-          </Button>
-          <Button className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600" onClick={() => saveCourse(true)} disabled={saving}>
-            {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-            Publish course
-          </Button>
+        <div className="space-y-2">
+          <div className="flex gap-2">
+            <Button variant="outline" className="flex-1" onClick={() => saveCourse(false)} disabled={saving}>
+              {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+              Save draft
+            </Button>
+            <Button className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600" onClick={() => saveCourse(true)} disabled={saving}>
+              {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+              Publish course
+              <span className="ml-2 inline-flex items-center rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold">15 CR</span>
+            </Button>
+          </div>
+          <p className="text-center text-xs text-muted-foreground">
+            Publishing a course costs <span className="font-semibold text-primary">15 credits</span>. Saving a draft is free.
+          </p>
         </div>
       </div>
     </div>

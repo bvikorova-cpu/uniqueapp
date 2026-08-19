@@ -444,4 +444,9 @@ verify_jwt = true
 [functions.generate-escape-room-panorama]
 verify_jwt = true
 
+[functions.create-course-credits]
+verify_jwt = true
+
+
+
 

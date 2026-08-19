@@ -12,7 +12,7 @@ import bgMyCourses from "@/assets/tutorial/bg-mycourses.jpg";
 import bgMessages from "@/assets/tutorial/bg-messages.jpg";
 
 const tools = [
-  { id: "create", label: "Create Course", icon: Plus, desc: "Build and publish your own course", img: bgCreate, span: "md:col-span-2" },
+  { id: "create", label: "Create Course", icon: Plus, desc: "Build and publish your own course", credits: 15, img: bgCreate, span: "md:col-span-2" },
   { id: "browse", label: "Browse Courses", icon: Search, desc: "Discover every course in the campus library", img: bgBrowse, span: "md:col-span-2" },
   { id: "ai-tutor", label: "AI Tutor", icon: MessageCircle, desc: "Ask anything, learn step by step", ai: true, credits: 3, img: bgTutor },
   { id: "ai-quiz", label: "AI Quiz", icon: Brain, desc: "Instant quizzes from any topic", ai: true, credits: 5, img: bgQuiz },
@@ -73,7 +73,7 @@ export function TutorialToolGrid({ onToolSelect }: Props) {
                     {unread}
                   </span>
                 )}
-                {tool.ai && (
+                {tool.credits && (
                   <Badge className="absolute right-3 top-3 border-0 bg-primary/15 px-2 py-0.5 text-[10px] font-bold text-primary">
                     <Sparkles className="mr-1 h-3 w-3" />
                     {tool.credits} CR
