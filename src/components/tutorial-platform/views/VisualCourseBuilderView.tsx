@@ -661,6 +661,8 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
       const { error: lessonsErr } = await supabase.from("course_lessons").insert(fullLessonRows);
       if (lessonsErr) throw lessonsErr;
 
+      await persistQuizzes(course.id, modules);
+
       toast({ title: "Course saved as draft" });
       navigate(`/tutorial-course/${course.id}`);
     } catch (e: any) {
