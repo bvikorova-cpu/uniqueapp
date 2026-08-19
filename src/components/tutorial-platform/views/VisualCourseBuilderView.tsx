@@ -286,6 +286,9 @@ export function VisualCourseBuilderView({ onBack }: Props) {
           title: m.title,
           description: m.description || null,
           video_url: normalizedUrl,
+          content: m.content || null,
+          attachment_url: m.attachment_url || null,
+          attachment_name: m.attachment_name || null,
           duration_minutes: parseInt(m.duration) || 10,
           order_index: i,
           is_preview: i === 0 });
