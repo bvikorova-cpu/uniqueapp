@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Puzzle, Brain, Zap, Calculator, Users, User, BarChart3, Target, Database } from "lucide-react";
+import { ArrowLeft, Puzzle, Brain, Zap, Calculator } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import BrainLabGameGate from "@/components/iq/BrainLabGameGate";
 
 // Puzzles & Games
 import IQHanoi from "@/components/iq/IQHanoi";
