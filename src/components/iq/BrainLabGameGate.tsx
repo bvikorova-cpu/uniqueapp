@@ -64,35 +64,31 @@ export default function BrainLabGameGate({ children }: BrainLabGameGateProps) {
 
   return (
     <div className="relative h-full">
-      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 p-5 rounded-xl bg-card/95 backdrop-blur-md border border-primary/20 text-center shadow-lg">
-        <div className="p-3 rounded-full bg-gradient-to-br from-primary/20 to-pink-500/20">
-          <Brain className="h-6 w-6 text-primary" />
-        </div>
-        <div>
+      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-background/25 backdrop-blur-[2px] text-center">
+        <div className="flex flex-col items-center gap-2 rounded-xl bg-card/85 border border-primary/20 shadow-lg px-4 py-3 max-w-[240px]">
           <p className="font-bold text-sm flex items-center justify-center gap-1">
             <Sparkles className="h-3 w-3 text-pink-500" /> Brain Training Game
           </p>
-          <p className="text-xs text-muted-foreground mt-1">Unlock to play this mini-game</p>
+          <Badge variant="outline" className="text-[10px]">
+            {BRAIN_LAB_GAME_COST} credit
+          </Badge>
+          <Button
+            onClick={unlock}
+            disabled={loading}
+            size="sm"
+            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+          >
+            {loading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <>
+                <Lock className="h-3 w-3 mr-1" /> Play
+              </>
+            )}
+          </Button>
         </div>
-        <Badge variant="outline" className="text-[10px]">
-          {BRAIN_LAB_GAME_COST} credit
-        </Badge>
-        <Button
-          onClick={unlock}
-          disabled={loading}
-          size="sm"
-          className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-        >
-          {loading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <>
-              <Lock className="h-3 w-3 mr-1" /> Play
-            </>
-          )}
-        </Button>
       </div>
-      <div className="opacity-25 pointer-events-none select-none h-full grayscale">
+      <div className="opacity-80 pointer-events-none select-none h-full">
         {children}
       </div>
     </div>
