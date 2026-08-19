@@ -128,6 +128,9 @@ export function getNotificationRoute(n: NotifLike): string {
     course_enrollment: "/education",
     course_completed: "/education/certificates",
     certificate_issued: "/education/certificates",
+    course_access_granted: "/tutorial-platform?view=my-learning",
+    course_access_request: "/tutorial-platform?view=messages",
+    course_message: "/tutorial-platform?view=messages",
 
     // User-to-user interactions
     comment: n.post_id ? `/post/${n.post_id}` : "/wall",
