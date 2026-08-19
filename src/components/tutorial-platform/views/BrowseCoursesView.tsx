@@ -10,9 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
-import { CourseChatDialog } from "../CourseChatDialog";
 import { useAuth } from "@/contexts/AuthContext";
-import { toast } from "sonner";
 
 interface Course {
   id: string;
@@ -37,7 +35,6 @@ interface Props { onBack: () => void; }
 export function BrowseCoursesView({ onBack }: Props) {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [chatCourse, setChatCourse] = useState<Course | null>(null);
   const [enrolled, setEnrolled] = useState<Set<string>>(new Set());
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
@@ -61,24 +58,6 @@ export function BrowseCoursesView({ onBack }: Props) {
       setEnrolled(new Set(((data || []) as any[]).map((e) => e.course_id)));
     })();
   }, [user]);
-
-  const requestAccess = async (course: Course) => {
-    if (!user) {
-      toast.error("Please sign in to request access");
-      return;
-    }
-    if (course.creator_id === user.id) {
-      toast.info("This is your own course");
-      return;
-    }
-    await (supabase as any)
-      .from("course_access_requests")
-      .upsert(
-        { course_id: course.id, buyer_id: user.id, creator_id: course.creator_id },
-        { onConflict: "course_id,buyer_id", ignoreDuplicates: true },
-      );
-    setChatCourse(course);
-  };
 
   const loadCourses = async () => {
     try {
@@ -258,17 +237,6 @@ export function BrowseCoursesView({ onBack }: Props) {
             </motion.div>
           ))}
         </div>
-      )}
-      {chatCourse && (
-        <CourseChatDialog
-          open={!!chatCourse}
-          onOpenChange={(o) => !o && setChatCourse(null)}
-          courseId={chatCourse.id}
-          courseTitle={chatCourse.title}
-          coursePrice={chatCourse.price}
-          otherId={chatCourse.creator_id}
-          prefillInterest
-        />
       )}
     </div>
     </>
