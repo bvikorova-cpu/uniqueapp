@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Languages, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useOverlayOpen } from "@/hooks/useOverlayOpen";
 
 declare global {
   interface Window {
