@@ -21,6 +21,7 @@ import { Play,
   Video } from "lucide-react";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { CourseChatDialog } from "@/components/tutorial-platform/CourseChatDialog";
 interface Course {
   id: string;
   creator_id: string;
@@ -59,6 +60,7 @@ export default function CourseDetailPage() {
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
   const [liveLessons, setLiveLessons] = useState<any[]>([]);
   const [selectedLiveLesson, setSelectedLiveLesson] = useState<any>(null);
+  const [chatOpen, setChatOpen] = useState(false);
 
   useEffect(() => {
     if (!courseId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(courseId)) {
@@ -124,32 +126,28 @@ export default function CourseDetailPage() {
     }
   };
 
-  const handlePurchase = async () => {
+  const handleRequestAccess = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) { toast({
+
+    if (!user) {
+      toast({
         title: "Authentication Required",
-        description: "Please sign in to purchase this course",
+        description: "Please sign in to request access to this course",
         variant: "destructive" });
       navigate("/auth");
       return;
     }
+    if (!course) return;
 
     setPurchasing(true);
     try {
-      const { data, error } = await supabase.functions.invoke("purchase-course", {
-        body: { courseId } });
-
-      if (error) throw error;
-
-      // Redirect to Stripe checkout
-      if (data?.url) {
-        window.open(data.url, "_blank");
-      }
-    } catch (error: any) { toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive" });
+      await (supabase as any)
+        .from("course_access_requests")
+        .upsert(
+          { course_id: course.id, buyer_id: user.id, creator_id: course.creator_id },
+          { onConflict: "course_id,buyer_id", ignoreDuplicates: true },
+        );
+      setChatOpen(true);
     } finally {
       setPurchasing(false);
     }
@@ -204,6 +202,17 @@ export default function CourseDetailPage() {
           description={selectedLesson.description || ""}
         />
       )}
+      {course && (
+        <CourseChatDialog
+          open={chatOpen}
+          onOpenChange={setChatOpen}
+          courseId={course.id}
+          courseTitle={course.title}
+          coursePrice={course.price}
+          otherId={course.creator_id}
+          prefillInterest
+        />
+      )}
       {/* Course Header */}
       <section className="bg-gradient-to-b from-primary/10 to-background py-16">
         <div className="container mx-auto px-4">
@@ -246,7 +255,7 @@ export default function CourseDetailPage() {
                     <Play className="h-16 w-16 text-primary" />
                   </div>
                   <CardTitle className="text-3xl">€{course.price.toFixed(2)}</CardTitle>
-                  <CardDescription>One-time purchase • Lifetime access</CardDescription>
+                  <CardDescription>Pay the creator directly • Lifetime access</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {isEnrolled ? (
@@ -259,14 +268,19 @@ export default function CourseDetailPage() {
                       Continue Learning
                     </Button>
                   ) : (
-                    <Button
-                      className="w-full"
-                      size="lg"
-                      onClick={handlePurchase}
-                      disabled={purchasing}
-                    >
-                      {purchasing ? "Processing..." : "Buy Now"}
-                    </Button>
+                    <>
+                      <Button
+                        className="w-full"
+                        size="lg"
+                        onClick={handleRequestAccess}
+                        disabled={purchasing || isInstructor}
+                      >
+                        {purchasing ? "Opening chat..." : "Message creator / Request access"}
+                      </Button>
+                      <p className="text-xs text-muted-foreground text-center">
+                        Payment is arranged directly with the creator. Once they confirm it, they grant you access and the course appears in your library.
+                      </p>
+                    </>
                   )}
                   
                   <div className="space-y-2 text-sm">
