@@ -407,6 +407,91 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
 
   const totalDuration = modules.reduce((sum, m) => sum + (parseInt(m.duration) || 0), 0);
 
+  // ---- Quiz editing helpers ----
+  const emptyQuestion = (): BuilderQuizQuestion => ({ question: "", options: ["", "", "", ""], correct: 0 });
+
+  const addQuestion = (moduleId: number) =>
+    setModules(prev => prev.map(m => (m.id === moduleId ? { ...m, quiz: [...(m.quiz || []), emptyQuestion()] } : m)));
+
+  const removeQuestion = (moduleId: number, qi: number) =>
+    setModules(prev => prev.map(m => (m.id === moduleId ? { ...m, quiz: (m.quiz || []).filter((_, i) => i !== qi) } : m)));
+
+  const updateQuestion = (moduleId: number, qi: number, patch: Partial<BuilderQuizQuestion>) =>
+    setModules(prev => prev.map(m => {
+      if (m.id !== moduleId) return m;
+      const quiz = [...(m.quiz || [])];
+      quiz[qi] = { ...quiz[qi], ...patch };
+      return { ...m, quiz };
+    }));
+
+  const updateOption = (moduleId: number, qi: number, oi: number, value: string) =>
+    setModules(prev => prev.map(m => {
+      if (m.id !== moduleId) return m;
+      const quiz = [...(m.quiz || [])];
+      const options = [...(quiz[qi].options || ["", "", "", ""])];
+      options[oi] = value;
+      quiz[qi] = { ...quiz[qi], options };
+      return { ...m, quiz };
+    }));
+
+  /** Persist quizzes for a saved course by matching lesson order_index. */
+  const persistQuizzes = async (savedCourseId: string, mods: Module[]) => {
+    const withQuiz = mods
+      .map((m, i) => ({ m, i }))
+      .filter(({ m }) => (m.quiz || []).some(q => q.question.trim() && (q.options || []).some(o => o.trim())));
+    if (!withQuiz.length) return;
+
+    const { data: lessons, error } = await supabase
+      .from("course_lessons")
+      .select("id, order_index")
+      .eq("course_id", savedCourseId)
+      .order("order_index", { ascending: true });
+    if (error || !lessons) return;
+
+    for (const { m, i } of withQuiz) {
+      const lesson = lessons.find((l: any) => l.order_index === i);
+      if (!lesson) continue;
+
+      // Replace any existing quiz for this lesson
+      const { data: existing } = await supabase
+        .from("course_quizzes")
+        .select("id")
+        .eq("lesson_id", lesson.id);
+      for (const q of existing || []) {
+        await supabase.from("quiz_questions").delete().eq("quiz_id", q.id);
+        await supabase.from("course_quizzes").delete().eq("id", q.id);
+      }
+
+      const { data: quiz, error: qErr } = await supabase
+        .from("course_quizzes")
+        .insert({
+          lesson_id: lesson.id,
+          title: `${m.title} — Quiz`,
+          passing_score: m.quizPassing ?? 70,
+          difficulty,
+        })
+        .select("id")
+        .single();
+      if (qErr || !quiz) continue;
+
+      const rows = (m.quiz || [])
+        .filter(q => q.question.trim())
+        .map((q, idx) => {
+          const options = (q.options || []).map(o => o.trim()).filter(Boolean);
+          return {
+            quiz_id: quiz.id,
+            question: q.question.trim(),
+            options,
+            correct_answer: options[q.correct] ?? options[0] ?? "",
+            explanation: q.explanation?.trim() || null,
+            order_index: idx,
+          };
+        })
+        .filter(r => r.options.length >= 2 && r.correct_answer);
+      if (rows.length) await supabase.from("quiz_questions").insert(rows);
+    }
+  };
+
   const saveCourse = async (publish: boolean) => {
     if (!title.trim() || !description.trim()) {
       toast({ title: "Fill in the name and description", variant: "destructive" });
