@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Zap, Target, FlaskConical, ArrowRight } from "lucide-react";
+import { Brain, Trophy, LineChart, Zap, Target, BarChart3, Medal, FlaskConical, ArrowRight } from "lucide-react";
 
 import IQPlatformHero from "@/components/iq/IQPlatformHero";
 import IQToolsGrid from "@/components/iq/IQToolsGrid";
 import IQTestRunner from "@/components/iq/IQTestRunner";
+import IQNotificationsBell from "@/components/iq/IQNotificationsBell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
