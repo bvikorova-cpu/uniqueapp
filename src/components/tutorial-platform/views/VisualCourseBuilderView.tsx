@@ -612,15 +612,21 @@ export function VisualCourseBuilderView({ onBack }: Props) {
           </CardContent>
         </Card>
 
-        <div className="flex gap-2">
-          <Button variant="outline" className="flex-1" onClick={() => saveCourse(false)} disabled={saving}>
-            {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-            Save draft
-          </Button>
-          <Button className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600" onClick={() => saveCourse(true)} disabled={saving}>
-            {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-            Publish course
-          </Button>
+        <div className="space-y-2">
+          <div className="flex gap-2">
+            <Button variant="outline" className="flex-1" onClick={() => saveCourse(false)} disabled={saving}>
+              {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+              Save draft
+            </Button>
+            <Button className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600" onClick={() => saveCourse(true)} disabled={saving}>
+              {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+              Publish course
+              <span className="ml-2 inline-flex items-center rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold">15 CR</span>
+            </Button>
+          </div>
+          <p className="text-center text-xs text-muted-foreground">
+            Publishing a course costs <span className="font-semibold text-primary">15 credits</span>. Saving a draft is free.
+          </p>
         </div>
       </div>
     </div>
