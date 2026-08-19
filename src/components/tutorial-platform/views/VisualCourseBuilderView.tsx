@@ -571,6 +571,8 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
         );
         if (insErr) throw insErr;
 
+        await persistQuizzes(courseId, modules);
+
         toast({ title: "Changes saved ✅" });
         onBack();
         return;
