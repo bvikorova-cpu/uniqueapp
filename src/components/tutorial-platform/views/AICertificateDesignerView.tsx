@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,58 @@ import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const CREDITS_COST = 5;
 
+const STYLE_THEMES: Record<string, {
+  title: string; frame: string; bg: string; icon: string; heading: string;
+  name: string; course: string; corners: boolean; cornerColor: string;
+}> = {
+  classic: {
+    title: "Certificate of Completion",
+    frame: "border-4 border-double border-amber-600/50",
+    bg: "bg-[#fdfaf1] dark:bg-amber-950/20",
+    icon: "text-amber-600",
+    heading: "font-serif tracking-wide text-amber-900 dark:text-amber-200",
+    name: "font-serif text-amber-950 dark:text-amber-100",
+    course: "font-serif italic",
+    corners: true,
+    cornerColor: "text-amber-500/40",
+  },
+  modern: {
+    title: "CERTIFICATE OF ACHIEVEMENT",
+    frame: "border-l-8 border-primary",
+    bg: "bg-background",
+    icon: "text-primary",
+    heading: "font-sans uppercase tracking-[0.25em] text-sm md:text-base",
+    name: "font-sans tracking-tight",
+    course: "font-sans font-medium text-muted-foreground",
+    corners: false,
+    cornerColor: "",
+  },
+  elegant: {
+    title: "Certificate of Excellence",
+    frame: "border-2 border-yellow-500/70 ring-4 ring-yellow-500/20 ring-offset-2 ring-offset-background",
+    bg: "bg-gradient-to-br from-yellow-50 via-amber-100/60 to-yellow-50 dark:from-yellow-950/30 dark:to-amber-900/20",
+    icon: "text-yellow-600",
+    heading: "font-serif italic text-yellow-800 dark:text-yellow-200",
+    name: "font-serif bg-gradient-to-r from-yellow-600 to-amber-500 bg-clip-text text-transparent",
+    course: "font-serif",
+    corners: true,
+    cornerColor: "text-yellow-500/50",
+  },
+  tech: {
+    title: "CERTIFIED COMPLETION",
+    frame: "border border-cyan-500/50 shadow-[0_0_30px_-10px_hsl(190_90%_50%/0.5)]",
+    bg: "bg-slate-950 text-slate-100",
+    icon: "text-cyan-400",
+    heading: "font-mono uppercase tracking-widest text-cyan-300",
+    name: "font-mono text-cyan-100",
+    course: "font-mono text-cyan-400",
+    corners: false,
+    cornerColor: "",
+  },
+};
+
 interface Props { onBack: () => void; }
+
 
 export function AICertificateDesignerView({ onBack }: Props) {
   const { toast } = useToast();
@@ -22,6 +73,9 @@ export function AICertificateDesignerView({ onBack }: Props) {
   const [style, setStyle] = useState("classic");
   const [loading, setLoading] = useState(false);
   const [certificate, setCertificate] = useState<string | null>(null);
+  const certRef = useRef<HTMLDivElement>(null);
+  const theme = STYLE_THEMES[style] ?? STYLE_THEMES.classic;
+
 
   const generateCertificate = async () => {
     if (!studentName.trim() || !courseName.trim()) {
@@ -47,16 +101,33 @@ export function AICertificateDesignerView({ onBack }: Props) {
     }
   };
 
-  // Keep only one short, clean line from the AI output (no markdown, no long essay).
-  const shortCitation = (() => {
-    if (!certificate) return "";
-    const clean = certificate
-      .replace(/[#*_>`-]/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-    const sentence = clean.split(/(?<=[.!?])\s/)[0] || clean;
-    return sentence.length > 160 ? sentence.slice(0, 157).trimEnd() + "…" : sentence;
-  })();
+  const downloadPdf = async () => {
+    const el = certRef.current;
+    if (!el) return;
+    try {
+      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+        import("html2canvas"),
+        import("jspdf"),
+      ]);
+      const canvas = await html2canvas(el, { scale: 2, backgroundColor: "#ffffff", useCORS: true });
+      const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+      const pw = pdf.internal.pageSize.getWidth();
+      const ph = pdf.internal.pageSize.getHeight();
+      const margin = 10;
+      const maxW = pw - margin * 2;
+      const maxH = ph - margin * 2;
+      const ratio = Math.min(maxW / canvas.width, maxH / canvas.height);
+      const w = canvas.width * ratio;
+      const h = canvas.height * ratio;
+      pdf.addImage(canvas.toDataURL("image/jpeg", 0.95), "JPEG", (pw - w) / 2, (ph - h) / 2, w, h);
+      pdf.save(`Certificate_${studentName.replace(/\s+/g, "_") || "Student"}.pdf`);
+      toast({ description: "Certificate PDF downloaded" });
+    } catch (e: any) {
+      toast({ title: "Download failed", description: e?.message || "Try again", variant: "destructive" });
+    }
+  };
+
+
 
 
 
@@ -105,39 +176,31 @@ export function AICertificateDesignerView({ onBack }: Props) {
         </Card>
 
         {certificate && (
-          <Card className="border-amber-500/20 shadow-xl">
+          <Card className="shadow-xl">
             <CardContent className="pt-6">
-              <div className="border-4 border-double border-amber-500/40 rounded-2xl p-6 md:p-10 bg-gradient-to-br from-amber-50/60 to-amber-100/30 dark:from-amber-950/30 dark:to-amber-900/10 text-center space-y-3 relative overflow-hidden">
-                {/* Decorative corners */}
-                <div className="absolute top-3 left-3"><Star className="w-5 h-5 text-amber-400/30" /></div>
-                <div className="absolute top-3 right-3"><Star className="w-5 h-5 text-amber-400/30" /></div>
-                <div className="absolute bottom-3 left-3"><Star className="w-5 h-5 text-amber-400/30" /></div>
-                <div className="absolute bottom-3 right-3"><Star className="w-5 h-5 text-amber-400/30" /></div>
-                
-                <Award className="w-16 h-16 text-amber-500 mx-auto drop-shadow-lg" />
-                <h3 className="text-2xl md:text-3xl font-serif font-bold">Certificate of Completion</h3>
-                <p className="text-muted-foreground text-sm">This certifies that</p>
-                <p className="text-2xl md:text-3xl font-black bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">{studentName}</p>
-                <p className="text-muted-foreground text-sm">has successfully completed</p>
-                <p className="text-lg md:text-xl font-bold">{courseName}</p>
-                <p className="text-sm text-muted-foreground mt-4">{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                {shortCitation && (
-                  <p className="text-sm italic text-muted-foreground max-w-xl mx-auto mt-3">"{shortCitation}"</p>
+              <div ref={certRef} className={`rounded-2xl p-6 md:p-10 text-center space-y-3 relative overflow-hidden ${theme.frame} ${theme.bg}`}>
+                {theme.corners && (
+                  <>
+                    <div className="absolute top-3 left-3"><Star className={`w-5 h-5 ${theme.cornerColor}`} /></div>
+                    <div className="absolute top-3 right-3"><Star className={`w-5 h-5 ${theme.cornerColor}`} /></div>
+                    <div className="absolute bottom-3 left-3"><Star className={`w-5 h-5 ${theme.cornerColor}`} /></div>
+                    <div className="absolute bottom-3 right-3"><Star className={`w-5 h-5 ${theme.cornerColor}`} /></div>
+                  </>
                 )}
+
+                <Award className={`w-16 h-16 mx-auto drop-shadow-lg ${theme.icon}`} />
+                <h3 className={`text-2xl md:text-3xl font-bold ${theme.heading}`}>{theme.title}</h3>
+                <p className="text-muted-foreground text-sm">This certifies that</p>
+                <p className={`text-2xl md:text-3xl font-black ${theme.name}`}>{studentName}</p>
+                <p className="text-muted-foreground text-sm">has successfully completed</p>
+                <p className={`text-lg md:text-xl font-bold ${theme.course}`}>{courseName}</p>
+                <p className="text-sm text-muted-foreground mt-4">{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                <p className="text-xs text-muted-foreground pt-2">Issued by Unique Tutorial Platform</p>
               </div>
-              <Button className="w-full mt-4 h-11" variant="outline" onClick={() => {
-                const content = `===== CERTIFICATE OF COMPLETION =====\n\nAwarded to: ${studentName}\nCourse: ${courseName}\nStyle: ${style}\nDate: ${new Date().toLocaleDateString()}\n\n${shortCitation}\n\nIssued by Unique Tutorial Platform\n`;
-                const blob = new Blob([content], { type: "text/plain" });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = `Certificate_${studentName.replace(/\s+/g, "_") || "Student"}.txt`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                toast({ description: "Certificate downloaded" });
-              }}><Download className="w-4 h-4 mr-2" />Download Certificate</Button>
+              <Button className="w-full mt-4 h-11" variant="outline" onClick={downloadPdf}>
+                <Download className="w-4 h-4 mr-2" />Download PDF
+              </Button>
+
 
             </CardContent>
           </Card>
