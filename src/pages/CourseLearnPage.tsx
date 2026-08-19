@@ -10,6 +10,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { LessonPlayer } from "@/components/course-creator/LessonPlayer";
 import { QuizTaker } from "@/components/student-learning/QuizTaker";
+import { CertificatePreview } from "@/components/student-learning/CertificatePreview";
+
 import { useCertificate } from "@/hooks/useCertificate";
 import { BookOpen,
   CheckCircle,
@@ -521,13 +523,11 @@ export default function CourseLearnPage() {
                               Congratulations on completing {course.title}
                             </p>
                             
-                            {/* Certificate Preview */}
-                            <div className="max-w-4xl mx-auto border rounded-lg overflow-hidden shadow-lg">
-                              <div 
-                                dangerouslySetInnerHTML={{ __html: certificateHtml }}
-                                className="w-full"
-                              />
+                            {/* Certificate Preview (auto-scaled, mobile safe) */}
+                            <div className="max-w-4xl mx-auto">
+                              <CertificatePreview html={certificateHtml} />
                             </div>
+
                             
                             <div className="flex gap-4 justify-center">
                               <Button
