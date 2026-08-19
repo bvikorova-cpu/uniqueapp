@@ -405,8 +405,9 @@ export default function HealthyChallenge() {
                     <div className="flex items-center gap-3">
                       <Sparkles className="w-6 h-6 text-orange-600" />
                       <div className="flex-1">
-                        <p className="font-semibold">✅ Submitted for today</p>
-                        <p className="text-sm text-muted-foreground">{mySubmissionToday.votes_count} votes · Day {myMonthDays} of {daysInMonth} this month</p>
+                        <p className="font-semibold">✅ Submitted today — monthly requirement met</p>
+                        <p className="text-sm text-muted-foreground">{mySubmissionToday.votes_count} votes · {myMonthDays} day{myMonthDays === 1 ? "" : "s"} with proof this month (minimum 1)</p>
+
                       </div>
                       {!mySubmissionToday.boosted_until && (
                         <Button size="sm" variant="outline" onClick={boostMine}>🚀 Boost 24h (5 credits)</Button>
