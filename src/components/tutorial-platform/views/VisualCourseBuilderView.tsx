@@ -98,9 +98,52 @@ export function VisualCourseBuilderView({ onBack }: Props) {
   const [saving, setSaving] = useState(false);
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [dragId, setDragId] = useState<number | null>(null);
+  const [uploadingId, setUploadingId] = useState<number | null>(null);
 
   const updateModule = (id: number, patch: Partial<Module>) =>
     setModules(prev => prev.map(m => (m.id === id ? { ...m, ...patch } : m)));
+
+  const MAX_VIDEO_BYTES = 500 * 1024 * 1024; // 500 MB
+
+  const handleVideoUpload = async (moduleId: number, file: File) => {
+    if (!file.type.startsWith("video/")) {
+      toast({ title: "Please select a video file", variant: "destructive" });
+      return;
+    }
+    if (file.size > MAX_VIDEO_BYTES) {
+      toast({ title: "Video is too large (max 500 MB)", variant: "destructive" });
+      return;
+    }
+    setUploadingId(moduleId);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) {
+        toast({ title: "Please sign in to upload videos", variant: "destructive" });
+        return;
+      }
+      const ext = file.name.split(".").pop()?.toLowerCase() || "mp4";
+      const path = `${auth.user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("course-videos")
+        .upload(path, file, { contentType: file.type, upsert: false });
+      if (upErr) throw upErr;
+
+      // Long-lived signed URL (private bucket)
+      const { data: signed, error: signErr } = await supabase.storage
+        .from("course-videos")
+        .createSignedUrl(path, 60 * 60 * 24 * 365 * 5);
+      if (signErr || !signed?.signedUrl) throw signErr || new Error("Could not create video link");
+
+      updateModule(moduleId, { video_url: signed.signedUrl, type: "video" });
+      toast({ title: "Video uploaded ✅" });
+    } catch (e: any) {
+      console.error(e);
+      toast({ title: "Upload failed", description: e.message, variant: "destructive" });
+    } finally {
+      setUploadingId(null);
+    }
+  };
+
 
   const onDragStart = (id: number) => setDragId(id);
   const onDragOver = (e: React.DragEvent, overId: number) => {
