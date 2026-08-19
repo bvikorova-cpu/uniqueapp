@@ -44,7 +44,22 @@ serve(async (req) => {
     }
     const customerId = customers.data[0].id;
 
-    const subs = await stripe.subscriptions.list({ customer: customerId, status: "active", limit: 50, expand: ["data.items.data.price.product"] });
+    // NOTE: Stripe allows max 4 expand levels, so "data.items.data.price.product"
+    // is invalid. Expand the price only and resolve product names separately.
+    const subs = await stripe.subscriptions.list({ customer: customerId, status: "active", limit: 50, expand: ["data.items.data.price"] });
+    const productNameCache = new Map<string, string>();
+    const productName = async (id: string): Promise<string> => {
+      if (productNameCache.has(id)) return productNameCache.get(id)!;
+      try {
+        const p = await stripe.products.retrieve(id);
+        const n = String((p as any)?.name || "");
+        productNameCache.set(id, n);
+        return n;
+      } catch (_e) {
+        productNameCache.set(id, "");
+        return "";
+      }
+    };
     log("active subs", { count: subs.data.length });
 
 
