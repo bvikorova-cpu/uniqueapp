@@ -191,6 +191,45 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
     }
   };
 
+  // Course hero / cover image
+  const handleHeroUpload = async (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "Please select an image file", variant: "destructive" });
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast({ title: "Image is too large (max 10 MB)", variant: "destructive" });
+      return;
+    }
+    setUploadingHero(true);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) {
+        toast({ title: "Please sign in to upload images", variant: "destructive" });
+        return;
+      }
+      const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+      const path = `${auth.user.id}/hero-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("course-files")
+        .upload(path, file, { contentType: file.type, upsert: false });
+      if (upErr) throw upErr;
+      const { data: signed, error: signErr } = await supabase.storage
+        .from("course-files")
+        .createSignedUrl(path, 60 * 60 * 24 * 365 * 5);
+      if (signErr || !signed?.signedUrl) throw signErr || new Error("Could not create image link");
+      setHeroUrl(signed.signedUrl);
+      toast({ title: "Cover image uploaded ✅" });
+    } catch (e: any) {
+      console.error(e);
+      toast({ title: "Upload failed", description: e.message, variant: "destructive" });
+    } finally {
+      setUploadingHero(false);
+    }
+  };
+
+
+
   const onDragStart = (id: number) => setDragId(id);
 
   const onDragOver = (e: React.DragEvent, overId: number) => {
