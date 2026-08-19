@@ -26,19 +26,19 @@ const IQPlatform = () => {
   const { data: stats } = useIQUserStats();
 
   const testCategories = [
-    { id: "beginner", title: "Beginner IQ Test", description: "Perfect for first-time test takers", difficulty: "Beginner", questions: 30, timeLimit: 30, credits: 10, icon: Target },
-    { id: "intermediate", title: "Intermediate IQ Test", description: "Standard IQ assessment", difficulty: "Intermediate", questions: 40, timeLimit: 45, credits: 15, icon: Brain },
-    { id: "advanced", title: "Advanced IQ Test", description: "Challenging cognitive assessment", difficulty: "Advanced", questions: 50, timeLimit: 60, credits: 20, icon: Zap },
-    { id: "expert", title: "Expert IQ Test", description: "Mensa-level difficulty", difficulty: "Expert", questions: 60, timeLimit: 75, credits: 25, icon: Trophy },
+    { id: "beginner", title: "Beginner IQ Test", description: "Perfect for first-time test takers", difficulty: "Beginner", questions: 30, timeLimit: 30, credits: 3, icon: Target },
+    { id: "intermediate", title: "Intermediate IQ Test", description: "Standard IQ assessment", difficulty: "Intermediate", questions: 40, timeLimit: 45, credits: 3, icon: Brain },
+    { id: "advanced", title: "Advanced IQ Test", description: "Challenging cognitive assessment", difficulty: "Advanced", questions: 50, timeLimit: 60, credits: 3, icon: Zap },
+    { id: "expert", title: "Expert IQ Test", description: "Mensa-level difficulty", difficulty: "Expert", questions: 60, timeLimit: 75, credits: 3, icon: Trophy },
   ];
 
   const specializedCategories = [
-    { id: "logical",   title: "Logical Reasoning",   desc: "Syllogisms & deduction",  icon: Brain,     credits: 8 },
-    { id: "spatial",   title: "Spatial Awareness",   desc: "3D rotation, mental maps", icon: Target,   credits: 8 },
-    { id: "verbal",    title: "Verbal Reasoning",    desc: "Analogies & vocabulary",   icon: Medal,    credits: 8 },
-    { id: "numerical", title: "Numerical Reasoning", desc: "Sequences & arithmetic",   icon: BarChart3, credits: 8 },
-    { id: "memory",    title: "Working Memory",      desc: "Recall & sequencing",      icon: Zap,      credits: 8 },
-    { id: "pattern",   title: "Pattern Recognition", desc: "Visual abstract logic",    icon: LineChart, credits: 8 },
+    { id: "logical",   title: "Logical Reasoning",   desc: "Syllogisms & deduction",  icon: Brain,     credits: 3 },
+    { id: "spatial",   title: "Spatial Awareness",   desc: "3D rotation, mental maps", icon: Target,   credits: 3 },
+    { id: "verbal",    title: "Verbal Reasoning",    desc: "Analogies & vocabulary",   icon: Medal,    credits: 3 },
+    { id: "numerical", title: "Numerical Reasoning", desc: "Sequences & arithmetic",   icon: BarChart3, credits: 3 },
+    { id: "memory",    title: "Working Memory",      desc: "Recall & sequencing",      icon: Zap,      credits: 3 },
+    { id: "pattern",   title: "Pattern Recognition", desc: "Visual abstract logic",    icon: LineChart, credits: 3 },
   ];
 
   useEffect(() => {
@@ -177,7 +177,7 @@ const IQPlatform = () => {
                         disabled={locked}
                         onClick={() => handleStartTest(test.id)}
                       >
-                        {locked ? `Cooldown · ${formatCooldown(cd)}` : "Start Test"}
+                        {locked ? `Cooldown · ${formatCooldown(cd)}` : "Start Test · 3 credits"}
                       </Button>
                     </CardContent>
                   </Card>
