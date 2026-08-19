@@ -185,7 +185,7 @@ const IQBrainLab = () => {
       </Card>
 
       <Tabs value={tab} onValueChange={setTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-1 h-auto p-1.5 bg-muted/50 rounded-xl">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1 h-auto p-1.5 bg-muted/50 rounded-xl">
           {CATEGORIES.map(c => (
             <TabsTrigger key={c.id} value={c.id} className="text-[10px] sm:text-xs py-2 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <c.icon className="h-3 w-3 sm:h-4 sm:w-4 mr-0.5 sm:mr-1" />
