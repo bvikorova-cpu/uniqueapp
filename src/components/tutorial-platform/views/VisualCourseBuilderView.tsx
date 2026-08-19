@@ -221,6 +221,58 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
   const [category, setCategory] = useState("Technology");
   const [difficulty, setDifficulty] = useState("beginner");
   const [price, setPrice] = useState("29.99");
+  const [wasPublished, setWasPublished] = useState(false);
+
+  // Load existing course when editing
+  useEffect(() => {
+    if (!courseId) return;
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      try {
+        const { data: course, error } = await supabase
+          .from("courses")
+          .select("*")
+          .eq("id", courseId)
+          .maybeSingle();
+        if (error) throw error;
+        if (!course) throw new Error("Course not found");
+        const { data: lessons, error: lErr } = await supabase
+          .from("course_lessons")
+          .select("*")
+          .eq("course_id", courseId)
+          .order("order_index", { ascending: true });
+        if (lErr) throw lErr;
+        if (cancelled) return;
+        setTitle(course.title || "");
+        setDescription(course.description || "");
+        setCategory(course.category || "Technology");
+        setDifficulty(course.difficulty_level || "beginner");
+        setPrice(String(course.price ?? 0));
+        setWasPublished(!!course.is_published);
+        const mapped: Module[] = (lessons || []).map((l: any, i: number) => ({
+          id: Date.now() + i,
+          title: l.title || `Module ${i + 1}`,
+          type: l.video_url ? "video" : "document",
+          duration: `${l.duration_minutes ?? 10} min`,
+          description: l.description || undefined,
+          video_url: l.video_url || undefined,
+          content: l.content || undefined,
+          attachment_url: l.attachment_url || undefined,
+          attachment_name: l.attachment_name || undefined,
+        }));
+        setModules(mapped);
+        setExpandedId(mapped[0]?.id ?? null);
+      } catch (e: any) {
+        toast({ title: "Could not load course", description: e.message, variant: "destructive" });
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [courseId]);
+
+
 
   const getIcon = (type: string) => {
     switch (type) {
