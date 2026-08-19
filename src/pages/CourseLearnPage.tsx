@@ -584,8 +584,8 @@ export default function CourseLearnPage() {
                             </p>
                             
                             {/* Certificate Preview (auto-scaled, mobile safe) */}
-                            <div className="max-w-4xl mx-auto" ref={certRef}>
-                              <CertificatePreview html={certificateHtml} />
+                            <div className="max-w-4xl mx-auto">
+                              <CertificatePreview ref={certRef} html={certificateHtml} />
                             </div>
 
                             <div className="flex flex-col sm:flex-row gap-3 justify-center">
