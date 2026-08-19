@@ -13,13 +13,14 @@ const SECTIONS: Section[] = [
   { id: "content", title: "4. User Content & Licenses" },
   { id: "payments", title: "5. Payments & Credits" },
   { id: "fees", title: "6. Platform Fees & Commissions" },
-  { id: "creator", title: "7. Creator Obligations" },
-  { id: "prohibited", title: "8. Prohibited Conduct" },
-  { id: "ip", title: "9. Intellectual Property" },
-  { id: "termination", title: "10. Termination" },
-  { id: "liability", title: "11. Limitation of Liability" },
-  { id: "law", title: "12. Governing Law" },
-  { id: "changes", title: "13. Changes to Terms" },
+  { id: "competitions", title: "7. Competitions & Skill-Based Challenges" },
+  { id: "creator", title: "8. Creator Obligations" },
+  { id: "prohibited", title: "9. Prohibited Conduct" },
+  { id: "ip", title: "10. Intellectual Property" },
+  { id: "termination", title: "11. Termination" },
+  { id: "liability", title: "12. Limitation of Liability" },
+  { id: "law", title: "13. Governing Law" },
+  { id: "changes", title: "14. Changes to Terms" },
 ];
 
 
