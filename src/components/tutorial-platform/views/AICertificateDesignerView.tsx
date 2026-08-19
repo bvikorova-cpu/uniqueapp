@@ -47,6 +47,19 @@ export function AICertificateDesignerView({ onBack }: Props) {
     }
   };
 
+  // Keep only one short, clean line from the AI output (no markdown, no long essay).
+  const shortCitation = (() => {
+    if (!certificate) return "";
+    const clean = certificate
+      .replace(/[#*_>`-]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    const sentence = clean.split(/(?<=[.!?])\s/)[0] || clean;
+    return sentence.length > 160 ? sentence.slice(0, 157).trimEnd() + "…" : sentence;
+  })();
+
+
+
   return (
     <>
       <FloatingHowItWorks title={"A I Certificate Designer View - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Certificate Designer View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Certificate Designer View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
