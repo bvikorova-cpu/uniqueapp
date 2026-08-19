@@ -370,7 +370,7 @@ export default function EcoChallenge() {
 
         <ChallengeProUpsell accent="emerald" />
 
-        <FloatingHowItWorks title="How Eco Challenge works" intro="Turn small daily actions into a global movement." steps={HIW_STEPS} />
+        <FloatingHowItWorks title="How Eco Challenge works" intro="No daily duty — just at least one eco proof between the first and last day of each month." steps={HIW_STEPS} />
 
         <Tabs defaultValue="today" className="w-full">
           <TabsList className="grid grid-cols-4 w-full mb-4">
