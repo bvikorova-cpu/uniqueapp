@@ -331,14 +331,14 @@ export default function CourseDetailPage() {
       {/* Course Content */}
       <section className="container mx-auto px-4 py-16">
         <Tabs defaultValue="curriculum">
-          <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-6">
-            <TabsTrigger value="curriculum">Curriculum</TabsTrigger>
-            <TabsTrigger value="about">About</TabsTrigger>
-            <TabsTrigger value="reviews">Reviews</TabsTrigger>
-            <TabsTrigger value="discussion">Discussion</TabsTrigger>
-            <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
-            <TabsTrigger value="live-lessons">
-              <Video className="w-4 h-4 mr-2" />
+          <TabsList className="flex w-full overflow-x-auto md:overflow-visible h-auto p-1 gap-1">
+            <TabsTrigger value="curriculum" className="whitespace-nowrap px-4 py-2">Curriculum</TabsTrigger>
+            <TabsTrigger value="about" className="whitespace-nowrap px-4 py-2">About</TabsTrigger>
+            <TabsTrigger value="reviews" className="whitespace-nowrap px-4 py-2">Reviews</TabsTrigger>
+            <TabsTrigger value="discussion" className="whitespace-nowrap px-4 py-2">Discussion</TabsTrigger>
+            <TabsTrigger value="leaderboard" className="whitespace-nowrap px-4 py-2">Leaderboard</TabsTrigger>
+            <TabsTrigger value="live-lessons" className="whitespace-nowrap px-4 py-2">
+              <Video className="w-4 h-4 mr-2 flex-shrink-0" />
               Live Lessons
             </TabsTrigger>
           </TabsList>
