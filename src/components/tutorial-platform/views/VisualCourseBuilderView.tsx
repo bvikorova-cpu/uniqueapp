@@ -102,6 +102,7 @@ export function VisualCourseBuilderView({ onBack }: Props) {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [dragId, setDragId] = useState<number | null>(null);
   const [uploadingId, setUploadingId] = useState<number | null>(null);
+  const [uploadingDocId, setUploadingDocId] = useState<number | null>(null);
 
   const updateModule = (id: number, patch: Partial<Module>) =>
     setModules(prev => prev.map(m => (m.id === id ? { ...m, ...patch } : m)));
