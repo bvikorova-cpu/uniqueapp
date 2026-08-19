@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Play, X, ExternalLink, FileText, Download } from "lucide-react";
+import { Play, ExternalLink, FileText, Download } from "lucide-react";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface LessonPlayerProps {
@@ -80,17 +80,13 @@ export function LessonPlayer({ isOpen,
           { title: 'Iterate', desc: 'Repeat or level up anytime.' },
         ]} />
       <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[95vw] max-w-5xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            <span>{lessonTitle}</span>
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
-          </DialogTitle>
+          <DialogTitle className="pr-8 text-left break-words">{lessonTitle}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
+
           {/* Video Player */}
           {embedUrl && (
             <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
@@ -168,6 +164,19 @@ export function LessonPlayer({ isOpen,
                   <Download className="mr-2 h-4 w-4" />
                   Open
                 </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Nothing to show */}
+          {!videoUrl && !description && !content && !attachmentUrl && (
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center py-10 text-center">
+                <FileText className="h-10 w-10 text-muted-foreground mb-3" />
+                <p className="font-semibold">No preview content yet</p>
+                <p className="text-sm text-muted-foreground">
+                  This lesson has no video, text or document added by the creator.
+                </p>
               </CardContent>
             </Card>
           )}
