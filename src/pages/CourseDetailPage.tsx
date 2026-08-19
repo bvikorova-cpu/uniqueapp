@@ -8,9 +8,6 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { LessonPlayer } from "@/components/course-creator/LessonPlayer";
 import { CourseReviews } from "@/components/courses/CourseReviews";
-import { CourseDiscussion } from "@/components/courses/CourseDiscussion";
-import { CourseLeaderboard } from "@/components/courses/CourseLeaderboard";
-import { LiveLessonRoom } from "@/components/courses/LiveLessonRoom";
 import { Play,
   Clock,
   Users,
@@ -59,8 +56,6 @@ export default function CourseDetailPage() {
   const [isInstructor, setIsInstructor] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
-  const [liveLessons, setLiveLessons] = useState<any[]>([]);
-  const [selectedLiveLesson, setSelectedLiveLesson] = useState<any>(null);
   const [chatOpen, setChatOpen] = useState(false);
 
   useEffect(() => {
@@ -93,15 +88,6 @@ export default function CourseDetailPage() {
         .order("order_index", { ascending: true });
 
       setLessons(lessonsData || []);
-
-      // Load live lessons
-      const { data: liveLessonsData } = await supabase
-        .from("live_lessons")
-        .select("*")
-        .eq("course_id", courseId)
-        .order("scheduled_at", { ascending: true });
-
-      setLiveLessons(liveLessonsData || []);
 
       // Check if user is enrolled
       if (user) {
