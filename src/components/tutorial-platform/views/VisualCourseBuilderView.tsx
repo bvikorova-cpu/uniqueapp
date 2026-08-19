@@ -10,6 +10,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
+export interface BuilderQuizQuestion {
+  question: string;
+  options: string[];
+  correct: number;
+  explanation?: string;
+}
+
 interface Module {
   id: number;
   title: string;
@@ -20,6 +27,8 @@ interface Module {
   content?: string;
   attachment_url?: string;
   attachment_name?: string;
+  quiz?: BuilderQuizQuestion[];
+  quizPassing?: number;
 }
 
 const initialModules: Module[] = [
@@ -294,16 +303,50 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
         setPrice(String(course.price ?? 0));
         setWasPublished(!!course.is_published);
         setHeroUrl(course.thumbnail_url || "");
+        // Load quizzes attached to these lessons
+        const lessonIds = (lessons || []).map((l: any) => l.id);
+        let quizByLesson: Record<string, { passing: number; questions: BuilderQuizQuestion[] }> = {};
+        if (lessonIds.length) {
+          const { data: quizzes } = await supabase
+            .from("course_quizzes")
+            .select("id, lesson_id, passing_score")
+            .in("lesson_id", lessonIds);
+          const quizIds = (quizzes || []).map((q: any) => q.id);
+          const { data: questions } = quizIds.length
+            ? await supabase
+                .from("quiz_questions")
+                .select("*")
+                .in("quiz_id", quizIds)
+                .order("order_index", { ascending: true })
+            : { data: [] as any[] };
+          (quizzes || []).forEach((q: any) => {
+            const qs = (questions || [])
+              .filter((x: any) => x.quiz_id === q.id)
+              .map((x: any) => {
+                const options: string[] = Array.isArray(x.options) ? x.options.map(String) : [];
+                const idx = options.findIndex((o) => o === x.correct_answer);
+                return {
+                  question: x.question,
+                  options: [0, 1, 2, 3].map((n) => options[n] ?? ""),
+                  correct: idx >= 0 ? idx : 0,
+                  explanation: x.explanation || undefined,
+                };
+              });
+            quizByLesson[q.lesson_id] = { passing: q.passing_score ?? 70, questions: qs };
+          });
+        }
         const mapped: Module[] = (lessons || []).map((l: any, i: number) => ({
           id: Date.now() + i,
           title: l.title || `Module ${i + 1}`,
-          type: l.video_url ? "video" : "document",
+          type: quizByLesson[l.id]?.questions.length ? "quiz" : l.video_url ? "video" : "document",
           duration: `${l.duration_minutes ?? 10} min`,
           description: l.description || undefined,
           video_url: l.video_url || undefined,
           content: l.content || undefined,
           attachment_url: l.attachment_url || undefined,
           attachment_name: l.attachment_name || undefined,
+          quiz: quizByLesson[l.id]?.questions,
+          quizPassing: quizByLesson[l.id]?.passing,
         }));
         setModules(mapped);
         setExpandedId(mapped[0]?.id ?? null);
@@ -363,6 +406,91 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
 
 
   const totalDuration = modules.reduce((sum, m) => sum + (parseInt(m.duration) || 0), 0);
+
+  // ---- Quiz editing helpers ----
+  const emptyQuestion = (): BuilderQuizQuestion => ({ question: "", options: ["", "", "", ""], correct: 0 });
+
+  const addQuestion = (moduleId: number) =>
+    setModules(prev => prev.map(m => (m.id === moduleId ? { ...m, quiz: [...(m.quiz || []), emptyQuestion()] } : m)));
+
+  const removeQuestion = (moduleId: number, qi: number) =>
+    setModules(prev => prev.map(m => (m.id === moduleId ? { ...m, quiz: (m.quiz || []).filter((_, i) => i !== qi) } : m)));
+
+  const updateQuestion = (moduleId: number, qi: number, patch: Partial<BuilderQuizQuestion>) =>
+    setModules(prev => prev.map(m => {
+      if (m.id !== moduleId) return m;
+      const quiz = [...(m.quiz || [])];
+      quiz[qi] = { ...quiz[qi], ...patch };
+      return { ...m, quiz };
+    }));
+
+  const updateOption = (moduleId: number, qi: number, oi: number, value: string) =>
+    setModules(prev => prev.map(m => {
+      if (m.id !== moduleId) return m;
+      const quiz = [...(m.quiz || [])];
+      const options = [...(quiz[qi].options || ["", "", "", ""])];
+      options[oi] = value;
+      quiz[qi] = { ...quiz[qi], options };
+      return { ...m, quiz };
+    }));
+
+  /** Persist quizzes for a saved course by matching lesson order_index. */
+  const persistQuizzes = async (savedCourseId: string, mods: Module[]) => {
+    const withQuiz = mods
+      .map((m, i) => ({ m, i }))
+      .filter(({ m }) => (m.quiz || []).some(q => q.question.trim() && (q.options || []).some(o => o.trim())));
+    if (!withQuiz.length) return;
+
+    const { data: lessons, error } = await supabase
+      .from("course_lessons")
+      .select("id, order_index")
+      .eq("course_id", savedCourseId)
+      .order("order_index", { ascending: true });
+    if (error || !lessons) return;
+
+    for (const { m, i } of withQuiz) {
+      const lesson = lessons.find((l: any) => l.order_index === i);
+      if (!lesson) continue;
+
+      // Replace any existing quiz for this lesson
+      const { data: existing } = await supabase
+        .from("course_quizzes")
+        .select("id")
+        .eq("lesson_id", lesson.id);
+      for (const q of existing || []) {
+        await supabase.from("quiz_questions").delete().eq("quiz_id", q.id);
+        await supabase.from("course_quizzes").delete().eq("id", q.id);
+      }
+
+      const { data: quiz, error: qErr } = await supabase
+        .from("course_quizzes")
+        .insert({
+          lesson_id: lesson.id,
+          title: `${m.title} — Quiz`,
+          passing_score: m.quizPassing ?? 70,
+          difficulty,
+        })
+        .select("id")
+        .single();
+      if (qErr || !quiz) continue;
+
+      const rows = (m.quiz || [])
+        .filter(q => q.question.trim())
+        .map((q, idx) => {
+          const options = (q.options || []).map(o => o.trim()).filter(Boolean);
+          return {
+            quiz_id: quiz.id,
+            question: q.question.trim(),
+            options,
+            correct_answer: options[q.correct] ?? options[0] ?? "",
+            explanation: q.explanation?.trim() || null,
+            order_index: idx,
+          };
+        })
+        .filter(r => r.options.length >= 2 && r.correct_answer);
+      if (rows.length) await supabase.from("quiz_questions").insert(rows);
+    }
+  };
 
   const saveCourse = async (publish: boolean) => {
     if (!title.trim() || !description.trim()) {
@@ -443,6 +571,8 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
         );
         if (insErr) throw insErr;
 
+        await persistQuizzes(courseId, modules);
+
         toast({ title: "Changes saved ✅" });
         onBack();
         return;
@@ -489,6 +619,8 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
           return;
         }
 
+        if (data?.courseId) await persistQuizzes(data.courseId, modules);
+
         toast({ title: "Course published 🎉", description: `15 credits used. Remaining: ${data?.credits_remaining ?? 0}` });
         navigate(`/tutorial-course/${data.courseId}`);
         return;
@@ -528,6 +660,8 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
       }));
       const { error: lessonsErr } = await supabase.from("course_lessons").insert(fullLessonRows);
       if (lessonsErr) throw lessonsErr;
+
+      await persistQuizzes(course.id, modules);
 
       toast({ title: "Course saved as draft" });
       navigate(`/tutorial-course/${course.id}`);
@@ -810,6 +944,91 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
                         </Button>
                       </div>
                     )}
+
+                    {/* ---- Quiz builder ---- */}
+                    <div className="rounded-lg border border-purple-500/30 bg-purple-500/5 p-3 space-y-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <p className="text-sm font-semibold flex items-center gap-2">
+                          <BookOpen className="w-4 h-4 text-purple-500" />
+                          Lesson quiz
+                          <Badge variant="outline" className="text-[10px]">{(mod.quiz || []).length} questions</Badge>
+                        </p>
+                        <Button type="button" size="sm" variant="secondary" onClick={() => addQuestion(mod.id)}>
+                          <Plus className="w-4 h-4 mr-1" />Add question
+                        </Button>
+                      </div>
+
+                      {(mod.quiz || []).length === 0 ? (
+                        <p className="text-xs text-muted-foreground">
+                          No quiz yet. Add questions with 2–4 answers and mark the correct one — students take it after this lesson.
+                        </p>
+                      ) : (
+                        <>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground">Passing score %</span>
+                            <Input
+                              type="number"
+                              min={0}
+                              max={100}
+                              value={mod.quizPassing ?? 70}
+                              onChange={(e) => updateModule(mod.id, { quizPassing: parseInt(e.target.value) || 0 })}
+                              className="h-8 w-20"
+                            />
+                          </div>
+                          {(mod.quiz || []).map((q, qi) => (
+                            <div key={qi} className="rounded-md border bg-background/70 p-3 space-y-2">
+                              <div className="flex items-start gap-2">
+                                <span className="text-xs font-bold text-muted-foreground mt-2">Q{qi + 1}</span>
+                                <Textarea
+                                  value={q.question}
+                                  onChange={(e) => updateQuestion(mod.id, qi, { question: e.target.value })}
+                                  placeholder="Question text"
+                                  rows={2}
+                                  className="flex-1"
+                                />
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7 text-red-500"
+                                  onClick={() => removeQuestion(mod.id, qi)}
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </Button>
+                              </div>
+                              <div className="grid gap-2 sm:grid-cols-2">
+                                {[0, 1, 2, 3].map((oi) => (
+                                  <label key={oi} className="flex items-center gap-2">
+                                    <input
+                                      type="radio"
+                                      name={`correct-${mod.id}-${qi}`}
+                                      checked={q.correct === oi}
+                                      onChange={() => updateQuestion(mod.id, qi, { correct: oi })}
+                                      aria-label={`Mark answer ${oi + 1} as correct`}
+                                    />
+                                    <Input
+                                      value={q.options?.[oi] ?? ""}
+                                      onChange={(e) => updateOption(mod.id, qi, oi, e.target.value)}
+                                      placeholder={`Answer ${oi + 1}${oi > 1 ? " (optional)" : ""}`}
+                                      className="h-8"
+                                    />
+                                  </label>
+                                ))}
+                              </div>
+                              <Input
+                                value={q.explanation || ""}
+                                onChange={(e) => updateQuestion(mod.id, qi, { explanation: e.target.value })}
+                                placeholder="Explanation shown after answering (optional)"
+                                className="h-8"
+                              />
+                            </div>
+                          ))}
+                          <p className="text-[11px] text-muted-foreground">
+                            Select the radio button next to the correct answer. Empty answer fields are ignored.
+                          </p>
+                        </>
+                      )}
+                    </div>
 
                     <div className="grid grid-cols-2 gap-2">
                       <Input
