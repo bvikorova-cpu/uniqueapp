@@ -14,6 +14,7 @@ interface LessonPlayerProps {
   content?: string | null;
   attachmentUrl?: string | null;
   attachmentName?: string | null;
+  hasAccess?: boolean;
 }
 
 export function LessonPlayer({ isOpen,
@@ -23,7 +24,8 @@ export function LessonPlayer({ isOpen,
   description,
   content,
   attachmentUrl,
-  attachmentName }: LessonPlayerProps) {
+  attachmentName,
+  hasAccess = false }: LessonPlayerProps) {
   const [embedUrl, setEmbedUrl] = useState<string>("");
   const [videoType, setVideoType] = useState<"youtube" | "vimeo" | "direct">("direct");
 
@@ -172,12 +174,26 @@ export function LessonPlayer({ isOpen,
           {!videoUrl && !description && !content && !attachmentUrl && (
             <Card className="border-primary/30 bg-primary/5">
               <CardContent className="flex flex-col items-center justify-center py-10 text-center">
-                <Lock className="h-10 w-10 text-primary mb-3" />
-                <p className="font-semibold">Preview not shared for this lesson</p>
-                <p className="text-sm text-muted-foreground max-w-sm mt-1">
-                  The creator keeps this lesson's materials for enrolled students. The full
-                  video, text and documents unlock right after you get access to the course.
-                </p>
+                {hasAccess ? (
+                  <>
+                    <FileText className="h-10 w-10 text-primary mb-3" />
+                    <p className="font-semibold">No materials in this lesson yet</p>
+                    <p className="text-sm text-muted-foreground max-w-sm mt-1">
+                      You have full access to this course, but the creator has not uploaded a
+                      video, text or document for this lesson yet. You can still mark it as
+                      complete or take the quiz if one is available.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <Lock className="h-10 w-10 text-primary mb-3" />
+                    <p className="font-semibold">Preview not shared for this lesson</p>
+                    <p className="text-sm text-muted-foreground max-w-sm mt-1">
+                      The creator keeps this lesson's materials for enrolled students. The full
+                      video, text and documents unlock right after you get access to the course.
+                    </p>
+                  </>
+                )}
               </CardContent>
             </Card>
           )}
