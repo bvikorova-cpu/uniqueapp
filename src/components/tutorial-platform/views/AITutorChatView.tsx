@@ -24,7 +24,7 @@ const suggestionCategories = [
 
 export function AITutorChatView({ onBack }: Props) {
   const { toast } = useToast();
-  const { credits, isLoading: creditsLoading, spendCredit, isUsingCredit } = useTutoringCredits();
+  const { credits, isLoading: creditsLoading, spendCredit, refundCredit, isUsingCredit } = useTutoringCredits();
   const [messages, setMessages] = useState<Message[]>([
     { role: "assistant", content: "Hello! 👋 I'm your AI Tutor. I can help you with programming, data science, design, marketing, and more. Pick a topic below or ask me anything!" }
   ]);
@@ -65,6 +65,7 @@ export function AITutorChatView({ onBack }: Props) {
       if (error) throw error;
       setMessages(prev => [...prev, { role: "assistant", content: data.result }]);
     } catch (err: any) {
+      if (charged) await refundCredit({ amount: CREDITS_PER_MESSAGE, reason: "tutor_chat_failed" });
       if (err.message === "Insufficient credits") {
         toast({ title: "Insufficient Credits", description: "Purchase more credits to continue.", variant: "destructive" });
       } else {
