@@ -157,7 +157,6 @@ export const CourseLearning = lazy(() => import("@/pages/CourseLearning"));
 export const CourseDetail = lazy(() => import("@/pages/CourseDetail"));
 export const CourseDetailPage = lazy(() => import("@/pages/CourseDetailPage"));
 export const CourseLearnPage = lazy(() => import("@/pages/CourseLearnPage"));
-export const CoursesHub = lazy(() => import("@/pages/CoursesHub"));
 export const GenerateCourses = lazy(() => import("@/pages/GenerateCourses"));
 export const MyLearning = lazy(() => import("@/pages/MyLearning"));
 export const GenericLearning = lazy(() => import("@/pages/GenericLearning"));
