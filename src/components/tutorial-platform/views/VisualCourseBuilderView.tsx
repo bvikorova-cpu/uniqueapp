@@ -32,9 +32,7 @@ interface Module {
 }
 
 const initialModules: Module[] = [
-  { id: 1, title: "Introduction", type: "video", duration: "5 min" },
-  { id: 2, title: "Core Concepts", type: "video", duration: "15 min" },
-  { id: 3, title: "Hands-On Exercise", type: "document", duration: "20 min" },
+  { id: 1, title: "Lesson 1", type: "video", duration: "10 min" },
 ];
 
 interface Props { onBack: () => void; courseId?: string | null; }
@@ -550,6 +548,23 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
           attachment_name: m.attachment_name || null,
           duration_minutes: parseInt(m.duration) || 10,
         });
+      }
+
+      const emptyLessonIndex = modules.findIndex((m) => {
+        const hasQuiz = (m.quiz || []).some((q) => {
+          const answers = (q.options || []).map((option) => option.trim()).filter(Boolean);
+          return q.question.trim().length > 0 && answers.length >= 2;
+        });
+        return !m.video_url?.trim() && !m.content?.trim() && !m.attachment_url?.trim() && !hasQuiz;
+      });
+      if ((publish || wasPublished) && emptyLessonIndex >= 0) {
+        toast({
+          title: `Lesson ${emptyLessonIndex + 1} is empty`,
+          description: "Add a video, lesson text, document or a valid quiz before publishing.",
+          variant: "destructive",
+        });
+        setExpandedId(modules[emptyLessonIndex].id);
+        return;
       }
 
       // ---- EDIT MODE: update existing course, no credit charge ----
