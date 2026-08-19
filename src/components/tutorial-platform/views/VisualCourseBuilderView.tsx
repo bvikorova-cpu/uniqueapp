@@ -396,10 +396,13 @@ export function VisualCourseBuilderView({ onBack }: Props) {
           </div>
         </Card>
 
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-3 mb-2">
           <Badge variant="outline"><BookOpen className="w-3 h-3 mr-1" />{modules.length} modulov</Badge>
           <Badge variant="outline"><Clock className="w-3 h-3 mr-1" />{totalDuration} min</Badge>
         </div>
+        <p className="text-xs text-muted-foreground mb-4">
+          Click a module to expand it. Inside you can write lesson text, upload a video from your device, and attach documents (PDF, DOC, images, etc.).
+        </p>
 
         <div className="space-y-2 mb-4">
           {modules.map((mod, i) => {
