@@ -62,10 +62,10 @@ export function TutorialToolGrid({ onToolSelect }: Props) {
                   loading="lazy"
                   width={768}
                   height={512}
-                  className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-25 transition-all duration-500 group-hover:scale-105 group-hover:opacity-40"
+                  className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-70 transition-all duration-500 group-hover:scale-105 group-hover:opacity-85"
                 />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/40" />
-                <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-primary/15 blur-2xl transition-opacity duration-300 group-hover:bg-primary/30" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card via-card/55 to-transparent" />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-card via-card/75 to-transparent" />
 
 
                 {tool.id === "messages" && unread > 0 && (
