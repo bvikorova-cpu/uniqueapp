@@ -123,10 +123,13 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
       let bodyErr = (data as { error?: string; retry_after?: number } | null)?.error;
       let retryAfter = (data as { retry_after?: number } | null)?.retry_after;
 
+      let isRateLimited = false;
+
       if (!bodyErr && error) {
         try {
           const ctx = (error as { context?: Response }).context;
           if (ctx && typeof (ctx as Response).json === "function") {
+            if ((ctx as Response).status === 429) isRateLimited = true;
             const parsed = await (ctx as Response).clone().json();
             bodyErr = parsed?.error;
             retryAfter = parsed?.retry_after;
@@ -135,13 +138,13 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
           /* ignore */
         }
         // Fallback: detect 429 from error message string
-        if (!bodyErr && /429|too fast/i.test(error.message ?? "")) {
-          bodyErr = "Too fast";
+        if (/429|too fast|rate limit/i.test(error.message ?? "")) {
+          isRateLimited = true;
         }
       }
 
       if (bodyErr || error) {
-        if (bodyErr === "Too fast") {
+        if (isRateLimited || /too fast/i.test(bodyErr ?? "")) {
           const wait = retryAfter ?? 10;
           toast({
             title: "Slow down ⏱️",
@@ -149,8 +152,14 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
           setPhase("idle");
           return;
         }
-        throw new Error(bodyErr || error?.message || "Failed to claim");
+        toast({
+          title: "Couldn't claim XP",
+          description: bodyErr || error?.message || "Please try again in a moment.",
+          variant: "destructive" });
+        setPhase("idle");
+        return;
       }
+
 
 
       bumpLocalViews(sectionKey);
