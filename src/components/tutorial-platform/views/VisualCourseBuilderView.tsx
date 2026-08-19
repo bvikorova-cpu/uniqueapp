@@ -363,9 +363,43 @@ export function VisualCourseBuilderView({ onBack }: Props) {
                       }}
                       placeholder="Video URL (YouTube/Vimeo, optional)"
                     />
+                    <div className="flex items-center gap-2">
+                      <input
+                        id={`video-file-${mod.id}`}
+                        type="file"
+                        accept="video/mp4,video/webm,video/quicktime,video/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0];
+                          e.target.value = "";
+                          if (f) handleVideoUpload(mod.id, f);
+                        }}
+                      />
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        disabled={uploadingId === mod.id}
+                        onClick={() => document.getElementById(`video-file-${mod.id}`)?.click()}
+                      >
+                        {uploadingId === mod.id ? (
+                          <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Uploading…</>
+                        ) : (
+                          <><Upload className="w-4 h-4 mr-2" />Upload video from device</>
+                        )}
+                      </Button>
+                      <span className="text-xs text-muted-foreground">MP4/WebM/MOV, max 500 MB</span>
+                    </div>
                     {(() => {
                       const { url } = normalizeVideoUrl(mod.video_url || "");
                       if (!url) return null;
+                      if (isDirectVideoFile(url)) {
+                        return (
+                          <div className="rounded-md overflow-hidden border bg-black aspect-video">
+                            <video src={url} controls className="w-full h-full" preload="metadata" />
+                          </div>
+                        );
+                      }
                       return (
                         <div className="rounded-md overflow-hidden border bg-black aspect-video">
                           <iframe
