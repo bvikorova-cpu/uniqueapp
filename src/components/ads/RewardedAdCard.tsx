@@ -125,7 +125,10 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
   };
 
   const claim = async () => {
+    if (isClaiming || cooldown > 0) return;
+    setIsClaiming(true);
     try {
+
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast({
           title: "Sign in to claim 5 XP",
