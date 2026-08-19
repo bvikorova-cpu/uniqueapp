@@ -404,7 +404,7 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
 
       // ---- EDIT MODE: update existing course, no credit charge ----
       if (courseId) {
-        const { error: upErr } = await supabase
+        const { data: updatedCourse, error: upErr } = await supabase
           .from("courses")
           .update({
             title,
@@ -417,8 +417,12 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
             thumbnail_url: heroUrl || null,
             is_published: publish ? true : wasPublished,
           })
-          .eq("id", courseId);
+          .eq("id", courseId)
+          .eq("creator_id", user.id)
+          .select("id")
+          .maybeSingle();
         if (upErr) throw upErr;
+        if (!updatedCourse) throw new Error("Course could not be updated. Please confirm that you own this course.");
 
         const { error: delErr } = await supabase.from("course_lessons").delete().eq("course_id", courseId);
         if (delErr) throw delErr;
@@ -439,8 +443,8 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
         );
         if (insErr) throw insErr;
 
-        toast({ title: "Course updated ✅" });
-        navigate(`/tutorial-course/${courseId}`);
+        toast({ title: "Changes saved ✅" });
+        onBack();
         return;
       }
 
@@ -845,19 +849,28 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
         </Card>
 
         <div className="space-y-2">
-          <div className="flex gap-2">
-            <Button variant="outline" className="flex-1" onClick={() => saveCourse(false)} disabled={saving}>
+          {isEdit ? (
+            <Button className="w-full bg-gradient-to-r from-emerald-500 to-teal-600" onClick={() => saveCourse(false)} disabled={saving}>
               {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-              Save draft
+              {saving ? "Saving changes…" : "Save changes"}
             </Button>
-            <Button className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600" onClick={() => saveCourse(true)} disabled={saving}>
-              {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-              Publish course
-              <span className="ml-2 inline-flex items-center rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold">15 CR</span>
-            </Button>
-          </div>
+          ) : (
+            <div className="flex gap-2">
+              <Button variant="outline" className="flex-1" onClick={() => saveCourse(false)} disabled={saving}>
+                {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                Save draft
+              </Button>
+              <Button className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600" onClick={() => saveCourse(true)} disabled={saving}>
+                {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+                Publish course
+                <span className="ml-2 inline-flex items-center rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold">15 CR</span>
+              </Button>
+            </div>
+          )}
           <p className="text-center text-xs text-muted-foreground">
-            Publishing a course costs <span className="font-semibold text-primary">15 credits</span>. Saving a draft is free.
+            {isEdit
+              ? "Saving changes is free and keeps the current publish status."
+              : <>Publishing a course costs <span className="font-semibold text-primary">15 credits</span>. Saving a draft is free.</>}
           </p>
         </div>
       </div>

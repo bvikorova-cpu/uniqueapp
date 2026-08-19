@@ -30,6 +30,9 @@ export function LessonPlayer({ isOpen,
   useEffect(() => {
     if (videoUrl) {
       processVideoUrl(videoUrl);
+    } else {
+      setEmbedUrl("");
+      setVideoType("direct");
     }
   }, [videoUrl]);
 

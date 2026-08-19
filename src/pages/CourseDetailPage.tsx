@@ -192,6 +192,7 @@ export default function CourseDetailPage() {
       {/* Lesson Player Modal */}
       {selectedLesson && (
         <LessonPlayer
+          key={selectedLesson.id}
           isOpen={isPlayerOpen}
           onClose={() => {
             setIsPlayerOpen(false);
