@@ -303,16 +303,50 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
         setPrice(String(course.price ?? 0));
         setWasPublished(!!course.is_published);
         setHeroUrl(course.thumbnail_url || "");
+        // Load quizzes attached to these lessons
+        const lessonIds = (lessons || []).map((l: any) => l.id);
+        let quizByLesson: Record<string, { passing: number; questions: BuilderQuizQuestion[] }> = {};
+        if (lessonIds.length) {
+          const { data: quizzes } = await supabase
+            .from("course_quizzes")
+            .select("id, lesson_id, passing_score")
+            .in("lesson_id", lessonIds);
+          const quizIds = (quizzes || []).map((q: any) => q.id);
+          const { data: questions } = quizIds.length
+            ? await supabase
+                .from("quiz_questions")
+                .select("*")
+                .in("quiz_id", quizIds)
+                .order("order_index", { ascending: true })
+            : { data: [] as any[] };
+          (quizzes || []).forEach((q: any) => {
+            const qs = (questions || [])
+              .filter((x: any) => x.quiz_id === q.id)
+              .map((x: any) => {
+                const options: string[] = Array.isArray(x.options) ? x.options.map(String) : [];
+                const idx = options.findIndex((o) => o === x.correct_answer);
+                return {
+                  question: x.question,
+                  options: [0, 1, 2, 3].map((n) => options[n] ?? ""),
+                  correct: idx >= 0 ? idx : 0,
+                  explanation: x.explanation || undefined,
+                };
+              });
+            quizByLesson[q.lesson_id] = { passing: q.passing_score ?? 70, questions: qs };
+          });
+        }
         const mapped: Module[] = (lessons || []).map((l: any, i: number) => ({
           id: Date.now() + i,
           title: l.title || `Module ${i + 1}`,
-          type: l.video_url ? "video" : "document",
+          type: quizByLesson[l.id]?.questions.length ? "quiz" : l.video_url ? "video" : "document",
           duration: `${l.duration_minutes ?? 10} min`,
           description: l.description || undefined,
           video_url: l.video_url || undefined,
           content: l.content || undefined,
           attachment_url: l.attachment_url || undefined,
           attachment_name: l.attachment_name || undefined,
+          quiz: quizByLesson[l.id]?.questions,
+          quizPassing: quizByLesson[l.id]?.passing,
         }));
         setModules(mapped);
         setExpandedId(mapped[0]?.id ?? null);
