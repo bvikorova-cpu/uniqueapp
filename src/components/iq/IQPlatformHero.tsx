@@ -1,42 +1,14 @@
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
-import { Brain, Trophy, Users, Flame, Zap, GraduationCap } from "lucide-react";
+import { Flame, GraduationCap } from "lucide-react";
 import heroVideo from "@/assets/iq-platform-hero.mp4.asset.json";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-function getWeeklyTimeLeft() {
-  const now = new Date();
-  const endOfWeek = new Date(now);
-  endOfWeek.setDate(now.getDate() + (7 - now.getDay()));
-  endOfWeek.setHours(23, 59, 59, 999);
-  const diff = endOfWeek.getTime() - now.getTime();
-  const days = Math.floor(diff / 86400000);
-  const hours = Math.floor((diff % 86400000) / 3600000);
-  return { days, hours };
-}
-
 interface IQPlatformHeroProps {
-  totalTests: number;
-  totalUsers: number;
-  userIQ: number | null;
   streak: number;
 }
 
-export default function IQPlatformHero({ totalTests, totalUsers, userIQ, streak }: IQPlatformHeroProps) {
-  const [timeLeft, setTimeLeft] = useState(getWeeklyTimeLeft());
-
-  useEffect(() => {
-    const timer = setInterval(() => setTimeLeft(getWeeklyTimeLeft()), 60000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const statCards = [
-    { value: userIQ ? `${userIQ}` : "—", label: "Your IQ", icon: Brain, accent: "from-blue-500/20 to-cyan-500/10", iconColor: "text-blue-400" },
-    { value: `${timeLeft.days}d ${timeLeft.hours}h`, label: "Tournament Ends", icon: Trophy, accent: "from-amber-500/20 to-yellow-500/10", iconColor: "text-amber-400" },
-    { value: totalUsers > 0 ? totalUsers.toLocaleString() : "—", label: "Active Users", icon: Users, accent: "from-emerald-500/20 to-green-500/10", iconColor: "text-emerald-400" },
-    { value: totalTests > 0 ? totalTests.toLocaleString() : "—", label: "Tests Taken", icon: Zap, accent: "from-purple-500/20 to-violet-500/10", iconColor: "text-purple-400" },
-  ];
+export default function IQPlatformHero({ streak }: IQPlatformHeroProps) {
 
   return (
     <div className="space-y-4 mb-8">
