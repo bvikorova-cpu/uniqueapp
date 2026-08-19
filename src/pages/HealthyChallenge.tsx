@@ -348,8 +348,9 @@ export default function HealthyChallenge() {
             💪 HEALTHY <span className="text-orange-300">CHALLENGE</span>
           </h1>
           <p className="text-sm sm:text-base text-white/85 font-semibold mt-2 drop-shadow max-w-xl">
-            One healthy action a day. Post proof — km, meals, workouts. Paid entry only — <b className="text-yellow-300">PRO €3/mo (200,000 XP)</b> or <b className="text-pink-300">TOP €5/mo (500,000 XP)</b>.
+            At least 1 photo or video per month — no daily posting required. Paid entry only — <b className="text-yellow-300">PRO €3/mo (200,000 XP)</b> or <b className="text-pink-300">TOP €5/mo (500,000 XP)</b>.
           </p>
+
           <p className="text-xs sm:text-sm text-white/70 font-medium mt-1.5 italic max-w-xl">
             🌍 A global fight against overweight and obesity — one healthy step at a time.
           </p>
