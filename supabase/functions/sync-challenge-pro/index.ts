@@ -137,6 +137,8 @@ serve(async (req) => {
       const { error: upsertErr } = await admin
         .from("challenge_pro_subscribers")
         .upsert(upsertRow, { onConflict: "user_id,challenge" });
+      if (upsertErr) log("upsert failed", { challenge: ch, error: upsertErr.message });
+
 
       let xpUpsertOk: boolean | null = null;
       let xpErrorMsg: string | null = null;
