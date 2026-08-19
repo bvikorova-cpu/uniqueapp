@@ -159,10 +159,10 @@ const Terms = () => {
             </LegalSection>
 
             <LegalSection id="creator" number="§8" title="Creator Obligations">
-              <p><strong>7.1.</strong> Comply with all tax obligations in your jurisdiction.</p>
-              <p><strong>7.2.</strong> Complete KYC verification before payouts.</p>
-              <p><strong>7.3.</strong> Honor all obligations to subscribers and customers.</p>
-              <p><strong>7.4.</strong> Comply with the <Link to="/legal/community" className="text-amber-400 underline">Community Guidelines</Link>.</p>
+              <p><strong>8.1.</strong> Comply with all tax obligations in your jurisdiction.</p>
+              <p><strong>8.2.</strong> Complete KYC verification before payouts.</p>
+              <p><strong>8.3.</strong> Honor all obligations to subscribers and customers.</p>
+              <p><strong>8.4.</strong> Comply with the <Link to="/legal/community" className="text-amber-400 underline">Community Guidelines</Link>.</p>
             </LegalSection>
 
             <LegalSection id="prohibited" number="§9" title="Prohibited Conduct">
