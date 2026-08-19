@@ -47,6 +47,19 @@ export function AICertificateDesignerView({ onBack }: Props) {
     }
   };
 
+  // Keep only one short, clean line from the AI output (no markdown, no long essay).
+  const shortCitation = (() => {
+    if (!certificate) return "";
+    const clean = certificate
+      .replace(/[#*_>`-]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    const sentence = clean.split(/(?<=[.!?])\s/)[0] || clean;
+    return sentence.length > 160 ? sentence.slice(0, 157).trimEnd() + "…" : sentence;
+  })();
+
+
+
   return (
     <>
       <FloatingHowItWorks title={"A I Certificate Designer View - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Certificate Designer View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Certificate Designer View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
@@ -108,10 +121,12 @@ export function AICertificateDesignerView({ onBack }: Props) {
                 <p className="text-muted-foreground text-sm">has successfully completed</p>
                 <p className="text-lg md:text-xl font-bold">{courseName}</p>
                 <p className="text-sm text-muted-foreground mt-4">{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                <div className="prose prose-sm max-w-none whitespace-pre-wrap text-xs mt-4 text-muted-foreground">{certificate}</div>
+                {shortCitation && (
+                  <p className="text-sm italic text-muted-foreground max-w-xl mx-auto mt-3">"{shortCitation}"</p>
+                )}
               </div>
               <Button className="w-full mt-4 h-11" variant="outline" onClick={() => {
-                const content = `===== CERTIFICATE OF COMPLETION =====\n\nAwarded to: ${studentName}\nCourse: ${courseName}\nStyle: ${style}\nDate: ${new Date().toLocaleDateString()}\n\n${certificate}\n\nIssued by Unique Tutorial Platform\n`;
+                const content = `===== CERTIFICATE OF COMPLETION =====\n\nAwarded to: ${studentName}\nCourse: ${courseName}\nStyle: ${style}\nDate: ${new Date().toLocaleDateString()}\n\n${shortCitation}\n\nIssued by Unique Tutorial Platform\n`;
                 const blob = new Blob([content], { type: "text/plain" });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
@@ -123,6 +138,7 @@ export function AICertificateDesignerView({ onBack }: Props) {
                 URL.revokeObjectURL(url);
                 toast({ description: "Certificate downloaded" });
               }}><Download className="w-4 h-4 mr-2" />Download Certificate</Button>
+
             </CardContent>
           </Card>
         )}
