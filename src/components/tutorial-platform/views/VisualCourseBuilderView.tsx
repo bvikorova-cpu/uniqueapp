@@ -147,8 +147,44 @@ export function VisualCourseBuilderView({ onBack }: Props) {
     }
   };
 
+  const MAX_DOC_BYTES = 50 * 1024 * 1024; // 50 MB
+
+  const handleDocUpload = async (moduleId: number, file: File) => {
+    if (file.size > MAX_DOC_BYTES) {
+      toast({ title: "File is too large (max 50 MB)", variant: "destructive" });
+      return;
+    }
+    setUploadingDocId(moduleId);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) {
+        toast({ title: "Please sign in to upload files", variant: "destructive" });
+        return;
+      }
+      const safeName = file.name.replace(/[^A-Za-z0-9._-]/g, "_");
+      const path = `${auth.user.id}/${Date.now()}-${safeName}`;
+      const { error: upErr } = await supabase.storage
+        .from("course-files")
+        .upload(path, file, { contentType: file.type || "application/octet-stream", upsert: false });
+      if (upErr) throw upErr;
+
+      const { data: signed, error: signErr } = await supabase.storage
+        .from("course-files")
+        .createSignedUrl(path, 60 * 60 * 24 * 365 * 5);
+      if (signErr || !signed?.signedUrl) throw signErr || new Error("Could not create file link");
+
+      updateModule(moduleId, { attachment_url: signed.signedUrl, attachment_name: file.name });
+      toast({ title: "Document uploaded ✅" });
+    } catch (e: any) {
+      console.error(e);
+      toast({ title: "Upload failed", description: e.message, variant: "destructive" });
+    } finally {
+      setUploadingDocId(null);
+    }
+  };
 
   const onDragStart = (id: number) => setDragId(id);
+
   const onDragOver = (e: React.DragEvent, overId: number) => {
     e.preventDefault();
     if (dragId === null || dragId === overId) return;
