@@ -28,7 +28,7 @@ const initialModules: Module[] = [
   { id: 3, title: "Hands-On Exercise", type: "document", duration: "20 min" },
 ];
 
-interface Props { onBack: () => void; }
+interface Props { onBack: () => void; courseId?: string | null; }
 
 /**
  * Validate & normalize a video URL.
