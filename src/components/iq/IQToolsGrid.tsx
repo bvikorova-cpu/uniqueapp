@@ -144,12 +144,13 @@ export default function IQToolsGrid() {
           { title: 'Review results', desc: 'Progress and history are saved.' },
           { title: 'Iterate', desc: 'Repeat or level up anytime.' },
         ]} />
-        <div className="prose prose-sm dark:prose-invert max-w-none">
-        <ReactMarkdown>{md}</ReactMarkdown>
-        <div className="mt-4 text-xs text-muted-foreground">
+        <div className="rounded-xl border border-border/40 bg-card/60 p-4">
+        <AiMarkdown content={md} />
+        <div className="mt-4 pt-3 border-t border-border/40 text-xs text-muted-foreground">
           Credits used: {credits_used} | Remaining: {credits_remaining}
         </div>
       </div>
+
       </>
       );
   };
