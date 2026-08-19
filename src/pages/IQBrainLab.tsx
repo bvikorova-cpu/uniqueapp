@@ -140,11 +140,6 @@ const CATEGORIES = [
   { id: "memory", label: "Memory & Attention", icon: Brain, desc: "Recall, focus, visual search" },
   { id: "speed", label: "Speed & Focus", icon: Zap, desc: "Reaction, Stroop, Schulte" },
   { id: "math", label: "Math & Logic", icon: Calculator, desc: "Equations, sequences, syllogisms" },
-  { id: "social", label: "Social & Clans", icon: Users, desc: "Duels, clans, mentor chat" },
-  { id: "profile", label: "Profile", icon: User, desc: "Avatar, theme, nickname, bio" },
-  { id: "analytics", label: "Analytics", icon: BarChart3, desc: "Skill radar, history, time" },
-  { id: "goals", label: "Goals", icon: Target, desc: "Habits, journal, milestones" },
-  { id: "data", label: "Data", icon: Database, desc: "Export / import / reset / share" },
 ];
 
 const Grid = ({ children }: { children: React.ReactNode }) => (
@@ -190,7 +185,7 @@ const IQBrainLab = () => {
       </Card>
 
       <Tabs value={tab} onValueChange={setTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-1 h-auto p-1.5 bg-muted/50 rounded-xl">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1 h-auto p-1.5 bg-muted/50 rounded-xl">
           {CATEGORIES.map(c => (
             <TabsTrigger key={c.id} value={c.id} className="text-[10px] sm:text-xs py-2 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <c.icon className="h-3 w-3 sm:h-4 sm:w-4 mr-0.5 sm:mr-1" />
@@ -238,43 +233,8 @@ const IQBrainLab = () => {
           <div className="mt-4"><IQMathSummary /></div>
         </TabsContent>
 
-        <TabsContent value="social">
-          <Grid>
-            <IQDuelInvite /><IQDuelLobby /><IQDuelMatch /><IQDuelHistory />
-            <IQClanCreate /><IQClanList /><IQClanChat /><IQGuildWar /><IQTeamLeaderboard />
-            <IQMentorMatch /><IQStudyGroup /><IQForumThreads /><IQMentorChat /><IQFriendInvite />
-          </Grid>
-          <div className="mt-4"><IQSocialSummary /></div>
-        </TabsContent>
 
-        <TabsContent value="profile">
-          <Grid>
-            <IQAvatarPicker /><IQThemeSelector /><IQBadgeShowcase /><IQTitleSelector />
-            <IQProfileBanner /><IQFrameSelector /><IQNicknameEditor /><IQBioEditor /><IQSoundToggle />
-          </Grid>
-          <div className="mt-4"><IQCustomSummary /></div>
-        </TabsContent>
 
-        <TabsContent value="analytics">
-          <Grid>
-            <IQWeeklyActivity /><IQSkillRadar /><IQScoreHistory /><IQTimeSpent />
-          </Grid>
-          <div className="mt-4"><IQAnalyticsSummary /></div>
-        </TabsContent>
-
-        <TabsContent value="goals">
-          <Grid>
-            <IQGoalSetter /><IQMilestoneTracker /><IQHabitTracker /><IQJournal />
-          </Grid>
-          <div className="mt-4"><IQGoalSummary /></div>
-        </TabsContent>
-
-        <TabsContent value="data">
-          <Grid>
-            <IQDataExport /><IQDataImport /><IQDataReset /><IQShareProfile />
-          </Grid>
-          <div className="mt-4"><IQFinalSummary /></div>
-        </TabsContent>
       </Tabs>
     </div>
   );
