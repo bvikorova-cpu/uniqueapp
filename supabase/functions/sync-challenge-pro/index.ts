@@ -59,8 +59,31 @@ serve(async (req) => {
 
     for (const s of subs.data) {
       const md = (s.metadata || {}) as Record<string, string>;
-      const kind = md.type || md.product || "";
-      const entry = { end: s.current_period_end, start: s.current_period_start, subId: s.id };
+      const item: any = (s as any).items?.data?.[0];
+      // Stripe API 2025-08-27.basil moved current_period_* onto subscription items.
+      const end: number =
+        (s as any).current_period_end ?? item?.current_period_end ?? 0;
+      const start: number =
+        (s as any).current_period_start ?? item?.current_period_start ?? 0;
+      if (!end) { log("skip sub without period end", { id: s.id }); continue; }
+
+      let kind = md.type || md.product || "";
+      if (!kind) {
+        // Fallback: derive from the product name on the price.
+        const prod = item?.price?.product;
+        const name = String(
+          (typeof prod === "object" && prod && (prod as any).name) ||
+          item?.price?.nickname || "",
+        ).toLowerCase();
+        if (name.includes("challenge")) {
+          const t = name.includes("top") ? "top" : "pro";
+          if (name.includes("eco")) kind = `challenge_${t}_eco`;
+          else if (name.includes("healthy")) kind = `challenge_${t}_healthy`;
+          else kind = `challenge_${t}`;
+        }
+      }
+
+      const entry = { end, start, subId: s.id };
       if (kind === "challenge_top_eco") put("eco", "top", entry);
       else if (kind === "challenge_pro_eco") put("eco", "pro", entry);
       else if (kind === "challenge_top_healthy") put("healthy", "top", entry);
@@ -69,6 +92,7 @@ serve(async (req) => {
       else if (kind === "challenge_top") { put("eco", "top", entry); put("healthy", "top", entry); }
       else if (kind === "challenge_pro") { put("eco", "pro", entry); put("healthy", "pro", entry); }
     }
+
 
     const result: Record<string, { active: boolean; tier: "pro" | "top" | null; activeUntil: string | null }> = {};
     let grantedXp = 0;
