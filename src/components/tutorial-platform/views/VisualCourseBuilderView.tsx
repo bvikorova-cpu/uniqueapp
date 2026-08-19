@@ -92,17 +92,20 @@ export function isDirectVideoFile(url: string) {
   return url.includes("/storage/v1/object/") || /\.(mp4|webm|mov|m4v)(\?|$)/i.test(url);
 }
 
-export function VisualCourseBuilderView({ onBack }: Props) {
+export function VisualCourseBuilderView({ onBack, courseId }: Props) {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [modules, setModules] = useState<Module[]>(initialModules);
+  const isEdit = !!courseId;
+  const [modules, setModules] = useState<Module[]>(isEdit ? [] : initialModules);
   const [newTitle, setNewTitle] = useState("");
   const [newType, setNewType] = useState("video");
   const [saving, setSaving] = useState(false);
-  const [expandedId, setExpandedId] = useState<number | null>(initialModules[0]?.id ?? null);
+  const [loading, setLoading] = useState(isEdit);
+  const [expandedId, setExpandedId] = useState<number | null>(isEdit ? null : (initialModules[0]?.id ?? null));
   const [dragId, setDragId] = useState<number | null>(null);
   const [uploadingId, setUploadingId] = useState<number | null>(null);
   const [uploadingDocId, setUploadingDocId] = useState<number | null>(null);
+
 
   const updateModule = (id: number, patch: Partial<Module>) =>
     setModules(prev => prev.map(m => (m.id === id ? { ...m, ...patch } : m)));
