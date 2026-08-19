@@ -479,7 +479,7 @@ export default function CourseLearnPage() {
           </div>
 
           {/* Current Lesson Content */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 min-w-0">
             {currentLesson ? (
               <div className="space-y-6">
                 {/* Lesson Header */}
