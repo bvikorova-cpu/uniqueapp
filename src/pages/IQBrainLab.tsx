@@ -238,43 +238,8 @@ const IQBrainLab = () => {
           <div className="mt-4"><IQMathSummary /></div>
         </TabsContent>
 
-        <TabsContent value="social">
-          <Grid>
-            <IQDuelInvite /><IQDuelLobby /><IQDuelMatch /><IQDuelHistory />
-            <IQClanCreate /><IQClanList /><IQClanChat /><IQGuildWar /><IQTeamLeaderboard />
-            <IQMentorMatch /><IQStudyGroup /><IQForumThreads /><IQMentorChat /><IQFriendInvite />
-          </Grid>
-          <div className="mt-4"><IQSocialSummary /></div>
-        </TabsContent>
 
-        <TabsContent value="profile">
-          <Grid>
-            <IQAvatarPicker /><IQThemeSelector /><IQBadgeShowcase /><IQTitleSelector />
-            <IQProfileBanner /><IQFrameSelector /><IQNicknameEditor /><IQBioEditor /><IQSoundToggle />
-          </Grid>
-          <div className="mt-4"><IQCustomSummary /></div>
-        </TabsContent>
 
-        <TabsContent value="analytics">
-          <Grid>
-            <IQWeeklyActivity /><IQSkillRadar /><IQScoreHistory /><IQTimeSpent />
-          </Grid>
-          <div className="mt-4"><IQAnalyticsSummary /></div>
-        </TabsContent>
-
-        <TabsContent value="goals">
-          <Grid>
-            <IQGoalSetter /><IQMilestoneTracker /><IQHabitTracker /><IQJournal />
-          </Grid>
-          <div className="mt-4"><IQGoalSummary /></div>
-        </TabsContent>
-
-        <TabsContent value="data">
-          <Grid>
-            <IQDataExport /><IQDataImport /><IQDataReset /><IQShareProfile />
-          </Grid>
-          <div className="mt-4"><IQFinalSummary /></div>
-        </TabsContent>
       </Tabs>
     </div>
   );
