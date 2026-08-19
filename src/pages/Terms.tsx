@@ -183,10 +183,10 @@ const Terms = () => {
               <p><strong>9.3.</strong> DMCA notices are handled per the <Link to="/legal/community" className="text-amber-400 underline">DMCA Policy</Link>.</p>
             </LegalSection>
 
-            <LegalSection id="termination" number="§10" title="Termination">
-              <p><strong>10.1.</strong> You may delete your account anytime in Settings.</p>
-              <p><strong>10.2.</strong> We may terminate accounts that breach these terms.</p>
-              <p><strong>10.3.</strong> Pending payouts above minimum threshold are processed within 30 days of termination.</p>
+            <LegalSection id="termination" number="§11" title="Termination">
+              <p><strong>11.1.</strong> You may delete your account anytime in Settings.</p>
+              <p><strong>11.2.</strong> We may terminate accounts that breach these terms.</p>
+              <p><strong>11.3.</strong> Pending payouts above minimum threshold are processed within 30 days of termination.</p>
             </LegalSection>
 
             <LegalSection id="liability" number="§11" title="Limitation of Liability">
