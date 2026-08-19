@@ -211,11 +211,12 @@ export default function HealthyChallenge() {
     if (!challenge || challenge.id === "fallback") { toast({ title: "No active challenge yet", description: "Admin has not created today's challenge.", variant: "destructive" }); return; }
     if (description.trim().length < 10) { toast({ title: "Describe your effort (min 10 chars)", variant: "destructive" }); return; }
     if (mySubmissionToday) { toast({
-        title: "⚠️ Daily limit reached",
-        description: "You have already submitted your proof for today. Only 1 submission per day is allowed. Come back tomorrow for a new challenge!",
+        title: "Already submitted today",
+        description: "Only 1 submission per day is allowed. Your monthly minimum (1 proof per calendar month) is already met — you can post again tomorrow.",
         variant: "destructive" });
       return;
     }
+
     setUploading(true);
     try {
       const { images, video } = await uploadMedia();
