@@ -462,17 +462,29 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
         await supabase.from("course_quizzes").delete().eq("id", q.id);
       }
 
+      // course_quizzes.difficulty only allows easy | medium | hard
+      const quizDifficulty =
+        difficulty === "beginner" ? "easy" : difficulty === "advanced" ? "hard" : "medium";
+
       const { data: quiz, error: qErr } = await supabase
         .from("course_quizzes")
         .insert({
           lesson_id: lesson.id,
           title: `${m.title} — Quiz`,
           passing_score: m.quizPassing ?? 70,
-          difficulty,
+          difficulty: quizDifficulty,
         })
         .select("id")
         .single();
-      if (qErr || !quiz) continue;
+      if (qErr || !quiz) {
+        console.error("Quiz save failed", qErr);
+        toast({
+          title: `Quiz for "${m.title}" was not saved`,
+          description: qErr?.message || "Unknown error",
+          variant: "destructive",
+        });
+        continue;
+      }
 
       const rows = (m.quiz || [])
         .filter(q => q.question.trim())
@@ -488,7 +500,17 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
           };
         })
         .filter(r => r.options.length >= 2 && r.correct_answer);
-      if (rows.length) await supabase.from("quiz_questions").insert(rows);
+      if (rows.length) {
+        const { error: rowsErr } = await supabase.from("quiz_questions").insert(rows);
+        if (rowsErr) {
+          console.error("Quiz questions save failed", rowsErr);
+          toast({
+            title: `Questions for "${m.title}" were not saved`,
+            description: rowsErr.message,
+            variant: "destructive",
+          });
+        }
+      }
     }
   };
 
