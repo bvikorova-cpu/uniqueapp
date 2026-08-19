@@ -679,8 +679,9 @@ export default function CourseLearnPage() {
                           </p>
                           <Button size="lg" onClick={handleGenerateCertificate}>
                             <Award className="mr-2 h-5 w-5" />
-                            Get Your Certificate
+                            Get Your Certificate (3 credits)
                           </Button>
+
                         </CardContent>
                       </Card>
                     );
