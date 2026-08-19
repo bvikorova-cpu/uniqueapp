@@ -44,115 +44,123 @@ serve(async (req) => {
     }
     const customerId = customers.data[0].id;
 
-    const subs = await stripe.subscriptions.list({ customer: customerId, status: "active", limit: 20 });
+    const subs = await stripe.subscriptions.list({ customer: customerId, status: "active", limit: 50 });
 
-    // Find highest matching sub. TOP outranks PRO.
-    let bestPro: { end: number; start: number; subId: string } | null = null;
-    let bestTop: { end: number; start: number; subId: string } | null = null;
+    type Entry = { end: number; start: number; subId: string };
+    const CHALLENGES = ["eco", "healthy"] as const;
+    const best: Record<string, { pro: Entry | null; top: Entry | null }> = {
+      eco: { pro: null, top: null },
+      healthy: { pro: null, top: null } };
+
+    const put = (ch: string, kind: "pro" | "top", e: Entry) => {
+      const cur = best[ch][kind];
+      if (!cur || e.end > cur.end) best[ch][kind] = e;
+    };
+
     for (const s of subs.data) {
       const md = (s.metadata || {}) as Record<string, string>;
-      const kind = md.type || md.product;
+      const kind = md.type || md.product || "";
       const entry = { end: s.current_period_end, start: s.current_period_start, subId: s.id };
-      if (kind === "challenge_top") {
-        if (!bestTop || s.current_period_end > bestTop.end) bestTop = entry;
-      } else if (kind === "challenge_pro") {
-        if (!bestPro || s.current_period_end > bestPro.end) bestPro = entry;
-      }
+      if (kind === "challenge_top_eco") put("eco", "top", entry);
+      else if (kind === "challenge_pro_eco") put("eco", "pro", entry);
+      else if (kind === "challenge_top_healthy") put("healthy", "top", entry);
+      else if (kind === "challenge_pro_healthy") put("healthy", "pro", entry);
+      // Legacy combined plans unlocked both sections
+      else if (kind === "challenge_top") { put("eco", "top", entry); put("healthy", "top", entry); }
+      else if (kind === "challenge_pro") { put("eco", "pro", entry); put("healthy", "pro", entry); }
     }
 
-    const match = bestTop || bestPro;
-    const tier: "top" | "pro" | null = bestTop ? "top" : bestPro ? "pro" : null;
-
-    if (!match || !tier) {
-      await admin.from("challenge_pro_subscribers").delete().eq("user_id", user.id);
-      return json({ active: false }, 200);
-    }
-
-    const activeUntil = new Date(match.end * 1000).toISOString();
-    const periodKey = `${match.subId}:${match.start}`;
-
-    // Read existing row to detect whether we already granted TOP XP this period
-    const { data: existing } = await admin
-      .from("challenge_pro_subscribers")
-      .select("top_last_grant_period")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    const alreadyGranted = (existing as any)?.top_last_grant_period === periodKey;
-    const shouldGrantTopXp = tier === "top" && !alreadyGranted;
-
-    const upsertRow: Record<string, unknown> = { user_id: user.id,
-      tier,
-      active_until: activeUntil,
-      stripe_subscription_id: match.subId,
-      stripe_customer_id: customerId,
-      updated_at: new Date().toISOString() };
-    if (shouldGrantTopXp) upsertRow.top_last_grant_period = periodKey;
-
-    const { error: upsertErr } = await admin
-      .from("challenge_pro_subscribers")
-      .upsert(upsertRow, { onConflict: "user_id" });
-
-    // Grant guaranteed 500,000 XP for TOP subscribers, once per billing period
+    const result: Record<string, { active: boolean; tier: "pro" | "top" | null; activeUntil: string | null }> = {};
     let grantedXp = 0;
-    let xpUpsertOk: boolean | null = null;
-    let xpErrorMsg: string | null = null;
 
-    if (shouldGrantTopXp && !upsertErr) {
-      grantedXp = 500000;
-      const { data: xpRow } = await admin
-        .from("user_xp")
-        .select("total_xp")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      const current = (xpRow as any)?.total_xp ?? 0;
-      const { error: xpErr } = await admin
-        .from("user_xp")
-        .upsert({ user_id: user.id, total_xp: current + grantedXp }, { onConflict: "user_id" });
-      xpUpsertOk = !xpErr;
-      if (xpErr) xpErrorMsg = xpErr.message;
+    for (const ch of CHALLENGES) {
+      const bTop = best[ch].top;
+      const bPro = best[ch].pro;
+      const match = bTop || bPro;
+      const tier: "top" | "pro" | null = bTop ? "top" : bPro ? "pro" : null;
 
-      if (!xpErr) {
-        await admin.from("notifications").insert({
-          user_id: user.id,
-          type: "challenge_top_monthly",
-          title: "👑 TOP monthly bonus",
-          message: "You received your guaranteed 500,000 XP for being a Challenge TOP subscriber this month!",
-          data: { xp: grantedXp, period: periodKey } });
+      if (!match || !tier) {
+        await admin.from("challenge_pro_subscribers").delete()
+          .eq("user_id", user.id).eq("challenge", ch);
+        result[ch] = { active: false, tier: null, activeUntil: null };
+        continue;
       }
+
+      const activeUntil = new Date(match.end * 1000).toISOString();
+      const periodKey = `${match.subId}:${match.start}:${ch}`;
+
+      const { data: existing } = await admin
+        .from("challenge_pro_subscribers")
+        .select("top_last_grant_period")
+        .eq("user_id", user.id)
+        .eq("challenge", ch)
+        .maybeSingle();
+
+      const alreadyGranted = (existing as any)?.top_last_grant_period === periodKey;
+      const shouldGrantTopXp = tier === "top" && !alreadyGranted;
+
+      const upsertRow: Record<string, unknown> = { user_id: user.id,
+        challenge: ch,
+        tier,
+        active_until: activeUntil,
+        stripe_subscription_id: match.subId,
+        stripe_customer_id: customerId,
+        updated_at: new Date().toISOString() };
+      if (shouldGrantTopXp) upsertRow.top_last_grant_period = periodKey;
+
+      const { error: upsertErr } = await admin
+        .from("challenge_pro_subscribers")
+        .upsert(upsertRow, { onConflict: "user_id,challenge" });
+
+      let xpUpsertOk: boolean | null = null;
+      let xpErrorMsg: string | null = null;
+      let xpForThis = 0;
+
+      if (shouldGrantTopXp && !upsertErr) {
+        xpForThis = 500000;
+        const { data: xpRow } = await admin
+          .from("user_xp")
+          .select("total_xp")
+          .eq("user_id", user.id)
+          .maybeSingle();
+        const current = (xpRow as any)?.total_xp ?? 0;
+        const { error: xpErr } = await admin
+          .from("user_xp")
+          .upsert({ user_id: user.id, total_xp: current + xpForThis }, { onConflict: "user_id" });
+        xpUpsertOk = !xpErr;
+        if (xpErr) { xpErrorMsg = xpErr.message; xpForThis = 0; }
+
+        if (!xpErr) {
+          grantedXp += 500000;
+          await admin.from("notifications").insert({
+            user_id: user.id,
+            type: "challenge_top_monthly",
+            title: "👑 TOP monthly bonus",
+            message: `You received your guaranteed 500,000 XP for being a ${ch === "eco" ? "Eco" : "Healthy"} Challenge TOP subscriber this month!`,
+            data: { xp: 500000, period: periodKey, challenge: ch } });
+        }
+      }
+
+      const auditResult: "granted" | "skipped_already_granted" | "skipped_wrong_tier" | "error" =
+        xpErrorMsg ? "error"
+          : shouldGrantTopXp ? "granted"
+            : tier !== "top" ? "skipped_wrong_tier" : "skipped_already_granted";
+
+      await admin.from("challenge_xp_grant_log").insert({ user_id: user.id,
+        tier,
+        sub_id: match.subId,
+        period_key: periodKey,
+        xp_amount: xpForThis,
+        result: auditResult,
+        reason: `challenge=${ch}`,
+        upsert_ok: xpUpsertOk,
+        error_message: xpErrorMsg });
+
+      result[ch] = { active: true, tier, activeUntil };
     }
 
-    // Audit log — always record the outcome for every sync where a tier is active
-    const auditResult: "granted" | "skipped_already_granted" | "skipped_wrong_tier" | "error" =
-      xpErrorMsg
-        ? "error"
-        : shouldGrantTopXp
-          ? "granted"
-          : tier !== "top"
-            ? "skipped_wrong_tier"
-            : "skipped_already_granted";
-
-    const auditReason =
-      auditResult === "granted"
-        ? "TOP tier + new billing period"
-        : auditResult === "skipped_already_granted"
-          ? "top_last_grant_period already matches periodKey"
-          : auditResult === "skipped_wrong_tier"
-            ? `tier=${tier} (only 'top' triggers guaranteed XP)`
-            : "xp upsert failed";
-
-    await admin.from("challenge_xp_grant_log").insert({ user_id: user.id,
-      tier,
-      sub_id: match.subId,
-      period_key: periodKey,
-      xp_amount: grantedXp,
-      result: auditResult,
-      reason: auditReason,
-      upsert_ok: xpUpsertOk,
-      error_message: xpErrorMsg });
-
-    log("synced", { user: user.id, tier, activeUntil, grantedXp, result: auditResult });
-    return json({ active: true, tier, activeUntil, grantedXp, auditResult }, 200);
+    log("synced", { user: user.id, result, grantedXp });
+    return json({ active: result.eco.active || result.healthy.active, challenges: result, grantedXp }, 200);
 
 
   } catch (e) {
