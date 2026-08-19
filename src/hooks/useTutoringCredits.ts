@@ -47,31 +47,23 @@ export const useTutoringCredits = () => {
       return data as TutoringCredits | null;
     } });
 
+  // Atomic spend through the unified RPC so every deduction lands in ai_credits_ledger.
   const spendCredit = useMutation({
-    mutationFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
-      const { data: currentCredits } = await supabase
-        .from("ai_credits")
-        .select("*")
-        .eq("user_id", user.id)
-        .maybeSingle();
-
-      if (!currentCredits || currentCredits.credits_remaining < 1) {
-        throw new Error("Insufficient credits");
-      }
-
-      const { error } = await supabase
-        .from("ai_credits")
-        .update({ credits_remaining: currentCredits.credits_remaining - 1,
-          updated_at: new Date().toISOString() })
-        .eq("user_id", user.id);
-
+    mutationFn: async (amount: number = 1) => {
+      const { data, error } = await (supabase as any).rpc("spend_ai_credits", {
+        _amount: amount,
+        _reason: "tutoring_ai",
+        _source: "tutorial_platform" });
       if (error) throw error;
+      if (!data?.ok) {
+        throw new Error(data?.error === "insufficient" ? "Insufficient credits" : "Credit deduction failed");
+      }
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tutoring-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
+      window.dispatchEvent(new Event("ai-credits-updated"));
     } });
 
   const purchaseCredits = useMutation({
@@ -110,26 +102,23 @@ export const useTutoringCredits = () => {
       toast.error("Could not activate purchase. Contact support.");
     } });
 
-  // Refund a previously-deducted credit (used when AI call fails after deduction)
+  // Refund previously-deducted credits (used when the AI call fails after deduction).
   const refundCredit = useMutation({
-    mutationFn: async (reason: string) => {
+    mutationFn: async (args: string | { amount: number; reason: string }) => {
+      const amount = typeof args === "string" ? 1 : args.amount;
+      const reason = typeof args === "string" ? args : args.reason;
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      const { data: cur } = await supabase
-        .from("ai_credits")
-        .select("credits_remaining")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      if (!cur) return;
-      await supabase
-        .from("ai_credits")
-        .update({ credits_remaining: cur.credits_remaining + 1,
-          updated_at: new Date().toISOString() })
-        .eq("user_id", user.id);
-      console.log("[refundCredit]", reason);
+      await (supabase as any).rpc("add_ai_credits", {
+        p_user_id: user.id,
+        p_amount: amount,
+        p_reason: `refund:${reason}`,
+        p_source: "tutorial_platform" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tutoring-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
+      window.dispatchEvent(new Event("ai-credits-updated"));
     } });
 
   return { credits: credits?.credits_remaining ?? 0,
