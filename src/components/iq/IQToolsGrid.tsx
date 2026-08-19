@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import ReactMarkdown from "react-markdown";
+import { AiMarkdown } from "@/components/common/AiMarkdown";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface ToolDef {
@@ -144,12 +144,13 @@ export default function IQToolsGrid() {
           { title: 'Review results', desc: 'Progress and history are saved.' },
           { title: 'Iterate', desc: 'Repeat or level up anytime.' },
         ]} />
-        <div className="prose prose-sm dark:prose-invert max-w-none">
-        <ReactMarkdown>{md}</ReactMarkdown>
-        <div className="mt-4 text-xs text-muted-foreground">
+        <div className="rounded-xl border border-border/40 bg-card/60 p-4">
+        <AiMarkdown content={md} />
+        <div className="mt-4 pt-3 border-t border-border/40 text-xs text-muted-foreground">
           Credits used: {credits_used} | Remaining: {credits_remaining}
         </div>
       </div>
+
       </>
       );
   };
@@ -232,29 +233,47 @@ export default function IQToolsGrid() {
   );
 }
 
+const titleize = (key: string) =>
+  key.replace(/[_-]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+
 function jsonToMarkdown(obj: any, depth = 0): string {
   if (obj === null || obj === undefined) return "";
-  if (typeof obj === "string") return obj;
+  if (typeof obj === "string") return obj.trim();
   if (typeof obj === "number" || typeof obj === "boolean") return String(obj);
-  
+
   if (Array.isArray(obj)) {
-    return obj.map(item => {
-      if (typeof item === "string") return `- ${item}`;
-      if (typeof item === "object") return jsonToMarkdown(item, depth);
-      return `- ${String(item)}`;
-    }).join("\n");
+    return obj
+      .map((item, i) => {
+        if (item === null || item === undefined) return "";
+        if (typeof item === "object") {
+          const label = item.name || item.title || item.day || item.week || item.step;
+          const heading = `${"#".repeat(Math.min(depth + 3, 6))} ${label ? String(label) : `${i + 1}.`}`;
+          const rest = { ...item };
+          ["name", "title", "day", "week", "step"].forEach(k => {
+            if (rest[k] === label) delete rest[k];
+          });
+          return `${heading}\n\n${jsonToMarkdown(rest, depth + 1)}`;
+        }
+        return `- ${String(item)}`;
+      })
+      .filter(Boolean)
+      .join("\n\n");
   }
 
-  const lines: string[] = [];
-  const prefix = "#".repeat(Math.min(depth + 2, 4));
+  const blocks: string[] = [];
   for (const [key, value] of Object.entries(obj)) {
-    const title = key.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-    if (typeof value === "object" && value !== null) {
-      lines.push(`\n${prefix} ${title}\n`);
-      lines.push(jsonToMarkdown(value, depth + 1));
+    if (value === null || value === undefined || value === "") continue;
+    const title = titleize(key);
+    if (Array.isArray(value) && value.every(v => typeof v !== "object")) {
+      blocks.push(`**${title}**\n\n${value.map(v => `- ${String(v)}`).join("\n")}`);
+    } else if (typeof value === "object") {
+      blocks.push(`${"#".repeat(Math.min(depth + 2, 6))} ${title}\n\n${jsonToMarkdown(value, depth + 1)}`);
     } else {
-      lines.push(`**${title}:** ${value}`);
+      const text = String(value).trim();
+      // Long prose reads better on its own line than as an inline label
+      blocks.push(text.length > 80 ? `**${title}**\n\n${text}` : `**${title}:** ${text}`);
     }
   }
-  return lines.join("\n");
+  return blocks.filter(Boolean).join("\n\n");
 }
+

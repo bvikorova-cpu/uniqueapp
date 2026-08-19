@@ -68230,6 +68230,19 @@ export type Database = {
         Args: { _delta?: number; _metric: string; _user_id: string }
         Returns: undefined
       }
+      _iq_seed_q: {
+        Args: {
+          _ans: string
+          _cat: string
+          _d1: string
+          _d2: string
+          _d3: string
+          _diff: string
+          _k: number
+          _q: string
+        }
+        Returns: undefined
+      }
       _iq_test_config: {
         Args: { _category: string }
         Returns: {
