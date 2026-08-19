@@ -336,29 +336,33 @@ export default function CourseDetailPage() {
                   {lessons.map((lesson, index) => (
                     <div
                       key={lesson.id}
-                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                      className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 sm:p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                     >
-                      <div className="flex items-center gap-4 flex-1">
-                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
+                      <div className="flex items-start gap-3 flex-1 min-w-0">
+                        <div className="h-9 w-9 shrink-0 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm">
                           {index + 1}
                         </div>
-                        <div className="flex-1">
-                          <h4 className="font-semibold">{lesson.title}</h4>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-semibold text-sm sm:text-base break-words">{lesson.title}</h4>
                           {lesson.description && (
-                            <p className="text-sm text-muted-foreground line-clamp-1">
+                            <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
                               {lesson.description}
                             </p>
                           )}
+                          <span className="mt-1 block text-xs text-muted-foreground sm:hidden">
+                            {lesson.duration_minutes} min
+                          </span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <span className="text-sm text-muted-foreground">
+                      <div className="flex items-center justify-end gap-3 shrink-0">
+                        <span className="hidden sm:inline text-sm text-muted-foreground whitespace-nowrap">
                           {lesson.duration_minutes} min
                         </span>
                         {lesson.is_preview ? (
                           <Button
                             size="sm"
                             variant="outline"
+                            className="w-full sm:w-auto"
                             onClick={() => handlePlayLesson(lesson)}
                           >
                             <Play className="h-4 w-4 mr-2" />
@@ -370,6 +374,7 @@ export default function CourseDetailPage() {
                           <Button
                             size="sm"
                             variant="ghost"
+                            className="w-full sm:w-auto"
                             onClick={() => handlePlayLesson(lesson)}
                           >
                             <Play className="h-4 w-4" />
@@ -378,6 +383,7 @@ export default function CourseDetailPage() {
                       </div>
                     </div>
                   ))}
+
                 </div>
               </CardContent>
             </Card>
