@@ -54,25 +54,14 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
 
   const loadQuestions = async () => {
     try {
-      const { data: rpcData, error: rpcError } = await supabase.rpc("get_quiz_questions_public", {
-        _quiz_id: quiz.id,
-      });
+      const { data, error } = await supabase
+        .from("quiz_questions_public")
+        .select("id, question, options, order_index")
+        .eq("quiz_id", quiz.id)
+        .order("order_index", { ascending: true });
 
-      if (rpcError) throw rpcError;
-
-      let loadedQuestions = (rpcData as Question[] | null) ?? [];
-      if (loadedQuestions.length === 0) {
-        const { data: viewData, error: viewError } = await supabase
-          .from("quiz_questions_public")
-          .select("id, question, options, order_index")
-          .eq("quiz_id", quiz.id)
-          .order("order_index", { ascending: true });
-
-        if (viewError) throw viewError;
-        loadedQuestions = (viewData as Question[] | null) ?? [];
-      }
-
-      setQuestions(loadedQuestions);
+      if (error) throw error;
+      setQuestions((data as Question[] | null) ?? []);
     } catch (error: any) { toast({
         title: "Error",
         description: error.message,
