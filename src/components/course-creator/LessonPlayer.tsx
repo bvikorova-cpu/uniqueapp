@@ -11,13 +11,19 @@ interface LessonPlayerProps {
   lessonTitle: string;
   videoUrl: string;
   description?: string;
+  content?: string | null;
+  attachmentUrl?: string | null;
+  attachmentName?: string | null;
 }
 
 export function LessonPlayer({ isOpen,
   onClose,
   lessonTitle,
   videoUrl,
-  description }: LessonPlayerProps) {
+  description,
+  content,
+  attachmentUrl,
+  attachmentName }: LessonPlayerProps) {
   const [embedUrl, setEmbedUrl] = useState<string>("");
   const [videoType, setVideoType] = useState<"youtube" | "vimeo" | "direct">("direct");
 
