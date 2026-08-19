@@ -334,6 +334,49 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
         });
       }
 
+      // ---- EDIT MODE: update existing course, no credit charge ----
+      if (courseId) {
+        const { error: upErr } = await supabase
+          .from("courses")
+          .update({
+            title,
+            description,
+            category,
+            difficulty_level: difficulty,
+            price: parseFloat(price) || 0,
+            duration_minutes: totalDuration,
+            total_lessons: modules.length,
+            is_published: publish ? true : wasPublished,
+          })
+          .eq("id", courseId);
+        if (upErr) throw upErr;
+
+        const { error: delErr } = await supabase.from("course_lessons").delete().eq("course_id", courseId);
+        if (delErr) throw delErr;
+
+        const { error: insErr } = await supabase.from("course_lessons").insert(
+          lessonRows.map((m, i) => ({
+            course_id: courseId,
+            title: m.title,
+            description: m.description,
+            video_url: m.video_url,
+            content: m.content,
+            attachment_url: m.attachment_url,
+            attachment_name: m.attachment_name,
+            duration_minutes: m.duration_minutes,
+            order_index: i,
+            is_preview: i === 0,
+          }))
+        );
+        if (insErr) throw insErr;
+
+        toast({ title: "Course updated ✅" });
+        navigate(`/tutorial-course/${courseId}`);
+        return;
+      }
+
+
+
       if (publish) {
         const { data, error } = await supabase.functions.invoke("create-course-credits", {
           body: {
