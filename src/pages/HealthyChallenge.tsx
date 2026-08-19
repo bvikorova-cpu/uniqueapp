@@ -14,7 +14,8 @@ import { Link } from "react-router-dom";
 import { HealthyComments } from "@/components/healthy/HealthyComments";
 import { ChallengeProUpsell } from "@/components/challenges/ChallengeProUpsell";
 import { ChallengeProBadge } from "@/components/challenges/ChallengeProBadge";
-import { useChallengeProSet } from "@/hooks/useChallengePro";
+import { useChallengeProSet, useChallengePro } from "@/hooks/useChallengePro";
+import { ChallengeLockedCard } from "@/components/challenges/ChallengeLockedCard";
 
 interface Challenge {
   id: string;
@@ -61,7 +62,7 @@ const HIW_STEPS = [
   { title: "4. Earn XP for each valid day", desc: "Every accepted submission credits +XP shown on today's card (default +50 XP). A day only counts once — extra tries the same day are blocked." },
   { title: "5. Vote & comment", desc: "Only registered users can vote and comment. You can't vote for yourself. One vote per submission. Comments follow the same registered-only rule as votes and can be deleted by their author." },
   { title: "6. Climb the leaderboard", desc: "Monthly ranking = number of days completed this calendar month (UTC). Ties are broken by total votes received on your submissions that month." },
-  { title: "7. Win 100,000 XP each month", desc: "On the 1st of the next month, the top healthy hero of the previous month automatically receives 100,000 XP + a champion badge. Only one winner per month. Winners are archived in Monthly History." },
+  { title: "7. Win the monthly prize", desc: "Participation requires a paid plan — PRO (€3/mo) or TOP (€5/mo); there is no free entry. On the 1st of the next month the top healthy hero receives 200,000 XP (PRO) or 500,000 XP (TOP) + a champion badge. Only one winner per month." },
   { title: "8. Boost your submission", desc: "Optional: spend 5 credits to pin your submission for 24 hours at the top of the feed. Boost does not add votes — only visibility." },
   { title: "9. Fair play & moderation", desc: "Duplicate accounts, fake proof, offensive content or spam get hidden by admins and disqualified from the monthly prize." },
   { title: "10. Sponsors welcome", desc: "Fitness brands, gyms and nutrition companies can sponsor a daily challenge — logo appears on the daily card and in the feed." },
@@ -293,6 +294,7 @@ export default function HealthyChallenge() {
     [submissions, leaderboard],
   );
   const proSet = useChallengeProSet(proUserIds);
+  const { isPro, loading: proLoading } = useChallengePro();
 
   const [countdown, setCountdown] = useState<string>(fmtCountdown(msUntilMonthEnd()));
   useEffect(() => {
@@ -339,13 +341,13 @@ export default function HealthyChallenge() {
             💪 HEALTHY <span className="text-orange-300">CHALLENGE</span>
           </h1>
           <p className="text-sm sm:text-base text-white/85 font-semibold mt-2 drop-shadow max-w-xl">
-            One healthy action a day. Post proof — km, meals, workouts. Monthly champion wins <b className="text-orange-300">100,000 XP</b> — <b className="text-yellow-300">200,000 XP</b> with PRO — or <b className="text-pink-300">500,000 XP</b> with TOP.
+            One healthy action a day. Post proof — km, meals, workouts. Paid entry only — <b className="text-yellow-300">PRO €3/mo (200,000 XP)</b> or <b className="text-pink-300">TOP €5/mo (500,000 XP)</b>.
           </p>
           <p className="text-xs sm:text-sm text-white/70 font-medium mt-1.5 italic max-w-xl">
             🌍 A global fight against overweight and obesity — one healthy step at a time.
           </p>
           <div className="mt-3 flex flex-wrap gap-2 text-xs">
-            <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Trophy className="w-3.5 h-3.5" /> 100k · PRO 200k · TOP 500k</div>
+            <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Trophy className="w-3.5 h-3.5" /> PRO 200k · TOP 500k</div>
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Calendar className="w-3.5 h-3.5" /> Daily challenge</div>
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Activity className="w-3.5 h-3.5" /> Run · Eat · Train</div>
             <div className="flex items-center gap-1.5 bg-yellow-500/20 border border-yellow-300/40 rounded-full px-2.5 py-1 text-yellow-100" title="Time left until this month's champion is auto-crowned"><Timer className="w-3.5 h-3.5" /> Month ends in {countdown}</div>
@@ -387,7 +389,9 @@ export default function HealthyChallenge() {
             )}
 
             {user ? (
-              mySubmissionToday ? (
+              !proLoading && !isPro ? (
+                <ChallengeLockedCard accent="orange" />
+              ) : mySubmissionToday ? (
                 <Card className="bg-orange-100/50 dark:bg-orange-900/20 border-orange-300">
                   <CardContent className="pt-6">
                     <div className="flex items-center gap-3">
@@ -497,7 +501,7 @@ export default function HealthyChallenge() {
                           </div>
                           <p className="text-xs text-muted-foreground">{r.days_completed} days · {r.total_votes} votes</p>
                         </div>
-                        {r.rank === 1 && <Badge className="bg-yellow-500">{proSet.has(r.user_id) ? "200k XP" : "100k XP"}</Badge>}
+                        {r.rank === 1 && <Badge className="bg-yellow-500">{proSet.has(r.user_id) ? "200k XP" : "—"}</Badge>}
                       </li>
                     ))}
                   </ol>
