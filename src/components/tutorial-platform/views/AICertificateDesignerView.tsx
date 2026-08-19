@@ -12,7 +12,58 @@ import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const CREDITS_COST = 5;
 
+const STYLE_THEMES: Record<string, {
+  title: string; frame: string; bg: string; icon: string; heading: string;
+  name: string; course: string; corners: boolean; cornerColor: string;
+}> = {
+  classic: {
+    title: "Certificate of Completion",
+    frame: "border-4 border-double border-amber-600/50",
+    bg: "bg-[#fdfaf1] dark:bg-amber-950/20",
+    icon: "text-amber-600",
+    heading: "font-serif tracking-wide text-amber-900 dark:text-amber-200",
+    name: "font-serif text-amber-950 dark:text-amber-100",
+    course: "font-serif italic",
+    corners: true,
+    cornerColor: "text-amber-500/40",
+  },
+  modern: {
+    title: "CERTIFICATE OF ACHIEVEMENT",
+    frame: "border-l-8 border-primary",
+    bg: "bg-background",
+    icon: "text-primary",
+    heading: "font-sans uppercase tracking-[0.25em] text-sm md:text-base",
+    name: "font-sans tracking-tight",
+    course: "font-sans font-medium text-muted-foreground",
+    corners: false,
+    cornerColor: "",
+  },
+  elegant: {
+    title: "Certificate of Excellence",
+    frame: "border-2 border-yellow-500/70 ring-4 ring-yellow-500/20 ring-offset-2 ring-offset-background",
+    bg: "bg-gradient-to-br from-yellow-50 via-amber-100/60 to-yellow-50 dark:from-yellow-950/30 dark:to-amber-900/20",
+    icon: "text-yellow-600",
+    heading: "font-serif italic text-yellow-800 dark:text-yellow-200",
+    name: "font-serif bg-gradient-to-r from-yellow-600 to-amber-500 bg-clip-text text-transparent",
+    course: "font-serif",
+    corners: true,
+    cornerColor: "text-yellow-500/50",
+  },
+  tech: {
+    title: "CERTIFIED COMPLETION",
+    frame: "border border-cyan-500/50 shadow-[0_0_30px_-10px_hsl(190_90%_50%/0.5)]",
+    bg: "bg-slate-950 text-slate-100",
+    icon: "text-cyan-400",
+    heading: "font-mono uppercase tracking-widest text-cyan-300",
+    name: "font-mono text-cyan-100",
+    course: "font-mono text-cyan-400",
+    corners: false,
+    cornerColor: "",
+  },
+};
+
 interface Props { onBack: () => void; }
+
 
 export function AICertificateDesignerView({ onBack }: Props) {
   const { toast } = useToast();
