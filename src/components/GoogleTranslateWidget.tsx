@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Languages, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useOverlayOpen } from "@/hooks/useOverlayOpen";
 
 declare global {
   interface Window {
@@ -21,6 +22,7 @@ interface GoogleTranslateWidgetProps {
  * Hidden visually on mobile until tapped, so it never blocks the feed.
  */
 export default function GoogleTranslateWidget({ docked = false }: GoogleTranslateWidgetProps) {
+  const overlayOpen = useOverlayOpen();
   const [isMobileViewport, setIsMobileViewport] = useState(() => {
     if (typeof window === "undefined") return false;
     return window.innerWidth < 768;
@@ -229,8 +231,10 @@ export default function GoogleTranslateWidget({ docked = false }: GoogleTranslat
     );
   }
 
+  if (overlayOpen) return null;
+
   return (
-    <div className="fixed bottom-[calc(14rem+env(safe-area-inset-bottom))] right-4 md:bottom-24 md:right-6 z-[9992] flex items-center gap-2">
+    <div className="fixed bottom-[calc(9rem+env(safe-area-inset-bottom))] left-3 md:bottom-24 md:left-6 z-[9992] flex items-center gap-2">
       {picker}
       {button}
     </div>
