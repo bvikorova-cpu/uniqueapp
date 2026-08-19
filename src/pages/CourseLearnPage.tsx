@@ -20,7 +20,7 @@ import { BookOpen,
   Award,
   ChevronRight,
   PlayCircle,
-  Download } from "lucide-react";
+  Download, Share2 } from "lucide-react";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Course {
