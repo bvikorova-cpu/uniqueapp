@@ -362,7 +362,7 @@ export default function EcoChallenge() {
           </p>
           <div className="mt-3 flex flex-wrap gap-2 text-xs">
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Trophy className="w-3.5 h-3.5" /> PRO 200k · TOP 500k</div>
-            <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Calendar className="w-3.5 h-3.5" /> Daily challenge</div>
+            <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Calendar className="w-3.5 h-3.5" /> Min. 1× per month</div>
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Heart className="w-3.5 h-3.5" /> Community voted</div>
             <div className="flex items-center gap-1.5 bg-yellow-500/20 border border-yellow-300/40 rounded-full px-2.5 py-1 text-yellow-100" title="Time left until this month's champion is auto-crowned"><Timer className="w-3.5 h-3.5" /> Month ends in {countdown}</div>
           </div>
