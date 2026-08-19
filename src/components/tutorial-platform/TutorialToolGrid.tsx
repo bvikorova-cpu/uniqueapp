@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Plus, Brain, MessageCircle, Award, Search, Sparkles, ArrowUpRight, Inbox } from "lucide-react";
+import { BookOpen, Plus, Brain, MessageCircle, Award, Search, Sparkles, ArrowUpRight, Inbox, GraduationCap } from "lucide-react";
 import { useCourseUnread } from "@/hooks/useSimpleUnread";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -18,6 +18,7 @@ const tools = [
   { id: "ai-quiz", label: "AI Quiz", icon: Brain, desc: "Instant quizzes from any topic", ai: true, credits: 5, img: bgQuiz },
   { id: "ai-certificate", label: "Certificate AI", icon: Award, desc: "Design elegant certificates", ai: true, credits: 5, img: bgCertificate },
   { id: "my-courses", label: "My Courses", icon: BookOpen, desc: "Track progress and manage lessons", img: bgMyCourses },
+  { id: "my-learning", label: "My Learning", icon: GraduationCap, desc: "Courses you bought or requested access to", img: bgMyCourses },
   { id: "messages", label: "Messages", icon: Inbox, desc: "Access requests & chats with creators", img: bgMessages },
 ];
 
