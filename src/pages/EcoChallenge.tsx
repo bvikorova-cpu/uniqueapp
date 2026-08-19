@@ -58,17 +58,18 @@ const todayISO = () => new Date().toISOString().slice(0, 10);
 const currentMonthKey = () => new Date().toISOString().slice(0, 7);
 
 const HIW_STEPS = [
-  { title: "1. See today's challenge", desc: "Every day a new eco good deed appears — plant, clean, recycle, save water, reduce waste." },
-  { title: "2. Do the deed in real life", desc: "Complete the action offline. Take photos or a short clip as proof." },
-  { title: "3. Submit your proof", desc: "Add a description (min 10 chars), upload up to 4 photos or 1 video (≤50 MB). Strict limit: 1 submission per user per day (enforced by the database)." },
-  { title: "4. Earn XP for each valid day", desc: "Every accepted submission credits +XP shown on today's card (default +50 XP). A day only counts once — extra attempts the same day are blocked." },
+  { title: "1. No daily obligation", desc: "You do NOT have to post every day, and there is not a new challenge every day. The only rule: add at least ONE photo or video about saving the ecosystem between the first and the last day of each calendar month." },
+  { title: "2. Do the deed in real life", desc: "Complete an eco action offline — plant, clean, recycle, save water, reduce waste. Take photos or a short clip as proof." },
+  { title: "3. Submit your proof", desc: "Add a description (min 10 chars), upload up to 4 photos or 1 video (≤50 MB). You can post on any day you want, maximum 1 submission per day." },
+  { title: "4. Earn XP for every valid submission", desc: "Every accepted submission credits +XP (default +50 XP). The same day counts only once — extra attempts on the same day are blocked." },
   { title: "5. Vote & comment", desc: "Only registered users can vote and comment. You can't vote for yourself. One vote per submission. Comments follow the same registered-only rule and can be deleted by their author." },
-  { title: "6. Climb the leaderboard", desc: "Monthly ranking = number of days completed this calendar month (UTC). Ties are broken by total votes received on your submissions that month." },
+  { title: "6. Climb the leaderboard", desc: "Monthly ranking = number of days with an accepted submission in this calendar month (UTC). One submission per month keeps you in the race; more submissions rank you higher. Ties are broken by total votes that month." },
   { title: "7. Win the monthly prize", desc: "Participation requires a paid plan — PRO (€3/mo) or TOP (€5/mo); there is no free entry. On the 1st of the next month the top eco hero receives 200,000 XP (PRO) or 500,000 XP (TOP) + a champion badge. Only one winner per month." },
   { title: "8. Boost your submission", desc: "Optional: spend 5 credits to pin your submission for 24 hours at the top of the feed. Boost does not add votes — only visibility." },
   { title: "9. Fair play & moderation", desc: "Duplicate accounts, fake proof, offensive content or spam get hidden by admins and disqualified from the monthly prize." },
-  { title: "10. Sponsors welcome", desc: "Eco brands can sponsor a daily challenge — logo appears on the daily card and in the feed." },
+  { title: "10. Sponsors welcome", desc: "Eco brands can sponsor a challenge — logo appears on the challenge card and in the feed." },
 ];
+
 
 const msUntilMonthEnd = () => {
   const now = new Date();
