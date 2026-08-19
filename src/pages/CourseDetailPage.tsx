@@ -15,7 +15,8 @@ import { Play,
   BookOpen,
   CheckCircle,
   Lock,
-  Video } from "lucide-react";
+  Video,
+  ArrowLeft } from "lucide-react";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { CourseChatDialog } from "@/components/tutorial-platform/CourseChatDialog";
