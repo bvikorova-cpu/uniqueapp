@@ -51,8 +51,11 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
   const [phase, setPhase] = useState<"idle" | "watching" | "ready" | "claimed">("idle");
   const [secondsLeft, setSecondsLeft] = useState(WATCH_SECONDS);
   const [viewsToday, setViewsToday] = useState(0);
+  const [isClaiming, setIsClaiming] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const cooldownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     setViewsToday(getLocalViews(sectionKey));
@@ -60,7 +63,25 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
 
   useEffect(() => () => {
     if (timerRef.current) clearInterval(timerRef.current);
+    if (cooldownRef.current) clearInterval(cooldownRef.current);
   }, []);
+
+  /** Start a visible countdown so the user knows exactly when Claim works again. */
+  const startCooldown = (seconds: number) => {
+    if (cooldownRef.current) clearInterval(cooldownRef.current);
+    setCooldown(Math.max(1, Math.ceil(seconds)));
+    cooldownRef.current = setInterval(() => {
+      setCooldown((s) => {
+        if (s <= 1) {
+          if (cooldownRef.current) clearInterval(cooldownRef.current);
+          cooldownRef.current = null;
+          return 0;
+        }
+        return s - 1;
+      });
+    }, 1000);
+  };
+
 
   const cancelWatch = () => {
     if (timerRef.current) clearInterval(timerRef.current);
