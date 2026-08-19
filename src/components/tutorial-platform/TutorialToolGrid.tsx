@@ -1,64 +1,19 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  BookOpen, Plus, ShoppingBag, Euro, TrendingUp, Users, Award,
-  Brain, FileText, MessageCircle, Palette, Video, BarChart3,
-  Search, Star, Zap, BookMarked, Shield, Lightbulb, Calendar,
-  Languages, Activity, MessageSquare, Medal, Share2, FileVideo,
-  FileCheck, CalendarDays, Layers, Presentation, Sparkles
-} from "lucide-react";
+import { BookOpen, Plus, Brain, MessageCircle, Award, Search, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const categories = [
   {
-    title: "📚 Learning",
+    title: "Education",
     tools: [
       { id: "browse", label: "Browse Courses", icon: Search, color: "from-violet-500 to-purple-600", desc: "Discover all courses" },
-      { id: "enrollments", label: "My Enrollments", icon: ShoppingBag, color: "from-blue-500 to-indigo-600", desc: "Your enrolled courses" },
-      { id: "trending", label: "Trending", icon: TrendingUp, color: "from-rose-500 to-pink-600", desc: "Most popular now" },
-      { id: "live-sessions", label: "Live Sessions", icon: Video, color: "from-amber-500 to-orange-600", desc: "Live classes" },
-    ]
-  },
-  {
-    title: "🤖 AI Tools",
-    tools: [
       { id: "ai-tutor", label: "AI Tutor", icon: MessageCircle, color: "from-cyan-500 to-blue-600", desc: "Personal AI tutor", ai: true, credits: 3 },
       { id: "ai-quiz", label: "AI Quiz", icon: Brain, color: "from-pink-500 to-rose-600", desc: "Generate quizzes", ai: true, credits: 5 },
-      { id: "ai-outline", label: "AI Outline", icon: FileText, color: "from-violet-500 to-purple-600", desc: "Course structure", ai: true, credits: 4 },
-      { id: "ai-flashcards", label: "Flashcards", icon: Layers, color: "from-emerald-500 to-teal-600", desc: "Study cards", ai: true, credits: 4 },
-      { id: "ai-study-plan", label: "Study Plan", icon: CalendarDays, color: "from-blue-500 to-indigo-600", desc: "Learning paths", ai: true, credits: 4 },
-      { id: "ai-summarizer", label: "Video Notes", icon: FileVideo, color: "from-rose-500 to-red-600", desc: "Summarize lessons", ai: true, credits: 5 },
-      { id: "ai-grader", label: "AI Grader", icon: FileCheck, color: "from-emerald-600 to-green-700", desc: "Auto-grade", ai: true, credits: 5 },
-      { id: "ai-presentation", label: "AI Slides", icon: Presentation, color: "from-rose-600 to-pink-700", desc: "Build decks", ai: true, credits: 5 },
-      { id: "ai-translator", label: "Translator", icon: Languages, color: "from-blue-500 to-indigo-600", desc: "Translate courses", ai: true, credits: 4 },
       { id: "ai-certificate", label: "Certificate AI", icon: Award, color: "from-amber-500 to-orange-600", desc: "Custom certs", ai: true, credits: 5 },
-    ]
-  },
-  {
-    title: "🎓 Teaching",
-    tools: [
       { id: "create", label: "Create Course", icon: Plus, color: "from-emerald-500 to-teal-600", desc: "Build new course" },
       { id: "my-courses", label: "My Courses", icon: BookOpen, color: "from-indigo-500 to-purple-600", desc: "Manage courses" },
-      { id: "earnings", label: "Earnings", icon: Euro, color: "from-yellow-500 to-amber-600", desc: "Revenue dashboard" },
-      { id: "course-builder", label: "Builder", icon: Palette, color: "from-emerald-600 to-green-700", desc: "Drag & drop" },
-      { id: "scheduler", label: "Scheduler", icon: Calendar, color: "from-purple-500 to-violet-600", desc: "Plan releases" },
-      { id: "analytics", label: "Analytics", icon: BarChart3, color: "from-teal-500 to-emerald-600", desc: "Performance" },
-    ]
-  },
-  {
-    title: "🏆 Community & Rewards",
-    tools: [
-      { id: "community", label: "Community", icon: Users, color: "from-sky-500 to-blue-600", desc: "Discussion forums" },
-      { id: "leaderboard", label: "Leaderboard", icon: Star, color: "from-amber-500 to-orange-600", desc: "Top educators" },
-      { id: "badges", label: "Badges & XP", icon: Medal, color: "from-amber-500 to-orange-600", desc: "Gamification" },
-      { id: "mentorship", label: "Mentorship", icon: Lightbulb, color: "from-fuchsia-500 to-purple-600", desc: "1-on-1 mentoring" },
-      { id: "affiliates", label: "Affiliates", icon: Share2, color: "from-green-500 to-emerald-600", desc: "Earn referrals" },
-      { id: "certificates", label: "Certificates", icon: Zap, color: "from-yellow-600 to-amber-700", desc: "Browse certs" },
-      { id: "heatmap", label: "Heatmap", icon: Activity, color: "from-emerald-500 to-green-600", desc: "Activity map" },
-      { id: "resources", label: "Resources", icon: BookMarked, color: "from-lime-500 to-green-600", desc: "Templates" },
-      { id: "reviews", label: "Reviews", icon: MessageSquare, color: "from-amber-500 to-yellow-600", desc: "AI analysis", ai: true, credits: 4 },
-      { id: "plagiarism", label: "Plagiarism", icon: Shield, color: "from-slate-500 to-gray-600", desc: "Originality check", ai: true, credits: 3 },
     ]
   },
 ];
