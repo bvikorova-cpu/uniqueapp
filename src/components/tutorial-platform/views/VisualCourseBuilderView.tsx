@@ -456,6 +456,62 @@ export function VisualCourseBuilderView({ onBack }: Props) {
                         </div>
                       );
                     })()}
+
+                    <Textarea
+                      value={mod.content || ""}
+                      onChange={(e) => updateModule(mod.id, { content: e.target.value })}
+                      placeholder="Lesson text / notes (optional) — students see this in the lesson"
+                      rows={4}
+                    />
+
+                    <div className="flex flex-wrap items-center gap-2">
+                      <input
+                        id={`doc-file-${mod.id}`}
+                        type="file"
+                        accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.zip,image/*,application/pdf"
+                        className="hidden"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0];
+                          e.target.value = "";
+                          if (f) handleDocUpload(mod.id, f);
+                        }}
+                      />
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        disabled={uploadingDocId === mod.id}
+                        onClick={() => document.getElementById(`doc-file-${mod.id}`)?.click()}
+                      >
+                        {uploadingDocId === mod.id ? (
+                          <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Uploading…</>
+                        ) : (
+                          <><FileText className="w-4 h-4 mr-2" />Upload document</>
+                        )}
+                      </Button>
+                      <span className="text-xs text-muted-foreground">PDF/DOC/PPT/XLS/TXT/ZIP/image, max 50 MB</span>
+                    </div>
+                    {mod.attachment_url && (
+                      <div className="flex items-center justify-between gap-2 rounded-md border bg-muted/40 px-3 py-2">
+                        <a
+                          href={mod.attachment_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm underline truncate"
+                        >
+                          {mod.attachment_name || "Attached document"}
+                        </a>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 text-red-500"
+                          onClick={() => updateModule(mod.id, { attachment_url: undefined, attachment_name: undefined })}
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    )}
+
                     <div className="grid grid-cols-2 gap-2">
                       <Input
                         value={mod.duration}
