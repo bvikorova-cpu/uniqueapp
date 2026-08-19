@@ -40,7 +40,7 @@ export default function IQPlatformHero({ streak }: IQPlatformHeroProps) {
                 <GraduationCap className="h-3 w-3 mr-1" /> Academic Premium
               </Badge>
             </motion.div>
-            {streak > 0 && (
+            {streak > 1 && (
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.3, type: "spring" }}>
                 <Badge className="bg-orange-500/90 text-white border-orange-400/50">
                   <Flame className="h-3 w-3 mr-1" /> {streak} Day Streak
