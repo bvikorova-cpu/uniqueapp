@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,7 @@ import { BookOpen,
   Award,
   ChevronRight,
   PlayCircle,
-  Download } from "lucide-react";
+  Download, Share2 } from "lucide-react";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Course {
@@ -79,6 +79,69 @@ export default function CourseLearnPage() {
   const [nameInput, setNameInput] = useState("");
   const [certificateHtml, setCertificateHtml] = useState<string | null>(null);
   const { generateCertificate, isGenerating } = useCertificate();
+  const certRef = useRef<HTMLDivElement>(null);
+  const [exporting, setExporting] = useState(false);
+
+  const captureCertificate = async (): Promise<Blob | null> => {
+    if (!certRef.current) return null;
+    const [{ default: html2canvas }] = await Promise.all([import("html2canvas")]);
+    const canvas = await html2canvas(certRef.current, { scale: 2, backgroundColor: "#ffffff", useCORS: true });
+    return await new Promise((resolve) => canvas.toBlob((b) => resolve(b), "image/png"));
+  };
+
+  const downloadCertificatePdf = async () => {
+    setExporting(true);
+    try {
+      if (!certRef.current) throw new Error("Certificate not ready");
+      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+        import("html2canvas"),
+        import("jspdf"),
+      ]);
+      const canvas = await html2canvas(certRef.current, { scale: 2, backgroundColor: "#ffffff", useCORS: true });
+      const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const ratio = Math.min(pageW / canvas.width, pageH / canvas.height);
+      const w = canvas.width * ratio;
+      const h = canvas.height * ratio;
+      pdf.addImage(canvas.toDataURL("image/png"), "PNG", (pageW - w) / 2, (pageH - h) / 2, w, h);
+      pdf.save(`Certificate_${(course?.title || "Course").replace(/[^a-z0-9]/gi, "_")}.pdf`);
+      toast({ title: "Certificate downloaded", description: "Saved as PDF." });
+    } catch (e: any) {
+      toast({ title: "Download failed", description: e.message || "Please try again.", variant: "destructive" });
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const shareCertificateImage = async () => {
+    setExporting(true);
+    try {
+      const blob = await captureCertificate();
+      if (!blob) throw new Error("Certificate not ready");
+      const file = new File([blob], "certificate.png", { type: "image/png" });
+      const nav = navigator as Navigator & { canShare?: (d: ShareData) => boolean };
+      if (nav.share && nav.canShare?.({ files: [file] })) {
+        await nav.share({ files: [file], title: "My certificate", text: `I completed ${course?.title || "a course"}!` });
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "certificate.png";
+        a.click();
+        URL.revokeObjectURL(url);
+        toast({ title: "Image saved", description: "Sharing isn't supported here — image downloaded instead." });
+      }
+    } catch (e: any) {
+      if (e?.name !== "AbortError") {
+        toast({ title: "Share failed", description: e.message || "Please try again.", variant: "destructive" });
+      }
+    } finally {
+      setExporting(false);
+    }
+  };
+
+
 
   useEffect(() => {
     loadCourseData();
@@ -524,26 +587,20 @@ export default function CourseLearnPage() {
                             </p>
                             
                             {/* Certificate Preview (auto-scaled, mobile safe) */}
-                            <div className="max-w-4xl mx-auto">
+                            <div className="max-w-4xl mx-auto" ref={certRef}>
                               <CertificatePreview html={certificateHtml} />
                             </div>
 
-                            
-                            <div className="flex gap-4 justify-center">
-                              <Button
-                                onClick={() => {
-                                  const printWindow = window.open('', '_blank');
-                                  if (printWindow) {
-                                    printWindow.document.write(certificateHtml);
-                                    printWindow.document.close();
-                                    printWindow.print();
-                                  }
-                                }}
-                                size="lg"
-                              >
+                            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                              <Button onClick={downloadCertificatePdf} disabled={exporting} size="lg">
                                 <Download className="mr-2 h-5 w-5" />
-                                Download Certificate
+                                {exporting ? "Preparing…" : "Download PDF"}
                               </Button>
+                              <Button onClick={shareCertificateImage} disabled={exporting} variant="secondary" size="lg">
+                                <Share2 className="mr-2 h-5 w-5" />
+                                Share as image
+                              </Button>
+
                               <Button
                                 variant="outline"
                                 onClick={() => navigate("/my-learning")}
