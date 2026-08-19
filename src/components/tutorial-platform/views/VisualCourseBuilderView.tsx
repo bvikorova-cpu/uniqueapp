@@ -17,6 +17,9 @@ interface Module {
   duration: string;
   description?: string;
   video_url?: string;
+  content?: string;
+  attachment_url?: string;
+  attachment_name?: string;
 }
 
 const initialModules: Module[] = [
