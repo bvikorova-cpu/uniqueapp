@@ -73,6 +73,9 @@ export function AICertificateDesignerView({ onBack }: Props) {
   const [style, setStyle] = useState("classic");
   const [loading, setLoading] = useState(false);
   const [certificate, setCertificate] = useState<string | null>(null);
+  const certRef = useRef<HTMLDivElement>(null);
+  const theme = STYLE_THEMES[style] ?? STYLE_THEMES.classic;
+
 
   const generateCertificate = async () => {
     if (!studentName.trim() || !courseName.trim()) {
