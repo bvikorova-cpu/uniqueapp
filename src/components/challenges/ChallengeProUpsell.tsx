@@ -6,17 +6,26 @@ import { ChallengeProBadge } from "./ChallengeProBadge";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { ChallengeRulesDialog } from "./ChallengeRulesDialog";
 
 /**
  * Upsell card for the Challenge subscriptions.
  *  - PRO tier: €3/month · 2× monthly winner XP (200,000) + gold badge.
  *  - TOP tier: €5/month · everything in PRO + **500,000 XP guaranteed every month**
  *    (auto-granted), TOP badge, and submissions pinned to top of feed.
- *  - Monthly winner (any tier): 1,000,000 AI credits + 5% of the total monthly
- *    subscription revenue pool (paid out as a cash prize).
+ *  - Monthly winner (any tier): 100 AI credits (non-transferable) + 50% of the
+ *    total profit of the challenge section, paid out in cash (min. €10 payout,
+ *    otherwise it rolls over to the next month).
  */
 
-export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" | "orange" }) {
+export function ChallengeProUpsell({
+  accent = "emerald",
+  sectionName,
+}: {
+  accent?: "emerald" | "orange";
+  sectionName?: string;
+}) {
+  const section = sectionName ?? (accent === "orange" ? "Healthy Challenge" : "Eco Challenge");
   const { tier, isPro, isTop, activeUntil, loading, subscribe, checkingOut } = useChallengePro();
   const [openingPortal, setOpeningPortal] = useState(false);
   const [selectedTarget, setSelectedTarget] = useState<"pro" | "top" | null>(null);
@@ -105,6 +114,8 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
             {openingPortal ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Settings className="w-3.5 h-3.5" />}
             Manage billing
           </Button>
+
+          <ChallengeRulesDialog sectionName={section} />
         </CardContent>
       </Card>
     );
@@ -130,12 +141,22 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
         <div className="rounded-lg bg-gradient-to-r from-yellow-500/25 via-amber-500/25 to-orange-500/25 border border-yellow-300/50 p-3 flex items-start gap-2">
           <Trophy className="w-5 h-5 text-yellow-300 shrink-0 mt-0.5" fill="currentColor" />
           <div className="text-xs sm:text-sm text-white leading-snug">
-            <b className="text-yellow-200">Monthly winner prize (any tier):</b>{" "}
-            <b>1,000,000 AI credits</b> usable across the whole platform{" "}
-            <span className="text-white/70">(non-cashable)</span> +{" "}
-            <b>5% of the total monthly subscription pool</b> paid out in cash. The more people subscribe, the bigger the cash prize.
+            <b className="text-yellow-200">Monthly winner prize (any tier):</b>
+            <ul className="mt-1 space-y-1 list-disc pl-4">
+              <li>
+                <b>100 AI credits</b> — non-transferable, usable across the whole platform
+              </li>
+              <li>
+                <b>50% of the total profit of the {section} section</b> paid out in cash{" "}
+                <span className="text-white/70">
+                  (paid once it reaches at least €10; below that it rolls over to the next month)
+                </span>
+              </li>
+            </ul>
           </div>
         </div>
+
+        <ChallengeRulesDialog sectionName={section} />
 
 
         <div className="grid gap-3 sm:grid-cols-2">
@@ -202,7 +223,7 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
               </li>
               <li className="flex items-start gap-2">
                 <Trophy className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
-                <span>If you <b>win</b>: 1M AI credits + 5% of subscription pool (see banner above)</span>
+                <span>If you <b>win</b>: 100 AI credits + 50% of section profit in cash (see banner above)</span>
               </li>
             </ul>
             <Button
