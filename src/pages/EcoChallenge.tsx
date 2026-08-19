@@ -428,7 +428,7 @@ export default function EcoChallenge() {
                   <CardContent className="space-y-3">
                     <div className="flex items-start gap-2 rounded-lg border border-emerald-300/60 bg-emerald-100/60 dark:border-emerald-800 dark:bg-emerald-900/20 p-3 text-xs">
                       <AlertCircle className="w-4 h-4 mt-0.5 text-emerald-700 shrink-0" />
-                      <p><b>Daily limit:</b> only <b>1 submission per user per day</b> is allowed. This is enforced by the database — extra attempts today will be automatically rejected. A new challenge unlocks tomorrow.</p>
+                      <p><b>Monthly rule:</b> you must add <b>at least 1 photo or video per calendar month</b> (between the 1st and the last day). Posting every day is optional — but only <b>1 submission per day</b> is allowed. {myMonthDays > 0 ? "You already met this month's minimum." : "You have no submission this month yet."}</p>
                     </div>
                     <Textarea placeholder="Describe your good deed — what, where, how..." value={description} onChange={(e) => setDescription(e.target.value)} rows={3} maxLength={500} />
                     <div className="flex flex-wrap gap-2">
