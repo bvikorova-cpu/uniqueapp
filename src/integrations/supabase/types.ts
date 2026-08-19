@@ -15570,6 +15570,44 @@ export type Database = {
         }
         Relationships: []
       }
+      course_access_requests: {
+        Row: {
+          buyer_id: string
+          course_id: string
+          created_at: string
+          creator_id: string
+          granted_at: string | null
+          id: string
+          status: string
+        }
+        Insert: {
+          buyer_id: string
+          course_id: string
+          created_at?: string
+          creator_id: string
+          granted_at?: string | null
+          id?: string
+          status?: string
+        }
+        Update: {
+          buyer_id?: string
+          course_id?: string
+          created_at?: string
+          creator_id?: string
+          granted_at?: string | null
+          id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_access_requests_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_certificates: {
         Row: {
           certificate_url: string | null
@@ -15777,6 +15815,50 @@ export type Database = {
             columns: ["lesson_id"]
             isOneToOne: false
             referencedRelation: "course_lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      course_messages: {
+        Row: {
+          attachment_path: string | null
+          attachment_type: string | null
+          course_id: string
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          receiver_id: string
+          sender_id: string
+        }
+        Insert: {
+          attachment_path?: string | null
+          attachment_type?: string | null
+          course_id: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          receiver_id: string
+          sender_id: string
+        }
+        Update: {
+          attachment_path?: string | null
+          attachment_type?: string | null
+          course_id?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          receiver_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_messages_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
             referencedColumns: ["id"]
           },
         ]
@@ -70182,6 +70264,7 @@ export type Database = {
         Args: { p_amount: number; p_user_id: string }
         Returns: number
       }
+      grant_course_access: { Args: { p_request_id: string }; Returns: Json }
       grant_founder_role: { Args: { _user_id: string }; Returns: undefined }
       grant_monthly_free_credits_all: {
         Args: never

@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Plus, Brain, MessageCircle, Award, Search, Sparkles, ArrowUpRight } from "lucide-react";
+import { BookOpen, Plus, Brain, MessageCircle, Award, Search, Sparkles, ArrowUpRight, Inbox } from "lucide-react";
+import { useCourseUnread } from "@/hooks/useSimpleUnread";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
@@ -9,7 +10,8 @@ const tools = [
   { id: "ai-quiz", label: "AI Quiz", icon: Brain, desc: "Instant quizzes from any topic", ai: true, credits: 5 },
   { id: "ai-certificate", label: "Certificate AI", icon: Award, desc: "Design elegant certificates", ai: true, credits: 5 },
   { id: "create", label: "Create Course", icon: Plus, desc: "Build and publish your own course" },
-  { id: "my-courses", label: "My Courses", icon: BookOpen, desc: "Track progress and manage lessons", span: "md:col-span-2" },
+  { id: "my-courses", label: "My Courses", icon: BookOpen, desc: "Track progress and manage lessons" },
+  { id: "messages", label: "Messages", icon: Inbox, desc: "Access requests & chats with creators" },
 ];
 
 interface Props {
@@ -17,6 +19,8 @@ interface Props {
 }
 
 export function TutorialToolGrid({ onToolSelect }: Props) {
+  const { unread } = useCourseUnread();
+
   return (
     <>
       <FloatingHowItWorks title={"Tutorial Tool Grid - How it works"} steps={[{ title: 'Open', desc: 'Access the Tutorial Tool Grid section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Tutorial Tool Grid.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
@@ -45,6 +49,11 @@ export function TutorialToolGrid({ onToolSelect }: Props) {
               >
                 <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-primary/15 blur-2xl transition-opacity duration-300 group-hover:bg-primary/30" />
 
+                {tool.id === "messages" && unread > 0 && (
+                  <span className="absolute right-3 top-3 flex h-6 min-w-6 items-center justify-center rounded-full bg-destructive px-1.5 text-[11px] font-bold text-destructive-foreground">
+                    {unread}
+                  </span>
+                )}
                 {tool.ai && (
                   <Badge className="absolute right-3 top-3 border-0 bg-primary/15 px-2 py-0.5 text-[10px] font-bold text-primary">
                     <Sparkles className="mr-1 h-3 w-3" />

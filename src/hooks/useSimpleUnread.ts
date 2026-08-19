@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
  * (sender_id, receiver_id, is_read) — bazaar_messages, coupon_messages.
  * Keeps the count live via realtime INSERT/UPDATE events.
  */
-export function useSimpleUnread(table: "bazaar_messages" | "coupon_messages" | "auction_messages") {
+export function useSimpleUnread(table: "bazaar_messages" | "coupon_messages" | "auction_messages" | "course_messages") {
   const { user } = useAuth();
   const [unread, setUnread] = useState(0);
   const mounted = useRef(true);
@@ -60,3 +60,4 @@ export function useSimpleUnread(table: "bazaar_messages" | "coupon_messages" | "
 export const useBazaarUnread = () => useSimpleUnread("bazaar_messages");
 export const useCouponUnread = () => useSimpleUnread("coupon_messages");
 export const useAuctionUnread = () => useSimpleUnread("auction_messages");
+export const useCourseUnread = () => useSimpleUnread("course_messages");
