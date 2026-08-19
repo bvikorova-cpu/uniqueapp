@@ -3,16 +3,24 @@ import { BookOpen, Plus, Brain, MessageCircle, Award, Search, Sparkles, ArrowUpR
 import { useCourseUnread } from "@/hooks/useSimpleUnread";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import bgCreate from "@/assets/tutorial/bg-create.jpg";
+import bgBrowse from "@/assets/tutorial/bg-browse.jpg";
+import bgTutor from "@/assets/tutorial/bg-tutor.jpg";
+import bgQuiz from "@/assets/tutorial/bg-quiz.jpg";
+import bgCertificate from "@/assets/tutorial/bg-certificate.jpg";
+import bgMyCourses from "@/assets/tutorial/bg-mycourses.jpg";
+import bgMessages from "@/assets/tutorial/bg-messages.jpg";
 
 const tools = [
-  { id: "browse", label: "Browse Courses", icon: Search, desc: "Discover every course in the campus library", span: "md:col-span-2" },
-  { id: "ai-tutor", label: "AI Tutor", icon: MessageCircle, desc: "Ask anything, learn step by step", ai: true, credits: 3 },
-  { id: "ai-quiz", label: "AI Quiz", icon: Brain, desc: "Instant quizzes from any topic", ai: true, credits: 5 },
-  { id: "ai-certificate", label: "Certificate AI", icon: Award, desc: "Design elegant certificates", ai: true, credits: 5 },
-  { id: "create", label: "Create Course", icon: Plus, desc: "Build and publish your own course" },
-  { id: "my-courses", label: "My Courses", icon: BookOpen, desc: "Track progress and manage lessons" },
-  { id: "messages", label: "Messages", icon: Inbox, desc: "Access requests & chats with creators" },
+  { id: "create", label: "Create Course", icon: Plus, desc: "Build and publish your own course", img: bgCreate, span: "md:col-span-2" },
+  { id: "browse", label: "Browse Courses", icon: Search, desc: "Discover every course in the campus library", img: bgBrowse, span: "md:col-span-2" },
+  { id: "ai-tutor", label: "AI Tutor", icon: MessageCircle, desc: "Ask anything, learn step by step", ai: true, credits: 3, img: bgTutor },
+  { id: "ai-quiz", label: "AI Quiz", icon: Brain, desc: "Instant quizzes from any topic", ai: true, credits: 5, img: bgQuiz },
+  { id: "ai-certificate", label: "Certificate AI", icon: Award, desc: "Design elegant certificates", ai: true, credits: 5, img: bgCertificate },
+  { id: "my-courses", label: "My Courses", icon: BookOpen, desc: "Track progress and manage lessons", img: bgMyCourses },
+  { id: "messages", label: "Messages", icon: Inbox, desc: "Access requests & chats with creators", img: bgMessages },
 ];
+
 
 interface Props {
   onToolSelect: (tool: string) => void;
@@ -47,7 +55,18 @@ export function TutorialToolGrid({ onToolSelect }: Props) {
                 transition={{ duration: 0.35, delay: i * 0.05 }}
                 className={`group relative overflow-hidden rounded-3xl border border-border/60 bg-card/60 p-5 text-left backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/15 ${tool.span ?? ""}`}
               >
+                <img
+                  src={tool.img}
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  width={768}
+                  height={512}
+                  className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-25 transition-all duration-500 group-hover:scale-105 group-hover:opacity-40"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/40" />
                 <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-primary/15 blur-2xl transition-opacity duration-300 group-hover:bg-primary/30" />
+
 
                 {tool.id === "messages" && unread > 0 && (
                   <span className="absolute right-3 top-3 flex h-6 min-w-6 items-center justify-center rounded-full bg-destructive px-1.5 text-[11px] font-bold text-destructive-foreground">
