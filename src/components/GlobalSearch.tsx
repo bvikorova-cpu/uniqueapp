@@ -103,7 +103,6 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   
   // Work & Career
   { id: "71", title: "Jobs", category: "Career", path: "/jobs" },
-  { id: "72", title: "Fundraising", category: "Career", path: "/fundraising" },
   { id: "73", title: "Brand Builder", category: "Career", path: "/brand-builder" },
   { id: "74", title: "Brand Battle", category: "Career", path: "/brand-battle" },
   { id: "75", title: "Sports Predictor", category: "Career", path: "/sports-predictor" },

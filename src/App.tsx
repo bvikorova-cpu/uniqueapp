@@ -437,36 +437,6 @@ import { ResetPassword,
   IQPublicProfile,
   IQLeaderboard,
   CertificateGallery,
-  FundraisingHub,
-  MedicalFundraising,
-  MedicalDetail,
-  CreateMedicalCampaign,
-  DonationReceipt,
-  FundraisingDashboard,
-  DonorDashboard,
-  RecurringDonationsHub,
-  EmbedCampaignWidget,
-  EmbedBuilder,
-  CampaignDashboard,
-  EditCampaign,
-  DreamMaker,
-  CreateDreamCampaign,
-  DreamDetail,
-  CommunityHero,
-  CreateHeroCampaign,
-  HeroDetail,
-  PetRescue,
-  CreatePetCampaign,
-  PetDetail,
-  StudentSupport,
-  CreateStudentCampaign,
-  StudentDetail,
-  CrisisRelief,
-  CreateCrisisCampaign,
-  CrisisDetail,
-  TalentSponsorship,
-  CreateTalentCampaign,
-  TalentDetail,
   Admin,
   AdminTransactions,
   AdminCorporateInquiries,
@@ -485,9 +455,6 @@ import { ResetPassword,
   AdminWithdrawals,
   AdminPaymentDashboard,
   PaymentDocumentation,
-  CampaignApprovals,
-  WithdrawalRequests,
-  CampaignSuccess,
   AdminPwaStats,
   QuizCreator,
   QuizTaker,
@@ -564,7 +531,6 @@ const AdminAuditLog = lazy(() => import("@/pages/admin/AdminAuditLog"));
 const AdminSecurityScan = lazy(() => import("@/pages/admin/AdminSecurityScan"));
 const AdminSmokeTest = lazy(() => import("@/pages/admin/AdminSmokeTest"));
 const AdminMegatalentModeration = lazy(() => import("@/pages/admin/AdminMegatalentModeration"));
-const AdminFundraisingModeration = lazy(() => import("@/pages/admin/AdminFundraisingModeration"));
 const AdminBattleRoyalePayouts = lazy(() => import("@/pages/admin/AdminBattleRoyalePayouts"));
 const AdminDatingModeration = lazy(() => import("@/pages/admin/AdminDatingModeration"));
 const AdminMegatalentPayouts = lazy(() => import("@/pages/admin/AdminMegatalentPayouts"));
@@ -751,7 +717,6 @@ const App = () => {
                         <Route path="/admin/megatalent-payouts" element={<ProtectedRoute requireAdmin={true}><AdminMegatalentPayouts /></ProtectedRoute>} />
                         <Route path="/admin/concert-earnings" element={<ProtectedRoute requireAdmin={true}><AdminConcertEarnings /></ProtectedRoute>} />
 
-                        <Route path="/admin/fundraising-moderation" element={<ProtectedRoute requireAdmin={true}><AdminFundraisingModeration /></ProtectedRoute>} />
                         <Route path="/admin/battle-royale-payouts" element={<ProtectedRoute requireAdmin={true}><AdminBattleRoyalePayouts /></ProtectedRoute>} />
                         <Route path="/admin/dating-moderation" element={<ProtectedRoute requireAdmin={true}><AdminDatingModeration /></ProtectedRoute>} />
                         <Route path="/referral" element={<Referral />} />
@@ -1265,41 +1230,6 @@ const App = () => {
                         <Route path="/iq/u/:slug" element={<IQPublicProfile />} />
                         <Route path="/iq/leaderboard" element={<IQLeaderboard />} />
                         
-                        {/* Fundraising Routes */}
-                        <Route path="/fundraising" element={<FundraisingHub />} />
-                        <Route path="/fundraising/dashboard" element={<ProtectedRoute><FundraisingDashboard /></ProtectedRoute>} />
-                        <Route path="/fundraising/my-donations" element={<ProtectedRoute><DonorDashboard /></ProtectedRoute>} />
-                        <Route path="/fundraising/recurring" element={<ProtectedRoute><RecurringDonationsHub /></ProtectedRoute>} />
-                        <Route path="/embed/campaign/:campaignType/:campaignId" element={<EmbedCampaignWidget />} />
-                        <Route path="/fundraising/embed" element={<EmbedBuilder />} />
-                        <Route path="/fundraising/:campaignType/:campaignId/dashboard" element={<ProtectedRoute><CampaignDashboard /></ProtectedRoute>} />
-                        <Route path="/fundraising/:campaignType/:campaignId/edit" element={<ProtectedRoute><EditCampaign /></ProtectedRoute>} />
-                        <Route path="/fundraising/medical" element={<MedicalFundraising />} />
-                        <Route path="/fundraising/medical/create" element={<CreateMedicalCampaign />} />
-                       <Route path="/fundraising/medical/:id" element={<MedicalDetail />} />
-                       <Route path="/fundraising/receipt/:donationId" element={<DonationReceipt />} />
-                       <Route path="/fundraising/receipt" element={<DonationReceipt />} />
-                        <Route path="/fundraising/dream" element={<DreamMaker />} />
-                        <Route path="/fundraising/dream/create" element={<CreateDreamCampaign />} />
-                        <Route path="/fundraising/dream/:id" element={<DreamDetail />} />
-                        <Route path="/fundraising/hero" element={<CommunityHero />} />
-                        <Route path="/fundraising/hero/create" element={<CreateHeroCampaign />} />
-                        <Route path="/fundraising/hero/:id" element={<HeroDetail />} />
-                        <Route path="/fundraising/pet" element={<PetRescue />} />
-                        <Route path="/fundraising/pet/create" element={<CreatePetCampaign />} />
-                        <Route path="/fundraising/pet/:id" element={<PetDetail />} />
-                        <Route path="/fundraising/student" element={<StudentSupport />} />
-                        <Route path="/fundraising/student/create" element={<CreateStudentCampaign />} />
-                        <Route path="/fundraising/student/:id" element={<StudentDetail />} />
-                        <Route path="/fundraising/crisis" element={<CrisisRelief />} />
-                        <Route path="/fundraising/crisis/create" element={<CreateCrisisCampaign />} />
-                        <Route path="/fundraising/crisis/:id" element={<CrisisDetail />} />
-                        <Route path="/fundraising/talent" element={<TalentSponsorship />} />
-                        <Route path="/fundraising/talent/create" element={<CreateTalentCampaign />} />
-                        <Route path="/fundraising/talent/:id" element={<TalentDetail />} />
-                        <Route path="/fundraising/:type/:id/success" element={<CampaignSuccess />} />
-                        <Route path="/admin/campaign-approvals" element={<ProtectedRoute requireAdmin={true}><CampaignApprovals /></ProtectedRoute>} />
-                        <Route path="/admin/campaign-withdrawals" element={<ProtectedRoute requireAdmin={true}><WithdrawalRequests /></ProtectedRoute>} />
                         <Route path="/property-marketplace" element={<PropertyMarketplace />} />
                         <Route path="/property-submission" element={<PropertySubmission />} />
                         <Route path="/my-properties" element={<ProtectedRoute><MyProperties /></ProtectedRoute>} />
