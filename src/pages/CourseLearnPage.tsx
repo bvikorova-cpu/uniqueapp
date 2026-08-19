@@ -424,10 +424,10 @@ export default function CourseLearnPage() {
       </section>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
+      <div className="container mx-auto px-4 py-8 max-w-full overflow-x-hidden">
+        <div className="grid lg:grid-cols-3 gap-8 min-w-0">
           {/* Lesson List Sidebar */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 min-w-0">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
