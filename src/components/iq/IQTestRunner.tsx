@@ -11,6 +11,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+export const IQ_TEST_CREDIT_COST = 3;
+
 interface Question {
   id: string;
   question: string;
