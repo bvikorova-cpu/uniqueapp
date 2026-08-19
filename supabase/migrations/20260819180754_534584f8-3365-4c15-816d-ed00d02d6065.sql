@@ -1,0 +1,1 @@
+ALTER TABLE public.iq_test_results ALTER COLUMN test_id DROP NOT NULL;

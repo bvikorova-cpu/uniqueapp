@@ -32468,7 +32468,7 @@ export type Database = {
           percentile: number | null
           score: number
           sub_scores: Json | null
-          test_id: string
+          test_id: string | null
           time_taken: number
           total_questions: number | null
           user_id: string
@@ -32483,7 +32483,7 @@ export type Database = {
           percentile?: number | null
           score: number
           sub_scores?: Json | null
-          test_id: string
+          test_id?: string | null
           time_taken: number
           total_questions?: number | null
           user_id: string
@@ -32498,7 +32498,7 @@ export type Database = {
           percentile?: number | null
           score?: number
           sub_scores?: Json | null
-          test_id?: string
+          test_id?: string | null
           time_taken?: number
           total_questions?: number | null
           user_id?: string
