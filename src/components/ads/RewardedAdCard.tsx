@@ -51,8 +51,11 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
   const [phase, setPhase] = useState<"idle" | "watching" | "ready" | "claimed">("idle");
   const [secondsLeft, setSecondsLeft] = useState(WATCH_SECONDS);
   const [viewsToday, setViewsToday] = useState(0);
+  const [isClaiming, setIsClaiming] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const cooldownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     setViewsToday(getLocalViews(sectionKey));
@@ -60,7 +63,25 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
 
   useEffect(() => () => {
     if (timerRef.current) clearInterval(timerRef.current);
+    if (cooldownRef.current) clearInterval(cooldownRef.current);
   }, []);
+
+  /** Start a visible countdown so the user knows exactly when Claim works again. */
+  const startCooldown = (seconds: number) => {
+    if (cooldownRef.current) clearInterval(cooldownRef.current);
+    setCooldown(Math.max(1, Math.ceil(seconds)));
+    cooldownRef.current = setInterval(() => {
+      setCooldown((s) => {
+        if (s <= 1) {
+          if (cooldownRef.current) clearInterval(cooldownRef.current);
+          cooldownRef.current = null;
+          return 0;
+        }
+        return s - 1;
+      });
+    }, 1000);
+  };
+
 
   const cancelWatch = () => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -104,7 +125,10 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
   };
 
   const claim = async () => {
+    if (isClaiming || cooldown > 0) return;
+    setIsClaiming(true);
     try {
+
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast({
           title: "Sign in to claim 5 XP",
@@ -146,12 +170,14 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
       if (bodyErr || error) {
         if (isRateLimited || /too fast/i.test(bodyErr ?? "")) {
           const wait = retryAfter ?? 10;
+          startCooldown(wait);
           toast({
             title: "Slow down ⏱️",
-            description: `Please wait ${wait}s before claiming again.` });
-          setPhase("idle");
+            description: `Claim unlocks again in ${wait}s — the countdown is on the button.` });
+          setPhase("ready");
           return;
         }
+
         toast({
           title: "Couldn't claim XP",
           description: bodyErr || error?.message || "Please try again in a moment.",
@@ -175,14 +201,19 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
       } catch { /* ignore */ }
 
       setPhase("claimed");
+      // Server enforces a 10s anti-fraud gap between claims — mirror it in the UI.
+      startCooldown(10);
       toast({ title: "+5 XP earned! ✨",
         description: "Watch another video to earn more — no daily limit!" });
     } catch (e) { toast({
         title: "Could not claim XP",
         description: e instanceof Error ? e.message : "Please try again.",
         variant: "destructive" });
+    } finally {
+      setIsClaiming(false);
     }
   };
+
 
   return (
     <>
@@ -202,8 +233,12 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
           </div>
 
           {phase === "idle" && (
-            <Button onClick={startWatch} size="sm" className="bg-gradient-to-r from-primary to-accent text-white">
-              <Play className="w-4 h-4 mr-1" /> Watch Ad
+            <Button onClick={startWatch} disabled={cooldown > 0} size="sm" className="bg-gradient-to-r from-primary to-accent text-white">
+              {cooldown > 0 ? (
+                <><Clock className="w-4 h-4 mr-1" /> Wait {cooldown}s</>
+              ) : (
+                <><Play className="w-4 h-4 mr-1" /> Watch Ad</>
+              )}
             </Button>
           )}
           {phase === "watching" && (
@@ -212,15 +247,29 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
             </Button>
           )}
           {phase === "ready" && (
-            <Button onClick={claim} size="sm" className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
-              <Sparkles className="w-4 h-4 mr-1" /> Claim 5 XP
+            <Button
+              onClick={claim}
+              disabled={isClaiming || cooldown > 0}
+              size="sm"
+              className="bg-gradient-to-r from-green-500 to-emerald-500 text-white"
+            >
+              {cooldown > 0 ? (
+                <><Clock className="w-4 h-4 mr-1" /> Claim in {cooldown}s</>
+              ) : (
+                <><Sparkles className="w-4 h-4 mr-1" /> {isClaiming ? "Claiming…" : "Claim 5 XP"}</>
+              )}
             </Button>
           )}
           {phase === "claimed" && (
-            <Button onClick={() => setPhase("idle")} size="sm" variant="outline">
-              <Check className="w-4 h-4 mr-1" /> Watch another
+            <Button onClick={() => setPhase("idle")} disabled={cooldown > 0} size="sm" variant="outline">
+              {cooldown > 0 ? (
+                <><Clock className="w-4 h-4 mr-1" /> Next in {cooldown}s</>
+              ) : (
+                <><Check className="w-4 h-4 mr-1" /> Watch another</>
+              )}
             </Button>
           )}
+
         </div>
 
         {phase === "watching" && (
