@@ -202,6 +202,10 @@ export default function HealthyChallenge() {
   };
 
   const submit = async () => {
+    if (!isPro) {
+      toast({ title: "Paid plan required", description: "Participation is subscription-only — choose PRO (€3/mo) or TOP (€5/mo)." });
+      return;
+    }
     if (!user) { toast({ title: "Sign in required", variant: "destructive" }); return; }
     if (!challenge || challenge.id === "fallback") { toast({ title: "No active challenge yet", description: "Admin has not created today's challenge.", variant: "destructive" }); return; }
     if (description.trim().length < 10) { toast({ title: "Describe your effort (min 10 chars)", variant: "destructive" }); return; }
