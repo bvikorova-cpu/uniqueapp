@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Brain, Trophy, LineChart, Zap, Target, BarChart3, Medal, FlaskConical, ArrowRight } from "lucide-react";
 
+
 import IQPlatformHero from "@/components/iq/IQPlatformHero";
 import IQToolsGrid from "@/components/iq/IQToolsGrid";
 import IQTestRunner from "@/components/iq/IQTestRunner";
