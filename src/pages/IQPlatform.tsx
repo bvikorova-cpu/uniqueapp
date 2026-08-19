@@ -144,28 +144,6 @@ const IQPlatform = () => {
         </TabsList>
 
         <TabsContent value="tests" className="space-y-6">
-          <Card className="bg-gradient-to-br from-primary/15 via-purple-500/10 to-pink-500/10 border-primary/30 hover:border-primary/60 transition-colors">
-            <Link to="/iq-platform/lab" className="block">
-              <CardHeader className="p-4 sm:p-6">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-pink-500 text-white">
-                    <FlaskConical className="h-6 w-6" />
-                  </div>
-                  <div className="flex-1">
-                    <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
-                      Brain Lab <Badge className="bg-primary/20 text-primary border-primary/30">100+ tools</Badge>
-                    </CardTitle>
-                    <CardDescription className="text-xs sm:text-sm mt-1">
-                      Puzzles · Memory · Focus · Math · Logic · Goals · Analytics — all in one place.
-                    </CardDescription>
-                  </div>
-                  <ArrowRight className="h-5 w-5 text-primary self-center" />
-                </div>
-              </CardHeader>
-            </Link>
-          </Card>
-
-        <TabsContent value="tests" className="space-y-6">
           <div>
             <h3 className="text-lg font-bold mb-3">Standard difficulty</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
