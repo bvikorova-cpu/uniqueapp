@@ -53,11 +53,11 @@ export function AITutorChatView({ onBack }: Props) {
     setSelectedCategory(null);
     setLoading(true);
 
+    let charged = false;
     try {
-      // Deduct credits first
-      for (let i = 0; i < CREDITS_PER_MESSAGE; i++) {
-        await spendCredit();
-      }
+      // Deduct the full message cost atomically (one ledger row).
+      await spendCredit(CREDITS_PER_MESSAGE);
+      charged = true;
 
       const { data, error } = await supabase.functions.invoke('stock-content-ai', {
         body: { action: 'tutor-chat', messages: [...messages, userMsg] }
