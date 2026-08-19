@@ -215,7 +215,7 @@ export default function EcoChallenge() {
       return;
     }
     if (!user) { toast({ title: "Sign in required", variant: "destructive" }); return; }
-    if (!challenge || challenge.id === "fallback") { toast({ title: "No active challenge yet", description: "Admin has not created today's challenge.", variant: "destructive" }); return; }
+    if (!challenge) { toast({ title: "Loading…", description: "Please try again in a second.", variant: "destructive" }); return; }
     if (description.trim().length < 10) { toast({ title: "Describe your good deed (min 10 chars)", variant: "destructive" }); return; }
     if (mySubmissionToday) { toast({
         title: "Already submitted today",
@@ -228,7 +228,7 @@ export default function EcoChallenge() {
     try {
       const { images, video } = await uploadMedia();
       const { error } = await supabase.from("eco_submissions").insert({ user_id: user.id,
-        challenge_id: challenge.id,
+        challenge_id: challenge.id === "fallback" ? null : challenge.id,
         challenge_date: challenge.challenge_date,
         description: description.trim(),
         image_urls: images,
