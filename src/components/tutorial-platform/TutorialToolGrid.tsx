@@ -12,7 +12,7 @@ import bgMyCourses from "@/assets/tutorial/bg-mycourses.jpg";
 import bgMessages from "@/assets/tutorial/bg-messages.jpg";
 
 const tools = [
-  { id: "create", label: "Create Course", icon: Plus, desc: "Build and publish your own course", img: bgCreate, span: "md:col-span-2" },
+  { id: "create", label: "Create Course", icon: Plus, desc: "Build and publish your own course", credits: 15, img: bgCreate, span: "md:col-span-2" },
   { id: "browse", label: "Browse Courses", icon: Search, desc: "Discover every course in the campus library", img: bgBrowse, span: "md:col-span-2" },
   { id: "ai-tutor", label: "AI Tutor", icon: MessageCircle, desc: "Ask anything, learn step by step", ai: true, credits: 3, img: bgTutor },
   { id: "ai-quiz", label: "AI Quiz", icon: Brain, desc: "Instant quizzes from any topic", ai: true, credits: 5, img: bgQuiz },
