@@ -140,13 +140,16 @@ export function AITutorChatView({ onBack }: Props) {
                     <Bot className="w-4 h-4 text-white" />
                   </div>
                 )}
-                <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm ${
+                <div className={`max-w-[85%] min-w-0 rounded-2xl px-4 py-3 text-sm overflow-hidden ${
                   msg.role === "user" 
                     ? "bg-gradient-to-r from-violet-500/20 to-purple-500/10 text-foreground border border-violet-500/20" 
                     : "bg-muted/80 border border-border/50"
                 }`}>
-                  {msg.content}
+                  {msg.role === "assistant"
+                    ? <AiMarkdown content={msg.content} />
+                    : <span className="whitespace-pre-wrap break-words">{msg.content}</span>}
                 </div>
+
                 {msg.role === "user" && (
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shrink-0 shadow-md">
                     <User className="w-4 h-4 text-white" />
