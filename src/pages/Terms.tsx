@@ -165,7 +165,7 @@ const Terms = () => {
               <p><strong>7.4.</strong> Comply with the <Link to="/legal/community" className="text-amber-400 underline">Community Guidelines</Link>.</p>
             </LegalSection>
 
-            <LegalSection id="prohibited" number="§8" title="Prohibited Conduct">
+            <LegalSection id="prohibited" number="§9" title="Prohibited Conduct">
               <ul>
                 <li>Illegal content of any kind.</li>
                 <li>Harassment, hate speech, threats, or incitement to violence.</li>
