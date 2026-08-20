@@ -520,7 +520,15 @@ export default function HealthyChallenge() {
                           </div>
                           <p className="text-xs text-muted-foreground">{r.days_completed} days · {r.total_votes} votes</p>
                         </div>
-                        {r.rank === 1 && <Badge className="bg-yellow-500">{proSet.has(r.user_id) ? "200k XP" : "—"}</Badge>}
+                        {r.rank === 1 && (
+                          <Badge className="bg-yellow-500">
+                            {((proSet as any).tierOf?.(r.user_id) ?? (proSet.has(r.user_id) ? "pro" : null)) === "top"
+                              ? "500k XP"
+                              : proSet.has(r.user_id)
+                                ? "200k XP"
+                                : "100k XP"}
+                          </Badge>
+                        )}
                       </li>
                     ))}
                   </ol>
