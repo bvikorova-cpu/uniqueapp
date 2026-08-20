@@ -136,7 +136,7 @@ function ModuleSection({ title, icon: Icon, iconColor, modules, onNavigate }: Mo
   );
 }
 
-export function MobileWallMenu({ onPostCreated }: MobileWallMenuProps) {
+export function MobileWallMenu({ onPostCreated, inline = false }: MobileWallMenuProps) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
