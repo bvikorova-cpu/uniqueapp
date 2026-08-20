@@ -416,6 +416,16 @@ export default function HealthyChallenge() {
                         <Button size="sm" variant="outline" onClick={boostMine}>🚀 Boost 24h (5 credits)</Button>
                       )}
                     </div>
+                    {mySubmissionToday.image_urls?.length > 0 && (
+                      <div className={`grid gap-2 mt-3 ${mySubmissionToday.image_urls.length === 1 ? "" : "grid-cols-2"}`}>
+                        {mySubmissionToday.image_urls.map((u: string, i: number) => (
+                          <ChallengeImage key={i} url={u} className="rounded-lg w-full object-cover max-h-72" />
+                        ))}
+                      </div>
+                    )}
+                    {mySubmissionToday.video_url && (
+                      <ChallengeVideo url={mySubmissionToday.video_url} className="w-full rounded-lg mt-3 max-h-80" />
+                    )}
                   </CardContent>
                 </Card>
               ) : (
