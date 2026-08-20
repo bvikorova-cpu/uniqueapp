@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
 import { Heart, MessageCircle, Users, Star, Share2, Zap } from "lucide-react";
+import wallHeroVideo from "../../../public/videos/wall-social-hero.mp4.asset.json";
+
 
 interface WallCinematicHeroProps {
   streak: number;
@@ -24,12 +26,14 @@ export default function WallCinematicHero({ streak }: WallCinematicHeroProps) {
         className="relative overflow-hidden rounded-2xl min-h-[240px] sm:min-h-[320px]"
       >
         <div className="absolute inset-0 z-0">
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(135deg, #7c3aed 0%, #a855f7 25%, #ec4899 60%, #f43f5e 100%)",
-            }}
+          <video
+            src={(wallHeroVideo as { url: string }).url}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            className="absolute inset-0 h-full w-full object-cover"
           />
           <div
             className="absolute inset-0 opacity-40"
@@ -38,6 +42,7 @@ export default function WallCinematicHero({ streak }: WallCinematicHeroProps) {
                 "radial-gradient(circle at 20% 30%, rgba(255,255,255,0.35) 0%, transparent 35%), radial-gradient(circle at 80% 70%, rgba(255,255,255,0.25) 0%, transparent 40%)",
             }}
           />
+
           <div className="absolute inset-0 bg-gradient-to-t from-[#1a0f0a]/90 via-[#1a0f0a]/40 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 via-transparent to-pink-900/20" />
         </div>
