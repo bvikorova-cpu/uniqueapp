@@ -28,6 +28,7 @@ import { NotesBar } from "@/components/wall/NotesBar";
 import { MutedUsersDialog } from "@/components/wall/MutedUsersDialog";
 import { MutedKeywordsDialog } from "@/components/wall/MutedKeywordsDialog";
 import { CloseFriendsDialog } from "@/components/wall/CloseFriendsDialog";
+import { useUserMutes } from "@/hooks/useUserMutes";
 
 import { useQuery } from "@tanstack/react-query";
 import WallMessages from "./wall/WallMessages";
@@ -479,9 +480,36 @@ const Feed = () => {
       return (data ?? []).map((r: any) => r.following_id).filter(Boolean);
     } });
 
+  // Muted users (hook keeps the list in sync with the Muted users dialog)
+  const { mutedIds } = useUserMutes();
+
+  // Muted words — posts containing any of these are hidden from my feed
+  const { data: mutedWords = [] } = useQuery({
+    queryKey: ["muted-keywords", user?.id],
+    enabled: !!user?.id,
+    queryFn: async (): Promise<string[]> => {
+      const { data, error } = await supabase
+        .from("user_muted_keywords")
+        .select("keyword")
+        .eq("user_id", user!.id);
+      if (error) return [];
+      return (data ?? []).map((r: any) => String(r.keyword).toLowerCase()).filter(Boolean);
+    } });
+
+  // People who added me to their Close Friends list — I may see their close-friends posts
+  const { data: closeFriendOfIds = [] } = useQuery({
+    queryKey: ["close-friend-of-me", user?.id],
+    enabled: !!user?.id,
+    queryFn: async (): Promise<string[]> => {
+      const { data, error } = await (supabase as any).rpc("get_users_who_close_friended_me");
+      if (error) return [];
+      return (data ?? []).map((r: any) => (typeof r === "string" ? r : r?.user_id)).filter(Boolean);
+    } });
+
   // Filter and sort feed items
   const filteredFeedItems = useMemo(() => {
     let filtered = [...feedItems];
+
 
     const authorOf = (item: FeedItem) =>
       item.type === "post"
@@ -503,10 +531,41 @@ const Feed = () => {
       return (p?.likes_count ?? 0) * 3 + (p?.comments_count ?? 0) * 2 + (p?.shares_count ?? 0) + (p?.reposts_count ?? 0);
     };
 
+    const contentOf = (item: FeedItem) =>
+      item.type === "post"
+        ? (item.data as Post).content || ""
+        : `${(item.data as Repost).comment || ""} ${(item.data as Repost).original_post?.content || ""}`;
+
+    // Muted users — hide everything they post or repost
+    if (mutedIds.length > 0) {
+      const muted = new Set(mutedIds);
+      filtered = filtered.filter((item) => !muted.has(authorOf(item)));
+    }
+
+    // Muted words — hide posts containing any muted keyword
+    if (mutedWords.length > 0) {
+      filtered = filtered.filter((item) => {
+        const text = contentOf(item).toLowerCase();
+        return !mutedWords.some((w) => text.includes(w));
+      });
+    }
+
+    // Close Friends audience — only the author and their close friends see these
+    {
+      const allowedCF = new Set([...closeFriendOfIds, user?.id].filter(Boolean) as string[]);
+      filtered = filtered.filter((item) => {
+        const p: any = item.type === "post" ? item.data : (item.data as Repost).original_post;
+        if (p?.audience !== "close_friends") return true;
+        return allowedCF.has(authorOf(item));
+      });
+    }
+
     // "Verified only" filter — applies across every tab.
     if (verifiedOnly) {
       filtered = filtered.filter((item) => tierRank(tierOf(item)) > 0);
     }
+
+
 
 
     if (feedTab === "friends") {
@@ -555,7 +614,7 @@ const Feed = () => {
 
 
     return filtered;
-  }, [feedItems, searchQuery, feedTab, friendIds, followingIds, verifiedOnly]);
+  }, [feedItems, searchQuery, feedTab, friendIds, followingIds, verifiedOnly, mutedIds, mutedWords, closeFriendOfIds, user?.id]);
 
 
   const location = useLocation();

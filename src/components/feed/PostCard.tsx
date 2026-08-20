@@ -12,6 +12,7 @@ import {
   Maximize2,
   Edit2,
   MoreVertical,
+  VolumeX,
   Image as ImageIcon,
   Video as VideoIcon,
   X,
@@ -24,6 +25,7 @@ import {
 } from "lucide-react";
 import { ReactionPicker } from "@/components/wall/ReactionPicker";
 import { ReportDialog } from "@/components/wall/ReportDialog";
+import { useUserMutes } from "@/hooks/useUserMutes";
 import { PinButton } from "@/components/wall/PinButton";
 import { FollowButton } from "@/components/wall/FollowButton";
 import { VerifiedFounderBadge, isVerifiedFounder } from "@/components/wall/VerifiedFounderBadge";
@@ -73,6 +75,8 @@ const ALLOWED_EXT = new Set(["jpg","jpeg","png","webp","gif","mp4","webm","mov"]
 
 const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps) => {
   const navigate = useNavigate();
+  const { muteUser, unmuteUser, mutedIds } = useUserMutes();
+  const isAuthorMuted = mutedIds.includes(post.user_id);
   const [deleting, setDeleting] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(post.likes_count || 0);
@@ -807,19 +811,33 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
                   </DropdownMenuItem>
                 </>
               ) : (
-                <ReportDialog
-                  postId={post.id}
-                  trigger={
-                    <DropdownMenuItem
-                      onSelect={(e) => e.preventDefault()}
-                      className="gap-2 text-destructive focus:text-destructive cursor-pointer"
-                    >
-                      <Flag className="h-4 w-4" />
-                      Report post
-                    </DropdownMenuItem>
-                  }
-                />
+                <>
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (isAuthorMuted) unmuteUser(post.user_id);
+                      else muteUser({ userId: post.user_id });
+                    }}
+                    className="gap-2"
+                  >
+                    <VolumeX className="h-4 w-4" />
+                    {isAuthorMuted ? "Unmute author" : "Mute author"}
+                  </DropdownMenuItem>
+                  <ReportDialog
+                    postId={post.id}
+                    trigger={
+                      <DropdownMenuItem
+                        onSelect={(e) => e.preventDefault()}
+                        className="gap-2 text-destructive focus:text-destructive cursor-pointer"
+                      >
+                        <Flag className="h-4 w-4" />
+                        Report post
+                      </DropdownMenuItem>
+                    }
+                  />
+                </>
               )}
+
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

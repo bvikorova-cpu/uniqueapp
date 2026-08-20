@@ -70273,6 +70273,7 @@ export type Database = {
       }
       get_user_pause_count: { Args: { _user_id: string }; Returns: number }
       get_user_role: { Args: never; Returns: string }
+      get_users_who_close_friended_me: { Args: never; Returns: string[] }
       get_vitals_daily: {
         Args: { p_days?: number; p_metric?: string }
         Returns: {
