@@ -1468,11 +1468,17 @@ const Messenger = () => {
                             </div>
                           )}
                           
-                          <div className={`relative rounded-lg p-3 ${
-                            msg.sender_id === user.id
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-muted"
-                          }`}>
+                          <div
+                            className={`relative rounded-lg p-3 border ${
+                              msg.sender_id === user.id ? "" : "text-foreground"
+                            }`}
+                            style={
+                              msg.sender_id === user.id
+                                ? outgoingBubbleStyle(chatTheme)
+                                : incomingBubbleStyle(chatTheme)
+                            }
+                          >
+
                             {msg.story_id && (
                               <div className="text-xs opacity-70 mb-2 pb-2 border-b border-current/20">
                                 📷 Story reply
