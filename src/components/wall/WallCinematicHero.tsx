@@ -1,8 +1,4 @@
-import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { Badge } from "@/components/ui/badge";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { Globe, TrendingUp, Flame, Info } from "lucide-react";
 import heroVideo from "@/assets/wall-hero.mp4.asset.json";
 
 interface WallCinematicHeroProps {
