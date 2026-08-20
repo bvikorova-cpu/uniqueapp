@@ -194,7 +194,7 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
             className="w-full justify-start gap-2.5 h-auto py-2.5 hover:bg-primary/10 rounded-lg"
             onClick={() => navigate("/settings")}
           >
-            <SettingsIcon className="h-4 w-4 text-primary" />
+            <Settings className="h-4 w-4 text-primary" />
             <span className="text-sm font-medium">Settings</span>
           </Button>
         </div>
