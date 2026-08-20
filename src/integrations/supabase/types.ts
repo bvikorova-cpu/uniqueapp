@@ -68518,6 +68518,10 @@ export type Database = {
         }
         Returns: number
       }
+      badge_metric_value: {
+        Args: { _metric: string; _user_id: string }
+        Returns: number
+      }
       batch_apply_reactions: { Args: { items: Json }; Returns: Json }
       battle_coins_apply:
         | {
@@ -70223,6 +70227,21 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_user_badge_progress: {
+        Args: never
+        Returns: {
+          current_value: number
+          description: string
+          earned_at: string
+          icon: string
+          id: string
+          name: string
+          points_reward: number
+          requirement_type: string
+          requirement_value: number
+          unlocked: boolean
+        }[]
+      }
       get_user_challenges: {
         Args: never
         Returns: {
@@ -71230,6 +71249,7 @@ export type Database = {
           suggested_id: string
         }[]
       }
+      sync_my_badges: { Args: never; Returns: number }
       toggle_time_reversal_like: { Args: { _post_id: string }; Returns: Json }
       top_games: {
         Args: { _category?: string; _limit?: number; _period?: string }

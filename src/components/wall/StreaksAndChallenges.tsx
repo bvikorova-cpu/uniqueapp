@@ -240,7 +240,14 @@ export function StreaksAndChallenges() {
             exit={{ opacity: 0, x: -20 }}
             className="space-y-3"
           >
+            {mapped.length === 0 && (
+              <p className="text-xs text-muted-foreground text-center py-6">
+                No active challenges right now — check back soon.
+              </p>
+            )}
+
             {/* Daily Challenges */}
+            {dailyChallenges.length > 0 && (
             <div>
               <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2">
                 Daily Challenges
@@ -258,8 +265,10 @@ export function StreaksAndChallenges() {
                 ))}
               </div>
             </div>
+            )}
 
             {/* Weekly */}
+            {weeklyChallenges.length > 0 && (
             <div>
               <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2">
                 Weekly
@@ -275,8 +284,10 @@ export function StreaksAndChallenges() {
                 />
               ))}
             </div>
+            )}
 
             {/* Community */}
+            {communityChallenges.length > 0 && (
             <div>
               <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2">
                 Community
@@ -292,6 +303,7 @@ export function StreaksAndChallenges() {
                 />
               ))}
             </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

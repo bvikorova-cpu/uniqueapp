@@ -29,6 +29,14 @@ export async function trackChallengeAction(
         description: `${c.title} — +${c.xp_reward} XP awarded` });
     }
 
+    // Unlock any badges the action may have earned (fire and forget).
+    supabase.rpc("sync_my_badges" as any).then(({ data }) => {
+      if (typeof data === "number" && data > 0) {
+        toast({ title: `🏆 ${data} new badge${data > 1 ? "s" : ""} unlocked!` });
+        window.dispatchEvent(new Event("badges-updated"));
+      }
+    });
+
     window.dispatchEvent(new Event("streak-updated"));
     window.dispatchEvent(new Event("challenges-updated"));
     return completed;
