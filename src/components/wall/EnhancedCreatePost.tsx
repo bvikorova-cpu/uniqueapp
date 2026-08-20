@@ -183,6 +183,10 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
         createdEventId = ev.id;
       }
 
+      // Resolve the background at submit time (media posts never get a background)
+      const bgToSave =
+        files.length === 0 && getPostBackground(backgroundStyle) ? backgroundStyle : null;
+
       const { data: post, error: postError } = await supabase
         .from("posts")
         .insert({ user_id: user.id,
@@ -194,12 +198,20 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           is_sensitive: isSensitive,
           sensitive_reason: isSensitive ? (sensitiveReason.trim() || null) : null,
           event_id: createdEventId,
-          background_style: useBackground ? backgroundStyle : null } as any)
+          background_style: bgToSave } as any)
         .select()
         .single();
 
 
       if (postError) throw postError;
+
+      // Safety net: make sure the chosen background really landed on the row
+      if (bgToSave && (post as any)?.background_style !== bgToSave) {
+        await supabase
+          .from("posts")
+          .update({ background_style: bgToSave } as any)
+          .eq("id", post.id);
+      }
 
 
       // Create hashtags
