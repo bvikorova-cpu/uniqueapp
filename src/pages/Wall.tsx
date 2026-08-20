@@ -640,8 +640,7 @@ const Feed = () => {
               <SearchBar />
               <HeroRewardedAd sectionKey="page_wall" />
 
-              {/* Moved up: user search, tools, notes, stories */}
-              <UserSearch />
+              {/* Moved up: tools, notes, stories */}
 
               <div className="glass-card rounded-2xl p-2 backdrop-blur-xl border border-white/10 flex flex-wrap gap-2">
                 <SpacesDialog />
