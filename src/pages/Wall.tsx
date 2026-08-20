@@ -28,15 +28,6 @@ import { NotesBar } from "@/components/wall/NotesBar";
 import { MutedUsersDialog } from "@/components/wall/MutedUsersDialog";
 import { MutedKeywordsDialog } from "@/components/wall/MutedKeywordsDialog";
 import { CloseFriendsDialog } from "@/components/wall/CloseFriendsDialog";
-import { SavedSearchesDialog } from "@/components/wall/SavedSearchesDialog";
-import { FollowedTopicsDialog } from "@/components/wall/FollowedTopicsDialog";
-import { ModerationQueueDialog } from "@/components/wall/ModerationQueueDialog";
-import { CreatorSubscriptionDialog } from "@/components/wall/CreatorSubscriptionDialog";
-import { DailyLoginRewardDialog } from "@/components/wall/DailyLoginRewardDialog";
-import { CreatorFundDialog } from "@/components/wall/CreatorFundDialog";
-import { CreatorWebhooksDialog } from "@/components/wall/CreatorWebhooksDialog";
-import { AccessibilityFieldsDialog } from "@/components/wall/AccessibilityFieldsDialog";
-import { OfflineStatusIndicator } from "@/components/wall/OfflineStatusIndicator";
 
 import { useQuery } from "@tanstack/react-query";
 import WallMessages from "./wall/WallMessages";
