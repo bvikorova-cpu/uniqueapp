@@ -371,7 +371,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
               <Sparkles className="w-4 h-4 animate-pulse shrink-0" />
               <span>Add to post</span>
             </span>
-            <div className="flex items-center gap-2 flex-wrap min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
               <AudienceSelector value={privacy} onChange={setPrivacy} />
               <Button
                 type="button"
