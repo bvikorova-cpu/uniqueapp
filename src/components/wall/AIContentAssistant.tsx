@@ -56,20 +56,20 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
 
   const callAI = async (type: AITool) => {
     if (!content.trim()) {
-      toast({ title: "First write content", description: "AI needs text to analyze.", variant: "destructive" });
+      toast({ title: "Write some content first", description: "AI needs text to analyze.", variant: "destructive" });
       return;
     }
 
-    const hasCredit = await spendCredit("custom_generation", `Wall AI: ${type}`);
-    if (!hasCredit) {
-      toast({ title: "Insufficient credits", description: "Buy credits for AI features.", variant: "destructive" });
+    // Credits are deducted server-side (1 credit per run) — only pre-check the balance here.
+    if ((credits?.credits_remaining ?? 0) < 1) {
+      toast({ title: "Insufficient credits", description: "Buy credits to use AI features.", variant: "destructive" });
       return;
     }
 
     setLoading(type);
     try {
       const { data, error } = await supabase.functions.invoke("wall-ai-assistant", {
-        body: { type, content, language: "sk" } });
+        body: { type, content, language: "en" } });
 
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
