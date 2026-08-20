@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { TrendingUp, Loader2, FlaskConical, Flame, Trophy, Medal, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import PostCard from "@/components/feed/PostCard";
 import { motion } from "framer-motion";
 
@@ -13,28 +15,72 @@ const isEducationalPost = (post: any): boolean => {
   return content.includes("#sciencelab") || content.includes("#science") || content.includes("#education") || content.includes("#learning") || content.includes("#tutorial");
 };
 
+const RANGES = [
+  { key: "24h", label: "Today", days: 1 },
+  { key: "7d", label: "Week", days: 7 },
+  { key: "30d", label: "Month", days: 30 },
+  { key: "all", label: "All time", days: 0 },
+] as const;
+
+const scoreOf = (post: any) =>
+  (post.likes_count || 0) + (post.comments_count || 0) * 2 + (post.shares_count || 0) * 3 + (post.reposts_count || 0) * 2;
+
+const decorate = (posts: any[], profilesMap: Map<string, any>) =>
+  posts
+    .map((post) => {
+      const isEducational = isEducationalPost(post);
+      const base = scoreOf(post);
+      return {
+        ...post,
+        profiles: profilesMap.get(post.user_id) || { id: post.user_id, full_name: null, avatar_url: null },
+        engagementScore: isEducational ? base * EDUCATIONAL_BOOST : base,
+        isEducational,
+      };
+    })
+    .sort((a, b) => b.engagementScore - a.engagementScore || +new Date(b.created_at) - +new Date(a.created_at));
+
 export default function WallTrending() {
-  const { data: trendingPosts = [], isLoading, refetch } = useQuery({
-    queryKey: ["trending-posts"],
+  const [range, setRange] = useState<(typeof RANGES)[number]["key"]>("7d");
+
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ["trending-posts", range],
+    staleTime: 1000 * 60 * 2,
     queryFn: async () => {
-      const sevenDaysAgo = new Date();
-      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      const { data: posts } = await supabase.from("posts").select(`*, media (*)`).gte("created_at", sevenDaysAgo.toISOString()).order("likes_count", { ascending: false }).limit(20);
-      if (!posts) return [];
-      const userIds = Array.from(new Set(posts.map(p => p.user_id)));
-      const { data: profiles } = await (supabase as any).from("public_profiles").select("id, full_name, avatar_url").in("id", userIds);
+      const fetchWindow = async (days: number) => {
+        let q = supabase.from("posts").select(`*, media (*)`).order("created_at", { ascending: false }).limit(60);
+        if (days > 0) {
+          const since = new Date();
+          since.setDate(since.getDate() - days);
+          q = q.gte("created_at", since.toISOString());
+        }
+        const { data: posts, error } = await q;
+        if (error) throw error;
+        return posts ?? [];
+      };
+
+      const selected = RANGES.find((r) => r.key === range)!;
+      let posts = await fetchWindow(selected.days);
+      let usedFallback = false;
+      // Fallback: a quiet window should never render an empty Trending page.
+      if (posts.length === 0 && selected.days > 0) {
+        posts = await fetchWindow(0);
+        usedFallback = posts.length > 0;
+      }
+      if (posts.length === 0) return { posts: [], usedFallback: false };
+
+      const userIds = Array.from(new Set(posts.map((p: any) => p.user_id)));
+      const { data: profiles } = await (supabase as any)
+        .from("public_profiles")
+        .select("id, full_name, avatar_url")
+        .in("id", userIds);
       const profilesMap = new Map<string, any>((profiles || []).map((p: any) => [p.id, p]));
-      return posts.map(post => {
-        const baseScore = (post.likes_count || 0) + (post.comments_count || 0) * 2 + (post.shares_count || 0) * 3 + (post.reposts_count || 0) * 2;
-        const isEducational = isEducationalPost(post);
-        return {
-          ...post,
-          profiles: profilesMap.get(post.user_id) || { id: post.user_id, full_name: null, avatar_url: null },
-          engagementScore: isEducational ? baseScore * EDUCATIONAL_BOOST : baseScore,
-          isEducational
-        };
-      }).sort((a, b) => b.engagementScore - a.engagementScore);
-    } });
+      return { posts: decorate(posts, profilesMap).slice(0, 20), usedFallback };
+    },
+  });
+
+  const trendingPosts = data?.posts ?? [];
+  const usedFallback = data?.usedFallback ?? false;
+
 
   const rankIcons = [
     <Trophy className="w-4 h-4" />,
