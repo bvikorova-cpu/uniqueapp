@@ -224,7 +224,13 @@ export function StreaksAndChallenges() {
                 <button
                   type="button"
                   key={bonus.label}
-                  onClick={() => window.dispatchEvent(new CustomEvent(bonus.event))}
+                  onClick={() => {
+                    if (bonus.event === "focus-feed") {
+                      document.getElementById("wall-feed")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    } else {
+                      window.dispatchEvent(new CustomEvent(bonus.event));
+                    }
+                  }}
                   className="text-center bg-accent/20 rounded-xl p-2 hover:bg-accent/30 transition-colors cursor-pointer"
                 >
                   <span className="text-lg">{bonus.icon}</span>
