@@ -690,8 +690,14 @@ const Feed = () => {
 
               {/* Moved up: tools, notes, stories */}
 
-              <div className="glass-card rounded-2xl p-2 backdrop-blur-xl border border-white/10 grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
-                <div className="w-full"><CloseFriendsDialog /></div>
+              <div className="glass-card rounded-2xl p-2 backdrop-blur-xl border border-white/10 grid grid-cols-1 gap-2">
+                <div className="w-full">
+                  <CloseFriendsDialog />
+                  <p className="mt-1 px-1 text-[11px] leading-snug text-muted-foreground">
+                    A private list of people you trust. Posts published with the
+                    “Close friends” audience are visible only to them.
+                  </p>
+                </div>
                 <button
                   type="button"
                   onClick={() => setMoreToolsOpen((v) => !v)}
@@ -700,9 +706,21 @@ const Feed = () => {
                   More tools
                 </button>
                 {moreToolsOpen && (
-                  <div className="col-span-2 w-full mt-1 grid grid-cols-2 sm:flex sm:flex-wrap gap-2 p-2 rounded-lg bg-background/50 border border-white/10">
-                    <MutedUsersDialog />
-                    <MutedKeywordsDialog />
+                  <div className="w-full mt-1 grid grid-cols-1 sm:grid-cols-2 gap-3 p-2 rounded-lg bg-background/50 border border-white/10">
+                    <div>
+                      <MutedUsersDialog />
+                      <p className="mt-1 px-1 text-[11px] leading-snug text-muted-foreground">
+                        Hide everything a person posts or reposts from your feed —
+                        for 24 hours, 7 days, 30 days or forever. They are never notified.
+                      </p>
+                    </div>
+                    <div>
+                      <MutedKeywordsDialog />
+                      <p className="mt-1 px-1 text-[11px] leading-snug text-muted-foreground">
+                        Add words or phrases (e.g. spoilers, politics). Any post
+                        containing them is filtered out of your feed only.
+                      </p>
+                    </div>
                   </div>
                 )}
               </div>

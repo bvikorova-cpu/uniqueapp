@@ -82,11 +82,17 @@ export const NotesBar = () => {
 
   return (
     <>
-      <div className="glass-post-card p-3 overflow-x-auto">
-        <div className="flex gap-3 min-w-max">
+      <div className="glass-post-card p-3">
+        <p className="mb-2 text-[11px] leading-snug text-muted-foreground">
+          <span className="font-semibold text-foreground">24h notes</span> — a short
+          text status (max 280 characters) with an emoji. It appears above the feed
+          for everyone and disappears automatically after 24 hours. Tap a bubble to
+          read the full text; tap your own note to read or delete it.
+        </p>
+        <div className="flex gap-3 overflow-x-auto pb-1">
           {/* Add / my note */}
           <button
-            onClick={() => setOpen(true)}
+            onClick={() => (myNote ? setViewing(myNote) : setOpen(true))}
             className="flex flex-col items-center gap-1 w-20 shrink-0"
           >
             <div className="relative h-16 w-16 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 ring-2 ring-primary/40 flex items-center justify-center">
@@ -102,7 +108,7 @@ export const NotesBar = () => {
               )}
             </div>
             <span className="text-[11px] text-muted-foreground truncate max-w-full">
-              {myNote ? "Your note" : "Add note"}
+              {myNote ? myNote.content : "Add note"}
             </span>
           </button>
 
@@ -123,8 +129,11 @@ export const NotesBar = () => {
                     {n.emoji || "💭"}
                   </div>
                 </div>
-                <span className="text-[11px] text-muted-foreground truncate max-w-full">
+                <span className="text-[11px] font-medium text-foreground truncate max-w-full">
                   {n.profile?.full_name?.split(" ")[0] ?? "User"}
+                </span>
+                <span className="text-[10px] text-muted-foreground truncate max-w-full">
+                  {n.content}
                 </span>
               </button>
             ))}
