@@ -644,15 +644,6 @@ const Feed = () => {
                   <div className="col-span-2 w-full mt-1 grid grid-cols-2 sm:flex sm:flex-wrap gap-2 p-2 rounded-lg bg-background/50 border border-white/10">
                     <MutedUsersDialog />
                     <MutedKeywordsDialog />
-                    <SavedSearchesDialog />
-                    <FollowedTopicsDialog />
-                    <ModerationQueueDialog />
-                    <CreatorSubscriptionDialog />
-                    <CreatorFundDialog />
-                    <DailyLoginRewardDialog />
-                    <CreatorWebhooksDialog />
-                    <AccessibilityFieldsDialog />
-                    <OfflineStatusIndicator />
                   </div>
                 )}
               </div>
