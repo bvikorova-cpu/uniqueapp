@@ -109,13 +109,22 @@ export const NotesBar = () => {
             onClick={() => (myNote ? setViewing(myNote) : setOpen(true))}
             className="flex flex-col items-center gap-1 w-20 shrink-0"
           >
-            <div className="relative h-16 w-16 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 ring-2 ring-primary/40 flex items-center justify-center">
-              {myNote ? (
-                <span className="text-2xl">{myNote.emoji || "💭"}</span>
+            <div className="relative">
+              {myNote || myProfile?.avatar_url ? (
+                <Avatar className="h-16 w-16 ring-2 ring-primary/40">
+                  <AvatarImage src={myProfile?.avatar_url ?? undefined} />
+                  <AvatarFallback>{myProfile?.full_name?.charAt(0) ?? "U"}</AvatarFallback>
+                </Avatar>
               ) : (
-                <Plus className="h-6 w-6 text-primary" />
+                <div className="relative h-16 w-16 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 ring-2 ring-primary/40 flex items-center justify-center">
+                  <Plus className="h-6 w-6 text-primary" />
+                </div>
               )}
-              {!myNote && (
+              {myNote ? (
+                <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-background border border-border flex items-center justify-center text-sm">
+                  {myNote.emoji || "💭"}
+                </div>
+              ) : (
                 <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs">
                   +
                 </div>
