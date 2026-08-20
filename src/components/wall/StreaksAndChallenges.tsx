@@ -225,12 +225,17 @@ export function StreaksAndChallenges() {
                   type="button"
                   key={bonus.label}
                   onClick={() => {
-                    if (bonus.event === "focus-feed") {
-                      document.getElementById("wall-feed")?.scrollIntoView({ behavior: "smooth", block: "start" });
-                    } else {
-                      window.dispatchEvent(new CustomEvent(bonus.event));
-                    }
+                    // close the mobile menu sheet first so the target UI is visible
+                    window.dispatchEvent(new CustomEvent("close-wall-menu"));
+                    setTimeout(() => {
+                      if (bonus.event === "focus-feed") {
+                        document.getElementById("wall-feed")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      } else {
+                        window.dispatchEvent(new CustomEvent(bonus.event));
+                      }
+                    }, 260);
                   }}
+
                   className="text-center bg-accent/20 rounded-xl p-2 hover:bg-accent/30 transition-colors cursor-pointer"
                 >
                   <span className="text-lg">{bonus.icon}</span>
