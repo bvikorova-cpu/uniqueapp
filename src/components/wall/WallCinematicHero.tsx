@@ -72,10 +72,10 @@ export default function WallCinematicHero({ streak }: WallCinematicHeroProps) {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.15 }}
-            className="border-2 border-orange-400/30 bg-[#1a0f0a]/50 backdrop-blur-lg rounded-xl px-5 py-4 w-fit max-w-full"
+            className="border-2 border-white/20 bg-black/30 backdrop-blur-lg rounded-xl px-5 py-4 w-fit max-w-full"
           >
             <h1 className="text-2xl sm:text-3xl lg:text-5xl font-black text-white drop-shadow-lg">
-              🌐 SOCIAL <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-coral-400 to-teal-400">WALL</span>
+              🌐 SOCIAL <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-pink-200 to-fuchsia-200">WALL</span>
             </h1>
             <p className="text-sm sm:text-base text-white/80 font-semibold mt-1 drop-shadow">
               Connect, share & grow with AI-powered social tools
