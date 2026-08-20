@@ -377,6 +377,7 @@ export default function HealthyChallenge() {
           </TabsList>
 
           <TabsContent value="today" className="space-y-4">
+            {user && <ChallengeSubscriptionPanel challenge="healthy" />}
             {challenge && (
               <Card className="border-orange-200 dark:border-orange-900">
                 <CardHeader>
