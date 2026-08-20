@@ -10,7 +10,6 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useStories } from "@/hooks/useStories";
 import { motion, AnimatePresence } from "framer-motion";
-import { StoryAnalyticsPanel } from "@/components/story/StoryAnalyticsPanel";
 import { StoryInteractions } from "@/components/story/StoryInteractions";
 import { useAuth } from "@/contexts/AuthContext";
 import { showMonetagRewarded, trackMonetagEvent, MONETAG_ZONES } from "@/lib/monetag";
