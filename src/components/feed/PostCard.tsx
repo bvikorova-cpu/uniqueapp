@@ -55,7 +55,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
 import type { Post } from "@/types/database";
-import { getPostBackground } from "@/lib/postBackgrounds";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface PostCardProps {
@@ -107,8 +106,6 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
   const [repostsCount, setRepostsCount] = useState(post.reposts_count || 0);
   const [saved, setSaved] = useState(false);
   const { toast } = useToast();
-  const postBackground = getPostBackground((post as any).background_style);
-  const hasVisualMedia = postMedia.some((media) => media.file_type === "image" || media.file_type === "video");
 
   // Action locks against rapid double-clicks (React batching can let 2 clicks through `useState` flags)
   const likeLockRef = useRef(false);
@@ -846,20 +843,11 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
         </div>
 
         {/* Content */}
-        {post.content && (() => {
-          const bg = postBackground && !hasVisualMedia ? postBackground : null;
-          return bg ? (
-            <div className={`rounded-xl p-8 mb-4 min-h-[220px] flex items-center justify-center ${bg.className}`}>
-              <p className={`whitespace-pre-wrap break-words ${bg.textClassName}`}>
-                {post.content}
-              </p>
-            </div>
-          ) : (
-            <p className="text-base text-foreground mb-4 leading-relaxed whitespace-pre-wrap line-clamp-6">
-              {post.content}
-            </p>
-          );
-        })()}
+        {post.content && (
+          <p className="text-base text-foreground mb-4 leading-relaxed whitespace-pre-wrap line-clamp-6">
+            {post.content}
+          </p>
+        )}
 
         {/* Real event attached to this post */}
         {(post as any).event_id && (
