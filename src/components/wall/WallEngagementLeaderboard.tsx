@@ -25,43 +25,48 @@ export default function WallEngagementLeaderboard() {
     let cancelled = false;
     (async () => {
       setLoading(true);
-      const { data } = await supabase
-        .from("user_xp")
-        .select("user_id, total_xp")
-        .order("total_xp", { ascending: false })
-        .limit(50);
 
-      const ids = (data || []).map((r: any) => r.user_id);
-      const { data: profs } = ids.length
-        ? await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", ids)
-        : { data: [] as any[] };
-      const pmap = new Map((profs || []).map((p: any) => [p.id, p]));
+      let all: Row[] = [];
 
-      const top: Row[] = (data || []).slice(0, 10).map((r: any, i: number) => ({ rank: i + 1,
-        user_id: r.user_id,
-        name: (pmap.get(r.user_id) as any)?.full_name || "User",
-        avatar_url: (pmap.get(r.user_id) as any)?.avatar_url || null,
-        score: Number(r.total_xp) || 0 }));
+      if (period === "week") {
+        const { data } = await supabase.rpc("get_weekly_xp_leaderboard");
+        all = ((data ?? []) as any[]).map((r, i) => ({
+          rank: Number(r.rank) || i + 1,
+          user_id: r.user_id,
+          name: r.display_name || "User",
+          avatar_url: r.avatar_url || null,
+          score: Number(r.weekly_xp) || 0,
+        }));
+      } else {
+        const { data } = await supabase.rpc("get_unified_xp_leaderboard", { _limit: 50 });
+        all = ((data ?? []) as any[]).map((r, i) => ({
+          rank: i + 1,
+          user_id: r.user_id,
+          name: r.full_name || "User",
+          avatar_url: r.avatar_url || null,
+          score: Number(r.total_xp) || 0,
+        }));
+      }
 
       let myRank: number | null = null;
       let myScore = 0;
       if (user) {
-        const idx = (data || []).findIndex((r: any) => r.user_id === user.id);
-        if (idx >= 0) {
-          myRank = idx + 1;
-          myScore = Number((data as any[])[idx].total_xp) || 0;
+        const mine = all.find((r) => r.user_id === user.id);
+        if (mine) {
+          myRank = mine.rank;
+          myScore = mine.score;
         } else {
-          const { data: mine } = await supabase
+          const { data: own } = await supabase
             .from("user_xp")
             .select("total_xp")
             .eq("user_id", user.id)
             .maybeSingle();
-          myScore = Number((mine as any)?.total_xp) || 0;
+          myScore = Number((own as any)?.total_xp) || 0;
         }
       }
 
       if (!cancelled) {
-        setRows(top);
+        setRows(all.slice(0, 10));
         setMe({ rank: myRank, score: myScore });
         setLoading(false);
       }
@@ -69,7 +74,8 @@ export default function WallEngagementLeaderboard() {
     return () => {
       cancelled = true;
     };
-  }, [user?.id]);
+  }, [user?.id, period]);
+
 
   const getRankIcon = (rank: number) => {
     if (rank === 1) return <Crown className="h-5 w-5 text-amber-400" />;
@@ -94,9 +100,11 @@ export default function WallEngagementLeaderboard() {
           </h3>
           <Tabs value={period} onValueChange={setPeriod}>
             <TabsList className="h-8">
+              <TabsTrigger value="week" className="text-xs px-3 h-7">This Week</TabsTrigger>
               <TabsTrigger value="alltime" className="text-xs px-3 h-7">All Time</TabsTrigger>
             </TabsList>
           </Tabs>
+
         </div>
 
         {user && (

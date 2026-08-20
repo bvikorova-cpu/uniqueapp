@@ -2,9 +2,8 @@ import { motion } from "framer-motion";
 import { Flame, Trophy, Zap, CheckCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/contexts/AuthContext";
-import { useRewardsStats } from "@/hooks/useRewardsStats";
-import { format, startOfWeek, addDays, isSameDay } from "date-fns";
+import { useWallStreak } from "@/hooks/useWallStreak";
+import { format, parseISO } from "date-fns";
 
 const milestones = [
   { days: 3, reward: "🔥", title: "Warm Up", xp: 50 },
@@ -16,22 +15,21 @@ const milestones = [
   { days: 365, reward: "💫", title: "Annual Champion", xp: 10000 },
 ];
 
-export default function WallPostingStreaks() {
-  const { user } = useAuth();
-  const { data: stats, isLoading } = useRewardsStats(user?.id);
-  const currentStreak = stats?.streak ?? 0;
-  const longestStreak = stats?.longestStreak ?? 0;
+const DAY_LABELS = ["M", "T", "W", "T", "F", "S", "S"];
 
-  const weekDays = ["M", "T", "W", "T", "F", "S", "S"];
-  const today = new Date();
-  const monday = startOfWeek(today, { weekStartsOn: 1 });
-  const todayIdx = (today.getDay() + 6) % 7;
+export default function WallPostingStreaks() {
+  const { data, isLoading } = useWallStreak();
+  const currentStreak = data.currentStreak;
+  const longestStreak = data.longestStreak;
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const week = data.week;
 
   const scrollToComposer = () => {
     window.dispatchEvent(new CustomEvent("open-create-post"));
     document.getElementById("wall-create-post")?.scrollIntoView({ behavior: "smooth", block: "center" });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
 
   return (
     <div className="space-y-4">
@@ -53,14 +51,17 @@ export default function WallPostingStreaks() {
         </div>
 
         <div className="grid grid-cols-7 gap-2 mb-4">
-          {weekDays.map((day, i) => {
-            const dayDate = addDays(monday, i);
-            const isToday = isSameDay(dayDate, today);
-            const isPast = i < todayIdx;
-            const isCompleted = (isPast || isToday) && i > todayIdx - currentStreak;
+          {DAY_LABELS.map((label, i) => {
+            const entry = week[i];
+            const isToday = entry?.day_date === todayIso;
+            const isCompleted = !!entry?.is_active;
             return (
-              <div key={i} className="flex flex-col items-center gap-1" title={format(dayDate, "PP")}>
-                <span className="text-[10px] text-muted-foreground font-bold">{day}</span>
+              <div
+                key={i}
+                className="flex flex-col items-center gap-1"
+                title={entry ? `${format(parseISO(entry.day_date), "PP")} · ${entry.xp_earned} XP` : label}
+              >
+                <span className="text-[10px] text-muted-foreground font-bold">{label}</span>
                 <div className={`h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold ${
                   isCompleted ? "bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-md" :
                   isToday ? "border-2 border-orange-400 border-dashed" :
@@ -72,6 +73,7 @@ export default function WallPostingStreaks() {
             );
           })}
         </div>
+
 
         <Button
           className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:opacity-90"

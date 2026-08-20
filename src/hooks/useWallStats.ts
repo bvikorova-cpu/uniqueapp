@@ -35,9 +35,14 @@ export function useWallStats(userId?: string | null, enabled = true) { const [st
 
       let streak = 0;
       if (userId) {
-        const { data } = await supabase.rpc("compute_xp_streak", { p_user_id: userId });
-        if (typeof data === "number") streak = data;
+        const { data } = await supabase
+          .from("user_streaks")
+          .select("current_streak")
+          .eq("user_id", userId)
+          .maybeSingle();
+        streak = (data as { current_streak?: number } | null)?.current_streak ?? 0;
       }
+
 
       if (cancelled) return;
       setStats({ postsToday: postsRes.count ?? 0,
