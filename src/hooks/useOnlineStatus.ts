@@ -1,31 +1,63 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-export const useOnlineStatus = (userId: string | null) => {
+/**
+ * Presence for the current user's conversation partners plus any extra user IDs
+ * passed in (profiles, feed authors, etc.), so "Last seen" is real for everyone.
+ */
+export const useOnlineStatus = (userId: string | null, extraUserIds: string[] = []) => {
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
   const [lastSeenMap, setLastSeenMap] = useState<Record<string, string>>({});
+  const trackedRef = useRef<Set<string>>(new Set());
 
-  const fetchPresence = useCallback(async () => {
-    if (!userId) return;
+  // Stable key so the effect only re-runs when the set of extra ids changes.
+  const extraKey = Array.from(new Set(extraUserIds.filter(Boolean))).sort().join(",");
 
-    const { data } = await supabase.rpc("get_my_conversation_presence_v1" as any, { _user_ids: null });
-
-    if (!Array.isArray(data)) return;
-
+  const applyRows = useCallback((rows: any[], replace: boolean) => {
     const online = new Set<string>();
     const seen: Record<string, string> = {};
 
-    data.forEach((row: any) => {
+    rows.forEach((row: any) => {
       if (!row?.user_id) return;
       if (row.is_online) online.add(row.user_id);
       if (row.last_seen) seen[row.user_id] = row.last_seen;
     });
 
-    setOnlineUsers(online);
-    setLastSeenMap(seen);
-  }, [userId]);
+    setOnlineUsers((prev) => {
+      if (replace) return online;
+      const merged = new Set(prev);
+      rows.forEach((row: any) => {
+        if (!row?.user_id) return;
+        if (row.is_online) merged.add(row.user_id);
+        else merged.delete(row.user_id);
+      });
+      return merged;
+    });
+    setLastSeenMap((prev) => (replace ? { ...prev, ...seen } : { ...prev, ...seen }));
+  }, []);
 
-  useEffect(() => { if (!userId) return;
+  const fetchPresence = useCallback(async () => {
+    if (!userId) return;
+
+    const { data } = await supabase.rpc("get_my_conversation_presence_v1" as any, { _user_ids: null });
+    if (Array.isArray(data)) applyRows(data, true);
+
+    const ids = Array.from(trackedRef.current);
+    if (ids.length) {
+      const { data: extra } = await supabase.rpc("get_presence_for_users_v1" as any, { _user_ids: ids });
+      if (Array.isArray(extra)) applyRows(extra, false);
+    }
+  }, [userId, applyRows]);
+
+  // Keep tracked ids in sync and refresh immediately when new ones appear.
+  useEffect(() => {
+    const ids = extraKey ? extraKey.split(",") : [];
+    trackedRef.current = new Set(ids);
+    if (userId && ids.length) fetchPresence();
+  }, [extraKey, userId, fetchPresence]);
+
+  useEffect(() => {
+    if (!userId) return;
 
     fetchPresence();
 
