@@ -59,6 +59,7 @@ export interface Post {
   reposts_count: number;
   feeling?: string | null;
   location?: string | null;
+  background_style?: string | null;
   group_id?: string | null;
   page_id?: string | null;
   event_id?: string | null;
