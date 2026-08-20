@@ -386,6 +386,7 @@ export default function EcoChallenge() {
 
           {/* ========== TODAY ========== */}
           <TabsContent value="today" className="space-y-4">
+            {user && <ChallengeSubscriptionPanel challenge="eco" />}
             {challenge && (
               <Card className="border-green-200 dark:border-green-900">
                 <CardHeader>
