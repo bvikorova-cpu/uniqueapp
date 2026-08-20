@@ -202,7 +202,11 @@ const Messenger = () => {
 
 
   // Online status hook
-  const { isUserOnline, getLastSeen } = useOnlineStatus(user?.id || null);
+  const presenceIds = useMemo(
+    () => conversations.map((c) => c.otherUser?.id).filter(Boolean) as string[],
+    [conversations]
+  );
+  const { isUserOnline, getLastSeen } = useOnlineStatus(user?.id || null, presenceIds);
   const { isMuted: isDmMuted, toggle: toggleDmMute } = useDmMutes();
 
   // Real "friends online" = unique conversation partners currently online
