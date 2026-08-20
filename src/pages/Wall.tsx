@@ -708,42 +708,63 @@ const Feed = () => {
               {/* Moved up: tools, notes, stories */}
 
               <div className="glass-card rounded-2xl p-2 backdrop-blur-xl border border-white/10 grid grid-cols-1 gap-2">
-                  <div className="w-full flex items-center gap-1">
-                    <div className="flex-1">
-                      <CloseFriendsDialog />
+                <div className="grid grid-cols-[1fr_auto_1fr] gap-2 items-center">
+                  <div className="flex items-center gap-1 min-w-0">
+                    <div className="flex-1 min-w-0">
+                      <CloseFriendsDialog
+                        trigger={
+                          <Button variant="ghost" size="sm" className="w-full justify-start px-2">
+                            <Heart className="w-4 h-4 mr-1.5 text-rose-500 shrink-0" />
+                            <span className="truncate">Close Friends</span>
+                          </Button>
+                        }
+                      />
                     </div>
                     <InfoHint label="What is Close Friends?">
                       A private list of people you trust. Posts published with the “Close friends” audience are visible only to them.
                     </InfoHint>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setMoreToolsOpen((v) => !v)}
-                    className="inline-flex items-center justify-center gap-2 px-3 py-1.5 text-sm rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors w-full"
-                  >
-                    More tools
-                  </button>
-                  {moreToolsOpen && (
-                    <div className="w-full mt-1 grid grid-cols-1 sm:grid-cols-2 gap-3 p-2 rounded-lg bg-background/50 border border-white/10">
-                      <div className="flex items-center gap-1">
-                        <div className="flex-1">
-                          <MutedUsersDialog />
-                        </div>
-                        <InfoHint label="What is Muted users?">
-                          Hide everything a person posts or reposts from your feed — for 24 hours, 7 days, 30 days or forever. They are never notified.
-                        </InfoHint>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <div className="flex-1">
-                          <MutedKeywordsDialog />
-                        </div>
-                        <InfoHint label="What is Muted words?">
-                          Add words or phrases (e.g. spoilers, politics). Any post containing them is filtered out of your feed only.
-                        </InfoHint>
-                      </div>
-                    </div>
-                  )}
+
+                  <WallComposer
+                    variant="inline"
+                    onPostCreated={fetchPosts}
+                    userProfile={userProfile}
+                  />
+
+                  <div className="flex items-center gap-1 min-w-0">
+                    <button
+                      type="button"
+                      onClick={() => setMoreToolsOpen((v) => !v)}
+                      className="inline-flex items-center justify-center gap-1.5 px-2 py-1.5 text-sm rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors w-full min-w-0"
+                    >
+                      <span className="truncate">More tools</span>
+                    </button>
+                    <InfoHint label="What is More tools?">
+                      Open extra feed controls: muted users and muted words.
+                    </InfoHint>
+                  </div>
                 </div>
+                {moreToolsOpen && (
+                  <div className="w-full mt-1 grid grid-cols-1 sm:grid-cols-2 gap-3 p-2 rounded-lg bg-background/50 border border-white/10">
+                    <div className="flex items-center gap-1">
+                      <div className="flex-1">
+                        <MutedUsersDialog />
+                      </div>
+                      <InfoHint label="What is Muted users?">
+                        Hide everything a person posts or reposts from your feed — for 24 hours, 7 days, 30 days or forever. They are never notified.
+                      </InfoHint>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="flex-1">
+                        <MutedKeywordsDialog />
+                      </div>
+                      <InfoHint label="What is Muted words?">
+                        Add words or phrases (e.g. spoilers, politics). Any post containing them is filtered out of your feed only.
+                      </InfoHint>
+                    </div>
+                  </div>
+                )}
+              </div>
 
 
 
