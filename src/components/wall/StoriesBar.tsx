@@ -336,11 +336,6 @@ export const StoriesBar = () => {
                 )}
               </div>
 
-              {isOwnStory && (
-                <div className="mt-3 max-w-md" onClick={(e) => e.stopPropagation()}>
-                  <StoryAnalyticsPanel storyId={viewingStory.id} />
-                </div>
-              )}
             </div>
           </motion.div>
         )}
