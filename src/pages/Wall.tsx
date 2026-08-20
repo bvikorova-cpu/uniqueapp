@@ -880,14 +880,14 @@ const Feed = () => {
         <WallComposer onPostCreated={fetchPosts} userProfile={userProfile} />
         
         {/* Main Layout Container - starts below fixed nav */}
-        <div className="flex flex-col lg:flex-row pt-[76px]">
+        <div className="flex flex-col lg:flex-row pt-[68px] lg:pt-[84px]">
           {/* Left Sidebar - Hidden on mobile, sticky within container */}
           <div className="hidden lg:block lg:w-64 xl:w-80 shrink-0">
             {feedEnhancementsReady && <WallSidebar onPostCreated={fetchPosts} />}
           </div>
 
           {/* Main Content Area - scrollable with enhanced contrast */}
-          <div className="flex-1 min-w-0 px-2 sm:px-4 py-4">
+          <div className="flex-1 min-w-0 px-2 sm:px-4 pt-1 pb-4">
             <div className="[&_.card]:bg-card/95 [&_.card]:backdrop-blur-md [&_.card]:shadow-glow [&_.card]:border-primary/20">
 
               {renderContent()}
