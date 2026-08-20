@@ -47,7 +47,6 @@ import { TagFriendsDialog } from "./TagFriendsDialog";
 import { VoiceRecorder } from "./VoiceRecorder";
 import { EphemeralPostToggle, type PostVisibility } from "./EphemeralPostToggle";
 import { DraftsManager } from "./DraftsManager";
-import { CollaborativePostEditor } from "./CollaborativePostEditor";
 import { MusicShareInput } from "./MusicShareCard";
 import { AIContentAssistant } from "./AIContentAssistant";
 import { AnimatePresence } from "framer-motion";
@@ -567,14 +566,14 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             </div>
           </TooltipProvider>
 
-          {/* Visibility + Collab + Drafts row */}
+          {/* Visibility + Drafts row */}
           <div className="mt-3 pt-3 border-t border-white/5 space-y-2">
             <div className="flex items-center justify-between gap-2 flex-wrap">
               <span className="text-xs font-semibold text-muted-foreground">
                 Who can see this post?
               </span>
               <div className="flex items-center gap-1">
-                <CollaborativePostEditor />
+
                 <BackgroundStylePicker
                   value={backgroundStyle}
                   onChange={setBackgroundStyle}
