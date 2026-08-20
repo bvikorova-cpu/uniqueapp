@@ -514,6 +514,14 @@ export default function EcoChallenge() {
                     </div>
                     <span className="text-xs text-muted-foreground">{new Date(s.created_at).toLocaleTimeString()}</span>
                   </div>
+                  {user?.id === s.user_id && (
+                    <ChallengeSubmissionActions
+                      table="eco_submissions"
+                      submissionId={s.id}
+                      description={s.description}
+                      onChanged={loadAll}
+                    />
+                  )}
                   <EcoComments submissionId={s.id} />
                 </CardContent>
               </Card>
