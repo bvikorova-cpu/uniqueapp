@@ -11,6 +11,7 @@ import { toast } from "@/hooks/use-toast";
 import { Leaf, Trophy, Heart, Upload, Sparkles, Calendar, Video, Image as ImageIcon, AlertCircle, History, Share2, Timer } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { SectionVideoPreview } from "@/components/SectionVideoPreview";
+import { shareLink } from "@/lib/shareLink";
 import { sectionVideos } from "@/components/sectionVideos";
 import { Link } from "react-router-dom";
 import { EcoComments } from "@/components/eco/EcoComments";
