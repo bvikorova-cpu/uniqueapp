@@ -567,18 +567,31 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             </div>
           </TooltipProvider>
 
-          {/* Ephemeral + Collab + Drafts row */}
-          <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/5 gap-2 flex-wrap">
-            <div className="flex items-center gap-1">
-              <EphemeralPostToggle visibility={postVisibility} onVisibilityChange={setPostVisibility} />
-              <CollaborativePostEditor />
-              <BackgroundStylePicker
-                value={backgroundStyle}
-                onChange={setBackgroundStyle}
-                disabled={files.length > 0}
-              />
+          {/* Visibility + Collab + Drafts row */}
+          <div className="mt-3 pt-3 border-t border-white/5 space-y-2">
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <span className="text-xs font-semibold text-muted-foreground">
+                Who can see this post?
+              </span>
+              <div className="flex items-center gap-1">
+                <CollaborativePostEditor />
+                <BackgroundStylePicker
+                  value={backgroundStyle}
+                  onChange={setBackgroundStyle}
+                  disabled={files.length > 0}
+                />
+                <DraftsManager onSelectDraft={(draft: any) => setContent(draft.content || "")} />
+              </div>
             </div>
-            <DraftsManager onSelectDraft={(draft: any) => setContent(draft.content || "")} />
+            <EphemeralPostToggle
+              visibility={postVisibility}
+              onVisibilityChange={(v) => {
+                setPostVisibility(v);
+                if (v === "normal") setPrivacy("public");
+                if (v === "close-friends") setPrivacy("close_friends");
+                if (v === "ephemeral") setPrivacy("public");
+              }}
+            />
           </div>
 
           {/* Poll preview */}
