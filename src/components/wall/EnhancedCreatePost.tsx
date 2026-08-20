@@ -483,7 +483,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
               </Tooltip>
 
               <Tooltip>
-                <Sheet>
+                <Sheet open={showEmoji} onOpenChange={setShowEmoji}>
                   <SheetTrigger asChild>
                     <TooltipTrigger asChild>
                       <Button type="button" variant="ghost" size="sm" className="flex-shrink-0 flex-col h-auto py-1 px-1 hover:bg-yellow-500/10 rounded-lg transition-all group">
