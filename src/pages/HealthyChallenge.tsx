@@ -507,6 +507,14 @@ export default function HealthyChallenge() {
                     </div>
                     <span className="text-xs text-muted-foreground">{new Date(s.created_at).toLocaleTimeString()}</span>
                   </div>
+                  {user?.id === s.user_id && (
+                    <ChallengeSubmissionActions
+                      table="healthy_submissions"
+                      submissionId={s.id}
+                      description={s.description}
+                      onChanged={loadAll}
+                    />
+                  )}
                   <HealthyComments submissionId={s.id} />
                 </CardContent>
               </Card>
