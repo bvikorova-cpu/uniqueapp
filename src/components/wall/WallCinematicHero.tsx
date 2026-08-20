@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
 import { Heart, MessageCircle, Users, Star, Share2, Zap } from "lucide-react";
+import wallHeroVideo from "../../../public/videos/wall-social-hero.mp4.asset.json";
+
 
 interface WallCinematicHeroProps {
   streak: number;
