@@ -26,6 +26,8 @@ export default function WallInfo() {
         { name: "Location Tagging", description: "Tag locations to your posts to show where you are.", icon: <MapPin className="h-4 w-4" /> },
         { name: "Hashtags", description: "Use #hashtags to categorize posts and improve discoverability.", icon: <Hash className="h-4 w-4" /> },
         { name: "User Mentions", description: "Mention users with @username to notify and link to profiles.", icon: <AtSign className="h-4 w-4" /> },
+        { name: "Event Posts", description: "Attach a real event (name, date, time, location) to a post — readers get an event card with details.", icon: <Calendar className="h-4 w-4" /> },
+        { name: "Privacy per Post", description: "Choose Everyone, Friends, Close Friends or Only me before publishing.", icon: <Lock className="h-4 w-4" /> },
         { name: "Post Scheduling", description: "Schedule posts for future publishing with the creator tools.", icon: <Clock className="h-4 w-4" /> },
       ] },
     {
