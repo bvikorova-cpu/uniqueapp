@@ -3,6 +3,8 @@ import { Heart, Share2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { canonicalUrl } from "@/lib/canonicalUrl";
+import { shareLink } from "@/lib/shareLink";
+
 import { toast } from "sonner";
 
 interface Props {
@@ -47,11 +49,11 @@ export const StoryInteractions = ({ storyId }: Props) => {
 
   const share = async () => {
     const url = canonicalUrl(`/wall?story=${storyId}`);
-    try {
-      if (navigator.share) await navigator.share({ title: "Story on Unique", url });
-      else { await navigator.clipboard.writeText(url); toast.success("Link copied"); }
-    } catch { /* user cancelled */ }
+    const result = await shareLink({ title: "Story on Unique", text: "Check out this story on Unique", url });
+    if (result === "copied") toast.success("Link copied to clipboard");
+    else if (result === "failed") toast.error("Could not share this story");
   };
+
 
   return (
     <div onClick={(e) => e.stopPropagation()} className="w-full">
