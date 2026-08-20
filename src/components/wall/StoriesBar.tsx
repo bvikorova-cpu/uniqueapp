@@ -294,21 +294,23 @@ export const StoriesBar = () => {
             </div>
 
             {viewingStory.media_url && (
-              isViewingVideo ? (
-                <video
-                  src={viewingStory.media_url}
-                  autoPlay controls playsInline
-                  className="w-full h-full max-h-screen object-contain"
-                  onClick={(e) => e.stopPropagation()}
-                  onEnded={() => setViewingStory(null)}
-                />
-              ) : (
-                <img
-                  src={viewingStory.media_url} alt=""
-                  className="w-full h-full max-h-screen object-contain"
-                  onClick={(e) => e.stopPropagation()}
-                />
-              )
+              <div className="w-full h-[100dvh] flex items-center justify-center overflow-hidden">
+                {isViewingVideo ? (
+                  <video
+                    src={viewingStory.media_url}
+                    autoPlay controls playsInline
+                    className="w-full h-full object-cover"
+                    onClick={(e) => e.stopPropagation()}
+                    onEnded={() => setViewingStory(null)}
+                  />
+                ) : (
+                  <img
+                    src={viewingStory.media_url} alt=""
+                    className="w-full h-full object-cover"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                )}
+              </div>
             )}
 
 
