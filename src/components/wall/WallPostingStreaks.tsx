@@ -51,14 +51,17 @@ export default function WallPostingStreaks() {
         </div>
 
         <div className="grid grid-cols-7 gap-2 mb-4">
-          {weekDays.map((day, i) => {
-            const dayDate = addDays(monday, i);
-            const isToday = isSameDay(dayDate, today);
-            const isPast = i < todayIdx;
-            const isCompleted = (isPast || isToday) && i > todayIdx - currentStreak;
+          {DAY_LABELS.map((label, i) => {
+            const entry = week[i];
+            const isToday = entry?.day_date === todayIso;
+            const isCompleted = !!entry?.is_active;
             return (
-              <div key={i} className="flex flex-col items-center gap-1" title={format(dayDate, "PP")}>
-                <span className="text-[10px] text-muted-foreground font-bold">{day}</span>
+              <div
+                key={i}
+                className="flex flex-col items-center gap-1"
+                title={entry ? `${format(parseISO(entry.day_date), "PP")} · ${entry.xp_earned} XP` : label}
+              >
+                <span className="text-[10px] text-muted-foreground font-bold">{label}</span>
                 <div className={`h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold ${
                   isCompleted ? "bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-md" :
                   isToday ? "border-2 border-orange-400 border-dashed" :
@@ -70,6 +73,7 @@ export default function WallPostingStreaks() {
             );
           })}
         </div>
+
 
         <Button
           className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:opacity-90"
