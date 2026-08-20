@@ -263,6 +263,20 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
         }
       }
 
+      // Voice note attachment
+      if (voiceFile) {
+        const voiceName = `${user.id}/voice-${Date.now()}.webm`;
+        const { error: voiceError } = await supabase.storage
+          .from("media")
+          .upload(voiceName, voiceFile, { contentType: voiceFile.type || "audio/webm" });
+        if (voiceError) throw voiceError;
+        const { data: { publicUrl: voiceUrl } } = supabase.storage.from("media").getPublicUrl(voiceName);
+        await supabase.from("media").insert({ post_id: post.id,
+          file_url: voiceUrl,
+          file_type: "audio",
+          file_name: voiceFile.name || "voice-note.webm" });
+      }
+
       // +20 XP + challenge tracking (toast for completion handled inside helper)
       trackChallengeAction("post", 20);
 
@@ -274,7 +288,8 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
       setPrivacy("public");
       setPollData(null);
       setEventDraft(null);
-
+      setVoiceFile(null);
+      setTaggedFriends([]);
       setBackgroundStyle(null);
       onPostCreated();
     } catch (error: any) {
