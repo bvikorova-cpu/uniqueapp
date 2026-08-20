@@ -2,9 +2,11 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Hash, TrendingUp } from "lucide-react";
 import { useTrending } from "@/hooks/useTrending";
+import { useNavigate } from "react-router-dom";
 
 export const TrendingSidebar = () => {
   const { topics, isLoading } = useTrending();
+  const navigate = useNavigate();
 
   if (isLoading) {
     return (
@@ -27,8 +29,20 @@ export const TrendingSidebar = () => {
         <h3 className="font-bold text-lg">Trending Now</h3>
       </div>
       <div className="space-y-3">
+        {topics.length === 0 && (
+          <p className="text-xs text-muted-foreground text-center py-4">
+            No trending hashtags yet — add #hashtags to your posts to start a trend.
+          </p>
+        )}
         {topics.slice(0, 5).map((topic, index) => (
-          <div key={topic.id} className="flex items-center gap-4 glass-hover p-3 rounded-xl cursor-pointer group">
+          <div
+            key={topic.id}
+            role="button"
+            tabIndex={0}
+            onClick={() => navigate(`/search?q=%23${encodeURIComponent(topic.topic)}`)}
+            onKeyDown={(e) => { if (e.key === "Enter") navigate(`/search?q=%23${encodeURIComponent(topic.topic)}`); }}
+            className="flex items-center gap-4 glass-hover p-3 rounded-xl cursor-pointer group"
+          >
             <span className={`text-2xl font-bold w-8 ${
               index === 0 ? "text-primary" : 
               index === 1 ? "text-primary/80" : 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,19 @@ export const XpToCreditsConverter = ({ userId }: Props) => {
   const [credits, setCredits] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  const maxCredits = Math.floor(xp / RATE);
+  const [convertibleXp, setConvertibleXp] = useState<number | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const { data } = await (supabase as any).rpc("convertible_xp", { _user_id: userId });
+      if (active) setConvertibleXp(Number(data ?? 0));
+    })();
+    return () => { active = false; };
+  }, [userId, xp]);
+
+  const availableXp = convertibleXp ?? xp;
+  const maxCredits = Math.floor(availableXp / RATE);
   const xpCost = credits * RATE;
   const canConvert = maxCredits >= 1 && credits >= 1 && credits <= maxCredits;
 
@@ -49,7 +61,8 @@ export const XpToCreditsConverter = ({ userId }: Props) => {
       setCredits(1);
     } catch (e: any) {
       const msg = e?.message ?? "Conversion failed";
-      if (msg.includes("INSUFFICIENT_XP")) toast.error("Not enough XP");
+      if (msg.includes("INSUFFICIENT_CONVERTIBLE_XP")) toast.error("Eco & Healthy Challenge XP cannot be exchanged for credits");
+      else if (msg.includes("INSUFFICIENT_XP")) toast.error("Not enough XP");
       else toast.error(msg);
     } finally {
       setLoading(false);
@@ -69,11 +82,11 @@ export const XpToCreditsConverter = ({ userId }: Props) => {
               </div>
               <div>
                 <CardTitle className="text-lg">Convert XP → Credits</CardTitle>
-                <CardDescription>1,000 XP = 1 credit. No daily limit.</CardDescription>
+                <CardDescription>1,000 XP = 1 credit. Eco &amp; Healthy Challenge XP is excluded.</CardDescription>
               </div>
             </div>
             <Badge variant="outline" className="text-sm px-3 py-1 bg-primary/10 border-primary/40">
-              {xp.toLocaleString()} XP
+              {availableXp.toLocaleString()} XP convertible
             </Badge>
           </div>
         </CardHeader>

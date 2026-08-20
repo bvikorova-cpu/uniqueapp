@@ -217,18 +217,31 @@ export function StreaksAndChallenges() {
             {/* Daily bonuses */}
             <div className="grid grid-cols-3 gap-2">
               {[
-                { icon: "📝", label: "Post", xp: "+20" },
-                { icon: "💬", label: "Comment", xp: "+10" },
-                { icon: "📖", label: "Story", xp: "+15" },
+                { icon: "📝", label: "Post", xp: "+20", event: "open-create-post" },
+                { icon: "💬", label: "Comment", xp: "+10", event: "focus-feed" },
+                { icon: "📖", label: "Story", xp: "+15", event: "open-create-story" },
               ].map((bonus) => (
-                <div
+                <button
+                  type="button"
                   key={bonus.label}
+                  onClick={() => {
+                    // close the mobile menu sheet first so the target UI is visible
+                    window.dispatchEvent(new CustomEvent("close-wall-menu"));
+                    setTimeout(() => {
+                      if (bonus.event === "focus-feed") {
+                        document.getElementById("wall-feed")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      } else {
+                        window.dispatchEvent(new CustomEvent(bonus.event));
+                      }
+                    }, 260);
+                  }}
+
                   className="text-center bg-accent/20 rounded-xl p-2 hover:bg-accent/30 transition-colors cursor-pointer"
                 >
                   <span className="text-lg">{bonus.icon}</span>
                   <p className="text-[10px] font-medium mt-0.5">{bonus.label}</p>
                   <p className="text-[9px] text-primary font-bold">{bonus.xp}</p>
-                </div>
+                </button>
               ))}
             </div>
           </motion.div>

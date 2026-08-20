@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,8 +25,6 @@ import { TrendingSidebar } from "./TrendingSidebar";
 import { ActivityFeedCard } from "./ActivityFeedCard";
 import { TrendingHashtags } from "./TrendingHashtags";
 import { StreaksAndChallenges } from "./StreaksAndChallenges";
-import { LiveStreamWidget } from "./LiveStreamWidget";
-import { AudioRooms } from "./AudioRooms";
 import { ThemeColorSwitcher } from "./ThemeColorSwitcher";
 
 interface MobileWallMenuProps {
@@ -160,10 +158,17 @@ export function MobileWallMenu({ onPostCreated, inline = false }: MobileWallMenu
     },
     enabled: !!user });
 
+  useEffect(() => {
+    const handler = () => setOpen(false);
+    window.addEventListener("close-wall-menu", handler);
+    return () => window.removeEventListener("close-wall-menu", handler);
+  }, []);
+
   const handleNavigate = (path: string) => {
     navigate(path);
     setOpen(false);
   };
+
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -235,9 +240,6 @@ export function MobileWallMenu({ onPostCreated, inline = false }: MobileWallMenu
           {/* Trending */}
           <TrendingSidebar />
 
-          {/* Live Streams & Audio Rooms */}
-          <LiveStreamWidget />
-          <AudioRooms />
 
           {/* Activity Feed */}
           <ActivityFeedCard />

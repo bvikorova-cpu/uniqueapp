@@ -64039,16 +64039,19 @@ export type Database = {
       }
       user_xp: {
         Row: {
+          locked_xp: number
           total_xp: number
           updated_at: string
           user_id: string
         }
         Insert: {
+          locked_xp?: number
           total_xp?: number
           updated_at?: string
           user_id: string
         }
         Update: {
+          locked_xp?: number
           total_xp?: number
           updated_at?: string
           user_id?: string
@@ -68858,6 +68861,7 @@ export type Database = {
         Args: { p_target: string; p_xp_amount: number }
         Returns: Json
       }
+      convertible_xp: { Args: { _user_id: string }; Returns: number }
       coupon_battle_pair: {
         Args: { p_category?: string }
         Returns: {
@@ -70224,6 +70228,14 @@ export type Database = {
           donation_count: number
           donor_name: string
           total_amount: number
+        }[]
+      }
+      get_trending_hashtags: {
+        Args: { p_limit?: number }
+        Returns: {
+          engagement_score: number
+          post_count: number
+          topic: string
         }[]
       }
       get_unified_xp_leaderboard: {

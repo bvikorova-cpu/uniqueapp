@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { EnhancedCreatePost } from "@/components/wall/EnhancedCreatePost";
@@ -18,6 +18,12 @@ interface WallComposerProps {
  */
 const WallComposer = ({ onPostCreated, userProfile, variant = "floating" }: WallComposerProps) => {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const handler = () => setOpen(true);
+    window.addEventListener("open-create-post", handler);
+    return () => window.removeEventListener("open-create-post", handler);
+  }, []);
 
   const isFloating = variant === "floating";
 

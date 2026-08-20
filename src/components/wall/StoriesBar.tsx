@@ -82,6 +82,12 @@ export const StoriesBar = () => {
 
   const isVideoFile = !!selectedFile?.type?.startsWith("video/");
 
+  useEffect(() => {
+    const handler = () => setOpen(true);
+    window.addEventListener("open-create-story", handler);
+    return () => window.removeEventListener("open-create-story", handler);
+  }, []);
+
   const handleCreateStory = async () => { if (!selectedFile) return;
     setUploadPct(0);
     try {

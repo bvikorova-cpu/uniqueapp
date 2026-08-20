@@ -189,7 +189,16 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
             <BarChart3 className="h-4 w-4 text-primary" />
             <span className="text-sm font-medium">Creator Studio</span>
           </Button>
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-2.5 h-auto py-2.5 hover:bg-primary/10 rounded-lg"
+            onClick={() => navigate("/settings")}
+          >
+            <Settings className="h-4 w-4 text-primary" />
+            <span className="text-sm font-medium">Settings</span>
+          </Button>
         </div>
+
 
         <div className="h-px bg-border" />
 

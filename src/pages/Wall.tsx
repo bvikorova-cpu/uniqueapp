@@ -797,7 +797,7 @@ const Feed = () => {
 
               {activeView === "feed" && (
                 <>
-                  <div className="flex items-center gap-2 flex-wrap">
+                  <div id="wall-feed" className="flex items-center gap-2 flex-wrap">
                     <div className="flex-1 min-w-0">
                       <SmartFeedTabs activeTab={feedTab} onTabChange={setFeedTab} />
                     </div>
