@@ -14,7 +14,7 @@ import { Select,
 import { Switch } from "@/components/ui/switch";
 import { Card } from "@/components/ui/card";
 import { usePrivacySettings } from "@/hooks/usePrivacySettings";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const PrivacySettingsDialog = () => {
   const { settings, updateSettings } = usePrivacySettings();
