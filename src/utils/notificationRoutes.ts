@@ -83,9 +83,9 @@ export function getNotificationRoute(n: NotifLike): string {
     skill_order_cancelled: "/skills-marketplace/orders",
 
     // Messaging
-    message: "/wall/messages",
-    new_message: "/wall/messages",
-    direct_message: "/wall/messages",
+    message: "/messenger",
+    new_message: "/messenger",
+    direct_message: "/messenger",
 
     // Brand collaborations
     brand_collab_invite: "/brand-dashboard",
@@ -104,7 +104,7 @@ export function getNotificationRoute(n: NotifLike): string {
     // Stories / posts / wall
     story_view: "/wall",
     story_reaction: "/wall",
-    story_reply: "/wall/messages",
+    story_reply: "/messenger",
     post_like: "/wall",
     post_comment: "/wall",
     post_share: n.post_id ? `/post/${n.post_id}` : "/wall",

@@ -665,7 +665,7 @@ const App = () => {
                         <Route path="/downloads" element={<Navigate to="/download" replace />} />
                         <Route path="/wall" element={<ProtectedRoute><Wall /></ProtectedRoute>} />
                         <Route path="/search" element={<SearchResults />} />
-                        <Route path="/wall/messages" element={<ProtectedRoute><Wall /></ProtectedRoute>} />
+                        <Route path="/wall/messages" element={<Navigate to="/messenger" replace />} />
                         <Route path="/wall/friends" element={<ProtectedRoute><Wall /></ProtectedRoute>} />
                        <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
                        <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
@@ -1234,7 +1234,7 @@ const App = () => {
                         <Route path="/teens" element={<Navigate to="/teen-hub" replace />} />
                         <Route path="/skills" element={<Navigate to="/marketplace" replace />} />
                         <Route path="/brand-arena" element={<Navigate to="/brand-battle/hub" replace />} />
-                        <Route path="/messages" element={<Navigate to="/wall/messages" replace />} />
+                        <Route path="/messages" element={<Navigate to="/messenger" replace />} />
                         <Route path="/community" element={<Navigate to="/wall" replace />} />
                         <Route path="/health" element={<Navigate to="/wellness" replace />} />
                         <Route path="/legal" element={<Navigate to="/terms" replace />} />

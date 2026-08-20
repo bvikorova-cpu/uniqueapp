@@ -30,7 +30,7 @@ export function WallTopNav({ currentPath, actions }: WallTopNavProps) {
 
   const mainNavItems = [
     { icon: Home, label: "Feed", path: "/wall" },
-    { icon: MessageCircle, label: "Messages", path: "/wall/messages" },
+    { icon: MessageCircle, label: "Messages", path: "/messenger" },
     { icon: Users2, label: "Friends", path: "/wall/friends" },
   ];
 
