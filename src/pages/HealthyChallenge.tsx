@@ -314,15 +314,10 @@ export default function HealthyChallenge() {
 
   const shareSubmission = async (s: Submission) => {
     const url = `${window.location.origin}/healthy-challenge`;
-    const text = `💪 Healthy Challenge — ${s.description.slice(0, 80)}`;
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: "Healthy Challenge", text, url });
-      } else {
-        await navigator.clipboard.writeText(`${text} ${url}`);
-        toast({ title: "Link copied to clipboard" });
-      }
-    } catch { /* user cancelled */ }
+    const text = `💪 Healthy Challenge — ${(s.description || "").slice(0, 80)}`;
+    const result = await shareLink({ title: "Healthy Challenge", text, url });
+    if (result === "copied") toast({ title: "Link copied to clipboard" });
+    else if (result === "failed") toast({ title: "Could not share", description: url, variant: "destructive" });
   };
 
   return (
