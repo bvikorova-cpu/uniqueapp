@@ -434,20 +434,20 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                     </TooltipTrigger>
                   </PopoverTrigger>
                   <TooltipContent>Feeling</TooltipContent>
-                  <PopoverContent className="w-full max-w-[90vw] sm:w-80 max-h-96 overflow-y-auto">
-                    <div className="grid grid-cols-6 sm:grid-cols-5 gap-1.5 sm:gap-2 p-2">
+                  <PopoverContent className="w-[calc(100vw-2rem)] max-w-[22rem] max-h-[80dvh] overflow-y-auto p-2">
+                    <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
                       {feelings.map((f) => (
                         <Button
                           key={f.label}
                           type="button"
                           variant="ghost"
-                          className="flex-col h-auto py-2"
+                          className="flex-col h-auto px-1 py-2 min-w-0"
                           onClick={() => {
                             setFeeling(f.emoji + " " + f.label);
                           }}
                         >
-                          <span className="text-2xl">{f.emoji}</span>
-                          <span className="text-xs mt-1">{f.label}</span>
+                          <span className="text-xl sm:text-2xl">{f.emoji}</span>
+                          <span className="text-[10px] sm:text-xs mt-1 truncate w-full text-center">{f.label}</span>
                         </Button>
                       ))}
                     </div>
