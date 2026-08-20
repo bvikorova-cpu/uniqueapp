@@ -19,6 +19,7 @@ import { useChallengeProSet, useChallengePro } from "@/hooks/useChallengePro";
 import { ChallengeLockedCard } from "@/components/challenges/ChallengeLockedCard";
 import { ChallengeImage, ChallengeVideo } from "@/components/challenges/ChallengeMedia";
 import { ChallengeSubscriptionPanel } from "@/components/challenges/ChallengeSubscriptionPanel";
+import { ChallengeSubmissionActions } from "@/components/challenges/ChallengeSubmissionActions";
 
 interface Challenge {
   id: string;
@@ -425,6 +426,12 @@ export default function HealthyChallenge() {
                     {mySubmissionToday.video_url && (
                       <ChallengeVideo url={mySubmissionToday.video_url} className="w-full rounded-lg mt-3 max-h-80" />
                     )}
+                    <ChallengeSubmissionActions
+                      table="healthy_submissions"
+                      submissionId={mySubmissionToday.id}
+                      description={mySubmissionToday.description}
+                      onChanged={loadAll}
+                    />
                   </CardContent>
                 </Card>
               ) : (
@@ -500,6 +507,14 @@ export default function HealthyChallenge() {
                     </div>
                     <span className="text-xs text-muted-foreground">{new Date(s.created_at).toLocaleTimeString()}</span>
                   </div>
+                  {user?.id === s.user_id && (
+                    <ChallengeSubmissionActions
+                      table="healthy_submissions"
+                      submissionId={s.id}
+                      description={s.description}
+                      onChanged={loadAll}
+                    />
+                  )}
                   <HealthyComments submissionId={s.id} />
                 </CardContent>
               </Card>
