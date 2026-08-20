@@ -36,6 +36,11 @@ import { Select,
 import { Popover,
   PopoverContent,
   PopoverTrigger } from "@/components/ui/popover";
+import { Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger } from "@/components/ui/sheet";
 import { PostTemplatesDialog } from "./PostTemplatesDialog";
 import { SchedulePostDialog } from "./SchedulePostDialog";
 import { CreatePollDialog } from "./CreatePollDialog";
