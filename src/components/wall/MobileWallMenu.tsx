@@ -31,6 +31,8 @@ import { ThemeColorSwitcher } from "./ThemeColorSwitcher";
 
 interface MobileWallMenuProps {
   onPostCreated?: () => void;
+  /** When true, the trigger renders inline (for the Wall top nav row) instead of floating. */
+  inline?: boolean;
 }
 
 const coreModules = [
@@ -134,7 +136,7 @@ function ModuleSection({ title, icon: Icon, iconColor, modules, onNavigate }: Mo
   );
 }
 
-export function MobileWallMenu({ onPostCreated }: MobileWallMenuProps) {
+export function MobileWallMenu({ onPostCreated, inline = false }: MobileWallMenuProps) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
@@ -169,10 +171,12 @@ export function MobileWallMenu({ onPostCreated }: MobileWallMenuProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="lg:hidden fixed top-[6.75rem] right-3 z-50 bg-primary/90 text-primary-foreground shadow-lg hover:bg-primary rounded-full h-10 w-10"
+          className={inline
+            ? "lg:hidden bg-primary/90 text-primary-foreground shadow-md hover:bg-primary rounded-full h-8 w-8 shrink-0"
+            : "lg:hidden fixed top-[6.75rem] right-3 z-50 bg-primary/90 text-primary-foreground shadow-lg hover:bg-primary rounded-full h-10 w-10"}
           aria-label="Wall Dashboard"
         >
-          <LayoutDashboard className="h-5 w-5" />
+          <LayoutDashboard className={inline ? "h-4 w-4" : "h-5 w-5"} />
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-[300px] sm:w-[350px] overflow-y-auto">

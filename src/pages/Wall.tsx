@@ -725,11 +725,7 @@ const Feed = () => {
                     </InfoHint>
                   </div>
 
-                  <WallComposer
-                    variant="inline"
-                    onPostCreated={fetchPosts}
-                    userProfile={userProfile}
-                  />
+                  <span />
 
                   <div className="flex items-center gap-1 min-w-0">
                     <button
@@ -892,10 +888,10 @@ const Feed = () => {
       {/* Content overlay with stronger contrast */}
       <div className="relative z-10">
         {/* Fixed Top Navigation */}
-        <WallTopNav currentPath={currentPath} />
-      
-        {/* Mobile Menu Button and Drawer */}
-        <MobileWallMenu onPostCreated={fetchPosts} />
+        <WallTopNav
+          currentPath={currentPath}
+          actions={<MobileWallMenu inline onPostCreated={fetchPosts} />}
+        />
         
         {/* Main Layout Container - starts below fixed nav */}
         <div className="flex flex-col lg:flex-row pt-[68px] lg:pt-[84px]">
@@ -919,16 +915,8 @@ const Feed = () => {
           </div>
         </div>
 
-        {/* Back to top button - enhanced neon style */}
-        {showBackToTop && (
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 xl:right-96 z-50 p-2.5 sm:p-3 rounded-full bg-violet-500 text-white shadow-[0_0_30px_rgba(167,139,250,0.8)] hover:shadow-[0_0_40px_rgba(167,139,250,1)] transition-all duration-300 hover:scale-110 animate-fade-in border-2 border-violet-300"
-            aria-label="Back to top"
-          >
-            <ArrowUp className="h-4 w-4 sm:h-5 sm:w-5" />
-          </button>
-        )}
+        {/* Floating new post button (mobile) */}
+        <WallComposer onPostCreated={fetchPosts} userProfile={userProfile} />
       </div>
     </div>
   );
