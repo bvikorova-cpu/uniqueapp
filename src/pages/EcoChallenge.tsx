@@ -321,16 +321,12 @@ export default function EcoChallenge() {
 
   const shareSubmission = async (s: Submission) => {
     const url = `${window.location.origin}/eco-challenge`;
-    const text = `🌱 Eco Challenge — ${s.description.slice(0, 80)}`;
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: "Eco Challenge", text, url });
-      } else {
-        await navigator.clipboard.writeText(`${text} ${url}`);
-        toast({ title: "Link copied to clipboard" });
-      }
-    } catch { /* user cancelled */ }
+    const text = `🌱 Eco Challenge — ${(s.description || "").slice(0, 80)}`;
+    const result = await shareLink({ title: "Eco Challenge", text, url });
+    if (result === "copied") toast({ title: "Link copied to clipboard" });
+    else if (result === "failed") toast({ title: "Could not share", description: url, variant: "destructive" });
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50 to-teal-50 dark:from-green-950/40 dark:via-emerald-950/40 dark:to-teal-950/40">
