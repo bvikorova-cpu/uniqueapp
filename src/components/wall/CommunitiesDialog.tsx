@@ -24,8 +24,9 @@ export const CommunitiesDialog = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon" title="Communities">
-          <Users2 className="h-5 w-5" />
+        <Button variant="outline" size="sm" className="w-full gap-2">
+          <Users2 className="h-4 w-4" />
+          Communities
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-lg">
