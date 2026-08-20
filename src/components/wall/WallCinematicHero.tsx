@@ -6,8 +6,6 @@ interface WallCinematicHeroProps {
 }
 
 export default function WallCinematicHero({ streak }: WallCinematicHeroProps) {
-  const { t } = useTranslation();
-
   return (
     <div className="space-y-4 mb-6">
       <motion.div
