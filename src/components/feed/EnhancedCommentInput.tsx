@@ -24,6 +24,7 @@ import { Popover,
   PopoverContent,
   PopoverTrigger } from "@/components/ui/popover";
 import { PostTemplatesDialog } from "@/components/wall/PostTemplatesDialog";
+import { MyCustomEmojis } from "@/components/common/MyCustomEmojis";
 import { TagFriendsDialog } from "@/components/wall/TagFriendsDialog";
 
 
