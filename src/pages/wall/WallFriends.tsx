@@ -42,6 +42,8 @@ interface FriendSuggestion {
   mutual_count: number;
 }
 
+import { invalidateFriendshipQueries, useFriendshipRealtime } from "@/hooks/useFriendshipSync";
+
 const publicProfiles = () => (supabase as any).from("public_profiles");
 
 export default function WallFriends() {
@@ -93,9 +95,11 @@ export default function WallFriends() {
 
 
 
-  const { data: friends = [], refetch: refetchFriends } = useMyFriends(user?.id);
+  useFriendshipRealtime(user?.id);
 
-  const { data: requests = [], refetch: refetchRequests } = useQuery({
+  const { data: friends = [] } = useMyFriends(user?.id);
+
+  const { data: requests = [] } = useQuery({
     queryKey: ["friend-requests", user?.id],
 
     queryFn: async () => {
@@ -217,8 +221,7 @@ export default function WallFriends() {
     },
     onSuccess: () => {
       toast({ title: "Request accepted", description: "You are now friends" });
-      refetchRequests(); refetchFriends();
-      queryClient.invalidateQueries({ queryKey: ["friend-suggestions"] });
+      invalidateFriendshipQueries(queryClient);
     },
     onError: () => { toast({ title: "Error", description: "Failed to accept request", variant: "destructive" }); }
   });
@@ -228,7 +231,7 @@ export default function WallFriends() {
       const { error } = await supabase.from("friendships").delete().eq("id", friendshipId);
       if (error) throw error;
     },
-    onSuccess: () => { toast({ title: "Request declined" }); refetchRequests(); },
+    onSuccess: () => { toast({ title: "Request declined" }); invalidateFriendshipQueries(queryClient); },
     onError: () => { toast({ title: "Error", description: "Failed to decline request", variant: "destructive" }); }
   });
 
@@ -239,8 +242,7 @@ export default function WallFriends() {
     },
     onSuccess: () => { sonnerToast.success("Request cancelled", {
         description: "Your friend request has been withdrawn" });
-      queryClient.invalidateQueries({ queryKey: ["friend-outgoing"] });
-      queryClient.invalidateQueries({ queryKey: ["friend-suggestions"] });
+      invalidateFriendshipQueries(queryClient);
     },
     onError: () => { sonnerToast.error("Failed to cancel request", {
         description: "Please try again later" });
@@ -250,15 +252,40 @@ export default function WallFriends() {
   const sendRequestMutation = useMutation({
     mutationFn: async (targetUserId: string) => {
       if (!user) throw new Error("Not logged in");
+      if (targetUserId === user.id) throw new Error("You can't add yourself");
+
+      // A row may already exist in either direction — never blindly insert a duplicate.
+      const { data: existing } = await supabase
+        .from("friendships")
+        .select("id, status, user_id, friend_id")
+        .or(`and(user_id.eq.${user.id},friend_id.eq.${targetUserId}),and(user_id.eq.${targetUserId},friend_id.eq.${user.id})`)
+        .maybeSingle();
+
+      if (existing) {
+        if (existing.status === "accepted") throw new Error("You are already friends");
+        if (existing.status === "pending") {
+          // They already invited us → accept instead of sending a duplicate.
+          if (existing.friend_id === user.id) {
+            const { error } = await supabase.from("friendships").update({ status: "accepted" }).eq("id", existing.id);
+            if (error) throw error;
+            return { accepted: true };
+          }
+          throw new Error("Friend request already sent");
+        }
+        throw new Error("Cannot send request");
+      }
+
       const { error } = await supabase.from("friendships").insert({ user_id: user.id, friend_id: targetUserId, status: "pending" });
       if (error) throw error;
+      return { accepted: false };
     },
-    onSuccess: () => {
-      toast({ title: "Request sent", description: "Waiting for acceptance" });
-      queryClient.invalidateQueries({ queryKey: ["friend-suggestions"] });
-      queryClient.invalidateQueries({ queryKey: ["friend-outgoing"] });
+    onSuccess: (res: any) => {
+      toast(res?.accepted
+        ? { title: "You are now friends", description: "Their pending request was accepted" }
+        : { title: "Request sent", description: "Waiting for acceptance" });
+      invalidateFriendshipQueries(queryClient);
     },
-    onError: () => { toast({ title: "Error", description: "Failed to send request", variant: "destructive" }); }
+    onError: (e: any) => { toast({ title: "Error", description: e?.message || "Failed to send request", variant: "destructive" }); }
   });
 
   const [hiddenSuggestions, setHiddenSuggestions] = useState<string[]>([]);

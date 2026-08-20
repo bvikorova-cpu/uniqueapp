@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { invalidateFriendshipQueries, useFriendshipRealtime } from "./useFriendshipSync";
 
 export type FriendshipStatus = "pending" | "accepted" | "blocked";
 
@@ -29,6 +30,9 @@ const publicProfiles = () => (supabase as any).from("public_profiles");
 
 export function useFriendships(userId: string | undefined) {
   const qc = useQueryClient();
+
+  // Keep every friendship surface live (incoming / sent requests, friends).
+  useFriendshipRealtime(userId);
 
   // ---- Accepted friends
   const friends = useQuery({
@@ -170,7 +174,7 @@ export function useFriendships(userId: string | undefined) {
     },
     onSuccess: (res: any) => {
       toast.success(res?.accepted ? "Friend request accepted" : "Friend request sent");
-      qc.invalidateQueries({ queryKey: KEY }); qc.invalidateQueries({ queryKey: ["my-friends"] });
+      invalidateFriendshipQueries(qc);
     },
     onError: (e: any) => toast.error(e.message ?? "Failed to send request") });
 
@@ -184,7 +188,7 @@ export function useFriendships(userId: string | undefined) {
     },
     onSuccess: () => {
       toast.success("Friend request accepted");
-      qc.invalidateQueries({ queryKey: KEY }); qc.invalidateQueries({ queryKey: ["my-friends"] });
+      invalidateFriendshipQueries(qc);
     },
     onError: (e: any) => toast.error(e.message ?? "Failed") });
 
@@ -200,7 +204,7 @@ export function useFriendships(userId: string | undefined) {
     },
     onSuccess: () => {
       toast.success("Friend request cancelled");
-      qc.invalidateQueries({ queryKey: KEY }); qc.invalidateQueries({ queryKey: ["my-friends"] });
+      invalidateFriendshipQueries(qc);
     },
     onError: (e: any) => toast.error(e.message ?? "Failed to cancel request") });
 
@@ -214,7 +218,7 @@ export function useFriendships(userId: string | undefined) {
     },
     onSuccess: () => {
       toast.success("Request dismissed");
-      qc.invalidateQueries({ queryKey: KEY }); qc.invalidateQueries({ queryKey: ["my-friends"] });
+      invalidateFriendshipQueries(qc);
     } });
 
   const removeFriend = useMutation({
@@ -230,7 +234,7 @@ export function useFriendships(userId: string | undefined) {
     },
     onSuccess: () => {
       toast.success("Friend removed");
-      qc.invalidateQueries({ queryKey: KEY }); qc.invalidateQueries({ queryKey: ["my-friends"] });
+      invalidateFriendshipQueries(qc);
     } });
 
   return { friends,
