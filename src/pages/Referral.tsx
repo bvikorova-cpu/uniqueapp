@@ -16,6 +16,7 @@ import { ReferralMilestones } from "@/components/referral/ReferralMilestones";
 import { ReferralWithdrawalRequest } from "@/components/referral/ReferralWithdrawalRequest";
 import { ReferralQRDialog } from "@/components/referral/ReferralQRDialog";
 import { ReferralEarningsCalculator } from "@/components/referral/ReferralEarningsCalculator";
+import { canonicalUrl } from "@/lib/canonicalUrl";
 import { AffiliateTierCard } from "@/components/affiliate/AffiliateTierCard";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
