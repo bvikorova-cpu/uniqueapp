@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Languages, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useOverlayOpen } from "@/hooks/useOverlayOpen";
+import { TRANSLATE_OPEN_EVENT, useAssistantsHidden, useOpenRequest } from "@/lib/assistantBus";
+
 
 declare global {
   interface Window {
@@ -29,6 +31,9 @@ export default function GoogleTranslateWidget({ docked = false }: GoogleTranslat
   });
   const [open, setOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const assistantsHidden = useAssistantsHidden();
+  useOpenRequest(TRANSLATE_OPEN_EVENT, () => setOpen(true));
+
 
   useEffect(() => {
     const updateViewport = () => setIsMobileViewport(window.innerWidth < 768);
@@ -231,12 +236,38 @@ export default function GoogleTranslateWidget({ docked = false }: GoogleTranslat
     );
   }
 
-  if (overlayOpen) return null;
+  if (overlayOpen || assistantsHidden) return null;
+
+  // Mobile: the trigger sits in the bottom navigation bar, so we only render
+  // the language picker as a small sheet above the nav when it is open.
+  if (isMobileViewport) {
+    if (!open) return null;
+    return (
+      <div className="md:hidden fixed inset-x-0 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-[9992] px-3">
+        <div className="mx-auto max-w-md rounded-2xl border border-border/60 bg-background/95 backdrop-blur-xl shadow-2xl p-3 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <Languages className="h-4 w-4 text-primary" />
+            {picker}
+          </div>
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            aria-label="Close translator"
+            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="fixed bottom-[calc(9rem+env(safe-area-inset-bottom))] left-3 md:bottom-24 md:left-6 z-[9992] flex items-center gap-2">
+    <div className="hidden md:flex fixed bottom-[calc(9rem+env(safe-area-inset-bottom))] left-3 md:bottom-24 md:left-6 z-[9992] items-center gap-2">
       {picker}
       {button}
     </div>
   );
 }
+
+

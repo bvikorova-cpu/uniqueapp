@@ -1,10 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import { Home, Crown, Trophy, MessageSquare, User, LogIn } from "lucide-react";
+import { Home, Crown, Trophy, MessageSquare, User, LogIn, Mic, Languages } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { markMeClick, storeMeProfileSnapshot } from "@/utils/perfMe";
 import { prefetchProfileRoute } from "@/utils/prewarmRoutes";
+import { openUni, openTranslator } from "@/lib/assistantBus";
 
 const ITEMS_AUTH = [
   { path: "/", label: "Home", icon: Home },
@@ -42,7 +43,7 @@ export const MobileBottomNav = () => {
       className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-border/60 bg-background/85 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]"
       aria-label="Primary mobile navigation"
     >
-      <ul className="grid grid-cols-5 gap-1 px-1">
+      <ul className="grid grid-cols-7 gap-0.5 px-1">
         {(user ? ITEMS_AUTH : ITEMS_GUEST).map(({ path, label, icon: Icon }) => {
           const active = path === "/" ? pathname === "/" : pathname.startsWith(path);
           const target = path === "/profile" ? (user ? `/profile/${user.id}` : "/auth") : path;
@@ -79,6 +80,34 @@ export const MobileBottomNav = () => {
             </li>
           );
         })}
+        <li>
+          <button
+            type="button"
+            onClick={openUni}
+            aria-label="Open Uni AI assistant"
+            className="w-full flex flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium text-muted-foreground hover:text-primary transition-colors"
+          >
+            <span className="relative flex items-center justify-center">
+              <Mic className="h-5 w-5 text-primary" />
+              <span className="absolute -top-1 -right-2 text-[9px]">🤖</span>
+            </span>
+            <span>Uni</span>
+          </button>
+        </li>
+        <li>
+          <button
+            type="button"
+            onClick={openTranslator}
+            aria-label="Open translator"
+            className="w-full flex flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium text-muted-foreground hover:text-primary transition-colors"
+          >
+            <span className="relative flex items-center justify-center">
+              <Languages className="h-5 w-5" />
+              <span className="absolute -top-1 -right-2 text-[9px]">🌐</span>
+            </span>
+            <span>Translate</span>
+          </button>
+        </li>
       </ul>
     </nav>
   );
