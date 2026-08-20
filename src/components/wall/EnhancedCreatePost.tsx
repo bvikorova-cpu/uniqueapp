@@ -373,29 +373,14 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             </span>
             <div className="flex items-center gap-2 flex-wrap">
               <AudienceSelector value={privacy} onChange={setPrivacy} />
-              <Button
-                type="button"
-                variant={isSensitive ? "default" : "outline"}
-                size="sm"
-                className="h-8 px-2 text-xs whitespace-nowrap"
-                onClick={() => setIsSensitive((v) => !v)}
-                title="Mark as sensitive — will be blurred for viewers"
-              >
-                ⚠️ Sensitive
-              </Button>
             </div>
           </div>
 
-          {isSensitive && (
-            <input
-              type="text"
-              placeholder="Reason (optional, e.g. 'graphic content')"
-              value={sensitiveReason}
-              onChange={(e) => setSensitiveReason(e.target.value)}
-              maxLength={120}
-              className="w-full text-xs px-3 py-2 rounded-md bg-amber-500/10 border border-amber-500/40 placeholder:text-amber-300/60"
-            />
-          )}
+          <p className="text-[11px] text-muted-foreground">
+            Nudity, sexual and other adult content is not allowed. Such posts are removed and the account can be banned.
+          </p>
+
+
 
           <TooltipProvider>
             <div className="flex flex-wrap justify-start gap-1 pb-2 w-full">
