@@ -42,6 +42,31 @@ export default function WallCinematicHero({ streak }: WallCinematicHeroProps) {
           <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 via-transparent to-pink-900/20" />
         </div>
 
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+          {socialFloaters.map(({ Icon, top, left, right, size, delay, duration }, i) => (
+            <motion.div
+              key={i}
+              className="absolute text-white/20"
+              style={{ top, left, right }}
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{
+                opacity: [0.15, 0.35, 0.15],
+                y: [0, -14, 0],
+                rotate: [0, 8, -8, 0],
+                scale: [1, 1.08, 1],
+              }}
+              transition={{
+                delay,
+                duration,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <Icon width={size} height={size} />
+            </motion.div>
+          ))}
+        </div>
+
         <div className="relative z-10 p-4 sm:p-6 lg:p-8 flex flex-col justify-end min-h-[240px] sm:min-h-[320px]">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
