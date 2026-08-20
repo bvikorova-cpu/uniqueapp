@@ -90,6 +90,12 @@ export default function WallCreatorBadges() {
     };
   }, [user?.id, qc]);
 
+  useEffect(() => {
+    const handler = () => qc.invalidateQueries({ queryKey: ["badge-progress", user?.id] });
+    window.addEventListener("badges-updated", handler);
+    return () => window.removeEventListener("badges-updated", handler);
+  }, [qc, user?.id]);
+
   const unlockedCount = badges.filter((b) => b.unlocked).length;
   const total = badges.length;
 
