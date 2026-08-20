@@ -18,12 +18,13 @@ const socialFloaters = [
 
 export default function WallCinematicHero({ streak }: WallCinematicHeroProps) {
   return (
-    <div className="space-y-4 mb-6">
+    <div className="space-y-4 mb-6 -mt-4 sm:-mt-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative overflow-hidden rounded-2xl min-h-[340px] sm:min-h-[440px] lg:min-h-[520px]"
+        className="relative overflow-hidden rounded-2xl min-h-[260px] sm:min-h-[340px] lg:min-h-[400px]"
+
       >
         <div className="absolute inset-0 z-0">
           <video
