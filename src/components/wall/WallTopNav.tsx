@@ -21,9 +21,11 @@ import { DropdownMenu,
 
 interface WallTopNavProps {
   currentPath?: string;
+  /** Optional extra trigger(s) rendered at the end of the nav row (e.g. Dashboard). */
+  actions?: React.ReactNode;
 }
 
-export function WallTopNav({ currentPath }: WallTopNavProps) {
+export function WallTopNav({ currentPath, actions }: WallTopNavProps) {
   const navigate = useNavigate();
 
   const mainNavItems = [
@@ -50,7 +52,7 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
       <div className="max-w-7xl mx-auto px-2 sm:px-4">
         <div className="flex items-center justify-center sm:justify-between gap-2 py-1.5 sm:py-2">
 
-          <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2 sm:flex-nowrap pr-14 sm:pr-0">
+          <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2 sm:flex-nowrap">
 
             {mainNavItems.map((item) => (
               <Button
@@ -103,6 +105,8 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {actions}
           </div>
           
         </div>
