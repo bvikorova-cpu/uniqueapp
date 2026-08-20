@@ -325,11 +325,11 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             </AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            {useBackground ? (
+            {activeBackground && !hasMediaAttachments ? (
               <div
                 className={cn(
                   "min-h-[180px] rounded-xl p-6 flex items-center justify-center",
-                  activeBackground!.className
+                  activeBackground.className
                 )}
               >
                 <Textarea
@@ -338,7 +338,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                   onChange={(e) => setContent(e.target.value)}
                   className={cn(
                     "min-h-[120px] resize-none border-0 bg-transparent shadow-none focus-visible:ring-0 placeholder:text-white/60",
-                    activeBackground!.textClassName
+                    activeBackground.textClassName
                   )}
                 />
               </div>
