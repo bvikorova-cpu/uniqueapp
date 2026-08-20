@@ -70011,6 +70011,14 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      get_presence_for_users_v1: {
+        Args: { _user_ids: string[] }
+        Returns: {
+          is_online: boolean
+          last_seen: string
+          user_id: string
+        }[]
+      }
       get_profile_tip_stats: {
         Args: { _recipient: string }
         Returns: {
