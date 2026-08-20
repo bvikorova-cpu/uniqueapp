@@ -363,7 +363,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           </div>
         )}
 
-        <div className="border-2 border-violet-600/50 rounded-xl p-4 bg-violet-50 dark:bg-violet-950/30 transition-all hover:shadow-[0_0_25px_rgba(139,92,246,0.4)] hover:border-violet-600 animate-in slide-in-from-bottom-2">
+          <div className="border-2 border-violet-600/50 rounded-xl p-4 bg-violet-50 dark:bg-violet-950/30 transition-all hover:shadow-[0_0_25px_rgba(139,92,246,0.4)] hover:border-violet-600 animate-in slide-in-from-bottom-2">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
             <span className="text-sm font-semibold text-violet-700 dark:text-violet-300 flex items-center gap-2">
               <Sparkles className="w-4 h-4 animate-pulse shrink-0" />
@@ -371,6 +371,12 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             </span>
             <div className="flex items-center gap-2 flex-wrap">
               <AudienceSelector value={privacy} onChange={setPrivacy} />
+              <BackgroundStylePicker
+                value={backgroundStyle}
+                onChange={setBackgroundStyle}
+                disabled={files.length > 0}
+              />
+              <DraftsManager onSelectDraft={(draft: any) => setContent(draft.content || "")} />
             </div>
           </div>
 
