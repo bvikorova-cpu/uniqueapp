@@ -1,8 +1,18 @@
 import { motion } from "framer-motion";
+import { Heart, MessageCircle, Users, Star, Share2, Zap } from "lucide-react";
 
 interface WallCinematicHeroProps {
   streak: number;
 }
+
+const socialFloaters = [
+  { Icon: Heart, top: "12%", left: "8%", size: 28, delay: 0, duration: 5 },
+  { Icon: MessageCircle, top: "20%", right: "12%", size: 32, delay: 0.5, duration: 6 },
+  { Icon: Users, top: "55%", left: "5%", size: 36, delay: 1, duration: 7 },
+  { Icon: Star, top: "8%", left: "55%", size: 22, delay: 1.5, duration: 5.5 },
+  { Icon: Share2, top: "65%", right: "8%", size: 26, delay: 0.8, duration: 6.5 },
+  { Icon: Zap, top: "35%", right: "25%", size: 24, delay: 1.2, duration: 5 },
+];
 
 export default function WallCinematicHero({ streak }: WallCinematicHeroProps) {
   return (
