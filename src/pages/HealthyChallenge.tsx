@@ -472,10 +472,10 @@ export default function HealthyChallenge() {
                   <p className="mb-3">{s.description}</p>
                   {s.image_urls.length > 0 && (
                     <div className={`grid gap-2 mb-3 ${s.image_urls.length === 1 ? "" : "grid-cols-2"}`}>
-                      {s.image_urls.map((u, i) => <img key={i} src={u} alt="" loading="lazy" className="rounded-lg w-full object-cover max-h-80" />)}
+                      {s.image_urls.map((u, i) => <ChallengeImage key={i} url={u} className="rounded-lg w-full object-cover max-h-80" />)}
                     </div>
                   )}
-                  {s.video_url && <video src={s.video_url} controls className="w-full rounded-lg mb-3 max-h-96" />}
+                  {s.video_url && <ChallengeVideo url={s.video_url} className="w-full rounded-lg mb-3 max-h-96" />}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Button size="sm" variant={s.hasVoted ? "default" : "outline"} onClick={() => toggleVote(s)} disabled={s.user_id === user?.id}>
