@@ -70230,6 +70230,14 @@ export type Database = {
           total_amount: number
         }[]
       }
+      get_trending_hashtags: {
+        Args: { p_limit?: number }
+        Returns: {
+          engagement_score: number
+          post_count: number
+          topic: string
+        }[]
+      }
       get_unified_xp_leaderboard: {
         Args: { _limit?: number }
         Returns: {
