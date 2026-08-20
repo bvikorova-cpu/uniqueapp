@@ -19,8 +19,17 @@ export const useTrending = () => {
         .order("engagement_score", { ascending: false })
         .limit(10);
 
-      if (error) throw error;
-      return data;
+      if (!error && data && data.length > 0) return data as TrendingTopic[];
+
+      // Fallback: compute live trending hashtags from recent public posts
+      const { data: live } = await (supabase as any).rpc("get_trending_hashtags", { p_limit: 10 });
+      return ((live ?? []) as any[]).map((t) => ({
+        id: t.topic,
+        topic: t.topic,
+        post_count: Number(t.post_count ?? 0),
+        engagement_score: Number(t.engagement_score ?? 0),
+        last_updated: new Date().toISOString(),
+      })) as TrendingTopic[];
     } });
 
   return { topics: topics || [],
