@@ -51,7 +51,7 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
   const [captions, setCaptions] = useState<CaptionResult[]>([]);
   const [sentiment, setSentiment] = useState<SentimentResult | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
-  const { credits, spendCredit } = useAICredits();
+  const { credits, refresh } = useAICredits();
   const { toast } = useToast();
 
   const callAI = async (type: AITool) => {
@@ -79,6 +79,7 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
       if (type === "hashtags") setHashtags(result.hashtags || []);
       else if (type === "caption") setCaptions(result.captions || []);
       else if (type === "sentiment") setSentiment(result);
+      refresh?.();
     } catch (err: any) {
       toast({ title: "AI error", description: err.message || "Try again.", variant: "destructive" });
     } finally {
@@ -113,8 +114,8 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
   };
 
   const tools: { type: AITool; label: string; icon: typeof Hash; color: string; cost: number }[] = [
-    { type: "hashtags", label: "Hashtagy", icon: Hash, color: "text-blue-500", cost: 1 },
-    { type: "caption", label: "Titulky", icon: Type, color: "text-purple-500", cost: 1 },
+    { type: "hashtags", label: "Hashtags", icon: Hash, color: "text-blue-500", cost: 1 },
+    { type: "caption", label: "Captions", icon: Type, color: "text-purple-500", cost: 1 },
     { type: "sentiment", label: "Sentiment", icon: BarChart2, color: "text-green-500", cost: 1 },
   ];
 
@@ -136,7 +137,7 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-amber-500" />
-            AI Content Asistent
+            AI Content Assistant
             <Badge variant="secondary" className="ml-auto text-xs">
               <Coins className="w-3 h-3 mr-1" />
               {credits.credits_remaining} credits

@@ -14,7 +14,7 @@ serve(async (req) => {
     const __deduct = __auth.deduct!;
 
     const { type, content, language } = await req.json();
-    const lang = language || "sk";
+    const lang = language || "en";
 
     let systemPrompt = "";
     let userPrompt = "";
