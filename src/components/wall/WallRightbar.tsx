@@ -17,8 +17,6 @@ import { ActivityFeedCard } from "./ActivityFeedCard";
 import { TrendingHashtags } from "./TrendingHashtags";
 import { DailyXPVideoReward } from "@/components/gamification/DailyXPVideoReward";
 import { CreatorAnalyticsPanel } from "./CreatorAnalyticsPanel";
-import { AudioRooms } from "./AudioRooms";
-import { LiveStreamWidget } from "./LiveStreamWidget";
 import { StreaksAndChallenges } from "./StreaksAndChallenges";
 import { EngagementInsights } from "./EngagementInsights";
 import { AIContentSuggestions } from "./AIContentSuggestions";
@@ -70,12 +68,6 @@ export function WallRightbar() {
 
       {/* Trending Topics */}
       <TrendingSidebar />
-
-      {/* Live Streams */}
-      <LiveStreamWidget />
-
-      {/* Audio Rooms */}
-      <AudioRooms />
 
       {/* Engagement Insights */}
       {user && <EngagementInsights />}

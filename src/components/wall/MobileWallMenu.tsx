@@ -25,8 +25,6 @@ import { TrendingSidebar } from "./TrendingSidebar";
 import { ActivityFeedCard } from "./ActivityFeedCard";
 import { TrendingHashtags } from "./TrendingHashtags";
 import { StreaksAndChallenges } from "./StreaksAndChallenges";
-import { LiveStreamWidget } from "./LiveStreamWidget";
-import { AudioRooms } from "./AudioRooms";
 import { ThemeColorSwitcher } from "./ThemeColorSwitcher";
 
 interface MobileWallMenuProps {
@@ -235,9 +233,6 @@ export function MobileWallMenu({ onPostCreated, inline = false }: MobileWallMenu
           {/* Trending */}
           <TrendingSidebar />
 
-          {/* Live Streams & Audio Rooms */}
-          <LiveStreamWidget />
-          <AudioRooms />
 
           {/* Activity Feed */}
           <ActivityFeedCard />
