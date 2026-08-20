@@ -291,17 +291,19 @@ export default function EcoChallenge() {
 
   const boostMine = async () => {
     if (!mySubmissionToday || !user) return;
-    // Deduct 5 credits via ai_credits (reuse existing table)
-    const { data: credits } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
-    if (!credits || (credits.credits_remaining ?? 0) < 5) {
-      toast({ title: "Need 5 credits", description: "Buy credits to boost your submission." });
+    // Atomic 5-credit spend (deduct + ledger row) via unified RPC.
+    const { data, error: spendErr } = await (supabase as any).rpc("spend_ai_credits", {
+      _amount: 5,
+      _reason: "Eco Challenge post boost (24h)",
+      _source: "eco_challenge_boost" });
+    if (spendErr || !(data as any)?.ok) {
+      toast({ title: "Need 5 credits", description: "Buy credits to boost your submission.", variant: "destructive" });
       return;
     }
     const until = new Date(Date.now() + 24 * 3600 * 1000).toISOString();
     const { error } = await supabase.from("eco_submissions").update({ boosted_until: until }).eq("id", mySubmissionToday.id);
     if (error) { toast({ title: "Boost failed", description: error.message, variant: "destructive" }); return; }
-    await supabase.from("ai_credits").update({ credits_remaining: (credits.credits_remaining ?? 0) - 5 }).eq("user_id", user.id);
-    toast({ title: "🚀 Boosted for 24h!" });
+    toast({ title: "🚀 Boosted for 24h!", description: "5 credits used." });
     loadAll();
   };
 
