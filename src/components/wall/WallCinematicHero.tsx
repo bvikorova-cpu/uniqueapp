@@ -18,7 +18,7 @@ const socialFloaters = [
 
 export default function WallCinematicHero({ streak }: WallCinematicHeroProps) {
   return (
-    <div className="space-y-4 mb-6 -mt-4 sm:-mt-6">
+    <div className="space-y-4 mb-4 -mt-2">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

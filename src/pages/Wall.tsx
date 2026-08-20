@@ -685,7 +685,7 @@ const Feed = () => {
               </div>
             )}
 
-            <div className="max-w-3xl mx-auto px-2 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-4">
+            <div className="max-w-3xl mx-auto px-2 sm:px-4 pt-0 pb-3 sm:pb-4 space-y-3 sm:space-y-4">
               {/* Cinematic hero video — always at the very top of the Wall */}
               <WallCinematicHero streak={wallStats.streak} />
 
@@ -880,7 +880,7 @@ const Feed = () => {
         <WallComposer onPostCreated={fetchPosts} userProfile={userProfile} />
         
         {/* Main Layout Container - starts below fixed nav */}
-        <div className="flex flex-col lg:flex-row pt-[112px]">
+        <div className="flex flex-col lg:flex-row pt-[76px]">
           {/* Left Sidebar - Hidden on mobile, sticky within container */}
           <div className="hidden lg:block lg:w-64 xl:w-80 shrink-0">
             {feedEnhancementsReady && <WallSidebar onPostCreated={fetchPosts} />}
