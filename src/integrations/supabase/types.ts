@@ -70011,6 +70011,21 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      get_post_memories_v2: {
+        Args: { _limit?: number }
+        Returns: {
+          comments_count: number
+          content: string
+          created_at: string
+          feeling: string
+          id: string
+          likes_count: number
+          location: string
+          media_types: string[]
+          media_urls: string[]
+          memory_kind: string
+        }[]
+      }
       get_presence_for_users_v1: {
         Args: { _user_ids: string[] }
         Returns: {
