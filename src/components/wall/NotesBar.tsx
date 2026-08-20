@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Plus, X, MessageCircle, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
-import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import InfoHint from "@/components/common/InfoHint";
 
 interface NoteRow {
   id: string;
