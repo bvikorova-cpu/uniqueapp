@@ -68322,6 +68322,24 @@ export type Database = {
             }
             Returns: undefined
           }
+      admin_challenge_subscribers: {
+        Args: { _challenge?: string }
+        Returns: {
+          active_until: string
+          challenge: string
+          email: string
+          full_name: string
+          is_active: boolean
+          monthly_price_eur: number
+          months_billed: number
+          started_at: string
+          stripe_customer_id: string
+          stripe_subscription_id: string
+          tier: string
+          total_paid_eur: number
+          user_id: string
+        }[]
+      }
       admin_concert_earnings_overview: {
         Args: never
         Returns: {
