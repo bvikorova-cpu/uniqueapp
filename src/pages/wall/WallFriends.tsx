@@ -97,9 +97,9 @@ export default function WallFriends() {
 
   useFriendshipRealtime(user?.id);
 
-  const { data: friends = [], refetch: refetchFriends } = useMyFriends(user?.id);
+  const { data: friends = [] } = useMyFriends(user?.id);
 
-  const { data: requests = [], refetch: refetchRequests } = useQuery({
+  const { data: requests = [] } = useQuery({
     queryKey: ["friend-requests", user?.id],
 
     queryFn: async () => {
