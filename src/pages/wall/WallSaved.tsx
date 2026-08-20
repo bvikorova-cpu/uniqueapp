@@ -69,7 +69,16 @@ export default function WallSaved() {
         </div>
       </motion.div>
 
+      <Card className="border-emerald-500/20 bg-emerald-500/5">
+        <CardContent className="p-4 text-xs text-muted-foreground">
+          <strong className="text-foreground">How it works:</strong> Tap the bookmark icon on any post to save it here.
+          Saved posts are private — only you can see this list. Tap the bookmark again on a post to remove it; deleted
+          posts disappear automatically.
+        </CardContent>
+      </Card>
+
       {isLoading ? (
+
         <div className="flex flex-col items-center justify-center py-20 gap-3">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
           <p className="text-sm text-muted-foreground">Loading saved posts...</p>
