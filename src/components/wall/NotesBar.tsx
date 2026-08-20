@@ -24,6 +24,7 @@ export const NotesBar = () => {
   const { toast } = useToast();
   const [notes, setNotes] = useState<NoteRow[]>([]);
   const [me, setMe] = useState<string | null>(null);
+  const [myProfile, setMyProfile] = useState<{ full_name: string | null; avatar_url: string | null } | null>(null);
   const [open, setOpen] = useState(false);
   const [content, setContent] = useState("");
   const [emoji, setEmoji] = useState("💭");
@@ -50,8 +51,21 @@ export const NotesBar = () => {
   }, []);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setMe(data.user?.id ?? null));
-    load();
+    const init = async () => {
+      const { data: authData } = await supabase.auth.getUser();
+      const userId = authData.user?.id ?? null;
+      setMe(userId);
+      if (userId) {
+        const { data: profile } = await (supabase as any)
+          .from("profiles_public")
+          .select("full_name, avatar_url")
+          .eq("id", userId)
+          .single();
+        setMyProfile(profile ?? null);
+      }
+      load();
+    };
+    init();
   }, [load]);
 
   const submit = async () => {
