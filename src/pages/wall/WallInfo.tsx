@@ -84,7 +84,7 @@ export default function WallInfo() {
       title: "AI Studio",
       icon: <Sparkles className="h-5 w-5" />,
       features: [
-        { name: "AI Content Assistant", description: "AI-powered content suggestions and caption generation (gpt-4o-mini, 1 credit).", icon: <Sparkles className="h-4 w-4" /> },
+        { name: "AI Content Assistant", description: "Captions, hashtags and rewrites powered by Lovable AI — credits are deducted server-side (3 credits).", icon: <Sparkles className="h-4 w-4" /> },
         { name: "AI Image Generation", description: "Generate unique images from text prompts for your posts.", icon: <Palette className="h-4 w-4" /> },
         { name: "Image Enhancement", description: "Enhance photos with AI-powered filters and improvements.", icon: <Camera className="h-4 w-4" /> },
         { name: "AI Mood Analysis", description: "AI detects emotional patterns from posts and mood logs.", icon: <Heart className="h-4 w-4" /> },
