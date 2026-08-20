@@ -44,7 +44,7 @@ export const SmartFeedTabs = ({ activeTab, onTabChange }: SmartFeedTabsProps) =>
             )}
             <span className="relative z-10 flex items-center gap-1 sm:gap-2">
               <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span className="hidden xs:inline">{tab.label}</span>
+              <span className="hidden sm:inline">{tab.label}</span>
             </span>
             {isActive && tab.id === "for-you" && (
               <motion.span
