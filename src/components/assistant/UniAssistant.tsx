@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { ToastAction } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import { useOverlayOpen } from "@/hooks/useOverlayOpen";
+import { UNI_OPEN_EVENT, useAssistantsHidden, useOpenRequest, setAssistantsHidden } from "@/lib/assistantBus";
+
 
 type Turn = { role: "user" | "assistant"; content: string };
 
@@ -21,6 +23,9 @@ interface UniAssistantProps {
 export function UniAssistant({ docked = false }: UniAssistantProps) {
   const overlayOpen = useOverlayOpen();
   const [open, setOpen] = useState(false);
+  const assistantsHidden = useAssistantsHidden();
+  useOpenRequest(UNI_OPEN_EVENT, () => setOpen(true));
+
   const [listening, setListening] = useState(false);
   const [thinking, setThinking] = useState(false);
   const [speaking, setSpeaking] = useState(false);
@@ -485,12 +490,40 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     <div className={cn(
       "flex flex-col items-start gap-2",
       docked && "hidden md:flex",
-      !docked && "fixed bottom-24 left-3 md:bottom-24 md:left-6 z-[9991]",
-      !docked && overlayOpen && "hidden"
+      // On mobile Uni lives in the bottom navigation bar instead of floating.
+      !docked && "hidden md:flex fixed bottom-24 left-3 md:bottom-24 md:left-6 z-[9991]",
+      !docked && overlayOpen && "hidden",
+      !docked && assistantsHidden && "hidden"
     )}>
       {uniButton}
+      {!docked && (
+        <button
+          type="button"
+          onClick={() => setAssistantsHidden(true)}
+          aria-label="Hide Uni and translator buttons"
+          title="Hide Uni & translator"
+          className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-background/80 backdrop-blur border border-border/60 text-muted-foreground hover:text-foreground"
+        >
+          Hide
+        </button>
+      )}
     </div>
   );
+
+  /** Small always-visible pill to bring the hidden assistants back (desktop). */
+  const restorePill = !docked && assistantsHidden && !overlayOpen ? (
+    <button
+      type="button"
+      onClick={() => setAssistantsHidden(false)}
+      aria-label="Show Uni and translator"
+      title="Show Uni & translator"
+      className="hidden md:flex fixed bottom-6 left-3 md:left-6 z-[9991] items-center gap-1.5 px-3 py-2 rounded-full bg-background/85 backdrop-blur-xl border border-primary/40 shadow-lg shadow-primary/20 text-xs font-bold text-primary"
+    >
+      <Sparkles className="h-3.5 w-3.5" />
+      Uni 🌐
+    </button>
+  ) : null;
+
 
   const modal = (
     <AnimatePresence>
@@ -683,6 +716,8 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
   return (
     <>
       {docked ? fab : createPortal(fab, document.body)}
+      {restorePill ? createPortal(restorePill, document.body) : null}
+
       {createPortal(captionBar, document.body)}
       {createPortal(modal, document.body)}
     </>
