@@ -643,10 +643,10 @@ const Feed = () => {
               {/* Moved up: tools, notes, stories */}
 
               <div className="glass-card rounded-2xl p-2 backdrop-blur-xl border border-white/10 grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
-                <SpacesDialog className="w-full" />
-                <GroupChatDialog className="w-full" />
-                <CommunitiesDialog className="w-full" />
-                <CloseFriendsDialog className="w-full" />
+                <div className="w-full"><SpacesDialog /></div>
+                <div className="w-full"><GroupChatDialog /></div>
+                <div className="w-full"><CommunitiesDialog /></div>
+                <div className="w-full"><CloseFriendsDialog /></div>
                 <details className="group col-span-2 sm:col-span-1 sm:inline-block w-full">
                   <summary className="list-none cursor-pointer inline-flex items-center justify-center gap-2 px-3 py-1.5 text-sm rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors w-full h-full">
                     More tools
