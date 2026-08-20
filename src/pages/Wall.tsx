@@ -617,6 +617,22 @@ const Feed = () => {
     return filtered;
   }, [feedItems, searchQuery, feedTab, friendIds, followingIds, verifiedOnly, mutedIds, mutedWords, closeFriendOfIds, user?.id]);
 
+  // Restrictive tabs (Friends / Following / Trending) filter the loaded pages
+  // client-side, so a page can easily contain zero matching posts. Keep pulling
+  // more pages until we have a reasonable amount of real matches for the tab.
+  const autoPagesRef = useRef(0);
+  useEffect(() => {
+    autoPagesRef.current = 0;
+  }, [feedTab]);
+
+  useEffect(() => {
+    const restrictive = feedTab === "friends" || feedTab === "following" || feedTab === "trending";
+    if (!restrictive || !hasMore || loading || loadingMore || fetchInFlight.current) return;
+    if (filteredFeedItems.length >= 5 || autoPagesRef.current >= 8) return;
+    autoPagesRef.current += 1;
+    fetchPosts(true);
+  }, [feedTab, filteredFeedItems.length, hasMore, loading, loadingMore, fetchPosts]);
+
 
   const location = useLocation();
   const currentPath = location.pathname;
