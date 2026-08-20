@@ -12,8 +12,9 @@ import { User } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
 
 
-import { Loader2, Home, ArrowUp, Wand2, Flame, Trophy, Award, Target } from "lucide-react";
+import { Loader2, Home, ArrowUp, Wand2, Flame, Trophy, Award, Target, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { WallSidebar } from "@/components/wall/WallSidebar";
 import { WallRightbar } from "@/components/wall/WallRightbar";
 import { MobileWallMenu } from "@/components/wall/MobileWallMenu";
@@ -690,40 +691,66 @@ const Feed = () => {
 
               {/* Moved up: tools, notes, stories */}
 
-              <div className="glass-card rounded-2xl p-2 backdrop-blur-xl border border-white/10 grid grid-cols-1 gap-2">
-                <div className="w-full">
-                  <CloseFriendsDialog />
-                  <p className="mt-1 px-1 text-[11px] leading-snug text-muted-foreground">
-                    A private list of people you trust. Posts published with the
-                    “Close friends” audience are visible only to them.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setMoreToolsOpen((v) => !v)}
-                  className="inline-flex items-center justify-center gap-2 px-3 py-1.5 text-sm rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors w-full"
-                >
-                  More tools
-                </button>
-                {moreToolsOpen && (
-                  <div className="w-full mt-1 grid grid-cols-1 sm:grid-cols-2 gap-3 p-2 rounded-lg bg-background/50 border border-white/10">
-                    <div>
-                      <MutedUsersDialog />
-                      <p className="mt-1 px-1 text-[11px] leading-snug text-muted-foreground">
-                        Hide everything a person posts or reposts from your feed —
-                        for 24 hours, 7 days, 30 days or forever. They are never notified.
-                      </p>
+              <TooltipProvider>
+                <div className="glass-card rounded-2xl p-2 backdrop-blur-xl border border-white/10 grid grid-cols-1 gap-2">
+                  <div className="w-full flex items-center gap-1">
+                    <div className="flex-1">
+                      <CloseFriendsDialog />
                     </div>
-                    <div>
-                      <MutedKeywordsDialog />
-                      <p className="mt-1 px-1 text-[11px] leading-snug text-muted-foreground">
-                        Add words or phrases (e.g. spoilers, politics). Any post
-                        containing them is filtered out of your feed only.
-                      </p>
-                    </div>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button type="button" className="p-1 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors shrink-0" aria-label="What is Close Friends?">
+                          <Info className="w-3.5 h-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="max-w-[220px] text-xs">
+                        A private list of people you trust. Posts published with the “Close friends” audience are visible only to them.
+                      </TooltipContent>
+                    </Tooltip>
                   </div>
-                )}
-              </div>
+                  <button
+                    type="button"
+                    onClick={() => setMoreToolsOpen((v) => !v)}
+                    className="inline-flex items-center justify-center gap-2 px-3 py-1.5 text-sm rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors w-full"
+                  >
+                    More tools
+                  </button>
+                  {moreToolsOpen && (
+                    <div className="w-full mt-1 grid grid-cols-1 sm:grid-cols-2 gap-3 p-2 rounded-lg bg-background/50 border border-white/10">
+                      <div className="flex items-center gap-1">
+                        <div className="flex-1">
+                          <MutedUsersDialog />
+                        </div>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button type="button" className="p-1 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors shrink-0" aria-label="What is Muted users?">
+                              <Info className="w-3.5 h-3.5" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="max-w-[220px] text-xs">
+                            Hide everything a person posts or reposts from your feed — for 24 hours, 7 days, 30 days or forever. They are never notified.
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="flex-1">
+                          <MutedKeywordsDialog />
+                        </div>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button type="button" className="p-1 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors shrink-0" aria-label="What is Muted words?">
+                              <Info className="w-3.5 h-3.5" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="max-w-[220px] text-xs">
+                            Add words or phrases (e.g. spoilers, politics). Any post containing them is filtered out of your feed only.
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </TooltipProvider>
 
 
               <NotesBar />
