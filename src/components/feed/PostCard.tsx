@@ -12,6 +12,7 @@ import {
   Maximize2,
   Edit2,
   MoreVertical,
+  VolumeX,
   Image as ImageIcon,
   Video as VideoIcon,
   X,
