@@ -102,6 +102,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [showTagFriends, setShowTagFriends] = useState(false);
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
   const [showEvent, setShowEvent] = useState(false);
+  const [showEmoji, setShowEmoji] = useState(false);
   const [eventDraft, setEventDraft] = useState<PostEventDraft | null>(null);
 
   const [voiceFile, setVoiceFile] = useState<File | null>(null);
