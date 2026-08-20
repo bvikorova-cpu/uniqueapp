@@ -453,6 +453,8 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
         ? await supabase.from("saved_posts").delete().eq("post_id", post.id).eq("user_id", user.id)
         : await supabase.from("saved_posts").insert({ post_id: post.id, user_id: user.id });
       if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
       toast({ title: wasSaved ? "Removed" : "Saved",
         description: wasSaved ? "Post removed from bookmarks" : "Post saved to bookmarks" });
     } catch (error: any) {
