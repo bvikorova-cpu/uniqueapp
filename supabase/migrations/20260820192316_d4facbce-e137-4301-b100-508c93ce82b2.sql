@@ -1,0 +1,1 @@
+DELETE FROM public.post_templates WHERE id = 'd0cc8264-e943-4561-a3d5-e4768c7d1316';

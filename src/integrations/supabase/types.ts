@@ -47540,6 +47540,7 @@ export type Database = {
           content: string | null
           created_at: string
           edited_at: string | null
+          event_id: string | null
           feeling: string | null
           id: string
           is_sensitive: boolean
@@ -47566,6 +47567,7 @@ export type Database = {
           content?: string | null
           created_at?: string
           edited_at?: string | null
+          event_id?: string | null
           feeling?: string | null
           id?: string
           is_sensitive?: boolean
@@ -47592,6 +47594,7 @@ export type Database = {
           content?: string | null
           created_at?: string
           edited_at?: string | null
+          event_id?: string | null
           feeling?: string | null
           id?: string
           is_sensitive?: boolean
@@ -47611,6 +47614,13 @@ export type Database = {
             columns: ["community_id"]
             isOneToOne: false
             referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posts_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
             referencedColumns: ["id"]
           },
         ]
@@ -69976,6 +69986,7 @@ export type Database = {
           content: string | null
           created_at: string
           edited_at: string | null
+          event_id: string | null
           feeling: string | null
           id: string
           is_sensitive: boolean

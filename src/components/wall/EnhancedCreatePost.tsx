@@ -20,6 +20,8 @@ import {
   Users2,
   ChevronDown,
   Clock,
+  CalendarDays,
+
   Sparkles,
   BarChart3,
   Mic
@@ -42,6 +44,8 @@ import { Sheet,
   SheetTitle,
   SheetTrigger } from "@/components/ui/sheet";
 import { PostTemplatesDialog } from "./PostTemplatesDialog";
+import { CreatePostEventDialog, type PostEventDraft } from "./CreatePostEventDialog";
+
 import { SchedulePostDialog } from "./SchedulePostDialog";
 import { CreatePollDialog } from "./CreatePollDialog";
 import { BackgroundStylePicker } from "./BackgroundStylePicker";
@@ -97,6 +101,9 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [showPoll, setShowPoll] = useState(false);
   const [showTagFriends, setShowTagFriends] = useState(false);
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
+  const [showEvent, setShowEvent] = useState(false);
+  const [eventDraft, setEventDraft] = useState<PostEventDraft | null>(null);
+
   const [voiceFile, setVoiceFile] = useState<File | null>(null);
   const [pollData, setPollData] = useState<{ question: string; options: string[]; endsAt: Date } | null>(null);
   const [isSensitive, setIsSensitive] = useState(false);
@@ -132,7 +139,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
 
   const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
 
-    if (!content.trim() && files.length === 0) {
+    if (!content.trim() && files.length === 0 && !eventDraft) {
       toast({
         title: "Empty post",
         description: "Add text or media",
@@ -157,6 +164,25 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
         }
       }
 
+      // Create the real event first so the post can link to it
+      let createdEventId: string | null = null;
+      if (eventDraft) {
+        const { data: ev, error: evError } = await supabase
+          .from("events")
+          .insert({ creator_id: user.id,
+            title: eventDraft.title,
+            description: eventDraft.description || null,
+            location: eventDraft.location || null,
+            start_time: new Date(eventDraft.startTime).toISOString(),
+            end_time: new Date(eventDraft.endTime || eventDraft.startTime).toISOString(),
+            max_attendees: eventDraft.maxAttendees,
+            is_public: true })
+          .select("id")
+          .single();
+        if (evError) throw evError;
+        createdEventId = ev.id;
+      }
+
       const { data: post, error: postError } = await supabase
         .from("posts")
         .insert({ user_id: user.id,
@@ -167,9 +193,11 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           audience: privacy,
           is_sensitive: isSensitive,
           sensitive_reason: isSensitive ? (sensitiveReason.trim() || null) : null,
-          background_style: useBackground ? backgroundStyle : null })
+          event_id: createdEventId,
+          background_style: useBackground ? backgroundStyle : null } as any)
         .select()
         .single();
+
 
       if (postError) throw postError;
 
@@ -233,6 +261,8 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
       setLocation("");
       setPrivacy("public");
       setPollData(null);
+      setEventDraft(null);
+
       setBackgroundStyle(null);
       onPostCreated();
     } catch (error: any) {
@@ -551,6 +581,24 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                     type="button"
                     variant="ghost"
                     size="sm"
+                    className="flex-shrink-0 flex-col h-auto py-1 px-1 hover:bg-indigo-500/10 rounded-lg transition-all group"
+                    onClick={() => setShowEvent(true)}
+                  >
+                    <div className="p-1 rounded-full bg-indigo-500/10 group-hover:bg-indigo-500/20 transition-all">
+                      <CalendarDays className="h-3.5 w-3.5 text-indigo-600" />
+                    </div>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Event</TooltipContent>
+              </Tooltip>
+
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
                     className="flex-shrink-0 flex-col h-auto py-1 px-1 hover:bg-pink-500/10 rounded-lg transition-all group"
                     onClick={() => setShowVoiceRecorder(true)}
                   >
@@ -571,7 +619,35 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
 
 
           {/* Poll preview */}
+          {/* Event preview */}
+          {eventDraft && (
+            <div className="mt-4 p-3 rounded-xl border border-primary/20 bg-primary/5">
+              <div className="flex justify-between items-start gap-2">
+                <div className="min-w-0">
+                  <p className="font-semibold text-sm flex items-center gap-1.5">
+                    <CalendarDays className="h-4 w-4 text-primary" /> {eventDraft.title}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {new Date(eventDraft.startTime).toLocaleString()}
+                    {eventDraft.location ? ` · ${eventDraft.location}` : ""}
+                    {eventDraft.maxAttendees ? ` · max ${eventDraft.maxAttendees}` : ""}
+                  </p>
+                </div>
+                <div className="flex gap-1 shrink-0">
+                  <Button type="button" variant="ghost" size="sm" className="h-7 text-xs" onClick={() => setShowEvent(true)}>
+                    Edit
+                  </Button>
+                  <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEventDraft(null)}>
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Poll preview */}
           {pollData && (
+
             <div className="mt-4 p-3 bg-accent/30 rounded-lg">
               <div className="flex justify-between items-start mb-2">
                 <span className="font-semibold text-sm">Poll: {pollData.question}</span>
@@ -662,6 +738,18 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
         open={showSchedule}
         onOpenChange={setShowSchedule}
       />
+
+      <CreatePostEventDialog
+        key={eventDraft?.title ?? "new-event"}
+        open={showEvent}
+        onOpenChange={setShowEvent}
+        initial={eventDraft}
+        onSave={(draft) => {
+          setEventDraft(draft);
+          toast({ title: "Event attached to post" });
+        }}
+      />
+
 
       {showPoll && (
         <CreatePollDialog

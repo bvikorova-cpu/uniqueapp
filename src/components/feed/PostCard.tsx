@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react";
+import { PostEventCard } from "@/components/wall/PostEventCard";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -859,6 +860,13 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
             </p>
           );
         })()}
+
+        {/* Real event attached to this post */}
+        {(post as any).event_id && (
+          <div onClick={(e) => e.stopPropagation()} className="mb-2">
+            <PostEventCard eventId={(post as any).event_id} />
+          </div>
+        )}
 
 
         {/* Interaction Buttons */}

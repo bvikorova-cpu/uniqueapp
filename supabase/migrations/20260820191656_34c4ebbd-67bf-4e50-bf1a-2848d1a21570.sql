@@ -1,0 +1,2 @@
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS event_id uuid REFERENCES public.events(id) ON DELETE SET NULL;
+CREATE INDEX IF NOT EXISTS idx_posts_event_id ON public.posts(event_id) WHERE event_id IS NOT NULL;
