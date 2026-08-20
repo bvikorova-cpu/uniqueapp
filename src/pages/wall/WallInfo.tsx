@@ -104,41 +104,31 @@ export default function WallInfo() {
         { name: "Earnings Tracking", description: "Track earnings from subscriptions and tips in real-time.", icon: <Zap className="h-4 w-4" /> },
       ] },
     {
-      title: "Groups",
-      icon: <Users className="h-5 w-5" />,
+      title: "24h Notes",
+      icon: <Clock className="h-5 w-5" />,
       features: [
-        { name: "Create & Join Groups", description: "Create public/private groups or join existing communities.", icon: <Users className="h-4 w-4" /> },
-        { name: "Group Discussions", description: "Post, share media, and engage in group conversations.", icon: <MessageCircle className="h-4 w-4" /> },
-        { name: "Group Management", description: "Manage members, assign admin roles, and moderate content.", icon: <Shield className="h-4 w-4" /> },
-        { name: "Member Stats", description: "View member counts and group activity statistics.", icon: <TrendingUp className="h-4 w-4" /> },
+        { name: "Share a Note", description: "Post a short text or emoji note that appears next to your avatar and expires after 24 hours.", icon: <MessageSquare className="h-4 w-4" /> },
+        { name: "Avatar Bar", description: "Notes from you and your friends show in the notes bar on top of the feed with a countdown.", icon: <Users className="h-4 w-4" /> },
+        { name: "Auto Expiry", description: "Notes disappear automatically after 24 hours — no cleanup needed.", icon: <Clock className="h-4 w-4" /> },
       ] },
     {
-      title: "Pages",
-      icon: <Flag className="h-5 w-5" />,
+      title: "Close Friends, Mutes & Words",
+      icon: <Lock className="h-5 w-5" />,
       features: [
-        { name: "Create Pages", description: "Pages for businesses, brands, artists, or public figures.", icon: <Flag className="h-4 w-4" /> },
-        { name: "Page Categories", description: "Categories: Business, Entertainment, Community, Art, Technology, Sports.", icon: <Filter className="h-4 w-4" /> },
-        { name: "Page Followers", description: "Build a following separate from personal connections.", icon: <UserPlus className="h-4 w-4" /> },
-        { name: "Discover Pages", description: "Search and browse pages by name or category.", icon: <Search className="h-4 w-4" /> },
+        { name: "Close Friends", description: "Build a private list and publish posts visible only to that list.", icon: <Users className="h-4 w-4" /> },
+        { name: "Muted Users", description: "Hide someone's posts from your feed for 24 hours, 7 days, 30 days, or forever — they are never notified.", icon: <EyeOff className="h-4 w-4" /> },
+        { name: "Muted Words", description: "Add keywords or hashtags and any post containing them is filtered out of your feed.", icon: <Filter className="h-4 w-4" /> },
+        { name: "Built-in Help", description: "Every option has an info (i) tooltip explaining exactly how it behaves.", icon: <Info className="h-4 w-4" /> },
       ] },
     {
-      title: "Events",
-      icon: <Calendar className="h-5 w-5" />,
+      title: "Saved & Trending",
+      icon: <Bookmark className="h-5 w-5" />,
       features: [
-        { name: "Create Events", description: "Create events with title, description, location, cover image, and timing.", icon: <Calendar className="h-4 w-4" /> },
-        { name: "RSVP", description: "RSVP as 'Going' or 'Interested' to community events.", icon: <ThumbsUp className="h-4 w-4" /> },
-        { name: "Upcoming Events", description: "Discover upcoming events in your network.", icon: <Clock className="h-4 w-4" /> },
-        { name: "Event Management", description: "Manage your created events and track attendees.", icon: <Star className="h-4 w-4" /> },
+        { name: "Saved Posts", description: "Your private bookmark collection — nobody sees what you save, and deleted posts are cleaned up automatically.", icon: <Bookmark className="h-4 w-4" /> },
+        { name: "Trending Ranges", description: "Switch Trending between Today, Week, Month and All time.", icon: <TrendingUp className="h-4 w-4" /> },
+        { name: "Engagement Score", description: "Ranking combines likes, comments, shares and reposts, with a boost for educational hashtags.", icon: <BarChart3 className="h-4 w-4" /> },
       ] },
-    {
-      title: "Live Streaming",
-      icon: <Radio className="h-5 w-5" />,
-      features: [
-        { name: "Go Live", description: "Start live streams visible to your followers and community.", icon: <Radio className="h-4 w-4" /> },
-        { name: "Live Chat", description: "Real-time chat with viewers during live streams.", icon: <MessageCircle className="h-4 w-4" /> },
-        { name: "Live Reactions", description: "Viewers can send floating emoji reactions during streams.", icon: <Heart className="h-4 w-4" /> },
-        { name: "Viewer Count", description: "Track live viewer count in real-time.", icon: <Eye className="h-4 w-4" /> },
-      ] },
+
     {
       title: "Gamification",
       icon: <Gift className="h-5 w-5" />,
