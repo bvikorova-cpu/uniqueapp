@@ -23,7 +23,7 @@ import { EncryptionBadge } from "@/components/messaging/EncryptionBadge";
 import { GroupChatDialog } from "@/components/messenger/GroupChatDialog";
 import { MessengerAIFeatures } from "@/components/messenger/MessengerAIFeatures";
 import { MessengerHero } from "@/components/messenger/MessengerHero";
-import { useChatTheme, chatBackgroundStyle } from "@/hooks/useChatTheme";
+import { useChatTheme, chatBackgroundStyle, outgoingBubbleStyle, incomingBubbleStyle } from "@/hooks/useChatTheme";
 import PushOptInButton from "@/components/notifications/PushOptInButton";
 import { ChatAnalyticsDashboard } from "@/components/messenger/ChatAnalyticsDashboard";
 import { AIChatThemes } from "@/components/messenger/AIChatThemes";
