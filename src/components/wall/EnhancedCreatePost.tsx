@@ -102,6 +102,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [showTagFriends, setShowTagFriends] = useState(false);
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
   const [showEvent, setShowEvent] = useState(false);
+  const [showEmoji, setShowEmoji] = useState(false);
   const [eventDraft, setEventDraft] = useState<PostEventDraft | null>(null);
 
   const [voiceFile, setVoiceFile] = useState<File | null>(null);
@@ -183,6 +184,10 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
         createdEventId = ev.id;
       }
 
+      // Resolve the background at submit time (media posts never get a background)
+      const bgToSave =
+        files.length === 0 && getPostBackground(backgroundStyle) ? backgroundStyle : null;
+
       const { data: post, error: postError } = await supabase
         .from("posts")
         .insert({ user_id: user.id,
@@ -194,12 +199,20 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           is_sensitive: isSensitive,
           sensitive_reason: isSensitive ? (sensitiveReason.trim() || null) : null,
           event_id: createdEventId,
-          background_style: useBackground ? backgroundStyle : null } as any)
+          background_style: bgToSave } as any)
         .select()
         .single();
 
 
       if (postError) throw postError;
+
+      // Safety net: make sure the chosen background really landed on the row
+      if (bgToSave && (post as any)?.background_style !== bgToSave) {
+        await supabase
+          .from("posts")
+          .update({ background_style: bgToSave } as any)
+          .eq("id", post.id);
+      }
 
 
       // Create hashtags
@@ -251,6 +264,20 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
         }
       }
 
+      // Voice note attachment
+      if (voiceFile) {
+        const voiceName = `${user.id}/voice-${Date.now()}.webm`;
+        const { error: voiceError } = await supabase.storage
+          .from("media")
+          .upload(voiceName, voiceFile, { contentType: voiceFile.type || "audio/webm" });
+        if (voiceError) throw voiceError;
+        const { data: { publicUrl: voiceUrl } } = supabase.storage.from("media").getPublicUrl(voiceName);
+        await supabase.from("media").insert({ post_id: post.id,
+          file_url: voiceUrl,
+          file_type: "audio",
+          file_name: voiceFile.name || "voice-note.webm" });
+      }
+
       // +20 XP + challenge tracking (toast for completion handled inside helper)
       trackChallengeAction("post", 20);
 
@@ -262,7 +289,8 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
       setPrivacy("public");
       setPollData(null);
       setEventDraft(null);
-
+      setVoiceFile(null);
+      setTaggedFriends([]);
       setBackgroundStyle(null);
       onPostCreated();
     } catch (error: any) {
@@ -456,7 +484,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
               </Tooltip>
 
               <Tooltip>
-                <Sheet>
+                <Sheet open={showEmoji} onOpenChange={setShowEmoji}>
                   <SheetTrigger asChild>
                     <TooltipTrigger asChild>
                       <Button type="button" variant="ghost" size="sm" className="flex-shrink-0 flex-col h-auto py-1 px-1 hover:bg-yellow-500/10 rounded-lg transition-all group">
@@ -482,7 +510,11 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                             type="button"
                             variant="ghost"
                             className="h-11 w-11 p-0 min-w-0 min-h-0 flex items-center justify-center text-2xl hover:bg-violet-500/10 rounded-xl"
-                            onClick={() => setFeeling(emoji)}
+                            onClick={() => {
+                              setFeeling(emoji);
+                              setContent((prev) => (prev ? `${prev} ${emoji}` : emoji));
+                              setShowEmoji(false);
+                            }}
                           >
                             {emoji}
                           </Button>

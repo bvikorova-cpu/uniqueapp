@@ -51,25 +51,25 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
   const [captions, setCaptions] = useState<CaptionResult[]>([]);
   const [sentiment, setSentiment] = useState<SentimentResult | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
-  const { credits, spendCredit } = useAICredits();
+  const { credits, refresh } = useAICredits();
   const { toast } = useToast();
 
   const callAI = async (type: AITool) => {
     if (!content.trim()) {
-      toast({ title: "First write content", description: "AI needs text to analyze.", variant: "destructive" });
+      toast({ title: "Write some content first", description: "AI needs text to analyze.", variant: "destructive" });
       return;
     }
 
-    const hasCredit = await spendCredit("custom_generation", `Wall AI: ${type}`);
-    if (!hasCredit) {
-      toast({ title: "Insufficient credits", description: "Buy credits for AI features.", variant: "destructive" });
+    // Credits are deducted server-side (1 credit per run) — only pre-check the balance here.
+    if ((credits?.credits_remaining ?? 0) < 1) {
+      toast({ title: "Insufficient credits", description: "Buy credits to use AI features.", variant: "destructive" });
       return;
     }
 
     setLoading(type);
     try {
       const { data, error } = await supabase.functions.invoke("wall-ai-assistant", {
-        body: { type, content, language: "sk" } });
+        body: { type, content, language: "en" } });
 
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
@@ -79,6 +79,7 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
       if (type === "hashtags") setHashtags(result.hashtags || []);
       else if (type === "caption") setCaptions(result.captions || []);
       else if (type === "sentiment") setSentiment(result);
+      refresh?.();
     } catch (err: any) {
       toast({ title: "AI error", description: err.message || "Try again.", variant: "destructive" });
     } finally {
@@ -113,8 +114,8 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
   };
 
   const tools: { type: AITool; label: string; icon: typeof Hash; color: string; cost: number }[] = [
-    { type: "hashtags", label: "Hashtagy", icon: Hash, color: "text-blue-500", cost: 1 },
-    { type: "caption", label: "Titulky", icon: Type, color: "text-purple-500", cost: 1 },
+    { type: "hashtags", label: "Hashtags", icon: Hash, color: "text-blue-500", cost: 1 },
+    { type: "caption", label: "Captions", icon: Type, color: "text-purple-500", cost: 1 },
     { type: "sentiment", label: "Sentiment", icon: BarChart2, color: "text-green-500", cost: 1 },
   ];
 
@@ -136,7 +137,7 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-amber-500" />
-            AI Content Asistent
+            AI Content Assistant
             <Badge variant="secondary" className="ml-auto text-xs">
               <Coins className="w-3 h-3 mr-1" />
               {credits.credits_remaining} credits
