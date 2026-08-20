@@ -691,22 +691,14 @@ const Feed = () => {
 
               {/* Moved up: tools, notes, stories */}
 
-              <TooltipProvider>
-                <div className="glass-card rounded-2xl p-2 backdrop-blur-xl border border-white/10 grid grid-cols-1 gap-2">
+              <div className="glass-card rounded-2xl p-2 backdrop-blur-xl border border-white/10 grid grid-cols-1 gap-2">
                   <div className="w-full flex items-center gap-1">
                     <div className="flex-1">
                       <CloseFriendsDialog />
                     </div>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button type="button" className="p-1 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors shrink-0" aria-label="What is Close Friends?">
-                          <Info className="w-3.5 h-3.5" />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="top" className="max-w-[220px] text-xs">
-                        A private list of people you trust. Posts published with the “Close friends” audience are visible only to them.
-                      </TooltipContent>
-                    </Tooltip>
+                    <InfoHint label="What is Close Friends?">
+                      A private list of people you trust. Posts published with the “Close friends” audience are visible only to them.
+                    </InfoHint>
                   </div>
                   <button
                     type="button"
@@ -721,36 +713,22 @@ const Feed = () => {
                         <div className="flex-1">
                           <MutedUsersDialog />
                         </div>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <button type="button" className="p-1 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors shrink-0" aria-label="What is Muted users?">
-                              <Info className="w-3.5 h-3.5" />
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent side="top" className="max-w-[220px] text-xs">
-                            Hide everything a person posts or reposts from your feed — for 24 hours, 7 days, 30 days or forever. They are never notified.
-                          </TooltipContent>
-                        </Tooltip>
+                        <InfoHint label="What is Muted users?">
+                          Hide everything a person posts or reposts from your feed — for 24 hours, 7 days, 30 days or forever. They are never notified.
+                        </InfoHint>
                       </div>
                       <div className="flex items-center gap-1">
                         <div className="flex-1">
                           <MutedKeywordsDialog />
                         </div>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <button type="button" className="p-1 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors shrink-0" aria-label="What is Muted words?">
-                              <Info className="w-3.5 h-3.5" />
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent side="top" className="max-w-[220px] text-xs">
-                            Add words or phrases (e.g. spoilers, politics). Any post containing them is filtered out of your feed only.
-                          </TooltipContent>
-                        </Tooltip>
+                        <InfoHint label="What is Muted words?">
+                          Add words or phrases (e.g. spoilers, politics). Any post containing them is filtered out of your feed only.
+                        </InfoHint>
                       </div>
                     </div>
                   )}
                 </div>
-              </TooltipProvider>
+
 
 
               <NotesBar />
