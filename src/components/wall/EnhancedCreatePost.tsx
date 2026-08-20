@@ -317,8 +317,18 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
         </div>
 
         {/* Selected feeling, location, tagged friends preview */}
-        {(feeling || location || taggedFriends.length > 0) && (
+        {(feeling || location || taggedFriends.length > 0 || activeBackground) && (
           <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
+            {activeBackground && (
+              <div className="flex items-center gap-1 bg-accent px-3 py-1 rounded-full">
+                <span className={cn("h-3 w-3 rounded-full", activeBackground.className)} />
+                <span className="font-semibold">{activeBackground.label}</span>
+                {files.length > 0 && <span className="text-xs">(disabled with media)</span>}
+                <button type="button" onClick={() => setBackgroundStyle(null)}>
+                  <X className="h-3 w-3 ml-1" />
+                </button>
+              </div>
+            )}
             {feeling && (
               <div className="flex items-center gap-1 bg-accent px-3 py-1 rounded-full">
                 <span>feeling</span>
