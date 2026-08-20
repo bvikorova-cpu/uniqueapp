@@ -105,7 +105,6 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [showTagFriends, setShowTagFriends] = useState(false);
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
   const [voiceFile, setVoiceFile] = useState<File | null>(null);
-  const [postVisibility, setPostVisibility] = useState<PostVisibility>("normal");
   const [pollData, setPollData] = useState<{ question: string; options: string[]; endsAt: Date } | null>(null);
   const [isSensitive, setIsSensitive] = useState(false);
   const [sensitiveReason, setSensitiveReason] = useState("");
