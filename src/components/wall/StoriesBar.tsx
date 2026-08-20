@@ -339,10 +339,10 @@ export const StoriesBar = () => {
                 )}
               </div>
             </div>
-          </motion.div>,
-          document.body
-        )}
-      </AnimatePresence>
+          </motion.div>
+        </AnimatePresence>,
+        document.body
+      )}
 
       <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
         <AlertDialogContent>
