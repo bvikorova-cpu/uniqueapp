@@ -531,10 +531,41 @@ const Feed = () => {
       return (p?.likes_count ?? 0) * 3 + (p?.comments_count ?? 0) * 2 + (p?.shares_count ?? 0) + (p?.reposts_count ?? 0);
     };
 
+    const contentOf = (item: FeedItem) =>
+      item.type === "post"
+        ? (item.data as Post).content || ""
+        : `${(item.data as Repost).comment || ""} ${(item.data as Repost).original_post?.content || ""}`;
+
+    // Muted users — hide everything they post or repost
+    if (mutedIds.length > 0) {
+      const muted = new Set(mutedIds);
+      filtered = filtered.filter((item) => !muted.has(authorOf(item)));
+    }
+
+    // Muted words — hide posts containing any muted keyword
+    if (mutedWords.length > 0) {
+      filtered = filtered.filter((item) => {
+        const text = contentOf(item).toLowerCase();
+        return !mutedWords.some((w) => text.includes(w));
+      });
+    }
+
+    // Close Friends audience — only the author and their close friends see these
+    {
+      const allowedCF = new Set([...closeFriendOfIds, user?.id].filter(Boolean) as string[]);
+      filtered = filtered.filter((item) => {
+        const p: any = item.type === "post" ? item.data : (item.data as Repost).original_post;
+        if (p?.audience !== "close_friends") return true;
+        return allowedCF.has(authorOf(item));
+      });
+    }
+
     // "Verified only" filter — applies across every tab.
     if (verifiedOnly) {
       filtered = filtered.filter((item) => tierRank(tierOf(item)) > 0);
     }
+
+
 
 
     if (feedTab === "friends") {
