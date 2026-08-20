@@ -416,8 +416,8 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
               </Tooltip>
 
               <Tooltip>
-                <Popover>
-                  <PopoverTrigger asChild>
+                <Sheet>
+                  <SheetTrigger asChild>
                     <TooltipTrigger asChild>
                       <Button type="button" variant="ghost" size="sm" className="flex-shrink-0 flex-col h-auto py-1 px-1 hover:bg-yellow-500/10 rounded-lg transition-all group">
                         <div className="p-1 rounded-full bg-yellow-500/10 group-hover:bg-yellow-500/20 transition-all">
@@ -425,15 +425,14 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                         </div>
                       </Button>
                     </TooltipTrigger>
-                  </PopoverTrigger>
+                  </SheetTrigger>
                   <TooltipContent>Feeling</TooltipContent>
-                  <PopoverContent
-                    align="end"
-                    sideOffset={8}
-                    className="w-[calc(100vw-1rem)] max-w-[24rem] p-0 overflow-hidden"
-                  >
+                  <SheetContent side="bottom" className="h-[85dvh] p-0 flex flex-col rounded-t-2xl">
+                    <SheetHeader className="px-4 pt-5 pb-2">
+                      <SheetTitle className="text-center text-base">Choose emoji</SheetTitle>
+                    </SheetHeader>
                     <div
-                      className="max-h-[70dvh] overflow-y-auto p-2"
+                      className="flex-1 overflow-y-auto px-3 pb-6"
                       style={{ WebkitOverflowScrolling: "touch" }}
                     >
                       <div className="grid grid-cols-6 sm:grid-cols-7 md:grid-cols-8 gap-1">
@@ -442,7 +441,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                             key={emoji}
                             type="button"
                             variant="ghost"
-                            className="h-10 w-10 p-0 min-w-0 min-h-0 flex items-center justify-center text-2xl hover:bg-violet-500/10 rounded-lg"
+                            className="h-11 w-11 p-0 min-w-0 min-h-0 flex items-center justify-center text-2xl hover:bg-violet-500/10 rounded-xl"
                             onClick={() => setFeeling(emoji)}
                           >
                             {emoji}
@@ -450,8 +449,8 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                         ))}
                       </div>
                     </div>
-                  </PopoverContent>
-                </Popover>
+                  </SheetContent>
+                </Sheet>
               </Tooltip>
 
               <Tooltip>
