@@ -93,13 +93,13 @@ export function getNotificationRoute(n: NotifLike): string {
     brand_collab_payout: "/brand-dashboard",
 
 
-    // Groups / Pages / Events
-    group_invite: "/wall/groups",
-    group_post: "/wall/groups",
-    page_follow: "/wall/pages",
-    page_post: "/wall/pages",
-    event_invite: "/wall/events",
-    event_reminder: "/wall/events",
+    // Legacy Groups / Pages / Events removed from Wall — route to main Wall feed
+    group_invite: "/wall",
+    group_post: "/wall",
+    page_follow: "/wall",
+    page_post: "/wall",
+    event_invite: "/wall",
+    event_reminder: "/wall",
 
     // Stories / posts / wall
     story_view: "/wall",
@@ -134,7 +134,7 @@ export function getNotificationRoute(n: NotifLike): string {
     comment_reply: n.post_id ? `/post/${n.post_id}` : "/wall",
     comment_reaction: n.post_id ? `/post/${n.post_id}` : "/wall",
     mention: n.post_id ? `/post/${n.post_id}` : "/wall",
-    group_message: "/wall/groups",
+    group_message: "/wall",
     dating_match: "/dating",
     dating_message: "/dating",
     dating_like: "/dating",

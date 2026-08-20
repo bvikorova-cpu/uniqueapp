@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Sparkles, Save, User as UserIcon, BookText, Wrench, Link2, Shield, X, Eye, EyeOff } from "lucide-react";
+import { canonicalUrl } from "@/lib/canonicalUrl";
 import { fileToDataUrl, normalizeImageForUpload } from "@/utils/imageUploadPrep";
 
 import { EditProfileHero } from "@/components/profile/edit/EditProfileHero";
@@ -521,7 +522,7 @@ const EditProfile = () => {
               description={profile.seo_description}
               fallbackTitle={profile.headline ? `${profile.full_name || "Profile"} — ${profile.headline}` : (profile.full_name || "Profile")}
               fallbackDescription={profile.bio || ""}
-              url={`${typeof window !== "undefined" ? window.location.origin : ""}/profile/${profile.id}`}
+              url={canonicalUrl(`/profile/${profile.id}`)}
               onTitleChange={(v) => setProfile({ ...profile, seo_title: v })}
               onDescriptionChange={(v) => setProfile({ ...profile, seo_description: v })}
             />

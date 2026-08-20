@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ import { Leaf, Trophy, Heart, Upload, Sparkles, Calendar, Video, Image as ImageI
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { SectionVideoPreview } from "@/components/SectionVideoPreview";
 import { shareLink } from "@/lib/shareLink";
+import { canonicalUrl } from "@/lib/canonicalUrl";
 import { sectionVideos } from "@/components/sectionVideos";
 import { Link } from "react-router-dom";
 import { EcoComments } from "@/components/eco/EcoComments";
@@ -324,7 +326,7 @@ export default function EcoChallenge() {
   }, []);
 
   const shareSubmission = async (s: Submission) => {
-    const url = `${window.location.origin}/eco-challenge`;
+    const url = canonicalUrl("/eco-challenge");
     const text = `🌱 Eco Challenge — ${(s.description || "").slice(0, 80)}`;
     const result = await shareLink({ title: "Eco Challenge", text, url });
     if (result === "copied") toast({ title: "Link copied to clipboard" });
@@ -334,6 +336,15 @@ export default function EcoChallenge() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50 to-teal-50 dark:from-green-950/40 dark:via-emerald-950/40 dark:to-teal-950/40">
+      <Helmet>
+        <title>Eco Challenge — Unique</title>
+        <meta name="description" content="Join the Eco Challenge on Unique. Share one eco action per month, vote for the best submissions and win XP rewards." />
+        <link rel="canonical" href={canonicalUrl("/eco-challenge")} />
+        <meta property="og:title" content="Eco Challenge — Unique" />
+        <meta property="og:description" content="Join the Eco Challenge on Unique. Share one eco action per month, vote for the best submissions and win XP rewards." />
+        <meta property="og:url" content={canonicalUrl("/eco-challenge")} />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <div className="container mx-auto px-4 py-6 max-w-5xl">
         {/* Video banner */}
         <div className="relative overflow-hidden rounded-3xl shadow-2xl mb-4 aspect-video">

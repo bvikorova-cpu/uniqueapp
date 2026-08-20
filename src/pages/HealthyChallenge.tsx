@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import { toast } from "@/hooks/use-toast";
 import { Dumbbell, Trophy, Heart, Upload, Sparkles, Calendar, Video, Image as ImageIcon, Activity, AlertCircle, History, Share2, Timer } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { shareLink } from "@/lib/shareLink";
+import { canonicalUrl } from "@/lib/canonicalUrl";
 import { sectionVideos } from "@/components/sectionVideos";
 import { Link } from "react-router-dom";
 import { HealthyComments } from "@/components/healthy/HealthyComments";
@@ -317,7 +319,7 @@ export default function HealthyChallenge() {
   }, []);
 
   const shareSubmission = async (s: Submission) => {
-    const url = `${window.location.origin}/healthy-challenge`;
+    const url = canonicalUrl("/healthy-challenge");
     const text = `💪 Healthy Challenge — ${(s.description || "").slice(0, 80)}`;
     const result = await shareLink({ title: "Healthy Challenge", text, url });
     if (result === "copied") toast({ title: "Link copied to clipboard" });
@@ -326,6 +328,15 @@ export default function HealthyChallenge() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 via-rose-50 to-sky-50 dark:from-orange-950/40 dark:via-rose-950/40 dark:to-sky-950/40">
+      <Helmet>
+        <title>Healthy Challenge — Unique</title>
+        <meta name="description" content="Join the Healthy Challenge on Unique. Share one healthy action per month, vote for the best submissions and win XP rewards." />
+        <link rel="canonical" href={canonicalUrl("/healthy-challenge")} />
+        <meta property="og:title" content="Healthy Challenge — Unique" />
+        <meta property="og:description" content="Join the Healthy Challenge on Unique. Share one healthy action per month, vote for the best submissions and win XP rewards." />
+        <meta property="og:url" content={canonicalUrl("/healthy-challenge")} />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <div className="container mx-auto px-4 py-6 max-w-5xl">
         {/* Video banner */}
         <div className="relative overflow-hidden rounded-3xl shadow-2xl mb-4 aspect-video">

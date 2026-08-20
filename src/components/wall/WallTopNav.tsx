@@ -1,13 +1,9 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Home, 
+import { Home,
   MessageCircle,
   Users2,
-  Users,
-  FileText,
   Video,
-  Calendar,
   Bookmark,
   TrendingUp,
   Info,
@@ -42,9 +38,6 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
     { icon: Sparkles, label: "Memories", path: "/wall/memories" },
     { icon: Heart, label: "Dating", path: "/dating" },
     { icon: EyeOff, label: "Anonymous Dating", path: "/anonymous-date" },
-    { icon: Users, label: "Groups", path: "/wall/groups" },
-    { icon: FileText, label: "Pages", path: "/wall/pages" },
-    { icon: Calendar, label: "Events", path: "/wall/events" },
     { icon: Bookmark, label: "Saved", path: "/wall/saved" },
     { icon: TrendingUp, label: "Trending", path: "/wall/trending" },
     { icon: Info, label: "Info", path: "/wall/info" },

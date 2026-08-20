@@ -44,10 +44,7 @@ import { OfflineStatusIndicator } from "@/components/wall/OfflineStatusIndicator
 import { useQuery } from "@tanstack/react-query";
 import WallMessages from "./wall/WallMessages";
 import WallFriends from "./wall/WallFriends";
-import WallGroups from "./wall/WallGroups";
-import WallPages from "./wall/WallPages";
 import WallVideos from "./wall/WallVideos";
-import WallEvents from "./wall/WallEvents";
 import WallSaved from "./wall/WallSaved";
 import WallTrending from "./wall/WallTrending";
 import WallInfo from "./wall/WallInfo";
@@ -582,14 +579,8 @@ const Feed = () => {
         return <WallMessages />;
       case '/wall/friends':
         return <WallFriends />;
-      case '/wall/groups':
-        return <WallGroups />;
-      case '/wall/pages':
-        return <WallPages />;
       case '/wall/videos':
         return <WallVideos />;
-      case '/wall/events':
-        return <WallEvents />;
       case '/wall/saved':
         return <WallSaved />;
       case '/wall/trending':

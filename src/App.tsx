@@ -148,13 +148,8 @@ import { ResetPassword,
   SecuritySettings,
   Wall,
   SearchResults,
-  Groups,
-  Pages,
   Contact,
   Terms,
-  GroupDetail,
-  PageDetail,
-  EventDetail,
   WallSaved,
   WallVideos,
   Shorts,
@@ -674,15 +669,9 @@ const App = () => {
                         <Route path="/wall/friends" element={<ProtectedRoute><Wall /></ProtectedRoute>} />
                        <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
                        <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
-                        <Route path="/wall/groups" element={<ProtectedRoute><Groups /></ProtectedRoute>} />
-                        <Route path="/wall/groups/:groupId" element={<ProtectedRoute><GroupDetail /></ProtectedRoute>} />
-                        <Route path="/wall/pages" element={<ProtectedRoute><Pages /></ProtectedRoute>} />
-                        <Route path="/wall/pages/:pageId" element={<ProtectedRoute><PageDetail /></ProtectedRoute>} />
                        <Route path="/wall/videos" element={<ProtectedRoute><WallVideos /></ProtectedRoute>} />
                        <Route path="/shorts" element={<ProtectedRoute><Shorts /></ProtectedRoute>} />
                        <Route path="/pitch" element={<Pitch />} />
-                       <Route path="/wall/events" element={<ProtectedRoute><Wall /></ProtectedRoute>} />
-                       <Route path="/wall/events/:eventId" element={<ProtectedRoute><EventDetail /></ProtectedRoute>} />
                        <Route path="/wall/saved" element={<ProtectedRoute><WallSaved /></ProtectedRoute>} />
                         <Route path="/wall/trending" element={<ProtectedRoute><Wall /></ProtectedRoute>} />
                        <Route path="/wall/info" element={<ProtectedRoute><Wall /></ProtectedRoute>} />

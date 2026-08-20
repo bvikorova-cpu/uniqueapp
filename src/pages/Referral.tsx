@@ -16,6 +16,7 @@ import { ReferralMilestones } from "@/components/referral/ReferralMilestones";
 import { ReferralWithdrawalRequest } from "@/components/referral/ReferralWithdrawalRequest";
 import { ReferralQRDialog } from "@/components/referral/ReferralQRDialog";
 import { ReferralEarningsCalculator } from "@/components/referral/ReferralEarningsCalculator";
+import { canonicalUrl } from "@/lib/canonicalUrl";
 import { AffiliateTierCard } from "@/components/affiliate/AffiliateTierCard";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -45,7 +46,7 @@ const Referral = () => {
 
   const shareReferral = async () => {
     if (!stats?.code) return;
-    const shareUrl = `${window.location.origin}/auth?ref=${stats.code}`;
+    const shareUrl = canonicalUrl(`/auth?ref=${stats.code}`);
     const shareText = `Join MegaTalent and compete for a growing quarterly cash prize! Use my code: ${stats.code}`;
     if (navigator.share && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
       try { await navigator.share({ title: 'MegaTalent — Win real cash', text: shareText, url: shareUrl }); return; } catch {}
@@ -56,20 +57,20 @@ const Referral = () => {
   const inviteByEmail = () => {
     if (!stats?.code) return;
     const subject = encodeURIComponent('Join MegaTalent — Win real cash!');
-    const body = encodeURIComponent(`Hi!\n\nI'd like to invite you to MegaTalent, where you can compete for a growing quarterly cash prize (funded by 50% of subscription profits).\n\nUse my referral code: ${stats.code}\n\nSign up: ${window.location.origin}/auth?ref=${stats.code}`);
+    const body = encodeURIComponent(`Hi!\n\nI'd like to invite you to MegaTalent, where you can compete for a growing quarterly cash prize (funded by 50% of subscription profits).\n\nUse my referral code: ${stats.code}\n\nSign up: ${canonicalUrl(`/auth?ref=${stats.code}`)}`);
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
 
   const shareWhatsApp = () => {
     if (!stats?.code) return;
-    const url = `${window.location.origin}/auth?ref=${stats.code}`;
+    const url = canonicalUrl(`/auth?ref=${stats.code}`);
     const text = `🎉 Join me on MegaTalent and compete for a growing quarterly cash prize! Use my code ${stats.code}: ${url}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   const shareTelegram = () => {
     if (!stats?.code) return;
-    const url = `${window.location.origin}/auth?ref=${stats.code}`;
+    const url = canonicalUrl(`/auth?ref=${stats.code}`);
     const text = `🎉 Join me on MegaTalent! Use my code ${stats.code}`;
     window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank');
   };
@@ -252,7 +253,7 @@ const Referral = () => {
         <ReferralQRDialog
           open={qrOpen}
           onOpenChange={setQrOpen}
-          url={`${window.location.origin}/auth?ref=${stats.code}`}
+          url={canonicalUrl(`/auth?ref=${stats.code}`)}
           code={stats.code}
         />
       )}
