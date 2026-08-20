@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 
 import { Loader2, Home, ArrowUp, Wand2, Flame, Trophy, Award, Target, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import InfoHint from "@/components/common/InfoHint";
 import { WallSidebar } from "@/components/wall/WallSidebar";
 import { WallRightbar } from "@/components/wall/WallRightbar";
 import { MobileWallMenu } from "@/components/wall/MobileWallMenu";
