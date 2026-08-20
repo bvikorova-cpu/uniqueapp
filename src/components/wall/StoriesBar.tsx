@@ -262,9 +262,10 @@ export const StoriesBar = () => {
       </Dialog>
 
       {/* Fullscreen Story Viewer — rendered via portal to break out of any stacking context */}
-      <AnimatePresence>
-        {viewingStory && createPortal(
+      {viewingStory && createPortal(
+        <AnimatePresence>
           <motion.div
+            key="story-viewer"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-[9999] bg-black flex flex-col"
             onClick={() => setViewingStory(null)}
@@ -338,10 +339,10 @@ export const StoriesBar = () => {
                 )}
               </div>
             </div>
-          </motion.div>,
-          document.body
-        )}
-      </AnimatePresence>
+          </motion.div>
+        </AnimatePresence>,
+        document.body
+      )}
 
       <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
         <AlertDialogContent>
