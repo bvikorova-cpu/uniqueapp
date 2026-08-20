@@ -72,7 +72,7 @@ export default function WallCinematicHero({ streak }: WallCinematicHeroProps) {
           ))}
         </div>
 
-        <div className="relative z-10 p-4 sm:p-6 lg:p-8 flex flex-col justify-end min-h-[240px] sm:min-h-[320px]">
+        <div className="relative z-10 p-4 sm:p-6 lg:p-8 flex flex-col justify-end min-h-[340px] sm:min-h-[440px] lg:min-h-[520px]">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
