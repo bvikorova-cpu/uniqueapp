@@ -115,7 +115,9 @@ export default function WallTrending() {
             <h1 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-foreground via-orange-500 to-red-500 bg-clip-text text-transparent">
               Trending
             </h1>
-            <p className="text-sm text-muted-foreground mt-0.5">Most engaging posts this week</p>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              Ranked by likes, comments and shares · {RANGES.find((r) => r.key === range)?.label}
+            </p>
           </div>
           {trendingPosts.length > 0 && (
             <Badge className="ml-auto bg-orange-500/10 text-orange-600 border-orange-500/20 gap-1">
@@ -124,6 +126,35 @@ export default function WallTrending() {
           )}
         </div>
       </motion.div>
+
+      <div className="flex flex-wrap gap-2">
+        {RANGES.map((r) => (
+          <Button
+            key={r.key}
+            size="sm"
+            variant={range === r.key ? "default" : "outline"}
+            onClick={() => setRange(r.key)}
+          >
+            {r.label}
+          </Button>
+        ))}
+      </div>
+
+      <Card className="border-orange-500/20 bg-orange-500/5">
+        <CardContent className="p-4 text-xs text-muted-foreground">
+          <strong className="text-foreground">How it works:</strong> Each post gets a score — 1 point per like, 2 per
+          comment, 3 per share and 2 per repost. Educational posts (#science, #education, #tutorial, #learning) get a
+          20% boost. Pick a time range above; if nothing was posted in that window, we show the all-time top posts
+          instead.
+        </CardContent>
+      </Card>
+
+      {usedFallback && (
+        <p className="text-xs text-muted-foreground">
+          No posts in the selected range — showing all-time top posts.
+        </p>
+      )}
+
 
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-20 gap-3">
