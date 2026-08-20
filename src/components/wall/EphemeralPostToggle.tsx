@@ -1,10 +1,5 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { Clock, Ghost, Users, Eye, EyeOff } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Popover,
-  PopoverContent,
-  PopoverTrigger } from "@/components/ui/popover";
+import { Ghost, Users, Eye } from "lucide-react";
 
 export type PostVisibility = "normal" | "ephemeral" | "close-friends";
 
@@ -14,86 +9,75 @@ interface EphemeralPostToggleProps {
 }
 
 const options = [
-  { value: "normal" as PostVisibility,
+  {
+    value: "normal" as PostVisibility,
     label: "Normal",
-    description: "Stays on your profile",
+    meaning: "Regular post",
+    description: "Stays on your profile and feed like any other post.",
     icon: Eye,
-    gradient: "from-primary/20 to-primary/10" },
-  { value: "ephemeral" as PostVisibility,
+    gradient: "from-primary/30 to-primary/10",
+    ring: "ring-primary/30",
+  },
+  {
+    value: "ephemeral" as PostVisibility,
     label: "24h Only",
-    description: "Disappears after 24 hours",
+    meaning: "Temporary post",
+    description: "Visible for 24 hours, then disappears automatically.",
     icon: Ghost,
-    gradient: "from-orange-500/20 to-amber-500/10" },
-  { value: "close-friends" as PostVisibility,
+    gradient: "from-orange-500/30 to-amber-500/10",
+    ring: "ring-orange-500/30",
+  },
+  {
+    value: "close-friends" as PostVisibility,
     label: "Close Friends",
-    description: "Only close friends can see",
+    meaning: "Restricted post",
+    description: "Only people you add to Close Friends can see it.",
     icon: Users,
-    gradient: "from-emerald-500/20 to-teal-500/10" },
+    gradient: "from-emerald-500/30 to-teal-500/10",
+    ring: "ring-emerald-500/30",
+  },
 ];
 
 export const EphemeralPostToggle = ({ visibility, onVisibilityChange }: EphemeralPostToggleProps) => {
-  const [open, setOpen] = useState(false);
-  const selected = options.find((o) => o.value === visibility) || options[0];
-  const Icon = selected.icon;
-
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          className="gap-1.5 text-xs font-medium"
-        >
-          <Icon className="w-3.5 h-3.5" />
-          {selected.label}
-          {visibility === "ephemeral" && (
-            <motion.div
-              animate={{ opacity: [1, 0.3, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="w-1.5 h-1.5 rounded-full bg-orange-500"
-            />
-          )}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-64 p-2" align="start">
-        <div className="space-y-1">
-          {options.map((option) => {
-            const OptIcon = option.icon;
-            const isActive = visibility === option.value;
-            return (
-              <motion.button
-                key={option.value}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => {
-                  onVisibilityChange(option.value);
-                  setOpen(false);
-                }}
-                className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${
-                  isActive
-                    ? `bg-gradient-to-r ${option.gradient} ring-1 ring-primary/20`
-                    : "hover:bg-accent/50"
-                }`}
-              >
-                <div className={`p-1.5 rounded-lg bg-gradient-to-br ${option.gradient}`}>
-                  <OptIcon className="w-4 h-4" />
-                </div>
-                <div className="text-left">
-                  <div className="text-sm font-semibold">{option.label}</div>
-                  <div className="text-[11px] text-muted-foreground">{option.description}</div>
-                </div>
+    <div className="w-full">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+        {options.map((option) => {
+          const OptIcon = option.icon;
+          const isActive = visibility === option.value;
+          return (
+            <motion.button
+              key={option.value}
+              type="button"
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => onVisibilityChange(option.value)}
+              className={`relative flex flex-col items-start gap-1 p-2.5 rounded-xl text-left transition-all border ${
+                isActive
+                  ? `bg-gradient-to-br ${option.gradient} border-transparent ring-1 ${option.ring}`
+                  : "bg-accent/20 hover:bg-accent/40 border-white/5"
+              }`}
+            >
+              <div className="flex items-center gap-1.5">
+                <OptIcon className={`w-3.5 h-3.5 ${isActive ? "text-foreground" : "text-muted-foreground"}`} />
+                <span className="text-xs font-semibold">{option.label}</span>
                 {isActive && (
-                  <motion.div
-                    layoutId="ephemeralActive"
-                    className="ml-auto w-2 h-2 rounded-full bg-primary"
+                  <motion.span
+                    layoutId="ephemeralActiveDot"
+                    className="ml-auto w-1.5 h-1.5 rounded-full bg-primary"
                   />
                 )}
-              </motion.button>
-            );
-          })}
-        </div>
-      </PopoverContent>
-    </Popover>
+              </div>
+              <span className="text-[10px] font-medium text-muted-foreground leading-tight">
+                {option.meaning}
+              </span>
+              <span className="text-[10px] text-muted-foreground/80 leading-tight">
+                {option.description}
+              </span>
+            </motion.button>
+          );
+        })}
+      </div>
+    </div>
   );
 };
