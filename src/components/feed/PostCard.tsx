@@ -73,6 +73,8 @@ const ALLOWED_EXT = new Set(["jpg","jpeg","png","webp","gif","mp4","webm","mov"]
 
 const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps) => {
   const navigate = useNavigate();
+  const { muteUser, unmuteUser, mutedIds } = useUserMutes();
+  const isAuthorMuted = mutedIds.includes(post.user_id);
   const [deleting, setDeleting] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(post.likes_count || 0);
