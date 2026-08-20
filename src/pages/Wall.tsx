@@ -25,14 +25,11 @@ import { WallBackground } from "@/components/wall/WallBackground";
 import { StoriesBar } from "@/components/wall/StoriesBar";
 import { SmartFeedTabs, type FeedTab } from "@/components/wall/SmartFeedTabs";
 import { NotesBar } from "@/components/wall/NotesBar";
-import { SpacesDialog } from "@/components/wall/SpacesDialog";
 import { MutedUsersDialog } from "@/components/wall/MutedUsersDialog";
 import { MutedKeywordsDialog } from "@/components/wall/MutedKeywordsDialog";
 import { CloseFriendsDialog } from "@/components/wall/CloseFriendsDialog";
 import { SavedSearchesDialog } from "@/components/wall/SavedSearchesDialog";
 import { FollowedTopicsDialog } from "@/components/wall/FollowedTopicsDialog";
-import { GroupChatDialog } from "@/components/wall/GroupChatDialog";
-import { CommunitiesDialog } from "@/components/wall/CommunitiesDialog";
 import { ModerationQueueDialog } from "@/components/wall/ModerationQueueDialog";
 import { CreatorSubscriptionDialog } from "@/components/wall/CreatorSubscriptionDialog";
 import { DailyLoginRewardDialog } from "@/components/wall/DailyLoginRewardDialog";
@@ -83,6 +80,7 @@ const Feed = () => {
   const [hasMore, setHasMore] = useState(true);
   // pagination uses lastCursor ref (keyset), no page state needed
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [moreToolsOpen, setMoreToolsOpen] = useState(false);
   const [feedTab, setFeedTab] = useState<FeedTab>("for-you");
   const [verifiedOnly, setVerifiedOnly] = useState<boolean>(() => {
     try { return localStorage.getItem("wall.verifiedOnly") === "1"; } catch { return false; }
@@ -643,15 +641,16 @@ const Feed = () => {
               {/* Moved up: tools, notes, stories */}
 
               <div className="glass-card rounded-2xl p-2 backdrop-blur-xl border border-white/10 grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
-                <div className="w-full"><SpacesDialog /></div>
-                <div className="w-full"><GroupChatDialog /></div>
-                <div className="w-full"><CommunitiesDialog /></div>
                 <div className="w-full"><CloseFriendsDialog /></div>
-                <details className="group col-span-2 sm:col-span-1 sm:inline-block w-full">
-                  <summary className="list-none cursor-pointer inline-flex items-center justify-center gap-2 px-3 py-1.5 text-sm rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors w-full h-full">
-                    More tools
-                  </summary>
-                  <div className="mt-2 flex flex-wrap gap-2 p-2 rounded-lg bg-background/50 border border-white/10">
+                <button
+                  type="button"
+                  onClick={() => setMoreToolsOpen((v) => !v)}
+                  className="inline-flex items-center justify-center gap-2 px-3 py-1.5 text-sm rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors w-full"
+                >
+                  More tools
+                </button>
+                {moreToolsOpen && (
+                  <div className="col-span-2 w-full mt-1 grid grid-cols-2 sm:flex sm:flex-wrap gap-2 p-2 rounded-lg bg-background/50 border border-white/10">
                     <MutedUsersDialog />
                     <MutedKeywordsDialog />
                     <SavedSearchesDialog />
@@ -664,8 +663,9 @@ const Feed = () => {
                     <AccessibilityFieldsDialog />
                     <OfflineStatusIndicator />
                   </div>
-                </details>
+                )}
               </div>
+
 
               <NotesBar />
 
