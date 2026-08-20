@@ -28,6 +28,7 @@ import { NotesBar } from "@/components/wall/NotesBar";
 import { MutedUsersDialog } from "@/components/wall/MutedUsersDialog";
 import { MutedKeywordsDialog } from "@/components/wall/MutedKeywordsDialog";
 import { CloseFriendsDialog } from "@/components/wall/CloseFriendsDialog";
+import { useUserMutes } from "@/hooks/useUserMutes";
 
 import { useQuery } from "@tanstack/react-query";
 import WallMessages from "./wall/WallMessages";
