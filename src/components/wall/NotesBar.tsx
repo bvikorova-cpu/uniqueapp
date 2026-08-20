@@ -150,7 +150,7 @@ export const NotesBar = () => {
                     <AvatarImage src={n.profile?.avatar_url ?? undefined} />
                     <AvatarFallback>{n.profile?.full_name?.charAt(0) ?? "U"}</AvatarFallback>
                   </Avatar>
-                  <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-background border border-border flex items-center justify-center text-sm">
+                  <div className="absolute -bottom-1 -right-1 h-7 w-7 rounded-full bg-background border border-border flex items-center justify-center text-base">
                     {n.emoji || "💭"}
                   </div>
                 </div>
