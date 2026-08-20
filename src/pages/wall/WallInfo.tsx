@@ -105,7 +105,7 @@ export default function WallInfo() {
         { name: "AI Content Suggestions", description: "AI-driven topic and content recommendations.", icon: <Sparkles className="h-4 w-4" /> },
         { name: "Subscription Tiers", description: "Create subscription tiers with different benefits and pricing.", icon: <Star className="h-4 w-4" /> },
         { name: "Exclusive Content", description: "Post content visible only to paying subscribers.", icon: <Lock className="h-4 w-4" /> },
-        { name: "Earnings Tracking", description: "Track earnings from subscriptions and tips in real-time.", icon: <Zap className="h-4 w-4" /> },
+        
       ] },
     {
       title: "24h Notes",
