@@ -56,10 +56,39 @@ export const chatBackgroundStyle = (state: ChatThemeState) => {
   const wp = resolveWallpaperColors(state);
   const theme = resolveTheme(state);
   return {
-    backgroundImage: `linear-gradient(135deg, ${wp[0]}22 0%, ${wp[1]}18 50%, ${wp[2]}22 100%)`,
-    borderColor: `${theme.colors[2]}33`,
+    backgroundImage: `linear-gradient(135deg, ${wp[0]}66 0%, ${wp[1]}55 50%, ${wp[2]}66 100%)`,
+    borderColor: `${theme.colors[2]}55`,
   } as React.CSSProperties;
 };
+
+const isLight = (hex: string) => {
+  const h = hex.replace("#", "");
+  if (h.length < 6) return false;
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.6;
+};
+
+/** Own (outgoing) message bubble painted with the active theme colors. */
+export const outgoingBubbleStyle = (state: ChatThemeState) => {
+  const t = resolveTheme(state);
+  return {
+    backgroundImage: `linear-gradient(135deg, ${t.colors[1]} 0%, ${t.colors[2]} 100%)`,
+    color: isLight(t.colors[2]) ? "#111827" : "#ffffff",
+    borderColor: `${t.colors[2]}66`,
+  } as React.CSSProperties;
+};
+
+/** Incoming message bubble: subtle tint of the theme base color. */
+export const incomingBubbleStyle = (state: ChatThemeState) => {
+  const t = resolveTheme(state);
+  return {
+    backgroundColor: `${t.colors[0]}26`,
+    borderColor: `${t.colors[1]}40`,
+  } as React.CSSProperties;
+};
+
 
 export const useChatTheme = (userId?: string) => {
   const [state, setState] = useState<ChatThemeState>(DEFAULTS);

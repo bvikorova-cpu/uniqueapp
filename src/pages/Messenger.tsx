@@ -23,7 +23,7 @@ import { EncryptionBadge } from "@/components/messaging/EncryptionBadge";
 import { GroupChatDialog } from "@/components/messenger/GroupChatDialog";
 import { MessengerAIFeatures } from "@/components/messenger/MessengerAIFeatures";
 import { MessengerHero } from "@/components/messenger/MessengerHero";
-import { useChatTheme, chatBackgroundStyle } from "@/hooks/useChatTheme";
+import { useChatTheme, chatBackgroundStyle, outgoingBubbleStyle, incomingBubbleStyle } from "@/hooks/useChatTheme";
 import PushOptInButton from "@/components/notifications/PushOptInButton";
 import { ChatAnalyticsDashboard } from "@/components/messenger/ChatAnalyticsDashboard";
 import { AIChatThemes } from "@/components/messenger/AIChatThemes";
@@ -1468,11 +1468,17 @@ const Messenger = () => {
                             </div>
                           )}
                           
-                          <div className={`relative rounded-lg p-3 ${
-                            msg.sender_id === user.id
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-muted"
-                          }`}>
+                          <div
+                            className={`relative rounded-lg p-3 border ${
+                              msg.sender_id === user.id ? "" : "text-foreground"
+                            }`}
+                            style={
+                              msg.sender_id === user.id
+                                ? outgoingBubbleStyle(chatTheme)
+                                : incomingBubbleStyle(chatTheme)
+                            }
+                          >
+
                             {msg.story_id && (
                               <div className="text-xs opacity-70 mb-2 pb-2 border-b border-current/20">
                                 📷 Story reply
