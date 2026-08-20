@@ -18,7 +18,20 @@ import { useEffect, useState } from "react";
 
 export const PrivacySettingsDialog = () => {
   const { settings, updateSettings } = usePrivacySettings();
-  const [localSettings, setLocalSettings] = useState(settings);
+  const [localSettings, setLocalSettings] = useState<any>(settings ?? {
+    profile_visibility: "public",
+    post_visibility: "public",
+    who_can_message: "everyone",
+    who_can_comment: "everyone",
+    who_can_tag: "everyone",
+    show_online_status: true,
+    show_activity: true,
+    show_birthday: false,
+    show_friends_list: true });
+
+  useEffect(() => {
+    if (settings) setLocalSettings(settings);
+  }, [settings]);
 
   const handleSave = () => {
     if (localSettings) {
@@ -26,7 +39,6 @@ export const PrivacySettingsDialog = () => {
     }
   };
 
-  if (!localSettings) return null;
 
   return (
     <Dialog>
