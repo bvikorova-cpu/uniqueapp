@@ -422,19 +422,28 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                     </TooltipTrigger>
                   </PopoverTrigger>
                   <TooltipContent>Feeling</TooltipContent>
-                  <PopoverContent className="w-[calc(100vw-2rem)] max-w-[24rem] max-h-[70dvh] overflow-y-auto p-2">
-                    <div className="grid grid-cols-6 sm:grid-cols-7 md:grid-cols-8 gap-1">
-                      {emojiList.map((emoji) => (
-                        <Button
-                          key={emoji}
-                          type="button"
-                          variant="ghost"
-                          className="h-10 w-10 p-0 min-w-0 min-h-0 flex items-center justify-center text-2xl hover:bg-violet-500/10 rounded-lg"
-                          onClick={() => setFeeling(emoji)}
-                        >
-                          {emoji}
-                        </Button>
-                      ))}
+                  <PopoverContent
+                    align="end"
+                    sideOffset={8}
+                    className="w-[calc(100vw-1rem)] max-w-[24rem] p-0 overflow-hidden"
+                  >
+                    <div
+                      className="max-h-[70dvh] overflow-y-auto p-2"
+                      style={{ WebkitOverflowScrolling: "touch" }}
+                    >
+                      <div className="grid grid-cols-6 sm:grid-cols-7 md:grid-cols-8 gap-1">
+                        {emojiList.map((emoji) => (
+                          <Button
+                            key={emoji}
+                            type="button"
+                            variant="ghost"
+                            className="h-10 w-10 p-0 min-w-0 min-h-0 flex items-center justify-center text-2xl hover:bg-violet-500/10 rounded-lg"
+                            onClick={() => setFeeling(emoji)}
+                          >
+                            {emoji}
+                          </Button>
+                        ))}
+                      </div>
                     </div>
                   </PopoverContent>
                 </Popover>
