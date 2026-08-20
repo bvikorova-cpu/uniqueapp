@@ -510,7 +510,11 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                             type="button"
                             variant="ghost"
                             className="h-11 w-11 p-0 min-w-0 min-h-0 flex items-center justify-center text-2xl hover:bg-violet-500/10 rounded-xl"
-                            onClick={() => setFeeling(emoji)}
+                            onClick={() => {
+                              setFeeling(emoji);
+                              setContent((prev) => (prev ? `${prev} ${emoji}` : emoji));
+                              setShowEmoji(false);
+                            }}
                           >
                             {emoji}
                           </Button>
