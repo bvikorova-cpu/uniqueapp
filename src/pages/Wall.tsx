@@ -897,9 +897,6 @@ const Feed = () => {
         {/* Mobile Menu Button and Drawer */}
         <MobileWallMenu onPostCreated={fetchPosts} />
         
-        {/* Mobile FAB for creating posts */}
-        <WallComposer onPostCreated={fetchPosts} userProfile={userProfile} />
-        
         {/* Main Layout Container - starts below fixed nav */}
         <div className="flex flex-col lg:flex-row pt-[68px] lg:pt-[84px]">
           {/* Left Sidebar - Hidden on mobile, sticky within container */}
