@@ -21,7 +21,7 @@ export const CloseFriendsDialog = ({ trigger }: Props) => {
 
   const { data: searchResults = [] } = useQuery({
     queryKey: ["close-friends-search", q],
-    enabled: q.length >= 2,
+    enabled: q.trim().length >= 1,
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       const { data, error } = await (supabase as any).rpc("search_users", { q, lim: 20 });
@@ -53,7 +53,7 @@ export const CloseFriendsDialog = ({ trigger }: Props) => {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
-            placeholder="Search people..."
+            placeholder="Type a letter to search people…"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             className="pl-9"
@@ -61,8 +61,11 @@ export const CloseFriendsDialog = ({ trigger }: Props) => {
         </div>
 
         <ScrollArea className="h-[360px]">
-          {q.length >= 2 ? (
+          {q.trim().length >= 1 ? (
             <div className="space-y-2">
+              {searchResults.length === 0 && (
+                <p className="text-sm text-muted-foreground text-center py-8">No people found.</p>
+              )}
               {searchResults.map((p: any) => {
                 const isFriend = friendIds.has(p.id);
                 return (
