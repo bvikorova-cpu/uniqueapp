@@ -521,7 +521,7 @@ const EditProfile = () => {
               description={profile.seo_description}
               fallbackTitle={profile.headline ? `${profile.full_name || "Profile"} — ${profile.headline}` : (profile.full_name || "Profile")}
               fallbackDescription={profile.bio || ""}
-              url={`${typeof window !== "undefined" ? window.location.origin : ""}/profile/${profile.id}`}
+              url={canonicalUrl(`/profile/${profile.id}`)}
               onTitleChange={(v) => setProfile({ ...profile, seo_title: v })}
               onDescriptionChange={(v) => setProfile({ ...profile, seo_description: v })}
             />

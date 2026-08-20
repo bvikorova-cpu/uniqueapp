@@ -34,9 +34,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "1", title: "Home", category: "Main", path: "/" },
   { id: "2", title: "Wall", category: "Social", path: "/wall" },
   { id: "3", title: "Messenger", category: "Communication", path: "/messenger" },
-  { id: "4", title: "Groups", category: "Social", path: "/wall/groups" },
-  { id: "5", title: "Pages", category: "Social", path: "/wall/pages" },
-  { id: "6", title: "Stories", category: "Social", path: "/wall" },
+  { id: "4", title: "Stories", category: "Social", path: "/wall" },
   { id: "7", title: "Megaforum", category: "Social", path: "/megaforum" },
   
   // Social & Dating

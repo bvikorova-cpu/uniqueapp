@@ -207,7 +207,7 @@ export default function TeacherDashboard() {
   };
 
   const handleShareCollection = async (id: string) => {
-    const shareUrl = `${window.location.origin}/collection/${id}`;
+    const shareUrl = canonicalUrl(`/collection/${id}`);
     try {
       await navigator.clipboard.writeText(shareUrl);
       toast.success("Share link copied to clipboard!");

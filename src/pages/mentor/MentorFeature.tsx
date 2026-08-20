@@ -228,7 +228,7 @@ function RolePlayPanel() {
 function Feedback360Panel() {
   const { data, refetch } = useMentor("feedback360.list");
   const create = async () => { await mentorCall("feedback360.create", {}); refetch(); };
-  const copy = (token: string) => { navigator.clipboard.writeText(`${window.location.origin}/mentor-360/${token}`); toast.success("Link copied"); };
+  const copy = (token: string) => { navigator.clipboard.writeText(canonicalUrl(`/mentor-360/${token}`)); toast.success("Link copied"); };
   return (
     <div>
       <h1 className="text-2xl font-black mb-4">360° Feedback</h1>
