@@ -158,10 +158,17 @@ export function MobileWallMenu({ onPostCreated, inline = false }: MobileWallMenu
     },
     enabled: !!user });
 
+  useEffect(() => {
+    const handler = () => setOpen(false);
+    window.addEventListener("close-wall-menu", handler);
+    return () => window.removeEventListener("close-wall-menu", handler);
+  }, []);
+
   const handleNavigate = (path: string) => {
     navigate(path);
     setOpen(false);
   };
+
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
