@@ -14,6 +14,9 @@ interface Post {
   reposts_count: number;
   feeling?: string | null;
   location?: string | null;
+  background_style?: string | null;
+  event_id?: string | null;
+  audience?: string | null;
   media: Array<{ id: string; file_url: string; file_type: string }>;
   profiles: { id: string; full_name: string | null; avatar_url: string | null };
 }

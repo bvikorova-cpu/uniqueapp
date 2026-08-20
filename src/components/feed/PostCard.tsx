@@ -107,6 +107,8 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
   const [repostsCount, setRepostsCount] = useState(post.reposts_count || 0);
   const [saved, setSaved] = useState(false);
   const { toast } = useToast();
+  const postBackground = getPostBackground((post as any).background_style);
+  const hasVisualMedia = postMedia.some((media) => media.file_type === "image" || media.file_type === "video");
 
   // Action locks against rapid double-clicks (React batching can let 2 clicks through `useState` flags)
   const likeLockRef = useRef(false);
@@ -845,9 +847,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
 
         {/* Content */}
         {post.content && (() => {
-          const bg = (post as any).background_style && (!post.media || post.media.length === 0)
-            ? getPostBackground((post as any).background_style)
-            : null;
+          const bg = postBackground && !hasVisualMedia ? postBackground : null;
           return bg ? (
             <div className={`rounded-xl p-8 mb-4 min-h-[220px] flex items-center justify-center ${bg.className}`}>
               <p className={`whitespace-pre-wrap break-words ${bg.textClassName}`}>

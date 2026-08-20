@@ -110,13 +110,19 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [isSensitive, setIsSensitive] = useState(false);
   const [sensitiveReason, setSensitiveReason] = useState("");
   const [backgroundStyle, setBackgroundStyle] = useState<string | null>(null);
+  const backgroundStyleRef = useRef<string | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const { createHashtagsForPost } = useHashtags();
   const { createPoll } = usePolls();
   const activeBackground = getPostBackground(backgroundStyle);
-  const useBackground = !!activeBackground && files.length === 0;
+  const hasMediaAttachments = files.length > 0 || !!voiceFile;
+
+  const handleBackgroundChange = (key: string | null) => {
+    backgroundStyleRef.current = key;
+    setBackgroundStyle(key);
+  };
 
   // Revoke object URLs when files change/unmount to avoid memory leaks
   const previewUrls = files.map((f) => URL.createObjectURL(f));
@@ -185,8 +191,9 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
       }
 
       // Resolve the background at submit time (media posts never get a background)
+      const selectedBackgroundKey = backgroundStyleRef.current;
       const bgToSave =
-        files.length === 0 && getPostBackground(backgroundStyle) ? backgroundStyle : null;
+        !hasMediaAttachments && getPostBackground(selectedBackgroundKey) ? selectedBackgroundKey : null;
 
       const { data: post, error: postError } = await supabase
         .from("posts")
@@ -208,10 +215,12 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
 
       // Safety net: make sure the chosen background really landed on the row
       if (bgToSave && (post as any)?.background_style !== bgToSave) {
-        await supabase
+        const { error: backgroundUpdateError } = await supabase
           .from("posts")
           .update({ background_style: bgToSave } as any)
           .eq("id", post.id);
+
+        if (backgroundUpdateError) throw backgroundUpdateError;
       }
 
 
@@ -291,7 +300,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
       setEventDraft(null);
       setVoiceFile(null);
       setTaggedFriends([]);
-      setBackgroundStyle(null);
+      handleBackgroundChange(null);
       onPostCreated();
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -315,11 +324,11 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             </AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            {useBackground ? (
+            {activeBackground && !hasMediaAttachments ? (
               <div
                 className={cn(
                   "min-h-[180px] rounded-xl p-6 flex items-center justify-center",
-                  activeBackground!.className
+                  activeBackground.className
                 )}
               >
                 <Textarea
@@ -328,7 +337,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                   onChange={(e) => setContent(e.target.value)}
                   className={cn(
                     "min-h-[120px] resize-none border-0 bg-transparent shadow-none focus-visible:ring-0 placeholder:text-white/60",
-                    activeBackground!.textClassName
+                    activeBackground.textClassName
                   )}
                 />
               </div>
@@ -351,8 +360,8 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
               <div className="flex items-center gap-1 bg-accent px-3 py-1 rounded-full">
                 <span className={cn("h-3 w-3 rounded-full", activeBackground.className)} />
                 <span className="font-semibold">{activeBackground.label}</span>
-                {files.length > 0 && <span className="text-xs">(disabled with media)</span>}
-                <button type="button" onClick={() => setBackgroundStyle(null)}>
+                {hasMediaAttachments && <span className="text-xs">(disabled with media)</span>}
+                <button type="button" onClick={() => handleBackgroundChange(null)}>
                   <X className="h-3 w-3 ml-1" />
                 </button>
               </div>
@@ -434,8 +443,8 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
               <AudienceSelector value={privacy} onChange={setPrivacy} />
               <BackgroundStylePicker
                 value={backgroundStyle}
-                onChange={setBackgroundStyle}
-                disabled={files.length > 0}
+                onChange={handleBackgroundChange}
+                disabled={hasMediaAttachments}
               />
               <DraftsManager onSelectDraft={(draft: any) => setContent(draft.content || "")} />
             </div>
