@@ -57,6 +57,7 @@ import { AIContentAssistant } from "./AIContentAssistant";
 import { AnimatePresence } from "framer-motion";
 import { useHashtags } from "@/hooks/useHashtags";
 import { usePolls } from "@/hooks/usePolls";
+import { MyCustomEmojis } from "@/components/common/MyCustomEmojis";
 
 interface EnhancedCreatePostProps {
   onPostCreated: () => void;
@@ -445,7 +446,15 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                       className="flex-1 overflow-y-auto px-3 pb-6"
                       style={{ WebkitOverflowScrolling: "touch" }}
                     >
+                      <MyCustomEmojis
+                        onSelect={(emoji) => {
+                          setFeeling(emoji);
+                          setContent((prev) => (prev ? `${prev} ${emoji}` : emoji));
+                          setShowEmoji(false);
+                        }}
+                      />
                       <div className="grid grid-cols-6 sm:grid-cols-7 md:grid-cols-8 gap-1">
+
                         {emojiList.map((emoji) => (
                           <Button
                             key={emoji}

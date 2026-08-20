@@ -24,6 +24,7 @@ import { Popover,
   PopoverContent,
   PopoverTrigger } from "@/components/ui/popover";
 import { PostTemplatesDialog } from "@/components/wall/PostTemplatesDialog";
+import { MyCustomEmojis } from "@/components/common/MyCustomEmojis";
 import { TagFriendsDialog } from "@/components/wall/TagFriendsDialog";
 
 
@@ -304,7 +305,11 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
                 </PopoverTrigger>
                 <TooltipContent>Feeling</TooltipContent>
                 <PopoverContent className="w-64 max-h-48 overflow-y-auto">
+                  <MyCustomEmojis
+                    onSelect={(emoji) => setContent((prev) => (prev ? `${prev} ${emoji}` : emoji))}
+                  />
                   <div className="grid grid-cols-4 gap-1">
+
                     {feelings.map((f) => (
                       <Button
                         key={f.label}
