@@ -16,6 +16,8 @@ import { ChallengeProUpsell } from "@/components/challenges/ChallengeProUpsell";
 import { ChallengeProBadge } from "@/components/challenges/ChallengeProBadge";
 import { useChallengeProSet, useChallengePro } from "@/hooks/useChallengePro";
 import { ChallengeLockedCard } from "@/components/challenges/ChallengeLockedCard";
+import { ChallengeImage, ChallengeVideo } from "@/components/challenges/ChallengeMedia";
+import { ChallengeSubscriptionPanel } from "@/components/challenges/ChallengeSubscriptionPanel";
 
 interface Challenge {
   id: string;
