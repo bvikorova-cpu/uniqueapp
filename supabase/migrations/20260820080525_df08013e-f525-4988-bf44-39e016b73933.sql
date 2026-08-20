@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.notify_challenge_engagement() FROM anon, authenticated;
