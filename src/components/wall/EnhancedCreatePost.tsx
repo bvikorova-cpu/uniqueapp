@@ -192,7 +192,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
       }
 
       // Resolve the background at submit time (media posts never get a background)
-      const selectedBackgroundKey = backgroundStyleRef.current ?? backgroundStyle;
+      const selectedBackgroundKey = backgroundStyleRef.current;
       const bgToSave =
         !hasMediaAttachments && getPostBackground(selectedBackgroundKey) ? selectedBackgroundKey : null;
 
