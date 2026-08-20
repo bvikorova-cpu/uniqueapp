@@ -10,7 +10,6 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useStories } from "@/hooks/useStories";
 import { motion, AnimatePresence } from "framer-motion";
-import { StoryAnalyticsPanel } from "@/components/story/StoryAnalyticsPanel";
 import { StoryInteractions } from "@/components/story/StoryInteractions";
 import { useAuth } from "@/contexts/AuthContext";
 import { showMonetagRewarded, trackMonetagEvent, MONETAG_ZONES } from "@/lib/monetag";
@@ -299,18 +298,19 @@ export const StoriesBar = () => {
                 <video
                   src={viewingStory.media_url}
                   autoPlay controls playsInline
-                  className="max-w-full max-h-full"
+                  className="w-full h-full max-h-screen object-contain"
                   onClick={(e) => e.stopPropagation()}
                   onEnded={() => setViewingStory(null)}
                 />
               ) : (
                 <img
                   src={viewingStory.media_url} alt=""
-                  className="max-w-full max-h-full object-contain"
+                  className="w-full h-full max-h-screen object-contain"
                   onClick={(e) => e.stopPropagation()}
                 />
               )
             )}
+
 
             {/* Bottom overlay: caption + interactions */}
             <div className="absolute bottom-0 left-0 right-0 z-20 pb-[max(1rem,env(safe-area-inset-bottom))] pt-10 px-4 bg-gradient-to-t from-black/85 via-black/50 to-transparent">
@@ -335,11 +335,6 @@ export const StoriesBar = () => {
                 )}
               </div>
 
-              {isOwnStory && (
-                <div className="mt-3 max-w-md" onClick={(e) => e.stopPropagation()}>
-                  <StoryAnalyticsPanel storyId={viewingStory.id} />
-                </div>
-              )}
             </div>
           </motion.div>
         )}
