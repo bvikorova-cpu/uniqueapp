@@ -75,31 +75,6 @@ export default function WallCinematicHero({ streak }: WallCinematicHeroProps) {
           </motion.div>
         </div>
       </motion.div>
-
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {statCards.map((item, i) => (
-          <Popover key={item.label}>
-            <PopoverTrigger asChild>
-              <motion.button
-                type="button"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * i + 0.4 }}
-                className={`relative rounded-xl bg-gradient-to-br ${item.accent} bg-card/80 backdrop-blur-md border border-border/30 p-3 sm:p-4 text-center cursor-pointer w-full`}
-              >
-                <Info className="absolute top-1.5 right-1.5 h-3 w-3 text-muted-foreground/60" />
-                <item.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${item.iconColor} mx-auto mb-1`} />
-                <p className="text-lg sm:text-2xl font-black">{item.value}</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground">{item.label}</p>
-                <p className="mt-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-wide text-primary">{item.scope}</p>
-              </motion.button>
-            </PopoverTrigger>
-            <PopoverContent side="top" className="max-w-[240px] text-center text-xs">
-              {item.tooltip}
-            </PopoverContent>
-          </Popover>
-        ))}
-      </div>
     </div>
   );
 }
