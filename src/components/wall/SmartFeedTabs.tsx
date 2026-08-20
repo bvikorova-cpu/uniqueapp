@@ -16,7 +16,7 @@ interface SmartFeedTabsProps {
 
 const tabs = [
   { id: "for-you" as FeedTab, label: "For You", description: "Personalized picks based on what you love", icon: Sparkles, gradient: "from-primary to-accent" },
-  { id: "following" as FeedTab, label: "Following", description: "Latest posts from people you follow", icon: Users, gradient: "from-blue-500 to-cyan-500" },
+  { id: "following" as FeedTab, label: "Follow", description: "Latest posts from people you follow", icon: Users, gradient: "from-blue-500 to-cyan-500" },
   { id: "friends" as FeedTab, label: "Friends", description: "Posts shared by your friends only", icon: UserCheck, gradient: "from-pink-500 to-purple-500" },
   { id: "trending" as FeedTab, label: "Trending", description: "Most popular posts from the last 7 days", icon: TrendingUp, gradient: "from-orange-500 to-rose-500" },
   { id: "latest" as FeedTab, label: "Latest", description: "Newest posts in chronological order", icon: Clock, gradient: "from-emerald-500 to-teal-500" },

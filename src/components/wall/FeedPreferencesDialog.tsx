@@ -53,7 +53,7 @@ export const FeedPreferencesDialog = () => {
                 <SelectItem value="smart">Smart Feed (Recommended)</SelectItem>
                 <SelectItem value="recent">Most Recent</SelectItem>
                 <SelectItem value="popular">Most Popular</SelectItem>
-                <SelectItem value="following">Following Only</SelectItem>
+                <SelectItem value="following">Follow Only</SelectItem>
               </SelectContent>
             </Select>
           </div>
