@@ -522,11 +522,9 @@ export default function HealthyChallenge() {
                         </div>
                         {r.rank === 1 && (
                           <Badge className="bg-yellow-500">
-                            {((proSet as any).tierOf?.(r.user_id) ?? (proSet.has(r.user_id) ? "pro" : null)) === "top"
+                            {((proSet as any).tierOf?.(r.user_id) ?? "pro") === "top"
                               ? "500k XP"
-                              : proSet.has(r.user_id)
-                                ? "200k XP"
-                                : "100k XP"}
+                              : "200k XP"}
                           </Badge>
                         )}
                       </li>

@@ -24,7 +24,7 @@ export function ChallengeSubscriptionPanel({ challenge }: { challenge: Challenge
   };
 
   const nextPeriod = activeUntil
-    ? new Date(activeUntil).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })
+    ? new Date(activeUntil).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
     : null;
 
   return (
