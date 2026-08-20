@@ -83,6 +83,7 @@ const Feed = () => {
   const [hasMore, setHasMore] = useState(true);
   // pagination uses lastCursor ref (keyset), no page state needed
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [moreToolsOpen, setMoreToolsOpen] = useState(false);
   const [feedTab, setFeedTab] = useState<FeedTab>("for-you");
   const [verifiedOnly, setVerifiedOnly] = useState<boolean>(() => {
     try { return localStorage.getItem("wall.verifiedOnly") === "1"; } catch { return false; }
