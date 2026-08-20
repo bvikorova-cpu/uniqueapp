@@ -45,7 +45,7 @@ import { cn } from "@/lib/utils";
 import { HashtagInput } from "./HashtagInput";
 import { TagFriendsDialog } from "./TagFriendsDialog";
 import { VoiceRecorder } from "./VoiceRecorder";
-import { EphemeralPostToggle, type PostVisibility } from "./EphemeralPostToggle";
+
 import { DraftsManager } from "./DraftsManager";
 import { MusicShareInput } from "./MusicShareCard";
 import { AIContentAssistant } from "./AIContentAssistant";
@@ -105,7 +105,6 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [showTagFriends, setShowTagFriends] = useState(false);
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
   const [voiceFile, setVoiceFile] = useState<File | null>(null);
-  const [postVisibility, setPostVisibility] = useState<PostVisibility>("normal");
   const [pollData, setPollData] = useState<{ question: string; options: string[]; endsAt: Date } | null>(null);
   const [isSensitive, setIsSensitive] = useState(false);
   const [sensitiveReason, setSensitiveReason] = useState("");
@@ -364,7 +363,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           </div>
         )}
 
-        <div className="border-2 border-violet-600/50 rounded-xl p-4 bg-violet-50 dark:bg-violet-950/30 transition-all hover:shadow-[0_0_25px_rgba(139,92,246,0.4)] hover:border-violet-600 animate-in slide-in-from-bottom-2">
+          <div className="border-2 border-violet-600/50 rounded-xl p-4 bg-violet-50 dark:bg-violet-950/30 transition-all hover:shadow-[0_0_25px_rgba(139,92,246,0.4)] hover:border-violet-600 animate-in slide-in-from-bottom-2">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
             <span className="text-sm font-semibold text-violet-700 dark:text-violet-300 flex items-center gap-2">
               <Sparkles className="w-4 h-4 animate-pulse shrink-0" />
@@ -372,6 +371,12 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             </span>
             <div className="flex items-center gap-2 flex-wrap">
               <AudienceSelector value={privacy} onChange={setPrivacy} />
+              <BackgroundStylePicker
+                value={backgroundStyle}
+                onChange={setBackgroundStyle}
+                disabled={files.length > 0}
+              />
+              <DraftsManager onSelectDraft={(draft: any) => setContent(draft.content || "")} />
             </div>
           </div>
 
@@ -429,20 +434,20 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                     </TooltipTrigger>
                   </PopoverTrigger>
                   <TooltipContent>Feeling</TooltipContent>
-                  <PopoverContent className="w-full max-w-[90vw] sm:w-80 max-h-96 overflow-y-auto">
-                    <div className="grid grid-cols-6 sm:grid-cols-5 gap-1.5 sm:gap-2 p-2">
+                  <PopoverContent className="w-[calc(100vw-2rem)] max-w-[22rem] max-h-[80dvh] overflow-y-auto p-2">
+                    <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
                       {feelings.map((f) => (
                         <Button
                           key={f.label}
                           type="button"
                           variant="ghost"
-                          className="flex-col h-auto py-2"
+                          className="flex-col h-auto px-1 py-2 min-w-0"
                           onClick={() => {
                             setFeeling(f.emoji + " " + f.label);
                           }}
                         >
-                          <span className="text-2xl">{f.emoji}</span>
-                          <span className="text-xs mt-1">{f.label}</span>
+                          <span className="text-xl sm:text-2xl">{f.emoji}</span>
+                          <span className="text-[10px] sm:text-xs mt-1 truncate w-full text-center">{f.label}</span>
                         </Button>
                       ))}
                     </div>
@@ -566,32 +571,6 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             </div>
           </TooltipProvider>
 
-          {/* Visibility + Drafts row */}
-          <div className="mt-3 pt-3 border-t border-white/5 space-y-2">
-            <div className="flex items-center justify-between gap-2 flex-wrap">
-              <span className="text-xs font-semibold text-muted-foreground">
-                Who can see this post?
-              </span>
-              <div className="flex items-center gap-1">
-
-                <BackgroundStylePicker
-                  value={backgroundStyle}
-                  onChange={setBackgroundStyle}
-                  disabled={files.length > 0}
-                />
-                <DraftsManager onSelectDraft={(draft: any) => setContent(draft.content || "")} />
-              </div>
-            </div>
-            <EphemeralPostToggle
-              visibility={postVisibility}
-              onVisibilityChange={(v) => {
-                setPostVisibility(v);
-                if (v === "normal") setPrivacy("public");
-                if (v === "close-friends") setPrivacy("close_friends");
-                if (v === "ephemeral") setPrivacy("public");
-              }}
-            />
-          </div>
 
           {/* Poll preview */}
           {pollData && (
