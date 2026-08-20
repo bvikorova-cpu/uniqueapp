@@ -807,19 +807,33 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
                   </DropdownMenuItem>
                 </>
               ) : (
-                <ReportDialog
-                  postId={post.id}
-                  trigger={
-                    <DropdownMenuItem
-                      onSelect={(e) => e.preventDefault()}
-                      className="gap-2 text-destructive focus:text-destructive cursor-pointer"
-                    >
-                      <Flag className="h-4 w-4" />
-                      Report post
-                    </DropdownMenuItem>
-                  }
-                />
+                <>
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (isAuthorMuted) unmuteUser(post.user_id);
+                      else muteUser({ userId: post.user_id });
+                    }}
+                    className="gap-2"
+                  >
+                    <VolumeX className="h-4 w-4" />
+                    {isAuthorMuted ? "Unmute author" : "Mute author"}
+                  </DropdownMenuItem>
+                  <ReportDialog
+                    postId={post.id}
+                    trigger={
+                      <DropdownMenuItem
+                        onSelect={(e) => e.preventDefault()}
+                        className="gap-2 text-destructive focus:text-destructive cursor-pointer"
+                      >
+                        <Flag className="h-4 w-4" />
+                        Report post
+                      </DropdownMenuItem>
+                    }
+                  />
+                </>
               )}
+
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
