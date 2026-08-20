@@ -2,9 +2,8 @@ import { motion } from "framer-motion";
 import { Flame, Trophy, Zap, CheckCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/contexts/AuthContext";
-import { useRewardsStats } from "@/hooks/useRewardsStats";
-import { format, startOfWeek, addDays, isSameDay } from "date-fns";
+import { useWallStreak } from "@/hooks/useWallStreak";
+import { format, parseISO } from "date-fns";
 
 const milestones = [
   { days: 3, reward: "🔥", title: "Warm Up", xp: 50 },
@@ -16,22 +15,21 @@ const milestones = [
   { days: 365, reward: "💫", title: "Annual Champion", xp: 10000 },
 ];
 
-export default function WallPostingStreaks() {
-  const { user } = useAuth();
-  const { data: stats, isLoading } = useRewardsStats(user?.id);
-  const currentStreak = stats?.streak ?? 0;
-  const longestStreak = stats?.longestStreak ?? 0;
+const DAY_LABELS = ["M", "T", "W", "T", "F", "S", "S"];
 
-  const weekDays = ["M", "T", "W", "T", "F", "S", "S"];
-  const today = new Date();
-  const monday = startOfWeek(today, { weekStartsOn: 1 });
-  const todayIdx = (today.getDay() + 6) % 7;
+export default function WallPostingStreaks() {
+  const { data, isLoading } = useWallStreak();
+  const currentStreak = data.currentStreak;
+  const longestStreak = data.longestStreak;
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const week = data.week;
 
   const scrollToComposer = () => {
     window.dispatchEvent(new CustomEvent("open-create-post"));
     document.getElementById("wall-create-post")?.scrollIntoView({ behavior: "smooth", block: "center" });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
 
   return (
     <div className="space-y-4">
