@@ -10,7 +10,7 @@ import { startWallTrace,
   tracedRpc } from "@/utils/wallPerf";
 import { User } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
-import UserSearch from "@/components/feed/UserSearch";
+
 
 import { Loader2, Home, ArrowUp, Wand2, Flame, Trophy, Award, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -640,8 +640,7 @@ const Feed = () => {
               <SearchBar />
               <HeroRewardedAd sectionKey="page_wall" />
 
-              {/* Moved up: user search, tools, notes, stories */}
-              <UserSearch />
+              {/* Moved up: tools, notes, stories */}
 
               <div className="glass-card rounded-2xl p-2 backdrop-blur-xl border border-white/10 flex flex-wrap gap-2">
                 <SpacesDialog />
