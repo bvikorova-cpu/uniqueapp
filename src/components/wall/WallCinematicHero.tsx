@@ -1,8 +1,18 @@
 import { motion } from "framer-motion";
+import { Heart, MessageCircle, Users, Star, Share2, Zap } from "lucide-react";
 
 interface WallCinematicHeroProps {
   streak: number;
 }
+
+const socialFloaters = [
+  { Icon: Heart, top: "12%", left: "8%", size: 28, delay: 0, duration: 5 },
+  { Icon: MessageCircle, top: "20%", right: "12%", size: 32, delay: 0.5, duration: 6 },
+  { Icon: Users, top: "55%", left: "5%", size: 36, delay: 1, duration: 7 },
+  { Icon: Star, top: "8%", left: "55%", size: 22, delay: 1.5, duration: 5.5 },
+  { Icon: Share2, top: "65%", right: "8%", size: 26, delay: 0.8, duration: 6.5 },
+  { Icon: Zap, top: "35%", right: "25%", size: 24, delay: 1.2, duration: 5 },
+];
 
 export default function WallCinematicHero({ streak }: WallCinematicHeroProps) {
   return (
@@ -32,15 +42,40 @@ export default function WallCinematicHero({ streak }: WallCinematicHeroProps) {
           <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 via-transparent to-pink-900/20" />
         </div>
 
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+          {socialFloaters.map(({ Icon, top, left, right, size, delay, duration }, i) => (
+            <motion.div
+              key={i}
+              className="absolute text-white/20"
+              style={{ top, left, right }}
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{
+                opacity: [0.15, 0.35, 0.15],
+                y: [0, -14, 0],
+                rotate: [0, 8, -8, 0],
+                scale: [1, 1.08, 1],
+              }}
+              transition={{
+                delay,
+                duration,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <Icon width={size} height={size} />
+            </motion.div>
+          ))}
+        </div>
+
         <div className="relative z-10 p-4 sm:p-6 lg:p-8 flex flex-col justify-end min-h-[240px] sm:min-h-[320px]">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.15 }}
-            className="border-2 border-orange-400/30 bg-[#1a0f0a]/50 backdrop-blur-lg rounded-xl px-5 py-4 w-fit max-w-full"
+            className="border-2 border-white/20 bg-black/30 backdrop-blur-lg rounded-xl px-5 py-4 w-fit max-w-full"
           >
             <h1 className="text-2xl sm:text-3xl lg:text-5xl font-black text-white drop-shadow-lg">
-              🌐 SOCIAL <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-coral-400 to-teal-400">WALL</span>
+              🌐 SOCIAL <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-pink-200 to-fuchsia-200">WALL</span>
             </h1>
             <p className="text-sm sm:text-base text-white/80 font-semibold mt-1 drop-shadow">
               Connect, share & grow with AI-powered social tools

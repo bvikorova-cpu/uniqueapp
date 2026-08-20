@@ -19,7 +19,7 @@ const tabs = [
 export const SmartFeedTabs = ({ activeTab, onTabChange }: SmartFeedTabsProps) => {
   return (
     <div className="relative">
-      <div className="flex gap-2 overflow-x-auto pb-1 pr-6 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
+      <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
       {tabs.map((tab) => {
         const isActive = activeTab === tab.id;
         const Icon = tab.icon;
@@ -29,7 +29,7 @@ export const SmartFeedTabs = ({ activeTab, onTabChange }: SmartFeedTabsProps) =>
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             onClick={() => onTabChange(tab.id)}
-            className={`relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap ${
+            className={`relative flex items-center justify-center gap-1 sm:gap-2 px-1.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 ${
               isActive
                 ? "text-primary-foreground shadow-lg"
                 : "text-muted-foreground hover:text-foreground bg-accent/30 backdrop-blur-sm hover:bg-accent/50 border border-white/5"
@@ -42,22 +42,21 @@ export const SmartFeedTabs = ({ activeTab, onTabChange }: SmartFeedTabsProps) =>
                 transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
               />
             )}
-            <span className="relative z-10 flex items-center gap-2">
-              <Icon className="w-4 h-4" />
-              {tab.label}
+            <span className="relative z-10 flex items-center gap-1 sm:gap-2">
+              <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">{tab.label}</span>
             </span>
             {isActive && tab.id === "for-you" && (
               <motion.span
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="relative z-10 w-2 h-2 rounded-full bg-primary-foreground animate-pulse"
+                className="relative z-10 w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-primary-foreground animate-pulse"
               />
             )}
           </motion.button>
         );
       })}
       </div>
-      <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-background to-transparent" />
     </div>
   );
 };
