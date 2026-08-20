@@ -426,6 +426,12 @@ export default function HealthyChallenge() {
                     {mySubmissionToday.video_url && (
                       <ChallengeVideo url={mySubmissionToday.video_url} className="w-full rounded-lg mt-3 max-h-80" />
                     )}
+                    <ChallengeSubmissionActions
+                      table="healthy_submissions"
+                      submissionId={mySubmissionToday.id}
+                      description={mySubmissionToday.description}
+                      onChanged={loadAll}
+                    />
                   </CardContent>
                 </Card>
               ) : (
