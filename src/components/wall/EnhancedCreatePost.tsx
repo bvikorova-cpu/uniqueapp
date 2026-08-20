@@ -52,7 +52,6 @@ import { HashtagInput } from "./HashtagInput";
 import { TagFriendsDialog } from "./TagFriendsDialog";
 import { VoiceRecorder } from "./VoiceRecorder";
 
-import { DraftsManager } from "./DraftsManager";
 import { MusicShareInput } from "./MusicShareCard";
 import { AIContentAssistant } from "./AIContentAssistant";
 import { AnimatePresence } from "framer-motion";
@@ -381,7 +380,6 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             </span>
             <div className="flex items-center gap-2 flex-wrap">
               <AudienceSelector value={privacy} onChange={setPrivacy} />
-              <DraftsManager onSelectDraft={(draft: any) => setContent(draft.content || "")} />
             </div>
           </div>
 
