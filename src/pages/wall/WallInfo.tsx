@@ -140,7 +140,8 @@ export default function WallInfo() {
         { name: "Daily Streaks", description: "Maintain daily activity streaks for bonus XP.", icon: <Zap className="h-4 w-4" /> },
         { name: "XP & Levels", description: "Earn experience points and level up through engagement.", icon: <TrendingUp className="h-4 w-4" /> },
         { name: "Achievements & Badges", description: "Unlock badges for milestones and special activities.", icon: <Star className="h-4 w-4" /> },
-        { name: "Challenges", description: "Participate in community challenges to earn rewards.", icon: <Gift className="h-4 w-4" /> },
+        { name: "Challenges", description: "Join Eco and Healthy Challenges to earn rewards — XP earned there is locked and cannot be converted into AI credits.", icon: <Gift className="h-4 w-4" /> },
+        { name: "Rewards Sync", description: "Your XP is mirrored into the Rewards section automatically, so totals always match.", icon: <Star className="h-4 w-4" /> },
       ] },
     {
       title: "Privacy & Security",
@@ -149,7 +150,7 @@ export default function WallInfo() {
         { name: "Privacy Settings", description: "Control who sees your posts, profile, and activity.", icon: <Lock className="h-4 w-4" /> },
         { name: "Block Users", description: "Block users from seeing your content or contacting you.", icon: <Shield className="h-4 w-4" /> },
         { name: "Report Content", description: "Report inappropriate posts or users for moderation.", icon: <Flag className="h-4 w-4" /> },
-        { name: "Post Visibility", description: "Set visibility per post: Everyone, Friends Only, or Only Me.", icon: <Eye className="h-4 w-4" /> },
+        { name: "Post Visibility", description: "Set visibility per post: Everyone, Friends, Close Friends, or Only me.", icon: <Eye className="h-4 w-4" /> },
       ] },
     {
       title: "Platform Features",
