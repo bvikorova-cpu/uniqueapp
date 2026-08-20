@@ -48,9 +48,6 @@ import { CreatePostEventDialog, type PostEventDraft } from "./CreatePostEventDia
 
 import { SchedulePostDialog } from "./SchedulePostDialog";
 import { CreatePollDialog } from "./CreatePollDialog";
-import { BackgroundStylePicker } from "./BackgroundStylePicker";
-import { getPostBackground } from "@/lib/postBackgrounds";
-import { cn } from "@/lib/utils";
 import { HashtagInput } from "./HashtagInput";
 import { TagFriendsDialog } from "./TagFriendsDialog";
 import { VoiceRecorder } from "./VoiceRecorder";
@@ -109,21 +106,11 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [pollData, setPollData] = useState<{ question: string; options: string[]; endsAt: Date } | null>(null);
   const [isSensitive, setIsSensitive] = useState(false);
   const [sensitiveReason, setSensitiveReason] = useState("");
-  const [backgroundStyle, setBackgroundStyle] = useState<string | null>(null);
-  const backgroundStyleRef = useRef<string | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const { createHashtagsForPost } = useHashtags();
   const { createPoll } = usePolls();
-  const activeBackground = getPostBackground(backgroundStyle);
-  const hasMediaAttachments = files.length > 0 || !!voiceFile;
-
-  const handleBackgroundChange = (key: string | null) => {
-    backgroundStyleRef.current = key;
-    setBackgroundStyle(key);
-  };
-
   // Revoke object URLs when files change/unmount to avoid memory leaks
   const previewUrls = files.map((f) => URL.createObjectURL(f));
   useEffect(() => {
@@ -190,11 +177,6 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
         createdEventId = ev.id;
       }
 
-      // Resolve the background at submit time (media posts never get a background)
-      const selectedBackgroundKey = backgroundStyleRef.current;
-      const bgToSave =
-        !hasMediaAttachments && getPostBackground(selectedBackgroundKey) ? selectedBackgroundKey : null;
-
       const { data: post, error: postError } = await supabase
         .from("posts")
         .insert({ user_id: user.id,
@@ -205,24 +187,12 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           audience: privacy,
           is_sensitive: isSensitive,
           sensitive_reason: isSensitive ? (sensitiveReason.trim() || null) : null,
-          event_id: createdEventId,
-          background_style: bgToSave } as any)
+          event_id: createdEventId } as any)
         .select()
         .single();
 
 
       if (postError) throw postError;
-
-      // Safety net: make sure the chosen background really landed on the row
-      if (bgToSave && (post as any)?.background_style !== bgToSave) {
-        const { error: backgroundUpdateError } = await supabase
-          .from("posts")
-          .update({ background_style: bgToSave } as any)
-          .eq("id", post.id);
-
-        if (backgroundUpdateError) throw backgroundUpdateError;
-      }
-
 
       // Create hashtags
       await createHashtagsForPost(post.id, content);
@@ -300,7 +270,6 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
       setEventDraft(null);
       setVoiceFile(null);
       setTaggedFriends([]);
-      handleBackgroundChange(null);
       onPostCreated();
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -324,48 +293,19 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             </AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            {activeBackground && !hasMediaAttachments ? (
-              <div
-                className={cn(
-                  "min-h-[180px] rounded-xl p-6 flex items-center justify-center",
-                  activeBackground.className
-                )}
-              >
-                <Textarea
-                  placeholder={`What's on your mind?`}
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  className={cn(
-                    "min-h-[120px] resize-none border-0 bg-transparent shadow-none focus-visible:ring-0 placeholder:text-white/60",
-                    activeBackground.textClassName
-                  )}
-                />
-              </div>
-            ) : (
-              <Textarea
-                placeholder={`What's on your mind, ${userProfile?.full_name?.split(" ")[0] || ""}?`}
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                className="min-h-[100px] resize-none border-2 border-violet-600/50 bg-violet-50 dark:bg-violet-950/30 focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:border-violet-600 rounded-xl transition-all hover:shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:border-violet-600"
-              />
-            )}
+            <Textarea
+              placeholder={`What's on your mind, ${userProfile?.full_name?.split(" ")[0] || ""}?`}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              className="min-h-[100px] resize-none border-2 border-violet-600/50 bg-violet-50 dark:bg-violet-950/30 focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:border-violet-600 rounded-xl transition-all hover:shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:border-violet-600"
+            />
             <HashtagInput text={content} />
           </div>
         </div>
 
         {/* Selected feeling, location, tagged friends preview */}
-        {(feeling || location || taggedFriends.length > 0 || activeBackground) && (
+        {(feeling || location || taggedFriends.length > 0) && (
           <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
-            {activeBackground && (
-              <div className="flex items-center gap-1 bg-accent px-3 py-1 rounded-full">
-                <span className={cn("h-3 w-3 rounded-full", activeBackground.className)} />
-                <span className="font-semibold">{activeBackground.label}</span>
-                {hasMediaAttachments && <span className="text-xs">(disabled with media)</span>}
-                <button type="button" onClick={() => handleBackgroundChange(null)}>
-                  <X className="h-3 w-3 ml-1" />
-                </button>
-              </div>
-            )}
             {feeling && (
               <div className="flex items-center gap-1 bg-accent px-3 py-1 rounded-full">
                 <span>feeling</span>
@@ -441,11 +381,6 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             </span>
             <div className="flex items-center gap-2 flex-wrap">
               <AudienceSelector value={privacy} onChange={setPrivacy} />
-              <BackgroundStylePicker
-                value={backgroundStyle}
-                onChange={handleBackgroundChange}
-                disabled={hasMediaAttachments}
-              />
               <DraftsManager onSelectDraft={(draft: any) => setContent(draft.content || "")} />
             </div>
           </div>
