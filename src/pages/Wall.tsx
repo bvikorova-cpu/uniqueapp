@@ -480,9 +480,36 @@ const Feed = () => {
       return (data ?? []).map((r: any) => r.following_id).filter(Boolean);
     } });
 
+  // Muted users (hook keeps the list in sync with the Muted users dialog)
+  const { mutedIds } = useUserMutes();
+
+  // Muted words — posts containing any of these are hidden from my feed
+  const { data: mutedWords = [] } = useQuery({
+    queryKey: ["muted-keywords", user?.id],
+    enabled: !!user?.id,
+    queryFn: async (): Promise<string[]> => {
+      const { data, error } = await supabase
+        .from("user_muted_keywords")
+        .select("keyword")
+        .eq("user_id", user!.id);
+      if (error) return [];
+      return (data ?? []).map((r: any) => String(r.keyword).toLowerCase()).filter(Boolean);
+    } });
+
+  // People who added me to their Close Friends list — I may see their close-friends posts
+  const { data: closeFriendOfIds = [] } = useQuery({
+    queryKey: ["close-friend-of-me", user?.id],
+    enabled: !!user?.id,
+    queryFn: async (): Promise<string[]> => {
+      const { data, error } = await (supabase as any).rpc("get_users_who_close_friended_me");
+      if (error) return [];
+      return (data ?? []).map((r: any) => (typeof r === "string" ? r : r?.user_id)).filter(Boolean);
+    } });
+
   // Filter and sort feed items
   const filteredFeedItems = useMemo(() => {
     let filtered = [...feedItems];
+
 
     const authorOf = (item: FeedItem) =>
       item.type === "post"
