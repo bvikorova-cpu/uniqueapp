@@ -261,22 +261,23 @@ export const StoriesBar = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Fullscreen Story Viewer */}
+      {/* Fullscreen Story Viewer — rendered via portal to break out of any stacking context */}
       <AnimatePresence>
-        {viewingStory && (
+        {viewingStory && createPortal(
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black flex items-center justify-center"
+            className="fixed inset-0 z-[9999] bg-black flex flex-col"
             onClick={() => setViewingStory(null)}
           >
             <button
-              className="absolute top-4 right-4 z-20 text-white/80 hover:text-white text-2xl"
+              className="absolute top-4 right-4 z-[10010] text-white/80 hover:text-white text-2xl p-2"
               onClick={(e) => { e.stopPropagation(); setViewingStory(null); }}
+              aria-label="Close story"
             >✕</button>
 
             {/* Progress bar — only for images (videos play own duration) */}
             {!isViewingVideo && (
-              <div className="absolute top-2 left-4 right-4 h-1 bg-white/20 rounded-full overflow-hidden z-10">
+              <div className="absolute top-2 left-4 right-4 h-1 bg-white/20 rounded-full overflow-hidden z-[10010]">
                 <motion.div
                   className="h-full bg-white rounded-full"
                   initial={{ width: "0%" }} animate={{ width: "100%" }}
@@ -286,8 +287,8 @@ export const StoriesBar = () => {
               </div>
             )}
 
-            <div className="absolute top-6 left-4 flex items-center gap-3 z-20">
-              <Avatar className="w-8 h-8 ring-2 ring-white/30">
+            <div className="absolute top-6 left-4 flex items-center gap-3 z-[10010]">
+              <Avatar className="w-9 h-9 ring-2 ring-white/30">
                 <AvatarImage src={viewingStory.profiles?.avatar_url || undefined} />
                 <AvatarFallback>{viewingStory.profiles?.full_name?.[0]}</AvatarFallback>
               </Avatar>
@@ -295,7 +296,7 @@ export const StoriesBar = () => {
             </div>
 
             {viewingStory.media_url && (
-              <div className="w-full h-[100dvh] flex items-center justify-center overflow-hidden">
+              <div className="flex-1 w-full h-full overflow-hidden">
                 {isViewingVideo ? (
                   <video
                     src={viewingStory.media_url}
@@ -314,9 +315,8 @@ export const StoriesBar = () => {
               </div>
             )}
 
-
             {/* Bottom overlay: caption + interactions */}
-            <div className="absolute bottom-0 left-0 right-0 z-20 pb-[max(1rem,env(safe-area-inset-bottom))] pt-10 px-4 bg-gradient-to-t from-black/85 via-black/50 to-transparent">
+            <div className="absolute bottom-0 left-0 right-0 z-[10010] pb-[max(1rem,env(safe-area-inset-bottom))] pt-12 px-4 bg-gradient-to-t from-black/90 via-black/60 to-transparent">
               {viewingStory.caption && (
                 <p className="text-white text-base font-medium drop-shadow-lg mb-3 max-w-2xl">
                   {viewingStory.caption}
@@ -337,9 +337,9 @@ export const StoriesBar = () => {
                   </button>
                 )}
               </div>
-
             </div>
-          </motion.div>
+          </motion.div>,
+          document.body
         )}
       </AnimatePresence>
 
