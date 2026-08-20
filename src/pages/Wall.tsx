@@ -617,6 +617,22 @@ const Feed = () => {
     return filtered;
   }, [feedItems, searchQuery, feedTab, friendIds, followingIds, verifiedOnly, mutedIds, mutedWords, closeFriendOfIds, user?.id]);
 
+  // Restrictive tabs (Friends / Following / Trending) filter the loaded pages
+  // client-side, so a page can easily contain zero matching posts. Keep pulling
+  // more pages until we have a reasonable amount of real matches for the tab.
+  const autoPagesRef = useRef(0);
+  useEffect(() => {
+    autoPagesRef.current = 0;
+  }, [feedTab]);
+
+  useEffect(() => {
+    const restrictive = feedTab === "friends" || feedTab === "following" || feedTab === "trending";
+    if (!restrictive || !hasMore || loading || loadingMore || fetchInFlight.current) return;
+    if (filteredFeedItems.length >= 5 || autoPagesRef.current >= 8) return;
+    autoPagesRef.current += 1;
+    fetchPosts(true);
+  }, [feedTab, filteredFeedItems.length, hasMore, loading, loadingMore, fetchPosts]);
+
 
   const location = useLocation();
   const currentPath = location.pathname;
@@ -669,7 +685,7 @@ const Feed = () => {
               </div>
             )}
 
-            <div className="max-w-3xl mx-auto px-2 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-4">
+            <div className="max-w-3xl mx-auto px-2 sm:px-4 pt-0 pb-3 sm:pb-4 space-y-3 sm:space-y-4">
               {/* Cinematic hero video — always at the very top of the Wall */}
               <WallCinematicHero streak={wallStats.streak} />
 
@@ -812,7 +828,17 @@ const Feed = () => {
                       onRetry={() => fetchPosts(false)}
                       onLoadMore={() => fetchPosts(true)}
                       onDelete={fetchPosts}
+                      emptyMessage={
+                        feedTab === "friends"
+                          ? "None of your friends has posted yet."
+                          : feedTab === "following"
+                          ? "The people you follow haven't posted yet."
+                          : feedTab === "trending"
+                          ? "No trending posts in the last 7 days."
+                          : undefined
+                      }
                     />
+
 
                   </div>
 
@@ -854,14 +880,14 @@ const Feed = () => {
         <WallComposer onPostCreated={fetchPosts} userProfile={userProfile} />
         
         {/* Main Layout Container - starts below fixed nav */}
-        <div className="flex flex-col lg:flex-row pt-[112px]">
+        <div className="flex flex-col lg:flex-row pt-[68px] lg:pt-[84px]">
           {/* Left Sidebar - Hidden on mobile, sticky within container */}
           <div className="hidden lg:block lg:w-64 xl:w-80 shrink-0">
             {feedEnhancementsReady && <WallSidebar onPostCreated={fetchPosts} />}
           </div>
 
           {/* Main Content Area - scrollable with enhanced contrast */}
-          <div className="flex-1 min-w-0 px-2 sm:px-4 py-4">
+          <div className="flex-1 min-w-0 px-2 sm:px-4 pt-1 pb-4">
             <div className="[&_.card]:bg-card/95 [&_.card]:backdrop-blur-md [&_.card]:shadow-glow [&_.card]:border-primary/20">
 
               {renderContent()}
