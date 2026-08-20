@@ -100,9 +100,11 @@ export default function WallEngagementLeaderboard() {
           </h3>
           <Tabs value={period} onValueChange={setPeriod}>
             <TabsList className="h-8">
+              <TabsTrigger value="week" className="text-xs px-3 h-7">This Week</TabsTrigger>
               <TabsTrigger value="alltime" className="text-xs px-3 h-7">All Time</TabsTrigger>
             </TabsList>
           </Tabs>
+
         </div>
 
         {user && (
