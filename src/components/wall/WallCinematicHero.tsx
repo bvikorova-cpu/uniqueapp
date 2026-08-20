@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import heroVideo from "@/assets/wall-hero.mp4.asset.json";
 
 interface WallCinematicHeroProps {
   streak: number;
