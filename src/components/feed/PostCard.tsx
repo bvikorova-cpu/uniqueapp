@@ -107,6 +107,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
   const [repostsCount, setRepostsCount] = useState(post.reposts_count || 0);
   const [saved, setSaved] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // Action locks against rapid double-clicks (React batching can let 2 clicks through `useState` flags)
   const likeLockRef = useRef(false);
