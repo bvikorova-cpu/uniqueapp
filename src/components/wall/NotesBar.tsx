@@ -4,9 +4,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Plus, X, MessageCircle } from "lucide-react";
+import { Plus, X, MessageCircle, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 interface NoteRow {
   id: string;
