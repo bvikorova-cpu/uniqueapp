@@ -98,12 +98,21 @@ export const NotesBar = () => {
   return (
     <>
       <div className="glass-post-card p-3">
-        <p className="mb-2 text-[11px] leading-snug text-muted-foreground">
-          <span className="font-semibold text-foreground">24h notes</span> — a short
-          text status (max 280 characters) with an emoji. It appears above the feed
-          for everyone and disappears automatically after 24 hours. Tap a bubble to
-          read the full text; tap your own note to read or delete it.
-        </p>
+        <TooltipProvider>
+          <div className="flex items-center gap-1.5 mb-2">
+            <span className="text-[11px] font-semibold text-foreground">24h notes</span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button type="button" className="p-1 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors shrink-0" aria-label="What are 24h notes?">
+                  <Info className="w-3.5 h-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[220px] text-xs">
+                A short text status (max 280 characters) with an emoji. It appears above the feed for everyone and disappears automatically after 24 hours. Tap a bubble to read the full text; tap your own note to read or delete it.
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
         <div className="flex gap-3 overflow-x-auto pb-1">
           {/* Add / my note */}
           <button
