@@ -45,7 +45,7 @@ import { cn } from "@/lib/utils";
 import { HashtagInput } from "./HashtagInput";
 import { TagFriendsDialog } from "./TagFriendsDialog";
 import { VoiceRecorder } from "./VoiceRecorder";
-import { EphemeralPostToggle, type PostVisibility } from "./EphemeralPostToggle";
+
 import { DraftsManager } from "./DraftsManager";
 import { MusicShareInput } from "./MusicShareCard";
 import { AIContentAssistant } from "./AIContentAssistant";
