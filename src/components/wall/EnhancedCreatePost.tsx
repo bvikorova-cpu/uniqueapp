@@ -118,7 +118,6 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const { createPoll } = usePolls();
   const activeBackground = getPostBackground(backgroundStyle);
   const hasMediaAttachments = files.length > 0 || !!voiceFile;
-  const useBackground = !!activeBackground && !hasMediaAttachments;
 
   const handleBackgroundChange = (key: string | null) => {
     backgroundStyleRef.current = key;
