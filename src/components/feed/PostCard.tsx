@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { PostEventCard } from "@/components/wall/PostEventCard";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -106,6 +107,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
   const [repostsCount, setRepostsCount] = useState(post.reposts_count || 0);
   const [saved, setSaved] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // Action locks against rapid double-clicks (React batching can let 2 clicks through `useState` flags)
   const likeLockRef = useRef(false);
@@ -451,6 +453,8 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
         ? await supabase.from("saved_posts").delete().eq("post_id", post.id).eq("user_id", user.id)
         : await supabase.from("saved_posts").insert({ post_id: post.id, user_id: user.id });
       if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
       toast({ title: wasSaved ? "Removed" : "Saved",
         description: wasSaved ? "Post removed from bookmarks" : "Post saved to bookmarks" });
     } catch (error: any) {

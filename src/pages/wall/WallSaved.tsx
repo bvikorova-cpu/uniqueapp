@@ -26,8 +26,15 @@ export default function WallSaved() {
         .range(0, 49);
       if (!savedData || savedData.length === 0) return [];
       const postIds = savedData.map(s => s.post_id);
-      const { data: posts } = await supabase.from("posts").select(`*, media (*)`).in("id", postIds);
+      const { data: posts, error: postsError } = await supabase.from("posts").select(`*, media (*)`).in("id", postIds);
+      if (postsError) throw postsError;
       if (!posts) return [];
+      // Self-heal: drop bookmarks whose post was deleted so the list never shows phantom entries.
+      const missing = postIds.filter((id) => !posts.some((p: any) => p.id === id));
+      if (missing.length > 0) {
+        await supabase.from("saved_posts").delete().eq("user_id", user.id).in("post_id", missing);
+      }
+      if (posts.length === 0) return [];
       const userIds = Array.from(new Set(posts.map(p => p.user_id)));
       const { data: profiles } = await (supabase as any).from("public_profiles").select("id, full_name, avatar_url").in("id", userIds);
       const profilesMap = new Map<string, any>((profiles || []).map((p: any) => [p.id, p]));
@@ -69,7 +76,16 @@ export default function WallSaved() {
         </div>
       </motion.div>
 
+      <Card className="border-emerald-500/20 bg-emerald-500/5">
+        <CardContent className="p-4 text-xs text-muted-foreground">
+          <strong className="text-foreground">How it works:</strong> Tap the bookmark icon on any post to save it here.
+          Saved posts are private — only you can see this list. Tap the bookmark again on a post to remove it; deleted
+          posts disappear automatically.
+        </CardContent>
+      </Card>
+
       {isLoading ? (
+
         <div className="flex flex-col items-center justify-center py-20 gap-3">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
           <p className="text-sm text-muted-foreground">Loading saved posts...</p>
