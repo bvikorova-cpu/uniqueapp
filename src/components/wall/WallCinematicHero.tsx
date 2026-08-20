@@ -23,7 +23,7 @@ export default function WallCinematicHero({ streak }: WallCinematicHeroProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative overflow-hidden rounded-2xl min-h-[240px] sm:min-h-[320px]"
+        className="relative overflow-hidden rounded-2xl min-h-[340px] sm:min-h-[440px] lg:min-h-[520px]"
       >
         <div className="absolute inset-0 z-0">
           <video
@@ -72,7 +72,7 @@ export default function WallCinematicHero({ streak }: WallCinematicHeroProps) {
           ))}
         </div>
 
-        <div className="relative z-10 p-4 sm:p-6 lg:p-8 flex flex-col justify-end min-h-[240px] sm:min-h-[320px]">
+        <div className="relative z-10 p-4 sm:p-6 lg:p-8 flex flex-col justify-end min-h-[340px] sm:min-h-[440px] lg:min-h-[520px]">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
