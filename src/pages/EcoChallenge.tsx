@@ -483,7 +483,7 @@ export default function EcoChallenge() {
                   <div className="flex items-center gap-2 mb-2">
                     {s.profile?.avatar_url && <img src={s.profile.avatar_url} className="w-8 h-8 rounded-full" alt="" />}
                     <span className="font-semibold">{s.profile?.full_name || s.profile?.username || "Anonymous"}</span>
-                    {proSet.has(s.user_id) && <ChallengeProBadge />}
+                    {proSet.has(s.user_id) && <ChallengeProBadge tier={(proSet as any).tierOf?.(s.user_id) ?? "pro"} />}
                     {s.boosted_until && new Date(s.boosted_until) > new Date() && <Badge variant="secondary">🚀 Boosted</Badge>}
                   </div>
                   <p className="mb-3">{s.description}</p>
@@ -525,7 +525,7 @@ export default function EcoChallenge() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
                             <p className="font-semibold truncate">{r.profile?.full_name || "User"}</p>
-                            {proSet.has(r.user_id) && <ChallengeProBadge compact />}
+                            {proSet.has(r.user_id) && <ChallengeProBadge compact tier={(proSet as any).tierOf?.(r.user_id) ?? "pro"} />}
                           </div>
                           <p className="text-xs text-muted-foreground">{r.days_completed} days · {r.total_votes} votes</p>
                         </div>
