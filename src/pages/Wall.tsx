@@ -828,7 +828,17 @@ const Feed = () => {
                       onRetry={() => fetchPosts(false)}
                       onLoadMore={() => fetchPosts(true)}
                       onDelete={fetchPosts}
+                      emptyMessage={
+                        feedTab === "friends"
+                          ? "None of your friends has posted yet."
+                          : feedTab === "following"
+                          ? "The people you follow haven't posted yet."
+                          : feedTab === "trending"
+                          ? "No trending posts in the last 7 days."
+                          : undefined
+                      }
                     />
+
 
                   </div>
 
