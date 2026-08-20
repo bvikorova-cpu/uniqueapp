@@ -4,9 +4,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Plus, X, MessageCircle } from "lucide-react";
+import { Plus, X, MessageCircle, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 interface NoteRow {
   id: string;
@@ -24,6 +25,7 @@ export const NotesBar = () => {
   const { toast } = useToast();
   const [notes, setNotes] = useState<NoteRow[]>([]);
   const [me, setMe] = useState<string | null>(null);
+  const [myProfile, setMyProfile] = useState<{ full_name: string | null; avatar_url: string | null } | null>(null);
   const [open, setOpen] = useState(false);
   const [content, setContent] = useState("");
   const [emoji, setEmoji] = useState("💭");
@@ -50,8 +52,21 @@ export const NotesBar = () => {
   }, []);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setMe(data.user?.id ?? null));
-    load();
+    const init = async () => {
+      const { data: authData } = await supabase.auth.getUser();
+      const userId = authData.user?.id ?? null;
+      setMe(userId);
+      if (userId) {
+        const { data: profile } = await (supabase as any)
+          .from("profiles_public")
+          .select("full_name, avatar_url")
+          .eq("id", userId)
+          .single();
+        setMyProfile(profile ?? null);
+      }
+      load();
+    };
+    init();
   }, [load]);
 
   const submit = async () => {
@@ -83,25 +98,43 @@ export const NotesBar = () => {
   return (
     <>
       <div className="glass-post-card p-3">
-        <p className="mb-2 text-[11px] leading-snug text-muted-foreground">
-          <span className="font-semibold text-foreground">24h notes</span> — a short
-          text status (max 280 characters) with an emoji. It appears above the feed
-          for everyone and disappears automatically after 24 hours. Tap a bubble to
-          read the full text; tap your own note to read or delete it.
-        </p>
+        <TooltipProvider>
+          <div className="flex items-center gap-1.5 mb-2">
+            <span className="text-[11px] font-semibold text-foreground">24h notes</span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button type="button" className="p-1 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors shrink-0" aria-label="What are 24h notes?">
+                  <Info className="w-3.5 h-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[220px] text-xs">
+                A short text status (max 280 characters) with an emoji. It appears above the feed for everyone and disappears automatically after 24 hours. Tap a bubble to read the full text; tap your own note to read or delete it.
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
         <div className="flex gap-3 overflow-x-auto pb-1">
           {/* Add / my note */}
           <button
             onClick={() => (myNote ? setViewing(myNote) : setOpen(true))}
             className="flex flex-col items-center gap-1 w-20 shrink-0"
           >
-            <div className="relative h-16 w-16 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 ring-2 ring-primary/40 flex items-center justify-center">
-              {myNote ? (
-                <span className="text-2xl">{myNote.emoji || "💭"}</span>
+            <div className="relative">
+              {myNote || myProfile?.avatar_url ? (
+                <Avatar className="h-16 w-16 ring-2 ring-primary/40">
+                  <AvatarImage src={myProfile?.avatar_url ?? undefined} />
+                  <AvatarFallback>{myProfile?.full_name?.charAt(0) ?? "U"}</AvatarFallback>
+                </Avatar>
               ) : (
-                <Plus className="h-6 w-6 text-primary" />
+                <div className="relative h-16 w-16 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 ring-2 ring-primary/40 flex items-center justify-center">
+                  <Plus className="h-6 w-6 text-primary" />
+                </div>
               )}
-              {!myNote && (
+              {myNote ? (
+                <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-background border border-border flex items-center justify-center text-sm">
+                  {myNote.emoji || "💭"}
+                </div>
+              ) : (
                 <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs">
                   +
                 </div>
