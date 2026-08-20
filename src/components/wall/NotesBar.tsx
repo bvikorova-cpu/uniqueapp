@@ -123,11 +123,11 @@ export const NotesBar = () => {
                 </div>
               )}
               {myNote ? (
-                <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-background border border-border flex items-center justify-center text-sm">
+                <div className="absolute -bottom-1 -right-1 h-7 w-7 rounded-full bg-background border border-border flex items-center justify-center text-base">
                   {myNote.emoji || "💭"}
                 </div>
               ) : (
-                <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs">
+                <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm">
                   +
                 </div>
               )}
@@ -150,7 +150,7 @@ export const NotesBar = () => {
                     <AvatarImage src={n.profile?.avatar_url ?? undefined} />
                     <AvatarFallback>{n.profile?.full_name?.charAt(0) ?? "U"}</AvatarFallback>
                   </Avatar>
-                  <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-background border border-border flex items-center justify-center text-sm">
+                  <div className="absolute -bottom-1 -right-1 h-7 w-7 rounded-full bg-background border border-border flex items-center justify-center text-base">
                     {n.emoji || "💭"}
                   </div>
                 </div>
