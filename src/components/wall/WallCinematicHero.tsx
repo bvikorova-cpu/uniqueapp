@@ -35,31 +35,6 @@ export default function WallCinematicHero({ streak }: WallCinematicHeroProps) {
         </div>
 
         <div className="relative z-10 p-4 sm:p-6 lg:p-8 flex flex-col justify-end min-h-[240px] sm:min-h-[320px]">
-          <div className="flex flex-wrap items-center gap-2 mb-4">
-            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
-              <Badge className="bg-gradient-to-r from-orange-500 to-coral-500 text-white font-bold border-orange-400/50 shadow-lg shadow-orange-500/20">
-                <TrendingUp className="h-3 w-3 mr-1" /> Vibrant Community
-              </Badge>
-            </motion.div>
-            {streak > 0 && (
-              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.3, type: "spring" }}>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button type="button">
-                      <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-400/50 cursor-pointer">
-                        <Flame className="h-3 w-3 mr-1" /> Personal · {streak} Day Streak
-                        <Info className="h-3 w-3 ml-1 opacity-70" />
-                      </Badge>
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent side="bottom" className="max-w-[240px] text-center text-xs">
-                    {t("wall.tooltip.streak")}
-                  </PopoverContent>
-                </Popover>
-              </motion.div>
-            )}
-          </div>
-
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
