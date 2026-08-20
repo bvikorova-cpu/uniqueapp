@@ -11,6 +11,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
 import { useStories } from "@/hooks/useStories";
 import { motion, AnimatePresence } from "framer-motion";
 import { StoryAnalyticsPanel } from "@/components/story/StoryAnalyticsPanel";
+import { StoryInteractions } from "@/components/story/StoryInteractions";
 import { useAuth } from "@/contexts/AuthContext";
 import { showMonetagRewarded, trackMonetagEvent, MONETAG_ZONES } from "@/lib/monetag";
 import { supabase } from "@/integrations/supabase/client";
@@ -311,29 +312,35 @@ export const StoriesBar = () => {
               )
             )}
 
-            {viewingStory.caption && (
-              <div className="absolute bottom-20 left-4 right-4 text-white text-center text-lg font-medium drop-shadow-lg z-10">
-                {viewingStory.caption}
-              </div>
-            )}
+            {/* Bottom overlay: caption + interactions */}
+            <div className="absolute bottom-0 left-0 right-0 z-20 pb-[max(1rem,env(safe-area-inset-bottom))] pt-10 px-4 bg-gradient-to-t from-black/85 via-black/50 to-transparent">
+              {viewingStory.caption && (
+                <p className="text-white text-base font-medium drop-shadow-lg mb-3 max-w-2xl">
+                  {viewingStory.caption}
+                </p>
+              )}
 
-            {isOwnStory && (
-              <>
-                <button
-                  className="absolute bottom-4 right-4 z-20 w-12 h-12 rounded-full bg-red-600/90 hover:bg-red-600 flex items-center justify-center text-white shadow-lg"
-                  onClick={(e) => { e.stopPropagation(); setConfirmDelete(true); }}
-                  aria-label="Delete story"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
-                <div
-                  className="absolute bottom-4 left-4 right-20 max-w-md z-20"
-                  onClick={(e) => e.stopPropagation()}
-                >
+              <div className="flex items-end gap-3">
+                <div className="flex-1 min-w-0">
+                  <StoryInteractions storyId={viewingStory.id} authorId={viewingStory.user_id} />
+                </div>
+                {isOwnStory && (
+                  <button
+                    className="shrink-0 w-11 h-11 rounded-full bg-red-600/90 hover:bg-red-600 flex items-center justify-center text-white shadow-lg"
+                    onClick={(e) => { e.stopPropagation(); setConfirmDelete(true); }}
+                    aria-label="Delete story"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                )}
+              </div>
+
+              {isOwnStory && (
+                <div className="mt-3 max-w-md" onClick={(e) => e.stopPropagation()}>
                   <StoryAnalyticsPanel storyId={viewingStory.id} />
                 </div>
-              </>
-            )}
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
