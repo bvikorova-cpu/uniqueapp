@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Sparkles, Save, User as UserIcon, BookText, Wrench, Link2, Shield, X, Eye, EyeOff } from "lucide-react";
+import { canonicalUrl } from "@/lib/canonicalUrl";
 import { fileToDataUrl, normalizeImageForUpload } from "@/utils/imageUploadPrep";
 
 import { EditProfileHero } from "@/components/profile/edit/EditProfileHero";

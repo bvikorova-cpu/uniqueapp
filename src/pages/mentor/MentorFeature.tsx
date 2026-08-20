@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { mentorCall, useMentor, useMentorMutation, useMentorPremium } from "@/hooks/useMentorRouter";
 import { toast } from "sonner";
 import { ArrowLeft, Send, Plus, Check, Copy, Crown } from "lucide-react";
+import { canonicalUrl } from "@/lib/canonicalUrl";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const __HIW_MENTORFEATURE_STEPS = [
