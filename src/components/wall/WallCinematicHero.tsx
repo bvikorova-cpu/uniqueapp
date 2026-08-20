@@ -1,17 +1,10 @@
-import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { Badge } from "@/components/ui/badge";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { Globe, TrendingUp, Flame, Info } from "lucide-react";
-import heroVideo from "@/assets/wall-hero.mp4.asset.json";
 
 interface WallCinematicHeroProps {
   streak: number;
 }
 
 export default function WallCinematicHero({ streak }: WallCinematicHeroProps) {
-  const { t } = useTranslation();
-
   return (
     <div className="space-y-4 mb-6">
       <motion.div
@@ -21,45 +14,25 @@ export default function WallCinematicHero({ streak }: WallCinematicHeroProps) {
         className="relative overflow-hidden rounded-2xl min-h-[240px] sm:min-h-[320px]"
       >
         <div className="absolute inset-0 z-0">
-          <video
-            src={heroVideo.url}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover"
-            style={{ filter: "brightness(0.8) saturate(1.15)" }}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(135deg, #7c3aed 0%, #a855f7 25%, #ec4899 60%, #f43f5e 100%)",
+            }}
+          />
+          <div
+            className="absolute inset-0 opacity-40"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 20% 30%, rgba(255,255,255,0.35) 0%, transparent 35%), radial-gradient(circle at 80% 70%, rgba(255,255,255,0.25) 0%, transparent 40%)",
+            }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1a0f0a]/90 via-[#1a0f0a]/40 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-orange-900/20 via-transparent to-teal-900/20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 via-transparent to-pink-900/20" />
         </div>
 
         <div className="relative z-10 p-4 sm:p-6 lg:p-8 flex flex-col justify-end min-h-[240px] sm:min-h-[320px]">
-          <div className="flex flex-wrap items-center gap-2 mb-4">
-            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
-              <Badge className="bg-gradient-to-r from-orange-500 to-coral-500 text-white font-bold border-orange-400/50 shadow-lg shadow-orange-500/20">
-                <TrendingUp className="h-3 w-3 mr-1" /> Vibrant Community
-              </Badge>
-            </motion.div>
-            {streak > 0 && (
-              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.3, type: "spring" }}>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button type="button">
-                      <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-400/50 cursor-pointer">
-                        <Flame className="h-3 w-3 mr-1" /> Personal · {streak} Day Streak
-                        <Info className="h-3 w-3 ml-1 opacity-70" />
-                      </Badge>
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent side="bottom" className="max-w-[240px] text-center text-xs">
-                    {t("wall.tooltip.streak")}
-                  </PopoverContent>
-                </Popover>
-              </motion.div>
-            )}
-          </div>
-
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
