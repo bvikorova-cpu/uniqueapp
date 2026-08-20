@@ -762,6 +762,8 @@ const App = () => {
                         <Route path="/admin/verifications" element={<ProtectedRoute requireAdmin={true}><AdminVerifications /></ProtectedRoute>} />
                         <Route path="/admin/bazaar-trust" element={<ProtectedRoute requireAdmin={true}><AdminBazaarTrust /></ProtectedRoute>} />
                         <Route path="/admin/club-shipping" element={<ProtectedRoute requireAdmin={true}><AdminClubShipping /></ProtectedRoute>} />
+                        <Route path="/admin/challenge-subscribers" element={<ProtectedRoute requireAdmin={true}><AdminChallengeSubscribers /></ProtectedRoute>} />
+                        <Route path="/admin/challenge-subs" element={<ProtectedRoute requireAdmin={true}><AdminChallengeSubscribers /></ProtectedRoute>} />
                         <Route path="/influ-king" element={<InfluKing />} />
                         <Route path="/influ-king/ppv/:id" element={<PPVPost />} />
                         <Route path="/paid-message/success" element={<PaidMessageSuccess />} />
