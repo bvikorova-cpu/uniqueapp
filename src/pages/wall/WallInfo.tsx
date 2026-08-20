@@ -73,11 +73,13 @@ export default function WallInfo() {
       icon: <MessageCircle className="h-5 w-5" />,
       features: [
         { name: "Real-time Messaging", description: "Instant messaging with real-time updates and typing indicators.", icon: <MessageCircle className="h-4 w-4" /> },
-        { name: "AI Smart Reply", description: "AI-generated smart reply suggestions based on context (1 credit).", icon: <Zap className="h-4 w-4" /> },
-        { name: "Conversation Summarizer", description: "AI summarization of long conversations with key points (5 credits).", icon: <MessageSquare className="h-4 w-4" /> },
+        { name: "AI Smart Reply", description: "AI-generated reply suggestions based on the conversation (3 credits).", icon: <Zap className="h-4 w-4" /> },
+        { name: "Conversation Summarizer", description: "AI summary of long conversations with key points (3 credits).", icon: <MessageSquare className="h-4 w-4" /> },
         { name: "Voice Messages", description: "Record and send voice messages in conversations.", icon: <Mic className="h-4 w-4" /> },
         { name: "Media Sharing", description: "Share photos, videos, and files in conversations.", icon: <Image className="h-4 w-4" /> },
+        { name: "Custom Emojis", description: "Use your own custom emojis in messages, posts and comments.", icon: <Smile className="h-4 w-4" /> },
         { name: "Message Reactions", description: "React to messages with emojis.", icon: <ThumbsUp className="h-4 w-4" /> },
+        { name: "Last Seen & Presence", description: "Real presence status and accurate last-seen time for every user.", icon: <Eye className="h-4 w-4" /> },
         { name: "Read Receipts", description: "See when messages have been read.", icon: <Eye className="h-4 w-4" /> },
       ] },
     {
