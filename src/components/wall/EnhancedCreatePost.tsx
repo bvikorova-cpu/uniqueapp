@@ -57,6 +57,7 @@ import { AIContentAssistant } from "./AIContentAssistant";
 import { AnimatePresence } from "framer-motion";
 import { useHashtags } from "@/hooks/useHashtags";
 import { usePolls } from "@/hooks/usePolls";
+import { MyCustomEmojis } from "@/components/common/MyCustomEmojis";
 
 interface EnhancedCreatePostProps {
   onPostCreated: () => void;
