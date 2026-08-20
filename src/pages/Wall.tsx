@@ -915,6 +915,8 @@ const Feed = () => {
           </div>
         </div>
 
+        {/* Floating new post button (mobile) */}
+        <WallComposer onPostCreated={fetchPosts} userProfile={userProfile} />
       </div>
     </div>
   );
