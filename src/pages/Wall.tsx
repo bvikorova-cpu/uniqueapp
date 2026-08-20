@@ -614,7 +614,7 @@ const Feed = () => {
 
 
     return filtered;
-  }, [feedItems, searchQuery, feedTab, friendIds, followingIds, verifiedOnly]);
+  }, [feedItems, searchQuery, feedTab, friendIds, followingIds, verifiedOnly, mutedIds, mutedWords, closeFriendOfIds, user?.id]);
 
 
   const location = useLocation();
