@@ -10,7 +10,7 @@ import { startWallTrace,
   tracedRpc } from "@/utils/wallPerf";
 import { User } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
-import UserSearch from "@/components/feed/UserSearch";
+
 
 import { Loader2, Home, ArrowUp, Wand2, Flame, Trophy, Award, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
