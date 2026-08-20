@@ -15,6 +15,7 @@ interface WallFeedProps {
   onRetry: () => void;
   onLoadMore: () => void;
   onDelete: () => void;
+  emptyMessage?: string;
 }
 
 /**
@@ -28,7 +29,8 @@ const WallFeed = ({ items,
   feedError,
   onRetry,
   onLoadMore,
-  onDelete }: WallFeedProps) => {
+  onDelete,
+  emptyMessage }: WallFeedProps) => {
   useEffect(() => {
     if (items.length > 0) markWallFirstPaint();
   }, [items.length]);
@@ -58,7 +60,7 @@ const WallFeed = ({ items,
   if (items.length === 0) {
     return (
       <Card className="p-6 sm:p-8 text-center text-sm sm:text-base text-muted-foreground">
-        No posts found. Try adjusting your filters.
+        {emptyMessage ?? "No posts found. Try adjusting your filters."}
       </Card>
     );
   }
