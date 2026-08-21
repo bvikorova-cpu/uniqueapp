@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+import { useJobsCredits, JOBS_CREDIT_COSTS } from "@/hooks/useJobsCredits";
 
 const HOW_STEPS_JOBBOOST = [
   { title: "Pick the job", desc: "Select an active post to boost." },
@@ -106,11 +107,11 @@ export default function JobBoost() {
                 <div className={`p-2 rounded-lg bg-gradient-to-br ${t.color} w-fit`}><Icon className="h-5 w-5 text-white" /></div>
                 <div>
                   <p className="font-black">{t.label}</p>
-                  <p className="text-2xl font-black">€{t.price}</p>
+                  <p className="text-2xl font-black">{t.credits} credits</p>
                   <p className="text-xs text-muted-foreground">{t.days} days · {t.desc}</p>
                 </div>
                 <Button className="w-full" onClick={() => buy(t)} disabled={loading === t.tier}>
-                  {loading === t.tier ? <Loader2 className="h-4 w-4 animate-spin" /> : "Buy"}
+                  {loading === t.tier ? <Loader2 className="h-4 w-4 animate-spin" /> : `Boost for ${t.credits} credits`}
                 </Button>
               </CardContent>
             </Card>
@@ -124,7 +125,7 @@ export default function JobBoost() {
           {history.map(h => (
             <div key={h.id} className="flex justify-between text-xs py-1 border-b last:border-0">
               <span>{h.boost_tier} · {h.duration_days}d</span>
-              <span className="font-bold">€{h.amount_eur} · {h.status}</span>
+              <span className="font-bold">{h.status}</span>
             </div>
           ))}
         </CardContent></Card>
