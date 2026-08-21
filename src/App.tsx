@@ -313,7 +313,6 @@ import { ResetPassword,
   CreativeForge,
   Jobs,
   JobDetailPage,
-  JobPostSuccess,
   SavedJobs,
   ApplicationTracker,
   JobAlerts,
@@ -713,7 +712,7 @@ const App = () => {
                         <Route path="/games" element={<Games />} />
                         <Route path="/games-hub" element={<GamesHub />} />
                         <Route path="/jobs" element={<Jobs />} />
-                        <Route path="/jobs/post/success" element={<JobPostSuccess />} />
+                        <Route path="/jobs/post/success" element={<Navigate to="/jobs" replace />} />
                         <Route path="/jobs/listing/:slug" element={<JobDetailPage />} />
                         <Route path="/jobs/saved" element={<ProtectedRoute><SavedJobs /></ProtectedRoute>} />
                         <Route path="/jobs/applications" element={<ProtectedRoute><ApplicationTracker /></ProtectedRoute>} />
