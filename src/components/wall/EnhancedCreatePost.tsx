@@ -605,12 +605,44 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                 <TooltipContent>Voice Note</TooltipContent>
               </Tooltip>
 
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="flex-shrink-0 flex-col h-auto py-1 px-1 hover:bg-indigo-500/10 rounded-lg transition-all group"
+                    onClick={() => setShowMusic((v) => !v)}
+                  >
+                    <div className="p-1 rounded-full bg-indigo-500/10 group-hover:bg-indigo-500/20 transition-all">
+                      <Music className="h-3.5 w-3.5 text-indigo-600" />
+                    </div>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Music</TooltipContent>
+              </Tooltip>
+
               <AIContentAssistant
                 content={content}
                 onInsertContent={(text) => setContent((prev) => prev + " " + text)}
               />
             </div>
           </TooltipProvider>
+
+          {showMusic && (
+            <div className="mt-3">
+              <MusicShareInput
+                onShare={(track) => {
+                  if (track.externalUrl) {
+                    setContent((prev) => (prev ? `${prev}\n🎵 ${track.externalUrl}` : `🎵 ${track.externalUrl}`));
+                  }
+                  setShowMusic(false);
+                  toast({ title: "Music added", description: "The track link was added to your post." });
+                }}
+              />
+            </div>
+          )}
+
 
 
           {/* Poll preview */}
