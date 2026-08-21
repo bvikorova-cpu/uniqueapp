@@ -57,7 +57,7 @@ export function WorkHero() {
           transition={{ delay: 0.1 }}
           className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tight bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent"
         >
-          Work
+          Workplace
         </motion.h1>
 
         <motion.p
