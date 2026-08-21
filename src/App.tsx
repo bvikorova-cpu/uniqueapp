@@ -859,10 +859,10 @@ const App = () => {
                         <Route path="/kitchenstars/recipes" element={<Navigate to="/masterchef/recipe-feed" replace />} />
                         <Route path="/kitchenstars/my-cookbook" element={<Navigate to="/masterchef" replace />} />
                         <Route path="/bazaar/create" element={<BazaarCreate />} />
-                        <Route path="/promotions" element={<PromotionsBoard />} />
-                        <Route path="/promotions/new" element={<PromotionsCreate />} />
-                        <Route path="/promotions/success" element={<PromotionsSuccess />} />
-                        <Route path="/promotions/mine" element={<MyPromotions />} />
+                        <Route path="/promotions" element={<ProtectedRoute><PromotionsBoard /></ProtectedRoute>} />
+                        <Route path="/promotions/new" element={<ProtectedRoute><PromotionsCreate /></ProtectedRoute>} />
+                        <Route path="/promotions/success" element={<ProtectedRoute><PromotionsSuccess /></ProtectedRoute>} />
+                        <Route path="/promotions/mine" element={<ProtectedRoute><MyPromotions /></ProtectedRoute>} />
                         <Route path="/bazaar/saved-searches" element={<BazaarSavedSearches />} />
                         <Route path="/bazaar/my" element={<ProtectedRoute><BazaarMy /></ProtectedRoute>} />
                         <Route path="/investment/portfolio" element={<InvestmentPortfolio />} />
