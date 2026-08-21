@@ -45,6 +45,8 @@ const applicationSchema = z.object({ cover_letter: z.string().trim().min(20, "Co
     "Resume URL must be https and from a trusted host (Drive, Dropbox, LinkedIn, GitHub, …) or a direct .pdf"
   ) });
 import { ResumeManagerDialog } from "@/components/jobs/ResumeManagerDialog";
+import { AICVGeneratorDialog } from "@/components/jobs/AICVGeneratorDialog";
+
 import CandidateSearchProfileDialog from "@/components/jobs/CandidateSearchProfileDialog";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
