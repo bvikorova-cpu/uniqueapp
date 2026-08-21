@@ -1,29 +1,17 @@
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
-import { Briefcase, Building2, Users, Globe, TrendingUp, Flame } from "lucide-react";
+import { TrendingUp, Flame } from "lucide-react";
 import heroVideo from "@/assets/jobs-hero.mp4.asset.json";
-import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
-
-function getWeeklyTimeLeft() {
-  const now = new Date();
-  const endOfWeek = new Date(now);
-  endOfWeek.setDate(now.getDate() + (7 - now.getDay()));
-  endOfWeek.setHours(23, 59, 59, 999);
-  const diff = endOfWeek.getTime() - now.getTime();
-  const days = Math.floor(diff / 86400000);
-  const hours = Math.floor((diff % 86400000) / 3600000);
-  return { days, hours };
-}
 
 interface JobsCinematicHeroProps {
-  totalJobs: number;
-  totalCompanies: number;
-  totalApplications: number;
+  totalJobs?: number;
+  totalCompanies?: number;
+  totalApplications?: number;
   streak: number;
 }
 
 export default function JobsCinematicHero({ streak }: JobsCinematicHeroProps) {
+
 
 
   return (
