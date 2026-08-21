@@ -24,7 +24,8 @@ import {
 
   Sparkles,
   BarChart3,
-  Mic
+  Mic,
+  Music
 } from "lucide-react";
 import { Tooltip,
   TooltipContent,
