@@ -232,24 +232,25 @@ export function AICVGeneratorDialog() {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col p-0 sm:p-6">
-        <DialogHeader className="px-6 pt-6 sm:px-0 sm:pt-0 shrink-0">
-          <DialogTitle className="flex items-center gap-2">
+      <DialogContent className="max-w-3xl h-[100dvh] max-h-[100dvh] sm:h-auto sm:max-h-[90vh] overflow-hidden flex flex-col p-0 sm:p-6">
+        <DialogHeader className="px-4 pt-4 pb-2 sm:px-0 sm:pt-0 sm:pb-0 shrink-0">
+          <DialogTitle className="flex items-center gap-2 text-base sm:text-lg">
             <FileSignature className="h-5 w-5 text-primary" />
             AI CV Generator
           </DialogTitle>
-          <DialogDescription>
-            Pick a template, check your personal info and let AI build a complete ATS-ready CV. {CREDITS} credits per CV.
+          <DialogDescription className="text-xs sm:text-sm">
+            Pick a template, check your info and let AI build an ATS-ready CV. {CREDITS} credits per CV.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-6 sm:px-0" style={{ WebkitOverflowScrolling: "touch" }}>
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 sm:px-0" style={{ WebkitOverflowScrolling: "touch" }}>
 
-          <div className="space-y-5 pb-4">
+          <div className="space-y-3 sm:space-y-5 pb-4">
+
             {/* Template picker */}
-            <div className="space-y-2">
-              <Label>CV style / template</Label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label className="text-xs sm:text-sm">CV style / template</Label>
+              <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
                 {TEMPLATES.map((t) => {
                   const active = template === t.id;
                   return (
@@ -257,66 +258,68 @@ export function AICVGeneratorDialog() {
                       key={t.id}
                       type="button"
                       onClick={() => setTemplate(t.id)}
-                      className={`relative text-left rounded-xl border p-3 transition-all ${
+                      className={`relative text-left rounded-lg sm:rounded-xl border p-2 sm:p-3 transition-all ${
                         active ? "border-primary bg-primary/5 shadow-sm" : "border-border hover:border-primary/40"
                       }`}
                     >
                       {active && (
-                        <span className="absolute top-2 right-2 h-5 w-5 rounded-full bg-primary text-primary-foreground grid place-items-center">
-                          <Check className="h-3 w-3" />
+                        <span className="absolute top-1 right-1 sm:top-2 sm:right-2 h-4 w-4 sm:h-5 sm:w-5 rounded-full bg-primary text-primary-foreground grid place-items-center">
+                          <Check className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                         </span>
                       )}
-                      <div className="text-sm font-semibold">{t.name}</div>
-                      <div className="text-[11px] text-muted-foreground">{t.desc}</div>
+                      <div className="text-xs sm:text-sm font-semibold">{t.name}</div>
+                      <div className="text-[10px] sm:text-[11px] text-muted-foreground leading-tight">{t.desc}</div>
                     </button>
                   );
                 })}
               </div>
             </div>
 
+
             {/* Personal info */}
-            <Card className="p-4 space-y-3 bg-muted/30">
-              <div className="flex items-center gap-2 text-sm font-semibold">
-                <User className="h-4 w-4 text-primary" /> Personal info
-                <span className="text-[11px] font-normal text-muted-foreground">(prefilled from your profile — edit anytime)</span>
+            <Card className="p-3 sm:p-4 space-y-2 sm:space-y-3 bg-muted/30">
+              <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold">
+                <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" /> Personal info
+                <span className="text-[10px] sm:text-[11px] font-normal text-muted-foreground">(prefilled — edit anytime)</span>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="space-y-1.5">
-                  <Label>Full name</Label>
-                  <Input value={personal.fullName} onChange={(e) => setPersonal({ ...personal, fullName: e.target.value })} placeholder="Jane Doe" />
+              <div className="grid gap-2 sm:gap-3 sm:grid-cols-2">
+                <div className="space-y-1">
+                  <Label className="text-xs">Full name</Label>
+                  <Input className="h-8 sm:h-10 text-xs sm:text-sm" value={personal.fullName} onChange={(e) => setPersonal({ ...personal, fullName: e.target.value })} placeholder="Jane Doe" />
                 </div>
-                <div className="space-y-1.5">
-                  <Label>Headline</Label>
-                  <Input value={personal.headline} onChange={(e) => setPersonal({ ...personal, headline: e.target.value })} placeholder="Frontend Developer" />
+                <div className="space-y-1">
+                  <Label className="text-xs">Headline</Label>
+                  <Input className="h-8 sm:h-10 text-xs sm:text-sm" value={personal.headline} onChange={(e) => setPersonal({ ...personal, headline: e.target.value })} placeholder="Frontend Developer" />
                 </div>
-                <div className="space-y-1.5">
-                  <Label>Email</Label>
-                  <Input value={personal.email} onChange={(e) => setPersonal({ ...personal, email: e.target.value })} placeholder="you@email.com" />
+                <div className="space-y-1">
+                  <Label className="text-xs">Email</Label>
+                  <Input className="h-8 sm:h-10 text-xs sm:text-sm" value={personal.email} onChange={(e) => setPersonal({ ...personal, email: e.target.value })} placeholder="you@email.com" />
                 </div>
-                <div className="space-y-1.5">
-                  <Label>Phone</Label>
-                  <Input value={personal.phone} onChange={(e) => setPersonal({ ...personal, phone: e.target.value })} placeholder="+00 000 000 000" />
+                <div className="space-y-1">
+                  <Label className="text-xs">Phone</Label>
+                  <Input className="h-8 sm:h-10 text-xs sm:text-sm" value={personal.phone} onChange={(e) => setPersonal({ ...personal, phone: e.target.value })} placeholder="+00 000 000 000" />
                 </div>
-                <div className="space-y-1.5">
-                  <Label>Location</Label>
-                  <Input value={personal.location} onChange={(e) => setPersonal({ ...personal, location: e.target.value })} placeholder="City" />
+                <div className="space-y-1">
+                  <Label className="text-xs">Location</Label>
+                  <Input className="h-8 sm:h-10 text-xs sm:text-sm" value={personal.location} onChange={(e) => setPersonal({ ...personal, location: e.target.value })} placeholder="City" />
                 </div>
-                <div className="space-y-1.5">
-                  <Label>Links</Label>
-                  <Input value={personal.links} onChange={(e) => setPersonal({ ...personal, links: e.target.value })} placeholder="LinkedIn / portfolio" />
+                <div className="space-y-1">
+                  <Label className="text-xs">Links</Label>
+                  <Input className="h-8 sm:h-10 text-xs sm:text-sm" value={personal.links} onChange={(e) => setPersonal({ ...personal, links: e.target.value })} placeholder="LinkedIn / portfolio" />
                 </div>
               </div>
             </Card>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-1.5">
-                <Label>Target role (optional)</Label>
-                <Input placeholder="e.g. Frontend Developer" value={targetRole} onChange={(e) => setTargetRole(e.target.value)} />
+
+            <div className="grid gap-2 sm:gap-4 sm:grid-cols-2">
+              <div className="space-y-1">
+                <Label className="text-xs">Target role (optional)</Label>
+                <Input className="h-8 sm:h-10 text-xs sm:text-sm" placeholder="e.g. Frontend Developer" value={targetRole} onChange={(e) => setTargetRole(e.target.value)} />
               </div>
-              <div className="space-y-1.5">
-                <Label>Tone</Label>
+              <div className="space-y-1">
+                <Label className="text-xs">Tone</Label>
                 <Select value={tone} onValueChange={setTone}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="professional">Professional</SelectItem>
                     <SelectItem value="confident">Confident</SelectItem>
@@ -325,10 +328,10 @@ export function AICVGeneratorDialog() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-1.5">
-                <Label>Language</Label>
+              <div className="space-y-1">
+                <Label className="text-xs">Language</Label>
                 <Select value={language} onValueChange={setLanguage}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="English">English</SelectItem>
                     <SelectItem value="Slovak">Slovak</SelectItem>
@@ -338,18 +341,20 @@ export function AICVGeneratorDialog() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-1.5 sm:col-span-2">
-                <Label>Experience, education & extras</Label>
+              <div className="space-y-1 sm:col-span-2">
+                <Label className="text-xs">Experience, education & extras</Label>
                 <Textarea
-                  rows={4}
-                  placeholder="Describe your work experience, education, certifications and projects — anything not saved in your profile yet…"
+                  rows={3}
+                  className="text-xs sm:text-sm"
+                  placeholder="Describe your work experience, education, certifications and projects…"
                   value={extraNotes}
                   onChange={(e) => setExtraNotes(e.target.value)}
                 />
               </div>
             </div>
 
-            <Button onClick={generate} disabled={loading} className="w-full bg-gradient-to-r from-amber-500 to-yellow-600">
+            <Button onClick={generate} disabled={loading} className="w-full bg-gradient-to-r from-amber-500 to-yellow-600 h-9 sm:h-10 text-sm">
+
               {loading ? (
                 <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Building your CV…</>
               ) : (
@@ -359,34 +364,34 @@ export function AICVGeneratorDialog() {
 
             {markdown && (
               <>
-                <div className="flex flex-wrap gap-2">
-                  <Button size="sm" onClick={downloadPdf} className="bg-primary"><Download className="h-4 w-4 mr-1.5" />Download PDF</Button>
-                  <Button size="sm" variant="outline" onClick={() => setEditing((v) => !v)}>
-                    {editing ? <><Eye className="h-4 w-4 mr-1.5" />Preview</> : <><Pencil className="h-4 w-4 mr-1.5" />Edit sections</>}
+                <div className="flex flex-wrap gap-1.5 sm:gap-2 sticky top-0 z-10 bg-background/95 backdrop-blur py-2 -mx-1 px-1 sm:static sm:bg-transparent sm:p-0">
+                  <Button size="sm" onClick={downloadPdf} className="bg-primary text-xs h-8"><Download className="h-3.5 w-3.5 mr-1" />Download PDF</Button>
+                  <Button size="sm" variant="outline" onClick={() => setEditing((v) => !v)} className="text-xs h-8">
+                    {editing ? <><Eye className="h-3.5 w-3.5 mr-1" />Preview</> : <><Pencil className="h-3.5 w-3.5 mr-1" />Edit</>}
                   </Button>
-                  <Button size="sm" variant="outline" onClick={copy}><Copy className="h-4 w-4 mr-1.5" />Copy</Button>
-                  <Button size="sm" variant="outline" onClick={saveToMyCvs} disabled={saving}>
-                    {saving ? <Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> : <Save className="h-4 w-4 mr-1.5" />}
-                    Save as new version
+                  <Button size="sm" variant="outline" onClick={copy} className="text-xs h-8"><Copy className="h-3.5 w-3.5 mr-1" />Copy</Button>
+                  <Button size="sm" variant="outline" onClick={saveToMyCvs} disabled={saving} className="text-xs h-8">
+                    {saving ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <Save className="h-3.5 w-3.5 mr-1" />}
+                    Save
                   </Button>
                 </div>
 
                 {editing ? (
-                  <div className="space-y-3">
+                  <div className="space-y-2 sm:space-y-3">
                     {sections.map((s, i) => (
-                      <Card key={i} className="p-3 space-y-2">
+                      <Card key={i} className="p-2 sm:p-3 space-y-2">
                         {s.heading ? (
                           <Input
                             value={s.heading}
                             onChange={(e) => updateSection(i, { heading: e.target.value })}
-                            className="font-semibold"
+                            className="font-semibold text-xs sm:text-sm h-8 sm:h-10"
                           />
                         ) : (
-                          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Header (name & contact)</div>
+                          <div className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wide">Header (name & contact)</div>
                         )}
                         <Textarea
                           value={s.body}
-                          rows={Math.min(14, Math.max(3, s.body.split("\n").length + 1))}
+                          rows={Math.min(10, Math.max(3, s.body.split("\n").length + 1))}
                           onChange={(e) => updateSection(i, { body: e.target.value })}
                           className="font-mono text-xs"
                         />
@@ -394,10 +399,10 @@ export function AICVGeneratorDialog() {
                           <Button
                             size="sm"
                             variant="ghost"
-                            className="text-destructive"
+                            className="text-destructive text-xs h-7"
                             onClick={() => setSections((prev) => prev.filter((_, idx) => idx !== i))}
                           >
-                            Remove section
+                            Remove
                           </Button>
                         </div>
                       </Card>
@@ -405,20 +410,22 @@ export function AICVGeneratorDialog() {
                     <Button
                       size="sm"
                       variant="outline"
+                      className="text-xs h-8"
                       onClick={() => setSections((prev) => [...prev, { heading: "New section", body: "" }])}
                     >
                       + Add section
                     </Button>
                   </div>
                 ) : (
-                  <Card className="p-5 bg-card/80">
-                    <div className="prose prose-sm dark:prose-invert max-w-none">
+                  <Card className="p-3 sm:p-5 bg-card/80 max-h-[40vh] sm:max-h-none overflow-y-auto">
+                    <div className="prose prose-xs sm:prose-sm dark:prose-invert max-w-none">
                       <ReactMarkdown>{markdown}</ReactMarkdown>
                     </div>
                   </Card>
                 )}
               </>
             )}
+
           </div>
         </div>
       </DialogContent>

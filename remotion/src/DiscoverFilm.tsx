@@ -459,7 +459,7 @@ const MODULES: Module[] = [
     image: "discover/02-games.jpg",
     accent: "#22d3ee",
     accent2: "#8b5cf6" },
-  { badge: "Work",
+  { badge: "Work place",
     title: "Find a Job.",
     subtitle: "Local & remote gigs. Hire top talent fast.",
     perks: ["Post jobs in minutes", "Verified applicants", "Chat & hire in-app"],
