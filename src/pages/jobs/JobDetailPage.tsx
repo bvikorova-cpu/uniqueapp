@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Briefcase, MapPin, Globe, Clock, DollarSign, Building2, ArrowLeft } from "lucide-react";
 import { SimilarJobs } from "@/components/jobs/SimilarJobs";
+import { JobApplicationDialog } from "@/components/jobs/JobApplicationDialog";
 
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
@@ -181,9 +182,7 @@ export default function JobDetailPage() {
                 </section>
               )}
               <div className="pt-4 border-t">
-                <Button onClick={() => navigate(`/jobs?focus=${job.id}`)} className="w-full md:w-auto">
-                  Apply on Unique Jobs
-                </Button>
+                <JobApplicationDialog jobId={job.id} jobTitle={job.title} companyName={job.company_name} />
               </div>
             </CardContent>
           </Card>
