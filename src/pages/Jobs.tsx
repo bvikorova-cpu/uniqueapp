@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Wand2, FileSignature, ArrowRight, Zap, Briefcase } from "lucide-react";
+import { Sparkles, Wand2, FileSignature, ArrowRight, Zap, Briefcase, Globe2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 import { SEO } from "@/components/SEO";
@@ -10,6 +10,7 @@ import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 import { AICVGeneratorDialog } from "@/components/jobs/AICVGeneratorDialog";
 import { AIJobOptimizer } from "@/components/jobs/AIJobOptimizer";
 import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
+import { WorkHero } from "@/components/jobs/WorkHero";
 import { useAuth } from "@/contexts/AuthContext";
 
 const HOW_IT_WORKS = [
