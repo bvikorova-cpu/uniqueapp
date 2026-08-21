@@ -168,8 +168,23 @@ const Feed = () => {
 
       const fallback = (id: string) => ({ id, full_name: null, avatar_url: null });
 
+      // Attached music (not part of the feed RPC payload) — one extra lookup, merged in.
+      let musicById: Record<string, any> = {};
+      if (postsData.length > 0) {
+        const { data: musicRows } = await supabase
+          .from("posts")
+          .select("id, music_url, music_start_seconds, music_end_seconds")
+          .in("id", postsData.map((p: any) => p.id));
+        for (const row of (musicRows as any[]) || []) {
+          if (row.music_url) musicById[row.id] = row;
+        }
+      }
+
       const postsWithProfiles = postsData.map((post: any) => ({ ...post,
         media: post.media || [],
+        music_url: musicById[post.id]?.music_url ?? null,
+        music_start_seconds: musicById[post.id]?.music_start_seconds ?? 0,
+        music_end_seconds: musicById[post.id]?.music_end_seconds ?? null,
         profiles: post.profiles || fallback(post.user_id) })) as Post[];
 
       const repostsWithData = repostsData
