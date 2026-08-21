@@ -847,11 +847,20 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
         </div>
 
         {/* Content */}
-        {post.content && (
-          <p className="text-base text-foreground mb-4 leading-relaxed whitespace-pre-wrap line-clamp-6">
-            {post.content}
-          </p>
-        )}
+        {(() => {
+          const { text, music } = extractMusic(post.content || "");
+          return (
+            <>
+              {text && (
+                <p className="text-base text-foreground mb-4 leading-relaxed whitespace-pre-wrap line-clamp-6">
+                  {text}
+                </p>
+              )}
+              {music && <PostMusicEmbed music={music} />}
+            </>
+          );
+        })()}
+
 
         {/* Real event attached to this post */}
         {(post as any).event_id && (
