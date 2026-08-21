@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { PostMusicEmbed, extractMusic } from "@/components/wall/PostMusicEmbed";
+import { PostMusicEmbed, extractMusic, parseMusicUrl } from "@/components/wall/PostMusicEmbed";
 
 import { 
   Trash2, 
@@ -673,6 +673,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
                   <video
                     src={post.media[0].file_url}
                     controls
+                    muted={!!(post as any).music_url}
                     className="w-full h-auto"
                     onClick={(e) => e.stopPropagation()}
                   />
@@ -712,6 +713,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
                           <video
                             src={media.file_url}
                             controls
+                            muted={!!(post as any).music_url}
                             className="w-full h-full object-contain"
                             onClick={(e) => e.stopPropagation()}
                           />
@@ -850,7 +852,10 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
 
         {/* Content */}
         {(() => {
+          const attached = parseMusicUrl((post as any).music_url);
           const { text, music } = extractMusic(post.content || "");
+          const track = attached ?? music;
+          const hasMedia = !!(post.media && post.media.length > 0);
           return (
             <>
               {text && (
@@ -858,10 +863,18 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
                   {text}
                 </p>
               )}
-              {music && <PostMusicEmbed music={music} />}
+              {track && (
+                <PostMusicEmbed
+                  music={track}
+                  startSeconds={attached ? Number((post as any).music_start_seconds ?? 0) : 0}
+                  endSeconds={attached ? ((post as any).music_end_seconds ?? null) : null}
+                  compact={hasMedia}
+                />
+              )}
             </>
           );
         })()}
+
 
 
         {/* Real event attached to this post */}

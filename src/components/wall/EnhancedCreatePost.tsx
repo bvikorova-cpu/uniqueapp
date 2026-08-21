@@ -53,7 +53,7 @@ import { HashtagInput } from "./HashtagInput";
 import { TagFriendsDialog } from "./TagFriendsDialog";
 import { VoiceRecorder } from "./VoiceRecorder";
 
-import { MusicShareInput } from "./MusicShareCard";
+import { MusicAttachPanel, type MusicAttachment } from "./MusicAttachPanel";
 import { AIContentAssistant } from "./AIContentAssistant";
 import { AnimatePresence } from "framer-motion";
 import { useHashtags } from "@/hooks/useHashtags";
@@ -102,6 +102,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [showEvent, setShowEvent] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
   const [showMusic, setShowMusic] = useState(false);
+  const [music, setMusic] = useState<MusicAttachment | null>(null);
   const [eventDraft, setEventDraft] = useState<PostEventDraft | null>(null);
 
   const [voiceFile, setVoiceFile] = useState<File | null>(null);
@@ -189,7 +190,10 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           audience: privacy,
           is_sensitive: isSensitive,
           sensitive_reason: isSensitive ? (sensitiveReason.trim() || null) : null,
-          event_id: createdEventId } as any)
+          event_id: createdEventId,
+          music_url: music?.url ?? null,
+          music_start_seconds: music?.startSeconds ?? 0,
+          music_end_seconds: music?.endSeconds ?? null } as any)
         .select()
         .single();
 
@@ -271,6 +275,8 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
       setPollData(null);
       setEventDraft(null);
       setVoiceFile(null);
+      setMusic(null);
+      setShowMusic(false);
       setTaggedFriends([]);
       onPostCreated();
     } catch (error: any) {
@@ -631,17 +637,22 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
 
           {showMusic && (
             <div className="mt-3">
-              <MusicShareInput
-                onShare={(track) => {
-                  if (track.externalUrl) {
-                    setContent((prev) => (prev ? `${prev}\n🎵 ${track.externalUrl}` : `🎵 ${track.externalUrl}`));
+              <MusicAttachPanel
+                value={music}
+                onChange={(m) => {
+                  setMusic(m);
+                  if (m) {
+                    toast({ title: "Music attached", description: "It will play with your post media." });
                   }
-                  setShowMusic(false);
-                  toast({ title: "Music added", description: "The track link was added to your post." });
                 }}
+                previewMediaUrl={previewUrls[0] ?? null}
+                previewMediaType={
+                  files[0] ? (files[0].type.startsWith("video/") ? "video" : "image") : null
+                }
               />
             </div>
           )}
+
 
 
 

@@ -47546,6 +47546,9 @@ export type Database = {
           is_sensitive: boolean
           likes_count: number | null
           location: string | null
+          music_end_seconds: number | null
+          music_start_seconds: number | null
+          music_url: string | null
           privacy: string | null
           reposts_count: number
           scheduled_at: string | null
@@ -47573,6 +47576,9 @@ export type Database = {
           is_sensitive?: boolean
           likes_count?: number | null
           location?: string | null
+          music_end_seconds?: number | null
+          music_start_seconds?: number | null
+          music_url?: string | null
           privacy?: string | null
           reposts_count?: number
           scheduled_at?: string | null
@@ -47600,6 +47606,9 @@ export type Database = {
           is_sensitive?: boolean
           likes_count?: number | null
           location?: string | null
+          music_end_seconds?: number | null
+          music_start_seconds?: number | null
+          music_url?: string | null
           privacy?: string | null
           reposts_count?: number
           scheduled_at?: string | null
@@ -69996,6 +70005,9 @@ export type Database = {
           is_sensitive: boolean
           likes_count: number | null
           location: string | null
+          music_end_seconds: number | null
+          music_start_seconds: number | null
+          music_url: string | null
           privacy: string | null
           reposts_count: number
           scheduled_at: string | null
