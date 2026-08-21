@@ -92,13 +92,15 @@ const Navbar = () => {
     { path: "/wall", label: "Wall", icon: MessageSquare },
     { path: "/games-hub", label: "Games", icon: Gamepad2 },
     { path: "/jobs", label: "Work", icon: Briefcase },
-    { path: "/promotions", label: "Promotions", icon: Megaphone },
+    { path: "/promotions", label: "Promotions", icon: Megaphone, requiresAuth: true },
     { path: "/booking", label: "Booking", icon: Calendar },
     { path: "/services-hub", label: "Services", icon: Scissors },
     { path: "/rewards", label: "Rewards", icon: Trophy },
     { path: "/megatalent", label: "Megatalent", icon: Crown, premium: true },
     
   ];
+
+  const visibleMainNavItems = mainNavItems.filter((item) => !item.requiresAuth || user);
 
   const clipBattlesServices = [
     { path: "/clip-battles", label: "Clip Battles", icon: Film },
@@ -341,7 +343,7 @@ const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {mainNavItems.map((item) => {
+            {visibleMainNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
               
@@ -718,7 +720,7 @@ const Navbar = () => {
             <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground">
               Discover
             </div>
-            {mainNavItems.map((item) => {
+            {visibleMainNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
               const isPremium = 'premium' in item && item.premium;
