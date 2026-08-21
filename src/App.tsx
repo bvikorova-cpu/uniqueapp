@@ -313,37 +313,10 @@ import { ResetPassword,
   CreativeForge,
   Jobs,
   JobDetailPage,
-  SavedJobs,
-  ApplicationTracker,
-  JobAlerts,
-  Companies,
   CompanyProfile,
   CompanyNew,
-  SalaryInsights,
-  InterviewQuestions,
-  EmployerATS,
-  CandidateSearch,
-  JobAnalytics,
-  RejectionTemplates,
-  PersonalizedFeed,
-  JobsMap,
-  Referrals,
-  SkillAssessments,
-  AssessmentTake,
-  CareerPath,
-  MockInterview,
-  VideoResumes,
-  DiversitySelfId,
-  DiversityReports,
   JobBoost,
   AIJobDescriptionWriter,
-  References,
-  BackgroundChecks,
-  Onboarding,
-  JobPostingTemplates,
-  BulkHiring,
-  HeadhunterMarketplace,
-  AICandidateRanking,
   EmployerDashboard,
   EmployerVerification,
   BrandBuilder,
@@ -714,39 +687,11 @@ const App = () => {
                         <Route path="/jobs" element={<Jobs />} />
                         <Route path="/jobs/post/success" element={<Navigate to="/jobs" replace />} />
                         <Route path="/jobs/listing/:slug" element={<JobDetailPage />} />
-                        <Route path="/jobs/saved" element={<ProtectedRoute><SavedJobs /></ProtectedRoute>} />
-                        <Route path="/jobs/applications" element={<ProtectedRoute><ApplicationTracker /></ProtectedRoute>} />
-                        <Route path="/jobs/alerts" element={<ProtectedRoute><JobAlerts /></ProtectedRoute>} />
-                        <Route path="/jobs/companies" element={<Companies />} />
                         <Route path="/jobs/companies/new" element={<ProtectedRoute><CompanyNew /></ProtectedRoute>} />
                         <Route path="/jobs/companies/:slug" element={<CompanyProfile />} />
-                        <Route path="/jobs/salaries" element={<SalaryInsights />} />
-                        <Route path="/jobs/interviews" element={<InterviewQuestions />} />
-                        <Route path="/jobs/candidate-search" element={<ProtectedRoute><CandidateSearch /></ProtectedRoute>} />
-                        <Route path="/jobs/rejection-templates" element={<ProtectedRoute><RejectionTemplates /></ProtectedRoute>} />
-                        <Route path="/jobs/for-you" element={<ProtectedRoute><PersonalizedFeed /></ProtectedRoute>} />
-                        <Route path="/jobs/map" element={<JobsMap />} />
-                        <Route path="/jobs/referrals" element={<ProtectedRoute><Referrals /></ProtectedRoute>} />
-                        <Route path="/jobs/assessments" element={<SkillAssessments />} />
-                        <Route path="/jobs/assessments/:id" element={<ProtectedRoute><AssessmentTake /></ProtectedRoute>} />
-                        <Route path="/jobs/career-path" element={<ProtectedRoute><CareerPath /></ProtectedRoute>} />
-                        <Route path="/jobs/mock-interview" element={<ProtectedRoute><MockInterview /></ProtectedRoute>} />
-                        <Route path="/jobs/video-resumes" element={<ProtectedRoute><VideoResumes /></ProtectedRoute>} />
-                        <Route path="/jobs/diversity/self-id" element={<ProtectedRoute><DiversitySelfId /></ProtectedRoute>} />
-                        <Route path="/jobs/diversity/reports/:jobId?" element={<ProtectedRoute><DiversityReports /></ProtectedRoute>} />
                         <Route path="/jobs/boost/:jobId" element={<ProtectedRoute><JobBoost /></ProtectedRoute>} />
                         <Route path="/jobs/ai-jd-writer" element={<ProtectedRoute><AIJobDescriptionWriter /></ProtectedRoute>} />
-                        <Route path="/jobs/references" element={<ProtectedRoute><References /></ProtectedRoute>} />
-                        <Route path="/jobs/background-checks" element={<ProtectedRoute><BackgroundChecks /></ProtectedRoute>} />
-                        <Route path="/jobs/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
-                        <Route path="/jobs/templates" element={<ProtectedRoute><JobPostingTemplates /></ProtectedRoute>} />
-                        <Route path="/jobs/bulk-hiring" element={<ProtectedRoute><BulkHiring /></ProtectedRoute>} />
-                        <Route path="/jobs/headhunters" element={<HeadhunterMarketplace />} />
-                        <Route path="/jobs/ai-ranking/:jobId" element={<ProtectedRoute><AICandidateRanking /></ProtectedRoute>} />
-                        <Route path="/jobs/ats/:jobId" element={<ProtectedRoute><EmployerATS /></ProtectedRoute>} />
-                        <Route path="/jobs/analytics/:jobId" element={<ProtectedRoute><JobAnalytics /></ProtectedRoute>} />
                         <Route path="/employer-dashboard" element={<ProtectedRoute><EmployerDashboard /></ProtectedRoute>} />
-                        <Route path="/employer-verification" element={<ProtectedRoute><EmployerVerification /></ProtectedRoute>} />
                         <Route path="/admin/verifications" element={<ProtectedRoute requireAdmin={true}><AdminVerifications /></ProtectedRoute>} />
                         <Route path="/admin/bazaar-trust" element={<ProtectedRoute requireAdmin={true}><AdminBazaarTrust /></ProtectedRoute>} />
                         <Route path="/admin/club-shipping" element={<ProtectedRoute requireAdmin={true}><AdminClubShipping /></ProtectedRoute>} />

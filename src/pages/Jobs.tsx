@@ -1,763 +1,145 @@
-import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Sparkles, Wand2, FileSignature, ArrowRight, Zap, Briefcase } from "lucide-react";
+import { motion } from "framer-motion";
 
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
-import { useDebounce } from "@/hooks/use-debounce";
-import { z } from "zod";
-import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe, Wrench, Flame, Trophy, Medal, Zap, Bookmark, ListChecks, Bell, HelpCircle, Users, Sparkles, Map as MapIcon } from "lucide-react";
-
-// PostgREST .or() escape: comma, parens, and quotes break the parser and
-// can also be abused for injection-style filter manipulation.
-const escapeOrTerm = (s: string) => s.replace(/[\\,()"%*]/g, "\\$&");
-
-// Resume URL whitelist: https only + trusted hosts to block phishing/SSRF.
-const RESUME_HOST_WHITELIST = [
-  "drive.google.com", "docs.google.com", "dropbox.com", "www.dropbox.com",
-  "onedrive.live.com", "1drv.ms", "linkedin.com", "www.linkedin.com",
-  "github.com", "gitlab.com", "notion.so", "www.notion.so",
-  "icloud.com", "box.com", "app.box.com", "read.cv", "standardresume.co",
-];
-const isAllowedResumeUrl = (raw: string): boolean => {
-  if (!raw) return true;
-  try {
-    const u = new URL(raw);
-    if (u.protocol !== "https:") return false;
-    const host = u.hostname.toLowerCase();
-    if (host.endsWith(".pdf")) return true;
-    return RESUME_HOST_WHITELIST.some((h) => host === h || host.endsWith("." + h)) ||
-           u.pathname.toLowerCase().endsWith(".pdf");
-  } catch {
-    return false;
-  }
-};
-
-const applicationSchema = z.object({ cover_letter: z.string().trim().min(20, "Cover letter must be at least 20 characters").max(5000, "Cover letter must be under 5000 characters"),
-  resume_url: z.string().trim().max(500, "Resume URL too long").refine(
-    (v) => v === "" || isAllowedResumeUrl(v),
-    "Resume URL must be https and from a trusted host (Drive, Dropbox, LinkedIn, GitHub, …) or a direct .pdf"
-  ) });
-import { ResumeManagerDialog } from "@/components/jobs/ResumeManagerDialog";
-import { AICVGeneratorDialog } from "@/components/jobs/AICVGeneratorDialog";
-
-import CandidateSearchProfileDialog from "@/components/jobs/CandidateSearchProfileDialog";
-import { HowItWorksButton } from "@/components/common/HowItWorksButton";
-
-const JOBS_HOW_IT_WORKS = [
-  { title: "Search and filter jobs", desc: "Use the search bar and filters (location, salary, remote, hot deals) to narrow down open roles." },
-  { title: "Open a job detail", desc: "Tap a job card to see the full description, company info, salary range and required skills." },
-  { title: "Apply with cover letter + resume", desc: "Click Apply, write a cover letter (min. 20 chars) and paste an https resume link (Drive, Dropbox, LinkedIn, GitHub, PDF)." },
-  { title: "Track your applications", desc: "Open the Application Tracker tab to see status changes for every job you applied to." },
-  { title: "Save jobs for later", desc: "Bookmark a job to find it in Saved Jobs. Turn on Job Alerts to get notified about new matching roles." },
-  { title: "Employers: Post & manage", desc: "Companies can post jobs, use the AI JD writer, rank candidates, run assessments and boost visibility." },
-];
-import { JobsPushButton } from "@/components/jobs/JobsPushButton";
-import { SaveJobButton } from "@/components/jobs/SaveJobButton";
-import { MatchScoreBadge } from "@/components/jobs/MatchScoreBadge";
-import { CoverLetterDialog } from "@/components/jobs/CoverLetterDialog";
-import JobsCinematicHero from "@/components/jobs/JobsCinematicHero";
-import { JobsHeroSection } from "@/components/jobs/JobsHeroSection";
-import { QuickFilterChips } from "@/components/jobs/QuickFilterChips";
-import { JobsSidebar } from "@/components/jobs/JobsSidebar";
-import { JobCardRedesigned } from "@/components/jobs/JobCardRedesigned";
-import { User as SupabaseUser } from "@supabase/supabase-js";
-import { JobPreferencesDialog } from "@/components/jobs/JobPreferencesDialog";
-import { JobAIAssistant } from "@/components/jobs/JobAIAssistant";
-
-import { OneClickApplyDialog } from "@/components/jobs/OneClickApplyDialog";
-import { AIJobOptimizer } from "@/components/jobs/AIJobOptimizer";
-import { WorkUserGuide } from "@/components/work/WorkUserGuide";
-import { ReportJobDialog } from "@/components/jobs/ReportJobDialog";
-
-import { useNavigate } from "react-router-dom";
-import JobsToolsGrid from "@/components/jobs/JobsToolsGrid";
-import JobsApplicationStreaks from "@/components/jobs/JobsApplicationStreaks";
-import JobsSkillLeaderboard from "@/components/jobs/JobsSkillLeaderboard";
-import JobsCareerAchievements from "@/components/jobs/JobsCareerAchievements";
 import { SEO } from "@/components/SEO";
-import JobsWeeklyChallenges from "@/components/jobs/JobsWeeklyChallenges";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+import { AICVGeneratorDialog } from "@/components/jobs/AICVGeneratorDialog";
+import { AIJobOptimizer } from "@/components/jobs/AIJobOptimizer";
+import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
+import { useAuth } from "@/contexts/AuthContext";
 
-import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-interface JobListing {
-  id: string;
-  title: string;
-  description: string;
-  company_name: string;
-  location: string;
-  country: string;
-  category: string;
-  job_type: string;
-  salary_min: number | null;
-  salary_max: number | null;
-  salary_currency: string;
-  requirements: string | null;
-  benefits: string | null;
-  contact_email: string;
-  applications_count: number;
-  created_at: string;
-}
-
-const CATEGORIES = { it_software: "IT & Software",
-  marketing_sales: "Marketing & Sales",
-  finance_accounting: "Finance & Accounting",
-  healthcare: "Healthcare",
-  education: "Education",
-  engineering: "Engineering",
-  hospitality: "Hospitality",
-  retail: "Retail",
-  manufacturing: "Manufacturing",
-  construction: "Construction",
-  transportation: "Transportation",
-  other: "Other" };
-
-const JOB_TYPES = { full_time: "Full Time",
-  part_time: "Part Time",
-  contract: "Contract",
-  internship: "Internship",
-  remote: "Remote" };
-
-type ActiveTab = "jobs" | "companies" | "map" | "saved" | "applications" | "tools" | "streaks" | "leaderboard" | "achievements" | "challenges";
-
-const TABS: { id: ActiveTab; label: string; icon: typeof Briefcase; route?: string }[] = [
-  { id: "jobs", label: "Jobs", icon: Briefcase },
-  { id: "companies", label: "Companies", icon: Building2, route: "/jobs/companies" },
-  { id: "map", label: "Map", icon: MapIcon, route: "/jobs/map" },
-  { id: "saved", label: "Saved", icon: Bookmark, route: "/jobs/saved" },
-  { id: "applications", label: "Applications", icon: ListChecks, route: "/jobs/applications" },
-  { id: "tools", label: "AI Tools", icon: Wrench },
-  { id: "streaks", label: "Streaks", icon: Flame },
-  { id: "leaderboard", label: "Ranks", icon: Trophy },
-  { id: "achievements", label: "Badges", icon: Medal },
-  { id: "challenges", label: "Challenges", icon: Zap },
+const HOW_IT_WORKS = [
+  { title: "Pick an AI tool", desc: "Choose the tool that matches what you need right now." },
+  { title: "Fill a few details", desc: "Add the job title, your resume text, or the role you want." },
+  { title: "Pay with credits", desc: "Each tool costs a few AI credits — no subscriptions needed." },
+  { title: "Get results instantly", desc: "Download, copy, or save the generated content." },
 ];
 
-const Jobs = () => {
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
+const TOOLS = [
+  {
+    id: "post-job",
+    title: "Post a Job",
+    short: "Post Job",
+    desc: "Publish a job listing and pay with AI credits. Choose 7, 14 or 30-day visibility and add your contact email.",
+    icon: Briefcase,
+    credits: 3,
+    color: "from-emerald-500 to-teal-600",
+    post: true,
+  },
+  {
+    id: "ai-jd-writer",
+    title: "AI Job Description Writer",
+    short: "AI JD Writer",
+    desc: "Generate a complete, inclusive job posting in seconds — responsibilities, requirements, benefits and EEO statement.",
+    icon: Sparkles,
+    credits: 5,
+    color: "from-fuchsia-500 to-purple-600",
+    route: "/jobs/ai-jd-writer",
+  },
+  {
+    id: "ai-resume-optimizer",
+    title: "AI Resume Optimizer",
+    short: "Optimize",
+    desc: "Paste your CV and get a professional score, keyword gaps, and prioritized tips to boost hireability.",
+    icon: Wand2,
+    credits: 5,
+    color: "from-violet-500 to-pink-600",
+    dialog: true,
+  },
+  {
+    id: "ai-cv-generator",
+    title: "AI CV Generator",
+    short: "CV Generator",
+    desc: "Build an ATS-optimized resume from your profile and skills. Pick a template, edit sections, and export to PDF.",
+    icon: FileSignature,
+    credits: 5,
+    color: "from-blue-500 to-cyan-600",
+    dialog: true,
+  },
+];
+
+export default function Jobs() {
   const navigate = useNavigate();
-  const [user, setUser] = useState<SupabaseUser | null>(null);
-  const [activeTab, setActiveTab] = useState<ActiveTab>("jobs");
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [selectedType, setSelectedType] = useState<string>("all");
-  const [selectedCountry, setSelectedCountry] = useState<string>("all");
-  const [isEmployer, setIsEmployer] = useState(false);
-  const [showApplyDialog, setShowApplyDialog] = useState(false);
-  const [selectedJob, setSelectedJob] = useState<JobListing | null>(null);
-  const [showJobDetailsDialog, setShowJobDetailsDialog] = useState(false);
-  const [quickFilter, setQuickFilter] = useState<string | null>(null);
-  const [showReportDialog, setShowReportDialog] = useState(false);
-
-  const [application, setApplication] = useState({ cover_letter: "", resume_url: "" });
-
-
-  useQuery({
-    queryKey: ["userRole", user?.id],
-    queryFn: async () => {
-      if (!user) return null;
-      const { data } = await supabase.from("user_roles").select("*").eq("user_id", user.id).eq("role", "employer").single();
-      setIsEmployer(!!data);
-      return data;
-    },
-    enabled: !!user });
-
-  const debouncedSearch = useDebounce(searchQuery, 300);
-
-  const PAGE_SIZE = 50;
-  const { data: jobsPages,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ["jobs", debouncedSearch, selectedCategory, selectedType, selectedCountry],
-    initialPageParam: 0,
-    queryFn: async ({ pageParam = 0 }) => {
-      const from = (pageParam as number) * PAGE_SIZE;
-      const to = from + PAGE_SIZE - 1;
-      let query = (supabase.from as any)("job_listings_public")
-        .select("*")
-        .order("is_featured", { ascending: false })
-        .order("created_at", { ascending: false })
-        .range(from, to);
-      if (debouncedSearch) {
-        const term = escapeOrTerm(debouncedSearch);
-        query = query.or(`title.ilike.%${term}%,description.ilike.%${term}%,company_name.ilike.%${term}%`);
-      }
-      if (selectedCategory !== "all") query = query.eq("category", selectedCategory as any);
-      if (selectedType !== "all") query = query.eq("job_type", selectedType as any);
-      if (selectedCountry !== "all") query = query.eq("country", selectedCountry);
-      const { data, error } = await query;
-      if (error) throw error;
-      return (data as JobListing[]) ?? [];
-    },
-    getNextPageParam: (lastPage, allPages) =>
-      lastPage.length === PAGE_SIZE ? allPages.length : undefined });
-
-  const jobs: JobListing[] = jobsPages?.pages.flat() ?? [];
-
-  const countries = Array.from(new Set(jobs.map((job) => job.country).filter(c => c && c.trim() !== ""))).sort();
-
-  const applyMutation = useMutation({
-    mutationFn: async () => {
-      if (!user || !selectedJob) throw new Error("Must be logged in");
-      const parsed = applicationSchema.safeParse(application);
-      if (!parsed.success) {
-        throw new Error(parsed.error.issues[0]?.message || "Invalid application");
-      }
-      const { error } = await supabase.from("job_applications").insert({ job_id: selectedJob.id,
-        applicant_id: user.id,
-        cover_letter: parsed.data.cover_letter,
-        resume_url: parsed.data.resume_url || null });
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["jobs"] });
-      setShowApplyDialog(false);
-      setSelectedJob(null);
-      setApplication({ cover_letter: "", resume_url: "" });
-      toast({ title: "✅ Application Sent", description: "Your application has been sent" });
-    },
-    onError: (error: any) => {
-      const msg = String(error?.message || "");
-      let friendly = msg || "Failed to send application";
-      if (/duplicate|unique|already/i.test(msg)) friendly = "You have already applied to this job.";
-      else if (/Daily application limit/i.test(msg)) friendly = "Daily limit reached (20 applications / 24h). Try again tomorrow.";
-      else if (/Resume URL/i.test(msg)) friendly = msg;
-      toast({ title: "❌ Error", description: friendly, variant: "destructive" });
-    } });
-
-  const registerEmployerMutation = useMutation({
-    mutationFn: async () => {
-      if (!user) throw new Error("Must be logged in");
-      const { error } = await supabase.from("user_roles").insert({ user_id: user.id, role: "employer" });
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['user-role'] });
-      toast({ title: "✅ Registered as Employer", description: "Please complete verification to post jobs" });
-      navigate('/employer-verification');
-    },
-    onError: (error: Error) => { toast({ title: "❌ Registration Failed", description: error.message, variant: "destructive" }); } });
-
-  const filteredJobs = jobs.filter((job) => {
-    if (!quickFilter) return true;
-    switch (quickFilter) {
-      case "remote": return job.job_type === "remote";
-      case "full_time": return job.job_type === "full_time";
-      case "part_time": return job.job_type === "part_time";
-      case "internship": return job.job_type === "internship";
-      case "it_software": return job.category === "it_software";
-      case "hot": return job.applications_count > 10;
-      case "new": return new Date(job.created_at) > new Date(Date.now() - 86400000);
-      case "high_salary": return (job.salary_max ?? 0) > 50000;
-      default: return true;
-    }
-  });
-
-  const handleApply = (job: JobListing) => {
-    if (!user) { toast({ title: "Login Required", description: "Please sign in to apply" }); window.location.href = "/auth"; return; }
-    setSelectedJob(job);
-    setShowApplyDialog(true);
-  };
-
-  const handleViewDetails = async (job: JobListing) => {
-    if (!user) { toast({ title: "Login Required", description: "Please sign in to view details" }); window.location.href = "/auth"; return; }
-    // Pull contact_email from raw table (RLS: applicant after apply, or employer)
-    const { data: full } = await supabase
-      .from("job_listings")
-      .select("contact_email")
-      .eq("id", job.id)
-      .maybeSingle();
-    setSelectedJob({ ...job, contact_email: (full as any)?.contact_email ?? "" });
-    setShowJobDetailsDialog(true);
-  };
+  const { user } = useAuth();
 
   return (
     <>
-      <FloatingHowItWorks title="How Jobs works" steps={[
-          { title: 'Browse listings', desc: 'Explore open positions by category, type and location.' },
-          { title: 'Apply for free', desc: 'Applying to any job is always free for candidates.' },
-          { title: 'Employers pay in credits', desc: 'Publishing a job costs 3-8 credits (7/14/30 days); boosting costs 5-20 credits.' },
-          { title: 'Track everything', desc: 'Manage applications, messages and notifications in one place.' },
-        ]} />
-      <>
       <SEO
-        title="Jobs - Find your next career opportunity"
-        description="Browse jobs, apply with AI assistance and track applications. Employers post jobs and find verified candidates on Unique."
+        title="Work AI Tools - Job Description, Resume Optimizer & CV Generator"
+        description="AI-powered career tools on Unique: write job descriptions, optimize your resume, and generate ATS-ready CVs with credits."
         canonical="/jobs"
       />
-    <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-8 sm:pb-12">
-      <div className="container mx-auto px-2 sm:px-4">
-        <div className="flex justify-end mb-2">
-          <HowItWorksButton title="Jobs" intro="How the Unique job board works for candidates and employers." steps={JOBS_HOW_IT_WORKS} variant="compact" />
-        </div>
-        {/* Cinematic Hero */}
-        <JobsCinematicHero
-          totalJobs={jobs.length}
-          totalCompanies={new Set(jobs.map(j => j.company_name)).size}
-          totalApplications={jobs.reduce((sum, j) => sum + j.applications_count, 0)}
-          streak={0}
-        />
-        <HeroRewardedAd sectionKey="page_jobs" />
+      <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <div className="flex justify-end mb-4">
+            <HowItWorksButton title="Work AI Tools" intro="Three credit-based AI tools for job posts and resumes." steps={HOW_IT_WORKS} variant="compact" />
+          </div>
 
-        <JobsHeroSection
-          totalJobs={jobs.length}
-          totalCompanies={new Set(jobs.map(j => j.company_name)).size}
-          totalApplications={jobs.reduce((sum, j) => sum + j.applications_count, 0)}
-        />
-
-
-        {/* Tab Navigation */}
-        <div className="flex flex-wrap gap-1.5 mb-6 p-1 bg-card/50 backdrop-blur-sm rounded-xl border border-border/30">
-          {TABS.map(tab => (
-            <Button
-              key={tab.id}
-              variant={activeTab === tab.id ? "default" : "ghost"}
-              size="sm"
-              className={`text-xs gap-1.5 ${activeTab === tab.id ? "bg-amber-500/90 hover:bg-amber-600 text-white" : ""}`}
-              onClick={() => {
-                if (tab.route) {
-                  navigate(tab.route);
-                } else {
-                  setActiveTab(tab.id);
-                }
-              }}
-            >
-              <tab.icon className="h-3.5 w-3.5" />
-              {tab.label}
-            </Button>
-          ))}
-        </div>
-
-        {/* Tab Content */}
-        {activeTab === "tools" && <JobsToolsGrid />}
-        {activeTab === "streaks" && <JobsApplicationStreaks />}
-        {activeTab === "leaderboard" && <JobsSkillLeaderboard />}
-        {activeTab === "achievements" && <JobsCareerAchievements />}
-        {activeTab === "challenges" && <JobsWeeklyChallenges />}
-
-        {activeTab === "jobs" && (
-          <>
-            {/* Info banner for non-authenticated users */}
-            {!user && (
-              <Card className="mb-6 border-primary/20 bg-primary/5">
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Briefcase className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-semibold mb-1">Welcome to the Job Portal!</p>
-                      <p className="text-sm text-muted-foreground">Browse all job listings for free. Sign in to apply for positions.</p>
-                    </div>
-                    <Button onClick={() => window.location.href = "/auth"}>Sign In</Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Action Buttons Row */}
-            <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
-              <WorkUserGuide />
-              {user && (
-                <>
-                  <JobPreferencesDialog userId={user.id} />
-                  <JobAIAssistant />
-                  <AICVGeneratorDialog />
-                  <AIJobOptimizer />
-                  <ResumeManagerDialog />
-
-                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/saved')}>
-                    <Bookmark className="h-3.5 w-3.5 mr-1" /> Saved
-                  </Button>
-                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/applications')}>
-                    <ListChecks className="h-3.5 w-3.5 mr-1" /> Tracker
-                  </Button>
-                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/alerts')}>
-                    <Bell className="h-3.5 w-3.5 mr-1" /> Alerts
-                  </Button>
-                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/companies')}>
-                    <Building2 className="h-3.5 w-3.5 mr-1" /> Companies
-                  </Button>
-                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/salaries')}>
-                    <DollarSign className="h-3.5 w-3.5 mr-1" /> Salaries
-                  </Button>
-                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/interviews')}>
-                    <HelpCircle className="h-3.5 w-3.5 mr-1" /> Interviews
-                  </Button>
-                  <CandidateSearchProfileDialog />
-                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/for-you')}>
-                    <Sparkles className="h-3.5 w-3.5 mr-1" /> For You
-                  </Button>
-                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/map')}>
-                    <MapIcon className="h-3.5 w-3.5 mr-1" /> Map
-                  </Button>
-                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/mock-interview')}>
-                    🎤 Mock Interview
-                  </Button>
-                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/assessments')}>
-                    🏆 Assessments
-                  </Button>
-                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/career-path')}>
-                    🗺️ Career Path
-                  </Button>
-                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/referrals')}>
-                    🤝 Referrals
-                  </Button>
-                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/video-resumes')}>
-                    🎬 Video Resume
-                  </Button>
-                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/diversity/self-id')}>
-                    💗 Self-ID
-                  </Button>
-                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/references')}>
-                    👥 References
-                  </Button>
-                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/background-checks')}>
-                    🛡️ BG Checks
-                  </Button>
-                  <JobsPushButton />
-                </>
-              )}
-              {user && isEmployer && (
-                <>
-                  <Button onClick={() => navigate('/employer-dashboard')} size="sm" className="text-xs">
-                    <Building2 className="h-3.5 w-3.5 mr-1" /> Dashboard
-                  </Button>
-                  <Button onClick={() => navigate('/jobs/candidate-search')} size="sm" variant="outline" className="text-xs">
-                    <Users className="h-3.5 w-3.5 mr-1" /> Find candidates
-                  </Button>
-                  <Button onClick={() => navigate('/jobs/rejection-templates')} size="sm" variant="outline" className="text-xs">
-                    <HelpCircle className="h-3.5 w-3.5 mr-1" /> Templates
-                  </Button>
-                  <Button onClick={() => navigate('/jobs/diversity/reports')} size="sm" variant="outline" className="text-xs">
-                    📊 Diversity
-                  </Button>
-                  <Button onClick={() => navigate('/jobs/ai-jd-writer')} size="sm" variant="outline" className="text-xs">
-                    ✨ AI JD Writer
-                  </Button>
-                  <Button onClick={() => navigate('/jobs/onboarding')} size="sm" variant="outline" className="text-xs">
-                    📋 Onboarding
-                  </Button>
-                  <Button onClick={() => navigate('/jobs/background-checks')} size="sm" variant="outline" className="text-xs">
-                    🛡️ BG Checks
-                  </Button>
-                  <Button onClick={() => navigate('/jobs/templates')} size="sm" variant="outline" className="text-xs">
-                    📄 Templates
-                  </Button>
-                  <Button onClick={() => navigate('/jobs/bulk-hiring')} size="sm" variant="outline" className="text-xs">
-                    👥 Bulk Hiring
-                  </Button>
-                  <Button onClick={() => navigate('/jobs/headhunters')} size="sm" variant="outline" className="text-xs">
-                    🎯 Headhunters
-                  </Button>
-                </>
-              )}
-              {user && !isEmployer && (
-                <Button onClick={() => registerEmployerMutation.mutate()} disabled={registerEmployerMutation.isPending} size="sm" className="text-xs">
-                  <Building2 className="h-3.5 w-3.5 mr-1" />
-                  {registerEmployerMutation.isPending ? "Registering..." : "Register as Employer"}
-                </Button>
-              )}
-              {!user && <Button onClick={() => window.location.href = "/auth"} size="sm">Sign In</Button>}
+          <motion.div
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-2xl bg-gradient-to-br from-primary/15 via-fuchsia-500/10 to-pink-500/5 border border-primary/20 p-6 sm:p-8 mb-8"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-pink-500 shadow-xl">
+                <Sparkles className="h-6 w-6 text-white" />
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-black">Work AI Tools</h1>
             </div>
+            <p className="text-sm sm:text-base text-muted-foreground max-w-2xl">
+              Everything you need to write job posts and polish your CV — all in one place, paid only with AI credits.
+            </p>
+          </motion.div>
 
-            {/* Filters */}
-            <Card className="mb-4 sm:mb-6">
-              <CardContent className="pt-4 sm:pt-6 p-3 sm:p-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-                  <div className="sm:col-span-2">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input placeholder="Search positions..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {TOOLS.map((tool, i) => (
+              <motion.div
+                key={tool.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.08 }}
+              >
+                <Card className="h-full flex flex-col hover:border-primary/40 transition-all hover:shadow-lg hover:shadow-primary/5 bg-card/80 border-border/40">
+                  <CardContent className="p-5 flex flex-col h-full">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 shadow-lg`}>
+                      <tool.icon className="h-6 w-6 text-white" />
                     </div>
-                  </div>
-                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                    <SelectTrigger><SelectValue placeholder="Category" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Categories</SelectItem>
-                      {Object.entries(CATEGORIES).map(([key, label]) => (<SelectItem key={key} value={key}>{label}</SelectItem>))}
-                    </SelectContent>
-                  </Select>
-                  <Select value={selectedType} onValueChange={setSelectedType}>
-                    <SelectTrigger><SelectValue placeholder="Job Type" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Types</SelectItem>
-                      {Object.entries(JOB_TYPES).map(([key, label]) => (<SelectItem key={key} value={key}>{label}</SelectItem>))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                {countries.length > 0 && (
-                  <div className="mt-4">
-                    <Select value={selectedCountry} onValueChange={setSelectedCountry}>
-                      <SelectTrigger><SelectValue placeholder="Country" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Countries</SelectItem>
-                        {countries.map((country) => (<SelectItem key={country} value={country}>{country}</SelectItem>))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            <QuickFilterChips activeFilter={quickFilter} onFilterChange={setQuickFilter} />
-
-            {/* Main Content: Jobs + Sidebar */}
-            <div className="flex gap-6">
-              <div className="flex-1 min-w-0">
-                {isLoading ? (
-                  <div className="text-center py-12">
-                    <div className="animate-pulse space-y-4">
-                      {[1, 2, 3].map((i) => (<div key={i} className="h-40 rounded-2xl bg-muted/50" />))}
-                    </div>
-                  </div>
-                ) : filteredJobs.length === 0 ? (
-                  <div className="text-center py-16">
-                    <div className="h-20 w-20 mx-auto mb-4 rounded-3xl bg-gradient-to-br from-amber-500/20 to-yellow-500/10 flex items-center justify-center">
-                      <Briefcase className="h-10 w-10 text-amber-500" />
-                    </div>
-                    <p className="text-lg font-semibold mb-1">
-                      {jobs.length === 0 ? "Be the first employer" : "No positions found"}
-                    </p>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      {jobs.length === 0
-                        ? "No active job listings yet. Post the first one and reach thousands of candidates."
-                        : "Try adjusting your filters or search query"}
-                    </p>
-                    {user && !isEmployer && jobs.length === 0 && (
-                      <Button onClick={() => registerEmployerMutation.mutate()} disabled={registerEmployerMutation.isPending} size="sm">
-                        <Building2 className="h-4 w-4 mr-1.5" />
-                        Register as Employer
-                      </Button>
-                    )}
-                    {user && isEmployer && jobs.length === 0 && (
-                      <Button onClick={() => navigate('/employer-dashboard')} size="sm">
-                        <Plus className="h-4 w-4 mr-1.5" /> Post a Job
-                      </Button>
-                    )}
-                    {!user && jobs.length === 0 && (
-                      <Button onClick={() => window.location.href = "/auth"} size="sm">Sign In to Post</Button>
-                    )}
-                  </div>
-
-                ) : (
-                  <div className="space-y-3">
-                    <p className="text-xs text-muted-foreground font-medium px-1">{filteredJobs.length} position{filteredJobs.length !== 1 ? "s" : ""} found</p>
-                    {filteredJobs.map((job) => (
-                      <JobCardRedesigned key={job.id} job={job} onViewDetails={handleViewDetails} onApply={handleApply} isLoggedIn={!!user} />
-                    ))}
-                    {hasNextPage && !quickFilter && (
-                      <div className="flex justify-center pt-4">
-                        <Button
-                          variant="outline"
-                          onClick={() => fetchNextPage()}
-                          disabled={isFetchingNextPage}
-                        >
-                          {isFetchingNextPage ? "Loading…" : "Load more jobs"}
+                    <h2 className="text-lg font-bold mb-1">{tool.title}</h2>
+                    <p className="text-sm text-muted-foreground flex-1 mb-4">{tool.desc}</p>
+                    <div className="flex items-center justify-between gap-3 mt-auto">
+                      <Badge variant="outline" className="text-[10px] border-amber-500/30 text-amber-500">
+                        <Zap className="h-3 w-3 mr-1" />
+                        {tool.credits} credits
+                      </Badge>
+                      {tool.route ? (
+                        <Button size="sm" onClick={() => navigate(tool.route!)}>
+                          Open <ArrowRight className="h-3.5 w-3.5 ml-1" />
                         </Button>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-              <div className="hidden lg:block w-72 xl:w-80 shrink-0">
-                <div className="sticky top-24"><JobsSidebar /></div>
-              </div>
-            </div>
-          </>
-        )}
+                      ) : tool.post && user ? (
+                        <CreateJobDialog userId={user.id} subscribed={true} onRenewSubscription={() => {}} />
+                      ) : tool.post ? (
+                        <Button size="sm" onClick={() => navigate("/auth")}>Sign in</Button>
+                      ) : tool.id === "ai-resume-optimizer" ? (
+                        <AIJobOptimizer />
+                      ) : (
+                        <AICVGeneratorDialog />
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
 
-        {/* Job Details Dialog */}
-        <Dialog open={showJobDetailsDialog} onOpenChange={setShowJobDetailsDialog}>
-          <DialogContent className="w-[min(calc(100vw-1rem),56rem)] max-w-[calc(100vw-1rem)] max-h-[90dvh] min-w-0 overflow-y-auto overflow-x-hidden box-border p-3 sm:p-6">
-            { selectedJob && (
-              <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{
-                  __html: JSON.stringify({
-                    "@context": "https://schema.org/",
-                    "@type": "JobPosting",
-                    title: selectedJob.title,
-                    description: selectedJob.description,
-                    datePosted: selectedJob.created_at,
-                    employmentType: selectedJob.job_type,
-                    hiringOrganization: {
-                      "@type": "Organization",
-                      name: selectedJob.company_name },
-                    jobLocation: { "@type": "Place",
-                      address: {
-                        "@type": "PostalAddress",
-                        addressLocality: selectedJob.location,
-                        addressCountry: selectedJob.country } },
-                    ...(selectedJob.salary_min && selectedJob.salary_max
-                      ? { baseSalary: {
-                            "@type": "MonetaryAmount",
-                            currency: selectedJob.salary_currency || "EUR",
-                            value: {
-                              "@type": "QuantitativeValue",
-                              minValue: Number(selectedJob.salary_min),
-                              maxValue: Number(selectedJob.salary_max),
-                              unitText: "YEAR" } } }
-                      : {}) }) }}
-              />
-            )}
-            <DialogHeader className="min-w-0 text-left">
-              <DialogTitle className="max-w-full text-left text-lg sm:text-3xl font-bold whitespace-normal break-words [overflow-wrap:anywhere] pr-10 leading-tight">{selectedJob?.title}</DialogTitle>
-              <DialogDescription asChild>
-                <div className="flex min-w-0 max-w-full flex-col gap-2 mt-3">
-                  <div className="flex items-center gap-2 text-sm sm:text-base min-w-0">
-                    <Building2 className="h-4 w-4 sm:h-5 sm:w-5 text-primary shrink-0" />
-                    <span className="font-semibold truncate min-w-0">{selectedJob?.company_name}</span>
-                  </div>
-                  <div className="flex min-w-0 max-w-full items-center gap-x-3 gap-y-2 text-xs sm:text-sm flex-wrap">
-                    <div className="flex min-w-0 max-w-full items-center gap-1"><MapPin className="h-4 w-4 shrink-0" /><span className="truncate min-w-0">{selectedJob?.location}</span></div>
-                    <div className="flex min-w-0 max-w-full items-center gap-1"><Globe className="h-4 w-4 shrink-0" /><span className="break-words [overflow-wrap:anywhere]">{selectedJob?.country}</span></div>
-                    <div className="flex min-w-0 max-w-full items-center gap-1"><Clock className="h-4 w-4 shrink-0" /><span className="break-words [overflow-wrap:anywhere]">Posted: {selectedJob && new Date(selectedJob.created_at).toLocaleDateString('en-US')}</span></div>
-                  </div>
-                </div>
-              </DialogDescription>
-            </DialogHeader>
-            <div className="min-w-0 max-w-full space-y-4 sm:space-y-6 mt-4">
-              <div className="flex min-w-0 max-w-full gap-2 flex-wrap">
-                <span className="inline-flex max-w-full min-w-0 items-center whitespace-normal break-words [overflow-wrap:anywhere] px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-primary/10 text-primary border border-primary/20">
-                  {selectedJob && CATEGORIES[selectedJob.category as keyof typeof CATEGORIES]}
-                </span>
-                <span className="inline-flex max-w-full min-w-0 items-center gap-1 whitespace-normal break-words [overflow-wrap:anywhere] px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-secondary border border-secondary-foreground/20">
-                  <Clock className="h-3 w-3 sm:h-4 sm:w-4" />{selectedJob && JOB_TYPES[selectedJob.job_type as keyof typeof JOB_TYPES]}
-                </span>
-                {selectedJob?.salary_min && selectedJob?.salary_max && (
-                  <span className="inline-flex max-w-full min-w-0 items-center gap-1 whitespace-normal break-words [overflow-wrap:anywhere] px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-green-100 text-green-800 border border-green-200">
-                    <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />{selectedJob.salary_min}-{selectedJob.salary_max} {selectedJob.salary_currency}
-                  </span>
-                )}
-              </div>
-              <div className="bg-muted/50 p-4 sm:p-6 rounded-lg border border-border">
-                <h3 className="font-bold text-base sm:text-xl mb-3 flex items-center gap-2"><Briefcase className="h-5 w-5 text-primary shrink-0" />Job Description</h3>
-                <p className="text-sm sm:text-base text-muted-foreground whitespace-pre-wrap leading-relaxed break-words">{selectedJob?.description}</p>
-              </div>
-              {selectedJob?.requirements && (
-                <div className="bg-muted/50 p-4 sm:p-6 rounded-lg border border-border">
-                  <h3 className="font-bold text-base sm:text-xl mb-3">Requirements and Qualifications</h3>
-                  <p className="text-sm sm:text-base text-muted-foreground whitespace-pre-wrap leading-relaxed break-words">{selectedJob.requirements}</p>
-                </div>
-              )}
-              {selectedJob?.benefits && (
-                <div className="bg-muted/50 p-4 sm:p-6 rounded-lg border border-border">
-                  <h3 className="font-bold text-base sm:text-xl mb-3">Benefits and Perks</h3>
-                  <p className="text-sm sm:text-base text-muted-foreground whitespace-pre-wrap leading-relaxed break-words">{selectedJob.benefits}</p>
-                </div>
-              )}
-              {selectedJob?.salary_min && selectedJob?.salary_max && (
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 p-4 sm:p-6 rounded-lg border border-green-200 dark:border-green-800">
-                  <h3 className="font-bold text-base sm:text-xl mb-3 flex items-center gap-2"><DollarSign className="h-5 w-5 text-green-700 dark:text-green-400 shrink-0" />Salary Range</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-                    <div><p className="text-xs sm:text-sm text-muted-foreground mb-1">Minimum</p><p className="text-base sm:text-lg font-semibold break-words">{selectedJob.salary_min} {selectedJob.salary_currency}</p></div>
-                    <div><p className="text-xs sm:text-sm text-muted-foreground mb-1">Maximum</p><p className="text-base sm:text-lg font-semibold break-words">{selectedJob.salary_max} {selectedJob.salary_currency}</p></div>
-                    <div><p className="text-xs sm:text-sm text-muted-foreground mb-1">Currency</p><p className="text-base sm:text-lg font-semibold">{selectedJob.salary_currency}</p></div>
-                  </div>
-                </div>
-              )}
-              <div className="bg-primary/5 p-4 sm:p-6 rounded-lg border border-primary/20">
-                <h3 className="font-bold text-base sm:text-xl mb-4">Contact Information</h3>
-                <div className="space-y-3">
-                  <div><p className="text-xs sm:text-sm text-muted-foreground mb-1">Application Email</p><p className="font-semibold text-sm sm:text-lg break-all">{selectedJob?.contact_email}</p></div>
-                  <div className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm pt-2 border-t border-border flex-wrap">
-                    <div><p className="text-muted-foreground">Applications</p><p className="font-semibold text-base sm:text-lg">{selectedJob?.applications_count}</p></div>
-                    <div><p className="text-muted-foreground">Type</p><p className="font-semibold">{selectedJob && JOB_TYPES[selectedJob.job_type as keyof typeof JOB_TYPES]}</p></div>
-                    <div><p className="text-muted-foreground">Category</p><p className="font-semibold">{selectedJob && CATEGORIES[selectedJob.category as keyof typeof CATEGORIES]}</p></div>
-                  </div>
-                </div>
-              </div>
-              {selectedJob && user && (
-                 <div className="space-y-2">
-                   <div className="flex flex-wrap gap-2 items-center">
-                     <MatchScoreBadge jobId={selectedJob.id} />
-                     <SaveJobButton jobId={selectedJob.id} />
-                     <CoverLetterDialog jobId={selectedJob.id} jobTitle={selectedJob.title} jobDescription={selectedJob.description} companyName={selectedJob.company_name} />
-                     <OneClickApplyDialog jobId={selectedJob.id} jobTitle={selectedJob.title} companyName={selectedJob.company_name} />
-                   </div>
-                   <Button className="w-full" size="lg" onClick={() => handleApply(selectedJob)}>
-                     <Briefcase className="h-4 w-4 mr-2" /> Apply
-                   </Button>
-                 </div>
-               )}
-              {!user && (
-                <Button className="w-full py-6 text-lg" onClick={() => { toast({ title: "Sign In Required" }); window.location.href = "/auth"; }}>
-                  <Search className="h-5 w-5 mr-2" /> Sign In to Apply
-                </Button>
-              )}
-              {user && selectedJob && (
-                <button
-                  type="button"
-                  onClick={() => setShowReportDialog(true)}
-                  className="text-xs text-muted-foreground hover:text-destructive underline underline-offset-2 mt-2"
-                >
-                  Report this job
-                </button>
-              )}
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        {selectedJob && (
-          <ReportJobDialog
-            jobId={selectedJob.id}
-            jobTitle={selectedJob.title}
-            open={showReportDialog}
-            onOpenChange={setShowReportDialog}
-          />
-        )}
-
-
-
-        {/* Apply Dialog */}
-        <Dialog open={showApplyDialog} onOpenChange={setShowApplyDialog}>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Apply for Position</DialogTitle>
-              <DialogDescription>{selectedJob?.title} - {selectedJob?.company_name}</DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="cover_letter">Cover Letter</Label>
-                <Textarea id="cover_letter" value={application.cover_letter} onChange={(e) => setApplication({ ...application, cover_letter: e.target.value })} placeholder="Write why you're a suitable candidate..." rows={6} />
-              </div>
-              <div>
-                <Label htmlFor="resume">Resume Link (optional)</Label>
-                <Input id="resume" type="url" value={application.resume_url} onChange={(e) => setApplication({ ...application, resume_url: e.target.value })} placeholder="https://..." />
-              </div>
-              <div className="bg-muted p-4 rounded-lg"><p className="text-sm text-muted-foreground"><strong>Contact:</strong> {selectedJob?.contact_email}</p></div>
-              <Button className="w-full" onClick={() => applyMutation.mutate()} disabled={applyMutation.isPending}>
-                {applyMutation.isPending ? "Sending..." : "Send Application"}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+          <p className="text-center text-xs text-muted-foreground mt-10">
+            Looking for your company profile? Use the search or open your company page directly.
+          </p>
+        </div>
       </div>
-    </div>
     </>
-    </>
-    );
-};
-
-export default Jobs;
+  );
+}
