@@ -720,7 +720,7 @@ const Navbar = () => {
             <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground">
               Discover
             </div>
-            {mainNavItems.map((item) => {
+            {visibleMainNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
               const isPremium = 'premium' in item && item.premium;
