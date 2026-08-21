@@ -191,8 +191,8 @@ export default function PromotionsCreate() {
                       {isTop && <Badge className="bg-gradient-to-r from-primary to-accent text-white">Best</Badge>}
                     </div>
                     <div className="text-3xl font-black mb-1">
-                      {isTop ? 50 : 20} credits
-                      <span className="text-sm font-normal text-muted-foreground"> / 30 days</span>
+                      €{isTop ? 50 : 20}
+                      <span className="text-sm font-normal text-muted-foreground"> / month</span>
                     </div>
                     <p className="text-xs text-muted-foreground">
                       {isTop
@@ -208,7 +208,7 @@ export default function PromotionsCreate() {
           <div className="mt-6 flex justify-end">
             <Button type="submit" size="lg" variant="premium" disabled={submitting}>
               {submitting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
-              {submitting ? "Publishing…" : `Publish for ${tier === "top" ? 50 : 20} credits (30 days)`}
+              {submitting ? "Publishing…" : `Publish for €${tier === "top" ? 50 : 20}/month`}
             </Button>
           </div>
         </form>
