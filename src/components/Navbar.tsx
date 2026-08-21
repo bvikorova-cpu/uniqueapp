@@ -92,13 +92,15 @@ const Navbar = () => {
     { path: "/wall", label: "Wall", icon: MessageSquare },
     { path: "/games-hub", label: "Games", icon: Gamepad2 },
     { path: "/jobs", label: "Work", icon: Briefcase },
-    { path: "/promotions", label: "Promotions", icon: Megaphone },
+    { path: "/promotions", label: "Promotions", icon: Megaphone, requiresAuth: true },
     { path: "/booking", label: "Booking", icon: Calendar },
     { path: "/services-hub", label: "Services", icon: Scissors },
     { path: "/rewards", label: "Rewards", icon: Trophy },
     { path: "/megatalent", label: "Megatalent", icon: Crown, premium: true },
     
   ];
+
+  const visibleMainNavItems = mainNavItems.filter((item) => !item.requiresAuth || user);
 
   const clipBattlesServices = [
     { path: "/clip-battles", label: "Clip Battles", icon: Film },
