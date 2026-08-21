@@ -114,11 +114,16 @@ export default function PromotionsCreate() {
       if (!result?.url) throw new Error("Could not open Stripe Checkout");
 
       const checkoutUrl = result.url as string;
+      const parsedCheckoutUrl = new URL(checkoutUrl);
+      if (parsedCheckoutUrl.protocol !== "https:") {
+        throw new Error("Stripe returned an invalid checkout link");
+      }
       if (checkoutWindow && !checkoutWindow.closed) {
-        checkoutWindow.opener = null;
-        checkoutWindow.location.replace(checkoutUrl);
+        // Do not clear `opener` before navigation. Chrome on Android can sever
+        // the WindowProxy immediately, leaving the user stuck on about:blank.
+        checkoutWindow.location.href = parsedCheckoutUrl.toString();
       } else {
-        window.location.assign(checkoutUrl);
+        window.location.assign(parsedCheckoutUrl.toString());
       }
 
     } catch (e: unknown) {
