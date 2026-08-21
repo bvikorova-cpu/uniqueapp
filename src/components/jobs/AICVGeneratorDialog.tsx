@@ -232,8 +232,8 @@ export function AICVGeneratorDialog() {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
-        <DialogHeader>
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col p-0 sm:p-6">
+        <DialogHeader className="px-6 pt-6 sm:px-0 sm:pt-0 shrink-0">
           <DialogTitle className="flex items-center gap-2">
             <FileSignature className="h-5 w-5 text-primary" />
             AI CV Generator
@@ -243,7 +243,8 @@ export function AICVGeneratorDialog() {
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 -mx-6 px-6">
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-6 sm:px-0" style={{ WebkitOverflowScrolling: "touch" }}>
+
           <div className="space-y-5 pb-4">
             {/* Template picker */}
             <div className="space-y-2">
@@ -419,7 +420,7 @@ export function AICVGeneratorDialog() {
               </>
             )}
           </div>
-        </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );
