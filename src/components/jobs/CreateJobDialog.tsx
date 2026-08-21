@@ -128,8 +128,10 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
         salary_max: "",
         salary_currency: "EUR" });
       setSelectedPackage(null);
+      toast({ title: "Job published", description: "Your listing is live and visible to candidates." });
     },
     onError: (error: Error) => { console.error('Job creation error:', error);
+      if (error.message === 'CREDITS_REQUIRED') return;
       toast({
         title: "Error",
         description: error.message || "Failed to create job listing",
@@ -315,7 +317,7 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
                 setShowPackageDialog(true);
               }}
             >
-              Continue to Payment
+              Continue
             </Button>
           </div>
         </DialogContent>
@@ -327,7 +329,7 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
           <DialogHeader>
             <DialogTitle className="text-2xl">Choose Your Job Listing Package</DialogTitle>
             <DialogDescription>
-              Select how long you want your job listing to be visible
+              Pay with credits — select how long your job listing stays visible
             </DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-6">
@@ -396,7 +398,7 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
               onClick={() => createJobMutation.mutate()}
               disabled={!selectedPackage || createJobMutation.isPending}
             >
-              {createJobMutation.isPending ? "Processing..." : "Proceed to Payment"}
+              {createJobMutation.isPending ? "Publishing..." : `Publish for ${selectedPackage?.credits ?? JOBS_CREDIT_COSTS.listing_7} credits`}
             </Button>
           </div>
         </DialogContent>
