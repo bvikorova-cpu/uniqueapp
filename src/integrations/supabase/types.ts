@@ -71321,6 +71321,7 @@ export type Database = {
         }[]
       }
       track_challenge_action: { Args: { _action: string }; Returns: Json }
+      track_job_view: { Args: { p_job_id: string }; Returns: undefined }
       trim_user_feed_cache: { Args: never; Returns: undefined }
       unlock_auction_contact: { Args: { _auction_id: string }; Returns: Json }
       unlock_bazaar_contact: { Args: { _item_id: string }; Returns: Json }

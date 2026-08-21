@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.search_public_profiles(text) TO anon, authenticated;
