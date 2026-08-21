@@ -158,10 +158,11 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription, prefi
       <>
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogTrigger asChild>
-          <Button onClick={handleOpenDialog}>
+          <Button onClick={handleOpenDialog} className={triggerClassName}>
             <Plus className="h-4 w-4 mr-2" />
-            {"Add Position"}
+            {triggerLabel ?? "Add Position"}
           </Button>
+
         </DialogTrigger>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
