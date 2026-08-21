@@ -72,7 +72,11 @@ export default function EmployerDashboard() { const [jobs, setJobs] = useState<J
   const loadDashboardData = async () => {
     try {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
-      if (!currentUser) { navigate("/"); return; }
+      if (!currentUser) {
+        toast({ title: "Sign in required", description: "Please sign in to access your Employer Dashboard." });
+        navigate("/auth");
+        return;
+      }
       setUser(currentUser);
 
       const { data: jobsData, error: jobsError } = await supabase
@@ -82,11 +86,21 @@ export default function EmployerDashboard() { const [jobs, setJobs] = useState<J
         .order('created_at', { ascending: false });
       if (jobsError) throw jobsError;
 
+      if (!jobsData || jobsData.length === 0) {
+        toast({
+          title: "No job listings yet",
+          description: "Post your first job to unlock your Employer Dashboard.",
+        });
+        navigate("/jobs");
+        return;
+      }
+
       const jobsWithStats = jobsData.map(job => ({ id: job.id, title: job.title, company_name: job.company_name,
         location: job.location, created_at: job.created_at,
         is_active: job.is_active || false, applications_count: job.applications_count || 0,
         views_count: job.views_count || 0 }));
       setJobs(jobsWithStats);
+
 
       const jobIds = jobsWithStats.map(j => j.id);
       if (jobIds.length > 0) {
