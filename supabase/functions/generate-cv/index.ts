@@ -10,6 +10,21 @@ const corsHeaders = {
 
 const CREDITS = 5;
 
+const TEMPLATE_HINTS: Record<string, string> = {
+  modern:
+    "Modern template: crisp headline under the name, a short punchy summary, skills grouped into 2-3 labelled clusters, achievement-first experience bullets.",
+  classic:
+    "Classic template: conservative and formal, full sentences in the summary, chronological experience with role/company/dates on one line, no buzzwords.",
+  minimal:
+    "Minimal template: very concise, max 2 bullets per role, short skill list as a single comma-free bullet line, no fluff, one page worth of content.",
+  creative:
+    "Creative template: expressive voice, a one-line personal tagline after the name, sections may include Projects and Highlights, still ATS-safe headings.",
+  executive:
+    "Executive template: leadership framing, opens with an Executive Summary and a Key Achievements section with quantified business impact, then experience.",
+  academic:
+    "Academic template: emphasis on Education, Research, Publications and Teaching sections before work experience.",
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
@@ -26,7 +41,10 @@ serve(async (req) => {
     const targetRole: string = (body.targetRole || "").toString().slice(0, 120);
     const tone: string = (body.tone || "professional").toString().slice(0, 40);
     const language: string = (body.language || "English").toString().slice(0, 40);
-    const extraNotes: string = (body.extraNotes || "").toString().slice(0, 2000);
+    const extraNotes: string = (body.extraNotes || "").toString().slice(0, 4000);
+    const template: string = (body.template || "modern").toString().slice(0, 30).toLowerCase();
+    const personal = (body.personal ?? {}) as Record<string, string>;
+    const pick = (k: string) => (personal[k] || "").toString().slice(0, 200);
 
     // ---- Collect the user's real data ----
     const [{ data: profile }, { data: resumes }] = await Promise.all([
@@ -50,12 +68,21 @@ serve(async (req) => {
     const experience = cv?.parsed_experience ?? [];
     const education = cv?.parsed_education ?? [];
 
+    const fullName = pick("fullName") || profile?.full_name || "";
+    const email = pick("email") || profile?.email || "";
+    const phone = pick("phone");
+    const location = pick("location") || profile?.location || "";
+    const links = pick("links") || profile?.website || "";
+    const headline = pick("headline") || profile?.headline || profile?.occupation || "";
+
     const hasSource =
       skills.length > 0 ||
       (Array.isArray(experience) && experience.length > 0) ||
       (Array.isArray(education) && education.length > 0) ||
       !!profile?.bio ||
       !!profile?.occupation ||
+      !!headline ||
+      (!!fullName && (!!email || !!location || extraNotes.length > 0)) ||
       extraNotes.length > 20;
 
     if (!hasSource) {
@@ -63,17 +90,18 @@ serve(async (req) => {
         JSON.stringify({
           error: "no_source_data",
           message:
-            "We could not find enough data to build your CV. Add skills and experience in your profile or save a CV in 'My CVs' first, or describe your background in the notes field.",
+            "Fill in the Personal info fields (at least your name plus email or location) and describe your background in the notes field, or save a CV in 'My CVs' first.",
         }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
 
-    const dataBlock = `Full name: ${profile?.full_name || "Not provided"}
-Headline: ${profile?.headline || "Not provided"}
-Current occupation: ${profile?.occupation || "Not provided"}
-Location: ${profile?.location || "Not provided"}
-Contact email: ${profile?.email || "Not provided"}
+    const dataBlock = `Full name: ${fullName || "Not provided"}
+Professional headline: ${headline || "Not provided"}
+Location: ${location || "Not provided"}
+Contact email: ${email || "Not provided"}
+Phone: ${phone || "Not provided"}
+Links (portfolio / LinkedIn / website): ${links || "Not provided"}
 Languages: ${(profile?.languages || []).join(", ") || "Not provided"}
 About / bio: ${profile?.bio || "Not provided"}
 Years of experience: ${cv?.years_experience ?? "Not provided"}
@@ -89,13 +117,14 @@ Additional notes from the user: ${extraNotes || "None"}`;
     const userPrompt = `Write a complete, ATS-optimized CV in ${language} using the candidate data below.
 Target role: ${targetRole || "best fit based on the data"}
 Tone: ${tone}
+Style: ${TEMPLATE_HINTS[template] || TEMPLATE_HINTS.modern}
 
-Structure:
+Structure (use "## " for every section heading so sections can be edited separately):
 # Name
-Contact line (location, email, languages) — only what is available
-## Professional Summary (3-4 sentences, tailored to the target role)
-## Key Skills (grouped, bullet list)
-## Work Experience (reverse-chronological, each role with 2-4 achievement bullets using strong action verbs and quantified impact where the data allows)
+Contact line (location, email, phone, links) — only what is available
+## Professional Summary
+## Key Skills
+## Work Experience
 ## Education
 ## Languages
 ## Additional (certifications, projects) — only if data exists
@@ -112,6 +141,7 @@ ${dataBlock}`;
       JSON.stringify({
         success: true,
         markdown,
+        template,
         creditsUsed: CREDITS,
         sourceUsed: {
           skills: skills.length,
