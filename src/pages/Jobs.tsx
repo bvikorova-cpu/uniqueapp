@@ -101,24 +101,26 @@ export default function Jobs() {
                       </div>
                       <h2 className="text-xs sm:text-sm font-bold leading-tight">{tool.short}</h2>
                     </div>
-                    <div className="flex items-center justify-between gap-2 mt-auto">
-                      <Badge variant="outline" className="text-[10px] px-1.5 border-amber-500/30 text-amber-500">
+                    <div className="flex items-center justify-between gap-2 mt-auto min-w-0 overflow-hidden [&_button]:h-7 [&_button]:px-2 [&_button]:text-[11px] [&_button]:max-w-full [&_button]:truncate [&_button_.text-\[10px\]]:hidden">
+                      <Badge variant="outline" className="shrink-0 text-[10px] px-1.5 border-amber-500/30 text-amber-500">
                         <Zap className="h-2.5 w-2.5 mr-0.5" />
                         {tool.credits}
                       </Badge>
-                      {tool.route ? (
-                        <Button size="sm" className="h-7 px-2 text-xs" onClick={() => navigate(tool.route!)}>
-                          Open <ArrowRight className="h-3 w-3 ml-1" />
-                        </Button>
-                      ) : tool.post && user ? (
-                        <CreateJobDialog userId={user.id} subscribed={true} onRenewSubscription={() => {}} />
-                      ) : tool.post ? (
-                        <Button size="sm" className="h-7 px-2 text-xs" onClick={() => navigate("/auth")}>Sign in</Button>
-                      ) : tool.id === "ai-resume-optimizer" ? (
-                        <AIJobOptimizer />
-                      ) : (
-                        <AICVGeneratorDialog />
-                      )}
+                      <div className="min-w-0 flex justify-end">
+                        {tool.route ? (
+                          <Button size="sm" onClick={() => navigate(tool.route!)}>
+                            Open <ArrowRight className="h-3 w-3 ml-1" />
+                          </Button>
+                        ) : tool.post && user ? (
+                          <CreateJobDialog userId={user.id} subscribed={true} onRenewSubscription={() => {}} />
+                        ) : tool.post ? (
+                          <Button size="sm" onClick={() => navigate("/auth")}>Sign in</Button>
+                        ) : tool.id === "ai-resume-optimizer" ? (
+                          <AIJobOptimizer />
+                        ) : (
+                          <AICVGeneratorDialog />
+                        )}
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
