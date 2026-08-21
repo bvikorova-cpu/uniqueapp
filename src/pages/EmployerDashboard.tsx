@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft, Download, MessageSquare, Sparkles, Crown, BarChart3, Receipt, Check, Rocket } from "lucide-react";
+import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft, Download, MessageSquare, Sparkles, Crown, BarChart3, Receipt, Check, Rocket, Pencil, Trash2, RefreshCcw } from "lucide-react";
 import { Table,
   TableBody,
   TableCell,
@@ -19,6 +19,8 @@ import { useNavigate } from "react-router-dom";
 import jsPDF from "jspdf";
 import { ResponseTemplatesManager } from "@/components/jobs/ResponseTemplatesManager";
 import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
+import { EditJobDialog } from "@/components/jobs/EditJobDialog";
+import { RenewJobDialog } from "@/components/employer/RenewJobDialog";
 import { JobPostingsStatus } from "@/components/employer/JobPostingsStatus";
 import { motion } from "framer-motion";
 
