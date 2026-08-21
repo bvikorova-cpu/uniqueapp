@@ -59,6 +59,9 @@ export default function EmployerDashboard() { const [jobs, setJobs] = useState<J
   const [jobFilter, setJobFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("newest");
   const [searchQuery, setSearchQuery] = useState("");
+  const [editJob, setEditJob] = useState<any>(null);
+  const [renewJob, setRenewJob] = useState<{ id: string; title: string } | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
