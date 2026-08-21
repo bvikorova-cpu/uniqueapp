@@ -60,22 +60,13 @@ export function AIJobOptimizer() {
   const [showResults, setShowResults] = useState(false);
   const { toast } = useToast();
 
-  // Check user's premium status and credits
+  // Credit-only access (no subscriptions in the Work section)
   const { data: userStatus, refetch: refetchStatus } = useQuery({
-    queryKey: ["user-premium-status"],
+    queryKey: ["jobs-optimizer-credits"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return { isPremium: false, credits: 0, isLoggedIn: false };
+      if (!user) return { credits: 0, isLoggedIn: false };
 
-      // Check premium subscription
-      const { data: subscription } = await supabase
-        .from('subscriptions')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('status', 'active')
-        .maybeSingle();
-
-      // Get credits from ai_credits table
       const { data: credits } = await supabase
         .from('ai_credits')
         .select('credits_remaining')
@@ -83,7 +74,6 @@ export function AIJobOptimizer() {
         .maybeSingle();
 
       return {
-        isPremium: !!subscription,
         credits: (credits as { credits_remaining?: number })?.credits_remaining || 0,
         isLoggedIn: true,
         userId: user.id
@@ -111,7 +101,7 @@ export function AIJobOptimizer() {
       return;
     }
 
-    if (!userStatus?.isPremium && userStatus?.credits < 5) {
+    if ((userStatus?.credits ?? 0) < 5) {
       setUpgradeDialogOpen(true);
       return;
     }
@@ -192,9 +182,9 @@ export function AIJobOptimizer() {
             <Wand2 className="h-4 w-4 text-primary" />
             <span className="hidden sm:inline">AI Optimizer</span>
             <span className="sm:hidden">Optimize</span>
-            <Badge className="ml-1 text-[10px] bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
-              <Crown className="h-2.5 w-2.5 mr-0.5" />
-              Premium
+            <Badge className="ml-1 text-[10px] bg-gradient-to-r from-violet-500 to-pink-500 text-white border-0">
+              <Zap className="h-2.5 w-2.5 mr-0.5" />
+              5 credits
             </Badge>
           </Button>
         </DialogTrigger>
@@ -209,16 +199,10 @@ export function AIJobOptimizer() {
                   AI Resume Optimizer
                 </span>
                 <div className="flex items-center gap-2 mt-1">
-                  <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 text-xs">
-                    <Crown className="h-3 w-3 mr-1" />
-                    Premium Feature
+                  <Badge variant="outline" className="text-xs">
+                    <Zap className="h-3 w-3 mr-1" />
+                    5 Credits per scan
                   </Badge>
-                  {!userStatus?.isPremium && (
-                    <Badge variant="outline" className="text-xs">
-                      <Zap className="h-3 w-3 mr-1" />
-                      5 Credits per scan
-                    </Badge>
-                  )}
                 </div>
               </div>
             </DialogTitle>
@@ -231,42 +215,26 @@ export function AIJobOptimizer() {
             {!showResults ? (
               <div className="space-y-6 py-4">
                 {/* User Status Banner */}
-                <Card className={`backdrop-blur-sm border ${userStatus?.isPremium ? 'bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-amber-500/20' : 'bg-muted/30 border-border'}`}>
+                <Card className="backdrop-blur-sm border bg-muted/30 border-border">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        {userStatus?.isPremium ? (
-                          <>
-                            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
-                              <Crown className="h-5 w-5 text-white" />
-                            </div>
-                            <div>
-                              <p className="font-semibold">Premium Member</p>
-                              <p className="text-sm text-muted-foreground">Unlimited AI scans included</p>
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                              <Zap className="h-5 w-5 text-primary" />
-                            </div>
-                            <div>
-                              <p className="font-semibold">Your Credits: {userStatus?.credits || 0}</p>
-                              <p className="text-sm text-muted-foreground">Each scan costs 5 credits</p>
-                            </div>
-                          </>
-                        )}
+                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Zap className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <p className="font-semibold">Your Credits: {userStatus?.credits || 0}</p>
+                          <p className="text-sm text-muted-foreground">Each scan costs 5 credits</p>
+                        </div>
                       </div>
-                      {!userStatus?.isPremium && (
-                        <Button 
-                          size="sm" 
-                          className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
-                          onClick={() => setUpgradeDialogOpen(true)}
-                        >
-                          <Crown className="h-4 w-4 mr-1" />
-                          Upgrade
-                        </Button>
-                      )}
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => { window.location.href = '/ai-credits'; }}
+                      >
+                        <Zap className="h-4 w-4 mr-1" />
+                        Top up
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -373,7 +341,7 @@ Include your:
                       <>
                         <Sparkles className="h-4 w-4" />
                         Analyze Resume
-                        {!userStatus?.isPremium && <span className="text-xs opacity-80">(5 credits)</span>}
+                        <span className="text-xs opacity-80">(5 credits)</span>
                       </>
                     )}
                   </Button>
@@ -517,26 +485,22 @@ Include your:
         </DialogContent>
       </Dialog>
 
-      {/* Upgrade Dialog */}
+      {/* Credits Dialog */}
       <Dialog open={upgradeDialogOpen} onOpenChange={setUpgradeDialogOpen}>
-        <DialogContent className="max-w-md backdrop-blur-xl bg-background/95 border-amber-500/20">
+        <DialogContent className="max-w-md backdrop-blur-xl bg-background/95 border-primary/20">
           <div className="text-center space-y-6 py-4">
-            <div className="h-20 w-20 mx-auto rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
-              <Crown className="h-10 w-10 text-white" />
+            <div className="h-20 w-20 mx-auto rounded-full bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center">
+              <Zap className="h-10 w-10 text-white" />
             </div>
-            
+
             <div>
-              <h2 className="text-2xl font-bold">Upgrade to Premium</h2>
+              <h2 className="text-2xl font-bold">Not enough credits</h2>
               <p className="text-muted-foreground mt-2">
-                Unlock AI Resume Optimization and boost your hireability by 40%
+                An AI resume scan costs 5 credits. Top up to continue.
               </p>
             </div>
 
             <div className="space-y-3 text-left">
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                <CheckCircle className="h-5 w-5 text-green-500 shrink-0" />
-                <span className="text-sm">Unlimited AI resume scans</span>
-              </div>
               <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
                 <CheckCircle className="h-5 w-5 text-green-500 shrink-0" />
                 <span className="text-sm">Detailed score breakdown</span>
@@ -547,36 +511,20 @@ Include your:
               </div>
               <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
                 <CheckCircle className="h-5 w-5 text-green-500 shrink-0" />
-                <span className="text-sm">Priority job matching</span>
+                <span className="text-sm">Keyword & ATS optimization</span>
               </div>
             </div>
 
-            <div className="space-y-3">
-              <Button 
-                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
-                onClick={() => {
-                  setUpgradeDialogOpen(false);
-                  window.location.href = '/premium';
-                }}
-              >
-                <Crown className="h-4 w-4 mr-2" />
-                Upgrade Now
-              </Button>
-              <p className="text-xs text-muted-foreground">
-                Or purchase credits: 5 credits = 1 scan
-              </p>
-              <Button 
-                variant="outline" 
-                className="w-full"
-                onClick={() => {
-                  setUpgradeDialogOpen(false);
-                  window.location.href = '/ai-credits-store';
-                }}
-              >
-                <Zap className="h-4 w-4 mr-2" />
-                Buy Credits
-              </Button>
-            </div>
+            <Button
+              className="w-full bg-gradient-to-r from-violet-500 to-pink-500 text-white"
+              onClick={() => {
+                setUpgradeDialogOpen(false);
+                window.location.href = '/ai-credits';
+              }}
+            >
+              <Zap className="h-4 w-4 mr-2" />
+              Buy Credits
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
