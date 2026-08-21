@@ -248,9 +248,9 @@ export function AICVGeneratorDialog() {
           <div className="space-y-3 sm:space-y-5 pb-4">
 
             {/* Template picker */}
-            <div className="space-y-2">
-              <Label>CV style / template</Label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label className="text-xs sm:text-sm">CV style / template</Label>
+              <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
                 {TEMPLATES.map((t) => {
                   const active = template === t.id;
                   return (
@@ -258,22 +258,23 @@ export function AICVGeneratorDialog() {
                       key={t.id}
                       type="button"
                       onClick={() => setTemplate(t.id)}
-                      className={`relative text-left rounded-xl border p-3 transition-all ${
+                      className={`relative text-left rounded-lg sm:rounded-xl border p-2 sm:p-3 transition-all ${
                         active ? "border-primary bg-primary/5 shadow-sm" : "border-border hover:border-primary/40"
                       }`}
                     >
                       {active && (
-                        <span className="absolute top-2 right-2 h-5 w-5 rounded-full bg-primary text-primary-foreground grid place-items-center">
-                          <Check className="h-3 w-3" />
+                        <span className="absolute top-1 right-1 sm:top-2 sm:right-2 h-4 w-4 sm:h-5 sm:w-5 rounded-full bg-primary text-primary-foreground grid place-items-center">
+                          <Check className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                         </span>
                       )}
-                      <div className="text-sm font-semibold">{t.name}</div>
-                      <div className="text-[11px] text-muted-foreground">{t.desc}</div>
+                      <div className="text-xs sm:text-sm font-semibold">{t.name}</div>
+                      <div className="text-[10px] sm:text-[11px] text-muted-foreground leading-tight">{t.desc}</div>
                     </button>
                   );
                 })}
               </div>
             </div>
+
 
             {/* Personal info */}
             <Card className="p-4 space-y-3 bg-muted/30">
