@@ -46,9 +46,11 @@ interface CreateJobDialogProps {
   subscribed: boolean;
   onRenewSubscription: () => void;
   prefillCompanyName?: string;
+  triggerLabel?: string;
+  triggerClassName?: string;
 }
 
-export function CreateJobDialog({ userId, subscribed, onRenewSubscription, prefillCompanyName }: CreateJobDialogProps) {
+export function CreateJobDialog({ userId, subscribed, onRenewSubscription, prefillCompanyName, triggerLabel, triggerClassName }: CreateJobDialogProps) {
   const { toast } = useToast();
   const { spend } = useJobsCredits();
   const queryClient = useQueryClient();
@@ -156,10 +158,11 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription, prefi
       <>
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogTrigger asChild>
-          <Button onClick={handleOpenDialog}>
+          <Button onClick={handleOpenDialog} className={triggerClassName}>
             <Plus className="h-4 w-4 mr-2" />
-            {"Add Position"}
+            {triggerLabel ?? "Add Position"}
           </Button>
+
         </DialogTrigger>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
