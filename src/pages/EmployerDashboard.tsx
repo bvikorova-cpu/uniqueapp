@@ -124,6 +124,30 @@ export default function EmployerDashboard() { const [jobs, setJobs] = useState<J
     }
   };
 
+  const handleEdit = async (jobId: string) => {
+    const { data, error } = await supabase.from("job_listings").select("*").eq("id", jobId).single();
+    if (error || !data) {
+      toast({ title: "Error", description: "Could not load job details.", variant: "destructive" });
+      return;
+    }
+    setEditJob(data);
+  };
+
+  const handleDelete = async (jobId: string) => {
+    if (!confirm("Are you sure you want to delete this job listing? This cannot be undone.")) return;
+    setDeleting(jobId);
+    try {
+      const { error } = await supabase.from("job_listings").delete().eq("id", jobId);
+      if (error) throw error;
+      toast({ title: "Deleted", description: "Job listing removed." });
+      loadDashboardData();
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      setDeleting(null);
+    }
+  };
+
   const filteredApplications = applications
     .filter(app => {
       if (statusFilter !== "all" && app.status !== statusFilter) return false;
