@@ -137,7 +137,7 @@ export default function PromotionsCreate() {
               </div>
               <div>
                 <Label htmlFor="link">External link (optional)</Label>
-                <Input id="link" type="url" placeholder="https://…" value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} />
+                <Input id="link" type="text" inputMode="url" autoCapitalize="none" spellCheck={false} placeholder="example.com or https://example.com" value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} />
               </div>
               <div>
                 <Label>Media (image or video) *</Label>
