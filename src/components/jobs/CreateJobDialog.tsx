@@ -46,9 +46,11 @@ interface CreateJobDialogProps {
   subscribed: boolean;
   onRenewSubscription: () => void;
   prefillCompanyName?: string;
+  triggerLabel?: string;
+  triggerClassName?: string;
 }
 
-export function CreateJobDialog({ userId, subscribed, onRenewSubscription, prefillCompanyName }: CreateJobDialogProps) {
+export function CreateJobDialog({ userId, subscribed, onRenewSubscription, prefillCompanyName, triggerLabel, triggerClassName }: CreateJobDialogProps) {
   const { toast } = useToast();
   const { spend } = useJobsCredits();
   const queryClient = useQueryClient();
