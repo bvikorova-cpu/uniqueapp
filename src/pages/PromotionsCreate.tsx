@@ -83,26 +83,15 @@ export default function PromotionsCreate() {
         .single();
       if (insErr) throw insErr;
 
-      const { data: result, error: rpcErr } = await (supabase as any).rpc(
-        "activate_promo_listing_with_credits",
-        { _listing_id: inserted.id },
-      );
-      if (rpcErr) throw rpcErr;
-      if (!result?.ok) {
-        if (result?.error === "insufficient_credits") {
-          toast.error("Not enough credits", {
-            description: `This plan costs ${result.cost} credits for 30 days.`,
-            action: { label: "Top up", onClick: () => navigate("/ai-credits") },
-            duration: 6000,
-          });
-          setSubmitting(false);
-          return;
-        }
-        throw new Error(result?.error || "Activation failed");
-      }
-      window.dispatchEvent(new Event("ai-credits-updated"));
-      toast.success("Promotion is live for 30 days", { description: `${result.cost} credits used.` });
-      navigate("/promotions/mine");
+      const { data: result, error: fnErr } = await supabase.functions.invoke("create-promo-subscription", {
+        body: { listingId: inserted.id, tier },
+      });
+      if (fnErr) throw fnErr;
+      if (result?.error) throw new Error(result.error);
+      if (!result?.url) throw new Error("Could not open Stripe Checkout");
+
+      window.location.href = result.url as string;
+
     } catch (e: any) {
       toast.error(e.message ?? "Something went wrong");
       setSubmitting(false);
@@ -202,8 +191,8 @@ export default function PromotionsCreate() {
                       {isTop && <Badge className="bg-gradient-to-r from-primary to-accent text-white">Best</Badge>}
                     </div>
                     <div className="text-3xl font-black mb-1">
-                      {isTop ? 50 : 20} credits
-                      <span className="text-sm font-normal text-muted-foreground"> / 30 days</span>
+                      €{isTop ? 50 : 20}
+                      <span className="text-sm font-normal text-muted-foreground"> / month</span>
                     </div>
                     <p className="text-xs text-muted-foreground">
                       {isTop
@@ -219,7 +208,7 @@ export default function PromotionsCreate() {
           <div className="mt-6 flex justify-end">
             <Button type="submit" size="lg" variant="premium" disabled={submitting}>
               {submitting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
-              {submitting ? "Publishing…" : `Publish for ${tier === "top" ? 50 : 20} credits (30 days)`}
+              {submitting ? "Publishing…" : `Publish for €${tier === "top" ? 50 : 20}/month`}
             </Button>
           </div>
         </form>
