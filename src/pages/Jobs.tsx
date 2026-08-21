@@ -77,7 +77,13 @@ export default function Jobs() {
       />
       <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-16">
         <div className="container mx-auto px-4 max-w-6xl">
-          <div className="flex justify-end mb-4">
+          <div className="flex justify-end gap-2 mb-4">
+            {user && (
+              <Button variant="outline" size="sm" onClick={() => navigate("/employer-dashboard")} className="gap-1.5 border-primary/30 text-primary hover:bg-primary/10">
+                <Briefcase className="h-4 w-4" />
+                Employer Dashboard
+              </Button>
+            )}
             <HowItWorksButton title="Work AI Tools" intro="Credit-based AI tools for job posts and resumes." steps={HOW_IT_WORKS} variant="compact" />
           </div>
 
