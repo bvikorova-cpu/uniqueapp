@@ -277,38 +277,39 @@ export function AICVGeneratorDialog() {
 
 
             {/* Personal info */}
-            <Card className="p-4 space-y-3 bg-muted/30">
-              <div className="flex items-center gap-2 text-sm font-semibold">
-                <User className="h-4 w-4 text-primary" /> Personal info
-                <span className="text-[11px] font-normal text-muted-foreground">(prefilled from your profile — edit anytime)</span>
+            <Card className="p-3 sm:p-4 space-y-2 sm:space-y-3 bg-muted/30">
+              <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold">
+                <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" /> Personal info
+                <span className="text-[10px] sm:text-[11px] font-normal text-muted-foreground">(prefilled — edit anytime)</span>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="space-y-1.5">
-                  <Label>Full name</Label>
-                  <Input value={personal.fullName} onChange={(e) => setPersonal({ ...personal, fullName: e.target.value })} placeholder="Jane Doe" />
+              <div className="grid gap-2 sm:gap-3 sm:grid-cols-2">
+                <div className="space-y-1">
+                  <Label className="text-xs">Full name</Label>
+                  <Input className="h-8 sm:h-10 text-xs sm:text-sm" value={personal.fullName} onChange={(e) => setPersonal({ ...personal, fullName: e.target.value })} placeholder="Jane Doe" />
                 </div>
-                <div className="space-y-1.5">
-                  <Label>Headline</Label>
-                  <Input value={personal.headline} onChange={(e) => setPersonal({ ...personal, headline: e.target.value })} placeholder="Frontend Developer" />
+                <div className="space-y-1">
+                  <Label className="text-xs">Headline</Label>
+                  <Input className="h-8 sm:h-10 text-xs sm:text-sm" value={personal.headline} onChange={(e) => setPersonal({ ...personal, headline: e.target.value })} placeholder="Frontend Developer" />
                 </div>
-                <div className="space-y-1.5">
-                  <Label>Email</Label>
-                  <Input value={personal.email} onChange={(e) => setPersonal({ ...personal, email: e.target.value })} placeholder="you@email.com" />
+                <div className="space-y-1">
+                  <Label className="text-xs">Email</Label>
+                  <Input className="h-8 sm:h-10 text-xs sm:text-sm" value={personal.email} onChange={(e) => setPersonal({ ...personal, email: e.target.value })} placeholder="you@email.com" />
                 </div>
-                <div className="space-y-1.5">
-                  <Label>Phone</Label>
-                  <Input value={personal.phone} onChange={(e) => setPersonal({ ...personal, phone: e.target.value })} placeholder="+00 000 000 000" />
+                <div className="space-y-1">
+                  <Label className="text-xs">Phone</Label>
+                  <Input className="h-8 sm:h-10 text-xs sm:text-sm" value={personal.phone} onChange={(e) => setPersonal({ ...personal, phone: e.target.value })} placeholder="+00 000 000 000" />
                 </div>
-                <div className="space-y-1.5">
-                  <Label>Location</Label>
-                  <Input value={personal.location} onChange={(e) => setPersonal({ ...personal, location: e.target.value })} placeholder="City" />
+                <div className="space-y-1">
+                  <Label className="text-xs">Location</Label>
+                  <Input className="h-8 sm:h-10 text-xs sm:text-sm" value={personal.location} onChange={(e) => setPersonal({ ...personal, location: e.target.value })} placeholder="City" />
                 </div>
-                <div className="space-y-1.5">
-                  <Label>Links</Label>
-                  <Input value={personal.links} onChange={(e) => setPersonal({ ...personal, links: e.target.value })} placeholder="LinkedIn / portfolio" />
+                <div className="space-y-1">
+                  <Label className="text-xs">Links</Label>
+                  <Input className="h-8 sm:h-10 text-xs sm:text-sm" value={personal.links} onChange={(e) => setPersonal({ ...personal, links: e.target.value })} placeholder="LinkedIn / portfolio" />
                 </div>
               </div>
             </Card>
+
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
