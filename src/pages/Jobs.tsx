@@ -11,6 +11,7 @@ import { AICVGeneratorDialog } from "@/components/jobs/AICVGeneratorDialog";
 import { AIJobOptimizer } from "@/components/jobs/AIJobOptimizer";
 import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
 import { WorkHero } from "@/components/jobs/WorkHero";
+import { JobListingsFeed } from "@/components/jobs/JobListingsFeed";
 import { useAuth } from "@/contexts/AuthContext";
 
 const HOW_IT_WORKS = [
