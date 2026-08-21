@@ -11,6 +11,7 @@ import { AICVGeneratorDialog } from "@/components/jobs/AICVGeneratorDialog";
 import { AIJobOptimizer } from "@/components/jobs/AIJobOptimizer";
 import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
 import { WorkHero } from "@/components/jobs/WorkHero";
+import { JobListingsFeed } from "@/components/jobs/JobListingsFeed";
 import { useAuth } from "@/contexts/AuthContext";
 
 const HOW_IT_WORKS = [
@@ -82,41 +83,44 @@ export default function Jobs() {
 
           <WorkHero />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
             {TOOLS.map((tool, i) => (
               <motion.div
                 key={tool.id}
-                initial={{ opacity: 0, y: 24 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.07 }}
+                transition={{ delay: i * 0.05 }}
               >
-                <Card className="group relative h-full flex flex-col overflow-hidden border-border/40 bg-card/60 backdrop-blur-xl transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10">
-                  <div className={`absolute -top-16 -right-16 h-40 w-40 rounded-full bg-gradient-to-br ${tool.color} opacity-15 blur-2xl transition-opacity group-hover:opacity-30`} />
-                  <CardContent className="relative p-5 flex flex-col h-full">
-                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-4 shadow-lg shadow-primary/20`}>
-                      <tool.icon className="h-6 w-6 text-white" />
+                <Card className="group relative h-full overflow-hidden border-border/40 bg-card/60 backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10">
+                  <div className={`absolute -top-10 -right-10 h-24 w-24 rounded-full bg-gradient-to-br ${tool.color} opacity-15 blur-2xl transition-opacity group-hover:opacity-30`} />
+                  <CardContent className="relative p-3 flex flex-col h-full gap-2">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-8 h-8 shrink-0 rounded-lg bg-gradient-to-br ${tool.color} flex items-center justify-center shadow`}>
+                        <tool.icon className="h-4 w-4 text-white" />
+                      </div>
+                      <h2 className="text-xs sm:text-sm font-bold leading-tight">{tool.short}</h2>
                     </div>
-                    <h2 className="text-base sm:text-lg font-bold mb-1.5">{tool.title}</h2>
-                    <p className="text-sm text-muted-foreground flex-1 mb-4">{tool.desc}</p>
-                    <div className="flex items-center justify-between gap-2 mt-auto pt-3 border-t border-border/40">
-                      <Badge variant="outline" className="text-[10px] border-amber-500/30 text-amber-500">
-                        <Zap className="h-3 w-3 mr-1" />
-                        {tool.credits} credits
+                    <div className="flex items-center justify-between gap-2 mt-auto min-w-0 overflow-hidden [&_button]:h-7 [&_button]:px-2 [&_button]:text-[11px] [&_button]:max-w-full [&_button]:truncate [&_button_.text-\[10px\]]:hidden">
+                      <Badge variant="outline" className="shrink-0 text-[10px] px-1.5 border-amber-500/30 text-amber-500">
+                        <Zap className="h-2.5 w-2.5 mr-0.5" />
+                        {tool.credits}
                       </Badge>
-                      {tool.route ? (
-                        <Button size="sm" onClick={() => navigate(tool.route!)}>
-                          Open <ArrowRight className="h-3.5 w-3.5 ml-1" />
-                        </Button>
-                      ) : tool.post && user ? (
-                        <CreateJobDialog userId={user.id} subscribed={true} onRenewSubscription={() => {}} />
-                      ) : tool.post ? (
-                        <Button size="sm" onClick={() => navigate("/auth")}>Sign in</Button>
-                      ) : tool.id === "ai-resume-optimizer" ? (
-                        <AIJobOptimizer />
-                      ) : (
-                        <AICVGeneratorDialog />
-                      )}
+                      <div className="min-w-0 flex justify-end">
+                        {tool.route ? (
+                          <Button size="sm" onClick={() => navigate(tool.route!)}>
+                            Open <ArrowRight className="h-3 w-3 ml-1" />
+                          </Button>
+                        ) : tool.post && user ? (
+                          <CreateJobDialog userId={user.id} subscribed={true} onRenewSubscription={() => {}} />
+                        ) : tool.post ? (
+                          <Button size="sm" onClick={() => navigate("/auth")}>Sign in</Button>
+                        ) : tool.id === "ai-resume-optimizer" ? (
+                          <AIJobOptimizer />
+                        ) : (
+                          <AICVGeneratorDialog />
+                        )}
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -124,14 +128,16 @@ export default function Jobs() {
             ))}
           </div>
 
-          <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <JobListingsFeed />
+
+          <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
               { icon: Globe2, title: "Global by default", desc: "Hire and get hired anywhere — remote-first listings, no borders." },
               { icon: Zap, title: "Credits only", desc: "No subscriptions. Pay a few AI credits per action." },
               { icon: Briefcase, title: "Instant visibility", desc: "Publish in seconds and boost your listing to the top." },
             ].map((f) => (
-              <div key={f.title} className="rounded-2xl border border-border/40 bg-gradient-to-br from-primary/10 via-card/50 to-accent/5 p-5 backdrop-blur-xl">
-                <f.icon className="h-5 w-5 text-primary mb-2.5" />
+              <div key={f.title} className="rounded-2xl border border-border/40 bg-gradient-to-br from-primary/10 via-card/50 to-accent/5 p-4 backdrop-blur-xl">
+                <f.icon className="h-5 w-5 text-primary mb-2" />
                 <h3 className="font-bold text-sm mb-1">{f.title}</h3>
                 <p className="text-xs text-muted-foreground">{f.desc}</p>
               </div>
