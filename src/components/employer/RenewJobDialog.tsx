@@ -3,14 +3,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, RefreshCcw, Sparkles } from "lucide-react";
+import { Loader2, RefreshCcw, Sparkles, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useJobsCredits, JOBS_CREDIT_COSTS } from "@/hooks/useJobsCredits";
 
-const PACKAGES: Array<{ days: number; price: number; popular?: boolean; productKey: string }> = [
-  { days: 7, price: 19, productKey: "job_listing_7" },
-  { days: 14, price: 29, popular: true, productKey: "job_listing_14" },
-  { days: 30, price: 49, productKey: "job_listing_30" },
+const PACKAGES: Array<{ days: number; credits: number; popular?: boolean }> = [
+  { days: 7, credits: JOBS_CREDIT_COSTS.listing_7 },
+  { days: 14, credits: JOBS_CREDIT_COSTS.listing_14, popular: true },
+  { days: 30, credits: JOBS_CREDIT_COSTS.listing_30 },
 ];
 
 interface Props {
@@ -22,24 +23,36 @@ interface Props {
 
 export function RenewJobDialog({ jobId, jobTitle, open, onOpenChange }: Props) {
   const { toast } = useToast();
-  const [loading, setLoading] = useState<string | null>(null);
+  const { spend } = useJobsCredits();
+  const [loading, setLoading] = useState<number | null>(null);
 
-  const handleRenew = async (productKey: string) => {
-    setLoading(productKey);
+  const handleRenew = async (pkg: { days: number; credits: number }) => {
+    setLoading(pkg.days);
     try {
-      const { data, error } = await supabase.functions.invoke("create-one-off-payment", {
-        body: { productKey, metadata: { jobListingId: jobId } } });
+      const ok = await spend(pkg.credits, `job_listing_renew_${pkg.days}d`);
+      if (!ok) return;
+
+      const now = new Date();
+      const expires = new Date(now.getTime() + pkg.days * 24 * 60 * 60 * 1000);
+
+      const { error } = await (supabase as any)
+        .from("job_listings")
+        .update({
+          is_active: true,
+          paid_status: "paid",
+          duration_days: pkg.days,
+          published_at: now.toISOString(),
+          expires_at: expires.toISOString(),
+        })
+        .eq("id", jobId);
       if (error) throw error;
-      if (data?.url) {
-        const w = window.open(data.url, "_blank", "noopener,noreferrer");
-        if (!w) window.location.href = data.url;
-        onOpenChange(false);
-      } else {
-        throw new Error("No checkout URL returned");
-      }
-    } catch (err: any) { toast({
+
+      toast({ title: "Listing renewed", description: `Visible for another ${pkg.days} days.` });
+      onOpenChange(false);
+    } catch (err: any) {
+      toast({
         title: "Renewal failed",
-        description: err?.message || "Could not start checkout.",
+        description: err?.message || "Could not renew this listing.",
         variant: "destructive" });
     } finally {
       setLoading(null);
@@ -54,14 +67,14 @@ export function RenewJobDialog({ jobId, jobTitle, open, onOpenChange }: Props) {
             <RefreshCcw className="h-5 w-5 text-primary" /> Renew job posting
           </DialogTitle>
           <DialogDescription>
-            Extend visibility for <span className="font-semibold">{jobTitle}</span>. Select a new package.
+            Extend visibility for <span className="font-semibold">{jobTitle}</span>. Renewal is paid with credits.
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
           {PACKAGES.map((p) => (
             <Card
-              key={p.productKey}
+              key={p.days}
               className={`relative border-2 transition-all ${
                 p.popular ? "border-primary shadow-lg shadow-primary/10" : "border-border/40"
               }`}
@@ -72,18 +85,20 @@ export function RenewJobDialog({ jobId, jobTitle, open, onOpenChange }: Props) {
                 </Badge>
               )}
               <CardContent className="p-5 flex flex-col items-center gap-3">
-                <div className="text-3xl font-black">€{p.price}</div>
+                <div className="text-3xl font-black flex items-center gap-1.5">
+                  <Zap className="h-5 w-5 text-primary" />{p.credits}
+                </div>
                 <div className="text-sm text-muted-foreground">{p.days} days visibility</div>
                 <Button
                   className="w-full"
                   variant={p.popular ? "default" : "outline"}
                   disabled={loading !== null}
-                  onClick={() => handleRenew(p.productKey)}
+                  onClick={() => handleRenew(p)}
                 >
-                  {loading === p.productKey ? (
-                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Loading…</>
+                  {loading === p.days ? (
+                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Renewing…</>
                   ) : (
-                    "Renew"
+                    `Renew · ${p.credits} credits`
                   )}
                 </Button>
               </CardContent>
