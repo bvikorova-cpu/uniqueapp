@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Building2, Loader2 } from "lucide-react";
+import { Building2, Loader2, Upload, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -22,8 +22,32 @@ const slugify = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-"
 export default function CompanyNew() {
   const [form, setForm] = useState({ name: "", website: "", industry: "", size: "", headquarters: "", description: "", logo_url: "" });
   const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const uploadLogo = async (file: File) => {
+    if (!file.type.startsWith("image/")) return toast({ title: "Please pick an image file", variant: "destructive" });
+    if (file.size > 5 * 1024 * 1024) return toast({ title: "Image is too large", description: "Max 5 MB.", variant: "destructive" });
+    setUploading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Sign in required");
+      const ext = file.name.split(".").pop()?.toLowerCase() || "png";
+      const path = `${user.id}/company-logos/${Date.now()}.${ext}`;
+      const { error } = await supabase.storage.from("media").upload(path, file, { upsert: true, contentType: file.type });
+      if (error) throw error;
+      const { data: { publicUrl } } = supabase.storage.from("media").getPublicUrl(path);
+      setForm((f) => ({ ...f, logo_url: publicUrl }));
+      toast({ title: "Logo uploaded" });
+    } catch (e: any) {
+      toast({ title: "Upload failed", description: e.message, variant: "destructive" });
+    } finally {
+      setUploading(false);
+    }
+  };
+
 
   const submit = async () => {
     if (!form.name.trim()) return toast({ title: "Name is required", variant: "destructive" });
