@@ -232,20 +232,21 @@ export function AICVGeneratorDialog() {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col p-0 sm:p-6">
-        <DialogHeader className="px-6 pt-6 sm:px-0 sm:pt-0 shrink-0">
-          <DialogTitle className="flex items-center gap-2">
+      <DialogContent className="max-w-3xl h-[100dvh] max-h-[100dvh] sm:h-auto sm:max-h-[90vh] overflow-hidden flex flex-col p-0 sm:p-6">
+        <DialogHeader className="px-4 pt-4 pb-2 sm:px-0 sm:pt-0 sm:pb-0 shrink-0">
+          <DialogTitle className="flex items-center gap-2 text-base sm:text-lg">
             <FileSignature className="h-5 w-5 text-primary" />
             AI CV Generator
           </DialogTitle>
-          <DialogDescription>
-            Pick a template, check your personal info and let AI build a complete ATS-ready CV. {CREDITS} credits per CV.
+          <DialogDescription className="text-xs sm:text-sm">
+            Pick a template, check your info and let AI build an ATS-ready CV. {CREDITS} credits per CV.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-6 sm:px-0" style={{ WebkitOverflowScrolling: "touch" }}>
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 sm:px-0" style={{ WebkitOverflowScrolling: "touch" }}>
 
-          <div className="space-y-5 pb-4">
+          <div className="space-y-3 sm:space-y-5 pb-4">
+
             {/* Template picker */}
             <div className="space-y-2">
               <Label>CV style / template</Label>
