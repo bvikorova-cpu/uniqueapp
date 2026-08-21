@@ -355,14 +355,46 @@ export default function EmployerDashboard() { const [jobs, setJobs] = useState<J
                         <TableCell className="text-right text-muted-foreground">{job.views_count}</TableCell>
                         <TableCell className="text-right text-muted-foreground text-sm">{format(new Date(job.created_at), 'MMM d, yyyy')}</TableCell>
                         <TableCell className="text-right">
-                          <Button
-                            size="sm"
-                            variant="secondary"
-                            onClick={() => navigate(`/jobs/boost/${job.id}`)}
-                            className="gap-1"
-                          >
-                            <Rocket className="h-3.5 w-3.5" /> Boost
-                          </Button>
+                          <div className="flex justify-end gap-2 flex-wrap">
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              onClick={() => navigate(`/jobs/boost/${job.id}`)}
+                              className="gap-1"
+                            >
+                              <Rocket className="h-3.5 w-3.5" /> Boost
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setRenewJob({ id: job.id, title: job.title })}
+                              className="gap-1"
+                            >
+                              <RefreshCcw className="h-3.5 w-3.5" /> Renew
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleEdit(job.id)}
+                              className="gap-1"
+                            >
+                              <Pencil className="h-3.5 w-3.5" /> Edit
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleDelete(job.id)}
+                              disabled={deleting === job.id}
+                              className="gap-1"
+                            >
+                              {deleting === job.id ? (
+                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                              ) : (
+                                <Trash2 className="h-3.5 w-3.5" />
+                              )}
+                              Delete
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
