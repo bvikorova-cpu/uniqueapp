@@ -137,8 +137,28 @@ Contact line (location, email, phone, links) — only what is available
 CANDIDATE DATA:
 ${dataBlock}`;
 
-    const markdown = await askAI(system, userPrompt, { max_tokens: 3000, tier: "cheap" });
-    if (!markdown || markdown.trim().length < 100) throw new Error("AI returned an empty CV");
+    // Gemini/GPT-5 thinking models burn hidden tokens first, so a tight budget
+    // can come back empty/truncated — give plenty of headroom and retry once.
+    let markdown = "";
+    for (const budget of [8000, 12000]) {
+      try {
+        markdown = (await askAI(system, userPrompt, { max_tokens: budget, tier: "cheap" })) || "";
+      } catch (err) {
+        console.error("[generate-cv] AI attempt failed:", (err as Error).message);
+        markdown = "";
+      }
+      if (markdown.trim().length >= 40) break;
+    }
+    if (markdown.trim().length < 40) {
+      return new Response(
+        JSON.stringify({
+          error: "ai_unavailable",
+          message: "The AI could not generate your CV right now. No credits were used — please try again.",
+        }),
+        { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
 
     await deduct!().catch((e) => console.error("[generate-cv] deduct failed:", e));
 
