@@ -32,11 +32,12 @@ const JOB_TYPES = { full_time: "Full Time",
   internship: "Internship",
   remote: "Remote" };
 
-const JOB_PACKAGES: Array<{ days: number; price: number; popular: boolean; productKey: string }> = [
-  { days: 7, price: 19, popular: false, productKey: "job_listing_7" },
-  { days: 14, price: 29, popular: true, productKey: "job_listing_14" },
-  { days: 30, price: 49, popular: false, productKey: "job_listing_30" },
+const JOB_PACKAGES: Array<{ days: number; credits: number; popular: boolean }> = [
+  { days: 7, credits: JOBS_CREDIT_COSTS.listing_7, popular: false },
+  { days: 14, credits: JOBS_CREDIT_COSTS.listing_14, popular: true },
+  { days: 30, credits: JOBS_CREDIT_COSTS.listing_30, popular: false },
 ];
+
 
 interface CreateJobDialogProps {
   userId: string;
