@@ -52,6 +52,19 @@ export default function PromotionsCreate() {
     setPreview(URL.createObjectURL(f));
   };
 
+  const normalizeLink = (raw: string): string | null => {
+    const v = raw.trim();
+    if (!v) return null;
+    const withProto = /^https?:\/\//i.test(v) ? v : `https://${v.replace(/^\/+/, "")}`;
+    try {
+      const u = new URL(withProto);
+      if (!u.hostname.includes(".")) return null;
+      return u.toString();
+    } catch {
+      return null;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file) { toast.error("Please upload an image or video"); return; }
@@ -74,7 +87,7 @@ export default function PromotionsCreate() {
           description: description.trim() || null,
           media_url: publicPath,
           media_type: mediaType,
-          link_url: linkUrl.trim() || null,
+          link_url: normalizeLink(linkUrl),
           tier,
           category,
           city: city.trim() || null,
@@ -137,7 +150,7 @@ export default function PromotionsCreate() {
               </div>
               <div>
                 <Label htmlFor="link">External link (optional)</Label>
-                <Input id="link" type="url" placeholder="https://…" value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} />
+                <Input id="link" type="text" inputMode="url" autoCapitalize="none" spellCheck={false} placeholder="example.com or https://example.com" value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} />
               </div>
               <div>
                 <Label>Media (image or video) *</Label>
