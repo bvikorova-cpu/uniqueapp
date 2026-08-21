@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.is_verified_employer(uuid) FROM anon;

@@ -1,9 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, MapPin, Building2, Briefcase, Clock, Globe, Loader2, Star } from "lucide-react";
+import { Search, MapPin, Building2, Briefcase, Clock, Globe, Loader2, Star, ArrowDownWideNarrow } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 
 interface PublicJob {
@@ -20,6 +27,9 @@ interface PublicJob {
   salary_currency: string | null;
   is_remote: boolean | null;
   is_featured: boolean | null;
+  duration_days: number | null;
+  views_count: number | null;
+  applications_count: number | null;
   created_at: string | null;
 }
 
@@ -46,32 +56,59 @@ const CATEGORY_FILTERS = [
   { value: "other", label: "Other" },
 ];
 
+type SortKey = "newest" | "credits" | "match";
+
+const SORT_OPTIONS: { value: SortKey; label: string }[] = [
+  { value: "newest", label: "Newest first" },
+  { value: "credits", label: "Most credits spent" },
+  { value: "match", label: "Best match" },
+];
+
+const PAGE_SIZE = 8;
+
+const SELECT_COLS =
+  "id, slug, title, company_name, location, country, category, job_type, salary_min, salary_max, salary_currency, is_remote, is_featured, duration_days, views_count, applications_count, created_at";
+
 export function JobListingsFeed() {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<PublicJob[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(0);
   const [query, setQuery] = useState("");
   const [debounced, setDebounced] = useState("");
   const [category, setCategory] = useState("all");
-  const [limit, setLimit] = useState(12);
+  const [sort, setSort] = useState<SortKey>("newest");
+
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const t = setTimeout(() => setDebounced(query.trim()), 300);
     return () => clearTimeout(t);
   }, [query]);
 
-  useEffect(() => {
-    let cancelled = false;
-    const load = async () => {
-      setLoading(true);
+  const buildQuery = useCallback(
+    (pageIndex: number) => {
       let q = (supabase.from as any)("job_listings_public")
-        .select(
-          "id, slug, title, company_name, location, country, category, job_type, salary_min, salary_max, salary_currency, is_remote, is_featured, created_at"
-        )
-        .eq("is_active", true)
-        .order("is_featured", { ascending: false })
-        .order("created_at", { ascending: false })
-        .limit(limit);
+        .select(SELECT_COLS)
+        .eq("is_active", true);
+
+      if (sort === "credits") {
+        q = q
+          .order("is_featured", { ascending: false })
+          .order("duration_days", { ascending: false, nullsFirst: false })
+          .order("created_at", { ascending: false });
+      } else if (sort === "match") {
+        q = q
+          .order("is_featured", { ascending: false })
+          .order("applications_count", { ascending: false, nullsFirst: false })
+          .order("views_count", { ascending: false, nullsFirst: false });
+      } else {
+        q = q.order("created_at", { ascending: false });
+      }
+
+      q = q.range(pageIndex * PAGE_SIZE, pageIndex * PAGE_SIZE + PAGE_SIZE - 1);
 
       if (category !== "all") q = q.eq("category", category);
       if (debounced) {
@@ -80,17 +117,57 @@ export function JobListingsFeed() {
           `title.ilike.%${esc}%,company_name.ilike.%${esc}%,location.ilike.%${esc}%,description.ilike.%${esc}%`
         );
       }
+      return q;
+    },
+    [category, debounced, sort]
+  );
 
-      const { data } = await q;
+  // Reset + first page whenever filters/sort change.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      const { data } = await buildQuery(0);
       if (cancelled) return;
-      setJobs((data as PublicJob[]) || []);
+      const rows = (data as PublicJob[]) || [];
+      setJobs(rows);
+      setPage(0);
+      setHasMore(rows.length === PAGE_SIZE);
       setLoading(false);
-    };
-    load();
+    })();
     return () => {
       cancelled = true;
     };
-  }, [debounced, category, limit]);
+  }, [buildQuery]);
+
+  const loadMore = useCallback(async () => {
+    if (loading || loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    const next = page + 1;
+    const { data } = await buildQuery(next);
+    const rows = (data as PublicJob[]) || [];
+    setJobs((prev) => {
+      const seen = new Set(prev.map((p) => p.id));
+      return [...prev, ...rows.filter((r) => !seen.has(r.id))];
+    });
+    setPage(next);
+    setHasMore(rows.length === PAGE_SIZE);
+    setLoadingMore(false);
+  }, [buildQuery, hasMore, loading, loadingMore, page]);
+
+  // Infinite scroll sentinel.
+  useEffect(() => {
+    const node = sentinelRef.current;
+    if (!node || !hasMore) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) loadMore();
+      },
+      { rootMargin: "300px" }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [loadMore, hasMore]);
 
   const salary = (j: PublicJob) => {
     if (!j.salary_min && !j.salary_max) return null;
@@ -99,6 +176,25 @@ export function JobListingsFeed() {
     if (j.salary_min && j.salary_max) return `${sym}${j.salary_min} – ${sym}${j.salary_max}`;
     return `${sym}${j.salary_min || j.salary_max}`;
   };
+
+  // "Best match" additionally re-ranks the loaded rows by how well the search
+  // text hits the title / company / location.
+  const visibleJobs = useMemo(() => {
+    if (sort !== "match" || !debounced) return jobs;
+    const term = debounced.toLowerCase();
+    const score = (j: PublicJob) => {
+      let s = 0;
+      const title = (j.title || "").toLowerCase();
+      if (title === term) s += 100;
+      else if (title.startsWith(term)) s += 60;
+      else if (title.includes(term)) s += 40;
+      if ((j.company_name || "").toLowerCase().includes(term)) s += 15;
+      if ((j.location || "").toLowerCase().includes(term)) s += 10;
+      if (j.is_featured) s += 20;
+      return s;
+    };
+    return [...jobs].sort((a, b) => score(b) - score(a));
+  }, [jobs, sort, debounced]);
 
   const heading = useMemo(
     () => (debounced ? `Results for "${debounced}"` : "Latest job openings"),
@@ -114,15 +210,33 @@ export function JobListingsFeed() {
             Browse open positions posted by employers worldwide.
           </p>
         </div>
-        <div className="relative w-full sm:w-80">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search title, company or location…"
-            className="pl-9 bg-card/60 backdrop-blur-xl"
-            aria-label="Search job listings"
-          />
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <div className="relative w-full sm:w-72">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search title, company or location…"
+              className="pl-9 bg-card/60 backdrop-blur-xl"
+              aria-label="Search job listings"
+            />
+          </div>
+          <Select value={sort} onValueChange={(v) => setSort(v as SortKey)}>
+            <SelectTrigger
+              className="w-full sm:w-[190px] bg-card/60 backdrop-blur-xl"
+              aria-label="Sort job listings"
+            >
+              <ArrowDownWideNarrow className="h-4 w-4 mr-2 text-muted-foreground shrink-0" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {SORT_OPTIONS.map((o) => (
+                <SelectItem key={o.value} value={o.value}>
+                  {o.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
@@ -130,10 +244,7 @@ export function JobListingsFeed() {
         {CATEGORY_FILTERS.map((c) => (
           <button
             key={c.value}
-            onClick={() => {
-              setCategory(c.value);
-              setLimit(12);
-            }}
+            onClick={() => setCategory(c.value)}
             className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
               category === c.value
                 ? "bg-primary text-primary-foreground border-primary"
@@ -149,7 +260,7 @@ export function JobListingsFeed() {
         <div className="flex items-center justify-center py-16 text-muted-foreground">
           <Loader2 className="h-5 w-5 animate-spin mr-2" /> Loading jobs…
         </div>
-      ) : jobs.length === 0 ? (
+      ) : visibleJobs.length === 0 ? (
         <div className="rounded-2xl border border-border/40 bg-card/50 backdrop-blur-xl p-10 text-center">
           <Briefcase className="h-8 w-8 mx-auto text-muted-foreground mb-3" />
           <p className="font-semibold mb-1">No job listings found</p>
@@ -159,7 +270,7 @@ export function JobListingsFeed() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-          {jobs.map((j) => (
+          {visibleJobs.map((j) => (
             <button
               key={j.id}
               onClick={() => navigate(`/jobs/listing/${j.slug || j.id}`)}
@@ -197,11 +308,17 @@ export function JobListingsFeed() {
         </div>
       )}
 
-      {!loading && jobs.length >= limit && (
-        <div className="flex justify-center mt-6">
-          <Button variant="outline" onClick={() => setLimit((l) => l + 12)}>
-            Load more
-          </Button>
+      {!loading && hasMore && (
+        <div ref={sentinelRef} className="flex justify-center mt-6">
+          {loadingMore ? (
+            <span className="inline-flex items-center text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin mr-2" /> Loading more…
+            </span>
+          ) : (
+            <Button variant="outline" onClick={loadMore}>
+              Load more
+            </Button>
+          )}
         </div>
       )}
     </section>
