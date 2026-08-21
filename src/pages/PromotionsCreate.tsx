@@ -52,6 +52,19 @@ export default function PromotionsCreate() {
     setPreview(URL.createObjectURL(f));
   };
 
+  const normalizeLink = (raw: string): string | null => {
+    const v = raw.trim();
+    if (!v) return null;
+    const withProto = /^https?:\/\//i.test(v) ? v : `https://${v.replace(/^\/+/, "")}`;
+    try {
+      const u = new URL(withProto);
+      if (!u.hostname.includes(".")) return null;
+      return u.toString();
+    } catch {
+      return null;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file) { toast.error("Please upload an image or video"); return; }
