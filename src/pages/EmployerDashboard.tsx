@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft, Download, MessageSquare, Sparkles, Crown, BarChart3, Receipt, Check } from "lucide-react";
+import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft, Download, MessageSquare, Sparkles, Crown, BarChart3, Receipt, Check, Rocket } from "lucide-react";
 import { Table,
   TableBody,
   TableCell,
@@ -302,11 +302,12 @@ export default function EmployerDashboard() { const [jobs, setJobs] = useState<J
                     <TableRow className="border-border/30">
                       <TableHead>Position</TableHead>
                       <TableHead>Location</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Applications</TableHead>
-                      <TableHead className="text-right">Views</TableHead>
-                      <TableHead className="text-right">Posted</TableHead>
-                    </TableRow>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Applications</TableHead>
+                    <TableHead className="text-right">Views</TableHead>
+                    <TableHead className="text-right">Posted</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
                   </TableHeader>
                   <TableBody>
                     {jobs.map((job) => (
@@ -324,6 +325,16 @@ export default function EmployerDashboard() { const [jobs, setJobs] = useState<J
                         <TableCell className="text-right font-bold">{job.applications_count}</TableCell>
                         <TableCell className="text-right text-muted-foreground">{job.views_count}</TableCell>
                         <TableCell className="text-right text-muted-foreground text-sm">{format(new Date(job.created_at), 'MMM d, yyyy')}</TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() => navigate(`/jobs/boost/${job.id}`)}
+                            className="gap-1"
+                          >
+                            <Rocket className="h-3.5 w-3.5" /> Boost
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     ))}
                     {jobs.length === 0 && (
