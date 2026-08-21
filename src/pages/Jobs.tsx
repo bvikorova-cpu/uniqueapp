@@ -28,7 +28,7 @@ const TOOLS = [
     short: "Post Job",
     desc: "Publish a job listing and pay with AI credits. Choose 7, 14 or 30-day visibility and add your contact email.",
     icon: Briefcase,
-    credits: 3,
+    credits: 10,
     color: "from-emerald-500 to-teal-600",
     post: true,
   },
