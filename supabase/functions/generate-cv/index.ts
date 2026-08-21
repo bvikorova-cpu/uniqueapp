@@ -82,15 +82,20 @@ serve(async (req) => {
       !!profile?.bio ||
       !!profile?.occupation ||
       !!headline ||
-      (!!fullName && (!!email || !!location || extraNotes.length > 0)) ||
-      extraNotes.length > 20;
+      !!fullName ||
+      !!email ||
+      !!location ||
+      !!links ||
+      !!phone ||
+      !!targetRole ||
+      extraNotes.trim().length > 0;
 
     if (!hasSource) {
       return new Response(
         JSON.stringify({
           error: "no_source_data",
           message:
-            "Fill in the Personal info fields (at least your name plus email or location) and describe your background in the notes field, or save a CV in 'My CVs' first.",
+            "Add at least your name or a target role in the Personal info fields (or a short background in the notes) and try again.",
         }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
