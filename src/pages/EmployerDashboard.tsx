@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft, Download, MessageSquare, Sparkles, Crown, BarChart3, Receipt, Check } from "lucide-react";
+import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft, Download, MessageSquare, Sparkles, Crown, BarChart3, Receipt, Check, Rocket, Pencil, Trash2, RefreshCcw, Loader2 } from "lucide-react";
 import { Table,
   TableBody,
   TableCell,
@@ -19,6 +19,8 @@ import { useNavigate } from "react-router-dom";
 import jsPDF from "jspdf";
 import { ResponseTemplatesManager } from "@/components/jobs/ResponseTemplatesManager";
 import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
+import { EditJobDialog } from "@/components/jobs/EditJobDialog";
+import { RenewJobDialog } from "@/components/employer/RenewJobDialog";
 import { JobPostingsStatus } from "@/components/employer/JobPostingsStatus";
 import { motion } from "framer-motion";
 
@@ -57,6 +59,9 @@ export default function EmployerDashboard() { const [jobs, setJobs] = useState<J
   const [jobFilter, setJobFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("newest");
   const [searchQuery, setSearchQuery] = useState("");
+  const [editJob, setEditJob] = useState<any>(null);
+  const [renewJob, setRenewJob] = useState<{ id: string; title: string } | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -116,6 +121,30 @@ export default function EmployerDashboard() { const [jobs, setJobs] = useState<J
       loadDashboardData();
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
+    }
+  };
+
+  const handleEdit = async (jobId: string) => {
+    const { data, error } = await supabase.from("job_listings").select("*").eq("id", jobId).single();
+    if (error || !data) {
+      toast({ title: "Error", description: "Could not load job details.", variant: "destructive" });
+      return;
+    }
+    setEditJob(data);
+  };
+
+  const handleDelete = async (jobId: string) => {
+    if (!confirm("Are you sure you want to delete this job listing? This cannot be undone.")) return;
+    setDeleting(jobId);
+    try {
+      const { error } = await supabase.from("job_listings").delete().eq("id", jobId);
+      if (error) throw error;
+      toast({ title: "Deleted", description: "Job listing removed." });
+      loadDashboardData();
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      setDeleting(null);
     }
   };
 
@@ -302,11 +331,12 @@ export default function EmployerDashboard() { const [jobs, setJobs] = useState<J
                     <TableRow className="border-border/30">
                       <TableHead>Position</TableHead>
                       <TableHead>Location</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Applications</TableHead>
-                      <TableHead className="text-right">Views</TableHead>
-                      <TableHead className="text-right">Posted</TableHead>
-                    </TableRow>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Applications</TableHead>
+                    <TableHead className="text-right">Views</TableHead>
+                    <TableHead className="text-right">Posted</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
                   </TableHeader>
                   <TableBody>
                     {jobs.map((job) => (
@@ -324,6 +354,48 @@ export default function EmployerDashboard() { const [jobs, setJobs] = useState<J
                         <TableCell className="text-right font-bold">{job.applications_count}</TableCell>
                         <TableCell className="text-right text-muted-foreground">{job.views_count}</TableCell>
                         <TableCell className="text-right text-muted-foreground text-sm">{format(new Date(job.created_at), 'MMM d, yyyy')}</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2 flex-wrap">
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              onClick={() => navigate(`/jobs/boost/${job.id}`)}
+                              className="gap-1"
+                            >
+                              <Rocket className="h-3.5 w-3.5" /> Boost
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setRenewJob({ id: job.id, title: job.title })}
+                              className="gap-1"
+                            >
+                              <RefreshCcw className="h-3.5 w-3.5" /> Renew
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleEdit(job.id)}
+                              className="gap-1"
+                            >
+                              <Pencil className="h-3.5 w-3.5" /> Edit
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleDelete(job.id)}
+                              disabled={deleting === job.id}
+                              className="gap-1"
+                            >
+                              {deleting === job.id ? (
+                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                              ) : (
+                                <Trash2 className="h-3.5 w-3.5" />
+                              )}
+                              Delete
+                            </Button>
+                          </div>
+                        </TableCell>
                       </TableRow>
                     ))}
                     {jobs.length === 0 && (
@@ -476,6 +548,24 @@ export default function EmployerDashboard() { const [jobs, setJobs] = useState<J
             <ResponseTemplatesManager />
           </TabsContent>
         </Tabs>
+
+        {editJob && (
+          <EditJobDialog
+            job={editJob}
+            open={!!editJob}
+            onOpenChange={(open) => !open && setEditJob(null)}
+            onSaved={loadDashboardData}
+          />
+        )}
+
+        {renewJob && (
+          <RenewJobDialog
+            jobId={renewJob.id}
+            jobTitle={renewJob.title}
+            open={!!renewJob}
+            onOpenChange={(open) => !open && setRenewJob(null)}
+          />
+        )}
       </div>
     </div>
   );
