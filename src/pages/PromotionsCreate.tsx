@@ -83,16 +83,26 @@ export default function PromotionsCreate() {
         .single();
       if (insErr) throw insErr;
 
-      const { data: checkout, error: fnErr } = await supabase.functions.invoke(
-        "create-promo-subscription",
-        { body: { listingId: inserted.id, tier } },
+      const { data: result, error: rpcErr } = await (supabase as any).rpc(
+        "activate_promo_listing_with_credits",
+        { _listing_id: inserted.id },
       );
-      if (fnErr) throw fnErr;
-      if (checkout?.url) {
-        window.location.href = checkout.url;
-      } else {
-        throw new Error(checkout?.error || "Checkout failed");
+      if (rpcErr) throw rpcErr;
+      if (!result?.ok) {
+        if (result?.error === "insufficient_credits") {
+          toast.error("Not enough credits", {
+            description: `This plan costs ${result.cost} credits for 30 days.`,
+            action: { label: "Top up", onClick: () => navigate("/ai-credits") },
+            duration: 6000,
+          });
+          setSubmitting(false);
+          return;
+        }
+        throw new Error(result?.error || "Activation failed");
       }
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      toast.success("Promotion is live for 30 days", { description: `${result.cost} credits used.` });
+      navigate("/promotions/my");
     } catch (e: any) {
       toast.error(e.message ?? "Something went wrong");
       setSubmitting(false);
