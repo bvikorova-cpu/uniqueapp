@@ -420,7 +420,7 @@ export function AICVGeneratorDialog() {
               </>
             )}
           </div>
-        </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );
