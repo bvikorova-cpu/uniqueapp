@@ -343,7 +343,7 @@ const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {mainNavItems.map((item) => {
+            {visibleMainNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
               
