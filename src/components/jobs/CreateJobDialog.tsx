@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -45,9 +45,10 @@ interface CreateJobDialogProps {
   userId: string;
   subscribed: boolean;
   onRenewSubscription: () => void;
+  prefillCompanyName?: string;
 }
 
-export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: CreateJobDialogProps) {
+export function CreateJobDialog({ userId, subscribed, onRenewSubscription, prefillCompanyName }: CreateJobDialogProps) {
   const { toast } = useToast();
   const { spend } = useJobsCredits();
   const queryClient = useQueryClient();
@@ -61,7 +62,7 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
   };
 
   const [newJob, setNewJob] = useState({ title: "",
-    company_name: "",
+    company_name: prefillCompanyName || "",
     location: "",
     country: "",
     category: "it_software",
@@ -73,6 +74,12 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
     salary_min: "",
     salary_max: "",
     salary_currency: "EUR" });
+
+  useEffect(() => {
+    if (prefillCompanyName) {
+      setNewJob((prev) => ({ ...prev, company_name: prefillCompanyName }));
+    }
+  }, [prefillCompanyName]);
 
   // Create job mutation
   const createJobMutation = useMutation({

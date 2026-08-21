@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft, Download, MessageSquare, CheckCircle2, AlertCircle, Sparkles, Crown, BarChart3, Receipt } from "lucide-react";
+import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft, Download, MessageSquare, Sparkles, Crown, BarChart3, Receipt, Check } from "lucide-react";
 import { Table,
   TableBody,
   TableCell,
@@ -18,11 +18,7 @@ import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import jsPDF from "jspdf";
 import { ResponseTemplatesManager } from "@/components/jobs/ResponseTemplatesManager";
-import { useEmployerPaymentStatus } from "@/hooks/useEmployerPaymentStatus";
-import { useEmployerVerification } from "@/hooks/useEmployerVerification";
 import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { EmployerSubscriptionTiers } from "@/components/employer/EmployerSubscriptionTiers";
 import { JobPostingsStatus } from "@/components/employer/JobPostingsStatus";
 import { motion } from "framer-motion";
 
@@ -63,22 +59,16 @@ export default function EmployerDashboard() { const [jobs, setJobs] = useState<J
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { subscribed, loading: paymentLoading } = useEmployerPaymentStatus();
-  const { verificationStatus, isApproved, loading: verificationLoading } = useEmployerVerification();
 
   useEffect(() => {
-    if (!paymentLoading && !verificationLoading) {
-      loadDashboardData();
-    }
-  }, [paymentLoading, verificationLoading]);
+    loadDashboardData();
+  }, []);
 
   const loadDashboardData = async () => {
     try {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       if (!currentUser) { navigate("/"); return; }
       setUser(currentUser);
-
-      if (!subscribed) { setLoading(false); return; }
 
       const { data: jobsData, error: jobsError } = await supabase
         .from('job_listings')
@@ -245,51 +235,15 @@ export default function EmployerDashboard() { const [jobs, setJobs] = useState<J
                 <p className="text-sm text-muted-foreground mt-0.5">Manage your job listings and applications</p>
               </div>
             </div>
-            {user && isApproved && (
+            {user && (
               <CreateJobDialog
                 userId={user.id}
-                subscribed={subscribed}
-                onRenewSubscription={() => {
-                  document.getElementById('subscription-tiers')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }}
+                subscribed={true}
+                onRenewSubscription={() => {}}
               />
             )}
           </div>
         </motion.div>
-
-        {/* Verification & Payment Alerts */}
-        {!isApproved && (
-          <Alert className="border-amber-500/30 bg-amber-500/5">
-            <AlertCircle className="h-4 w-4 text-amber-500" />
-            <AlertDescription className="flex items-center justify-between">
-              <span className="text-sm">
-                {verificationStatus === null && "Your company has not been verified yet. Start the verification process to post jobs."}
-                {verificationStatus === 'pending' && "Your verification is being reviewed. This usually takes 1-2 business days."}
-                {verificationStatus === 'rejected' && "Your verification was rejected. Please resubmit with updated documents."}
-                {verificationStatus === 'requires_resubmission' && "Additional documents required. Please resubmit your verification."}
-              </span>
-              <Button size="sm" onClick={() => navigate('/employer-verification')} variant={verificationStatus === null ? "default" : "outline"}>
-                {verificationStatus === null ? "Start Verification" : "View Status"}
-              </Button>
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {isApproved && !subscribed && (
-          <Alert className="border-emerald-500/30 bg-emerald-500/5">
-            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-            <AlertDescription>
-              <span className="font-semibold text-emerald-600">Verified!</span>
-              <span className="ml-2 text-sm">Choose a subscription plan below to start posting jobs.</span>
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {isApproved && (
-          <div id="subscription-tiers">
-            <EmployerSubscriptionTiers />
-          </div>
-        )}
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
@@ -485,7 +439,7 @@ export default function EmployerDashboard() { const [jobs, setJobs] = useState<J
                             {application.status === 'pending' && (
                               <>
                                 <Button size="sm" className="text-xs h-8 bg-emerald-600 hover:bg-emerald-700 text-white gap-1" onClick={() => updateApplicationStatus(application.id, 'accepted')}>
-                                  <CheckCircle2 className="h-3 w-3" /> Accept
+                                  <Check className="h-3 w-3" /> Accept
                                 </Button>
                                 <Button size="sm" variant="destructive" className="text-xs h-8 gap-1" onClick={() => updateApplicationStatus(application.id, 'rejected')}>
                                   Reject
