@@ -69165,6 +69165,7 @@ export type Database = {
       }
       expire_auctions: { Args: never; Returns: number }
       expire_featured_listings: { Args: never; Returns: undefined }
+      expire_job_boosts: { Args: never; Returns: undefined }
       expire_old_job_listings: { Args: never; Returns: number }
       expire_old_property_listings: { Args: never; Returns: number }
       expire_property_features: { Args: never; Returns: number }
