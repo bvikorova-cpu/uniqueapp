@@ -9,7 +9,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { Plus, Zap } from "lucide-react";
+import { useJobsCredits, JOBS_CREDIT_COSTS } from "@/hooks/useJobsCredits";
+
 
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
