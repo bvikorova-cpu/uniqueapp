@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft, Download, MessageSquare, Sparkles, Crown, BarChart3, Receipt, Check, Rocket, Pencil, Trash2, RefreshCcw } from "lucide-react";
+import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft, Download, MessageSquare, Sparkles, Crown, BarChart3, Receipt, Check, Rocket, Pencil, Trash2, RefreshCcw, Loader2 } from "lucide-react";
 import { Table,
   TableBody,
   TableCell,
