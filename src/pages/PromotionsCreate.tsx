@@ -69,6 +69,16 @@ export default function PromotionsCreate() {
     e.preventDefault();
     if (!file) { toast.error("Please upload an image or video"); return; }
     if (!title.trim()) { toast.error("Title is required"); return; }
+
+    // Open the checkout tab synchronously. Waiting until after the upload and
+    // Edge Function call causes mobile browsers (and the embedded preview) to
+    // treat Stripe as a blocked popup or attempt to render it inside an iframe.
+    const checkoutWindow = window.open("about:blank", "_blank");
+    if (checkoutWindow) {
+      checkoutWindow.document.title = "Opening Stripe Checkout…";
+      checkoutWindow.document.body.textContent = "Opening secure Stripe Checkout…";
+    }
+
     setSubmitting(true);
     try {
       const ext = file.name.split(".").pop() || "bin";
@@ -103,10 +113,17 @@ export default function PromotionsCreate() {
       if (result?.error) throw new Error(result.error);
       if (!result?.url) throw new Error("Could not open Stripe Checkout");
 
-      window.location.href = result.url as string;
+      const checkoutUrl = result.url as string;
+      if (checkoutWindow && !checkoutWindow.closed) {
+        checkoutWindow.opener = null;
+        checkoutWindow.location.replace(checkoutUrl);
+      } else {
+        window.location.assign(checkoutUrl);
+      }
 
-    } catch (e: any) {
-      toast.error(e.message ?? "Something went wrong");
+    } catch (e: unknown) {
+      checkoutWindow?.close();
+      toast.error(e instanceof Error ? e.message : "Something went wrong");
       setSubmitting(false);
     }
   };
