@@ -311,15 +311,15 @@ export function AICVGeneratorDialog() {
             </Card>
 
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-1.5">
-                <Label>Target role (optional)</Label>
-                <Input placeholder="e.g. Frontend Developer" value={targetRole} onChange={(e) => setTargetRole(e.target.value)} />
+            <div className="grid gap-2 sm:gap-4 sm:grid-cols-2">
+              <div className="space-y-1">
+                <Label className="text-xs">Target role (optional)</Label>
+                <Input className="h-8 sm:h-10 text-xs sm:text-sm" placeholder="e.g. Frontend Developer" value={targetRole} onChange={(e) => setTargetRole(e.target.value)} />
               </div>
-              <div className="space-y-1.5">
-                <Label>Tone</Label>
+              <div className="space-y-1">
+                <Label className="text-xs">Tone</Label>
                 <Select value={tone} onValueChange={setTone}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="professional">Professional</SelectItem>
                     <SelectItem value="confident">Confident</SelectItem>
@@ -328,10 +328,10 @@ export function AICVGeneratorDialog() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-1.5">
-                <Label>Language</Label>
+              <div className="space-y-1">
+                <Label className="text-xs">Language</Label>
                 <Select value={language} onValueChange={setLanguage}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="h-8 sm:h-10 text-xs sm:text-sm"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="English">English</SelectItem>
                     <SelectItem value="Slovak">Slovak</SelectItem>
@@ -341,18 +341,20 @@ export function AICVGeneratorDialog() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-1.5 sm:col-span-2">
-                <Label>Experience, education & extras</Label>
+              <div className="space-y-1 sm:col-span-2">
+                <Label className="text-xs">Experience, education & extras</Label>
                 <Textarea
-                  rows={4}
-                  placeholder="Describe your work experience, education, certifications and projects — anything not saved in your profile yet…"
+                  rows={3}
+                  className="text-xs sm:text-sm"
+                  placeholder="Describe your work experience, education, certifications and projects…"
                   value={extraNotes}
                   onChange={(e) => setExtraNotes(e.target.value)}
                 />
               </div>
             </div>
 
-            <Button onClick={generate} disabled={loading} className="w-full bg-gradient-to-r from-amber-500 to-yellow-600">
+            <Button onClick={generate} disabled={loading} className="w-full bg-gradient-to-r from-amber-500 to-yellow-600 h-9 sm:h-10 text-sm">
+
               {loading ? (
                 <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Building your CV…</>
               ) : (
