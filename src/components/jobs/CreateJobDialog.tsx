@@ -77,7 +77,14 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
     mutationFn: async () => {
       if (!selectedPackage) throw new Error("Package not selected");
 
-      const { data: jobData, error } = await supabase.from("job_listings").insert([{ employer_id: userId,
+      // Credits first — nothing is inserted unless the spend succeeds.
+      const paid = await spend(selectedPackage.credits, `job_listing_${selectedPackage.days}d`);
+      if (!paid) throw new Error("CREDITS_REQUIRED");
+
+      const now = new Date();
+      const expires = new Date(now.getTime() + selectedPackage.days * 24 * 60 * 60 * 1000);
+
+      const { error } = await supabase.from("job_listings").insert([{ employer_id: userId,
         title: newJob.title,
         company_name: newJob.company_name,
         location: newJob.location,
@@ -91,31 +98,15 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
         salary_min: newJob.salary_min ? parseInt(newJob.salary_min) : null,
         salary_max: newJob.salary_max ? parseInt(newJob.salary_max) : null,
         salary_currency: newJob.salary_currency,
-        is_active: false,
-        paid_status: 'pending',
+        is_active: true,
+        paid_status: 'paid',
+        published_at: now.toISOString(),
+        expires_at: expires.toISOString(),
         duration_days: selectedPackage.days } as any]).select().single();
 
       if (error) throw error;
-      if (!selectedPackage || !jobData) return;
-
-      try {
-        const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
-          'create-one-off-payment',
-          {
-            body: {
-              productKey: selectedPackage.productKey,
-              metadata: { jobListingId: jobData.id } } }
-        );
-
-        if (paymentError) throw paymentError;
-        if (paymentData?.url) {
-          { const __w = window.open(paymentData.url, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(paymentData.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = paymentData.url; } }
-        }
-      } catch (err) {
-        await supabase.from("job_listings").delete().eq('id', jobData.id);
-        throw err;
-      }
     },
+
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
       queryClient.invalidateQueries({ queryKey: ['employer-jobs'] });
