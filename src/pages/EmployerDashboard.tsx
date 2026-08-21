@@ -548,6 +548,24 @@ export default function EmployerDashboard() { const [jobs, setJobs] = useState<J
             <ResponseTemplatesManager />
           </TabsContent>
         </Tabs>
+
+        {editJob && (
+          <EditJobDialog
+            job={editJob}
+            open={!!editJob}
+            onOpenChange={(open) => !open && setEditJob(null)}
+            onSaved={loadDashboardData}
+          />
+        )}
+
+        {renewJob && (
+          <RenewJobDialog
+            jobId={renewJob.id}
+            jobTitle={renewJob.title}
+            open={!!renewJob}
+            onOpenChange={(open) => !open && setRenewJob(null)}
+          />
+        )}
       </div>
     </div>
   );
