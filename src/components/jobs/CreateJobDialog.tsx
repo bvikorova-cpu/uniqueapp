@@ -49,7 +49,9 @@ interface CreateJobDialogProps {
 
 export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: CreateJobDialogProps) {
   const { toast } = useToast();
+  const { spend } = useJobsCredits();
   const queryClient = useQueryClient();
+
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showPackageDialog, setShowPackageDialog] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<typeof JOB_PACKAGES[0] | null>(null);
