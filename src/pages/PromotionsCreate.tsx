@@ -74,7 +74,7 @@ export default function PromotionsCreate() {
           description: description.trim() || null,
           media_url: publicPath,
           media_type: mediaType,
-          link_url: linkUrl.trim() || null,
+          link_url: normalizeLink(linkUrl),
           tier,
           category,
           city: city.trim() || null,
