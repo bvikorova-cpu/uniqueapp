@@ -380,8 +380,10 @@ const Jobs = () => {
                 <>
                   <JobPreferencesDialog userId={user.id} />
                   <JobAIAssistant />
+                  <AICVGeneratorDialog />
                   <AIJobOptimizer />
                   <ResumeManagerDialog />
+
                   <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/saved')}>
                     <Bookmark className="h-3.5 w-3.5 mr-1" /> Saved
                   </Button>
