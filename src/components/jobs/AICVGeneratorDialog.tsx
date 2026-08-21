@@ -364,34 +364,34 @@ export function AICVGeneratorDialog() {
 
             {markdown && (
               <>
-                <div className="flex flex-wrap gap-2">
-                  <Button size="sm" onClick={downloadPdf} className="bg-primary"><Download className="h-4 w-4 mr-1.5" />Download PDF</Button>
-                  <Button size="sm" variant="outline" onClick={() => setEditing((v) => !v)}>
-                    {editing ? <><Eye className="h-4 w-4 mr-1.5" />Preview</> : <><Pencil className="h-4 w-4 mr-1.5" />Edit sections</>}
+                <div className="flex flex-wrap gap-1.5 sm:gap-2 sticky top-0 z-10 bg-background/95 backdrop-blur py-2 -mx-1 px-1 sm:static sm:bg-transparent sm:p-0">
+                  <Button size="sm" onClick={downloadPdf} className="bg-primary text-xs h-8"><Download className="h-3.5 w-3.5 mr-1" />Download PDF</Button>
+                  <Button size="sm" variant="outline" onClick={() => setEditing((v) => !v)} className="text-xs h-8">
+                    {editing ? <><Eye className="h-3.5 w-3.5 mr-1" />Preview</> : <><Pencil className="h-3.5 w-3.5 mr-1" />Edit</>}
                   </Button>
-                  <Button size="sm" variant="outline" onClick={copy}><Copy className="h-4 w-4 mr-1.5" />Copy</Button>
-                  <Button size="sm" variant="outline" onClick={saveToMyCvs} disabled={saving}>
-                    {saving ? <Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> : <Save className="h-4 w-4 mr-1.5" />}
-                    Save as new version
+                  <Button size="sm" variant="outline" onClick={copy} className="text-xs h-8"><Copy className="h-3.5 w-3.5 mr-1" />Copy</Button>
+                  <Button size="sm" variant="outline" onClick={saveToMyCvs} disabled={saving} className="text-xs h-8">
+                    {saving ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <Save className="h-3.5 w-3.5 mr-1" />}
+                    Save
                   </Button>
                 </div>
 
                 {editing ? (
-                  <div className="space-y-3">
+                  <div className="space-y-2 sm:space-y-3">
                     {sections.map((s, i) => (
-                      <Card key={i} className="p-3 space-y-2">
+                      <Card key={i} className="p-2 sm:p-3 space-y-2">
                         {s.heading ? (
                           <Input
                             value={s.heading}
                             onChange={(e) => updateSection(i, { heading: e.target.value })}
-                            className="font-semibold"
+                            className="font-semibold text-xs sm:text-sm h-8 sm:h-10"
                           />
                         ) : (
-                          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Header (name & contact)</div>
+                          <div className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wide">Header (name & contact)</div>
                         )}
                         <Textarea
                           value={s.body}
-                          rows={Math.min(14, Math.max(3, s.body.split("\n").length + 1))}
+                          rows={Math.min(10, Math.max(3, s.body.split("\n").length + 1))}
                           onChange={(e) => updateSection(i, { body: e.target.value })}
                           className="font-mono text-xs"
                         />
@@ -399,10 +399,10 @@ export function AICVGeneratorDialog() {
                           <Button
                             size="sm"
                             variant="ghost"
-                            className="text-destructive"
+                            className="text-destructive text-xs h-7"
                             onClick={() => setSections((prev) => prev.filter((_, idx) => idx !== i))}
                           >
-                            Remove section
+                            Remove
                           </Button>
                         </div>
                       </Card>
@@ -410,20 +410,22 @@ export function AICVGeneratorDialog() {
                     <Button
                       size="sm"
                       variant="outline"
+                      className="text-xs h-8"
                       onClick={() => setSections((prev) => [...prev, { heading: "New section", body: "" }])}
                     >
                       + Add section
                     </Button>
                   </div>
                 ) : (
-                  <Card className="p-5 bg-card/80">
-                    <div className="prose prose-sm dark:prose-invert max-w-none">
+                  <Card className="p-3 sm:p-5 bg-card/80 max-h-[40vh] sm:max-h-none overflow-y-auto">
+                    <div className="prose prose-xs sm:prose-sm dark:prose-invert max-w-none">
                       <ReactMarkdown>{markdown}</ReactMarkdown>
                     </div>
                   </Card>
                 )}
               </>
             )}
+
           </div>
         </div>
       </DialogContent>
