@@ -544,12 +544,6 @@ const Navbar = () => {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/employer-dashboard" className="w-full cursor-pointer">
-                        <Briefcase className="h-4 w-4 mr-2" />
-                        {"Employer Dashboard"}
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
                       <Link to="/subscriptions" className="w-full cursor-pointer">
                         <Crown className="h-4 w-4 mr-2" />
                         {"Subscription"}
@@ -901,12 +895,6 @@ const Navbar = () => {
                     <Button variant="ghost" className="w-full justify-start text-sm" size="sm">
                       <Sparkles className="h-4 w-4 mr-2" />
                       {"AI Credits"}
-                    </Button>
-                  </Link>
-                  <Link to="/employer-dashboard" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start text-sm" size="sm">
-                      <Briefcase className="h-4 w-4 mr-2" />
-                      {"Employer Dashboard"}
                     </Button>
                   </Link>
                   <Link to="/earnings" onClick={() => setIsMenuOpen(false)}>
