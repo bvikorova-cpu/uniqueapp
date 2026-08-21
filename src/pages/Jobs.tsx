@@ -154,35 +154,6 @@ const Jobs = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Check for payment success and activate job listing
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const success = params.get('success');
-    const sessionId = params.get('session_id');
-    if (success === 'true' && sessionId) {
-      const activateJob = async () => {
-        try {
-          const { data, error } = await supabase.functions.invoke('verify-job-listing-payment', {
-            body: { sessionId } });
-          if (error) throw error;
-          if (data?.verified) {
-            toast({ title: "✅ Payment Successful!", description: "Your job listing is now active and visible to candidates" });
-            queryClient.invalidateQueries({ queryKey: ["jobs"] });
-          } else {
-            toast({ title: "⚠️ Payment Pending", description: `Status: ${data?.status ?? 'unknown'}. We'll activate it once Stripe confirms.` });
-          }
-        } catch (error: any) {
-          toast({ title: "⚠️ Activation Failed", description: error?.message || "Could not verify payment.", variant: "destructive" });
-        }
-      };
-      activateJob();
-      window.history.replaceState({}, '', '/jobs');
-    } else if (params.get('canceled') === 'true') {
-      toast({ title: "❌ Payment Canceled", description: "Your job listing was not published.", variant: "destructive" });
-      window.history.replaceState({}, '', '/jobs');
-    }
-  }, [toast, queryClient]);
-
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedType, setSelectedType] = useState<string>("all");
@@ -321,10 +292,10 @@ const Jobs = () => {
   return (
     <>
       <FloatingHowItWorks title="How Jobs works" steps={[
-          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
-          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
-          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
-          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+          { title: 'Browse listings', desc: 'Explore open positions by category, type and location.' },
+          { title: 'Apply for free', desc: 'Applying to any job is always free for candidates.' },
+          { title: 'Employers pay in credits', desc: 'Publishing a job costs 3-8 credits (7/14/30 days); boosting costs 5-20 credits.' },
+          { title: 'Track everything', desc: 'Manage applications, messages and notifications in one place.' },
         ]} />
       <>
       <SEO

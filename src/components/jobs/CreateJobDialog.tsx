@@ -9,7 +9,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { Plus, Zap } from "lucide-react";
+import { useJobsCredits, JOBS_CREDIT_COSTS } from "@/hooks/useJobsCredits";
+
 
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -32,11 +34,12 @@ const JOB_TYPES = { full_time: "Full Time",
   internship: "Internship",
   remote: "Remote" };
 
-const JOB_PACKAGES: Array<{ days: number; price: number; popular: boolean; productKey: string }> = [
-  { days: 7, price: 19, popular: false, productKey: "job_listing_7" },
-  { days: 14, price: 29, popular: true, productKey: "job_listing_14" },
-  { days: 30, price: 49, popular: false, productKey: "job_listing_30" },
+const JOB_PACKAGES: Array<{ days: number; credits: number; popular: boolean }> = [
+  { days: 7, credits: JOBS_CREDIT_COSTS.listing_7, popular: false },
+  { days: 14, credits: JOBS_CREDIT_COSTS.listing_14, popular: true },
+  { days: 30, credits: JOBS_CREDIT_COSTS.listing_30, popular: false },
 ];
+
 
 interface CreateJobDialogProps {
   userId: string;
@@ -46,7 +49,9 @@ interface CreateJobDialogProps {
 
 export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: CreateJobDialogProps) {
   const { toast } = useToast();
+  const { spend } = useJobsCredits();
   const queryClient = useQueryClient();
+
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showPackageDialog, setShowPackageDialog] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<typeof JOB_PACKAGES[0] | null>(null);
@@ -74,7 +79,14 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
     mutationFn: async () => {
       if (!selectedPackage) throw new Error("Package not selected");
 
-      const { data: jobData, error } = await supabase.from("job_listings").insert([{ employer_id: userId,
+      // Credits first — nothing is inserted unless the spend succeeds.
+      const paid = await spend(selectedPackage.credits, `job_listing_${selectedPackage.days}d`);
+      if (!paid) throw new Error("CREDITS_REQUIRED");
+
+      const now = new Date();
+      const expires = new Date(now.getTime() + selectedPackage.days * 24 * 60 * 60 * 1000);
+
+      const { error } = await supabase.from("job_listings").insert([{ employer_id: userId,
         title: newJob.title,
         company_name: newJob.company_name,
         location: newJob.location,
@@ -88,31 +100,15 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
         salary_min: newJob.salary_min ? parseInt(newJob.salary_min) : null,
         salary_max: newJob.salary_max ? parseInt(newJob.salary_max) : null,
         salary_currency: newJob.salary_currency,
-        is_active: false,
-        paid_status: 'pending',
+        is_active: true,
+        paid_status: 'paid',
+        published_at: now.toISOString(),
+        expires_at: expires.toISOString(),
         duration_days: selectedPackage.days } as any]).select().single();
 
       if (error) throw error;
-      if (!selectedPackage || !jobData) return;
-
-      try {
-        const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
-          'create-one-off-payment',
-          {
-            body: {
-              productKey: selectedPackage.productKey,
-              metadata: { jobListingId: jobData.id } } }
-        );
-
-        if (paymentError) throw paymentError;
-        if (paymentData?.url) {
-          { const __w = window.open(paymentData.url, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(paymentData.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = paymentData.url; } }
-        }
-      } catch (err) {
-        await supabase.from("job_listings").delete().eq('id', jobData.id);
-        throw err;
-      }
     },
+
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
       queryClient.invalidateQueries({ queryKey: ['employer-jobs'] });
@@ -132,8 +128,10 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
         salary_max: "",
         salary_currency: "EUR" });
       setSelectedPackage(null);
+      toast({ title: "Job published", description: "Your listing is live and visible to candidates." });
     },
     onError: (error: Error) => { console.error('Job creation error:', error);
+      if (error.message === 'CREDITS_REQUIRED') return;
       toast({
         title: "Error",
         description: error.message || "Failed to create job listing",
@@ -319,7 +317,7 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
                 setShowPackageDialog(true);
               }}
             >
-              Continue to Payment
+              Continue
             </Button>
           </div>
         </DialogContent>
@@ -331,7 +329,7 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
           <DialogHeader>
             <DialogTitle className="text-2xl">Choose Your Job Listing Package</DialogTitle>
             <DialogDescription>
-              Select how long you want your job listing to be visible
+              Pay with credits — select how long your job listing stays visible
             </DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-6">
@@ -357,11 +355,15 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="text-center">
-                    <div className="text-4xl font-bold">€{pkg.price}</div>
+                    <div className="text-4xl font-bold flex items-center justify-center gap-2">
+                      <Zap className="h-6 w-6 text-primary" />
+                      {pkg.credits}
+                    </div>
                     <div className="text-sm text-muted-foreground mt-1">
-                      €{(pkg.price / pkg.days).toFixed(2)} per day
+                      credits · {(pkg.credits / pkg.days).toFixed(2)} per day
                     </div>
                   </div>
+
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
                       <div className="h-1.5 w-1.5 rounded-full bg-primary" />
@@ -396,7 +398,7 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
               onClick={() => createJobMutation.mutate()}
               disabled={!selectedPackage || createJobMutation.isPending}
             >
-              {createJobMutation.isPending ? "Processing..." : "Proceed to Payment"}
+              {createJobMutation.isPending ? "Publishing..." : `Publish for ${selectedPackage?.credits ?? JOBS_CREDIT_COSTS.listing_7} credits`}
             </Button>
           </div>
         </DialogContent>

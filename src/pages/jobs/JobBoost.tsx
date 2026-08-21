@@ -8,17 +8,18 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+import { useJobsCredits, JOBS_CREDIT_COSTS } from "@/hooks/useJobsCredits";
 
 const HOW_STEPS_JOBBOOST = [
   { title: "Pick the job", desc: "Select an active post to boost." },
-  { title: "Choose a boost tier", desc: "48h Highlight, 7-day Featured or 30-day Top-of-search." },
-  { title: "Pay & activate", desc: "Boost starts immediately after payment. Analytics show views/applies delta." },
+  { title: "Choose a boost tier", desc: "7-day pinned, 14-day featured or 30-day top-of-search." },
+  { title: "Pay with credits", desc: "Boost activates instantly after credits are deducted. Analytics show views/applies delta." },
 ];
 
 const TIERS = [
-  { tier: "basic", label: "Basic Boost", price: 19, days: 7, desc: "Pinned to top of category", icon: TrendingUp, color: "from-blue-500 to-cyan-500" },
-  { tier: "premium", label: "Premium Boost", price: 49, days: 14, desc: "Featured + push notifications", icon: Sparkles, color: "from-purple-500 to-pink-500" },
-  { tier: "ultimate", label: "Ultimate", price: 99, days: 30, desc: "Homepage feature + email blast", icon: Crown, color: "from-amber-500 to-orange-500" },
+  { tier: "basic", label: "Basic Boost", credits: JOBS_CREDIT_COSTS.boost_basic, days: 7, desc: "Pinned to top of category", icon: TrendingUp, color: "from-blue-500 to-cyan-500" },
+  { tier: "premium", label: "Premium Boost", credits: JOBS_CREDIT_COSTS.boost_premium, days: 14, desc: "Featured in search results", icon: Sparkles, color: "from-purple-500 to-pink-500" },
+  { tier: "ultimate", label: "Ultimate", credits: JOBS_CREDIT_COSTS.boost_ultimate, days: 30, desc: "Homepage feature + top of search", icon: Crown, color: "from-amber-500 to-orange-500" },
 ];
 
 export default function JobBoost() {
@@ -26,27 +27,61 @@ export default function JobBoost() {
   const [job, setJob] = useState<any>(null);
   const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState<string | null>(null);
+  const { spend } = useJobsCredits();
+
+  const loadHistory = async () => {
+    const { data: h } = await (supabase as any)
+      .from("job_boost_purchases").select("*").eq("job_id", jobId).order("created_at", { ascending: false });
+    setHistory(h || []);
+  };
 
   useEffect(() => {
     if (!jobId) return;
     (async () => {
       const { data } = await (supabase as any).from("job_listings").select("*").eq("id", jobId).maybeSingle();
       setJob(data);
-      const { data: h } = await (supabase as any).from("job_boost_purchases").select("*").eq("job_id", jobId).order("created_at", { ascending: false });
-      setHistory(h || []);
+      await loadHistory();
     })();
   }, [jobId]);
 
   const buy = async (t: typeof TIERS[number]) => {
+    if (!jobId) return;
     setLoading(t.tier);
     try {
-      const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { product: "job_boost", module: "job_boost", job_id: jobId, boost_tier: t.tier, duration_days: t.days, amount_eur: t.price } });
-      if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
+      const ok = await spend(t.credits, `job_boost_${t.tier}`);
+      if (!ok) return;
+
+      const now = new Date();
+      const expires = new Date(now.getTime() + t.days * 24 * 60 * 60 * 1000);
+
+      const { error: upErr } = await (supabase as any)
+        .from("job_listings")
+        .update({
+          is_featured: true,
+          boost_tier: t.tier,
+          boost_until: expires.toISOString(),
+          featured_until: expires.toISOString(),
+        })
+        .eq("id", jobId);
+      if (upErr) throw upErr;
+
+      await (supabase as any).from("job_boost_purchases").insert({
+        job_id: jobId,
+        employer_id: job?.employer_id,
+        boost_tier: t.tier,
+        duration_days: t.days,
+        amount_eur: 0,
+        status: "active",
+        starts_at: now.toISOString(),
+        expires_at: expires.toISOString(),
+      });
+
+      toast.success(`${t.label} active for ${t.days} days`, { description: `${t.credits} credits used.` });
+      await loadHistory();
     } catch (e: any) { toast.error(e.message); }
     finally { setLoading(null); }
   };
+
 
   return (
     <div className="max-w-4xl mx-auto px-4 pt-6 pb-8 space-y-4">
@@ -72,11 +107,11 @@ export default function JobBoost() {
                 <div className={`p-2 rounded-lg bg-gradient-to-br ${t.color} w-fit`}><Icon className="h-5 w-5 text-white" /></div>
                 <div>
                   <p className="font-black">{t.label}</p>
-                  <p className="text-2xl font-black">€{t.price}</p>
+                  <p className="text-2xl font-black">{t.credits} credits</p>
                   <p className="text-xs text-muted-foreground">{t.days} days · {t.desc}</p>
                 </div>
                 <Button className="w-full" onClick={() => buy(t)} disabled={loading === t.tier}>
-                  {loading === t.tier ? <Loader2 className="h-4 w-4 animate-spin" /> : "Buy"}
+                  {loading === t.tier ? <Loader2 className="h-4 w-4 animate-spin" /> : `Boost for ${t.credits} credits`}
                 </Button>
               </CardContent>
             </Card>
@@ -90,7 +125,7 @@ export default function JobBoost() {
           {history.map(h => (
             <div key={h.id} className="flex justify-between text-xs py-1 border-b last:border-0">
               <span>{h.boost_tier} · {h.duration_days}d</span>
-              <span className="font-bold">€{h.amount_eur} · {h.status}</span>
+              <span className="font-bold">{h.status}</span>
             </div>
           ))}
         </CardContent></Card>
