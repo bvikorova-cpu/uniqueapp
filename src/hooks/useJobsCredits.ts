@@ -6,12 +6,12 @@ import { useAuth } from "@/contexts/AuthContext";
 
 /** Credit prices for the Work (Jobs) section — credits only, no EUR. */
 export const JOBS_CREDIT_COSTS = {
-  listing_7: 3,
-  listing_14: 5,
-  listing_30: 8,
-  boost_basic: 5,
-  boost_premium: 10,
-  boost_ultimate: 20,
+  listing_7: 10,
+  listing_14: 20,
+  listing_30: 30,
+  boost_basic: 15,
+  boost_premium: 30,
+  boost_ultimate: 60,
 } as const;
 
 export type JobsCreditAction = keyof typeof JOBS_CREDIT_COSTS;
