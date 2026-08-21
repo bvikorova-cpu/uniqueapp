@@ -78,13 +78,44 @@ export default function CompanyNew() {
           ["industry", "Industry", "IT & Software"],
           ["size", "Company size", "11-50"],
           ["headquarters", "Headquarters", "Global"],
-          ["logo_url", "Logo URL", "https://"],
         ].map(([k, label, ph]) => (
           <div key={k}>
             <Label>{label}</Label>
             <Input value={(form as any)[k]} onChange={(e) => setForm({ ...form, [k]: e.target.value })} placeholder={ph} />
           </div>
         ))}
+        <div className="space-y-2">
+          <Label>Company logo</Label>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadLogo(f); e.target.value = ""; }}
+          />
+          <div className="flex items-center gap-3">
+            {form.logo_url && (
+              <div className="relative">
+                <img src={form.logo_url} alt="Company logo preview" className="h-16 w-16 rounded-lg object-cover border" />
+                <button
+                  type="button"
+                  aria-label="Remove logo"
+                  onClick={() => setForm({ ...form, logo_url: "" })}
+                  className="absolute -top-2 -right-2 rounded-full bg-destructive text-destructive-foreground p-1"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </div>
+            )}
+            <Button type="button" variant="outline" onClick={() => fileRef.current?.click()} disabled={uploading}>
+              {uploading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Upload className="h-4 w-4 mr-2" />}
+              {form.logo_url ? "Change logo" : "Upload from device"}
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground">JPG or PNG, max 5 MB. Square works best. Or paste a link below.</p>
+          <Input value={form.logo_url} onChange={(e) => setForm({ ...form, logo_url: e.target.value })} placeholder="https:// (optional logo URL)" />
+        </div>
+
         <div>
           <Label>Description</Label>
           <Textarea rows={5} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="What does the company do?" />
