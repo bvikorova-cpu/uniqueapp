@@ -65,11 +65,20 @@ export default function JobDetailPage() {
         setNotFound(true);
       } else {
         setJob(data as JobDetail);
+        // Count a real view (server-side dedup per signed-in user / employer excluded)
+        const jobId = (data as JobDetail).id;
+        const key = `job-view-${jobId}`;
+        const last = Number(localStorage.getItem(key) || 0);
+        if (Date.now() - last > 60 * 60 * 1000) {
+          localStorage.setItem(key, String(Date.now()));
+          (supabase as any).rpc("track_job_view", { p_job_id: jobId }).then(() => {}, () => {});
+        }
         // Canonicalize legacy UUID URL -> slug URL
         if (column === "id" && (data as JobDetail).slug) {
           navigate(`/jobs/listing/${(data as JobDetail).slug}`, { replace: true });
         }
       }
+
       setLoading(false);
     })();
     return () => { cancelled = true; };
