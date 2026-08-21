@@ -65,11 +65,7 @@ export default function SearchResults() {
       if (activeFilter === "all" || activeFilter === "posts") {
         let postsQuery = supabase
           .from("posts")
-          .select(`
-            *,
-            profiles(id, full_name, avatar_url),
-            media(*)
-          `)
+          .select("*")
           .ilike("content", `%${searchTerm}%`)
           .order("created_at", { ascending: false });
 
@@ -79,8 +75,24 @@ export default function SearchResults() {
           postsQuery = postsQuery.gte("created_at", weekAgo.toISOString());
         }
 
-        postsResult = await postsQuery.limit(50);
+        const { data: postRows } = await postsQuery.limit(50);
+        const rows = postRows || [];
+
+        // Attach author profiles separately (no FK embed available on posts).
+        const authorIds = [...new Set(rows.map((p: any) => p.user_id).filter(Boolean))];
+        let profileMap = new Map<string, any>();
+        if (authorIds.length > 0) {
+          const { data: profs } = await supabase
+            .from("public_profiles")
+            .select("id, full_name, username, avatar_url")
+            .in("id", authorIds);
+          profileMap = new Map((profs || []).map((p: any) => [p.id, p]));
+        }
+        postsResult = {
+          data: rows.map((p: any) => ({ ...p, profiles: profileMap.get(p.user_id) ?? null })),
+        };
       }
+
 
       // Search users — use public_profiles view (safe columns only) and restrict to full_name
       // ILIKE on bio is too expensive at scale and exposes private data.
