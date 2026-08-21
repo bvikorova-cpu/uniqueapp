@@ -301,20 +301,21 @@ export default function EmployerDashboard() { const [jobs, setJobs] = useState<J
 
         {/* Tabs */}
         <Tabs defaultValue="jobs" className="space-y-4">
-          <TabsList className="bg-muted/50 border border-border/50 p-1 rounded-xl">
-            <TabsTrigger value="jobs" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white gap-1.5">
-              <Briefcase className="h-3.5 w-3.5" /> My Positions
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto bg-muted/50 border border-border/50 p-1 rounded-xl gap-1">
+            <TabsTrigger value="jobs" className="w-full text-xs sm:text-sm whitespace-nowrap rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white gap-1.5">
+              <Briefcase className="h-3.5 w-3.5 shrink-0" /> My Positions
             </TabsTrigger>
-            <TabsTrigger value="applications" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white gap-1.5">
-              <Users className="h-3.5 w-3.5" /> Applications
+            <TabsTrigger value="applications" className="w-full text-xs sm:text-sm whitespace-nowrap rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white gap-1.5">
+              <Users className="h-3.5 w-3.5 shrink-0" /> Applications
             </TabsTrigger>
-            <TabsTrigger value="packages" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white gap-1.5">
-              <Receipt className="h-3.5 w-3.5" /> Packages
+            <TabsTrigger value="packages" className="w-full text-xs sm:text-sm whitespace-nowrap rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white gap-1.5">
+              <Receipt className="h-3.5 w-3.5 shrink-0" /> Packages
             </TabsTrigger>
-            <TabsTrigger value="templates" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white gap-1.5">
-              <MessageSquare className="h-3.5 w-3.5" /> Templates
+            <TabsTrigger value="templates" className="w-full text-xs sm:text-sm whitespace-nowrap rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white gap-1.5">
+              <MessageSquare className="h-3.5 w-3.5 shrink-0" /> Templates
             </TabsTrigger>
           </TabsList>
+
 
           <TabsContent value="jobs" className="space-y-4">
             <Card className="border-border/40 bg-card/80 backdrop-blur-sm">
