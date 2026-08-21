@@ -283,8 +283,11 @@ export default function EmployerDashboard() { const [jobs, setJobs] = useState<J
                 userId={user.id}
                 subscribed={true}
                 onRenewSubscription={() => {}}
+                triggerLabel="Create Listing"
+                triggerClassName="w-full sm:w-auto h-12 px-6 text-base font-bold rounded-xl bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-xl shadow-primary/30 hover:opacity-90"
               />
             )}
+
           </div>
         </motion.div>
 
