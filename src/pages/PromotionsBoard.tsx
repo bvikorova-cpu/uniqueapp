@@ -285,8 +285,8 @@ export default function PromotionsBoard() {
             <Button asChild size="lg" variant="premium">
               <Link to="/promotions/new"><Plus className="h-4 w-4 mr-1" /> Publish a promo</Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="bg-background/20 backdrop-blur border-white/30 text-white hover:bg-background/40">
-              <Link to="/promotions/mine">My promotions</Link>
+            <Button asChild size="lg" className="bg-white/95 text-primary hover:bg-white shadow-xl shadow-black/20 border-2 border-white/50 font-bold">
+              <Link to="/promotions/mine"><Crown className="h-4 w-4 mr-1" /> My promotions</Link>
             </Button>
           </div>
         </div>
