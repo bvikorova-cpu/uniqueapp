@@ -169,24 +169,26 @@ export default function RewardsBattlePass() {
         { title: "Don't miss the deadline", desc: "Unclaimed rewards disappear when the season ends. Log in daily to stay on track." },
       ]} /></div>
       <Card className="overflow-hidden border-primary/30">
-        <div className="bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 p-6 text-white">
-          <div className="flex items-start justify-between gap-4">
+        <div className="bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 p-4 sm:p-6 text-white">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div>
               <Badge className="bg-white/20 mb-2">{`Season ${season.season_number}`}</Badge>
               <h2 className="text-2xl font-bold">{season.name}</h2>
               <p className="text-sm opacity-90">{`${daysLeft} days left · Tier ${currentTier} / ${season.total_tiers}`}</p>
             </div>
-            {!progress?.has_premium && (
-              <Button onClick={purchasePremium} disabled={purchasingPremium} className="bg-white text-purple-700 hover:bg-white/90 font-bold">
-                <Crown className="h-4 w-4 mr-1" />
-                {purchasingPremium ? "Unlocking…" : `Unlock Premium · ${PREMIUM_CREDITS} credits`}
-              </Button>
-            )}
-            {progress?.has_premium && (
-              <Badge className="bg-yellow-400 text-purple-900 font-bold gap-1">
-                <Crown className="h-3 w-3" /> {"PREMIUM"}
-              </Badge>
-            )}
+            <div className="flex sm:justify-end">
+              {!progress?.has_premium && (
+                <Button onClick={purchasePremium} disabled={purchasingPremium} className="w-full sm:w-auto bg-white text-purple-700 hover:bg-white/90 font-bold whitespace-normal text-center">
+                  <Crown className="h-4 w-4 mr-1 shrink-0" />
+                  {purchasingPremium ? "Unlocking…" : `Unlock Premium · ${PREMIUM_CREDITS} credits`}
+                </Button>
+              )}
+              {progress?.has_premium && (
+                <Badge className="bg-yellow-400 text-purple-900 font-bold gap-1">
+                  <Crown className="h-3 w-3" /> {"PREMIUM"}
+                </Badge>
+              )}
+            </div>
           </div>
           <div className="mt-4">
             <Progress value={tierProgress} className="h-3 bg-white/20" />
