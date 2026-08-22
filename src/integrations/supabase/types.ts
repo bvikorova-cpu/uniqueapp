@@ -71343,6 +71343,7 @@ export type Database = {
       }
       redeem_shop_item: { Args: { _item_code: string }; Returns: Json }
       refresh_battle_leaderboards: { Args: never; Returns: undefined }
+      refresh_league_week: { Args: never; Returns: Json }
       refresh_public_cache_mvs: { Args: never; Returns: undefined }
       refund_ai_credits_atomic: {
         Args: { _amount: number; _user_id: string }
