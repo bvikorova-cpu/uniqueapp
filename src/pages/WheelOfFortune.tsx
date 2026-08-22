@@ -104,7 +104,10 @@ export default function WheelOfFortune() {
   const [attempt, setAttempt] = useState("");
   const [angle, setAngle] = useState(0);
   const [spinning, setSpinning] = useState(false);
+  const [category, setCategory] = useState<string>("Riddles");
+  const [categories, setCategories] = useState<string[]>([]);
   const videoRef = useRef<HTMLVideoElement>(null);
+
 
   const refreshWallet = useCallback(async () => {
     const { data } = await supabase.rpc("wheel_wallet" as never);
@@ -128,8 +131,16 @@ export default function WheelOfFortune() {
       if (res?.state) setState(res.state);
       void refreshWallet();
       void refreshLeaders();
+      const { data: cats } = await supabase
+        .from("wheel_puzzles")
+        .select("category")
+        .eq("active", true);
+      if (cats) {
+        setCategories([...new Set(cats.map((c) => c.category as string))].sort());
+      }
     })();
   }, [navigate, refreshWallet, refreshLeaders]);
+
 
   const handle = async (
     key: string,
@@ -170,10 +181,16 @@ export default function WheelOfFortune() {
   };
 
   const startGame = () =>
-    handle("start", "wheel_start_game", undefined, () => {
-      setAttempt("");
-      toast.success("New puzzle — 1 credit spent. Good luck!");
-    });
+    handle(
+      "start",
+      "wheel_start_game",
+      category === "any" ? {} : { _category: category },
+      () => {
+        setAttempt("");
+        toast.success("New puzzle — 1 credit spent. Good luck!");
+      },
+    );
+
 
   const spin = async () => {
     if (spinning) return;
@@ -317,7 +334,26 @@ export default function WheelOfFortune() {
                 <p className="max-w-md text-muted-foreground">
                   Each puzzle round costs <strong>1 AI credit</strong>. Three strikes end the round.
                 </p>
+                <div className="w-full max-w-md space-y-2">
+                  <div className="text-xs font-semibold uppercase text-muted-foreground">
+                    Choose a category
+                  </div>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {["any", ...categories].map((c) => (
+                      <Button
+                        key={c}
+                        type="button"
+                        size="sm"
+                        variant={category === c ? "default" : "outline"}
+                        onClick={() => setCategory(c)}
+                      >
+                        {c === "any" ? "Surprise me" : c}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
                 <div className="flex flex-wrap justify-center gap-2">
+
                   <Button size="lg" onClick={startGame} disabled={busy === "start"}>
                     {busy === "start" ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />

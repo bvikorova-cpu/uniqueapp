@@ -71534,7 +71534,9 @@ export type Database = {
       wheel_second_chance: { Args: never; Returns: Json }
       wheel_solve: { Args: { _attempt: string }; Returns: Json }
       wheel_spin: { Args: never; Returns: Json }
-      wheel_start_game: { Args: never; Returns: Json }
+      wheel_start_game:
+        | { Args: never; Returns: Json }
+        | { Args: { _category?: string }; Returns: Json }
       wheel_wallet: { Args: never; Returns: Json }
     }
     Enums: {
