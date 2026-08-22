@@ -304,9 +304,9 @@ export default function WheelOfFortune() {
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title="Wheel of Fortune Puzzles | Unique"
+        title="Spin & Solve Puzzles | Unique"
         description="Spin the wheel, guess letters and solve word puzzles to win Spin Coins. Boosters, hints and a live leaderboard."
-        canonical="/wheel-of-fortune"
+        canonical="/spin-solve"
       />
 
       {/* Hero */}
@@ -334,7 +334,7 @@ export default function WheelOfFortune() {
           <Badge className="mb-3 w-fit gap-1 bg-primary/20 text-primary backdrop-blur-md">
             <Sparkles className="h-3 w-3" /> Word puzzle game show
           </Badge>
-          <h1 className="text-4xl font-black tracking-tight sm:text-6xl">Wheel of Fortune</h1>
+          <h1 className="text-4xl font-black tracking-tight sm:text-6xl">Spin &amp; Solve</h1>
           <p className="mt-2 max-w-2xl text-muted-foreground">
             Spin for letter values, buy vowels and solve the hidden phrase. Every win pays out in
             Spin Coins — the in-game currency you spend right here.
