@@ -373,11 +373,18 @@ export default function WheelOfFortune() {
                 </div>
 
                 {state.hint && (
-                  <p className="text-center text-sm text-muted-foreground">
-                    <Lightbulb className="mr-1 inline h-3.5 w-3.5 text-primary" />
+                  <p
+                    className={
+                      state.category === "Riddles"
+                        ? "rounded-xl border border-primary/30 bg-primary/10 p-3 text-center text-base font-semibold text-foreground"
+                        : "text-center text-sm text-muted-foreground"
+                    }
+                  >
+                    <Lightbulb className="mr-1 inline h-4 w-4 text-primary" />
                     {state.hint}
                   </p>
                 )}
+
 
                 {/* Wheel */}
                 <div className="flex flex-col items-center gap-4">
