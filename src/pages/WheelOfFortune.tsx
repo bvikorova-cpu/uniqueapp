@@ -343,8 +343,29 @@ export default function WheelOfFortune() {
                   </div>
                 )}
                 <p className="max-w-md text-muted-foreground">
-                  Each puzzle round costs <strong>1 AI credit</strong>. Three strikes end the round.
+                  Pick a difficulty — harder puzzles cost more credits but pay out far more Spin
+                  Coins. Three strikes end the round.
                 </p>
+                <div className="grid w-full max-w-md gap-2 sm:grid-cols-3">
+                  {MODES.map((m) => (
+                    <button
+                      key={m.key}
+                      type="button"
+                      onClick={() => setMode(m.key)}
+                      className={`rounded-xl border p-3 text-left transition ${
+                        mode === m.key
+                          ? "border-primary bg-primary/10 ring-2 ring-primary/40"
+                          : "border-border/60 bg-muted/40 hover:bg-muted/70"
+                      }`}
+                    >
+                      <div className="font-semibold">{m.label}</div>
+                      <div className="text-xs text-muted-foreground">{m.desc}</div>
+                      <div className="mt-1 text-xs font-medium text-primary">
+                        {m.cost} credit{m.cost > 1 ? "s" : ""} · {m.mult}x SC
+                      </div>
+                    </button>
+                  ))}
+                </div>
                 <div className="w-full max-w-md space-y-2">
                   <div className="text-xs font-semibold uppercase text-muted-foreground">
                     Choose a category
@@ -364,15 +385,15 @@ export default function WheelOfFortune() {
                   </div>
                 </div>
                 <div className="flex flex-wrap justify-center gap-2">
-
                   <Button size="lg" onClick={startGame} disabled={busy === "start"}>
                     {busy === "start" ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     ) : (
                       <Play className="mr-2 h-4 w-4" />
                     )}
-                    Play a puzzle (1 credit)
+                    Play a puzzle ({MODES.find((m) => m.key === mode)?.cost} credits)
                   </Button>
+
                   {state?.status === "lost" && (
                     <Button
                       variant="outline"
