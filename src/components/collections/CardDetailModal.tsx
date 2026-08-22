@@ -86,7 +86,7 @@ export const CardDetailModal = ({ card, category, totalCards, onClose }: Props) 
                     <img
                       src={card.image_url}
                       alt={`${card.name} — ${category.name} collectible card artwork`}
-                      className={`absolute inset-0 w-full h-full object-cover ${owned ? "" : "opacity-75 saturate-[0.6]"}`}
+                      className={`absolute inset-0 w-full h-full object-cover scale-[1.06] ${owned ? "" : "opacity-75 saturate-[0.6]"}`}
                       decoding="async"
                     />
                   ) : (
