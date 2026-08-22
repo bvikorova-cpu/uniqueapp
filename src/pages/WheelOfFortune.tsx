@@ -627,14 +627,8 @@ export default function WheelOfFortune() {
                 </div>
 
                 {/* Boosters */}
-                <div className="grid gap-2 sm:grid-cols-3">
-                  <Button
-                    variant="outline"
-                    onClick={() => handle("hint", "wheel_buy_hint")}
-                    disabled={busy === "hint" || !!state.hint}
-                  >
-                    <Lightbulb className="mr-2 h-4 w-4" /> AI hint (2 cr)
-                  </Button>
+                <div className="grid gap-2 sm:grid-cols-2">
+
                   <Button
                     variant="outline"
                     onClick={() => handle("reveal", "wheel_reveal_letter")}
