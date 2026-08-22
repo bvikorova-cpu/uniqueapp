@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Trophy, ArrowUp, ArrowDown, Minus, Shield } from "lucide-react";
+import { Trophy, ArrowUp, ArrowDown, Minus, Shield, Info } from "lucide-react";
 import { motion } from "framer-motion";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+import { InfoHint } from "@/components/common/InfoHint";
 
 const TIERS = [
   { id: "bronze", label: "Bronze", color: "from-amber-700 to-amber-900", text: "text-amber-300" },
