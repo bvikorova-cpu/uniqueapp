@@ -225,21 +225,34 @@ export default function PromotionsBoard() {
   const [cityFilter, setCityFilter] = useState("all");
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
   const [myLikes, setMyLikes] = useState<Set<string>>(new Set());
+  const [likeProfiles, setLikeProfiles] = useState<Record<string, PromoLiker[]>>({});
 
   useEffect(() => {
-    (async () => {
-      const { data } = await supabase
-        .from("promo_listings")
-        .select("id,title,description,media_url,media_type,link_url,tier,active_until,category,city")
-        .eq("status", "active")
-        .gt("active_until", new Date().toISOString())
-        .order("tier", { ascending: true }) // 'top' < 'standard' alphabetically
-        .order("created_at", { ascending: false })
-        .limit(200);
-      setListings((data as PromoListing[]) ?? []);
-      setLoading(false);
-    })();
-  }, []);
+    const timer = setTimeout(() => {
+      (async () => {
+        setLoading(true);
+        let query = supabase
+          .from("promo_listings")
+          .select("id,title,description,media_url,media_type,link_url,tier,active_until,category,city")
+          .eq("status", "active")
+          .gt("active_until", new Date().toISOString())
+          .order("tier", { ascending: true }) // 'top' < 'standard' alphabetically
+          .order("created_at", { ascending: false })
+          .limit(200);
+        const term = q.trim();
+        if (term) {
+          const pattern = `%${term}%`;
+          query = query.or(
+            `title.ilike.${pattern},description.ilike.${pattern},city.ilike.${pattern},category.ilike.${pattern}`
+          );
+        }
+        const { data } = await query;
+        setListings((data as PromoListing[]) ?? []);
+        setLoading(false);
+      })();
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [q]);
 
   useEffect(() => {
     if (listings.length === 0) return;
