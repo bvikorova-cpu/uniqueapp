@@ -39,7 +39,7 @@ export default function BadgeLeaderboard() {
 
       const userIds = topUsers.map(([id]) => id);
       const { data: profiles, error: profileError } = await supabase
-        .from("profiles")
+        .from("public_profiles" as any)
         .select("id, full_name, avatar_url")
         .in("id", userIds);
       if (profileError) throw profileError;

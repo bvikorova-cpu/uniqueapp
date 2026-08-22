@@ -127,7 +127,7 @@ export const useFollowingPosts = (userId: string | undefined) => {
       const userIds = Array.from(new Set((postsData || []).map(p => p.user_id)));
       
       const { data: profilesData } = await supabase
-        .from("profiles")
+        .from("public_profiles" as any)
         .select("id, full_name, avatar_url")
         .in("id", userIds);
 

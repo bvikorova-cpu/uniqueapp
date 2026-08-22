@@ -24,7 +24,7 @@ export const useTrendingPosts = () => {
       const postsWithProfiles = await Promise.all(
         (data || []).map(async (post) => {
           const { data: profile } = await supabase
-            .from("profiles")
+            .from("public_profiles" as any)
             .select("id, full_name, avatar_url")
             .eq("id", post.user_id)
             .single();
@@ -77,7 +77,7 @@ export const useActiveUsers = () => {
 
       // Fetch user profiles
       const { data: profiles, error: profilesError } = await supabase
-        .from("profiles")
+        .from("public_profiles" as any)
         .select("id, full_name, avatar_url")
         .in("id", topUserIds);
 
