@@ -110,6 +110,8 @@ export default function WheelOfFortune() {
   const [state, setState] = useState<GameState | null>(null);
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [leaders, setLeaders] = useState<LeaderRow[]>([]);
+  const [myId, setMyId] = useState<string | null>(null);
+
   const [busy, setBusy] = useState<string | null>(null);
   const [attempt, setAttempt] = useState("");
   const [angle, setAngle] = useState(0);
@@ -127,9 +129,21 @@ export default function WheelOfFortune() {
   }, []);
 
   const refreshLeaders = useCallback(async () => {
-    const { data } = await supabase.rpc("wheel_leaderboard" as never);
-    if (data) setLeaders(data as unknown as LeaderRow[]);
+    const { data, error } = await supabase.rpc("wheel_leaderboard" as never);
+    if (error) {
+      console.error("wheel_leaderboard failed", error);
+      return;
+    }
+    const rows = (data as unknown as LeaderRow[] | null) ?? [];
+    setLeaders(
+      rows
+        .filter((r) => Number(r.total_won) > 0)
+        .sort(
+          (a, b) => Number(b.total_won) - Number(a.total_won) || Number(b.games_won) - Number(a.games_won),
+        ),
+    );
   }, []);
+
 
   useEffect(() => {
     (async () => {
@@ -138,6 +152,7 @@ export default function WheelOfFortune() {
         navigate("/auth");
         return;
       }
+      setMyId(u.user.id);
       const { data } = await supabase.rpc("wheel_get_game" as never);
       const res = data as unknown as { ok: boolean; state: GameState | null } | null;
       if (res?.state) setState(res.state);
@@ -151,6 +166,13 @@ export default function WheelOfFortune() {
 
     })();
   }, [navigate, refreshWallet, refreshLeaders]);
+
+  // Keep the leaderboard fresh while the page is open.
+  useEffect(() => {
+    const id = window.setInterval(() => void refreshLeaders(), 30000);
+    return () => window.clearInterval(id);
+  }, [refreshLeaders]);
+
 
 
   const handle = async (
@@ -184,6 +206,8 @@ export default function WheelOfFortune() {
       if (res.state) setState(res.state as unknown as GameState);
       onOk?.(res);
       void refreshWallet();
+      void refreshLeaders();
+
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Something went wrong");
     } finally {
@@ -656,9 +680,14 @@ export default function WheelOfFortune() {
         {/* Leaderboard */}
         <Card className="border-border/50 bg-card/60 backdrop-blur-xl">
           <CardContent className="p-5">
-            <h2 className="mb-4 flex items-center gap-2 text-lg font-bold">
-              <Trophy className="h-5 w-5 text-primary" /> Top puzzle solvers
-            </h2>
+            <div className="mb-4 flex items-center justify-between gap-2">
+              <h2 className="flex items-center gap-2 text-lg font-bold">
+                <Trophy className="h-5 w-5 text-primary" /> Top puzzle solvers
+              </h2>
+              <Button variant="ghost" size="sm" onClick={() => void refreshLeaders()}>
+                Refresh
+              </Button>
+            </div>
             {leaders.length === 0 ? (
               <p className="text-sm text-muted-foreground">No results yet — be the first.</p>
             ) : (
@@ -666,19 +695,34 @@ export default function WheelOfFortune() {
                 {leaders.map((row, i) => (
                   <li
                     key={row.user_id}
-                    className="flex items-center gap-3 rounded-lg bg-muted/40 px-3 py-2"
+                    className={`flex items-center gap-3 rounded-lg px-3 py-2 ${
+                      row.user_id === myId
+                        ? "bg-primary/15 ring-1 ring-primary/40"
+                        : "bg-muted/40"
+                    }`}
                   >
-                    <span className="w-5 text-sm font-bold text-muted-foreground">{i + 1}</span>
+                    <span className="w-6 text-center text-sm font-bold text-muted-foreground">
+                      {i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : i + 1}
+                    </span>
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={row.avatar_url ?? undefined} alt={row.display_name} />
                       <AvatarFallback>{row.display_name.slice(0, 2).toUpperCase()}</AvatarFallback>
                     </Avatar>
-                    <span className="flex-1 truncate text-sm font-medium">{row.display_name}</span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium">
+                        {row.display_name}
+                        {row.user_id === myId ? " (you)" : ""}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {row.games_won.toLocaleString()} puzzle{row.games_won === 1 ? "" : "s"} solved
+                      </p>
+                    </div>
                     <span className="text-sm font-bold">{row.total_won.toLocaleString()} SC</span>
                   </li>
                 ))}
               </ol>
             )}
+
           </CardContent>
         </Card>
 
