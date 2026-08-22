@@ -23,7 +23,7 @@ interface Provider {
   languages: string[] | null;
 }
 
-const CATEGORIES = ["all", "hair", "nails", "massage", "beauty", "fitness", "tutoring", "cleaning", "repair", "photography", "other"];
+const CATEGORIES = ["all", "hair", "nails", "makeup", "massage", "tattoo", "beauty", "fitness", "tutoring", "cleaning", "repair", "photography", "other"];
 
 export default function ServicesList() {
   const [providers, setProviders] = useState<Provider[]>([]);
