@@ -29,28 +29,30 @@ serve(async (req) => {
       .single();
 
     if (!match) throw new Error("Match not found");
-    if (match.status === "finished") {
-      return new Response(JSON.stringify({ match }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+    // Determine winner (already-finished matches use stored winner_id)
+    let winnerId = match.winner_id;
+    let didTransition = false;
+    let updatedMatch = match;
+
+    if (match.status !== "finished") {
+      if (match.player1_score > match.player2_score) winnerId = match.player1_id;
+      else if (match.player2_score > match.player1_score) winnerId = match.player2_id || "ai_bot";
+
+      // Atomic transition: only one caller may flip the match to "finished".
+      const { data: updatedRows } = await supabase
+        .from("brain_duel_matches")
+        .update({ status: "finished",
+          winner_id: winnerId === "ai_bot" ? null : winnerId,
+          finished_at: new Date().toISOString() })
+        .eq("id", match_id)
+        .neq("status", "finished")
+        .select();
+
+      didTransition = Array.isArray(updatedRows) && updatedRows.length > 0;
+      updatedMatch = didTransition ? updatedRows[0] : match;
     }
 
-    // Determine winner
-    let winnerId = null;
-    if (match.player1_score > match.player2_score) winnerId = match.player1_id;
-    else if (match.player2_score > match.player1_score) winnerId = match.player2_id || "ai_bot";
-
-    // Atomic transition: only one caller may flip the match to "finished".
-    const { data: updatedRows } = await supabase
-      .from("brain_duel_matches")
-      .update({ status: "finished",
-        winner_id: winnerId === "ai_bot" ? null : winnerId,
-        finished_at: new Date().toISOString() })
-      .eq("id", match_id)
-      .neq("status", "finished")
-      .select();
-
-    const didTransition = Array.isArray(updatedRows) && updatedRows.length > 0;
-    const updatedMatch = didTransition ? updatedRows[0] : match;
 
     // Award credits to the WINNER — no matter who called finish-match.
     const isPlayerWinner = winnerId === user.id;

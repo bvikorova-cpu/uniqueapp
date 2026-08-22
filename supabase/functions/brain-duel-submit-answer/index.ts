@@ -51,12 +51,17 @@ serve(async (req) => {
     const totalPoints = basePoints + timeBonus;
 
     // Save answer
-    await supabase.from("brain_duel_answers").insert({ match_id,
+    const { error: answerError } = await supabase.from("brain_duel_answers").insert({ match_id,
       question_id,
       player_id: user.id,
       answer: answer || "timeout",
       is_correct: isCorrect,
       time_taken: safeTime });
+    if (answerError) {
+      console.error("Failed to save answer:", answerError);
+      throw new Error("Failed to save answer: " + answerError.message);
+    }
+
 
     const newScore = (isPlayer1 ? match.player1_score : match.player2_score) + totalPoints;
 

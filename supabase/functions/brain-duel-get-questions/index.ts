@@ -42,9 +42,10 @@ serve(async (req) => {
       const { data: prevAnswers } = await supabase
         .from("brain_duel_answers")
         .select("question_id")
-        .in("user_id", playerIds)
+        .in("player_id", playerIds)
         .limit(2000);
       (prevAnswers || []).forEach((a: any) => a.question_id && seenIds.add(a.question_id));
+
       const ids = Array.from(seenIds);
       if (ids.length) {
         const { data: seenQs } = await supabase
