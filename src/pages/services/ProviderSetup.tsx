@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { Loader2, Trash2, Plus, Calendar, Save, ArrowRight, Coffee } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 
-const CATEGORIES = ["hair", "nails", "massage", "beauty", "fitness", "tutoring", "cleaning", "repair", "photography", "other"];
+const CATEGORIES = ["hair", "nails", "makeup", "massage", "tattoo", "beauty", "fitness", "tutoring", "cleaning", "repair", "photography", "other"];
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 interface Rule { id?: string; weekday: number; start_time: string; end_time: string; is_active: boolean; }
