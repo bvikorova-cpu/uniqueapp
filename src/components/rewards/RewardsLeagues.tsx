@@ -74,8 +74,8 @@ export default function RewardsLeagues() {
         const ids = (g || []).map((r: any) => r.user_id);
         let profileMap: Record<string, any> = {};
         if (ids.length) {
-          const { data: profs } = await supabase
-            .from("profiles")
+          const { data: profs } = await (supabase as any)
+            .from("public_profiles")
             .select("id, full_name, avatar_url")
             .in("id", ids);
           profileMap = Object.fromEntries((profs || []).map((p: any) => [p.id, p]));
