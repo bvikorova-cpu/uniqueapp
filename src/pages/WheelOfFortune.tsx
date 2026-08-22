@@ -243,13 +243,20 @@ export default function WheelOfFortune() {
   };
 
 
-  const guess = (letter: string) =>
-    handle(`letter-${letter}`, "wheel_guess_letter", { _letter: letter }, (res) => {
-      const hits = Number(res.hits ?? 0);
-      const gain = Number(res.gain ?? 0);
-      if (hits === 0) toast.error(`No ${letter} in this puzzle.`);
-      else toast.success(`${hits}× ${letter}${gain ? ` — +${gain} SC to bank` : ""}`);
-    });
+  const guess = (letter: string, payWithCredits = false) =>
+    handle(
+      `letter-${letter}`,
+      "wheel_guess_letter",
+      { _letter: letter, _pay_with_credits: payWithCredits },
+      (res) => {
+        const hits = Number(res.hits ?? 0);
+        const gain = Number(res.gain ?? 0);
+        if (res.paid_with === "credit") toast.success(`Vowel ${letter} bought for 1 AI credit`);
+        if (hits === 0) toast.error(`No ${letter} in this puzzle.`);
+        else toast.success(`${hits}× ${letter}${gain ? ` — +${gain} SC to bank` : ""}`);
+      },
+    );
+
 
   const solve = () => {
     if (!attempt.trim()) return;
