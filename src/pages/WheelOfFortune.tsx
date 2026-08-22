@@ -196,6 +196,8 @@ export default function WheelOfFortune() {
       if (res.state) setState(res.state as unknown as GameState);
       onOk?.(res);
       void refreshWallet();
+      void refreshLeaders();
+
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Something went wrong");
     } finally {
