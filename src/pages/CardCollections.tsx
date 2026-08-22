@@ -34,16 +34,16 @@ const CardCollections = () => {
   });
 
   const { data: progress = {} } = useQuery({
-    queryKey: ["card-collection-progress"],
+    queryKey: ["card-collection-progress", user?.id],
+    enabled: !!user?.id,
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return {} as Record<string, { unique: number; total: number }>;
+      const map: Record<string, { unique: number; total: number }> = {};
+      if (!user?.id) return map;
       const { data, error } = await supabase
         .from("user_card_collection")
         .select("category_slug, copies")
         .eq("user_id", user.id);
       if (error) throw error;
-      const map: Record<string, { unique: number; total: number }> = {};
       for (const r of (data ?? []) as { category_slug: string; copies: number }[]) {
         const entry = map[r.category_slug] ?? { unique: 0, total: 0 };
         entry.unique += 1;
@@ -52,8 +52,11 @@ const CardCollections = () => {
       }
       return map;
     },
-    staleTime: 30 * 1000,
+    staleTime: 15 * 1000,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
+
 
   const totalUnique = Object.values(progress).reduce((a, b) => a + b.unique, 0);
 
