@@ -381,30 +381,53 @@ export default function WheelOfFortune() {
 
                 {/* Wheel */}
                 <div className="flex flex-col items-center gap-4">
-                  <div className="relative h-40 w-40">
+                  <div className="relative h-64 w-64 sm:h-72 sm:w-72">
+                    {/* pointer */}
                     <div
-                      className="absolute inset-0 rounded-full border-8 border-primary/30 transition-transform duration-[1400ms] ease-out"
+                      className="absolute left-1/2 top-0 z-20 h-0 w-0 -translate-x-1/2 -translate-y-1 border-l-[10px] border-r-[10px] border-t-[20px] border-l-transparent border-r-transparent border-t-foreground drop-shadow"
+                      aria-hidden
+                    />
+                    <div
+                      className="absolute inset-0 rounded-full border-[6px] border-primary/40 shadow-xl shadow-primary/20"
                       style={{
                         transform: `rotate(${angle}deg)`,
-                        background: `conic-gradient(hsl(var(--primary)) 0deg 45deg, hsl(var(--accent)) 45deg 90deg, hsl(var(--muted)) 90deg 135deg, hsl(var(--primary)) 135deg 180deg, hsl(var(--destructive)) 180deg 225deg, hsl(var(--accent)) 225deg 270deg, hsl(var(--muted)) 270deg 315deg, hsl(var(--primary)) 315deg 360deg)` }}
+                        background: WHEEL_GRADIENT,
+                        transition: `transform ${SPIN_MS}ms cubic-bezier(0.12, 0.72, 0.06, 1)`,
+                      }}
                     >
-                      <div className="absolute inset-6 flex items-center justify-center rounded-full bg-background text-center">
+                      {SEGMENTS.map((s, i) => (
+                        <div
+                          key={`${s.key}-${i}`}
+                          className="absolute left-1/2 top-0 h-1/2 origin-bottom"
+                          style={{ transform: `rotate(${i * SEG_ANGLE + SEG_ANGLE / 2}deg)` }}
+                          aria-hidden
+                        >
+                          <span
+                            className={`block -translate-x-1/2 pt-3 text-[10px] font-black tracking-tight sm:text-xs ${
+                              s.tone === "lose" ? "text-foreground/80" : "text-white"
+                            }`}
+                            style={{ writingMode: "vertical-rl" }}
+                          >
+                            {s.label}
+                          </span>
+                        </div>
+                      ))}
+                      <div className="absolute inset-[26%] z-10 flex items-center justify-center rounded-full border-4 border-primary/30 bg-background text-center shadow-inner">
                         <span className="px-1 text-sm font-bold leading-tight">
-                          {state.pending_value
-                            ? `${state.pending_value}`
-                            : state.last_spin === "bankrupt"
-                              ? "Bankrupt"
-                              : state.last_spin === "lose_turn"
-                                ? "Lost turn"
-                                : "Spin"}
+                          {spinning
+                            ? "…"
+                            : state.pending_value
+                              ? `${state.pending_value}`
+                              : state.last_spin === "bankrupt"
+                                ? "Bankrupt"
+                                : state.last_spin === "lose_turn"
+                                  ? "Lost turn"
+                                  : "Spin"}
                         </span>
                       </div>
                     </div>
-                    <div
-                      className="absolute left-1/2 top-0 h-0 w-0 -translate-x-1/2 -translate-y-2 border-l-8 border-r-8 border-t-[16px] border-l-transparent border-r-transparent border-t-foreground"
-                      aria-hidden
-                    />
                   </div>
+
                   <Button
                     onClick={spin}
                     disabled={spinning || busy === "spin" || state.pending_value != null}
