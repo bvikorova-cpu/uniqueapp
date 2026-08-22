@@ -162,11 +162,16 @@ export default function ProviderSetup() {
 
   return (
     <>
-      <Helmet><title>Offer Your Services · Unique</title></Helmet>
+      <Helmet><title>Book & Glow · Provider Setup · Unique</title></Helmet>
       <div className="min-h-screen bg-background"><Navbar />
         <div className="container mx-auto px-4 py-24 mt-16 max-w-3xl">
-          <h1 className="text-3xl font-black mb-2">Offer your services</h1>
-          <p className="text-muted-foreground mb-6">Set your business profile, service catalog, weekly hours and breaks. Customers book paid slots directly.</p>
+          <div className="flex items-start justify-between flex-wrap gap-3 mb-4">
+            <div>
+              <h1 className="text-3xl font-black mb-2">Offer your services</h1>
+              <p className="text-muted-foreground">Set your Book & Glow profile, service catalog, weekly hours and breaks. Customers book paid slots directly.</p>
+            </div>
+            <Button asChild variant="outline"><Link to="/services/provider/inbox">Provider inbox</Link></Button>
+          </div>
 
           <Card className="mb-6">
             <CardHeader><CardTitle>Business profile</CardTitle><CardDescription>Public info shown to customers.</CardDescription></CardHeader>
