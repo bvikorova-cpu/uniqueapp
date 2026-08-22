@@ -10,12 +10,13 @@ const PLATFORM_FEE_BPS = 1500;
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
-    // Verify cron secret (required for production invocation; keep it in Supabase Edge Function secrets).
-    const cronSecret = req.headers.get("x-cron-secret");
-    if (!cronSecret || cronSecret !== Deno.env.get("CRON_SECRET")) {
+    // Verify cron invocation via the Supabase anon key (apikey header), the standard pattern for pg_cron.
+    const apikey = req.headers.get("apikey");
+    if (!apikey || apikey !== Deno.env.get("SUPABASE_ANON_KEY")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
+
 
 
     const admin = createClient(
