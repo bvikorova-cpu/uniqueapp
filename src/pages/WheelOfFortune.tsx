@@ -529,8 +529,15 @@ export default function WheelOfFortune() {
 
                 {/* Letters */}
                 <div>
-                  <div className="mb-2 text-center text-xs text-muted-foreground">
-                    Consonants pay spin value × occurrences · Vowels cost {VOWEL_COST} SC
+                  <div className="mb-3 flex flex-wrap items-center justify-center gap-2 text-center text-xs text-muted-foreground">
+                    <span className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-1 font-medium text-primary">
+                      <span className="h-2 w-2 rounded-full bg-primary" />
+                      Consonants = spin value × occurrences
+                    </span>
+                    <span className="inline-flex items-center gap-1 rounded-full border border-secondary/50 bg-secondary/30 px-2 py-1 font-medium text-secondary-foreground">
+                      <span className="h-2 w-2 rounded-full bg-secondary-foreground" />
+                      Vowels = {VOWEL_COST} SC each
+                    </span>
                   </div>
                   <div className="grid grid-cols-7 gap-1.5 sm:grid-cols-9">
                     {ALPHABET.map((letter) => {
