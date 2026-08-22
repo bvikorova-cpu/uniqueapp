@@ -150,6 +150,7 @@ export default function WheelOfFortune() {
         navigate("/auth");
         return;
       }
+      setMyId(u.user.id);
       const { data } = await supabase.rpc("wheel_get_game" as never);
       const res = data as unknown as { ok: boolean; state: GameState | null } | null;
       if (res?.state) setState(res.state);
@@ -163,6 +164,13 @@ export default function WheelOfFortune() {
 
     })();
   }, [navigate, refreshWallet, refreshLeaders]);
+
+  // Keep the leaderboard fresh while the page is open.
+  useEffect(() => {
+    const id = window.setInterval(() => void refreshLeaders(), 30000);
+    return () => window.clearInterval(id);
+  }, [refreshLeaders]);
+
 
 
   const handle = async (
