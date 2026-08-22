@@ -477,7 +477,7 @@ export default function PromotionsBoard() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {topListings.map((l) => (
-                    <PromoCard key={l.id} listing={l} likeCount={likeCounts[l.id] ?? 0} liked={myLikes.has(l.id)} onToggleLike={toggleLike} />
+                    <PromoCard key={l.id} listing={l} likeCount={likeCounts[l.id] ?? 0} liked={myLikes.has(l.id)} likers={likeProfiles[l.id] ?? []} onToggleLike={toggleLike} />
                   ))}
                 </div>
               </section>
@@ -488,7 +488,7 @@ export default function PromotionsBoard() {
                 <h2 className="text-2xl font-bold mb-4">All promotions</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {standardListings.map((l) => (
-                    <PromoCard key={l.id} listing={l} likeCount={likeCounts[l.id] ?? 0} liked={myLikes.has(l.id)} onToggleLike={toggleLike} />
+                    <PromoCard key={l.id} listing={l} likeCount={likeCounts[l.id] ?? 0} liked={myLikes.has(l.id)} likers={likeProfiles[l.id] ?? []} onToggleLike={toggleLike} />
                   ))}
                 </div>
               </section>
