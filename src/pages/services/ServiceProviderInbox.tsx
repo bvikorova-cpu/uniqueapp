@@ -48,7 +48,7 @@ export default function ServiceProviderInbox() {
     if (!user) return;
     setLoading(true);
     const { data, error } = await supabase.functions.invoke("service-provider-inbox", {
-      queryParams: { filter },
+      body: { filter },
     });
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
