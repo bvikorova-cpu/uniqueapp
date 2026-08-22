@@ -176,17 +176,42 @@ export default function WheelOfFortune() {
     });
 
   const spin = async () => {
+    if (spinning) return;
     setSpinning(true);
-    setAngle((a) => a + 1440 + Math.floor(Math.random() * 360));
-    await new Promise((r) => setTimeout(r, 1400));
-    await handle("spin", "wheel_spin", undefined, (res) => {
+    setBusy("spin");
+    try {
+      const { data, error } = await supabase.rpc("wheel_spin" as never);
+      if (error) throw error;
+      const res = (data ?? {}) as Record<string, unknown>;
+      if (res.ok === false) {
+        toast.error(String(res.error ?? "failed").replace(/_/g, " "));
+        return;
+      }
       const outcome = String(res.outcome);
+      const matches = SEGMENTS.map((s, i) => (s.key === outcome ? i : -1)).filter((i) => i >= 0);
+      const idx = matches.length ? matches[Math.floor(Math.random() * matches.length)] : 0;
+
+      // Land the chosen segment's centre under the top pointer, always spinning forward.
+      setAngle((a) => {
+        const target = 360 - (idx * SEG_ANGLE + SEG_ANGLE / 2);
+        const base = Math.ceil((a + 1) / 360) * 360;
+        return base + 360 * 4 + target;
+      });
+      await new Promise((r) => setTimeout(r, SPIN_MS + 150));
+
+      if (res.state) setState(res.state as unknown as GameState);
       if (outcome === "bankrupt") toast.error("Bankrupt! Your round bank is gone.");
       else if (outcome === "lose_turn") toast("Lose a turn — spin again.");
       else toast.success(`${outcome} per letter — pick a consonant!`);
-    });
-    setSpinning(false);
+      void refreshWallet();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Something went wrong");
+    } finally {
+      setSpinning(false);
+      setBusy(null);
+    }
   };
+
 
   const guess = (letter: string) =>
     handle(`letter-${letter}`, "wheel_guess_letter", { _letter: letter }, (res) => {
