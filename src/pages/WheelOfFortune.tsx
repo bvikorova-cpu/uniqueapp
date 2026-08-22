@@ -658,7 +658,7 @@ export default function WheelOfFortune() {
                     onClick={() => handle("reveal", "wheel_reveal_letter")}
                     disabled={busy === "reveal"}
                   >
-                    <Eye className="mr-2 h-4 w-4" /> Reveal a letter (3 cr)
+                    <Eye className="mr-2 h-4 w-4" /> Odhaliť písmeno (3 cr)
                   </Button>
                   <Button
                     variant="outline"
