@@ -105,7 +105,7 @@ const WHEEL_GRADIENT = `conic-gradient(${SEGMENTS.map(
 const SPIN_MS = 3800;
 
 
-export default function WheelOfFortune() {
+export default function SpinSolve() {
   const navigate = useNavigate();
   const [state, setState] = useState<GameState | null>(null);
   const [wallet, setWallet] = useState<Wallet | null>(null);
