@@ -32,10 +32,20 @@ const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 const VOWELS = ["A", "E", "I", "O", "U"];
 const VOWEL_COST = 250;
 
+const MODES = [
+  { key: "normal" as const, label: "Normal", cost: 1, mult: 1, desc: "Everyday puzzles" },
+  { key: "hard" as const, label: "Hard", cost: 3, mult: 3, desc: "Tricky riddles, 3x payout" },
+  { key: "expert" as const, label: "Expert", cost: 5, mult: 5, desc: "Brutal riddles, 5x payout" },
+];
+
+
 interface GameState {
   game_id: string;
   category: string;
+  mode?: string;
+  payout_multiplier?: number;
   hint: string | null;
+
   masked: string;
   guessed: string[];
   bank: number;
@@ -105,6 +115,8 @@ export default function WheelOfFortune() {
   const [angle, setAngle] = useState(0);
   const [spinning, setSpinning] = useState(false);
   const [category, setCategory] = useState<string>("Riddles");
+  const [mode, setMode] = useState<"normal" | "hard" | "expert">("normal");
+
   const [categories, setCategories] = useState<string[]>([]);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -184,12 +196,14 @@ export default function WheelOfFortune() {
     handle(
       "start",
       "wheel_start_game",
-      category === "any" ? {} : { _category: category },
+      { ...(category === "any" ? {} : { _category: category }), _mode: mode },
       () => {
         setAttempt("");
-        toast.success("New puzzle — 1 credit spent. Good luck!");
+        const m = MODES.find((x) => x.key === mode)!;
+        toast.success(`New ${m.label} puzzle — ${m.cost} credits spent. Good luck!`);
       },
     );
+
 
 
   const spin = async () => {
@@ -332,8 +346,29 @@ export default function WheelOfFortune() {
                   </div>
                 )}
                 <p className="max-w-md text-muted-foreground">
-                  Each puzzle round costs <strong>1 AI credit</strong>. Three strikes end the round.
+                  Pick a difficulty — harder puzzles cost more credits but pay out far more Spin
+                  Coins. Three strikes end the round.
                 </p>
+                <div className="grid w-full max-w-md gap-2 sm:grid-cols-3">
+                  {MODES.map((m) => (
+                    <button
+                      key={m.key}
+                      type="button"
+                      onClick={() => setMode(m.key)}
+                      className={`rounded-xl border p-3 text-left transition ${
+                        mode === m.key
+                          ? "border-primary bg-primary/10 ring-2 ring-primary/40"
+                          : "border-border/60 bg-muted/40 hover:bg-muted/70"
+                      }`}
+                    >
+                      <div className="font-semibold">{m.label}</div>
+                      <div className="text-xs text-muted-foreground">{m.desc}</div>
+                      <div className="mt-1 text-xs font-medium text-primary">
+                        {m.cost} credit{m.cost > 1 ? "s" : ""} · {m.mult}x SC
+                      </div>
+                    </button>
+                  ))}
+                </div>
                 <div className="w-full max-w-md space-y-2">
                   <div className="text-xs font-semibold uppercase text-muted-foreground">
                     Choose a category
@@ -353,15 +388,15 @@ export default function WheelOfFortune() {
                   </div>
                 </div>
                 <div className="flex flex-wrap justify-center gap-2">
-
                   <Button size="lg" onClick={startGame} disabled={busy === "start"}>
                     {busy === "start" ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     ) : (
                       <Play className="mr-2 h-4 w-4" />
                     )}
-                    Play a puzzle (1 credit)
+                    Play a puzzle ({MODES.find((m) => m.key === mode)?.cost} credits)
                   </Button>
+
                   {state?.status === "lost" && (
                     <Button
                       variant="outline"
@@ -377,7 +412,13 @@ export default function WheelOfFortune() {
             ) : (
               <div className="space-y-6">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <Badge variant="secondary">{state.category}</Badge>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="secondary">{state.category}</Badge>
+                    {(state.payout_multiplier ?? 1) > 1 && (
+                      <Badge>{state.payout_multiplier}x SC</Badge>
+                    )}
+                  </div>
+
                   <div className="flex items-center gap-3 text-sm">
                     <span>
                       Bank: <strong>{state.bank} SC</strong>

@@ -65997,6 +65997,8 @@ export type Database = {
           hint_revealed: boolean
           id: string
           last_spin: string | null
+          mode: string
+          payout_multiplier: number
           pending_value: number | null
           puzzle_id: string
           spins: number
@@ -66012,6 +66014,8 @@ export type Database = {
           hint_revealed?: boolean
           id?: string
           last_spin?: string | null
+          mode?: string
+          payout_multiplier?: number
           pending_value?: number | null
           puzzle_id: string
           spins?: number
@@ -66027,6 +66031,8 @@ export type Database = {
           hint_revealed?: boolean
           id?: string
           last_spin?: string | null
+          mode?: string
+          payout_multiplier?: number
           pending_value?: number | null
           puzzle_id?: string
           spins?: number
@@ -71537,6 +71543,7 @@ export type Database = {
       wheel_start_game:
         | { Args: never; Returns: Json }
         | { Args: { _category?: string }; Returns: Json }
+        | { Args: { _category?: string; _mode?: string }; Returns: Json }
       wheel_wallet: { Args: never; Returns: Json }
     }
     Enums: {
