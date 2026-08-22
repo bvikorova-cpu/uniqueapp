@@ -91,15 +91,15 @@ export default function MyServiceBookings() {
   return (
     <>
       <Helmet>
-        <title>My Service Bookings · Unique</title>
-        <meta name="description" content="Manage your upcoming and past service bookings." />
+        <title>Book & Glow · My Bookings · Unique</title>
+        <meta name="description" content="Manage your Book & Glow beauty and wellness appointments." />
       </Helmet>
       <div className="min-h-screen bg-background">
         <Navbar />
         <div className="container mx-auto px-4 py-24 mt-16 max-w-3xl">
           <div className="mb-6 flex items-center justify-between flex-wrap gap-2">
             <h1 className="text-3xl font-black flex items-center gap-2">
-              <CalendarClock className="w-7 h-7 text-primary" /> My Service Bookings
+              <CalendarClock className="w-7 h-7 text-primary" /> Book & Glow — My bookings
             </h1>
             <Button asChild variant="outline"><Link to="/services">Find a service</Link></Button>
           </div>
