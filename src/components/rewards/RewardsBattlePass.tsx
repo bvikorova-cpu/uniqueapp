@@ -10,6 +10,9 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
+const PREMIUM_CREDITS = 30;
+
+
 
 interface Reward {
   id: string;
