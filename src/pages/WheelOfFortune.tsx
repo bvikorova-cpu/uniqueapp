@@ -127,9 +127,21 @@ export default function WheelOfFortune() {
   }, []);
 
   const refreshLeaders = useCallback(async () => {
-    const { data } = await supabase.rpc("wheel_leaderboard" as never);
-    if (data) setLeaders(data as unknown as LeaderRow[]);
+    const { data, error } = await supabase.rpc("wheel_leaderboard" as never);
+    if (error) {
+      console.error("wheel_leaderboard failed", error);
+      return;
+    }
+    const rows = (data as unknown as LeaderRow[] | null) ?? [];
+    setLeaders(
+      rows
+        .filter((r) => Number(r.total_won) > 0)
+        .sort(
+          (a, b) => Number(b.total_won) - Number(a.total_won) || Number(b.games_won) - Number(a.games_won),
+        ),
+    );
   }, []);
+
 
   useEffect(() => {
     (async () => {
