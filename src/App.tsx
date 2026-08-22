@@ -464,6 +464,7 @@ const YearWrappedPublic = lazy(() => import("@/pages/YearWrappedPublic"));
 const AdminCreditsLedger = lazy(() => import("@/pages/admin/AdminCreditsLedger"));
 const MyCreditsLedger = lazy(() => import("@/pages/MyCreditsLedger"));
 const LuckyWheel = lazy(() => import("@/pages/LuckyWheel"));
+const WheelOfFortune = lazy(() => import("@/pages/WheelOfFortune"));
 const CreditGifts = lazy(() => import("@/pages/CreditGifts"));
 const AdminEngagement = lazy(() => import("@/pages/admin/AdminEngagement"));
 const AdminMonetagStats = lazy(() => import("@/pages/admin/AdminMonetagStats"));
@@ -768,6 +769,7 @@ const App = () => {
                         <Route path="/credits/history" element={<ProtectedRoute><MyCreditsLedger /></ProtectedRoute>} />
                         <Route path="/my-credits-history" element={<ProtectedRoute><MyCreditsLedger /></ProtectedRoute>} />
                         <Route path="/lucky-wheel" element={<ProtectedRoute><LuckyWheel /></ProtectedRoute>} />
+                        <Route path="/wheel-of-fortune" element={<ProtectedRoute><WheelOfFortune /></ProtectedRoute>} />
                         <Route path="/credit-gifts" element={<ProtectedRoute><CreditGifts /></ProtectedRoute>} />
                         <Route path="/admin/transactions" element={<ProtectedRoute requireAdmin={true}><AdminTransactions /></ProtectedRoute>} />
                         <Route path="/admin/corporate-inquiries" element={<ProtectedRoute requireAdmin={true}><AdminCorporateInquiries /></ProtectedRoute>} />

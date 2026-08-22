@@ -1,0 +1,2 @@
+revoke all on function public._wheel_state(public.wheel_games) from public, anon, authenticated;
+revoke all on function public._wheel_sc_apply(uuid, integer, text, uuid) from public, anon, authenticated;
