@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Trophy, ArrowUp, ArrowDown, Minus, Shield, Info } from "lucide-react";
+import { Trophy, ArrowUp, ArrowDown, Minus, Shield } from "lucide-react";
 import { motion } from "framer-motion";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 import { InfoHint } from "@/components/common/InfoHint";
