@@ -110,6 +110,8 @@ export default function WheelOfFortune() {
   const [state, setState] = useState<GameState | null>(null);
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [leaders, setLeaders] = useState<LeaderRow[]>([]);
+  const [myId, setMyId] = useState<string | null>(null);
+
   const [busy, setBusy] = useState<string | null>(null);
   const [attempt, setAttempt] = useState("");
   const [angle, setAngle] = useState(0);
