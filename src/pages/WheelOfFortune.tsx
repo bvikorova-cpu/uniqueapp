@@ -104,7 +104,10 @@ export default function WheelOfFortune() {
   const [attempt, setAttempt] = useState("");
   const [angle, setAngle] = useState(0);
   const [spinning, setSpinning] = useState(false);
+  const [category, setCategory] = useState<string>("Riddles");
+  const [categories, setCategories] = useState<string[]>([]);
   const videoRef = useRef<HTMLVideoElement>(null);
+
 
   const refreshWallet = useCallback(async () => {
     const { data } = await supabase.rpc("wheel_wallet" as never);
