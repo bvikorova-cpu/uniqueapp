@@ -28,6 +28,9 @@ export default function RewardsLeagues() {
 
   useEffect(() => {
     (async () => {
+      // Recompute this week's real XP for every player before reading the table
+      if (user) await (supabase as any).rpc("refresh_league_week");
+
       const { data: s } = await supabase
         .from("league_seasons")
         .select("*")
@@ -37,6 +40,8 @@ export default function RewardsLeagues() {
         .maybeSingle();
       setSeason(s);
       if (!s || !user) { setLoading(false); return; }
+
+
 
       let { data: mine } = await supabase
         .from("user_league_standings")
