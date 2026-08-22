@@ -510,7 +510,7 @@ export const CardCategoryCollection = ({ category }: Props) => {
                           <img
                             src={c.image_url}
                             alt={`${c.name} collectible card`}
-                            className={`absolute inset-0 w-full h-full object-cover ${owned ? "" : "opacity-70 saturate-[0.6]"}`}
+                            className={`absolute inset-0 w-full h-full object-cover scale-[1.06] ${owned ? "" : "opacity-70 saturate-[0.6]"}`}
                             loading="lazy"
                             decoding="async"
                             width={320}
