@@ -65988,6 +65988,146 @@ export type Database = {
         }
         Relationships: []
       }
+      wheel_games: {
+        Row: {
+          bank: number
+          created_at: string
+          finished_at: string | null
+          guessed_letters: string[]
+          hint_revealed: boolean
+          id: string
+          last_spin: string | null
+          pending_value: number | null
+          puzzle_id: string
+          spins: number
+          status: string
+          strikes: number
+          user_id: string
+        }
+        Insert: {
+          bank?: number
+          created_at?: string
+          finished_at?: string | null
+          guessed_letters?: string[]
+          hint_revealed?: boolean
+          id?: string
+          last_spin?: string | null
+          pending_value?: number | null
+          puzzle_id: string
+          spins?: number
+          status?: string
+          strikes?: number
+          user_id: string
+        }
+        Update: {
+          bank?: number
+          created_at?: string
+          finished_at?: string | null
+          guessed_letters?: string[]
+          hint_revealed?: boolean
+          id?: string
+          last_spin?: string | null
+          pending_value?: number | null
+          puzzle_id?: string
+          spins?: number
+          status?: string
+          strikes?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wheel_games_puzzle_id_fkey"
+            columns: ["puzzle_id"]
+            isOneToOne: false
+            referencedRelation: "wheel_puzzles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wheel_puzzles: {
+        Row: {
+          active: boolean
+          category: string
+          created_at: string
+          difficulty: number
+          hint: string | null
+          id: string
+          phrase: string
+        }
+        Insert: {
+          active?: boolean
+          category: string
+          created_at?: string
+          difficulty?: number
+          hint?: string | null
+          id?: string
+          phrase: string
+        }
+        Update: {
+          active?: boolean
+          category?: string
+          created_at?: string
+          difficulty?: number
+          hint?: string | null
+          id?: string
+          phrase?: string
+        }
+        Relationships: []
+      }
+      wheel_sc_ledger: {
+        Row: {
+          balance_after: number
+          created_at: string
+          delta: number
+          game_id: string | null
+          id: string
+          reason: string
+          user_id: string
+        }
+        Insert: {
+          balance_after: number
+          created_at?: string
+          delta: number
+          game_id?: string | null
+          id?: string
+          reason: string
+          user_id: string
+        }
+        Update: {
+          balance_after?: number
+          created_at?: string
+          delta?: number
+          game_id?: string | null
+          id?: string
+          reason?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wheel_wallets: {
+        Row: {
+          games_won: number
+          spin_coins: number
+          total_won: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          games_won?: number
+          spin_coins?: number
+          total_won?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          games_won?: number
+          spin_coins?: number
+          total_won?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       whiteboard_strokes: {
         Row: {
           created_at: string
@@ -68317,6 +68457,14 @@ export type Database = {
         Returns: undefined
       }
       _tier_rank: { Args: { _tier: string }; Returns: number }
+      _wheel_sc_apply: {
+        Args: { _delta: number; _game?: string; _reason: string; _uid: string }
+        Returns: number
+      }
+      _wheel_state: {
+        Args: { _g: Database["public"]["Tables"]["wheel_games"]["Row"] }
+        Returns: Json
+      }
       accept_friend_quest_invite: {
         Args: { _invite_id: string }
         Returns: Json
@@ -71368,6 +71516,26 @@ export type Database = {
         Args: { loser_id: string; winner_id: string }
         Returns: undefined
       }
+      wheel_buy_coins: { Args: { _credits: number }; Returns: Json }
+      wheel_buy_hint: { Args: never; Returns: Json }
+      wheel_get_game: { Args: never; Returns: Json }
+      wheel_guess_letter: { Args: { _letter: string }; Returns: Json }
+      wheel_leaderboard: {
+        Args: never
+        Returns: {
+          avatar_url: string
+          display_name: string
+          games_won: number
+          total_won: number
+          user_id: string
+        }[]
+      }
+      wheel_reveal_letter: { Args: never; Returns: Json }
+      wheel_second_chance: { Args: never; Returns: Json }
+      wheel_solve: { Args: { _attempt: string }; Returns: Json }
+      wheel_spin: { Args: never; Returns: Json }
+      wheel_start_game: { Args: never; Returns: Json }
+      wheel_wallet: { Args: never; Returns: Json }
     }
     Enums: {
       accessory_type:
