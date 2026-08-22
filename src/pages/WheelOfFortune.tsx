@@ -334,7 +334,26 @@ export default function WheelOfFortune() {
                 <p className="max-w-md text-muted-foreground">
                   Each puzzle round costs <strong>1 AI credit</strong>. Three strikes end the round.
                 </p>
+                <div className="w-full max-w-md space-y-2">
+                  <div className="text-xs font-semibold uppercase text-muted-foreground">
+                    Choose a category
+                  </div>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {["any", ...categories].map((c) => (
+                      <Button
+                        key={c}
+                        type="button"
+                        size="sm"
+                        variant={category === c ? "default" : "outline"}
+                        onClick={() => setCategory(c)}
+                      >
+                        {c === "any" ? "Surprise me" : c}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
                 <div className="flex flex-wrap justify-center gap-2">
+
                   <Button size="lg" onClick={startGame} disabled={busy === "start"}>
                     {busy === "start" ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
