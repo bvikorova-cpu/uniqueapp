@@ -709,7 +709,7 @@ export default function WheelOfFortune() {
                       <AvatarFallback>{row.display_name.slice(0, 2).toUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">
+                      <p className="break-words text-sm font-medium">
                         {row.display_name}
                         {row.user_id === myId ? " (you)" : ""}
                       </p>
