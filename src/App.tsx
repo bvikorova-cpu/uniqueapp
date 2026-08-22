@@ -945,19 +945,13 @@ const App = () => {
                         <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
                         <Route path="/healthcare-dashboard" element={<HealthcareProviderDashboard />} />
                         <Route path="/healthcare-library" element={<HealthcareContentLibrary />} />
-                        <Route path="/booking" element={<BookingLanding />} />
-                        <Route path="/doctors" element={<DoctorsList />} />
-                        <Route path="/doctors/booking/:appointmentId" element={<ProtectedRoute><DoctorBookingSuccess /></ProtectedRoute>} />
-                        <Route path="/doctors/:id" element={<DoctorProfile />} />
-                        <Route path="/my-bookings/doctors" element={<ProtectedRoute><MyDoctorBookings /></ProtectedRoute>} />
-                        <Route path="/doctors/call/:appointmentId" element={<ProtectedRoute><VideoConsultationRoom /></ProtectedRoute>} />
-                        <Route path="/doctors/apply" element={<ProtectedRoute><BecomeDoctor /></ProtectedRoute>} />
-                        <Route path="/doctor-dashboard" element={<ProtectedRoute><DoctorDashboard /></ProtectedRoute>} />
-                        <Route path="/admin/doctor-verifications" element={<ProtectedRoute requireAdmin={true}><AdminDoctorVerifications /></ProtectedRoute>} />
-                        <Route path="/my-health/prescriptions" element={<ProtectedRoute><PrescriptionsList /></ProtectedRoute>} />
-                        <Route path="/my-health/records" element={<ProtectedRoute><MedicalRecords /></ProtectedRoute>} />
-                        <Route path="/my-health/insurance" element={<ProtectedRoute><InsuranceClaims /></ProtectedRoute>} />
-                        <Route path="/admin/insurance-claims" element={<ProtectedRoute><AdminClaimsInbox /></ProtectedRoute>} />
+                        {/* Booking Center (doctors / health bookings) removed — redirect to Services */}
+                        <Route path="/booking" element={<Navigate to="/services-hub" replace />} />
+                        <Route path="/doctors/*" element={<Navigate to="/services-hub" replace />} />
+                        <Route path="/doctor-dashboard" element={<Navigate to="/services-hub" replace />} />
+                        <Route path="/my-bookings/doctors" element={<Navigate to="/my-bookings/services" replace />} />
+                        <Route path="/my-health/*" element={<Navigate to="/wellness" replace />} />
+
                         <Route path="/services-hub" element={<ServicesLanding />} />
                         <Route path="/services" element={<ServicesList />} />
                         <Route path="/services/provider/setup" element={<ProtectedRoute><ProviderSetup /></ProtectedRoute>} />
