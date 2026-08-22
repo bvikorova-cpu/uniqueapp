@@ -459,17 +459,17 @@ export default function WheelOfFortune() {
                 </div>
 
                 {state.hint && (
-                  <p
-                    className={
-                      state.category === "Riddles"
-                        ? "rounded-xl border border-primary/30 bg-primary/10 p-3 text-center text-base font-semibold text-foreground"
-                        : "text-center text-sm text-muted-foreground"
-                    }
-                  >
-                    <Lightbulb className="mr-1 inline h-4 w-4 text-primary" />
-                    {state.hint}
-                  </p>
+                  <div className="rounded-xl border border-primary/30 bg-primary/10 p-3 text-center">
+                    <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
+                      {state.category?.toLowerCase().includes("riddle") ? "Riddle" : "Clue"}
+                    </p>
+                    <p className="text-base font-semibold text-foreground">
+                      <Lightbulb className="mr-1 inline h-4 w-4 text-primary" />
+                      {state.hint}
+                    </p>
+                  </div>
                 )}
+
 
 
                 {/* Wheel */}
