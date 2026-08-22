@@ -34,7 +34,6 @@ const PromotionsBoard = lazy(() => import("@/pages/PromotionsBoard"));
 const PromotionsCreate = lazy(() => import("@/pages/PromotionsCreate"));
 const PromotionsSuccess = lazy(() => import("@/pages/PromotionsSuccess"));
 const MyPromotions = lazy(() => import("@/pages/MyPromotions"));
-const BookingLanding = lazy(() => import("@/pages/BookingLanding"));
 const ServicesLanding = lazy(() => import("@/pages/services/ServicesLanding"));
 const ServicesList = lazy(() => import("@/pages/services/ServicesList"));
 const ServiceProfile = lazy(() => import("@/pages/services/ServiceProfile"));
@@ -365,20 +364,7 @@ import { ResetPassword,
   FairyAdmin,
   NutritionHub,
   NutritionSubscriptions,
-  HealthcareProviderDashboard,
   HealthcareContentLibrary,
-  DoctorsList,
-  DoctorProfile,
-  DoctorBookingSuccess,
-  MyDoctorBookings,
-  VideoConsultationRoom,
-  BecomeDoctor,
-  DoctorDashboard,
-  PrescriptionsList,
-  MedicalRecords,
-  InsuranceClaims,
-  AdminClaimsInbox,
-  AdminDoctorVerifications,
   UniversalAnalyzer,
   AnalyzerResult,
   AnalyzerPricing,
