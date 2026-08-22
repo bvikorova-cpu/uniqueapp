@@ -296,6 +296,18 @@ export default function PromotionsBoard() {
       return next;
     });
     setLikeCounts((prev) => ({ ...prev, [id]: Math.max(0, (prev[id] ?? 0) + (liked ? -1 : 1)) }));
+    setLikeProfiles((prev) => {
+      const next = { ...prev };
+      if (liked) {
+        next[id] = (next[id] ?? []).filter((p) => p.id !== user.id);
+      } else {
+        next[id] = [
+          ...(next[id] ?? []),
+          { id: user.id, full_name: user.user_metadata?.full_name ?? null, avatar_url: user.user_metadata?.avatar_url ?? null },
+        ];
+      }
+      return next;
+    });
 
     const { error } = liked
       ? await supabase.from("promo_listing_likes").delete().eq("listing_id", id).eq("user_id", user.id)
@@ -309,6 +321,18 @@ export default function PromotionsBoard() {
         return next;
       });
       setLikeCounts((prev) => ({ ...prev, [id]: Math.max(0, (prev[id] ?? 0) + (liked ? 1 : -1)) }));
+      setLikeProfiles((prev) => {
+        const next = { ...prev };
+        if (liked) {
+          next[id] = [
+            ...(next[id] ?? []),
+            { id: user.id, full_name: user.user_metadata?.full_name ?? null, avatar_url: user.user_metadata?.avatar_url ?? null },
+          ];
+        } else {
+          next[id] = (next[id] ?? []).filter((p) => p.id !== user.id);
+        }
+        return next;
+      });
       toast.error("Could not save your like");
     }
   };
