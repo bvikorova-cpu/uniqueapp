@@ -27,7 +27,7 @@ export const useRecommendations = () => {
         .in("id", userIds);
 
       return data.map((rec) => ({ ...rec,
-        profile: profiles?.find((p) => p.id === rec.recommended_user_id) }));
+        profile: profiles?.find((p: any) => p.id === rec.recommended_user_id) }));
     } });
 
   return { recommendations,
