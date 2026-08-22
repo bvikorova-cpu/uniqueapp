@@ -224,7 +224,7 @@ const Navbar = () => {
         { path: "/coffee", label: "Coffee Community", icon: Coffee },
         { path: "/virtual-pet", label: "Virtual Pet", icon: PawPrint },
         { path: "/adult-puzzles", label: "Adult Puzzles", icon: Puzzle },
-        { path: "/wheel-of-fortune", label: "Wheel of Fortune", icon: Puzzle },
+        { path: "/spin-solve", label: "Spin & Solve", icon: Puzzle },
       ] },
     {
       category: "Marketplaces & Commerce",
