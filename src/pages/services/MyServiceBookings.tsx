@@ -61,6 +61,13 @@ export default function MyServiceBookings() {
       const byId = new Map((profs ?? []).map((p: any) => [p.owner_id, p]));
       rows.forEach((r) => (r.provider = byId.get(r.provider_id) ?? null));
     }
+    const bookingIds = rows.map((r) => r.id);
+    if (bookingIds.length) {
+      const { data: revs } = await supabase.from("service_reviews").select("booking_id").in("booking_id", bookingIds).eq("reviewer_id", user.id);
+      setReviewedIds(new Set((revs ?? []).map((r: any) => r.booking_id)));
+    } else {
+      setReviewedIds(new Set());
+    }
     setItems(rows);
     setLoading(false);
   }, [user]);
