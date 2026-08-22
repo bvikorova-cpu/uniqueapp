@@ -942,6 +942,7 @@ const App = () => {
                         <Route path="/services-hub" element={<ServicesLanding />} />
                         <Route path="/services" element={<ServicesList />} />
                         <Route path="/services/provider/setup" element={<ProtectedRoute><ProviderSetup /></ProtectedRoute>} />
+                        <Route path="/services/provider/inbox" element={<ProtectedRoute><ServiceProviderInbox /></ProtectedRoute>} />
                         <Route path="/services/booking/:bookingId" element={<ProtectedRoute><ServiceBookingSuccess /></ProtectedRoute>} />
                         <Route path="/services/:id" element={<ServiceProfile />} />
                         <Route path="/my-bookings/services" element={<ProtectedRoute><MyServiceBookings /></ProtectedRoute>} />
