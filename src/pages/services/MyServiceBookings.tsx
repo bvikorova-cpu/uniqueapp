@@ -149,6 +149,14 @@ export default function MyServiceBookings() {
                         </div>
                         {b.customer_notes && <div className="mt-2 text-muted-foreground"><em>Note:</em> {b.customer_notes}</div>}
                       </div>
+                      {b.status === "completed" && !reviewedIds.has(b.id) && (
+                        <Button variant="outline" size="sm" onClick={() => setReviewBooking(b)}>
+                          <Star className="w-4 h-4 mr-1" /> Leave review
+                        </Button>
+                      )}
+                      {b.status === "completed" && reviewedIds.has(b.id) && (
+                        <p className="text-sm text-muted-foreground">Review sent ✓</p>
+                      )}
                       {canCancel && (
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
