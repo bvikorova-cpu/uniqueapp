@@ -131,8 +131,16 @@ export default function WheelOfFortune() {
       if (res?.state) setState(res.state);
       void refreshWallet();
       void refreshLeaders();
+      const { data: cats } = await supabase
+        .from("wheel_puzzles")
+        .select("category")
+        .eq("active", true);
+      if (cats) {
+        setCategories([...new Set(cats.map((c) => c.category as string))].sort());
+      }
     })();
   }, [navigate, refreshWallet, refreshLeaders]);
+
 
   const handle = async (
     key: string,
