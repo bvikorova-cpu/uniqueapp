@@ -409,7 +409,13 @@ export default function WheelOfFortune() {
             ) : (
               <div className="space-y-6">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <Badge variant="secondary">{state.category}</Badge>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="secondary">{state.category}</Badge>
+                    {(state.payout_multiplier ?? 1) > 1 && (
+                      <Badge>{state.payout_multiplier}x SC</Badge>
+                    )}
+                  </div>
+
                   <div className="flex items-center gap-3 text-sm">
                     <span>
                       Bank: <strong>{state.bank} SC</strong>
