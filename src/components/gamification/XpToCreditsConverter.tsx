@@ -12,7 +12,7 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Target = "free_tier" | "tutoring" | "brand_votes";
 
-const RATE = 1000; // 1000 XP = 1 credit
+const RATE = 10000; // 10,000 XP = 1 credit
 
 const TARGETS: { id: Target; label: string; desc: string; icon: any; gradient: string }[] = [
   { id: "free_tier", label: "AI Credits", desc: "Use across all AI tools", icon: Coins, gradient: "from-amber-500 to-orange-500" },

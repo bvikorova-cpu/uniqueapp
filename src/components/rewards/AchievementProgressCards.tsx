@@ -13,35 +13,6 @@ import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 export default function AchievementProgressCards({ userId }: { userId: string }) {
   const { data: allBadges = [] } = useAllBadges();
   const { data: userBadges = [] } = useUserBadges(userId);
-  const { data: stats } = useQuery({
-    queryKey: ["badge-progress-stats", userId],
-    enabled: !!userId,
-    queryFn: async () => {
-      const { data: pts } = await supabase
-        .from("user_points")
-        .select("total_points, login_streak, level")
-        .eq("user_id", userId)
-        .maybeSingle();
-      const { count: badgeCount } = await supabase
-        .from("user_badges" as any)
-        .select("*", { count: "exact", head: true })
-        .eq("user_id", userId);
-      return { total_xp: pts?.total_points || 0,
-        login_streak: pts?.login_streak || 0,
-        level: pts?.level || 1,
-        badges_earned: badgeCount || 0 };
-    } });
-
-  const computeProgress = (b: any): number => {
-    if (!stats || !b.requirement_value) return 0;
-    const type = String(b.requirement_type || "").toLowerCase();
-    let current = 0;
-    if (type.includes("xp") || type.includes("point")) current = stats.total_xp;
-    else if (type.includes("streak") || type.includes("login")) current = stats.login_streak;
-    else if (type.includes("level")) current = stats.level;
-    else if (type.includes("badge")) current = stats.badges_earned;
-    return Math.min(100, Math.round((current / b.requirement_value) * 100));
-  };
 
   const earnedIds = new Set(userBadges.map((ub: any) => ub.badge_id));
 
@@ -50,6 +21,31 @@ export default function AchievementProgressCards({ userId }: { userId: string })
     .filter((b: any) => !earnedIds.has(b.id))
     .sort((a: any, b: any) => a.requirement_value - b.requirement_value)
     .slice(0, 6);
+
+  const metrics = Array.from(
+    new Set(lockedBadges.map((b: any) => String(b.requirement_type || "").toLowerCase()).filter(Boolean))
+  );
+
+  // Real per-metric values straight from the database (posts, friends, streak, xp, ...)
+  const { data: metricValues = {} } = useQuery({
+    queryKey: ["badge-metric-values", userId, metrics.join(",")],
+    enabled: !!userId && metrics.length > 0,
+    queryFn: async () => {
+      const entries = await Promise.all(
+        metrics.map(async (m) => {
+          const { data } = await (supabase as any).rpc("badge_metric_value", { _user_id: userId, _metric: m });
+          return [m, Number(data ?? 0)] as const;
+        })
+      );
+      return Object.fromEntries(entries) as Record<string, number>;
+    } });
+
+  const computeProgress = (b: any): number => {
+    if (!b.requirement_value) return 0;
+    const type = String(b.requirement_type || "").toLowerCase();
+    const current = metricValues[type] ?? 0;
+    return Math.min(100, Math.round((current / b.requirement_value) * 100));
+  };
 
   if (lockedBadges.length === 0) return null;
 
