@@ -15,13 +15,6 @@ describe("Phase 3 — wired modules", () => {
     expect(src).toMatch(/functions\.invoke/);
   });
 
-  it("Healthcare dashboard exposes appointments & referrals panels", () => {
-    expect(existsSync(join(root, "components/healthcare/AppointmentsPanel.tsx"))).toBe(true);
-    expect(existsSync(join(root, "components/healthcare/ReferralsPanel.tsx"))).toBe(true);
-    const dash = read("src/pages/HealthcareProviderDashboard.tsx");
-    expect(dash).toMatch(/AppointmentsPanel/);
-    expect(dash).toMatch(/ReferralsPanel/);
-  });
 
   it("education-skill-unlock edge function exists", () => {
     expect(existsSync(join(process.cwd(), "supabase/functions/education-skill-unlock/index.ts"))).toBe(true);

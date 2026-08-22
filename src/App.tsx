@@ -929,7 +929,7 @@ const App = () => {
                         <Route path="/healthcare" element={<Navigate to="/wellness" replace />} />
                         <Route path="/corporate-events" element={<Navigate to="/coloring-pages" replace />} />
                         <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
-                        <Route path="/healthcare-dashboard" element={<HealthcareProviderDashboard />} />
+                        <Route path="/healthcare-dashboard" element={<Navigate to="/wellness" replace />} />
                         <Route path="/healthcare-library" element={<HealthcareContentLibrary />} />
                         {/* Booking Center (doctors / health bookings) removed — redirect to Services */}
                         <Route path="/booking" element={<Navigate to="/services-hub" replace />} />
