@@ -40,6 +40,8 @@ export default function MyServiceBookings() {
   const [items, setItems] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState<string | null>(null);
+  const [reviewedIds, setReviewedIds] = useState<Set<string>>(new Set());
+  const [reviewBooking, setReviewBooking] = useState<Booking | null>(null);
 
   const load = useCallback(async () => {
     if (!user) return;
