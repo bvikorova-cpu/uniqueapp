@@ -39,6 +39,9 @@ export default function MyPromotions() {
   const load = async () => {
     if (!user) return;
     setLoading(true);
+    // Self-heal: activate any listing that was paid but never confirmed
+    // (checkout tab closed, mobile redirect lost, etc.).
+    await supabase.functions.invoke("reconcile-promo-subscriptions").catch(() => {});
     const { data } = await supabase
       .from("promo_listings")
       .select("id,title,media_url,media_type,tier,status,active_until,created_at")
