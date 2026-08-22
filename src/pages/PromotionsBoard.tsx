@@ -159,11 +159,14 @@ function PromoCard({
 
 
 export default function PromotionsBoard() {
+  const { user } = useAuth();
   const [listings, setListings] = useState<PromoListing[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [cat, setCat] = useState("all");
   const [cityFilter, setCityFilter] = useState("all");
+  const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
+  const [myLikes, setMyLikes] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     (async () => {
@@ -179,6 +182,55 @@ export default function PromotionsBoard() {
       setLoading(false);
     })();
   }, []);
+
+  useEffect(() => {
+    if (listings.length === 0) return;
+    const ids = listings.map((l) => l.id);
+    (async () => {
+      const { data } = await supabase
+        .from("promo_listing_likes")
+        .select("listing_id,user_id")
+        .in("listing_id", ids);
+      const counts: Record<string, number> = {};
+      const mine = new Set<string>();
+      (data ?? []).forEach((row: { listing_id: string; user_id: string }) => {
+        counts[row.listing_id] = (counts[row.listing_id] ?? 0) + 1;
+        if (user && row.user_id === user.id) mine.add(row.listing_id);
+      });
+      setLikeCounts(counts);
+      setMyLikes(mine);
+    })();
+  }, [listings, user]);
+
+  const toggleLike = async (id: string) => {
+    if (!user) {
+      toast.error("Sign in to like promotions");
+      return;
+    }
+    const liked = myLikes.has(id);
+    setMyLikes((prev) => {
+      const next = new Set(prev);
+      if (liked) next.delete(id); else next.add(id);
+      return next;
+    });
+    setLikeCounts((prev) => ({ ...prev, [id]: Math.max(0, (prev[id] ?? 0) + (liked ? -1 : 1)) }));
+
+    const { error } = liked
+      ? await supabase.from("promo_listing_likes").delete().eq("listing_id", id).eq("user_id", user.id)
+      : await supabase.from("promo_listing_likes").insert({ listing_id: id, user_id: user.id });
+
+    if (error) {
+      // revert
+      setMyLikes((prev) => {
+        const next = new Set(prev);
+        if (liked) next.add(id); else next.delete(id);
+        return next;
+      });
+      setLikeCounts((prev) => ({ ...prev, [id]: Math.max(0, (prev[id] ?? 0) + (liked ? 1 : -1)) }));
+      toast.error("Could not save your like");
+    }
+  };
+
 
   const cities = useMemo(() => {
     const s = new Set<string>();
