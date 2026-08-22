@@ -72,15 +72,20 @@ function PromoCard({
   listing,
   likeCount,
   liked,
+  likers,
   onToggleLike,
 }: {
   listing: PromoListing;
   likeCount: number;
   liked: boolean;
+  likers: PromoLiker[];
   onToggleLike: (id: string) => void;
 }) {
   const isTop = listing.tier === "top";
   const [open, setOpen] = useState(false);
+  const [likersOpen, setLikersOpen] = useState(false);
+  const visibleLikers = likers.slice(0, 5);
+  const remaining = Math.max(0, likers.length - visibleLikers.length);
 
   return (
     <>
@@ -136,6 +141,30 @@ function PromoCard({
               {likeCount}
             </Button>
           </div>
+          {likers.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setLikersOpen(true)}
+              className="mt-3 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              aria-label={`Liked by ${likers.length} users`}
+            >
+              <div className="flex -space-x-2">
+                {visibleLikers.map((liker) => (
+                  <Avatar key={liker.id} className="h-6 w-6 border-2 border-background">
+                    <AvatarImage src={liker.avatar_url ?? undefined} alt={liker.full_name ?? ""} />
+                    <AvatarFallback className="text-[10px]">
+                      {(liker.full_name ?? "?").charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                ))}
+              </div>
+              <span>
+                {likers.length <= 5
+                  ? `Liked by ${likers.length} user${likers.length === 1 ? "" : "s"}`
+                  : `Liked by ${visibleLikers.map((l) => l.full_name || "Someone").join(", ")} and ${remaining} more`}
+              </span>
+            </button>
+          )}
         </CardContent>
       </Card>
 
@@ -157,6 +186,28 @@ function PromoCard({
                 <ExternalLink className="h-4 w-4" /> Visit ({prettyDomain(listing.link_url)})
               </a>
             )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={likersOpen} onOpenChange={setLikersOpen}>
+        <DialogContent className="max-w-sm max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5 text-primary" /> Liked by
+            </DialogTitle>
+            <DialogDescription>{likers.length} user{likers.length === 1 ? "" : "s"} liked this promotion</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 mt-2">
+            {likers.map((liker) => (
+              <div key={liker.id} className="flex items-center gap-3">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={liker.avatar_url ?? undefined} alt={liker.full_name ?? ""} />
+                  <AvatarFallback>{(liker.full_name ?? "?").charAt(0).toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <span className="font-medium text-sm">{liker.full_name || "Unknown user"}</span>
+              </div>
+            ))}
           </div>
         </DialogContent>
       </Dialog>
