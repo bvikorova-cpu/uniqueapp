@@ -932,20 +932,18 @@ const App = () => {
                         <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
                         <Route path="/healthcare-dashboard" element={<Navigate to="/wellness" replace />} />
                         <Route path="/healthcare-library" element={<HealthcareContentLibrary />} />
-                        {/* Booking Center (doctors / health bookings) removed — redirect to Services */}
-                        <Route path="/booking" element={<Navigate to="/services-hub" replace />} />
-                        <Route path="/doctors/*" element={<Navigate to="/services-hub" replace />} />
-                        <Route path="/doctor-dashboard" element={<Navigate to="/services-hub" replace />} />
-                        <Route path="/my-bookings/doctors" element={<Navigate to="/my-bookings/services" replace />} />
+                        {/* Booking Center & Book & Glow (services) removed */}
+                        <Route path="/booking" element={<Navigate to="/" replace />} />
+                        <Route path="/doctors/*" element={<Navigate to="/" replace />} />
+                        <Route path="/doctor-dashboard" element={<Navigate to="/" replace />} />
+                        <Route path="/my-bookings/doctors" element={<Navigate to="/" replace />} />
                         <Route path="/my-health/*" element={<Navigate to="/wellness" replace />} />
 
-                        <Route path="/services-hub" element={<ServicesLanding />} />
-                        <Route path="/services" element={<ServicesList />} />
-                        <Route path="/services/provider/setup" element={<ProtectedRoute><ProviderSetup /></ProtectedRoute>} />
-                        <Route path="/services/provider/inbox" element={<ProtectedRoute><ServiceProviderInbox /></ProtectedRoute>} />
-                        <Route path="/services/booking/:bookingId" element={<ProtectedRoute><ServiceBookingSuccess /></ProtectedRoute>} />
-                        <Route path="/services/:id" element={<ServiceProfile />} />
-                        <Route path="/my-bookings/services" element={<ProtectedRoute><MyServiceBookings /></ProtectedRoute>} />
+                        <Route path="/services-hub" element={<Navigate to="/" replace />} />
+                        <Route path="/services/*" element={<Navigate to="/" replace />} />
+                        <Route path="/services" element={<Navigate to="/" replace />} />
+                        <Route path="/my-bookings/services" element={<Navigate to="/" replace />} />
+
                         <Route path="/brand-battle" element={<BrandBattle />} />
                         <Route path="/brand-battle/hub" element={<BrandArenaHub />} />
                         <Route path="/sponsor-registration" element={<SponsorRegistration />} />
