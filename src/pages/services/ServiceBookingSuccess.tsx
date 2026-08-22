@@ -179,7 +179,7 @@ export default function ServiceBookingSuccess() {
             )}
             {state === "error" && <p className="text-destructive text-sm">{error}</p>}
             <div className="flex gap-2 justify-center">
-              <Button asChild variant="outline"><Link to="/services-hub">Back to services</Link></Button>
+              <Button asChild variant="outline"><Link to="/services-hub">Back to Book & Glow</Link></Button>
               <Button onClick={() => navigate(0)}>Refresh</Button>
             </div>
           </CardContent>
