@@ -7,25 +7,38 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 export default function StreakHeatmap({ userId }: { userId: string }) {
-  const { data: claims = [] } = useQuery({
+  const { data: activeDates = [] } = useQuery({
     queryKey: ["streak-heatmap", userId],
     queryFn: async () => {
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 42);
-      
-      const { data } = await supabase
-        .from("daily_rewards")
-        .select("claimed_at")
-        .eq("user_id", userId)
-        .gte("claimed_at", thirtyDaysAgo.toISOString())
-        .order("claimed_at", { ascending: true });
-      return data || [];
+      const since = new Date();
+      since.setDate(since.getDate() - 42);
+      const sinceIso = since.toISOString();
+
+      // A day counts as active if the daily reward was claimed OR any activity was logged.
+      const [claims, activity] = await Promise.all([
+        supabase
+          .from("daily_rewards")
+          .select("claimed_at")
+          .eq("user_id", userId)
+          .gte("claimed_at", sinceIso),
+        supabase
+          .from("activity_logs")
+          .select("created_at")
+          .eq("user_id", userId)
+          .gte("created_at", sinceIso),
+      ]);
+
+      const dates = [
+        ...(claims.data || []).map((c: any) => c.claimed_at),
+        ...(activity.data || []).map((a: any) => a.created_at),
+      ].filter(Boolean);
+      return dates;
     },
     enabled: !!userId });
 
   // Build 42-day grid (6 weeks)
   const days: { date: string; active: boolean; label: string }[] = [];
-  const claimDates = new Set(claims.map((c: any) => new Date(c.claimed_at).toISOString().split("T")[0]));
+  const claimDates = new Set(activeDates.map((d: any) => new Date(d).toISOString().split("T")[0]));
 
   for (let i = 41; i >= 0; i--) {
     const d = new Date();
