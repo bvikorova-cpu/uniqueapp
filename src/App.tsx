@@ -769,6 +769,7 @@ const App = () => {
                         <Route path="/credits/history" element={<ProtectedRoute><MyCreditsLedger /></ProtectedRoute>} />
                         <Route path="/my-credits-history" element={<ProtectedRoute><MyCreditsLedger /></ProtectedRoute>} />
                         <Route path="/lucky-wheel" element={<ProtectedRoute><LuckyWheel /></ProtectedRoute>} />
+                        <Route path="/wheel-of-fortune" element={<ProtectedRoute><WheelOfFortune /></ProtectedRoute>} />
                         <Route path="/credit-gifts" element={<ProtectedRoute><CreditGifts /></ProtectedRoute>} />
                         <Route path="/admin/transactions" element={<ProtectedRoute requireAdmin={true}><AdminTransactions /></ProtectedRoute>} />
                         <Route path="/admin/corporate-inquiries" element={<ProtectedRoute requireAdmin={true}><AdminCorporateInquiries /></ProtectedRoute>} />
