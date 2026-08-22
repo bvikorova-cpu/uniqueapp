@@ -188,6 +188,19 @@ export default function MyServiceBookings() {
           )}
         </div>
       </div>
+      {reviewBooking && (
+        <ServiceReviewDialog
+          booking={{
+            id: reviewBooking.id,
+            customer_id: user?.id ?? "",
+            provider_id: reviewBooking.provider_id,
+            scheduled_at: reviewBooking.scheduled_at,
+            offering_name: reviewBooking.provider?.business_name ?? "appointment",
+          }}
+          onClose={() => setReviewBooking(null)}
+          onSaved={load}
+        />
+      )}
     </>
   );
 }
