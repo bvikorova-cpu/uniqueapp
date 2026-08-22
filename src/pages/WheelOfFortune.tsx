@@ -459,17 +459,17 @@ export default function WheelOfFortune() {
                 </div>
 
                 {state.hint && (
-                  <p
-                    className={
-                      state.category === "Riddles"
-                        ? "rounded-xl border border-primary/30 bg-primary/10 p-3 text-center text-base font-semibold text-foreground"
-                        : "text-center text-sm text-muted-foreground"
-                    }
-                  >
-                    <Lightbulb className="mr-1 inline h-4 w-4 text-primary" />
-                    {state.hint}
-                  </p>
+                  <div className="rounded-xl border border-primary/30 bg-primary/10 p-3 text-center">
+                    <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
+                      {state.category?.toLowerCase().includes("riddle") ? "Riddle" : "Clue"}
+                    </p>
+                    <p className="text-base font-semibold text-foreground">
+                      <Lightbulb className="mr-1 inline h-4 w-4 text-primary" />
+                      {state.hint}
+                    </p>
+                  </div>
                 )}
+
 
 
                 {/* Wheel */}
@@ -627,14 +627,8 @@ export default function WheelOfFortune() {
                 </div>
 
                 {/* Boosters */}
-                <div className="grid gap-2 sm:grid-cols-3">
-                  <Button
-                    variant="outline"
-                    onClick={() => handle("hint", "wheel_buy_hint")}
-                    disabled={busy === "hint" || !!state.hint}
-                  >
-                    <Lightbulb className="mr-2 h-4 w-4" /> AI hint (2 cr)
-                  </Button>
+                <div className="grid gap-2 sm:grid-cols-2">
+
                   <Button
                     variant="outline"
                     onClick={() => handle("reveal", "wheel_reveal_letter")}
