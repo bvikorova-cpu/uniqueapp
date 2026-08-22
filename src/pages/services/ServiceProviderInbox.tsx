@@ -16,6 +16,7 @@ import { ServiceReviewDialog } from "@/components/services/ServiceReviewDialog";
 interface Booking {
   id: string;
   customer_id: string;
+  provider_id: string;
   customer?: { email?: string; full_name?: string | null; avatar_url?: string | null } | null;
   scheduled_at: string;
   duration_minutes: number | null;
