@@ -1,5 +1,5 @@
 // Provider inbox: list appointments for the authenticated provider.
-// Query: ?filter=upcoming|past|cancelled|all (default upcoming)
+// Body: { filter: 'upcoming'|'past'|'cancelled'|'all' } (default upcoming)
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
@@ -17,8 +17,8 @@ serve(async (req) => {
     const user = userData.user;
     if (!user) throw new Error("Not authenticated");
 
-    const url = new URL(req.url);
-    const filter = url.searchParams.get("filter") || "upcoming";
+    const body = await req.json().catch(() => ({}));
+    const filter = body.filter || "upcoming";
     const allowed = ["upcoming", "past", "cancelled", "all"];
     if (!allowed.includes(filter)) throw new Error("Invalid filter");
 
@@ -30,7 +30,7 @@ serve(async (req) => {
 
     let query = admin
       .from("service_bookings")
-      .select("id, customer_id, scheduled_at, duration_minutes, status, price_cents, customer_notes, offering_name, created_at")
+      .select("id, provider_id, customer_id, scheduled_at, duration_minutes, status, price_cents, customer_notes, offering_name, created_at")
       .eq("provider_id", user.id);
 
     if (filter === "upcoming") {
