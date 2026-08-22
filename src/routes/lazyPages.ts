@@ -372,24 +372,11 @@ export const StockContentLibrary = lazy(() => import("@/pages/StockContentLibrar
 export const TutorialPlatform = lazy(() => import("@/pages/TutorialPlatform"));
 export const PaymentDocumentation = lazy(() => import("@/pages/PaymentDocumentation"));
 export const TeacherDashboard = lazy(() => import("@/pages/TeacherDashboard"));
-export const HealthcareProviderDashboard = lazy(() => import("@/pages/HealthcareProviderDashboard"));
 export const HealthcareContentLibrary = lazy(() => import("@/pages/HealthcareContentLibrary"));
 export const Numerology = lazy(() => import("@/pages/Numerology"));
 export const ParallelUniverse = lazy(() => import("@/pages/ParallelUniverse"));
 export const MemoryAuctions = lazy(() => import("@/pages/MemoryAuctions"));
 export const BrandKits = lazy(() => import("@/pages/BrandKits"));
-export const DoctorsList = lazy(() => import("@/pages/doctors/DoctorsList"));
-export const DoctorProfile = lazy(() => import("@/pages/doctors/DoctorProfile"));
-export const DoctorBookingSuccess = lazy(() => import("@/pages/doctors/DoctorBookingSuccess"));
-export const MyDoctorBookings = lazy(() => import("@/pages/doctors/MyDoctorBookings"));
-export const VideoConsultationRoom = lazy(() => import("@/pages/doctors/VideoConsultationRoom"));
-export const BecomeDoctor = lazy(() => import("@/pages/doctors/BecomeDoctor"));
-export const DoctorDashboard = lazy(() => import("@/pages/doctors/DoctorDashboard"));
-export const PrescriptionsList = lazy(() => import("@/pages/health/PrescriptionsList"));
-export const MedicalRecords = lazy(() => import("@/pages/health/MedicalRecords"));
-export const InsuranceClaims = lazy(() => import("@/pages/health/InsuranceClaims"));
-export const AdminClaimsInbox = lazy(() => import("@/pages/health/AdminClaimsInbox"));
-export const AdminDoctorVerifications = lazy(() => import("@/pages/admin/AdminDoctorVerifications"));
 
 // Components that need lazy loading
 export const QuizCreator = lazy(() => import("@/components/education/QuizCreator"));
