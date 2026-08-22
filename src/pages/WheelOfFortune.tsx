@@ -32,6 +32,13 @@ const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 const VOWELS = ["A", "E", "I", "O", "U"];
 const VOWEL_COST = 250;
 
+const MODES = [
+  { key: "normal" as const, label: "Normal", cost: 1, mult: 1, desc: "Everyday puzzles" },
+  { key: "hard" as const, label: "Hard", cost: 3, mult: 3, desc: "Tricky riddles, 3x payout" },
+  { key: "expert" as const, label: "Expert", cost: 5, mult: 5, desc: "Brutal riddles, 5x payout" },
+];
+
+
 interface GameState {
   game_id: string;
   category: string;
