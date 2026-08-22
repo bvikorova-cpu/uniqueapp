@@ -48572,6 +48572,35 @@ export type Database = {
         }
         Relationships: []
       }
+      promo_listing_likes: {
+        Row: {
+          created_at: string
+          id: string
+          listing_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          listing_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          listing_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promo_listing_likes_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "promo_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       promo_listings: {
         Row: {
           active_until: string | null
