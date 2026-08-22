@@ -527,31 +527,20 @@ export default function WheelOfFortune() {
                   </Button>
                 </div>
 
-                {/* Letters */}
+                {/* Consonants */}
                 <div>
-                  <div className="mb-3 flex flex-wrap items-center justify-center gap-2 text-center text-xs text-muted-foreground">
-                    <span className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-1 font-medium text-primary">
-                      <span className="h-2 w-2 rounded-full bg-primary" />
-                      Consonants = spin value × occurrences
-                    </span>
-                    <span className="inline-flex items-center gap-1 rounded-full border border-secondary/50 bg-secondary/30 px-2 py-1 font-medium text-secondary-foreground">
-                      <span className="h-2 w-2 rounded-full bg-secondary-foreground" />
-                      Vowels = {VOWEL_COST} SC each
-                    </span>
+                  <div className="mb-2 text-center text-xs text-muted-foreground">
+                    Consonants pay spin value × occurrences — pick one after a spin
                   </div>
                   <div className="grid grid-cols-7 gap-1.5 sm:grid-cols-9">
-                    {ALPHABET.map((letter) => {
+                    {ALPHABET.filter((l) => !VOWELS.includes(l)).map((letter) => {
                       const used = state.guessed.includes(letter);
-                      const isVowel = VOWELS.includes(letter);
-                      const disabled =
-                        used ||
-                        busy !== null ||
-                        (isVowel ? coins < VOWEL_COST : !canGuessConsonant);
+                      const disabled = used || busy !== null || !canGuessConsonant;
                       return (
                         <Button
                           key={letter}
                           size="sm"
-                          variant={used ? "ghost" : isVowel ? "secondary" : "outline"}
+                          variant={used ? "ghost" : "outline"}
                           className="h-9 px-0 font-bold"
                           disabled={disabled}
                           onClick={() => guess(letter)}
@@ -564,6 +553,41 @@ export default function WheelOfFortune() {
                         </Button>
                       );
                     })}
+                  </div>
+                </div>
+
+                {/* Vowels */}
+                <div className="rounded-2xl border border-secondary/50 bg-secondary/10 p-4">
+                  <div className="mb-2 text-center text-xs font-semibold text-secondary-foreground">
+                    Buy vowels · {VOWEL_COST} SC each
+                  </div>
+                  <div className="grid grid-cols-5 gap-2">
+                    {VOWELS.map((letter) => {
+                      const used = state.guessed.includes(letter);
+                      const disabled = used || busy !== null || coins < VOWEL_COST;
+                      return (
+                        <Button
+                          key={letter}
+                          size="sm"
+                          variant={used ? "ghost" : "secondary"}
+                          className="h-10 px-0 text-xs font-bold"
+                          disabled={disabled}
+                          onClick={() => guess(letter)}
+                        >
+                          {busy === `letter-${letter}` ? (
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                          ) : (
+                            <>
+                              <span className="hidden sm:inline">Buy </span>
+                              {letter}
+                            </>
+                          )}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                  <div className="mt-2 text-center text-[10px] text-muted-foreground">
+                    You have {coins} SC · each vowel deducts {VOWEL_COST} SC from your total
                   </div>
                 </div>
 
