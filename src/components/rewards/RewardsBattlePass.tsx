@@ -179,7 +179,7 @@ export default function RewardsBattlePass() {
             {!progress?.has_premium && (
               <Button onClick={purchasePremium} disabled={purchasingPremium} className="bg-white text-purple-700 hover:bg-white/90 font-bold">
                 <Crown className="h-4 w-4 mr-1" />
-                {purchasingPremium ? "Loading…" : `Unlock Premium · €${season.premium_price_eur}`}
+                {purchasingPremium ? "Unlocking…" : `Unlock Premium · ${PREMIUM_CREDITS} credits`}
               </Button>
             )}
             {progress?.has_premium && (
