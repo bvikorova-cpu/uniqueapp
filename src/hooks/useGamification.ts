@@ -91,9 +91,13 @@ export const useDailyReward = () => {
       
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (data: any) => {
       queryClient.invalidateQueries({ queryKey: ["daily-reward"] });
       queryClient.invalidateQueries({ queryKey: ["gamification"] });
+      if (data?.alreadyClaimed) {
+        toast({ title: "Already claimed", description: "Come back tomorrow for your next reward." });
+        return;
+      }
       toast({ title: "Success", description: "Daily reward claimed!" });
     },
     onError: (error: Error) => {
