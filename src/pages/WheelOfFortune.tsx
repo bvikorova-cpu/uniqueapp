@@ -368,21 +368,24 @@ export default function WheelOfFortune() {
                     </button>
                   ))}
                 </div>
-                <div className="w-full max-w-md space-y-2">
-                  <div className="text-xs font-semibold uppercase text-muted-foreground">
+                <div className="w-full max-w-2xl space-y-3">
+                  <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     Choose a category
                   </div>
-                  <div className="flex flex-wrap justify-center gap-2">
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
                     {["any", ...categories].map((c) => (
-                      <Button
+                      <button
                         key={c}
                         type="button"
-                        size="sm"
-                        variant={category === c ? "default" : "outline"}
                         onClick={() => setCategory(c)}
+                        className={`rounded-lg border px-2 py-2 text-sm font-medium transition ${
+                          category === c
+                            ? "border-primary bg-primary/15 text-primary ring-1 ring-primary/40"
+                            : "border-border/60 bg-muted/40 text-muted-foreground hover:bg-muted/70"
+                        }`}
                       >
                         {c === "any" ? "Surprise me" : c}
-                      </Button>
+                      </button>
                     ))}
                   </div>
                 </div>
