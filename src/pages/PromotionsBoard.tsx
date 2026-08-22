@@ -260,16 +260,27 @@ export default function PromotionsBoard() {
     (async () => {
       const { data } = await supabase
         .from("promo_listing_likes")
-        .select("listing_id,user_id")
+        .select("listing_id, user_id, profiles(id, full_name, avatar_url)")
         .in("listing_id", ids);
       const counts: Record<string, number> = {};
       const mine = new Set<string>();
-      (data ?? []).forEach((row: { listing_id: string; user_id: string }) => {
+      const profilesMap: Record<string, PromoLiker[]> = {};
+      (data ?? []).forEach((row: any) => {
         counts[row.listing_id] = (counts[row.listing_id] ?? 0) + 1;
         if (user && row.user_id === user.id) mine.add(row.listing_id);
+        const p = row.profiles as { id?: string; full_name?: string | null; avatar_url?: string | null } | null;
+        if (p?.id) {
+          profilesMap[row.listing_id] = profilesMap[row.listing_id] ?? [];
+          profilesMap[row.listing_id].push({
+            id: p.id,
+            full_name: p.full_name ?? null,
+            avatar_url: p.avatar_url ?? null,
+          });
+        }
       });
       setLikeCounts(counts);
       setMyLikes(mine);
+      setLikeProfiles(profilesMap);
     })();
   }, [listings, user]);
 
