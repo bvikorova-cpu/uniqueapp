@@ -62,6 +62,39 @@ interface LeaderRow {
   games_won: number;
 }
 
+/** Physical wheel layout — every value the server can roll appears here. */
+const SEGMENTS: { key: string; label: string; tone: "a" | "b" | "bankrupt" | "lose" }[] = [
+  { key: "500", label: "500", tone: "a" },
+  { key: "bankrupt", label: "BANKRUPT", tone: "bankrupt" },
+  { key: "300", label: "300", tone: "b" },
+  { key: "800", label: "800", tone: "a" },
+  { key: "lose_turn", label: "LOSE TURN", tone: "lose" },
+  { key: "400", label: "400", tone: "b" },
+  { key: "650", label: "650", tone: "a" },
+  { key: "1000", label: "1000", tone: "b" },
+  { key: "200", label: "200", tone: "a" },
+  { key: "1500", label: "1500", tone: "b" },
+  { key: "bankrupt", label: "BANKRUPT", tone: "bankrupt" },
+  { key: "500", label: "500", tone: "a" },
+  { key: "800", label: "800", tone: "b" },
+  { key: "100", label: "100", tone: "a" },
+  { key: "2500", label: "2500", tone: "b" },
+  { key: "lose_turn", label: "LOSE TURN", tone: "lose" },
+];
+
+const SEG_ANGLE = 360 / SEGMENTS.length;
+const SEG_COLOR: Record<string, string> = {
+  a: "hsl(var(--primary))",
+  b: "hsl(var(--accent))",
+  bankrupt: "hsl(var(--destructive))",
+  lose: "hsl(var(--muted-foreground) / 0.45)",
+};
+const WHEEL_GRADIENT = `conic-gradient(${SEGMENTS.map(
+  (s, i) => `${SEG_COLOR[s.tone]} ${i * SEG_ANGLE}deg ${(i + 1) * SEG_ANGLE}deg`,
+).join(", ")})`;
+const SPIN_MS = 3800;
+
+
 export default function WheelOfFortune() {
   const navigate = useNavigate();
   const [state, setState] = useState<GameState | null>(null);
