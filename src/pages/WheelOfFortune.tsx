@@ -170,10 +170,16 @@ export default function WheelOfFortune() {
   };
 
   const startGame = () =>
-    handle("start", "wheel_start_game", undefined, () => {
-      setAttempt("");
-      toast.success("New puzzle — 1 credit spent. Good luck!");
-    });
+    handle(
+      "start",
+      "wheel_start_game",
+      category === "any" ? {} : { _category: category },
+      () => {
+        setAttempt("");
+        toast.success("New puzzle — 1 credit spent. Good luck!");
+      },
+    );
+
 
   const spin = async () => {
     if (spinning) return;
