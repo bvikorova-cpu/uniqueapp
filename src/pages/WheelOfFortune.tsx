@@ -368,21 +368,24 @@ export default function WheelOfFortune() {
                     </button>
                   ))}
                 </div>
-                <div className="w-full max-w-md space-y-2">
-                  <div className="text-xs font-semibold uppercase text-muted-foreground">
+                <div className="w-full max-w-2xl space-y-3">
+                  <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     Choose a category
                   </div>
-                  <div className="flex flex-wrap justify-center gap-2">
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
                     {["any", ...categories].map((c) => (
-                      <Button
+                      <button
                         key={c}
                         type="button"
-                        size="sm"
-                        variant={category === c ? "default" : "outline"}
                         onClick={() => setCategory(c)}
+                        className={`rounded-lg border px-2 py-2 text-sm font-medium transition ${
+                          category === c
+                            ? "border-primary bg-primary/15 text-primary ring-1 ring-primary/40"
+                            : "border-border/60 bg-muted/40 text-muted-foreground hover:bg-muted/70"
+                        }`}
                       >
                         {c === "any" ? "Surprise me" : c}
-                      </Button>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -526,8 +529,15 @@ export default function WheelOfFortune() {
 
                 {/* Letters */}
                 <div>
-                  <div className="mb-2 text-center text-xs text-muted-foreground">
-                    Consonants pay spin value × occurrences · Vowels cost {VOWEL_COST} SC
+                  <div className="mb-3 flex flex-wrap items-center justify-center gap-2 text-center text-xs text-muted-foreground">
+                    <span className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-1 font-medium text-primary">
+                      <span className="h-2 w-2 rounded-full bg-primary" />
+                      Consonants = spin value × occurrences
+                    </span>
+                    <span className="inline-flex items-center gap-1 rounded-full border border-secondary/50 bg-secondary/30 px-2 py-1 font-medium text-secondary-foreground">
+                      <span className="h-2 w-2 rounded-full bg-secondary-foreground" />
+                      Vowels = {VOWEL_COST} SC each
+                    </span>
                   </div>
                   <div className="grid grid-cols-7 gap-1.5 sm:grid-cols-9">
                     {ALPHABET.map((letter) => {
