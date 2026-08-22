@@ -7,13 +7,20 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Crown, Plus, ExternalLink, Megaphone, Filter, Search, MapPin, Heart, Maximize2 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Crown, Plus, ExternalLink, Megaphone, Filter, Search, MapPin, Heart, Maximize2, Users } from "lucide-react";
 import { useResolvedStorageUrl } from "@/lib/storageSigned";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import SEO from "@/components/SEO";
 import promoVideo from "@/assets/section-videos/promotions-board.mp4.asset.json";
+
+interface PromoLiker {
+  id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+}
 
 interface PromoListing {
   id: string;
