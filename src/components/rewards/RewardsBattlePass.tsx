@@ -32,6 +32,10 @@ export default function RewardsBattlePass() {
   const [purchasingPremium, setPurchasingPremium] = useState(false);
 
   const refresh = async () => {
+    if (user) {
+      // Recompute tier from XP actually earned during the season
+      await supabase.rpc("refresh_battle_pass_progress" as any);
+    }
     const { data: s } = await supabase
       .from("battle_pass_seasons")
       .select("*")
@@ -41,6 +45,7 @@ export default function RewardsBattlePass() {
       .maybeSingle();
     setSeason(s);
     if (!s) { setLoading(false); return; }
+
 
     // Parallel fetch of rewards + progress + claims
     const rewardsP = supabase
