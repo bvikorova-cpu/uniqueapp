@@ -7,10 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { CalendarClock, Store, Loader2, XCircle } from "lucide-react";
+import { CalendarClock, Store, Loader2, XCircle, Star } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { ServiceReviewDialog } from "@/components/services/ServiceReviewDialog";
 
 interface Booking {
   id: string;
