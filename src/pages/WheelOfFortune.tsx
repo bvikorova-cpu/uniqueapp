@@ -143,13 +143,12 @@ export default function WheelOfFortune() {
       if (res?.state) setState(res.state);
       void refreshWallet();
       void refreshLeaders();
-      const { data: cats } = await supabase
-        .from("wheel_puzzles")
-        .select("category")
-        .eq("active", true);
-      if (cats) {
-        setCategories([...new Set(cats.map((c) => c.category as string))].sort());
+      const { data: cats } = await supabase.rpc("wheel_categories" as never);
+      const rows = (cats as unknown as { category: string }[] | null) ?? [];
+      if (rows.length) {
+        setCategories([...new Set(rows.map((c) => c.category))].sort());
       }
+
     })();
   }, [navigate, refreshWallet, refreshLeaders]);
 
