@@ -7,13 +7,20 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Crown, Plus, ExternalLink, Megaphone, Filter, Search, MapPin, Heart, Maximize2 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Crown, Plus, ExternalLink, Megaphone, Filter, Search, MapPin, Heart, Maximize2, Users } from "lucide-react";
 import { useResolvedStorageUrl } from "@/lib/storageSigned";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import SEO from "@/components/SEO";
 import promoVideo from "@/assets/section-videos/promotions-board.mp4.asset.json";
+
+interface PromoLiker {
+  id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+}
 
 interface PromoListing {
   id: string;
@@ -65,15 +72,20 @@ function PromoCard({
   listing,
   likeCount,
   liked,
+  likers,
   onToggleLike,
 }: {
   listing: PromoListing;
   likeCount: number;
   liked: boolean;
+  likers: PromoLiker[];
   onToggleLike: (id: string) => void;
 }) {
   const isTop = listing.tier === "top";
   const [open, setOpen] = useState(false);
+  const [likersOpen, setLikersOpen] = useState(false);
+  const visibleLikers = likers.slice(0, 5);
+  const remaining = Math.max(0, likers.length - visibleLikers.length);
 
   return (
     <>
@@ -129,6 +141,30 @@ function PromoCard({
               {likeCount}
             </Button>
           </div>
+          {likers.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setLikersOpen(true)}
+              className="mt-3 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              aria-label={`Liked by ${likers.length} users`}
+            >
+              <div className="flex -space-x-2">
+                {visibleLikers.map((liker) => (
+                  <Avatar key={liker.id} className="h-6 w-6 border-2 border-background">
+                    <AvatarImage src={liker.avatar_url ?? undefined} alt={liker.full_name ?? ""} />
+                    <AvatarFallback className="text-[10px]">
+                      {(liker.full_name ?? "?").charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                ))}
+              </div>
+              <span>
+                {likers.length <= 5
+                  ? `Liked by ${likers.length} user${likers.length === 1 ? "" : "s"}`
+                  : `Liked by ${visibleLikers.map((l) => l.full_name || "Someone").join(", ")} and ${remaining} more`}
+              </span>
+            </button>
+          )}
         </CardContent>
       </Card>
 
@@ -153,6 +189,28 @@ function PromoCard({
           </div>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={likersOpen} onOpenChange={setLikersOpen}>
+        <DialogContent className="max-w-sm max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5 text-primary" /> Liked by
+            </DialogTitle>
+            <DialogDescription>{likers.length} user{likers.length === 1 ? "" : "s"} liked this promotion</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 mt-2">
+            {likers.map((liker) => (
+              <div key={liker.id} className="flex items-center gap-3">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={liker.avatar_url ?? undefined} alt={liker.full_name ?? ""} />
+                  <AvatarFallback>{(liker.full_name ?? "?").charAt(0).toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <span className="font-medium text-sm">{liker.full_name || "Unknown user"}</span>
+              </div>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
@@ -167,21 +225,34 @@ export default function PromotionsBoard() {
   const [cityFilter, setCityFilter] = useState("all");
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
   const [myLikes, setMyLikes] = useState<Set<string>>(new Set());
+  const [likeProfiles, setLikeProfiles] = useState<Record<string, PromoLiker[]>>({});
 
   useEffect(() => {
-    (async () => {
-      const { data } = await supabase
-        .from("promo_listings")
-        .select("id,title,description,media_url,media_type,link_url,tier,active_until,category,city")
-        .eq("status", "active")
-        .gt("active_until", new Date().toISOString())
-        .order("tier", { ascending: true }) // 'top' < 'standard' alphabetically
-        .order("created_at", { ascending: false })
-        .limit(200);
-      setListings((data as PromoListing[]) ?? []);
-      setLoading(false);
-    })();
-  }, []);
+    const timer = setTimeout(() => {
+      (async () => {
+        setLoading(true);
+        let query = supabase
+          .from("promo_listings")
+          .select("id,title,description,media_url,media_type,link_url,tier,active_until,category,city")
+          .eq("status", "active")
+          .gt("active_until", new Date().toISOString())
+          .order("tier", { ascending: true }) // 'top' < 'standard' alphabetically
+          .order("created_at", { ascending: false })
+          .limit(200);
+        const term = q.trim();
+        if (term) {
+          const pattern = `%${term}%`;
+          query = query.or(
+            `title.ilike.${pattern},description.ilike.${pattern},city.ilike.${pattern},category.ilike.${pattern}`
+          );
+        }
+        const { data } = await query;
+        setListings((data as PromoListing[]) ?? []);
+        setLoading(false);
+      })();
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [q]);
 
   useEffect(() => {
     if (listings.length === 0) return;
@@ -189,16 +260,27 @@ export default function PromotionsBoard() {
     (async () => {
       const { data } = await supabase
         .from("promo_listing_likes")
-        .select("listing_id,user_id")
+        .select("listing_id, user_id, profiles(id, full_name, avatar_url)")
         .in("listing_id", ids);
       const counts: Record<string, number> = {};
       const mine = new Set<string>();
-      (data ?? []).forEach((row: { listing_id: string; user_id: string }) => {
+      const profilesMap: Record<string, PromoLiker[]> = {};
+      (data ?? []).forEach((row: any) => {
         counts[row.listing_id] = (counts[row.listing_id] ?? 0) + 1;
         if (user && row.user_id === user.id) mine.add(row.listing_id);
+        const p = row.profiles as { id?: string; full_name?: string | null; avatar_url?: string | null } | null;
+        if (p?.id) {
+          profilesMap[row.listing_id] = profilesMap[row.listing_id] ?? [];
+          profilesMap[row.listing_id].push({
+            id: p.id,
+            full_name: p.full_name ?? null,
+            avatar_url: p.avatar_url ?? null,
+          });
+        }
       });
       setLikeCounts(counts);
       setMyLikes(mine);
+      setLikeProfiles(profilesMap);
     })();
   }, [listings, user]);
 
@@ -214,6 +296,18 @@ export default function PromotionsBoard() {
       return next;
     });
     setLikeCounts((prev) => ({ ...prev, [id]: Math.max(0, (prev[id] ?? 0) + (liked ? -1 : 1)) }));
+    setLikeProfiles((prev) => {
+      const next = { ...prev };
+      if (liked) {
+        next[id] = (next[id] ?? []).filter((p) => p.id !== user.id);
+      } else {
+        next[id] = [
+          ...(next[id] ?? []),
+          { id: user.id, full_name: user.user_metadata?.full_name ?? null, avatar_url: user.user_metadata?.avatar_url ?? null },
+        ];
+      }
+      return next;
+    });
 
     const { error } = liked
       ? await supabase.from("promo_listing_likes").delete().eq("listing_id", id).eq("user_id", user.id)
@@ -227,6 +321,18 @@ export default function PromotionsBoard() {
         return next;
       });
       setLikeCounts((prev) => ({ ...prev, [id]: Math.max(0, (prev[id] ?? 0) + (liked ? 1 : -1)) }));
+      setLikeProfiles((prev) => {
+        const next = { ...prev };
+        if (liked) {
+          next[id] = [
+            ...(next[id] ?? []),
+            { id: user.id, full_name: user.user_metadata?.full_name ?? null, avatar_url: user.user_metadata?.avatar_url ?? null },
+          ];
+        } else {
+          next[id] = (next[id] ?? []).filter((p) => p.id !== user.id);
+        }
+        return next;
+      });
       toast.error("Could not save your like");
     }
   };
@@ -285,8 +391,8 @@ export default function PromotionsBoard() {
             <Button asChild size="lg" variant="premium">
               <Link to="/promotions/new"><Plus className="h-4 w-4 mr-1" /> Publish a promo</Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="bg-background/20 backdrop-blur border-white/30 text-white hover:bg-background/40">
-              <Link to="/promotions/mine">My promotions</Link>
+            <Button asChild size="lg" className="bg-white/95 text-primary hover:bg-white shadow-xl shadow-black/20 border-2 border-white/50 font-bold">
+              <Link to="/promotions/mine"><Crown className="h-4 w-4 mr-1" /> My promotions</Link>
             </Button>
           </div>
         </div>
@@ -371,7 +477,7 @@ export default function PromotionsBoard() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {topListings.map((l) => (
-                    <PromoCard key={l.id} listing={l} likeCount={likeCounts[l.id] ?? 0} liked={myLikes.has(l.id)} onToggleLike={toggleLike} />
+                    <PromoCard key={l.id} listing={l} likeCount={likeCounts[l.id] ?? 0} liked={myLikes.has(l.id)} likers={likeProfiles[l.id] ?? []} onToggleLike={toggleLike} />
                   ))}
                 </div>
               </section>
@@ -382,7 +488,7 @@ export default function PromotionsBoard() {
                 <h2 className="text-2xl font-bold mb-4">All promotions</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {standardListings.map((l) => (
-                    <PromoCard key={l.id} listing={l} likeCount={likeCounts[l.id] ?? 0} liked={myLikes.has(l.id)} onToggleLike={toggleLike} />
+                    <PromoCard key={l.id} listing={l} likeCount={likeCounts[l.id] ?? 0} liked={myLikes.has(l.id)} likers={likeProfiles[l.id] ?? []} onToggleLike={toggleLike} />
                   ))}
                 </div>
               </section>
