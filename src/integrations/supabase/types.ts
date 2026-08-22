@@ -71532,7 +71532,12 @@ export type Database = {
         }[]
       }
       wheel_get_game: { Args: never; Returns: Json }
-      wheel_guess_letter: { Args: { _letter: string }; Returns: Json }
+      wheel_guess_letter:
+        | { Args: { _letter: string }; Returns: Json }
+        | {
+            Args: { _letter: string; _pay_with_credits?: boolean }
+            Returns: Json
+          }
       wheel_leaderboard: {
         Args: never
         Returns: {

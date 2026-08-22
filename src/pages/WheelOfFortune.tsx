@@ -243,13 +243,20 @@ export default function WheelOfFortune() {
   };
 
 
-  const guess = (letter: string) =>
-    handle(`letter-${letter}`, "wheel_guess_letter", { _letter: letter }, (res) => {
-      const hits = Number(res.hits ?? 0);
-      const gain = Number(res.gain ?? 0);
-      if (hits === 0) toast.error(`No ${letter} in this puzzle.`);
-      else toast.success(`${hits}× ${letter}${gain ? ` — +${gain} SC to bank` : ""}`);
-    });
+  const guess = (letter: string, payWithCredits = false) =>
+    handle(
+      `letter-${letter}`,
+      "wheel_guess_letter",
+      { _letter: letter, _pay_with_credits: payWithCredits },
+      (res) => {
+        const hits = Number(res.hits ?? 0);
+        const gain = Number(res.gain ?? 0);
+        if (res.paid_with === "credit") toast.success(`Vowel ${letter} bought for 1 AI credit`);
+        if (hits === 0) toast.error(`No ${letter} in this puzzle.`);
+        else toast.success(`${hits}× ${letter}${gain ? ` — +${gain} SC to bank` : ""}`);
+      },
+    );
+
 
   const solve = () => {
     if (!attempt.trim()) return;
@@ -559,27 +566,33 @@ export default function WheelOfFortune() {
                 {/* Vowels */}
                 <div className="rounded-2xl border border-secondary/50 bg-secondary/10 p-4">
                   <div className="mb-2 text-center text-xs font-semibold text-secondary-foreground">
-                    Buy vowels · {VOWEL_COST} SC each
+                    Buy vowels · {VOWEL_COST} SC each · or 1 AI credit
                   </div>
                   <div className="grid grid-cols-5 gap-2">
                     {VOWELS.map((letter) => {
                       const used = state.guessed.includes(letter);
-                      const disabled = used || busy !== null || coins < VOWEL_COST;
+                      const withCredit = coins < VOWEL_COST;
+                      const disabled = used || busy !== null;
                       return (
                         <Button
                           key={letter}
                           size="sm"
-                          variant={used ? "ghost" : "secondary"}
-                          className="h-10 px-0 text-xs font-bold"
+                          variant={used ? "ghost" : withCredit ? "outline" : "secondary"}
+                          className="h-auto flex-col gap-0 py-2 px-0 text-xs font-bold leading-tight"
                           disabled={disabled}
-                          onClick={() => guess(letter)}
+                          onClick={() => guess(letter, withCredit)}
                         >
                           {busy === `letter-${letter}` ? (
                             <Loader2 className="h-3 w-3 animate-spin" />
                           ) : (
                             <>
-                              <span className="hidden sm:inline">Buy </span>
-                              {letter}
+                              <span>
+                                <span className="hidden sm:inline">Buy </span>
+                                {letter}
+                              </span>
+                              <span className="text-[9px] font-normal opacity-70">
+                                {withCredit ? "1 credit" : `${VOWEL_COST} SC`}
+                              </span>
                             </>
                           )}
                         </Button>
@@ -587,9 +600,13 @@ export default function WheelOfFortune() {
                     })}
                   </div>
                   <div className="mt-2 text-center text-[10px] text-muted-foreground">
-                    You have {coins} SC · each vowel deducts {VOWEL_COST} SC from your total
+                    You have {coins} SC ·{" "}
+                    {coins < VOWEL_COST
+                      ? "not enough Spin Coins, so vowels cost 1 AI credit each"
+                      : `each vowel deducts ${VOWEL_COST} SC from your total`}
                   </div>
                 </div>
+
 
                 {/* Solve */}
                 <div className="flex flex-col gap-2 sm:flex-row">
