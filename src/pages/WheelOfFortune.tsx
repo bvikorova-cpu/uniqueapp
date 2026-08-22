@@ -105,6 +105,8 @@ export default function WheelOfFortune() {
   const [angle, setAngle] = useState(0);
   const [spinning, setSpinning] = useState(false);
   const [category, setCategory] = useState<string>("Riddles");
+  const [mode, setMode] = useState<"normal" | "hard" | "expert">("normal");
+
   const [categories, setCategories] = useState<string[]>([]);
   const videoRef = useRef<HTMLVideoElement>(null);
 
