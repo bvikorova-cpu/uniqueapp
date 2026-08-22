@@ -23,10 +23,17 @@ serve(async (req) => {
 
     if (!payload?.ok) {
       const code = payload?.error ?? "unknown";
-      const status = code === "already_claimed" ? 400 : code === "unauthenticated" ? 401 : 400;
-      const msg = code === "already_claimed" ? "Already claimed today" : code;
+      // "already claimed" is a normal state, not a failure — return 200 so the
+      // client can show a friendly message instead of throwing a runtime error.
+      if (code === "already_claimed") {
+        return new Response(
+          JSON.stringify({ success: false, code, alreadyClaimed: true, message: "Already claimed today" }),
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      const status = code === "unauthenticated" ? 401 : 400;
       return new Response(
-        JSON.stringify({ error: msg, code }),
+        JSON.stringify({ error: code, code }),
         { status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
