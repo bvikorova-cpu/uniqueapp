@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Crown, Plus, ExternalLink, Megaphone, Filter, Search, MapPin, Maximize2 } from "lucide-react";
 import { useResolvedStorageUrl } from "@/lib/storageSigned";
@@ -139,7 +137,6 @@ function PromoCard({ listing }: { listing: PromoListing }) {
 
 
 export default function PromotionsBoard() {
-  const { user } = useAuth();
   const [listings, setListings] = useState<PromoListing[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
