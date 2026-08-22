@@ -21,8 +21,8 @@ export const useRecommendations = () => {
       if (!data || data.length === 0) return [];
 
       const userIds = data.map((r) => r.recommended_user_id);
-      const { data: profiles } = await supabase
-        .from("public_profiles" as any)
+      const { data: profiles } = await (supabase as any)
+        .from("public_profiles")
         .select("*")
         .in("id", userIds);
 

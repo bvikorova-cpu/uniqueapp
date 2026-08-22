@@ -69,8 +69,8 @@ export const useEducationLeaderboard = () => {
       if (!top || top.length === 0) return [];
 
       const userIds = top.map((t) => t.user_id);
-      const { data: profiles } = await supabase
-        .from("public_profiles" as any)
+      const { data: profiles } = await (supabase as any)
+        .from("public_profiles")
         .select("id, full_name, avatar_url")
         .in("id", userIds);
 

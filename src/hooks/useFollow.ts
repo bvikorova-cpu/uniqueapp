@@ -126,8 +126,8 @@ export const useFollowingPosts = (userId: string | undefined) => {
       // Batch fetch all profiles for better performance
       const userIds = Array.from(new Set((postsData || []).map(p => p.user_id)));
       
-      const { data: profilesData } = await supabase
-        .from("public_profiles" as any)
+      const { data: profilesData } = await (supabase as any)
+        .from("public_profiles")
         .select("id, full_name, avatar_url")
         .in("id", userIds);
 
