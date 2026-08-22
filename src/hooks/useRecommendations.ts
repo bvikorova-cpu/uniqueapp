@@ -21,13 +21,13 @@ export const useRecommendations = () => {
       if (!data || data.length === 0) return [];
 
       const userIds = data.map((r) => r.recommended_user_id);
-      const { data: profiles } = await supabase
-        .from("profiles")
+      const { data: profiles } = await (supabase as any)
+        .from("public_profiles")
         .select("*")
         .in("id", userIds);
 
       return data.map((rec) => ({ ...rec,
-        profile: profiles?.find((p) => p.id === rec.recommended_user_id) }));
+        profile: profiles?.find((p: any) => p.id === rec.recommended_user_id) }));
     } });
 
   return { recommendations,

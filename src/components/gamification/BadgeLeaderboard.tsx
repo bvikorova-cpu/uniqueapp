@@ -38,8 +38,8 @@ export default function BadgeLeaderboard() {
       if (topUsers.length === 0) return [];
 
       const userIds = topUsers.map(([id]) => id);
-      const { data: profiles, error: profileError } = await supabase
-        .from("profiles")
+      const { data: profiles, error: profileError } = await (supabase as any)
+        .from("public_profiles")
         .select("id, full_name, avatar_url")
         .in("id", userIds);
       if (profileError) throw profileError;

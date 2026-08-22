@@ -57,8 +57,8 @@ export const useSmartSuggestions = (limit = 8) => {
       const ids = candidates.slice(0, limit);
       if (ids.length === 0) return [];
 
-      const { data: profiles } = await supabase
-        .from("profiles")
+      const { data: profiles } = await (supabase as any)
+        .from("public_profiles")
         .select("id, full_name, username, avatar_url, bio")
         .in("id", ids);
 
