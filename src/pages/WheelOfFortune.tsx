@@ -42,7 +42,10 @@ const MODES = [
 interface GameState {
   game_id: string;
   category: string;
+  mode?: string;
+  payout_multiplier?: number;
   hint: string | null;
+
   masked: string;
   guessed: string[];
   bank: number;
