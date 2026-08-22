@@ -112,17 +112,24 @@ export default function RewardsBattlePass() {
     if (!user || !season || purchasingPremium) return;
     setPurchasingPremium(true);
     try {
-      const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { product: "rewards_checkout", kind: "battle_pass_premium" } });
+      const { data, error } = await supabase.rpc("unlock_battle_pass_premium_credits" as any);
       if (error) throw error;
-      const url = (data as any)?.url;
-      if (!url) throw new Error("No checkout URL");
-      window.location.href = url;
+      const res = data as any;
+      if (!res?.ok) {
+        toast.error(res?.error || "Not enough credits", {
+          description: `Battle Pass Premium costs ${PREMIUM_CREDITS} credits.` });
+        return;
+      }
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      toast.success("Premium unlocked! 👑");
+      await refresh();
     } catch (e: any) {
-      toast.error(e?.message || "Checkout failed");
+      toast.error(e?.message || "Unlock failed");
+    } finally {
       setPurchasingPremium(false);
     }
   };
+
 
   useEffect(() => {
     const onDone = () => refresh();
