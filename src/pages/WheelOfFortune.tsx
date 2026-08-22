@@ -184,12 +184,14 @@ export default function WheelOfFortune() {
     handle(
       "start",
       "wheel_start_game",
-      category === "any" ? {} : { _category: category },
+      { ...(category === "any" ? {} : { _category: category }), _mode: mode },
       () => {
         setAttempt("");
-        toast.success("New puzzle — 1 credit spent. Good luck!");
+        const m = MODES.find((x) => x.key === mode)!;
+        toast.success(`New ${m.label} puzzle — ${m.cost} credits spent. Good luck!`);
       },
     );
+
 
 
   const spin = async () => {
