@@ -6,11 +6,13 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
+    // Verify cron secret (required for production invocation; keep it in Supabase Edge Function secrets).
     const cronSecret = req.headers.get("x-cron-secret");
-    if (cronSecret && cronSecret !== Deno.env.get("CRON_SECRET")) {
+    if (!cronSecret || cronSecret !== Deno.env.get("CRON_SECRET")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
+
 
     const admin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
