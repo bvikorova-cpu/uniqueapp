@@ -40,6 +40,7 @@ const ServiceProfile = lazy(() => import("@/pages/services/ServiceProfile"));
 const ServiceBookingSuccess = lazy(() => import("@/pages/services/ServiceBookingSuccess"));
 const MyServiceBookings = lazy(() => import("@/pages/services/MyServiceBookings"));
 const ProviderSetup = lazy(() => import("@/pages/services/ProviderSetup"));
+const ServiceProviderInbox = lazy(() => import("@/pages/services/ServiceProviderInbox"));
 const PPVPost = lazy(() => import("@/pages/PPVPost"));
 const PaidMessageSuccess = lazy(() => import("@/pages/PaidMessageSuccess"));
 const GiftSuccess = lazy(() => import("@/pages/GiftSuccess"));
