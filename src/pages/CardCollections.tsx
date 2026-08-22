@@ -20,6 +20,7 @@ import cardsHeroVideo from "../../public/videos/collectible-cards-hero.mp4.asset
 
 /** Hub listing all collectible-card categories with the user's real progress. */
 const CardCollections = () => {
+  const { user } = useAuth();
   const { data: categories = [], isLoading } = useQuery({
     queryKey: ["card-categories"],
     queryFn: async () => {
