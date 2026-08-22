@@ -7,10 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { CalendarClock, Store, Loader2, XCircle } from "lucide-react";
+import { CalendarClock, Store, Loader2, XCircle, Star } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { ServiceReviewDialog } from "@/components/services/ServiceReviewDialog";
 
 interface Booking {
   id: string;
@@ -39,6 +40,8 @@ export default function MyServiceBookings() {
   const [items, setItems] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState<string | null>(null);
+  const [reviewedIds, setReviewedIds] = useState<Set<string>>(new Set());
+  const [reviewBooking, setReviewBooking] = useState<Booking | null>(null);
 
   const load = useCallback(async () => {
     if (!user) return;
@@ -57,6 +60,13 @@ export default function MyServiceBookings() {
         .in("owner_id", ids);
       const byId = new Map((profs ?? []).map((p: any) => [p.owner_id, p]));
       rows.forEach((r) => (r.provider = byId.get(r.provider_id) ?? null));
+    }
+    const bookingIds = rows.map((r) => r.id);
+    if (bookingIds.length) {
+      const { data: revs } = await supabase.from("service_reviews").select("booking_id").in("booking_id", bookingIds).eq("reviewer_id", user.id);
+      setReviewedIds(new Set((revs ?? []).map((r: any) => r.booking_id)));
+    } else {
+      setReviewedIds(new Set());
     }
     setItems(rows);
     setLoading(false);
@@ -81,15 +91,15 @@ export default function MyServiceBookings() {
   return (
     <>
       <Helmet>
-        <title>My Service Bookings · Unique</title>
-        <meta name="description" content="Manage your upcoming and past service bookings." />
+        <title>Book & Glow · My Bookings · Unique</title>
+        <meta name="description" content="Manage your Book & Glow beauty and wellness appointments." />
       </Helmet>
       <div className="min-h-screen bg-background">
         <Navbar />
         <div className="container mx-auto px-4 py-24 mt-16 max-w-3xl">
           <div className="mb-6 flex items-center justify-between flex-wrap gap-2">
             <h1 className="text-3xl font-black flex items-center gap-2">
-              <CalendarClock className="w-7 h-7 text-primary" /> My Service Bookings
+              <CalendarClock className="w-7 h-7 text-primary" /> Book & Glow — My bookings
             </h1>
             <Button asChild variant="outline"><Link to="/services">Find a service</Link></Button>
           </div>
@@ -139,6 +149,14 @@ export default function MyServiceBookings() {
                         </div>
                         {b.customer_notes && <div className="mt-2 text-muted-foreground"><em>Note:</em> {b.customer_notes}</div>}
                       </div>
+                      {b.status === "completed" && !reviewedIds.has(b.id) && (
+                        <Button variant="outline" size="sm" onClick={() => setReviewBooking(b)}>
+                          <Star className="w-4 h-4 mr-1" /> Leave review
+                        </Button>
+                      )}
+                      {b.status === "completed" && reviewedIds.has(b.id) && (
+                        <p className="text-sm text-muted-foreground">Review sent ✓</p>
+                      )}
                       {canCancel && (
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
@@ -170,6 +188,19 @@ export default function MyServiceBookings() {
           )}
         </div>
       </div>
+      {reviewBooking && (
+        <ServiceReviewDialog
+          booking={{
+            id: reviewBooking.id,
+            customer_id: user?.id ?? "",
+            provider_id: reviewBooking.provider_id,
+            scheduled_at: reviewBooking.scheduled_at,
+            offering_name: reviewBooking.provider?.business_name ?? "appointment",
+          }}
+          onClose={() => setReviewBooking(null)}
+          onSaved={load}
+        />
+      )}
     </>
   );
 }

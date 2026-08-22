@@ -40,6 +40,7 @@ const ServiceProfile = lazy(() => import("@/pages/services/ServiceProfile"));
 const ServiceBookingSuccess = lazy(() => import("@/pages/services/ServiceBookingSuccess"));
 const MyServiceBookings = lazy(() => import("@/pages/services/MyServiceBookings"));
 const ProviderSetup = lazy(() => import("@/pages/services/ProviderSetup"));
+const ServiceProviderInbox = lazy(() => import("@/pages/services/ServiceProviderInbox"));
 const PPVPost = lazy(() => import("@/pages/PPVPost"));
 const PaidMessageSuccess = lazy(() => import("@/pages/PaidMessageSuccess"));
 const GiftSuccess = lazy(() => import("@/pages/GiftSuccess"));
@@ -941,6 +942,7 @@ const App = () => {
                         <Route path="/services-hub" element={<ServicesLanding />} />
                         <Route path="/services" element={<ServicesList />} />
                         <Route path="/services/provider/setup" element={<ProtectedRoute><ProviderSetup /></ProtectedRoute>} />
+                        <Route path="/services/provider/inbox" element={<ProtectedRoute><ServiceProviderInbox /></ProtectedRoute>} />
                         <Route path="/services/booking/:bookingId" element={<ProtectedRoute><ServiceBookingSuccess /></ProtectedRoute>} />
                         <Route path="/services/:id" element={<ServiceProfile />} />
                         <Route path="/my-bookings/services" element={<ProtectedRoute><MyServiceBookings /></ProtectedRoute>} />

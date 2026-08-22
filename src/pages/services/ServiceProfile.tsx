@@ -132,12 +132,12 @@ export default function ServiceProfile() {
   return (
     <>
       <Helmet>
-        <title>{`Book ${provider.business_name} · Unique`}</title>
-        <meta name="description" content={`Book ${provider.business_name} (${provider.category}) — €${priceEur} for ${effectiveDuration} minutes.`} />
+        <title>{`Book ${provider.business_name} · Book & Glow · Unique`}</title>
+        <meta name="description" content={`Book ${provider.business_name} (${provider.category}) on Book & Glow — €${priceEur} for ${effectiveDuration} minutes.`} />
       </Helmet>
       <div className="min-h-screen bg-background"><Navbar />
         <div className="container mx-auto px-4 py-24 mt-16 max-w-4xl">
-          <Button variant="ghost" onClick={() => navigate("/services")} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" /> All services</Button>
+          <Button variant="ghost" onClick={() => navigate("/services")} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" /> All providers</Button>
 
           <Card className="mb-6">
             <CardHeader>

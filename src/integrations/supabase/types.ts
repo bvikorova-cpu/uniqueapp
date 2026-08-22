@@ -54595,6 +54595,7 @@ export type Database = {
           cancellation_reason: string | null
           cancelled_at: string | null
           cancelled_by: string | null
+          completed_at: string | null
           confirmed_at: string | null
           created_at: string
           currency: string
@@ -54620,6 +54621,7 @@ export type Database = {
           cancellation_reason?: string | null
           cancelled_at?: string | null
           cancelled_by?: string | null
+          completed_at?: string | null
           confirmed_at?: string | null
           created_at?: string
           currency?: string
@@ -54645,6 +54647,7 @@ export type Database = {
           cancellation_reason?: string | null
           cancelled_at?: string | null
           cancelled_by?: string | null
+          completed_at?: string | null
           confirmed_at?: string | null
           created_at?: string
           currency?: string
@@ -54667,6 +54670,35 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      service_notification_log: {
+        Row: {
+          booking_id: string
+          id: string
+          sent_at: string
+          type: string
+        }
+        Insert: {
+          booking_id: string
+          id?: string
+          sent_at?: string
+          type: string
+        }
+        Update: {
+          booking_id?: string
+          id?: string
+          sent_at?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_notification_log_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "service_bookings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       service_offerings: {
         Row: {
@@ -54916,6 +54948,50 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      service_reviews: {
+        Row: {
+          booking_id: string
+          comment: string | null
+          created_at: string
+          id: string
+          is_visible: boolean
+          provider_id: string
+          rating: number
+          reviewer_id: string
+          updated_at: string
+        }
+        Insert: {
+          booking_id: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          is_visible?: boolean
+          provider_id: string
+          rating: number
+          reviewer_id: string
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          is_visible?: boolean
+          provider_id?: string
+          rating?: number
+          reviewer_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_reviews_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "service_bookings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       session_players: {
         Row: {

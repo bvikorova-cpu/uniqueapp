@@ -23,7 +23,7 @@ interface Provider {
   languages: string[] | null;
 }
 
-const CATEGORIES = ["all", "hair", "nails", "massage", "beauty", "fitness", "tutoring", "cleaning", "repair", "photography", "other"];
+const CATEGORIES = ["all", "hair", "nails", "makeup", "massage", "tattoo", "beauty", "fitness", "tutoring", "cleaning", "repair", "photography", "other"];
 
 export default function ServicesList() {
   const [providers, setProviders] = useState<Provider[]>([]);
@@ -67,15 +67,15 @@ export default function ServicesList() {
   return (
     <>
       <Helmet>
-        <title>Find a Service Provider · Book Any Service · Unique</title>
-        <meta name="description" content="Browse verified service providers (hair, nails, massage, tutoring, repair…) and book a paid slot in EUR." />
+        <title>Find a Provider · Book & Glow · Unique</title>
+        <meta name="description" content="Browse verified beauty and wellness providers (hair, nails, makeup, massage, tattoo, fitness) and book a paid slot in EUR." />
       </Helmet>
       <FloatingHowItWorks
-        title="How service booking works"
+        title="How Book & Glow works"
         steps={[
           { title: "Filter", description: "Pick a category, city, price range or search by name." },
-          { title: "Pick a service", description: "Providers may list several services (Cut, Highlights…) with their own price & duration." },
-          { title: "Pick a slot", description: "Slot length auto-adjusts to the service you chose." },
+          { title: "Pick a service", description: "Providers list services (Cut, Highlights, Manicure…) with their own price & duration." },
+          { title: "Pick a slot", description: "Slot length auto-adjusts to the service you choose." },
           { title: "Pay in EUR", description: "Secure Stripe checkout at the fixed price." },
           { title: "Get reminded", description: "Add the booking to your calendar for a 24 h reminder. Cancel > 24 h in advance for a refund." },
         ]}
@@ -86,9 +86,9 @@ export default function ServicesList() {
           <div className="mb-8 flex items-start justify-between gap-4 flex-wrap">
             <div>
               <h1 className="text-4xl font-black mb-2 flex items-center gap-3">
-                <Store className="w-8 h-8 text-primary" /> Find a Service
+                <Store className="w-8 h-8 text-primary" /> Find a Provider
               </h1>
-              <p className="text-muted-foreground">Book any professional — hair, nails, massage, tutoring, repair.</p>
+              <p className="text-muted-foreground">Book hair, nails, makeup, massage, tattoo, fitness and wellness professionals.</p>
             </div>
             <div className="flex gap-2 flex-wrap">
               <Button asChild variant="outline"><Link to="/services/provider/setup">Offer services</Link></Button>
