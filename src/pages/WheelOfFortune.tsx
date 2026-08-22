@@ -62,6 +62,39 @@ interface LeaderRow {
   games_won: number;
 }
 
+/** Physical wheel layout — every value the server can roll appears here. */
+const SEGMENTS: { key: string; label: string; tone: "a" | "b" | "bankrupt" | "lose" }[] = [
+  { key: "500", label: "500", tone: "a" },
+  { key: "bankrupt", label: "BANKRUPT", tone: "bankrupt" },
+  { key: "300", label: "300", tone: "b" },
+  { key: "800", label: "800", tone: "a" },
+  { key: "lose_turn", label: "LOSE TURN", tone: "lose" },
+  { key: "400", label: "400", tone: "b" },
+  { key: "650", label: "650", tone: "a" },
+  { key: "1000", label: "1000", tone: "b" },
+  { key: "200", label: "200", tone: "a" },
+  { key: "1500", label: "1500", tone: "b" },
+  { key: "bankrupt", label: "BANKRUPT", tone: "bankrupt" },
+  { key: "500", label: "500", tone: "a" },
+  { key: "800", label: "800", tone: "b" },
+  { key: "100", label: "100", tone: "a" },
+  { key: "2500", label: "2500", tone: "b" },
+  { key: "lose_turn", label: "LOSE TURN", tone: "lose" },
+];
+
+const SEG_ANGLE = 360 / SEGMENTS.length;
+const SEG_COLOR: Record<string, string> = {
+  a: "hsl(var(--primary))",
+  b: "hsl(var(--accent))",
+  bankrupt: "hsl(var(--destructive))",
+  lose: "hsl(var(--muted-foreground) / 0.45)",
+};
+const WHEEL_GRADIENT = `conic-gradient(${SEGMENTS.map(
+  (s, i) => `${SEG_COLOR[s.tone]} ${i * SEG_ANGLE}deg ${(i + 1) * SEG_ANGLE}deg`,
+).join(", ")})`;
+const SPIN_MS = 3800;
+
+
 export default function WheelOfFortune() {
   const navigate = useNavigate();
   const [state, setState] = useState<GameState | null>(null);
@@ -143,17 +176,42 @@ export default function WheelOfFortune() {
     });
 
   const spin = async () => {
+    if (spinning) return;
     setSpinning(true);
-    setAngle((a) => a + 1440 + Math.floor(Math.random() * 360));
-    await new Promise((r) => setTimeout(r, 1400));
-    await handle("spin", "wheel_spin", undefined, (res) => {
+    setBusy("spin");
+    try {
+      const { data, error } = await supabase.rpc("wheel_spin" as never);
+      if (error) throw error;
+      const res = (data ?? {}) as Record<string, unknown>;
+      if (res.ok === false) {
+        toast.error(String(res.error ?? "failed").replace(/_/g, " "));
+        return;
+      }
       const outcome = String(res.outcome);
+      const matches = SEGMENTS.map((s, i) => (s.key === outcome ? i : -1)).filter((i) => i >= 0);
+      const idx = matches.length ? matches[Math.floor(Math.random() * matches.length)] : 0;
+
+      // Land the chosen segment's centre under the top pointer, always spinning forward.
+      setAngle((a) => {
+        const target = 360 - (idx * SEG_ANGLE + SEG_ANGLE / 2);
+        const base = Math.ceil((a + 1) / 360) * 360;
+        return base + 360 * 4 + target;
+      });
+      await new Promise((r) => setTimeout(r, SPIN_MS + 150));
+
+      if (res.state) setState(res.state as unknown as GameState);
       if (outcome === "bankrupt") toast.error("Bankrupt! Your round bank is gone.");
       else if (outcome === "lose_turn") toast("Lose a turn — spin again.");
       else toast.success(`${outcome} per letter — pick a consonant!`);
-    });
-    setSpinning(false);
+      void refreshWallet();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Something went wrong");
+    } finally {
+      setSpinning(false);
+      setBusy(null);
+    }
   };
+
 
   const guess = (letter: string) =>
     handle(`letter-${letter}`, "wheel_guess_letter", { _letter: letter }, (res) => {
@@ -323,30 +381,53 @@ export default function WheelOfFortune() {
 
                 {/* Wheel */}
                 <div className="flex flex-col items-center gap-4">
-                  <div className="relative h-40 w-40">
+                  <div className="relative h-64 w-64 sm:h-72 sm:w-72">
+                    {/* pointer */}
                     <div
-                      className="absolute inset-0 rounded-full border-8 border-primary/30 transition-transform duration-[1400ms] ease-out"
+                      className="absolute left-1/2 top-0 z-20 h-0 w-0 -translate-x-1/2 -translate-y-1 border-l-[10px] border-r-[10px] border-t-[20px] border-l-transparent border-r-transparent border-t-foreground drop-shadow"
+                      aria-hidden
+                    />
+                    <div
+                      className="absolute inset-0 rounded-full border-[6px] border-primary/40 shadow-xl shadow-primary/20"
                       style={{
                         transform: `rotate(${angle}deg)`,
-                        background: `conic-gradient(hsl(var(--primary)) 0deg 45deg, hsl(var(--accent)) 45deg 90deg, hsl(var(--muted)) 90deg 135deg, hsl(var(--primary)) 135deg 180deg, hsl(var(--destructive)) 180deg 225deg, hsl(var(--accent)) 225deg 270deg, hsl(var(--muted)) 270deg 315deg, hsl(var(--primary)) 315deg 360deg)` }}
+                        background: WHEEL_GRADIENT,
+                        transition: `transform ${SPIN_MS}ms cubic-bezier(0.12, 0.72, 0.06, 1)`,
+                      }}
                     >
-                      <div className="absolute inset-6 flex items-center justify-center rounded-full bg-background text-center">
+                      {SEGMENTS.map((s, i) => (
+                        <div
+                          key={`${s.key}-${i}`}
+                          className="absolute left-1/2 top-0 h-1/2 origin-bottom"
+                          style={{ transform: `rotate(${i * SEG_ANGLE + SEG_ANGLE / 2}deg)` }}
+                          aria-hidden
+                        >
+                          <span
+                            className={`block -translate-x-1/2 pt-3 text-[10px] font-black tracking-tight sm:text-xs ${
+                              s.tone === "lose" ? "text-foreground/80" : "text-white"
+                            }`}
+                            style={{ writingMode: "vertical-rl" }}
+                          >
+                            {s.label}
+                          </span>
+                        </div>
+                      ))}
+                      <div className="absolute inset-[26%] z-10 flex items-center justify-center rounded-full border-4 border-primary/30 bg-background text-center shadow-inner">
                         <span className="px-1 text-sm font-bold leading-tight">
-                          {state.pending_value
-                            ? `${state.pending_value}`
-                            : state.last_spin === "bankrupt"
-                              ? "Bankrupt"
-                              : state.last_spin === "lose_turn"
-                                ? "Lost turn"
-                                : "Spin"}
+                          {spinning
+                            ? "…"
+                            : state.pending_value
+                              ? `${state.pending_value}`
+                              : state.last_spin === "bankrupt"
+                                ? "Bankrupt"
+                                : state.last_spin === "lose_turn"
+                                  ? "Lost turn"
+                                  : "Spin"}
                         </span>
                       </div>
                     </div>
-                    <div
-                      className="absolute left-1/2 top-0 h-0 w-0 -translate-x-1/2 -translate-y-2 border-l-8 border-r-8 border-t-[16px] border-l-transparent border-r-transparent border-t-foreground"
-                      aria-hidden
-                    />
                   </div>
+
                   <Button
                     onClick={spin}
                     disabled={spinning || busy === "spin" || state.pending_value != null}
