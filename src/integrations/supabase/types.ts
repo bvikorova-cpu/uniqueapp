@@ -71524,6 +71524,13 @@ export type Database = {
       }
       wheel_buy_coins: { Args: { _credits: number }; Returns: Json }
       wheel_buy_hint: { Args: never; Returns: Json }
+      wheel_categories: {
+        Args: never
+        Returns: {
+          category: string
+          puzzle_count: number
+        }[]
+      }
       wheel_get_game: { Args: never; Returns: Json }
       wheel_guess_letter: { Args: { _letter: string }; Returns: Json }
       wheel_leaderboard: {
