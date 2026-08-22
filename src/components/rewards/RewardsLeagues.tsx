@@ -63,13 +63,23 @@ export default function RewardsLeagues() {
       if (mine) {
         const { data: g } = await supabase
           .from("user_league_standings")
-          .select("user_id, weekly_xp, tier, rank, profile:profiles(full_name, avatar_url)")
+          .select("user_id, weekly_xp, tier, rank")
           .eq("season_id", s.id)
           .eq("tier", mine.tier)
           .eq("group_number", mine.group_number)
           .order("weekly_xp", { ascending: false })
           .limit(30);
-        setGroup(g || []);
+
+        const ids = (g || []).map((r: any) => r.user_id);
+        let profileMap: Record<string, any> = {};
+        if (ids.length) {
+          const { data: profs } = await supabase
+            .from("profiles")
+            .select("id, full_name, avatar_url")
+            .in("id", ids);
+          profileMap = Object.fromEntries((profs || []).map((p: any) => [p.id, p]));
+        }
+        setGroup((g || []).map((r: any) => ({ ...r, profile: profileMap[r.user_id] ?? null })));
       }
       setLoading(false);
     })();
