@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Trophy, ArrowUp, ArrowDown, Minus, Shield } from "lucide-react";
 import { motion } from "framer-motion";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+import { InfoHint } from "@/components/common/InfoHint";
 
 const TIERS = [
   { id: "bronze", label: "Bronze", color: "from-amber-700 to-amber-900", text: "text-amber-300" },
@@ -129,7 +130,23 @@ export default function RewardsLeagues() {
           <CardTitle className="flex items-center gap-2">
             <Trophy className="h-5 w-5 text-primary" />
             Your group ({group.length} players)
+            <InfoHint label="How your group is matched">
+              <div className="space-y-2">
+                <p>
+                  <strong>Your group</strong> is a small, random matchmaking pool of players in the same league tier and the same weekly season.
+                </p>
+                <p>
+                  <strong>group_number</strong> is the system ID of that pool. It is assigned automatically when the season starts so everyone in the group competes at the same level.
+                </p>
+                <p>
+                  You cannot choose or change your group. Promotion and relegation are calculated inside each group separately.
+                </p>
+              </div>
+            </InfoHint>
           </CardTitle>
+          <CardDescription className="text-xs">
+            Players are matched by tier and split into random pools at the start of each weekly season.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (
