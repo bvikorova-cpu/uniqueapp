@@ -1,12 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Crown, Plus, ExternalLink, Megaphone, Filter, Search, MapPin } from "lucide-react";
+import { Crown, Plus, ExternalLink, Megaphone, Filter, Search, MapPin, Heart, Maximize2 } from "lucide-react";
 import { useResolvedStorageUrl } from "@/lib/storageSigned";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import SEO from "@/components/SEO";
@@ -27,71 +30,143 @@ interface PromoListing {
 
 const PROMO_CATEGORIES = ["all", "business", "event", "restaurant", "beauty", "fitness", "shop", "service", "real_estate", "job", "other"];
 
-function PromoMedia({ url, type, alt }: { url: string; type: string; alt: string }) {
+function prettyDomain(url: string): string {
+  try {
+    const u = new URL(url.startsWith("http") ? url : `https://${url}`);
+    return u.hostname.replace(/^www\./, "");
+  } catch {
+    return url.replace(/^https?:\/\//, "").replace(/^www\./, "").split("/")[0];
+  }
+}
+
+function PromoMedia({ url, type, alt, full = false }: { url: string; type: string; alt: string; full?: boolean }) {
   const resolved = useResolvedStorageUrl(url);
   if (!resolved) {
     return <div className="w-full h-full bg-muted animate-pulse" />;
   }
+  const cls = full ? "w-full max-h-[80vh] object-contain" : "w-full h-full object-cover";
   if (type === "video") {
     return (
       <video
         src={resolved}
-        muted
+        muted={!full}
         loop
         autoPlay
         playsInline
-        className="w-full h-full object-cover"
+        controls={full}
+        className={cls}
       />
     );
   }
-  return <img src={resolved} alt={alt} loading="lazy" className="w-full h-full object-cover" />;
+  return <img src={resolved} alt={alt} loading={full ? "eager" : "lazy"} className={cls} />;
 }
 
-function PromoCard({ listing }: { listing: PromoListing }) {
+function PromoCard({
+  listing,
+  likeCount,
+  liked,
+  onToggleLike,
+}: {
+  listing: PromoListing;
+  likeCount: number;
+  liked: boolean;
+  onToggleLike: (id: string) => void;
+}) {
   const isTop = listing.tier === "top";
-  const inner = (
-    <Card
-      className={`overflow-hidden group hover:shadow-xl transition-all duration-300 h-full ${
-        isTop ? "ring-2 ring-primary shadow-lg shadow-primary/20" : ""
-      }`}
-    >
-      <div className="relative aspect-[4/3] bg-muted overflow-hidden">
-        <PromoMedia url={listing.media_url} type={listing.media_type} alt={listing.title} />
-        {isTop && (
-          <Badge className="absolute top-2 left-2 bg-gradient-to-r from-primary to-accent text-white shadow-md">
-            <Crown className="h-3 w-3 mr-1" /> TOP
-          </Badge>
-        )}
-      </div>
-      <CardContent className="p-4">
-        <h3 className="font-bold text-lg line-clamp-2 mb-1">{listing.title}</h3>
-        {listing.description && (
-          <p className="text-sm text-muted-foreground line-clamp-3">{listing.description}</p>
-        )}
-        {listing.link_url && (
-          <div className="mt-3 inline-flex items-center gap-1 text-xs text-primary">
-            <ExternalLink className="h-3 w-3" /> Visit
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <Card
+        className={`overflow-hidden group hover:shadow-xl transition-all duration-300 h-full ${
+          isTop ? "ring-2 ring-primary shadow-lg shadow-primary/20" : ""
+        }`}
+      >
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label={`Open ${listing.title}`}
+          className="relative aspect-[4/3] w-full bg-muted overflow-hidden block cursor-zoom-in"
+        >
+          <PromoMedia url={listing.media_url} type={listing.media_type} alt={listing.title} />
+          {isTop && (
+            <Badge className="absolute top-2 left-2 bg-gradient-to-r from-primary to-accent text-white shadow-md">
+              <Crown className="h-3 w-3 mr-1" /> TOP
+            </Badge>
+          )}
+          <span className="absolute bottom-2 right-2 inline-flex items-center justify-center h-8 w-8 rounded-full bg-background/80 backdrop-blur opacity-0 group-hover:opacity-100 transition-opacity">
+            <Maximize2 className="h-4 w-4" />
+          </span>
+        </button>
+        <CardContent className="p-4">
+          <h3 className="font-bold text-lg line-clamp-2 mb-1">{listing.title}</h3>
+          {listing.description && (
+            <p className="text-sm text-muted-foreground line-clamp-3">{listing.description}</p>
+          )}
+          <div className="mt-3 flex items-center justify-between gap-2">
+            {listing.link_url ? (
+              <a
+                href={listing.link_url}
+                target="_blank"
+                rel="noopener noreferrer sponsored"
+                className="inline-flex items-center gap-1 text-xs text-primary hover:underline min-w-0"
+              >
+                <ExternalLink className="h-3 w-3 shrink-0" />
+                <span className="truncate">Visit ({prettyDomain(listing.link_url)})</span>
+              </a>
+            ) : (
+              <span />
+            )}
+            <Button
+              size="sm"
+              variant={liked ? "default" : "outline"}
+              className="h-8 px-2 shrink-0"
+              onClick={() => onToggleLike(listing.id)}
+              aria-pressed={liked}
+              aria-label={liked ? "Unlike" : "Like"}
+            >
+              <Heart className={`h-4 w-4 mr-1 ${liked ? "fill-current" : ""}`} />
+              {likeCount}
+            </Button>
           </div>
-        )}
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-4xl p-2 sm:p-4">
+          <div className="rounded-lg overflow-hidden bg-black/90 flex items-center justify-center">
+            {open && <PromoMedia url={listing.media_url} type={listing.media_type} alt={listing.title} full />}
+          </div>
+          <div className="px-1 pt-2">
+            <h3 className="font-bold text-lg">{listing.title}</h3>
+            {listing.description && <p className="text-sm text-muted-foreground mt-1">{listing.description}</p>}
+            {listing.link_url && (
+              <a
+                href={listing.link_url}
+                target="_blank"
+                rel="noopener noreferrer sponsored"
+                className="mt-2 inline-flex items-center gap-1 text-sm text-primary hover:underline"
+              >
+                <ExternalLink className="h-4 w-4" /> Visit ({prettyDomain(listing.link_url)})
+              </a>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
-  if (listing.link_url) {
-    return (
-      <a href={listing.link_url} target="_blank" rel="noopener noreferrer sponsored">
-        {inner}
-      </a>
-    );
-  }
-  return inner;
 }
+
 
 export default function PromotionsBoard() {
+  const { user } = useAuth();
   const [listings, setListings] = useState<PromoListing[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [cat, setCat] = useState("all");
   const [cityFilter, setCityFilter] = useState("all");
+  const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
+  const [myLikes, setMyLikes] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     (async () => {
@@ -107,6 +182,55 @@ export default function PromotionsBoard() {
       setLoading(false);
     })();
   }, []);
+
+  useEffect(() => {
+    if (listings.length === 0) return;
+    const ids = listings.map((l) => l.id);
+    (async () => {
+      const { data } = await supabase
+        .from("promo_listing_likes")
+        .select("listing_id,user_id")
+        .in("listing_id", ids);
+      const counts: Record<string, number> = {};
+      const mine = new Set<string>();
+      (data ?? []).forEach((row: { listing_id: string; user_id: string }) => {
+        counts[row.listing_id] = (counts[row.listing_id] ?? 0) + 1;
+        if (user && row.user_id === user.id) mine.add(row.listing_id);
+      });
+      setLikeCounts(counts);
+      setMyLikes(mine);
+    })();
+  }, [listings, user]);
+
+  const toggleLike = async (id: string) => {
+    if (!user) {
+      toast.error("Sign in to like promotions");
+      return;
+    }
+    const liked = myLikes.has(id);
+    setMyLikes((prev) => {
+      const next = new Set(prev);
+      if (liked) next.delete(id); else next.add(id);
+      return next;
+    });
+    setLikeCounts((prev) => ({ ...prev, [id]: Math.max(0, (prev[id] ?? 0) + (liked ? -1 : 1)) }));
+
+    const { error } = liked
+      ? await supabase.from("promo_listing_likes").delete().eq("listing_id", id).eq("user_id", user.id)
+      : await supabase.from("promo_listing_likes").insert({ listing_id: id, user_id: user.id });
+
+    if (error) {
+      // revert
+      setMyLikes((prev) => {
+        const next = new Set(prev);
+        if (liked) next.add(id); else next.delete(id);
+        return next;
+      });
+      setLikeCounts((prev) => ({ ...prev, [id]: Math.max(0, (prev[id] ?? 0) + (liked ? 1 : -1)) }));
+      toast.error("Could not save your like");
+    }
+  };
+
 
   const cities = useMemo(() => {
     const s = new Set<string>();
@@ -247,7 +371,7 @@ export default function PromotionsBoard() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {topListings.map((l) => (
-                    <PromoCard key={l.id} listing={l} />
+                    <PromoCard key={l.id} listing={l} likeCount={likeCounts[l.id] ?? 0} liked={myLikes.has(l.id)} onToggleLike={toggleLike} />
                   ))}
                 </div>
               </section>
@@ -258,7 +382,7 @@ export default function PromotionsBoard() {
                 <h2 className="text-2xl font-bold mb-4">All promotions</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {standardListings.map((l) => (
-                    <PromoCard key={l.id} listing={l} />
+                    <PromoCard key={l.id} listing={l} likeCount={likeCounts[l.id] ?? 0} liked={myLikes.has(l.id)} onToggleLike={toggleLike} />
                   ))}
                 </div>
               </section>
