@@ -102,12 +102,17 @@ export default function CosmeticVisualPreview({
   if (category === "animated_border") {
     return (
       <div className="aspect-square rounded mb-2 bg-muted/30 flex items-center justify-center p-2">
-        <div className={`w-full h-full rounded-lg bg-card flex items-center justify-center text-2xl ${BORDER_STYLE[slug] ?? "border-4 border-primary"}`}>
-          {emoji || "✨"}
+        <div className={`w-full h-full rounded-lg bg-card flex flex-col items-center justify-center gap-1.5 ${BORDER_STYLE[slug] ?? "border-4 border-primary"}`}>
+          <Avatar className="h-10 w-10">
+            <AvatarImage src={avatarUrl || undefined} alt={`${name} preview`} />
+            <AvatarFallback className="text-[10px]">{initials}</AvatarFallback>
+          </Avatar>
+          <span className="text-[10px] font-semibold truncate max-w-full px-1">{who}</span>
         </div>
       </div>
     );
   }
+
 
   return (
     <div className="aspect-square rounded mb-2 bg-muted/30 flex items-center justify-center text-3xl">
