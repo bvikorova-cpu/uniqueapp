@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Snowflake, Flame, ShieldCheck, Sparkles } from "lucide-react";
+import { CheckCircle2, Flame, Info, Snowflake, Sparkles, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
@@ -85,10 +85,11 @@ export default function RewardsStreakFreeze() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Streak Freeze" intro="Protect your daily login streak from breaking if you miss a day." steps={[
-        { title: "Why it matters", desc: "Losing your streak resets your bonus multiplier back to 1x. A freeze keeps the streak intact." },
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Streak Freeze" intro="Protect your daily login streak when you miss exactly one day." steps={[
+        { title: "When it works", desc: "A freeze is used only if you missed exactly 1 day, you have at least 1 freeze in inventory, and you have not used a freeze in the last 7 days." },
+        { title: "Exact calculation", desc: "If today UTC minus your last claim date = 2 days, and the rules above pass, the system consumes 1 freeze and keeps your streak count unchanged." },
+        { title: "When it does NOT work", desc: "It does not cover 2+ missed days in a row, another freeze used in the last 7 days, or an empty inventory." },
         { title: "Buy freezes", desc: "Pick a pack (single, triple, week shield) and pay with XP or AI credits (1 / 3 / 6)." },
-        { title: "Auto-apply", desc: "If you skip a day, one freeze is automatically consumed the next morning." },
         { title: "Stack them", desc: "You can hold multiple freezes at once — great before holidays or busy weeks." },
       ]} /></div>
       <Card className="overflow-hidden border-cyan-500/30">
@@ -114,10 +115,39 @@ export default function RewardsStreakFreeze() {
             <span>Current streak: <b>{streak} days</b></span>
           </div>
         </div>
-        <CardContent className="pt-4">
-          <div className="flex items-start gap-2 text-xs text-muted-foreground">
-            <ShieldCheck className="h-4 w-4 text-cyan-400 mt-0.5 flex-shrink-0" />
-            <p>Auto-applied if you miss a day. Each freeze covers 1 missed day. Max 1 freeze per week.</p>
+        <CardContent className="pt-4 space-y-4">
+          <div className="flex items-start gap-2 text-sm">
+            <Info className="h-4 w-4 text-cyan-400 mt-0.5 flex-shrink-0" />
+            <p>Auto-applied if you miss exactly one day. Each freeze covers 1 missed day. <strong>Max 1 freeze per 7 days.</strong></p>
+          </div>
+
+          <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+            <h3 className="text-sm font-semibold flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+              When a freeze is applied
+            </h3>
+            <ul className="text-sm space-y-1.5 text-muted-foreground">
+              <li>• You missed exactly <strong>1 day</strong> (not 2 or more).</li>
+              <li>• You have at least <strong>1 freeze</strong> in inventory.</li>
+              <li>• You have not used a freeze in the <strong>last 7 days</strong>.</li>
+              <li>• You claim the next daily reward after the missed day.</li>
+            </ul>
+            <p className="text-sm text-muted-foreground">
+              <strong>Calculation:</strong> If today&apos;s UTC date minus your last claim date = 2 days, and the above rules pass, the system consumes 1 freeze and keeps your streak count unchanged.
+            </p>
+          </div>
+
+          <div className="bg-destructive/10 rounded-lg p-4 space-y-2">
+            <h3 className="text-sm font-semibold flex items-center gap-2 text-destructive">
+              <XCircle className="h-4 w-4" />
+              When it does NOT apply
+            </h3>
+            <ul className="text-sm space-y-1 text-muted-foreground">
+              <li>• You missed 2 or more days in a row.</li>
+              <li>• You already used a freeze in the last 7 days.</li>
+              <li>• You have 0 freezes in inventory.</li>
+              <li>• You did not claim the next daily reward after the missed day.</li>
+            </ul>
           </div>
         </CardContent>
       </Card>
