@@ -52,7 +52,7 @@ interface Props {
 
 export default function MegatalentLuxeNav({ active, onChange }: Props) {
   return (
-    <section className="my-8">
+    <section className="my-8 relative z-20 isolate pointer-events-auto">
       <div className="text-center mb-6">
         <p className="text-[11px] uppercase tracking-[0.35em] text-gold font-semibold">
           The Megatalent stage
