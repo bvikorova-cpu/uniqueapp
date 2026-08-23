@@ -68808,6 +68808,7 @@ export type Database = {
         }
         Returns: number
       }
+      backfill_card_art_tick: { Args: never; Returns: undefined }
       badge_hunters_leaderboard: {
         Args: { _limit?: number }
         Returns: {
