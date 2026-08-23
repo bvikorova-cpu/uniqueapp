@@ -98,30 +98,33 @@ const MegatalentUploadPaywallDialog = ({ open, onOpenChange }: Props) => {
         <div className="space-y-2">
           <Button
             size="lg"
-            className="w-full justify-between"
+            className="w-full justify-between gap-2 px-3 text-sm"
             onClick={() => startCheckout("premium")}
             disabled={loadingTier !== null}
           >
-            <span className="flex items-center gap-2"><Star className="h-4 w-4" /> Premium</span>
-            <span className="font-bold">
+            <span className="flex items-center gap-2 min-w-0"><Star className="h-4 w-4 shrink-0" /> Premium</span>
+            <span className="font-bold shrink-0 whitespace-nowrap">
               {loadingTier === "premium" ? <Loader2 className="h-4 w-4 animate-spin" /> : "€10 / month"}
             </span>
           </Button>
           <Button
             size="lg"
             variant="secondary"
-            className="w-full justify-between"
+            className="w-full justify-between gap-2 px-3 h-auto py-2.5 text-sm"
             onClick={() => startCheckout("top_premium")}
             disabled={loadingTier !== null}
           >
-            <span className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 fill-current" /> TOP Premium
-              <span className="text-xs opacity-80">(2× vote weight)</span>
+            <span className="flex flex-col items-start min-w-0 text-left">
+              <span className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 fill-current shrink-0" /> TOP Premium
+              </span>
+              <span className="text-[10px] opacity-80">2× vote weight</span>
             </span>
-            <span className="font-bold">
+            <span className="font-bold shrink-0 whitespace-nowrap">
               {loadingTier === "top_premium" ? <Loader2 className="h-4 w-4 animate-spin" /> : "€15 / month"}
             </span>
           </Button>
+
           <p className="text-xs text-muted-foreground text-center pt-1">
             Already paid?{" "}
             <button className="underline" onClick={() => window.location.reload()}>Refresh access</button>
