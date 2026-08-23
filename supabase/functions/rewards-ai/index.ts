@@ -134,25 +134,45 @@ DELIVER ALL SECTIONS, fully written out:
         throw new Error(`Unknown action: ${action}`);
     }
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-        max_completion_tokens: action === "xp_optimizer" ? 8000 : 3000 }) });
+    // Ask the model to always finish its answer; never stop mid-sentence.
+    systemPrompt += " Always deliver a complete answer: finish every section and every sentence. Never stop mid-sentence. If space is limited, keep sections shorter but always reach a proper conclusion and end with a final closing line.";
 
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error("OpenAI error:", errText);
-      throw new Error("AI service error");
+    const messages: Array<{ role: string; content: string }> = [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
+    ];
+
+    const maxTokens = action === "xp_optimizer" ? 8000 : 6000;
+    let result = "";
+    let finishReason = "";
+
+    // Up to 3 passes: if the model runs out of tokens, ask it to continue
+    // exactly where it stopped so the text is never cut mid-sentence.
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "gpt-4o-mini", messages, max_completion_tokens: maxTokens }) });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        console.error("OpenAI error:", errText);
+        if (attempt === 0) throw new Error("AI service error");
+        break;
+      }
+
+      const data = await response.json();
+      const chunk = data.choices?.[0]?.message?.content || "";
+      finishReason = data.choices?.[0]?.finish_reason || "";
+      if (!chunk && attempt === 0) throw new Error("No AI response");
+      result += (result && chunk ? "\n" : "") + chunk;
+
+      if (finishReason !== "length") break;
+
+      messages.push({ role: "assistant", content: chunk });
+      messages.push({ role: "user", content: "Continue exactly where you stopped. Do not repeat anything already written, do not re-introduce, just carry on and finish all remaining sections with a proper conclusion." });
     }
 
-    const data = await response.json();
-    const result = data.choices?.[0]?.message?.content;
     if (!result) throw new Error("No AI response");
 
     await supabase.from("ai_credits").update({ credits_remaining: remaining - creditCost }).eq("user_id", user.id);
