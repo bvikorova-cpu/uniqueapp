@@ -68494,7 +68494,7 @@ export type Database = {
     Functions: {
       _grant_xp_and_log: {
         Args: {
-          _meta: Json
+          _meta?: Json
           _ref: string
           _source: string
           _user_id: string
