@@ -52,7 +52,7 @@ interface Props {
 
 export default function MegatalentLuxeNav({ active, onChange }: Props) {
   return (
-    <section className="my-8">
+    <section className="my-8 relative z-20 isolate pointer-events-auto">
       <div className="text-center mb-6">
         <p className="text-[11px] uppercase tracking-[0.35em] text-gold font-semibold">
           The Megatalent stage
@@ -79,8 +79,9 @@ export default function MegatalentLuxeNav({ active, onChange }: Props) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.07, duration: 0.5 }}
               whileHover={{ y: -4 }}
+              whileTap={{ scale: 0.98 }}
               aria-pressed={isActive}
-              className={`group relative overflow-hidden rounded-3xl p-[1px] text-left transition-shadow ${
+              className={`group relative z-10 cursor-pointer overflow-hidden rounded-3xl p-[1px] text-left transition-shadow ${
                 isActive ? "shadow-gold" : "hover:shadow-gold"
               }`}
               style={{
@@ -90,7 +91,7 @@ export default function MegatalentLuxeNav({ active, onChange }: Props) {
               }}
             >
               <div
-                className={`relative h-full rounded-[calc(1.5rem-1px)] p-5 backdrop-blur-xl ${
+                className={`pointer-events-none relative h-full rounded-[calc(1.5rem-1px)] p-5 backdrop-blur-xl ${
                   isActive ? "bg-card/95" : "bg-card/70"
                 }`}
               >
