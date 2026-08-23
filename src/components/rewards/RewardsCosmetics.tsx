@@ -123,21 +123,25 @@ export default function RewardsCosmetics() {
 
   const equip = async (item: any) => {
     if (!user || busyId) return;
+    setBusyId(item.id);
+    try {
+      await equipById(item);
+      toast.success(`Equipped ${item.name}`);
+      await load();
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const unequip = async (item: any) => {
+    if (!user || busyId) return;
     const rec = owned[item.id];
     if (!rec) return;
     setBusyId(item.id);
     try {
-      const sameCatIds = items
-        .filter(i => i.category === item.category)
-        .map(i => owned[i.id])
-        .filter(Boolean)
-        .map((r: any) => r.id);
-      if (sameCatIds.length > 0) {
-        await supabase.from("user_rewards_cosmetics").update({ is_equipped: false }).in("id", sameCatIds);
-      }
-      await supabase.from("user_rewards_cosmetics").update({ is_equipped: true }).eq("id", rec.id);
-      toast.success(`Equipped ${item.name}`);
+      await supabase.from("user_rewards_cosmetics").update({ is_equipped: false }).eq("id", rec.id);
       window.dispatchEvent(new Event(REWARDS_COSMETICS_UPDATED));
+      toast.success(`Removed ${item.name}`);
       await load();
     } finally {
       setBusyId(null);
