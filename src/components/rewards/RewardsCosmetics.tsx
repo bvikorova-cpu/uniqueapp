@@ -23,6 +23,21 @@ export default function RewardsCosmetics() {
   const [owned, setOwned] = useState<Record<string, any>>({});
   const [tab, setTab] = useState("avatar_frame");
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [profile, setProfile] = useState<{ username: string | null; full_name: string | null; avatar_url: string | null } | null>(null);
+
+  useEffect(() => {
+    if (!user) { setProfile(null); return; }
+    let alive = true;
+    (async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("username, full_name, avatar_url")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (alive) setProfile((data as any) || null);
+    })();
+    return () => { alive = false; };
+  }, [user?.id]);
 
   const CATS = useMemo(() => [
     { id: "avatar_frame", label: "Frames" },
