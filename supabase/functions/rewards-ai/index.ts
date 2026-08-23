@@ -53,8 +53,36 @@ serve(async (req) => {
 
     switch (action) {
       case "xp_optimizer":
-        systemPrompt = "You are a gamification strategist and XP optimization expert.";
-        userPrompt = `Create a personalized XP optimization strategy:\n\nCurrent Level: ${params.current_level || "1"}\nCurrent XP: ${params.current_xp || "0"}\nTarget Level: ${params.target_level || "10"}\nDaily Activity Hours: ${params.daily_hours || "1-2 hours"}\nPreferred Activities: ${params.activities || "Posting, commenting, liking"}\n\nProvide:\n1. **XP Gap Analysis**\n2. **Daily XP Blueprint**\n3. **High-Value Activities** ranked by XP/minute\n4. **Streak Strategy**\n5. **Badge Hunting Plan**\n6. **Weekly Milestones**\n7. **Hidden XP Boosters**\n8. **Level-Up Forecast**`;
+        systemPrompt = "You are a gamification strategist and XP optimization expert for the Unique platform. Write a rich, detailed, practical plan in English. Use markdown headings, short paragraphs and tables where useful. Never invent XP thresholds: use ONLY the official table given to you. Be concrete with numbers, and always finish every section you start.";
+        userPrompt = `Create a deep, personalized XP optimization strategy.
+
+USER DATA
+- Current Level: ${params.current_level || "1"}
+- Current XP: ${params.current_xp || "0"}
+- Target Level: ${params.target_level || "10"}
+- Daily time available: ${params.daily_hours || "1-2 hours"}
+- Preferred activities: ${params.activities || "Posting, commenting, liking"}
+
+OFFICIAL XP FACTS (use exactly these, do not assume others)
+- Level formula: level N requires (N-1) * 100 XP cumulative (L1=0, L2=100, L3=200, L4=300, L5=400, L10=900, L20=1900).
+- Typical XP rewards: daily login 10-140 XP (calendar, grows with streak), create post 10 XP, comment 3 XP, like 1 XP, win Brain Duel 25 XP, complete AI tool run 5 XP, referral 100 XP, challenge win bonus (locked XP).
+- 10,000 XP = 1 AI credit in the XP converter. XP earned in Eco/Healthy Challenges is LOCKED and cannot be converted.
+- Streak freeze protects the login streak (max 1 use per 7 days).
+
+DELIVER ALL SECTIONS, fully written out:
+1. **XP Gap Analysis** — exact XP still needed to the target level, using the official formula (show the arithmetic).
+2. **Daily XP Blueprint** — a realistic day-by-day routine that fits the available time, with per-activity XP and a daily total.
+3. **High-Value Activities** — table ranked by XP per minute (activity | XP | est. minutes | XP/min).
+4. **Weekly Plan** — Monday-Sunday table with focus, actions and expected weekly XP total.
+5. **Streak Strategy** — how to maximize the login calendar, when to use a freeze, streak milestones.
+6. **Badge & Achievement Plan** — which badges to chase first and how to unlock them.
+7. **Battle Pass & Leagues** — how this routine also moves the Genesis battle pass tiers and the league ranking.
+8. **Hidden XP Boosters** — underused platform actions worth extra XP.
+9. **Level-Up Forecast** — table: level | cumulative XP needed | estimated date at your pace.
+10. **Credits Outlook** — how long until the routine earns 10,000 XP (= 1 credit) and what to spend it on.
+11. **Mistakes To Avoid** — 5 traps that waste time or lock XP.
+12. **Action Checklist** — 10 concrete steps for the next 7 days.`;
+
         break;
 
       case "badge_predictor":
