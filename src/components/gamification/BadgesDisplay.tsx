@@ -114,8 +114,11 @@ export default function BadgesDisplay({ userId }: BadgesDisplayProps) {
                             <Lock className="absolute -bottom-1 -right-1 h-3 w-3 text-muted-foreground" />
                           )}
                         </div>
-                        <p className="text-[10px] font-medium text-center line-clamp-1 w-full">
+                        <p className="text-[11px] leading-tight font-medium text-center w-full break-words hyphens-auto">
                           {badge.name}
+                        </p>
+                        <p className="text-[9px] text-muted-foreground text-center">
+                          {badge.requirement_value} {badge.requirement_type?.replace(/_/g, " ")}
                         </p>
                       </motion.div>
                     </TooltipTrigger>
