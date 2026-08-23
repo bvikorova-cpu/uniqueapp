@@ -79,8 +79,9 @@ export default function MegatalentLuxeNav({ active, onChange }: Props) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.07, duration: 0.5 }}
               whileHover={{ y: -4 }}
+              whileTap={{ scale: 0.98 }}
               aria-pressed={isActive}
-              className={`group relative overflow-hidden rounded-3xl p-[1px] text-left transition-shadow ${
+              className={`group relative z-10 cursor-pointer overflow-hidden rounded-3xl p-[1px] text-left transition-shadow ${
                 isActive ? "shadow-gold" : "hover:shadow-gold"
               }`}
               style={{
