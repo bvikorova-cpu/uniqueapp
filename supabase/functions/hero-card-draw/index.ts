@@ -205,17 +205,23 @@ serve(async (req) => {
     if (!pool || pool.length === 0) return j({ error: "The card pool is empty" }, 400);
 
 
-    const denied = await deductAICredits(user.id, DRAW_COST, "hero_card_draw");
-    if (denied) return denied;
+    const { data: deductRes, error: deductErr } = await db.rpc("deduct_ai_credits", {
+      p_user_id: user.id,
+      p_amount: DRAW_COST,
+      p_reason: "hero_card_draw",
+      p_source: "character_arena",
+    });
+    if (deductErr || !deductRes) {
+      const msg = deductErr?.message ?? "";
+      if (msg.includes("Insufficient") || msg.includes("No credit balance")) {
+        return j({ error: "Insufficient credits", code: "INSUFFICIENT_CREDITS", required: DRAW_COST, action: "hero_card_draw" }, 402);
+      }
+      console.error("[hero-card-draw] draw deduct failed", deductErr);
+      return j({ error: "Credit deduction failed" }, 500);
+    }
 
     const { data: balRow } = await db.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
     const after = balRow?.credits_remaining ?? 0;
-    await db.from("ai_credits_ledger").insert({ user_id: user.id,
-      delta: -DRAW_COST,
-      balance_before: after + DRAW_COST,
-      balance_after: after,
-      reason: "hero_card_draw",
-      source: "character_arena" });
 
     try {
       // Weighting layer: when a collector is one card away from completing the
