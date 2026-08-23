@@ -9,8 +9,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Upload, Video, Camera, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { useSpendCredits } from "@/hooks/useSpendCredits";
 import { supabase } from "@/integrations/supabase/client";
+import { safeInvoke } from "@/utils/safeInvoke";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ReferralProgram } from "@/components/megatalent/ReferralProgram";
 import { MegaTalentGuide } from "@/components/megatalent/MegaTalentGuide";
@@ -64,8 +64,6 @@ type ActiveView = string | null;
 
 const Megatalent = () => {
   const navigate = useNavigate();
-  const { spend } = useSpendCredits();
-
   const [activeView, setActiveView] = useState<ActiveView>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
   // Publishing always requires a real paid plan (€10 / €15) — even for admins,
@@ -326,14 +324,22 @@ const Megatalent = () => {
     if (!uploadedFile) { toast({ title: "Error", description: "Please upload media first", variant: "destructive" }); return; }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
-    if (!hasPaidPlan) {
-      setUploadPaywallOpen(true);
-      return;
-    }
     setSubmitting(true);
     try {
-      const paid = await spend("megatalent_upload", { description: `upload:${selectedCategory}` });
-      if (!paid) { setSubmitting(false); return; }
+      // Always refresh entitlement at the moment of publishing. This covers a
+      // payment completed in another tab and avoids relying on stale page state.
+      if (!hasPaidPlan) {
+        const { data, error: verificationError } = await safeInvoke("check-router", {
+          body: { action: "megatalent_sub" },
+        });
+        if (verificationError || data?.subscribed !== true) {
+          setUploadPaywallOpen(true);
+          return;
+        }
+        setHasPaidPlan(true);
+        setIsSubscribed(true);
+        setSubscriptionTier(data.tier === "top_premium" ? "top_premium" : "premium");
+      }
       const { error } = await supabase.from('talent_submissions').insert({ user_id: user.id, title: title.trim(), description: description.trim(), category: selectedCategory as any, media_url: uploadedFile.url, media_type: uploadedFile.type });
       if (error) throw error;
       toast({ title: "Published!", description: "Your submission is now live" });

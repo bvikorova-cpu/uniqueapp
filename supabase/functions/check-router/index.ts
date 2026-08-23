@@ -402,21 +402,51 @@ serve(async (req) => {
     }
 
     if (action === "megatalent_sub") {
-      const customers = await stripe.customers.list({ email: user.email!, limit: 1 });
-      if (customers.data.length === 0) {
+      const requestedSessionId = typeof body?.session_id === "string" ? body.session_id.trim() : "";
+      let customerId: string | null = null;
+      let sessionSubscriptionId: string | null = null;
+
+      // Immediately after checkout, verify the exact Checkout Session instead
+      // of waiting for Stripe's customer/subscription list to become consistent.
+      if (requestedSessionId) {
+        const checkout = await stripe.checkout.sessions.retrieve(requestedSessionId);
+        if (checkout.metadata?.user_id !== user.id) {
+          return json({ error: "This payment does not belong to the signed-in user" }, 403);
+        }
+        customerId = typeof checkout.customer === "string" ? checkout.customer : checkout.customer?.id ?? null;
+        sessionSubscriptionId = typeof checkout.subscription === "string"
+          ? checkout.subscription
+          : checkout.subscription?.id ?? null;
+      }
+
+      if (!customerId) {
+        const customers = await stripe.customers.list({ email: user.email ?? undefined, limit: 1 });
+        customerId = customers.data[0]?.id ?? null;
+      }
+      if (!customerId) {
         await sb.from("megatalent_subscriptions").update({ status: "inactive" }).eq("user_id", user.id).eq("status", "active");
         return json({ subscribed: false, tier: null });
       }
-      const customerId = customers.data[0].id;
-      const subs = await stripe.subscriptions.list({ customer: customerId, status: "active", limit: 5 });
-      const mtSub = subs.data.find((s) => s.items.data.some((it) => MT_PRICE_TO_TIER[it.price.id]));
+      let mtSub = sessionSubscriptionId
+        ? await stripe.subscriptions.retrieve(sessionSubscriptionId)
+        : null;
+      if (!mtSub || !["active", "trialing"].includes(mtSub.status)) {
+        const subs = await stripe.subscriptions.list({ customer: customerId, status: "all", limit: 10 });
+        mtSub = subs.data.find((s) =>
+          ["active", "trialing"].includes(s.status) &&
+          s.items.data.some((it) => MT_PRICE_TO_TIER[it.price.id])
+        ) ?? null;
+      }
       if (!mtSub) {
         await sb.from("megatalent_subscriptions").update({ status: "inactive" }).eq("user_id", user.id).eq("status", "active");
         return json({ subscribed: false, tier: null });
       }
-      const priceId = mtSub.items.data.find((it) => MT_PRICE_TO_TIER[it.price.id])!.price.id;
+      const matchingItem = mtSub.items.data.find((it) => MT_PRICE_TO_TIER[it.price.id]);
+      if (!matchingItem) return json({ subscribed: false, tier: null });
+      const priceId = matchingItem.price.id;
       const tier = MT_PRICE_TO_TIER[priceId];
-      const end = periodEndIso(mtSub)!;
+      const end = periodEndIso(mtSub);
+      if (!tier || !end) return json({ subscribed: false, tier: null });
       const payload = { user_id: user.id, tier, price: MT_TIER_PRICE[tier], bonus_votes: 0,
         win_chance_boost: tier === "top_premium" ? 100 : 0,
         status: "active", stripe_customer_id: customerId,
