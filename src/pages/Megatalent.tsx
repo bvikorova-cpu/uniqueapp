@@ -294,11 +294,9 @@ const Megatalent = () => {
     if (!file) return;
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
-    if (!hasPaidPlan) {
-      event.target.value = "";
-      setUploadPaywallOpen(true);
-      return;
-    }
+    // Paywall is enforced on Publish (see handleSubmit) so the user can fill
+    // in everything first.
+
     const isImage = type === 'image';
     const validMime = isImage ? file.type.startsWith('image/') : file.type.startsWith('video/');
     if (!validMime) { toast({ title: "Invalid file", description: `Please select a ${isImage ? 'photo' : 'video'} file`, variant: "destructive" }); return; }
