@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { refundAICredits } from "./credits.ts";
 import { generateOpenAIImage } from "./unifiedAI.ts";
 
 const corsHeaders = {
