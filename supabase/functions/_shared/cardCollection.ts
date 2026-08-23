@@ -1,5 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
-import { deductAICredits, refundAICredits } from "./credits.ts";
+import { refundAICredits } from "./credits.ts";
 import { generateOpenAIImage } from "./unifiedAI.ts";
 
 const corsHeaders = {
@@ -649,19 +649,23 @@ export async function handleCardCollection(req: Request, preparsed?: any): Promi
       .order("card_index", { ascending: true });
     if (!pool || pool.length === 0) return j({ error: "This collection is empty." }, 404);
 
-    const denied = await deductAICredits(user.id, DRAW_COST, "collection_card_draw");
-    if (denied) return denied;
+    const { data: deductRes, error: deductErr } = await db.rpc("deduct_ai_credits", {
+      p_user_id: user.id,
+      p_amount: DRAW_COST,
+      p_reason: `collection_card_draw:${category}`,
+      p_source: "card_collections",
+    });
+    if (deductErr || !deductRes) {
+      const msg = deductErr?.message ?? "";
+      if (msg.includes("Insufficient") || msg.includes("No credit balance")) {
+        return j({ error: "Insufficient credits", code: "INSUFFICIENT_CREDITS", required: DRAW_COST, category }, 402);
+      }
+      console.error("[card-collection] deduct failed", deductErr);
+      return j({ error: "Credit deduction failed" }, 500);
+    }
 
     const { data: balRow } = await db.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
     const after = balRow?.credits_remaining ?? 0;
-    await db.from("ai_credits_ledger").insert({
-      user_id: user.id,
-      delta: -DRAW_COST,
-      balance_before: after + DRAW_COST,
-      balance_after: after,
-      reason: `collection_card_draw:${category}`,
-      source: "card_collections",
-    });
 
     try {
       const { data: owned } = await db

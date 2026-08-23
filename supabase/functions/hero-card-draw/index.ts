@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
-import { deductAICredits, refundAICredits } from "../_shared/credits.ts";
+import { refundAICredits } from "../_shared/credits.ts";
 import { generateOpenAIImage } from "../_shared/unifiedAI.ts";
 import { handleCardCollection } from "../_shared/cardCollection.ts";
 
@@ -118,17 +118,23 @@ serve(async (req) => {
       if (existing) return j({ error: "You have already claimed Unitas.", character: existing }, 400);
       if (!complete) return j({ error: "Complete the whole collection first — every card needs at least one copy." }, 400);
 
-      const deniedU = await deductAICredits(user.id, UNITAS_COST, "unitas_mega_hero");
-      if (deniedU) return deniedU;
+      const { data: deductU, error: deductUErr } = await db.rpc("deduct_ai_credits", {
+        p_user_id: user.id,
+        p_amount: UNITAS_COST,
+        p_reason: "unitas_mega_hero",
+        p_source: "character_arena",
+      });
+      if (deductUErr || !deductU) {
+        const msg = deductUErr?.message ?? "";
+        if (msg.includes("Insufficient") || msg.includes("No credit balance")) {
+          return j({ error: "Insufficient credits", code: "INSUFFICIENT_CREDITS", required: UNITAS_COST, action: "unitas_mega_hero" }, 402);
+        }
+        console.error("[hero-card-draw] unitas deduct failed", deductUErr);
+        return j({ error: "Credit deduction failed" }, 500);
+      }
 
       const { data: balU } = await db.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
       const afterU = balU?.credits_remaining ?? 0;
-      await db.from("ai_credits_ledger").insert({ user_id: user.id,
-        delta: -UNITAS_COST,
-        balance_before: afterU + UNITAS_COST,
-        balance_after: afterU,
-        reason: "unitas_mega_hero",
-        source: "character_arena" });
 
       try {
         let imageUrl: string | null = null;
@@ -199,17 +205,23 @@ serve(async (req) => {
     if (!pool || pool.length === 0) return j({ error: "The card pool is empty" }, 400);
 
 
-    const denied = await deductAICredits(user.id, DRAW_COST, "hero_card_draw");
-    if (denied) return denied;
+    const { data: deductRes, error: deductErr } = await db.rpc("deduct_ai_credits", {
+      p_user_id: user.id,
+      p_amount: DRAW_COST,
+      p_reason: "hero_card_draw",
+      p_source: "character_arena",
+    });
+    if (deductErr || !deductRes) {
+      const msg = deductErr?.message ?? "";
+      if (msg.includes("Insufficient") || msg.includes("No credit balance")) {
+        return j({ error: "Insufficient credits", code: "INSUFFICIENT_CREDITS", required: DRAW_COST, action: "hero_card_draw" }, 402);
+      }
+      console.error("[hero-card-draw] draw deduct failed", deductErr);
+      return j({ error: "Credit deduction failed" }, 500);
+    }
 
     const { data: balRow } = await db.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
     const after = balRow?.credits_remaining ?? 0;
-    await db.from("ai_credits_ledger").insert({ user_id: user.id,
-      delta: -DRAW_COST,
-      balance_before: after + DRAW_COST,
-      balance_after: after,
-      reason: "hero_card_draw",
-      source: "character_arena" });
 
     try {
       // Weighting layer: when a collector is one card away from completing the
