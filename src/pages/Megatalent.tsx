@@ -571,7 +571,10 @@ const Megatalent = () => {
 
           <MegatalentExpandedMediaDialog media={expandedMedia} onClose={() => setExpandedMedia(null)} />
 
+          <MegatalentUploadPaywallDialog open={uploadPaywallOpen} onOpenChange={setUploadPaywallOpen} />
+
           <MegatalentCopyrightCard />
+
         </div>
       </div>
     </>
