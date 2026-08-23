@@ -43,61 +43,33 @@ export default function RewardsCosmetics() {
 
   useEffect(() => { load(); }, [user?.id]);
 
-  // After Stripe redirects back: verify session and grant ownership.
-  useEffect(() => {
-    if (!user) return;
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("cosmetic") !== "success") return;
-    const sessionId = params.get("session_id");
-    const itemId = params.get("item");
-    if (!sessionId || !itemId) return;
-    (async () => {
-      const { data, error } = await supabase.functions.invoke("verify-cosmetic-purchase", {
-        body: { sessionId, itemId } });
-      if (error || !(data as any)?.ok) {
-        toast.error((data as any)?.error ?? error?.message ?? "Acquire failed");
-      } else {
-        toast.success(`Acquired ${""}!`);
-        load();
-      }
-      // Clean URL.
-      const url = new URL(window.location.href);
-      ["cosmetic", "session_id", "item"].forEach(k => url.searchParams.delete(k));
-      window.history.replaceState({}, "", url.toString());
-    })();
-  }, [user?.id]);
-
-  const acquire = async (item: any) => {
+  const acquire = async (item: any, payWith: "xp" | "credits") => {
     if (!user || busyId) return;
     setBusyId(item.id);
     try {
-      if (item.price_eur && Number(item.price_eur) > 0) {
-        const successPath = `/rewards?cosmetic=success&item=${encodeURIComponent(item.id)}`;
-        const { data, error } = await supabase.functions.invoke("create-one-off-payment", {
-          body: {
-            productKey: "cosmetic_purchase",
-            amount: Math.round(Number(item.price_eur) * 100),
-            name: item.name,
-            description: `${item.category} • ${item.rarity}`,
-            metadata: { itemId: item.id },
-            successPath } });
-        if (error || !(data as any)?.url) {
-          toast.error(error?.message ?? "Checkout failed");
-          return;
-        }
-        window.location.href = (data as any).url;
-        return;
-      }
-      const { data, error } = await supabase.rpc("acquire_cosmetic_item", { _item_id: item.id });
+      const { data, error } = await supabase.rpc("acquire_cosmetic_item" as any, {
+        _item_id: item.id,
+        _pay_with: payWith,
+      });
       if (error) { toast.error(error.message); return; }
       const res = data as any;
-      if (!res?.ok) { toast.error(res?.error ?? "Acquire failed"); return; }
+      if (!res?.ok) {
+        const map: Record<string, string> = {
+          insufficient_xp: "Not enough XP (locked challenge XP cannot be used).",
+          insufficient_credits: "Not enough AI credits.",
+          already_owned: "You already own this item.",
+        };
+        toast.error(map[res?.error] ?? res?.error ?? "Acquire failed");
+        return;
+      }
       toast.success(`Acquired ${item.name}!`);
+      window.dispatchEvent(new Event("ai-credits-updated"));
       await load();
     } finally {
       setBusyId(null);
     }
   };
+
 
   const equip = async (item: any) => {
     if (!user || busyId) return;
