@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Loader2, Sparkles, Star } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Loader2, Sparkles, Star, Gift } from "lucide-react";
+import { applyReferralCode } from "@/lib/referralCode";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -18,10 +21,29 @@ interface Props {
 const MegatalentUploadPaywallDialog = ({ open, onOpenChange }: Props) => {
   const { toast } = useToast();
   const [loadingTier, setLoadingTier] = useState<null | "premium" | "top_premium">(null);
+  const [referralCode, setReferralCode] = useState("");
 
   const startCheckout = async (tier: "premium" | "top_premium") => {
     setLoadingTier(tier);
     try {
+      // Optional referral code — attribute it before payment so the code owner
+      // automatically gets their €5 reward once the subscription is paid.
+      if (referralCode.trim()) {
+        const res = await applyReferralCode(referralCode);
+        if (!res.ok) {
+          toast({
+            title: "Invalid referral code",
+            description: res.error ?? "Please check the code or leave it empty.",
+            variant: "destructive" });
+          setLoadingTier(null);
+          return;
+        }
+        toast({
+          title: res.alreadyClaimed ? "Referral already applied" : "Referral code applied ✅",
+          description: res.alreadyClaimed
+            ? "A referral code is already linked to your account."
+            : "Your inviter will receive their €5 bonus after your payment." });
+      }
       const { data, error } = await supabase.functions.invoke("create-megatalent-checkout", {
         body: { tier } });
       if (error) throw error;
@@ -54,6 +76,23 @@ const MegatalentUploadPaywallDialog = ({ open, onOpenChange }: Props) => {
           <li>✅ Access to all 35+ categories</li>
           <li>✅ Eligible for cash prizes for winners</li>
         </ul>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="mt-referral" className="text-sm flex items-center gap-1.5">
+            <Gift className="h-3.5 w-3.5 text-primary" /> Referral code (optional)
+          </Label>
+          <Input
+            id="mt-referral"
+            placeholder="e.g. UNIQ-1A2B3C"
+            value={referralCode}
+            onChange={(e) => setReferralCode(e.target.value)}
+            disabled={loadingTier !== null}
+            maxLength={64}
+          />
+          <p className="text-xs text-muted-foreground">
+            Got a code from a friend? Enter it and they receive a €5 bonus after your payment.
+          </p>
+        </div>
 
         <div className="space-y-2">
           <Button
