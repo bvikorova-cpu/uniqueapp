@@ -16,9 +16,20 @@ interface BadgesDisplayProps {
 }
 
 export default function BadgesDisplay({ userId }: BadgesDisplayProps) {
-  const { data: userBadges = [] } = useUserBadges(userId);
+  const { data: userBadges = [], refetch: refetchUserBadges } = useUserBadges(userId);
   const { data: allBadges = [] } = useAllBadges();
   const previousBadgeCount = useRef(0);
+  const synced = useRef(false);
+
+  // Sync real progress: unlock any badge the user already qualifies for
+  useEffect(() => {
+    if (!userId || synced.current) return;
+    synced.current = true;
+    (async () => {
+      const { error } = await supabase.rpc("check_and_award_badges" as any, { p_user_id: userId });
+      if (!error) refetchUserBadges();
+    })();
+  }, [userId, refetchUserBadges]);
 
   const earnedBadgeIds = new Set(userBadges.map((ub: any) => ub.badge_id));
 
