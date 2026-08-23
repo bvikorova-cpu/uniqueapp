@@ -9,10 +9,11 @@ import { toast } from "sonner";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 const PACKS = [
-  { qty: 1, xp: 200, eur: 0.99, label: "Single Freeze" },
-  { qty: 3, xp: 500, eur: 2.49, label: "Triple Pack", popular: true },
-  { qty: 7, xp: 1000, eur: 4.99, label: "Week Shield" },
+  { qty: 1, xp: 200, credits: 1, label: "Single Freeze" },
+  { qty: 3, xp: 500, credits: 3, label: "Triple Pack", popular: true },
+  { qty: 7, xp: 1000, credits: 6, label: "Week Shield" },
 ];
+
 
 export default function RewardsStreakFreeze() {
   const { user } = useAuth();
