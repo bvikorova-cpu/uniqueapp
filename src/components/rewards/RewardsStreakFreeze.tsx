@@ -85,10 +85,11 @@ export default function RewardsStreakFreeze() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Streak Freeze" intro="Protect your daily login streak from breaking if you miss a day." steps={[
-        { title: "Why it matters", desc: "Losing your streak resets your bonus multiplier back to 1x. A freeze keeps the streak intact." },
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Streak Freeze" intro="Protect your daily login streak when you miss exactly one day." steps={[
+        { title: "When it works", desc: "A freeze is used only if you missed exactly 1 day, you have at least 1 freeze in inventory, and you have not used a freeze in the last 7 days." },
+        { title: "Exact calculation", desc: "If today UTC minus your last claim date = 2 days, and the rules above pass, the system consumes 1 freeze and keeps your streak count unchanged." },
+        { title: "When it does NOT work", desc: "It does not cover 2+ missed days in a row, another freeze used in the last 7 days, or an empty inventory." },
         { title: "Buy freezes", desc: "Pick a pack (single, triple, week shield) and pay with XP or AI credits (1 / 3 / 6)." },
-        { title: "Auto-apply", desc: "If you skip a day, one freeze is automatically consumed the next morning." },
         { title: "Stack them", desc: "You can hold multiple freezes at once — great before holidays or busy weeks." },
       ]} /></div>
       <Card className="overflow-hidden border-cyan-500/30">
