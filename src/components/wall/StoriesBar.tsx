@@ -174,7 +174,7 @@ export const StoriesBar = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
                 <div className="absolute top-2 left-2">
-                  <div className="w-9 h-9 rounded-full p-[2px] bg-gradient-to-br from-primary via-accent to-primary">
+                  <div className={`w-9 h-9 rounded-full p-[2px] ${storyFrame(story.user_id) || "bg-gradient-to-br from-primary via-accent to-primary"}`}>
                     <Avatar className="w-full h-full border-2 border-background">
                       <AvatarImage src={story.profiles?.avatar_url || undefined} />
                       <AvatarFallback className="text-[10px] bg-accent">{story.profiles?.full_name?.[0] || "U"}</AvatarFallback>
@@ -304,7 +304,7 @@ export const StoriesBar = () => {
             )}
 
             <div className="absolute top-6 left-4 flex items-center gap-3 z-[10010]">
-              <Avatar className="w-9 h-9 ring-2 ring-white/30">
+              <Avatar className={`w-9 h-9 ${storyFrame(viewingStory?.user_id) || "ring-2 ring-white/30"}`}>
                 <AvatarImage src={viewingStory.profiles?.avatar_url || undefined} />
                 <AvatarFallback>{viewingStory.profiles?.full_name?.[0]}</AvatarFallback>
               </Avatar>
