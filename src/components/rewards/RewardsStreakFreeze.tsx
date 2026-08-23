@@ -44,23 +44,25 @@ export default function RewardsStreakFreeze() {
     return () => window.removeEventListener("rewards-purchase-completed", onDone);
   }, [user?.id]);
 
-  const buy = async (pack: typeof PACKS[number], method: "xp" | "eur") => {
+  const buy = async (pack: typeof PACKS[number], method: "xp" | "credits") => {
     if (!user) return;
     const key = `${pack.label}-${method}`;
     if (buyingKey) return;
     setBuyingKey(key);
     try {
-      if (method === "eur") {
-        try {
-          const { data, error } = await supabase.functions.invoke("create-checkout", {
-            body: { product: "rewards_checkout", kind: "streak_freeze", qty: pack.qty } });
-          if (error) throw error;
-          const url = (data as any)?.url;
-          if (!url) throw new Error("No checkout URL");
-          window.location.href = url;
-        } catch (e: any) {
-          toast.error(e?.message || "Checkout failed");
+      if (method === "credits") {
+        const { data, error } = await (supabase as any).rpc("buy_streak_freeze_credits", { _qty: pack.qty });
+        if (error) return toast.error(error.message);
+        const res = data as any;
+        if (!res?.ok) {
+          const msg = res?.error === "insufficient_credits"
+            ? `Not enough AI credits (need ${pack.credits})`
+            : (res?.error ?? "Purchase failed");
+          return toast.error(msg);
         }
+        toast.success(`+${pack.qty} Streak Freeze${pack.qty > 1 ? "s" : ""} for ${pack.credits} credits ❄️`);
+        window.dispatchEvent(new Event("ai-credits-updated"));
+        await refresh();
         return;
       }
       const { data, error } = await supabase.rpc("buy_streak_freeze_xp" as any, { _qty: pack.qty,
@@ -77,6 +79,7 @@ export default function RewardsStreakFreeze() {
       setBuyingKey(null);
     }
   };
+
 
   if (loading) return <p className="text-sm text-muted-foreground p-4">Loading...</p>;
 
