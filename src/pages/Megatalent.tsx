@@ -19,7 +19,7 @@ import { AnimatedVoteCounter } from "@/components/megatalent/AnimatedVoteCounter
 import { VoteBoostTooltip } from "@/components/megatalent/VoteBoostTooltip";
 
 import MegaTalentHero from "@/components/megatalent/MegaTalentHero";
-import MegatalentClipOfDay from "@/components/megatalent/MegatalentClipOfDay";
+
 import MegatalentTalentShop from "@/components/megatalent/MegatalentTalentShop";
 import MegatalentStories from "@/components/megatalent/MegatalentStories";
 import MegatalentSponsorShowcase from "@/components/megatalent/MegatalentSponsorShowcase";
@@ -411,7 +411,7 @@ const Megatalent = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <MegatalentStories />
               <MegatalentSponsorShowcase category={selectedCategory} />
-              <MegatalentClipOfDay category={selectedCategory} />
+              
               <MegatalentTalentShop userId={currentUserId} />
               <MegatalentVotingStreak userId={currentUserId} />
               <MegatalentAchievements userId={currentUserId} />

@@ -43,7 +43,7 @@ import MegatalentFanClub from "@/components/megatalent/MegatalentFanClub";
 import MegatalentSeasonPass from "@/components/megatalent/MegatalentSeasonPass";
 import MegatalentEndorsements from "@/components/megatalent/MegatalentEndorsements";
 import MegatalentComments from "@/components/megatalent/MegatalentComments";
-import MegatalentClipOfDay from "@/components/megatalent/MegatalentClipOfDay";
+
 import MegatalentTalentShop from "@/components/megatalent/MegatalentTalentShop";
 import { ReferralProgram } from "@/components/megatalent/ReferralProgram";
 import MegatalentJudgePanel from "@/components/megatalent/MegatalentJudgePanel";
@@ -459,7 +459,7 @@ const MegatalentCategory = () => {
         </div>
 
         {/* Features #34-40 */}
-        <div className="mb-6"><MegatalentClipOfDay category={category} /></div>
+        
         <div className="mb-6"><MegatalentJudgePanel category={category} categories={config?.categories} userId={currentUserId} /></div>
         <div className="mb-6"><JudgeApplication userId={currentUserId} /></div>
         <div className="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
