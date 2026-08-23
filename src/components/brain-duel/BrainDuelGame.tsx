@@ -437,8 +437,13 @@ export const BrainDuelGame = ({
 
     } catch (err: any) {
       console.error('Submit answer error:', err);
-      toast.error('Failed to submit answer');
+      // Never leave the player stuck on a highlighted answer — let them tap again.
+      setSelectedAnswer(null);
+      setAnswerResult(null);
+      setAnswerStartTime(Date.now());
+      toast.error('Could not submit your answer. Please tap it again.');
     }
+
   };
 
   const nextQuestion = () => {
