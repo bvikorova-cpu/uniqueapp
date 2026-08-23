@@ -525,7 +525,8 @@ export const CardCategoryCollection = ({ category }: Props) => {
                             src={cardThumbUrl(c.image_url)}
                             alt={`${c.name} collectible card`}
                             className={`absolute inset-0 w-full h-full object-cover scale-[1.06] ${owned ? "" : "opacity-70 saturate-[0.6]"}`}
-                            loading={gridIndex < 8 ? "eager" : "lazy"}
+                            loading={gridIndex < 12 ? "eager" : "lazy"}
+                            fetchPriority={gridIndex < 12 ? "high" : "auto"}
                             decoding="async"
                             width={320}
                             height={400}
