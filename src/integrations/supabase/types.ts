@@ -69746,6 +69746,15 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_equipped_rewards_cosmetics: {
+        Args: { _user_ids: string[] }
+        Returns: {
+          category: string
+          name: string
+          slug: string
+          user_id: string
+        }[]
+      }
       get_escape_room_hint: { Args: { _puzzle_id: string }; Returns: string }
       get_escape_room_points_leaderboard: {
         Args: { _limit?: number }
