@@ -68991,6 +68991,10 @@ export type Database = {
         Args: { p_user_id: string }
         Returns: undefined
       }
+      check_and_award_badges_metric: {
+        Args: { p_metric: string; p_user_id: string }
+        Returns: undefined
+      }
       check_and_award_iq_badges: { Args: never; Returns: string[] }
       check_anon_dating_rate_limit: {
         Args: { p_action: string; p_max_per_minute?: number; p_user_id: string }
@@ -69285,6 +69289,14 @@ export type Database = {
       }
       create_payout_batch: { Args: { p_batch_date: string }; Returns: string }
       create_weekly_iq_tournament: { Args: never; Returns: string }
+      current_season_bounds: {
+        Args: never
+        Returns: {
+          ends_at: string
+          season: string
+          starts_at: string
+        }[]
+      }
       current_user_email: { Args: never; Returns: string }
       dating_send_gift_credits: {
         Args: { _gift_id: string; _match_id: string; _message?: string }

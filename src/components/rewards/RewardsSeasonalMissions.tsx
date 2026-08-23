@@ -10,10 +10,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 const seasons = [
-  { id: "spring", name: "Spring Bloom", emoji: "🌸", icon: Leaf, color: "from-green-500 to-emerald-500" },
-  { id: "summer", name: "Summer Festival", emoji: "☀️", icon: Sun, color: "from-amber-500 to-orange-500" },
-  { id: "autumn", name: "Harvest Season", emoji: "🍂", icon: Leaf, color: "from-orange-600 to-red-600" },
-  { id: "winter", name: "Winter Gala", emoji: "❄️", icon: Snowflake, color: "from-blue-400 to-cyan-500" },
+  { id: "spring", name: "Spring Bloom", months: "Mar · Apr · May", emoji: "🌸", icon: Leaf, color: "from-green-500 to-emerald-500" },
+  { id: "summer", name: "Summer Festival", months: "Jun · Jul · Aug", emoji: "☀️", icon: Sun, color: "from-amber-500 to-orange-500" },
+  { id: "autumn", name: "Harvest Season", months: "Sep · Oct · Nov", emoji: "🍂", icon: Leaf, color: "from-orange-600 to-red-600" },
+  { id: "winter", name: "Winter Gala", months: "Dec · Jan · Feb", emoji: "❄️", icon: Snowflake, color: "from-blue-400 to-cyan-500" },
 ];
 
 interface MissionRow {
@@ -62,8 +62,10 @@ export default function RewardsSeasonalMissions() {
     },
     onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }) });
 
-  // Determine the active season based on the first mission's season, fallback to summer
-  const activeSeasonId = missions[0]?.season ?? "summer";
+  // Season by calendar month: spring Mar-May, summer Jun-Aug, autumn Sep-Nov, winter Dec-Feb
+  const month = new Date().getMonth() + 1;
+  const monthSeason = month >= 3 && month <= 5 ? "spring" : month >= 6 && month <= 8 ? "summer" : month >= 9 && month <= 11 ? "autumn" : "winter";
+  const activeSeasonId = missions[0]?.season ?? monthSeason;
   const activeSeason = seasons.find(s => s.id === activeSeasonId) ?? seasons[1];
   const earliestEnd = missions.reduce<string | null>((acc, m) => (!acc || m.ends_at < acc ? m.ends_at : acc), null);
   const daysLeft = earliestEnd ? Math.max(0, Math.ceil((new Date(earliestEnd).getTime() - Date.now()) / 86400000)) : 0;
