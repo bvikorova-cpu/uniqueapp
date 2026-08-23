@@ -417,7 +417,6 @@ const Megatalent = () => {
             <ReferralProgram />
 
             <BattleRoyalePayouts userId={currentUserId} />
-            <UnifiedXPLeaderboard hub="megatalent" />
 
           </section>
 
