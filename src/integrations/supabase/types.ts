@@ -68808,6 +68808,19 @@ export type Database = {
         }
         Returns: number
       }
+      badge_hunters_leaderboard: {
+        Args: { _limit?: number }
+        Returns: {
+          avatar_url: string
+          badge_count: number
+          full_name: string
+          last_badge_at: string
+          level: number
+          rank: number
+          total_points: number
+          user_id: string
+        }[]
+      }
       badge_metric_value: {
         Args: { _metric: string; _user_id: string }
         Returns: number
