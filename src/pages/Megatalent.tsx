@@ -397,7 +397,19 @@ const Megatalent = () => {
 
 
 
-          <MegatalentLuxeNav active={luxeSection} onChange={setLuxeSection} />
+          <MegatalentLuxeNav
+            active={luxeSection}
+            onChange={(s) => {
+              setLuxeSection(s);
+              requestAnimationFrame(() => {
+                document
+                  .getElementById("megatalent-luxe-content")
+                  ?.scrollIntoView({ behavior: "smooth", block: "start" });
+              });
+            }}
+          />
+
+          <div id="megatalent-luxe-content" className="scroll-mt-24" />
 
           {luxeSection === "categories" && (
             <section className="space-y-8">
