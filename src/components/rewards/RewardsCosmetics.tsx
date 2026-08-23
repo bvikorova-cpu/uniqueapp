@@ -118,13 +118,16 @@ export default function RewardsCosmetics() {
                   const isOwned = !!owned[i.id];
                   const isEquipped = owned[i.id]?.is_equipped;
                   return (
-                    <div key={i.id} className={`p-3 rounded-lg border-2 ${RARITY[i.rarity]}`}>
-                      <div className="aspect-square bg-muted/30 rounded flex items-center justify-center text-3xl mb-2">
-                        {i.preview_url ? <img src={i.preview_url} alt={i.name} className="w-full h-full object-cover rounded" /> : "✨"}
+                    <div key={i.id} className={`p-3 rounded-lg border-2 flex flex-col ${RARITY[i.rarity]}`}>
+                      <div className="aspect-square bg-muted/30 rounded flex items-center justify-center text-3xl mb-2 overflow-hidden">
+                        {i.preview_url
+                          ? <img src={i.preview_url} alt={i.name} loading="lazy" className="w-full h-full object-cover rounded"
+                              onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
+                          : <span>✨</span>}
                       </div>
                       <p className="font-semibold text-sm truncate">{i.name}</p>
-                      <Badge variant="outline" className="text-[10px] capitalize">{i.rarity}</Badge>
-                      <div className="mt-2">
+                      <Badge variant="outline" className="text-[10px] capitalize w-fit">{i.rarity}</Badge>
+                      <div className="mt-2 space-y-1.5">
                         {isOwned ? (
                           isEquipped ? (
                             <Badge className="w-full justify-center"><Check className="h-3 w-3 mr-1" /> {"Equipped"}</Badge>
@@ -132,11 +135,26 @@ export default function RewardsCosmetics() {
                             <Button size="sm" variant="outline" className="w-full" disabled={busyId === i.id} onClick={() => equip(i)}>{busyId === i.id ? "…" : "Equip"}</Button>
                           )
                         ) : (
-                          <Button size="sm" className="w-full text-xs" disabled={busyId === i.id} onClick={() => acquire(i)}>
-                            {busyId === i.id ? "…" : (i.price_xp ? `${i.price_xp} XP` : i.price_eur ? `€${i.price_eur}` : "Get")}
-                          </Button>
+                          <>
+                            {i.price_xp > 0 && (
+                              <Button size="sm" className="w-full text-xs" disabled={busyId === i.id} onClick={() => acquire(i, "xp")}>
+                                {busyId === i.id ? "…" : `${i.price_xp} XP`}
+                              </Button>
+                            )}
+                            {i.price_credits > 0 && (
+                              <Button size="sm" variant="outline" className="w-full text-xs" disabled={busyId === i.id} onClick={() => acquire(i, "credits")}>
+                                {busyId === i.id ? "…" : `${i.price_credits} credits`}
+                              </Button>
+                            )}
+                            {!i.price_xp && !i.price_credits && (
+                              <Button size="sm" className="w-full text-xs" disabled={busyId === i.id} onClick={() => acquire(i, "xp")}>{busyId === i.id ? "…" : "Get"}</Button>
+                            )}
+                            <p className="text-[10px] text-muted-foreground text-center">{"Choose one payment"}</p>
+                          </>
                         )}
                       </div>
+                    </div>
+
                     </div>
                   );
                 })}
