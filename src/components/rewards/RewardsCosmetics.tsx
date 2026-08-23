@@ -103,6 +103,7 @@ export default function RewardsCosmetics() {
       }
       await supabase.from("user_rewards_cosmetics").update({ is_equipped: true }).eq("id", rec.id);
       toast.success(`Equipped ${item.name}`);
+      window.dispatchEvent(new Event(REWARDS_COSMETICS_UPDATED));
       await load();
     } finally {
       setBusyId(null);
