@@ -44,6 +44,8 @@ import MegatalentCopyrightCard from "@/components/megatalent/MegatalentCopyright
 import MegatalentSubscriptionManagement from "@/components/megatalent/MegatalentSubscriptionManagement";
 import MegatalentUploadPaywallDialog from "@/components/megatalent/MegatalentUploadPaywallDialog";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+import MegatalentLuxeNav, { type LuxeSection } from "@/components/megatalent/MegatalentLuxeNav";
+
 
 const MEGATALENT_HOW_IT_WORKS = [
   { title: "Register to watch & vote", desc: "Every registered user can browse Megatalent, vote and comment for free. A subscription (€10 or €15/month) is only needed to publish your own submission." },
