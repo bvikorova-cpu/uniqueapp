@@ -8,6 +8,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Sparkles, Check } from "lucide-react";
 import { toast } from "sonner";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+import CosmeticVisualPreview from "@/components/rewards/CosmeticVisualPreview";
 
 
 const RARITY: Record<string, string> = { common: "border-slate-400 bg-slate-500/10",
@@ -22,6 +23,21 @@ export default function RewardsCosmetics() {
   const [owned, setOwned] = useState<Record<string, any>>({});
   const [tab, setTab] = useState("avatar_frame");
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [profile, setProfile] = useState<{ username: string | null; full_name: string | null; avatar_url: string | null } | null>(null);
+
+  useEffect(() => {
+    if (!user) { setProfile(null); return; }
+    let alive = true;
+    (async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("username, full_name, avatar_url")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (alive) setProfile((data as any) || null);
+    })();
+    return () => { alive = false; };
+  }, [user?.id]);
 
   const CATS = useMemo(() => [
     { id: "avatar_frame", label: "Frames" },
@@ -119,12 +135,14 @@ export default function RewardsCosmetics() {
                   const isEquipped = owned[i.id]?.is_equipped;
                   return (
                     <div key={i.id} className={`p-3 rounded-lg border-2 flex flex-col ${RARITY[i.rarity]}`}>
-                      <div className="aspect-square bg-muted/30 rounded flex items-center justify-center text-3xl mb-2 overflow-hidden">
-                        {i.preview_url
-                          ? <img src={i.preview_url} alt={i.name} loading="lazy" className="w-full h-full object-cover rounded"
-                              onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
-                          : <span>✨</span>}
-                      </div>
+                      <CosmeticVisualPreview
+                        slug={i.slug}
+                        category={i.category}
+                        name={i.name}
+                        emoji={i.preview_url}
+                        avatarUrl={profile?.avatar_url}
+                        displayName={profile?.username || profile?.full_name}
+                      />
                       <p className="font-semibold text-sm truncate">{i.name}</p>
                       <Badge variant="outline" className="text-[10px] capitalize w-fit">{i.rarity}</Badge>
                       <div className="mt-2 space-y-1.5">
