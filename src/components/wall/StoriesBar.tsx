@@ -2,6 +2,8 @@ import { useState, useEffect, useMemo, Fragment } from "react";
 import { createPortal } from "react-dom";
 import { Plus, Play, Camera, Video, Megaphone, Loader2, Trash2, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useRewardsCosmetics } from "@/hooks/useRewardsCosmetics";
+import { rewardsFrameClass } from "@/lib/rewardsCosmeticStyles";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";

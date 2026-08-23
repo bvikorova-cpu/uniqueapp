@@ -8,6 +8,8 @@ import { Plus, X, MessageCircle, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import InfoHint from "@/components/common/InfoHint";
+import { useRewardsCosmetics } from "@/hooks/useRewardsCosmetics";
+import { rewardsFrameClass } from "@/lib/rewardsCosmeticStyles";
 
 interface NoteRow {
   id: string;
@@ -31,6 +33,8 @@ export const NotesBar = () => {
   const [emoji, setEmoji] = useState("💭");
   const [submitting, setSubmitting] = useState(false);
   const [viewing, setViewing] = useState<NoteRow | null>(null);
+  const cosmetics = useRewardsCosmetics([me, ...notes.map((n) => n.user_id), viewing?.user_id]);
+  const frameFor = (id?: string | null) => rewardsFrameClass(id ? cosmetics[id]?.avatar_frame : undefined);
 
   const load = useCallback(async () => {
     const { data: notesData, error } = await supabase
@@ -113,7 +117,7 @@ export const NotesBar = () => {
           >
             <div className="relative">
               {myNote || myProfile?.avatar_url ? (
-                <Avatar className="h-16 w-16 ring-2 ring-primary/40">
+                <Avatar className={`h-16 w-16 ${frameFor(me) || "ring-2 ring-primary/40"}`}>
                   <AvatarImage src={myProfile?.avatar_url ?? undefined} />
                   <AvatarFallback>{myProfile?.full_name?.charAt(0) ?? "U"}</AvatarFallback>
                 </Avatar>
@@ -146,7 +150,7 @@ export const NotesBar = () => {
                 className="flex flex-col items-center gap-1 w-20 shrink-0"
               >
                 <div className="relative">
-                  <Avatar className="h-16 w-16 ring-2 ring-accent/50">
+                  <Avatar className={`h-16 w-16 ${frameFor(n.user_id) || "ring-2 ring-accent/50"}`}>
                     <AvatarImage src={n.profile?.avatar_url ?? undefined} />
                     <AvatarFallback>{n.profile?.full_name?.charAt(0) ?? "U"}</AvatarFallback>
                   </Avatar>
@@ -219,7 +223,7 @@ export const NotesBar = () => {
             <>
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-3">
-                  <Avatar className="h-10 w-10">
+                  <Avatar className={`h-10 w-10 ${frameFor(viewing?.user_id)}`}>
                     <AvatarImage src={viewing.profile?.avatar_url ?? undefined} />
                     <AvatarFallback>{viewing.profile?.full_name?.charAt(0) ?? "U"}</AvatarFallback>
                   </Avatar>
