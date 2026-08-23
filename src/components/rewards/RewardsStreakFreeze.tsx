@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Snowflake, Flame, ShieldCheck, Sparkles } from "lucide-react";
+import { AlertCircle, CheckCircle2, Flame, ShieldCheck, Snowflake, Sparkles, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
