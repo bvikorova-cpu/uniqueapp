@@ -337,15 +337,10 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
   const startCheckout = async (tier: "premium" | "top_premium") => {
     setCheckoutLoading(tier);
     try {
-      const { data, error } = await supabase.functions.invoke("create-megatalent-checkout", {
-        body: { tier } });
-      if (error) throw error;
-      if (data?.url) {
-        // Redirect in same tab so Stripe sends user back to /megatalent?success=true
-        { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; } }
-      } else {
-        throw new Error("No checkout URL returned");
-      }
+      const url = await startMegatalentCheckout(tier);
+      const __w = window.open(url, "_blank", "noopener,noreferrer");
+      if (!__w) window.location.href = url;
+
     } catch (err: any) { toast({
         title: "Checkout failed",
         description: err?.message ?? "Could not start checkout. Please try again.",
