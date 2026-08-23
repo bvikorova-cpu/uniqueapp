@@ -25,7 +25,7 @@ import { useRewardsStats } from "@/hooks/useRewardsStats";
 import { toast } from "sonner";
 import { Crown, Home, Wand2, Trophy, Layers, Disc3, Target, Award, Medal, Flame,
   Gift, Eye, Sword, HelpCircle, ShoppingBag, Shield, Snowflake, CalendarDays,
-  Users, Castle, Map, Sparkles as SparklesIcon, PartyPopper, Heart } from "lucide-react";
+  Castle, Map, Sparkles as SparklesIcon, PartyPopper, Heart } from "lucide-react";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 const REWARDS_HOW_IT_WORKS = [
@@ -54,7 +54,6 @@ const RewardsLeagues = lazy(() => import("@/components/rewards/RewardsLeagues"))
 const RewardsBattlePass = lazy(() => import("@/components/rewards/RewardsBattlePass"));
 const RewardsStreakFreeze = lazy(() => import("@/components/rewards/RewardsStreakFreeze"));
 const RewardsLoginCalendar = lazy(() => import("@/components/rewards/RewardsLoginCalendar"));
-const RewardsFriendQuests = lazy(() => import("@/components/rewards/RewardsFriendQuests"));
 const RewardsGuilds = lazy(() => import("@/components/rewards/RewardsGuilds"));
 const RewardsQuestPath = lazy(() => import("@/components/rewards/RewardsQuestPath"));
 const RewardsCosmetics = lazy(() => import("@/components/rewards/RewardsCosmetics"));
@@ -66,7 +65,6 @@ const TABS = [
   { id: "battlepass", icon: Crown, label: "Battle Pass" },
   { id: "calendar", icon: CalendarDays, label: "Calendar" },
   { id: "freeze", icon: Snowflake, label: "Streak Freeze" },
-  { id: "friend-quests", icon: Users, label: "Friend Quests" },
   { id: "guilds", icon: Castle, label: "Guilds" },
   { id: "quest-path", icon: Map, label: "Quest Path" },
   { id: "cosmetics", icon: SparklesIcon, label: "Cosmetics" },
@@ -333,7 +331,6 @@ export default function Rewards() {
               {activeView === "battlepass" && <RewardsBattlePass />}
               {activeView === "calendar" && <RewardsLoginCalendar />}
               {activeView === "freeze" && <RewardsStreakFreeze />}
-              {activeView === "friend-quests" && <RewardsFriendQuests />}
               {activeView === "guilds" && <RewardsGuilds />}
               {activeView === "quest-path" && <RewardsQuestPath />}
               {activeView === "cosmetics" && <RewardsCosmetics />}
