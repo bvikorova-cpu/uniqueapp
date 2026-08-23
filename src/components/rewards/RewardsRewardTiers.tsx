@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Crown, Star, Shield, Gem, Lock, CheckCircle, Loader2 } from "lucide-react";
+import { Crown, Star, Shield, Gem, Lock, CheckCircle, Loader2, Info, Layers, Trophy, Calendar, Infinity } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useRewardsStats } from "@/hooks/useRewardsStats";
@@ -49,6 +49,39 @@ export default function RewardsRewardTiers() {
             <p className="font-black text-lg">{tiers[currentTierIdx]?.name || "Bronze"}</p>
             <Progress value={((currentXP - (tiers[currentTierIdx]?.minXP || 0)) / ((tiers[currentTierIdx]?.maxXP || 500) - (tiers[currentTierIdx]?.minXP || 0))) * 100} className="h-2 mt-1" />
             <p className="text-[10px] text-muted-foreground mt-0.5">{currentXP.toLocaleString()} / {tiers[currentTierIdx]?.maxXP.toLocaleString()} XP to next tier</p>
+          </div>
+        </div>
+      </Card>
+
+      <Card className="p-4 border-amber-400/20 bg-card/80 backdrop-blur-md">
+        <div className="flex items-start gap-3">
+          <div className="shrink-0 h-9 w-9 rounded-xl bg-amber-500/10 flex items-center justify-center">
+            <Info className="h-5 w-5 text-amber-500" />
+          </div>
+          <div className="space-y-2">
+            <p className="font-bold text-sm">Tiers vs. Leagues — what's the difference?</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+                  <Layers className="h-3.5 w-3.5 text-amber-500" /> Tiers
+                </div>
+                <ul className="space-y-1 text-[11px] text-muted-foreground leading-snug">
+                  <li className="flex items-center gap-1"><Infinity className="h-3 w-3 text-muted-foreground/60" /> Based on lifetime XP</li>
+                  <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Permanent — you never lose a tier</li>
+                  <li className="flex items-center gap-1"><Crown className="h-3 w-3 text-amber-500" /> Unlock perks forever</li>
+                </ul>
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+                  <Trophy className="h-3.5 w-3.5 text-purple-500" /> Leagues
+                </div>
+                <ul className="space-y-1 text-[11px] text-muted-foreground leading-snug">
+                  <li className="flex items-center gap-1"><Calendar className="h-3 w-3 text-muted-foreground/60" /> Weekly competition</li>
+                  <li className="flex items-center gap-1"><span className="text-xs">↻</span> Resets every Monday</li>
+                  <li className="flex items-center gap-1"><Shield className="h-3 w-3 text-purple-500" /> Everyone starts in Bronze each week</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </Card>
