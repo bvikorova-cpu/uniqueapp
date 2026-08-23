@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Loader2, Sparkles, Star, Gift } from "lucide-react";
 import { applyReferralCode } from "@/lib/referralCode";
 import { supabase } from "@/integrations/supabase/client";
+import { startMegatalentCheckout } from "@/lib/megatalentCheckout";
+
 import { useToast } from "@/hooks/use-toast";
 
 interface Props {
