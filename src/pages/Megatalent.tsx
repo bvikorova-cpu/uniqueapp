@@ -393,47 +393,55 @@ const Megatalent = () => {
 
 
 
-          <MegaTalentCategoryGrid />
+          <MegatalentLuxeNav active={luxeSection} onChange={setLuxeSection} />
 
-          <section className="my-8 space-y-6">
-            <div className="flex items-end justify-between gap-4">
+          {luxeSection === "categories" && (
+            <section className="space-y-8">
+              <MegaTalentCategoryGrid />
+              <MegaTalentLatestFeed categoryGroups={categoryGroups} />
+            </section>
+          )}
+
+          {luxeSection === "community" && (
+            <section className="space-y-6">
               <div>
-                <h2 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-600 bg-clip-text text-transparent">
-                  Top features
+                <h2 className="text-2xl sm:text-3xl font-black bg-gradient-gold bg-clip-text text-transparent">
+                  Creator lounge
                 </h2>
                 <p className="text-sm text-muted-foreground mt-1">
                   Earn XP, win recognition, and invite friends — all from one place.
                 </p>
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <MegatalentStories />
-              <MegatalentSponsorShowcase category={selectedCategory} />
-              
-              <MegatalentAchievements userId={currentUserId} />
-            </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <MegatalentStories />
+                <MegatalentSponsorShowcase category={selectedCategory} />
+                <MegatalentAchievements userId={currentUserId} />
+              </div>
 
-            <ReferralProgram />
+              <ReferralProgram />
 
-            <BattleRoyalePayouts userId={currentUserId} />
+              <BattleRoyalePayouts userId={currentUserId} />
 
-          </section>
+              {isSubscribed && (
+                <MegatalentSubscriptionManagement
+                  subscriptionTier={subscriptionTier}
+                  canceling={cancelingSubscription}
+                  onManage={handleManageSubscription}
+                  onCancel={handleCancelSubscription}
+                />
+              )}
+            </section>
+          )}
 
-          <MegaTalentGuide />
+          {luxeSection === "guide" && (
+            <section className="space-y-6">
+              <MegaTalentGuide />
+              <MegatalentCopyrightCard />
+            </section>
+          )}
 
-          <Tabs defaultValue="feed" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-6">
-              <TabsTrigger value="feed">Contest Feed</TabsTrigger>
-              <TabsTrigger value="latest">Latest</TabsTrigger>
-              <TabsTrigger value="referral">Referral Program</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="latest" className="mt-0">
-              <MegaTalentLatestFeed categoryGroups={categoryGroups} />
-            </TabsContent>
-
-            <TabsContent value="feed" className="mt-0">
+          {luxeSection === "compete" && (
               <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 <div className="lg:col-span-1 order-2 lg:order-1">
                   <Card className="sticky top-24 backdrop-blur-xl bg-card/80 border-yellow-500/10">
@@ -547,22 +555,8 @@ const Megatalent = () => {
                   </div>
                 </div>
               </div>
-            </TabsContent>
+          )}
 
-            <TabsContent value="referral" className="mt-0">
-              <div className="max-w-4xl mx-auto space-y-6">
-                <ReferralProgram />
-                {isSubscribed && (
-                  <MegatalentSubscriptionManagement
-                    subscriptionTier={subscriptionTier}
-                    canceling={cancelingSubscription}
-                    onManage={handleManageSubscription}
-                    onCancel={handleCancelSubscription}
-                  />
-                )}
-              </div>
-            </TabsContent>
-          </Tabs>
 
           <MegatalentCommentDialog
             openId={commentDialogOpen}
