@@ -25,7 +25,7 @@ import { useRewardsStats } from "@/hooks/useRewardsStats";
 import { toast } from "sonner";
 import { Crown, Home, Wand2, Trophy, Layers, Disc3, Target, Award, Medal, Flame,
   Gift, Eye, Sword, HelpCircle, ShoppingBag, Shield, Snowflake, CalendarDays,
-  Castle, Map, Sparkles as SparklesIcon, PartyPopper, Heart } from "lucide-react";
+  Sparkles as SparklesIcon, PartyPopper, Heart } from "lucide-react";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 const REWARDS_HOW_IT_WORKS = [
