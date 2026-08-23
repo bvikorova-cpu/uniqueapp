@@ -505,7 +505,7 @@ export const CardCategoryCollection = ({ category }: Props) => {
           ) : (
             <>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                {catalogue.slice(0, visibleCount).map((c) => {
+                {catalogue.slice(0, visibleCount).map((c, gridIndex) => {
                   const count = ownedCounts[c.id] ?? 0;
                   const owned = count > 0;
                   return (
@@ -523,7 +523,7 @@ export const CardCategoryCollection = ({ category }: Props) => {
                             src={c.image_url}
                             alt={`${c.name} collectible card`}
                             className={`absolute inset-0 w-full h-full object-cover scale-[1.06] ${owned ? "" : "opacity-70 saturate-[0.6]"}`}
-                            loading="lazy"
+                            loading={gridIndex < 8 ? "eager" : "lazy"}
                             decoding="async"
                             width={320}
                             height={400}
