@@ -412,13 +412,11 @@ const Megatalent = () => {
               <MegatalentStories />
               <MegatalentSponsorShowcase category={selectedCategory} />
               
-              <MegatalentTalentShop userId={currentUserId} />
-              <MegatalentVotingStreak userId={currentUserId} />
               <MegatalentAchievements userId={currentUserId} />
             </div>
 
             <ReferralProgram />
-            <MonthlyChampionRewardsCard module="megatalent" accent="primary" />
+
             <BattleRoyalePayouts userId={currentUserId} />
             <UnifiedXPLeaderboard hub="megatalent" />
 
