@@ -1,3 +1,4 @@
+import { cardThumbUrl } from "@/lib/cardImageUrl";
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -146,7 +147,7 @@ export const CardTrashBin = ({ category }: Props) => {
                 <div className={`relative aspect-[4/5] bg-gradient-to-br ${r.card?.gradient ?? "from-slate-500 to-slate-700"}`}>
                   {r.card?.image_url ? (
                     <img
-                      src={r.card.image_url}
+                      src={cardThumbUrl(r.card.image_url)}
                       alt={`${r.card.name} discarded collectible card`}
                       className="absolute inset-0 w-full h-full object-cover opacity-80 saturate-[0.7]"
                       loading="lazy"

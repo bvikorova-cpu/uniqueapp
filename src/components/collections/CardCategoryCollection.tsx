@@ -17,6 +17,8 @@ import { getCategoryBlurb } from "./categoryBlurbs";
 
 
 import { warmCollectionCardImages, readCachedCategory, writeCachedCategory } from "@/lib/collectionCardCache";
+import { cardThumbUrl, cardLargeUrl } from "@/lib/cardImageUrl";
+
 
 export const DRAW_COST = 1;
 export const CARDS_PER_CATEGORY = 150;
@@ -357,7 +359,7 @@ export const CardCategoryCollection = ({ category }: Props) => {
           <div className="mt-4 flex flex-col sm:flex-row items-center gap-4">
             {prime.card?.image_url && (
               <img
-                src={prime.card.image_url}
+                src={cardLargeUrl(prime.card.image_url)}
                 alt={`${category.name} Prime golden collectible card`}
                 className="w-32 rounded-xl border-2 border-amber-400/60 shadow-[0_0_30px_rgba(251,191,36,0.35)]"
                 loading="lazy"
@@ -412,7 +414,7 @@ export const CardCategoryCollection = ({ category }: Props) => {
                     <div className={`relative aspect-[4/5] bg-gradient-to-br ${current.gradient}`}>
                       {current.image_url ? (
                         <img
-                          src={current.image_url}
+                          src={cardLargeUrl(current.image_url)}
                           alt={`${current.name} — ${category.name} collectible card`}
                           className="absolute inset-0 w-full h-full object-cover scale-[1.06]"
                           loading="lazy"
@@ -520,10 +522,11 @@ export const CardCategoryCollection = ({ category }: Props) => {
                       <div className={`relative aspect-[4/5] bg-gradient-to-br ${c.gradient}`}>
                         {c.image_url ? (
                           <img
-                            src={c.image_url}
+                            src={cardThumbUrl(c.image_url)}
                             alt={`${c.name} collectible card`}
                             className={`absolute inset-0 w-full h-full object-cover scale-[1.06] ${owned ? "" : "opacity-70 saturate-[0.6]"}`}
-                            loading={gridIndex < 8 ? "eager" : "lazy"}
+                            loading={gridIndex < 12 ? "eager" : "lazy"}
+                            fetchPriority={gridIndex < 12 ? "high" : "auto"}
                             decoding="async"
                             width={320}
                             height={400}

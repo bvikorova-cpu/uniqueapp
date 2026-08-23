@@ -1,3 +1,4 @@
+import { cardThumbUrl } from "@/lib/cardImageUrl";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -178,7 +179,7 @@ const CardCollectionsGallery = () => {
                       <div className="w-12 h-16 rounded-lg overflow-hidden bg-muted flex items-center justify-center shrink-0">
                         {unlocked && prime?.image_url ? (
                           <img
-                            src={prime.image_url}
+                            src={cardThumbUrl(prime.image_url)}
                             alt={`${prime.name} Prime card artwork`}
                             loading="lazy"
                             className="w-full h-full object-cover"
