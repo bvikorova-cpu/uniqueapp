@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { startMegatalentCheckout } from "@/lib/megatalentCheckout";
+
 import { z } from "zod";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
