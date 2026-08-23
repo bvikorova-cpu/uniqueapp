@@ -97,6 +97,8 @@ const Megatalent = () => {
   const [feedFilter, setFeedFilter] = useState<FeedFilter>("hot");
   const [shareSheetSubmission, setShareSheetSubmission] = useState<any>(null);
   const [uploadPaywallOpen, setUploadPaywallOpen] = useState(false);
+  const [luxeSection, setLuxeSection] = useState<LuxeSection>("compete");
+
 
   useEffect(() => {
     checkSubscription();
