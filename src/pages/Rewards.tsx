@@ -25,7 +25,7 @@ import { useRewardsStats } from "@/hooks/useRewardsStats";
 import { toast } from "sonner";
 import { Crown, Home, Wand2, Trophy, Layers, Disc3, Target, Award, Medal, Flame,
   Gift, Eye, Sword, HelpCircle, ShoppingBag, Shield, Snowflake, CalendarDays,
-  Sparkles as SparklesIcon, PartyPopper, Heart } from "lucide-react";
+  Sparkles as SparklesIcon, Heart } from "lucide-react";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 const REWARDS_HOW_IT_WORKS = [
@@ -55,7 +55,6 @@ const RewardsBattlePass = lazy(() => import("@/components/rewards/RewardsBattleP
 const RewardsStreakFreeze = lazy(() => import("@/components/rewards/RewardsStreakFreeze"));
 const RewardsLoginCalendar = lazy(() => import("@/components/rewards/RewardsLoginCalendar"));
 const RewardsCosmetics = lazy(() => import("@/components/rewards/RewardsCosmetics"));
-const RewardsYearWrapped = lazy(() => import("@/components/rewards/RewardsYearWrapped"));
 
 const TABS = [
   { id: "overview", icon: Home, label: "Overview" },
@@ -64,7 +63,6 @@ const TABS = [
   { id: "calendar", icon: CalendarDays, label: "Calendar" },
   { id: "freeze", icon: Snowflake, label: "Streak Freeze" },
   { id: "cosmetics", icon: SparklesIcon, label: "Cosmetics" },
-  { id: "wrapped", icon: PartyPopper, label: "Wrapped" },
   { id: "ai-tools", icon: Wand2, label: "AI Tools" },
   { id: "tiers", icon: Layers, label: "Tiers" },
   { id: "spin", icon: Disc3, label: "Lucky Spin" },
@@ -328,7 +326,6 @@ export default function Rewards() {
               {activeView === "calendar" && <RewardsLoginCalendar />}
               {activeView === "freeze" && <RewardsStreakFreeze />}
               {activeView === "cosmetics" && <RewardsCosmetics />}
-              {activeView === "wrapped" && <RewardsYearWrapped />}
             </Suspense>
           </ErrorBoundary>
         </div>
