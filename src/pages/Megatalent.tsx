@@ -43,12 +43,13 @@ import MegatalentShareSheet from "@/components/megatalent/MegatalentShareSheet";
 import MegatalentExpandedMediaDialog from "@/components/megatalent/MegatalentExpandedMediaDialog";
 import MegatalentCopyrightCard from "@/components/megatalent/MegatalentCopyrightCard";
 import MegatalentSubscriptionManagement from "@/components/megatalent/MegatalentSubscriptionManagement";
+import MegatalentUploadPaywallDialog from "@/components/megatalent/MegatalentUploadPaywallDialog";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 const MEGATALENT_HOW_IT_WORKS = [
-  { title: "Activate Premium to compete", desc: "Megatalent needs Premium (€10/month) to upload clips, vote and comment. Free users can watch." },
+  { title: "Register to watch & vote", desc: "Every registered user can browse Megatalent, vote and comment for free. A subscription (€10 or €15/month) is only needed to publish your own submission." },
   { title: "Pick a category & upload", desc: "Choose a category (Music, Dance, Comedy…), upload a short video/photo, add a title and publish your submission." },
-  { title: "Get votes from the community", desc: "Other Premium users vote in daily voting windows. Longer voting streaks give you a 2× vote multiplier." },
+  { title: "Get votes from the community", desc: "Registered users vote in daily voting windows. Longer voting streaks give you a 2× vote multiplier." },
   { title: "Climb the leaderboard", desc: "Sort feed by Top / New / Hot. Weekly leaderboards decide finalists in each category." },
   { title: "Win real prizes", desc: "Weekly cash rewards + a quarterly grand prize funded by 50% of Megatalent subscription profits — grows with every new subscriber. Payouts via Stripe Connect." },
   { title: "Boost with AI tools", desc: "Use the AI toolbox (clip editor, thumbnail maker, caption writer) to make your submission stand out." },
@@ -91,6 +92,7 @@ const Megatalent = () => {
   const [expandedMedia, setExpandedMedia] = useState<{ url: string; type: 'image' | 'video' } | null>(null);
   const [feedFilter, setFeedFilter] = useState<FeedFilter>("hot");
   const [shareSheetSubmission, setShareSheetSubmission] = useState<any>(null);
+  const [uploadPaywallOpen, setUploadPaywallOpen] = useState(false);
 
   useEffect(() => {
     checkSubscription();
@@ -221,10 +223,6 @@ const Megatalent = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast({ title: "Login Required", description: "Please log in to vote", variant: "destructive" }); return; }
-      if (!isSubscribed) {
-        toast({ title: "Megatalent Premium required", description: "Activate Premium (10 €/month) to vote in the contest.", variant: "destructive" });
-        return;
-      }
       const isLiked = likedSubmissions.has(submissionId);
       if (isLiked) {
         await supabase.from('talent_votes').delete().eq('submission_id', submissionId).eq('user_id', user.id);
@@ -256,10 +254,6 @@ const Megatalent = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
-      if (!isSubscribed) {
-        toast({ title: "Megatalent Premium required", description: "Activate Premium (10 €/month) to comment.", variant: "destructive" });
-        return;
-      }
       const { error } = await supabase.from('talent_comments').insert({ submission_id: submissionId, user_id: user.id, comment_text: commentText.trim() });
       if (error) throw error;
       setCommentText("");
@@ -290,7 +284,8 @@ const Megatalent = () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
     if (!isSubscribed) {
-      toast({ title: "Megatalent Premium required", description: "Activate Premium (10 €/month) to upload to the contest.", variant: "destructive" });
+      event.target.value = "";
+      setUploadPaywallOpen(true);
       return;
     }
     const isImage = type === 'image';
@@ -323,7 +318,7 @@ const Megatalent = () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
     if (!isSubscribed) {
-      toast({ title: "Megatalent Premium required", description: "Activate Premium (10 €/month) to publish your submission.", variant: "destructive" });
+      setUploadPaywallOpen(true);
       return;
     }
     setSubmitting(true);
