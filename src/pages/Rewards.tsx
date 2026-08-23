@@ -24,7 +24,7 @@ import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { useRewardsStats } from "@/hooks/useRewardsStats";
 import { toast } from "sonner";
 import { Crown, Home, Wand2, Trophy, Layers, Disc3, Target, Award, Medal, Flame,
-  Gift, Eye, Sword, HelpCircle, ShoppingBag, Shield, Snowflake, CalendarDays,
+  Gift, Eye, Shield, Snowflake, CalendarDays,
   Sparkles as SparklesIcon, Heart } from "lucide-react";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
@@ -35,7 +35,7 @@ const REWARDS_HOW_IT_WORKS = [
   { title: "Weekly Challenges", desc: "Complete rotating quests (invite a friend, use 3 AI tools…) for burst XP and badges." },
   { title: "Battle Pass & Leagues", desc: "Season pass with free + premium tracks. Weekly leagues rank you against other players — promote to a higher league by finishing top." },
   { title: "Convert XP → Credits", desc: "Use the XP → Credits converter to turn earned XP into platform credits usable across AI tools and premium features." },
-  { title: "Lucky Wheel, Gifts, Marketplace", desc: "Spend XP on the Lucky Wheel spin, gift XP to friends, or trade badges/rewards in the Marketplace." },
+  { title: "Lucky Wheel & Gifts", desc: "Spend XP on the Lucky Wheel spin or gift XP to friends." },
 ];
 
 // Lazy-load heavy tab content — keeps initial bundle small on mobile.
@@ -46,10 +46,6 @@ const RewardsLuckyWheel = lazy(() => import("@/components/rewards/RewardsLuckyWh
 const RewardsSeasonalMissions = lazy(() => import("@/components/rewards/RewardsSeasonalMissions"));
 const RewardsStreakCoach = lazy(() => import("@/components/rewards/RewardsStreakCoach"));
 const RewardsGiftXP = lazy(() => import("@/components/rewards/RewardsGiftXP"));
-const RewardsShowcase = lazy(() => import("@/components/rewards/RewardsShowcase"));
-const RewardsXPBetting = lazy(() => import("@/components/rewards/RewardsXPBetting"));
-const RewardsMysteryBadges = lazy(() => import("@/components/rewards/RewardsMysteryBadges"));
-const RewardsMarketplace = lazy(() => import("@/components/rewards/RewardsMarketplace"));
 const RewardsLeagues = lazy(() => import("@/components/rewards/RewardsLeagues"));
 const RewardsBattlePass = lazy(() => import("@/components/rewards/RewardsBattlePass"));
 const RewardsStreakFreeze = lazy(() => import("@/components/rewards/RewardsStreakFreeze"));
@@ -72,10 +68,6 @@ const TABS = [
   { id: "hunters", icon: Medal, label: "Hunters" },
   { id: "streak-coach", icon: Flame, label: "Streak Coach" },
   { id: "gift-xp", icon: Gift, label: "Gift XP" },
-  { id: "showcase", icon: Eye, label: "Showcase" },
-  { id: "betting", icon: Sword, label: "XP Betting" },
-  { id: "mystery", icon: HelpCircle, label: "Mystery" },
-  { id: "marketplace", icon: ShoppingBag, label: "Marketplace" },
 ] as const;
 
 const VALID_TABS = new Set(TABS.map((t) => t.id));
@@ -261,20 +253,11 @@ export default function Rewards() {
             <Suspense fallback={<TabFallback />}>
               {activeView === "overview" && (
                 <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                     <DailyRewardButton />
                     <DailyXPVideoReward userId={user.id} />
-                    <div className="sm:col-span-2 lg:col-span-1">
-                      <Button
-                        onClick={() => navigate("/premium-store")}
-                        className="w-full h-full min-h-[120px] gap-2 text-lg bg-gradient-to-br from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white"
-                        size="lg"
-                      >
-                        <Crown className="h-6 w-6" />
-                        Premium Store
-                      </Button>
-                    </div>
                   </div>
+
 
                   <div className="mb-8">
                     <XpToCreditsConverter userId={user.id} />
@@ -317,10 +300,6 @@ export default function Rewards() {
               {activeView === "hunters" && <BadgeLeaderboard />}
               {activeView === "streak-coach" && <RewardsStreakCoach />}
               {activeView === "gift-xp" && <RewardsGiftXP />}
-              {activeView === "showcase" && <RewardsShowcase />}
-              {activeView === "betting" && <RewardsXPBetting />}
-              {activeView === "mystery" && <RewardsMysteryBadges />}
-              {activeView === "marketplace" && <RewardsMarketplace />}
               {activeView === "leagues" && <RewardsLeagues />}
               {activeView === "battlepass" && <RewardsBattlePass />}
               {activeView === "calendar" && <RewardsLoginCalendar />}

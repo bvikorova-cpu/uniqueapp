@@ -82,7 +82,7 @@ export const XpToCreditsConverter = ({ userId }: Props) => {
               </div>
               <div>
                 <CardTitle className="text-lg">Convert XP → Credits</CardTitle>
-                <CardDescription>1,000 XP = 1 credit. Eco &amp; Healthy Challenge XP is excluded.</CardDescription>
+                <CardDescription>10,000 XP = 1 credit. Eco &amp; Healthy Challenge XP is excluded.</CardDescription>
               </div>
             </div>
             <Badge variant="outline" className="text-sm px-3 py-1 bg-primary/10 border-primary/40">
