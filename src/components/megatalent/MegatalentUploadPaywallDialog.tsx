@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Loader2, Sparkles, Star, Gift } from "lucide-react";
 import { applyReferralCode } from "@/lib/referralCode";
 import { supabase } from "@/integrations/supabase/client";
+import { startMegatalentCheckout } from "@/lib/megatalentCheckout";
+
 import { useToast } from "@/hooks/use-toast";
 
 interface Props {
@@ -44,12 +46,10 @@ const MegatalentUploadPaywallDialog = ({ open, onOpenChange }: Props) => {
             ? "A referral code is already linked to your account."
             : "Your inviter will receive their €5 bonus after your payment." });
       }
-      const { data, error } = await supabase.functions.invoke("create-megatalent-checkout", {
-        body: { tier } });
-      if (error) throw error;
-      if (!data?.url) throw new Error("No checkout URL returned");
-      const w = window.open(data.url, "_blank", "noopener,noreferrer");
-      if (!w) window.location.href = data.url;
+      const url = await startMegatalentCheckout(tier, referralCode);
+      const w = window.open(url, "_blank", "noopener,noreferrer");
+      if (!w) window.location.href = url;
+
     } catch (err: any) {
       toast({
         title: "Checkout failed",

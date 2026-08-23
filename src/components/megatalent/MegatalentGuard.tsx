@@ -4,6 +4,8 @@ import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { Loader2, Lock, Star, CheckCircle2, Sparkles, Eye, Heart, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { safeInvoke } from "@/utils/safeInvoke";
+import { startMegatalentCheckout } from "@/lib/megatalentCheckout";
+
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -337,15 +339,10 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
   const startCheckout = async (tier: "premium" | "top_premium") => {
     setCheckoutLoading(tier);
     try {
-      const { data, error } = await supabase.functions.invoke("create-megatalent-checkout", {
-        body: { tier } });
-      if (error) throw error;
-      if (data?.url) {
-        // Redirect in same tab so Stripe sends user back to /megatalent?success=true
-        { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; } }
-      } else {
-        throw new Error("No checkout URL returned");
-      }
+      const url = await startMegatalentCheckout(tier);
+      const __w = window.open(url, "_blank", "noopener,noreferrer");
+      if (!__w) window.location.href = url;
+
     } catch (err: any) { toast({
         title: "Checkout failed",
         description: err?.message ?? "Could not start checkout. Please try again.",
