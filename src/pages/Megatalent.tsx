@@ -67,6 +67,9 @@ const Megatalent = () => {
 
   const [activeView, setActiveView] = useState<ActiveView>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  // Publishing always requires a real paid plan (€10 / €15) — even for admins,
+  // so the upload paywall is testable from every account.
+  const [hasPaidPlan, setHasPaidPlan] = useState(false);
   const [subscriptionTier, setSubscriptionTier] = useState<'premium' | 'top_premium' | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("drawing");
   const [loading, setLoading] = useState(true);
