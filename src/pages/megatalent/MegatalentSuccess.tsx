@@ -33,6 +33,7 @@ export default function MegatalentSuccess() {
   const startedRef = useRef(false);
 
   const tierParam = params.get("tier");
+  const sessionId = params.get("session_id");
   const tier: "premium" | "top_premium" =
     tierParam === "top_premium" ? "top_premium" : "premium";
   const isTop = tier === "top_premium";
@@ -55,7 +56,9 @@ export default function MegatalentSuccess() {
       const MAX_ATTEMPTS = 8;
       for (let i = 0; i < MAX_ATTEMPTS; i++) {
         setAttempt(i + 1);
-        const { data, error } = await safeInvoke("check-megatalent-subscription");
+        const { data, error } = await safeInvoke("check-router", {
+          body: { action: "megatalent_sub", session_id: sessionId ?? undefined },
+        });
         if (!error && data?.subscribed === true) { setStatus("success");
           toast({
             title: "MegaTalent activated 🎉",
@@ -72,7 +75,7 @@ export default function MegatalentSuccess() {
       // remainder. It has its own retry + reload fallback.
       setStatus("error");
     })();
-  }, [authLoading, user, navigate, toast, isTop]);
+  }, [authLoading, user, navigate, toast, isTop, sessionId]);
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-background to-primary/10">

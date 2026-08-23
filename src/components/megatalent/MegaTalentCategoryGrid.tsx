@@ -22,6 +22,8 @@ const categories: CategoryItem[] = [
   { emoji: "💪", name: "Sports", description: "Fitness & Training", route: "/megatalent/sports" },
   { emoji: "😂", name: "Entertainment", description: "Comedy & Fun", route: "/megatalent/entertainment" },
   { emoji: "💡", name: "Education", description: "Tutorials & Tips", route: "/megatalent/education" },
+  { emoji: "🤳", name: "Best Selfie", description: "Portraits & Selfies", route: "/megatalent/selfie" },
+  { emoji: "🌟", name: "Other", description: "All Other Talents", route: "/megatalent/other" },
 ];
 
 export default function MegaTalentCategoryGrid() {

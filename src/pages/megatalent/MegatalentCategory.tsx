@@ -36,7 +36,9 @@ const categoryConfig: Record<string, { title: string; icon: string; categories: 
   photography: { title: "Photography", icon: "📸", categories: ["photography"] },
   cooking: { title: "Cooking & Baking", icon: "👨‍🍳", categories: ["cooking"] },
   digital_art: { title: "Digital Art", icon: "💻", categories: ["digital_art"] },
-  makeup_art: { title: "Makeup Art", icon: "💄", categories: ["makeup_art"] } };
+  makeup_art: { title: "Makeup Art", icon: "💄", categories: ["makeup_art"] },
+  selfie: { title: "Best Selfie", icon: "🤳", categories: ["best_selfie"] },
+  other: { title: "Other Talents", icon: "🌟", categories: ["transformation", "pet_talent", "other"] } };
 
 const MegatalentCategory = () => {
   const { category } = useParams<{ category: string }>();
