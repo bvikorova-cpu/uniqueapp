@@ -9,46 +9,24 @@ import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface BadgeLeaderEntry {
+  rank: number;
   user_id: string;
+  full_name: string | null;
+  avatar_url: string | null;
   badge_count: number;
-  profile: {
-    full_name: string | null;
-    avatar_url: string | null;
-  } | null;
+  total_points: number;
+  level: number;
+  last_badge_at: string | null;
 }
 
 export default function BadgeLeaderboard() {
   const { data: leaders = [], isLoading } = useQuery({
-    queryKey: ["badge-leaderboard"],
+    queryKey: ["badge-hunters-leaderboard"],
+    staleTime: 60_000,
     queryFn: async () => {
-      const { data: badgeCounts, error: countError } = await supabase
-        .from("user_badges")
-        .select("user_id");
-      if (countError) throw countError;
-
-      const userBadgeCounts: Record<string, number> = {};
-      badgeCounts?.forEach((item: any) => {
-        userBadgeCounts[item.user_id] = (userBadgeCounts[item.user_id] || 0) + 1;
-      });
-
-      const topUsers = Object.entries(userBadgeCounts)
-        .sort(([, a], [, b]) => b - a)
-        .slice(0, 10);
-
-      if (topUsers.length === 0) return [];
-
-      const userIds = topUsers.map(([id]) => id);
-      const { data: profiles, error: profileError } = await (supabase as any)
-        .from("public_profiles")
-        .select("id, full_name, avatar_url")
-        .in("id", userIds);
-      if (profileError) throw profileError;
-
-      const profileMap = new Map(profiles?.map((p: any) => [p.id, p]) || []);
-      
-      return topUsers.map(([userId, count]) => ({ user_id: userId,
-        badge_count: count,
-        profile: profileMap.get(userId) || null })) as BadgeLeaderEntry[];
+      const { data, error } = await (supabase as any).rpc("badge_hunters_leaderboard", { _limit: 20 });
+      if (error) throw error;
+      return (data || []) as BadgeLeaderEntry[];
     } });
 
   const getRankIcon = (index: number) => {
