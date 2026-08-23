@@ -118,23 +118,28 @@ const Megatalent = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setLoading(false); return; }
 
+      const { data, error } = await supabase.from('megatalent_subscriptions').select('*').eq('user_id', user.id).eq('status', 'active').maybeSingle();
+      if (error) throw error;
+      setHasPaidPlan(!!data);
+
       const { data: roleData } = await supabase
         .from("user_roles")
         .select("role")
         .eq("user_id", user.id)
         .eq("role", "admin")
         .maybeSingle();
-      if (roleData) {
+
+      if (data) {
+        setIsSubscribed(true);
+        setSubscriptionTier(data.tier as any);
+      } else if (roleData) {
+        // Admins keep premium perks in the UI, but still must pick a paid plan to publish.
         setIsSubscribed(true);
         setSubscriptionTier('top_premium');
-        setLoading(false);
-        return;
+      } else {
+        setIsSubscribed(false);
+        setSubscriptionTier(null);
       }
-
-      const { data, error } = await supabase.from('megatalent_subscriptions').select('*').eq('user_id', user.id).eq('status', 'active').maybeSingle();
-      if (error) throw error;
-      setIsSubscribed(!!data);
-      setSubscriptionTier(data?.tier || null);
     } catch (error) { console.error('Error checking subscription:', error); } finally { setLoading(false); }
   };
 
