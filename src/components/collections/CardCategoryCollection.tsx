@@ -359,7 +359,7 @@ export const CardCategoryCollection = ({ category }: Props) => {
           <div className="mt-4 flex flex-col sm:flex-row items-center gap-4">
             {prime.card?.image_url && (
               <img
-                src={prime.card.image_url}
+                src={cardLargeUrl(prime.card.image_url)}
                 alt={`${category.name} Prime golden collectible card`}
                 className="w-32 rounded-xl border-2 border-amber-400/60 shadow-[0_0_30px_rgba(251,191,36,0.35)]"
                 loading="lazy"
@@ -414,7 +414,7 @@ export const CardCategoryCollection = ({ category }: Props) => {
                     <div className={`relative aspect-[4/5] bg-gradient-to-br ${current.gradient}`}>
                       {current.image_url ? (
                         <img
-                          src={current.image_url}
+                          src={cardLargeUrl(current.image_url)}
                           alt={`${current.name} — ${category.name} collectible card`}
                           className="absolute inset-0 w-full h-full object-cover scale-[1.06]"
                           loading="lazy"
@@ -522,7 +522,7 @@ export const CardCategoryCollection = ({ category }: Props) => {
                       <div className={`relative aspect-[4/5] bg-gradient-to-br ${c.gradient}`}>
                         {c.image_url ? (
                           <img
-                            src={c.image_url}
+                            src={cardThumbUrl(c.image_url)}
                             alt={`${c.name} collectible card`}
                             className={`absolute inset-0 w-full h-full object-cover scale-[1.06] ${owned ? "" : "opacity-70 saturate-[0.6]"}`}
                             loading={gridIndex < 8 ? "eager" : "lazy"}
