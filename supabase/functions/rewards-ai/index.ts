@@ -143,7 +143,7 @@ DELIVER ALL SECTIONS, fully written out:
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-        max_completion_tokens: 3000 }) });
+        max_completion_tokens: action === "xp_optimizer" ? 8000 : 3000 }) });
 
     if (!response.ok) {
       const errText = await response.text();
