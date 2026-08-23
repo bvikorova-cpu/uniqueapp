@@ -2,6 +2,8 @@ import { useState, useEffect, useMemo, Fragment } from "react";
 import { createPortal } from "react-dom";
 import { Plus, Play, Camera, Video, Megaphone, Loader2, Trash2, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useRewardsCosmetics } from "@/hooks/useRewardsCosmetics";
+import { rewardsFrameClass } from "@/lib/rewardsCosmeticStyles";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -73,6 +75,13 @@ export const StoriesBar = () => {
   const { stories, createStoryAsync, isCreating, deleteStory, isDeleting, viewStory } = useStories();
   const { user } = useAuth();
   const isOwnStory = !!viewingStory && user?.id === viewingStory.user_id;
+  const storyCosmetics = useRewardsCosmetics([
+    user?.id,
+    ...(stories ?? []).map((s: any) => s.user_id),
+    viewingStory?.user_id,
+  ]);
+  const storyFrame = (id?: string | null) =>
+    rewardsFrameClass(id ? storyCosmetics[id]?.avatar_frame : undefined);
 
   const previewUrl = useMemo(
     () => (selectedFile ? URL.createObjectURL(selectedFile) : null),
@@ -165,7 +174,7 @@ export const StoriesBar = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
                 <div className="absolute top-2 left-2">
-                  <div className="w-9 h-9 rounded-full p-[2px] bg-gradient-to-br from-primary via-accent to-primary">
+                  <div className={`w-9 h-9 rounded-full p-[2px] ${storyFrame(story.user_id) || "bg-gradient-to-br from-primary via-accent to-primary"}`}>
                     <Avatar className="w-full h-full border-2 border-background">
                       <AvatarImage src={story.profiles?.avatar_url || undefined} />
                       <AvatarFallback className="text-[10px] bg-accent">{story.profiles?.full_name?.[0] || "U"}</AvatarFallback>
@@ -295,7 +304,7 @@ export const StoriesBar = () => {
             )}
 
             <div className="absolute top-6 left-4 flex items-center gap-3 z-[10010]">
-              <Avatar className="w-9 h-9 ring-2 ring-white/30">
+              <Avatar className={`w-9 h-9 ${storyFrame(viewingStory?.user_id) || "ring-2 ring-white/30"}`}>
                 <AvatarImage src={viewingStory.profiles?.avatar_url || undefined} />
                 <AvatarFallback>{viewingStory.profiles?.full_name?.[0]}</AvatarFallback>
               </Avatar>

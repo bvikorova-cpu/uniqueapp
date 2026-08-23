@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useRewardsCosmeticsFor } from "@/hooks/useRewardsCosmetics";
+import { rewardsFrameClass } from "@/lib/rewardsCosmeticStyles";
 import { 
   Image, 
   Video, 
@@ -87,6 +89,8 @@ const emojiList = [
 ];
 
 export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreatePostProps) {
+  const myCosmetics = useRewardsCosmeticsFor(userProfile?.id);
+  const myFrame = rewardsFrameClass(myCosmetics.avatar_frame);
   const [content, setContent] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -294,7 +298,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
     <div className="glass-post-card p-6">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex gap-3">
-          <Avatar className="h-11 w-11 ring-2 ring-primary/10">
+          <Avatar className={`h-11 w-11 ${myFrame || "ring-2 ring-primary/10"}`}>
             <AvatarImage src={userProfile?.avatar_url || undefined} />
             <AvatarFallback className="bg-gradient-to-br from-primary/20 to-accent/20 font-semibold">
               {userProfile?.full_name?.[0] || "U"}
