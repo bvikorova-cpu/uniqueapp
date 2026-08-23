@@ -141,9 +141,10 @@ export default function RewardsStreakFreeze() {
               <Button onClick={() => buy(pack, "xp")} disabled={!!buyingKey} variant="outline" className="w-full">
                 {buyingKey === `${pack.label}-xp` ? "Buying…" : `${pack.xp} XP`}
               </Button>
-              <Button onClick={() => buy(pack, "eur")} disabled={!!buyingKey} className="w-full bg-gradient-to-r from-cyan-500 to-blue-600">
-                {buyingKey === `${pack.label}-eur` ? "Loading…" : `€${pack.eur}`}
+              <Button onClick={() => buy(pack, "credits")} disabled={!!buyingKey} className="w-full bg-gradient-to-r from-cyan-500 to-blue-600">
+                {buyingKey === `${pack.label}-credits` ? "Buying…" : `${pack.credits} credit${pack.credits > 1 ? "s" : ""}`}
               </Button>
+
 
             </CardContent>
           </Card>
