@@ -21,7 +21,6 @@ import MegatalentAchievements from "@/components/megatalent/MegatalentAchievemen
 import MegatalentRisingStars from "@/components/megatalent/MegatalentRisingStars";
 import MegatalentTalentDuel from "@/components/megatalent/MegatalentTalentDuel";
 import MegatalentSpotlight from "@/components/megatalent/MegatalentSpotlight";
-import MegatalentVotingStreak from "@/components/megatalent/MegatalentVotingStreak";
 import MegatalentSponsorShowcase from "@/components/megatalent/MegatalentSponsorShowcase";
 import MegatalentCertificate from "@/components/megatalent/MegatalentCertificate";
 import MegatalentHighlightReel from "@/components/megatalent/MegatalentHighlightReel";
@@ -44,7 +43,6 @@ import MegatalentSeasonPass from "@/components/megatalent/MegatalentSeasonPass";
 import MegatalentEndorsements from "@/components/megatalent/MegatalentEndorsements";
 import MegatalentComments from "@/components/megatalent/MegatalentComments";
 
-import MegatalentTalentShop from "@/components/megatalent/MegatalentTalentShop";
 import { ReferralProgram } from "@/components/megatalent/ReferralProgram";
 import MegatalentJudgePanel from "@/components/megatalent/MegatalentJudgePanel";
 import JudgeApplication from "@/components/megatalent/JudgeApplication";
@@ -370,7 +368,6 @@ const MegatalentCategory = () => {
           <div className="mb-6 space-y-6">
             <MegatalentDailyLoginBonus userId={currentUserId} />
             <MegatalentAchievements userId={currentUserId} />
-            <MegatalentVotingStreak userId={currentUserId} />
             <MegatalentCertificate userId={currentUserId} category={category} />
             <MegatalentFriendInvites userId={currentUserId} />
           </div>
@@ -467,7 +464,6 @@ const MegatalentCategory = () => {
           <MegatalentComments category={category} categories={config?.categories} userId={currentUserId} />
         </div>
         <div className="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <MegatalentTalentShop userId={currentUserId} />
           <ReferralProgram />
         </div>
         <div className="mb-6"><MegatalentRivalries category={category} categories={config?.categories} /></div>

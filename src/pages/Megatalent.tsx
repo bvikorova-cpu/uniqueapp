@@ -20,16 +20,13 @@ import { VoteBoostTooltip } from "@/components/megatalent/VoteBoostTooltip";
 
 import MegaTalentHero from "@/components/megatalent/MegaTalentHero";
 
-import MegatalentTalentShop from "@/components/megatalent/MegatalentTalentShop";
 import MegatalentStories from "@/components/megatalent/MegatalentStories";
 import MegatalentSponsorShowcase from "@/components/megatalent/MegatalentSponsorShowcase";
-import MegatalentVotingStreak from "@/components/megatalent/MegatalentVotingStreak";
 import MegatalentAchievements from "@/components/megatalent/MegatalentAchievements";
 
 import BattleRoyalePayouts from "@/components/megatalent/BattleRoyalePayouts";
 import MegatalentNotificationBell from "@/components/megatalent/MegatalentNotificationBell";
 import { LiveSocialProof } from "@/components/social/LiveSocialProof";
-import MonthlyChampionRewardsCard from "@/components/battle-coins/MonthlyChampionRewardsCard";
 import UnifiedXPLeaderboard from "@/components/shared/UnifiedXPLeaderboard";
 import NextVotingCountdown from "@/components/megatalent/NextVotingCountdown";
 import MegaTalentCategoryGrid from "@/components/megatalent/MegaTalentCategoryGrid";
@@ -412,13 +409,11 @@ const Megatalent = () => {
               <MegatalentStories />
               <MegatalentSponsorShowcase category={selectedCategory} />
               
-              <MegatalentTalentShop userId={currentUserId} />
-              <MegatalentVotingStreak userId={currentUserId} />
               <MegatalentAchievements userId={currentUserId} />
             </div>
 
             <ReferralProgram />
-            <MonthlyChampionRewardsCard module="megatalent" accent="primary" />
+
             <BattleRoyalePayouts userId={currentUserId} />
             <UnifiedXPLeaderboard hub="megatalent" />
 
