@@ -1,3 +1,4 @@
+import { REWARDS_COSMETICS_UPDATED } from "@/hooks/useRewardsCosmetics";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
