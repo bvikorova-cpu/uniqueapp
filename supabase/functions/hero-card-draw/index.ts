@@ -118,17 +118,23 @@ serve(async (req) => {
       if (existing) return j({ error: "You have already claimed Unitas.", character: existing }, 400);
       if (!complete) return j({ error: "Complete the whole collection first — every card needs at least one copy." }, 400);
 
-      const deniedU = await deductAICredits(user.id, UNITAS_COST, "unitas_mega_hero");
-      if (deniedU) return deniedU;
+      const { data: deductU, error: deductUErr } = await db.rpc("deduct_ai_credits", {
+        p_user_id: user.id,
+        p_amount: UNITAS_COST,
+        p_reason: "unitas_mega_hero",
+        p_source: "character_arena",
+      });
+      if (deductUErr || !deductU) {
+        const msg = deductUErr?.message ?? "";
+        if (msg.includes("Insufficient") || msg.includes("No credit balance")) {
+          return j({ error: "Insufficient credits", code: "INSUFFICIENT_CREDITS", required: UNITAS_COST, action: "unitas_mega_hero" }, 402);
+        }
+        console.error("[hero-card-draw] unitas deduct failed", deductUErr);
+        return j({ error: "Credit deduction failed" }, 500);
+      }
 
       const { data: balU } = await db.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
       const afterU = balU?.credits_remaining ?? 0;
-      await db.from("ai_credits_ledger").insert({ user_id: user.id,
-        delta: -UNITAS_COST,
-        balance_before: afterU + UNITAS_COST,
-        balance_after: afterU,
-        reason: "unitas_mega_hero",
-        source: "character_arena" });
 
       try {
         let imageUrl: string | null = null;
