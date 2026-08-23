@@ -335,7 +335,7 @@ const Megatalent = () => {
       toast({ title: "Published!", description: "Your submission is now live" });
       setTitle(""); setDescription(""); setUploadedFile(null);
       fetchSubmissions();
-    } catch (error) { console.error('Submit error:', error); toast({ title: "Error", description: "Failed to publish", variant: "destructive" }); } finally { setSubmitting(false); }
+    } catch (error: any) { console.error('Submit error:', error); toast({ title: "Error", description: error?.message || "Failed to publish", variant: "destructive" }); } finally { setSubmitting(false); }
   };
 
   if (loading) return <MegatalentLoadingSkeleton />;
