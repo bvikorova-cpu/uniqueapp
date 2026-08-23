@@ -158,6 +158,18 @@ export const CardCategoryCollection = ({ category }: Props) => {
     return () => { stop = true; window.clearTimeout(idle); };
   }, [queryClient, slug]);
 
+  // Artwork also keeps generating server-side, so refresh the catalogue while
+  // any card is still without an illustration.
+  useEffect(() => {
+    if (!catalogue.length) return;
+    if (!catalogue.some((c) => !c.image_url)) return;
+    const timer = window.setInterval(() => {
+      queryClient.invalidateQueries({ queryKey: ["card-catalogue", slug] });
+    }, 25_000);
+    return () => window.clearInterval(timer);
+  }, [catalogue, queryClient, slug]);
+
+
   // Realtime: my collection updates instantly across devices.
   useEffect(() => {
     const channel = supabase
