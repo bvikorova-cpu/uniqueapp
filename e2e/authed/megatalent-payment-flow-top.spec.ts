@@ -16,7 +16,7 @@ import { test, expect, Page } from "@playwright/test";
 const SUPABASE_HOST = "jufrdzeonywluwutvyxz.supabase.co";
 const REST_SUB = `https://${SUPABASE_HOST}/rest/v1/megatalent_subscriptions*`;
 const FN_CHECKOUT = `https://${SUPABASE_HOST}/functions/v1/create-checkout`;
-const FN_CHECK = `https://${SUPABASE_HOST}/functions/v1/check-megatalent-subscription`;
+const FN_CHECK = `https://${SUPABASE_HOST}/functions/v1/check-router`;
 
 async function installGateStubs(page: Page, getSubscribed: () => boolean) { await page.route(REST_SUB, async (route) =>
     route.fulfill({

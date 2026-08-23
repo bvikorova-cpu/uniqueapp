@@ -26,7 +26,7 @@ const REST_SUB = `https://${SUPABASE_HOST}/rest/v1/megatalent_subscriptions*`;
 // (src/integrations/supabase/proxyMap.ts) to the universal create-checkout
 // router with product: "megatalent_subscription".
 const FN_CHECKOUT = `https://${SUPABASE_HOST}/functions/v1/create-checkout`;
-const FN_CHECK = `https://${SUPABASE_HOST}/functions/v1/check-megatalent-subscription`;
+const FN_CHECK = `https://${SUPABASE_HOST}/functions/v1/check-router`;
 
 /**
  * Install request interceptors that simulate the gate's data sources.
@@ -50,7 +50,7 @@ async function installGateStubs(page: Page, getSubscribed: () => boolean) { // B
       ]) });
   });
 
-  // Fallback edge function check — mirror the same toggle.
+  // Subscription verification — mirror the same toggle.
   await page.route(FN_CHECK, async (route) =>
     route.fulfill({
       status: 200,
