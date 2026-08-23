@@ -10,6 +10,7 @@ import { Tooltip,
   TooltipTrigger } from "@/components/ui/tooltip";
 import { Progress } from "@/components/ui/progress";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { supabase } from "@/integrations/supabase/client";
 
 interface BadgesDisplayProps {
   userId: string;
