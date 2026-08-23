@@ -1564,7 +1564,7 @@ async function handler(req: Request): Promise<Response> {
         customer_email: customerId ? undefined : email,
         line_items: [{ price: priceId, quantity: 1 }],
         mode: "subscription",
-        success_url: `${origin}/megatalent/success?session_id={CHECKOUT_SESSION_ID}&tier=${tier}`,
+        success_url: `${origin}/megatalent?payment=success&session_id={CHECKOUT_SESSION_ID}&tier=${tier}`,
         cancel_url: `${origin}/megatalent?canceled=true`,
         metadata: { user_id: userId ?? "",
           tier,

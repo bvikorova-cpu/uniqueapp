@@ -16,7 +16,7 @@ import { test, expect, Page } from "@playwright/test";
 const SUPABASE_HOST = "jufrdzeonywluwutvyxz.supabase.co";
 const REST_SUB = `https://${SUPABASE_HOST}/rest/v1/megatalent_subscriptions*`;
 const FN_CHECKOUT = `https://${SUPABASE_HOST}/functions/v1/create-checkout`;
-const FN_CHECK = `https://${SUPABASE_HOST}/functions/v1/check-megatalent-subscription`;
+const FN_CHECK = `https://${SUPABASE_HOST}/functions/v1/check-router`;
 
 async function installGateStubs(page: Page, getSubscribed: () => boolean) { await page.route(REST_SUB, async (route) =>
     route.fulfill({
@@ -42,9 +42,7 @@ async function installGateStubs(page: Page, getSubscribed: () => boolean) { awai
   );
 }
 
-test.describe("Megatalent payment flow — €15 Top Premium (authed)", () => { test("pay €15 → return from Stripe → feed unlocks at top_premium tier", async ({
-    page,
-    context }) => {
+test.describe("Megatalent payment flow — €15 Top Premium (authed)", () => { test("pay €15 → return from Stripe → feed unlocks at top_premium tier", async ({ page }) => {
     let subscribed = false;
     let checkoutCalled = false;
 
@@ -69,16 +67,12 @@ test.describe("Megatalent payment flow — €15 Top Premium (authed)", () => { 
       page.getByText(/Unlock the MegaTalent contest|Odomkni MegaTalent/i),
     ).toBeVisible({ timeout: 15_000 });
 
-    const popupPromise = context.waitForEvent("page", { timeout: 5_000 }).catch(() => null);
     await page.getByRole("button", { name: /€15 \/ month/i }).click();
 
     await expect.poll(() => checkoutCalled, { timeout: 5_000 }).toBe(true);
 
-    const popup = await popupPromise;
-    if (popup) await popup.close().catch(() => {});
-
     subscribed = true;
-    await page.goto("/megatalent?success=true&tier=top_premium");
+    await page.goto("/megatalent?payment=success&session_id=cs_test_top&tier=top_premium");
 
     await expect(
       page.getByText(/Unlock the MegaTalent contest|Odomkni MegaTalent/i),
@@ -91,6 +85,6 @@ test.describe("Megatalent payment flow — €15 Top Premium (authed)", () => { 
 
     await expect
       .poll(() => new URL(page.url()).search, { timeout: 5_000 })
-      .not.toContain("success=true");
+      .not.toContain("session_id");
   });
 });

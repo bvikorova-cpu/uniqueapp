@@ -5,10 +5,8 @@
  * or relying on the Stripe sandbox:
  *
  *   1. Visit /megatalent — paywall is shown (subscription check stubbed = false).
- *   2. Click "€10 / month" → create-megatalent-checkout invocation is captured;
- *      the test responds with a fake Stripe URL.
- *   3. The fake Stripe page is short-circuited; we navigate the SAME tab back
- *      to /megatalent?success=true&tier=premium — exactly what Stripe does
+ *   2. Click "€10 / month" → create-checkout invocation is captured.
+ *   3. Stripe returns in the SAME tab directly to MegaTalent.
  *      after a real successful payment.
  *   4. The post-payment activation flow polls check-megatalent-subscription;
  *      we stub it to return `subscribed: true` (mirroring the Stripe webhook
@@ -28,7 +26,7 @@ const REST_SUB = `https://${SUPABASE_HOST}/rest/v1/megatalent_subscriptions*`;
 // (src/integrations/supabase/proxyMap.ts) to the universal create-checkout
 // router with product: "megatalent_subscription".
 const FN_CHECKOUT = `https://${SUPABASE_HOST}/functions/v1/create-checkout`;
-const FN_CHECK = `https://${SUPABASE_HOST}/functions/v1/check-megatalent-subscription`;
+const FN_CHECK = `https://${SUPABASE_HOST}/functions/v1/check-router`;
 
 /**
  * Install request interceptors that simulate the gate's data sources.
@@ -52,7 +50,7 @@ async function installGateStubs(page: Page, getSubscribed: () => boolean) { // B
       ]) });
   });
 
-  // Fallback edge function check — mirror the same toggle.
+  // Subscription verification — mirror the same toggle.
   await page.route(FN_CHECK, async (route) =>
     route.fulfill({
       status: 200,
@@ -67,7 +65,7 @@ async function installGateStubs(page: Page, getSubscribed: () => boolean) { // B
 }
 
 test.describe("Megatalent payment flow — authed", () => {
-  test("pay €10 Premium → return from Stripe → feed unlocks", async ({ page, context }) => {
+  test("pay €10 Premium → return from Stripe → feed unlocks", async ({ page }) => {
     let subscribed = false;
     let checkoutCalled = false;
 
@@ -94,23 +92,16 @@ test.describe("Megatalent payment flow — authed", () => {
       page.getByText(/Unlock the MegaTalent contest|Odomkni MegaTalent/i),
     ).toBeVisible({ timeout: 15_000 });
 
-    // 2) Click the €10 Premium tier — opens in a new tab.
-    const popupPromise = context.waitForEvent("page", { timeout: 5_000 }).catch(() => null);
+    // 2) Click the €10 Premium tier — checkout uses the same tab.
     await page.getByRole("button", { name: /€10 \/ month/i }).click();
 
     await expect.poll(() => checkoutCalled, { timeout: 5_000 }).toBe(true);
-
-    const popup = await popupPromise;
-    if (popup) {
-      // Close the stripe popup — we'll simulate the redirect on the main tab.
-      await popup.close().catch(() => {});
-    }
 
     // 3) Flip the gate (mirrors Stripe webhook activating the subscription).
     subscribed = true;
 
     // 4) Return from Stripe to the SAME tab with success params.
-    await page.goto("/megatalent?success=true&tier=premium");
+    await page.goto("/megatalent?payment=success&session_id=cs_test_premium&tier=premium");
 
     // 5) Paywall must disappear. The guard shows an "Activating..." screen
     //    for ~2.5s then mounts the real MegaTalent shell. Allow up to 15s.
@@ -128,6 +119,6 @@ test.describe("Megatalent payment flow — authed", () => {
     // The Stripe redirect params must be stripped from the URL by the guard.
     await expect
       .poll(() => new URL(page.url()).search, { timeout: 5_000 })
-      .not.toContain("success=true");
+      .not.toContain("session_id");
   });
 });
