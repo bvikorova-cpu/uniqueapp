@@ -291,9 +291,10 @@ export function resolveProxy(
   if (functionName === "check-masterchef-subscription") {
     return { target: "check-subscription", body: { ...b, tier: "masterchef" } };
   }
-  if (functionName === "check-megatalent-subscription") {
-    return { target: "check-subscription", body: { ...b, tier: "megatalent" } };
-  }
+  // NOTE: check-megatalent-subscription is intentionally NOT routed to
+  // check-subscription — only check-router's "megatalent_sub" action knows the
+  // MegaTalent price IDs and upserts megatalent_subscriptions (see below).
+
   if (functionName === "check-lottery-subscription") {
     return { target: "check-subscription", body: { ...b, tier: "lottery" } };
   }
