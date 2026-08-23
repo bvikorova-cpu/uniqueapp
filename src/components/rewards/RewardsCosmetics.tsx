@@ -187,7 +187,10 @@ export default function RewardsCosmetics() {
                       <div className="mt-2 space-y-1.5">
                         {isOwned ? (
                           isEquipped ? (
-                            <Badge className="w-full justify-center"><Check className="h-3 w-3 mr-1" /> {"Equipped"}</Badge>
+                            <>
+                              <Badge className="w-full justify-center"><Check className="h-3 w-3 mr-1" /> {"Equipped"}</Badge>
+                              <Button size="sm" variant="ghost" className="w-full text-xs" disabled={busyId === i.id} onClick={() => unequip(i)}>{busyId === i.id ? "…" : "Remove"}</Button>
+                            </>
                           ) : (
                             <Button size="sm" variant="outline" className="w-full" disabled={busyId === i.id} onClick={() => equip(i)}>{busyId === i.id ? "…" : "Equip"}</Button>
                           )
