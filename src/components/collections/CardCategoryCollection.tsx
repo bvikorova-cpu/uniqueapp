@@ -17,6 +17,8 @@ import { getCategoryBlurb } from "./categoryBlurbs";
 
 
 import { warmCollectionCardImages, readCachedCategory, writeCachedCategory } from "@/lib/collectionCardCache";
+import { cardThumbUrl, cardLargeUrl } from "@/lib/cardImageUrl";
+
 
 export const DRAW_COST = 1;
 export const CARDS_PER_CATEGORY = 150;
