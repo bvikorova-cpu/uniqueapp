@@ -1,0 +1,1 @@
+ALTER TABLE public.brain_duel_answers ADD COLUMN IF NOT EXISTS time_taken integer NOT NULL DEFAULT 0;

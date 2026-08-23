@@ -5547,6 +5547,7 @@ export type Database = {
           match_id: string
           player_id: string
           question_id: string
+          time_taken: number
         }
         Insert: {
           answer: string
@@ -5556,6 +5557,7 @@ export type Database = {
           match_id: string
           player_id: string
           question_id: string
+          time_taken?: number
         }
         Update: {
           answer?: string
@@ -5565,6 +5567,7 @@ export type Database = {
           match_id?: string
           player_id?: string
           question_id?: string
+          time_taken?: number
         }
         Relationships: [
           {
