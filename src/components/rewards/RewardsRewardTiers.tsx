@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Crown, Star, Shield, Gem, Lock, CheckCircle, Loader2 } from "lucide-react";
+import { Crown, Star, Shield, Gem, Lock, CheckCircle, Loader2, Info, Layers, Trophy, Calendar, Infinity } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useRewardsStats } from "@/hooks/useRewardsStats";
