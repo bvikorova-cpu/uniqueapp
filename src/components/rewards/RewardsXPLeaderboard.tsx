@@ -21,46 +21,28 @@ interface LeaderboardEntry {
 type Period = "weekly" | "monthly" | "alltime";
 
 async function fetchLeaderboard(period: Period): Promise<LeaderboardEntry[]> {
-  // Server-side aggregation via SECURITY DEFINER RPC — avoids pulling thousands of xp_events rows.
-  const { data: rows, error } = await (supabase as any).rpc("rewards_xp_leaderboard", { _period: period,
-    _limit: 50 });
-  if (error || !rows) return [];
-  const totals: { user_id: string; total: number }[] = (rows as any[]).map((r) => ({ user_id: r.user_id,
-    total: Number(r.total ?? 0) }));
+  // Single SECURITY DEFINER RPC returns real totals + real profile names/avatars.
+  const { data, error } = await (supabase as any).rpc("rewards_xp_leaderboard_full", {
+    _period: period,
+    _limit: 50,
+  });
+  if (error || !data) return [];
 
-
-  if (totals.length === 0) return [];
-  const userIds = totals.map((t) => t.user_id);
-
-  const [pointsRes, profilesRes, badgesRes] = await Promise.all([
-    supabase.from("user_points").select("user_id, level, login_streak").in("user_id", userIds),
-    (supabase as any).from("profiles_public").select("id, full_name, username, avatar_url").in("id", userIds),
-    supabase.from("user_badges").select("user_id").in("user_id", userIds),
-  ]);
-
-  const pointsMap = new Map((pointsRes.data ?? []).map((p: any) => [p.user_id, p]));
-  const profileMap = new Map((profilesRes.data ?? []).map((p: any) => [p.id, p]));
-  const badgeCounts = new Map<string, number>();
-  for (const b of badgesRes.data ?? []) {
-    badgeCounts.set(b.user_id, (badgeCounts.get(b.user_id) ?? 0) + 1);
-  }
-
-  return totals
-    .filter((t) => t.total > 0)
-    .map((t, i) => {
-      const profile: any = profileMap.get(t.user_id);
-      const pts: any = pointsMap.get(t.user_id);
-      return {
-        user_id: t.user_id,
-        display_name: profile?.username || profile?.full_name || `Player ${t.user_id.slice(0, 4)}`,
-        avatar_url: profile?.avatar_url ?? null,
-        total_points: t.total,
-        level: pts?.level ?? 1,
-        login_streak: pts?.login_streak ?? 0,
-        badges: badgeCounts.get(t.user_id) ?? 0,
-        rank: i + 1 };
-    });
+  return (data as any[])
+    .map((r) => ({
+      user_id: r.user_id as string,
+      display_name: (r.display_name as string) || "Unique member",
+      avatar_url: (r.avatar_url as string | null) ?? null,
+      total_points: Number(r.total ?? 0),
+      level: Number(r.level ?? 1),
+      login_streak: Number(r.login_streak ?? 0),
+      badges: Number(r.badges ?? 0),
+      rank: 0,
+    }))
+    .filter((r) => r.total_points > 0)
+    .map((r, i) => ({ ...r, rank: i + 1 }));
 }
+
 
 export default function RewardsXPLeaderboard() {
   const [period, setPeriod] = useState<Period>("alltime");
