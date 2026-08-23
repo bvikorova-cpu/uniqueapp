@@ -7,7 +7,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useLearningContent } from "@/hooks/useLearningContent";
 import { Video, Calendar, Users, Star, Clock } from "lucide-react";
 import { toast } from "sonner";
-import UnifiedXPLeaderboard from "@/components/shared/UnifiedXPLeaderboard";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const Masterclasses = () => {
