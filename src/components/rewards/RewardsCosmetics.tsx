@@ -154,8 +154,6 @@ export default function RewardsCosmetics() {
                         )}
                       </div>
                     </div>
-
-                    </div>
                   );
                 })}
                 {items.filter(i => i.category === c.id).length === 0 && (
