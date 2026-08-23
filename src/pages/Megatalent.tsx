@@ -108,6 +108,15 @@ const Megatalent = () => {
     checkSubscription();
     fetchUserVotes();
     getCurrentUser();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      const draft = readPendingMegatalentSubmission(user.id);
+      if (!draft) return;
+      setTitle(draft.title);
+      setDescription(draft.description);
+      setSelectedCategory(draft.category);
+      setUploadedFile({ url: draft.mediaUrl, type: draft.mediaType });
+    });
   }, []);
 
   useEffect(() => {
@@ -434,6 +443,7 @@ const Megatalent = () => {
       }
       const { error } = await supabase.from('talent_submissions').insert({ user_id: user.id, title: title.trim(), description: description.trim(), category: selectedCategory as any, media_url: uploadedFile.url, media_type: uploadedFile.type });
       if (error) throw error;
+      clearPendingMegatalentSubmission();
       toast({ title: "Published!", description: "Your submission is now live" });
       setTitle(""); setDescription(""); setUploadedFile(null);
       fetchSubmissions();
