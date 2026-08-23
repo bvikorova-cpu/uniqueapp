@@ -75,6 +75,13 @@ export const StoriesBar = () => {
   const { stories, createStoryAsync, isCreating, deleteStory, isDeleting, viewStory } = useStories();
   const { user } = useAuth();
   const isOwnStory = !!viewingStory && user?.id === viewingStory.user_id;
+  const storyCosmetics = useRewardsCosmetics([
+    user?.id,
+    ...(stories ?? []).map((s: any) => s.user_id),
+    viewingStory?.user_id,
+  ]);
+  const storyFrame = (id?: string | null) =>
+    rewardsFrameClass(id ? storyCosmetics[id]?.avatar_frame : undefined);
 
   const previewUrl = useMemo(
     () => (selectedFile ? URL.createObjectURL(selectedFile) : null),
