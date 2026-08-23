@@ -66,17 +66,13 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
         window.location.href = "/auth?redirect=/megatalent";
         return;
       }
-      const { data, error } = await supabase.functions.invoke("create-megatalent-checkout", {
-        body: { tier: tierToBuy },
-        headers: { Authorization: `Bearer ${session.access_token}` } });
-      if (error) throw error;
-      if (data?.url) { window.open(data.url, "_blank");
-        toast({
-          title: "Presmerovanie na Stripe…",
-          description: "After completing the payment, go back and refresh the page." });
-      } else {
-        throw new Error("Checkout URL was not returned");
-      }
+      const url = await startMegatalentCheckout(tierToBuy);
+      const w = window.open(url, "_blank");
+      if (!w) window.location.href = url;
+      toast({
+        title: "Redirecting to Stripe…",
+        description: "After completing the payment, go back and refresh the page." });
+
     } catch (err: any) { toast({
         title: "Checkout error",
         description: err?.message || "Failed to initiate payment.",
