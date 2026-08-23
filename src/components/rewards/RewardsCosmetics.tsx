@@ -79,12 +79,45 @@ export default function RewardsCosmetics() {
         toast.error(map[res?.error] ?? res?.error ?? "Acquire failed");
         return;
       }
-      toast.success(`Acquired ${item.name}!`);
       window.dispatchEvent(new Event("ai-credits-updated"));
+      // Auto-equip straight after purchase: buying an item and seeing nothing
+      // change anywhere was the single most confusing part of this screen.
+      await equipById(item, true);
+      toast.success(`Acquired & equipped ${item.name}!`);
       await load();
     } finally {
       setBusyId(null);
     }
+  };
+
+  /**
+   * Marks one item as the active one in its category (unequipping siblings).
+   * `fresh` re-reads ownership from the DB, needed right after a purchase when
+   * local state has not been reloaded yet.
+   */
+  const equipById = async (item: any, fresh = false) => {
+    if (!user) return;
+    let rec = owned[item.id];
+    if (fresh || !rec) {
+      const { data } = await supabase
+        .from("user_rewards_cosmetics")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("item_id", item.id)
+        .maybeSingle();
+      rec = data as any;
+    }
+    if (!rec) return;
+    const sameCatItemIds = items.filter(i => i.category === item.category).map(i => i.id);
+    if (sameCatItemIds.length > 0) {
+      await supabase
+        .from("user_rewards_cosmetics")
+        .update({ is_equipped: false })
+        .eq("user_id", user.id)
+        .in("item_id", sameCatItemIds);
+    }
+    await supabase.from("user_rewards_cosmetics").update({ is_equipped: true }).eq("id", rec.id);
+    window.dispatchEvent(new Event(REWARDS_COSMETICS_UPDATED));
   };
 
 
