@@ -62,20 +62,21 @@ const MegatalentUploadPaywallDialog = ({ open, onOpenChange }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-xl">Choose a plan to publish 🏆</DialogTitle>
-          <DialogDescription>
+      <DialogContent className="w-[calc(100vw-2rem)] max-w-md max-h-[85vh] overflow-y-auto p-4 sm:p-6">
+        <DialogHeader className="text-left">
+          <DialogTitle className="text-base sm:text-xl pr-6">Choose a plan to publish 🏆</DialogTitle>
+          <DialogDescription className="text-xs sm:text-sm">
             Browsing and voting are free for every registered user. To upload and publish your
             submission, pick a MegaTalent subscription.
           </DialogDescription>
         </DialogHeader>
 
-        <ul className="text-sm space-y-1.5 bg-muted/40 rounded-lg p-3">
+        <ul className="text-xs sm:text-sm space-y-1.5 bg-muted/40 rounded-lg p-3">
           <li>✅ Unlimited photo &amp; video uploads</li>
           <li>✅ Access to all 35+ categories</li>
           <li>✅ Eligible for cash prizes for winners</li>
         </ul>
+
 
         <div className="space-y-1.5">
           <Label htmlFor="mt-referral" className="text-sm flex items-center gap-1.5">
