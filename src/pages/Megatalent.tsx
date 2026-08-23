@@ -291,7 +291,7 @@ const Megatalent = () => {
     if (!file) return;
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
-    if (!isSubscribed) {
+    if (!hasPaidPlan) {
       event.target.value = "";
       setUploadPaywallOpen(true);
       return;
@@ -325,7 +325,7 @@ const Megatalent = () => {
     if (!uploadedFile) { toast({ title: "Error", description: "Please upload media first", variant: "destructive" }); return; }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
-    if (!isSubscribed) {
+    if (!hasPaidPlan) {
       setUploadPaywallOpen(true);
       return;
     }
