@@ -47,8 +47,7 @@ const MegatalentUploadPaywallDialog = ({ open, onOpenChange }: Props) => {
             : "Your inviter will receive their €5 bonus after your payment." });
       }
       const url = await startMegatalentCheckout(tier, referralCode);
-      const w = window.open(url, "_blank", "noopener,noreferrer");
-      if (!w) window.location.href = url;
+      window.location.assign(url);
 
     } catch (err: any) {
       toast({

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -45,6 +45,11 @@ import MegatalentSubscriptionManagement from "@/components/megatalent/Megatalent
 import MegatalentUploadPaywallDialog from "@/components/megatalent/MegatalentUploadPaywallDialog";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 import MegatalentLuxeNav, { type LuxeSection } from "@/components/megatalent/MegatalentLuxeNav";
+import {
+  clearPendingMegatalentSubmission,
+  readPendingMegatalentSubmission,
+  savePendingMegatalentSubmission,
+} from "@/lib/megatalentPendingSubmission";
 
 
 const MEGATALENT_HOW_IT_WORKS = [
@@ -63,7 +68,7 @@ import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ActiveView = string | null;
 
 const Megatalent = () => {
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeView, setActiveView] = useState<ActiveView>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
   // Publishing always requires a real paid plan (€10 / €15) — even for admins,
@@ -96,6 +101,7 @@ const Megatalent = () => {
   const [shareSheetSubmission, setShareSheetSubmission] = useState<any>(null);
   const [uploadPaywallOpen, setUploadPaywallOpen] = useState(false);
   const [luxeSection, setLuxeSection] = useState<LuxeSection>("compete");
+  const paymentHandledRef = useRef(false);
 
 
   useEffect(() => {
@@ -113,6 +119,83 @@ const Megatalent = () => {
   useEffect(() => {
     if (isSubscribed) { fetchTotalVotes(); }
   }, [isSubscribed, submissions]);
+
+  useEffect(() => {
+    const sessionId = searchParams.get("session_id");
+    if (searchParams.get("payment") !== "success" || !sessionId || paymentHandledRef.current) return;
+    paymentHandledRef.current = true;
+
+    const finishPaidPublish = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        paymentHandledRef.current = false;
+        return;
+      }
+
+      let verification: any = null;
+      let verificationError: unknown = null;
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        const result = await safeInvoke("check-router", {
+          body: { action: "megatalent_sub", session_id: sessionId },
+        });
+        verification = result.data;
+        verificationError = result.error;
+        if (!result.error && result.data?.subscribed === true) break;
+        await new Promise((resolve) => window.setTimeout(resolve, 800));
+      }
+
+      if (verificationError || verification?.subscribed !== true) {
+        paymentHandledRef.current = false;
+        toast({ title: "Payment verification failed", description: "Your draft is safe. Please tap Publish to try again.", variant: "destructive" });
+        return;
+      }
+
+      setHasPaidPlan(true);
+      setIsSubscribed(true);
+      setSubscriptionTier(verification.tier === "top_premium" ? "top_premium" : "premium");
+
+      const draft = readPendingMegatalentSubmission(user.id);
+      if (draft) {
+        const { data: existing, error: existingError } = await supabase
+          .from("talent_submissions")
+          .select("id")
+          .eq("user_id", user.id)
+          .eq("media_url", draft.mediaUrl)
+          .eq("title", draft.title)
+          .limit(1)
+          .maybeSingle();
+        if (existingError) throw existingError;
+
+        if (!existing) {
+          const { error: publishError } = await supabase.from("talent_submissions").insert({
+            user_id: user.id,
+            title: draft.title,
+            description: draft.description,
+            category: draft.category as any,
+            media_url: draft.mediaUrl,
+            media_type: draft.mediaType,
+          });
+          if (publishError) throw publishError;
+        }
+        clearPendingMegatalentSubmission();
+        setSelectedCategory(draft.category);
+        setTitle("");
+        setDescription("");
+        setUploadedFile(null);
+        await fetchSubmissions();
+        toast({ title: "Published!", description: "Payment confirmed and your submission is now live." });
+      } else {
+        toast({ title: "Subscription active", description: "Your MegaTalent plan is ready." });
+      }
+      setSearchParams({}, { replace: true });
+    };
+
+    finishPaidPublish().catch((error: unknown) => {
+      paymentHandledRef.current = false;
+      console.error("Paid MegaTalent publish failed:", error);
+      toast({ title: "Could not publish", description: error instanceof Error ? error.message : "Your draft is safe. Please try Publish again.", variant: "destructive" });
+    });
+  }, [searchParams, setSearchParams, toast]);
 
   const checkSubscription = async () => {
     try {
@@ -333,6 +416,15 @@ const Megatalent = () => {
           body: { action: "megatalent_sub" },
         });
         if (verificationError || data?.subscribed !== true) {
+          savePendingMegatalentSubmission({
+            userId: user.id,
+            title: title.trim(),
+            description: description.trim(),
+            category: selectedCategory,
+            mediaUrl: uploadedFile.url,
+            mediaType: uploadedFile.type,
+            createdAt: new Date().toISOString(),
+          });
           setUploadPaywallOpen(true);
           return;
         }
