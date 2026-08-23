@@ -1,5 +1,6 @@
 import "./aiRedirect.ts";
 import { tryVertexChat, tryVertexImage, tryVertexSpeech } from "./vertexDirect.ts";
+import { tryFallbackImage } from "./imageFallback.ts";
 
 /**
  * Unified AI provider for all Supabase Edge Functions.
@@ -335,8 +336,12 @@ export async function askAIJSON<T = any>(system: string, user: string, opts?: Om
 /** Vertex image generation. Export name is retained for caller compatibility. */
 export async function generateOpenAIImage(prompt: string, size: "1024x1024" | "1024x1536" | "1536x1024" = "1024x1024"): Promise<{ url?: string; b64_json?: string }> {
   const data = await tryVertexImage(prompt, size, 1);
-  if (!data) throw new UnifiedAIError(503, "Vertex AI image generation is temporarily unavailable.", "Vertex AI");
-  return { b64_json: data?.data?.[0]?.b64_json, url: data?.data?.[0]?.url };
+  if (data) return { b64_json: data?.data?.[0]?.b64_json, url: data?.data?.[0]?.url };
+  // Vertex is primary; when its image quota is exhausted (429) fall back so the
+  // user still gets artwork instead of an empty card.
+  const fallback = await tryFallbackImage(prompt, size);
+  if (fallback) return { b64_json: fallback };
+  throw new UnifiedAIError(503, "Vertex AI image generation is temporarily unavailable.", "Vertex AI");
 }
 
 /** Vertex text-to-speech. Export name is retained for caller compatibility. */
