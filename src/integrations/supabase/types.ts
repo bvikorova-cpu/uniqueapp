@@ -68907,6 +68907,7 @@ export type Database = {
       }
       brain_duel_spend_credits: { Args: { _amount: number }; Returns: number }
       bucket_30s: { Args: { ts: string }; Returns: number }
+      buy_streak_freeze_credits: { Args: { _qty: number }; Returns: Json }
       buy_streak_freeze_xp: {
         Args: { _cost_xp: number; _qty: number }
         Returns: Json

@@ -9,10 +9,11 @@ import { toast } from "sonner";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 const PACKS = [
-  { qty: 1, xp: 200, eur: 0.99, label: "Single Freeze" },
-  { qty: 3, xp: 500, eur: 2.49, label: "Triple Pack", popular: true },
-  { qty: 7, xp: 1000, eur: 4.99, label: "Week Shield" },
+  { qty: 1, xp: 200, credits: 1, label: "Single Freeze" },
+  { qty: 3, xp: 500, credits: 3, label: "Triple Pack", popular: true },
+  { qty: 7, xp: 1000, credits: 6, label: "Week Shield" },
 ];
+
 
 export default function RewardsStreakFreeze() {
   const { user } = useAuth();
@@ -43,23 +44,25 @@ export default function RewardsStreakFreeze() {
     return () => window.removeEventListener("rewards-purchase-completed", onDone);
   }, [user?.id]);
 
-  const buy = async (pack: typeof PACKS[number], method: "xp" | "eur") => {
+  const buy = async (pack: typeof PACKS[number], method: "xp" | "credits") => {
     if (!user) return;
     const key = `${pack.label}-${method}`;
     if (buyingKey) return;
     setBuyingKey(key);
     try {
-      if (method === "eur") {
-        try {
-          const { data, error } = await supabase.functions.invoke("create-checkout", {
-            body: { product: "rewards_checkout", kind: "streak_freeze", qty: pack.qty } });
-          if (error) throw error;
-          const url = (data as any)?.url;
-          if (!url) throw new Error("No checkout URL");
-          window.location.href = url;
-        } catch (e: any) {
-          toast.error(e?.message || "Checkout failed");
+      if (method === "credits") {
+        const { data, error } = await (supabase as any).rpc("buy_streak_freeze_credits", { _qty: pack.qty });
+        if (error) return toast.error(error.message);
+        const res = data as any;
+        if (!res?.ok) {
+          const msg = res?.error === "insufficient_credits"
+            ? `Not enough AI credits (need ${pack.credits})`
+            : (res?.error ?? "Purchase failed");
+          return toast.error(msg);
         }
+        toast.success(`+${pack.qty} Streak Freeze${pack.qty > 1 ? "s" : ""} for ${pack.credits} credits ❄️`);
+        window.dispatchEvent(new Event("ai-credits-updated"));
+        await refresh();
         return;
       }
       const { data, error } = await supabase.rpc("buy_streak_freeze_xp" as any, { _qty: pack.qty,
@@ -77,13 +80,14 @@ export default function RewardsStreakFreeze() {
     }
   };
 
+
   if (loading) return <p className="text-sm text-muted-foreground p-4">Loading...</p>;
 
   return (
     <div className="space-y-6">
       <div className="flex justify-end"><HowItWorksButton variant="compact" title="Streak Freeze" intro="Protect your daily login streak from breaking if you miss a day." steps={[
         { title: "Why it matters", desc: "Losing your streak resets your bonus multiplier back to 1x. A freeze keeps the streak intact." },
-        { title: "Buy freezes", desc: "Pick a pack (single, triple, week shield) and pay with XP or EUR via secure Stripe checkout." },
+        { title: "Buy freezes", desc: "Pick a pack (single, triple, week shield) and pay with XP or AI credits (1 / 3 / 6)." },
         { title: "Auto-apply", desc: "If you skip a day, one freeze is automatically consumed the next morning." },
         { title: "Stack them", desc: "You can hold multiple freezes at once — great before holidays or busy weeks." },
       ]} /></div>
@@ -137,9 +141,10 @@ export default function RewardsStreakFreeze() {
               <Button onClick={() => buy(pack, "xp")} disabled={!!buyingKey} variant="outline" className="w-full">
                 {buyingKey === `${pack.label}-xp` ? "Buying…" : `${pack.xp} XP`}
               </Button>
-              <Button onClick={() => buy(pack, "eur")} disabled={!!buyingKey} className="w-full bg-gradient-to-r from-cyan-500 to-blue-600">
-                {buyingKey === `${pack.label}-eur` ? "Loading…" : `€${pack.eur}`}
+              <Button onClick={() => buy(pack, "credits")} disabled={!!buyingKey} className="w-full bg-gradient-to-r from-cyan-500 to-blue-600">
+                {buyingKey === `${pack.label}-credits` ? "Buying…" : `${pack.credits} credit${pack.credits > 1 ? "s" : ""}`}
               </Button>
+
 
             </CardContent>
           </Card>
