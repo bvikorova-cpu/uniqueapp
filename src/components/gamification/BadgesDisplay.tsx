@@ -10,15 +10,27 @@ import { Tooltip,
   TooltipTrigger } from "@/components/ui/tooltip";
 import { Progress } from "@/components/ui/progress";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { supabase } from "@/integrations/supabase/client";
 
 interface BadgesDisplayProps {
   userId: string;
 }
 
 export default function BadgesDisplay({ userId }: BadgesDisplayProps) {
-  const { data: userBadges = [] } = useUserBadges(userId);
+  const { data: userBadges = [], refetch: refetchUserBadges } = useUserBadges(userId);
   const { data: allBadges = [] } = useAllBadges();
   const previousBadgeCount = useRef(0);
+  const synced = useRef(false);
+
+  // Sync real progress: unlock any badge the user already qualifies for
+  useEffect(() => {
+    if (!userId || synced.current) return;
+    synced.current = true;
+    (async () => {
+      const { error } = await supabase.rpc("check_and_award_badges" as any, { p_user_id: userId });
+      if (!error) refetchUserBadges();
+    })();
+  }, [userId, refetchUserBadges]);
 
   const earnedBadgeIds = new Set(userBadges.map((ub: any) => ub.badge_id));
 
@@ -88,7 +100,7 @@ export default function BadgesDisplay({ userId }: BadgesDisplayProps) {
                 {badges.filter((b: any) => earnedBadgeIds.has(b.id)).length}/{badges.length}
               </Badge>
             </h3>
-            <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
               {badges.map((badge: any, i: number) => {
                 const earned = earnedBadgeIds.has(badge.id);
                 const userBadge = userBadges.find((ub: any) => ub.badge_id === badge.id);
@@ -114,8 +126,11 @@ export default function BadgesDisplay({ userId }: BadgesDisplayProps) {
                             <Lock className="absolute -bottom-1 -right-1 h-3 w-3 text-muted-foreground" />
                           )}
                         </div>
-                        <p className="text-[10px] font-medium text-center line-clamp-1 w-full">
+                        <p className="text-[11px] leading-tight font-medium text-center w-full break-words hyphens-auto">
                           {badge.name}
+                        </p>
+                        <p className="text-[9px] text-muted-foreground text-center">
+                          {badge.requirement_value} {badge.requirement_type?.replace(/_/g, " ")}
                         </p>
                       </motion.div>
                     </TooltipTrigger>
