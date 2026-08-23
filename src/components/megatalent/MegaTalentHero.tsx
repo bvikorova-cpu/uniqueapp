@@ -37,12 +37,8 @@ export default function MegaTalentHero({ totalVotes, isSubscribed, subscriptionT
   const prizePoolLabel = stats?.prizePool ? stats.prizePoolFormatted : "—";
   const categoryLabel = stats ? `${stats.categoryCount}` : "36";
 
-  const statCards = [
-    { value: `${timeLeft.days}d ${timeLeft.hours}h`, label: "Time Left", icon: Clock, accent: "from-red-500/20 to-orange-500/10", iconColor: "text-red-400" },
-    { value: prizePoolLabel, label: "Prize Pool", icon: Trophy, accent: "from-yellow-500/20 to-amber-500/10", iconColor: "text-yellow-400" },
-    { value: totalVotes.toLocaleString(), label: "Your Votes", icon: Heart, accent: "from-pink-500/20 to-red-500/10", iconColor: "text-pink-400" },
-    { value: categoryLabel, label: "Categories", icon: Sparkles, accent: "from-purple-500/20 to-violet-500/10", iconColor: "text-purple-400" },
-  ];
+
+
 
   return (
     <div className="space-y-4 mb-6">
@@ -101,23 +97,7 @@ export default function MegaTalentHero({ totalVotes, isSubscribed, subscriptionT
           </motion.div>
         </div>
       </motion.div>
-
-      {/* Stat Cards Below Video */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {statCards.map((item, i) => (
-          <motion.div
-            key={item.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 * i + 0.4 }}
-            className={`rounded-xl bg-gradient-to-br ${item.accent} bg-card/80 backdrop-blur-md border border-yellow-400/20 p-3 sm:p-4 text-center`}
-          >
-            <item.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${item.iconColor} mx-auto mb-1`} />
-            <p className="text-lg sm:text-2xl font-black">{item.value}</p>
-            <p className="text-[10px] sm:text-xs text-muted-foreground">{item.label}</p>
-          </motion.div>
-        ))}
-      </div>
     </div>
+
   );
 }

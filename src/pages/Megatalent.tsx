@@ -40,7 +40,6 @@ import MegaTalentFeedFilters, { type FeedFilter } from "@/components/megatalent/
 import MegaTalentLatestFeed from "@/components/megatalent/MegaTalentLatestFeed";
 import { MegaTalentOnboarding } from "@/components/megatalent/MegaTalentOnboarding";
 import MegatalentLoadingSkeleton from "@/components/megatalent/MegatalentLoadingSkeleton";
-import MegatalentEngagementRow from "@/components/megatalent/MegatalentEngagementRow";
 import MegatalentToolView from "@/components/megatalent/MegatalentToolView";
 import MegatalentCommentDialog from "@/components/megatalent/MegatalentCommentDialog";
 import MegatalentShareSheet from "@/components/megatalent/MegatalentShareSheet";
@@ -393,7 +392,6 @@ const Megatalent = () => {
 
           <HeroRewardedAd sectionKey="page_megatalent" />
 
-          <MegatalentEngagementRow totalVotes={totalVotes} subscriptionTier={subscriptionTier} />
 
 
           <MegaTalentCategoryGrid />
