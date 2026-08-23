@@ -406,9 +406,6 @@ const Megatalent = () => {
                   Earn XP, win recognition, and invite friends — all from one place.
                 </p>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => navigate(`/megatalent/${selectedCategory}`)} className="gap-1">
-                See category <ArrowRight className="h-4 w-4" />
-              </Button>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
