@@ -91,12 +91,14 @@ export default function BadgeLeaderboard() {
                   {getRankIcon(index) || `#${index + 1}`}
                 </div>
                 <Avatar className="h-10 w-10 ring-2 ring-primary/20">
-                  <AvatarImage src={leader.profile?.avatar_url || undefined} />
-                  <AvatarFallback>{leader.profile?.full_name?.[0]?.toUpperCase() || "?"}</AvatarFallback>
+                  <AvatarImage src={leader.avatar_url || undefined} />
+                  <AvatarFallback>{leader.full_name?.[0]?.toUpperCase() || "?"}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold truncate">{leader.profile?.full_name || "Anonymous"}</p>
-                  <p className="text-xs text-muted-foreground">Badge Collector</p>
+                  <p className="font-semibold truncate">{leader.full_name || "Unique member"}</p>
+                  <p className="text-xs text-muted-foreground">
+                    Level {leader.level} · {(leader.total_points || 0).toLocaleString()} XP
+                  </p>
                 </div>
                 <div className="text-right">
                   <div className="flex items-center gap-1">
