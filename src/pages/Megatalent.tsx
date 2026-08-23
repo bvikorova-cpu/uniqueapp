@@ -41,7 +41,6 @@ import MegaTalentLatestFeed from "@/components/megatalent/MegaTalentLatestFeed";
 import { MegaTalentOnboarding } from "@/components/megatalent/MegaTalentOnboarding";
 import MegatalentLoadingSkeleton from "@/components/megatalent/MegatalentLoadingSkeleton";
 import MegatalentEngagementRow from "@/components/megatalent/MegatalentEngagementRow";
-import MegatalentAIToolsGrid from "@/components/megatalent/MegatalentAIToolsGrid";
 import MegatalentToolView from "@/components/megatalent/MegatalentToolView";
 import MegatalentCommentDialog from "@/components/megatalent/MegatalentCommentDialog";
 import MegatalentShareSheet from "@/components/megatalent/MegatalentShareSheet";
@@ -396,7 +395,6 @@ const Megatalent = () => {
 
           <MegatalentEngagementRow totalVotes={totalVotes} subscriptionTier={subscriptionTier} />
 
-          <MegatalentAIToolsGrid onSelect={setActiveView} />
 
           <MegaTalentCategoryGrid />
 
