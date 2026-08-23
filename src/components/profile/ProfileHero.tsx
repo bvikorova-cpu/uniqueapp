@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Edit, MapPin, Briefcase, Sparkles, TrendingUp, Users, Trophy, Zap } from "lucide-react";
 import { lazy, ReactNode, Suspense } from "react";
 import { VerifiedBadge, getVerifiedRingClass, TIER_META, normalizeTier } from "@/components/verified/VerifiedBadge";
+import { useRewardsCosmeticsFor } from "@/hooks/useRewardsCosmetics";
+import { rewardsFrameClass, rewardsNameClass, rewardsThemeClass, rewardsBorderClass } from "@/lib/rewardsCosmeticStyles";
 
 const VerifiedFounderBadge = lazy(() =>
   import("@/components/wall/VerifiedFounderBadge").then((m) => ({ default: m.VerifiedFounderBadge })),
@@ -51,6 +53,10 @@ export const ProfileHero = ({ profile,
   friendsAction,
   deferExtras = false }: ProfileHeroProps) => {
   const initial = profile.full_name?.[0]?.toUpperCase() || profile.email?.[0]?.toUpperCase() || "U";
+  const cosmetics = useRewardsCosmeticsFor(userId || profile.id);
+  const themeClass = rewardsThemeClass(cosmetics.profile_theme);
+  const borderClass = rewardsBorderClass(cosmetics.animated_border);
+  const frameClass = rewardsFrameClass(cosmetics.avatar_frame);
 
   const liveStats = [
     { label: "Posts", value: stats.posts, icon: Sparkles },
@@ -66,7 +72,7 @@ export const ProfileHero = ({ profile,
           <FloatingHowItWorks title={"Profile Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Profile Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Profile Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
         </Suspense>
       )}
-      <div className="relative w-full overflow-hidden rounded-3xl border border-amber-500/20 mb-6 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.6)] bg-gradient-to-br from-violet-950 via-background to-amber-950">
+      <div className={`relative w-full overflow-hidden rounded-3xl mb-6 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.6)] ${borderClass || "border border-amber-500/20"} ${themeClass || "bg-gradient-to-br from-violet-950 via-background to-amber-950"}`}>
       {/* Lightweight static background; avoids loading a profile video before content appears. */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/30 to-black/70" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(251,191,36,0.15),transparent_50%)]" />
@@ -96,7 +102,7 @@ export const ProfileHero = ({ profile,
                 title={meta.tooltip || undefined}
               >
                 <div className={`absolute -inset-2 bg-gradient-to-tr ${glow} rounded-full blur-xl opacity-80`} />
-                <Avatar className={`relative h-28 w-28 sm:h-36 sm:w-36 ${avatarRing} ring-offset-4 ring-offset-black/40`}>
+                <Avatar className={`relative h-28 w-28 sm:h-36 sm:w-36 ${frameClass || avatarRing} ring-offset-4 ring-offset-black/40`}>
                   <AvatarImage src={profile.avatar_url || undefined} className="object-cover" />
                   <AvatarFallback className="text-4xl bg-gradient-to-br from-amber-500/30 to-violet-500/30 font-black text-white">
                     {initial}
@@ -125,7 +131,10 @@ export const ProfileHero = ({ profile,
             </div>
 
             <h1
-              className="text-2xl sm:text-4xl md:text-5xl font-black leading-tight bg-gradient-to-r from-white via-amber-100 to-amber-300 bg-clip-text text-transparent"
+              className={`text-2xl sm:text-4xl md:text-5xl font-black leading-tight ${
+                rewardsNameClass(cosmetics.name_color) ||
+                "bg-gradient-to-r from-white via-amber-100 to-amber-300 bg-clip-text text-transparent"
+              }`}
               style={{ textShadow: "0 4px 24px rgba(0,0,0,0.6)" }}
             >
               {profile.full_name || "No name"}

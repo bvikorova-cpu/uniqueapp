@@ -40,6 +40,8 @@ import { CommentItem } from "./CommentItem";
 import { SensitiveOverlay } from "./SensitiveOverlay";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useRewardsCosmeticsFor } from "@/hooks/useRewardsCosmetics";
+import { rewardsFrameClass, rewardsNameClass } from "@/lib/rewardsCosmeticStyles";
 import { Popover,
   PopoverContent,
   PopoverTrigger } from "@/components/ui/popover";
@@ -90,6 +92,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
   // Provide default values for optional fields
   const postMedia = post.media || [];
   const postProfiles = post.profiles || { id: post.user_id, full_name: "Unknown User", avatar_url: null };
+  const authorCosmetics = useRewardsCosmeticsFor(post.user_id);
   const [comments, setComments] = useState<any[]>([]);
   const [newComment, setNewComment] = useState("");
   const [loadingComments, setLoadingComments] = useState(false);
@@ -737,7 +740,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
         {/* Author Info */}
         <div className="flex items-center gap-3">
           <Avatar 
-            className={`h-10 w-10 cursor-pointer transition-all ${verifiedRing || "ring-2 ring-primary/10 hover:ring-primary/30"}`}
+            className={`h-10 w-10 cursor-pointer transition-all ${rewardsFrameClass(authorCosmetics.avatar_frame) || verifiedRing || "ring-2 ring-primary/10 hover:ring-primary/30"}`}
             onClick={(e) => handleUserClick(e, post.user_id)}
           >
             <AvatarImage src={post.profiles?.avatar_url || undefined} />
@@ -748,7 +751,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <p 
-                className="font-semibold text-base truncate cursor-pointer hover:underline" 
+                className={`font-semibold text-base truncate cursor-pointer hover:underline ${rewardsNameClass(authorCosmetics.name_color)}`}
                 onClick={(e) => handleUserClick(e, post.user_id)}
               >
                 {post.profiles?.full_name || (post.profiles as any)?.username || "User"}
