@@ -8,6 +8,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Sparkles, Check } from "lucide-react";
 import { toast } from "sonner";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+import CosmeticVisualPreview from "@/components/rewards/CosmeticVisualPreview";
 
 
 const RARITY: Record<string, string> = { common: "border-slate-400 bg-slate-500/10",
