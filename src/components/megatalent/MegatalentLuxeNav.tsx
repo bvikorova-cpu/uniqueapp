@@ -91,7 +91,7 @@ export default function MegatalentLuxeNav({ active, onChange }: Props) {
               }}
             >
               <div
-                className={`relative h-full rounded-[calc(1.5rem-1px)] p-5 backdrop-blur-xl ${
+                className={`pointer-events-none relative h-full rounded-[calc(1.5rem-1px)] p-5 backdrop-blur-xl ${
                   isActive ? "bg-card/95" : "bg-card/70"
                 }`}
               >
