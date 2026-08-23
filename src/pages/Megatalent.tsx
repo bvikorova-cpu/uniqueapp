@@ -411,7 +411,7 @@ const Megatalent = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <MegatalentStories />
               <MegatalentSponsorShowcase category={selectedCategory} />
-              <MegatalentClipOfDay category={selectedCategory} />
+              
               <MegatalentTalentShop userId={currentUserId} />
               <MegatalentVotingStreak userId={currentUserId} />
               <MegatalentAchievements userId={currentUserId} />
