@@ -1,45 +1,31 @@
 /**
  * Persistent image caching for the collectible-card sections.
- * Mirrors the hero-card cache but is namespaced per category.
+ *
+ * Card artwork is served with immutable cache headers, so the browser's own
+ * HTTP/disk cache is the fastest and most reliable store — it is the only cache
+ * an <img> consults. Warming therefore just fetches through `Image()` so the
+ * exact URLs the grid renders land in the disk cache and survive hard refresh.
  */
 
-const CACHE_NAME = "collection-card-art-v1";
+import { cardThumbUrl } from "./cardImageUrl";
 
 const warmed = new Set<string>();
 
-const cacheSupported = () =>
-  typeof window !== "undefined" && "caches" in window && window.isSecureContext;
-
 export async function warmCollectionCardImages(urls: (string | null | undefined)[]) {
-  const list = urls.filter((u): u is string => !!u && !warmed.has(u));
+  if (typeof window === "undefined") return;
+  const list = urls
+    .map((u) => cardThumbUrl(u))
+    .filter((u): u is string => !!u && !warmed.has(u));
   if (!list.length) return;
   list.forEach((u) => warmed.add(u));
 
-  if (!cacheSupported()) {
-    list.forEach((u) => {
-      const img = new Image();
-      img.decoding = "async";
-      img.src = u;
-    });
-    return;
-  }
-
-  try {
-    const cache = await caches.open(CACHE_NAME);
-    await Promise.all(
-      list.map(async (url) => {
-        try {
-          if (await cache.match(url)) return;
-          await cache.add(new Request(url, { mode: "cors" }));
-        } catch {
-          /* ignore individual failures */
-        }
-      }),
-    );
-  } catch {
-    /* cache storage unavailable */
-  }
+  list.forEach((u) => {
+    const img = new Image();
+    img.decoding = "async";
+    img.src = u;
+  });
 }
+
 
 const key = (slug: string) => `collection-catalogue-v1:${slug}`;
 
