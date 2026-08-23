@@ -138,11 +138,12 @@ export default function RewardsStreakFreeze() {
             </CardHeader>
             <CardContent className="space-y-2">
               <p className="text-3xl font-bold">{pack.qty} <span className="text-sm font-normal text-muted-foreground">freeze{pack.qty > 1 ? "s" : ""}</span></p>
+              <p className="text-[11px] text-muted-foreground">Choose one payment method — XP <b>or</b> credits.</p>
               <Button onClick={() => buy(pack, "xp")} disabled={!!buyingKey} variant="outline" className="w-full">
-                {buyingKey === `${pack.label}-xp` ? "Buying…" : `${pack.xp} XP`}
+                {buyingKey === `${pack.label}-xp` ? "Buying…" : `Pay ${pack.xp} XP`}
               </Button>
               <Button onClick={() => buy(pack, "credits")} disabled={!!buyingKey} className="w-full bg-gradient-to-r from-cyan-500 to-blue-600">
-                {buyingKey === `${pack.label}-credits` ? "Buying…" : `${pack.credits} credit${pack.credits > 1 ? "s" : ""}`}
+                {buyingKey === `${pack.label}-credits` ? "Buying…" : `Pay ${pack.credits} credit${pack.credits > 1 ? "s" : ""}`}
               </Button>
 
 
