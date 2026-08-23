@@ -71408,6 +71408,18 @@ export type Database = {
           user_id: string
         }[]
       }
+      rewards_xp_leaderboard_full: {
+        Args: { _limit?: number; _period?: string }
+        Returns: {
+          avatar_url: string
+          badges: number
+          display_name: string
+          level: number
+          login_streak: number
+          total: number
+          user_id: string
+        }[]
+      }
       rotate_my_brand_api_key: { Args: never; Returns: string }
       rotate_mystery_events: { Args: never; Returns: undefined }
       rotate_seasonal_missions: { Args: never; Returns: Json }
