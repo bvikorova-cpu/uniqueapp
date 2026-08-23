@@ -261,20 +261,11 @@ export default function Rewards() {
             <Suspense fallback={<TabFallback />}>
               {activeView === "overview" && (
                 <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                     <DailyRewardButton />
                     <DailyXPVideoReward userId={user.id} />
-                    <div className="sm:col-span-2 lg:col-span-1">
-                      <Button
-                        onClick={() => navigate("/premium-store")}
-                        className="w-full h-full min-h-[120px] gap-2 text-lg bg-gradient-to-br from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white"
-                        size="lg"
-                      >
-                        <Crown className="h-6 w-6" />
-                        Premium Store
-                      </Button>
-                    </div>
                   </div>
+
 
                   <div className="mb-8">
                     <XpToCreditsConverter userId={user.id} />
