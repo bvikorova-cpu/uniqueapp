@@ -62,20 +62,21 @@ const MegatalentUploadPaywallDialog = ({ open, onOpenChange }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-xl">Choose a plan to publish 🏆</DialogTitle>
-          <DialogDescription>
+      <DialogContent className="w-[calc(100vw-2rem)] max-w-md max-h-[85vh] overflow-y-auto p-4 sm:p-6">
+        <DialogHeader className="text-left">
+          <DialogTitle className="text-base sm:text-xl pr-6">Choose a plan to publish 🏆</DialogTitle>
+          <DialogDescription className="text-xs sm:text-sm">
             Browsing and voting are free for every registered user. To upload and publish your
             submission, pick a MegaTalent subscription.
           </DialogDescription>
         </DialogHeader>
 
-        <ul className="text-sm space-y-1.5 bg-muted/40 rounded-lg p-3">
+        <ul className="text-xs sm:text-sm space-y-1.5 bg-muted/40 rounded-lg p-3">
           <li>✅ Unlimited photo &amp; video uploads</li>
           <li>✅ Access to all 35+ categories</li>
           <li>✅ Eligible for cash prizes for winners</li>
         </ul>
+
 
         <div className="space-y-1.5">
           <Label htmlFor="mt-referral" className="text-sm flex items-center gap-1.5">
@@ -97,30 +98,33 @@ const MegatalentUploadPaywallDialog = ({ open, onOpenChange }: Props) => {
         <div className="space-y-2">
           <Button
             size="lg"
-            className="w-full justify-between"
+            className="w-full justify-between gap-2 px-3 text-sm"
             onClick={() => startCheckout("premium")}
             disabled={loadingTier !== null}
           >
-            <span className="flex items-center gap-2"><Star className="h-4 w-4" /> Premium</span>
-            <span className="font-bold">
+            <span className="flex items-center gap-2 min-w-0"><Star className="h-4 w-4 shrink-0" /> Premium</span>
+            <span className="font-bold shrink-0 whitespace-nowrap">
               {loadingTier === "premium" ? <Loader2 className="h-4 w-4 animate-spin" /> : "€10 / month"}
             </span>
           </Button>
           <Button
             size="lg"
             variant="secondary"
-            className="w-full justify-between"
+            className="w-full justify-between gap-2 px-3 h-auto py-2.5 text-sm"
             onClick={() => startCheckout("top_premium")}
             disabled={loadingTier !== null}
           >
-            <span className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 fill-current" /> TOP Premium
-              <span className="text-xs opacity-80">(2× vote weight)</span>
+            <span className="flex flex-col items-start min-w-0 text-left">
+              <span className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 fill-current shrink-0" /> TOP Premium
+              </span>
+              <span className="text-[10px] opacity-80">2× vote weight</span>
             </span>
-            <span className="font-bold">
+            <span className="font-bold shrink-0 whitespace-nowrap">
               {loadingTier === "top_premium" ? <Loader2 className="h-4 w-4 animate-spin" /> : "€15 / month"}
             </span>
           </Button>
+
           <p className="text-xs text-muted-foreground text-center pt-1">
             Already paid?{" "}
             <button className="underline" onClick={() => window.location.reload()}>Refresh access</button>
