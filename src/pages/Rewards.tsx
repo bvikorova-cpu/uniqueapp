@@ -54,8 +54,6 @@ const RewardsLeagues = lazy(() => import("@/components/rewards/RewardsLeagues"))
 const RewardsBattlePass = lazy(() => import("@/components/rewards/RewardsBattlePass"));
 const RewardsStreakFreeze = lazy(() => import("@/components/rewards/RewardsStreakFreeze"));
 const RewardsLoginCalendar = lazy(() => import("@/components/rewards/RewardsLoginCalendar"));
-const RewardsGuilds = lazy(() => import("@/components/rewards/RewardsGuilds"));
-const RewardsQuestPath = lazy(() => import("@/components/rewards/RewardsQuestPath"));
 const RewardsCosmetics = lazy(() => import("@/components/rewards/RewardsCosmetics"));
 const RewardsYearWrapped = lazy(() => import("@/components/rewards/RewardsYearWrapped"));
 
@@ -65,8 +63,6 @@ const TABS = [
   { id: "battlepass", icon: Crown, label: "Battle Pass" },
   { id: "calendar", icon: CalendarDays, label: "Calendar" },
   { id: "freeze", icon: Snowflake, label: "Streak Freeze" },
-  { id: "guilds", icon: Castle, label: "Guilds" },
-  { id: "quest-path", icon: Map, label: "Quest Path" },
   { id: "cosmetics", icon: SparklesIcon, label: "Cosmetics" },
   { id: "wrapped", icon: PartyPopper, label: "Wrapped" },
   { id: "ai-tools", icon: Wand2, label: "AI Tools" },
@@ -331,8 +327,6 @@ export default function Rewards() {
               {activeView === "battlepass" && <RewardsBattlePass />}
               {activeView === "calendar" && <RewardsLoginCalendar />}
               {activeView === "freeze" && <RewardsStreakFreeze />}
-              {activeView === "guilds" && <RewardsGuilds />}
-              {activeView === "quest-path" && <RewardsQuestPath />}
               {activeView === "cosmetics" && <RewardsCosmetics />}
               {activeView === "wrapped" && <RewardsYearWrapped />}
             </Suspense>
