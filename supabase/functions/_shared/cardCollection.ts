@@ -496,12 +496,27 @@ export async function handleCardCollection(req: Request, preparsed?: any): Promi
         .order("card_index", { ascending: true })
         .limit(limit);
 
-      const results = await Promise.all(
-        (missing ?? [])
-          .filter((card: any) => catMap.has(card.category_slug))
-          .map((card: any) => ensureArtwork(card, catMap.get(card.category_slug))),
-      );
-      const generated = results.filter(Boolean).length;
+      // Vertex image quota is per-minute, so hammering it in parallel returns
+      // 429 for most cards. Generate in small waves with a short pause and one
+      // retry per card — far higher success rate than a single big Promise.all.
+      const queue = (missing ?? []).filter((card: any) => catMap.has(card.category_slug));
+      const deadline = Date.now() + 110_000;
+      let generated = 0;
+      const retryQueue: any[] = [];
+      for (let i = 0; i < queue.length; i += 3) {
+        if (Date.now() > deadline) break;
+        const wave = queue.slice(i, i + 3);
+        const res = await Promise.all(
+          wave.map((card: any) => ensureArtwork(card, catMap.get(card.category_slug))),
+        );
+        res.forEach((url, idx) => { if (url) generated++; else retryQueue.push(wave[idx]); });
+        if (i + 3 < queue.length) await new Promise((r) => setTimeout(r, 900));
+      }
+      for (const card of retryQueue) {
+        if (Date.now() > deadline) break;
+        await new Promise((r) => setTimeout(r, 700));
+        if (await ensureArtwork(card, catMap.get(card.category_slug))) generated++;
+      }
       const { count } = await db
         .from("card_collectibles")
         .select("id", { count: "exact", head: true })
