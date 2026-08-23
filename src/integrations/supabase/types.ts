@@ -52539,6 +52539,7 @@ export type Database = {
           is_premium: boolean
           name: string
           preview_url: string | null
+          price_credits: number | null
           price_eur: number | null
           price_xp: number | null
           rarity: string
@@ -52554,6 +52555,7 @@ export type Database = {
           is_premium?: boolean
           name: string
           preview_url?: string | null
+          price_credits?: number | null
           price_eur?: number | null
           price_xp?: number | null
           rarity?: string
@@ -52569,6 +52571,7 @@ export type Database = {
           is_premium?: boolean
           name?: string
           preview_url?: string | null
+          price_credits?: number | null
           price_eur?: number | null
           price_xp?: number | null
           rarity?: string
@@ -68560,7 +68563,9 @@ export type Database = {
       }
       accept_pet_trade: { Args: { p_trade_id: string }; Returns: Json }
       accept_skill_bid: { Args: { _bid_id: string }; Returns: Json }
-      acquire_cosmetic_item: { Args: { _item_id: string }; Returns: Json }
+      acquire_cosmetic_item:
+        | { Args: { _item_id: string }; Returns: Json }
+        | { Args: { _item_id: string; _pay_with?: string }; Returns: Json }
       activate_promo_listing_with_credits: {
         Args: { _listing_id: string }
         Returns: Json

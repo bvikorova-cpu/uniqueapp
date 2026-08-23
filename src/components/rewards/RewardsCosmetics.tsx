@@ -43,61 +43,33 @@ export default function RewardsCosmetics() {
 
   useEffect(() => { load(); }, [user?.id]);
 
-  // After Stripe redirects back: verify session and grant ownership.
-  useEffect(() => {
-    if (!user) return;
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("cosmetic") !== "success") return;
-    const sessionId = params.get("session_id");
-    const itemId = params.get("item");
-    if (!sessionId || !itemId) return;
-    (async () => {
-      const { data, error } = await supabase.functions.invoke("verify-cosmetic-purchase", {
-        body: { sessionId, itemId } });
-      if (error || !(data as any)?.ok) {
-        toast.error((data as any)?.error ?? error?.message ?? "Acquire failed");
-      } else {
-        toast.success(`Acquired ${""}!`);
-        load();
-      }
-      // Clean URL.
-      const url = new URL(window.location.href);
-      ["cosmetic", "session_id", "item"].forEach(k => url.searchParams.delete(k));
-      window.history.replaceState({}, "", url.toString());
-    })();
-  }, [user?.id]);
-
-  const acquire = async (item: any) => {
+  const acquire = async (item: any, payWith: "xp" | "credits") => {
     if (!user || busyId) return;
     setBusyId(item.id);
     try {
-      if (item.price_eur && Number(item.price_eur) > 0) {
-        const successPath = `/rewards?cosmetic=success&item=${encodeURIComponent(item.id)}`;
-        const { data, error } = await supabase.functions.invoke("create-one-off-payment", {
-          body: {
-            productKey: "cosmetic_purchase",
-            amount: Math.round(Number(item.price_eur) * 100),
-            name: item.name,
-            description: `${item.category} • ${item.rarity}`,
-            metadata: { itemId: item.id },
-            successPath } });
-        if (error || !(data as any)?.url) {
-          toast.error(error?.message ?? "Checkout failed");
-          return;
-        }
-        window.location.href = (data as any).url;
-        return;
-      }
-      const { data, error } = await supabase.rpc("acquire_cosmetic_item", { _item_id: item.id });
+      const { data, error } = await supabase.rpc("acquire_cosmetic_item" as any, {
+        _item_id: item.id,
+        _pay_with: payWith,
+      });
       if (error) { toast.error(error.message); return; }
       const res = data as any;
-      if (!res?.ok) { toast.error(res?.error ?? "Acquire failed"); return; }
+      if (!res?.ok) {
+        const map: Record<string, string> = {
+          insufficient_xp: "Not enough XP (locked challenge XP cannot be used).",
+          insufficient_credits: "Not enough AI credits.",
+          already_owned: "You already own this item.",
+        };
+        toast.error(map[res?.error] ?? res?.error ?? "Acquire failed");
+        return;
+      }
       toast.success(`Acquired ${item.name}!`);
+      window.dispatchEvent(new Event("ai-credits-updated"));
       await load();
     } finally {
       setBusyId(null);
     }
   };
+
 
   const equip = async (item: any) => {
     if (!user || busyId) return;
@@ -146,13 +118,16 @@ export default function RewardsCosmetics() {
                   const isOwned = !!owned[i.id];
                   const isEquipped = owned[i.id]?.is_equipped;
                   return (
-                    <div key={i.id} className={`p-3 rounded-lg border-2 ${RARITY[i.rarity]}`}>
-                      <div className="aspect-square bg-muted/30 rounded flex items-center justify-center text-3xl mb-2">
-                        {i.preview_url ? <img src={i.preview_url} alt={i.name} className="w-full h-full object-cover rounded" /> : "✨"}
+                    <div key={i.id} className={`p-3 rounded-lg border-2 flex flex-col ${RARITY[i.rarity]}`}>
+                      <div className="aspect-square bg-muted/30 rounded flex items-center justify-center text-3xl mb-2 overflow-hidden">
+                        {i.preview_url
+                          ? <img src={i.preview_url} alt={i.name} loading="lazy" className="w-full h-full object-cover rounded"
+                              onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
+                          : <span>✨</span>}
                       </div>
                       <p className="font-semibold text-sm truncate">{i.name}</p>
-                      <Badge variant="outline" className="text-[10px] capitalize">{i.rarity}</Badge>
-                      <div className="mt-2">
+                      <Badge variant="outline" className="text-[10px] capitalize w-fit">{i.rarity}</Badge>
+                      <div className="mt-2 space-y-1.5">
                         {isOwned ? (
                           isEquipped ? (
                             <Badge className="w-full justify-center"><Check className="h-3 w-3 mr-1" /> {"Equipped"}</Badge>
@@ -160,9 +135,22 @@ export default function RewardsCosmetics() {
                             <Button size="sm" variant="outline" className="w-full" disabled={busyId === i.id} onClick={() => equip(i)}>{busyId === i.id ? "…" : "Equip"}</Button>
                           )
                         ) : (
-                          <Button size="sm" className="w-full text-xs" disabled={busyId === i.id} onClick={() => acquire(i)}>
-                            {busyId === i.id ? "…" : (i.price_xp ? `${i.price_xp} XP` : i.price_eur ? `€${i.price_eur}` : "Get")}
-                          </Button>
+                          <>
+                            {i.price_xp > 0 && (
+                              <Button size="sm" className="w-full text-xs" disabled={busyId === i.id} onClick={() => acquire(i, "xp")}>
+                                {busyId === i.id ? "…" : `${i.price_xp} XP`}
+                              </Button>
+                            )}
+                            {i.price_credits > 0 && (
+                              <Button size="sm" variant="outline" className="w-full text-xs" disabled={busyId === i.id} onClick={() => acquire(i, "credits")}>
+                                {busyId === i.id ? "…" : `${i.price_credits} credits`}
+                              </Button>
+                            )}
+                            {!i.price_xp && !i.price_credits && (
+                              <Button size="sm" className="w-full text-xs" disabled={busyId === i.id} onClick={() => acquire(i, "xp")}>{busyId === i.id ? "…" : "Get"}</Button>
+                            )}
+                            <p className="text-[10px] text-muted-foreground text-center">{"Choose one payment"}</p>
+                          </>
                         )}
                       </div>
                     </div>
