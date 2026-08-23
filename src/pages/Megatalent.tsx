@@ -19,7 +19,7 @@ import { AnimatedVoteCounter } from "@/components/megatalent/AnimatedVoteCounter
 import { VoteBoostTooltip } from "@/components/megatalent/VoteBoostTooltip";
 
 import MegaTalentHero from "@/components/megatalent/MegaTalentHero";
-import MegatalentClipOfDay from "@/components/megatalent/MegatalentClipOfDay";
+
 import MegatalentTalentShop from "@/components/megatalent/MegatalentTalentShop";
 import MegatalentStories from "@/components/megatalent/MegatalentStories";
 import MegatalentSponsorShowcase from "@/components/megatalent/MegatalentSponsorShowcase";
