@@ -460,6 +460,54 @@ serve(async (req) => {
       const { data: existing } = await sb.from("megatalent_subscriptions").select("id").eq("user_id", user.id).maybeSingle();
       if (existing) await sb.from("megatalent_subscriptions").update(payload).eq("id", existing.id);
       else await sb.from("megatalent_subscriptions").insert(payload);
+
+      // ─── Referral reward (fallback when the Stripe webhook did not fire) ────
+      // Flat €5 for the referrer, idempotent via unique source_subscription_id.
+      try {
+        const { data: attr } = await sb
+          .from("referral_attributions")
+          .select("id, referrer_id, status, rewarded_at")
+          .eq("referred_user_id", user.id)
+          .maybeSingle();
+        if (attr && attr.status === "approved") {
+          const { data: already } = await sb
+            .from("megatalent_referral_earnings")
+            .select("id")
+            .eq("referrer_id", attr.referrer_id)
+            .eq("source_subscription_id", mtSub.id)
+            .maybeSingle();
+          if (!already) {
+            const { error: earnErr } = await sb.from("megatalent_referral_earnings").insert({
+              referrer_id: attr.referrer_id,
+              referred_user_id: user.id,
+              amount: 5,
+              paid: false,
+              period_start: new Date().toISOString(),
+              period_end: new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString(),
+              source_subscription_id: mtSub.id,
+              source_kind: "subscription",
+              auto_credited: true });
+            if (!earnErr) {
+              if (!attr.rewarded_at) {
+                await sb.from("referral_attributions")
+                  .update({ rewarded_at: new Date().toISOString(), first_subscription_id: mtSub.id })
+                  .eq("id", attr.id);
+              }
+              await sb.from("notifications").insert({
+                user_id: attr.referrer_id,
+                type: "referral_bonus",
+                title: "+5 € referral bonus",
+                message: "Your invited user paid for a subscription — we credited you a €5 bonus.",
+                is_read: false });
+            } else {
+              console.error("[check-router:megatalent_sub] referral earning insert", earnErr.message);
+            }
+          }
+        }
+      } catch (refErr) {
+        console.error("[check-router:megatalent_sub] referral fallback", (refErr as Error).message);
+      }
+
       return json({ subscribed: true, tier, current_period_end: end });
     }
 
