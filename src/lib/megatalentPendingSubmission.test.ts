@@ -1,9 +1,22 @@
-import { beforeEach, describe, expect, it } from "vitest";
-import {
-  clearPendingMegatalentSubmission,
-  readPendingMegatalentSubmission,
-  savePendingMegatalentSubmission,
-} from "./megatalentPendingSubmission";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("@/integrations/supabase/client", () => {
+  const thenable = { then: (cb: (r: { error: null }) => void) => cb({ error: null }) };
+  const builder = {
+    upsert: () => thenable,
+    insert: () => thenable,
+    select: () => builder,
+    eq: () => builder,
+    order: () => builder,
+    limit: () => Promise.resolve({ data: [], error: null }),
+    delete: () => builder,
+    contains: () => Promise.resolve({ error: null }),
+  };
+  return { supabase: { from: () => builder } };
+});
+
+const { clearPendingMegatalentSubmission, readPendingMegatalentSubmission, savePendingMegatalentSubmission } =
+  await import("./megatalentPendingSubmission");
 
 const draft = {
   userId: "user-1",
@@ -26,7 +39,7 @@ describe("MegaTalent pending submission", () => {
 
   it("clears the draft after publishing", () => {
     savePendingMegatalentSubmission(draft);
-    clearPendingMegatalentSubmission();
+    clearPendingMegatalentSubmission("user-1");
     expect(readPendingMegatalentSubmission("user-1")).toBeNull();
   });
 });
