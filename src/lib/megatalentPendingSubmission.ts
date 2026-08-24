@@ -10,6 +10,7 @@ export interface PendingMegatalentSubmission {
   category: string;
   mediaUrl: string;
   mediaType: "image" | "video";
+  thumbnailUrl?: string | null;
   createdAt: string;
 }
 
