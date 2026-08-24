@@ -102,6 +102,8 @@ const Megatalent = () => {
   const [uploadPaywallOpen, setUploadPaywallOpen] = useState(false);
   const [luxeSection, setLuxeSection] = useState<LuxeSection>("compete");
   const paymentHandledRef = useRef(false);
+  const autoPublishRef = useRef(false);
+
 
 
   useEffect(() => {
@@ -122,6 +124,48 @@ const Megatalent = () => {
   useEffect(() => {
     fetchSubmissions();
   }, [selectedCategory, feedFilter]);
+
+  // Safety net: if a paid plan is active and a saved draft is still pending
+  // (e.g. the payment return flow was interrupted), publish it automatically.
+  useEffect(() => {
+    if (!hasPaidPlan || autoPublishRef.current) return;
+    autoPublishRef.current = true;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { autoPublishRef.current = false; return; }
+      const draft = readPendingMegatalentSubmission(user.id);
+      if (!draft) { autoPublishRef.current = false; return; }
+      const { data: existing } = await supabase
+        .from("talent_submissions")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("media_url", draft.mediaUrl)
+        .eq("title", draft.title)
+        .limit(1)
+        .maybeSingle();
+      if (!existing) {
+        const { error } = await supabase.from("talent_submissions").insert({
+          user_id: user.id,
+          title: draft.title,
+          description: draft.description,
+          category: draft.category as any,
+          media_url: draft.mediaUrl,
+          media_type: draft.mediaType,
+        });
+        if (error) {
+          autoPublishRef.current = false;
+          toast({ title: "Could not publish", description: error.message, variant: "destructive" });
+          return;
+        }
+      }
+      clearPendingMegatalentSubmission();
+      setSelectedCategory(draft.category);
+      setTitle(""); setDescription(""); setUploadedFile(null);
+      await fetchSubmissions();
+      toast({ title: "Published!", description: "Your submission is now live." });
+    })();
+  }, [hasPaidPlan, toast]);
+
 
   // loading clears in checkSubscription's finally block
 
