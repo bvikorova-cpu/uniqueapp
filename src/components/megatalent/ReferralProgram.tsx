@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Copy, Users, DollarSign, Share2, Facebook, Twitter, Mail, RefreshCw, TrendingUp, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { ReceivedTipsList } from "./ReceivedTipsList";
 
 export const ReferralProgram = () => {
   const [referralCode, setReferralCode] = useState<string>("");
