@@ -47,7 +47,7 @@ const KIND_MAP = {
   referral: {
     table: "referral_withdrawal_requests",
     statusColumn: "status",
-    userIdColumn: "user_id",
+    userIdColumn: "referrer_id",
     transferIdColumn: "stripe_transfer_id",
     currency: "EUR",
     amountColumn: "amount",
