@@ -117,9 +117,9 @@ serve(async (req) => {
       'Withdrawal Request Rejected';
 
     const notificationMessage =
-      action === 'approve' ? `Your referral withdrawal request for €${request.amount} has been approved and will be processed soon.` :
-      action === 'complete' ? `Your referral withdrawal of €${request.amount} has been completed.` :
-      `Your referral withdrawal request for €${request.amount} has been rejected. ${adminNotes || ''}`;
+      action === 'approve' ? `Your MegaTalent payout request for €${request.amount} has been approved and will be processed soon.` :
+      action === 'complete' ? `Your MegaTalent payout of €${request.amount} has been completed.` :
+      `Your MegaTalent payout request for €${request.amount} has been rejected. ${adminNotes || ''}`;
 
     await supabase.from('notifications').insert({ user_id: request.referrer_id,
       title: notificationTitle,
