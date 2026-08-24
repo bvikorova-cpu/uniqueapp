@@ -41,6 +41,9 @@ export default function MegaTalentSubmissionCard({ submission,
   onMediaClick }: SubmissionCardProps) {
   const isTopPremium = submission.subscriptionTier === "top_premium";
   const displayVotes = (submission.votes_count || 0).toLocaleString();
+  const cosmetics = useRewardsCosmeticsFor(submission.user_id);
+  const frameClass = rewardsFrameClass(cosmetics.avatar_frame);
+
 
   return (
     <>
