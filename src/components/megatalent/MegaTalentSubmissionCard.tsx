@@ -108,19 +108,19 @@ export default function MegaTalentSubmissionCard({ submission,
           <h3 className="font-bold text-base">{submission.title}</h3>
 
           {/* Media */}
-          <div className="rounded-xl overflow-hidden border border-border/20">
+          <div className="rounded-xl overflow-hidden border border-border/20 bg-muted/30">
             {submission.media_type === "image" ? (
               <img
                 src={submission.media_url}
                 alt={submission.title}
-                className="w-full aspect-video object-cover cursor-pointer hover:scale-[1.02] transition-transform"
+                className="w-full max-h-[70vh] object-contain cursor-pointer"
                 onClick={() => onMediaClick(submission.media_url, "image")}
               />
             ) : (
               <video
                 src={submission.media_url}
                 controls
-                className="w-full aspect-video"
+                className="w-full max-h-[70vh] object-contain"
               />
             )}
           </div>
