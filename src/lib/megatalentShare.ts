@@ -8,10 +8,15 @@ export function megatalentPostUrl(submissionId: string) {
   return `${origin}/megatalent/post/${submissionId}`;
 }
 
-export function buildMegatalentShare(submission: { id: string; title?: string }) {
+export function buildMegatalentShare(submission: {
+  id: string;
+  title?: string;
+  thumbnail_url?: string | null;
+}) {
   return {
     title: submission.title ? `${submission.title} — MegaTalent` : "MegaTalent | Unique",
     text: "Vote for my post in Mega Talent 🏆 on Unique",
     url: megatalentPostUrl(submission.id),
+    imageUrl: submission.thumbnail_url || undefined,
   };
 }
