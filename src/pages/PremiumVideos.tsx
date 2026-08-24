@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import PremiumVideoCard from "@/components/premiumVideos/PremiumVideoCard";
 import UploadPremiumVideoDialog from "@/components/premiumVideos/UploadPremiumVideoDialog";
 import { usePremiumVideos } from "@/hooks/usePremiumVideos";
+import heroVideo from "@/assets/section-videos/unlock-videos.mp4.asset.json";
 
 export default function PremiumVideos() {
   const { videos, loading, unlock, unlocking, addView, refetch } = usePremiumVideos();
