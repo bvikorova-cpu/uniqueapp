@@ -450,6 +450,27 @@ const Megatalent = () => {
       if (uploadError) throw uploadError;
       const { data: { publicUrl } } = supabase.storage.from(bucket).getPublicUrl(fileName);
       setUploadedFile({ url: publicUrl, type });
+
+      // Generate a first-frame thumbnail for videos so social previews work immediately.
+      if (!isImage) {
+        try {
+          const thumbBlob = await extractVideoFirstFrame(publicUrl);
+          const thumbName = `thumbnails/${user.id}/${Date.now()}.jpg`;
+          const { error: thumbError } = await supabase.storage.from('media').upload(thumbName, thumbBlob, {
+            contentType: 'image/jpeg',
+            upsert: true,
+          });
+          if (!thumbError) {
+            const { data: { publicUrl: thumbPublicUrl } } = supabase.storage.from('media').getPublicUrl(thumbName);
+            setUploadedThumbnailUrl(thumbPublicUrl);
+          }
+        } catch (thumbErr) {
+          console.error('Video thumbnail generation failed:', thumbErr);
+        }
+      } else {
+        setUploadedThumbnailUrl(null);
+      }
+
       toast({ title: "Uploaded!", description: `${isImage ? 'Photo' : 'Video'} uploaded successfully` });
     } catch (error: any) {
       console.error('Upload error:', error);
