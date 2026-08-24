@@ -12,6 +12,8 @@ import { toast as sonnerToast } from "sonner";
 import { TalentCommentsSheet } from "@/components/megatalent/TalentCommentsSheet";
 import MegatalentTipJar from "@/components/megatalent/MegatalentTipJar";
 import MegatalentBoostButton from "@/components/megatalent/MegatalentBoostButton";
+import BoostCountdown from "@/components/megatalent/BoostCountdown";
+
 
 import { Badge as UiBadge } from "@/components/ui/badge";
 import { Rocket } from "lucide-react";
@@ -53,6 +55,8 @@ const MegatalentCategory = () => {
   const [tipTarget, setTipTarget] = useState<{ id: string; name?: string } | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [boostedIds, setBoostedIds] = useState<Set<string>>(new Set());
+  const [boostExpiry, setBoostExpiry] = useState<Record<string, string>>({});
+
 
   const config = category ? categoryConfig[category] : null;
 
@@ -92,15 +96,20 @@ const MegatalentCategory = () => {
   }, [category]);
 
   const fetchActiveBoosts = async () => {
+
     if (!config) return;
     const { data } = await supabase
       .from("megatalent_boosts")
-      .select("submission_id")
+      .select("submission_id, expires_at")
       .eq("status", "active")
       .gt("expires_at", new Date().toISOString())
       .in("category", config.categories as any);
     setBoostedIds(new Set((data ?? []).map((b: any) => b.submission_id)));
+    const map: Record<string, string> = {};
+    (data ?? []).forEach((b: any) => { map[b.submission_id] = b.expires_at; });
+    setBoostExpiry(map);
   };
+
 
   const fetchSubmissions = async () => {
     if (!config) return;
@@ -416,6 +425,14 @@ const MegatalentCategory = () => {
                           onBoosted={fetchActiveBoosts}
                         />
                       )}
+
+                      {currentUserId === submission.user_id && boostExpiry[submission.id] && (
+                        <BoostCountdown
+                          expiresAt={boostExpiry[submission.id]}
+                          onExpired={fetchActiveBoosts}
+                        />
+                      )}
+
                     </div>
 
                   </CardContent>
