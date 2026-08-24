@@ -98,7 +98,7 @@ export const ReceivedTipsList = () => {
                 className="flex gap-3 p-3 rounded-xl border border-border/30 bg-background/40"
               >
                 <Avatar className="h-10 w-10 shrink-0">
-                  <AvatarImage src={s?.avatar_url ?? undefined} alt={name} />
+                  <AvatarImage src={avatar ?? undefined} alt={name} />
                   <AvatarFallback>{name.slice(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 flex-1">
