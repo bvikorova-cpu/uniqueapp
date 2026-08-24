@@ -11,7 +11,7 @@ export function megatalentPostUrl(submissionId: string) {
 export function buildMegatalentShare(submission: { id: string; title?: string }) {
   return {
     title: submission.title ? `${submission.title} — MegaTalent` : "MegaTalent | Unique",
-    text: "Hlasuj za môj príspevok v Mega Talent 🏆 na Unique",
+    text: "Vote for my post in Mega Talent 🏆 on Unique",
     url: megatalentPostUrl(submission.id),
   };
 }
