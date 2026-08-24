@@ -47,9 +47,10 @@ import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 import MegatalentLuxeNav, { type LuxeSection } from "@/components/megatalent/MegatalentLuxeNav";
 import {
   clearPendingMegatalentSubmission,
-  readPendingMegatalentSubmission,
+  loadPendingMegatalentSubmission,
   savePendingMegatalentSubmission,
 } from "@/lib/megatalentPendingSubmission";
+
 
 
 const MEGATALENT_HOW_IT_WORKS = [
