@@ -47,9 +47,10 @@ import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 import MegatalentLuxeNav, { type LuxeSection } from "@/components/megatalent/MegatalentLuxeNav";
 import {
   clearPendingMegatalentSubmission,
-  readPendingMegatalentSubmission,
+  loadPendingMegatalentSubmission,
   savePendingMegatalentSubmission,
 } from "@/lib/megatalentPendingSubmission";
+
 
 
 const MEGATALENT_HOW_IT_WORKS = [
@@ -110,9 +111,9 @@ const Megatalent = () => {
     checkSubscription();
     fetchUserVotes();
     getCurrentUser();
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (!user) return;
-      const draft = readPendingMegatalentSubmission(user.id);
+      const draft = await loadPendingMegatalentSubmission(user.id);
       if (!draft) return;
       setTitle(draft.title);
       setDescription(draft.description);
@@ -133,7 +134,7 @@ const Megatalent = () => {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { autoPublishRef.current = false; return; }
-      const draft = readPendingMegatalentSubmission(user.id);
+      const draft = await loadPendingMegatalentSubmission(user.id);
       if (!draft) { autoPublishRef.current = false; return; }
       const { data: existing } = await supabase
         .from("talent_submissions")
@@ -158,7 +159,7 @@ const Megatalent = () => {
           return;
         }
       }
-      clearPendingMegatalentSubmission();
+      clearPendingMegatalentSubmission(user.id);
       setSelectedCategory(draft.category);
       setTitle(""); setDescription(""); setUploadedFile(null);
       await fetchSubmissions();
@@ -207,7 +208,7 @@ const Megatalent = () => {
       setIsSubscribed(true);
       setSubscriptionTier(verification.tier === "top_premium" ? "top_premium" : "premium");
 
-      const draft = readPendingMegatalentSubmission(user.id);
+      const draft = await loadPendingMegatalentSubmission(user.id);
       if (draft) {
         const { data: existing, error: existingError } = await supabase
           .from("talent_submissions")
@@ -230,7 +231,7 @@ const Megatalent = () => {
           });
           if (publishError) throw publishError;
         }
-        clearPendingMegatalentSubmission();
+        clearPendingMegatalentSubmission(user.id);
         setSelectedCategory(draft.category);
         setTitle("");
         setDescription("");
@@ -487,7 +488,7 @@ const Megatalent = () => {
       }
       const { error } = await supabase.from('talent_submissions').insert({ user_id: user.id, title: title.trim(), description: description.trim(), category: selectedCategory as any, media_url: uploadedFile.url, media_type: uploadedFile.type });
       if (error) throw error;
-      clearPendingMegatalentSubmission();
+      clearPendingMegatalentSubmission(user.id);
       toast({ title: "Published!", description: "Your submission is now live" });
       setTitle(""); setDescription(""); setUploadedFile(null);
       fetchSubmissions();
