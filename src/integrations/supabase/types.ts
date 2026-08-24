@@ -47940,6 +47940,47 @@ export type Database = {
         }
         Relationships: []
       }
+      premium_video_boosts: {
+        Row: {
+          created_at: string
+          credits_spent: number
+          expires_at: string
+          id: string
+          starts_at: string
+          tier: string
+          user_id: string
+          video_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_spent: number
+          expires_at: string
+          id?: string
+          starts_at?: string
+          tier: string
+          user_id: string
+          video_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_spent?: number
+          expires_at?: string
+          id?: string
+          starts_at?: string
+          tier?: string
+          user_id?: string
+          video_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "premium_video_boosts_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "premium_videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       premium_video_creator_balance: {
         Row: {
           credited_total: number
@@ -47995,6 +48036,8 @@ export type Database = {
       }
       premium_videos: {
         Row: {
+          boost_tier: string | null
+          boost_until: string | null
           created_at: string
           description: string | null
           duration_seconds: number | null
@@ -48010,6 +48053,8 @@ export type Database = {
           views_count: number
         }
         Insert: {
+          boost_tier?: string | null
+          boost_until?: string | null
           created_at?: string
           description?: string | null
           duration_seconds?: number | null
@@ -48025,6 +48070,8 @@ export type Database = {
           views_count?: number
         }
         Update: {
+          boost_tier?: string | null
+          boost_until?: string | null
           created_at?: string
           description?: string | null
           duration_seconds?: number | null
@@ -64535,6 +64582,69 @@ export type Database = {
           },
         ]
       }
+      video_credits: {
+        Row: {
+          created_at: string
+          credits_remaining: number
+          id: string
+          last_used_at: string | null
+          total_credits_purchased: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          last_used_at?: string | null
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          last_used_at?: string | null
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      video_credits_ledger: {
+        Row: {
+          balance_after: number
+          balance_before: number
+          created_at: string
+          delta: number
+          id: string
+          reason: string
+          source: string | null
+          user_id: string
+        }
+        Insert: {
+          balance_after: number
+          balance_before: number
+          created_at?: string
+          delta: number
+          id?: string
+          reason?: string
+          source?: string | null
+          user_id: string
+        }
+        Update: {
+          balance_after?: number
+          balance_before?: number
+          created_at?: string
+          delta?: number
+          id?: string
+          reason?: string
+          source?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       video_likes: {
         Row: {
           created_at: string
@@ -68725,6 +68835,15 @@ export type Database = {
             }
             Returns: undefined
           }
+      add_video_credits: {
+        Args: {
+          p_amount: number
+          p_reason?: string
+          p_source?: string
+          p_user_id: string
+        }
+        Returns: number
+      }
       admin_challenge_subscribers: {
         Args: { _challenge?: string }
         Returns: {
@@ -69054,6 +69173,10 @@ export type Database = {
       }
       boost_megatalent_with_credits: {
         Args: { p_category: string; p_cost?: number; p_submission_id: string }
+        Returns: Json
+      }
+      boost_premium_video: {
+        Args: { _tier: string; _video_id: string }
         Returns: Json
       }
       brain_duel_activate_combo: {
