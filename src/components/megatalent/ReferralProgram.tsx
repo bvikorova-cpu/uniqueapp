@@ -56,6 +56,20 @@ export const ReferralProgram = () => {
       setActiveCount(Number(stats?.invited_active ?? 0));
       setPendingEarnings(Number(stats?.pending_earnings ?? 0));
 
+      // Gifts (tips) received from other users — separate income stream from referrals
+      const { data: tips } = await supabase
+        .from("megatalent_tips")
+        .select("creator_amount_cents, amount_cents")
+        .eq("creator_id", user.id)
+        .eq("status", "completed");
+      const tipsTotal = (tips ?? []).reduce(
+        (s: number, t: any) => s + Number(t.creator_amount_cents ?? t.amount_cents ?? 0),
+        0,
+      );
+      setTipsEarned(tipsTotal / 100);
+      setTipsCount((tips ?? []).length);
+
+
     } catch (error) {
       console.error("Error loading referral data:", error);
     } finally {
