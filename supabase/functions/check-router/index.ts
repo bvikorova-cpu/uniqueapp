@@ -59,9 +59,15 @@ async function getUser(req: Request) {
 }
 
 function periodEndIso(sub: any): string | null {
-  const v = sub?.current_period_end;
-  if (typeof v !== "number" || !isFinite(v)) return null;
-  return new Date(v * 1000).toISOString();
+  // Stripe API 2025-08-27 (Basil) moved current_period_end from the
+  // Subscription onto each subscription item — read both shapes.
+  const candidates: unknown[] = [sub?.current_period_end];
+  for (const it of sub?.items?.data ?? []) candidates.push(it?.current_period_end);
+  const numbers = candidates.filter((v): v is number => typeof v === "number" && isFinite(v));
+  if (numbers.length > 0) return new Date(Math.max(...numbers) * 1000).toISOString();
+  // Last resort: never fail verification just because Stripe omitted the field.
+  const started = typeof sub?.start_date === "number" ? sub.start_date * 1000 : Date.now();
+  return new Date(started + 31 * 24 * 60 * 60 * 1000).toISOString();
 }
 
 const safeTsToIso = (ts: number | null | undefined): string | null => {
