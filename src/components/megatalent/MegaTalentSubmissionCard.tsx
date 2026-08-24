@@ -7,6 +7,9 @@ import { TopPremiumBadge } from "@/components/megatalent/TopPremiumBadge";
 import { VoteBoostTooltip } from "@/components/megatalent/VoteBoostTooltip";
 import MegatalentReactions from "@/components/megatalent/MegatalentReactions";
 import MegatalentPinButton from "@/components/megatalent/MegatalentPinButton";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useRewardsCosmeticsFor } from "@/hooks/useRewardsCosmetics";
+import { rewardsFrameClass, rewardsNameClass } from "@/lib/rewardsCosmeticStyles";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface SubmissionCardProps {
@@ -38,6 +41,9 @@ export default function MegaTalentSubmissionCard({ submission,
   onMediaClick }: SubmissionCardProps) {
   const isTopPremium = submission.subscriptionTier === "top_premium";
   const displayVotes = (submission.votes_count || 0).toLocaleString();
+  const cosmetics = useRewardsCosmeticsFor(submission.user_id);
+  const frameClass = rewardsFrameClass(cosmetics.avatar_frame);
+
 
   return (
     <>
@@ -57,16 +63,20 @@ export default function MegaTalentSubmissionCard({ submission,
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="relative">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-bold text-sm">
-                  {submission.profiles?.full_name?.[0] || "U"}
-                </div>
+                <Avatar className={`h-10 w-10 ${frameClass || "ring-2 ring-primary/10"}`}>
+                  <AvatarImage src={submission.profiles?.avatar_url || undefined} alt={submission.profiles?.full_name || "User"} />
+                  <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-primary-foreground font-bold text-sm">
+                    {submission.profiles?.full_name?.[0] || "U"}
+                  </AvatarFallback>
+                </Avatar>
                 {isTopPremium && (
                   <TopPremiumBadge variant="small" className="absolute -bottom-1 -right-1" showIcon={false} />
                 )}
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
-                  <p className="font-semibold text-sm">{submission.profiles?.full_name || "User"}</p>
+                  <p className={`font-semibold text-sm ${rewardsNameClass(cosmetics.name_color)}`}>{submission.profiles?.full_name || "User"}</p>
+
                   {isTopPremium && <TopPremiumBadge variant="inline" />}
                 </div>
                 <p className="text-xs text-muted-foreground">
@@ -98,19 +108,19 @@ export default function MegaTalentSubmissionCard({ submission,
           <h3 className="font-bold text-base">{submission.title}</h3>
 
           {/* Media */}
-          <div className="rounded-xl overflow-hidden border border-border/20">
+          <div className="rounded-xl overflow-hidden border border-border/20 bg-muted/30">
             {submission.media_type === "image" ? (
               <img
                 src={submission.media_url}
                 alt={submission.title}
-                className="w-full aspect-video object-cover cursor-pointer hover:scale-[1.02] transition-transform"
+                className="w-full max-h-[70vh] object-contain cursor-pointer"
                 onClick={() => onMediaClick(submission.media_url, "image")}
               />
             ) : (
               <video
                 src={submission.media_url}
                 controls
-                className="w-full aspect-video"
+                className="w-full max-h-[70vh] object-contain"
               />
             )}
           </div>
