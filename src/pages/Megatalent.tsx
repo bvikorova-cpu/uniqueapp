@@ -308,13 +308,13 @@ const Megatalent = () => {
       let submissionsData: any[] | null = null;
       let error: any = null;
       if (feedFilter === "hot") {
-        const res = await (supabase as any).rpc("mt_feed_hot", { _category: selectedCategory, _limit: 10 });
+        const res = await (supabase as any).rpc("mt_feed_hot", { _category: selectedCategory, _limit: 5 });
         submissionsData = res.data; error = res.error;
       } else {
         const orderCol = feedFilter === "top" ? "votes_count" : "created_at";
         const res = await supabase.from('talent_submissions').select('*')
           .eq('category', selectedCategory as any).eq('is_active', true)
-          .order(orderCol as any, { ascending: false }).limit(10);
+          .order(orderCol as any, { ascending: false }).limit(5);
         submissionsData = res.data as any; error = res.error;
       }
       if (error) throw error;
