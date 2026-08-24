@@ -626,6 +626,7 @@ const App = () => {
                        <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
                        <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
                        <Route path="/wall/videos" element={<ProtectedRoute><WallVideos /></ProtectedRoute>} />
+                       <Route path="/unlock-videos" element={<ProtectedRoute><PremiumVideos /></ProtectedRoute>} />
                        <Route path="/shorts" element={<ProtectedRoute><Shorts /></ProtectedRoute>} />
                        <Route path="/pitch" element={<Pitch />} />
                        <Route path="/wall/saved" element={<ProtectedRoute><WallSaved /></ProtectedRoute>} />
