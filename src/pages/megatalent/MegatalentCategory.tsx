@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, MessageCircle, ArrowLeft, Play, Trophy, Loader2, ThumbsDown, Gift } from "lucide-react";
+import { Heart, MessageCircle, ArrowLeft, Play, Trophy, Loader2, Gift } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -387,17 +387,6 @@ const MegatalentCategory = () => {
                         >
                           <Heart className={`w-4 h-4 ${userVotes[submission.id] === 'like' ? "fill-current" : ""}`} />
                           <span className="text-xs font-bold">{submission.votes_count || 0}</span>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleVote(submission.id, 'dislike')}
-                          className={`gap-1.5 h-8 px-2 ${userVotes[submission.id] === 'dislike' ? "text-blue-500" : ""}`}
-                          aria-label="Dislike"
-                          aria-pressed={userVotes[submission.id] === 'dislike'}
-                        >
-                          <ThumbsDown className={`w-4 h-4 ${userVotes[submission.id] === 'dislike' ? "fill-current" : ""}`} />
-                          <span className="text-xs font-bold">{submission.dislikes_count || 0}</span>
                         </Button>
                         <Button
                           variant="ghost"
