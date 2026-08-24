@@ -47940,6 +47940,107 @@ export type Database = {
         }
         Relationships: []
       }
+      premium_video_creator_balance: {
+        Row: {
+          credited_total: number
+          pending_credits: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          credited_total?: number
+          pending_credits?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          credited_total?: number
+          pending_credits?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      premium_video_unlocks: {
+        Row: {
+          created_at: string
+          credits_spent: number
+          id: string
+          user_id: string
+          video_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          user_id: string
+          video_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          user_id?: string
+          video_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "premium_video_unlocks_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "premium_videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      premium_videos: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration_seconds: number | null
+          id: string
+          is_published: boolean
+          thumbnail_url: string | null
+          title: string
+          unlock_cost: number
+          unlocks_count: number
+          updated_at: string
+          user_id: string
+          video_url: string
+          views_count: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration_seconds?: number | null
+          id?: string
+          is_published?: boolean
+          thumbnail_url?: string | null
+          title: string
+          unlock_cost?: number
+          unlocks_count?: number
+          updated_at?: string
+          user_id: string
+          video_url: string
+          views_count?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration_seconds?: number | null
+          id?: string
+          is_published?: boolean
+          thumbnail_url?: string | null
+          title?: string
+          unlock_cost?: number
+          unlocks_count?: number
+          updated_at?: string
+          user_id?: string
+          video_url?: string
+          views_count?: number
+        }
+        Relationships: []
+      }
       prescriptions: {
         Row: {
           appointment_id: string
@@ -71260,6 +71361,10 @@ export type Database = {
         }
         Returns: Json
       }
+      premium_video_add_view: {
+        Args: { _video_id: string }
+        Returns: undefined
+      }
       process_campaign_donation: {
         Args: {
           _amount: number
@@ -71759,6 +71864,7 @@ export type Database = {
         Args: { p_subject?: string; p_user_id: string }
         Returns: number
       }
+      unlock_premium_video: { Args: { _video_id: string }; Returns: Json }
       unlock_skill_contact: { Args: { _offering_id: string }; Returns: Json }
       update_battle_stats: {
         Args: { loser_id: string; winner_id: string }
