@@ -489,6 +489,31 @@ const Admin = () => {
           </Card>
         </div>
 
+        {/* Users & Referrals overview */}
+        <div className="grid grid-cols-1 gap-6 mb-8">
+          <Card
+            className="cursor-pointer hover:shadow-lg transition-shadow border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-accent/5"
+            onClick={() => navigate('/admin/users-overview')}
+          >
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 rounded-lg bg-primary/20">
+                    <Users className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl">Users &amp; Referrals</CardTitle>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Subscriptions, credits and who earned the €5 from each invite code
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight className="h-6 w-6 text-muted-foreground" />
+              </div>
+            </CardHeader>
+          </Card>
+        </div>
+
         {/* Referral Tools */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <Card
