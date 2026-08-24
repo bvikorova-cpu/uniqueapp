@@ -153,6 +153,7 @@ import { ResetPassword,
   Megaforum,
   Megatalent,
   MegatalentCategory,
+  MegatalentPost,
   MegatalentSuccess,
   MegatalentBattleResults,
   Subscription,
@@ -633,6 +634,7 @@ const App = () => {
                         <Route path="/post/:id" element={<PostDetail />} />
                         <Route path="/messenger" element={<Messenger />} />
                         <Route path="/megatalent" element={<MegatalentGuard><Megatalent /></MegatalentGuard>} />
+                        <Route path="/megatalent/post/:id" element={<MegatalentPost />} />
                         <Route path="/megatalent/success" element={<MegatalentSuccess />} />
                         <Route path="/megatalent/battle-results" element={<MegatalentBattleResults />} />
                         <Route path="/megatalent/battle-results/id/:tournamentId" element={<MegatalentBattleResults />} />

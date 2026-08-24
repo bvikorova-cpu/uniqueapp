@@ -1,7 +1,9 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Copy, Facebook } from "lucide-react";
+import { Copy, Facebook, Share2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { buildMegatalentShare } from "@/lib/megatalentShare";
+import { shareLink } from "@/lib/shareLink";
 
 interface Props {
   submission: any | null;
@@ -10,23 +12,52 @@ interface Props {
 
 const MegatalentShareSheet = ({ submission, onClose }: Props) => {
   const { toast } = useToast();
-  const copyMediaLink = async (url: string) => {
-    try { await navigator.clipboard.writeText(url); toast({ title: "Link copied" }); } catch { toast({ title: "Error", variant: "destructive" }); }
+  const share = submission ? buildMegatalentShare(submission) : null;
+
+  const copyLink = async () => {
+    if (!share) return;
+    try {
+      await navigator.clipboard.writeText(`${share.text} ${share.url}`);
+      toast({ title: "Link copied" });
+    } catch {
+      toast({ title: "Error", variant: "destructive" });
+    }
   };
-  const shareToFacebook = (s: any) => { window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(s.media_url)}`, '_blank'); };
-  const shareToTwitter = (s: any) => { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(s.title)}&url=${encodeURIComponent(s.media_url)}`, '_blank'); };
-  const shareToWhatsApp = (s: any) => { window.open(`https://wa.me/?text=${encodeURIComponent(`${s.title} - ${s.media_url}`)}`, '_blank'); };
+
+  const nativeShare = async () => {
+    if (!share) return;
+    const res = await shareLink(share);
+    if (res === "copied") toast({ title: "Link copied" });
+    if (res === "failed") toast({ title: "Error", variant: "destructive" });
+  };
+
+  const openWindow = (url: string) => window.open(url, "_blank", "noopener,noreferrer");
 
   return (
     <Sheet open={!!submission} onOpenChange={(open) => { if (!open) onClose(); }}>
       <SheetContent>
         <SheetHeader><SheetTitle>Share</SheetTitle></SheetHeader>
-        {submission && (
-          <div className="space-y-4 mt-6">
-            <Button variant="outline" className="w-full justify-start" onClick={() => copyMediaLink(submission.media_url)}><Copy className="h-4 w-4 mr-2" /> Copy media link</Button>
-            <Button variant="outline" className="w-full justify-start" onClick={() => shareToFacebook(submission)}><Facebook className="h-4 w-4 mr-2" /> Share on Facebook</Button>
-            <Button variant="outline" className="w-full justify-start" onClick={() => shareToTwitter(submission)}>Share on X (Twitter)</Button>
-            <Button variant="outline" className="w-full justify-start" onClick={() => shareToWhatsApp(submission)}>Share via WhatsApp</Button>
+        {share && (
+          <div className="space-y-3 mt-6">
+            <div className="rounded-lg border border-border/50 bg-muted/30 p-3 text-sm">
+              <p className="font-medium">{share.text}</p>
+              <p className="text-xs text-muted-foreground break-all mt-1">{share.url}</p>
+            </div>
+            <Button className="w-full justify-start gap-2" onClick={nativeShare}>
+              <Share2 className="h-4 w-4" /> Share…
+            </Button>
+            <Button variant="outline" className="w-full justify-start gap-2" onClick={copyLink}>
+              <Copy className="h-4 w-4" /> Copy link + text
+            </Button>
+            <Button variant="outline" className="w-full justify-start gap-2" onClick={() => openWindow(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(share.url)}&quote=${encodeURIComponent(share.text)}`)}>
+              <Facebook className="h-4 w-4" /> Share on Facebook
+            </Button>
+            <Button variant="outline" className="w-full justify-start" onClick={() => openWindow(`https://twitter.com/intent/tweet?text=${encodeURIComponent(share.text)}&url=${encodeURIComponent(share.url)}`)}>
+              Share on X (Twitter)
+            </Button>
+            <Button variant="outline" className="w-full justify-start" onClick={() => openWindow(`https://wa.me/?text=${encodeURIComponent(`${share.text} ${share.url}`)}`)}>
+              Share via WhatsApp
+            </Button>
           </div>
         )}
       </SheetContent>
