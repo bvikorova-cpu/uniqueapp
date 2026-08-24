@@ -1,0 +1,1 @@
+ALTER TABLE public.megatalent_referral_earnings ALTER COLUMN subscription_id DROP NOT NULL;
