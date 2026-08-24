@@ -423,6 +423,14 @@ const MegatalentCategory = () => {
                           onBoosted={fetchActiveBoosts}
                         />
                       )}
+
+                      {currentUserId === submission.user_id && boostExpiry[submission.id] && (
+                        <BoostCountdown
+                          expiresAt={boostExpiry[submission.id]}
+                          onExpired={fetchActiveBoosts}
+                        />
+                      )}
+
                     </div>
 
                   </CardContent>
