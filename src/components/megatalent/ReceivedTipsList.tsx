@@ -14,6 +14,8 @@ type TipRow = {
   completed_at: string | null;
   payout_status: string | null;
   tipper_id: string | null;
+  tipper_name: string | null;
+  tipper_avatar_url: string | null;
 };
 
 type Sender = { name: string | null; avatar_url: string | null };
@@ -31,7 +33,7 @@ export const ReceivedTipsList = () => {
 
         const { data } = await supabase
           .from("megatalent_tips")
-          .select("id, amount_cents, creator_amount_cents, message, created_at, completed_at, payout_status, tipper_id")
+          .select("id, amount_cents, creator_amount_cents, message, created_at, completed_at, payout_status, tipper_id, tipper_name, tipper_avatar_url")
           .eq("creator_id", user.id)
           .eq("status", "completed")
           .order("created_at", { ascending: false })
@@ -40,7 +42,10 @@ export const ReceivedTipsList = () => {
         const rows = (data ?? []) as TipRow[];
         setTips(rows);
 
-        const ids = Array.from(new Set(rows.map((t) => t.tipper_id).filter(Boolean))) as string[];
+        // Fallback lookup for older rows that have no stored sender name.
+        const ids = Array.from(
+          new Set(rows.filter((t) => t.tipper_id && !t.tipper_name).map((t) => t.tipper_id)),
+        ) as string[];
         if (ids.length) {
           const { data: profiles } = await supabase
             .from("profiles")
@@ -57,6 +62,7 @@ export const ReceivedTipsList = () => {
       }
     })();
   }, []);
+
 
   if (loading) {
     return (
@@ -81,7 +87,9 @@ export const ReceivedTipsList = () => {
         <ul className="space-y-3">
           {tips.map((t) => {
             const s = t.tipper_id ? senders[t.tipper_id] : undefined;
-            const name = s?.name || "Unique user";
+            const name = t.tipper_name || s?.name || "Unique user";
+            const avatar = t.tipper_avatar_url || s?.avatar_url;
+
             const gross = (t.amount_cents ?? 0) / 100;
             const yours = (t.creator_amount_cents ?? Math.round((t.amount_cents ?? 0) * 0.8)) / 100;
             return (
@@ -90,7 +98,7 @@ export const ReceivedTipsList = () => {
                 className="flex gap-3 p-3 rounded-xl border border-border/30 bg-background/40"
               >
                 <Avatar className="h-10 w-10 shrink-0">
-                  <AvatarImage src={s?.avatar_url ?? undefined} alt={name} />
+                  <AvatarImage src={avatar ?? undefined} alt={name} />
                   <AvatarFallback>{name.slice(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 flex-1">
