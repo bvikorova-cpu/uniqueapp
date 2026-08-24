@@ -53,6 +53,8 @@ const MegatalentCategory = () => {
   const [tipTarget, setTipTarget] = useState<{ id: string; name?: string } | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [boostedIds, setBoostedIds] = useState<Set<string>>(new Set());
+  const [boostExpiry, setBoostExpiry] = useState<Record<string, string>>({});
+
 
   const config = category ? categoryConfig[category] : null;
 
