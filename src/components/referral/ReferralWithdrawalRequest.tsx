@@ -53,16 +53,37 @@ export const ReferralWithdrawalRequest = () => {
     queryKey: ["referral-earnings", user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
-      const { data } = await supabase
+
+      // Unpaid referral bonuses
+      const { data: refRows } = await supabase
         .from("megatalent_referral_earnings")
         .select("amount, paid")
         .eq("referrer_id", user.id);
-      
-      const totalEarnings = data?.reduce((sum, e) => sum + Number(e.amount), 0) || 0;
-      const paidEarnings = data?.filter(e => e.paid).reduce((sum, e) => sum + Number(e.amount), 0) || 0;
-      const availableBalance = totalEarnings - paidEarnings;
-      
-      return { availableBalance, totalEarnings };
+
+      const totalReferralEarnings = refRows?.reduce((sum, e) => sum + Number(e.amount), 0) || 0;
+      const paidReferralEarnings = refRows?.filter(e => e.paid).reduce((sum, e) => sum + Number(e.amount), 0) || 0;
+      const availableReferrals = totalReferralEarnings - paidReferralEarnings;
+
+      // Completed tips that have not been paid out yet
+      const { data: tipRows } = await supabase
+        .from("megatalent_tips")
+        .select("creator_amount_cents")
+        .eq("creator_id", user.id)
+        .eq("status", "completed")
+        .or("payout_status.eq.pending,payout_status.is.null");
+
+      const availableTips = (tipRows ?? []).reduce(
+        (s: number, t: any) => s + Number(t.creator_amount_cents ?? 0),
+        0,
+      ) / 100;
+      const totalTips = availableTips; // tips are only available once completed
+
+      return {
+        availableBalance: availableReferrals + availableTips,
+        totalEarnings: totalReferralEarnings + totalTips,
+        referralAvailable: availableReferrals,
+        tipsAvailable: availableTips,
+      };
     },
     enabled: !!user?.id });
 
