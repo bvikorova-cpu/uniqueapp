@@ -39595,7 +39595,7 @@ export type Database = {
           source_invoice_id: string | null
           source_kind: string
           source_subscription_id: string | null
-          subscription_id: string
+          subscription_id: string | null
         }
         Insert: {
           amount?: number
@@ -39610,7 +39610,7 @@ export type Database = {
           source_invoice_id?: string | null
           source_kind?: string
           source_subscription_id?: string | null
-          subscription_id: string
+          subscription_id?: string | null
         }
         Update: {
           amount?: number
@@ -39625,7 +39625,7 @@ export type Database = {
           source_invoice_id?: string | null
           source_kind?: string
           source_subscription_id?: string | null
-          subscription_id?: string
+          subscription_id?: string | null
         }
         Relationships: [
           {
