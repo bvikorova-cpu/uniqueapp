@@ -87,7 +87,9 @@ export const ReceivedTipsList = () => {
         <ul className="space-y-3">
           {tips.map((t) => {
             const s = t.tipper_id ? senders[t.tipper_id] : undefined;
-            const name = s?.name || "Unique user";
+            const name = t.tipper_name || s?.name || "Unique user";
+            const avatar = t.tipper_avatar_url || s?.avatar_url;
+
             const gross = (t.amount_cents ?? 0) / 100;
             const yours = (t.creator_amount_cents ?? Math.round((t.amount_cents ?? 0) * 0.8)) / 100;
             return (
