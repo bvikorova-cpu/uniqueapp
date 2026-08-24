@@ -102,6 +102,8 @@ const Megatalent = () => {
   const [uploadPaywallOpen, setUploadPaywallOpen] = useState(false);
   const [luxeSection, setLuxeSection] = useState<LuxeSection>("compete");
   const paymentHandledRef = useRef(false);
+  const autoPublishRef = useRef(false);
+
 
 
   useEffect(() => {
