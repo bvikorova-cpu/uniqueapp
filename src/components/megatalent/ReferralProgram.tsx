@@ -222,7 +222,19 @@ export const ReferralProgram = () => {
               <p className="text-3xl font-bold">€{earnings.toFixed(2)}</p>
               <p className="text-xs text-muted-foreground mt-1">€{pendingEarnings.toFixed(2)} pending payout</p>
             </Card>
+
+            <Card className="col-span-2 p-4 backdrop-blur-xl bg-card/60 border-border/30">
+              <div className="flex items-center gap-2 mb-2">
+                <Sparkles className="h-5 w-5 text-amber-500" />
+                <span className="text-sm text-muted-foreground">Gifts (tips) received</span>
+              </div>
+              <p className="text-3xl font-bold">€{tipsEarned.toFixed(2)}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {tipsCount} gift{tipsCount === 1 ? "" : "s"} · your 80% share, paid out separately from referrals
+              </p>
+            </Card>
           </div>
+
 
           <div className="mt-6 p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
             <h3 className="font-semibold mb-2 flex items-center gap-2">
