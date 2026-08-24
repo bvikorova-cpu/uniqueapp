@@ -16,7 +16,7 @@ type TipRow = {
   tipper_id: string | null;
 };
 
-type Sender = { display_name: string | null; avatar_url: string | null };
+type Sender = { name: string | null; avatar_url: string | null };
 
 export const ReceivedTipsList = () => {
   const [tips, setTips] = useState<TipRow[]>([]);
@@ -44,11 +44,11 @@ export const ReceivedTipsList = () => {
         if (ids.length) {
           const { data: profiles } = await supabase
             .from("profiles")
-            .select("id, display_name, avatar_url")
+            .select("id, full_name, username, avatar_url")
             .in("id", ids);
           const map: Record<string, Sender> = {};
           (profiles ?? []).forEach((p: any) => {
-            map[p.id] = { display_name: p.display_name, avatar_url: p.avatar_url };
+            map[p.id] = { name: p.full_name || p.username, avatar_url: p.avatar_url };
           });
           setSenders(map);
         }
@@ -81,7 +81,7 @@ export const ReceivedTipsList = () => {
         <ul className="space-y-3">
           {tips.map((t) => {
             const s = t.tipper_id ? senders[t.tipper_id] : undefined;
-            const name = s?.display_name || "Unique user";
+            const name = s?.name || "Unique user";
             const gross = (t.amount_cents ?? 0) / 100;
             const yours = (t.creator_amount_cents ?? Math.round((t.amount_cents ?? 0) * 0.8)) / 100;
             return (
