@@ -56,8 +56,8 @@ export default function MegatalentBoostButton({ submissionId, category, onBooste
       className="gap-1.5 h-8 shrink-0 px-2 border-amber-500/40 hover:border-amber-500 text-amber-500 hover:bg-amber-500/10"
     >
       {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Rocket className="h-3.5 w-3.5" />}
-      <span className="text-xs font-bold whitespace-nowrap hidden sm:inline">Boost {BOOST_COST}</span>
-      <span className="text-xs font-bold whitespace-nowrap sm:hidden">Boost</span>
+      <span className="text-xs font-bold whitespace-nowrap hidden sm:inline">Boost {BOOST_COST} credits</span>
+      <span className="text-xs font-bold whitespace-nowrap sm:hidden">Boost {BOOST_COST}</span>
     </Button>
   );
 }
