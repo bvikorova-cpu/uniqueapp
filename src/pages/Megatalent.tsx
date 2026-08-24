@@ -208,7 +208,7 @@ const Megatalent = () => {
       setIsSubscribed(true);
       setSubscriptionTier(verification.tier === "top_premium" ? "top_premium" : "premium");
 
-      const draft = readPendingMegatalentSubmission(user.id);
+      const draft = await loadPendingMegatalentSubmission(user.id);
       if (draft) {
         const { data: existing, error: existingError } = await supabase
           .from("talent_submissions")
