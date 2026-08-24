@@ -53,16 +53,37 @@ export const ReferralWithdrawalRequest = () => {
     queryKey: ["referral-earnings", user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
-      const { data } = await supabase
+
+      // Unpaid referral bonuses
+      const { data: refRows } = await supabase
         .from("megatalent_referral_earnings")
         .select("amount, paid")
         .eq("referrer_id", user.id);
-      
-      const totalEarnings = data?.reduce((sum, e) => sum + Number(e.amount), 0) || 0;
-      const paidEarnings = data?.filter(e => e.paid).reduce((sum, e) => sum + Number(e.amount), 0) || 0;
-      const availableBalance = totalEarnings - paidEarnings;
-      
-      return { availableBalance, totalEarnings };
+
+      const totalReferralEarnings = refRows?.reduce((sum, e) => sum + Number(e.amount), 0) || 0;
+      const paidReferralEarnings = refRows?.filter(e => e.paid).reduce((sum, e) => sum + Number(e.amount), 0) || 0;
+      const availableReferrals = totalReferralEarnings - paidReferralEarnings;
+
+      // Completed tips that have not been paid out yet
+      const { data: tipRows } = await supabase
+        .from("megatalent_tips")
+        .select("creator_amount_cents")
+        .eq("creator_id", user.id)
+        .eq("status", "completed")
+        .or("payout_status.eq.pending,payout_status.is.null");
+
+      const availableTips = (tipRows ?? []).reduce(
+        (s: number, t: any) => s + Number(t.creator_amount_cents ?? 0),
+        0,
+      ) / 100;
+      const totalTips = availableTips; // tips are only available once completed
+
+      return {
+        availableBalance: availableReferrals + availableTips,
+        totalEarnings: totalReferralEarnings + totalTips,
+        referralAvailable: availableReferrals,
+        tipsAvailable: availableTips,
+      };
     },
     enabled: !!user?.id });
 
@@ -233,10 +254,10 @@ export const ReferralWithdrawalRequest = () => {
       <Card className="p-6">
         <div className="flex items-center gap-2 mb-4">
           <DollarSign className="h-6 w-6 text-primary" />
-          <h2 className="text-2xl font-bold">Referral Earnings</h2>
+          <h2 className="text-2xl font-bold">MegaTalent Earnings</h2>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-2 gap-4 mb-4">
           <div className="p-4 bg-muted rounded-lg">
             <p className="text-sm text-muted-foreground mb-1">Available Balance</p>
             <p className="text-2xl font-bold text-primary">
@@ -250,6 +271,13 @@ export const ReferralWithdrawalRequest = () => {
             </p>
           </div>
         </div>
+
+        {(earnings?.referralAvailable || 0) > 0 || (earnings?.tipsAvailable || 0) > 0 ? (
+          <div className="mb-6 text-sm text-muted-foreground space-y-1">
+            <p>Referral bonuses: <span className="font-medium text-foreground">{formatCurrency(earnings?.referralAvailable || 0)}</span></p>
+            <p>Tips received: <span className="font-medium text-foreground">{formatCurrency(earnings?.tipsAvailable || 0)}</span></p>
+          </div>
+        ) : null}
 
         <div className="space-y-4">
           <div>

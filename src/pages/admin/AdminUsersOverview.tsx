@@ -7,9 +7,10 @@ import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Loader2, RefreshCw, Users, Gift, Search } from "lucide-react";
+import { Loader2, RefreshCw, Users, Gift, Search, SlidersHorizontal, X } from "lucide-react";
 import { toast } from "sonner";
 
 type UserRow = {
@@ -56,6 +57,8 @@ const fmtDate = (v: string | null) =>
   v ? new Date(v).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "—";
 const eur = (v: number | null | undefined) => `€${Number(v ?? 0).toFixed(2)}`;
 
+type SubscriptionStatusFilter = "all" | "active" | "inactive" | "any_subscription";
+
 export default function AdminUsersOverview() {
   const [users, setUsers] = useState<UserRow[]>([]);
   const [rewards, setRewards] = useState<RewardRow[]>([]);
@@ -64,11 +67,26 @@ export default function AdminUsersOverview() {
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(0);
+  const [showFilters, setShowFilters] = useState(false);
+  const [nameFilter, setNameFilter] = useState("");
+  const [emailFilter, setEmailFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState<SubscriptionStatusFilter>("all");
+  const [codeFilter, setCodeFilter] = useState("");
+  const [activeFilters, setActiveFilters] = useState({
+    name: "",
+    email: "",
+    status: "all" as SubscriptionStatusFilter,
+    code: "",
+  });
 
   const loadUsers = useCallback(async () => {
     setLoading(true);
     const { data, error } = await (supabase as any).rpc("admin_list_users_overview", {
       p_search: query || null,
+      p_name: activeFilters.name || null,
+      p_email: activeFilters.email || null,
+      p_subscription_status: activeFilters.status === "all" ? null : activeFilters.status,
+      p_referral_code: activeFilters.code || null,
       p_limit: PAGE_SIZE,
       p_offset: page * PAGE_SIZE,
     });
@@ -79,7 +97,7 @@ export default function AdminUsersOverview() {
       setUsers((data as UserRow[]) || []);
     }
     setLoading(false);
-  }, [query, page]);
+  }, [query, page, activeFilters]);
 
   const loadRewards = useCallback(async () => {
     setLoadingRewards(true);
@@ -141,8 +159,18 @@ export default function AdminUsersOverview() {
 
             <TabsContent value="users" className="mt-6 space-y-4">
               <form
-                className="flex gap-2"
-                onSubmit={(e) => { e.preventDefault(); setPage(0); setQuery(search.trim()); }}
+                className="flex flex-col sm:flex-row gap-2"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setPage(0);
+                  setQuery(search.trim());
+                  setActiveFilters({
+                    name: nameFilter.trim(),
+                    email: emailFilter.trim(),
+                    status: statusFilter,
+                    code: codeFilter.trim(),
+                  });
+                }}
               >
                 <Input
                   value={search}
@@ -153,10 +181,99 @@ export default function AdminUsersOverview() {
                 <Button type="submit" variant="secondary">
                   <Search className="h-4 w-4 mr-2" /> Search
                 </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowFilters((s) => !s)}
+                  className="gap-2"
+                >
+                  <SlidersHorizontal className="h-4 w-4" /> Filters
+                </Button>
                 <Button type="button" variant="ghost" onClick={loadUsers} disabled={loading}>
                   <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
                 </Button>
               </form>
+
+              {showFilters && (
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 p-4 rounded-xl border bg-muted/30">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="filter-name" className="text-xs text-muted-foreground">Name</Label>
+                    <Input
+                      id="filter-name"
+                      value={nameFilter}
+                      onChange={(e) => setNameFilter(e.target.value)}
+                      placeholder="Filter by full name"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="filter-email" className="text-xs text-muted-foreground">Email</Label>
+                    <Input
+                      id="filter-email"
+                      value={emailFilter}
+                      onChange={(e) => setEmailFilter(e.target.value)}
+                      placeholder="Filter by email"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="filter-status" className="text-xs text-muted-foreground">Subscription status</Label>
+                    <select
+                      id="filter-status"
+                      value={statusFilter}
+                      onChange={(e) => setStatusFilter(e.target.value as SubscriptionStatusFilter)}
+                      className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    >
+                      <option value="all">All users</option>
+                      <option value="active">Active MegaTalent</option>
+                      <option value="inactive">No active subscription</option>
+                      <option value="any_subscription">Any paid subscription</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="filter-code" className="text-xs text-muted-foreground">Referral code</Label>
+                    <Input
+                      id="filter-code"
+                      value={codeFilter}
+                      onChange={(e) => setCodeFilter(e.target.value)}
+                      placeholder="Source referral code"
+                    />
+                  </div>
+                  <div className="sm:col-span-2 lg:col-span-4 flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => {
+                        setPage(0);
+                        setActiveFilters({
+                          name: nameFilter.trim(),
+                          email: emailFilter.trim(),
+                          status: statusFilter,
+                          code: codeFilter.trim(),
+                        });
+                      }}
+                    >
+                      <Search className="h-4 w-4 mr-2" /> Apply filters
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setSearch("");
+                        setQuery("");
+                        setNameFilter("");
+                        setEmailFilter("");
+                        setStatusFilter("all");
+                        setCodeFilter("");
+                        setActiveFilters({ name: "", email: "", status: "all", code: "" });
+                        setPage(0);
+                      }}
+                    >
+                      <X className="h-4 w-4 mr-2" /> Reset
+                    </Button>
+                  </div>
+                </div>
+              )}
 
               {loading ? (
                 <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin" /></div>
