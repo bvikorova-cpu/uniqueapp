@@ -94,15 +94,20 @@ const MegatalentCategory = () => {
   }, [category]);
 
   const fetchActiveBoosts = async () => {
+  const fetchActiveBoosts = async () => {
     if (!config) return;
     const { data } = await supabase
       .from("megatalent_boosts")
-      .select("submission_id")
+      .select("submission_id, expires_at")
       .eq("status", "active")
       .gt("expires_at", new Date().toISOString())
       .in("category", config.categories as any);
     setBoostedIds(new Set((data ?? []).map((b: any) => b.submission_id)));
+    const map: Record<string, string> = {};
+    (data ?? []).forEach((b: any) => { map[b.submission_id] = b.expires_at; });
+    setBoostExpiry(map);
   };
+
 
   const fetchSubmissions = async () => {
     if (!config) return;
