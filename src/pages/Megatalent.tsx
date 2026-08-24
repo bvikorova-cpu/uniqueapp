@@ -50,6 +50,7 @@ import {
   loadPendingMegatalentSubmission,
   savePendingMegatalentSubmission,
 } from "@/lib/megatalentPendingSubmission";
+import { extractVideoFirstFrame } from "@/lib/videoThumbnail";
 
 
 
@@ -79,6 +80,7 @@ const Megatalent = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("drawing");
   const [loading, setLoading] = useState(true);
   const [uploadedFile, setUploadedFile] = useState<{ url: string; type: 'image' | 'video' } | null>(null);
+  const [uploadedThumbnailUrl, setUploadedThumbnailUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [title, setTitle] = useState("");
