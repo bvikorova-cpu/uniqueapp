@@ -14,6 +14,8 @@ export const ReferralProgram = () => {
   const [referredCount, setReferredCount] = useState(0);
   const [activeCount, setActiveCount] = useState(0);
   const [pendingEarnings, setPendingEarnings] = useState(0);
+  const [tipsEarned, setTipsEarned] = useState(0);
+  const [tipsCount, setTipsCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
