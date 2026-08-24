@@ -7,6 +7,7 @@ import { TopPremiumBadge } from "@/components/megatalent/TopPremiumBadge";
 import { VoteBoostTooltip } from "@/components/megatalent/VoteBoostTooltip";
 import MegatalentReactions from "@/components/megatalent/MegatalentReactions";
 import MegatalentPinButton from "@/components/megatalent/MegatalentPinButton";
+import SubmissionBoostCountdown from "@/components/megatalent/SubmissionBoostCountdown";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRewardsCosmeticsFor } from "@/hooks/useRewardsCosmetics";
 import { rewardsFrameClass, rewardsNameClass } from "@/lib/rewardsCosmeticStyles";
@@ -130,11 +131,15 @@ export default function MegaTalentSubmissionCard({ submission,
             <p className="text-sm text-muted-foreground line-clamp-3">{submission.description}</p>
           )}
 
+          {/* Active boost countdown */}
+          <SubmissionBoostCountdown submissionId={submission.id} />
+
           {/* Reactions + Pin */}
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <MegatalentReactions submissionId={submission.id} />
             <MegatalentPinButton submissionId={submission.id} isOwner={isOwner} />
           </div>
+
 
           {/* Engagement bar */}
           <div className="flex items-center justify-between pt-1 border-t border-border/20">
