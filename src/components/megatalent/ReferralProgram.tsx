@@ -24,7 +24,9 @@ export const ReferralProgram = () => {
   const [activeCount, setActiveCount] = useState(0);
   const [pendingEarnings, setPendingEarnings] = useState(0);
   const [tipsEarned, setTipsEarned] = useState(0);
+  const [unpaidTipsEarned, setUnpaidTipsEarned] = useState(0);
   const [tipsCount, setTipsCount] = useState(0);
+  const [withdrawDialogOpen, setWithdrawDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
