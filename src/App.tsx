@@ -122,7 +122,7 @@ const PropertyFavorites = lazy(() => import("./pages/PropertyFavorites"));
 const Roadmap = lazy(() => import("./pages/Roadmap"));
 const AdPreview = lazy(() => import("./pages/AdPreview"));
 const MobileBottomNav = lazy(() => import("@/components/mobile/MobileBottomNav"));
-const ComebackBonusModal = lazy(() => import("@/components/retention/ComebackBonusModal"));
+
 
 // Install global runtime patches as early as possible
 installGlobalErrorHandlers();
@@ -554,7 +554,7 @@ const App = () => {
               <PushNotificationsMount />
               <FanClubAutoResyncMount />
               <WelcomeOnboarding />
-              <ComebackBonusModal />
+              
 
             </Suspense>
             <AnimationProvider>
