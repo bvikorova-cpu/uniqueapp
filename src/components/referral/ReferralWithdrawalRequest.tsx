@@ -254,10 +254,10 @@ export const ReferralWithdrawalRequest = () => {
       <Card className="p-6">
         <div className="flex items-center gap-2 mb-4">
           <DollarSign className="h-6 w-6 text-primary" />
-          <h2 className="text-2xl font-bold">Referral Earnings</h2>
+          <h2 className="text-2xl font-bold">MegaTalent Earnings</h2>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-2 gap-4 mb-4">
           <div className="p-4 bg-muted rounded-lg">
             <p className="text-sm text-muted-foreground mb-1">Available Balance</p>
             <p className="text-2xl font-bold text-primary">
@@ -271,6 +271,13 @@ export const ReferralWithdrawalRequest = () => {
             </p>
           </div>
         </div>
+
+        {(earnings?.referralAvailable || 0) > 0 || (earnings?.tipsAvailable || 0) > 0 ? (
+          <div className="mb-6 text-sm text-muted-foreground space-y-1">
+            <p>Referral bonuses: <span className="font-medium text-foreground">{formatCurrency(earnings?.referralAvailable || 0)}</span></p>
+            <p>Tips received: <span className="font-medium text-foreground">{formatCurrency(earnings?.tipsAvailable || 0)}</span></p>
+          </div>
+        ) : null}
 
         <div className="space-y-4">
           <div>
