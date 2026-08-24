@@ -20,19 +20,27 @@ function legacyCopy(text: string): boolean {
   }
 }
 
-export async function shareLink(opts: { title: string; text: string; url: string }): Promise<ShareResult> {
-  const { title, text, url } = opts;
+export async function shareLink(opts: {
+  title: string;
+  text: string;
+  url: string;
+  files?: File[];
+}): Promise<ShareResult> {
+  const { title, text, url, files } = opts;
   const payload = `${text} ${url}`.trim();
 
   // 1) Native share sheet (mobile). Skipped when unavailable or blocked in iframe.
+  const shareData: ShareData = { title, text, url };
+  if (files && files.length > 0) shareData.files = files;
+
   const canNativeShare =
     typeof navigator !== "undefined" &&
     typeof navigator.share === "function" &&
-    (typeof navigator.canShare !== "function" || navigator.canShare({ title, text, url }));
+    (typeof navigator.canShare !== "function" || navigator.canShare(shareData));
 
   if (canNativeShare) {
     try {
-      await navigator.share({ title, text, url });
+      await navigator.share(shareData);
       return "shared";
     } catch (e) {
       const name = (e as { name?: string } | undefined)?.name;
