@@ -230,6 +230,51 @@ serve(async (req) => {
       .eq("id", withdrawalId);
     if (updateError) throw updateError;
 
+    // For MegaTalent referral withdrawals, mark the underlying earnings/tips as paid (FIFO)
+    if (kind === "referral") {
+      let remaining = amount;
+      const { data: unpaidReferrals } = await supabaseAdmin
+        .from("megatalent_referral_earnings")
+        .select("id, amount")
+        .eq("referrer_id", userId)
+        .eq("paid", false)
+        .order("created_at", { ascending: true });
+      const referralIds: string[] = [];
+      for (const row of unpaidReferrals || []) {
+        if (remaining <= 0) break;
+        referralIds.push(row.id);
+        remaining -= Number(row.amount);
+      }
+      if (referralIds.length > 0) {
+        await supabaseAdmin
+          .from("megatalent_referral_earnings")
+          .update({ paid: true })
+          .in("id", referralIds);
+      }
+
+      if (remaining > 0) {
+        const { data: unpaidTips } = await supabaseAdmin
+          .from("megatalent_tips")
+          .select("id, creator_amount_cents")
+          .eq("creator_id", userId)
+          .eq("status", "completed")
+          .or("payout_status.eq.pending,payout_status.is.null")
+          .order("created_at", { ascending: true });
+        const tipIds: string[] = [];
+        for (const row of unpaidTips || []) {
+          if (remaining <= 0) break;
+          tipIds.push(row.id);
+          remaining -= Number(row.creator_amount_cents) / 100;
+        }
+        if (tipIds.length > 0) {
+          await supabaseAdmin
+            .from("megatalent_tips")
+            .update({ payout_status: "paid" })
+            .in("id", tipIds);
+        }
+      }
+    }
+
     // Tell the creator the money is on its way
     await supabaseAdmin.from("notifications").insert({
       user_id: userId,
