@@ -7,6 +7,9 @@ import { TopPremiumBadge } from "@/components/megatalent/TopPremiumBadge";
 import { VoteBoostTooltip } from "@/components/megatalent/VoteBoostTooltip";
 import MegatalentReactions from "@/components/megatalent/MegatalentReactions";
 import MegatalentPinButton from "@/components/megatalent/MegatalentPinButton";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useRewardsCosmeticsFor } from "@/hooks/useRewardsCosmetics";
+import { rewardsFrameClass, rewardsNameClass } from "@/lib/rewardsCosmeticStyles";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface SubmissionCardProps {
