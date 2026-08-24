@@ -195,6 +195,7 @@ export const ReferralProgram = () => {
                 <span className="text-sm text-muted-foreground">Invited Friends</span>
               </div>
               <p className="text-3xl font-bold">{referredCount}</p>
+              <p className="text-xs text-muted-foreground mt-1">{activeCount} currently active</p>
             </Card>
 
             <Card className="p-4 backdrop-blur-xl bg-card/60 border-border/30">
@@ -203,6 +204,7 @@ export const ReferralProgram = () => {
                 <span className="text-sm text-muted-foreground">Total Earnings</span>
               </div>
               <p className="text-3xl font-bold">€{earnings.toFixed(2)}</p>
+              <p className="text-xs text-muted-foreground mt-1">€{pendingEarnings.toFixed(2)} pending payout</p>
             </Card>
           </div>
 
