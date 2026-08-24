@@ -27,10 +27,8 @@ import MegatalentAchievements from "@/components/megatalent/MegatalentAchievemen
 import BattleRoyalePayouts from "@/components/megatalent/BattleRoyalePayouts";
 import MegatalentNotificationBell from "@/components/megatalent/MegatalentNotificationBell";
 import { LiveSocialProof } from "@/components/social/LiveSocialProof";
-import NextVotingCountdown from "@/components/megatalent/NextVotingCountdown";
 import MegaTalentCategoryGrid from "@/components/megatalent/MegaTalentCategoryGrid";
 import ContestStatsSidebar from "@/components/megatalent/ContestStatsSidebar";
-import { LiveVoting } from "@/components/megatalent/LiveVoting";
 import MegaTalentSubmissionCard from "@/components/megatalent/MegaTalentSubmissionCard";
 import MegaTalentFeedFilters, { type FeedFilter } from "@/components/megatalent/MegaTalentFeedFilters";
 import MegaTalentLatestFeed from "@/components/megatalent/MegaTalentLatestFeed";
