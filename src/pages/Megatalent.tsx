@@ -556,7 +556,8 @@ const Megatalent = () => {
       <div className="min-h-screen bg-background pt-20 pb-12">
         <MegaTalentOnboarding />
         <div className="container mx-auto px-4 max-w-6xl">
-          <NextVotingCountdown />
+
+
 
           <div className="flex justify-end items-center gap-2 mb-2">
             <HowItWorksButton title="Megatalent" intro="How the talent contest, voting and prizes work." steps={MEGATALENT_HOW_IT_WORKS} variant="compact" />
