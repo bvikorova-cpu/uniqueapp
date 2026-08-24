@@ -554,7 +554,7 @@ const App = () => {
               <PushNotificationsMount />
               <FanClubAutoResyncMount />
               <WelcomeOnboarding />
-              <ComebackBonusModal />
+              
 
             </Suspense>
             <AnimationProvider>
