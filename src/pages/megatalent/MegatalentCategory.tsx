@@ -12,6 +12,8 @@ import { toast as sonnerToast } from "sonner";
 import { TalentCommentsSheet } from "@/components/megatalent/TalentCommentsSheet";
 import MegatalentTipJar from "@/components/megatalent/MegatalentTipJar";
 import MegatalentBoostButton from "@/components/megatalent/MegatalentBoostButton";
+import BoostCountdown from "@/components/megatalent/BoostCountdown";
+
 
 import { Badge as UiBadge } from "@/components/ui/badge";
 import { Rocket } from "lucide-react";
