@@ -551,7 +551,7 @@ const Megatalent = () => {
         description="Show your talent, get votes and win cash prizes. Join Megatalent — Unique's global talent competition with weekly winners."
         canonical="/megatalent"
       />
-      <div className="min-h-screen bg-background pt-20 pb-12">
+      <div className="min-h-screen bg-background pt-16 pb-12">
         <MegaTalentOnboarding />
         <div className="container mx-auto px-4 max-w-6xl">
 
