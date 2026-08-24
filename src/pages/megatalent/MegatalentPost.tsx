@@ -76,7 +76,7 @@ const MegatalentPost = () => {
           .upload(fileName, blob, { contentType: "image/jpeg", upsert: true });
         if (uploadError) throw uploadError;
         const { data: { publicUrl } } = supabase.storage.from("media").getPublicUrl(fileName);
-        await supabase.from("talent_submissions").update({ thumbnail_url: publicUrl }).eq("id", submission.id);
+        await (supabase.from("talent_submissions") as any).update({ thumbnail_url: publicUrl }).eq("id", submission.id);
         setSubmission((s: any) => ({ ...s, thumbnail_url: publicUrl }));
       } catch (error) {
         console.error("Thumbnail generation failed:", error);
@@ -145,7 +145,9 @@ const MegatalentPost = () => {
         <meta property="og:description" content={share.text} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={share.url} />
-        {submission.media_url && !isVideo && <meta property="og:image" content={submission.media_url} />}
+        {(submission.thumbnail_url || submission.media_url) && (
+          <meta property="og:image" content={submission.thumbnail_url || submission.media_url} />
+        )}
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 
