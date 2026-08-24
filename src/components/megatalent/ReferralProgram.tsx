@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Copy, Users, DollarSign, Share2, Facebook, Twitter, Mail, RefreshCw, TrendingUp, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { ReceivedTipsList } from "./ReceivedTipsList";
 
 export const ReferralProgram = () => {
   const [referralCode, setReferralCode] = useState<string>("");
@@ -234,6 +235,12 @@ export const ReferralProgram = () => {
               </p>
             </Card>
           </div>
+
+          <div className="mt-6">
+            <ReceivedTipsList />
+          </div>
+
+
 
 
           <div className="mt-6 p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
