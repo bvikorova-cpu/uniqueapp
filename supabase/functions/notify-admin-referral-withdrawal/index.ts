@@ -34,8 +34,8 @@ serve(async (req) => {
     // Create notification for each admin
     const notifications = admins.map((a: any) => ({
       user_id: a.user_id,
-      title: 'New Referral Withdrawal Request',
-      message: `${referrerName} has requested a withdrawal of €${amount} from referral earnings.`,
+      title: 'New MegaTalent Payout Request',
+      message: `${referrerName} has requested a MegaTalent payout of €${amount} (referral bonuses + tips).`,
       type: 'admin_withdrawal',
       is_read: false }));
 
