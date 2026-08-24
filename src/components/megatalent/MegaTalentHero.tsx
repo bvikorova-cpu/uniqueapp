@@ -41,8 +41,36 @@ export default function MegaTalentHero({ totalVotes, isSubscribed, subscriptionT
 
 
   return (
-    <div className="space-y-4 mb-6">
+    <div className="space-y-3 mb-6">
+      {/* Quarterly contest countdown */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative overflow-hidden rounded-xl border border-yellow-500/30 bg-gradient-to-r from-yellow-500/10 via-amber-500/5 to-yellow-500/10 backdrop-blur-md px-4 py-2.5"
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(234,179,8,0.15),transparent_60%)]" />
+        <div className="relative flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <Trophy className="h-4 w-4 text-yellow-500 shrink-0" />
+            <span className="text-xs sm:text-sm font-semibold text-foreground truncate">
+              Quarterly contest ends in
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <Badge className="bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 border-yellow-500/30 font-mono text-xs px-2 py-0.5">
+              {timeLeft.days}d
+            </Badge>
+            <span className="text-yellow-600 dark:text-yellow-400 font-bold">:</span>
+            <Badge className="bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 border-yellow-500/30 font-mono text-xs px-2 py-0.5">
+              {String(timeLeft.hours).padStart(2, "0")}h
+            </Badge>
+          </div>
+        </div>
+      </motion.div>
+
       {/* Video Hero */}
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
