@@ -134,7 +134,7 @@ const Megatalent = () => {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { autoPublishRef.current = false; return; }
-      const draft = readPendingMegatalentSubmission(user.id);
+      const draft = await loadPendingMegatalentSubmission(user.id);
       if (!draft) { autoPublishRef.current = false; return; }
       const { data: existing } = await supabase
         .from("talent_submissions")
