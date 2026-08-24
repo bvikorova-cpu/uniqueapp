@@ -111,9 +111,9 @@ const Megatalent = () => {
     checkSubscription();
     fetchUserVotes();
     getCurrentUser();
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (!user) return;
-      const draft = readPendingMegatalentSubmission(user.id);
+      const draft = await loadPendingMegatalentSubmission(user.id);
       if (!draft) return;
       setTitle(draft.title);
       setDescription(draft.description);
