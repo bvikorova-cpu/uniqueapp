@@ -94,7 +94,7 @@ const MegatalentCategory = () => {
   }, [category]);
 
   const fetchActiveBoosts = async () => {
-  const fetchActiveBoosts = async () => {
+
     if (!config) return;
     const { data } = await supabase
       .from("megatalent_boosts")
