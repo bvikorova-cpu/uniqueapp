@@ -57,6 +57,8 @@ const fmtDate = (v: string | null) =>
   v ? new Date(v).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "—";
 const eur = (v: number | null | undefined) => `€${Number(v ?? 0).toFixed(2)}`;
 
+type SubscriptionStatusFilter = "all" | "active" | "inactive" | "any_subscription";
+
 export default function AdminUsersOverview() {
   const [users, setUsers] = useState<UserRow[]>([]);
   const [rewards, setRewards] = useState<RewardRow[]>([]);
@@ -65,11 +67,26 @@ export default function AdminUsersOverview() {
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(0);
+  const [showFilters, setShowFilters] = useState(false);
+  const [nameFilter, setNameFilter] = useState("");
+  const [emailFilter, setEmailFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState<SubscriptionStatusFilter>("all");
+  const [codeFilter, setCodeFilter] = useState("");
+  const [activeFilters, setActiveFilters] = useState({
+    name: "",
+    email: "",
+    status: "all" as SubscriptionStatusFilter,
+    code: "",
+  });
 
   const loadUsers = useCallback(async () => {
     setLoading(true);
     const { data, error } = await (supabase as any).rpc("admin_list_users_overview", {
       p_search: query || null,
+      p_name: activeFilters.name || null,
+      p_email: activeFilters.email || null,
+      p_subscription_status: activeFilters.status === "all" ? null : activeFilters.status,
+      p_referral_code: activeFilters.code || null,
       p_limit: PAGE_SIZE,
       p_offset: page * PAGE_SIZE,
     });
@@ -80,7 +97,7 @@ export default function AdminUsersOverview() {
       setUsers((data as UserRow[]) || []);
     }
     setLoading(false);
-  }, [query, page]);
+  }, [query, page, activeFilters]);
 
   const loadRewards = useCallback(async () => {
     setLoadingRewards(true);
