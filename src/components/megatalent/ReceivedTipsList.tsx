@@ -14,6 +14,8 @@ type TipRow = {
   completed_at: string | null;
   payout_status: string | null;
   tipper_id: string | null;
+  tipper_name: string | null;
+  tipper_avatar_url: string | null;
 };
 
 type Sender = { name: string | null; avatar_url: string | null };
@@ -31,7 +33,7 @@ export const ReceivedTipsList = () => {
 
         const { data } = await supabase
           .from("megatalent_tips")
-          .select("id, amount_cents, creator_amount_cents, message, created_at, completed_at, payout_status, tipper_id")
+          .select("id, amount_cents, creator_amount_cents, message, created_at, completed_at, payout_status, tipper_id, tipper_name, tipper_avatar_url")
           .eq("creator_id", user.id)
           .eq("status", "completed")
           .order("created_at", { ascending: false })
@@ -40,7 +42,10 @@ export const ReceivedTipsList = () => {
         const rows = (data ?? []) as TipRow[];
         setTips(rows);
 
-        const ids = Array.from(new Set(rows.map((t) => t.tipper_id).filter(Boolean))) as string[];
+        // Fallback lookup for older rows that have no stored sender name.
+        const ids = Array.from(
+          new Set(rows.filter((t) => t.tipper_id && !t.tipper_name).map((t) => t.tipper_id)),
+        ) as string[];
         if (ids.length) {
           const { data: profiles } = await supabase
             .from("profiles")
@@ -57,6 +62,7 @@ export const ReceivedTipsList = () => {
       }
     })();
   }, []);
+
 
   if (loading) {
     return (
