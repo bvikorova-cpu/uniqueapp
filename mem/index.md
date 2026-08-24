@@ -35,6 +35,7 @@
 - [AI Credits Grant Policy](mem://features/ai-credits-policy) — STRIKTNÉ: žiadne nové automatické granty ai_credits bez schválenia. Schválené iba: monthly +10, founding +50, Stripe, promo, referral, gift, auto-recharge. Ledger + trigger auditujú každú zmenu.
 - [Social & Dating audit fixes](mem://features/social-dating-audit-batch) — 24h refund, DM mute, confession sanitize, coffee no-show strikes.
 - [DM Consolidation](mem://features/dm-consolidation) — Direct messages unified onto conversations schema via RPC; legacy `direct_messages` deprecated.
+- [Unlock Videos](mem://features/unlock-videos) — /unlock-videos: video locks at 50%, unlock 1 credit, 50/50 split with creator.
 - [Scale-readiness primitives](mem://features/scale-readiness) — Rate-limit RPC, FTS search, feed cache fan-out, spam score, moderate-text/image edge fns.
 - [Challenge TOP tier](mem://features/challenge-top-tier) — €5/mo Challenge tier: PRO benefits + 500k XP + 1M ai_credits monthly + TOP badge + pinned feed submission.
 - [Doctor Booking (Phase 4)](mem://features/doctor-booking) — Healthcare 85/15 split, 24h refund window, availability slot generation rules.
