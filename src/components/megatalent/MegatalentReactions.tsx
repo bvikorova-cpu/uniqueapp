@@ -65,13 +65,15 @@ export default function MegatalentReactions({ submissionId }: Props) {
     if (busy) return;
     setBusy(emoji);
     const had = mine.has(emoji);
-    // optimistic
-    setMine((prev) => {
-      const n = new Set(prev);
-      had ? n.delete(emoji) : n.add(emoji);
-      return n;
+    const previous = [...mine].filter((e) => e !== emoji);
+    // optimistic: one reaction per user — selecting a new emoji replaces the old one
+    setMine(had ? new Set<string>() : new Set([emoji]));
+    setCounts((prev) => {
+      const next = { ...prev };
+      next[emoji] = Math.max(0, (next[emoji] || 0) + (had ? -1 : 1));
+      if (!had) previous.forEach((e) => { next[e] = Math.max(0, (next[e] || 0) - 1); });
+      return next;
     });
-    setCounts((prev) => ({ ...prev, [emoji]: Math.max(0, (prev[emoji] || 0) + (had ? -1 : 1)) }));
     try {
       if (had) {
         await (supabase as any)
@@ -81,6 +83,12 @@ export default function MegatalentReactions({ submissionId }: Props) {
           .eq("user_id", userId)
           .eq("emoji", emoji);
       } else {
+        // remove any earlier reaction from this user first
+        await (supabase as any)
+          .from("mt_submission_reactions")
+          .delete()
+          .eq("submission_id", submissionId)
+          .eq("user_id", userId);
         await (supabase as any)
           .from("mt_submission_reactions")
           .insert({ submission_id: submissionId, user_id: userId, emoji });
@@ -91,6 +99,7 @@ export default function MegatalentReactions({ submissionId }: Props) {
     } finally {
       setBusy(null);
     }
+
   };
 
   return (
