@@ -154,6 +154,7 @@ const Megatalent = () => {
           category: draft.category as any,
           media_url: draft.mediaUrl,
           media_type: draft.mediaType,
+          thumbnail_url: draft.thumbnailUrl,
         });
         if (error) {
           autoPublishRef.current = false;
