@@ -2,12 +2,20 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Copy, Users, DollarSign, Share2, Facebook, Twitter, Mail, RefreshCw, TrendingUp, Sparkles } from "lucide-react";
+import { Copy, Users, DollarSign, Share2, Facebook, Twitter, Mail, RefreshCw, TrendingUp, Sparkles, Wallet } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 import { ReceivedTipsList } from "./ReceivedTipsList";
+import { ReferralWithdrawalRequest } from "@/components/referral/ReferralWithdrawalRequest";
 
 export const ReferralProgram = () => {
   const [referralCode, setReferralCode] = useState<string>("");
