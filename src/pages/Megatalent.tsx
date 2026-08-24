@@ -551,18 +551,16 @@ const Megatalent = () => {
         description="Show your talent, get votes and win cash prizes. Join Megatalent — Unique's global talent competition with weekly winners."
         canonical="/megatalent"
       />
-      <div className="min-h-screen bg-background pt-16 lg:pt-20 pb-12">
+      <div className="min-h-screen bg-background pt-14 lg:pt-20 pb-12">
         <MegaTalentOnboarding />
         <div className="container mx-auto px-4 max-w-6xl">
+          <MegaTalentHero totalVotes={totalVotes} isSubscribed={isSubscribed} subscriptionTier={subscriptionTier} />
 
-
-
-          <div className="flex justify-end items-center gap-2">
+          <div className="flex justify-end items-center gap-2 -mt-4 mb-2">
             <HowItWorksButton title="Megatalent" intro="How the talent contest, voting and prizes work." steps={MEGATALENT_HOW_IT_WORKS} variant="compact" />
             <MegatalentNotificationBell />
           </div>
 
-          <MegaTalentHero totalVotes={totalVotes} isSubscribed={isSubscribed} subscriptionTier={subscriptionTier} />
 
           <div className="flex justify-center -mt-2">
             <LiveSocialProof
