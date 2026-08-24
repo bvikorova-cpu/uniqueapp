@@ -187,7 +187,7 @@ const MegatalentPost = () => {
         submissionId={comments ? submission.id : null}
         open={comments}
         onOpenChange={(o) => setComments(o)}
-        onCountChange={(n: number) => setCommentCount(n)}
+        onCountChange={(_sid: string, n: number) => setCommentCount(n)}
       />
     </div>
   );
