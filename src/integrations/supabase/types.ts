@@ -68695,6 +68695,48 @@ export type Database = {
           user_points_total: number
         }[]
       }
+      admin_list_referral_rewards: {
+        Args: { p_limit?: number; p_offset?: number }
+        Returns: {
+          amount: number
+          auto_credited: boolean
+          code: string
+          created_at: string
+          id: string
+          paid: boolean
+          referred_email: string
+          referred_name: string
+          referred_user_id: string
+          referrer_email: string
+          referrer_id: string
+          referrer_name: string
+          source_kind: string
+          source_subscription_id: string
+        }[]
+      }
+      admin_list_users_overview: {
+        Args: { p_limit?: number; p_offset?: number; p_search?: string }
+        Returns: {
+          created_at: string
+          credits_remaining: number
+          email: string
+          full_name: string
+          mt_expires_at: string
+          mt_status: string
+          mt_tier: string
+          other_subscriptions: Json
+          referral_code: string
+          referral_reward_amount: number
+          referral_reward_paid: boolean
+          referral_status: string
+          referred_by_id: string
+          referred_by_name: string
+          total_referral_earnings: number
+          total_referrals: number
+          user_id: string
+          username: string
+        }[]
+      }
       admin_mark_megatalent_paid: {
         Args: { _reference?: string; _winner_id: string }
         Returns: undefined
