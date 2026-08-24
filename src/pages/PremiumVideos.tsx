@@ -1,15 +1,43 @@
+import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Info, Loader2, PlayCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import PremiumVideoCard from "@/components/premiumVideos/PremiumVideoCard";
 import UploadPremiumVideoDialog from "@/components/premiumVideos/UploadPremiumVideoDialog";
 import { usePremiumVideos } from "@/hooks/usePremiumVideos";
+import VideoCreditsPanel from "@/components/premiumVideos/VideoCreditsPanel";
 import heroVideo from "@/assets/section-videos/unlock-videos.mp4.asset.json";
 
 export default function PremiumVideos() {
   const { videos, loading, unlock, unlocking, addView, refetch } = usePremiumVideos();
+  const [params, setParams] = useSearchParams();
+
+  useEffect(() => {
+    const sessionId = params.get("session_id");
+    if (params.get("success") !== "true" || !sessionId) return;
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("verify-credits-payment", {
+          body: { session_id: sessionId },
+        });
+        if (error) throw error;
+        if (data?.success) {
+          toast.success(
+            data.credits_added ? `+${data.credits_added} video credits added` : "Payment already processed",
+          );
+          window.dispatchEvent(new Event("video-credits-updated"));
+        }
+      } catch (e: any) {
+        toast.error("Could not verify payment", { description: e?.message });
+      } finally {
+        setParams(new URLSearchParams(), { replace: true });
+      }
+    })();
+  }, [params, setParams]);
 
   return (
     <>
@@ -17,7 +45,7 @@ export default function PremiumVideos() {
         <title>Unlock Videos — Watch Half Free | Unique</title>
         <meta
           name="description"
-          content="Creator videos that play free up to the halfway point. Unlock the rest for 1 credit — creators keep 50%."
+          content="Creator videos that play free up to the halfway point. Unlock the rest for 1 video credit — creators keep 50%."
         />
         <link rel="canonical" href="https://uniqueapp.fun/unlock-videos" />
         <meta property="og:title" content="Unlock Videos — Watch Half Free | Unique" />
@@ -63,6 +91,8 @@ export default function PremiumVideos() {
           <UploadPremiumVideoDialog onUploaded={refetch} />
         </div>
 
+        <VideoCreditsPanel />
+
 
         <Card className="mb-6 border-primary/20 bg-primary/5">
           <CardHeader className="pb-2">
@@ -73,9 +103,13 @@ export default function PremiumVideos() {
           <CardContent className="space-y-1.5 text-sm text-muted-foreground">
             <p>1. Any member can upload a video — it is published instantly.</p>
             <p>2. Everyone watches the first 50% for free; playback then pauses.</p>
-            <p>3. Unlocking the rest costs 1 AI credit, charged once per video.</p>
+            <p>3. Unlocking the rest costs 1 video credit (own wallet: 10/€5, 20/€10, 30/€15), charged once per video.</p>
             <p>4. The creator receives 50% of every unlock in credits; the platform keeps 50%.</p>
             <p>5. Your own videos are always unlocked for you.</p>
+            <p>
+              6. Promote your video with credits: Quick Boost 5 (6h top of feed), Daily Top 12 (24h in “Hot”),
+              Mega Boost 25 (“Featured” badge + priority for 3 days).
+            </p>
           </CardContent>
         </Card>
 
@@ -96,6 +130,7 @@ export default function PremiumVideos() {
                 unlocking={unlocking === v.id}
                 onUnlock={unlock}
                 onFirstPlay={addView}
+                onBoosted={refetch}
               />
             ))}
           </div>
