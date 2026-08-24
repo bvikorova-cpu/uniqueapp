@@ -1,0 +1,1 @@
+ALTER TABLE public.talent_submissions ADD COLUMN IF NOT EXISTS thumbnail_url text;
