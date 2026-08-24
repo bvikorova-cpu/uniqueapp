@@ -121,7 +121,7 @@ const MegatalentCategory = () => {
         .in('category', config.categories as any)
         .eq('is_active', true)
         .order('votes_count', { ascending: false })
-        .limit(50);
+        .limit(5);
 
       if (error) throw error;
 
