@@ -546,9 +546,7 @@ export function resolveProxy(
   if (functionName === "create-megatalent-boost") {
     return { target: "create-checkout", body: { ...b, product: "megatalent_boost" } };
   }
-  if (functionName === "create-megatalent-tip") {
-    return { target: "create-checkout", body: { ...b, product: "megatalent_tip" } };
-  }
+  // "create-megatalent-tip": dedicated edge function — not proxied
   if (functionName === "create-megatalent-vip-checkout") {
     return { target: "create-checkout", body: { ...b, product: "megatalent_vip" } };
   }

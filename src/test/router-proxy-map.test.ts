@@ -76,8 +76,11 @@ describe("proxyMap router consolidation", () => {
   describe("B18a megatalent consolidation", () => { const MEGATALENT_EXPECTED: Record<string, string> = {
       "create-megatalent-checkout": "megatalent_subscription",
       "create-megatalent-boost": "megatalent_boost",
-      "create-megatalent-tip": "megatalent_tip",
       "create-megatalent-vip-checkout": "megatalent_vip" };
+
+    it("create-megatalent-tip is a dedicated function, not proxied", () => {
+      expect(resolveProxy("create-megatalent-tip", {})).toBeNull();
+    });
 
     it.each(Object.entries(MEGATALENT_EXPECTED))(
       "%s -> create-checkout product=%s",
