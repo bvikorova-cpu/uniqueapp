@@ -223,6 +223,7 @@ const Navbar = () => {
         { path: "/virtual-pet", label: "Virtual Pet", icon: PawPrint },
         { path: "/adult-puzzles", label: "Adult Puzzles", icon: Puzzle },
         { path: "/spin-solve", label: "Spin & Solve", icon: Puzzle },
+        { path: "/unlock-videos", label: "Unlock Videos — Watch Half Free", icon: Video },
       ] },
     {
       category: "Marketplaces & Commerce",

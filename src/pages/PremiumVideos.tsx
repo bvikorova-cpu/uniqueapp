@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import PremiumVideoCard from "@/components/premiumVideos/PremiumVideoCard";
 import UploadPremiumVideoDialog from "@/components/premiumVideos/UploadPremiumVideoDialog";
 import { usePremiumVideos } from "@/hooks/usePremiumVideos";
+import heroVideo from "@/assets/section-videos/unlock-videos.mp4.asset.json";
 
 export default function PremiumVideos() {
   const { videos, loading, unlock, unlocking, addView, refetch } = usePremiumVideos();
@@ -31,23 +32,37 @@ export default function PremiumVideos() {
       <Navbar />
 
       <main className="container mx-auto max-w-5xl px-4 pb-24 pt-6">
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-          <div className="min-w-0">
+        {/* Hero video */}
+        <div className="relative mb-6 overflow-hidden rounded-2xl border border-border/50 min-h-[220px] sm:min-h-[300px]">
+          <video
+            src={heroVideo.url}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/85 via-background/40 to-background/10" />
+          <div className="relative z-10 flex min-h-[220px] flex-col justify-end gap-2 p-5 sm:min-h-[300px] sm:p-8">
             <Link
               to="/wall/videos"
-              className="mb-2 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+              className="inline-flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
             >
               <ArrowLeft className="h-4 w-4" /> Wall Videos
             </Link>
-            <h1 className="flex items-center gap-2 text-2xl font-bold sm:text-3xl">
+            <h1 className="flex items-center gap-2 text-2xl font-bold sm:text-4xl">
               <PlayCircle className="h-7 w-7 text-primary" /> Unlock Videos
             </h1>
-            <p className="text-sm text-muted-foreground">
-              First half free. Unlock the rest for 1 credit.
+            <p className="max-w-xl text-sm text-muted-foreground sm:text-base">
+              First half free. Unlock the rest for 1 credit — creators keep 50%.
             </p>
           </div>
+        </div>
+
+        <div className="mb-6 flex flex-wrap items-center justify-end gap-3">
           <UploadPremiumVideoDialog onUploaded={refetch} />
         </div>
+
 
         <Card className="mb-6 border-primary/20 bg-primary/5">
           <CardHeader className="pb-2">
