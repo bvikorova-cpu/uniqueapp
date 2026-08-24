@@ -3,17 +3,31 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Eye, Loader2, Lock, Sparkles, Unlock } from "lucide-react";
+import { Award, Eye, Flame, Loader2, Lock, Sparkles, Unlock, Zap } from "lucide-react";
 import type { PremiumVideo } from "@/hooks/usePremiumVideos";
+import BoostVideoDialog from "@/components/premiumVideos/BoostVideoDialog";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Props {
   video: PremiumVideo;
   unlocking: boolean;
   onUnlock: (id: string) => Promise<boolean>;
   onFirstPlay: (id: string) => void;
+  onBoosted?: () => void;
 }
 
-export default function PremiumVideoCard({ video, unlocking, onUnlock, onFirstPlay }: Props) {
+const BOOST_META: Record<string, { label: string; icon: typeof Zap }> = {
+  quick: { label: "Boosted", icon: Zap },
+  daily: { label: "Hot", icon: Flame },
+  mega: { label: "Featured", icon: Award },
+};
+
+export default function PremiumVideoCard({ video, unlocking, onUnlock, onFirstPlay, onBoosted }: Props) {
+  const { user } = useAuth();
+  const isOwner = user?.id === video.user_id;
+  const boostActive =
+    !!video.boost_until && new Date(video.boost_until).getTime() > Date.now() && !!video.boost_tier;
+  const boost = boostActive ? BOOST_META[video.boost_tier as string] : undefined;
   const ref = useRef<HTMLVideoElement>(null);
   const [locked, setLocked] = useState(false);
   const [viewed, setViewed] = useState(false);
@@ -80,6 +94,12 @@ export default function PremiumVideoCard({ video, unlocking, onUnlock, onFirstPl
           </div>
         )}
 
+        {boost && (
+          <Badge className="absolute right-3 top-3 gap-1 bg-accent text-accent-foreground">
+            <boost.icon className="h-3 w-3" /> {boost.label}
+          </Badge>
+        )}
+
         {!video.unlocked && !locked && (
           <Badge className="absolute left-3 top-3 gap-1 bg-primary/90">
             <Sparkles className="h-3 w-3" /> Locks at 50%
@@ -109,6 +129,7 @@ export default function PremiumVideoCard({ video, unlocking, onUnlock, onFirstPl
             <span className="flex items-center gap-1">
               <Unlock className="h-3.5 w-3.5" /> {video.unlocks_count}
             </span>
+            {isOwner && <BoostVideoDialog videoId={video.id} onBoosted={onBoosted} />}
           </div>
         </div>
       </div>
