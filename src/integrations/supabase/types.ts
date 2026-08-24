@@ -70219,6 +70219,16 @@ export type Database = {
           xp: number
         }[]
       }
+      get_my_megatalent_referral_stats: {
+        Args: never
+        Returns: {
+          invited_active: number
+          invited_total: number
+          paid_earnings: number
+          pending_earnings: number
+          total_earnings: number
+        }[]
+      }
       get_my_secret_santa_received_gifts: {
         Args: never
         Returns: {

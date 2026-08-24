@@ -12,6 +12,8 @@ export const ReferralProgram = () => {
   const [referralCode, setReferralCode] = useState<string>("");
   const [earnings, setEarnings] = useState(0);
   const [referredCount, setReferredCount] = useState(0);
+  const [activeCount, setActiveCount] = useState(0);
+  const [pendingEarnings, setPendingEarnings] = useState(0);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -42,20 +44,18 @@ export const ReferralProgram = () => {
 
       if (codeData) setReferralCode(codeData.code);
 
-      const { data: earningsData } = await supabase
-        .from("megatalent_referral_earnings")
-        .select("amount")
-        .eq("referrer_id", user.id);
+      // Real referral numbers via secure RPC (subscriptions of others are RLS-protected)
+      const { data: statsRows, error: statsErr } = await supabase.rpc(
+        "get_my_megatalent_referral_stats" as any,
+      );
+      if (statsErr) console.error("[referral] stats RPC", statsErr);
+      const stats: any = Array.isArray(statsRows) ? statsRows[0] : statsRows;
 
-      setEarnings(earningsData?.reduce((sum, e) => sum + Number(e.amount), 0) || 0);
+      setEarnings(Number(stats?.total_earnings ?? 0));
+      setReferredCount(Number(stats?.invited_total ?? 0));
+      setActiveCount(Number(stats?.invited_active ?? 0));
+      setPendingEarnings(Number(stats?.pending_earnings ?? 0));
 
-      const { data: subsData } = await supabase
-        .from("megatalent_subscriptions")
-        .select("id")
-        .eq("referred_by", user.id)
-        .eq("status", "active");
-
-      setReferredCount(subsData?.length || 0);
     } catch (error) {
       console.error("Error loading referral data:", error);
     } finally {
@@ -195,6 +195,7 @@ export const ReferralProgram = () => {
                 <span className="text-sm text-muted-foreground">Invited Friends</span>
               </div>
               <p className="text-3xl font-bold">{referredCount}</p>
+              <p className="text-xs text-muted-foreground mt-1">{activeCount} currently active</p>
             </Card>
 
             <Card className="p-4 backdrop-blur-xl bg-card/60 border-border/30">
@@ -203,6 +204,7 @@ export const ReferralProgram = () => {
                 <span className="text-sm text-muted-foreground">Total Earnings</span>
               </div>
               <p className="text-3xl font-bold">€{earnings.toFixed(2)}</p>
+              <p className="text-xs text-muted-foreground mt-1">€{pendingEarnings.toFixed(2)} pending payout</p>
             </Card>
           </div>
 
