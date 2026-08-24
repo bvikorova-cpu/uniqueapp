@@ -26,7 +26,17 @@ const MegatalentShareSheet = ({ submission, onClose }: Props) => {
 
   const nativeShare = async () => {
     if (!share) return;
-    const res = await shareLink(share);
+    const files: File[] = [];
+    if (share.imageUrl) {
+      try {
+        const res = await fetch(share.imageUrl);
+        const blob = await res.blob();
+        files.push(new File([blob], "megatalent.jpg", { type: "image/jpeg" }));
+      } catch (e) {
+        console.error("Failed to load share image:", e);
+      }
+    }
+    const res = await shareLink({ ...share, files });
     if (res === "copied") toast({ title: "Link copied" });
     if (res === "failed") toast({ title: "Error", variant: "destructive" });
   };
