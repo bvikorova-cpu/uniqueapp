@@ -3,28 +3,43 @@ import { Button } from "@/components/ui/button";
 import { Rocket, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+
+const BOOST_COST = 5;
 
 interface Props {
   submissionId: string;
   category: string;
+  onBoosted?: () => void;
 }
 
-export default function MegatalentBoostButton({ submissionId, category }: Props) {
+export default function MegatalentBoostButton({ submissionId, category, onBoosted }: Props) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
   const boost = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("create-megatalent-boost", {
-        body: { submission_id: submissionId, category } });
+      const { data, error } = await supabase.rpc("boost_megatalent_with_credits", {
+        p_submission_id: submissionId,
+        p_category: category,
+        p_cost: BOOST_COST,
+      });
       if (error) throw error;
-      if ((data as any)?.url) {
-        window.location.href = (data as any).url;
-      } else {
-        throw new Error("No checkout URL");
+      const res = data as any;
+      if (!res?.success) {
+        const msg =
+          res?.error === "insufficient_credits"
+            ? `You need ${BOOST_COST} AI credits to boost.`
+            : res?.error === "already_boosted"
+              ? "This submission is already boosted."
+              : res?.error === "not_owner"
+                ? "You can only boost your own submission."
+                : "Boost failed.";
+        toast({ title: "Boost not applied", description: msg, variant: "destructive" });
+        return;
       }
+      toast({ title: "🚀 Boost active!", description: `${BOOST_COST} credits used. Spotlighted for 24h.` });
+      onBoosted?.();
     } catch (e: any) {
       toast({ title: "Error", description: e.message, variant: "destructive" });
     } finally {
@@ -33,18 +48,15 @@ export default function MegatalentBoostButton({ submissionId, category }: Props)
   };
 
   return (
-    <>
-      <FloatingHowItWorks title={"Megatalent Boost Button - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Boost Button section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Boost Button.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <Button
+    <Button
       onClick={boost}
       disabled={loading}
       size="sm"
       variant="outline"
-      className="gap-1.5 h-8 border-amber-500/40 hover:border-amber-500 text-amber-500 hover:bg-amber-500/10"
+      className="gap-1.5 h-8 shrink-0 px-2 border-amber-500/40 hover:border-amber-500 text-amber-500 hover:bg-amber-500/10"
     >
       {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Rocket className="h-3.5 w-3.5" />}
-      <span className="text-xs font-bold">Boost €4.99</span>
+      <span className="text-xs font-bold whitespace-nowrap">Boost {BOOST_COST} credits</span>
     </Button>
-    </>
   );
 }

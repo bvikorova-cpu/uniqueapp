@@ -329,12 +329,12 @@ const MegatalentCategory = () => {
               >
                 <Card className="overflow-hidden backdrop-blur-xl bg-card/80 border-border/30 hover:border-primary/20 hover:shadow-lg transition-all group">
                   <div 
-                    className="relative aspect-video bg-muted cursor-pointer overflow-hidden"
+                    className="relative bg-muted cursor-pointer overflow-hidden flex items-center justify-center"
                     onClick={() => setExpandedMedia({ url: submission.media_url, type: submission.media_type })}
                   >
                     {submission.media_type === 'video' ? (
-                      <div className="relative w-full h-full">
-                        <video src={submission.media_url} className="w-full h-full object-cover" playsInline />
+                      <div className="relative w-full">
+                        <video src={submission.media_url} className="w-full max-h-[60vh] object-contain" playsInline />
                         <div className="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/50 transition-colors">
                           <Play className="w-16 h-16 text-white" />
                         </div>
@@ -343,10 +343,11 @@ const MegatalentCategory = () => {
                       <img
                         src={submission.media_url}
                         alt={submission.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full max-h-[60vh] object-contain"
                       />
                     )}
                   </div>
+
 
                   <CardContent className="p-4">
                     <div className="flex items-center gap-2 mb-3">
@@ -374,13 +375,13 @@ const MegatalentCategory = () => {
                       <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{submission.description}</p>
                     )}
 
-                    <div className="flex items-center justify-between pt-2 border-t border-border/20">
+                    <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-border/20">
                       <div className="flex items-center gap-1">
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleVote(submission.id, 'like')}
-                          className={`gap-1.5 h-8 ${userVotes[submission.id] === 'like' ? "text-red-500" : ""}`}
+                          className={`gap-1.5 h-8 px-2 ${userVotes[submission.id] === 'like' ? "text-red-500" : ""}`}
                           aria-label="Like"
                           aria-pressed={userVotes[submission.id] === 'like'}
                         >
@@ -391,23 +392,17 @@ const MegatalentCategory = () => {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleVote(submission.id, 'dislike')}
-                          className={`gap-1.5 h-8 ${userVotes[submission.id] === 'dislike' ? "text-blue-500" : ""}`}
+                          className={`gap-1.5 h-8 px-2 ${userVotes[submission.id] === 'dislike' ? "text-blue-500" : ""}`}
                           aria-label="Dislike"
                           aria-pressed={userVotes[submission.id] === 'dislike'}
                         >
                           <ThumbsDown className={`w-4 h-4 ${userVotes[submission.id] === 'dislike' ? "fill-current" : ""}`} />
                           <span className="text-xs font-bold">{submission.dislikes_count || 0}</span>
                         </Button>
-                      </div>
-
-                      <div className="flex items-center gap-1">
-                        {currentUserId === submission.user_id && !boostedIds.has(submission.id) && category && (
-                          <MegatalentBoostButton submissionId={submission.id} category={category} />
-                        )}
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="gap-1.5 h-8 text-pink-500 hover:text-pink-600"
+                          className="gap-1.5 h-8 px-2 text-pink-500 hover:text-pink-600"
                           onClick={() => setTipTarget({ id: submission.user_id, name: submission.profiles?.full_name })}
                           aria-label="Send tip"
                         >
@@ -416,7 +411,7 @@ const MegatalentCategory = () => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="gap-1.5 h-8"
+                          className="gap-1.5 h-8 px-2"
                           onClick={() => setCommentsForId(submission.id)}
                           aria-label="Open comments"
                         >
@@ -424,7 +419,16 @@ const MegatalentCategory = () => {
                           <span className="text-xs">{commentCounts[submission.id] || 0}</span>
                         </Button>
                       </div>
+
+                      {currentUserId === submission.user_id && !boostedIds.has(submission.id) && category && (
+                        <MegatalentBoostButton
+                          submissionId={submission.id}
+                          category={category}
+                          onBoosted={fetchActiveBoosts}
+                        />
+                      )}
                     </div>
+
                   </CardContent>
                 </Card>
               </motion.div>
