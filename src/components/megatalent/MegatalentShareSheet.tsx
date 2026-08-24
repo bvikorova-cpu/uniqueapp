@@ -49,6 +49,11 @@ const MegatalentShareSheet = ({ submission, onClose }: Props) => {
         <SheetHeader><SheetTitle>Share</SheetTitle></SheetHeader>
         {share && (
           <div className="space-y-3 mt-6">
+            {share.imageUrl && (
+              <div className="rounded-lg overflow-hidden border border-border/50 bg-black">
+                <img src={share.imageUrl} alt="Preview" className="w-full max-h-48 object-contain" />
+              </div>
+            )}
             <div className="rounded-lg border border-border/50 bg-muted/30 p-3 text-sm">
               <p className="font-medium">{share.text}</p>
               <p className="text-xs text-muted-foreground break-all mt-1">{share.url}</p>
