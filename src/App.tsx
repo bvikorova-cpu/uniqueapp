@@ -458,6 +458,7 @@ const AdminButtonTester = lazy(() => import("@/pages/admin/AdminButtonTester"));
 const AdminFanClubVerifyAudit = lazy(() => import("@/pages/admin/AdminFanClubVerifyAudit"));
 const AdminClubShipping = lazy(() => import("@/pages/admin/AdminClubShipping"));
 const AdminChallengeSubscribers = lazy(() => import("@/pages/admin/AdminChallengeSubscribers"));
+const AdminUsersOverview = lazy(() => import("@/pages/admin/AdminUsersOverview"));
 const AdminCrawler = lazy(() => import("@/pages/admin/AdminCrawler"));
 const BugReportsManager = lazy(() => import("@/pages/admin/BugReportsManager"));
 const ReportBug = lazy(() => import("@/pages/ReportBug"));
