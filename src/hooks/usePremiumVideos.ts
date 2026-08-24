@@ -17,6 +17,8 @@ export interface PremiumVideo {
   unlocks_count: number;
   views_count: number;
   created_at: string;
+  boost_tier?: string | null;
+  boost_until?: string | null;
   author_name?: string | null;
   author_avatar?: string | null;
   unlocked?: boolean;
@@ -34,9 +36,10 @@ export function usePremiumVideos() {
       const { data, error } = await (supabase as any)
         .from("premium_videos")
         .select(
-          "id, user_id, title, description, video_url, thumbnail_url, duration_seconds, unlock_cost, unlocks_count, views_count, created_at",
+          "id, user_id, title, description, video_url, thumbnail_url, duration_seconds, unlock_cost, unlocks_count, views_count, created_at, boost_tier, boost_until",
         )
         .eq("is_published", true)
+        .order("boost_until", { ascending: false, nullsFirst: false })
         .order("created_at", { ascending: false })
         .limit(60);
       if (error) throw error;
@@ -90,7 +93,7 @@ export function usePremiumVideos() {
         if (!data?.ok) {
           if (data?.error === "insufficient") {
             toast.error("Not enough credits", {
-              description: `Unlocking costs ${PREMIUM_VIDEO_UNLOCK_COST} credit. Top up to continue.`,
+              description: `Unlocking costs ${PREMIUM_VIDEO_UNLOCK_COST} video credit. Top up above to continue.`,
             });
           } else {
             toast.error("Unlock failed", { description: String(data?.error ?? "Unknown error") });
@@ -104,7 +107,10 @@ export function usePremiumVideos() {
               : v,
           ),
         );
-        if (!data?.already) toast.success("Video unlocked — enjoy the rest!");
+        if (!data?.already) {
+          toast.success("Video unlocked — enjoy the rest!");
+          window.dispatchEvent(new Event("video-credits-updated"));
+        }
         return true;
       } catch (e: any) {
         toast.error("Unlock failed", { description: e?.message });
