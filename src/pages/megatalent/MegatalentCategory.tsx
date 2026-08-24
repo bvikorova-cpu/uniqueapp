@@ -329,12 +329,12 @@ const MegatalentCategory = () => {
               >
                 <Card className="overflow-hidden backdrop-blur-xl bg-card/80 border-border/30 hover:border-primary/20 hover:shadow-lg transition-all group">
                   <div 
-                    className="relative aspect-video bg-muted cursor-pointer overflow-hidden"
+                    className="relative bg-muted cursor-pointer overflow-hidden flex items-center justify-center"
                     onClick={() => setExpandedMedia({ url: submission.media_url, type: submission.media_type })}
                   >
                     {submission.media_type === 'video' ? (
-                      <div className="relative w-full h-full">
-                        <video src={submission.media_url} className="w-full h-full object-cover" playsInline />
+                      <div className="relative w-full">
+                        <video src={submission.media_url} className="w-full max-h-[60vh] object-contain" playsInline />
                         <div className="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/50 transition-colors">
                           <Play className="w-16 h-16 text-white" />
                         </div>
@@ -343,10 +343,11 @@ const MegatalentCategory = () => {
                       <img
                         src={submission.media_url}
                         alt={submission.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full max-h-[60vh] object-contain"
                       />
                     )}
                   </div>
+
 
                   <CardContent className="p-4">
                     <div className="flex items-center gap-2 mb-3">
