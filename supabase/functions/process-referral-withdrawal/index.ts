@@ -54,26 +54,51 @@ serve(async (req) => {
       updateData.processed_at = new Date().toISOString();
 
       // Mark earnings as paid up to the withdrawn amount only (FIFO oldest-first)
-      const { data: unpaid } = await supabase
+      let remaining = Number(request.amount);
+      const referralIdsToMark: string[] = [];
+      const { data: unpaidReferrals } = await supabase
         .from('megatalent_referral_earnings')
         .select('id, amount')
         .eq('referrer_id', request.referrer_id)
         .eq('paid', false)
         .order('created_at', { ascending: true });
 
-      let remaining = Number(request.amount);
-      const idsToMark: string[] = [];
-      for (const row of unpaid || []) {
+      for (const row of unpaidReferrals || []) {
         if (remaining <= 0) break;
-        idsToMark.push(row.id);
+        referralIdsToMark.push(row.id);
         remaining -= Number(row.amount);
       }
-      if (idsToMark.length > 0) {
+      if (referralIdsToMark.length > 0) {
         const { error: payErr } = await supabase
           .from('megatalent_referral_earnings')
           .update({ paid: true })
-          .in('id', idsToMark);
-        if (payErr) console.error('mark paid failed', payErr);
+          .in('id', referralIdsToMark);
+        if (payErr) console.error('mark referral paid failed', payErr);
+      }
+
+      // Then mark completed tips as paid (oldest-first) for any remaining amount
+      if (remaining > 0) {
+        const { data: unpaidTips } = await supabase
+          .from('megatalent_tips')
+          .select('id, creator_amount_cents')
+          .eq('creator_id', request.referrer_id)
+          .eq('status', 'completed')
+          .or('payout_status.eq.pending,payout_status.is.null')
+          .order('created_at', { ascending: true });
+
+        const tipIdsToMark: string[] = [];
+        for (const row of unpaidTips || []) {
+          if (remaining <= 0) break;
+          tipIdsToMark.push(row.id);
+          remaining -= Number(row.creator_amount_cents) / 100;
+        }
+        if (tipIdsToMark.length > 0) {
+          const { error: tipErr } = await supabase
+            .from('megatalent_tips')
+            .update({ payout_status: 'paid' })
+            .in('id', tipIdsToMark);
+          if (tipErr) console.error('mark tips paid failed', tipErr);
+        }
       }
     } else if (action === 'reject') {
       updateData.status = 'rejected';
