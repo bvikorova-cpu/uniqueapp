@@ -159,7 +159,7 @@ const Megatalent = () => {
           return;
         }
       }
-      clearPendingMegatalentSubmission();
+      clearPendingMegatalentSubmission(user.id);
       setSelectedCategory(draft.category);
       setTitle(""); setDescription(""); setUploadedFile(null);
       await fetchSubmissions();
@@ -231,7 +231,7 @@ const Megatalent = () => {
           });
           if (publishError) throw publishError;
         }
-        clearPendingMegatalentSubmission();
+        clearPendingMegatalentSubmission(user.id);
         setSelectedCategory(draft.category);
         setTitle("");
         setDescription("");
@@ -488,7 +488,7 @@ const Megatalent = () => {
       }
       const { error } = await supabase.from('talent_submissions').insert({ user_id: user.id, title: title.trim(), description: description.trim(), category: selectedCategory as any, media_url: uploadedFile.url, media_type: uploadedFile.type });
       if (error) throw error;
-      clearPendingMegatalentSubmission();
+      clearPendingMegatalentSubmission(user.id);
       toast({ title: "Published!", description: "Your submission is now live" });
       setTitle(""); setDescription(""); setUploadedFile(null);
       fetchSubmissions();
