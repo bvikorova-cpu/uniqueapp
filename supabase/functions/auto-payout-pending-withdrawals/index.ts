@@ -118,21 +118,40 @@ serve(async (req) => {
           await admin.from(cfg.table).update(updateData).eq("id", wd.id);
 
           if (kind === "referral") {
-            const { data: unpaid } = await admin
+            let remaining = Number(wd.amount);
+            const { data: unpaidReferrals } = await admin
               .from("megatalent_referral_earnings")
               .select("id, amount")
               .eq("referrer_id", creatorId)
               .eq("paid", false)
               .order("created_at", { ascending: true });
-            let remaining = Number(wd.amount);
-            const idsToMark: string[] = [];
-            for (const row of unpaid || []) {
+            const referralIds: string[] = [];
+            for (const row of unpaidReferrals || []) {
               if (remaining <= 0) break;
-              idsToMark.push(row.id);
+              referralIds.push(row.id);
               remaining -= Number(row.amount);
             }
-            if (idsToMark.length > 0) {
-              await admin.from("megatalent_referral_earnings").update({ paid: true }).in("id", idsToMark);
+            if (referralIds.length > 0) {
+              await admin.from("megatalent_referral_earnings").update({ paid: true }).in("id", referralIds);
+            }
+
+            if (remaining > 0) {
+              const { data: unpaidTips } = await admin
+                .from("megatalent_tips")
+                .select("id, creator_amount_cents")
+                .eq("creator_id", creatorId)
+                .eq("status", "completed")
+                .or("payout_status.eq.pending,payout_status.is.null")
+                .order("created_at", { ascending: true });
+              const tipIds: string[] = [];
+              for (const row of unpaidTips || []) {
+                if (remaining <= 0) break;
+                tipIds.push(row.id);
+                remaining -= Number(row.creator_amount_cents) / 100;
+              }
+              if (tipIds.length > 0) {
+                await admin.from("megatalent_tips").update({ payout_status: "paid" }).in("id", tipIds);
+              }
             }
           }
 
