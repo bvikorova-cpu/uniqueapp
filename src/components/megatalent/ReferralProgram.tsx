@@ -72,14 +72,22 @@ export const ReferralProgram = () => {
       // Gifts (tips) received from other users — separate income stream from referrals
       const { data: tips } = await supabase
         .from("megatalent_tips")
-        .select("creator_amount_cents, amount_cents")
+        .select("creator_amount_cents, amount_cents, payout_status")
         .eq("creator_id", user.id)
         .eq("status", "completed");
       const tipsTotal = (tips ?? []).reduce(
         (s: number, t: any) => s + Number(t.creator_amount_cents ?? t.amount_cents ?? 0),
         0,
       );
+      const unpaidTips = (tips ?? []).reduce(
+        (s: number, t: any) => {
+          const isPaid = t.payout_status === "paid" || t.payout_status === "in_transit";
+          return s + (isPaid ? 0 : Number(t.creator_amount_cents ?? t.amount_cents ?? 0));
+        },
+        0,
+      );
       setTipsEarned(tipsTotal / 100);
+      setUnpaidTipsEarned(unpaidTips / 100);
       setTipsCount((tips ?? []).length);
 
 
