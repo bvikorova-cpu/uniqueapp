@@ -674,7 +674,25 @@ const Megatalent = () => {
                   <div className="flex items-center justify-between">
                     <h2 className="text-xl sm:text-2xl font-bold">{categoryGroups.flatMap(g => g.categories).find(c => c.value === selectedCategory)?.label || "Posts"}</h2>
                   </div>
+                  <div className="space-y-1.5">
+                    <label htmlFor="feed-category" className="text-xs font-medium text-muted-foreground">Category</label>
+                    <select
+                      id="feed-category"
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      className="w-full h-10 rounded-lg border border-border/50 bg-card/80 backdrop-blur-xl px-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/40"
+                    >
+                      {categoryGroups.map((g) => (
+                        <optgroup key={g.group} label={g.group}>
+                          {g.categories.map((c) => (
+                            <option key={c.value} value={c.value}>{c.label}</option>
+                          ))}
+                        </optgroup>
+                      ))}
+                    </select>
+                  </div>
                   <MegaTalentFeedFilters active={feedFilter} onChange={setFeedFilter} />
+
                   {feedLoading ? (
                     <div className="space-y-4">
                       {[0, 1, 2].map((i) => (
