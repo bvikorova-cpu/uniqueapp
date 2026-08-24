@@ -27,10 +27,8 @@ import MegatalentAchievements from "@/components/megatalent/MegatalentAchievemen
 import BattleRoyalePayouts from "@/components/megatalent/BattleRoyalePayouts";
 import MegatalentNotificationBell from "@/components/megatalent/MegatalentNotificationBell";
 import { LiveSocialProof } from "@/components/social/LiveSocialProof";
-import NextVotingCountdown from "@/components/megatalent/NextVotingCountdown";
 import MegaTalentCategoryGrid from "@/components/megatalent/MegaTalentCategoryGrid";
 import ContestStatsSidebar from "@/components/megatalent/ContestStatsSidebar";
-import { LiveVoting } from "@/components/megatalent/LiveVoting";
 import MegaTalentSubmissionCard from "@/components/megatalent/MegaTalentSubmissionCard";
 import MegaTalentFeedFilters, { type FeedFilter } from "@/components/megatalent/MegaTalentFeedFilters";
 import MegaTalentLatestFeed from "@/components/megatalent/MegaTalentLatestFeed";
@@ -556,7 +554,8 @@ const Megatalent = () => {
       <div className="min-h-screen bg-background pt-20 pb-12">
         <MegaTalentOnboarding />
         <div className="container mx-auto px-4 max-w-6xl">
-          <NextVotingCountdown />
+
+
 
           <div className="flex justify-end items-center gap-2 mb-2">
             <HowItWorksButton title="Megatalent" intro="How the talent contest, voting and prizes work." steps={MEGATALENT_HOW_IT_WORKS} variant="compact" />
@@ -755,21 +754,8 @@ const Megatalent = () => {
 
                 <div className="lg:col-span-1 order-3">
                   <div className="sticky top-24 space-y-4">
-                    <LiveVoting
-                      contestants={ sortedSubmissions.slice(0, 5).map(s => {
-                        const total = sortedSubmissions.slice(0, 5).reduce((a, b) => a + (b.votes_count || 0), 0) || 1;
-                        return {
-                          id: s.id,
-                          name: s.profiles?.full_name || s.title || "User",
-                          votes: s.votes_count || 0,
-                          percentage: Math.round(((s.votes_count || 0) / total) * 100) };
-                      })}
-                      totalVotes={sortedSubmissions.reduce((a, b) => a + (b.votes_count || 0), 0)}
-                      isVotingOpen={true}
-                      onVote={handleVote}
-                      userVotedFor={[...likedSubmissions][0] || null}
-                    />
                     <ContestStatsSidebar subscriptionTier={subscriptionTier} totalVotes={totalVotes} />
+
                   </div>
                 </div>
               </div>
