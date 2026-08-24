@@ -236,21 +236,54 @@ export const ReferralProgram = () => {
             <Card className="p-4 backdrop-blur-xl bg-card/60 border-border/30">
               <div className="flex items-center gap-2 mb-2">
                 <DollarSign className="h-5 w-5 text-green-500" />
-                <span className="text-sm text-muted-foreground">Total Earnings</span>
+                <span className="text-sm text-muted-foreground">Referral Earnings</span>
               </div>
               <p className="text-3xl font-bold">€{earnings.toFixed(2)}</p>
-              <p className="text-xs text-muted-foreground mt-1">€{pendingEarnings.toFixed(2)} pending payout</p>
+              <p className="text-xs text-muted-foreground mt-1">€{pendingEarnings.toFixed(2)} available</p>
             </Card>
 
-            <Card className="col-span-2 p-4 backdrop-blur-xl bg-card/60 border-border/30">
+            <Card className="p-4 backdrop-blur-xl bg-card/60 border-border/30">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="h-5 w-5 text-amber-500" />
-                <span className="text-sm text-muted-foreground">Gifts (tips) received</span>
+                <span className="text-sm text-muted-foreground">Gifts (tips)</span>
               </div>
               <p className="text-3xl font-bold">€{tipsEarned.toFixed(2)}</p>
               <p className="text-xs text-muted-foreground mt-1">
-                {tipsCount} gift{tipsCount === 1 ? "" : "s"} · your 80% share, paid out separately from referrals
+                €{unpaidTipsEarned.toFixed(2)} available · {tipsCount} gift{tipsCount === 1 ? "" : "s"}
               </p>
+            </Card>
+
+            <Card className="col-span-2 p-4 backdrop-blur-xl bg-card/60 border-border/30 border-green-500/30">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <Wallet className="h-5 w-5 text-green-500" />
+                    <span className="text-sm text-muted-foreground">Available for payout</span>
+                  </div>
+                  <p className="text-3xl font-bold text-green-500">
+                    €{(pendingEarnings + unpaidTipsEarned).toFixed(2)}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Minimum withdrawal is €10
+                  </p>
+                </div>
+                <Dialog open={withdrawDialogOpen} onOpenChange={setWithdrawDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      className="bg-green-500 hover:bg-green-600 text-white"
+                      disabled={(pendingEarnings + unpaidTipsEarned) < 10}
+                    >
+                      <Wallet className="h-4 w-4 mr-2" /> Request payout
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle>Request MegaTalent payout</DialogTitle>
+                    </DialogHeader>
+                    <ReferralWithdrawalRequest />
+                  </DialogContent>
+                </Dialog>
+              </div>
             </Card>
           </div>
 
