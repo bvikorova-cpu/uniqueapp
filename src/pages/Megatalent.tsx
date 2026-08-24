@@ -175,6 +175,25 @@ const Megatalent = () => {
     if (isSubscribed) { fetchTotalVotes(); }
   }, [isSubscribed, submissions]);
 
+  // Verify a tip payment on Stripe redirect (page-level, independent of the tip jar being mounted)
+  const tipHandledRef = useRef(false);
+  useEffect(() => {
+    const sid = searchParams.get("session_id");
+    if (searchParams.get("tip") !== "success" || !sid || tipHandledRef.current) return;
+    tipHandledRef.current = true;
+    (async () => {
+      const { data, error } = await safeInvoke("verify-megatalent-tip", { body: { sessionId: sid } });
+      if (!error && (data as any)?.verified) {
+        toast({ title: "Tip delivered", description: "The creator has received your support." });
+      }
+      const next = new URLSearchParams(searchParams);
+      next.delete("tip");
+      next.delete("session_id");
+      setSearchParams(next, { replace: true });
+    })();
+  }, [searchParams, setSearchParams]);
+
+
   useEffect(() => {
     const sessionId = searchParams.get("session_id");
     if (searchParams.get("payment") !== "success" || !sessionId || paymentHandledRef.current) return;
