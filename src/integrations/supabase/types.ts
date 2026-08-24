@@ -68868,6 +68868,10 @@ export type Database = {
           tier: string
         }[]
       }
+      boost_megatalent_with_credits: {
+        Args: { p_category: string; p_cost?: number; p_submission_id: string }
+        Returns: Json
+      }
       brain_duel_activate_combo: {
         Args: {
           _combo_type: string
