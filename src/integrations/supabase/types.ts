@@ -39707,7 +39707,9 @@ export type Database = {
           status: string
           stripe_session_id: string | null
           stripe_transfer_id: string | null
+          tipper_avatar_url: string | null
           tipper_id: string | null
+          tipper_name: string | null
         }
         Insert: {
           amount_cents: number
@@ -39724,7 +39726,9 @@ export type Database = {
           status?: string
           stripe_session_id?: string | null
           stripe_transfer_id?: string | null
+          tipper_avatar_url?: string | null
           tipper_id?: string | null
+          tipper_name?: string | null
         }
         Update: {
           amount_cents?: number
@@ -39741,7 +39745,9 @@ export type Database = {
           status?: string
           stripe_session_id?: string | null
           stripe_transfer_id?: string | null
+          tipper_avatar_url?: string | null
           tipper_id?: string | null
+          tipper_name?: string | null
         }
         Relationships: []
       }
