@@ -13,6 +13,7 @@ import { TalentCommentsSheet } from "@/components/megatalent/TalentCommentsSheet
 import MegatalentReactions from "@/components/megatalent/MegatalentReactions";
 import { buildMegatalentShare } from "@/lib/megatalentShare";
 import { shareLink } from "@/lib/shareLink";
+import { extractVideoFirstFrame } from "@/lib/videoThumbnail";
 
 const MegatalentPost = () => {
   const { id } = useParams<{ id: string }>();
