@@ -68714,29 +68714,61 @@ export type Database = {
           source_subscription_id: string
         }[]
       }
-      admin_list_users_overview: {
-        Args: { p_limit?: number; p_offset?: number; p_search?: string }
-        Returns: {
-          created_at: string
-          credits_remaining: number
-          email: string
-          full_name: string
-          mt_expires_at: string
-          mt_status: string
-          mt_tier: string
-          other_subscriptions: Json
-          referral_code: string
-          referral_reward_amount: number
-          referral_reward_paid: boolean
-          referral_status: string
-          referred_by_id: string
-          referred_by_name: string
-          total_referral_earnings: number
-          total_referrals: number
-          user_id: string
-          username: string
-        }[]
-      }
+      admin_list_users_overview:
+        | {
+            Args: { p_limit?: number; p_offset?: number; p_search?: string }
+            Returns: {
+              created_at: string
+              credits_remaining: number
+              email: string
+              full_name: string
+              mt_expires_at: string
+              mt_status: string
+              mt_tier: string
+              other_subscriptions: Json
+              referral_code: string
+              referral_reward_amount: number
+              referral_reward_paid: boolean
+              referral_status: string
+              referred_by_id: string
+              referred_by_name: string
+              total_referral_earnings: number
+              total_referrals: number
+              user_id: string
+              username: string
+            }[]
+          }
+        | {
+            Args: {
+              p_email?: string
+              p_limit?: number
+              p_name?: string
+              p_offset?: number
+              p_referral_code?: string
+              p_search?: string
+              p_subscription_status?: string
+            }
+            Returns: {
+              created_at: string
+              credits_remaining: number
+              email: string
+              full_name: string
+              mt_expires_at: string
+              mt_status: string
+              mt_tier: string
+              other_subscriptions: Json
+              referral_code: string
+              referral_reward_amount: number
+              referral_reward_paid: boolean
+              referral_status: string
+              referred_by_id: string
+              referred_by_name: string
+              total_referral_earnings: number
+              total_referrals: number
+              user_id: string
+              username: string
+            }[]
+          }
       admin_mark_megatalent_paid: {
         Args: { _reference?: string; _winner_id: string }
         Returns: undefined
@@ -70147,6 +70179,15 @@ export type Database = {
       get_megatalent_challenge_progress: {
         Args: { _user_id: string }
         Returns: Json
+      }
+      get_megatalent_earnings_breakdown: {
+        Args: { _user_id: string }
+        Returns: {
+          amount: number
+          created_at: string
+          id: string
+          source: string
+        }[]
       }
       get_megatalent_stream_key: {
         Args: { _stream_id: string }
