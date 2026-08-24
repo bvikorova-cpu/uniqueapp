@@ -500,6 +500,7 @@ const Megatalent = () => {
             category: selectedCategory,
             mediaUrl: uploadedFile.url,
             mediaType: uploadedFile.type,
+            thumbnailUrl: uploadedThumbnailUrl,
             createdAt: new Date().toISOString(),
           });
           setUploadPaywallOpen(true);
@@ -509,11 +510,19 @@ const Megatalent = () => {
         setIsSubscribed(true);
         setSubscriptionTier(data.tier === "top_premium" ? "top_premium" : "premium");
       }
-      const { error } = await supabase.from('talent_submissions').insert({ user_id: user.id, title: title.trim(), description: description.trim(), category: selectedCategory as any, media_url: uploadedFile.url, media_type: uploadedFile.type });
+      const { error } = await supabase.from('talent_submissions').insert({
+        user_id: user.id,
+        title: title.trim(),
+        description: description.trim(),
+        category: selectedCategory as any,
+        media_url: uploadedFile.url,
+        media_type: uploadedFile.type,
+        thumbnail_url: uploadedThumbnailUrl,
+      });
       if (error) throw error;
       clearPendingMegatalentSubmission(user.id);
       toast({ title: "Published!", description: "Your submission is now live" });
-      setTitle(""); setDescription(""); setUploadedFile(null);
+      setTitle(""); setDescription(""); setUploadedFile(null); setUploadedThumbnailUrl(null);
       fetchSubmissions();
     } catch (error: any) { console.error('Submit error:', error); toast({ title: "Error", description: error?.message || "Failed to publish", variant: "destructive" }); } finally { setSubmitting(false); }
   };
