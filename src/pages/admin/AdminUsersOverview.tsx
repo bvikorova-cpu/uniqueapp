@@ -7,9 +7,10 @@ import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Loader2, RefreshCw, Users, Gift, Search } from "lucide-react";
+import { Loader2, RefreshCw, Users, Gift, Search, SlidersHorizontal, X } from "lucide-react";
 import { toast } from "sonner";
 
 type UserRow = {
