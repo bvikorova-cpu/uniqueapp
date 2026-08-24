@@ -13,6 +13,7 @@ import { TalentCommentsSheet } from "@/components/megatalent/TalentCommentsSheet
 import MegatalentReactions from "@/components/megatalent/MegatalentReactions";
 import { buildMegatalentShare } from "@/lib/megatalentShare";
 import { shareLink } from "@/lib/shareLink";
+import { extractVideoFirstFrame } from "@/lib/videoThumbnail";
 
 const MegatalentPost = () => {
   const { id } = useParams<{ id: string }>();
@@ -61,6 +62,29 @@ const MegatalentPost = () => {
       .maybeSingle()
       .then(({ data }) => setVoted(!!data));
   }, [id, userId]);
+
+  // Auto-generate a first-frame thumbnail for videos so social previews show an image.
+  useEffect(() => {
+    if (!submission?.media_url || submission.media_type !== "video" || submission.thumbnail_url) return;
+
+    const generateThumbnail = async () => {
+      try {
+        const blob = await extractVideoFirstFrame(submission.media_url);
+        const fileName = `thumbnails/${submission.user_id}/${submission.id}.jpg`;
+        const { error: uploadError } = await supabase.storage
+          .from("media")
+          .upload(fileName, blob, { contentType: "image/jpeg", upsert: true });
+        if (uploadError) throw uploadError;
+        const { data: { publicUrl } } = supabase.storage.from("media").getPublicUrl(fileName);
+        await (supabase.from("talent_submissions") as any).update({ thumbnail_url: publicUrl }).eq("id", submission.id);
+        setSubmission((s: any) => ({ ...s, thumbnail_url: publicUrl }));
+      } catch (error) {
+        console.error("Thumbnail generation failed:", error);
+      }
+    };
+
+    generateThumbnail();
+  }, [submission?.media_url, submission?.media_type, submission?.thumbnail_url, submission?.id, submission?.user_id]);
 
   const handleVote = async () => {
     if (!userId) {
@@ -121,7 +145,9 @@ const MegatalentPost = () => {
         <meta property="og:description" content={share.text} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={share.url} />
-        {submission.media_url && !isVideo && <meta property="og:image" content={submission.media_url} />}
+        {(submission.thumbnail_url || submission.media_url) && (
+          <meta property="og:image" content={submission.thumbnail_url || submission.media_url} />
+        )}
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 
