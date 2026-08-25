@@ -69,7 +69,7 @@ export function AutoWithdrawSettings() {
           <Label className="text-xs">Trigger at balance (€)</Label>
           <Input
             type="number"
-            min={25}
+            min={20}
             value={threshold}
             onChange={(e) => setThreshold(Number(e.target.value))}
             disabled={!enabled}

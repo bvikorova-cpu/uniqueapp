@@ -17,8 +17,8 @@ const json = (body: unknown, status = 200) =>
     headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
 const INSTANT_FEE_BPS = 100; // 1.00 %
-const MIN_STANDARD_CENTS = 100;   // €1
-const MIN_INSTANT_CENTS = 1000;   // €10
+const MIN_STANDARD_CENTS = 2000;   // €20
+const MIN_INSTANT_CENTS = 2000;    // €20
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
