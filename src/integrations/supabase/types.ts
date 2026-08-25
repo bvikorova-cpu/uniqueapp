@@ -71596,6 +71596,16 @@ export type Database = {
         }
         Returns: string
       }
+      publish_premium_video: {
+        Args: {
+          _description?: string
+          _duration_seconds?: number
+          _thumbnail_url?: string
+          _title: string
+          _video_url: string
+        }
+        Returns: Json
+      }
       publish_skill_offering: {
         Args: {
           _category: Database["public"]["Enums"]["skill_category"]
