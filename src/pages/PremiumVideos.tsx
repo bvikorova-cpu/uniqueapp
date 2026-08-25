@@ -1,10 +1,19 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Info, Loader2, PlayCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  Coins,
+  Flame,
+  Info,
+  Loader2,
+  PlayCircle,
+  Video,
+} from "lucide-react";
 import Navbar from "@/components/Navbar";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import PremiumVideoCard from "@/components/premiumVideos/PremiumVideoCard";
 import UploadPremiumVideoDialog from "@/components/premiumVideos/UploadPremiumVideoDialog";
@@ -14,9 +23,29 @@ import MyVideosPanel from "@/components/premiumVideos/MyVideosPanel";
 
 import heroVideo from "@/assets/section-videos/unlock-videos.mp4.asset.json";
 
+type TabKey = "feed" | "mine" | "credits" | "how";
+
+const TABS: { key: TabKey; label: string; icon: typeof Video; desc: string }[] = [
+  { key: "feed", label: "Feed", icon: Flame, desc: "Watch & unlock" },
+  { key: "mine", label: "My videos", icon: Video, desc: "Manage & earnings" },
+  { key: "credits", label: "Credits", icon: Coins, desc: "Top up your wallet" },
+  { key: "how", label: "How it works", icon: Info, desc: "Rules & pricing" },
+];
+
 export default function PremiumVideos() {
   const { videos, loading, unlock, unlocking, addView, refetch } = usePremiumVideos();
   const [params, setParams] = useSearchParams();
+  const [tab, setTab] = useState<TabKey>(
+    (TABS.find((t) => t.key === params.get("tab"))?.key ?? "feed") as TabKey,
+  );
+
+  const goTab = (key: TabKey) => {
+    setTab(key);
+    const next = new URLSearchParams(params);
+    next.set("tab", key);
+    setParams(next, { replace: true });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   useEffect(() => {
     const sessionId = params.get("session_id");
@@ -36,7 +65,10 @@ export default function PremiumVideos() {
       } catch (e: any) {
         toast.error("Could not verify payment", { description: e?.message });
       } finally {
-        setParams(new URLSearchParams(), { replace: true });
+        const next = new URLSearchParams();
+        next.set("tab", "credits");
+        setTab("credits");
+        setParams(next, { replace: true });
       }
     })();
   }, [params, setParams]);
@@ -89,56 +121,98 @@ export default function PremiumVideos() {
           </div>
         </div>
 
-        <div className="mb-6 flex flex-wrap items-center justify-end gap-3">
-          <UploadPremiumVideoDialog onUploaded={refetch} />
+        {/* Sub-navigation */}
+        <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {TABS.map((t) => {
+            const Icon = t.icon;
+            const active = tab === t.key;
+            return (
+              <button
+                key={t.key}
+                onClick={() => goTab(t.key)}
+                aria-current={active ? "page" : undefined}
+                className={`rounded-xl border p-3 text-left transition-all ${
+                  active
+                    ? "border-primary bg-primary/10 shadow-sm"
+                    : "border-border/60 bg-card/60 hover:border-primary/40 hover:bg-primary/5"
+                }`}
+              >
+                <span className="flex items-center gap-2 text-sm font-semibold">
+                  <Icon className={`h-4 w-4 ${active ? "text-primary" : "text-muted-foreground"}`} />
+                  {t.label}
+                </span>
+                <span className="mt-0.5 block text-xs text-muted-foreground">{t.desc}</span>
+              </button>
+            );
+          })}
         </div>
 
-        <VideoCreditsPanel />
+        {tab === "feed" && (
+          <>
+            <div className="mb-6 flex flex-wrap items-center justify-end gap-3">
+              <UploadPremiumVideoDialog onUploaded={refetch} />
+            </div>
 
-        <MyVideosPanel onChanged={refetch} />
+            {loading ? (
+              <div className="flex justify-center py-20">
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+              </div>
+            ) : videos.length === 0 ? (
+              <p className="py-20 text-center text-muted-foreground">
+                No videos yet — be the first to upload one.
+              </p>
+            ) : (
+              <div className="grid gap-6 sm:grid-cols-2">
+                {videos.map((v) => (
+                  <PremiumVideoCard
+                    key={v.id}
+                    video={v}
+                    unlocking={unlocking === v.id}
+                    onUnlock={unlock}
+                    onFirstPlay={addView}
+                    onBoosted={refetch}
+                  />
+                ))}
+              </div>
+            )}
+          </>
+        )}
 
+        {tab === "mine" && (
+          <>
+            <div className="mb-6 flex flex-wrap items-center justify-end gap-3">
+              <UploadPremiumVideoDialog onUploaded={refetch} />
+            </div>
+            <MyVideosPanel onChanged={refetch} />
+          </>
+        )}
 
+        {tab === "credits" && <VideoCreditsPanel />}
 
-        <Card className="mb-6 border-primary/20 bg-primary/5">
-          <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Info className="h-4 w-4 text-primary" /> How it works
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-1.5 text-sm text-muted-foreground">
-            <p>1. Any member can upload a video — publishing costs 1 video credit and goes live instantly.</p>
-            <p>2. Everyone watches the first 50% for free; playback then pauses.</p>
-            <p>3. Unlocking the rest costs 1 video credit (own wallet: 10/€5, 20/€10, 30/€15), charged once per video.</p>
-            <p>4. The creator receives 50% of every unlock in credits; the platform keeps 50%.</p>
-            <p>5. Your own videos are always unlocked for you.</p>
-            <p>
-              6. Promote your video with credits: Quick Boost 5 (6h top of feed), Daily Top 12 (24h in “Hot”),
-              Mega Boost 25 (“Featured” badge + priority for 3 days).
-            </p>
-          </CardContent>
-        </Card>
-
-        {loading ? (
-          <div className="flex justify-center py-20">
-            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-          </div>
-        ) : videos.length === 0 ? (
-          <p className="py-20 text-center text-muted-foreground">
-            No videos yet — be the first to upload one.
-          </p>
-        ) : (
-          <div className="grid gap-6 sm:grid-cols-2">
-            {videos.map((v) => (
-              <PremiumVideoCard
-                key={v.id}
-                video={v}
-                unlocking={unlocking === v.id}
-                onUnlock={unlock}
-                onFirstPlay={addView}
-                onBoosted={refetch}
-              />
-            ))}
-          </div>
+        {tab === "how" && (
+          <Card className="border-primary/20 bg-primary/5">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Info className="h-4 w-4 text-primary" /> How it works
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-1.5 text-sm text-muted-foreground">
+              <p>1. Any member can upload a video — publishing costs 1 video credit and goes live instantly.</p>
+              <p>2. Everyone watches the first 50% for free; playback then pauses.</p>
+              <p>3. Unlocking the rest costs 1 video credit (own wallet: 10/€5, 20/€10, 30/€15), charged once per video.</p>
+              <p>4. The creator receives 50% of every unlock in credits; the platform keeps 50%.</p>
+              <p>5. Your own videos are always unlocked for you.</p>
+              <p>
+                6. Promote your video with credits: Quick Boost 5 (6h top of feed), Daily Top 12 (24h in “Hot”),
+                Mega Boost 25 (“Featured” badge + priority for 3 days).
+              </p>
+              <div className="pt-3">
+                <Button variant="outline" size="sm" onClick={() => goTab("credits")}>
+                  <Coins className="mr-2 h-4 w-4" /> Top up credits
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         )}
       </main>
     </>
