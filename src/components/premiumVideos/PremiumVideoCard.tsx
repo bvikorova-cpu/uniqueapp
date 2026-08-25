@@ -7,6 +7,7 @@ import { Award, Eye, Flame, Loader2, Lock, Sparkles, Unlock, Zap } from "lucide-
 import type { PremiumVideo } from "@/hooks/usePremiumVideos";
 import BoostVideoDialog from "@/components/premiumVideos/BoostVideoDialog";
 import { useAuth } from "@/contexts/AuthContext";
+import VideoFrame from "@/components/premiumVideos/VideoFrame";
 
 interface Props {
   video: PremiumVideo;
@@ -60,6 +61,7 @@ export default function PremiumVideoCard({ video, unlocking, onUnlock, onFirstPl
 
   return (
     <Card className="overflow-hidden border-border/50 bg-card/60 backdrop-blur-xl shadow-lg">
+      <VideoFrame slug={video.frame_slug}>
       <div className="relative aspect-video bg-black">
         <video
           ref={ref}
@@ -106,6 +108,7 @@ export default function PremiumVideoCard({ video, unlocking, onUnlock, onFirstPl
           </Badge>
         )}
       </div>
+      </VideoFrame>
 
       <div className="space-y-2 p-4">
         <h3 className="font-semibold leading-tight">{video.title}</h3>

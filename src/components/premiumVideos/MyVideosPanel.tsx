@@ -35,10 +35,11 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import BoostVideoDialog from "@/components/premiumVideos/BoostVideoDialog";
+import VideoFrameDialog from "@/components/premiumVideos/VideoFrameDialog";
 import { useMyPremiumVideos, type MyVideoStats } from "@/hooks/useMyPremiumVideos";
 
 export default function MyVideosPanel({ onChanged }: { onChanged?: () => void }) {
-  const { videos, loading, busyId, totals, update, remove } = useMyPremiumVideos();
+  const { videos, loading, busyId, totals, update, remove, refetch } = useMyPremiumVideos();
   const [editing, setEditing] = useState<MyVideoStats | null>(null);
   const [deleting, setDeleting] = useState<MyVideoStats | null>(null);
   const [title, setTitle] = useState("");
@@ -138,6 +139,14 @@ export default function MyVideosPanel({ onChanged }: { onChanged?: () => void })
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     <BoostVideoDialog videoId={v.id} onBoosted={onChanged} />
+                    <VideoFrameDialog
+                      videoId={v.id}
+                      currentSlug={v.frame_slug}
+                      onChanged={() => {
+                        refetch();
+                        onChanged?.();
+                      }}
+                    />
                     <Button size="sm" variant="outline" onClick={() => openEdit(v)}>
                       <Pencil className="h-4 w-4" />
                     </Button>
