@@ -75,23 +75,45 @@ export function useVideoCredits() {
 
   const purchase = useCallback(async (credits: number) => {
     setBuying(credits);
-    const checkoutWindow = window.open("", "_blank");
-    if (checkoutWindow) checkoutWindow.opener = null;
+    // Pre-open a tab during the user gesture so mobile browsers don't block it.
+    // NOTE: never null out `opener` here — some mobile browsers then ignore
+    // later `location` writes and the tab stays on about:blank.
+    let checkoutWindow: Window | null = null;
+    try {
+      checkoutWindow = window.open("about:blank", "_blank");
+    } catch {
+      checkoutWindow = null;
+    }
     try {
       const { data, error } = await supabase.functions.invoke("create-video-credits-payment", {
         body: { credits },
       });
       if (error) throw error;
-      if (!data?.url) throw new Error("Checkout link missing");
-      if (checkoutWindow) checkoutWindow.location.assign(data.url as string);
-      else window.location.href = data.url as string;
+      const url = data?.url as string | undefined;
+      if (!url) throw new Error(data?.error || "Checkout link missing");
+
+      if (checkoutWindow && !checkoutWindow.closed) {
+        try {
+          checkoutWindow.location.href = url;
+        } catch {
+          checkoutWindow.close();
+          window.location.href = url;
+        }
+      } else {
+        window.location.href = url;
+      }
     } catch (e: any) {
-      checkoutWindow?.close();
+      try {
+        checkoutWindow?.close();
+      } catch {
+        /* noop */
+      }
       toast.error("Checkout failed", { description: e?.message });
     } finally {
       setBuying(null);
     }
   }, []);
+
 
   return { balance, loading, buying, purchase, refresh: load };
 }
