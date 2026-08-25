@@ -78,7 +78,11 @@ export default function MyVideosPanel({ onChanged }: { onChanged?: () => void })
 
   const stats = [
     { label: "Videos", value: totals.videos, icon: VideoIcon },
-    { label: "Views", value: totals.views, icon: Eye },
+    {
+      label: "Earned in EUR",
+      value: `€${(totals.earnedCredits * 0.5).toFixed(2)}`,
+      icon: Euro,
+    },
     { label: "Unlocks", value: totals.unlocks, icon: Lock },
     { label: "Earned credits", value: totals.earnedCredits, icon: Coins },
   ];
