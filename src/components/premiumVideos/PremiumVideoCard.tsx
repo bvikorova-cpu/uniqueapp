@@ -123,7 +123,7 @@ export default function PremiumVideoCard({ video, unlocking, onUnlock, onFirstPl
               <AvatarFallback>{(video.author_name || "U").charAt(0)}</AvatarFallback>
             </Avatar>
             <span className="truncate text-sm text-muted-foreground">
-              {video.author_name || "Unique creator"}
+              {video.author_name || "Creator"}
             </span>
           </div>
           <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 text-xs text-muted-foreground">
