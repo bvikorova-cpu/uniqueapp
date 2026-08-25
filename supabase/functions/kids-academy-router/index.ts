@@ -21,7 +21,7 @@ const ok = (b: unknown, s = 200) =>
   new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
 const COSTS: Record<string, number> = { "hub.dailyPlan": 3,
-  "hub.recommendations": 2,
+  "hub.recommendations": 3,
   "hub.parentDigest": 3 };
 
 // Simple in-memory per-user rate limiter for free read actions to prevent abuse.
@@ -77,18 +77,18 @@ serve(async (req) => {
     const cost = COSTS[action] ?? 0;
     if (cost > 0) {
       const { data: row } = await supabase
-        .from("kids_academy_credits").select("credits_remaining").eq("user_id", userId).maybeSingle();
+        .from("ai_credits").select("credits_remaining").eq("user_id", userId).maybeSingle();
       const bal = row?.credits_remaining ?? 0;
       if (bal < cost) {
-        await supabase.from("kids_academy_credits").upsert({ user_id: userId, credits_remaining: 0 }, { onConflict: "user_id" });
+        await supabase.from("ai_credits").upsert({ user_id: userId, credits_remaining: 0 }, { onConflict: "user_id" });
         return ok({ error: "Insufficient credits", needed: cost, balance: bal }, 402);
       }
-      await supabase.from("kids_academy_credits").update({ credits_remaining: bal - cost }).eq("user_id", userId);
+      await supabase.from("ai_credits").update({ credits_remaining: bal - cost }).eq("user_id", userId);
     }
 
     switch (action) {
       case "hub.credits": {
-        const { data } = await supabase.from("kids_academy_credits").select("credits_remaining").eq("user_id", userId).maybeSingle();
+        const { data } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", userId).maybeSingle();
         return ok({ credits: data?.credits_remaining ?? 0 });
       }
 

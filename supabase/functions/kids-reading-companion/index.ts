@@ -5,7 +5,7 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 
-const COSTS = { analyze: 2, "multi-quiz": 2, define: 1 } as const;
+const COSTS = { analyze: 3, "multi-quiz": 3, define: 1 } as const;
 type Action = keyof typeof COSTS;
 
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
@@ -53,7 +53,7 @@ Deno.serve(async (req) => {
 
     const goldPass = await hasKidsGoldPass(authHeader);
     const { data: row } = await supa
-      .from("kids_reading_credits")
+      .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
@@ -94,7 +94,7 @@ Deno.serve(async (req) => {
 
     if (!goldPass) {
       await supa
-        .from("kids_reading_credits")
+        .from("ai_credits")
         .update({ credits_remaining: balance - cost, updated_at: new Date().toISOString() })
         .eq("user_id", user.id);
     }

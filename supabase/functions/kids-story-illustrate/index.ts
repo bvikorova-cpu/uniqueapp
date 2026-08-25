@@ -8,7 +8,7 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS" };
 
-const COST = 2;
+const COST = 3;
 const MODEL = "dall-e-3";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -55,13 +55,13 @@ Deno.serve(async (req) => {
     const goldPass = await hasKidsGoldPass(authHeader);
 
     const { data: credRow } = await admin
-      .from("kids_story_credits")
+      .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
 
     const balance = credRow?.credits_remaining ?? 0;
-    if (!credRow) { await admin.from("kids_story_credits").insert({
+    if (!credRow) { await admin.from("ai_credits").insert({
         user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
     }
     if (!goldPass && balance < COST) {
@@ -106,7 +106,7 @@ Visual style: ${styleHint}. Age-appropriate for kids 4-10, friendly and safe, no
     const newBalance = goldPass ? balance : balance - COST;
     if (!goldPass) {
       await admin
-        .from("kids_story_credits")
+        .from("ai_credits")
         .update({ credits_remaining: newBalance, last_used_at: new Date().toISOString() })
         .eq("user_id", user.id);
     }

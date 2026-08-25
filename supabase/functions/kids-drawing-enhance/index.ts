@@ -8,7 +8,7 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS" };
 
-const COST = 4;
+const COST = 5;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
@@ -66,12 +66,12 @@ Deno.serve(async (req) => {
 
       const adminT = createClient(SUPABASE_URL, SERVICE_KEY);
       const { data: credRowT } = await adminT
-        .from("kids_drawing_credits")
+        .from("ai_credits")
         .select("credits_remaining")
         .eq("user_id", user.id)
         .maybeSingle();
 
-      if (!credRowT) { await adminT.from("kids_drawing_credits").insert({
+      if (!credRowT) { await adminT.from("ai_credits").insert({
           user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
         if (!goldPass) return json({ error: "Insufficient credits", credits_remaining: 0, cost: COST }, 402);
       }
@@ -107,7 +107,7 @@ Deno.serve(async (req) => {
         : [{ instruction: `Start by drawing the outline of a ${topic}.` }];
 
       if (!goldPass) {
-        await adminT.from("kids_drawing_credits")
+        await adminT.from("ai_credits")
           .update({ credits_remaining: balanceT - COST })
           .eq("user_id", user.id);
       }
@@ -131,12 +131,12 @@ Deno.serve(async (req) => {
     const admin = createClient(SUPABASE_URL, SERVICE_KEY);
 
     const { data: credRow } = await admin
-      .from("kids_drawing_credits")
+      .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
 
-    if (!credRow) { await admin.from("kids_drawing_credits").insert({
+    if (!credRow) { await admin.from("ai_credits").insert({
         user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
       if (!goldPass) return json({ error: "Insufficient credits", credits_remaining: 0, cost: COST }, 402);
     }
@@ -185,7 +185,7 @@ Kid-friendly (ages 4-12), no text or letters, no scary or violent content, frien
     const newBalance = goldPass ? balance : balance - COST;
     if (!goldPass) {
       await admin
-        .from("kids_drawing_credits")
+        .from("ai_credits")
         .update({ credits_remaining: newBalance, updated_at: new Date().toISOString() })
         .eq("user_id", user.id);
     }
