@@ -219,9 +219,9 @@ async function callProvider(
         );
         const part = next.choices?.[0]?.message?.content?.toString() || "";
         if (!part.trim()) break;
-        content = `${content}${/\s$/.test(content) ? "" : content.endsWith("\n") ? "" : ""}${
-          part.startsWith("\n") || content.endsWith("\n") ? "" : "\n"
-        }${part}`.trim();
+        const glue = /[.!?:;,)\]"'`\w]$/.test(content) && /^[a-z0-9(]/.test(part.trim()) ? " " : "\n";
+        content = `${content}${glue}${part.trim()}`.trim();
+
         lastRaw = next;
       } catch (e) {
         console.warn("UnifiedAI continuation failed:", e);
