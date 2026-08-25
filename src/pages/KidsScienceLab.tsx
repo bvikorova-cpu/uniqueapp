@@ -204,7 +204,7 @@ const KidsScienceLab = () => {
             <ScienceLimitBanner
               creditsRemaining={credits.credits_remaining}
               creditsPerRun={SCIENCE_CREDITS_PER_RUN}
-              onBuyCredits={() => navigate("/kids-science-pricing")}
+              onBuyCredits={() => navigate("/ai-credits")}
             />
           )}
 

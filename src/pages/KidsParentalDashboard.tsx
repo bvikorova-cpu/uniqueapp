@@ -244,7 +244,7 @@ export default function KidsParentalDashboard() {
               {goldPassLoading ? "…" : hasGoldPass ? "Active" : "Inactive"}
             </Badge>
             {!goldPassLoading && !hasGoldPass && (
-              <Button size="sm" onClick={() => navigate("/kids-pricing")} className="bg-amber-500 hover:bg-amber-600">
+              <Button size="sm" onClick={() => navigate("/ai-credits")} className="bg-amber-500 hover:bg-amber-600">
                 Get Gold Pass
               </Button>
             )}

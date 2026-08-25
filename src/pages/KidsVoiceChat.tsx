@@ -122,7 +122,7 @@ export default function KidsVoiceChat() {
         title: "Out of Chat credits",
         description: "Buy more credits to keep chatting with your characters!",
         variant: "destructive" });
-      navigate("/kids-voice-chat-pricing");
+      navigate("/ai-credits");
       return;
     }
 
@@ -167,7 +167,7 @@ export default function KidsVoiceChat() {
           variant: "destructive" });
         setMessages(prev => prev.slice(0, -1));
         await refreshCredits();
-        navigate("/kids-voice-chat-pricing");
+        navigate("/ai-credits");
         return;
       }
       if (response.status === 429) {

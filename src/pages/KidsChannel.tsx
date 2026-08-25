@@ -281,7 +281,7 @@ const KidsChannel = () => {
             iconColor="text-pink-500"
             gradient="from-pink-100/95 to-rose-100/95"
             badges={[{ text: "Premium", color: "bg-pink-500 text-white" }]}
-            onClick={() => navigate('/kids-pricing')}
+            onClick={() => navigate('/ai-credits')}
             delay={0.3}
           />
 

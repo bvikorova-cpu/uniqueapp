@@ -128,7 +128,7 @@ const KidsDrawingBuddy = () => {
     }
     if (!canUse) {
       toast.error(`You need ${costPerUse} credits to start. Buy a credit pack!`);
-      navigate("/kids-drawing-pricing");
+      navigate("/ai-credits");
       return;
     }
 
@@ -232,7 +232,7 @@ const KidsDrawingBuddy = () => {
                     <Coins className="w-5 h-5 text-primary" />
                     Drawing Credits: <span className="text-primary font-black">{balance}</span>
                   </span>
-                  <Button onClick={() => navigate("/kids-drawing-pricing")} size="sm" variant={canUse ? "outline" : "default"}>
+                  <Button onClick={() => navigate("/ai-credits")} size="sm" variant={canUse ? "outline" : "default"}>
                     <Coins className="w-4 h-4 mr-1" /> Buy Credits
                   </Button>
                 </CardTitle>
@@ -311,7 +311,7 @@ const KidsDrawingBuddy = () => {
                                 <p className="text-sm text-muted-foreground text-center">
                                   Need {costPerUse} credits — you have {balance}
                                 </p>
-                                <Button onClick={() => navigate("/kids-drawing-pricing")} className="w-full">
+                                <Button onClick={() => navigate("/ai-credits")} className="w-full">
                                   <Coins className="w-4 h-4 mr-2" /> Buy Credits
                                 </Button>
                               </div>
@@ -393,7 +393,7 @@ const KidsDrawingBuddy = () => {
                 <SketchEnhancer
                   balance={balance}
                   onCreditsChanged={refresh}
-                  onBuyCredits={() => navigate("/kids-drawing-pricing")}
+                  onBuyCredits={() => navigate("/ai-credits")}
                 />
               )}
             </TabsContent>

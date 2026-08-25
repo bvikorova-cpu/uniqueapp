@@ -189,7 +189,7 @@ const KidsStoryCreator = () => {
                     onBuyCredits={handleBuyCredits}
                     unitName="story"
                   />
-                  <StorySubscriptionManagement subscribed={balance > 0} onManageSubscription={() => navigate('/kids-story-pricing')} />
+                  <StorySubscriptionManagement subscribed={balance > 0} onManageSubscription={() => navigate('/ai-credits')} />
                 </>
               )}
             </div>
