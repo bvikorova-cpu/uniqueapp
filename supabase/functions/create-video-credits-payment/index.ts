@@ -16,10 +16,10 @@ function json(body: unknown, status = 200) {
 }
 
 // 10 credits / €5 · 20 / €10 · 30 / €15
-const PACKS: Record<string, { credits: number; amount: number; name: string }> = {
-  "10": { credits: 10, amount: 500, name: "10 Video Credits" },
-  "20": { credits: 20, amount: 1000, name: "20 Video Credits" },
-  "30": { credits: 30, amount: 1500, name: "30 Video Credits" },
+const PACKS: Record<string, { credits: number; priceId: string }> = {
+  "10": { credits: 10, priceId: "price_1U8NcnGaXSfGtYFtaI4tniK5" },
+  "20": { credits: 20, priceId: "price_1U8NctGaXSfGtYFtMWK8AJIP" },
+  "30": { credits: 30, priceId: "price_1U8Nd2GaXSfGtYFtoU3ruWht" },
 };
 
 Deno.serve(async (req) => {
@@ -52,11 +52,7 @@ Deno.serve(async (req) => {
       customer_email: user.email,
       line_items: [
         {
-          price_data: {
-            currency: "eur",
-            product_data: { name: pack.name },
-            unit_amount: pack.amount,
-          },
+          price: pack.priceId,
           quantity: 1,
         },
       ],

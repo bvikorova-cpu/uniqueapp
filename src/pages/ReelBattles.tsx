@@ -303,8 +303,18 @@ export default function ReelBattles() {
       toast({ title: "Vote failed", description: error?.message || data?.error, variant: "destructive" });
       return;
     }
+    const nextVoteCount = typeof data?.vote_count === "number" ? data.vote_count : undefined;
+    setParticipants(prev => {
+      const current = prev[battleId] || [];
+      return {
+        ...prev,
+        [battleId]: current.map(p => p.id === participantId
+          ? { ...p, vote_count: nextVoteCount ?? (p.vote_count || 0) + 1 }
+          : p),
+      };
+    });
+    setMyVotes(prev => ({ ...prev, [battleId]: { participant_id: participantId, vote_type: "like" } }));
     toast({ title: "Vote counted!" });
-    load();
   };
 
   const postComment = async (battleId: string) => {

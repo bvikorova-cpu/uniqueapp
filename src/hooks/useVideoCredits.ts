@@ -81,7 +81,8 @@ export function useVideoCredits() {
       });
       if (error) throw error;
       if (!data?.url) throw new Error("Checkout link missing");
-      window.location.href = data.url as string;
+      const checkoutWindow = window.open(data.url as string, "_blank", "noopener,noreferrer");
+      if (!checkoutWindow) window.location.href = data.url as string;
     } catch (e: any) {
       toast.error("Checkout failed", { description: e?.message });
     } finally {

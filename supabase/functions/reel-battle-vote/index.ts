@@ -45,11 +45,20 @@ Deno.serve(async (req) => {
 
     const field = vt === "like" ? "vote_count" : "dislike_count";
     const current = vt === "like" ? part.vote_count : part.dislike_count;
-    await supabase.from("reel_battle_participants")
+    const nextCount = (current || 0) + 1;
+    const { error: updateError } = await supabase.from("reel_battle_participants")
       .update({ [field]: (current || 0) + 1 })
       .eq("id", participantId);
+    if (updateError) throw updateError;
 
-    return new Response(JSON.stringify({ success: true, voteType: vt }), {
+    return new Response(JSON.stringify({
+      success: true,
+      battleId,
+      participantId,
+      voteType: vt,
+      vote_count: vt === "like" ? nextCount : part.vote_count,
+      dislike_count: vt === "dislike" ? nextCount : part.dislike_count,
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 });
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as Error).message }), {
