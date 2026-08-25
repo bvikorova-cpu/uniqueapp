@@ -8,6 +8,7 @@ import type { PremiumVideo } from "@/hooks/usePremiumVideos";
 import BoostVideoDialog from "@/components/premiumVideos/BoostVideoDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import VideoFrame from "@/components/premiumVideos/VideoFrame";
+import VideoFrameDialog from "@/components/premiumVideos/VideoFrameDialog";
 
 interface Props {
   video: PremiumVideo;
@@ -125,14 +126,19 @@ export default function PremiumVideoCard({ video, unlocking, onUnlock, onFirstPl
               {video.author_name || "Unique creator"}
             </span>
           </div>
-          <div className="flex shrink-0 items-center gap-3 text-xs text-muted-foreground">
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
               <Eye className="h-3.5 w-3.5" /> {video.views_count}
             </span>
             <span className="flex items-center gap-1">
               <Unlock className="h-3.5 w-3.5" /> {video.unlocks_count}
             </span>
-            {isOwner && <BoostVideoDialog videoId={video.id} onBoosted={onBoosted} />}
+            {isOwner && (
+              <>
+                <BoostVideoDialog videoId={video.id} onBoosted={onBoosted} />
+                <VideoFrameDialog videoId={video.id} currentSlug={video.frame_slug} onChanged={onBoosted} />
+              </>
+            )}
           </div>
         </div>
       </div>
