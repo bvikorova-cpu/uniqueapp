@@ -31,7 +31,7 @@ const __HIW_KIDSCHANNEL_STEPS = [
   { title: 'Pick an activity', desc: 'Browse original stories, games and creative studios — all age-rated and moderated.' },
   { title: 'Earn Daily Stars', desc: 'Watching, learning and quizzes give stars, badges and streaks.' },
   { title: 'Explore the map', desc: 'Adventure Map, Weekly Themes and Story Creator keep it fresh.' },
-  { title: 'Gold Pass perks', desc: 'Optional Gold Pass unlocks premium activities and no ads.' }
+  { title: 'AI credits', desc: 'AI activities cost credits — buy them once on the AI Credits page.' }
 ];
 const __HIW_KIDSCHANNEL = { title: 'Kids Channel', intro: 'Safe, moderated original stories and learning games for ages 6–12.', steps: __HIW_KIDSCHANNEL_STEPS };
 
@@ -275,8 +275,8 @@ const KidsChannel = () => {
           />
 
           <FeatureCard
-            title="Pricing & Plans! 💎"
-            description="Unlock unlimited stories and premium features for your family!"
+            title="AI Credits! 💎"
+            description="Top up AI credits to use stories, homework help and all AI tools!"
             icon={CreditCard}
             iconColor="text-pink-500"
             gradient="from-pink-100/95 to-rose-100/95"
@@ -320,7 +320,7 @@ const KidsChannel = () => {
               gradient="from-slate-100/95 to-gray-100/95"
               badges={[
                 { text: "Analytics", color: "bg-slate-500 text-white" },
-                ...(!hasGoldPass ? [{ text: "Gold Pass", color: "border-amber-400 text-amber-600" }] : []),
+                
               ]}
               onClick={() => navigate('/kids-channel/parental-dashboard')}
               delay={0.45}

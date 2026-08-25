@@ -110,7 +110,7 @@ const KidsHomework = () => {
       return;
     }
     if (!canAsk) {
-      toast.error("Gold Pass required.");
+      toast.error("Not enough AI credits — 3 credits per question.");
       return;
     }
 
@@ -207,7 +207,7 @@ const KidsHomework = () => {
                     Ask Your Question
                   </CardTitle>
                   <CardDescription>
-                    Choose a subject, pick difficulty, then type or select a question. ✨ Gold Pass: unlimited questions.
+                    Choose a subject, pick difficulty, then type or select a question. ✨ 3 credits per question.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-5">
@@ -266,11 +266,11 @@ const KidsHomework = () => {
                           AI is thinking...
                         </>
                       ) : !canAsk ? (
-                        "🔒 Gold Pass required"
+                        "🔒 Buy AI credits"
                       ) : (
                         <>
                           <Send className="w-4 h-4 mr-2" />
-                          Get Help! ✨ (unlimited)
+                          Get Help! ✨ (3 credits)
                         </>
                       )}
                     </Button>
