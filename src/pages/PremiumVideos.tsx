@@ -43,18 +43,6 @@ export default function PremiumVideos() {
     (TABS.find((t) => t.key === params.get("tab"))?.key ?? "feed") as TabKey,
   );
 
-  const stats = useMemo(() => {
-    const views = videos.reduce((s, v) => s + (v.views_count || 0), 0);
-    const unlocks = videos.reduce((s, v) => s + (v.unlocks_count || 0), 0);
-    const fmt = (n: number) =>
-      n >= 1_000_000 ? `${(n / 1_000_000).toFixed(1)}M` : n >= 1000 ? `${(n / 1000).toFixed(1)}K` : String(n);
-    return [
-      { value: fmt(videos.length), label: "Videos live" },
-      { value: fmt(views), label: "Views" },
-      { value: fmt(unlocks), label: "Unlocks" },
-      { value: "50%", label: "Free preview" },
-    ];
-  }, [videos]);
 
   const goTab = (key: TabKey) => {
     setTab(key);
@@ -141,16 +129,6 @@ export default function PremiumVideos() {
                 First half free. Unlock the rest for 1 credit — creators keep 50%.
               </p>
             </div>
-          </div>
-
-          {/* Stat chrome cards */}
-          <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {stats.map((s) => (
-              <div key={s.label} className="iri-card rounded-3xl px-4 py-5 text-center">
-                <p className="iri-text text-3xl font-black italic tracking-tight sm:text-4xl">{s.value}</p>
-                <p className="iri-mono mt-1 text-[10px] text-muted-foreground">{s.label}</p>
-              </div>
-            ))}
           </div>
 
           {/* Demo video */}
