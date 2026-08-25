@@ -2,50 +2,46 @@ import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Loader2, Lock, Sparkles, Check, ArrowLeft } from "lucide-react";
+import { Loader2, Lock, Sparkles, ArrowLeft, Coins } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
 
 interface Props {
   children: ReactNode;
-  /** Module credit table (e.g. "kids_story_credits"). If provided and row has credits > 0, pass. */
+  /** Legacy prop — module credit tables are no longer used (unified ai_credits). */
   creditTable?: string;
-  /** Module-specific pricing page for redirect. Defaults to /kids-pricing (Gold Pass). */
+  /** Legacy prop — all purchases now happen on /ai-credits. */
   pricingPath?: string;
-  /** Displayed module name for the toast. */
+  /** Displayed module name. */
   moduleName: string;
   /** Current path so /auth can return here. */
   redirectPath: string;
 }
 
-const GOLD_PASS_FEATURES = [
-  "Homework Helper",
-  "Story Creator",
-  "Drawing Buddy",
-  "Science Lab",
-  "Reading Companion",
-  "Coloring Pages",
-  "Fairy Castles",
-  "Character Chat",
-  "Bedtime Stories",
-  "5 kids profiles",
-  "Progress Reports",
-  "Parental dashboard",
-  "Priority support",
+/** Credit price list shown on the paywall (server-side enforced). */
+const KIDS_CREDIT_PRICES: { label: string; cost: string }[] = [
+  { label: "Homework Helper", cost: "3 credits / question" },
+  { label: "Science Lab", cost: "3 credits / answer" },
+  { label: "Story Creator", cost: "8 credits / story" },
+  { label: "Story illustration", cost: "3 credits / page" },
+  { label: "Story read-aloud (TTS)", cost: "2 credits / page" },
+  { label: "Drawing Buddy", cost: "5 credits / drawing" },
+  { label: "Reading Companion", cost: "3 credits / analysis or quiz" },
+  { label: "Word definition", cost: "1 credit" },
+  { label: "Character Chat", cost: "1 credit / message" },
+  { label: "Academy AI actions", cost: "3 credits / action" },
 ];
 
 /**
- * Gate for Kids Gold Pass modules. Grants access if EITHER:
- *   1. Active Kids Gold Pass subscription (`check-subscription` / cache), OR
- *   2. Module has credits (`creditTable` row with credits >= 1), OR
- *   3. User has admin role.
- * Otherwise renders an inline paywall (Gold Pass upsell) — no redirect.
+ * Credit gate for Kids modules. Grants access if EITHER:
+ *   1. User is an admin, OR
+ *   2. User has at least 1 credit in the unified `ai_credits` balance.
+ *
+ * Every AI action inside the module deducts its own credit cost server-side.
  */
 export const KidsGoldPassGate = ({
   children,
-  creditTable,
-  pricingPath = "/kids-pricing",
   moduleName,
   redirectPath,
 }: Props) => {
@@ -53,8 +49,8 @@ export const KidsGoldPassGate = ({
   const navigate = useNavigate();
   const [checking, setChecking] = useState(true);
   const [allowed, setAllowed] = useState(false);
+  const [balance, setBalance] = useState(0);
 
-  // Access check — runs on mount and whenever the cached Gold Pass row changes.
   const runCheck = async (uid: string): Promise<boolean> => {
     // 1. Admin bypass
     const { data: role } = await supabase
@@ -65,32 +61,15 @@ export const KidsGoldPassGate = ({
       .maybeSingle();
     if (role) return true;
 
-    // 2. Cached Kids Gold Pass status (written instantly by stripe-webhook).
-    const { data: cache } = await (supabase as any)
-      .from("kids_gold_pass_status")
-      .select("active")
+    // 2. Unified AI credits balance
+    const { data: credits } = await supabase
+      .from("ai_credits")
+      .select("credits_remaining")
       .eq("user_id", uid)
       .maybeSingle();
-    if ((cache as any)?.active) return true;
-
-    // 3. Fallback: universal check-subscription (covers legacy users w/o cache row).
-    if (!cache) {
-      try {
-        const { data } = await supabase.functions.invoke("check-subscription", { body: { tier: "kids" } });
-        if ((data as any)?.subscribed) return true;
-      } catch { /* fall through */ }
-    }
-
-    // 4. Module credits
-    if (creditTable) {
-      const { data: credits } = await (supabase as any)
-        .from(creditTable)
-        .select("credits_remaining")
-        .eq("user_id", uid)
-        .maybeSingle();
-      if ((credits?.credits_remaining ?? 0) >= 1) return true;
-    }
-    return false;
+    const remaining = credits?.credits_remaining ?? 0;
+    setBalance(remaining);
+    return remaining >= 1;
   };
 
   useEffect(() => {
@@ -114,7 +93,7 @@ export const KidsGoldPassGate = ({
     return () => {
       cancelled = true;
     };
-  }, [user?.id, authLoading, creditTable, pricingPath, moduleName, redirectPath, navigate]);
+  }, [user?.id, authLoading, moduleName, redirectPath, navigate]);
 
   if (checking || authLoading) {
     return (
@@ -123,6 +102,7 @@ export const KidsGoldPassGate = ({
       </div>
     );
   }
+
   if (allowed) {
     return (
       <>
@@ -134,51 +114,43 @@ export const KidsGoldPassGate = ({
     );
   }
 
-  // Inline paywall (no redirect) — new users see Gold Pass upsell for the module they tried to open
+  // Inline paywall — no subscription, just AI credits
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 via-background to-background px-4 py-12 flex items-start justify-center">
-      <Card className="w-full max-w-2xl p-8 md:p-10 shadow-xl border-amber-300/60 relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-amber-100/40 via-transparent to-purple-100/40" />
+    <div className="min-h-screen bg-gradient-to-b from-primary/5 via-background to-background px-4 py-12 flex items-start justify-center">
+      <Card className="w-full max-w-2xl p-8 md:p-10 shadow-xl relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-primary/10 via-transparent to-accent/10" />
         <div className="relative">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="mb-4 -ml-2"
-            onClick={() => navigate(-1)}
-          >
+          <Button variant="ghost" size="sm" className="mb-4 -ml-2" onClick={() => navigate(-1)}>
             <ArrowLeft className="h-4 w-4 mr-1" /> Back
           </Button>
 
           <div className="flex items-center gap-3 mb-2">
-            <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-600 flex items-center justify-center shadow-lg">
-              <Lock className="h-6 w-6 text-white" />
+            <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
+              <Lock className="h-6 w-6 text-primary-foreground" />
             </div>
             <div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-amber-700">
-                Gold Pass required
+              <div className="text-xs font-semibold uppercase tracking-wider text-primary">
+                AI credits required
               </div>
-              <h1 className="text-2xl md:text-3xl font-bold">{moduleName} is locked</h1>
+              <h1 className="text-2xl md:text-3xl font-bold">{moduleName} needs credits</h1>
             </div>
           </div>
 
           <p className="text-muted-foreground mb-6">
-            Unlock <strong>{moduleName}</strong> and every Kids module with a single Gold Pass subscription.
-            Cancel anytime.
+            No subscription needed — Kids modules run on the same AI credits you use everywhere
+            else on the platform. You currently have{" "}
+            <span className="font-bold text-primary">{balance} credits</span>.
           </p>
 
-          <div className="rounded-xl border-2 border-amber-300 bg-white/70 backdrop-blur p-5 mb-6">
-            <div className="flex items-baseline gap-2 mb-3">
-              <span className="text-4xl font-black text-amber-600">€75</span>
-              <span className="text-muted-foreground">/ month</span>
-              <span className="ml-auto inline-flex items-center gap-1 text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-1 rounded-full">
-                <Sparkles className="h-3 w-3" /> Fixed price
-              </span>
+          <div className="rounded-xl border bg-card/70 backdrop-blur p-5 mb-6">
+            <div className="flex items-center gap-2 mb-3 font-semibold">
+              <Coins className="h-4 w-4 text-primary" /> Kids credit prices
             </div>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-              {GOLD_PASS_FEATURES.map((f) => (
-                <li key={f} className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-600 flex-shrink-0" />
-                  <span>{f}</span>
+              {KIDS_CREDIT_PRICES.map((p) => (
+                <li key={p.label} className="flex items-center justify-between gap-2 rounded-lg bg-muted/50 px-3 py-2">
+                  <span>{p.label}</span>
+                  <span className="font-semibold text-primary whitespace-nowrap">{p.cost}</span>
                 </li>
               ))}
             </ul>
@@ -187,23 +159,19 @@ export const KidsGoldPassGate = ({
           <div className="flex flex-col sm:flex-row gap-3">
             <Button
               size="lg"
-              className="flex-1 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-semibold shadow-lg"
-              onClick={() => navigate(pricingPath)}
+              className="flex-1 font-semibold shadow-lg"
+              onClick={() => navigate("/ai-credits")}
             >
               <Sparkles className="h-4 w-4 mr-2" />
-              Get Gold Pass — €75/month
+              Buy AI credits
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => navigate("/kids-channel")}
-            >
+            <Button size="lg" variant="outline" onClick={() => navigate("/kids-channel")}>
               Explore free content
             </Button>
           </div>
 
           <p className="text-xs text-muted-foreground text-center mt-4">
-            One subscription unlocks every Kids module. Cancel anytime from your account.
+            Credits never expire. Math games and free content stay open — you only pay for AI actions.
           </p>
         </div>
       </Card>
