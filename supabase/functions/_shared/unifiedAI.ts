@@ -49,7 +49,14 @@ export interface UnifiedAIOptions {
    * Set "premium" to always use the requested model directly.
    */
   tier?: "cheap" | "premium";
+  /**
+   * Max automatic continuation requests when the model stops because it hit the
+   * token budget (finish_reason "length"/"MAX_TOKENS"). Prevents half-finished
+   * answers platform-wide. Default 3, set 0 to disable.
+   */
+  maxContinuations?: number;
 }
+
 
 
 export class UnifiedAIError extends Error {
@@ -164,6 +171,13 @@ export interface UnifiedAIResult {
   raw: any;
 }
 
+function isTruncated(data: any): boolean {
+  const reason = String(
+    data?.choices?.[0]?.finish_reason ?? data?.candidates?.[0]?.finishReason ?? "",
+  ).toLowerCase();
+  return reason === "length" || reason === "max_tokens" || reason === "maxtokens";
+}
+
 async function callProvider(
   useVertex: boolean,
   messages: UnifiedMessage[],
@@ -173,10 +187,49 @@ async function callProvider(
   const data = await callProviderRaw(useVertex, messages, opts, cheap);
   const message = data.choices?.[0]?.message;
 
-  const content = message?.content?.toString().trim() || "";
+  let content = message?.content?.toString().trim() || "";
   if (!content && !message?.tool_calls) {
     throw new UnifiedAIError(502, "AI returned an empty response. Please try again.", "Vertex AI");
   }
+
+  // PLATFORM RULE: never return a half-finished answer. If the model stopped
+  // because it ran out of output tokens, keep asking it to continue and stitch
+  // the parts together. Skipped for tool calls and JSON responses (JSON has its
+  // own repair path in callUnifiedAIJSON).
+  const allowed = opts.maxContinuations ?? 3;
+  const canContinue = allowed > 0 && !message?.tool_calls && !opts.tools?.length &&
+    !opts.json && opts.response_format?.type !== "json_object";
+  let lastRaw = data;
+  if (canContinue) {
+    for (let i = 0; i < allowed && isTruncated(lastRaw); i++) {
+      try {
+        const next = await callProviderRaw(
+          useVertex,
+          [
+            ...messages,
+            { role: "assistant", content },
+            {
+              role: "user",
+              content:
+                "Your previous answer was cut off because of the length limit. Continue EXACTLY where you stopped, mid-sentence if needed. Do not repeat anything already written, do not restate the intro, do not add a new title. Finish every remaining section completely.",
+            },
+          ],
+          opts,
+          cheap,
+        );
+        const part = next.choices?.[0]?.message?.content?.toString() || "";
+        if (!part.trim()) break;
+        const glue = /[.!?:;,)\]"'`\w]$/.test(content) && /^[a-z0-9(]/.test(part.trim()) ? " " : "\n";
+        content = `${content}${glue}${part.trim()}`.trim();
+
+        lastRaw = next;
+      } catch (e) {
+        console.warn("UnifiedAI continuation failed:", e);
+        break;
+      }
+    }
+  }
+
   return {
     content,
     tool_calls: message?.tool_calls,
@@ -184,6 +237,7 @@ async function callProvider(
     raw: data,
   };
 }
+
 
 /**
  * Call a chat-completion through Vertex AI only.
