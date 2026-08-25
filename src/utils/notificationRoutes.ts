@@ -158,7 +158,7 @@ export function getNotificationRoute(n: NotifLike): string {
     stream_live: n.related_id ? `/live/${n.related_id}` : "/influ-king",
 
     // Unlock Videos
-    premium_video_unlock: "/unlock-videos?tab=my-videos",
+    premium_video_unlock: "/unlock-videos?tab=mine",
 
     coffee_match: "/coffee",
     coffee_message: "/coffee" };
