@@ -487,6 +487,7 @@ const AdminBattleRoyalePayouts = lazy(() => import("@/pages/admin/AdminBattleRoy
 const AdminDatingModeration = lazy(() => import("@/pages/admin/AdminDatingModeration"));
 const AdminMegatalentPayouts = lazy(() => import("@/pages/admin/AdminMegatalentPayouts"));
 const AdminConcertEarnings = lazy(() => import("@/pages/admin/AdminConcertEarnings"));
+const AdminPremiumVideos = lazy(() => import("@/pages/admin/AdminPremiumVideos"));
 const CouponsMy = lazy(() => import("@/pages/CouponsMy"));
 
 // Tiny redirect helper for /education/course/:courseId → /course/:courseId
