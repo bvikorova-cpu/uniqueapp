@@ -246,7 +246,7 @@ const Earnings = () => {
       <div className="grid lg:grid-cols-3 gap-4 mb-6">
         <EarningsPayoutCard
           available={stats.available}
-          minimum={25}
+          minimum={20}
           hasPayoutMethod={hasPayoutMethod}
           onRequest={handlePayout}
           onSetupMethod={() => {
