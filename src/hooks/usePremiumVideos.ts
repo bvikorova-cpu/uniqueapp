@@ -50,7 +50,10 @@ export function usePremiumVideos() {
 
       const [profilesRes, unlocksRes] = await Promise.all([
         authorIds.length
-          ? (supabase as any).from("profiles").select("id, full_name, avatar_url").in("id", authorIds)
+          ? (supabase as any)
+              .from("public_profiles")
+              .select("id, full_name, username, avatar_url")
+              .in("id", authorIds)
           : Promise.resolve({ data: [] }),
         user?.id
           ? (supabase as any).from("premium_video_unlocks").select("video_id").eq("user_id", user.id)
@@ -61,12 +64,16 @@ export function usePremiumVideos() {
       const unlockedSet = new Set<string>((unlocksRes.data || []).map((u: any) => u.video_id));
 
       setVideos(
-        rows.map((r) => ({
-          ...r,
-          author_name: profileMap.get(r.user_id)?.full_name ?? null,
-          author_avatar: profileMap.get(r.user_id)?.avatar_url ?? null,
-          unlocked: r.user_id === user?.id || unlockedSet.has(r.id),
-        })),
+        rows.map((r) => {
+          const prof = profileMap.get(r.user_id);
+          const name = (prof?.full_name || prof?.username || "").trim();
+          return {
+            ...r,
+            author_name: name || null,
+            author_avatar: prof?.avatar_url || null,
+            unlocked: r.user_id === user?.id || unlockedSet.has(r.id),
+          };
+        }),
       );
     } catch (e: any) {
       console.error("[usePremiumVideos]", e);
