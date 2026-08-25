@@ -160,7 +160,7 @@ const Earnings = () => {
 
   const handlePayout = async () => {
     if (stats.available < 25) {
-      toast({ title: "Below minimum", description: "Minimum payout is €25.", variant: "destructive" });
+      toast({ title: "Below minimum", description: "Minimum payout is €20.", variant: "destructive" });
       return;
     }
     if (!hasPayoutMethod) {
@@ -246,7 +246,7 @@ const Earnings = () => {
       <div className="grid lg:grid-cols-3 gap-4 mb-6">
         <EarningsPayoutCard
           available={stats.available}
-          minimum={25}
+          minimum={20}
           hasPayoutMethod={hasPayoutMethod}
           onRequest={handlePayout}
           onSetupMethod={() => {

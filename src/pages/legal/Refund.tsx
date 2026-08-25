@@ -70,7 +70,7 @@ export default function Refund() {
             <LegalSection id="payouts" number="§6" title="Creator Payouts">
               <ul>
                 <li>Via Stripe Connect, processed weekly to creators worldwide.</li>
-                <li>Minimum payout: <strong>€50 / $50 / equivalent</strong> in your local currency.</li>
+                <li>Minimum payout: <strong>€20 / $20 / equivalent</strong> in your local currency.</li>
                 <li>KYC verification required before first payout (per Stripe Connect rules).</li>
                 <li>Available in all countries supported by Stripe Connect (45+ countries).</li>
                 <li>Currency conversion handled by Stripe at market rates.</li>

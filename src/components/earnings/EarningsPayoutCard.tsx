@@ -21,7 +21,7 @@ interface EarningsPayoutCardProps {
  * Premium payout request card — replaces all role-specific withdrawal CTAs.
  */
 export const EarningsPayoutCard = ({ available,
-  minimum = 25,
+  minimum = 20,
   hasPayoutMethod,
   onRequest,
   onSetupMethod,
