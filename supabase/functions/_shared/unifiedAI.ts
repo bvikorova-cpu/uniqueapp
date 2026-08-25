@@ -49,7 +49,14 @@ export interface UnifiedAIOptions {
    * Set "premium" to always use the requested model directly.
    */
   tier?: "cheap" | "premium";
+  /**
+   * Max automatic continuation requests when the model stops because it hit the
+   * token budget (finish_reason "length"/"MAX_TOKENS"). Prevents half-finished
+   * answers platform-wide. Default 3, set 0 to disable.
+   */
+  maxContinuations?: number;
 }
+
 
 
 export class UnifiedAIError extends Error {
