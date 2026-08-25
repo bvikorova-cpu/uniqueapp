@@ -7,7 +7,7 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
 
 const EMOTIONS = ["joy", "love", "motivation", "peace", "excitement", "curiosity"];
 const SPIN_COST = 1;
-const WIN_PAYOUT = 2;
+const WIN_PAYOUT = 0; // Spins never pay out AI credits — winners receive emotion units instead.
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -53,27 +53,12 @@ Deno.serve(async (req) => {
     const won = resultEmotion === betEmotion;
     const payout = won ? WIN_PAYOUT : 0;
 
-    // Credit winnings back as unified AI credits
-    if (won && payout > 0) {
-      const { data: credits } = await admin
-        .from("ai_credits")
-        .select("credits_remaining")
-        .eq("user_id", userId)
-        .maybeSingle();
-      if (credits) {
-        await admin
-          .from("ai_credits")
-          .update({ credits_remaining: (credits.credits_remaining ?? 0) + payout })
-          .eq("user_id", userId);
-      } else {
-        await admin.from("ai_credits").insert({ user_id: userId, credits_remaining: payout });
-      }
-    }
+    // No AI credits are ever paid out by spins (credits stay purchase-only).
 
     // Emotion units always change on a spin: 10 units of the winning emotion,
     // 2 consolation units of whatever landed on a loss.
     const unitEmotion = won ? betEmotion : resultEmotion;
-    const unitGain = won ? 10 : 2;
+    const unitGain = won ? 25 : 2;
     const WALLET_EMOTIONS = ["joy", "love", "motivation", "peace", "excitement", "sadness", "anger", "fear"];
     const unitCol = `${WALLET_EMOTIONS.includes(unitEmotion) ? unitEmotion : "joy"}_balance`;
     const { data: wallet } = await admin

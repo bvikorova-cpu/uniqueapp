@@ -11,13 +11,13 @@ import confetti from 'canvas-confetti';
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const WHEEL_SEGMENTS = [
-  { label: '5 Credits', value: 5, color: 'hsl(var(--primary))', icon: Coins, rarity: 'common' },
-  { label: '10 Credits', value: 10, color: 'hsl(220 70% 50%)', icon: Coins, rarity: 'common' },
-  { label: '25 Credits', value: 25, color: 'hsl(280 70% 50%)', icon: Star, rarity: 'uncommon' },
-  { label: '50 Credits', value: 50, color: 'hsl(340 70% 50%)', icon: Zap, rarity: 'rare' },
+  { label: '500 XP', value: 500, color: 'hsl(var(--primary))', icon: Coins, rarity: 'common' },
+  { label: '1,000 XP', value: 1000, color: 'hsl(220 70% 50%)', icon: Coins, rarity: 'common' },
+  { label: '2,500 XP', value: 2500, color: 'hsl(280 70% 50%)', icon: Star, rarity: 'uncommon' },
+  { label: '5,000 XP', value: 5000, color: 'hsl(340 70% 50%)', icon: Zap, rarity: 'rare' },
   { label: '2× Power-up', value: 0, type: 'powerup', color: 'hsl(160 70% 40%)', icon: Sparkles, rarity: 'uncommon' },
-  { label: '15 Credits', value: 15, color: 'hsl(30 70% 50%)', icon: Coins, rarity: 'common' },
-  { label: '100 Credits', value: 100, color: 'hsl(50 80% 45%)', icon: Trophy, rarity: 'legendary' },
+  { label: '750 XP', value: 750, color: 'hsl(30 70% 50%)', icon: Coins, rarity: 'common' },
+  { label: '10,000 XP', value: 10000, color: 'hsl(50 80% 45%)', icon: Trophy, rarity: 'legendary' },
   { label: '+30s Power-up', value: 0, type: 'time_powerup', color: 'hsl(200 70% 45%)', icon: Clock, rarity: 'rare' },
 ];
 

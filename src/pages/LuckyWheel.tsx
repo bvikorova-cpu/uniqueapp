@@ -8,12 +8,13 @@ import { toast } from "sonner";
 import { SEO } from "@/components/SEO";
 
 const SPIN_COST = 5;
-const PRIZES = [0, 2, 5, 10, 25, 100];
+const PRIZES = [0, 500, 1000, 2500, 10000, 25000];
 const SEGMENT_ANGLE = 360 / PRIZES.length;
 
 interface SpinResult {
   cost: number;
   prize: number;
+  prize_xp?: number;
   net: number;
   balance_after: number;
 }
@@ -71,14 +72,14 @@ export default function LuckyWheel() {
         return;
       }
 
-      setAngle((currentAngle) => getTargetAngleForPrize(r.prize, currentAngle));
+      setAngle((currentAngle) => getTargetAngleForPrize(r.prize_xp ?? 0, currentAngle));
       await new Promise((res) => setTimeout(res, 1800));
 
       setResult(r);
       setBalance(r.balance_after);
-      if (r.prize > 0) {
-        toast.success(`You won ${r.prize} CR!`, {
-          description: `Net: ${r.net >= 0 ? "+" : ""}${r.net} CR · Balance: ${r.balance_after} CR` });
+      if ((r.prize_xp ?? 0) > 0) {
+        toast.success(`You won ${r.prize_xp} XP!`, {
+          description: `Spin cost ${SPIN_COST} CR · Balance: ${r.balance_after} CR` });
       } else {
         toast(`No win this time — lost ${SPIN_COST} CR`);
       }
@@ -93,7 +94,7 @@ export default function LuckyWheel() {
     <div className="min-h-screen bg-background">
       <SEO
         title="Lucky Wheel | Unique"
-        description="Spin the lucky wheel and win credits. 5 CR per spin."
+        description="Spin the lucky wheel and win XP. 5 CR per spin."
         canonical="/lucky-wheel"
       />
       <div className="container max-w-2xl mx-auto px-4 py-6">
@@ -111,7 +112,7 @@ export default function LuckyWheel() {
           <h1 className="text-3xl font-bold">Lucky Wheel</h1>
         </div>
         <p className="text-muted-foreground mb-6">
-          Cost <strong>{SPIN_COST} CR</strong> per spin. Possible prizes: {PRIZES.join(" / ")} CR.
+          Cost <strong>{SPIN_COST} CR</strong> per spin. Prizes are XP only: {PRIZES.join(" / ")} XP.
         </p>
 
         <Card className="p-8 text-center">
@@ -145,7 +146,7 @@ export default function LuckyWheel() {
                       transform: `rotate(${labelAngle}deg) translateY(-94px) translateX(-50%) rotate(${-labelAngle}deg)`,
                       transformOrigin: "center center" }}
                   >
-                    {prize} CR
+                    {prize} XP
                   </div>
                 );
               })}
@@ -180,10 +181,10 @@ export default function LuckyWheel() {
             <div className="mt-6 p-4 rounded-lg bg-muted">
               <div className="text-sm text-muted-foreground">Last spin:</div>
               <div className="text-2xl font-bold mt-1">
-                {result.prize > 0 ? `+${result.prize} CR won` : "No win"}
+                {(result.prize_xp ?? 0) > 0 ? `+${result.prize_xp} XP won` : "No win"}
               </div>
               <div className="text-xs text-muted-foreground mt-1">
-                Net: <strong>{result.net >= 0 ? "+" : ""}{result.net} CR</strong> · Balance:{" "}
+                Spin cost: <strong>{result.cost} CR</strong> · Balance:{" "}
                 <strong>{result.balance_after} CR</strong>
               </div>
             </div>

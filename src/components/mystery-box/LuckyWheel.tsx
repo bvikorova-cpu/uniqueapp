@@ -13,14 +13,14 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 interface Props { onBack: () => void; }
 
 const PRIZES = [
-  { label: "5 Credits", value: 5, color: "#4A5568", chance: 25 },
-  { label: "10 Credits", value: 10, color: "#2D3748", chance: 20 },
-  { label: "25 Credits", value: 25, color: "#553C9A", chance: 15 },
-  { label: "50 Credits", value: 50, color: "#2C5282", chance: 12 },
-  { label: "100 Credits", value: 100, color: "#9B2C2C", chance: 8 },
+  { label: "500 XP", value: 500, color: "#4A5568", chance: 25 },
+  { label: "1,000 XP", value: 1000, color: "#2D3748", chance: 20 },
+  { label: "2,500 XP", value: 2500, color: "#553C9A", chance: 15 },
+  { label: "5,000 XP", value: 5000, color: "#2C5282", chance: 12 },
+  { label: "10,000 XP", value: 10000, color: "#9B2C2C", chance: 8 },
   { label: "Free Box", value: 0, color: "#276749", chance: 10 },
   { label: "2x Luck", value: 0, color: "#744210", chance: 7 },
-  { label: "250 Credits", value: 250, color: "#B7791F", chance: 3 },
+  { label: "25,000 XP", value: 25000, color: "#B7791F", chance: 3 },
 ];
 
 export const LuckyWheel = ({ onBack }: Props) => {
@@ -85,7 +85,7 @@ export const LuckyWheel = ({ onBack }: Props) => {
     setTimeout(async () => {
       setResult(prizeLabel);
       if (prizeValue > 0) setTotalWon(t => t + prizeValue);
-      if (prizeValue >= 100) {
+      if (prizeValue >= 5000) {
         confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#FFD700', '#FFA500', '#FF4500'] });
       }
       await refresh();
@@ -110,7 +110,7 @@ export const LuckyWheel = ({ onBack }: Props) => {
           </div>
           <div>
             <h2 className="text-2xl font-black bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">Lucky Wheel</h2>
-            <p className="text-muted-foreground text-xs">Spin to win credits, boxes & boosts</p>
+            <p className="text-muted-foreground text-xs">Spin to win XP, boxes & luck boosts</p>
           </div>
           <span className="ml-auto text-xs font-bold text-yellow-400 bg-yellow-500/10 px-3 py-1 rounded-full border border-yellow-500/20">{SPIN_COST} Credits</span>
         </motion.div>
@@ -125,7 +125,7 @@ export const LuckyWheel = ({ onBack }: Props) => {
           <Card className="p-3 text-center bg-yellow-500/5 border-yellow-500/20">
             <Trophy className="h-4 w-4 mx-auto text-yellow-400 mb-1" />
             <p className="text-lg font-black text-yellow-400">{totalWon}</p>
-            <p className="text-[10px] text-muted-foreground">Total Won</p>
+            <p className="text-[10px] text-muted-foreground">XP Won</p>
           </Card>
           <Card className="p-3 text-center bg-purple-500/5 border-purple-500/20">
             <Gift className="h-4 w-4 mx-auto text-purple-400 mb-1" />
