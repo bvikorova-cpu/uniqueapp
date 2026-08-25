@@ -58,16 +58,26 @@ export default function UploadPremiumVideoDialog({ onUploaded }: { onUploaded: (
       const { data: pub } = supabase.storage.from("videos").getPublicUrl(path);
       const duration = await readDuration(file);
 
-      const { error } = await (supabase as any).from("premium_videos").insert({
-        user_id: user.id,
-        title: title.trim(),
-        description: description.trim() || null,
-        video_url: pub.publicUrl,
-        duration_seconds: duration,
+      const { data, error } = await (supabase as any).rpc("publish_premium_video", {
+        _title: title.trim(),
+        _video_url: pub.publicUrl,
+        _description: description.trim() || null,
+        _duration_seconds: duration,
       });
       if (error) throw error;
+      if (!data?.ok) {
+        if (data?.error === "insufficient") {
+          await supabase.storage.from("videos").remove([path]);
+          toast.error("Not enough video credits", {
+            description: "Uploading a video costs 1 video credit. Top up in the credits panel.",
+          });
+          return;
+        }
+        throw new Error(String(data?.error ?? "publish_failed"));
+      }
 
-      toast.success("Video published", { description: "It locks automatically at 50%." });
+      window.dispatchEvent(new Event("video-credits-updated"));
+      toast.success("Video published", { description: "1 credit charged. It locks automatically at 50%." });
       reset();
       setOpen(false);
       onUploaded();
@@ -89,7 +99,7 @@ export default function UploadPremiumVideoDialog({ onUploaded }: { onUploaded: (
         <DialogHeader>
           <DialogTitle>Upload a locked video</DialogTitle>
           <DialogDescription>
-            Viewers watch the first half for free. Unlocking the rest costs 1 credit — you keep 50% of it.
+            Publishing costs 1 video credit. Viewers watch the first half for free — unlocking the rest costs them 1 credit, and you keep 50% of it.
           </DialogDescription>
         </DialogHeader>
 
@@ -125,7 +135,7 @@ export default function UploadPremiumVideoDialog({ onUploaded }: { onUploaded: (
           </div>
           <Button onClick={submit} disabled={busy} className="w-full">
             {busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-            Publish video
+            Publish video (1 credit)
           </Button>
         </div>
       </DialogContent>
