@@ -46,6 +46,8 @@ export default function UploadPremiumVideoDialog({ onUploaded }: { onUploaded: (
     if (file.size > 200 * 1024 * 1024) return toast.error("Max file size is 200 MB");
 
     setBusy(true);
+    let uploadedPath: string | null = null;
+    let published = false;
     try {
       const ext = file.name.split(".").pop() || "mp4";
       const path = `${user.id}/premium-${Date.now()}.${ext}`;
@@ -54,6 +56,7 @@ export default function UploadPremiumVideoDialog({ onUploaded }: { onUploaded: (
         contentType: file.type || "video/mp4",
       });
       if (upErr) throw upErr;
+      uploadedPath = path;
 
       const { data: pub } = supabase.storage.from("videos").getPublicUrl(path);
       const duration = await readDuration(file);
@@ -67,7 +70,6 @@ export default function UploadPremiumVideoDialog({ onUploaded }: { onUploaded: (
       if (error) throw error;
       if (!data?.ok) {
         if (data?.error === "insufficient") {
-          await supabase.storage.from("videos").remove([path]);
           toast.error("Not enough video credits", {
             description: "Uploading a video costs 1 video credit. Top up in the credits panel.",
           });
@@ -76,6 +78,7 @@ export default function UploadPremiumVideoDialog({ onUploaded }: { onUploaded: (
         throw new Error(String(data?.error ?? "publish_failed"));
       }
 
+      published = true;
       window.dispatchEvent(new Event("video-credits-updated"));
       toast.success("Video published", { description: "1 credit charged. It locks automatically at 50%." });
       reset();
@@ -84,6 +87,11 @@ export default function UploadPremiumVideoDialog({ onUploaded }: { onUploaded: (
     } catch (e: any) {
       toast.error("Upload failed", { description: e?.message });
     } finally {
+      // Nothing is charged unless the Storage upload AND the publish RPC both succeed.
+      // If we bailed out after uploading, remove the orphaned file.
+      if (uploadedPath && !published) {
+        await supabase.storage.from("videos").remove([uploadedPath]).catch(() => {});
+      }
       setBusy(false);
     }
   };
