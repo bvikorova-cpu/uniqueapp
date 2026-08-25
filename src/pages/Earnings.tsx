@@ -159,7 +159,7 @@ const Earnings = () => {
   const getItemTypeName = (t: string) => t === 'bazaar' ? 'Bazaar' : t === 'auction' ? 'Auction' : t;
 
   const handlePayout = async () => {
-    if (stats.available < 25) {
+    if (stats.available < 20) {
       toast({ title: "Below minimum", description: "Minimum payout is €20.", variant: "destructive" });
       return;
     }

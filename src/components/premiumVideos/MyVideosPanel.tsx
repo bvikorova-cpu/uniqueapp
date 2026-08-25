@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import BoostVideoDialog from "@/components/premiumVideos/BoostVideoDialog";
 import VideoFrameDialog from "@/components/premiumVideos/VideoFrameDialog";
+import CreatorCashoutCard from "@/components/premiumVideos/CreatorCashoutCard";
 import { useMyPremiumVideos, type MyVideoStats } from "@/hooks/useMyPremiumVideos";
 
 export default function MyVideosPanel({ onChanged }: { onChanged?: () => void }) {
@@ -122,6 +123,10 @@ export default function MyVideosPanel({ onChanged }: { onChanged?: () => void })
           with these fees — the final amount landing on your account is lower than the EUR value
           shown above.
         </p>
+
+        <CreatorCashoutCard />
+
+
 
 
         {loading ? (

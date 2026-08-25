@@ -47987,18 +47987,21 @@ export type Database = {
           pending_credits: number
           updated_at: string
           user_id: string
+          withdrawn_credits: number
         }
         Insert: {
           credited_total?: number
           pending_credits?: number
           updated_at?: string
           user_id: string
+          withdrawn_credits?: number
         }
         Update: {
           credited_total?: number
           pending_credits?: number
           updated_at?: string
           user_id?: string
+          withdrawn_credits?: number
         }
         Relationships: []
       }
@@ -69320,6 +69323,7 @@ export type Database = {
       }
       card_trash_add: { Args: { _collectible_id: string }; Returns: string }
       card_trash_recycle: { Args: { _trash_ids: string[] }; Returns: Json }
+      cashout_premium_video_earnings: { Args: never; Returns: Json }
       challenge_monthly_prize_pool_cents: { Args: never; Returns: number }
       challenge_period_key: { Args: { _type: string }; Returns: string }
       challenge_tier: { Args: { _user_id: string }; Returns: string }
@@ -70707,6 +70711,7 @@ export type Database = {
           memory_kind: string
         }[]
       }
+      get_premium_video_withdrawable: { Args: never; Returns: Json }
       get_presence_for_users_v1: {
         Args: { _user_ids: string[] }
         Returns: {
