@@ -625,7 +625,7 @@ export const BrainDuelGame = ({
 
         <div className="flex items-center justify-center gap-2 mt-4">
           <Bot className="w-4 h-4 text-primary animate-pulse" />
-          <span className="text-xs text-muted-foreground">Powered by OpenAI</span>
+          <span className="text-xs text-muted-foreground">Powered by Unique AI</span>
         </div>
       </Card>
     );
