@@ -105,11 +105,18 @@ export const RecipeGenerator = () => {
             </Button>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {ingredients.map((ing, idx) => (
-              <div key={idx} className="bg-primary/10 px-3 py-1 rounded-full flex items-center gap-2">
-                <span className="break-all">{ing}</span>
-                <button onClick={() => removeIngredient(idx)} aria-label={`Remove ${ing}`}>
+              <div
+                key={idx}
+                className="inline-flex max-w-full shrink-0 items-center gap-2 rounded-full bg-primary/10 px-3 py-1"
+              >
+                <span className="truncate text-sm">{ing}</span>
+                <button
+                  onClick={() => removeIngredient(idx)}
+                  aria-label={`Remove ${ing}`}
+                  className="shrink-0"
+                >
                   <X className="h-4 w-4" />
                 </button>
               </div>
