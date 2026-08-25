@@ -68,6 +68,11 @@ export default function UploadPremiumVideoDialog({ onUploaded }: { onUploaded: (
     if (!title.trim()) return toast.error("Add a title");
     if (!file) return toast.error("Choose a video file");
     if (file.size > 200 * 1024 * 1024) return toast.error("Max file size is 200 MB");
+    if (!selectedFrameOwned) {
+      return toast.error("Buy this frame first", {
+        description: "Preview is free, but a frame must be owned before it can be used on an uploaded video.",
+      });
+    }
 
     setBusy(true);
     let uploadedPath: string | null = null;
@@ -223,7 +228,7 @@ export default function UploadPremiumVideoDialog({ onUploaded }: { onUploaded: (
               </Button>
             )}
           </div>
-          <Button onClick={submit} disabled={busy} className="w-full">
+          <Button onClick={submit} disabled={busy || !selectedFrameOwned} className="w-full">
             {busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
             Publish video (1 credit{selectedFrameOwned && selectedFrame !== "vframe_none" ? " + selected frame" : ""})
           </Button>
