@@ -20,7 +20,7 @@ type ActiveView = "dashboard" | "shop" | "lucky_wheel" | "trading" | "ai_predict
 
 const TOOLS: { id: ActiveView; icon: any; label: string; desc: string; cost: string; gradient: string; glow: string }[] = [
   { id: "shop", icon: Gift, label: "Mystery Box Shop", desc: "Buy & open gacha-style mystery boxes across 9 tiers", cost: "50-2500 credits", gradient: "from-yellow-500 to-amber-600", glow: "shadow-yellow-500/20" },
-  { id: "lucky_wheel", icon: RotateCw, label: "Lucky Wheel", desc: "Spin to win credits, free boxes & luck boosts", cost: "15 credits", gradient: "from-green-500 to-emerald-600", glow: "shadow-green-500/20" },
+  { id: "lucky_wheel", icon: RotateCw, label: "Lucky Wheel", desc: "Spin to win XP, free boxes & luck boosts", cost: "15 credits", gradient: "from-green-500 to-emerald-600", glow: "shadow-green-500/20" },
   { id: "ai_predictor", icon: Brain, label: "AI Rarity Predictor", desc: "AI analyzes your luck patterns & suggests best boxes", cost: "8-10 credits", gradient: "from-violet-500 to-purple-600", glow: "shadow-violet-500/20" },
   { id: "trading", icon: ArrowRightLeft, label: "Trading & Gifting", desc: "Send credits or trade items with friends securely", cost: "Free", gradient: "from-pink-500 to-rose-600", glow: "shadow-pink-500/20" },
   { id: "collection", icon: Trophy, label: "My Collection", desc: "Browse and filter your collected rewards & items", cost: "Free", gradient: "from-amber-500 to-orange-600", glow: "shadow-amber-500/20" },

@@ -9,12 +9,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 const prizes = [
-  { label: "0 CR", emoji: "💨", color: "text-muted-foreground" },
-  { label: "2 CR", emoji: "🪙", color: "text-emerald-400" },
-  { label: "5 CR", emoji: "🪙", color: "text-emerald-400" },
-  { label: "10 CR", emoji: "💰", color: "text-yellow-400" },
-  { label: "25 CR", emoji: "💰", color: "text-amber-400" },
-  { label: "100 CR", emoji: "👑", color: "text-amber-300" },
+  { label: "0 XP", emoji: "💨", color: "text-muted-foreground" },
+  { label: "500 XP", emoji: "⭐", color: "text-emerald-400" },
+  { label: "1000 XP", emoji: "⭐", color: "text-emerald-400" },
+  { label: "2500 XP", emoji: "🌟", color: "text-yellow-400" },
+  { label: "10000 XP", emoji: "🏆", color: "text-amber-400" },
+  { label: "Jackpot XP", emoji: "👑", color: "text-amber-300" },
 ];
 
 export default function RewardsLuckyWheel() {
@@ -82,6 +82,7 @@ export default function RewardsLuckyWheel() {
       const res = (data ?? {}) as {
         error?: string;
         prize?: number;
+        prize_xp?: number;
         net?: number;
         balance_after?: number;
       };
@@ -96,11 +97,11 @@ export default function RewardsLuckyWheel() {
         if (mounted.current) setSpinning(false);
         return;
       }
-      const prizeNum = res.prize ?? 0;
-      const netNum = res.net ?? prizeNum - 5;
+      const prizeNum = res.prize_xp ?? 0;
+      const netNum = res.net ?? -5;
       const balanceAfter = res.balance_after ?? 0;
       // Map server prize → visual segment so the pointer lands on the actual win
-      const prizeToLabel = prizeNum > 0 ? `${prizeNum} CR` : "0 CR";
+      const prizeToLabel = prizeNum > 0 ? `${prizeNum} XP` : "0 XP";
       const segmentIndex = Math.max(0, prizes.findIndex((p) => p.label === prizeToLabel));
       const segAngle = 360 / prizes.length;
       // Wheel rotates clockwise; align the pointer to the centre of the server-selected segment.
@@ -109,11 +110,11 @@ export default function RewardsLuckyWheel() {
         const base = Math.ceil(r / 360) * 360; // normalize to next full turn
         return base + 1440 + targetOffset;
       });
-      const prizeLabel = prizeNum > 0 ? `+${prizeNum} CR` : "0 CR";
+      const prizeLabel = prizeNum > 0 ? `+${prizeNum} XP` : "0 XP";
       const matched =
-        prizes.find((p) => p.label === (prizeNum > 0 ? `${prizeNum} CR` : "0 CR")) ??
+        prizes.find((p) => p.label === (prizeNum > 0 ? `${prizeNum} XP` : "0 XP")) ??
         (prizeNum > 0
-          ? { label: prizeLabel, emoji: "🪙", color: "text-emerald-400" }
+          ? { label: prizeLabel, emoji: "⭐", color: "text-emerald-400" }
           : { label: prizeLabel, emoji: "💨", color: "text-muted-foreground" });
       revealTimer.current = setTimeout(() => {
         if (!mounted.current) return;
@@ -127,7 +128,7 @@ export default function RewardsLuckyWheel() {
               : "💨 No win this time",
           description:
             prizeNum > 0
-              ? `Net: ${netNum >= 0 ? "+" : ""}${netNum} CR · Balance: ${balanceAfter} CR`
+              ? `${prizeLabel} added · Balance: ${balanceAfter} CR`
               : `Lost 5 CR · Balance: ${balanceAfter} CR` });
         qc.invalidateQueries({ queryKey: ["rewards-stats"] });
         qc.invalidateQueries({ queryKey: ["gamification"] });
@@ -154,11 +155,11 @@ export default function RewardsLuckyWheel() {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Lucky Wheel" intro="Spin once per day for a chance at credits, XP boosts and rare cosmetics." steps={[
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Lucky Wheel" intro="Spin once per day for a chance at XP, boosts and rare cosmetics." steps={[
         { title: "One free spin per day", desc: "Come back every 24 hours for a free spin. Missed days do NOT stack." },
         { title: "Extra spins", desc: "Buy additional spins with credits — the cost and remaining spins are shown on the wheel." },
-        { title: "Prizes are randomised", desc: "Each segment has different odds. Rare prizes (jackpot 🎉) have a small chance — good luck!" },
-        { title: "Auto-credit", desc: "Winnings drop into your wallet or inventory instantly. Check your credit balance in the header." },
+        { title: "Prizes are XP only", desc: "The wheel never pays out AI credits — you win XP, boosts and cosmetics. Each segment has different odds." },
+        { title: "Instant XP", desc: "Winnings are added to your XP total instantly. Check the Rewards Center for your level." },
       ]} /></div>
       <Card className="p-6 bg-gradient-to-br from-amber-500/10 to-yellow-500/5 border-amber-400/20 backdrop-blur-md text-center">
         <h3 className="font-bold text-lg flex items-center justify-center gap-2 mb-4">
@@ -205,7 +206,7 @@ export default function RewardsLuckyWheel() {
         </Button>
 
         <p className="text-xs text-muted-foreground mt-2">
-          1 spin daily • Costs 5 CR • Win up to 100 CR
+          1 spin daily • Costs 5 CR • Win up to 10,000 XP
         </p>
       </Card>
 
