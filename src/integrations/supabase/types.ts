@@ -48041,6 +48041,7 @@ export type Database = {
           created_at: string
           description: string | null
           duration_seconds: number | null
+          frame_slug: string | null
           id: string
           is_published: boolean
           thumbnail_url: string | null
@@ -48058,6 +48059,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           duration_seconds?: number | null
+          frame_slug?: string | null
           id?: string
           is_published?: boolean
           thumbnail_url?: string | null
@@ -48075,6 +48077,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           duration_seconds?: number | null
+          frame_slug?: string | null
           id?: string
           is_published?: boolean
           thumbnail_url?: string | null
@@ -64645,6 +64648,33 @@ export type Database = {
         }
         Relationships: []
       }
+      video_frame_purchases: {
+        Row: {
+          created_at: string
+          credits_spent: number
+          frame_slug: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_spent?: number
+          frame_slug: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_spent?: number
+          frame_slug?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       video_likes: {
         Row: {
           created_at: string
@@ -69245,6 +69275,7 @@ export type Database = {
         Args: { _cost_xp: number; _qty: number }
         Returns: Json
       }
+      buy_video_frame: { Args: { _slug: string }; Returns: Json }
       buyout_collectible_auction: {
         Args: { p_auction_id: string }
         Returns: {
@@ -71870,6 +71901,10 @@ export type Database = {
         }
         Returns: string
       }
+      set_premium_video_frame: {
+        Args: { _slug: string; _video_id: string }
+        Returns: Json
+      }
       settle_kitchen_competitions: { Args: never; Returns: number }
       settle_monthly_battle_champions: {
         Args: { _module: string; _period?: string }
@@ -72003,6 +72038,7 @@ export type Database = {
         Args: { loser_id: string; winner_id: string }
         Returns: undefined
       }
+      video_frame_cost: { Args: { _slug: string }; Returns: number }
       wheel_buy_coins: { Args: { _credits: number }; Returns: Json }
       wheel_buy_hint: { Args: never; Returns: Json }
       wheel_categories: {
