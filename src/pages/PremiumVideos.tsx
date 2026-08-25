@@ -10,6 +10,7 @@ import {
   Info,
   Loader2,
   PlayCircle,
+  Sparkles,
   Video,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
