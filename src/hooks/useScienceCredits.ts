@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export const SCIENCE_CREDITS_PER_RUN = 4;
+export const SCIENCE_CREDITS_PER_RUN = 3;
 
 interface ScienceCreditsState {
   credits_remaining: number;

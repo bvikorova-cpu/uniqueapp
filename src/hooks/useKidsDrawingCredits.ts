@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
-export const KIDS_DRAWING_CREDIT_COST = 4; // 4 credits per AI drawing operation (matrix)
+export const KIDS_DRAWING_CREDIT_COST = 5; // 4 credits per AI drawing operation (matrix)
 
 export function useKidsDrawingCredits() {
   const { user } = useAuth();
