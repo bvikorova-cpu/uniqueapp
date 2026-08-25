@@ -93,6 +93,9 @@ export default function PremiumVideos() {
 
         <VideoCreditsPanel />
 
+        <MyVideosPanel onChanged={refetch} />
+
+
 
         <Card className="mb-6 border-primary/20 bg-primary/5">
           <CardHeader className="pb-2">
