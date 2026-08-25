@@ -35,6 +35,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import BoostVideoDialog from "@/components/premiumVideos/BoostVideoDialog";
+import VideoFrameDialog from "@/components/premiumVideos/VideoFrameDialog";
 import { useMyPremiumVideos, type MyVideoStats } from "@/hooks/useMyPremiumVideos";
 
 export default function MyVideosPanel({ onChanged }: { onChanged?: () => void }) {
