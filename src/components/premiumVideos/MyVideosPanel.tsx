@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   Coins,
-  Eye,
+  Euro,
   Loader2,
   Lock,
   Pencil,
