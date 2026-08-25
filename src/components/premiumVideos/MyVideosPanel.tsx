@@ -123,6 +123,10 @@ export default function MyVideosPanel({ onChanged }: { onChanged?: () => void })
           shown above.
         </p>
 
+        <CreatorCashoutCard />
+
+
+
 
         {loading ? (
           <div className="flex justify-center py-8">
