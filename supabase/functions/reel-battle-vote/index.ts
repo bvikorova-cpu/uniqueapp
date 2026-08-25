@@ -1,7 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -45,11 +45,20 @@ Deno.serve(async (req) => {
 
     const field = vt === "like" ? "vote_count" : "dislike_count";
     const current = vt === "like" ? part.vote_count : part.dislike_count;
-    await supabase.from("reel_battle_participants")
+    const nextCount = (current || 0) + 1;
+    const { error: updateError } = await supabase.from("reel_battle_participants")
       .update({ [field]: (current || 0) + 1 })
       .eq("id", participantId);
+    if (updateError) throw updateError;
 
-    return new Response(JSON.stringify({ success: true, voteType: vt }), {
+    return new Response(JSON.stringify({
+      success: true,
+      battleId,
+      participantId,
+      voteType: vt,
+      vote_count: vt === "like" ? nextCount : part.vote_count,
+      dislike_count: vt === "dislike" ? nextCount : part.dislike_count,
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 });
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as Error).message }), {

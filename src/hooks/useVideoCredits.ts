@@ -75,14 +75,18 @@ export function useVideoCredits() {
 
   const purchase = useCallback(async (credits: number) => {
     setBuying(credits);
+    const checkoutWindow = window.open("", "_blank");
+    if (checkoutWindow) checkoutWindow.opener = null;
     try {
       const { data, error } = await supabase.functions.invoke("create-video-credits-payment", {
         body: { credits },
       });
       if (error) throw error;
       if (!data?.url) throw new Error("Checkout link missing");
-      window.location.href = data.url as string;
+      if (checkoutWindow) checkoutWindow.location.assign(data.url as string);
+      else window.location.href = data.url as string;
     } catch (e: any) {
+      checkoutWindow?.close();
       toast.error("Checkout failed", { description: e?.message });
     } finally {
       setBuying(null);
