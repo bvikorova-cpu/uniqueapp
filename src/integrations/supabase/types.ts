@@ -69026,6 +69026,48 @@ export type Database = {
         Args: { _reference?: string; _winner_id: string }
         Returns: undefined
       }
+      admin_premium_videos_activity: { Args: never; Returns: Json }
+      admin_premium_videos_creators: {
+        Args: never
+        Returns: {
+          avatar_url: string
+          boost_credits: number
+          cashed_out_eur: number
+          earned_credits: number
+          email: string
+          full_name: string
+          last_upload_at: string
+          published_count: number
+          purchased_credits: number
+          unlocks_total: number
+          user_id: string
+          username: string
+          videos_count: number
+          views_total: number
+          wallet_credits: number
+          withdrawable_credits: number
+          withdrawn_credits: number
+        }[]
+      }
+      admin_premium_videos_list: {
+        Args: never
+        Returns: {
+          boost_tier: string
+          boost_until: string
+          created_at: string
+          creator_name: string
+          duration_seconds: number
+          frame_slug: string
+          id: string
+          is_published: boolean
+          title: string
+          unlock_cost: number
+          unlocks_count: number
+          user_id: string
+          views_count: number
+        }[]
+      }
+      admin_premium_videos_summary: { Args: never; Returns: Json }
       admin_search_users_for_xp_audit: {
         Args: { _query: string }
         Returns: {

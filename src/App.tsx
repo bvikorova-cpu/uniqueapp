@@ -487,6 +487,7 @@ const AdminBattleRoyalePayouts = lazy(() => import("@/pages/admin/AdminBattleRoy
 const AdminDatingModeration = lazy(() => import("@/pages/admin/AdminDatingModeration"));
 const AdminMegatalentPayouts = lazy(() => import("@/pages/admin/AdminMegatalentPayouts"));
 const AdminConcertEarnings = lazy(() => import("@/pages/admin/AdminConcertEarnings"));
+const AdminPremiumVideos = lazy(() => import("@/pages/admin/AdminPremiumVideos"));
 const CouponsMy = lazy(() => import("@/pages/CouponsMy"));
 
 // Tiny redirect helper for /education/course/:courseId → /course/:courseId
@@ -664,6 +665,8 @@ const App = () => {
                         <Route path="/admin/megatalent-moderation" element={<ProtectedRoute requireAdmin={true}><AdminMegatalentModeration /></ProtectedRoute>} />
                         <Route path="/admin/megatalent-payouts" element={<ProtectedRoute requireAdmin={true}><AdminMegatalentPayouts /></ProtectedRoute>} />
                         <Route path="/admin/concert-earnings" element={<ProtectedRoute requireAdmin={true}><AdminConcertEarnings /></ProtectedRoute>} />
+                        <Route path="/admin/unlock-videos" element={<ProtectedRoute requireAdmin={true}><AdminPremiumVideos /></ProtectedRoute>} />
+                        <Route path="/admin/premium-videos" element={<ProtectedRoute requireAdmin={true}><AdminPremiumVideos /></ProtectedRoute>} />
 
                         <Route path="/admin/battle-royale-payouts" element={<ProtectedRoute requireAdmin={true}><AdminBattleRoyalePayouts /></ProtectedRoute>} />
                         <Route path="/admin/dating-moderation" element={<ProtectedRoute requireAdmin={true}><AdminDatingModeration /></ProtectedRoute>} />
