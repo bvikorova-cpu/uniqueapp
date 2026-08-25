@@ -118,10 +118,9 @@ export default function MyVideosPanel({ onChanged }: { onChanged?: () => void })
           <strong>Value &amp; fees:</strong> Each unlock earns you <strong>€0.25</strong> (0.5 video
           credit, valued at €0.50 per credit). Stripe charges a processing fee of{" "}
           <strong>1.5% + €0.25</strong> per European card transaction (2.5% + €0.25 for
-          non-European cards). When you withdraw your earnings, Stripe also charges a separate{" "}
-          <strong>€2 payout fee</strong> for transferring the money to your bank account. Please
-          count with these fees — the final amount landing on your account is lower than the EUR
-          value shown above.
+          non-European cards). The minimum creator payout is <strong>€20</strong>. Please count
+          with these fees — the final amount landing on your account is lower than the EUR value
+          shown above.
         </p>
 
 
