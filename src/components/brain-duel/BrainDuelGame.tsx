@@ -907,7 +907,7 @@ export const BrainDuelGame = ({
           <div className="flex items-center gap-2 mb-4">
             <Bot className="w-5 h-5 text-primary" />
             <h2 className="text-lg font-bold">AI Match Analysis</h2>
-            <Badge variant="outline" className="ml-auto text-[10px]">OpenAI Powered</Badge>
+            <Badge variant="outline" className="ml-auto text-[10px]">Unique AI</Badge>
           </div>
           <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
             <ReactMarkdown>{aiAnalysis}</ReactMarkdown>
