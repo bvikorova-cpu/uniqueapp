@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS public.publish_premium_video(text, text, text, integer, text, text);

@@ -7,6 +7,7 @@ import {
   ArrowLeft,
   Coins,
   Flame,
+  Frame,
   Info,
   Loader2,
   PlayCircle,
@@ -20,15 +21,17 @@ import UploadPremiumVideoDialog from "@/components/premiumVideos/UploadPremiumVi
 import { usePremiumVideos } from "@/hooks/usePremiumVideos";
 import VideoCreditsPanel from "@/components/premiumVideos/VideoCreditsPanel";
 import MyVideosPanel from "@/components/premiumVideos/MyVideosPanel";
+import VideoFrameShop from "@/components/premiumVideos/VideoFrameShop";
 
 import heroVideo from "@/assets/section-videos/unlock-videos.mp4.asset.json";
 import demoVideo from "@/assets/section-videos/unlock-videos-demo.mp4.asset.json";
 
-type TabKey = "feed" | "mine" | "credits" | "how";
+type TabKey = "feed" | "mine" | "frames" | "credits" | "how";
 
 const TABS: { key: TabKey; label: string; icon: typeof Video; desc: string }[] = [
   { key: "feed", label: "Feed", icon: Flame, desc: "Watch & unlock" },
   { key: "mine", label: "My videos", icon: Video, desc: "Manage & earnings" },
+  { key: "frames", label: "Frames", icon: Frame, desc: "Buy video frames" },
   { key: "credits", label: "Credits", icon: Coins, desc: "Top up your wallet" },
   { key: "how", label: "How it works", icon: Info, desc: "Rules & pricing" },
 ];
@@ -175,7 +178,7 @@ export default function PremiumVideos() {
           </div>
 
           {/* Sub-navigation */}
-          <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-5">
             {TABS.map((t) => {
               const Icon = t.icon;
               const active = tab === t.key;
@@ -241,6 +244,8 @@ export default function PremiumVideos() {
           )}
 
           {tab === "credits" && <VideoCreditsPanel />}
+
+          {tab === "frames" && <VideoFrameShop onChanged={refetch} />}
 
           {tab === "how" && (
             <div className="iri-card rounded-3xl p-5 sm:p-7">
