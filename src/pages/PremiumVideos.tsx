@@ -106,7 +106,7 @@ export default function PremiumVideos() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-1.5 text-sm text-muted-foreground">
-            <p>1. Any member can upload a video — it is published instantly.</p>
+            <p>1. Any member can upload a video — publishing costs 1 video credit and goes live instantly.</p>
             <p>2. Everyone watches the first 50% for free; playback then pauses.</p>
             <p>3. Unlocking the rest costs 1 video credit (own wallet: 10/€5, 20/€10, 30/€15), charged once per video.</p>
             <p>4. The creator receives 50% of every unlock in credits; the platform keeps 50%.</p>
