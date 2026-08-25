@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Award, Eye, Flame, Loader2, Lock, Sparkles, Unlock, Zap } from "lucide-react";
+import { Award, Flame, Loader2, Lock, Sparkles, Unlock, Zap } from "lucide-react";
 import type { PremiumVideo } from "@/hooks/usePremiumVideos";
 import BoostVideoDialog from "@/components/premiumVideos/BoostVideoDialog";
 import { useAuth } from "@/contexts/AuthContext";
@@ -127,9 +127,6 @@ export default function PremiumVideoCard({ video, unlocking, onUnlock, onFirstPl
             </span>
           </div>
           <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1">
-              <Eye className="h-3.5 w-3.5" /> {video.views_count}
-            </span>
             <span className="flex items-center gap-1">
               <Unlock className="h-3.5 w-3.5" /> {video.unlocks_count}
             </span>
