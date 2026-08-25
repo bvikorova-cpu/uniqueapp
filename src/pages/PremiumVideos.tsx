@@ -95,7 +95,7 @@ export default function PremiumVideos() {
 
       <main className="container mx-auto max-w-5xl px-4 pb-24 pt-6">
         {/* Hero video */}
-        <div className="relative mb-6 overflow-hidden rounded-2xl border border-border/50 min-h-[220px] sm:min-h-[300px]">
+        <div className="relative mb-6 overflow-hidden rounded-3xl border border-gold/30 shadow-gold min-h-[240px] sm:min-h-[320px]">
           <video
             src={heroVideo.url}
             autoPlay
@@ -104,16 +104,21 @@ export default function PremiumVideos() {
             playsInline
             className="absolute inset-0 h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/85 via-background/40 to-background/10" />
-          <div className="relative z-10 flex min-h-[220px] flex-col justify-end gap-2 p-5 sm:min-h-[300px] sm:p-8">
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/10" />
+          <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-gold/20 blur-3xl" />
+          <div className="relative z-10 flex min-h-[240px] flex-col justify-end gap-3 p-5 sm:min-h-[320px] sm:p-8">
             <Link
               to="/wall/videos"
               className="inline-flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
             >
               <ArrowLeft className="h-4 w-4" /> Wall Videos
             </Link>
-            <h1 className="flex items-center gap-2 text-2xl font-bold sm:text-4xl">
-              <PlayCircle className="h-7 w-7 text-primary" /> Unlock Videos
+            <span className="inline-flex w-fit items-center gap-2 rounded-full border border-gold/40 bg-gold/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-gold">
+              <Sparkles className="h-3.5 w-3.5" /> Creator gold rush
+            </span>
+            <h1 className="flex items-center gap-2 text-3xl font-extrabold tracking-tight sm:text-5xl">
+              <PlayCircle className="h-8 w-8 text-gold" />
+              <span className="bg-gradient-gold bg-clip-text text-transparent">Unlock Videos</span>
             </h1>
             <p className="max-w-xl text-sm text-muted-foreground sm:text-base">
               First half free. Unlock the rest for 1 credit — creators keep 50%.
@@ -131,21 +136,26 @@ export default function PremiumVideos() {
                 key={t.key}
                 onClick={() => goTab(t.key)}
                 aria-current={active ? "page" : undefined}
-                className={`rounded-xl border p-3 text-left transition-all ${
+                className={`group relative overflow-hidden rounded-2xl border p-4 text-left backdrop-blur transition-all duration-300 ${
                   active
-                    ? "border-primary bg-primary/10 shadow-sm"
-                    : "border-border/60 bg-card/60 hover:border-primary/40 hover:bg-primary/5"
+                    ? "border-gold/60 bg-gradient-gold text-gold-foreground shadow-gold"
+                    : "border-border/60 bg-card/60 hover:-translate-y-0.5 hover:border-gold/40 hover:shadow-gold"
                 }`}
               >
-                <span className="flex items-center gap-2 text-sm font-semibold">
-                  <Icon className={`h-4 w-4 ${active ? "text-primary" : "text-muted-foreground"}`} />
+                <span className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide">
+                  <Icon className={`h-4 w-4 ${active ? "" : "text-gold"}`} />
                   {t.label}
                 </span>
-                <span className="mt-0.5 block text-xs text-muted-foreground">{t.desc}</span>
+                <span
+                  className={`mt-1 block text-xs ${active ? "text-gold-foreground/80" : "text-muted-foreground"}`}
+                >
+                  {t.desc}
+                </span>
               </button>
             );
           })}
         </div>
+
 
         {tab === "feed" && (
           <>
