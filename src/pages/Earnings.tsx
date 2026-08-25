@@ -160,7 +160,7 @@ const Earnings = () => {
 
   const handlePayout = async () => {
     if (stats.available < 25) {
-      toast({ title: "Below minimum", description: "Minimum payout is €25.", variant: "destructive" });
+      toast({ title: "Below minimum", description: "Minimum payout is €20.", variant: "destructive" });
       return;
     }
     if (!hasPayoutMethod) {
