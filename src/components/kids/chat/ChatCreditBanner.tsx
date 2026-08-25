@@ -36,7 +36,7 @@ export const ChatCreditBanner = ({ credits, loading }: ChatCreditBannerProps) =>
         </div>
       </div>
       <Button
-        onClick={() => navigate("/kids-voice-chat-pricing")}
+        onClick={() => navigate("/ai-credits")}
         size="sm"
         variant={isEmpty ? "default" : "outline"}
         className={isEmpty ? "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600" : ""}

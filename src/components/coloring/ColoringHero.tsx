@@ -6,7 +6,7 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const stats = [
   { label: "Pages Created", icon: Image, value: "—", color: "from-pink-500 to-rose-600" },
-  { label: "Access", icon: Gem, value: "Gold Pass", color: "from-violet-500 to-purple-600" },
+  { label: "Access", icon: Gem, value: "AI credits", color: "from-violet-500 to-purple-600" },
   { label: "Templates", icon: Palette, value: "16", color: "from-amber-500 to-orange-600" },
   { label: "Resolution", icon: Scan, value: "Ultra HD", color: "from-emerald-500 to-teal-600" },
 ];

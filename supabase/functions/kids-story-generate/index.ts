@@ -9,7 +9,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    const __auth = await requireAiCredits(req, corsHeaders, { credits: 1, usageType: "kids_story" });
+    const __auth = await requireAiCredits(req, corsHeaders, { credits: 8, usageType: "kids_story" });
     if (__auth.errorResponse) return __auth.errorResponse;
     const __deduct = __auth.deduct!;
     const { prompt, title } = await req.json();

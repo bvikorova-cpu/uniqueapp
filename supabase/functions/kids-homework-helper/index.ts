@@ -67,13 +67,13 @@ Deno.serve(async (req) => {
 
     // Ensure & check credits
     const { data: credRow } = await admin
-      .from("homework_credits")
+      .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
 
     let balance = credRow?.credits_remaining ?? 0;
-    if (!credRow) { await admin.from("homework_credits").insert({
+    if (!credRow) { await admin.from("ai_credits").insert({
         user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
     }
     if (!goldPass && balance < COST) {
@@ -144,7 +144,7 @@ Schema:
     const newBalance = goldPass ? balance : balance - COST;
     if (!goldPass) {
       await admin
-        .from("homework_credits")
+        .from("ai_credits")
         .update({ credits_remaining: newBalance, last_used_at: new Date().toISOString() })
         .eq("user_id", user.id);
     }

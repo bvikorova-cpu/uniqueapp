@@ -11,7 +11,7 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-const TTS_COST = 1; // per page, per credit matrix
+const TTS_COST = 2; // per page, per credit matrix
 const MAX_TEXT_LENGTH = 4000; // OpenAI TTS hard limit is 4096 chars
 const ALLOWED_VOICES = new Set([
   "alloy",
@@ -109,12 +109,12 @@ Deno.serve(async (req) => {
     const userId = userData.user.id;
     const goldPass = await hasKidsGoldPass(authHeader);
     const { data: credRow } = await admin
-      .from("kids_story_credits")
+      .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", userId)
       .maybeSingle();
     const balance = credRow?.credits_remaining ?? 0;
-    if (!credRow) { await admin.from("kids_story_credits").insert({
+    if (!credRow) { await admin.from("ai_credits").insert({
         user_id: userId, credits_remaining: 0, total_credits_purchased: 0 });
     }
     if (!goldPass && balance < TTS_COST) {
@@ -200,7 +200,7 @@ Deno.serve(async (req) => {
     const newBalance = goldPass ? balance : balance - TTS_COST;
     if (!goldPass) {
       await admin
-        .from("kids_story_credits")
+        .from("ai_credits")
         .update({ credits_remaining: newBalance, last_used_at: new Date().toISOString() })
         .eq("user_id", userId);
     }

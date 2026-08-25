@@ -1,5 +1,6 @@
-import { Sparkles, Infinity as InfinityIcon } from "lucide-react";
-import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
+import { Coins, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useAICredits } from "@/hooks/useAICredits";
 
 interface Props {
   /** Module name shown in the banner (e.g. "Homework Helper"). */
@@ -9,55 +10,58 @@ interface Props {
 }
 
 /**
- * Slim banner that confirms the user has an active Kids Gold Pass and that
- * this module is unlimited (no credits deducted). Reads from the
- * `kids_gold_pass_status` cache (written by stripe-webhook) and re-renders
- * instantly on webhook updates via Realtime.
+ * Slim banner showing the unified AI credit balance for Kids modules.
+ * Gold Pass was retired — every AI action deducts credits server-side.
  */
 export const KidsGoldPassBanner = ({ moduleName, compact = false }: Props) => {
-  const { hasGoldPass, loading, expiresAt } = useKidsGoldPass();
+  const { totalBalance, loading } = useAICredits();
 
-  if (loading || !hasGoldPass) return null;
-
-  const renewLabel = expiresAt
-    ? `Renews ${new Date(expiresAt).toLocaleDateString(undefined, { day: "numeric", month: "short" })}`
-    : null;
+  if (loading) return null;
 
   if (compact) {
     return (
-      <div className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 px-3 py-1 text-xs font-semibold text-white shadow-sm">
-        <Sparkles className="h-3 w-3" />
-        Gold Pass · Unlimited
-      </div>
+      <Link
+        to="/ai-credits"
+        className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-accent px-3 py-1 text-xs font-semibold text-primary-foreground shadow-sm"
+      >
+        <Coins className="h-3 w-3" />
+        {totalBalance} credits
+      </Link>
     );
   }
 
   return (
     <div
-      className="mx-auto max-w-5xl mb-4 rounded-xl border border-amber-300/70 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 p-3 md:p-4 shadow-sm"
+      className="mx-auto max-w-5xl mb-4 rounded-xl border bg-card/70 backdrop-blur p-3 md:p-4 shadow-sm"
       role="status"
       aria-live="polite"
     >
       <div className="flex items-center gap-3">
-        <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gradient-to-br from-amber-400 to-yellow-600 flex items-center justify-center shadow">
-          <Sparkles className="h-5 w-5 text-white" />
+        <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow">
+          <Coins className="h-5 w-5 text-primary-foreground" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm font-bold text-amber-900">
-              Gold Pass active
+            <span className="text-sm font-bold">
+              {totalBalance} AI credits available
             </span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 px-2 py-0.5 text-[11px] font-semibold text-amber-800">
-              <InfinityIcon className="h-3 w-3" />
-              Unlimited
-            </span>
+            {moduleName && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
+                <Sparkles className="h-3 w-3" />
+                {moduleName}
+              </span>
+            )}
           </div>
-          <p className="text-xs md:text-sm text-amber-800/90 mt-0.5">
-            {moduleName ? `${moduleName} is unlimited — ` : ""}
-            no credits are deducted while your Gold Pass is active.
-            {renewLabel ? <span className="text-amber-700/80"> · {renewLabel}</span> : null}
+          <p className="text-xs text-muted-foreground truncate">
+            Each AI action deducts credits. No subscription needed.
           </p>
         </div>
+        <Link
+          to="/ai-credits"
+          className="text-xs font-semibold text-primary hover:underline whitespace-nowrap"
+        >
+          Buy credits
+        </Link>
       </div>
     </div>
   );

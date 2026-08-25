@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
-export const KIDS_READING_CREDIT_COST = 2;
+export const KIDS_READING_CREDIT_COST = 3;
 
 export function useKidsReadingCredits() {
   const { user } = useAuth();

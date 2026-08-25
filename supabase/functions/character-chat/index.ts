@@ -78,7 +78,7 @@ serve(async (req) => {
       const refund = async () => {
         if (goldPass) return;
         await adminClient
-          .from("chat_credits")
+          .from("ai_credits")
           .update({ credits_remaining: balance })
           .eq("user_id", user.id);
       };
@@ -86,7 +86,7 @@ serve(async (req) => {
       if (!goldPass) {
         // Read balance (lazy-create row if missing)
         const { data: creditRow } = await adminClient
-          .from("chat_credits")
+          .from("ai_credits")
           .select("credits_remaining")
           .eq("user_id", user.id)
           .maybeSingle();
@@ -95,7 +95,7 @@ serve(async (req) => {
         if (balance < 1) {
           if (!creditRow) {
             await adminClient
-              .from("chat_credits")
+              .from("ai_credits")
               .insert({ user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
           }
           return new Response(
@@ -106,7 +106,7 @@ serve(async (req) => {
 
         // Deduct 1 credit BEFORE calling AI (optimistic concurrency)
         const { error: deductErr, data: deductData } = await adminClient
-          .from("chat_credits")
+          .from("ai_credits")
           .update({ credits_remaining: balance - 1 })
           .eq("user_id", user.id)
           .eq("credits_remaining", balance)

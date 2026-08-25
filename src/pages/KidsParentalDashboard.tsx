@@ -225,9 +225,9 @@ export default function KidsParentalDashboard() {
               <Crown className="h-6 w-6 text-amber-600" />
             </div>
             <div className="min-w-[200px] flex-1">
-              <p className="font-semibold text-amber-900">Kids Gold Pass</p>
+              <p className="font-semibold text-amber-900">AI credits access</p>
               {goldPassLoading ? (
-                <p className="text-sm text-amber-700">Checking subscription…</p>
+                <p className="text-sm text-amber-700">Checking access…</p>
               ) : hasGoldPass ? (
                 <p className="text-sm text-amber-700">
                   {goldPassExpiresAt
@@ -237,15 +237,15 @@ export default function KidsParentalDashboard() {
                     : "Active — unlimited access (no expiry date on record)"}
                 </p>
               ) : (
-                <p className="text-sm text-amber-700">Not active — premium Kids modules are locked.</p>
+                <p className="text-sm text-amber-700">Kids AI modules run on AI credits — buy credits to unlock them.</p>
               )}
             </div>
             <Badge className={hasGoldPass ? "bg-amber-500" : "bg-muted text-muted-foreground"}>
               {goldPassLoading ? "…" : hasGoldPass ? "Active" : "Inactive"}
             </Badge>
             {!goldPassLoading && !hasGoldPass && (
-              <Button size="sm" onClick={() => navigate("/kids-pricing")} className="bg-amber-500 hover:bg-amber-600">
-                Get Gold Pass
+              <Button size="sm" onClick={() => navigate("/ai-credits")} className="bg-amber-500 hover:bg-amber-600">
+                Buy AI credits
               </Button>
             )}
           </CardContent>

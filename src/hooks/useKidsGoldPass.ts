@@ -8,6 +8,11 @@ interface GoldPassStatus {
   expiresAt: string | null;
 }
 
+/**
+ * Kids Gold Pass was retired — the Kids Channel is fully credit-based
+ * (unified `ai_credits`). This hook is kept for backwards compatibility and now
+ * only reports `true` for platform admins (unlimited access for support/QA).
+ */
 export function useKidsGoldPass(): GoldPassStatus {
   const { user, loading: authLoading } = useAuth();
   const [status, setStatus] = useState<GoldPassStatus>({
@@ -22,8 +27,6 @@ export function useKidsGoldPass(): GoldPassStatus {
       return;
     }
 
-    setStatus((current) => ({ ...current, loading: true }));
-
     try {
       const { data: adminRole } = await supabase
         .from("user_roles")
@@ -32,44 +35,15 @@ export function useKidsGoldPass(): GoldPassStatus {
         .eq("role", "admin")
         .maybeSingle();
 
-      if (adminRole) {
-        setStatus({ hasGoldPass: true, loading: false, expiresAt: null });
-        return;
-      }
-
-      const { data: cache, error: cacheError } = await (supabase as any)
-        .from("kids_gold_pass_status")
-        .select("active, current_period_end")
-        .eq("user_id", user.id)
-        .maybeSingle();
-
-      if (!cacheError && cache) {
-        setStatus({
-          hasGoldPass: !!cache.active,
-          loading: false,
-          expiresAt: cache.current_period_end ?? null,
-        });
-        return;
-      }
-
-      const { data } = await supabase.functions.invoke("check-subscription", {
-        body: { tier: "kids" },
-      });
-
-      setStatus({
-        hasGoldPass: !!(data as any)?.subscribed,
-        loading: false,
-        expiresAt: (data as any)?.subscription_end ?? null,
-      });
+      setStatus({ hasGoldPass: !!adminRole, loading: false, expiresAt: null });
     } catch (error) {
-      console.error("Kids Gold Pass status check failed", error);
+      console.error("Kids admin status check failed", error);
       setStatus({ hasGoldPass: false, loading: false, expiresAt: null });
     }
   }, [user?.id]);
 
   useEffect(() => {
     if (authLoading) return;
-
     loadStatus();
   }, [authLoading, loadStatus, user?.id]);
 

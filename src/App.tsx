@@ -869,17 +869,17 @@ const App = () => {
                         <Route path="/plant-care" element={<PlantCare />} />
                         <Route path="/ai-tattoo" element={<AITattoo />} />
                         <Route path="/kids-homework" element={<KidsGoldPassGate moduleName="Homework Helper" pricingPath="/kids-pricing" redirectPath="/kids-homework"><KidsHomework /></KidsGoldPassGate>} />
-                        <Route path="/kids-homework-pricing" element={<Navigate to="/kids-pricing" replace />} />
+                        <Route path="/kids-homework-pricing" element={<Navigate to="/ai-credits" replace />} />
                         
                         <Route path="/kids-story-creator" element={<KidsGoldPassGate moduleName="Story Creator" pricingPath="/kids-pricing" creditTable="kids_story_credits" redirectPath="/kids-story-creator"><KidsStoryCreator /></KidsGoldPassGate>} />
-                        <Route path="/kids-story-pricing" element={<KidsStoryPricing />} />
+                        <Route path="/kids-story-pricing" element={<Navigate to="/ai-credits" replace />} />
                         <Route path="/kids-science-lab" element={<KidsGoldPassGate moduleName="Science Lab" pricingPath="/kids-pricing" creditTable="science_credits" redirectPath="/kids-science-lab"><KidsScienceLab /></KidsGoldPassGate>} />
-                        <Route path="/kids-science-pricing" element={<KidsSciencePricing />} />
+                        <Route path="/kids-science-pricing" element={<Navigate to="/ai-credits" replace />} />
                         <Route path="/kids-science-admin" element={<ProtectedRoute requireAdmin={true}><KidsScienceAdmin /></ProtectedRoute>} />
                         <Route path="/kids-drawing-buddy" element={<KidsGoldPassGate moduleName="Drawing Buddy" pricingPath="/kids-pricing" creditTable="kids_drawing_credits" redirectPath="/kids-drawing-buddy"><KidsDrawingBuddy /></KidsGoldPassGate>} />
-                        <Route path="/kids-drawing-pricing" element={<KidsDrawingPricing />} />
+                        <Route path="/kids-drawing-pricing" element={<Navigate to="/ai-credits" replace />} />
                         <Route path="/kids-reading-companion" element={<KidsGoldPassGate moduleName="Reading Companion" pricingPath="/kids-pricing" creditTable="kids_reading_credits" redirectPath="/kids-reading-companion"><KidsReadingCompanion /></KidsGoldPassGate>} />
-                        <Route path="/kids-reading-pricing" element={<KidsReadingPricing />} />
+                        <Route path="/kids-reading-pricing" element={<Navigate to="/ai-credits" replace />} />
                         <Route path="/kids" element={<Navigate to="/kids-academy" replace />} />
                         <Route path="/kids-academy" element={<KidsAcademy />} />
                         <Route path="/kids-puzzles" element={<KidsPuzzles />} />
@@ -887,7 +887,7 @@ const App = () => {
                         <Route path="/photo-restoration" element={<PhotoRestoration />} />
                         <Route path="/antique-appraisal" element={<AntiqueAppraisal />} />
                         <Route path="/teen-career-counselor" element={<TeenCareerCounselor />} />
-                        <Route path="/teen-career-pricing" element={<TeenCareerPricing />} />
+                        <Route path="/teen-career-pricing" element={<Navigate to="/ai-credits" replace />} />
                         <Route path="/teen" element={<Navigate to="/teen-hub" replace />} />
                         <Route path="/teen-hub" element={<TeenHub />} />
                         <Route path="/teen-homework-pro" element={<TeenHomeworkPro />} />
@@ -965,12 +965,12 @@ const App = () => {
                         <Route path="/kids-channel/share/:token" element={<KidsShareView />} />
                         <Route path="/choose-adventure" element={<ChooseAdventure />} />
                         <Route path="/kids-voice-chat" element={<KidsGoldPassGate moduleName="Character Chat" pricingPath="/kids-pricing" redirectPath="/kids-voice-chat"><KidsVoiceChat /></KidsGoldPassGate>} />
-                        <Route path="/kids-voice-chat-pricing" element={<KidsVoiceChatPricing />} />
+                        <Route path="/kids-voice-chat-pricing" element={<Navigate to="/ai-credits" replace />} />
                         <Route path="/create-character" element={<CreateCharacter />} />
                         <Route path="/educational-stories" element={<EducationalStories />} />
                         <Route path="/bedtime-stories" element={<KidsGoldPassGate moduleName="Bedtime Stories" redirectPath="/bedtime-stories"><KidsParentalGateGuard featureName="Bedtime Stories" storageKey="pg_bedtime"><BedtimeStories /></KidsParentalGateGuard></KidsGoldPassGate>} />
                         <Route path="/story-games" element={<StoryGames />} />
-                        <Route path="/kids-pricing" element={<KidsPricing />} />
+                        <Route path="/kids-pricing" element={<Navigate to="/ai-credits" replace />} />
                         <Route path="/story-video-demo" element={<KidsGoldPassGate moduleName="Story Videos" redirectPath="/story-video-demo"><StoryVideoDemo /></KidsGoldPassGate>} />
                         <Route path="/story-gallery" element={<StoryGallery />} />
                         <Route path="/shared/:shareCode" element={<SharedStory />} />
