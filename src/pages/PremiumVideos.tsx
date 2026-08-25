@@ -10,6 +10,8 @@ import PremiumVideoCard from "@/components/premiumVideos/PremiumVideoCard";
 import UploadPremiumVideoDialog from "@/components/premiumVideos/UploadPremiumVideoDialog";
 import { usePremiumVideos } from "@/hooks/usePremiumVideos";
 import VideoCreditsPanel from "@/components/premiumVideos/VideoCreditsPanel";
+import MyVideosPanel from "@/components/premiumVideos/MyVideosPanel";
+
 import heroVideo from "@/assets/section-videos/unlock-videos.mp4.asset.json";
 
 export default function PremiumVideos() {
@@ -92,6 +94,9 @@ export default function PremiumVideos() {
         </div>
 
         <VideoCreditsPanel />
+
+        <MyVideosPanel onChanged={refetch} />
+
 
 
         <Card className="mb-6 border-primary/20 bg-primary/5">
