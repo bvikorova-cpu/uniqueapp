@@ -201,10 +201,10 @@ export default function PremiumVideos() {
         {tab === "credits" && <VideoCreditsPanel />}
 
         {tab === "how" && (
-          <Card className="border-primary/20 bg-primary/5">
+          <Card className="border-gold/30 bg-gradient-to-br from-gold/10 via-card to-card shadow-gold">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
-                <Info className="h-4 w-4 text-primary" /> How it works
+                <Info className="h-4 w-4 text-gold" /> How it works
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-1.5 text-sm text-muted-foreground">
