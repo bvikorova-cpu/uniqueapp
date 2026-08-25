@@ -47,7 +47,7 @@ export const MysteryBoxHero = () => {
   const formatNumber = (value: number) => isLoading ? "…" : value.toLocaleString();
 
   const statItems = [
-    { icon: Gift, label: "Boxes Opened", value: formatNumber(stats.boxesOpened), glow: "shadow-yellow-500/30" },
+    
     { icon: Users, label: "Active Players", value: formatNumber(stats.activePlayers), glow: "shadow-emerald-500/30" },
     { icon: Crown, label: "Legendary Drops", value: formatNumber(stats.legendaryDrops), glow: "shadow-purple-500/30" },
   ];
