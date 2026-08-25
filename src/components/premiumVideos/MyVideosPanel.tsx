@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   Coins,
-  Eye,
+  Euro,
   Loader2,
   Lock,
   Pencil,
@@ -78,7 +78,11 @@ export default function MyVideosPanel({ onChanged }: { onChanged?: () => void })
 
   const stats = [
     { label: "Videos", value: totals.videos, icon: VideoIcon },
-    { label: "Views", value: totals.views, icon: Eye },
+    {
+      label: "Earned in EUR",
+      value: `€${(totals.earnedCredits * 0.5).toFixed(2)}`,
+      icon: Euro,
+    },
     { label: "Unlocks", value: totals.unlocks, icon: Lock },
     { label: "Earned credits", value: totals.earnedCredits, icon: Coins },
   ];
@@ -108,6 +112,15 @@ export default function MyVideosPanel({ onChanged }: { onChanged?: () => void })
           credits, waiting: <strong>{totals.pendingCredits}</strong>. Spent on boosts:{" "}
           <strong>{totals.boostSpent}</strong> credits.
         </p>
+
+        <p className="rounded-xl border border-border/60 bg-background/40 p-3 text-xs text-muted-foreground">
+          <strong>Value &amp; fees:</strong> 1 credit = <strong>€0.50</strong> (based on the 10
+          credits / €5 pack). Payouts run through Stripe, which charges a processing fee of{" "}
+          <strong>1.5% + €0.25</strong> per European card transaction (2.5% + €0.25 for non-European
+          cards) plus <strong>€2</strong> per payout to your bank account. Please count with these
+          fees — the amount landing on your account is lower than the EUR value shown above.
+        </p>
+
 
         {loading ? (
           <div className="flex justify-center py-8">
