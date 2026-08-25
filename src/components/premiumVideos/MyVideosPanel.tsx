@@ -80,7 +80,7 @@ export default function MyVideosPanel({ onChanged }: { onChanged?: () => void })
     { label: "Videos", value: totals.videos, icon: VideoIcon },
     {
       label: "Earned in EUR",
-      value: `€${(totals.earnedCredits * 0.5).toFixed(2)}`,
+      value: `€${(totals.unlocks * 0.25).toFixed(2)}`,
       icon: Euro,
     },
     { label: "Unlocks", value: totals.unlocks, icon: Lock },
@@ -107,18 +107,21 @@ export default function MyVideosPanel({ onChanged }: { onChanged?: () => void })
         </div>
 
         <p className="text-xs text-muted-foreground">
-          You receive 0.5 credit per unlock. Halves accumulate and are paid into your video credit
-          wallet once they reach a full credit — already paid out: <strong>{totals.paidOutCredits}</strong>{" "}
-          credits, waiting: <strong>{totals.pendingCredits}</strong>. Spent on boosts:{" "}
+          You receive <strong>€0.25</strong> per unlock (0.5 video credit). Halves accumulate and are
+          paid into your video credit wallet once they reach a full credit — already paid out:{" "}
+          <strong>{totals.paidOutCredits}</strong> credits, waiting:{" "}
+          <strong>{totals.pendingCredits}</strong>. Spent on boosts:{" "}
           <strong>{totals.boostSpent}</strong> credits.
         </p>
 
         <p className="rounded-xl border border-border/60 bg-background/40 p-3 text-xs text-muted-foreground">
-          <strong>Value &amp; fees:</strong> 1 credit = <strong>€0.50</strong> (based on the 10
-          credits / €5 pack). Payouts run through Stripe, which charges a processing fee of{" "}
-          <strong>1.5% + €0.25</strong> per European card transaction (2.5% + €0.25 for non-European
-          cards) plus <strong>€2</strong> per payout to your bank account. Please count with these
-          fees — the amount landing on your account is lower than the EUR value shown above.
+          <strong>Value &amp; fees:</strong> Each unlock earns you <strong>€0.25</strong> (0.5 video
+          credit, valued at €0.50 per credit). Stripe charges a processing fee of{" "}
+          <strong>1.5% + €0.25</strong> per European card transaction (2.5% + €0.25 for
+          non-European cards). When you withdraw your earnings, Stripe also charges a separate{" "}
+          <strong>€2 payout fee</strong> for transferring the money to your bank account. Please
+          count with these fees — the final amount landing on your account is lower than the EUR
+          value shown above.
         </p>
 
 
