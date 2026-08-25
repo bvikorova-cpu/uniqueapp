@@ -45,6 +45,8 @@ export const getNotificationText = (n: NotificationLike): string => {
       return "New KitchenStars payout pending";
     case "masterchef_withdrawal":
       return n.message || "New KitchenStars withdrawal request";
+    case "premium_video_unlock":
+      return n.message || (withActor ? `${name} unlocked your video` : "Someone unlocked your video");
     case "musician_withdrawal":
       return n.message || "New Musician withdrawal request";
     case "instructor_withdrawal":
