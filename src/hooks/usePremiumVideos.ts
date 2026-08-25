@@ -19,6 +19,7 @@ export interface PremiumVideo {
   created_at: string;
   boost_tier?: string | null;
   boost_until?: string | null;
+  frame_slug?: string | null;
   author_name?: string | null;
   author_avatar?: string | null;
   unlocked?: boolean;
@@ -36,7 +37,7 @@ export function usePremiumVideos() {
       const { data, error } = await (supabase as any)
         .from("premium_videos")
         .select(
-          "id, user_id, title, description, video_url, thumbnail_url, duration_seconds, unlock_cost, unlocks_count, views_count, created_at, boost_tier, boost_until",
+          "id, user_id, title, description, video_url, thumbnail_url, duration_seconds, unlock_cost, unlocks_count, views_count, created_at, boost_tier, boost_until, frame_slug",
         )
         .eq("is_published", true)
         .order("boost_until", { ascending: false, nullsFirst: false })

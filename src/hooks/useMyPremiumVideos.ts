@@ -37,7 +37,7 @@ export function useMyPremiumVideos() {
         (supabase as any)
           .from("premium_videos")
           .select(
-            "id, user_id, title, description, video_url, thumbnail_url, duration_seconds, unlock_cost, unlocks_count, views_count, created_at, boost_tier, boost_until, is_published",
+            "id, user_id, title, description, video_url, thumbnail_url, duration_seconds, unlock_cost, unlocks_count, views_count, created_at, boost_tier, boost_until, is_published, frame_slug",
           )
           .eq("user_id", user.id)
           .order("created_at", { ascending: false }),
