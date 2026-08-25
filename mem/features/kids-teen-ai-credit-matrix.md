@@ -1,29 +1,35 @@
 ---
 name: Kids & Teen AI Credit Matrix
-description: Complete credit gating matrix for all Kids & Teen AI features — table, cost, edge function
+description: Credit gating matrix for all Kids & Teen AI features — unified ai_credits, Gold Pass retired
 type: feature
 ---
 
-# Kids & Teen AI Credit Matrix (paid-only)
+# Kids & Teen AI Credit Matrix (paid-only, unified `ai_credits`)
 
-All AI calls must deduct credits server-side. Frontend NEVER bypasses the edge function.
+Kids Gold Pass subscription is RETIRED (Aug 2026). All Kids/Teen AI features are
+credit-based on the single `ai_credits` balance. Credits are bought only on
+`/ai-credits`; all `/kids-*-pricing` and `/teen-career-pricing` routes redirect there.
+Admins keep unlimited access (`hasKidsGoldPass` = admin check only).
 
-| Module           | Edge Function              | Credit Table              | Cost / call              |
-|------------------|----------------------------|---------------------------|--------------------------|
-| Homework Helper  | kids-homework-helper       | homework_credits          | 3                        |
-| Science Lab      | kids-science-helper        | science_credits           | 2                        |
-| Story Creator    | kids-story-generate        | kids_story_credits        | 5 (story)                |
-| Story Illustrate | kids-story-illustrate      | kids_story_credits        | 2 / page                 |
-| Story TTS        | kids-story-tts             | kids_story_credits        | 1 / page                 |
-| Drawing Polish   | kids-drawing-enhance       | kids_drawing_credits      | 4                        |
-| Reading: analyze | kids-reading-companion     | kids_reading_credits      | 2                        |
-| Reading: quiz    | kids-reading-companion     | kids_reading_credits      | 2                        |
-| Reading: define  | kids-reading-companion     | kids_reading_credits      | 1                        |
-| Academy hub      | kids-academy-router        | (hub credits)             | 2–3 per action           |
-| Teen Career      | teen-career-counselor      | teen_career_credits       | 2–5 per action           |
+| Module           | Edge Function              | Credit Table | Cost / call |
+|------------------|----------------------------|--------------|-------------|
+| Homework Helper  | kids-homework-helper       | ai_credits   | 3           |
+| Science Lab      | kids-science-helper        | ai_credits   | 3 (analyze 4) |
+| Story Creator    | kids-story-generate        | ai_credits   | 8           |
+| Story Illustrate | kids-story-illustrate      | ai_credits   | 3 / page    |
+| Story TTS        | kids-story-tts             | ai_credits   | 2 / page    |
+| Drawing Polish   | kids-drawing-enhance       | ai_credits   | 5           |
+| Reading: analyze | kids-reading-companion     | ai_credits   | 3           |
+| Reading: quiz    | kids-reading-companion     | ai_credits   | 3           |
+| Reading: define  | kids-reading-companion     | ai_credits   | 1           |
+| Academy actions  | kids-academy-router        | ai_credits   | 3           |
+| Character Chat   | character-chat (kids mode) | ai_credits   | 1 / message |
+| Teen Career      | teen-career-counselor      | teen_career_credits | 2–5   |
 
 ## Rules
-- 402 response → frontend redirects to `/kids-*-pricing` (or `/teen-career-pricing`).
-- Credits deducted ONLY after AI success.
-- Auto-init row at 0 credits if missing.
-- Web Speech Synthesis (Reading Read-Aloud) is FREE — uses browser API, no credits.
+- Math games and free Kids content stay open — no credits, no gate.
+- `KidsGoldPassGate` = credit gate: admin bypass, else requires ≥1 `ai_credits`;
+  paywall shows the price list and links to `/ai-credits`.
+- 402 response → user is sent to `/ai-credits`.
+- Credits deducted ONLY after AI success (chat reserves and refunds on failure).
+- Web Speech Synthesis (Reading Read-Aloud) is FREE — browser API, no credits.
