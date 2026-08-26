@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Coffee, Heart, Loader2, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,6 +29,7 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
   const [amount, setAmount] = useState<number>(3);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const checkoutKeyRef = useRef<string | null>(null);
 
   if (currentUserId === recipientId) return null;
 
@@ -36,6 +37,7 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
     setStep("select");
     setAmount(3);
     setMessage("");
+    checkoutKeyRef.current = null;
   };
 
   const fee = Math.round(amount * 100 * (FEE_PCT / 100)) / 100;
@@ -49,6 +51,8 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
     }
     if (!valid) return;
     setLoading(true);
+    const idempotencyKey = checkoutKeyRef.current ?? crypto.randomUUID();
+    checkoutKeyRef.current = idempotencyKey;
     const payload = {
       recipientId,
       amountCents: Math.round(amount * 100),
@@ -56,7 +60,10 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
     };
 
     const invokeOnce = async () => {
-      const { data, error } = await supabase.functions.invoke("create-profile-tip", { body: payload });
+      const { data, error } = await supabase.functions.invoke("create-profile-tip", {
+        body: payload,
+        headers: { "Idempotency-Key": idempotencyKey },
+      });
       if (error) throw error;
       return data as { url?: string } | null;
     };
@@ -132,7 +139,10 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
                   key={v}
                   type="button"
                   variant={amount === v ? "default" : "outline"}
-                  onClick={() => setAmount(v)}
+                  onClick={() => {
+                    checkoutKeyRef.current = null;
+                    setAmount(v);
+                  }}
                   className={
                     amount === v
                       ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white font-bold border-0"
@@ -152,7 +162,10 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
                 max={MAX}
                 step="1"
                 value={amount}
-                onChange={(e) => setAmount(Number(e.target.value))}
+                onChange={(e) => {
+                  checkoutKeyRef.current = null;
+                  setAmount(Number(e.target.value));
+                }}
               />
               {!valid && (
                 <p className="text-xs text-destructive mt-1">Amount must be €{MIN}–€{MAX}.</p>
@@ -162,7 +175,10 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
             <Textarea
               placeholder="Optional message (max 280 characters)…"
               value={message}
-              onChange={(e) => setMessage(e.target.value.slice(0, 280))}
+              onChange={(e) => {
+                checkoutKeyRef.current = null;
+                setMessage(e.target.value.slice(0, 280));
+              }}
               rows={3}
             />
 

@@ -570,6 +570,19 @@ serve(async (req) => {
               }
             }
 
+            if (meta.type === "profile_tip") {
+              const { error } = await supabase
+                .from("profile_tips")
+                .update({
+                  status: "completed",
+                  completed_at: new Date().toISOString(),
+                  stripe_payment_intent_id: paymentIntentId,
+                })
+                .eq("stripe_session_id", session.id)
+                .eq("status", "pending");
+              if (error) log("profile tip webhook update failed", { err: error.message });
+            }
+
 
             if (meta.type === "influencer_gift") {
               const { data: gift, error } = await supabase
