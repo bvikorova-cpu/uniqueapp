@@ -703,8 +703,6 @@ const Profile = () => {
             {/* FreeTierBalanceWidget removed — paid-only model */}
             {currentUserId === userId && <StreakMultiplierCard />}
             {/* FreeTierHistory removed — free credits discontinued (paid-only model) */}
-            {currentUserId === userId && <VictoryCardGenerator username={profile?.username ?? null} avatarUrl={profile?.avatar_url ?? null} />}
-            {currentUserId === userId && <CreatorAnalyticsWidget userId={userId} />}
           </div>
         )}
 
@@ -718,9 +716,6 @@ const Profile = () => {
 
         <ProfileJsonLd profile={profile} />
 
-        <div className="flex items-center justify-center mb-3">
-          <ProfileViewsCounter profileUserId={userId!} viewerId={currentUserId} />
-        </div>
 
         {currentUserId && currentUserId !== userId && (
           <MutualConnections viewerId={currentUserId} profileUserId={userId!} />
@@ -739,11 +734,6 @@ const Profile = () => {
 
         <ProfileMusicPlayer url={profile.profile_music_url} title={profile.profile_music_title} />
 
-        {/* Voice intro */}
-        <VoiceIntro userId={userId!} isOwnProfile={currentUserId === userId} />
-
-        {/* Story Highlights */}
-        <StoryHighlights userId={userId!} isOwnProfile={currentUserId === userId} />
 
         {/* 3D Avatar (if set) */}
         <Avatar3D userId={userId!} />
