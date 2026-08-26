@@ -58,12 +58,6 @@ export const ProfileHero = ({ profile,
   const borderClass = rewardsBorderClass(cosmetics.animated_border);
   const frameClass = rewardsFrameClass(cosmetics.avatar_frame);
 
-  const liveStats = [
-    { label: "Posts", value: stats.posts, icon: Sparkles },
-    { label: "Followers", value: stats.followers, icon: Users },
-    { label: "Following", value: stats.following, icon: TrendingUp },
-    { label: "XP", value: stats.xp ?? 0, icon: Zap },
-  ];
 
   return (
     <>
@@ -193,19 +187,6 @@ export const ProfileHero = ({ profile,
           </div>
         </div>
 
-        {/* Live Stats Strip */}
-        <div className="grid grid-cols-4 gap-2 sm:gap-3 mt-6">
-          {liveStats.map((stat) => (
-            <div
-              key={stat.label}
-              className="bg-black/45 backdrop-blur-xl border border-amber-400/25 rounded-xl px-2 sm:px-3 py-2.5 text-center hover:border-amber-400/60 transition-all hover:shadow-[0_0_20px_rgba(251,191,36,0.2)]"
-            >
-              <stat.icon className="h-3.5 w-3.5 mx-auto mb-1 text-amber-300" />
-              <div className="text-base sm:text-xl font-black text-white">{stat.value.toLocaleString()}</div>
-              <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-amber-100/70 font-semibold">{stat.label}</div>
-            </div>
-          ))}
-        </div>
 
         {/* Level / Rank — always visible so the level is clear on every profile */}
         {(stats.level !== undefined || (stats.rank !== undefined && stats.rank > 0)) && (
