@@ -60,8 +60,8 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
     };
 
     const invokeOnce = async () => {
-      const { data, error } = await supabase.functions.invoke("create-profile-tip", {
-        body: payload,
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { ...payload, product: "profile_tip" },
         headers: { "Idempotency-Key": idempotencyKey },
       });
       if (error) throw error;
