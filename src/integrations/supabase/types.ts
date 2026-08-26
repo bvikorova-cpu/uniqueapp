@@ -71740,6 +71740,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      purchase_verified_with_credits: { Args: never; Returns: Json }
       push_notification: {
         Args: {
           _action_url?: string
