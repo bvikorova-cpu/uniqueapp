@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 
-const VERIFIED_CREDIT_COST = 15;
+const VERIFIED_CREDIT_COST = 30;
 
 const FEATURES = [
   "Golden verified badge on profile",
@@ -95,7 +95,7 @@ export default function Verified() {
         <title>Unique Verified — One-time credit badge</title>
         <meta
           name="description"
-          content="Get the golden Unique Verified badge for a one-time 15 credit payment. Feed priority, highlighted comments and VIP support."
+          content="Get the golden Unique Verified badge for a one-time 30 credit payment. Feed priority, highlighted comments and VIP support."
         />
       </Helmet>
 
