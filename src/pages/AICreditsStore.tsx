@@ -61,12 +61,6 @@ const AICreditsStore = () => {
     { name: "Ultimate", credits: 150, price: 40, icon: Package, popular: false, description: "Best value", perCredit: 0.27, savings: "46%" },
   ];
 
-  const usageCosts = [
-    { icon: ImageIcon, label: "Image Generation", cost: "5 credits" },
-    { icon: Pencil, label: "Image Editing", cost: "3 credits" },
-    { icon: Brush, label: "Style Transfer", cost: "3 credits" },
-    { icon: ArrowUpRight, label: "AI Upscaler", cost: "2 credits" },
-  ];
 
   const handlePurchase = async (pkg: { credits: number; price: number }) => {
     try {
