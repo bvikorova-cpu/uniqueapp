@@ -58,12 +58,6 @@ export const ProfileHero = ({ profile,
   const borderClass = rewardsBorderClass(cosmetics.animated_border);
   const frameClass = rewardsFrameClass(cosmetics.avatar_frame);
 
-  const liveStats = [
-    { label: "Posts", value: stats.posts, icon: Sparkles },
-    { label: "Followers", value: stats.followers, icon: Users },
-    { label: "Following", value: stats.following, icon: TrendingUp },
-    { label: "XP", value: stats.xp ?? 0, icon: Zap },
-  ];
 
   return (
     <>
