@@ -38,7 +38,7 @@ interface TipRow {
   status: string;
   sender_id: string;
   refunded_at?: string | null;
-  sender?: { full_name: string | null; username: string | null } | null;
+  sender?: { full_name: string | null; username: string | null; avatar_url: string | null } | null;
 }
 
 interface Stats {
@@ -90,12 +90,9 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
     setStats(s ?? { total_count: 0, total_amount_cents: 0, total_recipient_cents: 0 });
 
     let list: TipRow[] = (tipsRows ?? []) as TipRow[];
-    if (list.length && isOwnProfile) {
+    if (list.length) {
       const ids = Array.from(new Set(list.map((t) => t.sender_id)));
-      const { data: senders } = await supabase
-        .from("profiles")
-        .select("id, full_name, username")
-        .in("id", ids);
+      const { data: senders } = await supabase.rpc("get_public_profiles", { ids });
       const map = new Map((senders ?? []).map((p: any) => [p.id, p]));
       list = list.map((t) => ({ ...t, sender: map.get(t.sender_id) ?? null }));
     }
