@@ -28,9 +28,7 @@ import MePerfOverlay from "@/components/debug/MePerfOverlay";
 const PostCard = lazy(() => import("@/components/feed/PostCard"));
 
 const StreakMultiplierCard = lazy(() => import("@/components/gamification/StreakMultiplierCard").then((m) => ({ default: m.StreakMultiplierCard })));
-const VictoryCardGenerator = lazy(() => import("@/components/social/VictoryCardGenerator").then((m) => ({ default: m.VictoryCardGenerator })));
 const ProfileMilestones = lazy(() => import("@/components/profile/ProfileMilestones").then((m) => ({ default: m.ProfileMilestones })));
-const CreatorAnalyticsWidget = lazy(() => import("@/components/analytics/CreatorAnalyticsWidget"));
 const InviteFriendPanel = lazy(() => import("@/components/referral/InviteFriendPanel").then((m) => ({ default: m.InviteFriendPanel })));
 const BrainDuelStats = lazy(() => import("@/components/profile/BrainDuelStats").then((m) => ({ default: m.BrainDuelStats })));
 const CourseHistory = lazy(() => import("@/components/profile/CourseHistory").then((m) => ({ default: m.CourseHistory })));
@@ -45,8 +43,6 @@ const CardCategoryBadges = lazy(() => import("@/components/profile/CardCategoryB
 
 const ActivityHeatmap = lazy(() => import("@/components/profile/ActivityHeatmap").then((m) => ({ default: m.ActivityHeatmap })));
 const FounderStory = lazy(() => import("@/components/profile/FounderStory").then((m) => ({ default: m.FounderStory })));
-const StoryHighlights = lazy(() => import("@/components/profile/StoryHighlights").then((m) => ({ default: m.StoryHighlights })));
-const VoiceIntro = lazy(() => import("@/components/profile/VoiceIntro").then((m) => ({ default: m.VoiceIntro })));
 const Avatar3D = lazy(() => import("@/components/profile/Avatar3D").then((m) => ({ default: m.Avatar3D })));
 const PublicGoals = lazy(() => import("@/components/profile/PublicGoals").then((m) => ({ default: m.PublicGoals })));
 const ProfileJsonLd = lazy(() => import("@/components/profile/ProfileJsonLd").then((m) => ({ default: m.ProfileJsonLd })));
@@ -59,7 +55,6 @@ const TipHistory = lazy(() => import("@/components/profile/TipHistory").then((m)
 const ProfileQRCode = lazy(() => import("@/components/profile/ProfileQRCode").then((m) => ({ default: m.ProfileQRCode })));
 const ThemePicker = lazy(() => import("@/components/profile/ThemePicker").then((m) => ({ default: m.ThemePicker })));
 const Endorsements = lazy(() => import("@/components/profile/Endorsements").then((m) => ({ default: m.Endorsements })));
-const ProfileViewsCounter = lazy(() => import("@/components/profile/ProfileViewsCounter").then((m) => ({ default: m.ProfileViewsCounter })));
 const LifeEventsTimeline = lazy(() => import("@/components/profile/LifeEventsTimeline").then((m) => ({ default: m.LifeEventsTimeline })));
 const FamilySection = lazy(() => import("@/components/profile/FamilySection").then((m) => ({ default: m.FamilySection })));
 
