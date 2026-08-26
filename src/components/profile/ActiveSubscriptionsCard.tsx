@@ -7,24 +7,19 @@ import { Button } from "@/components/ui/button";
 import { Crown, Loader2, ArrowRight, Sparkles } from "lucide-react";
 
 interface ActiveSub {
-  module: string;
-  tier: string | null;
+  id: string;
+  product_name: string;
   status: string;
-  expires_at: string | null;
+  current_period_end: string | null;
+  cancel_at_period_end: boolean;
 }
-
-const prettyModule = (m: string) =>
-  m
-    .split("_")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
 
 const fmtDate = (iso: string | null) =>
   iso ? new Date(iso).toLocaleDateString(undefined, { dateStyle: "medium" }) : "Ongoing";
 
 /**
  * Shows every platform subscription the user currently has active,
- * aggregated across all modules by get_my_active_subscriptions().
+ * Uses Stripe as the source of truth instead of inferred module-table rows.
  */
 export function ActiveSubscriptionsCard() {
   const [subs, setSubs] = useState<ActiveSub[]>([]);
@@ -34,8 +29,14 @@ export function ActiveSubscriptionsCard() {
     let cancelled = false;
     (async () => {
       try {
-        const { data } = await supabase.rpc("get_my_active_subscriptions" as any);
-        if (!cancelled && Array.isArray(data)) setSubs(data as ActiveSub[]);
+        const { data, error } = await supabase.functions.invoke("list-user-subscriptions");
+        if (error) throw error;
+        const active = Array.isArray(data?.subscriptions)
+          ? (data.subscriptions as ActiveSub[]).filter(
+              (subscription) => subscription.status === "active" || subscription.status === "trialing",
+            )
+          : [];
+        if (!cancelled) setSubs(active);
       } catch {
         /* silent — must never break the profile page */
       } finally {
@@ -80,21 +81,18 @@ export function ActiveSubscriptionsCard() {
             <div className="space-y-2">
               {subs.map((s) => (
                 <div
-                  key={s.module}
+                  key={s.id}
                   className="flex items-center justify-between gap-3 rounded-lg border bg-muted/30 px-3 py-2"
                 >
                   <div className="min-w-0">
-                    <p className="text-sm font-medium truncate">{prettyModule(s.module)}</p>
+                    <p className="text-sm font-medium truncate">{s.product_name}</p>
                     <p className="text-xs text-muted-foreground">
-                      Renews / valid until {fmtDate(s.expires_at)}
+                      {s.cancel_at_period_end ? "Ends" : "Renews"} {fmtDate(s.current_period_end)}
                     </p>
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
-                    {s.tier && (
-                      <Badge variant="outline" className="text-xs capitalize">{s.tier}</Badge>
-                    )}
                     <Badge
-                      variant={s.status?.toLowerCase() === "past_due" ? "destructive" : "default"}
+                      variant={s.status === "trialing" ? "secondary" : "default"}
                       className="text-xs capitalize"
                     >
                       {s.status?.replace("_", " ")}
