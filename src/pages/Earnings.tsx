@@ -19,7 +19,8 @@ import { EarningsHero,
   EarningsGoalTracker,
   EarningsTipsBanner,
   PayoutMethodsManager,
-  StripeConnectBanner } from "@/components/earnings";
+  StripeConnectBanner,
+  TipEarningsCard } from "@/components/earnings";
 import { PayoutSchedulePicker } from "@/components/earnings/PayoutSchedulePicker";
 import { TaxDocsButton } from "@/components/earnings/TaxDocsButton";
 import { WalletBalanceCard } from "@/components/earnings/WalletBalanceCard";
@@ -45,6 +46,12 @@ interface Transaction {
   buyer_id: string;
 }
 
+interface TipStats {
+  total_count: number;
+  total_amount_cents: number;
+  total_recipient_cents: number;
+}
+
 const Earnings = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -54,7 +61,8 @@ const Earnings = () => {
     completedPayouts: 0,
     available: 0,
     monthEarnings: 0,
-    totalSales: 0 });
+    totalSales: 0,
+    tipNet: 0 });
   const [lastMonthEarnings, setLastMonthEarnings] = useState(0);
   const [loading, setLoading] = useState(true);
   const [hasPayoutMethod, setHasPayoutMethod] = useState(false);
@@ -94,19 +102,34 @@ const Earnings = () => {
     setStripeConnect({ enabled, reason });
 
     loadTransactions(user.id);
+    loadTipStats(user.id);
+  };
+
+  const loadTipStats = async (userId: string) => {
+    try {
+      const { data } = await supabase.rpc("get_profile_tip_stats", { _recipient: userId });
+      const s = Array.isArray(data) ? data[0] : data;
+      const tipNet = (s?.total_recipient_cents ?? 0) / 100;
+      setStats((prev) => ({ ...prev, tipNet }));
+    } catch (e) {
+      console.error("[Earnings] tip stats failed", e);
+    }
   };
 
   const loadTransactions = async (userId: string) => {
     try {
-      const { data, error } = await supabase
-        .from('transactions')
-        .select('*')
-        .eq('seller_id', userId)
-        .order('created_at', { ascending: false });
+      const [{ data, error }, { data: availableCents }] = await Promise.all([
+        supabase
+          .from('transactions')
+          .select('*')
+          .eq('seller_id', userId)
+          .order('created_at', { ascending: false }),
+        supabase.rpc("get_creator_available_cents", { _user_id: userId }),
+      ]);
       if (error) throw error;
       const list = (data as any[]) || [];
       setTransactions(list);
-      calculateStats(list);
+      calculateStats(list, Number(availableCents ?? 0) / 100);
     } catch (error) {
       console.error('Error loading transactions:', error);
       toast({ title: "Error", description: "Failed to load transactions", variant: "destructive" });
@@ -115,13 +138,10 @@ const Earnings = () => {
     }
   };
 
-  const calculateStats = (txs: Transaction[]) => {
+  const calculateStats = (txs: Transaction[], availableBalance: number) => {
     const totalEarnings = txs.reduce((s, t) => s + Number(t.seller_amount), 0);
     const pendingPayouts = txs.filter(t => t.status === 'pending').reduce((s, t) => s + Number(t.seller_amount), 0);
     const completedPayouts = txs.filter(t => t.status === 'completed').reduce((s, t) => s + Number(t.seller_amount), 0);
-    // Available = funds released by buyer/escrow but not yet paid out (status === 'released')
-    // Falls back to completed when no released rows exist.
-    const releasedFunds = txs.filter(t => t.status === 'released').reduce((s, t) => s + Number(t.seller_amount), 0);
     const now = new Date();
     const monthEarnings = txs
       .filter(t => {
@@ -140,9 +160,10 @@ const Earnings = () => {
     setStats({ totalEarnings,
       pendingPayouts,
       completedPayouts,
-      available: releasedFunds > 0 ? releasedFunds : completedPayouts,
+      available: availableBalance,
       monthEarnings,
-      totalSales: txs.length });
+      totalSales: txs.length,
+      tipNet: stats.tipNet });
   };
 
   const formatDate = (s: string) =>
@@ -243,7 +264,7 @@ const Earnings = () => {
         <PayoutMethodsManager onChange={setHasPayoutMethod} />
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-4 mb-6">
+      <div className="grid lg:grid-cols-4 gap-4 mb-6">
         <EarningsPayoutCard
           available={stats.available}
           minimum={20}
@@ -258,6 +279,7 @@ const Earnings = () => {
           payoutsBlockReason={stripeConnect.reason}
         />
         <WalletBalanceCard />
+        <TipEarningsCard />
         <EarningsComparisonCard thisMonth={stats.monthEarnings} lastMonth={lastMonthEarnings} />
       </div>
 
@@ -282,8 +304,8 @@ const Earnings = () => {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-4 mb-6">
-        <EarningsMilestones totalEarnings={stats.totalEarnings} />
-        <EarningsTaxEstimator totalEarnings={stats.totalEarnings} />
+        <EarningsMilestones totalEarnings={stats.totalEarnings + stats.tipNet} />
+        <EarningsTaxEstimator totalEarnings={stats.totalEarnings + stats.tipNet} />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-4 mb-6">

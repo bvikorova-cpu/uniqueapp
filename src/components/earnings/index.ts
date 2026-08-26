@@ -10,3 +10,4 @@ export { EarningsGoalTracker } from "./EarningsGoalTracker";
 export { EarningsTipsBanner } from "./EarningsTipsBanner";
 export { PayoutMethodsManager } from "./PayoutMethodsManager";
 export { StripeConnectBanner } from "./StripeConnectBanner";
+export { TipEarningsCard } from "./TipEarningsCard";
