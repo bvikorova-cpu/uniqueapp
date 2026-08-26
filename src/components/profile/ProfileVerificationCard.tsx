@@ -8,7 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { VerifiedBadge } from "@/components/verified/VerifiedBadge";
 import { toast } from "sonner";
 
-export const VERIFIED_CREDIT_COST = 15;
+export const VERIFIED_CREDIT_COST = 30;
 
 const HIGHLIGHTS = [
   "Golden verified badge",
