@@ -18,7 +18,7 @@ const CAMPAIGN_TABLE: Record<string, string> = { medical: "medical_campaigns", d
 
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, idempotency-key, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const DEFAULT_APP_ORIGIN = "https://uniqueapp.fun";
 
@@ -2064,6 +2064,10 @@ async function handler(req: Request): Promise<Response> {
 
     // ─── B18d Creator Economy: profile_tip (10% fee, Stripe Connect destination charges when available) ───
     if (body.product === "profile_tip") {
+      const requestKey = req.headers.get("idempotency-key");
+      if (!requestKey || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(requestKey)) {
+        return errorResponse("A valid Idempotency-Key is required", 400);
+      }
       const recipientId = String(body.recipientId || "");
       const amt = Number(body.amountCents);
       if (!recipientId) return errorResponse("recipientId required", 400);
@@ -2106,7 +2110,10 @@ async function handler(req: Request): Promise<Response> {
           transfer_data: { destination: recipient.stripe_connect_account_id! },
           description: `Tip from ${email ?? userId} → ${recipientId}` };
       }
-      const session = await stripe.checkout.sessions.create(sessionParams as any);
+      const session = await stripe.checkout.sessions.create(
+        sessionParams as any,
+        { idempotencyKey: `profile-tip-${userId}-${requestKey}` },
+      );
       const { error: insertErr } = await admin.from("profile_tips").insert({ sender_id: userId,
         recipient_id: recipientId,
         amount_cents: amt,

@@ -38,7 +38,19 @@ Deno.serve(async (req) => {
         .select('id, amount_cents, recipient_amount_cents, recipient_id')
         .maybeSingle();
       if (error) throw error;
-      return j({ verified: true, tip: updated });
+      if (updated) return j({ verified: true, tip: updated, replayed: false });
+
+      // A redirect refresh or webhook retry may verify the same paid session again.
+      // Return the original completed row without another update, so notification
+      // triggers and downstream accounting are not executed twice.
+      const { data: existing, error: existingError } = await admin
+        .from('profile_tips')
+        .select('id, amount_cents, recipient_amount_cents, recipient_id')
+        .eq('stripe_session_id', sessionId)
+        .eq('status', 'completed')
+        .maybeSingle();
+      if (existingError) throw existingError;
+      return j({ verified: true, tip: existing, replayed: true });
     }
 
     return j({ verified: false, payment_status: session.payment_status });
