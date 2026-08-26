@@ -206,15 +206,16 @@ export default function Billing() {
               </div>
             ) : subs.length === 0 ? (
               <div className="py-12 text-center text-muted-foreground text-sm">
-                You don't have any subscriptions yet. Browse our{" "}
+                You don't have any subscriptions yet. Top up{" "}
                 <button
                   className="text-primary underline-offset-2 hover:underline"
-                  onClick={() => navigate("/subscription")}
+                  onClick={() => navigate("/ai-credits-store")}
                 >
-                  subscription plans
+                  AI credits
                 </button>
-                .
+                {" "}to use any paid feature.
               </div>
+
             ) : (
               <div className="rounded-md border overflow-x-auto">
                 <Table>

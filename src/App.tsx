@@ -157,7 +157,6 @@ import { ResetPassword,
   MegatalentPost,
   MegatalentSuccess,
   MegatalentBattleResults,
-  Subscription,
   Verified,
   
   
@@ -618,7 +617,7 @@ const App = () => {
                         <Route path="/club/checkout/:tier" element={<ClubCheckout />} />
                         <Route path="/club/card" element={<ClubCard />} />
                         <Route path="/subscriptions" element={<ProtectedRoute><Subscriptions /></ProtectedRoute>} />
-                        <Route path="/billing" element={<Navigate to="/subscriptions" replace />} />
+
                         <Route path="/downloads" element={<Navigate to="/download" replace />} />
                         <Route path="/wall" element={<ProtectedRoute><Wall /></ProtectedRoute>} />
                         <Route path="/search" element={<SearchResults />} />
@@ -740,16 +739,17 @@ const App = () => {
                         <Route path="/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
                         <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                         <Route path="/settings/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
-                        <Route path="/subscription" element={<Subscription />} />
+                        <Route path="/subscription" element={<Navigate to="/ai-credits-store" replace />} />
                         <Route path="/verified" element={<Verified />} />
                         
-                        <Route path="/pricing" element={<Navigate to="/subscription" replace />} />
-                        <Route path="/plans" element={<Navigate to="/subscription" replace />} />
-                        <Route path="/upgrade" element={<Navigate to="/subscription" replace />} />
-                        <Route path="/subscriptions" element={<Navigate to="/subscription" replace />} />
-                        <Route path="/prices" element={<Navigate to="/subscription" replace />} />
-                        <Route path="/billing" element={<Navigate to="/subscription" replace />} />
-                        <Route path="/membership" element={<Navigate to="/subscription" replace />} />
+                        <Route path="/pricing" element={<Navigate to="/ai-credits-store" replace />} />
+                        <Route path="/plans" element={<Navigate to="/ai-credits-store" replace />} />
+                        <Route path="/upgrade" element={<Navigate to="/ai-credits-store" replace />} />
+                        
+                        <Route path="/prices" element={<Navigate to="/ai-credits-store" replace />} />
+                        <Route path="/billing" element={<Navigate to="/ai-credits-store" replace />} />
+                        <Route path="/membership" element={<Navigate to="/ai-credits-store" replace />} />
+
                         <Route path="/premium-plans" element={<Navigate to="/premium" replace />} />
                         <Route path="/ai-credits-store" element={<AICreditsStore />} />
                         <Route path="/ai-credits" element={<AICreditsStore />} />
@@ -841,7 +841,7 @@ const App = () => {
                         <Route path="/education/course/:courseId" element={<EducationCourseRedirect />} />
                         <Route path="/education/my-courses" element={<Navigate to="/my-learning" replace />} />
                         <Route path="/education/teach" element={<Navigate to="/teacher-dashboard" replace />} />
-                        <Route path="/account/billing" element={<Navigate to="/subscription" replace />} />
+                        <Route path="/account/billing" element={<Navigate to="/ai-credits-store" replace />} />
                         <Route path="/account/credits" element={<Navigate to="/credits/history" replace />} />
                         <Route path="/account/parental" element={<Navigate to="/kids-channel/parental-dashboard" replace />} />
                         <Route path="/megatalent/go-live" element={<Navigate to="/megatalent" replace />} />

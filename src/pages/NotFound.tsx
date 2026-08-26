@@ -6,23 +6,24 @@ import { supabase } from "@/integrations/supabase/client";
 
 // Legacy / alias paths that should redirect to the canonical premium page
 // instead of showing a 404. Keep keys lowercase.
-const PREMIUM_ALIASES: Record<string, string> = { "/pricing": "/subscription",
-  "/price": "/subscription",
-  "/prices": "/subscription",
-  "/plans": "/subscription",
-  "/plan": "/subscription",
-  "/upgrade": "/subscription",
-  "/subscriptions": "/subscription",
-  "/billing": "/subscription",
-  "/membership": "/subscription",
-  "/memberships": "/subscription",
+const PREMIUM_ALIASES: Record<string, string> = { "/pricing": "/ai-credits-store",
+  "/price": "/ai-credits-store",
+  "/prices": "/ai-credits-store",
+  "/plans": "/ai-credits-store",
+  "/plan": "/ai-credits-store",
+  "/upgrade": "/ai-credits-store",
+  "/subscriptions": "/ai-credits-store",
+  "/billing": "/ai-credits-store",
+  "/membership": "/ai-credits-store",
+  "/memberships": "/ai-credits-store",
   "/premium-plans": "/premium",
   "/pro": "/premium",
   "/vip": "/premium",
-  "/checkout": "/subscription",
-  "/buy": "/subscription",
-  "/payment": "/subscription",
-  "/payments": "/subscription" };
+  "/checkout": "/ai-credits-store",
+  "/buy": "/ai-credits-store",
+  "/payment": "/ai-credits-store",
+  "/payments": "/ai-credits-store" };
+
 
 // Any path containing one of these tokens (as a path segment) will fall back
 // to /subscription instead of showing a 404. This catches nested aliases like
@@ -63,7 +64,7 @@ const NotFound = () => {
     // 2. Segment-based fallback: scan path segments for known tokens
     const segments = normalized.split("/").filter(Boolean);
     if (segments.some((s) => PREMIUM_PAGE_TOKENS.includes(s))) return "/premium";
-    if (segments.some((s) => PREMIUM_TOKENS.includes(s))) return "/subscription";
+    if (segments.some((s) => PREMIUM_TOKENS.includes(s))) return "/ai-credits-store";
 
     return null;
   }, [normalized]);

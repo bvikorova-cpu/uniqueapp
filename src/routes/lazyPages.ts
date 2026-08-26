@@ -245,11 +245,10 @@ export const InfluencerEarnings = lazy(() => import("@/pages/InfluencerEarnings"
 export const CreatorStudio = lazy(() => import("@/pages/CreatorStudio"));
 
 // Membership & Subscriptions
-export const Subscription = lazy(() => import("@/pages/Subscription"));
 export const Verified = lazy(() => import("@/pages/Verified"));
 
-
 export const CommunityDetail = lazy(() => import("@/pages/CommunityDetail"));
+
 export const PremiumStore = lazy(() => import("@/pages/PremiumStore"));
 export const Premium = lazy(() => import("@/pages/Premium"));
 export const AICreditsStore = lazy(() => import("@/pages/AICreditsStore"));

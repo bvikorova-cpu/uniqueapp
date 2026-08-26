@@ -107,7 +107,7 @@ const WinBackOffer = () => {
                 But you're still welcome back any time at our regular pricing.
               </p>
               <Button asChild size="lg" variant="outline" className="w-full">
-                <a href="/subscription">View plans</a>
+                <a href="/ai-credits-store">AI Credits Store</a>
               </Button>
             </>
           ) : (
