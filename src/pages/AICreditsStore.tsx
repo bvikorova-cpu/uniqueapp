@@ -155,12 +155,6 @@ const AICreditsStore = () => {
         </div>
 
 
-        {/* Flash sale */}
-        <AICreditsFlashSale onClaim={handleFlashSale} />
-
-        {/* Smart recommendation */}
-        <AICreditsRecommendation onSelectPackage={handleSelectByCredits} />
-
         {/* Packages */}
         <div ref={packagesRef} className="scroll-mt-20">
           <div className="text-center mb-6">
