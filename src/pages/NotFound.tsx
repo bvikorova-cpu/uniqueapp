@@ -26,8 +26,9 @@ const PREMIUM_ALIASES: Record<string, string> = { "/pricing": "/ai-credits-store
 
 
 // Any path containing one of these tokens (as a path segment) will fall back
-// to /subscription instead of showing a 404. This catches nested aliases like
+// to /ai-credits-store instead of showing a 404. This catches nested aliases like
 // /pricing/pro, /billing/invoice/123, /plans/annual, etc.
+
 const PREMIUM_TOKENS = [
   "pricing",
   "prices",
