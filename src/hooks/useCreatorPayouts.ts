@@ -9,7 +9,8 @@ export type PayoutKind =
   | "influencer"
   | "auction"
   | "referral"
-  | "campaign";
+  | "campaign"
+  | "creator_payout";
 
 export interface PayoutRow {
   id: string;
@@ -35,7 +36,8 @@ const KIND_CONFIG: Record<PayoutKind, KindConfig> = {
   influencer: { table: "influencer_withdrawal_requests", userIdCol: "influencer_id", label: "Influencer" },
   auction: { table: "auction_withdrawal_requests", userIdCol: "seller_id", label: "Auctions" },
   referral: { table: "referral_withdrawal_requests", userIdCol: "referrer_id", label: "Referrals" },
-  campaign: { table: "withdrawal_requests", userIdCol: "creator_id", label: "Campaigns" } };
+  campaign: { table: "withdrawal_requests", userIdCol: "creator_id", label: "Campaigns" },
+  creator_payout: { table: "creator_payouts", userIdCol: "user_id", label: "Stripe Connect" } };
 
 export const KIND_LABELS = Object.fromEntries(
   Object.entries(KIND_CONFIG).map(([k, v]) => [k, v.label]),
