@@ -92,15 +92,6 @@ const AICreditsStore = () => {
 
   const scrollToPackages = () => packagesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
-  // Flash-sale shortcut: 100 credits for €25 (custom price)
-  const handleFlashSale = () => handlePurchase({ credits: 100, price: 25 });
-
-  const handleSelectByCredits = (creditsAmount: number) => {
-    const pkg = creditPackages.find(p => p.credits === creditsAmount);
-    if (pkg) handlePurchase(pkg);
-    else scrollToPackages();
-  };
-
   return (
     <>
       <FloatingHowItWorks
