@@ -6,26 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useAICredits } from "@/hooks/useAICredits";
-import { Sparkles, Zap, Star, Package, ArrowLeft, Image as ImageIcon, Brush, Pencil, ArrowUpRight } from "lucide-react";
+import { Sparkles, Star, Package, ArrowLeft, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AICreditsHero } from "@/components/ai-credits/AICreditsHero";
 import { AICreditsLiveTicker } from "@/components/ai-credits/AICreditsLiveTicker";
 import { AICreditsFlashSale } from "@/components/ai-credits/AICreditsFlashSale";
 import { AICreditsLowBalanceAlert } from "@/components/ai-credits/AICreditsLowBalanceAlert";
 import { AICreditsRecommendation } from "@/components/ai-credits/AICreditsRecommendation";
-import { AIUsageAnalytics } from "@/components/ai-credits/AIUsageAnalytics";
-import { AICommunityGalleryStrip } from "@/components/ai-credits/AICommunityGalleryStrip";
-import { AutoRechargeCard } from "@/components/ai-credits/AutoRechargeCard";
-import { CreditSubscriptionCard } from "@/components/ai-credits/CreditSubscriptionCard";
 import { RolloverPolicyBanner } from "@/components/ai-credits/RolloverPolicyBanner";
 import { BulkSliderCalculator } from "@/components/ai-credits/BulkSliderCalculator";
-import { SpendForecastCard } from "@/components/ai-credits/SpendForecastCard";
-import { UsageBreakdownChart } from "@/components/ai-credits/UsageBreakdownChart";
-import { GiftCreditsDialog } from "@/components/ai-credits/GiftCreditsDialog";
-import { ReferralCreditsCard } from "@/components/ai-credits/ReferralCreditsCard";
-import { PromoCodeInput } from "@/components/ai-credits/PromoCodeInput";
-import { AlternativePayMethods } from "@/components/ai-credits/AlternativePayMethods";
-import { ReceiptHistoryCard } from "@/components/ai-credits/ReceiptHistoryCard";
 import { WatchAdButton } from "@/components/ads/WatchAdButton";
 import { SEO } from "@/components/SEO";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -72,12 +61,6 @@ const AICreditsStore = () => {
     { name: "Ultimate", credits: 150, price: 40, icon: Package, popular: false, description: "Best value", perCredit: 0.27, savings: "46%" },
   ];
 
-  const usageCosts = [
-    { icon: ImageIcon, label: "Image Generation", cost: "5 credits" },
-    { icon: Pencil, label: "Image Editing", cost: "3 credits" },
-    { icon: Brush, label: "Style Transfer", cost: "3 credits" },
-    { icon: ArrowUpRight, label: "AI Upscaler", cost: "2 credits" },
-  ];
 
   const handlePurchase = async (pkg: { credits: number; price: number }) => {
     try {
@@ -256,65 +239,7 @@ const AICreditsStore = () => {
         {/* Bulk slider */}
         <BulkSliderCalculator />
 
-        {/* Monthly subscription packs */}
-        <CreditSubscriptionCard />
 
-        {/* Spend forecast */}
-        <SpendForecastCard />
-
-        {/* Promo code */}
-        <PromoCodeInput onApplied={refresh} />
-
-        {/* Alternative pay methods notice */}
-        <AlternativePayMethods />
-
-        {/* Gift + Referral row */}
-        <div className="max-w-5xl mx-auto mb-6 flex justify-end">
-          <GiftCreditsDialog />
-        </div>
-        <ReferralCreditsCard />
-
-        {/* Auto-recharge */}
-        <AutoRechargeCard currentBalance={credits?.credits_remaining ?? 0} />
-
-        {/* Smart features section */}
-        <div className="grid lg:grid-cols-2 gap-6 max-w-6xl mx-auto mb-8">
-          <AIUsageAnalytics />
-          <UsageBreakdownChart />
-        </div>
-
-        {/* Receipt history */}
-        <ReceiptHistoryCard />
-
-        {/* Community gallery */}
-        <div className="max-w-6xl mx-auto mb-8">
-          <AICommunityGalleryStrip />
-        </div>
-
-        {/* Usage Costs */}
-        <div className="max-w-3xl mx-auto">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Zap className="w-5 h-5 text-primary" /> Credit Usage Guide
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {usageCosts.map((item) => (
-                  <div key={item.label} className="text-center p-3 rounded-xl bg-muted/50">
-                    <item.icon className="w-6 h-6 text-primary mx-auto mb-2" />
-                    <p className="font-bold text-sm">{item.cost}</p>
-                    <p className="text-[11px] text-muted-foreground">{item.label}</p>
-                  </div>
-                ))}
-              </div>
-              <p className="text-xs text-muted-foreground mt-4 text-center">
-                Credits are valid for 12 months · Usable across all AI features on the platform
-              </p>
-            </CardContent>
-          </Card>
-        </div>
       </div>
     </div>
     </>
