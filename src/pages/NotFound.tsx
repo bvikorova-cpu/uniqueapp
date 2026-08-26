@@ -12,7 +12,6 @@ const PREMIUM_ALIASES: Record<string, string> = { "/pricing": "/ai-credits-store
   "/plans": "/ai-credits-store",
   "/plan": "/ai-credits-store",
   "/upgrade": "/ai-credits-store",
-  "/subscriptions": "/ai-credits-store",
   "/billing": "/ai-credits-store",
   "/membership": "/ai-credits-store",
   "/memberships": "/ai-credits-store",
@@ -23,6 +22,7 @@ const PREMIUM_ALIASES: Record<string, string> = { "/pricing": "/ai-credits-store
   "/buy": "/ai-credits-store",
   "/payment": "/ai-credits-store",
   "/payments": "/ai-credits-store" };
+
 
 
 // Any path containing one of these tokens (as a path segment) will fall back
