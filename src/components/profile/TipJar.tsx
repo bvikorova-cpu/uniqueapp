@@ -154,7 +154,7 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
                 <span className="font-semibold">{recipientName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Suma tipu</span>
+                <span className="text-muted-foreground">Tip amount</span>
                 <span className="font-semibold">€{amount.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-xs">
@@ -162,7 +162,7 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
                 <span>-€{fee.toFixed(2)}</span>
               </div>
               <div className="flex justify-between border-t border-violet-400/20 pt-1.5 text-base">
-                <span className="text-muted-foreground">Pre tvorcu</span>
+                <span className="text-muted-foreground">For creator</span>
                 <span className="font-black text-violet-300">€{net.toFixed(2)}</span>
               </div>
               {message && (
