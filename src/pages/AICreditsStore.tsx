@@ -239,65 +239,7 @@ const AICreditsStore = () => {
         {/* Bulk slider */}
         <BulkSliderCalculator />
 
-        {/* Monthly subscription packs */}
-        <CreditSubscriptionCard />
 
-        {/* Spend forecast */}
-        <SpendForecastCard />
-
-        {/* Promo code */}
-        <PromoCodeInput onApplied={refresh} />
-
-        {/* Alternative pay methods notice */}
-        <AlternativePayMethods />
-
-        {/* Gift + Referral row */}
-        <div className="max-w-5xl mx-auto mb-6 flex justify-end">
-          <GiftCreditsDialog />
-        </div>
-        <ReferralCreditsCard />
-
-        {/* Auto-recharge */}
-        <AutoRechargeCard currentBalance={credits?.credits_remaining ?? 0} />
-
-        {/* Smart features section */}
-        <div className="grid lg:grid-cols-2 gap-6 max-w-6xl mx-auto mb-8">
-          <AIUsageAnalytics />
-          <UsageBreakdownChart />
-        </div>
-
-        {/* Receipt history */}
-        <ReceiptHistoryCard />
-
-        {/* Community gallery */}
-        <div className="max-w-6xl mx-auto mb-8">
-          <AICommunityGalleryStrip />
-        </div>
-
-        {/* Usage Costs */}
-        <div className="max-w-3xl mx-auto">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Zap className="w-5 h-5 text-primary" /> Credit Usage Guide
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {usageCosts.map((item) => (
-                  <div key={item.label} className="text-center p-3 rounded-xl bg-muted/50">
-                    <item.icon className="w-6 h-6 text-primary mx-auto mb-2" />
-                    <p className="font-bold text-sm">{item.cost}</p>
-                    <p className="text-[11px] text-muted-foreground">{item.label}</p>
-                  </div>
-                ))}
-              </div>
-              <p className="text-xs text-muted-foreground mt-4 text-center">
-                Credits are valid for 12 months · Usable across all AI features on the platform
-              </p>
-            </CardContent>
-          </Card>
-        </div>
       </div>
     </div>
     </>
