@@ -49,20 +49,51 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
     }
     if (!valid) return;
     setLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("create-profile-tip", {
-        body: { recipientId, amountCents: Math.round(amount * 100), message: message.trim() || null } });
+    const payload = {
+      recipientId,
+      amountCents: Math.round(amount * 100),
+      message: message.trim() || null,
+    };
+
+    const invokeOnce = async () => {
+      const { data, error } = await supabase.functions.invoke("create-profile-tip", { body: payload });
       if (error) throw error;
+      return data as { url?: string } | null;
+    };
+
+    try {
+      let data: { url?: string } | null = null;
+      try {
+        data = await invokeOnce();
+      } catch (firstError: any) {
+        // Transient network / edge-runtime cold start: retry once after a short delay.
+        await new Promise((r) => setTimeout(r, 1200));
+        try {
+          data = await invokeOnce();
+        } catch {
+          throw firstError;
+        }
+      }
+
       if (data?.url) {
-        window.location.href = data.url as string;
+        window.location.href = data.url;
       } else {
-        throw new Error("Failed to get the payment link.");
+        throw new Error("We could not create the payment link. Please try again.");
       }
     } catch (e: any) {
-      toast({ title: "Tip zlyhal", description: e.message ?? String(e), variant: "destructive" });
+      const raw = e?.message ?? String(e);
+      const networkIssue = /Failed to send a request|Failed to fetch|NetworkError|load failed/i.test(raw);
+      toast({
+        title: "Tip failed",
+        description: networkIssue
+          ? "The payment service could not be reached. Check your connection and try again."
+          : raw,
+        variant: "destructive",
+      });
       setLoading(false);
     }
   };
+
 
   return (
     <>
