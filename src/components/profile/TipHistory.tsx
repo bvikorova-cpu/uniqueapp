@@ -177,15 +177,21 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
                 key={t.id}
                 className="flex items-start gap-2 rounded-md border border-violet-400/10 bg-background/40 p-2"
               >
-                <div className="h-7 w-7 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shrink-0">
-                  <Heart className="h-3.5 w-3.5 text-white" />
+                <div className="h-7 w-7 rounded-full overflow-hidden bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shrink-0">
+                  {t.sender?.avatar_url ? (
+                    <img
+                      src={t.sender.avatar_url}
+                      alt={t.sender.full_name || t.sender.username || "Tipper"}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <Heart className="h-3.5 w-3.5 text-white" />
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-sm font-semibold truncate">
-                      {isOwnProfile
-                        ? t.sender?.full_name || t.sender?.username || "Anonymous donor"
-                        : "Tipper"}
+                      {t.sender?.full_name || t.sender?.username || "Anonymous donor"}
                     </span>
                     <span
                       className={`text-sm font-black shrink-0 ${
