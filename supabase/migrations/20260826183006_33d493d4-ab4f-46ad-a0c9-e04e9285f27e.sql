@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.notify_megatalent_tip_received() FROM anon, authenticated, PUBLIC;

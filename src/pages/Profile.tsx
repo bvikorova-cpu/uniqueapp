@@ -54,7 +54,6 @@ const TipJar = lazy(() => import("@/components/profile/TipJar").then((m) => ({ d
 const TipHistory = lazy(() => import("@/components/profile/TipHistory").then((m) => ({ default: m.TipHistory })));
 const ProfileQRCode = lazy(() => import("@/components/profile/ProfileQRCode").then((m) => ({ default: m.ProfileQRCode })));
 const ThemePicker = lazy(() => import("@/components/profile/ThemePicker").then((m) => ({ default: m.ThemePicker })));
-const Endorsements = lazy(() => import("@/components/profile/Endorsements").then((m) => ({ default: m.Endorsements })));
 const LifeEventsTimeline = lazy(() => import("@/components/profile/LifeEventsTimeline").then((m) => ({ default: m.LifeEventsTimeline })));
 const FamilySection = lazy(() => import("@/components/profile/FamilySection").then((m) => ({ default: m.FamilySection })));
 
@@ -715,8 +714,6 @@ const Profile = () => {
         {currentUserId && currentUserId !== userId && (
           <MutualConnections viewerId={currentUserId} profileUserId={userId!} />
         )}
-
-        <Endorsements profileUserId={userId!} currentUserId={currentUserId} />
 
         {/* Tip history & totals — visible to everyone, sender names only to owner */}
         <div className="my-4">

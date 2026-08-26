@@ -25,9 +25,24 @@ Deno.serve(async (req) => {
     );
 
     if (session.payment_status === 'paid') {
+      // Always record the real amount that Stripe actually charged.
+      const paidCents = Number(session.amount_total ?? 0);
+      const platformFee = Math.round(paidCents * 0.2);
+      const creatorAmount = paidCents - platformFee;
+
       const { data: updated, error } = await admin
         .from('megatalent_tips')
-        .update({ status: 'completed', completed_at: new Date().toISOString() })
+        .update({
+          status: 'completed',
+          completed_at: new Date().toISOString(),
+          ...(paidCents > 0
+            ? {
+                amount_cents: paidCents,
+                platform_fee_cents: platformFee,
+                creator_amount_cents: creatorAmount,
+              }
+            : {}),
+        })
         .eq('stripe_session_id', sessionId)
         .eq('status', 'pending')
         .select('id, amount_cents, creator_amount_cents')
