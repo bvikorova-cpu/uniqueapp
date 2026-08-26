@@ -44,11 +44,15 @@ serve(async (req) => {
     const user = userData.user;
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    // One email can have multiple Stripe customer records (for example after
+    // an older checkout flow). Read all of them so no real subscription is
+    // hidden and never rely on a single, arbitrary customer match.
+    const customers = await stripe.customers.list({ email: user.email, limit: 100 });
     if (customers.data.length === 0) {
       return json({ subscriptions: [], invoices: [], customer_id: null }, 200);
     }
-    const customerId = customers.data[0].id;
+    const customerIds = customers.data.map((customer) => customer.id);
+    const customerId = customerIds[0];
 
     const body = await req.json().catch(() => ({} as any));
     const action = body?.action ?? "list";
@@ -56,8 +60,14 @@ serve(async (req) => {
     // ---- ACTION: list_invoices ---------------------------------------------
     if (action === "list_invoices") {
       const limit = Math.min(Math.max(Number(body?.limit) || 12, 1), 50);
-      const inv = await stripe.invoices.list({ customer: customerId, limit });
-      const invoices = inv.data.map((i) => ({ id: i.id,
+      const invoicePages = await Promise.all(
+        customerIds.map((id) => stripe.invoices.list({ customer: id, limit })),
+      );
+      const invoices = invoicePages
+        .flatMap((page) => page.data)
+        .sort((a, b) => (b.created ?? 0) - (a.created ?? 0))
+        .slice(0, limit)
+        .map((i) => ({ id: i.id,
         number: i.number,
         status: i.status,
         amount_paid: (i.amount_paid ?? 0) / 100,
@@ -81,7 +91,8 @@ serve(async (req) => {
         return json({ error: "subscription_id and new_price_id required" }, 400);
       }
       const sub = await stripe.subscriptions.retrieve(subId);
-      if (sub.customer !== customerId) {
+      const subCustomerId = typeof sub.customer === "string" ? sub.customer : sub.customer.id;
+      if (!customerIds.includes(subCustomerId)) {
         return json({ error: "Not your subscription" }, 403);
       }
       const itemId = sub.items.data[0]?.id;
@@ -89,7 +100,7 @@ serve(async (req) => {
 
       // Use any-cast for retrieveUpcoming (typed differently across SDK versions)
       const upcoming: any = await (stripe.invoices as any).retrieveUpcoming({
-        customer: customerId,
+        customer: subCustomerId,
         subscription: subId,
         subscription_items: [{ id: itemId, price: newPriceId }],
         subscription_proration_behavior: "create_prorations" });
@@ -116,12 +127,20 @@ serve(async (req) => {
     }
 
     // ---- DEFAULT: list subscriptions ---------------------------------------
-    const subs = await stripe.subscriptions.list({ customer: customerId,
-      status: "all",
-      limit: 50,
-      expand: ["data.items.data.price.product"] });
+    const subscriptionPages = await Promise.all(
+      customerIds.map((id) => stripe.subscriptions.list({
+        customer: id,
+        status: "all",
+        limit: 100,
+        expand: ["data.items.data.price.product"],
+      })),
+    );
 
-    const result = subs.data
+    const result = subscriptionPages
+      .flatMap((page) => page.data)
+      .filter((subscription, index, all) =>
+        all.findIndex((candidate) => candidate.id === subscription.id) === index,
+      )
       .filter((s) =>
         ["active", "trialing", "past_due", "unpaid", "canceled"].includes(s.status),
       )
