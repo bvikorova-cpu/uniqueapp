@@ -18,17 +18,20 @@ interface Stats {
   joinedDays: number;
 }
 
-const LEVELS = [
-  { lvl: 1, name: "Newcomer", min: 0, color: "from-slate-400 to-slate-600", icon: Star },
-  { lvl: 2, name: "Explorer", min: 50, color: "from-emerald-400 to-teal-600", icon: Zap },
-  { lvl: 3, name: "Creator", min: 250, color: "from-blue-400 to-purple-600", icon: Award },
-  { lvl: 4, name: "Star", min: 1000, color: "from-pink-500 to-orange-500", icon: Sparkles },
-  { lvl: 5, name: "Legend", min: 5000, color: "from-yellow-400 via-orange-500 to-red-500", icon: Crown },
+// Rank tiers based on the SAME level value used by the Rewards hub
+// (Rewards: level = 100 XP per level, tracked in `user_points`).
+const TIERS = [
+  { minLevel: 1, name: "Newcomer", color: "from-slate-400 to-slate-600", icon: Star },
+  { minLevel: 3, name: "Explorer", color: "from-emerald-400 to-teal-600", icon: Zap },
+  { minLevel: 6, name: "Creator", color: "from-blue-400 to-purple-600", icon: Award },
+  { minLevel: 11, name: "Star", color: "from-pink-500 to-orange-500", icon: Sparkles },
+  { minLevel: 25, name: "Legend", color: "from-yellow-400 via-orange-500 to-red-500", icon: Crown },
 ];
 
 export function ProfileMilestones({ userId }: ProfileMilestonesProps) {
   const [stats, setStats] = useState<Stats | null>(null);
-  const [realXp, setRealXp] = useState<number | null>(null);
+  const [realXp, setRealXp] = useState<number>(0);
+  const [realLevel, setRealLevel] = useState<number>(1);
 
   useEffect(() => {
     if (!userId) return;
@@ -40,7 +43,7 @@ export function ProfileMilestones({ userId }: ProfileMilestonesProps) {
           (supabase as any).from("megatalent_entries").select("*", { count: "exact", head: true }).eq("user_id", userId),
           (supabase as any).from("follows").select("*", { count: "exact", head: true }).eq("following_id", userId),
           (supabase as any).from("profiles_public").select("created_at").eq("id", userId).maybeSingle(),
-          (supabase as any).from("user_points").select("total_points").eq("user_id", userId).maybeSingle(),
+          (supabase as any).from("user_points").select("total_points, level").eq("user_id", userId).maybeSingle(),
         ]);
         const created = (profile.data as any)?.created_at;
         const days = created ? Math.max(1, Math.floor((Date.now() - new Date(created).getTime()) / 86400000)) : 0;
@@ -49,7 +52,9 @@ export function ProfileMilestones({ userId }: ProfileMilestonesProps) {
           uploads: uploads.count || 0,
           followers: followers.count || 0,
           joinedDays: days });
-        setRealXp((points.data as any)?.total_points ?? null);
+        const p = points.data as { total_points?: number; level?: number } | null;
+        setRealXp(p?.total_points ?? 0);
+        setRealLevel(p?.level ?? 1);
       } catch {
         setStats({ votes: 0, comments: 0, uploads: 0, followers: 0, joinedDays: 0 });
       }
@@ -58,13 +63,20 @@ export function ProfileMilestones({ userId }: ProfileMilestonesProps) {
 
   if (!stats) return null;
 
-  const xp = realXp ?? (stats.votes * 2 + stats.comments * 3 + stats.uploads * 25 + stats.followers * 10);
-  const currentLevel = [...LEVELS].reverse().find((l) => xp >= l.min) ?? LEVELS[0];
-  const nextLevel = LEVELS.find((l) => l.min > xp);
-  const progress = nextLevel
-    ? Math.min(100, ((xp - currentLevel.min) / (nextLevel.min - currentLevel.min)) * 100)
-    : 100;
-  const Icon = currentLevel.icon;
+  const xp = realXp;
+  const level = Math.max(1, realLevel);
+  const tier = [...TIERS].reverse().find((t) => level >= t.minLevel) ?? TIERS[0];
+  const nextTier = TIERS.find((t) => t.minLevel > level);
+  // Same math as the Rewards hero: 100 XP per level
+  const xpForCurrentLevel = (level - 1) * 100;
+  const xpForNextLevel = level * 100;
+  const nextLevel = { name: `Level ${level + 1}${nextTier ? ` · ${nextTier.name}` : ""}`,
+    min: xpForNextLevel,
+    color: (nextTier ?? tier).color };
+  const progress = Math.min(100, Math.max(0, ((xp - xpForCurrentLevel) / (xpForNextLevel - xpForCurrentLevel)) * 100));
+  const currentLevel = { lvl: level, name: tier.name, color: tier.color };
+  const Icon = tier.icon;
+
 
   return (
     <>
