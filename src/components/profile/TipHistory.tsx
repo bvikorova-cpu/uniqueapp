@@ -38,7 +38,7 @@ interface TipRow {
   status: string;
   sender_id: string;
   refunded_at?: string | null;
-  sender?: { full_name: string | null; username: string | null } | null;
+  sender?: { full_name: string | null; username: string | null; avatar_url: string | null } | null;
 }
 
 interface Stats {
@@ -90,12 +90,9 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
     setStats(s ?? { total_count: 0, total_amount_cents: 0, total_recipient_cents: 0 });
 
     let list: TipRow[] = (tipsRows ?? []) as TipRow[];
-    if (list.length && isOwnProfile) {
+    if (list.length) {
       const ids = Array.from(new Set(list.map((t) => t.sender_id)));
-      const { data: senders } = await supabase
-        .from("profiles")
-        .select("id, full_name, username")
-        .in("id", ids);
+      const { data: senders } = await supabase.rpc("get_public_profiles", { ids });
       const map = new Map((senders ?? []).map((p: any) => [p.id, p]));
       list = list.map((t) => ({ ...t, sender: map.get(t.sender_id) ?? null }));
     }
@@ -180,15 +177,21 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
                 key={t.id}
                 className="flex items-start gap-2 rounded-md border border-violet-400/10 bg-background/40 p-2"
               >
-                <div className="h-7 w-7 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shrink-0">
-                  <Heart className="h-3.5 w-3.5 text-white" />
+                <div className="h-7 w-7 rounded-full overflow-hidden bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shrink-0">
+                  {t.sender?.avatar_url ? (
+                    <img
+                      src={t.sender.avatar_url}
+                      alt={t.sender.full_name || t.sender.username || "Tipper"}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <Heart className="h-3.5 w-3.5 text-white" />
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-sm font-semibold truncate">
-                      {isOwnProfile
-                        ? t.sender?.full_name || t.sender?.username || "Anonymous donor"
-                        : "Tipper"}
+                      {t.sender?.full_name || t.sender?.username || "Anonymous donor"}
                     </span>
                     <span
                       className={`text-sm font-black shrink-0 ${
