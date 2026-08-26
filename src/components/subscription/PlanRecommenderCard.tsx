@@ -47,7 +47,7 @@ export const PlanRecommenderCard = () => {
         {rec.monthly_savings_cents > 0 && (
           <div className="text-sm flex items-center gap-1 text-emerald-500"><TrendingUp className="h-4 w-4" /> Save €{(rec.monthly_savings_cents/100).toFixed(2)}/mo</div>
         )}
-        <Button onClick={() => navigate("/subscription")} className="gap-2">
+        <Button onClick={() => navigate("/ai-credits-store")} className="gap-2">
           {upgrade ? "Upgrade" : "Switch plan"} <ArrowRight className="h-4 w-4" />
         </Button>
       </CardContent>

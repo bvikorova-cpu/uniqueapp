@@ -133,7 +133,7 @@ export const MonetizationPolicy = () => {
             <Zap className="h-4 w-4" />
             Buy Credits
           </Button>
-          <Button onClick={() => navigate('/subscription')} variant="outline" className="flex-1 gap-2">
+          <Button onClick={() => navigate('/ai-credits-store')} variant="outline" className="flex-1 gap-2">
             <Crown className="h-4 w-4" />
             Go Premium
           </Button>

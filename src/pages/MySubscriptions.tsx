@@ -207,7 +207,7 @@ export default function MySubscriptions() {
           <CardContent className="py-12 text-center text-muted-foreground">
             <p className="mb-4">You don't have any subscriptions yet.</p>
             <Button asChild variant="outline">
-              <a href="/subscription">Browse plans</a>
+              <a href="/ai-credits-store">Get AI credits</a>
             </Button>
           </CardContent>
         </Card>

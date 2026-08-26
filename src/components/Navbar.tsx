@@ -546,12 +546,6 @@ const Navbar = () => {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/subscriptions" className="w-full cursor-pointer">
-                        <Crown className="h-4 w-4 mr-2" />
-                        {"Subscription"}
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
                       <Link to="/club" className="w-full cursor-pointer">
                         <Ticket className="h-4 w-4 mr-2 text-amber-500" />
                         <span className="bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent font-semibold">
@@ -885,12 +879,6 @@ const Navbar = () => {
                     <Button variant="ghost" className="w-full justify-start text-sm" size="sm">
                       <Settings className="h-4 w-4 mr-2" />
                       {"Edit profile"}
-                    </Button>
-                  </Link>
-                  <Link to="/subscription" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start text-sm" size="sm">
-                      <Crown className="h-4 w-4 mr-2" />
-                      {"Subscription"}
                     </Button>
                   </Link>
                   <Link to="/ai-credits" onClick={() => setIsMenuOpen(false)}>

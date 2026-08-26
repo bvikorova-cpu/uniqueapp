@@ -182,7 +182,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "142", title: "Earnings", category: "Rewards", path: "/earnings" },
   { id: "143", title: "Settings", category: "Account", path: "/settings" },
   { id: "144", title: "Profile", category: "Account", path: "/profile" },
-  { id: "145", title: "Subscription", category: "Account", path: "/subscription" },
+  
   { id: "146", title: "Premium Store", category: "Account", path: "/premium-store" },
   { id: "147", title: "AI Credits Store", category: "Account", path: "/ai-credits-store" },
   { id: "148", title: "Contact", category: "Account", path: "/contact" },

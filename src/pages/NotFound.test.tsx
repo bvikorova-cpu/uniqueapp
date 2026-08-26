@@ -13,8 +13,9 @@ function renderAt(path: string) {
   return render(
     <MemoryRouter initialEntries={[path]}>
       <Routes>
-        <Route path="/subscription" element={<div>SUB_PAGE</div>} />
+        <Route path="/ai-credits-store" element={<div>AI_CREDITS_PAGE</div>} />
         <Route path="/premium" element={<div>PREMIUM_PAGE</div>} />
+
         <Route path="*" element={<NotFound />} />
       </Routes>
     </MemoryRouter>
@@ -23,10 +24,11 @@ function renderAt(path: string) {
 
 describe("NotFound legacy redirects", () => {
   it.each([
-    ["/pricing", "SUB_PAGE"],
-    ["/Plans", "SUB_PAGE"],
-    ["/billing/invoice/123", "SUB_PAGE"],
-    ["/checkout/", "SUB_PAGE"],
+    ["/pricing", "AI_CREDITS_PAGE"],
+    ["/Plans", "AI_CREDITS_PAGE"],
+    ["/billing/invoice/123", "AI_CREDITS_PAGE"],
+    ["/checkout/", "AI_CREDITS_PAGE"],
+
     ["/vip", "PREMIUM_PAGE"],
     ["/pro/anything", "PREMIUM_PAGE"],
   ])("redirects %s to canonical page", (path, expected) => {
