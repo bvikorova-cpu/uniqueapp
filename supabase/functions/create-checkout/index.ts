@@ -260,7 +260,7 @@ async function handler(req: Request): Promise<Response> {
 
     // Public deployment probe — confirms which product branches this build supports.
     if (body?.product === "__ping") {
-      return successResponse({ ok: true, products: ["paid_message", "fan_club", "ppv"] });
+      return successResponse({ ok: true, products: ["paid_message", "profile_tip", "fan_club", "ppv"] });
     }
 
     const stripe = createStripeClient();
@@ -2105,9 +2105,11 @@ async function handler(req: Request): Promise<Response> {
       if (customerId) sessionParams.customer = customerId;
       else if (email) sessionParams.customer_email = email;
       if (useConnect) {
+        const destinationAccount = recipient.stripe_connect_account_id;
+        if (!destinationAccount) return errorResponse("Creator payout account is unavailable", 409);
         sessionParams.payment_intent_data = {
           application_fee_amount: platformFee,
-          transfer_data: { destination: recipient.stripe_connect_account_id! },
+          transfer_data: { destination: destinationAccount },
           description: `Tip from ${email ?? userId} → ${recipientId}` };
       }
       const session = await stripe.checkout.sessions.create(
@@ -2116,6 +2118,7 @@ async function handler(req: Request): Promise<Response> {
       );
       const { error: insertErr } = await admin.from("profile_tips").insert({ sender_id: userId,
         recipient_id: recipientId,
+        amount: amt / 100,
         amount_cents: amt,
         platform_fee_cents: platformFee,
         recipient_amount_cents: amt - platformFee,
