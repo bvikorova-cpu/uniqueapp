@@ -10,9 +10,7 @@ import { Sparkles, Star, Package, ArrowLeft, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AICreditsHero } from "@/components/ai-credits/AICreditsHero";
 import { AICreditsLiveTicker } from "@/components/ai-credits/AICreditsLiveTicker";
-import { AICreditsFlashSale } from "@/components/ai-credits/AICreditsFlashSale";
 import { AICreditsLowBalanceAlert } from "@/components/ai-credits/AICreditsLowBalanceAlert";
-import { AICreditsRecommendation } from "@/components/ai-credits/AICreditsRecommendation";
 import { RolloverPolicyBanner } from "@/components/ai-credits/RolloverPolicyBanner";
 import { BulkSliderCalculator } from "@/components/ai-credits/BulkSliderCalculator";
 import { WatchAdButton } from "@/components/ads/WatchAdButton";
@@ -94,15 +92,6 @@ const AICreditsStore = () => {
 
   const scrollToPackages = () => packagesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
-  // Flash-sale shortcut: 100 credits for €25 (custom price)
-  const handleFlashSale = () => handlePurchase({ credits: 100, price: 25 });
-
-  const handleSelectByCredits = (creditsAmount: number) => {
-    const pkg = creditPackages.find(p => p.credits === creditsAmount);
-    if (pkg) handlePurchase(pkg);
-    else scrollToPackages();
-  };
-
   return (
     <>
       <FloatingHowItWorks
@@ -165,12 +154,6 @@ const AICreditsStore = () => {
           <WatchAdButton size="sm" />
         </div>
 
-
-        {/* Flash sale */}
-        <AICreditsFlashSale onClaim={handleFlashSale} />
-
-        {/* Smart recommendation */}
-        <AICreditsRecommendation onSelectPackage={handleSelectByCredits} />
 
         {/* Packages */}
         <div ref={packagesRef} className="scroll-mt-20">
