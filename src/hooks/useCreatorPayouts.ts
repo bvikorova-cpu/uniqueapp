@@ -45,7 +45,7 @@ export const KIND_LABELS = Object.fromEntries(
 ) as Record<PayoutKind, string>;
 
 /**
- * Loads withdrawal history for the logged-in creator across ALL 7 payout types.
+ * Loads withdrawal history for the logged-in creator across ALL payout types.
  * Computes totals: pending, paid, rejected.
  */
 export function useCreatorPayouts() {
