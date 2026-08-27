@@ -205,8 +205,12 @@ export function GiftShopSheet({
             <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
           </div>
         ) : (
-          <Tabs defaultValue={GIFT_CATEGORIES[0].id} className="flex-1 flex flex-col min-h-0">
+          <Tabs defaultValue="all" className="flex-1 flex flex-col min-h-0">
             <TabsList className="w-full justify-start overflow-x-auto">
+              <TabsTrigger value="all" className="shrink-0 gap-1.5">
+                <Gift className="h-4 w-4" />
+                All ({gifts.length})
+              </TabsTrigger>
               {GIFT_CATEGORIES.map((c) => (
                 <TabsTrigger key={c.id} value={c.id} className="shrink-0 gap-1.5">
                   <img
@@ -217,12 +221,15 @@ export function GiftShopSheet({
                     className="h-5 w-5 object-contain"
                   />
                   {c.label}
+                  <span className="text-[10px] text-muted-foreground">
+                    {(byCategory[c.id] || []).length}
+                  </span>
                 </TabsTrigger>
               ))}
             </TabsList>
 
+            {[{ id: "all", label: "All" }, ...GIFT_CATEGORIES].map((c) => (
 
-            {GIFT_CATEGORIES.map((c) => (
               <TabsContent key={c.id} value={c.id} className="flex-1 min-h-0 mt-2">
                 <ScrollArea className="h-full pr-2">
                   <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 pb-6">
