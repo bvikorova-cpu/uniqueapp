@@ -621,6 +621,17 @@ const Profile = () => {
         
         {currentUserId === userId && <BillingOverviewCard />}
 
+        {currentUserId === userId && (
+          <a
+            href="/gifts/inbox"
+            className="mb-4 flex items-center justify-between rounded-xl border bg-card px-4 py-3 text-sm font-medium hover:bg-accent transition-colors"
+          >
+            <span>🎁 My gifts — received, sent & earned credits</span>
+            <span className="text-muted-foreground">›</span>
+          </a>
+        )}
+
+
 
 
         {/* XP breakdown — visible on every profile so the source of XP is clear */}
