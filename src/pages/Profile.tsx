@@ -132,8 +132,7 @@ const Profile = () => {
   const [followersModalTab, setFollowersModalTab] = useState<"followers" | "following">("followers");
   const [defaultTab, setDefaultTab] = useState("posts");
   const [detailsReady, setDetailsReady] = useState(false);
-  const [extendedReady, setExtendedReady] = useState(false);
-  const { data: followCounts } = useFollowCounts(extendedReady ? userId : undefined);
+  const { data: followCounts } = useFollowCounts(userId);
   const [stats, setStats] = useState({ postsCount: 0,
     likesGiven: 0,
     commentsGiven: 0,
