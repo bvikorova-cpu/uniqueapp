@@ -1,31 +1,62 @@
 import { lazy, Suspense, useEffect, useState } from "react";
-import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, ArrowLeft, Users, UserPlus, UserCheck } from "lucide-react";
+import { Loader2, ArrowLeft, Briefcase, Brain, Package, Sparkles, Users, UserPlus, UserCheck, Gift } from "lucide-react";
+import { VerifiedBadge } from "@/components/verified/VerifiedBadge";
+// FreeTierBalanceWidget import removed — paid-only model
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFollowCounts } from "@/hooks/useFollow";
 import { ProfileHero } from "@/components/profile/ProfileHero";
-import {
-  finishMeTrace,
+import { ProfileVerificationCard } from "@/components/profile/ProfileVerificationCard";
+import { ClubMembershipCard } from "@/components/profile/ClubMembershipCard";
+import { BillingOverviewCard } from "@/components/profile/BillingOverviewCard";
+
+import { XpBreakdown } from "@/components/profile/XpBreakdown";
+import { finishMeTrace,
   markMeFirstPaint,
   readMeProfileSnapshot,
   startMeTrace,
-  tracedQuery,
-} from "@/utils/perfMe";
+  tracedQuery } from "@/utils/perfMe";
 import MePerfOverlay from "@/components/debug/MePerfOverlay";
 
 const PostCard = lazy(() => import("@/components/feed/PostCard"));
-const FollowersModal = lazy(() =>
-  import("@/components/profile/FollowersModal").then((m) => ({ default: m.FollowersModal })),
-);
-const ThemePicker = lazy(() => import("@/components/profile/ThemePicker").then((m) => ({ default: m.ThemePicker })));
+
+const StreakMultiplierCard = lazy(() => import("@/components/gamification/StreakMultiplierCard").then((m) => ({ default: m.StreakMultiplierCard })));
+const ProfileMilestones = lazy(() => import("@/components/profile/ProfileMilestones").then((m) => ({ default: m.ProfileMilestones })));
+const InviteFriendPanel = lazy(() => import("@/components/referral/InviteFriendPanel").then((m) => ({ default: m.InviteFriendPanel })));
+const BrainDuelStats = lazy(() => import("@/components/profile/BrainDuelStats").then((m) => ({ default: m.BrainDuelStats })));
+const CourseHistory = lazy(() => import("@/components/profile/CourseHistory").then((m) => ({ default: m.CourseHistory })));
+const UserContests = lazy(() => import("@/components/profile/UserContests").then((m) => ({ default: m.UserContests })));
+const FollowersModal = lazy(() => import("@/components/profile/FollowersModal").then((m) => ({ default: m.FollowersModal })));
+const DailyXPVideoReward = lazy(() => import("@/components/gamification/DailyXPVideoReward").then((m) => ({ default: m.DailyXPVideoReward })));
+const MyBazaarListings = lazy(() => import("@/components/profile/MyBazaarListings").then((m) => ({ default: m.MyBazaarListings })));
+const MySkillsHub = lazy(() => import("@/components/profile/MySkillsHub").then((m) => ({ default: m.MySkillsHub })));
+const MyJobApplications = lazy(() => import("@/components/profile/MyJobApplications").then((m) => ({ default: m.MyJobApplications })));
+const AchievementsWall = lazy(() => import("@/components/profile/AchievementsWall").then((m) => ({ default: m.AchievementsWall })));
+
+
+const FounderStory = lazy(() => import("@/components/profile/FounderStory").then((m) => ({ default: m.FounderStory })));
+const Avatar3D = lazy(() => import("@/components/profile/Avatar3D").then((m) => ({ default: m.Avatar3D })));
+const ProfileJsonLd = lazy(() => import("@/components/profile/ProfileJsonLd").then((m) => ({ default: m.ProfileJsonLd })));
+const OpenToWorkBadge = lazy(() => import("@/components/profile/OpenToWork").then((m) => ({ default: m.OpenToWorkBadge })));
+const ProfileMusicPlayer = lazy(() => import("@/components/profile/ProfileMusicPlayer").then((m) => ({ default: m.ProfileMusicPlayer })));
+const MutualConnections = lazy(() => import("@/components/profile/MutualConnections").then((m) => ({ default: m.MutualConnections })));
+const VCardDownloadButton = lazy(() => import("@/components/profile/VCardDownloadButton").then((m) => ({ default: m.VCardDownloadButton })));
 const TipJar = lazy(() => import("@/components/profile/TipJar").then((m) => ({ default: m.TipJar })));
+const TipHistory = lazy(() => import("@/components/profile/TipHistory").then((m) => ({ default: m.TipHistory })));
+const ProfileQRCode = lazy(() => import("@/components/profile/ProfileQRCode").then((m) => ({ default: m.ProfileQRCode })));
+const ThemePicker = lazy(() => import("@/components/profile/ThemePicker").then((m) => ({ default: m.ThemePicker })));
+const LifeEventsTimeline = lazy(() => import("@/components/profile/LifeEventsTimeline").then((m) => ({ default: m.LifeEventsTimeline })));
+const FamilySection = lazy(() => import("@/components/profile/FamilySection").then((m) => ({ default: m.FamilySection })));
 
 const PROFILE_POSTS_PAGE_SIZE = 10;
+const LazyProfileSectionFallback = () => <div className="h-24 rounded-xl bg-muted/30 animate-pulse" />;
 
 const createOwnProfileSnapshot = (user: NonNullable<ReturnType<typeof useAuth>["user"]>): Profile => ({ id: user.id,
   full_name: (user.user_metadata?.full_name as string | undefined) || (user.email?.split("@")[0] ?? "Unique user"),
@@ -131,7 +162,8 @@ const Profile = () => {
   const [followersModalTab, setFollowersModalTab] = useState<"followers" | "following">("followers");
   const [defaultTab, setDefaultTab] = useState("posts");
   const [detailsReady, setDetailsReady] = useState(false);
-  const { data: followCounts } = useFollowCounts(userId);
+  const [extendedReady, setExtendedReady] = useState(false);
+  const { data: followCounts } = useFollowCounts(extendedReady ? userId : undefined);
   const [stats, setStats] = useState({ postsCount: 0,
     likesGiven: 0,
     commentsGiven: 0,
@@ -176,11 +208,19 @@ const Profile = () => {
 
   useEffect(() => {
     setDetailsReady(false);
+    setExtendedReady(false);
 
     const detailsTimer = window.setTimeout(() => setDetailsReady(true), 900);
+    const extendedTimer = window.setTimeout(() => {
+      const schedule = (window as any).requestIdleCallback
+        ? (cb: () => void) => (window as any).requestIdleCallback(cb, { timeout: 4500 })
+        : (cb: () => void) => window.setTimeout(cb, 2500);
+      schedule(() => setExtendedReady(true));
+    }, 4500);
 
     return () => {
       window.clearTimeout(detailsTimer);
+      window.clearTimeout(extendedTimer);
     };
   }, [userId]);
 
@@ -625,13 +665,131 @@ const Profile = () => {
                 )}
             </Suspense>
           }
+          deferExtras={extendedReady}
         />
 
-        {/* Posts only */}
+        {/* Unique Verified / Plus / Pro — direct upgrade on own profile */}
+        {currentUserId === userId && <ProfileVerificationCard />}
+        {currentUserId === userId && <ClubMembershipCard />}
+        
+        {currentUserId === userId && <BillingOverviewCard />}
+
+
+
+        {/* XP breakdown — visible on every profile so the source of XP is clear */}
+        <XpBreakdown
+          xp={stats.xp}
+          level={stats.level}
+          posts={stats.postsCount}
+          likes={stats.likesGiven}
+          comments={stats.commentsGiven}
+          friends={stats.friendsCount}
+        />
+
+        {extendedReady ? (
+        <Suspense fallback={<LazyProfileSectionFallback />}>
+        {/* Free Tier Credits — visible on own profile */}
+        {userId && (
+          <div className="mb-4 grid md:grid-cols-2 gap-4">
+            <ProfileMilestones userId={userId} />
+            {/* FreeTierBalanceWidget removed — paid-only model */}
+            {currentUserId === userId && <StreakMultiplierCard />}
+            {/* FreeTierHistory removed — free credits discontinued (paid-only model) */}
+          </div>
+        )}
+
+        {/* Secondary share actions — shown below hero on mobile for clarity */}
+        {currentUserId !== userId && (
+          <div className="flex flex-wrap justify-center gap-2 mb-4">
+            <ProfileQRCode userId={userId!} userName={profile.full_name || "user"} />
+            <VCardDownloadButton profile={profile} />
+          </div>
+        )}
+
+        <ProfileJsonLd profile={profile} />
+
+
+        {currentUserId && currentUserId !== userId && (
+          <MutualConnections viewerId={currentUserId} profileUserId={userId!} />
+        )}
+
+        {/* Tip history & totals — visible to everyone, sender names only to owner */}
+        <div className="my-4">
+          <TipHistory userId={userId!} isOwnProfile={currentUserId === userId} />
+        </div>
+
+        {profile.open_to_work && (
+          <OpenToWorkBadge details={profile.open_to_work_details} />
+        )}
+
+        <ProfileMusicPlayer url={profile.profile_music_url} title={profile.profile_music_title} />
+
+
+        {/* 3D Avatar (if set) */}
+        <Avatar3D userId={userId!} />
+
+        {/* Founder Story / Bio */}
+        <FounderStory profile={profile as any} />
+
+        {/* Trophy Wall */}
+        <AchievementsWall
+          userId={userId!}
+          stats={ {
+            posts: stats.postsCount,
+            friends: stats.friendsCount,
+            contests: stats.submissionsCount,
+            courses: stats.completedCoursesCount,
+            likes: stats.likesGiven,
+            comments: stats.commentsGiven,
+            followers: followCounts?.followers || 0 }}
+        />
+
+
+        {/* Daily XP Widget - only for own profile */}
+        {currentUserId === userId && (
+          <div className="mb-6">
+            <DailyXPVideoReward userId={userId} />
+          </div>
+        )}
+
+
+
+        {/* Tabs Section - Central Hub */}
         <Tabs defaultValue={defaultTab} className="w-full">
-          <TabsList className="w-full h-auto p-1">
-            <TabsTrigger value="posts">Posts</TabsTrigger>
-          </TabsList>
+          <div className="-mx-1 overflow-x-auto scrollbar-hide">
+            <TabsList className="inline-flex w-max min-w-full gap-1 h-auto p-1">
+              <TabsTrigger value="posts">Posts</TabsTrigger>
+              <TabsTrigger value="listings">
+                <Package className="h-4 w-4 mr-1 hidden sm:inline" />
+                Listings
+              </TabsTrigger>
+              <TabsTrigger value="skills">
+                <Sparkles className="h-4 w-4 mr-1 hidden sm:inline" />
+                Skills
+              </TabsTrigger>
+              <TabsTrigger value="jobs">
+                <Briefcase className="h-4 w-4 mr-1 hidden sm:inline" />
+                Jobs
+              </TabsTrigger>
+              <TabsTrigger value="contests">Contests</TabsTrigger>
+              <TabsTrigger value="education">Courses</TabsTrigger>
+              <TabsTrigger value="brain-duel">
+                <Brain className="h-4 w-4 mr-1 hidden sm:inline" />
+                Duel
+              </TabsTrigger>
+              <TabsTrigger value="friends">Friends</TabsTrigger>
+              <TabsTrigger value="life">
+                <Sparkles className="h-4 w-4 mr-1 hidden sm:inline" />
+                Life
+              </TabsTrigger>
+              {currentUserId === userId && (
+                <TabsTrigger value="invite">
+                  <Gift className="h-4 w-4 mr-1 hidden sm:inline" />
+                  Invite
+                </TabsTrigger>
+              )}
+            </TabsList>
+          </div>
           
           <TabsContent value="posts" className="space-y-4 mt-4">
             {posts.length === 0 ? (
@@ -648,6 +806,87 @@ const Profile = () => {
               ))
             )}
           </TabsContent>
+
+          {/* My Listings (Bazaar) */}
+          <TabsContent value="listings" className="mt-4">
+            <MyBazaarListings userId={userId!} isOwnProfile={currentUserId === userId} />
+          </TabsContent>
+
+          {/* My Skills (Marketplace/Swap) */}
+          <TabsContent value="skills" className="mt-4">
+            <MySkillsHub userId={userId!} isOwnProfile={currentUserId === userId} />
+          </TabsContent>
+
+          {/* Job Applications */}
+          <TabsContent value="jobs" className="mt-4">
+            <MyJobApplications userId={userId!} isOwnProfile={currentUserId === userId} />
+          </TabsContent>
+
+          <TabsContent value="contests" className="mt-4">
+            <UserContests userId={userId!} />
+          </TabsContent>
+
+          <TabsContent value="education" className="mt-4">
+            <CourseHistory userId={userId} />
+          </TabsContent>
+
+          <TabsContent value="brain-duel" className="mt-4">
+            <BrainDuelStats userId={userId!} />
+          </TabsContent>
+
+          <TabsContent value="friends" className="mt-4 space-y-3">
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <p className="text-xs text-muted-foreground flex-1 min-w-0">
+                Friends are mutual connections (both accepted).
+              </p>
+              {currentUserId === userId && (
+                <Button size="sm" variant="outline" onClick={() => navigate("/friends")}>
+                  Manage all
+                </Button>
+              )}
+            </div>
+            {friends.length === 0 ? (
+              <Card className="p-8 text-center text-muted-foreground">
+                No friends yet
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {friends.map((friend) => (
+                  <Card
+                    key={friend.id}
+                    className="p-3 cursor-pointer hover:bg-accent transition-colors"
+                    onClick={() => navigate(`/profile/${friend.id}`)}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <Avatar className="h-10 w-10 shrink-0">
+                        <AvatarImage src={friend.avatar_url || undefined} />
+                        <AvatarFallback>
+                          {friend.full_name?.[0]?.toUpperCase() || "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0 flex-1">
+                        <div className="font-semibold truncate">{friend.full_name || "No name"}</div>
+                        {friend.username && (
+                          <div className="text-xs text-muted-foreground truncate">@{friend.username}</div>
+                        )}
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="life" className="mt-4 space-y-4">
+            <LifeEventsTimeline userId={userId!} isOwnProfile={currentUserId === userId} />
+            <FamilySection userId={userId!} currentUserId={currentUserId} isOwnProfile={currentUserId === userId} />
+          </TabsContent>
+
+          {currentUserId === userId && (
+            <TabsContent value="invite" className="mt-4">
+              <InviteFriendPanel />
+            </TabsContent>
+          )}
         </Tabs>
 
         <FollowersModal
@@ -657,6 +896,10 @@ const Profile = () => {
           onClose={() => setFollowersModalOpen(false)}
           defaultTab={followersModalTab}
         />
+        </Suspense>
+        ) : (
+          <LazyProfileSectionFallback />
+        )}
       </div>
     </div>
   );
