@@ -1730,6 +1730,17 @@ const Messenger = () => {
                       </PopoverContent>
                     </Popover>
 
+                    <div className="shrink-0">
+                      <GiftShopSheet
+                        conversationId={selectedConversation}
+                        recipientId={otherUser?.id}
+                        recipientName={otherUser?.full_name || undefined}
+                        onSent={() => fetchMessages()}
+                      />
+                    </div>
+
+
+
 
                     <div className="shrink-0">
                       <SelfDestructingMessage
