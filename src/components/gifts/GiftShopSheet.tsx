@@ -100,6 +100,11 @@ export function GiftShopSheet({
     };
   }, [open]);
 
+  const allFiltered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return gifts.filter((g) => !q || g.name.toLowerCase().includes(q));
+  }, [gifts, search]);
+
   const byCategory = useMemo(() => {
     const q = search.trim().toLowerCase();
     const map: Record<string, CatalogGift[]> = {};
