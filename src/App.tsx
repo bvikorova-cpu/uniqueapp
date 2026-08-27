@@ -38,6 +38,8 @@ const PPVPost = lazy(() => import("@/pages/PPVPost"));
 const PaidMessageSuccess = lazy(() => import("@/pages/PaidMessageSuccess"));
 const GiftSuccess = lazy(() => import("@/pages/GiftSuccess"));
 const GiftHistory = lazy(() => import("@/pages/GiftHistory"));
+const GiftsInbox = lazy(() => import("@/pages/GiftsInbox"));
+
 const Club = lazy(() => import("@/pages/Club"));
 const ClubCheckout = lazy(() => import("@/pages/ClubCheckout"));
 const ClubCard = lazy(() => import("@/pages/ClubCard"));
