@@ -41,7 +41,7 @@ const MyJobApplications = lazy(() => import("@/components/profile/MyJobApplicati
 const AchievementsWall = lazy(() => import("@/components/profile/AchievementsWall").then((m) => ({ default: m.AchievementsWall })));
 const CardCategoryBadges = lazy(() => import("@/components/profile/CardCategoryBadges").then((m) => ({ default: m.CardCategoryBadges })));
 
-const ActivityHeatmap = lazy(() => import("@/components/profile/ActivityHeatmap").then((m) => ({ default: m.ActivityHeatmap })));
+
 const FounderStory = lazy(() => import("@/components/profile/FounderStory").then((m) => ({ default: m.FounderStory })));
 const Avatar3D = lazy(() => import("@/components/profile/Avatar3D").then((m) => ({ default: m.Avatar3D })));
 const PublicGoals = lazy(() => import("@/components/profile/PublicGoals").then((m) => ({ default: m.PublicGoals })));
@@ -751,8 +751,6 @@ const Profile = () => {
           <CardCategoryBadges userId={userId!} isOwnProfile={currentUserId === userId} />
         </div>
 
-        {/* Activity Heatmap */}
-        <ActivityHeatmap userId={userId!} />
 
 
         {/* Public Goals */}
