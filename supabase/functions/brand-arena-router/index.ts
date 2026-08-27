@@ -17,29 +17,29 @@ const CREDIT_COSTS: Record<string, number> = { "ai.brandAnalyzer": 5,
   "ai.trendTimeline": 3,
   "share.unlockVote": 0 };
 
+// Unified credit pool: always spend from public.ai_credits (+ ledger row).
 async function spendCredits(admin: any, userId: string, amount: number) {
   if (amount <= 0) return;
   const { data: row } = await admin
-    .from("brand_battle_credits")
-    .select("*")
+    .from("ai_credits")
+    .select("credits_remaining")
     .eq("user_id", userId)
     .maybeSingle();
-  const bal = row?.credits_balance ?? 0;
+  const bal = row?.credits_remaining ?? 0;
   if (bal < amount) {
     const e: any = new Error("Insufficient credits");
     e.status = 402;
     throw e;
   }
-  if (row) { await admin
-      .from("brand_battle_credits")
-      .update({
-        credits_balance: bal - amount,
-        total_credits_spent: (row.total_credits_spent ?? 0) + amount })
-      .eq("user_id", userId);
-  } else {
-    await admin
-      .from("brand_battle_credits")
-      .insert({ user_id: userId, credits_balance: 0, total_credits_spent: amount });
+  const { error } = await admin.rpc("deduct_ai_credits", {
+    p_user_id: userId,
+    p_amount: amount,
+    p_reason: "brand_arena_ai",
+    p_source: "brand_arena" });
+  if (error) {
+    const e: any = new Error(error.message || "Insufficient credits");
+    e.status = /insufficient/i.test(error.message || "") ? 402 : 500;
+    throw e;
   }
 }
 
@@ -240,11 +240,14 @@ Deno.serve(async (req) => {
       // --- Credits balance ---
       case "credits.balance": {
         const { data } = await admin
-          .from("brand_battle_credits")
-          .select("*")
+          .from("ai_credits")
+          .select("credits_remaining, credits_used")
           .eq("user_id", user.id)
           .maybeSingle();
-        result = { credits: data };
+        result = {
+          credits: {
+            credits_balance: data?.credits_remaining ?? 0,
+            total_credits_spent: data?.credits_used ?? 0 } };
         break;
       }
 
