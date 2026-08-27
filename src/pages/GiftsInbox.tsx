@@ -101,7 +101,8 @@ export default function GiftsInbox() {
                 name={r.gift_catalog?.name ?? "Gift"}
                 imageUrl={r.gift_catalog?.image_url ?? null}
                 animation={r.gift_catalog?.animation ?? "none"}
-                size="sm"
+                size={48}
+
               />
             </div>
             <div className="min-w-0 flex-1">
