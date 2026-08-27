@@ -26183,6 +26183,7 @@ export type Database = {
           gift_id: string
           id: string
           message_id: string | null
+          post_id: string | null
           recipient_id: string
           recipient_share_credits: number
           sender_id: string
@@ -26194,6 +26195,7 @@ export type Database = {
           gift_id: string
           id?: string
           message_id?: string | null
+          post_id?: string | null
           recipient_id: string
           recipient_share_credits?: number
           sender_id: string
@@ -26205,6 +26207,7 @@ export type Database = {
           gift_id?: string
           id?: string
           message_id?: string | null
+          post_id?: string | null
           recipient_id?: string
           recipient_share_credits?: number
           sender_id?: string
@@ -72032,6 +72035,10 @@ export type Database = {
           p_recipient_email: string
         }
         Returns: Json
+      }
+      send_post_gift: {
+        Args: { p_gift_id: string; p_post_id: string }
+        Returns: string
       }
       send_secret_santa_gift: {
         Args: {
