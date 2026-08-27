@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { GiftVisual } from "@/components/gifts/GiftVisual";
 import { Gift, Inbox, Send, Coins, ArrowLeft, Wallet } from "lucide-react";
 import { format } from "date-fns";
