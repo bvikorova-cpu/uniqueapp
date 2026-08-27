@@ -73,8 +73,22 @@ export function PostGiftStrip({ postId }: PostGiftProps) {
  */
 export function PostGiftAction({ postId, authorId, authorName, currentUserId }: PostGiftProps) {
   const { gifts, reload } = usePostGifts(postId);
+  const isOwnPost = !!currentUserId && currentUserId === authorId;
 
-  if (currentUserId && currentUserId === authorId) return null;
+  if (isOwnPost) {
+    return (
+      <Button
+        variant="ghost"
+        size="sm"
+        disabled
+        className="w-full gap-1.5 opacity-70"
+        title="You cannot send gifts to your own post"
+      >
+        <Gift className="h-4 w-4 text-primary" />
+        <span className="text-xs font-medium">{gifts.length > 0 ? gifts.length : "Gifts"}</span>
+      </Button>
+    );
+  }
 
   return (
     <GiftShopSheet
