@@ -758,5 +758,32 @@ export const GIFT_RARITY_RING: Record<string, string> = {
   legendary: "ring-amber-400/70",
 };
 
+/** Universal 3D fallback so no gift ever renders an emoji glyph. */
+export const GIFT_FALLBACK_IMAGE = GIFT_IMAGES["gift-mountain"] || GIFT_IMAGES["heart-gift"];
+
 export const giftImage = (slug: string, fallback?: string | null) =>
-  GIFT_IMAGES[slug] || fallback || "";
+  GIFT_IMAGES[slug] || fallback || GIFT_FALLBACK_IMAGE;
+
+/** One representative 3D icon per gift category (used in the shop tabs). */
+const GIFT_CATEGORY_ICON_SLUG: Record<string, string> = {
+  classic: "bouquet",
+  love: "heart-gift",
+  party: "disco",
+  fairytale: "castle",
+  luxury: "crown",
+  nature: "sunflower",
+  food: "cupcake",
+  adventure: "compass",
+  cosmic: "galaxy",
+  cute: "kitten",
+  prestige: "gold-watch",
+  scenes: "dj-cat",
+  cozy: "sheep-cloud",
+  fantasy: "unicorn-rainbow",
+  journey: "hot-air-balloons",
+  nightlife: "champagne-fountain",
+};
+
+export const giftCategoryIcon = (categoryId: string) =>
+  GIFT_IMAGES[GIFT_CATEGORY_ICON_SLUG[categoryId] || ""] || GIFT_FALLBACK_IMAGE;
+
