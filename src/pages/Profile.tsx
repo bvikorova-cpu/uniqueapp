@@ -626,7 +626,6 @@ const Profile = () => {
                 )}
             </Suspense>
           }
-          deferExtras={extendedReady}
         />
 
         {/* Posts only */}
