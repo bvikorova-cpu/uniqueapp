@@ -755,39 +755,10 @@ const Profile = () => {
 
 
         {/* Tabs Section - Central Hub */}
-        <Tabs defaultValue={defaultTab} className="w-full">
+        <Tabs defaultValue="posts" className="w-full">
           <div className="-mx-1 overflow-x-auto scrollbar-hide">
             <TabsList className="inline-flex w-max min-w-full gap-1 h-auto p-1">
               <TabsTrigger value="posts">Posts</TabsTrigger>
-              <TabsTrigger value="listings">
-                <Package className="h-4 w-4 mr-1 hidden sm:inline" />
-                Listings
-              </TabsTrigger>
-              <TabsTrigger value="skills">
-                <Sparkles className="h-4 w-4 mr-1 hidden sm:inline" />
-                Skills
-              </TabsTrigger>
-              <TabsTrigger value="jobs">
-                <Briefcase className="h-4 w-4 mr-1 hidden sm:inline" />
-                Jobs
-              </TabsTrigger>
-              <TabsTrigger value="contests">Contests</TabsTrigger>
-              <TabsTrigger value="education">Courses</TabsTrigger>
-              <TabsTrigger value="brain-duel">
-                <Brain className="h-4 w-4 mr-1 hidden sm:inline" />
-                Duel
-              </TabsTrigger>
-              <TabsTrigger value="friends">Friends</TabsTrigger>
-              <TabsTrigger value="life">
-                <Sparkles className="h-4 w-4 mr-1 hidden sm:inline" />
-                Life
-              </TabsTrigger>
-              {currentUserId === userId && (
-                <TabsTrigger value="invite">
-                  <Gift className="h-4 w-4 mr-1 hidden sm:inline" />
-                  Invite
-                </TabsTrigger>
-              )}
             </TabsList>
           </div>
           
