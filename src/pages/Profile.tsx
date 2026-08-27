@@ -177,19 +177,11 @@ const Profile = () => {
 
   useEffect(() => {
     setDetailsReady(false);
-    setExtendedReady(false);
 
     const detailsTimer = window.setTimeout(() => setDetailsReady(true), 900);
-    const extendedTimer = window.setTimeout(() => {
-      const schedule = (window as any).requestIdleCallback
-        ? (cb: () => void) => (window as any).requestIdleCallback(cb, { timeout: 4500 })
-        : (cb: () => void) => window.setTimeout(cb, 2500);
-      schedule(() => setExtendedReady(true));
-    }, 4500);
 
     return () => {
       window.clearTimeout(detailsTimer);
-      window.clearTimeout(extendedTimer);
     };
   }, [userId]);
 
