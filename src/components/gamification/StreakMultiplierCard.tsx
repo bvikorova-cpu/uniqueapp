@@ -16,10 +16,11 @@ interface Milestone {
 }
 
 const MILESTONES: Milestone[] = [
-  { days: 7, label: "Week Warrior", reward: "+5 credits", icon: Zap, color: "from-orange-400 to-amber-500" },
-  { days: 30, label: "Monthly Master", reward: "+25 credits + badge", icon: Trophy, color: "from-purple-500 to-pink-500" },
-  { days: 100, label: "Centurion", reward: "+100 credits + exclusive badge", icon: Crown, color: "from-yellow-400 via-orange-500 to-red-500" },
+  { days: 7, label: "Week Warrior", reward: "+100 XP per day", icon: Zap, color: "from-orange-400 to-amber-500" },
+  { days: 30, label: "Monthly Master", reward: "+250 XP per day + badge", icon: Trophy, color: "from-purple-500 to-pink-500" },
+  { days: 100, label: "Centurion", reward: "+500 XP per day + exclusive badge", icon: Crown, color: "from-yellow-400 via-orange-500 to-red-500" },
 ];
+
 
 export function StreakMultiplierCard() {
   const { streak, loading, claiming, canClaim, claim } = useDailyLoginReward();
@@ -37,19 +38,21 @@ export function StreakMultiplierCard() {
   const onClaim = async () => {
     const res = await claim();
     if (res?.claimed) {
+      const xp = res.xp ?? res.bonus ?? 0;
       if (res.was_reset) {
         const missed = res.missed_days ?? 0;
         toast.warning("Streak reset 🔄", {
           description:
             missed > 0
-              ? `You missed ${missed} day${missed === 1 ? "" : "s"}. Fresh start: 1 day 🔥 (+${res.bonus} credit${(res.bonus ?? 1) === 1 ? "" : "s"})`
-              : `Fresh start: 1 day 🔥 (+${res.bonus} credit${(res.bonus ?? 1) === 1 ? "" : "s"})` });
+              ? `You missed ${missed} day${missed === 1 ? "" : "s"}. Fresh start: 1 day 🔥 (+${xp} XP)`
+              : `Fresh start: 1 day 🔥 (+${xp} XP)` });
       } else {
-        toast.success(`+${res.bonus} credit${(res.bonus ?? 1) === 1 ? "" : "s"}`, {
+        toast.success(`+${xp} XP`, {
           description: `Streak: ${res.streak} days 🔥` });
       }
     }
   };
+
 
   return (
     <>
