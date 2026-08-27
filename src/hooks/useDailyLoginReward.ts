@@ -55,6 +55,7 @@ export function useDailyLoginReward() {
         claimed: boolean;
         streak: number;
         bonus?: number;
+        xp?: number;
         reason?: string;
         was_reset?: boolean;
         missed_days?: number;
