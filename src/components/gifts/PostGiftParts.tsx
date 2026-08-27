@@ -81,11 +81,13 @@ export function PostGiftAction({ postId, authorId, authorName, currentUserId }: 
         variant="ghost"
         size="sm"
         disabled
-        className="w-full gap-1.5 opacity-70"
+        className="w-full gap-1 px-1 sm:px-3 opacity-70"
         title="You cannot send gifts to your own post"
       >
-        <Gift className="h-4 w-4 text-primary" />
-        <span className="text-xs font-medium">{gifts.length > 0 ? gifts.length : "Gifts"}</span>
+        <Gift className="h-4 w-4 text-primary shrink-0" />
+        <span className="text-xs font-medium">
+          {gifts.length > 0 ? gifts.length : <span className="hidden sm:inline">Gifts</span>}
+        </span>
       </Button>
     );
   }
@@ -99,11 +101,13 @@ export function PostGiftAction({ postId, authorId, authorName, currentUserId }: 
         <Button
           variant="ghost"
           size="sm"
-          className="w-full gap-1.5 hover:bg-amber-50 dark:hover:bg-amber-950/20 transition-colors"
+          className="w-full gap-1 px-1 sm:px-3 hover:bg-amber-50 dark:hover:bg-amber-950/20 transition-colors"
           title="Send a gift"
         >
-          <Gift className="h-4 w-4 text-primary" />
-          <span className="text-xs font-medium">{gifts.length > 0 ? gifts.length : "Gift"}</span>
+          <Gift className="h-4 w-4 text-primary shrink-0" />
+          <span className="text-xs font-medium">
+            {gifts.length > 0 ? gifts.length : <span className="hidden sm:inline">Gift</span>}
+          </span>
         </Button>
       }
     />
