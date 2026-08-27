@@ -15,11 +15,11 @@ import {
 } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
 import {
-  GIFT_ANIMATION_CLASS,
   GIFT_CATEGORIES,
   GIFT_RARITY_RING,
-  giftImage,
 } from "./giftAssets";
+import { GiftVisual } from "./GiftVisual";
+import { Input } from "@/components/ui/input";
 
 export interface CatalogGift {
   id: string;
@@ -30,6 +30,7 @@ export interface CatalogGift {
   rarity: string;
   animation: string;
   image_url: string | null;
+  emoji: string | null;
 }
 
 interface GiftShopSheetProps {
@@ -51,6 +52,7 @@ export function GiftShopSheet({
   const [loading, setLoading] = useState(false);
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [balance, setBalance] = useState<number | null>(null);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     if (!open) return;
@@ -61,7 +63,7 @@ export function GiftShopSheet({
       const [{ data: catalog }, { data: session }] = await Promise.all([
         supabase
           .from("gift_catalog")
-          .select("id, slug, name, category, price_credits, rarity, animation, image_url")
+          .select("id, slug, name, category, price_credits, rarity, animation, image_url, emoji")
           .eq("is_active", true)
           .order("sort_order", { ascending: true }),
         supabase.auth.getSession(),
@@ -91,13 +93,16 @@ export function GiftShopSheet({
   }, [open]);
 
   const byCategory = useMemo(() => {
+    const q = search.trim().toLowerCase();
     const map: Record<string, CatalogGift[]> = {};
-    gifts.forEach((g) => {
+    gifts
+      .filter((g) => !q || g.name.toLowerCase().includes(q))
+      .forEach((g) => {
       map[g.category] = map[g.category] || [];
-      map[g.category].push(g);
-    });
+        map[g.category].push(g);
+      });
     return map;
-  }, [gifts]);
+  }, [gifts, search]);
 
   const sendGift = async (gift: CatalogGift) => {
     if (!conversationId || !recipientId) {
@@ -172,6 +177,12 @@ export function GiftShopSheet({
             <Coins className="h-3.5 w-3.5" />
             {balance === null ? "—" : balance} credits
           </Badge>
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search gifts…"
+            className="h-9 max-w-[180px]"
+          />
         </div>
 
         {loading ? (
@@ -191,7 +202,7 @@ export function GiftShopSheet({
             {GIFT_CATEGORIES.map((c) => (
               <TabsContent key={c.id} value={c.id} className="flex-1 min-h-0 mt-2">
                 <ScrollArea className="h-full pr-2">
-                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 pb-6">
+                  <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 pb-6">
                     {(byCategory[c.id] || []).map((gift) => {
                       const affordable = balance === null || balance >= gift.price_credits;
                       return (
@@ -209,15 +220,13 @@ export function GiftShopSheet({
                               <Loader2 className="h-4 w-4 animate-spin" />
                             </span>
                           )}
-                          <img
-                            src={giftImage(gift.slug, gift.image_url)}
-                            alt={gift.name}
-                            loading="lazy"
-                            width={72}
-                            height={72}
-                            className={`h-16 w-16 object-contain ${
-                              GIFT_ANIMATION_CLASS[gift.animation] || ""
-                            }`}
+                          <GiftVisual
+                            slug={gift.slug}
+                            name={gift.name}
+                            emoji={gift.emoji}
+                            image_url={gift.image_url}
+                            animation={gift.animation}
+                            size={56}
                           />
                           <span className="text-[11px] font-semibold leading-tight text-center line-clamp-2">
                             {gift.name}

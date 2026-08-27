@@ -1,4 +1,4 @@
-import { GIFT_ANIMATION_CLASS, giftImage } from "./giftAssets";
+import { GiftVisual } from "./GiftVisual";
 
 export interface GiftBubbleData {
   slug: string;
@@ -7,6 +7,7 @@ export interface GiftBubbleData {
   rarity: string;
   animation: string;
   image_url: string | null;
+  emoji?: string | null;
 }
 
 interface GiftBubbleProps {
@@ -15,8 +16,6 @@ interface GiftBubbleProps {
 }
 
 export function GiftBubble({ gift, compact = false }: GiftBubbleProps) {
-  const src = giftImage(gift.slug, gift.image_url);
-  const anim = GIFT_ANIMATION_CLASS[gift.animation] || GIFT_ANIMATION_CLASS.float;
   const size = compact ? 56 : 112;
 
   return (
@@ -28,14 +27,14 @@ export function GiftBubble({ gift, compact = false }: GiftBubbleProps) {
         {gift.rarity === "epic" && (
           <span className="absolute inset-0 rounded-full bg-accent/20 blur-xl" aria-hidden />
         )}
-        <img
-          src={src}
-          alt={gift.name}
-          loading="lazy"
-          width={size}
-          height={size}
-          style={{ width: size, height: size }}
-          className={`relative object-contain drop-shadow-lg ${anim}`}
+        <GiftVisual
+          slug={gift.slug}
+          name={gift.name}
+          emoji={gift.emoji}
+          image_url={gift.image_url}
+          animation={gift.animation}
+          size={size}
+          className="relative drop-shadow-lg"
         />
       </div>
       <span className="text-xs font-semibold">{gift.name}</span>
