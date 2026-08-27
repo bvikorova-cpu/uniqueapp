@@ -39,12 +39,10 @@ const MyBazaarListings = lazy(() => import("@/components/profile/MyBazaarListing
 const MySkillsHub = lazy(() => import("@/components/profile/MySkillsHub").then((m) => ({ default: m.MySkillsHub })));
 const MyJobApplications = lazy(() => import("@/components/profile/MyJobApplications").then((m) => ({ default: m.MyJobApplications })));
 const AchievementsWall = lazy(() => import("@/components/profile/AchievementsWall").then((m) => ({ default: m.AchievementsWall })));
-const CardCategoryBadges = lazy(() => import("@/components/profile/CardCategoryBadges").then((m) => ({ default: m.CardCategoryBadges })));
 
 
 const FounderStory = lazy(() => import("@/components/profile/FounderStory").then((m) => ({ default: m.FounderStory })));
 const Avatar3D = lazy(() => import("@/components/profile/Avatar3D").then((m) => ({ default: m.Avatar3D })));
-const PublicGoals = lazy(() => import("@/components/profile/PublicGoals").then((m) => ({ default: m.PublicGoals })));
 const ProfileJsonLd = lazy(() => import("@/components/profile/ProfileJsonLd").then((m) => ({ default: m.ProfileJsonLd })));
 const OpenToWorkBadge = lazy(() => import("@/components/profile/OpenToWork").then((m) => ({ default: m.OpenToWorkBadge })));
 const ProfileMusicPlayer = lazy(() => import("@/components/profile/ProfileMusicPlayer").then((m) => ({ default: m.ProfileMusicPlayer })));
@@ -746,15 +744,6 @@ const Profile = () => {
             followers: followCounts?.followers || 0 }}
         />
 
-        {/* Collectible-card category badges */}
-        <div className="mb-6">
-          <CardCategoryBadges userId={userId!} isOwnProfile={currentUserId === userId} />
-        </div>
-
-
-
-        {/* Public Goals */}
-        <PublicGoals userId={userId!} isOwnProfile={currentUserId === userId} />
 
         {/* Daily XP Widget - only for own profile */}
         {currentUserId === userId && (
