@@ -36,12 +36,8 @@ export function useDailyLoginReward() {
     fetchStreak();
   }, [fetchStreak]);
 
-  // Use the user's local date so the day flips at local midnight.
-  const today = new Intl.DateTimeFormat("en-CA", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date());
+  // Match the server RPC, which uses the UTC date for claim windows.
+  const today = new Date().toISOString().slice(0, 10);
   const canClaim = !streak || streak.last_claim_date !== today;
 
   const claim = async () => {
