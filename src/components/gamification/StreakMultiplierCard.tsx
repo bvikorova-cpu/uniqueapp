@@ -16,10 +16,11 @@ interface Milestone {
 }
 
 const MILESTONES: Milestone[] = [
-  { days: 7, label: "Week Warrior", reward: "+5 credits", icon: Zap, color: "from-orange-400 to-amber-500" },
-  { days: 30, label: "Monthly Master", reward: "+25 credits + badge", icon: Trophy, color: "from-purple-500 to-pink-500" },
-  { days: 100, label: "Centurion", reward: "+100 credits + exclusive badge", icon: Crown, color: "from-yellow-400 via-orange-500 to-red-500" },
+  { days: 7, label: "Week Warrior", reward: "+100 XP per day", icon: Zap, color: "from-orange-400 to-amber-500" },
+  { days: 30, label: "Monthly Master", reward: "+250 XP per day + badge", icon: Trophy, color: "from-purple-500 to-pink-500" },
+  { days: 100, label: "Centurion", reward: "+500 XP per day + exclusive badge", icon: Crown, color: "from-yellow-400 via-orange-500 to-red-500" },
 ];
+
 
 export function StreakMultiplierCard() {
   const { streak, loading, claiming, canClaim, claim } = useDailyLoginReward();
