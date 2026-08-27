@@ -15,6 +15,8 @@ import { brandArenaCall } from "@/hooks/useBrandArenaRouter";
 import { useBrandBattleCredits } from "@/hooks/useBrandBattleCredits";
 import { handleEdgeError } from "@/lib/handleEdgeError";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { BrandAiOutput } from "./BrandAiOutput";
+
 
 type Feature = {
   id: string;
