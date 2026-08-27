@@ -463,25 +463,12 @@ const Profile = () => {
 
       setFriendshipStatus('accepted');
       
-      // Refresh friends list and stats
+      // Refresh friends count
       const { data: friendsData } = await supabase
         .from("friendships")
         .select("user_id, friend_id")
         .eq("status", "accepted")
         .or(`user_id.eq.${userId},friend_id.eq.${userId}`);
-
-      if (friendsData && friendsData.length > 0) {
-        const friendIds = friendsData.map(f => 
-          f.user_id === userId ? f.friend_id : f.user_id
-        );
-
-        const { data: friendProfiles } = await supabase
-          .from("profiles")
-          .select("*")
-          .in("id", friendIds);
-
-        setFriends(friendProfiles || []);
-      }
 
       setStats(prev => ({
         ...prev,
