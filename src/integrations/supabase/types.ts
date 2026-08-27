@@ -26103,6 +26103,48 @@ export type Database = {
         }
         Relationships: []
       }
+      gift_catalog: {
+        Row: {
+          animation: string
+          category: string
+          created_at: string
+          id: string
+          image_url: string
+          is_active: boolean
+          name: string
+          price_credits: number
+          rarity: string
+          slug: string
+          sort_order: number
+        }
+        Insert: {
+          animation?: string
+          category: string
+          created_at?: string
+          id?: string
+          image_url: string
+          is_active?: boolean
+          name: string
+          price_credits: number
+          rarity?: string
+          slug: string
+          sort_order?: number
+        }
+        Update: {
+          animation?: string
+          category?: string
+          created_at?: string
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          name?: string
+          price_credits?: number
+          rarity?: string
+          slug?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
       gift_chat_messages: {
         Row: {
           content: string
@@ -26129,6 +26171,50 @@ export type Database = {
           sender_id?: string
         }
         Relationships: []
+      }
+      gift_transactions: {
+        Row: {
+          conversation_id: string | null
+          created_at: string
+          credits_spent: number
+          gift_id: string
+          id: string
+          message_id: string | null
+          recipient_id: string
+          recipient_share_credits: number
+          sender_id: string
+        }
+        Insert: {
+          conversation_id?: string | null
+          created_at?: string
+          credits_spent: number
+          gift_id: string
+          id?: string
+          message_id?: string | null
+          recipient_id: string
+          recipient_share_credits?: number
+          sender_id: string
+        }
+        Update: {
+          conversation_id?: string | null
+          created_at?: string
+          credits_spent?: number
+          gift_id?: string
+          id?: string
+          message_id?: string | null
+          recipient_id?: string
+          recipient_share_credits?: number
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gift_transactions_gift_id_fkey"
+            columns: ["gift_id"]
+            isOneToOne: false
+            referencedRelation: "gift_catalog"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       glamour_coins: {
         Row: {
@@ -41449,6 +41535,7 @@ export type Database = {
           conversation_id: string
           created_at: string
           expires_at: string | null
+          gift_id: string | null
           id: string
           is_read: boolean | null
           message_type: string | null
@@ -41466,6 +41553,7 @@ export type Database = {
           conversation_id: string
           created_at?: string
           expires_at?: string | null
+          gift_id?: string | null
           id?: string
           is_read?: boolean | null
           message_type?: string | null
@@ -41483,6 +41571,7 @@ export type Database = {
           conversation_id?: string
           created_at?: string
           expires_at?: string | null
+          gift_id?: string | null
           id?: string
           is_read?: boolean | null
           message_type?: string | null
@@ -41499,6 +41588,13 @@ export type Database = {
             columns: ["conversation_id"]
             isOneToOne: false
             referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_gift_id_fkey"
+            columns: ["gift_id"]
+            isOneToOne: false
+            referencedRelation: "gift_catalog"
             referencedColumns: ["id"]
           },
           {
@@ -71917,6 +72013,14 @@ export type Database = {
           is_verified: boolean
           username: string
         }[]
+      }
+      send_chat_gift: {
+        Args: {
+          p_conversation_id: string
+          p_gift_id: string
+          p_recipient_id: string
+        }
+        Returns: string
       }
       send_credit_gift: {
         Args: {
