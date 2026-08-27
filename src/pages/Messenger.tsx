@@ -160,6 +160,8 @@ const Messenger = () => {
 
   
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const { giftsById } = useChatGifts();
+
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   const [selfDestructDuration, setSelfDestructDuration] = useState<number | null>(null);
   const [uploadingAttachment, setUploadingAttachment] = useState(false);
