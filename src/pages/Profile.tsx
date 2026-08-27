@@ -16,7 +16,7 @@ import { ProfileHero } from "@/components/profile/ProfileHero";
 import { ProfileVerificationCard } from "@/components/profile/ProfileVerificationCard";
 import { ClubMembershipCard } from "@/components/profile/ClubMembershipCard";
 import { BillingOverviewCard } from "@/components/profile/BillingOverviewCard";
-import { ActiveSubscriptionsCard } from "@/components/profile/ActiveSubscriptionsCard";
+
 import { XpBreakdown } from "@/components/profile/XpBreakdown";
 import { finishMeTrace,
   markMeFirstPaint,
@@ -671,7 +671,7 @@ const Profile = () => {
         {/* Unique Verified / Plus / Pro — direct upgrade on own profile */}
         {currentUserId === userId && <ProfileVerificationCard />}
         {currentUserId === userId && <ClubMembershipCard />}
-        {currentUserId === userId && <ActiveSubscriptionsCard />}
+        
         {currentUserId === userId && <BillingOverviewCard />}
 
 
