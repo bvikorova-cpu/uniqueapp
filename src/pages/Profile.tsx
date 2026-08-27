@@ -495,7 +495,6 @@ const Profile = () => {
       if (error) throw error;
 
       setFriendshipStatus('none');
-      setFriends([]);
       setStats(prev => ({
         ...prev,
         friendsCount: 0
