@@ -288,15 +288,8 @@ export default function BrandArenaHub() {
                 {busy ? "Working…" : active.ai ? `Run AI (${active.credits} credits)` : active.id === "embed" ? "Copy embed code" : active.id === "profiles" ? "Open profile" : "Submit"}
               </Button>
 
-              {output && (
-                <Card className="bg-muted/30">
-                  <CardContent className="pt-4">
-                    <pre className="text-xs overflow-auto whitespace-pre-wrap">
-                      {typeof output === "string" ? output : JSON.stringify(output, null, 2)}
-                    </pre>
-                  </CardContent>
-                </Card>
-              )}
+              {output && <BrandAiOutput output={output} />}
+
 
               {!active.ai && active.id !== "embed" && active.id !== "profiles" && (
                 <div>
