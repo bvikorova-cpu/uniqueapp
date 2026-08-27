@@ -2,11 +2,11 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, ArrowLeft, Briefcase, Brain, Package, Sparkles, Users, UserPlus, UserCheck, Gift } from "lucide-react";
+import { Loader2, ArrowLeft, Users, UserPlus, UserCheck } from "lucide-react";
 import { VerifiedBadge } from "@/components/verified/VerifiedBadge";
 // FreeTierBalanceWidget import removed — paid-only model
 import { useToast } from "@/hooks/use-toast";
@@ -29,15 +29,8 @@ const PostCard = lazy(() => import("@/components/feed/PostCard"));
 
 const StreakMultiplierCard = lazy(() => import("@/components/gamification/StreakMultiplierCard").then((m) => ({ default: m.StreakMultiplierCard })));
 const ProfileMilestones = lazy(() => import("@/components/profile/ProfileMilestones").then((m) => ({ default: m.ProfileMilestones })));
-const InviteFriendPanel = lazy(() => import("@/components/referral/InviteFriendPanel").then((m) => ({ default: m.InviteFriendPanel })));
-const BrainDuelStats = lazy(() => import("@/components/profile/BrainDuelStats").then((m) => ({ default: m.BrainDuelStats })));
-const CourseHistory = lazy(() => import("@/components/profile/CourseHistory").then((m) => ({ default: m.CourseHistory })));
-const UserContests = lazy(() => import("@/components/profile/UserContests").then((m) => ({ default: m.UserContests })));
 const FollowersModal = lazy(() => import("@/components/profile/FollowersModal").then((m) => ({ default: m.FollowersModal })));
 const DailyXPVideoReward = lazy(() => import("@/components/gamification/DailyXPVideoReward").then((m) => ({ default: m.DailyXPVideoReward })));
-const MyBazaarListings = lazy(() => import("@/components/profile/MyBazaarListings").then((m) => ({ default: m.MyBazaarListings })));
-const MySkillsHub = lazy(() => import("@/components/profile/MySkillsHub").then((m) => ({ default: m.MySkillsHub })));
-const MyJobApplications = lazy(() => import("@/components/profile/MyJobApplications").then((m) => ({ default: m.MyJobApplications })));
 const AchievementsWall = lazy(() => import("@/components/profile/AchievementsWall").then((m) => ({ default: m.AchievementsWall })));
 
 
@@ -52,8 +45,6 @@ const TipJar = lazy(() => import("@/components/profile/TipJar").then((m) => ({ d
 const TipHistory = lazy(() => import("@/components/profile/TipHistory").then((m) => ({ default: m.TipHistory })));
 const ProfileQRCode = lazy(() => import("@/components/profile/ProfileQRCode").then((m) => ({ default: m.ProfileQRCode })));
 const ThemePicker = lazy(() => import("@/components/profile/ThemePicker").then((m) => ({ default: m.ThemePicker })));
-const LifeEventsTimeline = lazy(() => import("@/components/profile/LifeEventsTimeline").then((m) => ({ default: m.LifeEventsTimeline })));
-const FamilySection = lazy(() => import("@/components/profile/FamilySection").then((m) => ({ default: m.FamilySection })));
 
 const PROFILE_POSTS_PAGE_SIZE = 10;
 const LazyProfileSectionFallback = () => <div className="h-24 rounded-xl bg-muted/30 animate-pulse" />;
@@ -157,10 +148,10 @@ const Profile = () => {
   const [loading, setLoading] = useState(() => !cachedProfile);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [friendshipStatus, setFriendshipStatus] = useState<'none' | 'pending_sent' | 'pending_received' | 'accepted'>('none');
-  const [friends, setFriends] = useState<Profile[]>([]);
+  
   const [followersModalOpen, setFollowersModalOpen] = useState(false);
   const [followersModalTab, setFollowersModalTab] = useState<"followers" | "following">("followers");
-  const [defaultTab, setDefaultTab] = useState("posts");
+  
   const [detailsReady, setDetailsReady] = useState(false);
   const [extendedReady, setExtendedReady] = useState(false);
   const { data: followCounts } = useFollowCounts(extendedReady ? userId : undefined);
@@ -259,12 +250,6 @@ const Profile = () => {
     }
   }, [searchParams, setSearchParams, toast]);
 
-  useEffect(() => {
-    const tab = searchParams.get('tab');
-    if (tab && currentUserId === userId) {
-      setDefaultTab(tab);
-    }
-  }, [searchParams, currentUserId, userId]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -334,30 +319,6 @@ const Profile = () => {
           completedCoursesCount: coursesRes.count || 0,
           xp: pointsRes.data?.total_points ?? 0,
           level: pointsRes.data?.level ?? 1 });
-
-        if (friendsData && friendsData.length > 0) {
-          const friendIds = friendsData.map((f) =>
-            f.user_id === userId ? f.friend_id : f.user_id
-          );
-          const { data: friendProfiles } = await tracedQuery(
-            "friend_profiles",
-            () => supabase.from("public_profiles").select("id, full_name, avatar_url, username").in("id", friendIds),
-          );
-          if (!cancelled) { setFriends(
-              (friendProfiles || []).map((friend) => ({
-                id: friend.id,
-                full_name: friend.full_name,
-                avatar_url: friend.avatar_url,
-                username: friend.username,
-                bio: null,
-                location: null,
-                website: null,
-                interests: null,
-                occupation: null,
-                company: null })),
-            );
-          }
-        }
       } catch {
         // Keep the already-rendered profile usable even if secondary counters fail.
       }
@@ -502,25 +463,12 @@ const Profile = () => {
 
       setFriendshipStatus('accepted');
       
-      // Refresh friends list and stats
+      // Refresh friends count
       const { data: friendsData } = await supabase
         .from("friendships")
         .select("user_id, friend_id")
         .eq("status", "accepted")
         .or(`user_id.eq.${userId},friend_id.eq.${userId}`);
-
-      if (friendsData && friendsData.length > 0) {
-        const friendIds = friendsData.map(f => 
-          f.user_id === userId ? f.friend_id : f.user_id
-        );
-
-        const { data: friendProfiles } = await supabase
-          .from("profiles")
-          .select("*")
-          .in("id", friendIds);
-
-        setFriends(friendProfiles || []);
-      }
 
       setStats(prev => ({
         ...prev,
@@ -547,7 +495,6 @@ const Profile = () => {
       if (error) throw error;
 
       setFriendshipStatus('none');
-      setFriends([]);
       setStats(prev => ({
         ...prev,
         friendsCount: 0
@@ -755,39 +702,10 @@ const Profile = () => {
 
 
         {/* Tabs Section - Central Hub */}
-        <Tabs defaultValue={defaultTab} className="w-full">
+        <Tabs defaultValue="posts" className="w-full">
           <div className="-mx-1 overflow-x-auto scrollbar-hide">
             <TabsList className="inline-flex w-max min-w-full gap-1 h-auto p-1">
               <TabsTrigger value="posts">Posts</TabsTrigger>
-              <TabsTrigger value="listings">
-                <Package className="h-4 w-4 mr-1 hidden sm:inline" />
-                Listings
-              </TabsTrigger>
-              <TabsTrigger value="skills">
-                <Sparkles className="h-4 w-4 mr-1 hidden sm:inline" />
-                Skills
-              </TabsTrigger>
-              <TabsTrigger value="jobs">
-                <Briefcase className="h-4 w-4 mr-1 hidden sm:inline" />
-                Jobs
-              </TabsTrigger>
-              <TabsTrigger value="contests">Contests</TabsTrigger>
-              <TabsTrigger value="education">Courses</TabsTrigger>
-              <TabsTrigger value="brain-duel">
-                <Brain className="h-4 w-4 mr-1 hidden sm:inline" />
-                Duel
-              </TabsTrigger>
-              <TabsTrigger value="friends">Friends</TabsTrigger>
-              <TabsTrigger value="life">
-                <Sparkles className="h-4 w-4 mr-1 hidden sm:inline" />
-                Life
-              </TabsTrigger>
-              {currentUserId === userId && (
-                <TabsTrigger value="invite">
-                  <Gift className="h-4 w-4 mr-1 hidden sm:inline" />
-                  Invite
-                </TabsTrigger>
-              )}
             </TabsList>
           </div>
           
@@ -806,87 +724,6 @@ const Profile = () => {
               ))
             )}
           </TabsContent>
-
-          {/* My Listings (Bazaar) */}
-          <TabsContent value="listings" className="mt-4">
-            <MyBazaarListings userId={userId!} isOwnProfile={currentUserId === userId} />
-          </TabsContent>
-
-          {/* My Skills (Marketplace/Swap) */}
-          <TabsContent value="skills" className="mt-4">
-            <MySkillsHub userId={userId!} isOwnProfile={currentUserId === userId} />
-          </TabsContent>
-
-          {/* Job Applications */}
-          <TabsContent value="jobs" className="mt-4">
-            <MyJobApplications userId={userId!} isOwnProfile={currentUserId === userId} />
-          </TabsContent>
-
-          <TabsContent value="contests" className="mt-4">
-            <UserContests userId={userId!} />
-          </TabsContent>
-
-          <TabsContent value="education" className="mt-4">
-            <CourseHistory userId={userId} />
-          </TabsContent>
-
-          <TabsContent value="brain-duel" className="mt-4">
-            <BrainDuelStats userId={userId!} />
-          </TabsContent>
-
-          <TabsContent value="friends" className="mt-4 space-y-3">
-            <div className="flex items-center justify-between gap-2 flex-wrap">
-              <p className="text-xs text-muted-foreground flex-1 min-w-0">
-                Friends are mutual connections (both accepted).
-              </p>
-              {currentUserId === userId && (
-                <Button size="sm" variant="outline" onClick={() => navigate("/friends")}>
-                  Manage all
-                </Button>
-              )}
-            </div>
-            {friends.length === 0 ? (
-              <Card className="p-8 text-center text-muted-foreground">
-                No friends yet
-              </Card>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {friends.map((friend) => (
-                  <Card
-                    key={friend.id}
-                    className="p-3 cursor-pointer hover:bg-accent transition-colors"
-                    onClick={() => navigate(`/profile/${friend.id}`)}
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <Avatar className="h-10 w-10 shrink-0">
-                        <AvatarImage src={friend.avatar_url || undefined} />
-                        <AvatarFallback>
-                          {friend.full_name?.[0]?.toUpperCase() || "U"}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="min-w-0 flex-1">
-                        <div className="font-semibold truncate">{friend.full_name || "No name"}</div>
-                        {friend.username && (
-                          <div className="text-xs text-muted-foreground truncate">@{friend.username}</div>
-                        )}
-                      </div>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="life" className="mt-4 space-y-4">
-            <LifeEventsTimeline userId={userId!} isOwnProfile={currentUserId === userId} />
-            <FamilySection userId={userId!} currentUserId={currentUserId} isOwnProfile={currentUserId === userId} />
-          </TabsContent>
-
-          {currentUserId === userId && (
-            <TabsContent value="invite" className="mt-4">
-              <InviteFriendPanel />
-            </TabsContent>
-          )}
         </Tabs>
 
         <FollowersModal
