@@ -26,7 +26,6 @@ const ThemePicker = lazy(() => import("@/components/profile/ThemePicker").then((
 const TipJar = lazy(() => import("@/components/profile/TipJar").then((m) => ({ default: m.TipJar })));
 
 const PROFILE_POSTS_PAGE_SIZE = 10;
-const LazyProfileSectionFallback = () => <div className="h-24 rounded-xl bg-muted/30 animate-pulse" />;
 
 const createOwnProfileSnapshot = (user: NonNullable<ReturnType<typeof useAuth>["user"]>): Profile => ({ id: user.id,
   full_name: (user.user_metadata?.full_name as string | undefined) || (user.email?.split("@")[0] ?? "Unique user"),
