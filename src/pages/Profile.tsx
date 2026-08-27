@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, ArrowLeft, Briefcase, Brain, Package, Sparkles, Users, UserPlus, UserCheck, Gift } from "lucide-react";
+import { Loader2, ArrowLeft, Users, UserPlus, UserCheck } from "lucide-react";
 import { VerifiedBadge } from "@/components/verified/VerifiedBadge";
 // FreeTierBalanceWidget import removed — paid-only model
 import { useToast } from "@/hooks/use-toast";
