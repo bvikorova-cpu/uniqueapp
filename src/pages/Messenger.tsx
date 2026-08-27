@@ -1553,10 +1553,16 @@ const Messenger = () => {
                               />
                             )}
                             
+                            {/* Unique Gift */}
+                            {msg.gift_id && giftsById[msg.gift_id] && (
+                              <GiftBubble gift={giftsById[msg.gift_id]} />
+                            )}
+
                             {/* Text content (hide for attachment-only messages) */}
-                            {!effectiveType && (
+                            {!effectiveType && !msg.gift_id && (
                               <p className="break-words">{msg.content}</p>
                             )}
+
                             
                             <div className="flex items-center justify-between mt-1 gap-2">
                               <span className="text-xs opacity-70">
