@@ -132,7 +132,7 @@ export function StreakMultiplierCard() {
           className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white"
         >
           {claiming && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {canClaim ? "Claim today's reward" : "Come back tomorrow"}
+          {canClaim ? `Claim today's reward (+${nextXp} XP)` : "Come back tomorrow"}
         </Button>
       </CardContent>
     </Card>
