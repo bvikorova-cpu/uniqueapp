@@ -240,11 +240,14 @@ Deno.serve(async (req) => {
       // --- Credits balance ---
       case "credits.balance": {
         const { data } = await admin
-          .from("brand_battle_credits")
-          .select("*")
+          .from("ai_credits")
+          .select("credits_remaining, credits_used")
           .eq("user_id", user.id)
           .maybeSingle();
-        result = { credits: data };
+        result = {
+          credits: {
+            credits_balance: data?.credits_remaining ?? 0,
+            total_credits_spent: data?.credits_used ?? 0 } };
         break;
       }
 
