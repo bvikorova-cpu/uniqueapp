@@ -61,12 +61,20 @@ export default function GiftsInbox() {
       ...new Set([...inRows.map((r) => r.sender_id), ...outRows.map((r) => r.recipient_id)]),
     ].filter(Boolean);
     if (ids.length) {
-      const { data: profs } = await supabase
-        .from("profiles")
+      const map: Record<string, Profile> = {};
+      const { data: pub } = await (supabase as any)
+        .from("public_profiles")
         .select("id, full_name, username, avatar_url")
         .in("id", ids);
-      const map: Record<string, Profile> = {};
-      (profs ?? []).forEach((p: any) => (map[p.id] = p));
+      (pub ?? []).forEach((p: any) => (map[p.id] = p));
+      const missing = ids.filter((id) => !map[id]);
+      if (missing.length) {
+        const { data: profs } = await supabase
+          .from("profiles")
+          .select("id, full_name, username, avatar_url")
+          .in("id", missing);
+        (profs ?? []).forEach((p: any) => (map[p.id] = p));
+      }
       setProfiles(map);
     }
     setLoading(false);
@@ -81,6 +89,24 @@ export default function GiftsInbox() {
 
   const name = (id: string) =>
     profiles[id]?.full_name || profiles[id]?.username || "Unique user";
+
+  const PersonChip = ({ id }: { id: string }) => {
+    const p = profiles[id];
+    const initials = (name(id) || "U").slice(0, 2).toUpperCase();
+    return (
+      <Link
+        to={`/profile/${id}`}
+        className="inline-flex items-center gap-1.5 align-middle hover:underline"
+      >
+        <Avatar className="h-5 w-5">
+          <AvatarImage src={p?.avatar_url ?? undefined} alt={name(id)} />
+          <AvatarFallback className="text-[9px]">{initials}</AvatarFallback>
+        </Avatar>
+        <span className="font-medium text-foreground">{name(id)}</span>
+      </Link>
+    );
+  };
+
 
   const List = ({ rows, mode }: { rows: Row[]; mode: "in" | "out" }) => {
     if (loading) return <Skeleton className="h-40 w-full" />;
