@@ -1065,3 +1065,50 @@ body:has([data-state="open"][role="dialog"]) [data-floating-hiw] {
   color: hsl(265 60% 25%);
   box-shadow: 0 12px 30px -12px hsl(265 80% 60% / 0.5);
 }
+
+/* ===== Unique Gifts animations ===== */
+@keyframes gift-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes gift-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+@keyframes gift-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes gift-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  35% { transform: translateY(-12px) scale(1.05); }
+  60% { transform: translateY(0) scale(0.96); }
+}
+@keyframes gift-swing {
+  0%, 100% { transform: rotate(-7deg); }
+  50% { transform: rotate(7deg); }
+}
+@keyframes gift-glow {
+  0%, 100% { filter: drop-shadow(0 0 4px hsl(var(--primary) / 0.5)); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 18px hsl(var(--accent) / 0.8)); transform: scale(1.06); }
+}
+@keyframes gift-burst {
+  0% { transform: scale(0.7) rotate(-6deg); opacity: 0.6; }
+  45% { transform: scale(1.15) rotate(4deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.gift-anim-float { animation: gift-float 3s ease-in-out infinite; }
+.gift-anim-pulse { animation: gift-pulse 1.8s ease-in-out infinite; }
+.gift-anim-spin { animation: gift-spin 6s linear infinite; }
+.gift-anim-bounce { animation: gift-bounce 2.2s ease-in-out infinite; }
+.gift-anim-swing { animation: gift-swing 2.4s ease-in-out infinite; transform-origin: top center; }
+.gift-anim-glow { animation: gift-glow 2.4s ease-in-out infinite; }
+.gift-anim-burst { animation: gift-burst 1.6s ease-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .gift-anim-float, .gift-anim-pulse, .gift-anim-spin,
+  .gift-anim-bounce, .gift-anim-swing, .gift-anim-glow, .gift-anim-burst {
+    animation: none;
+  }
+}
