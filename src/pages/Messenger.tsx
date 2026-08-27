@@ -11,6 +11,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Mic, Smile, Square, Play, Pause, BarChart3, Palette, Radio, Clock, ArrowLeft, Download, Brain, Gamepad2, Bell, BellOff, Loader2, Plus, Camera, Upload, File as FileIcon } from "lucide-react";
 import { useDmMutes } from "@/hooks/useDmMutes";
 import { EmojiPicker } from "@/components/messenger/EmojiPicker";
+import { GiftShopSheet } from "@/components/gifts/GiftShopSheet";
+import { GiftBubble } from "@/components/gifts/GiftBubble";
+import { useChatGifts } from "@/hooks/useChatGifts";
+
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 import { useToast } from "@/hooks/use-toast";
@@ -79,7 +83,9 @@ interface Message {
   attachment_type?: string | null;
   voice_duration?: number | null;
   expires_at?: string | null;
+  gift_id?: string | null;
 }
+
 
 interface MessageReaction {
   id: string;
@@ -154,6 +160,8 @@ const Messenger = () => {
 
   
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const { giftsById } = useChatGifts();
+
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   const [selfDestructDuration, setSelfDestructDuration] = useState<number | null>(null);
   const [uploadingAttachment, setUploadingAttachment] = useState(false);
@@ -524,7 +532,7 @@ const Messenger = () => {
     // Fetch newest 100 messages (fast path) — order DESC + reverse for render.
     const msgsPromise = supabase
       .from("messages")
-      .select("id, content, sender_id, created_at, story_id, reply_to_id, is_read, read_at, attachment_url, attachment_type, voice_duration, expires_at")
+      .select("id, content, sender_id, created_at, story_id, reply_to_id, is_read, read_at, attachment_url, attachment_type, voice_duration, expires_at, gift_id")
       .eq("conversation_id", convId)
       .order("created_at", { ascending: false })
       .limit(100);
@@ -1545,10 +1553,16 @@ const Messenger = () => {
                               />
                             )}
                             
+                            {/* Unique Gift */}
+                            {msg.gift_id && giftsById[msg.gift_id] && (
+                              <GiftBubble gift={giftsById[msg.gift_id]} />
+                            )}
+
                             {/* Text content (hide for attachment-only messages) */}
-                            {!effectiveType && (
+                            {!effectiveType && !msg.gift_id && (
                               <p className="break-words">{msg.content}</p>
                             )}
+
                             
                             <div className="flex items-center justify-between mt-1 gap-2">
                               <span className="text-xs opacity-70">
@@ -1715,6 +1729,17 @@ const Messenger = () => {
                         <EmojiPicker userId={user.id} onSelect={(emoji) => setNewMessage((prev) => prev + emoji)} />
                       </PopoverContent>
                     </Popover>
+
+                    <div className="shrink-0">
+                      <GiftShopSheet
+                        conversationId={selectedConversation}
+                        recipientId={otherUser?.id}
+                        recipientName={otherUser?.full_name || undefined}
+                        onSent={() => fetchMessages()}
+                      />
+                    </div>
+
+
 
 
                     <div className="shrink-0">
