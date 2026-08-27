@@ -198,6 +198,36 @@ import wink from "@/assets/gifts/wink.png";
 import wizard from "@/assets/gifts/wizard.png";
 import worldTrip from "@/assets/gifts/world-trip.png";
 import yacht from "@/assets/gifts/yacht.png";
+import pgWhiskyGlass from "@/assets/gifts/whisky-glass.png";
+import pgCigarHumidor from "@/assets/gifts/cigar-humidor.png";
+import pgGoldWatch from "@/assets/gifts/gold-watch.png";
+import pgBlackCoupe from "@/assets/gifts/black-coupe.png";
+import pgBlackCard from "@/assets/gifts/black-card.png";
+import pgPrivateJet from "@/assets/gifts/private-jet.png";
+import pgPenthouseKey from "@/assets/gifts/penthouse-key.png";
+import pgRedLipstick from "@/assets/gifts/red-lipstick.png";
+import pgNoirRose from "@/assets/gifts/noir-rose.png";
+import pgPerfumeFlacon from "@/assets/gifts/perfume-flacon.png";
+import pgGoldBullion from "@/assets/gifts/gold-bullion.png";
+import pgOnyxKing from "@/assets/gifts/onyx-king.png";
+import pgFountainPen from "@/assets/gifts/fountain-pen.png";
+import pgChampagneTower from "@/assets/gifts/champagne-tower.png";
+import pgVinylDeck from "@/assets/gifts/vinyl-deck.png";
+import pgCognacDecanter from "@/assets/gifts/cognac-decanter.png";
+import pgLeatherBriefcase from "@/assets/gifts/leather-briefcase.png";
+import pgSolitaireRing from "@/assets/gifts/solitaire-ring.png";
+import pgSuperyacht from "@/assets/gifts/superyacht.png";
+import pgEspressoNoir from "@/assets/gifts/espresso-noir.png";
+import pgSilkTie from "@/assets/gifts/silk-tie.png";
+import pgGoldCufflinks from "@/assets/gifts/gold-cufflinks.png";
+import pgFirstEdition from "@/assets/gifts/first-edition.png";
+import pgChandelier from "@/assets/gifts/chandelier.png";
+import pgStiletto from "@/assets/gifts/stiletto.png";
+import pgRedWine from "@/assets/gifts/red-wine.png";
+import pgGoldTrophyCup from "@/assets/gifts/gold-trophy-cup.png";
+import pgBlackOrchid from "@/assets/gifts/black-orchid.png";
+import pgPocketWatch from "@/assets/gifts/pocket-watch.png";
+import pgDiamondSolitaire from "@/assets/gifts/diamond-solitaire.png";
 
 export const GIFT_IMAGES: Record<string, string> = {
   "alien-friend": alienFriend,
@@ -400,6 +430,36 @@ export const GIFT_IMAGES: Record<string, string> = {
   "wizard": wizard,
   "world-trip": worldTrip,
   "yacht": yacht,
+  "whisky-glass": pgWhiskyGlass,
+  "cigar-humidor": pgCigarHumidor,
+  "gold-watch": pgGoldWatch,
+  "black-coupe": pgBlackCoupe,
+  "black-card": pgBlackCard,
+  "private-jet": pgPrivateJet,
+  "penthouse-key": pgPenthouseKey,
+  "red-lipstick": pgRedLipstick,
+  "noir-rose": pgNoirRose,
+  "perfume-flacon": pgPerfumeFlacon,
+  "gold-bullion": pgGoldBullion,
+  "onyx-king": pgOnyxKing,
+  "fountain-pen": pgFountainPen,
+  "champagne-tower": pgChampagneTower,
+  "vinyl-deck": pgVinylDeck,
+  "cognac-decanter": pgCognacDecanter,
+  "leather-briefcase": pgLeatherBriefcase,
+  "solitaire-ring": pgSolitaireRing,
+  "superyacht": pgSuperyacht,
+  "espresso-noir": pgEspressoNoir,
+  "silk-tie": pgSilkTie,
+  "gold-cufflinks": pgGoldCufflinks,
+  "first-edition": pgFirstEdition,
+  "chandelier": pgChandelier,
+  "stiletto": pgStiletto,
+  "red-wine": pgRedWine,
+  "gold-trophy-cup": pgGoldTrophyCup,
+  "black-orchid": pgBlackOrchid,
+  "pocket-watch": pgPocketWatch,
+  "diamond-solitaire": pgDiamondSolitaire,
 };
 
 export const GIFT_CATEGORIES = [
@@ -413,6 +473,7 @@ export const GIFT_CATEGORIES = [
   { id: "adventure", label: "Adventure" },
   { id: "cosmic", label: "Cosmic" },
   { id: "cute", label: "Cute" },
+  { id: "prestige", label: "Prestige" },
 ] as const;
 
 export const GIFT_ANIMATION_CLASS: Record<string, string> = {
