@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   GIFT_CATEGORIES,
   GIFT_RARITY_RING,
+  giftCategoryIcon,
 } from "./giftAssets";
 import { GiftVisual } from "./GiftVisual";
 import { Input } from "@/components/ui/input";
