@@ -233,7 +233,7 @@ export function GiftShopSheet({
               <TabsContent key={c.id} value={c.id} className="flex-1 min-h-0 mt-2">
                 <ScrollArea className="h-full pr-2">
                   <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 pb-6">
-                    {(byCategory[c.id] || []).map((gift) => {
+                    {(c.id === "all" ? allFiltered : byCategory[c.id] || []).map((gift) => {
                       const affordable = balance === null || balance >= gift.price_credits;
                       return (
                         <button
