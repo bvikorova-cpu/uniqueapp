@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -29,15 +29,8 @@ const PostCard = lazy(() => import("@/components/feed/PostCard"));
 
 const StreakMultiplierCard = lazy(() => import("@/components/gamification/StreakMultiplierCard").then((m) => ({ default: m.StreakMultiplierCard })));
 const ProfileMilestones = lazy(() => import("@/components/profile/ProfileMilestones").then((m) => ({ default: m.ProfileMilestones })));
-const InviteFriendPanel = lazy(() => import("@/components/referral/InviteFriendPanel").then((m) => ({ default: m.InviteFriendPanel })));
-const BrainDuelStats = lazy(() => import("@/components/profile/BrainDuelStats").then((m) => ({ default: m.BrainDuelStats })));
-const CourseHistory = lazy(() => import("@/components/profile/CourseHistory").then((m) => ({ default: m.CourseHistory })));
-const UserContests = lazy(() => import("@/components/profile/UserContests").then((m) => ({ default: m.UserContests })));
 const FollowersModal = lazy(() => import("@/components/profile/FollowersModal").then((m) => ({ default: m.FollowersModal })));
 const DailyXPVideoReward = lazy(() => import("@/components/gamification/DailyXPVideoReward").then((m) => ({ default: m.DailyXPVideoReward })));
-const MyBazaarListings = lazy(() => import("@/components/profile/MyBazaarListings").then((m) => ({ default: m.MyBazaarListings })));
-const MySkillsHub = lazy(() => import("@/components/profile/MySkillsHub").then((m) => ({ default: m.MySkillsHub })));
-const MyJobApplications = lazy(() => import("@/components/profile/MyJobApplications").then((m) => ({ default: m.MyJobApplications })));
 const AchievementsWall = lazy(() => import("@/components/profile/AchievementsWall").then((m) => ({ default: m.AchievementsWall })));
 
 
@@ -52,8 +45,6 @@ const TipJar = lazy(() => import("@/components/profile/TipJar").then((m) => ({ d
 const TipHistory = lazy(() => import("@/components/profile/TipHistory").then((m) => ({ default: m.TipHistory })));
 const ProfileQRCode = lazy(() => import("@/components/profile/ProfileQRCode").then((m) => ({ default: m.ProfileQRCode })));
 const ThemePicker = lazy(() => import("@/components/profile/ThemePicker").then((m) => ({ default: m.ThemePicker })));
-const LifeEventsTimeline = lazy(() => import("@/components/profile/LifeEventsTimeline").then((m) => ({ default: m.LifeEventsTimeline })));
-const FamilySection = lazy(() => import("@/components/profile/FamilySection").then((m) => ({ default: m.FamilySection })));
 
 const PROFILE_POSTS_PAGE_SIZE = 10;
 const LazyProfileSectionFallback = () => <div className="h-24 rounded-xl bg-muted/30 animate-pulse" />;
@@ -157,10 +148,10 @@ const Profile = () => {
   const [loading, setLoading] = useState(() => !cachedProfile);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [friendshipStatus, setFriendshipStatus] = useState<'none' | 'pending_sent' | 'pending_received' | 'accepted'>('none');
-  const [friends, setFriends] = useState<Profile[]>([]);
+  
   const [followersModalOpen, setFollowersModalOpen] = useState(false);
   const [followersModalTab, setFollowersModalTab] = useState<"followers" | "following">("followers");
-  const [defaultTab, setDefaultTab] = useState("posts");
+  
   const [detailsReady, setDetailsReady] = useState(false);
   const [extendedReady, setExtendedReady] = useState(false);
   const { data: followCounts } = useFollowCounts(extendedReady ? userId : undefined);
@@ -259,12 +250,6 @@ const Profile = () => {
     }
   }, [searchParams, setSearchParams, toast]);
 
-  useEffect(() => {
-    const tab = searchParams.get('tab');
-    if (tab && currentUserId === userId) {
-      setDefaultTab(tab);
-    }
-  }, [searchParams, currentUserId, userId]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -334,30 +319,6 @@ const Profile = () => {
           completedCoursesCount: coursesRes.count || 0,
           xp: pointsRes.data?.total_points ?? 0,
           level: pointsRes.data?.level ?? 1 });
-
-        if (friendsData && friendsData.length > 0) {
-          const friendIds = friendsData.map((f) =>
-            f.user_id === userId ? f.friend_id : f.user_id
-          );
-          const { data: friendProfiles } = await tracedQuery(
-            "friend_profiles",
-            () => supabase.from("public_profiles").select("id, full_name, avatar_url, username").in("id", friendIds),
-          );
-          if (!cancelled) { setFriends(
-              (friendProfiles || []).map((friend) => ({
-                id: friend.id,
-                full_name: friend.full_name,
-                avatar_url: friend.avatar_url,
-                username: friend.username,
-                bio: null,
-                location: null,
-                website: null,
-                interests: null,
-                occupation: null,
-                company: null })),
-            );
-          }
-        }
       } catch {
         // Keep the already-rendered profile usable even if secondary counters fail.
       }
