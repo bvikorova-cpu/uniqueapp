@@ -668,128 +668,11 @@ const Profile = () => {
           deferExtras={extendedReady}
         />
 
-        {/* Unique Verified / Plus / Pro — direct upgrade on own profile */}
-        {currentUserId === userId && <ProfileVerificationCard />}
-        {currentUserId === userId && <ClubMembershipCard />}
-        
-        {currentUserId === userId && <BillingOverviewCard />}
-
-
-
-        {/* XP breakdown — visible on every profile so the source of XP is clear */}
-        <XpBreakdown
-          xp={stats.xp}
-          level={stats.level}
-          posts={stats.postsCount}
-          likes={stats.likesGiven}
-          comments={stats.commentsGiven}
-          friends={stats.friendsCount}
-        />
-
-        {extendedReady ? (
-        <Suspense fallback={<LazyProfileSectionFallback />}>
-        {/* Free Tier Credits — visible on own profile */}
-        {userId && (
-          <div className="mb-4 grid md:grid-cols-2 gap-4">
-            <ProfileMilestones userId={userId} />
-            {/* FreeTierBalanceWidget removed — paid-only model */}
-            {currentUserId === userId && <StreakMultiplierCard />}
-            {/* FreeTierHistory removed — free credits discontinued (paid-only model) */}
-          </div>
-        )}
-
-        {/* Secondary share actions — shown below hero on mobile for clarity */}
-        {currentUserId !== userId && (
-          <div className="flex flex-wrap justify-center gap-2 mb-4">
-            <ProfileQRCode userId={userId!} userName={profile.full_name || "user"} />
-            <VCardDownloadButton profile={profile} />
-          </div>
-        )}
-
-        <ProfileJsonLd profile={profile} />
-
-
-        {currentUserId && currentUserId !== userId && (
-          <MutualConnections viewerId={currentUserId} profileUserId={userId!} />
-        )}
-
-        {/* Tip history & totals — visible to everyone, sender names only to owner */}
-        <div className="my-4">
-          <TipHistory userId={userId!} isOwnProfile={currentUserId === userId} />
-        </div>
-
-        {profile.open_to_work && (
-          <OpenToWorkBadge details={profile.open_to_work_details} />
-        )}
-
-        <ProfileMusicPlayer url={profile.profile_music_url} title={profile.profile_music_title} />
-
-
-        {/* 3D Avatar (if set) */}
-        <Avatar3D userId={userId!} />
-
-        {/* Founder Story / Bio */}
-        <FounderStory profile={profile as any} />
-
-        {/* Trophy Wall */}
-        <AchievementsWall
-          userId={userId!}
-          stats={ {
-            posts: stats.postsCount,
-            friends: stats.friendsCount,
-            contests: stats.submissionsCount,
-            courses: stats.completedCoursesCount,
-            likes: stats.likesGiven,
-            comments: stats.commentsGiven,
-            followers: followCounts?.followers || 0 }}
-        />
-
-
-        {/* Daily XP Widget - only for own profile */}
-        {currentUserId === userId && (
-          <div className="mb-6">
-            <DailyXPVideoReward userId={userId} />
-          </div>
-        )}
-
-
-
-        {/* Tabs Section - Central Hub */}
+        {/* Posts only */}
         <Tabs defaultValue={defaultTab} className="w-full">
-          <div className="-mx-1 overflow-x-auto scrollbar-hide">
-            <TabsList className="inline-flex w-max min-w-full gap-1 h-auto p-1">
-              <TabsTrigger value="posts">Posts</TabsTrigger>
-              <TabsTrigger value="listings">
-                <Package className="h-4 w-4 mr-1 hidden sm:inline" />
-                Listings
-              </TabsTrigger>
-              <TabsTrigger value="skills">
-                <Sparkles className="h-4 w-4 mr-1 hidden sm:inline" />
-                Skills
-              </TabsTrigger>
-              <TabsTrigger value="jobs">
-                <Briefcase className="h-4 w-4 mr-1 hidden sm:inline" />
-                Jobs
-              </TabsTrigger>
-              <TabsTrigger value="contests">Contests</TabsTrigger>
-              <TabsTrigger value="education">Courses</TabsTrigger>
-              <TabsTrigger value="brain-duel">
-                <Brain className="h-4 w-4 mr-1 hidden sm:inline" />
-                Duel
-              </TabsTrigger>
-              <TabsTrigger value="friends">Friends</TabsTrigger>
-              <TabsTrigger value="life">
-                <Sparkles className="h-4 w-4 mr-1 hidden sm:inline" />
-                Life
-              </TabsTrigger>
-              {currentUserId === userId && (
-                <TabsTrigger value="invite">
-                  <Gift className="h-4 w-4 mr-1 hidden sm:inline" />
-                  Invite
-                </TabsTrigger>
-              )}
-            </TabsList>
-          </div>
+          <TabsList className="w-full h-auto p-1">
+            <TabsTrigger value="posts">Posts</TabsTrigger>
+          </TabsList>
           
           <TabsContent value="posts" className="space-y-4 mt-4">
             {posts.length === 0 ? (
@@ -806,87 +689,6 @@ const Profile = () => {
               ))
             )}
           </TabsContent>
-
-          {/* My Listings (Bazaar) */}
-          <TabsContent value="listings" className="mt-4">
-            <MyBazaarListings userId={userId!} isOwnProfile={currentUserId === userId} />
-          </TabsContent>
-
-          {/* My Skills (Marketplace/Swap) */}
-          <TabsContent value="skills" className="mt-4">
-            <MySkillsHub userId={userId!} isOwnProfile={currentUserId === userId} />
-          </TabsContent>
-
-          {/* Job Applications */}
-          <TabsContent value="jobs" className="mt-4">
-            <MyJobApplications userId={userId!} isOwnProfile={currentUserId === userId} />
-          </TabsContent>
-
-          <TabsContent value="contests" className="mt-4">
-            <UserContests userId={userId!} />
-          </TabsContent>
-
-          <TabsContent value="education" className="mt-4">
-            <CourseHistory userId={userId} />
-          </TabsContent>
-
-          <TabsContent value="brain-duel" className="mt-4">
-            <BrainDuelStats userId={userId!} />
-          </TabsContent>
-
-          <TabsContent value="friends" className="mt-4 space-y-3">
-            <div className="flex items-center justify-between gap-2 flex-wrap">
-              <p className="text-xs text-muted-foreground flex-1 min-w-0">
-                Friends are mutual connections (both accepted).
-              </p>
-              {currentUserId === userId && (
-                <Button size="sm" variant="outline" onClick={() => navigate("/friends")}>
-                  Manage all
-                </Button>
-              )}
-            </div>
-            {friends.length === 0 ? (
-              <Card className="p-8 text-center text-muted-foreground">
-                No friends yet
-              </Card>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {friends.map((friend) => (
-                  <Card
-                    key={friend.id}
-                    className="p-3 cursor-pointer hover:bg-accent transition-colors"
-                    onClick={() => navigate(`/profile/${friend.id}`)}
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <Avatar className="h-10 w-10 shrink-0">
-                        <AvatarImage src={friend.avatar_url || undefined} />
-                        <AvatarFallback>
-                          {friend.full_name?.[0]?.toUpperCase() || "U"}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="min-w-0 flex-1">
-                        <div className="font-semibold truncate">{friend.full_name || "No name"}</div>
-                        {friend.username && (
-                          <div className="text-xs text-muted-foreground truncate">@{friend.username}</div>
-                        )}
-                      </div>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="life" className="mt-4 space-y-4">
-            <LifeEventsTimeline userId={userId!} isOwnProfile={currentUserId === userId} />
-            <FamilySection userId={userId!} currentUserId={currentUserId} isOwnProfile={currentUserId === userId} />
-          </TabsContent>
-
-          {currentUserId === userId && (
-            <TabsContent value="invite" className="mt-4">
-              <InviteFriendPanel />
-            </TabsContent>
-          )}
         </Tabs>
 
         <FollowersModal
@@ -896,10 +698,6 @@ const Profile = () => {
           onClose={() => setFollowersModalOpen(false)}
           defaultTab={followersModalTab}
         />
-        </Suspense>
-        ) : (
-          <LazyProfileSectionFallback />
-        )}
       </div>
     </div>
   );
