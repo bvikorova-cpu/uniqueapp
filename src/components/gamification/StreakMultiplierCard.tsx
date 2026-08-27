@@ -25,6 +25,7 @@ const MILESTONES: Milestone[] = [
 export function StreakMultiplierCard() {
   const { streak, loading, claiming, canClaim, claim } = useDailyLoginReward();
   const current = streak?.current_streak ?? 0;
+  const totalClaims = streak?.total_claims ?? 0;
 
   // find next milestone
   const next = MILESTONES.find((m) => current < m.days) ?? MILESTONES[MILESTONES.length - 1];
@@ -32,8 +33,10 @@ export function StreakMultiplierCard() {
   const base = prev?.days ?? 0;
   const progress = Math.min(100, ((current - base) / (next.days - base)) * 100);
 
-  // current multiplier: 1x base, 1.5x at 7, 2x at 30, 3x at 100
-  const multiplier = current >= 100 ? 3 : current >= 30 ? 2 : current >= 7 ? 1.5 : 1;
+  // Mirrors claim_daily_login_reward(): 50 XP base, +50 per completed 7-day block, capped at 500
+  const nextStreak = canClaim ? current + 1 : current;
+  const nextXp = Math.min(500, 50 * (1 + Math.floor(nextStreak / 7)));
+  const multiplier = Math.round((nextXp / 50) * 10) / 10;
 
   const onClaim = async () => {
     const res = await claim();
