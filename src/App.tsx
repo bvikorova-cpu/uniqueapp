@@ -695,6 +695,8 @@ const App = () => {
                         <Route path="/gift/success" element={<GiftSuccess />} />
                         <Route path="/gift/canceled" element={<GiftSuccess />} />
                         <Route path="/gift/history" element={<ProtectedRoute><GiftHistory /></ProtectedRoute>} />
+                        <Route path="/gifts/inbox" element={<ProtectedRoute><GiftsInbox /></ProtectedRoute>} />
+
                         <Route path="/auction" element={<Auction />} />
                         <Route path="/auction/create" element={<ProtectedRoute><AuctionCreate /></ProtectedRoute>} />
                         <Route path="/auction/my" element={<ProtectedRoute><AuctionMy /></ProtectedRoute>} />
