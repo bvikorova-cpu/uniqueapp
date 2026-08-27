@@ -900,8 +900,8 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
         </div>
 
         {/* Interaction Buttons */}
-        <div className="flex items-center gap-2 pt-4 border-t">
-          <div onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-0.5 sm:gap-2 pt-4 border-t overflow-hidden">
+          <div onClick={(e) => e.stopPropagation()} className="min-w-0 shrink">
             <ReactionPicker postId={post.id} />
           </div>
 
@@ -909,9 +909,9 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
             variant="ghost"
             size="sm"
             onClick={toggleComments}
-            className="gap-1.5 flex-1 hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-colors"
+            className="gap-1 flex-1 min-w-0 px-1.5 sm:px-3 hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-colors"
           >
-            <MessageCircle className="h-4 w-4" />
+            <MessageCircle className="h-4 w-4 shrink-0" />
             <span className="text-xs font-medium">{commentsCount}</span>
           </Button>
 
@@ -922,13 +922,13 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
               e.stopPropagation();
               handleShare(e);
             }}
-            className="gap-1.5 flex-1 hover:bg-green-50 dark:hover:bg-green-950/20 transition-colors"
+            className="gap-1 flex-1 min-w-0 px-1.5 sm:px-3 hover:bg-green-50 dark:hover:bg-green-950/20 transition-colors"
           >
-            <Share2 className="h-4 w-4" />
+            <Share2 className="h-4 w-4 shrink-0" />
             <span className="text-xs font-medium">{repostsCount}</span>
           </Button>
 
-          <div onClick={(e) => e.stopPropagation()} className="flex-1 flex">
+          <div onClick={(e) => e.stopPropagation()} className="flex-1 min-w-0 flex">
             <PostGiftAction
               postId={post.id}
               authorId={post.user_id}
@@ -941,12 +941,13 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
             variant="ghost"
             size="sm"
             onClick={handleSave}
-            className="gap-1.5 hover:bg-purple-50 dark:hover:bg-purple-950/20 transition-colors"
+            className="shrink-0 px-1.5 sm:px-3 hover:bg-purple-50 dark:hover:bg-purple-950/20 transition-colors"
             title={saved ? "Remove from bookmarks" : "Save to bookmarks"}
           >
             <Bookmark className={`h-4 w-4 transition-all ${saved ? "fill-purple-500 text-purple-500" : ""}`} />
           </Button>
         </div>
+
 
         {/* Additional Actions */}
         <div className="flex items-center gap-2 pt-2 border-t mt-2" onClick={(e) => e.stopPropagation()}>
