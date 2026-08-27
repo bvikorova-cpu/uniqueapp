@@ -1,59 +1,29 @@
 import { lazy, Suspense, useEffect, useState } from "react";
-import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, ArrowLeft, Briefcase, Brain, Package, Sparkles, Users, UserPlus, UserCheck, Gift } from "lucide-react";
-import { VerifiedBadge } from "@/components/verified/VerifiedBadge";
-// FreeTierBalanceWidget import removed — paid-only model
+import { Loader2, ArrowLeft, Users, UserPlus, UserCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFollowCounts } from "@/hooks/useFollow";
 import { ProfileHero } from "@/components/profile/ProfileHero";
-import { ProfileVerificationCard } from "@/components/profile/ProfileVerificationCard";
-import { ClubMembershipCard } from "@/components/profile/ClubMembershipCard";
-import { BillingOverviewCard } from "@/components/profile/BillingOverviewCard";
-
-import { XpBreakdown } from "@/components/profile/XpBreakdown";
-import { finishMeTrace,
+import {
+  finishMeTrace,
   markMeFirstPaint,
   readMeProfileSnapshot,
   startMeTrace,
-  tracedQuery } from "@/utils/perfMe";
+  tracedQuery,
+} from "@/utils/perfMe";
 import MePerfOverlay from "@/components/debug/MePerfOverlay";
 
 const PostCard = lazy(() => import("@/components/feed/PostCard"));
-
-const StreakMultiplierCard = lazy(() => import("@/components/gamification/StreakMultiplierCard").then((m) => ({ default: m.StreakMultiplierCard })));
-const ProfileMilestones = lazy(() => import("@/components/profile/ProfileMilestones").then((m) => ({ default: m.ProfileMilestones })));
-const InviteFriendPanel = lazy(() => import("@/components/referral/InviteFriendPanel").then((m) => ({ default: m.InviteFriendPanel })));
-const BrainDuelStats = lazy(() => import("@/components/profile/BrainDuelStats").then((m) => ({ default: m.BrainDuelStats })));
-const CourseHistory = lazy(() => import("@/components/profile/CourseHistory").then((m) => ({ default: m.CourseHistory })));
-const UserContests = lazy(() => import("@/components/profile/UserContests").then((m) => ({ default: m.UserContests })));
-const FollowersModal = lazy(() => import("@/components/profile/FollowersModal").then((m) => ({ default: m.FollowersModal })));
-const DailyXPVideoReward = lazy(() => import("@/components/gamification/DailyXPVideoReward").then((m) => ({ default: m.DailyXPVideoReward })));
-const MyBazaarListings = lazy(() => import("@/components/profile/MyBazaarListings").then((m) => ({ default: m.MyBazaarListings })));
-const MySkillsHub = lazy(() => import("@/components/profile/MySkillsHub").then((m) => ({ default: m.MySkillsHub })));
-const MyJobApplications = lazy(() => import("@/components/profile/MyJobApplications").then((m) => ({ default: m.MyJobApplications })));
-const AchievementsWall = lazy(() => import("@/components/profile/AchievementsWall").then((m) => ({ default: m.AchievementsWall })));
-
-
-const FounderStory = lazy(() => import("@/components/profile/FounderStory").then((m) => ({ default: m.FounderStory })));
-const Avatar3D = lazy(() => import("@/components/profile/Avatar3D").then((m) => ({ default: m.Avatar3D })));
-const ProfileJsonLd = lazy(() => import("@/components/profile/ProfileJsonLd").then((m) => ({ default: m.ProfileJsonLd })));
-const OpenToWorkBadge = lazy(() => import("@/components/profile/OpenToWork").then((m) => ({ default: m.OpenToWorkBadge })));
-const ProfileMusicPlayer = lazy(() => import("@/components/profile/ProfileMusicPlayer").then((m) => ({ default: m.ProfileMusicPlayer })));
-const MutualConnections = lazy(() => import("@/components/profile/MutualConnections").then((m) => ({ default: m.MutualConnections })));
-const VCardDownloadButton = lazy(() => import("@/components/profile/VCardDownloadButton").then((m) => ({ default: m.VCardDownloadButton })));
-const TipJar = lazy(() => import("@/components/profile/TipJar").then((m) => ({ default: m.TipJar })));
-const TipHistory = lazy(() => import("@/components/profile/TipHistory").then((m) => ({ default: m.TipHistory })));
-const ProfileQRCode = lazy(() => import("@/components/profile/ProfileQRCode").then((m) => ({ default: m.ProfileQRCode })));
+const FollowersModal = lazy(() =>
+  import("@/components/profile/FollowersModal").then((m) => ({ default: m.FollowersModal })),
+);
 const ThemePicker = lazy(() => import("@/components/profile/ThemePicker").then((m) => ({ default: m.ThemePicker })));
-const LifeEventsTimeline = lazy(() => import("@/components/profile/LifeEventsTimeline").then((m) => ({ default: m.LifeEventsTimeline })));
-const FamilySection = lazy(() => import("@/components/profile/FamilySection").then((m) => ({ default: m.FamilySection })));
+const TipJar = lazy(() => import("@/components/profile/TipJar").then((m) => ({ default: m.TipJar })));
 
 const PROFILE_POSTS_PAGE_SIZE = 10;
 const LazyProfileSectionFallback = () => <div className="h-24 rounded-xl bg-muted/30 animate-pulse" />;
