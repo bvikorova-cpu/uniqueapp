@@ -11,6 +11,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Mic, Smile, Square, Play, Pause, BarChart3, Palette, Radio, Clock, ArrowLeft, Download, Brain, Gamepad2, Bell, BellOff, Loader2, Plus, Camera, Upload, File as FileIcon } from "lucide-react";
 import { useDmMutes } from "@/hooks/useDmMutes";
 import { EmojiPicker } from "@/components/messenger/EmojiPicker";
+import { GiftShopSheet } from "@/components/gifts/GiftShopSheet";
+import { GiftBubble } from "@/components/gifts/GiftBubble";
+import { useChatGifts } from "@/hooks/useChatGifts";
+
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 import { useToast } from "@/hooks/use-toast";
@@ -79,7 +83,9 @@ interface Message {
   attachment_type?: string | null;
   voice_duration?: number | null;
   expires_at?: string | null;
+  gift_id?: string | null;
 }
+
 
 interface MessageReaction {
   id: string;
@@ -524,7 +530,7 @@ const Messenger = () => {
     // Fetch newest 100 messages (fast path) — order DESC + reverse for render.
     const msgsPromise = supabase
       .from("messages")
-      .select("id, content, sender_id, created_at, story_id, reply_to_id, is_read, read_at, attachment_url, attachment_type, voice_duration, expires_at")
+      .select("id, content, sender_id, created_at, story_id, reply_to_id, is_read, read_at, attachment_url, attachment_type, voice_duration, expires_at, gift_id")
       .eq("conversation_id", convId)
       .order("created_at", { ascending: false })
       .limit(100);
