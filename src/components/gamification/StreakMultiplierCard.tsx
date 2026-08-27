@@ -80,12 +80,13 @@ export function StreakMultiplierCard() {
       <CardContent className="space-y-4">
         <div className="flex items-baseline gap-2">
           <span className="text-5xl font-black bg-gradient-to-br from-orange-400 to-red-500 bg-clip-text text-transparent">
-            {current}
+            {loading ? "–" : current}
           </span>
           <span className="text-sm text-muted-foreground">
-            day{current === 1 ? "" : "s"} · record {streak?.longest_streak ?? 0}
+            day{current === 1 ? "" : "s"} · record {streak?.longest_streak ?? 0} · {totalClaims} claim{totalClaims === 1 ? "" : "s"}
           </span>
         </div>
+
 
         {/* progress to next milestone */}
         <div className="space-y-1.5">
