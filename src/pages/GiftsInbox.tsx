@@ -136,7 +136,9 @@ export default function GiftsInbox() {
               <p className="truncate text-sm font-medium">
                 {r.gift_catalog?.name ?? "Gift"}{" "}
                 <span className="text-muted-foreground font-normal">
-                  {mode === "in" ? `from ${name(r.sender_id)}` : `to ${name(r.recipient_id)}`}
+                  {mode === "in" ? "from " : "to "}
+                  <PersonChip id={mode === "in" ? r.sender_id : r.recipient_id} />
+
                 </span>
               </p>
               <p className="text-xs text-muted-foreground">
