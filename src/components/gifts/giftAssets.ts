@@ -228,6 +228,36 @@ import pgGoldTrophyCup from "@/assets/gifts/gold-trophy-cup.png";
 import pgBlackOrchid from "@/assets/gifts/black-orchid.png";
 import pgPocketWatch from "@/assets/gifts/pocket-watch.png";
 import pgDiamondSolitaire from "@/assets/gifts/diamond-solitaire.png";
+import scSleepingPuppies from "@/assets/gifts/sleeping-puppies.png";
+import scLionCub from "@/assets/gifts/lion-cub.png";
+import scUnicornFantasy from "@/assets/gifts/unicorn-fantasy.png";
+import scPartyBus from "@/assets/gifts/party-bus.png";
+import scDiamondBlaster from "@/assets/gifts/diamond-blaster.png";
+import scDinoFreestyle from "@/assets/gifts/dino-freestyle.png";
+import scDjCat from "@/assets/gifts/dj-cat.png";
+import scKittenRose from "@/assets/gifts/kitten-rose.png";
+import scPandaPicnic from "@/assets/gifts/panda-picnic.png";
+import scSlothHammock from "@/assets/gifts/sloth-hammock.png";
+import scPenguinSlide from "@/assets/gifts/penguin-slide.png";
+import scBunnyBalloon from "@/assets/gifts/bunny-balloon.png";
+import scCorgiSkate from "@/assets/gifts/corgi-skate.png";
+import scOtterBoat from "@/assets/gifts/otter-boat.png";
+import scSpaceKitty from "@/assets/gifts/space-kitty.png";
+import scPegasusSky from "@/assets/gifts/pegasus-sky.png";
+import scDragonCastle from "@/assets/gifts/dragon-castle.png";
+import scSunsetSupercar from "@/assets/gifts/sunset-supercar.png";
+import scLoveCarriage from "@/assets/gifts/love-carriage.png";
+import scTreasureIsland from "@/assets/gifts/treasure-island.png";
+import scMagicLibrary from "@/assets/gifts/magic-library.png";
+import scNeonMotorbike from "@/assets/gifts/neon-motorbike.png";
+import scKoalaSurf from "@/assets/gifts/koala-surf.png";
+import scTigerThrone from "@/assets/gifts/tiger-throne.png";
+import scFoxLantern from "@/assets/gifts/fox-lantern.png";
+import scSkyWhale from "@/assets/gifts/sky-whale.png";
+import scMermaidCove from "@/assets/gifts/mermaid-cove.png";
+import scRobotBuddy from "@/assets/gifts/robot-buddy.png";
+import scCloudCastle from "@/assets/gifts/cloud-castle.png";
+import scPhoenixRise from "@/assets/gifts/phoenix-rise.png";
 
 export const GIFT_IMAGES: Record<string, string> = {
   "alien-friend": alienFriend,
@@ -460,6 +490,36 @@ export const GIFT_IMAGES: Record<string, string> = {
   "black-orchid": pgBlackOrchid,
   "pocket-watch": pgPocketWatch,
   "diamond-solitaire": pgDiamondSolitaire,
+  "sleeping-puppies": scSleepingPuppies,
+  "lion-cub": scLionCub,
+  "unicorn-fantasy": scUnicornFantasy,
+  "party-bus": scPartyBus,
+  "diamond-blaster": scDiamondBlaster,
+  "dino-freestyle": scDinoFreestyle,
+  "dj-cat": scDjCat,
+  "kitten-rose": scKittenRose,
+  "panda-picnic": scPandaPicnic,
+  "sloth-hammock": scSlothHammock,
+  "penguin-slide": scPenguinSlide,
+  "bunny-balloon": scBunnyBalloon,
+  "corgi-skate": scCorgiSkate,
+  "otter-boat": scOtterBoat,
+  "space-kitty": scSpaceKitty,
+  "pegasus-sky": scPegasusSky,
+  "dragon-castle": scDragonCastle,
+  "sunset-supercar": scSunsetSupercar,
+  "love-carriage": scLoveCarriage,
+  "treasure-island": scTreasureIsland,
+  "magic-library": scMagicLibrary,
+  "neon-motorbike": scNeonMotorbike,
+  "koala-surf": scKoalaSurf,
+  "tiger-throne": scTigerThrone,
+  "fox-lantern": scFoxLantern,
+  "sky-whale": scSkyWhale,
+  "mermaid-cove": scMermaidCove,
+  "robot-buddy": scRobotBuddy,
+  "cloud-castle": scCloudCastle,
+  "phoenix-rise": scPhoenixRise,
 };
 
 export const GIFT_CATEGORIES = [
@@ -474,6 +534,7 @@ export const GIFT_CATEGORIES = [
   { id: "cosmic", label: "Cosmic" },
   { id: "cute", label: "Cute" },
   { id: "prestige", label: "Prestige" },
+  { id: "scenes", label: "Scenes" },
 ] as const;
 
 export const GIFT_ANIMATION_CLASS: Record<string, string> = {
