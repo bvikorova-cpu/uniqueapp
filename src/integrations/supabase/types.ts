@@ -26108,8 +26108,9 @@ export type Database = {
           animation: string
           category: string
           created_at: string
+          emoji: string | null
           id: string
-          image_url: string
+          image_url: string | null
           is_active: boolean
           name: string
           price_credits: number
@@ -26121,8 +26122,9 @@ export type Database = {
           animation?: string
           category: string
           created_at?: string
+          emoji?: string | null
           id?: string
-          image_url: string
+          image_url?: string | null
           is_active?: boolean
           name: string
           price_credits: number
@@ -26134,8 +26136,9 @@ export type Database = {
           animation?: string
           category?: string
           created_at?: string
+          emoji?: string | null
           id?: string
-          image_url?: string
+          image_url?: string | null
           is_active?: boolean
           name?: string
           price_credits?: number

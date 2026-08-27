@@ -44,9 +44,15 @@ export const GIFT_IMAGES: Record<string, string> = {
 
 export const GIFT_CATEGORIES = [
   { id: "classic", label: "Classic" },
+  { id: "love", label: "Love" },
   { id: "party", label: "Music & Party" },
   { id: "fairytale", label: "Fairytale" },
   { id: "luxury", label: "Luxury" },
+  { id: "nature", label: "Nature" },
+  { id: "food", label: "Food" },
+  { id: "adventure", label: "Adventure" },
+  { id: "cosmic", label: "Cosmic" },
+  { id: "cute", label: "Cute" },
 ] as const;
 
 export const GIFT_ANIMATION_CLASS: Record<string, string> = {

@@ -15,7 +15,7 @@ export function useChatGifts() {
     (async () => {
       const { data } = await supabase
         .from("gift_catalog")
-        .select("id, slug, name, price_credits, rarity, animation, image_url");
+        .select("id, slug, name, price_credits, rarity, animation, image_url, emoji");
 
       if (cancelled || !data) return;
       const map: Record<string, GiftBubbleData> = {};
@@ -27,6 +27,7 @@ export function useChatGifts() {
           rarity: g.rarity,
           animation: g.animation,
           image_url: g.image_url,
+          emoji: g.emoji,
         };
       });
       setGiftsById(map);
