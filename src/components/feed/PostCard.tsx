@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import { PostGiftAction, PostGiftStrip } from "@/components/gifts/PostGiftParts";
 import { PostMusicEmbed, extractMusic, parseMusicUrl } from "@/components/wall/PostMusicEmbed";
 
 import { 
@@ -888,6 +889,16 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
         )}
 
 
+        {/* Gifts received on this post */}
+        <div onClick={(e) => e.stopPropagation()}>
+          <PostGiftStrip
+            postId={post.id}
+            authorId={post.user_id}
+            authorName={(post as any).profiles?.full_name || undefined}
+            currentUserId={currentUserId}
+          />
+        </div>
+
         {/* Interaction Buttons */}
         <div className="flex items-center gap-2 pt-4 border-t">
           <div onClick={(e) => e.stopPropagation()}>
@@ -916,6 +927,15 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
             <Share2 className="h-4 w-4" />
             <span className="text-xs font-medium">{repostsCount}</span>
           </Button>
+
+          <div onClick={(e) => e.stopPropagation()} className="flex-1 flex">
+            <PostGiftAction
+              postId={post.id}
+              authorId={post.user_id}
+              authorName={(post as any).profiles?.full_name || undefined}
+              currentUserId={currentUserId}
+            />
+          </div>
 
           <Button
             variant="ghost"
