@@ -258,6 +258,106 @@ import scMermaidCove from "@/assets/gifts/mermaid-cove.png";
 import scRobotBuddy from "@/assets/gifts/robot-buddy.png";
 import scCloudCastle from "@/assets/gifts/cloud-castle.png";
 import scPhoenixRise from "@/assets/gifts/phoenix-rise.png";
+import czSheepCloud from "@/assets/gifts/sheep-cloud.png";
+import czHedgehogUmbrella from "@/assets/gifts/hedgehog-umbrella.png";
+import czDeerForest from "@/assets/gifts/deer-forest.png";
+import czOwlBooks from "@/assets/gifts/owl-books.png";
+import czCatPiano from "@/assets/gifts/cat-piano.png";
+import czDuckPond from "@/assets/gifts/duck-pond.png";
+import czRaccoonPicnic from "@/assets/gifts/raccoon-picnic.png";
+import czSquirrelAcorn from "@/assets/gifts/squirrel-acorn.png";
+import czHamsterCart from "@/assets/gifts/hamster-cart.png";
+import czTurtleLantern from "@/assets/gifts/turtle-lantern.png";
+import czFrogLilypad from "@/assets/gifts/frog-lilypad.png";
+import czGoatPeak from "@/assets/gifts/goat-peak.png";
+import czAlpacaField from "@/assets/gifts/alpaca-field.png";
+import czSealIceberg from "@/assets/gifts/seal-iceberg.png";
+import czParrotPirate from "@/assets/gifts/parrot-pirate.png";
+import czHippoBath from "@/assets/gifts/hippo-bath.png";
+import czElephantShower from "@/assets/gifts/elephant-shower.png";
+import czGiraffeStars from "@/assets/gifts/giraffe-stars.png";
+import czZebraSwing from "@/assets/gifts/zebra-swing.png";
+import czMonkeyHammock from "@/assets/gifts/monkey-hammock.png";
+import czBearHoney from "@/assets/gifts/bear-honey.png";
+import czWolfMoon from "@/assets/gifts/wolf-moon.png";
+import czHuskySled from "@/assets/gifts/husky-sled.png";
+import czKittenYarn from "@/assets/gifts/kitten-yarn.png";
+import czPuppyUmbrella from "@/assets/gifts/puppy-umbrella.png";
+import fyFairyMushroom from "@/assets/gifts/fairy-mushroom.png";
+import fyWizardTower from "@/assets/gifts/wizard-tower.png";
+import fyCrystalCave from "@/assets/gifts/crystal-cave.png";
+import fyGenieLampScene from "@/assets/gifts/genie-lamp-scene.png";
+import fyUnicornRainbow from "@/assets/gifts/unicorn-rainbow.png";
+import fyDragonEggNest from "@/assets/gifts/dragon-egg-nest.png";
+import fyElfTreehouse from "@/assets/gifts/elf-treehouse.png";
+import fyWitchCauldron from "@/assets/gifts/witch-cauldron.png";
+import fyKnightShield from "@/assets/gifts/knight-shield.png";
+import fyIcePalace from "@/assets/gifts/ice-palace.png";
+import fyLavaForge from "@/assets/gifts/lava-forge.png";
+import fyEnchantedMirror from "@/assets/gifts/enchanted-mirror.png";
+import fyPotionShelf from "@/assets/gifts/potion-shelf.png";
+import fyGriffinCliff from "@/assets/gifts/griffin-cliff.png";
+import fyMermaidThrone from "@/assets/gifts/mermaid-throne.png";
+import fySpiritFox from "@/assets/gifts/spirit-fox.png";
+import fyFloatingIslands from "@/assets/gifts/floating-islands.png";
+import fyStarFisher from "@/assets/gifts/star-fisher.png";
+import fyMoonSwing from "@/assets/gifts/moon-swing.png";
+import fyClockTowerMagic from "@/assets/gifts/clock-tower-magic.png";
+import fyRuneStone from "@/assets/gifts/rune-stone.png";
+import fyPhoenixNest from "@/assets/gifts/phoenix-nest.png";
+import fyPixieGarden from "@/assets/gifts/pixie-garden.png";
+import fyStormWizard from "@/assets/gifts/storm-wizard.png";
+import fyCelestialHarp from "@/assets/gifts/celestial-harp.png";
+import jrHotAirBalloons from "@/assets/gifts/hot-air-balloons.png";
+import jrCamperVan from "@/assets/gifts/camper-van.png";
+import jrSailYachtSunset from "@/assets/gifts/sail-yacht-sunset.png";
+import jrMountainCamp from "@/assets/gifts/mountain-camp.png";
+import jrDesertJeep from "@/assets/gifts/desert-jeep.png";
+import jrJungleBridge from "@/assets/gifts/jungle-bridge.png";
+import jrHikingSummit from "@/assets/gifts/hiking-summit.png";
+import jrScubaReef from "@/assets/gifts/scuba-reef.png";
+import jrSkiLodge from "@/assets/gifts/ski-lodge.png";
+import jrSurfWave from "@/assets/gifts/surf-wave.png";
+import jrKayakRiver from "@/assets/gifts/kayak-river.png";
+import jrTrainMountain from "@/assets/gifts/train-mountain.png";
+import jrLighthouseStorm from "@/assets/gifts/lighthouse-storm.png";
+import jrHelicopterRescue from "@/assets/gifts/helicopter-rescue.png";
+import jrSeaplaneLagoon from "@/assets/gifts/seaplane-lagoon.png";
+import jrVintageMotorbike from "@/assets/gifts/vintage-motorbike.png";
+import jrRallyCar from "@/assets/gifts/rally-car.png";
+import jrSkateboardPark from "@/assets/gifts/skateboard-park.png";
+import jrBikeTour from "@/assets/gifts/bike-tour.png";
+import jrSafariTruck from "@/assets/gifts/safari-truck.png";
+import jrIcebergShip from "@/assets/gifts/iceberg-ship.png";
+import jrVolcanoTrek from "@/assets/gifts/volcano-trek.png";
+import jrCanyonBridge from "@/assets/gifts/canyon-bridge.png";
+import jrWaterfallPool from "@/assets/gifts/waterfall-pool.png";
+import jrAuroraCabin from "@/assets/gifts/aurora-cabin.png";
+import nlRooftopParty from "@/assets/gifts/rooftop-party.png";
+import nlChampagneTower from "@/assets/gifts/champagne-fountain.png";
+import nlCasinoTable from "@/assets/gifts/casino-table.png";
+import nlDjBoothNeon from "@/assets/gifts/dj-booth-neon.png";
+import nlFireworksCity from "@/assets/gifts/fireworks-city.png";
+import nlRedCarpet from "@/assets/gifts/red-carpet.png";
+import nlLimousineNight from "@/assets/gifts/limousine-night.png";
+import nlPenthouseView from "@/assets/gifts/penthouse-view.png";
+import nlJazzLounge from "@/assets/gifts/jazz-lounge.png";
+import nlWeddingArch from "@/assets/gifts/wedding-arch.png";
+import nlCastleCake from "@/assets/gifts/castle-cake.png";
+import nlGiftMountain from "@/assets/gifts/gift-mountain.png";
+import nlGoldenThrone from "@/assets/gifts/golden-throne.png";
+import nlDiamondVault from "@/assets/gifts/diamond-vault.png";
+import nlPerfumeAtelier from "@/assets/gifts/perfume-atelier.png";
+import nlSushiOmakase from "@/assets/gifts/sushi-omakase.png";
+import nlWineCellar from "@/assets/gifts/wine-cellar.png";
+import nlCigarLounge from "@/assets/gifts/cigar-lounge.png";
+import nlTeaCeremony from "@/assets/gifts/tea-ceremony.png";
+import nlOperaBox from "@/assets/gifts/opera-box.png";
+import nlBallroomDance from "@/assets/gifts/ballroom-dance.png";
+import nlHotSpringNight from "@/assets/gifts/hot-spring-night.png";
+import nlSpaCandles from "@/assets/gifts/spa-candles.png";
+import nlYachtDeckParty from "@/assets/gifts/yacht-deck-party.png";
+import nlSkylineDrone from "@/assets/gifts/skyline-drone.png";
 
 export const GIFT_IMAGES: Record<string, string> = {
   "alien-friend": alienFriend,
@@ -520,6 +620,106 @@ export const GIFT_IMAGES: Record<string, string> = {
   "robot-buddy": scRobotBuddy,
   "cloud-castle": scCloudCastle,
   "phoenix-rise": scPhoenixRise,
+"sheep-cloud": czSheepCloud,
+  "hedgehog-umbrella": czHedgehogUmbrella,
+  "deer-forest": czDeerForest,
+  "owl-books": czOwlBooks,
+  "cat-piano": czCatPiano,
+  "duck-pond": czDuckPond,
+  "raccoon-picnic": czRaccoonPicnic,
+  "squirrel-acorn": czSquirrelAcorn,
+  "hamster-cart": czHamsterCart,
+  "turtle-lantern": czTurtleLantern,
+  "frog-lilypad": czFrogLilypad,
+  "goat-peak": czGoatPeak,
+  "alpaca-field": czAlpacaField,
+  "seal-iceberg": czSealIceberg,
+  "parrot-pirate": czParrotPirate,
+  "hippo-bath": czHippoBath,
+  "elephant-shower": czElephantShower,
+  "giraffe-stars": czGiraffeStars,
+  "zebra-swing": czZebraSwing,
+  "monkey-hammock": czMonkeyHammock,
+  "bear-honey": czBearHoney,
+  "wolf-moon": czWolfMoon,
+  "husky-sled": czHuskySled,
+  "kitten-yarn": czKittenYarn,
+  "puppy-umbrella": czPuppyUmbrella,
+  "fairy-mushroom": fyFairyMushroom,
+  "wizard-tower": fyWizardTower,
+  "crystal-cave": fyCrystalCave,
+  "genie-lamp-scene": fyGenieLampScene,
+  "unicorn-rainbow": fyUnicornRainbow,
+  "dragon-egg-nest": fyDragonEggNest,
+  "elf-treehouse": fyElfTreehouse,
+  "witch-cauldron": fyWitchCauldron,
+  "knight-shield": fyKnightShield,
+  "ice-palace": fyIcePalace,
+  "lava-forge": fyLavaForge,
+  "enchanted-mirror": fyEnchantedMirror,
+  "potion-shelf": fyPotionShelf,
+  "griffin-cliff": fyGriffinCliff,
+  "mermaid-throne": fyMermaidThrone,
+  "spirit-fox": fySpiritFox,
+  "floating-islands": fyFloatingIslands,
+  "star-fisher": fyStarFisher,
+  "moon-swing": fyMoonSwing,
+  "clock-tower-magic": fyClockTowerMagic,
+  "rune-stone": fyRuneStone,
+  "phoenix-nest": fyPhoenixNest,
+  "pixie-garden": fyPixieGarden,
+  "storm-wizard": fyStormWizard,
+  "celestial-harp": fyCelestialHarp,
+  "hot-air-balloons": jrHotAirBalloons,
+  "camper-van": jrCamperVan,
+  "sail-yacht-sunset": jrSailYachtSunset,
+  "mountain-camp": jrMountainCamp,
+  "desert-jeep": jrDesertJeep,
+  "jungle-bridge": jrJungleBridge,
+  "hiking-summit": jrHikingSummit,
+  "scuba-reef": jrScubaReef,
+  "ski-lodge": jrSkiLodge,
+  "surf-wave": jrSurfWave,
+  "kayak-river": jrKayakRiver,
+  "train-mountain": jrTrainMountain,
+  "lighthouse-storm": jrLighthouseStorm,
+  "helicopter-rescue": jrHelicopterRescue,
+  "seaplane-lagoon": jrSeaplaneLagoon,
+  "vintage-motorbike": jrVintageMotorbike,
+  "rally-car": jrRallyCar,
+  "skateboard-park": jrSkateboardPark,
+  "bike-tour": jrBikeTour,
+  "safari-truck": jrSafariTruck,
+  "iceberg-ship": jrIcebergShip,
+  "volcano-trek": jrVolcanoTrek,
+  "canyon-bridge": jrCanyonBridge,
+  "waterfall-pool": jrWaterfallPool,
+  "aurora-cabin": jrAuroraCabin,
+  "rooftop-party": nlRooftopParty,
+  "champagne-fountain": nlChampagneTower,
+  "casino-table": nlCasinoTable,
+  "dj-booth-neon": nlDjBoothNeon,
+  "fireworks-city": nlFireworksCity,
+  "red-carpet": nlRedCarpet,
+  "limousine-night": nlLimousineNight,
+  "penthouse-view": nlPenthouseView,
+  "jazz-lounge": nlJazzLounge,
+  "wedding-arch": nlWeddingArch,
+  "castle-cake": nlCastleCake,
+  "gift-mountain": nlGiftMountain,
+  "golden-throne": nlGoldenThrone,
+  "diamond-vault": nlDiamondVault,
+  "perfume-atelier": nlPerfumeAtelier,
+  "sushi-omakase": nlSushiOmakase,
+  "wine-cellar": nlWineCellar,
+  "cigar-lounge": nlCigarLounge,
+  "tea-ceremony": nlTeaCeremony,
+  "opera-box": nlOperaBox,
+  "ballroom-dance": nlBallroomDance,
+  "hot-spring-night": nlHotSpringNight,
+  "spa-candles": nlSpaCandles,
+  "yacht-deck-party": nlYachtDeckParty,
+  "skyline-drone": nlSkylineDrone,
 };
 
 export const GIFT_CATEGORIES = [
@@ -535,6 +735,10 @@ export const GIFT_CATEGORIES = [
   { id: "cute", label: "Cute" },
   { id: "prestige", label: "Prestige" },
   { id: "scenes", label: "Scenes" },
+  { id: "cozy", label: "Cozy Animals" },
+  { id: "fantasy", label: "Fantasy" },
+  { id: "journey", label: "Journey" },
+  { id: "nightlife", label: "Nightlife" },
 ] as const;
 
 export const GIFT_ANIMATION_CLASS: Record<string, string> = {
