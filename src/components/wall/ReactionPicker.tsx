@@ -54,23 +54,23 @@ export const ReactionPicker = ({ postId }: ReactionPickerProps) => {
   const totalReactions = Object.values(counts).reduce((a, b) => a + b, 0);
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 min-w-0">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             type="button"
             variant="ghost"
             size="sm"
-            className={userReactionType ? "text-primary" : ""}
+            className={`px-1.5 sm:px-3 ${userReactionType ? "text-primary" : ""}`}
             onClick={(e) => e.stopPropagation()}
           >
-            <span className="text-xl mr-2">{userReactionEmoji || "👍"}</span>
-            {userReactionType ? "Reacted" : "React"}
+            <span className="text-xl sm:mr-2">{userReactionEmoji || "👍"}</span>
+            <span className="hidden sm:inline">{userReactionType ? "Reacted" : "React"}</span>
             {totalReactions > 0 && (
               <span
                 role="button"
                 tabIndex={0}
-                className="ml-2 text-muted-foreground hover:underline cursor-pointer"
+                className="ml-1 sm:ml-2 text-xs text-muted-foreground hover:underline cursor-pointer"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -133,7 +133,7 @@ export const ReactionPicker = ({ postId }: ReactionPickerProps) => {
             e.stopPropagation();
             setListOpen(true);
           }}
-          className="flex gap-1 hover:bg-accent rounded-md px-2 py-1 transition-colors"
+          className="hidden sm:flex gap-1 hover:bg-accent rounded-md px-2 py-1 transition-colors"
           aria-label="View who reacted"
         >
           {Object.entries(counts).map(([type, count]) => {
