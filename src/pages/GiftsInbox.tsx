@@ -99,7 +99,7 @@ export default function GiftsInbox() {
               <GiftVisual
                 slug={r.gift_catalog?.slug ?? ""}
                 name={r.gift_catalog?.name ?? "Gift"}
-                imageUrl={r.gift_catalog?.image_url ?? null}
+                image_url={r.gift_catalog?.image_url ?? null}
                 animation={r.gift_catalog?.animation ?? "none"}
                 size={48}
 
