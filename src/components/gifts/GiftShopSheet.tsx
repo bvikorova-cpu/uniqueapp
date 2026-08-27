@@ -35,9 +35,14 @@ export interface CatalogGift {
 }
 
 interface GiftShopSheetProps {
-  conversationId: string | null;
+  /** Chat mode: conversation the gift message is posted into. */
+  conversationId?: string | null;
   recipientId?: string | null;
   recipientName?: string;
+  /** Post mode: send the gift to the author of this post. */
+  postId?: string | null;
+  /** Custom trigger (defaults to a round gift icon button). */
+  trigger?: React.ReactNode;
   onSent?: () => void;
 }
 
@@ -45,6 +50,8 @@ export function GiftShopSheet({
   conversationId,
   recipientId,
   recipientName,
+  postId,
+  trigger,
   onSent,
 }: GiftShopSheetProps) {
   const { toast } = useToast();
@@ -106,7 +113,7 @@ export function GiftShopSheet({
   }, [gifts, search]);
 
   const sendGift = async (gift: CatalogGift) => {
-    if (!conversationId || !recipientId) {
+    if (!postId && (!conversationId || !recipientId)) {
       toast({ title: "Open a conversation first", variant: "destructive" });
       return;
     }
@@ -120,11 +127,16 @@ export function GiftShopSheet({
     }
 
     setSendingId(gift.id);
-    const { error } = await supabase.rpc("send_chat_gift", {
-      p_gift_id: gift.id,
-      p_conversation_id: conversationId,
-      p_recipient_id: recipientId,
-    });
+    const { error } = postId
+      ? await supabase.rpc("send_post_gift", {
+          p_gift_id: gift.id,
+          p_post_id: postId,
+        })
+      : await supabase.rpc("send_chat_gift", {
+          p_gift_id: gift.id,
+          p_conversation_id: conversationId as string,
+          p_recipient_id: recipientId as string,
+        });
     setSendingId(null);
 
     if (error) {
@@ -149,6 +161,7 @@ export function GiftShopSheet({
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
+        {trigger ?? (
         <Button
           type="button"
           variant="ghost"
@@ -159,6 +172,7 @@ export function GiftShopSheet({
         >
           <Gift className="h-4 w-4 text-primary" />
         </Button>
+        )}
       </SheetTrigger>
 
       <SheetContent side="bottom" className="h-[80vh] flex flex-col">
@@ -168,7 +182,7 @@ export function GiftShopSheet({
             Unique Gifts
           </SheetTitle>
           <SheetDescription className="flex items-center gap-2">
-            Send an animated gift{recipientName ? ` to ${recipientName}` : ""}. The recipient keeps
+            Send an animated gift{recipientName ? ` to ${recipientName}` : postId ? " to this post" : ""}. The recipient keeps
             50% of the value in credits.
           </SheetDescription>
         </SheetHeader>
