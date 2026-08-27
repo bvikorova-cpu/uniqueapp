@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   GIFT_CATEGORIES,
   GIFT_RARITY_RING,
+  giftCategoryIcon,
 } from "./giftAssets";
 import { GiftVisual } from "./GiftVisual";
 import { Input } from "@/components/ui/input";
@@ -193,11 +194,19 @@ export function GiftShopSheet({
           <Tabs defaultValue={GIFT_CATEGORIES[0].id} className="flex-1 flex flex-col min-h-0">
             <TabsList className="w-full justify-start overflow-x-auto">
               {GIFT_CATEGORIES.map((c) => (
-                <TabsTrigger key={c.id} value={c.id} className="shrink-0">
+                <TabsTrigger key={c.id} value={c.id} className="shrink-0 gap-1.5">
+                  <img
+                    src={giftCategoryIcon(c.id)}
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    className="h-5 w-5 object-contain"
+                  />
                   {c.label}
                 </TabsTrigger>
               ))}
             </TabsList>
+
 
             {GIFT_CATEGORIES.map((c) => (
               <TabsContent key={c.id} value={c.id} className="flex-1 min-h-0 mt-2">

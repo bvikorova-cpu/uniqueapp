@@ -3,6 +3,7 @@ import { GIFT_ANIMATION_CLASS, giftImage } from "./giftAssets";
 interface GiftVisualProps {
   slug: string;
   name: string;
+  /** @deprecated kept for call-site compatibility; emoji glyphs are never rendered. */
   emoji?: string | null;
   image_url?: string | null;
   animation?: string;
@@ -11,13 +12,12 @@ interface GiftVisualProps {
 }
 
 /**
- * Renders a gift as its custom illustration when one exists, otherwise falls
- * back to the catalog emoji glyph so the catalog can grow without new assets.
+ * Renders a gift as its custom 3D illustration. Every gift resolves to an
+ * image (with a universal 3D fallback), so emoji glyphs are never used.
  */
 export function GiftVisual({
   slug,
   name,
-  emoji,
   image_url,
   animation,
   size = 64,
@@ -26,28 +26,15 @@ export function GiftVisual({
   const src = giftImage(slug, image_url);
   const anim = GIFT_ANIMATION_CLASS[animation || "float"] || GIFT_ANIMATION_CLASS.float;
 
-  if (src) {
-    return (
-      <img
-        src={src}
-        alt={name}
-        loading="lazy"
-        width={size}
-        height={size}
-        style={{ width: size, height: size }}
-        className={`object-contain ${anim} ${className}`}
-      />
-    );
-  }
-
   return (
-    <span
-      role="img"
-      aria-label={name}
-      style={{ width: size, height: size, fontSize: Math.round(size * 0.78), lineHeight: 1 }}
-      className={`flex items-center justify-center select-none ${anim} ${className}`}
-    >
-      {emoji || "🎁"}
-    </span>
+    <img
+      src={src}
+      alt={name}
+      loading="lazy"
+      width={size}
+      height={size}
+      style={{ width: size, height: size }}
+      className={`object-contain ${anim} ${className}`}
+    />
   );
 }
