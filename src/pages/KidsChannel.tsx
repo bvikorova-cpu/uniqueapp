@@ -17,6 +17,7 @@ import { motion } from "framer-motion";
 import { KidsHero } from "@/components/kids/KidsHero";
 
 import { WhatsNewSpotlight } from "@/components/kids/WhatsNewSpotlight";
+import { KidsCreditPriceList } from "@/components/kids/KidsCreditPriceList";
 import { DailyStars } from "@/components/kids/DailyStars";
 import { AdventureMap } from "@/components/kids/AdventureMap";
 import { WeeklyTheme } from "@/components/kids/WeeklyTheme";
@@ -189,6 +190,11 @@ const KidsChannel = () => {
 
         {/* What's New */}
         <WhatsNewSpotlight />
+
+        {/* Transparent credit price list — always visible */}
+        <div className="max-w-3xl mx-auto mb-8">
+          <KidsCreditPriceList />
+        </div>
 
 
         {/* Interactive Features Grid */}
