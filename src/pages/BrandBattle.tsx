@@ -216,12 +216,12 @@ export default function BrandBattle() {
 
   return (
     <div className="min-h-screen bg-background">
-      <FloatingHowItWorks title="Brand Battle" intro="Vote for your favorite brands, join head-to-head duels, and earn rewards." steps={[
+      <FloatingHowItWorks title="Brand Battle" intro="Register your brand, vote in duels and follow the leaderboard and monthly champions." steps={[
         { title: "Pick a matchup", desc: "Browse head-to-head battles or tournaments and tap Vote for the brand you support." },
-        { title: "Build a streak", desc: "Vote daily to grow your voting streak and unlock bonus multipliers." },
-        { title: "Complete challenges", desc: "Finish daily challenges and comment on brand cards to earn extra XP." },
-        { title: "Earn rewards", desc: "Climb the leaderboard, collect badges, and redeem seasonal rewards." },
-        { title: "Support a brand", desc: "Tap a featured brand to visit its profile, coupons, and sponsor page." }
+        { title: "Vote in duels", desc: "Open Duels and pick the winner in a 1v1 brand matchup." },
+        { title: "Watch the leaderboard", desc: "Votes update the leaderboard live, ordered by sponsor tier and votes." },
+        { title: "Monthly champions", desc: "The brand with the most votes each month enters the Hall of Champions and gets exclusive perks." },
+        { title: "Register your brand", desc: "Pick a sponsor tier and register your company to join the arena." }
       ]} />
       <Navbar />
       <main className="container mx-auto px-3 sm:px-4 pt-20 pb-8 max-w-6xl">
@@ -262,9 +262,9 @@ export default function BrandBattle() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
                 { num: "01", title: "Daily Vote", text: "Get 1 free vote every day to support your favorite brand." },
-                { num: "02", title: "Head-to-Head", text: "Pick winners in 1v1 brand duels and earn streak bonuses." },
-                { num: "03", title: "Challenges", text: "Complete daily quests to unlock vote multipliers." },
-                { num: "04", title: "Win Rewards", text: "Top voters and champion brands earn quarterly prizes." },
+                { num: "02", title: "Duels", text: "Pick winners in 1v1 brand duels." },
+                { num: "03", title: "Leaderboard", text: "Votes rank brands live by tier and total votes." },
+                { num: "04", title: "Monthly Champion", text: "The top brand of the month wins exclusive champion perks." },
               ].map((item) => (
                 <div
                   key={item.num}
