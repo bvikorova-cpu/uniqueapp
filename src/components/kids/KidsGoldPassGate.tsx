@@ -2,10 +2,11 @@ import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Loader2, Lock, Sparkles, ArrowLeft, Coins } from "lucide-react";
+import { Loader2, Lock, Sparkles, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
+import { KidsCreditPriceList } from "@/components/kids/KidsCreditPriceList";
 
 interface Props {
   children: ReactNode;
@@ -18,20 +19,6 @@ interface Props {
   /** Current path so /auth can return here. */
   redirectPath: string;
 }
-
-/** Credit price list shown on the paywall (server-side enforced). */
-const KIDS_CREDIT_PRICES: { label: string; cost: string }[] = [
-  { label: "Homework Helper", cost: "3 credits / question" },
-  { label: "Science Lab", cost: "3 credits / answer" },
-  { label: "Story Creator", cost: "8 credits / story" },
-  { label: "Story illustration", cost: "3 credits / page" },
-  { label: "Story read-aloud (TTS)", cost: "2 credits / page" },
-  { label: "Drawing Buddy", cost: "5 credits / drawing" },
-  { label: "Reading Companion", cost: "3 credits / analysis or quiz" },
-  { label: "Word definition", cost: "1 credit" },
-  { label: "Character Chat", cost: "1 credit / message" },
-  { label: "Academy AI actions", cost: "3 credits / action" },
-];
 
 /**
  * Credit gate for Kids modules. Grants access if EITHER:
@@ -142,19 +129,7 @@ export const KidsGoldPassGate = ({
             <span className="font-bold text-primary">{balance} credits</span>.
           </p>
 
-          <div className="rounded-xl border bg-card/70 backdrop-blur p-5 mb-6">
-            <div className="flex items-center gap-2 mb-3 font-semibold">
-              <Coins className="h-4 w-4 text-primary" /> Kids credit prices
-            </div>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-              {KIDS_CREDIT_PRICES.map((p) => (
-                <li key={p.label} className="flex items-center justify-between gap-2 rounded-lg bg-muted/50 px-3 py-2">
-                  <span>{p.label}</span>
-                  <span className="font-semibold text-primary whitespace-nowrap">{p.cost}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <KidsCreditPriceList showBuyButton={false} className="mb-6" />
 
           <div className="flex flex-col sm:flex-row gap-3">
             <Button
