@@ -69416,6 +69416,18 @@ export type Database = {
         }
       }
       brain_duel_spend_credits: { Args: { _amount: number }; Returns: number }
+      brand_monthly_winners: {
+        Args: { p_months?: number }
+        Returns: {
+          brand_category: string
+          brand_id: string
+          brand_logo: string
+          brand_name: string
+          brand_tier: string
+          month_start: string
+          votes: number
+        }[]
+      }
       bucket_30s: { Args: { ts: string }; Returns: number }
       buy_streak_freeze_credits: { Args: { _qty: number }; Returns: Json }
       buy_streak_freeze_xp: {
