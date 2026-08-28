@@ -29,6 +29,7 @@ import { MagicalParticles } from "@/components/kids/chat/MagicalParticles";
 import { characterImages } from "@/data/characterImages";
 import Navbar from "@/components/Navbar";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { KidsModuleCreditNote } from "@/components/kids/KidsModuleCreditNote";
 
 const __HIW_KIDSVOICECHAT_STEPS = [
   { title: 'Press to talk', desc: 'Kid holds the mic to talk to the AI companion.' },
@@ -266,6 +267,7 @@ export default function KidsVoiceChat() {
               💬 Character Chat
             </motion.h1>
             <p className="text-lg text-gray-600">Choose a character and start an amazing conversation!</p>
+            <KidsModuleCreditNote module="characterChat" className="mt-4 text-left" />
           </motion.div>
 
           {/* Credit balance banner (paid-only) */}
