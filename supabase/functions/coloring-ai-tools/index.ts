@@ -265,6 +265,7 @@ Each palette should have 6-8 colors with hex codes and names. Include a palette 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
+    try { await refundRef?.(); } catch { /* ignore */ }
     console.error("coloring-ai-tools error:", error);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
