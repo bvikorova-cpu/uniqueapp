@@ -129,19 +129,7 @@ export const KidsGoldPassGate = ({
             <span className="font-bold text-primary">{balance} credits</span>.
           </p>
 
-          <div className="rounded-xl border bg-card/70 backdrop-blur p-5 mb-6">
-            <div className="flex items-center gap-2 mb-3 font-semibold">
-              <Coins className="h-4 w-4 text-primary" /> Kids credit prices
-            </div>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-              {KIDS_CREDIT_PRICES.map((p) => (
-                <li key={p.label} className="flex items-center justify-between gap-2 rounded-lg bg-muted/50 px-3 py-2">
-                  <span>{p.label}</span>
-                  <span className="font-semibold text-primary whitespace-nowrap">{p.cost}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <KidsCreditPriceList showBuyButton={false} className="mb-6" />
 
           <div className="flex flex-col sm:flex-row gap-3">
             <Button
