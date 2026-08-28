@@ -55,6 +55,7 @@ async function callAI(messages: any[], json = true): Promise<any> {
 }
 
 serve(async (req) => {
+  let refundRef: (() => Promise<void>) | null = null;
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
     const auth = req.headers.get("Authorization");
@@ -87,6 +88,7 @@ serve(async (req) => {
     };
     /** Refund the reservation before returning a non-success response. */
     const fail = async (b: unknown, s: number) => { await refund(); return ok(b, s); };
+    refundRef = refund;
 
     if (cost > 0) {
       // Validate action payload BEFORE charging.
@@ -160,7 +162,7 @@ serve(async (req) => {
         if (!child_id) return ok({ error: "child_id required" }, 400);
         const today = new Date().toISOString().slice(0, 10);
         const { data: existing } = await supabase.from("kids_academy_daily_plan").select("*").eq("child_id", child_id).eq("plan_date", today).maybeSingle();
-        if (existing) return ok({ plan: existing });
+        if (existing) return await fail({ plan: existing }, 200);
         const plan = await callAI([
           { role: "system", content: "You design a fun, balanced learning day for a child. Return JSON: { items: [{id, section, title, duration_min, xp}] } with 5-6 items across sections: homework, story, science, drawing, reading, career. Keep age-appropriate." },
           { role: "user", content: `Age: ${age}. Interests: ${(interests as string[]).join(", ") || "general"}. Generate today's plan.` },
@@ -208,6 +210,7 @@ serve(async (req) => {
         return ok({ error: `Unknown action: ${action}` }, 400);
     }
   } catch (e) {
+    try { await refundRef?.(); } catch { /* ignore */ }
     const msg = e instanceof Error ? e.message : String(e);
     const status = msg === "RATE_LIMIT" ? 429 : msg === "AI_CREDITS_EXHAUSTED" ? 402 : 500;
     return ok({ error: msg }, status);
