@@ -28,6 +28,7 @@ import { PrintExport } from "@/components/coloring/PrintExport";
 import { CreditBanner } from "@/components/kids/CreditBanner";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { KidsModuleCreditNote } from "@/components/kids/KidsModuleCreditNote";
 
 
 const __HIW_COLORINGPAGES_STEPS = [
@@ -179,6 +180,7 @@ export default function ColoringPages() {
       <Navbar />
       <main className="container mx-auto px-4 py-16 max-w-7xl">
         <ColoringHero totalPages={totalPages} credits={creditsDisplay} />
+        <KidsModuleCreditNote module="coloring" className="mt-4" />
 
 
         <HeroRewardedAd sectionKey="page_coloringpages" />
