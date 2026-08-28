@@ -29,9 +29,8 @@ serve(async (req) => {
   );
 
   try {
-    // NOTE: ColoringPage uses its dedicated `coloring_credits` ledger
-    // (purchased via plan tiers). Do NOT also debit unified ai_credits — that
-    // caused double-charging users.
+    // Gold Pass / coloring plan tiers were retired — coloring pages now use the
+    // unified `ai_credits` balance (3 credits per generation). Admins unlimited.
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       return new Response(
