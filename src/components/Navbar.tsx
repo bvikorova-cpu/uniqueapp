@@ -118,9 +118,6 @@ const Navbar = () => {
 
   const brandArenaServices = [
     { path: "/brand-battle", label: "Brand Battle Arena", icon: Trophy },
-    { path: "/brand-battle/hub", label: "Arena Hub — 20 Features", icon: Sparkles },
-    { path: "/sponsor-registration", label: "Become a Sponsor", icon: Crown },
-    { path: "/sponsor-dashboard", label: "Sponsor Dashboard", icon: Building2 },
   ];
 
   const kidsAcademyServices = [

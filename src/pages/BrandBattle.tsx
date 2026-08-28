@@ -14,26 +14,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import confetti from "canvas-confetti";
 import Navbar from "@/components/Navbar";
 import { BrandVotesDisplay } from "@/components/brand-battle/BrandVotesDisplay";
-import { VotingStreakCard } from "@/components/brand-battle/VotingStreakCard";
-import { RewardsSection } from "@/components/brand-battle/RewardsSection";
 import { FeaturedBrandCard } from "@/components/brand-battle/FeaturedBrandCard";
 import { HeadToHead } from "@/components/brand-battle/HeadToHead";
-import { DailyChallenges } from "@/components/brand-battle/DailyChallenges";
-import { BrandComments } from "@/components/brand-battle/BrandComments";
-import { TournamentBracket } from "@/components/brand-battle/TournamentBracket";
+import { MonthlyChampions } from "@/components/brand-battle/MonthlyChampions";
 import { LuxuryArenaHero } from "@/components/brand-battle/LuxuryArenaHero";
 import { LuxuryTabsNav, LuxuryTabItem } from "@/components/brand-battle/LuxuryTabsNav";
-import { BrandStockTicker } from "@/components/brand-battle/BrandStockTicker";
-import { BrandStockMarket } from "@/components/brand-battle/BrandStockMarket";
-import { BrandAIAnalyzer } from "@/components/brand-battle/BrandAIAnalyzer";
-import { AIBattlePredictor } from "@/components/brand-battle/AIBattlePredictor";
-import { BrandTribes } from "@/components/brand-battle/BrandTribes";
-import { BrandTradingCards } from "@/components/brand-battle/BrandTradingCards";
-import { LiveBrandChat } from "@/components/brand-battle/LiveBrandChat";
-import { BoosterPacks } from "@/components/brand-battle/BoosterPacks";
-import { PremiumPasses } from "@/components/brand-battle/PremiumPasses";
 import { useBrandVotes } from "@/hooks/useBrandVotes";
-import { useVotingStreak } from "@/hooks/useVotingStreak";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface BrandSponsor {
@@ -86,7 +72,6 @@ export default function BrandBattle() {
   const [activeTab, setActiveTab] = useState<string>("leaderboard");
   const [searchParams, setSearchParams] = useSearchParams();
   const { data: votes, refetch: refetchVotes } = useBrandVotes();
-  const { data: streak } = useVotingStreak();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
@@ -224,29 +209,19 @@ export default function BrandBattle() {
 
   const LUXURY_TABS: LuxuryTabItem[] = [
     { value: "leaderboard", label: "Leaderboard", icon: Trophy },
-    { value: "ai", label: "AI Lab", icon: Sparkles },
-    { value: "market", label: "Stock Market", icon: TrendingUp },
-    { value: "matchup", label: "Head-to-Head", icon: Swords },
-    { value: "tribes", label: "Tribes", icon: Crown },
-    { value: "cards", label: "Trading Cards", icon: Star },
-    { value: "chat", label: "Live Chat", icon: MessageSquare },
-    { value: "boosters", label: "Boosters", icon: Zap },
-    { value: "passes", label: "Premium Pass", icon: Crown },
-    { value: "challenges", label: "Challenges", icon: Target },
-    { value: "tournament", label: "Tournament", icon: Calendar },
-    { value: "reviews", label: "Reviews", icon: MessageSquare },
-    { value: "sponsors", label: "Become Sponsor", icon: Building2 },
-    { value: "rewards", label: "Rewards", icon: Award },
+    { value: "matchup", label: "Duels", icon: Swords },
+    { value: "champions", label: "Monthly Champions", icon: Crown },
+    { value: "sponsors", label: "Register Brand", icon: Building2 },
   ];
 
   return (
     <div className="min-h-screen bg-background">
-      <FloatingHowItWorks title="Brand Battle" intro="Vote for your favorite brands, join head-to-head duels, and earn rewards." steps={[
+      <FloatingHowItWorks title="Brand Battle" intro="Register your brand, vote in duels and follow the leaderboard and monthly champions." steps={[
         { title: "Pick a matchup", desc: "Browse head-to-head battles or tournaments and tap Vote for the brand you support." },
-        { title: "Build a streak", desc: "Vote daily to grow your voting streak and unlock bonus multipliers." },
-        { title: "Complete challenges", desc: "Finish daily challenges and comment on brand cards to earn extra XP." },
-        { title: "Earn rewards", desc: "Climb the leaderboard, collect badges, and redeem seasonal rewards." },
-        { title: "Support a brand", desc: "Tap a featured brand to visit its profile, coupons, and sponsor page." }
+        { title: "Vote in duels", desc: "Open Duels and pick the winner in a 1v1 brand matchup." },
+        { title: "Watch the leaderboard", desc: "Votes update the leaderboard live, ordered by sponsor tier and votes." },
+        { title: "Monthly champions", desc: "The brand with the most votes each month enters the Hall of Champions and gets exclusive perks." },
+        { title: "Register your brand", desc: "Pick a sponsor tier and register your company to join the arena." }
       ]} />
       <Navbar />
       <main className="container mx-auto px-3 sm:px-4 pt-20 pb-8 max-w-6xl">
@@ -256,17 +231,6 @@ export default function BrandBattle() {
           totalSponsors={campaignStats?.totalSponsors}
           liveNow={Math.max(1, Math.floor((campaignStats?.totalSponsors ?? 0) / 2))}
         />
-
-        <div className="my-4 flex justify-center">
-          <Button size="lg" onClick={() => navigate("/brand-battle/hub")} className="gap-2">
-            <Sparkles className="w-5 h-5" /> Open Brand Arena Hub (20 new features)
-          </Button>
-        </div>
-
-        {/* Live brand stock ticker */}
-        <div className="mb-8">
-          <BrandStockTicker />
-        </div>
 
         {/* User controls */}
         {user && (
@@ -283,7 +247,6 @@ export default function BrandBattle() {
                 Sponsor Dashboard
               </Button>
             </div>
-            <VotingStreakCard />
           </div>
         )}
 
@@ -299,9 +262,9 @@ export default function BrandBattle() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
                 { num: "01", title: "Daily Vote", text: "Get 1 free vote every day to support your favorite brand." },
-                { num: "02", title: "Head-to-Head", text: "Pick winners in 1v1 brand duels and earn streak bonuses." },
-                { num: "03", title: "Challenges", text: "Complete daily quests to unlock vote multipliers." },
-                { num: "04", title: "Win Rewards", text: "Top voters and champion brands earn quarterly prizes." },
+                { num: "02", title: "Duels", text: "Pick winners in 1v1 brand duels." },
+                { num: "03", title: "Leaderboard", text: "Votes rank brands live by tier and total votes." },
+                { num: "04", title: "Monthly Champion", text: "The top brand of the month wins exclusive champion perks." },
               ].map((item) => (
                 <div
                   key={item.num}
@@ -467,19 +430,6 @@ export default function BrandBattle() {
             )}
           </TabsContent>
 
-          {/* AI Lab */}
-          <TabsContent value="ai" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <BrandAIAnalyzer brands={sponsors as any} />
-              <AIBattlePredictor brands={sponsors as any} />
-            </div>
-          </TabsContent>
-
-          {/* Stock Market */}
-          <TabsContent value="market" className="space-y-6">
-            <BrandStockMarket />
-          </TabsContent>
-
           {/* Head-to-Head */}
           <TabsContent value="matchup" className="space-y-6">
             <HeadToHead
@@ -491,47 +441,9 @@ export default function BrandBattle() {
             />
           </TabsContent>
 
-          {/* Tribes */}
-          <TabsContent value="tribes" className="space-y-6">
-            <BrandTribes />
-          </TabsContent>
-
-          {/* Trading Cards */}
-          <TabsContent value="cards" className="space-y-6">
-            <BrandTradingCards />
-          </TabsContent>
-
-          {/* Live Chat */}
-          <TabsContent value="chat" className="space-y-6">
-            <LiveBrandChat />
-          </TabsContent>
-
-          {/* Boosters */}
-          <TabsContent value="boosters" className="space-y-6">
-            <BoosterPacks />
-          </TabsContent>
-
-          {/* Premium Passes */}
-          <TabsContent value="passes" className="space-y-6">
-            <PremiumPasses />
-          </TabsContent>
-
-          {/* Challenges */}
-          <TabsContent value="challenges" className="space-y-6">
-            <DailyChallenges
-              currentStreak={streak?.currentStreak || 0}
-              totalVotesCast={streak?.totalVotesCast || 0}
-            />
-          </TabsContent>
-
-          {/* Tournament */}
-          <TabsContent value="tournament" className="space-y-6">
-            <TournamentBracket sponsors={sponsors} />
-          </TabsContent>
-
-          {/* Reviews */}
-          <TabsContent value="reviews" className="space-y-6">
-            <BrandComments isAuthenticated={!!user} />
+          {/* Monthly Champions */}
+          <TabsContent value="champions" className="space-y-6">
+            <MonthlyChampions />
           </TabsContent>
 
           {/* Sponsor Tiers */}
@@ -576,10 +488,6 @@ export default function BrandBattle() {
             </div>
           </TabsContent>
 
-          {/* Rewards */}
-          <TabsContent value="rewards" className="space-y-6">
-            <RewardsSection />
-          </TabsContent>
         </Tabs>
       </main>
     </div>
