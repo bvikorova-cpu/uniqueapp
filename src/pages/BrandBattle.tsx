@@ -224,19 +224,9 @@ export default function BrandBattle() {
 
   const LUXURY_TABS: LuxuryTabItem[] = [
     { value: "leaderboard", label: "Leaderboard", icon: Trophy },
-    { value: "ai", label: "AI Lab", icon: Sparkles },
-    { value: "market", label: "Stock Market", icon: TrendingUp },
-    { value: "matchup", label: "Head-to-Head", icon: Swords },
-    { value: "tribes", label: "Tribes", icon: Crown },
-    { value: "cards", label: "Trading Cards", icon: Star },
-    { value: "chat", label: "Live Chat", icon: MessageSquare },
-    { value: "boosters", label: "Boosters", icon: Zap },
-    { value: "passes", label: "Premium Pass", icon: Crown },
-    { value: "challenges", label: "Challenges", icon: Target },
-    { value: "tournament", label: "Tournament", icon: Calendar },
-    { value: "reviews", label: "Reviews", icon: MessageSquare },
-    { value: "sponsors", label: "Become Sponsor", icon: Building2 },
-    { value: "rewards", label: "Rewards", icon: Award },
+    { value: "matchup", label: "Duels", icon: Swords },
+    { value: "champions", label: "Monthly Champions", icon: Crown },
+    { value: "sponsors", label: "Register Brand", icon: Building2 },
   ];
 
   return (
