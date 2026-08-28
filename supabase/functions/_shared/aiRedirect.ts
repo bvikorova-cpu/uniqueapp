@@ -98,10 +98,58 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
       if (!body) return blocked("unsupported request payload");
 
       if (url.includes("/chat/completions")) {
-        const data = await withRetry("chat", () => tryVertexChat(body!));
+        // Vertex's OpenAI-compatible endpoint does not stream reliably here, so we
+        // always request a full completion and re-emit it as an SSE stream when the
+        // caller asked for `stream: true` (kids Character Chat, companions, etc.).
+        const wantsStream = body!.stream === true;
+        const payload = { ...body! };
+        delete payload.stream;
+        delete (payload as Record<string, unknown>).stream_options;
+        const data = await withRetry("chat", () => tryVertexChat(payload));
         if (!data) return blocked("vertex chat completion failed");
-        return json(data);
+        if (!wantsStream) return json(data);
+
+        const content = String(data?.choices?.[0]?.message?.content ?? "");
+        const id = data?.id ?? `chatcmpl-${crypto.randomUUID()}`;
+        const model = data?.model ?? String(body!.model ?? "vertex");
+        const enc = new TextEncoder();
+        const stream = new ReadableStream({
+          start(controller) {
+            const send = (obj: unknown) =>
+              controller.enqueue(enc.encode(`data: ${JSON.stringify(obj)}\n\n`));
+            // Chunk the text so consumers render progressively.
+            const size = 60;
+            for (let i = 0; i < content.length; i += size) {
+              send({
+                id,
+                object: "chat.completion.chunk",
+                created: Math.floor(Date.now() / 1000),
+                model,
+                choices: [{ index: 0, delta: { content: content.slice(i, i + size) }, finish_reason: null }],
+              });
+            }
+            send({
+              id,
+              object: "chat.completion.chunk",
+              created: Math.floor(Date.now() / 1000),
+              model,
+              choices: [{ index: 0, delta: {}, finish_reason: "stop" }],
+            });
+            controller.enqueue(enc.encode("data: [DONE]\n\n"));
+            controller.close();
+          },
+        });
+        return new Response(stream, {
+          status: 200,
+          headers: {
+            "Content-Type": "text/event-stream",
+            "Cache-Control": "no-cache",
+            Connection: "keep-alive",
+          },
+        });
       }
+
+
 
       if (url.includes("/images/generations") || url.includes("/images/edits")) {
         // Collect any reference image the caller supplied (edit / transform flows).
