@@ -207,7 +207,7 @@ serve(async (req) => {
         processed_image_url: generatedImageUrl,
         difficulty: difficulty,
         status: 'completed',
-        credits_used: 1,
+        credits_used: isAdmin ? 0 : COST,
         metadata: { resolution, tier: creditsData.tier }
       })
       .select()
@@ -218,10 +218,10 @@ serve(async (req) => {
       throw pageError;
     }
 
-    if (creditsData.tier !== 'premium' && !isAdmin) {
+    if (!isAdmin) {
       const { error: updateError } = await supabaseClient
-        .from("coloring_credits")
-        .update({ credits_remaining: creditsData.credits_remaining - 1 })
+        .from("ai_credits")
+        .update({ credits_remaining: creditsData.credits_remaining - COST })
         .eq("user_id", user.id);
 
       if (updateError) {
@@ -234,7 +234,7 @@ serve(async (req) => {
       .insert({
         user_id: user.id,
         usage_type: "coloring_page_generation",
-        credits_used: 1,
+        credits_used: isAdmin ? 0 : COST,
         description: `Generated ${difficulty} coloring page`
       });
 
@@ -242,7 +242,7 @@ serve(async (req) => {
       JSON.stringify({
         success: true,
         coloringPage,
-        creditsRemaining: creditsData.tier === 'premium' ? 'unlimited' : creditsData.credits_remaining - 1
+        creditsRemaining: isAdmin ? 'unlimited' : creditsData.credits_remaining - COST
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
