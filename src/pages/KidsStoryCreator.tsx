@@ -25,6 +25,7 @@ import { KidsGoldPassBanner } from "@/components/kids/KidsGoldPassBanner";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { logKidsStory } from "@/lib/kidsActivityLog";
+import { KidsModuleCreditNote } from "@/components/kids/KidsModuleCreditNote";
 
 const __HIW_KIDSSTORYCREATOR_STEPS = [
   { title: 'Choose theme & hero', desc: 'Pick a setting and a main character.' },
@@ -172,6 +173,7 @@ const KidsStoryCreator = () => {
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-6xl mx-auto">
           <StoryCreatorHero />
+          <KidsModuleCreditNote module="story" className="mt-4" />
 
           <HeroRewardedAd sectionKey="page_kidsstorycreator" />
 

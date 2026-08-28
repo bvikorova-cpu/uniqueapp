@@ -33,6 +33,7 @@ import coloringDragon from "@/assets/coloring/dragon.png";
 import coloringFlower from "@/assets/coloring/flower.png";
 import coloringUnicorn from "@/assets/coloring/unicorn.png";
 import coloringDog from "@/assets/coloring/dog.png";
+import { KidsModuleCreditNote } from "@/components/kids/KidsModuleCreditNote";
 
 const COLORING_IMAGES: Record<string, string> = {
   cat: coloringCat,
@@ -219,6 +220,7 @@ const KidsDrawingBuddy = () => {
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-6xl mx-auto space-y-6">
           <DrawingBuddyHero />
+          <KidsModuleCreditNote module="drawing" className="mt-4" />
 
           <HeroRewardedAd sectionKey="page_kidsdrawingbuddy" />
 

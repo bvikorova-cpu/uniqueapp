@@ -27,6 +27,7 @@ import { WordDefinitionPopover } from "@/components/kids-reading/WordDefinitionP
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { logKidsReadingSession } from "@/lib/kidsActivityLog";
+import { KidsModuleCreditNote } from "@/components/kids/KidsModuleCreditNote";
 
 const __HIW_KIDSREADINGCOMPANION_STEPS = [
   { title: 'Choose a text', desc: 'Pick a book, story or upload a reading task.' },
@@ -182,6 +183,7 @@ const KidsReadingCompanion = () => {
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-4xl mx-auto">
           <ReadingHero />
+          <KidsModuleCreditNote module="reading" className="mt-4" />
 
           <HeroRewardedAd sectionKey="page_kidsreadingcompanion" />
 

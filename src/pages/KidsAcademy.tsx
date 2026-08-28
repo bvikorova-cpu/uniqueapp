@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Puzzle as PuzzleIcon } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
+import { KidsModuleCreditNote } from "@/components/kids/KidsModuleCreditNote";
 import { KidsCollectibles } from "@/components/kids/academy/KidsCollectibles";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
@@ -26,6 +27,7 @@ const KidsAcademy = () => {
               <PuzzleIcon className="h-4 w-4" /> Kids Puzzles — collect pieces for 1 credit
             </Link>
           </Button>
+          <KidsModuleCreditNote module="academy" />
           <KidsCollectibles />
         </div>
       </main>

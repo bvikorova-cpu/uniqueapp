@@ -27,6 +27,7 @@ import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 import { logKidsHomework } from "@/lib/kidsActivityLog";
+import { KidsModuleCreditNote } from "@/components/kids/KidsModuleCreditNote";
 
 const __HIW_KIDSHOMEWORK_STEPS = [
   { title: 'Type or snap homework', desc: 'Kid photographs or types the question.' },
@@ -153,6 +154,7 @@ const KidsHomework = () => {
       <main className="container mx-auto px-4 pt-8 pb-[calc(12rem+env(safe-area-inset-bottom))] md:pb-12 mt-16">
         <div className="max-w-6xl mx-auto">
           <HomeworkHero />
+          <KidsModuleCreditNote module="homework" className="mt-4" />
 
           <HeroRewardedAd sectionKey="page_kidshomework" />
 

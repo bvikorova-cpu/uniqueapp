@@ -25,6 +25,7 @@ import { AskTheScientist } from "@/components/kids-science/AskTheScientist";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { logKidsScienceExperiment } from "@/lib/kidsActivityLog";
+import { KidsModuleCreditNote } from "@/components/kids/KidsModuleCreditNote";
 
 const __HIW_KIDSSCIENCELAB_STEPS = [
   { title: 'Pick an experiment', desc: 'Browse by topic and age — each has a safety label.' },
@@ -182,6 +183,7 @@ const KidsScienceLab = () => {
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-4xl mx-auto space-y-6">
           <ScienceLabHero />
+          <KidsModuleCreditNote module="science" className="mt-4" />
 
           <HeroRewardedAd sectionKey="page_kidssciencelab" />
 
