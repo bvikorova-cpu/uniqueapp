@@ -73,9 +73,26 @@ serve(async (req) => {
     const action: string = body?.action ?? "";
     if (!action) return ok({ error: "Missing action" }, 400);
 
-    // Credit gate
+    // Credit gate — reserve now, refund if the request fails or nothing is generated.
     const cost = COSTS[action] ?? 0;
+    let charged = 0;
+    const refund = async () => {
+      if (charged <= 0) return;
+      const { data: r } = await supabase
+        .from("ai_credits").select("credits_remaining").eq("user_id", userId).maybeSingle();
+      await supabase.from("ai_credits")
+        .update({ credits_remaining: (r?.credits_remaining ?? 0) + charged })
+        .eq("user_id", userId);
+      charged = 0;
+    };
+    /** Refund the reservation before returning a non-success response. */
+    const fail = async (b: unknown, s: number) => { await refund(); return ok(b, s); };
+
     if (cost > 0) {
+      // Validate action payload BEFORE charging.
+      if (action !== "hub.parentDigest" && !body?.child_id) {
+        return ok({ error: "child_id required" }, 400);
+      }
       const { data: row } = await supabase
         .from("ai_credits").select("credits_remaining").eq("user_id", userId).maybeSingle();
       const bal = row?.credits_remaining ?? 0;
@@ -84,6 +101,7 @@ serve(async (req) => {
         return ok({ error: "Insufficient credits", needed: cost, balance: bal }, 402);
       }
       await supabase.from("ai_credits").update({ credits_remaining: bal - cost }).eq("user_id", userId);
+      charged = cost;
     }
 
     switch (action) {
