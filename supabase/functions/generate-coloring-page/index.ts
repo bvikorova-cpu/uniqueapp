@@ -133,23 +133,18 @@ serve(async (req) => {
     if (imageUrl) {
       console.log("Fetching original image...");
       const imageBase64 = await fetchImageAsBase64(imageUrl);
-      const binaryString = atob(imageBase64);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
-      const imageBlob = new Blob([bytes], { type: 'image/png' });
-
-      const formData = new FormData();
-      formData.append('image', imageBlob, 'image.png');
-      formData.append('prompt', prompt);
-      formData.append('model', 'gpt-image-1');
-      formData.append('size', '1024x1024');
 
       aiResponse = await fetch("https://api.openai.com/v1/images/edits", {
         method: "POST",
-        headers: { "Authorization": `Bearer ${LOVABLE_API_KEY}` },
-        body: formData });
+        headers: {
+          "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: 'gpt-image-1',
+          prompt,
+          image: `data:image/png;base64,${imageBase64}`,
+          size: '1024x1024',
+          n: 1 }) });
     } else {
       aiResponse = await fetch("https://api.openai.com/v1/images/generations", {
         method: "POST",
