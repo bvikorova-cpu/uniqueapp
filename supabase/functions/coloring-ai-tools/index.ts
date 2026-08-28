@@ -23,30 +23,41 @@ serve(async (req) => {
 
     const { action, ...params } = await req.json();
 
-    // Check AI credits
+    // Unified ai_credits (coloring plan tiers / Gold Pass retired). Admins unlimited.
+    const { data: adminRow } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id)
+      .eq("role", "admin")
+      .maybeSingle();
+    const isAdmin = !!adminRow;
+
     const checkCredits = async (cost: number) => {
+      if (isAdmin) return;
       const { data: credits } = await supabase
-        .from("coloring_credits")
-        .select("credits_remaining, tier")
+        .from("ai_credits")
+        .select("credits_remaining")
         .eq("user_id", user.id)
         .maybeSingle();
 
-      if (!credits) throw new Error("No credits found. Please purchase a plan.");
-      if (credits.tier !== "premium" && credits.credits_remaining < cost) {
-        throw new Error(`Insufficient credits. Need ${cost}, have ${credits.credits_remaining}`);
+      const balance = credits?.credits_remaining ?? 0;
+      if (!credits) {
+        await supabase.from("ai_credits").insert({
+          user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
+      }
+      if (balance < cost) {
+        throw new Error(`Insufficient credits. Need ${cost}, have ${balance}`);
       }
 
-      if (credits.tier !== "premium") {
-        await supabase
-          .from("coloring_credits")
-          .update({ credits_remaining: credits.credits_remaining - cost })
-          .eq("user_id", user.id);
-      }
+      await supabase
+        .from("ai_credits")
+        .update({ credits_remaining: balance - cost })
+        .eq("user_id", user.id);
     };
 
     const callAI = async (systemPrompt: string, userPrompt: string) => {
       if (!LOVABLE_API_KEY) throw new Error("AI not configured");
-      const res = await fetch("https://api.openai.com/v1/images/generations", {
+      const res = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${LOVABLE_API_KEY}`,
