@@ -29,7 +29,7 @@ export function MonthlyChampions() {
   const { data: winners = [], isLoading } = useQuery({
     queryKey: ["brand-monthly-winners"],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("brand_monthly_winners", { p_months: 12 });
+      const { data, error } = await (supabase.rpc as any)("brand_monthly_winners", { p_months: 12 });
       if (error) throw error;
       return (data ?? []) as WinnerRow[];
     },
