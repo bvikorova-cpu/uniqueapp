@@ -65,7 +65,7 @@ export function WelcomeOnboarding() {
   const recommended = INTERESTS.filter((i) => selected.includes(i.id)).slice(0, 4);
 
   return (
-    <Dialog open={open} onOpenChange={(v) => { if (!v) finish(); }}>
+    <Dialog modal={false} open={open} onOpenChange={(v) => { if (!v) finish(); }}>
       <DialogContent className="max-w-lg p-0 overflow-hidden border-primary/30 bg-gradient-to-br from-background via-background to-primary/5">
         <DialogTitle className="sr-only">Welcome to Unique</DialogTitle>
         <DialogDescription className="sr-only">Personalize your experience in 30 seconds.</DialogDescription>

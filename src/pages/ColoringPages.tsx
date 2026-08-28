@@ -188,36 +188,36 @@ export default function ColoringPages() {
 
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
-             <TabsList className="inline-flex gap-2 sm:grid sm:grid-cols-6 lg:grid-cols-7 xl:grid-cols-14 w-max sm:w-full h-auto p-2">
-              <TabsTrigger value="generate" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+          <div className="-mx-4 px-4 sm:mx-0 sm:px-0">
+             <TabsList className="flex flex-wrap gap-1.5 w-full h-auto p-2 justify-center">
+              <TabsTrigger value="generate" className="px-2.5 py-1.5 text-[11px] sm:text-xs whitespace-nowrap gap-1">
                 <Palette className="w-3.5 h-3.5" /> Create
               </TabsTrigger>
-              <TabsTrigger value="ai-prompt" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+              <TabsTrigger value="ai-prompt" className="px-2.5 py-1.5 text-[11px] sm:text-xs whitespace-nowrap gap-1">
                 <Wand2 className="w-3.5 h-3.5" /> AI Prompt
               </TabsTrigger>
-              <TabsTrigger value="style-transfer" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+              <TabsTrigger value="style-transfer" className="px-2.5 py-1.5 text-[11px] sm:text-xs whitespace-nowrap gap-1">
                 <Paintbrush className="w-3.5 h-3.5" /> Style Transfer
               </TabsTrigger>
-              <TabsTrigger value="templates" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+              <TabsTrigger value="templates" className="px-2.5 py-1.5 text-[11px] sm:text-xs whitespace-nowrap gap-1">
                 <LayoutGrid className="w-3.5 h-3.5" /> Templates
               </TabsTrigger>
-              <TabsTrigger value="my-pages" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+              <TabsTrigger value="my-pages" className="px-2.5 py-1.5 text-[11px] sm:text-xs whitespace-nowrap gap-1">
                 <ImageIcon className="w-3.5 h-3.5" /> My Pages
               </TabsTrigger>
-              <TabsTrigger value="community" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+              <TabsTrigger value="community" className="px-2.5 py-1.5 text-[11px] sm:text-xs whitespace-nowrap gap-1">
                 <Users className="w-3.5 h-3.5" /> Community
               </TabsTrigger>
-              <TabsTrigger value="daily" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+              <TabsTrigger value="daily" className="px-2.5 py-1.5 text-[11px] sm:text-xs whitespace-nowrap gap-1">
                 <Trophy className="w-3.5 h-3.5" /> Challenge
               </TabsTrigger>
-              <TabsTrigger value="colors" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+              <TabsTrigger value="colors" className="px-2.5 py-1.5 text-[11px] sm:text-xs whitespace-nowrap gap-1">
                 <Zap className="w-3.5 h-3.5" /> AI Colors
               </TabsTrigger>
-              <TabsTrigger value="print" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+              <TabsTrigger value="print" className="px-2.5 py-1.5 text-[11px] sm:text-xs whitespace-nowrap gap-1">
                 <Printer className="w-3.5 h-3.5" /> Print
               </TabsTrigger>
-              <TabsTrigger value="stats" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+              <TabsTrigger value="stats" className="px-2.5 py-1.5 text-[11px] sm:text-xs whitespace-nowrap gap-1">
                 <Trophy className="w-3.5 h-3.5" /> Stats
               </TabsTrigger>
             </TabsList>
