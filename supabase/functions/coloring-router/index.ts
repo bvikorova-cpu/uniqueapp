@@ -1,6 +1,6 @@
 import "../_shared/aiRedirect.ts";
 // Coloring Hub universal router — handles all 18 features.
-// AI actions deduct credits from coloring_credits.
+// AI actions deduct credits from the unified ai_credits balance.
 import { createClient } from "npm:@supabase/supabase-js@2.45.0";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
@@ -37,15 +37,27 @@ async function callAI(prompt: string, system?: string) {
 }
 
 async function deductCredits(supabase: any, userId: string, cost: number) {
+  const { data: adminRow } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .eq("role", "admin")
+    .maybeSingle();
+  if (adminRow) return;
+
   const { data: row } = await supabase
-    .from("coloring_credits")
+    .from("ai_credits")
     .select("credits_remaining")
     .eq("user_id", userId)
     .maybeSingle();
   const balance = row?.credits_remaining ?? 0;
+  if (!row) {
+    await supabase.from("ai_credits").insert({
+      user_id: userId, credits_remaining: 0, total_credits_purchased: 0 });
+  }
   if (balance < cost) throw new Error("insufficient_credits");
   await supabase
-    .from("coloring_credits")
+    .from("ai_credits")
     .update({ credits_remaining: balance - cost })
     .eq("user_id", userId);
 }
