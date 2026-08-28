@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
-export const COLORING_CREDIT_COST = 5; // 5 credits per coloring page generation
+export const COLORING_CREDIT_COST = 3; // 3 credits per coloring page generation
 
 /**
  * Coloring Pages credits — paid-only model, consistent with other 7 modules.

@@ -1,6 +1,6 @@
 import "../_shared/aiRedirect.ts";
 // Coloring Hub universal router — handles all 18 features.
-// AI actions deduct credits from coloring_credits.
+// AI actions deduct credits from the unified ai_credits balance.
 import { createClient } from "npm:@supabase/supabase-js@2.45.0";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
