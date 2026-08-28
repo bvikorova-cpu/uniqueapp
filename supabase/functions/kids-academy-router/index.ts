@@ -55,6 +55,7 @@ async function callAI(messages: any[], json = true): Promise<any> {
 }
 
 serve(async (req) => {
+  let refundRef: (() => Promise<void>) | null = null;
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
     const auth = req.headers.get("Authorization");
@@ -73,9 +74,27 @@ serve(async (req) => {
     const action: string = body?.action ?? "";
     if (!action) return ok({ error: "Missing action" }, 400);
 
-    // Credit gate
+    // Credit gate — reserve now, refund if the request fails or nothing is generated.
     const cost = COSTS[action] ?? 0;
+    let charged = 0;
+    const refund = async () => {
+      if (charged <= 0) return;
+      const { data: r } = await supabase
+        .from("ai_credits").select("credits_remaining").eq("user_id", userId).maybeSingle();
+      await supabase.from("ai_credits")
+        .update({ credits_remaining: (r?.credits_remaining ?? 0) + charged })
+        .eq("user_id", userId);
+      charged = 0;
+    };
+    /** Refund the reservation before returning a non-success response. */
+    const fail = async (b: unknown, s: number) => { await refund(); return ok(b, s); };
+    refundRef = refund;
+
     if (cost > 0) {
+      // Validate action payload BEFORE charging.
+      if (action !== "hub.parentDigest" && !body?.child_id) {
+        return ok({ error: "child_id required" }, 400);
+      }
       const { data: row } = await supabase
         .from("ai_credits").select("credits_remaining").eq("user_id", userId).maybeSingle();
       const bal = row?.credits_remaining ?? 0;
@@ -84,6 +103,7 @@ serve(async (req) => {
         return ok({ error: "Insufficient credits", needed: cost, balance: bal }, 402);
       }
       await supabase.from("ai_credits").update({ credits_remaining: bal - cost }).eq("user_id", userId);
+      charged = cost;
     }
 
     switch (action) {
@@ -142,7 +162,7 @@ serve(async (req) => {
         if (!child_id) return ok({ error: "child_id required" }, 400);
         const today = new Date().toISOString().slice(0, 10);
         const { data: existing } = await supabase.from("kids_academy_daily_plan").select("*").eq("child_id", child_id).eq("plan_date", today).maybeSingle();
-        if (existing) return ok({ plan: existing });
+        if (existing) return await fail({ plan: existing }, 200);
         const plan = await callAI([
           { role: "system", content: "You design a fun, balanced learning day for a child. Return JSON: { items: [{id, section, title, duration_min, xp}] } with 5-6 items across sections: homework, story, science, drawing, reading, career. Keep age-appropriate." },
           { role: "user", content: `Age: ${age}. Interests: ${(interests as string[]).join(", ") || "general"}. Generate today's plan.` },
@@ -190,6 +210,7 @@ serve(async (req) => {
         return ok({ error: `Unknown action: ${action}` }, 400);
     }
   } catch (e) {
+    try { await refundRef?.(); } catch { /* ignore */ }
     const msg = e instanceof Error ? e.message : String(e);
     const status = msg === "RATE_LIMIT" ? 429 : msg === "AI_CREDITS_EXHAUSTED" ? 402 : 500;
     return ok({ error: msg }, status);

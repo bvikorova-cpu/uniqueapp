@@ -8,6 +8,8 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  let charged = 0;
+  let refundRef: (() => Promise<void>) | null = null;
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("Not authenticated");
@@ -53,6 +55,18 @@ serve(async (req) => {
         .from("ai_credits")
         .update({ credits_remaining: balance - cost })
         .eq("user_id", user.id);
+      charged += cost;
+    };
+
+    // Refund the reservation when the AI call fails, so failed actions cost nothing.
+    refundRef = async () => {
+      if (charged <= 0) return;
+      const { data: r } = await supabase
+        .from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
+      await supabase.from("ai_credits")
+        .update({ credits_remaining: (r?.credits_remaining ?? 0) + charged })
+        .eq("user_id", user.id);
+      charged = 0;
     };
 
     const callAI = async (systemPrompt: string, userPrompt: string) => {
@@ -107,7 +121,7 @@ serve(async (req) => {
 
     const callAIStructured = async (systemPrompt: string, userPrompt: string, toolDef: any) => {
       if (!LOVABLE_API_KEY) throw new Error("AI not configured");
-      const res = await fetch("https://api.openai.com/v1/images/generations", {
+      const res = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${LOVABLE_API_KEY}`,
@@ -251,6 +265,7 @@ Each palette should have 6-8 colors with hex codes and names. Include a palette 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
+    try { await refundRef?.(); } catch { /* ignore */ }
     console.error("coloring-ai-tools error:", error);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
