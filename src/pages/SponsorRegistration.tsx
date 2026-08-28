@@ -135,19 +135,24 @@ export default function SponsorRegistration() { const navigate = useNavigate();
 
       const { error: uploadError } = await supabase.storage
         .from("brand-assets")
-        .upload(filePath, file);
+        .upload(filePath, file, { upsert: true, contentType: file.type });
 
       if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage
+      // Bucket is private → use a long-lived signed URL
+      const { data: signed, error: signedError } = await supabase.storage
         .from("brand-assets")
-        .getPublicUrl(filePath);
+        .createSignedUrl(filePath, 60 * 60 * 24 * 365 * 10);
 
-      form.setValue("logo", publicUrl);
+      if (signedError) throw signedError;
+
+      form.setValue("logo", signed.signedUrl);
       toast.success("Logo uploaded successfully");
     } catch (error) {
       console.error("Error uploading logo:", error);
-      toast.error("Failed to upload logo");
+      const msg = error instanceof Error ? error.message : "Failed to upload logo";
+      toast.error(msg);
+
     } finally {
       setUploading(false);
     }
