@@ -25,17 +25,7 @@ serve(async (req) => {
 
     const { action, ...params } = await req.json();
 
-    // Unified ai_credits (coloring plan tiers / Gold Pass retired). Admins unlimited.
-    const { data: adminRow } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id)
-      .eq("role", "admin")
-      .maybeSingle();
-    const isAdmin = !!adminRow;
-
     const checkCredits = async (cost: number) => {
-      if (isAdmin) return;
       const { data: credits } = await supabase
         .from("ai_credits")
         .select("credits_remaining")
@@ -51,21 +41,25 @@ serve(async (req) => {
         throw new Error(`Insufficient credits. Need ${cost}, have ${balance}`);
       }
 
-      await supabase
-        .from("ai_credits")
-        .update({ credits_remaining: balance - cost })
-        .eq("user_id", user.id);
+      const { error: deductError } = await supabase.rpc("deduct_ai_credits", {
+        p_user_id: user.id,
+        p_amount: cost,
+        p_reason: `coloring_${action}`,
+        p_source: "coloring_ai_tools",
+      });
+      if (deductError) throw new Error(deductError.message);
       charged += cost;
     };
 
     // Refund the reservation when the AI call fails, so failed actions cost nothing.
     refundRef = async () => {
       if (charged <= 0) return;
-      const { data: r } = await supabase
-        .from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
-      await supabase.from("ai_credits")
-        .update({ credits_remaining: (r?.credits_remaining ?? 0) + charged })
-        .eq("user_id", user.id);
+      await supabase.rpc("add_ai_credits", {
+        p_user_id: user.id,
+        p_amount: charged,
+        p_reason: `coloring_${action}_refund`,
+        p_source: "coloring_ai_tools",
+      });
       charged = 0;
     };
 
@@ -146,7 +140,7 @@ serve(async (req) => {
     switch (action) {
       case "style-transfer": {
         // AI Style Transfer: generate coloring page in a specific art style
-        await checkCredits(2);
+        await checkCredits(3);
         const { description, style } = params;
         const styleMap: Record<string, string> = { "van-gogh": "Van Gogh's Starry Night swirling post-impressionist style with bold brushstroke outlines",
           "manga": "Japanese manga anime style with clean precise lines and expressive details",

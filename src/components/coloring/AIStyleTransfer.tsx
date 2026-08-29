@@ -57,7 +57,7 @@ export function AIStyleTransfer({ onColorOnline }: AIStyleTransferProps) {
               <Paintbrush className="h-5 w-5 text-primary" />
             </div>
             AI Style Transfer
-            <Badge variant="secondary" className="ml-2 text-[10px]">2 CR</Badge>
+            <Badge variant="secondary" className="ml-2 text-[10px]">3 CR</Badge>
           </CardTitle>
           <CardDescription>Describe a scene and choose a famous art style to generate a unique coloring page</CardDescription>
         </CardHeader>
