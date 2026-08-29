@@ -37,14 +37,6 @@ async function callAI(prompt: string, system?: string) {
 }
 
 async function deductCredits(supabase: any, userId: string, cost: number) {
-  const { data: adminRow } = await supabase
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", userId)
-    .eq("role", "admin")
-    .maybeSingle();
-  if (adminRow) return;
-
   const { data: row } = await supabase
     .from("ai_credits")
     .select("credits_remaining")
@@ -56,10 +48,13 @@ async function deductCredits(supabase: any, userId: string, cost: number) {
       user_id: userId, credits_remaining: 0, total_credits_purchased: 0 });
   }
   if (balance < cost) throw new Error("insufficient_credits");
-  await supabase
-    .from("ai_credits")
-    .update({ credits_remaining: balance - cost })
-    .eq("user_id", userId);
+  const { error } = await supabase.rpc("deduct_ai_credits", {
+    p_user_id: userId,
+    p_amount: cost,
+    p_reason: "coloring_ai_action",
+    p_source: "coloring_router",
+  });
+  if (error) throw new Error(error.message);
 }
 
 async function bumpStreak(supabase: any, userId: string, xpGain = 10) {

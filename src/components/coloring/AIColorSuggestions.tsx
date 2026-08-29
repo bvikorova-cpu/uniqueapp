@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { useAICredits } from "@/hooks/useAICredits";
 
 interface ColorPalette {
   name: string;
@@ -17,6 +18,7 @@ interface ColorPalette {
 }
 
 export function AIColorSuggestions() {
+  const { refresh: refreshCredits } = useAICredits();
   const [description, setDescription] = useState("");
   const [mood, setMood] = useState("vibrant");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -32,6 +34,7 @@ export function AIColorSuggestions() {
       if (error) throw new Error(data?.error || error.message);
       if (data?.error) throw new Error(data.error);
       setPalettes(data.palettes || []);
+      refreshCredits();
       toast.success("Color palettes generated!");
     } catch (err: any) {
       toast.error(err.message || "Failed to generate");

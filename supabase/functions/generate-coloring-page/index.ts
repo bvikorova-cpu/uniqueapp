@@ -29,8 +29,8 @@ serve(async (req) => {
   );
 
   try {
-    // Gold Pass / coloring plan tiers were retired — coloring pages now use the
-    // unified `ai_credits` balance (3 credits per generation). Admins unlimited.
+    // Gold Pass / coloring plan tiers were retired — every user, including admins,
+    // pays from the unified `ai_credits` balance (3 credits per generation).
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       return new Response(
@@ -59,63 +59,34 @@ serve(async (req) => {
     }
     console.log("Generating coloring page for user:", user.id);
 
-    const { data: adminCheck, error: adminError } = await supabaseClient
-      .from("user_roles")
-      .select("role")
+    const COST = 3;
+    const { data: credRow, error: creditsError } = await supabaseClient
+      .from("ai_credits")
+      .select("credits_remaining")
       .eq("user_id", user.id)
-      .eq("role", "admin")
       .maybeSingle();
 
-    if (adminError) {
-      console.error("Error checking admin status:", adminError);
+    if (creditsError) {
+      console.error("Error fetching credits:", creditsError);
       return new Response(
-        JSON.stringify({ error: `Database error: ${adminError.message}` }),
+        JSON.stringify({ error: `Credits error: ${creditsError.message}` }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
       );
     }
 
-    const isAdmin = !!adminCheck;
-    console.log("User is admin:", isAdmin);
-
-    const COST = 3;
-    let creditsData: { tier: string; credits_remaining: number };
-    if (!isAdmin) {
-      const { data: credRow, error: creditsError } = await supabaseClient
-        .from("ai_credits")
-        .select("credits_remaining")
-        .eq("user_id", user.id)
-        .maybeSingle();
-
-      if (creditsError) {
-        console.error("Error fetching credits:", creditsError);
-        return new Response(
-          JSON.stringify({ error: `Credits error: ${creditsError.message}` }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
-        );
-      }
-
-      const balance = credRow?.credits_remaining ?? 0;
-      if (!credRow) {
-        await supabaseClient.from("ai_credits").insert({
-          user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
-      }
-      if (balance < COST) {
-        return new Response(
-          JSON.stringify({ error: "Insufficient credits", credits_remaining: balance, cost: COST }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 402 }
-        );
-      }
-      creditsData = { tier: 'credits', credits_remaining: balance };
-    } else {
-      creditsData = {
-        tier: 'premium',
-        credits_remaining: 999999
-      };
+    const balance = credRow?.credits_remaining ?? 0;
+    if (!credRow) {
+      await supabaseClient.from("ai_credits").insert({
+        user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
+    }
+    if (balance < COST) {
+      return new Response(
+        JSON.stringify({ error: "Insufficient credits", credits_remaining: balance, cost: COST }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 402 }
+      );
     }
 
-
-    const isUltraHD = creditsData.tier === 'premium';
-    const resolution = isUltraHD ? 2048 : 1024;
+    const resolution = 1024;
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -207,8 +178,8 @@ serve(async (req) => {
         processed_image_url: generatedImageUrl,
         difficulty: difficulty,
         status: 'completed',
-        credits_used: isAdmin ? 0 : COST,
-        metadata: { resolution, tier: creditsData.tier }
+        credits_used: COST,
+        metadata: { resolution, tier: "credits" }
       })
       .select()
       .single();
@@ -218,15 +189,19 @@ serve(async (req) => {
       throw pageError;
     }
 
-    if (!isAdmin) {
-      const { error: updateError } = await supabaseClient
-        .from("ai_credits")
-        .update({ credits_remaining: creditsData.credits_remaining - COST })
-        .eq("user_id", user.id);
-
-      if (updateError) {
-        console.error("Error updating credits:", updateError);
-      }
+    const { error: deductError } = await supabaseClient.rpc("deduct_ai_credits", {
+      p_user_id: user.id,
+      p_amount: COST,
+      p_reason: imageUrl ? "coloring_create_from_image" : "coloring_ai_prompt",
+      p_source: "coloring_pages",
+    });
+    if (deductError) {
+      await supabaseClient.from("coloring_pages").delete().eq("id", coloringPage.id);
+      const status = /insufficient/i.test(deductError.message) ? 402 : 500;
+      return new Response(
+        JSON.stringify({ error: deductError.message, credits_remaining: balance, cost: COST }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status }
+      );
     }
 
     await supabaseClient
@@ -234,7 +209,7 @@ serve(async (req) => {
       .insert({
         user_id: user.id,
         usage_type: "coloring_page_generation",
-        credits_used: isAdmin ? 0 : COST,
+        credits_used: COST,
         description: `Generated ${difficulty} coloring page`
       });
 
@@ -242,7 +217,7 @@ serve(async (req) => {
       JSON.stringify({
         success: true,
         coloringPage,
-        creditsRemaining: isAdmin ? 'unlimited' : creditsData.credits_remaining - COST
+        creditsRemaining: balance - COST
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
