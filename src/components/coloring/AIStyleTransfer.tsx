@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { useAICredits } from "@/hooks/useAICredits";
 
 const ART_STYLES = [
   { value: "van-gogh", label: "Van Gogh", desc: "Swirling post-impressionist brushstrokes", gradient: "from-amber-500 to-yellow-500" },
@@ -23,6 +24,7 @@ interface AIStyleTransferProps {
 }
 
 export function AIStyleTransfer({ onColorOnline }: AIStyleTransferProps) {
+  const { refresh: refreshCredits } = useAICredits();
   const [description, setDescription] = useState("");
   const [selectedStyle, setSelectedStyle] = useState("van-gogh");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -37,6 +39,7 @@ export function AIStyleTransfer({ onColorOnline }: AIStyleTransferProps) {
       if (error) throw new Error(data?.error || error.message);
       if (data?.error) throw new Error(data.error);
       setResultImage(data.imageUrl);
+      refreshCredits();
       toast.success("Style transfer coloring page created!");
     } catch (err: any) {
       toast.error(err.message || "Failed to generate");
