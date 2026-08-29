@@ -159,22 +159,12 @@ export const usePremiumStore = () => {
         return false;
       }
 
-      // Kontrola admin statusu
-      const { data: adminRole } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .eq('role', 'admin')
-        .maybeSingle();
-
-      // Admin does not have to pay
-      if (!adminRole) {
-        // Deduct credits (using the actual cost multiple times)
-        for (let i = 0; i < cost; i++) {
-          const success = await spendCredit('custom_generation', 'Premium badge purchase');
-          if (!success) return false;
-        }
+      // No admin bypass — every user pays credits
+      for (let i = 0; i < cost; i++) {
+        const success = await spendCredit('custom_generation', 'Premium badge purchase');
+        if (!success) return false;
       }
+
 
       // Add badge to user
       const { data, error } = await supabase
