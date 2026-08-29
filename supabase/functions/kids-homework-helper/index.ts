@@ -3,6 +3,7 @@ import "../_shared/aiRedirect.ts";
 // Costs 3 homework credits per question. Uses OpenAI vision.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
+import { parseAiJson } from "../_shared/aiJson.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -25,10 +26,6 @@ function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" } });
-}
-
-function stripJsonFence(s: string) {
-  return s.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
 }
 
 Deno.serve(async (req) => {
@@ -122,6 +119,7 @@ Schema:
           { role: "system", content: system },
           { role: "user", content: userContent },
         ],
+        max_tokens: 4096,
         response_format: { type: "json_object" } }) });
 
     if (aiResp.status === 429) return json({ error: "Rate limited, try again shortly" }, 429);
@@ -133,12 +131,13 @@ Schema:
     }
     const aiJson = await aiResp.json();
     const raw = aiJson?.choices?.[0]?.message?.content || "{}";
-    let parsed: any = {};
-    try {
-      parsed = JSON.parse(stripJsonFence(raw));
-    } catch {
-      parsed = { explanation: raw, steps: [], funFacts: [], wasFiltered: false };
+    let parsed: any = parseAiJson<any>(raw);
+    if (!parsed) {
+      // Last resort: never surface raw JSON/prose soup to a kid — keep it as plain text.
+      parsed = { explanation: raw.replace(/[{}\[\]"]/g, " ").replace(/\s+/g, " ").trim(), steps: [], funFacts: [], wasFiltered: false };
     }
+    const finishReason = aiJson?.choices?.[0]?.finish_reason;
+    const truncated = finishReason === "length" || finishReason === "MAX_TOKENS";
 
     // Deduct credits (only on success, and only if not Gold Pass unlimited)
     const newBalance = goldPass ? balance : balance - COST;
@@ -181,6 +180,7 @@ Schema:
       commonMistakes: Array.isArray(parsed.commonMistakes) ? parsed.commonMistakes : [],
       funFacts: Array.isArray(parsed.funFacts) ? parsed.funFacts : [],
       wasFiltered: !!parsed.wasFiltered,
+      truncated,
       credits_remaining: newBalance,
       unlimited: goldPass,
       cost: goldPass ? 0 : COST });
