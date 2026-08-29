@@ -3,6 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Map, Trophy } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const SUBJECTS = [
@@ -13,15 +16,35 @@ const SUBJECTS = [
   { id: "geography", name: "Geography", emoji: "🌍", color: "text-cyan-500", badge: "Globe Trotter", badgeEmoji: "🗺️" },
 ];
 
+const MASTERY_TARGET = 25; // questions per subject for 100% mastery
+
 interface SubjectMasteryMapProps {
   points: { total_points: number } | null;
 }
 
 export const SubjectMasteryMap = ({ points }: SubjectMasteryMapProps) => {
-  const totalPoints = points?.total_points || 0;
-  // Until per-subject tracking is wired, distribute total points evenly across subjects
-  // so the map reflects actual user activity instead of always showing 0.
-  const perSubject = Math.floor(totalPoints / SUBJECTS.length);
+  const { user } = useAuth();
+
+  // Real per-subject counts from the kid's own homework history.
+  const { data: counts } = useQuery({
+    queryKey: ["kids-subject-mastery", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await (supabase as any)
+        .from("kids_homework")
+        .select("subject")
+        .eq("user_id", user!.id)
+        .limit(5000);
+      if (error) throw error;
+      const map: Record<string, number> = {};
+      for (const row of (data ?? []) as { subject: string | null }[]) {
+        const key = String(row.subject ?? "").toLowerCase().trim();
+        if (!key) continue;
+        map[key] = (map[key] ?? 0) + 1;
+      }
+      return map;
+    },
+  });
 
   return (
     <>
@@ -35,9 +58,10 @@ export const SubjectMasteryMap = ({ points }: SubjectMasteryMapProps) => {
       </CardHeader>
       <CardContent className="space-y-3">
         {SUBJECTS.map((sub, i) => {
-          const subjectPoints = perSubject;
-          const mastery = Math.min((subjectPoints / 100) * 100, 100);
+          const subjectPoints = counts?.[sub.id] ?? 0;
+          const mastery = Math.min((subjectPoints / MASTERY_TARGET) * 100, 100);
           const level = mastery >= 80 ? "Master" : mastery >= 50 ? "Advanced" : mastery >= 20 ? "Intermediate" : "Beginner";
+
 
           return (
             <motion.div
