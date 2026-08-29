@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Lightbulb, Star, Brain, CheckCircle2, AlertTriangle, ListOrdered } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { normalizeHomeworkResult } from "@/lib/normalizeAiResult";
 
 interface ChatResponseProps {
   result: {
@@ -11,6 +12,7 @@ interface ChatResponseProps {
     commonMistakes?: string[];
     funFacts?: string[];
     wasFiltered?: boolean;
+    truncated?: boolean;
   } | null;
   isLoading: boolean;
   question: string;
@@ -21,7 +23,8 @@ const SUBJECT_EMOJI: Record<string, string> = {
   math: "📐", science: "🔬", english: "📖", history: "🏛️", geography: "🌍"
 };
 
-export const ChatResponse = ({ result, isLoading, question, subject }: ChatResponseProps) => {
+export const ChatResponse = ({ result: rawResult, isLoading, question, subject }: ChatResponseProps) => {
+  const result = normalizeHomeworkResult(rawResult);
   if (!isLoading && !result) return null;
 
   return (
@@ -198,6 +201,15 @@ export const ChatResponse = ({ result, isLoading, question, subject }: ChatRespo
                         ))}
                       </ul>
                     </motion.div>
+                  )}
+
+                  {/* Truncated notice */}
+                  {result.truncated && (
+                    <div className="bg-muted/60 border border-border/60 rounded-xl px-3 py-2 text-center">
+                      <p className="text-xs text-muted-foreground">
+                        The answer was long and may be shortened. Ask a follow-up for more detail.
+                      </p>
+                    </div>
                   )}
 
                   {/* Filtered tip */}
