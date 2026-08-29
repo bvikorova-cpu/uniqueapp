@@ -796,18 +796,6 @@ All colors MUST be HSL.
       gap: 0.5rem;
     }
 
-    /* Brand Battle categories - horizontal scrolling */
-    .flex.flex-wrap.gap-2 {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-    }
-
-    .flex.flex-wrap.gap-2::-webkit-scrollbar {
-      display: none;
-    }
 
     /* Modals and Dialogs - full width on mobile */
     [role="dialog"] {
