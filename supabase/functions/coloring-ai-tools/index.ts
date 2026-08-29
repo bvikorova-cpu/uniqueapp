@@ -54,11 +54,9 @@ serve(async (req) => {
     // Refund the reservation when the AI call fails, so failed actions cost nothing.
     refundRef = async () => {
       if (charged <= 0) return;
-      await supabase.rpc("add_ai_credits", {
-        p_user_id: user.id,
-        p_amount: charged,
-        p_reason: `coloring_${action}_refund`,
-        p_source: "coloring_ai_tools",
+      await supabase.rpc("refund_ai_credits_atomic", {
+        _user_id: user.id,
+        _amount: charged,
       });
       charged = 0;
     };
