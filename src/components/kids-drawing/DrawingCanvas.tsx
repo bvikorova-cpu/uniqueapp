@@ -154,8 +154,27 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category, coloringIma
     };
   }, [fabricCanvas, activeTool]);
 
+  // Keep canvas responsive to its container (mobile fix)
+  useEffect(() => {
+    if (!fabricCanvas || !wrapperRef.current) return;
+    const el = wrapperRef.current;
+    const resize = () => {
+      const w = Math.max(240, Math.floor(el.clientWidth));
+      const h = Math.round(w * 0.75);
+      if (Math.abs(fabricCanvas.getWidth() - w) < 1) return;
+      fabricCanvas.setDimensions({ width: w, height: h });
+      setCanvasSize({ w, h });
+      fabricCanvas.renderAll();
+    };
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [fabricCanvas]);
+
   // Load coloring template as canvas background so kids draw directly on the outline
   useEffect(() => {
+
     if (!fabricCanvas) return;
     if (!coloringImage) {
       fabricCanvas.backgroundImage = undefined;
