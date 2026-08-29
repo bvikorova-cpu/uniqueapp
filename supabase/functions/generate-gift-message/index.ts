@@ -186,11 +186,11 @@ Clearly depict this exact location. Include rich searchable details such as furn
       const goldPass = await hasKidsGoldPass(authHeader).catch(() => false);
       const cost = 1 + sceneCount * 2 + (wantAudio ? sceneCount : 0);
       const { data: credRow } = await admin
-        .from("kids_story_credits")
+        .from("ai_credits")
         .select("credits_remaining")
         .eq("user_id", user.id)
         .maybeSingle();
-      if (!credRow) { await admin.from("kids_story_credits").insert({
+      if (!credRow) { await admin.from("ai_credits").insert({
           user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
       }
       const balance = credRow?.credits_remaining ?? 0;
@@ -272,7 +272,7 @@ Clearly depict this exact location. Include rich searchable details such as furn
 
       if (!goldPass) {
         await admin
-          .from("kids_story_credits")
+          .from("ai_credits")
           .update({ credits_remaining: balance - cost, last_used_at: new Date().toISOString() })
           .eq("user_id", user.id);
       }
@@ -292,7 +292,7 @@ Clearly depict this exact location. Include rich searchable details such as furn
     const __style = reqBody.style;
     const __giftType = reqBody.giftType;
     const __type = reqBody.type;
-    const __KIDS_TYPES = new Set(["kids_drawing", "kids_reading", "kids_story", "teen_career"]);
+    const __KIDS_TYPES = new Set(["teen_career"]);
     const __hasKidsLedger = __type && __KIDS_TYPES.has(__type);
 
     // Unified AI credits gate. Legacy Secret-Santa gifts (style/giftType) and universal
@@ -313,6 +313,9 @@ Clearly depict this exact location. Include rich searchable details such as furn
       nutrition_plan: 3,
       fitness_plan: 3,
       story_video: 5,
+      kids_drawing: 5,
+      kids_reading: 3,
+      kids_story: 8,
       uni_assistant: 5,
       generate_ai_room_design: 30,
       recipe_from_ingredients: 3,
@@ -365,9 +368,6 @@ Clearly depict this exact location. Include rich searchable details such as furn
     // Each kids module has its own credit ledger. Deduct from the right table here
     // before invoking the AI. If insufficient, return 402.
     const KIDS_CREDIT_MAP: Record<string, { table: string; cost: number }> = {
-      kids_drawing: { table: "kids_drawing_credits", cost: 2 },
-      kids_reading: { table: "kids_reading_credits", cost: 2 },
-      kids_story:   { table: "kids_story_credits",   cost: 3 },
       teen_career:  { table: "teen_career_credits",  cost: 5 } };
     const kidsCfg = type ? KIDS_CREDIT_MAP[type] : undefined;
     if (kidsCfg) {
