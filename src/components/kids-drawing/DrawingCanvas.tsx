@@ -33,6 +33,8 @@ const COLORS = [
 export const DrawingCanvas = ({ tutorialImage, stepNumber, category, coloringImage }: DrawingCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const [canvasSize, setCanvasSize] = useState({ w: 600, h: 450 });
+
 
   const [fabricCanvas, setFabricCanvas] = useState<FabricCanvas | null>(null);
   const [activeColor, setActiveColor] = useState("#000000");
