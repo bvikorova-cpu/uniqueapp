@@ -48,11 +48,9 @@ serve(async (req) => {
 
     const { action, ...params } = await req.json();
 
-    // Check admin
-    const { data: adminRole } = await supabase
-      .from('user_roles').select('role')
-      .eq('user_id', user.id).eq('role', 'admin').maybeSingle();
-    const isAdmin = !!adminRole;
+    // No admin bypass — every user pays credits
+    const isAdmin = false;
+
 
     // Credit costs
     const costs: Record<string, number> = { generate_script: 1,
