@@ -206,7 +206,7 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category, coloringIma
       fabricCanvas.renderAll();
     }).catch(() => {});
     return () => { cancelled = true; };
-  }, [fabricCanvas, coloringImage]);
+  }, [fabricCanvas, coloringImage, canvasSize]);
 
   const applyZoom = (nextZoom: number) => {
     if (!fabricCanvas) return;
