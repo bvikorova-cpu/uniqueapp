@@ -32,6 +32,10 @@ const COLORS = [
 
 export const DrawingCanvas = ({ tutorialImage, stepNumber, category, coloringImage }: DrawingCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [canvasSize, setCanvasSize] = useState({ w: 600, h: 450 });
+
+
   const [fabricCanvas, setFabricCanvas] = useState<FabricCanvas | null>(null);
   const [activeColor, setActiveColor] = useState("#000000");
   const [brushSize, setBrushSize] = useState(3);
@@ -152,8 +156,27 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category, coloringIma
     };
   }, [fabricCanvas, activeTool]);
 
+  // Keep canvas responsive to its container (mobile fix)
+  useEffect(() => {
+    if (!fabricCanvas || !wrapperRef.current) return;
+    const el = wrapperRef.current;
+    const resize = () => {
+      const w = Math.max(240, Math.floor(el.clientWidth));
+      const h = Math.round(w * 0.75);
+      if (Math.abs(fabricCanvas.getWidth() - w) < 1) return;
+      fabricCanvas.setDimensions({ width: w, height: h });
+      setCanvasSize({ w, h });
+      fabricCanvas.renderAll();
+    };
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [fabricCanvas]);
+
   // Load coloring template as canvas background so kids draw directly on the outline
   useEffect(() => {
+
     if (!fabricCanvas) return;
     if (!coloringImage) {
       fabricCanvas.backgroundImage = undefined;
@@ -183,7 +206,7 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category, coloringIma
       fabricCanvas.renderAll();
     }).catch(() => {});
     return () => { cancelled = true; };
-  }, [fabricCanvas, coloringImage]);
+  }, [fabricCanvas, coloringImage, canvasSize]);
 
   const applyZoom = (nextZoom: number) => {
     if (!fabricCanvas) return;
@@ -573,8 +596,9 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category, coloringIma
           <div className="bg-muted px-3 py-2 text-sm font-medium">
             Your Drawing {overlayMode && "(Overlay Mode)"}
           </div>
-          <div className="relative">
-            <canvas ref={canvasRef} className="w-full" />
+          <div className="relative w-full" ref={wrapperRef}>
+            <canvas ref={canvasRef} className="block max-w-full" />
+
             {/* Overlay Reference Image */}
             {overlayMode && tutorialImage && (
               <div 
