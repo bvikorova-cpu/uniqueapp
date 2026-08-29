@@ -123,20 +123,10 @@ export const usePremiumStore = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return false;
 
-      // Kontrola admin statusu
-      const { data: adminRole } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .eq('role', 'admin')
-        .maybeSingle();
+      // No admin bypass — every user pays credits
+      const success = await spendCredit('custom_generation', `Purchased ${featureName}`);
+      if (!success) return false;
 
-      // Admin does not have to pay
-      if (!adminRole) {
-        // Deduct credits
-        const success = await spendCredit('custom_generation', `Purchased ${featureName}`);
-        if (!success) return false;
-      }
 
       // Record purchase — only when featureId is a real UUID (skip synthetic
       // bundle/flash ids like "bundle_starter", "flash_mega" which have no FK row).
