@@ -120,7 +120,9 @@ export async function tryVertexChat(body: Record<string, unknown>): Promise<any 
   const budget = Number(payload.max_completion_tokens ?? payload.max_tokens ?? 0);
   delete payload.max_completion_tokens;
   delete payload.reasoning_effort;
-  if (budget) payload.max_tokens = Math.max(budget, 2048);
+  // Always give Gemini a generous budget: too small a budget truncates JSON /
+  // markdown answers mid-sentence, which surfaced as unfinished, garbled output.
+  payload.max_tokens = Math.max(budget || 0, 4096);
 
   const primary = Deno.env.get("GCP_LOCATION") || "us-central1";
   const locations = [primary, "global", "us-east4", "europe-west4", "us-west1"]
