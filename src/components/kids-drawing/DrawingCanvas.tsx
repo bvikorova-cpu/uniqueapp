@@ -573,8 +573,9 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category, coloringIma
           <div className="bg-muted px-3 py-2 text-sm font-medium">
             Your Drawing {overlayMode && "(Overlay Mode)"}
           </div>
-          <div className="relative">
-            <canvas ref={canvasRef} className="w-full" />
+          <div className="relative w-full" ref={wrapperRef}>
+            <canvas ref={canvasRef} className="block max-w-full" />
+
             {/* Overlay Reference Image */}
             {overlayMode && tutorialImage && (
               <div 
