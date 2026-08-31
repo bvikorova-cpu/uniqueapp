@@ -7,7 +7,6 @@ import { useUserCertificates } from "@/hooks/useCertificates";
 import { useUserDisneyCollectibles } from "@/hooks/useCollectibles";
 import { ArrowLeft, Award, BookOpen } from "lucide-react";
 import { CastleHero } from "@/components/fairy-castles/CastleHero";
-import { InteractiveWorldMap } from "@/components/fairy-castles/InteractiveWorldMap";
 import { PremiumCastleCard } from "@/components/fairy-castles/PremiumCastleCard";
 import { StampCollection } from "@/components/fairy-castles/StampCollection";
 import { CastleLeaderboard } from "@/components/fairy-castles/CastleLeaderboard";
@@ -87,19 +86,14 @@ export default function FairyCastles() {
           visitedCount={visitedCastleIds.length}
         />
 
-        {/* World Map */}
-        <InteractiveWorldMap
-          castles={castles || []}
-          stampedIds={stampedCastleIds}
-          visitedIds={visitedCastleIds}
-          onCastleClick={(id) => navigate(`/kids-channel/fairy-castles/${id}`)}
-        />
-
         {/* Castle Cards */}
         <div>
           <h2 className="text-3xl font-bold text-center mb-8">
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               All Castles
+            </span>
+            <span className="block mt-2 text-sm font-medium text-muted-foreground">
+              Each castle tour costs 3 credits (one-time per castle)
             </span>
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

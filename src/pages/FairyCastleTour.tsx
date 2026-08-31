@@ -2,20 +2,23 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Sparkles, Award, Map, TrendingUp, BookOpen } from "lucide-react";
+import { ArrowLeft, Sparkles, Award, Map, TrendingUp, BookOpen, Lock, Loader2 } from "lucide-react";
 import { FairyPanoramaViewer } from "@/components/fairy-castles/FairyPanoramaViewer";
 import { CastleRoomMiniMap } from "@/components/fairy-castles/CastleRoomMiniMap";
 import { CastleProgressTracker } from "@/components/fairy-castles/CastleProgressTracker";
 import { CastleCertificate } from "@/components/fairy-castles/CastleCertificate";
 import { CastleQuiz } from "@/components/fairy-castles/CastleQuiz";
 import { TourOnboarding, type TourGuideId } from "@/components/fairy-castles/TourOnboarding";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 import { useCastleRooms, useStartTour, useCompleteRoom, useEarnStamp, useUserStamps } from "@/hooks/useFairyCastles";
 import { useRoomCollectibles, useCollectDisneyItem, useUserDisneyCollectibles } from "@/hooks/useCollectibles";
 import { useSaveCertificate } from "@/hooks/useCertificates";
 import { supabase } from "@/integrations/supabase/client";
 import { getRoomPanorama } from "@/lib/castleImages";
 import { motion } from "framer-motion";
+
+export const CASTLE_TOUR_COST = 3;
 
 export default function FairyCastleTour() {
   const { castleId } = useParams<{ castleId: string }>();
@@ -32,6 +35,10 @@ export default function FairyCastleTour() {
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [tourStarted, setTourStarted] = useState(false);
   const [selectedGuide, setSelectedGuide] = useState<TourGuideId>("explorer");
+  const [paid, setPaid] = useState(false);
+  const [paying, setPaying] = useState(false);
+  const { toast } = useToast();
+  const qc = useQueryClient();
 
   const { rooms, isLoading: roomsLoading } = useCastleRooms(castleId!);
   const startTour = useStartTour();
@@ -197,12 +204,68 @@ export default function FairyCastleTour() {
     }
   };
 
+  const unlockTour = async () => {
+    setPaying(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({ title: "Please sign in", description: "Sign in to start a castle tour.", variant: "destructive" });
+        return;
+      }
+      const { data, error } = await supabase.rpc("spend_ai_credits" as any, {
+        _amount: CASTLE_TOUR_COST,
+        _reason: "fairy_castle_tour",
+        _source: "kids_fairy_castles",
+      });
+      if (error || !(data as any)?.ok) {
+        const insufficient = (data as any)?.error === "insufficient";
+        toast({
+          title: insufficient ? "Not enough credits" : "Cannot start tour",
+          description: insufficient
+            ? `You need ${CASTLE_TOUR_COST} credits to explore this castle.`
+            : error?.message || "Credit charge failed. Please try again.",
+          variant: "destructive",
+        });
+        if (insufficient) navigate("/ai-credits");
+        return;
+      }
+      qc.invalidateQueries({ queryKey: ["ai-credits"] });
+      setPaid(true);
+      toast({ title: "Castle unlocked", description: `${CASTLE_TOUR_COST} credits used. Enjoy your tour!` });
+    } finally {
+      setPaying(false);
+    }
+  };
+
   const handleStartTour = (guide: TourGuideId) => {
     setSelectedGuide(guide);
     try { localStorage.setItem('fairy.guide', guide); } catch {}
     setShowOnboarding(false);
     setTourStarted(true);
   };
+
+  if (!visit && !paid) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-950 to-purple-950 p-6">
+        <Card className="max-w-md w-full p-6 text-center space-y-4 bg-card/95 backdrop-blur-sm">
+          <div className="text-5xl">🏰</div>
+          <h1 className="text-2xl font-bold">{castle.name}</h1>
+          <p className="text-sm text-muted-foreground">
+            Unlock this castle tour with {rooms?.length || 0} rooms, quiz, collectibles and a certificate.
+          </p>
+          <p className="text-sm font-semibold">
+            One-time cost: {CASTLE_TOUR_COST} credits
+          </p>
+          <Button onClick={unlockTour} disabled={paying} className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+            {paying ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Lock className="h-4 w-4 mr-2" /> Unlock for {CASTLE_TOUR_COST} credits</>}
+          </Button>
+          <Button variant="ghost" className="w-full" onClick={() => navigate("/kids-channel/fairy-castles")}>
+            <ArrowLeft className="h-4 w-4 mr-2" /> Back to castles
+          </Button>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="relative h-screen w-full overflow-hidden">
