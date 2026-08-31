@@ -21,7 +21,10 @@ import {
   type S3ClientConfig,
 } from "npm:@aws-sdk/client-s3@3";
 
-const R2_ACCOUNT_ID = Deno.env.get("CLOUDFLARE_R2_ACCOUNT_ID") ?? "";
+const R2_ACCOUNT_ID =
+  Deno.env.get("CLOUDFLARE_R2_ACCOUNT_ID_V2") ??
+  Deno.env.get("CLOUDFLARE_R2_ACCOUNT_ID") ??
+  "";
 const R2_ACCESS_KEY_ID = Deno.env.get("CLOUDFLARE_R2_ACCESS_KEY_ID") ?? "";
 const R2_SECRET_ACCESS_KEY = Deno.env.get("CLOUDFLARE_R2_SECRET_ACCESS_KEY") ?? "";
 const R2_BUCKET_NAME = Deno.env.get("CLOUDFLARE_R2_BUCKET_NAME") ?? "";
