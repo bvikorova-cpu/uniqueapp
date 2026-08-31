@@ -154,7 +154,11 @@ serve(async (req) => {
         await supabase.from("ai_video_creations")
           .update({ status: "failed", error: "Video model unavailable. Credits refunded.", updated_at: new Date().toISOString() })
           .eq("id", row.id);
-        return json({ error: "Video model unavailable right now. Your credits were refunded." }, 503);
+        return json({
+          error:
+            "Video generation is temporarily unavailable (video model quota/billing). Your credits were refunded — please try again later.",
+        }, 503);
+
       }
 
       await supabase.from("ai_video_creations")

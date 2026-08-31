@@ -570,14 +570,111 @@ export async function startVertexVideo(opts: {
       }
     }
   }
+
+  // Fallback: Gemini API (generativelanguage). The GCP project may not be
+  // allowlisted for Veo publisher models on Vertex, but the API key is.
+  return await startGeminiVideo(opts);
+}
+
+/** Start a Veo generation through the Gemini API. location marker = "gemini". */
+async function startGeminiVideo(opts: {
+  prompt: string;
+  durationSeconds?: number;
+  aspectRatio?: string;
+  models?: string[];
+  resolution?: string;
+  negativePrompt?: string;
+}): Promise<{ operationName: string; model: string; location: string } | null> {
+  const key = Deno.env.get("GEMINI_API_KEY");
+  if (!key) return null;
+  const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
+
+  const models = (opts.models?.length ? opts.models : VEO_LITE_MODELS);
+  for (const model of models) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:predictLongRunning`;
+    const paramSets = [
+      {
+        durationSeconds: Math.min(Math.max(opts.durationSeconds ?? 8, 4), 8),
+        aspectRatio: opts.aspectRatio ?? "9:16",
+        ...(opts.resolution ? { resolution: opts.resolution } : {}),
+        ...(opts.negativePrompt ? { negativePrompt: opts.negativePrompt } : {}),
+      },
+      { aspectRatio: opts.aspectRatio ?? "9:16" },
+    ];
+    for (const parameters of paramSets) {
+      try {
+        const res = await rawFetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+          signal: AbortSignal.timeout(30_000),
+          body: JSON.stringify({ instances: [{ prompt: opts.prompt }], parameters }),
+        });
+        if (!res.ok) {
+          const text = await res.text().catch(() => "");
+          console.warn(`[gemini] veo start ${model} ${res.status}:`, text.slice(0, 200));
+          continue;
+        }
+        const data = await res.json();
+        if (data?.name) return { operationName: data.name as string, model, location: "gemini" };
+      } catch (e) {
+        console.warn(`[gemini] veo start ${model} error:`, e instanceof Error ? e.message : String(e));
+      }
+    }
+  }
   return null;
 }
+
+/** Poll a Gemini API video operation and download the finished MP4 as base64. */
+async function pollGeminiVideo(operationName: string):
+  Promise<{ done: boolean; videoBase64?: string; error?: string } | null> {
+  const key = Deno.env.get("GEMINI_API_KEY");
+  if (!key) return null;
+  const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
+  try {
+    const res = await rawFetch(
+      `https://generativelanguage.googleapis.com/v1beta/${operationName}`,
+      { headers: { "x-goog-api-key": key }, signal: AbortSignal.timeout(30_000) },
+    );
+    if (!res.ok) {
+      console.warn("[gemini] veo poll", res.status, (await res.text().catch(() => "")).slice(0, 200));
+      return null;
+    }
+    const data = await res.json();
+    if (!data?.done) return { done: false };
+    if (data?.error) return { done: true, error: String(data.error?.message || "generation failed") };
+    const resp = data?.response?.generateVideoResponse ?? data?.response ?? {};
+    const samples = resp?.generatedSamples ?? resp?.videos ?? [];
+    const first = Array.isArray(samples) ? samples[0] : null;
+    const inline = first?.video?.bytesBase64Encoded ?? first?.bytesBase64Encoded;
+    if (typeof inline === "string" && inline.length) return { done: true, videoBase64: inline };
+    const uri = first?.video?.uri ?? first?.uri;
+    if (typeof uri === "string" && uri) {
+      const dl = await rawFetch(uri, { headers: { "x-goog-api-key": key } });
+      if (!dl.ok) return { done: true, error: `download failed (${dl.status})` };
+      const buf = new Uint8Array(await dl.arrayBuffer());
+      let binary = "";
+      const chunk = 0x8000;
+      for (let i = 0; i < buf.length; i += chunk) {
+        binary += String.fromCharCode(...buf.subarray(i, i + chunk));
+      }
+      return { done: true, videoBase64: btoa(binary) };
+    }
+    const filtered = resp?.raiMediaFilteredReasons?.[0];
+    return { done: true, error: filtered ? String(filtered) : "Video generation returned no data." };
+  } catch (e) {
+    console.warn("[gemini] veo poll error:", e instanceof Error ? e.message : String(e));
+    return null;
+  }
+}
+
 
 /** Poll a Veo operation. Returns { done, videoBase64?, error? } or null when unreachable. */
 export async function pollVertexVideo(op: { operationName: string; model: string; location: string }):
   Promise<{ done: boolean; videoBase64?: string; error?: string } | null> {
+  if (op.location === "gemini") return await pollGeminiVideo(op.operationName);
   const sa = getServiceAccount();
   if (!sa) return null;
+
   const projectId = Deno.env.get("GCP_PROJECT_ID") || sa.project_id;
   if (!projectId) return null;
   const token = await getAccessToken(sa);
