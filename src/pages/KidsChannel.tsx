@@ -84,8 +84,8 @@ const FeatureCard = ({ title,
         >
           <Icon className={`w-10 h-10 ${iconColor}`} />
         </motion.div>
-        <h3 className="text-xl font-bold mb-2">{title}</h3>
-        <p className="text-gray-700 text-sm mb-3">{description}</p>
+        <h3 className="text-xl font-bold mb-2 text-gray-900 drop-shadow-sm">{title}</h3>
+        <p className="text-gray-800 text-sm mb-3 leading-relaxed">{description}</p>
         <div className="flex gap-2 justify-center flex-wrap">
           {cardBadges.map((b, i) => (
             <Badge key={i} className={`${b.color} shadow-md`}>
