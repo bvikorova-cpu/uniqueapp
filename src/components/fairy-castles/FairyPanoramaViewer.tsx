@@ -621,7 +621,7 @@ export function FairyPanoramaViewer({
   const [visitedPois, setVisitedPois] = useState<Set<string>>(new Set());
   const [poiAudioCache, setPoiAudioCache] = useState<Record<string, string>>({});
   const [poiPanelDismissed, setPoiPanelDismissed] = useState(false);
-  const [autoGazeAudio, setAutoGazeAudio] = useState(true);
+  const [autoGazeAudio, setAutoGazeAudio] = useState(false);
   const poiAudioRef = useRef<HTMLAudioElement | null>(null);
   const audioUnlockedRef = useRef<boolean>(false);
   const [audioUnlocked, setAudioUnlocked] = useState(false);
@@ -1125,7 +1125,7 @@ export function FairyPanoramaViewer({
               <ul className="space-y-1 text-sm text-gray-700">
                 <li>🖱️ <strong>Click & drag</strong> to look around</li>
                 <li>🔍 <strong>Scroll</strong> to zoom in/out</li>
-                <li>🎧 <strong>Audio Guide</strong> tells the castle story</li>
+                <li>📖 Tap hotspots to read the castle story</li>
                 <li>🎵 <strong>Ambient sounds</strong> create atmosphere</li>
                 <li>📱 <strong>Mobile</strong>: Touch and swipe to explore</li>
               </ul>
