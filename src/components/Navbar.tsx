@@ -787,6 +787,7 @@ const Navbar = () => {
                 );
               })}
             </div>
+            )}
 
             {/* Kids Academy Section */}
             <div className="pt-2 pb-1">
