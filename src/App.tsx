@@ -950,10 +950,10 @@ const App = () => {
                         <Route path="/services" element={<Navigate to="/" replace />} />
                         <Route path="/my-bookings/services" element={<Navigate to="/" replace />} />
 
-                        <Route path="/brand-battle" element={<BrandBattle />} />
-                        <Route path="/brand-battle/hub" element={<BrandArenaHub />} />
-                        <Route path="/sponsor-registration" element={<SponsorRegistration />} />
-                        <Route path="/sponsor-dashboard" element={<ProtectedRoute><SponsorDashboard /></ProtectedRoute>} />
+                        <Route path="/brand-battle" element={<ProtectedRoute requireAdmin={true}><BrandBattle /></ProtectedRoute>} />
+                        <Route path="/brand-battle/hub" element={<ProtectedRoute requireAdmin={true}><BrandArenaHub /></ProtectedRoute>} />
+                        <Route path="/sponsor-registration" element={<ProtectedRoute requireAdmin={true}><SponsorRegistration /></ProtectedRoute>} />
+                        <Route path="/sponsor-dashboard" element={<ProtectedRoute requireAdmin={true}><SponsorDashboard /></ProtectedRoute>} />
                         <Route path="/brain-duel" element={<ProtectedRoute><BrainDuel /></ProtectedRoute>} />
                         <Route path="/brain-duel/hub" element={<ProtectedRoute><BrainDuelHub /></ProtectedRoute>} />
                         <Route path="/fashion-studio" element={<FashionStudio />} />
@@ -1166,7 +1166,7 @@ const App = () => {
                         {/* Alias redirects for legacy / commonly-typed paths */}
                         <Route path="/teens" element={<Navigate to="/teen-hub" replace />} />
                         <Route path="/skills" element={<Navigate to="/marketplace" replace />} />
-                        <Route path="/brand-arena" element={<Navigate to="/brand-battle/hub" replace />} />
+                        <Route path="/brand-arena" element={<ProtectedRoute requireAdmin={true}><BrandArenaHub /></ProtectedRoute>} />
                         <Route path="/messages" element={<Navigate to="/messenger" replace />} />
                         <Route path="/community" element={<Navigate to="/wall" replace />} />
                         <Route path="/health" element={<Navigate to="/wellness" replace />} />
