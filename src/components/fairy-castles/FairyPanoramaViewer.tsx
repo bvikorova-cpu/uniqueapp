@@ -819,59 +819,14 @@ export function FairyPanoramaViewer({
     }
   }, [ambientVolume, isAmbientMuted]);
 
+  // Voice narration removed from castle tours.
   const handleSpeak = async () => {
-    if (!audioGuideText) return;
-
-    if (isPlaying) {
-      if (elevenLabsAudioRef.current) {
-        elevenLabsAudioRef.current.pause();
-        elevenLabsAudioRef.current.currentTime = 0;
-      }
-      setIsPlaying(false);
-      return;
+    if (elevenLabsAudioRef.current) {
+      elevenLabsAudioRef.current.pause();
     }
-
-    // Check cache first (per guide persona, so each voice has its own cache)
-    const cacheKey = `${imageUrl}-${selectedLanguage}-${guide}`;
-    if (audioCache[cacheKey]) {
-      playAudio(audioCache[cacheKey]);
-      return;
-    }
-
-    // Generate new audio
-    setIsGenerating(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('text-to-speech', { body: {
-          text: narratedText,
-          language: selectedLanguage } });
-
-      if (error) throw error;
-
-      if (data?.audioContent) {
-        // Convert base64 to blob URL
-        const binaryString = atob(data.audioContent);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
-        }
-        const blob = new Blob([bytes], { type: 'audio/mpeg' });
-        const audioUrl = URL.createObjectURL(blob);
-
-        // Cache the audio URL
-        setAudioCache(prev => ({ ...prev, [cacheKey]: audioUrl }));
-        playAudio(audioUrl);
-      } else {
-        // No audio returned → read the (possibly translated) text in-browser
-        speakWithBrowser(data?.translatedText || narratedText, selectedLanguage);
-      }
-    } catch (error) {
-      console.error('Error generating audio:', error);
-      speakWithBrowser(narratedText, selectedLanguage);
-    } finally {
-      setIsGenerating(false);
-    }
-
+    setIsPlaying(false);
   };
+
 
   const playAudio = (audioUrl: string) => {
     if (elevenLabsAudioRef.current) {
