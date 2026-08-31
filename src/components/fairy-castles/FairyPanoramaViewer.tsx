@@ -120,30 +120,13 @@ const BCP47: Record<string, string> = {
   it: "it-IT", hu: "hu-HU", pl: "pl-PL", ru: "ru-RU", ja: "ja-JP", ko: "ko-KR",
   zh: "zh-CN", pt: "pt-PT", nl: "nl-NL" };
 
-function speakWithBrowser(text: string, language: string) {
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-  const base = (language || "en").toLowerCase().split(/[-_]/)[0];
-  const tag = BCP47[base] || "en-US";
-
-  const speak = () => {
-    const voices = window.speechSynthesis.getVoices();
-    const voice =
-      voices.find((v) => v.lang?.toLowerCase() === tag.toLowerCase()) ||
-      voices.find((v) => v.lang?.toLowerCase().startsWith(base));
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = tag;
-    if (voice) u.voice = voice;
-    u.rate = 0.95;
+// Voice narration disabled for castle tours (text-only experience).
+function speakWithBrowser(_text: string, _language: string) {
+  if (typeof window !== "undefined" && "speechSynthesis" in window) {
     window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(u);
-  };
-
-  if (window.speechSynthesis.getVoices().length === 0) {
-    window.speechSynthesis.addEventListener("voiceschanged", speak, { once: true });
-    setTimeout(speak, 300);
-  } else {
-    speak();
   }
+  return;
+
 }
 
 
@@ -638,7 +621,7 @@ export function FairyPanoramaViewer({
   const [visitedPois, setVisitedPois] = useState<Set<string>>(new Set());
   const [poiAudioCache, setPoiAudioCache] = useState<Record<string, string>>({});
   const [poiPanelDismissed, setPoiPanelDismissed] = useState(false);
-  const [autoGazeAudio, setAutoGazeAudio] = useState(true);
+  const [autoGazeAudio, setAutoGazeAudio] = useState(false);
   const poiAudioRef = useRef<HTMLAudioElement | null>(null);
   const audioUnlockedRef = useRef<boolean>(false);
   const [audioUnlocked, setAudioUnlocked] = useState(false);
@@ -748,63 +731,15 @@ export function FairyPanoramaViewer({
     }
   }, [imageUrl]);
 
-  const playPoiAudio = async (poi: Poi) => {
-    // Stop any existing POI audio + main audio guide to avoid overlap
+  // Voice narration removed — hotspots are text-only now.
+  const playPoiAudio = async (_poi: Poi) => {
     if (poiAudioRef.current) {
       poiAudioRef.current.pause();
       poiAudioRef.current = null;
     }
-    if (elevenLabsAudioRef.current && isPlaying) {
-      elevenLabsAudioRef.current.pause();
-      setIsPlaying(false);
-    }
-
-    const cacheKey = `${poi.id}-${selectedLanguage}`;
-    let url = poiAudioCache[cacheKey];
-
-    if (!url) {
-      try {
-        const { data, error } = await supabase.functions.invoke('text-to-speech', {
-          body: { text: `${poi.title}. ${poi.narrative}`, language: selectedLanguage } });
-        if (error) throw error;
-        if (data?.audioContent) {
-          const binaryString = atob(data.audioContent);
-          const bytes = new Uint8Array(binaryString.length);
-          for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
-          const blob = new Blob([bytes], { type: 'audio/mpeg' });
-          url = URL.createObjectURL(blob);
-          setPoiAudioCache((prev) => ({ ...prev, [cacheKey]: url! }));
-        }
-      } catch (e) {
-        console.error('POI audio generation failed:', e);
-        // Browser TTS fallback so the experience still works
-        speakWithBrowser(`${poi.title}. ${poi.narrative}`, selectedLanguage);
-        return;
-      }
-
-    }
-
-    if (!url) return;
-    const audio = new Audio(url);
-    audio.preload = 'auto';
-    // iOS sometimes ignores volume set before play() — set both before and after.
-    audio.volume = isPoiMuted ? 0 : poiVolume;
-    poiAudioRef.current = audio;
-
-    try {
-      await audio.play();
-      // Re-apply volume after play() resolves (Safari quirk)
-      audio.volume = isPoiMuted ? 0 : poiVolume;
-    } catch (err: any) {
-      // NotAllowedError = no user gesture yet → queue and prompt
-      if (err?.name === 'NotAllowedError') {
-        pendingPoiRef.current = poi;
-        setNeedsGesture(true);
-      } else {
-        console.warn('POI audio play failed:', err);
-      }
-    }
+    return;
   };
+
 
   const handleGazeStart = (poiId: string) => {
     const poi = pois.find((p) => p.id === poiId);
@@ -884,59 +819,14 @@ export function FairyPanoramaViewer({
     }
   }, [ambientVolume, isAmbientMuted]);
 
+  // Voice narration removed from castle tours.
   const handleSpeak = async () => {
-    if (!audioGuideText) return;
-
-    if (isPlaying) {
-      if (elevenLabsAudioRef.current) {
-        elevenLabsAudioRef.current.pause();
-        elevenLabsAudioRef.current.currentTime = 0;
-      }
-      setIsPlaying(false);
-      return;
+    if (elevenLabsAudioRef.current) {
+      elevenLabsAudioRef.current.pause();
     }
-
-    // Check cache first (per guide persona, so each voice has its own cache)
-    const cacheKey = `${imageUrl}-${selectedLanguage}-${guide}`;
-    if (audioCache[cacheKey]) {
-      playAudio(audioCache[cacheKey]);
-      return;
-    }
-
-    // Generate new audio
-    setIsGenerating(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('text-to-speech', { body: {
-          text: narratedText,
-          language: selectedLanguage } });
-
-      if (error) throw error;
-
-      if (data?.audioContent) {
-        // Convert base64 to blob URL
-        const binaryString = atob(data.audioContent);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
-        }
-        const blob = new Blob([bytes], { type: 'audio/mpeg' });
-        const audioUrl = URL.createObjectURL(blob);
-
-        // Cache the audio URL
-        setAudioCache(prev => ({ ...prev, [cacheKey]: audioUrl }));
-        playAudio(audioUrl);
-      } else {
-        // No audio returned → read the (possibly translated) text in-browser
-        speakWithBrowser(data?.translatedText || narratedText, selectedLanguage);
-      }
-    } catch (error) {
-      console.error('Error generating audio:', error);
-      speakWithBrowser(narratedText, selectedLanguage);
-    } finally {
-      setIsGenerating(false);
-    }
-
+    setIsPlaying(false);
   };
+
 
   const playAudio = (audioUrl: string) => {
     if (elevenLabsAudioRef.current) {
@@ -1079,113 +969,12 @@ export function FairyPanoramaViewer({
                   </button>
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed">{activePoi.narrative}</p>
-                <div className="flex items-center gap-2 mt-3">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => playPoiAudio(activePoi)}
-                    className="h-8 text-xs"
-                  >
-                    <Volume2 className="mr-1 h-3.5 w-3.5" /> Replay
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => setAutoGazeAudio((v) => !v)}
-                    className="h-8 text-xs"
-                    title="Toggle automatic audio when you look at hotspots"
-                  >
-                    {autoGazeAudio ? '🎧 Auto-play: On' : '🔇 Auto-play: Off'}
-                  </Button>
-                </div>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Audio Guide Control */}
-      {audioGuideText && (
-        <div className="absolute bottom-24 left-3 sm:left-6 z-20 flex flex-col gap-2">
-          {/* Main Controls Row */}
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={handleSpeak}
-              size="sm"
-              disabled={isGenerating}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-xl disabled:opacity-50"
-            >
-              {isGenerating ? (
-                <>
-                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  Generating...
-                </>
-              ) : isPlaying ? (
-                <>
-                  <VolumeX className="mr-2 h-4 w-4" />
-                  Stop
-                </>
-              ) : (
-                <>
-                  <Volume2 className="mr-2 h-4 w-4" />
-                  Play Story
-                </>
-              )}
-            </Button>
-
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="bg-white/90 hover:bg-white shadow-lg"
-                >
-                  <Languages className="mr-1.5 h-4 w-4" />
-                  <span>{LANGUAGES.find(l => l.code === selectedLanguage)?.flag}</span>
-                  <span className="hidden sm:inline ml-1">{LANGUAGES.find(l => l.code === selectedLanguage)?.name}</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-white max-h-[300px] overflow-y-auto">
-                {LANGUAGES.map((lang) => (
-                  <DropdownMenuItem
-                    key={lang.code}
-                    onClick={() => {
-                      setSelectedLanguage(lang.code);
-                      if (isPlaying && elevenLabsAudioRef.current) {
-                        elevenLabsAudioRef.current.pause();
-                        elevenLabsAudioRef.current.currentTime = 0;
-                        setIsPlaying(false);
-                      }
-                    }}
-                    className={`cursor-pointer ${lang.code === selectedLanguage ? 'bg-purple-100' : ''}`}
-                  >
-                    <span className="mr-2 text-lg">{lang.flag}</span>
-                    {lang.name}
-                    {lang.code === selectedLanguage && (
-                      <span className="ml-auto text-purple-600">✓</span>
-                    )}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
-          {isPlaying && (
-            <div className="bg-black/55 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg flex items-center gap-2 w-fit">
-              <div className="flex items-end gap-0.5 h-3">
-                {[...Array(6)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-0.5 bg-white rounded-full animate-pulse"
-                    style={{ height: `${30 + ((i * 17) % 70)}%`, animationDelay: `${i * 0.1}s`, animationDuration: "0.5s" }}
-                  />
-                ))}
-              </div>
-              <span className="text-[11px] text-white">Playing…</span>
-            </div>
-          )}
-        </div>
-      )}
 
       {/* Audio Mixer (collapsible, keeps the panorama clear) */}
       <button
@@ -1336,7 +1125,7 @@ export function FairyPanoramaViewer({
               <ul className="space-y-1 text-sm text-gray-700">
                 <li>🖱️ <strong>Click & drag</strong> to look around</li>
                 <li>🔍 <strong>Scroll</strong> to zoom in/out</li>
-                <li>🎧 <strong>Audio Guide</strong> tells the castle story</li>
+                <li>📖 Tap hotspots to read the castle story</li>
                 <li>🎵 <strong>Ambient sounds</strong> create atmosphere</li>
                 <li>📱 <strong>Mobile</strong>: Touch and swipe to explore</li>
               </ul>
