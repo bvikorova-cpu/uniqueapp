@@ -41,7 +41,7 @@ type Category = {
   sections: Section[];
 };
 
-const CATEGORIES: Category[] = [
+const ALL_CATEGORIES: Category[] = [
   { id: "social",
     title: "Social & Communication",
     icon: Users,
