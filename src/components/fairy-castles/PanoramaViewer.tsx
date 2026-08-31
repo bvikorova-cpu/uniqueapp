@@ -126,16 +126,6 @@ export function PanoramaViewer({
 
       {/* Controls Overlay */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-4">
-        {audioGuideText && (
-          <Button
-            onClick={handleSpeak}
-            className="bg-white/90 hover:bg-white text-gray-900"
-          >
-            {isPlaying ? <VolumeX className="mr-2 h-5 w-5" /> : <Volume2 className="mr-2 h-5 w-5" />}
-            {isPlaying ? "Stop Guide" : "Audio Guide"}
-          </Button>
-        )}
-        
         <Button
           onClick={() => setShowInfo(!showInfo)}
           variant="outline"
@@ -154,7 +144,6 @@ export function PanoramaViewer({
             <li>🖱️ Click and drag to look around</li>
             <li>🔍 Scroll to zoom in/out</li>
             <li>🔵 Click blue hotspots to navigate</li>
-            <li>🔊 Use Audio Guide to hear the story</li>
             <li>📱 Works great on mobile too!</li>
           </ul>
         </div>
