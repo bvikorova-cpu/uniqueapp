@@ -159,26 +159,26 @@ export function DigitalMandala() {
                 key={name}
                 variant={activePalette === name ? "default" : "outline"}
                 size="sm"
-                className="text-xs h-auto py-1.5"
+                className="text-xs h-auto py-1.5 px-2 whitespace-nowrap shrink-0 flex-none"
                 onClick={() => { setActivePalette(name); setColor(colors[0]); }}
               >
-                <div className="flex gap-0.5 mr-1.5">
+                <div className="flex gap-0.5 mr-1.5 shrink-0">
                   {colors.slice(0, 3).map((c, i) => (
-                    <div key={i} className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: c }} />
+                    <div key={i} className="w-2.5 h-2.5 rounded-full border border-border/40" style={{ backgroundColor: c }} />
                   ))}
                 </div>
-                {name}
+                <span className="whitespace-nowrap">{name}</span>
               </Button>
             ))}
           </div>
-          <div className="flex gap-2 mt-2">
+          <div className="flex gap-2 mt-2 flex-wrap">
             {COLOR_PALETTES[activePalette as keyof typeof COLOR_PALETTES].map((c) => (
               <motion.button
                 key={c}
                 whileHover={{ scale: 1.2 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setColor(c)}
-                className={`w-8 h-8 rounded-full border-2 transition-all shadow-lg ${
+                className={`w-8 h-8 shrink-0 rounded-full border-2 transition-all shadow-lg ${
                   color === c ? "border-foreground scale-110 ring-2 ring-primary/30" : "border-border/50"
                 }`}
                 style={{ backgroundColor: c, boxShadow: color === c ? `0 0 12px ${c}50` : undefined }}
