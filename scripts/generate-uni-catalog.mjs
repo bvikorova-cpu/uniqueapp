@@ -23,6 +23,7 @@ let m;
 while ((m = re.exec(src))) {
   const p = m[1].startsWith("/") ? m[1] : "/" + m[1];
   if (p.includes(":") || p.includes("*")) continue;
+  if (p.startsWith("/__")) continue;
   routes.add(p);
 }
 

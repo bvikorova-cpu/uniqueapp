@@ -14,24 +14,6 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     "keywords": []
   },
   {
-    "path": "/__e2e/anonymous-date-matches",
-    "label": "__e2e — Anonymous Date Matches",
-    "keywords": [
-      "__e2e",
-      "anonymous",
-      "date",
-      "matches"
-    ]
-  },
-  {
-    "path": "/__preview/ad",
-    "label": "__preview — Ad",
-    "keywords": [
-      "__preview",
-      "ad"
-    ]
-  },
-  {
     "path": "/about",
     "label": "About",
     "keywords": [
