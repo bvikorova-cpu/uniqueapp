@@ -24,7 +24,7 @@ Deno.serve(async (req) => {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
     if (!LOVABLE_API_KEY) { // Fail-open with deny-list fallback if AI gateway unconfigured.
-      const denylist = /\b(kill yourself|kys|n[i1]gg[ae3]r|f[a4]gg[o0]t|child porn|csam)\b/i;
+      const denylist = /\b(kill yourself|kys|n[i1]gg[ae3]r|f[a4]gg[o0]t|child porn|csam|porn|porno|hardcore sex|nudes?|naked pics?|blowjob|handjob|anal|cumshot|escort service|sexting)\b/i;
       const allowed = !denylist.test(text);
       const result: ModResult = {
         allowed,
@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
           {
             role: 'system',
             content:
-              'You are a content moderator. Classify the user message. Return ONLY compact JSON like {"allowed":true|false,"severity":"none|low|medium|high","categories":[...],"reason":"..."}. Categories: hate, harassment, sexual_minors, sexual_explicit, violence, self_harm, illegal, spam. Block (allowed=false) only on severity medium+ for harassment/hate/violence/self_harm, or any severity for sexual_minors/illegal. Be tolerant of profanity and adult flirty content.' },
+              'You are a STRICT content moderator for a platform where erotic, sexual and pornographic content is FORBIDDEN. Return ONLY compact JSON like {"allowed":true|false,"severity":"none|low|medium|high","categories":[...],"reason":"..."}. Categories: hate, harassment, sexual_minors, sexual_explicit, sexual_suggestive, erotic, prostitution, violence, self_harm, illegal, spam. Set allowed=false for ANY sexual_explicit, erotic, pornographic, fetish or prostitution/escort content, any solicitation of nudes or sexual services, and for ANY severity of sexual_minors/illegal. Also block severity medium+ harassment/hate/violence/self_harm. Mild profanity and non-sexual romantic flirting are allowed. When uncertain, block.' },
           { role: 'user', content: text },
         ],
         temperature: 0 }) });
