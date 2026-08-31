@@ -73,8 +73,19 @@ export function PremiumCastleCard({ castle, image, isVisited, hasStamp, countryF
               ))}
               <span className="text-white text-xs ml-1">{difficulty.label}</span>
             </div>
-            <div className="flex items-center gap-1 text-white/80 text-xs">
-              <Clock className="h-3 w-3" /> ~{estimatedTime} min
+            <div className="flex items-center gap-2 text-white text-xs">
+              {!hasStamp && !isVisited ? (
+                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-purple-500/80 backdrop-blur-sm font-semibold">
+                  3 credits
+                </span>
+              ) : (
+                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500/80 backdrop-blur-sm font-semibold">
+                  Unlocked
+                </span>
+              )}
+              <span className="flex items-center gap-1 text-white/80">
+                <Clock className="h-3 w-3" /> ~{estimatedTime} min
+              </span>
             </div>
           </div>
         </div>
@@ -111,9 +122,14 @@ export function PremiumCastleCard({ castle, image, isVisited, hasStamp, countryF
 
           {/* Price & CTA */}
           <div className="flex items-center justify-between">
-            <span className="text-xl font-bold text-amber-600 dark:text-amber-400">
-              {castle.price_coins} 🪙
-            </span>
+            <div className="flex flex-col">
+              {hasStamp || isVisited ? (
+                <span className="text-sm font-semibold text-green-600 dark:text-green-400">Unlocked</span>
+              ) : (
+                <span className="text-xl font-bold text-primary">3 credits</span>
+              )}
+              <span className="text-xs text-muted-foreground">one-time entry</span>
+            </div>
             <Button
               onClick={onExplore}
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl"
