@@ -184,7 +184,7 @@ Clearly depict this exact location. Include rich searchable details such as furn
         Deno.env.get("SUPABASE_URL") ?? "",
         Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
       );
-      const goldPass = await hasKidsGoldPass(authHeader).catch(() => false);
+      // Kids Gold Pass is retired — every user pays credits.
       const cost = 1 + sceneCount * 2 + (wantAudio ? sceneCount : 0);
       const { data: credRow } = await admin
         .from("ai_credits")
@@ -195,10 +195,11 @@ Clearly depict this exact location. Include rich searchable details such as furn
           user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
       }
       const balance = credRow?.credits_remaining ?? 0;
-      if (!goldPass && balance < cost) {
+      if (balance < cost) {
         return new Response(JSON.stringify({ error: "Insufficient credits", credits_remaining: balance, cost }), {
           status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
+
 
       // 1) Scenes
       const scRes = await fetch("https://api.openai.com/v1/chat/completions", {
