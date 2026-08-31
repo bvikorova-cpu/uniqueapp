@@ -272,17 +272,15 @@ Clearly depict this exact location. Include rich searchable details such as furn
         }
       })) : undefined;
 
-      if (!goldPass) {
-        await admin
-          .from("ai_credits")
-          .update({ credits_remaining: balance - cost, last_used_at: new Date().toISOString() })
-          .eq("user_id", user.id);
-      }
+      await admin
+        .from("ai_credits")
+        .update({ credits_remaining: balance - cost, last_used_at: new Date().toISOString() })
+        .eq("user_id", user.id);
 
       return new Response(JSON.stringify({ scenes, images, audioFiles,
-        credits_remaining: goldPass ? balance : balance - cost,
-        cost: goldPass ? 0 : cost,
-        unlimited: goldPass }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        credits_remaining: balance - cost,
+        cost }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
     }
     // ─── END STORY VIDEO PIPELINE ───
 
