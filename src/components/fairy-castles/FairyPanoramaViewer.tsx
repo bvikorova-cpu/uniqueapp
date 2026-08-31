@@ -1079,113 +1079,12 @@ export function FairyPanoramaViewer({
                   </button>
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed">{activePoi.narrative}</p>
-                <div className="flex items-center gap-2 mt-3">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => playPoiAudio(activePoi)}
-                    className="h-8 text-xs"
-                  >
-                    <Volume2 className="mr-1 h-3.5 w-3.5" /> Replay
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => setAutoGazeAudio((v) => !v)}
-                    className="h-8 text-xs"
-                    title="Toggle automatic audio when you look at hotspots"
-                  >
-                    {autoGazeAudio ? '🎧 Auto-play: On' : '🔇 Auto-play: Off'}
-                  </Button>
-                </div>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Audio Guide Control */}
-      {audioGuideText && (
-        <div className="absolute bottom-24 left-3 sm:left-6 z-20 flex flex-col gap-2">
-          {/* Main Controls Row */}
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={handleSpeak}
-              size="sm"
-              disabled={isGenerating}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-xl disabled:opacity-50"
-            >
-              {isGenerating ? (
-                <>
-                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  Generating...
-                </>
-              ) : isPlaying ? (
-                <>
-                  <VolumeX className="mr-2 h-4 w-4" />
-                  Stop
-                </>
-              ) : (
-                <>
-                  <Volume2 className="mr-2 h-4 w-4" />
-                  Play Story
-                </>
-              )}
-            </Button>
-
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="bg-white/90 hover:bg-white shadow-lg"
-                >
-                  <Languages className="mr-1.5 h-4 w-4" />
-                  <span>{LANGUAGES.find(l => l.code === selectedLanguage)?.flag}</span>
-                  <span className="hidden sm:inline ml-1">{LANGUAGES.find(l => l.code === selectedLanguage)?.name}</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-white max-h-[300px] overflow-y-auto">
-                {LANGUAGES.map((lang) => (
-                  <DropdownMenuItem
-                    key={lang.code}
-                    onClick={() => {
-                      setSelectedLanguage(lang.code);
-                      if (isPlaying && elevenLabsAudioRef.current) {
-                        elevenLabsAudioRef.current.pause();
-                        elevenLabsAudioRef.current.currentTime = 0;
-                        setIsPlaying(false);
-                      }
-                    }}
-                    className={`cursor-pointer ${lang.code === selectedLanguage ? 'bg-purple-100' : ''}`}
-                  >
-                    <span className="mr-2 text-lg">{lang.flag}</span>
-                    {lang.name}
-                    {lang.code === selectedLanguage && (
-                      <span className="ml-auto text-purple-600">✓</span>
-                    )}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
-          {isPlaying && (
-            <div className="bg-black/55 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg flex items-center gap-2 w-fit">
-              <div className="flex items-end gap-0.5 h-3">
-                {[...Array(6)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-0.5 bg-white rounded-full animate-pulse"
-                    style={{ height: `${30 + ((i * 17) % 70)}%`, animationDelay: `${i * 0.1}s`, animationDuration: "0.5s" }}
-                  />
-                ))}
-              </div>
-              <span className="text-[11px] text-white">Playing…</span>
-            </div>
-          )}
-        </div>
-      )}
 
       {/* Audio Mixer (collapsible, keeps the panorama clear) */}
       <button
