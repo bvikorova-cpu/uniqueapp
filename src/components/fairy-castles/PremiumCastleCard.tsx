@@ -73,8 +73,19 @@ export function PremiumCastleCard({ castle, image, isVisited, hasStamp, countryF
               ))}
               <span className="text-white text-xs ml-1">{difficulty.label}</span>
             </div>
-            <div className="flex items-center gap-1 text-white/80 text-xs">
-              <Clock className="h-3 w-3" /> ~{estimatedTime} min
+            <div className="flex items-center gap-2 text-white text-xs">
+              {!hasStamp && !isVisited ? (
+                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-purple-500/80 backdrop-blur-sm font-semibold">
+                  3 credits
+                </span>
+              ) : (
+                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500/80 backdrop-blur-sm font-semibold">
+                  Unlocked
+                </span>
+              )}
+              <span className="flex items-center gap-1 text-white/80">
+                <Clock className="h-3 w-3" /> ~{estimatedTime} min
+              </span>
             </div>
           </div>
         </div>
