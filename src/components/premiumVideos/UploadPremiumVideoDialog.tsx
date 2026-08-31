@@ -78,6 +78,10 @@ export default function UploadPremiumVideoDialog({ onUploaded }: { onUploaded: (
     let uploadedPath: string | null = null;
     let published = false;
     try {
+      const { screenMediaFile, NSFW_BLOCK_MESSAGE } = await import("@/lib/mediaModeration");
+      const verdict = await screenMediaFile(file);
+      if (!verdict.allowed) throw new Error(NSFW_BLOCK_MESSAGE);
+
       const ext = file.name.split(".").pop() || "mp4";
       const path = `${user.id}/premium-${Date.now()}.${ext}`;
       const { error: upErr } = await supabase.storage.from("videos").upload(path, file, {

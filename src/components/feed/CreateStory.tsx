@@ -36,6 +36,13 @@ export default function CreateStory() {
         data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("You are not logged in");
 
+      // Platform rule: no erotic/nude/sexual media.
+      {
+        const { screenMediaFile, NSFW_BLOCK_MESSAGE } = await import("@/lib/mediaModeration");
+        const verdict = await screenMediaFile(mediaFile);
+        if (!verdict.allowed) throw new Error(NSFW_BLOCK_MESSAGE);
+      }
+
       // Upload media
       const fileExt = mediaFile.name.split(".").pop();
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;

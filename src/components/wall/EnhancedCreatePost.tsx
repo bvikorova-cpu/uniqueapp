@@ -224,6 +224,12 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
       }
 
       if (files.length > 0) {
+        // Platform rule: no erotic/nude/sexual media (images and videos alike).
+        const { screenMediaFile, NSFW_BLOCK_MESSAGE } = await import("@/lib/mediaModeration");
+        for (const file of files) {
+          const verdict = await screenMediaFile(file);
+          if (!verdict.allowed) throw new Error(NSFW_BLOCK_MESSAGE);
+        }
         for (const file of files) {
           const fileExt = file.name.split(".").pop();
           const fileName = `${user.id}/${Date.now()}.${fileExt}`;

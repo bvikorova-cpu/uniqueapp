@@ -43,6 +43,11 @@ export default function VideoUploadDialog({ onUploadSuccess }: { onUploadSuccess
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
+      // Platform rule: no erotic/nude/sexual videos.
+      const { screenMediaFile, NSFW_BLOCK_MESSAGE } = await import("@/lib/mediaModeration");
+      const verdict = await screenMediaFile(videoFile);
+      if (!verdict.allowed) throw new Error(NSFW_BLOCK_MESSAGE);
+
       // Upload video to storage
       const fileExt = videoFile.name.split('.').pop();
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;

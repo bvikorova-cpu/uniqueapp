@@ -163,6 +163,12 @@ export default function ReelBattles() {
 
   /** Uploads the reel video and returns its public URL and storage path. */
   const uploadVideo = async (battleId: string, file: File): Promise<{ url: string; path: string } | null> => {
+    const { screenMediaFile, NSFW_BLOCK_MESSAGE } = await import("@/lib/mediaModeration");
+    const verdict = await screenMediaFile(file);
+    if (!verdict.allowed) {
+      toast({ title: "Video blocked", description: NSFW_BLOCK_MESSAGE, variant: "destructive" });
+      return null;
+    }
     const ext = file.name.split(".").pop()?.toLowerCase() || "mp4";
     const path = `${userId}/reel-battles/${battleId}/${crypto.randomUUID()}.${ext}`;
     const { error } = await supabase.storage.from(STORAGE_BUCKET)
