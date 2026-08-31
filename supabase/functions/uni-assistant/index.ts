@@ -56,11 +56,18 @@ Deno.serve(async (req) => {
       .maybeSingle();
     if ((creditRow?.credits_remaining ?? 0) < COST) return json({ error: "INSUFFICIENT_CREDITS" }, 402);
 
+    // Search the whole app catalog (routes + sub-sections/categories/tools)
+    const matches = searchCatalog(transcript, 25);
+    const catalogBlock = matches.length
+      ? matches.map((m) => `- "${m.path}" ${m.label}`).join("\n")
+      : "(no matching destination found)";
+
     // Call unified AI with tool calling
     const raw = await callOpenAI({
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "system", content: `The user is currently on route: ${currentRoute}` },
+        { role: "system", content: `MATCHING DESTINATIONS in the app catalog:\n${catalogBlock}` },
         { role: "user", content: transcript },
       ],
       model: "gpt-4o-mini",
@@ -68,7 +75,7 @@ Deno.serve(async (req) => {
         type: "function",
         function: {
           name: "navigate",
-          description: "Navigate the app to a route from the allowed list.",
+          description: "Navigate the app to one of the paths listed in MATCHING DESTINATIONS.",
           parameters: {
             type: "object",
             properties: {
@@ -84,11 +91,16 @@ Deno.serve(async (req) => {
     if (toolCall?.function?.name === "navigate") {
       try {
         const args = JSON.parse(toolCall.function.arguments || "{}");
-        if (typeof args.path === "string" && args.path.startsWith("/")) {
+        if (typeof args.path === "string" && args.path.startsWith("/") && isKnownPath(args.path)) {
           action = { type: "navigate", path: args.path };
         }
       } catch { /* ignore */ }
     }
+    // Fallback: user clearly wanted to find something and the catalog has a match.
+    if (!action && matches.length && /\b(find|search|open|show|go to|take me|najdi|vyhlada|otvor|ukaz|chcem)\b/i.test(transcript)) {
+      action = { type: "navigate", path: matches[0].path };
+    }
+
     const reply = String(msg.content ?? "").trim()
       || (action ? `Opening ${action.path} for you.` : "Okay.");
 
