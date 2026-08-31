@@ -84,6 +84,7 @@ export function searchCatalog(query: string, limit = 25): UniCatalogEntry[] {
       }
     }
     if (hay.includes(q)) score += 4;
+    if (e.path.startsWith("/admin")) score -= 4;
     return { e, score };
   })
     .filter((r) => r.score > 0)

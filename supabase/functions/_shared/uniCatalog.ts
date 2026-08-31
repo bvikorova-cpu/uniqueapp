@@ -3857,7 +3857,7 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     ]
   },
   {
-    "path": "/spin-and-solve",
+    "path": "/spin-solve",
     "label": "Spin & Solve — wheel of fortune with word puzzles (tajnicky)",
     "keywords": [
       "tajnicka",
@@ -3895,7 +3895,7 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     ]
   },
   {
-    "path": "/brain-lab",
+    "path": "/brain-duel/hub",
     "label": "Brain Lab — brain games and duels (1 credit per game)",
     "keywords": [
       "brain lab",
@@ -3907,7 +3907,7 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     ]
   },
   {
-    "path": "/iq-test",
+    "path": "/iq-platform",
     "label": "IQ tests (3 credits)",
     "keywords": [
       "iq",
@@ -3941,7 +3941,7 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     ]
   },
   {
-    "path": "/property",
+    "path": "/property-marketplace",
     "label": "Property Marketplace — real estate listings (25 credits per listing)",
     "keywords": [
       "property",
@@ -3954,7 +3954,7 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     ]
   },
   {
-    "path": "/auctions",
+    "path": "/auction",
     "label": "Online Auction — bidding and antiques",
     "keywords": [
       "auction",
@@ -4045,7 +4045,7 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     ]
   },
   {
-    "path": "/wallet",
+    "path": "/credits",
     "label": "Credits & wallet — buy credits, ledger, cashout",
     "keywords": [
       "credits",
@@ -4121,7 +4121,7 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     ]
   },
   {
-    "path": "/referrals",
+    "path": "/referral",
     "label": "Referrals — invite friends, earn 5 EUR",
     "keywords": [
       "referral",
@@ -4172,6 +4172,7 @@ export function searchCatalog(query: string, limit = 25): UniCatalogEntry[] {
       }
     }
     if (hay.includes(q)) score += 4;
+    if (e.path.startsWith("/admin")) score -= 4;
     return { e, score };
   })
     .filter((r) => r.score > 0)

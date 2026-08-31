@@ -21,7 +21,7 @@
   { "path": "/cooking", "label": "Cooking hub — recipe generator, culinary academy, AI cooking tools", "keywords": ["cooking", "recipe", "recepty", "culinary", "kitchen", "nutrition", "meal plan"] },
   { "path": "/health", "label": "Health & Wellness hub — fitness plans, nutrition, doctor booking", "keywords": ["health", "fitness", "nutrition", "doctor", "booking", "wellness", "plan 30 60 90"] },
   { "path": "/jobs", "label": "Work & Jobs — job listings, AI CV generator, promotions board", "keywords": ["jobs", "work", "praca", "cv", "resume", "zivotopis", "employer", "promotions"] },
-  { "path": "/wallet", "label": "Credits & wallet — buy credits, ledger, cashout", "keywords": ["credits", "kredity", "wallet", "balance", "cashout", "payout", "vyplata", "ledger"] },
+  { "path": "/credits", "label": "Credits & wallet — buy credits, ledger, cashout", "keywords": ["credits", "kredity", "wallet", "balance", "cashout", "payout", "vyplata", "ledger"] },
   { "path": "/rewards", "label": "Rewards — XP, daily login, lucky wheel, achievements", "keywords": ["rewards", "xp", "daily login", "lucky wheel", "achievements", "streak", "odmeny"] },
   { "path": "/brand-arena", "label": "Brand Arena — brand battles, leaderboard, sponsorship tiers", "keywords": ["brand", "brand battle", "arena", "sponsor", "leaderboard", "champions"] },
   { "path": "/face-insight", "label": "Face Insight Studio — face analysis, compare mode, PDF report", "keywords": ["face", "face insight", "palmistry", "guess my age", "vek", "photo analysis"] },
