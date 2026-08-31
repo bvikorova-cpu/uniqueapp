@@ -34,19 +34,23 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
 const MAX_FILE_SIZE_BYTES = 500 * 1024 * 1024; // 500 MB
+const ALLOWED_TYPE_PREFIXES = ["image/", "video/", "audio/"];
 const ALLOWED_CONTENT_TYPES = new Set([
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "image/gif",
-  "video/mp4",
-  "video/webm",
-  "video/quicktime",
-  "audio/mpeg",
-  "audio/wav",
-  "audio/webm",
   "application/pdf",
+  "application/json",
+  "application/zip",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/octet-stream",
+  "text/plain",
+  "text/csv",
 ]);
+
+function isAllowedContentType(t: string): boolean {
+  return ALLOWED_TYPE_PREFIXES.some((p) => t.startsWith(p)) || ALLOWED_CONTENT_TYPES.has(t);
+}
 
 function isConfigured(): boolean {
   return Boolean(
@@ -154,7 +158,7 @@ export default {
     }
 
     const contentType = file.type || "application/octet-stream";
-    if (!ALLOWED_CONTENT_TYPES.has(contentType)) {
+    if (!isAllowedContentType(contentType)) {
       return new Response(
         JSON.stringify({ error: `Unsupported content type: ${contentType}` }),
         { status: 415, headers: { ...corsHeaders, "Content-Type": "application/json" } },
@@ -173,7 +177,21 @@ export default {
         ? (formData.get("fileName") as string).trim()
         : file.name || "upload";
 
-    const key = generateKey(userId, pathPrefix, fileName);
+    // Explicit key (mirrors the Supabase Storage layout "<bucket>/<path>").
+    const rawKey = formData.get("key");
+    let key: string;
+    if (typeof rawKey === "string" && rawKey.trim().length > 0) {
+      key = rawKey
+        .trim()
+        .replace(/^\/+/, "")
+        .split("/")
+        .map((seg) => sanitizePathSegment(seg))
+        .filter(Boolean)
+        .join("/");
+      if (!key) key = generateKey(userId, pathPrefix, fileName);
+    } else {
+      key = generateKey(userId, pathPrefix, fileName);
+    }
 
     const s3Config: S3ClientConfig = {
       region: "auto",
