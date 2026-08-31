@@ -13,7 +13,7 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { sponsorId: string; }
 
-const PRIORITY_EMAIL = "priority@uniqueapp.fun";
+const PRIORITY_EMAIL = "uniqueapp.fun@gmail.com";
 
 interface Ticket {
   id: string;

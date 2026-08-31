@@ -10,7 +10,7 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
 
 const VAPID_PUBLIC = Deno.env.get("VAPID_PUBLIC_KEY")!;
 const VAPID_PRIVATE = Deno.env.get("VAPID_PRIVATE_KEY")!;
-const VAPID_SUBJECT = Deno.env.get("VAPID_SUBJECT") || "mailto:admin@uniqueapp.fun";
+const VAPID_SUBJECT = Deno.env.get("VAPID_SUBJECT") || "mailto:uniqueapp.fun@gmail.com";
 
 webpush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC, VAPID_PRIVATE);
 

@@ -100,20 +100,20 @@ const Footer = () => {
               </li>
               <li>
                 <a 
-                  href="mailto:support@unique-platform.com" 
+                  href="mailto:uniqueapp.fun@gmail.com" 
                   className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
                 >
                   <ExternalLink className="h-3 w-3" />
-                  support@unique-platform.com
+                  uniqueapp.fun@gmail.com
                 </a>
               </li>
               <li>
                 <a 
-                  href="mailto:privacy@unique-platform.com" 
+                  href="mailto:uniqueapp.fun@gmail.com" 
                   className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
                 >
                   <ExternalLink className="h-3 w-3" />
-                  privacy@unique-platform.com
+                  uniqueapp.fun@gmail.com
                 </a>
               </li>
             </ul>

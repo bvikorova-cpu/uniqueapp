@@ -185,10 +185,10 @@ export function ChallengeRulesDialog({
                 The competition is organised by the operator of the UNIQUE platform
                 (uniqueapp.fun). For any question, data-protection request or complaint, contact{" "}
                 <a
-                  href="mailto:support@unique-platform.com"
+                  href="mailto:uniqueapp.fun@gmail.com"
                   className="font-semibold text-primary underline"
                 >
-                  support@unique-platform.com
+                  uniqueapp.fun@gmail.com
                 </a>
                 .
               </p>
