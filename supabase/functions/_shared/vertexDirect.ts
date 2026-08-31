@@ -504,6 +504,16 @@ const VEO_MODELS = [
   "veo-2.0-generate-001",
 ].filter((m, i, a) => a.indexOf(m) === i);
 
+/**
+ * Cheapest Veo 3.1 tier ("lite"). Used by the AI Video Creator so a 30s clip
+ * stays well under $5. Falls back to the fast tier if lite is not enabled.
+ */
+export const VEO_LITE_MODELS = [
+  Deno.env.get("GCP_VIDEO_MODEL_LITE") || "veo-3.1-lite-generate-preview",
+  "veo-3.1-fast-generate-preview",
+  "veo-3.0-fast-generate-001",
+].filter((m, i, a) => a.indexOf(m) === i);
+
 function veoLocations(): string[] {
   const primary = Deno.env.get("GCP_VIDEO_LOCATION") || "us-central1";
   return [primary, "us-east4", "europe-west4"].filter((l, i, a) => a.indexOf(l) === i);
@@ -514,6 +524,10 @@ export async function startVertexVideo(opts: {
   prompt: string;
   durationSeconds?: number;
   aspectRatio?: string;
+  models?: string[];
+  resolution?: string;
+  negativePrompt?: string;
+  generateAudio?: boolean;
 }): Promise<{ operationName: string; model: string; location: string } | null> {
   const sa = getServiceAccount();
   const projectId = sa ? (Deno.env.get("GCP_PROJECT_ID") || sa.project_id) : null;
@@ -522,7 +536,7 @@ export async function startVertexVideo(opts: {
   const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
 
 
-  for (const model of VEO_MODELS) {
+  for (const model of (opts.models?.length ? opts.models : VEO_MODELS)) {
     for (const location of veoLocations()) {
       const url =
         `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:predictLongRunning`;
@@ -537,8 +551,10 @@ export async function startVertexVideo(opts: {
               durationSeconds: Math.min(Math.max(opts.durationSeconds ?? 8, 4), 8),
               aspectRatio: opts.aspectRatio ?? "9:16",
               sampleCount: 1,
-              generateAudio: true,
+              generateAudio: opts.generateAudio ?? true,
               personGeneration: "allow_adult",
+              ...(opts.resolution ? { resolution: opts.resolution } : {}),
+              ...(opts.negativePrompt ? { negativePrompt: opts.negativePrompt } : {}),
             },
           }),
         });
