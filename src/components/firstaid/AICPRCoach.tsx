@@ -19,6 +19,7 @@ export function AICPRCoach({ onBack }: Props) {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
+        headers: { Authorization: `Bearer ${token}` },
         body: {
           type: "travel_planner", module: "first_aid",
           prompt: `You are an expert CPR instructor. Provide a comprehensive, step-by-step CPR coaching guide for: Patient type: ${patient}. Include: 1) Assessment steps, 2) Exact hand placement with description, 3) Compression depth & rate, 4) Rescue breathing technique, 5) AED usage steps, 6) Common mistakes to avoid, 7) When to stop CPR. Use clear numbered steps and visual descriptions.`
