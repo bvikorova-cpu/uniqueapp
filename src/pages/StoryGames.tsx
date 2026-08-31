@@ -34,6 +34,7 @@ export default function StoryGames() {
   const [userId, setUserId] = useState<string | null>(null);
   const [streak, setStreak] = useState(0);
   const [longestStreak, setLongestStreak] = useState(0);
+  const [startingGame, setStartingGame] = useState(false);
 
   // Level derived from same thresholds as XPSystem
   const LEVEL_THRESHOLDS = [0, 50, 120, 200, 300, 420, 560, 720, 900, 1100];
@@ -175,10 +176,40 @@ export default function StoryGames() {
     setActiveGame(null);
   };
 
-  const handleGameStart = (gameId: number) => {
+  const STORY_GAME_COST = 1;
+
+  const handleGameStart = async (gameId: number) => {
     const gameMap: Record<number, string> = { 1: "memory", 2: "word", 3: "hidden", 4: "sequence", 5: "color", 6: "number" };
-    setActiveGame(gameMap[gameId]);
+    if (startingGame) return;
+    setStartingGame(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Please sign in to play Story Games.");
+        navigate("/auth");
+        return;
+      }
+      const { data, error } = await supabase.rpc("spend_ai_credits" as any, {
+        _amount: STORY_GAME_COST,
+        _reason: "story_game",
+        _source: "kids_story_games",
+      });
+      if (error || !(data as any)?.ok) {
+        if ((data as any)?.error === "insufficient") {
+          toast.error(`You need ${STORY_GAME_COST} credit to play this game.`);
+          navigate("/ai-credits");
+        } else {
+          toast.error(error?.message || "Credit charge failed. Please try again.");
+        }
+        return;
+      }
+      toast.success(`${STORY_GAME_COST} credit used. Have fun!`);
+      setActiveGame(gameMap[gameId]);
+    } finally {
+      setStartingGame(false);
+    }
   };
+
 
   // Render active game
   if (activeGame === "memory") return <MemoryMatch onComplete={handleGameComplete} onBack={() => setActiveGame(null)} />;
@@ -215,6 +246,10 @@ export default function StoryGames() {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             {/* Main Content */}
             <div className="lg:col-span-3 space-y-6">
+
+              <div className="rounded-xl border border-primary/20 bg-white/80 backdrop-blur-md px-4 py-3 text-sm font-semibold text-gray-900 shadow">
+                Each game costs 1 credit to start. XP, streaks and leaderboards stay free.
+              </div>
 
               {/* Games Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
