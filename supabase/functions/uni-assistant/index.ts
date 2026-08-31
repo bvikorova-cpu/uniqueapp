@@ -3,6 +3,7 @@
 import { corsHeaders } from "../_shared/cors.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { callOpenAI } from "../_shared/openai.ts";
+import { searchCatalog, isKnownPath } from "../_shared/uniCatalog.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
