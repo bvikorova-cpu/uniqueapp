@@ -87,14 +87,6 @@ export default function FairyCastles() {
           visitedCount={visitedCastleIds.length}
         />
 
-        {/* World Map */}
-        <InteractiveWorldMap
-          castles={castles || []}
-          stampedIds={stampedCastleIds}
-          visitedIds={visitedCastleIds}
-          onCastleClick={(id) => navigate(`/kids-channel/fairy-castles/${id}`)}
-        />
-
         {/* Castle Cards */}
         <div>
           <h2 className="text-3xl font-bold text-center mb-8">
