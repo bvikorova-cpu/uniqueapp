@@ -5,6 +5,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { hasKidsGoldPass } from "../_shared/kidsGoldPass.ts";
 import { callOpenAI, callOpenAIRaw } from "../_shared/openai-safe.ts";
 import { tryVertexImage } from "../_shared/vertexDirect.ts";
+import { isKnownPath, searchCatalog } from "../_shared/uniCatalog.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
@@ -425,6 +426,14 @@ Clearly depict this exact location. Include rich searchable details such as furn
         .slice(-14)
         .map((h: any) => ({ role: h.role as "user" | "assistant", content: String(h.content).slice(0, 1500) }));
 
+      // This universal router is the function actually used by the web client.
+      // Search the generated full catalog here as well; the standalone
+      // `uni-assistant` function is retained for direct callers only.
+      const matches = searchCatalog(transcript, 25);
+      const catalogBlock = matches.length
+        ? matches.map((match) => `- "${match.path}" ${match.label}`).join("\n")
+        : "(no matching destination found)";
+
       const uniSystemPrompt = `You are "Uni", the personal assistant of the Unique platform (uniqueapp.fun).
 Speak like a calm, competent human professional — natural, conversational, never robotic and never theatrical.
 You are in an ongoing spoken conversation: remember what was already said, refer back to it naturally, and never restart the conversation or re-introduce yourself.
@@ -439,28 +448,15 @@ Reply in the same language the user spoke. Keep answers spoken-friendly:
 - For explanations, how-tos, facts, math, coding, cooking, travel, science, history, definitions, translations, recommendations, comparisons, etc.: up to ~5 concise sentences with the real answer.
 Never refuse just because a topic is outside the app. Answer general-knowledge questions directly using what you know. If you truly don't know or the info may be outdated, say so briefly.
 
-You can ALSO navigate the user inside the app to these routes:
-- "/" home
-- "/ai-mentor/hub" Personal AI Mentor coaches
-- "/megatalent" Megatalent contest
-- "/dating" Dating
-- "/bazaar" Bazaar marketplace
-- "/skills" Skills marketplace
-- "/education" Education / courses
-- "/kids" Kids channel
-- "/health" Health & Wellness
-- "/jobs" Jobs
-- "/wallet" Credits & wallet
-- "/notifications" Notifications
-- "/report-bug" Report a bug
-- "/settings" Settings
-
-Only call the navigate tool when the user clearly asks to open/go to/show one of these. Never invent routes not listed above.`;
+You can ALSO navigate anywhere inside the app, including sub-sections, categories, tools and features.
+When the user asks to find, search, open, show or go to something on the platform, choose the best result from MATCHING DESTINATIONS and call the navigate tool with its exact path.
+Never say that you cannot search or open a platform feature when a plausible match is provided. Never invent a route outside MATCHING DESTINATIONS.`;
 
       const uniResponse = await callOpenAIText({
         messages: [
           { role: "system", content: uniSystemPrompt },
           { role: "system", content: `The user is currently on route: ${currentRoute}` },
+          { role: "system", content: `MATCHING DESTINATIONS in the app catalog:\n${catalogBlock}` },
           ...history,
           { role: "user", content: transcript },
         ],
@@ -468,7 +464,7 @@ Only call the navigate tool when the user clearly asks to open/go to/show one of
           type: "function",
           function: {
             name: "navigate",
-            description: "Navigate the app to a route from the allowed list.",
+            description: "Navigate to one exact path from MATCHING DESTINATIONS.",
             parameters: {
               type: "object",
               properties: { path: { type: "string", description: "Route path starting with /" } },
@@ -495,12 +491,20 @@ Only call the navigate tool when the user clearly asks to open/go to/show one of
       if (toolCall?.function?.name === "navigate") {
         try {
           const args = JSON.parse(toolCall.function.arguments || "{}");
-          if (typeof args.path === "string" && args.path.startsWith("/")) {
+          if (typeof args.path === "string" && args.path.startsWith("/") && isKnownPath(args.path)) {
             action = { type: "navigate", path: args.path };
           }
         } catch { /* ignore malformed tool args */ }
       }
-      const reply = String(msg.content ?? "").trim() || (action ? `Opening ${action.path} for you.` : "Okay.");
+      const navigationIntent = /\b(find|search|open|show|go|take|launch|finde|suche|offne|ouvrir|cherche|abre|busca|apri|cerca|najdi|vyhlada|vyhladaj|otvor|ukaz|zobraz|chod|prejdi|hladaj|chcem|nájdi|vyhľada|vyhľadaj|otvor|ukáž|zobraz|choď)\b/i.test(transcript);
+      let usedFallback = false;
+      if (!action && navigationIntent && matches.length > 0) {
+        action = { type: "navigate", path: matches[0].path };
+        usedFallback = true;
+      }
+      const reply = usedFallback
+        ? `Opening ${matches[0].label} for you.`
+        : String(msg.content ?? "").trim() || (action ? `Opening ${action.path} for you.` : "Okay.");
 
       await __deduct();
       return new Response(JSON.stringify({ reply,

@@ -78,11 +78,22 @@ const WELLNESS_TOOLS = [
 
 export default function Wellness() {
   const [activeTool, setActiveTool] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [unlocked, setUnlocked] = useState<string[]>([]);
   const [unlocking, setUnlocking] = useState<string | null>(null);
   const { toast } = useToast();
   const { spend } = useSpendCredits();
   const { paidBalance, loading, refresh } = useAICredits();
+
+  useEffect(() => {
+    const requestedTool = searchParams.get("tool");
+    if (!requestedTool || !WELLNESS_TOOLS.some((tool) => tool.id === requestedTool)) return;
+    setActiveTool(requestedTool);
+    setSearchParams((params) => {
+      params.delete("tool");
+      return params;
+    }, { replace: true });
+  }, [searchParams, setSearchParams]);
 
   const handleSelectTool = async (toolId: string, cost: number) => {
     if (cost === 0 || unlocked.includes(toolId)) {
