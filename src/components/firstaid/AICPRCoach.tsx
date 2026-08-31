@@ -18,6 +18,9 @@ export function AICPRCoach({ onBack }: Props) {
   const generate = async () => {
     setLoading(true);
     try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error("Please sign in to use this tool");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         headers: { Authorization: `Bearer ${token}` },
         body: {
