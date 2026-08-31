@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { isR2Url, lookupR2Url } from "@/lib/r2Registry";
 
 /**
  * Buckets that have been flipped to private (Phase 1+ of GDPR storage lockdown).
@@ -34,6 +35,8 @@ export async function getReadableUrl(
   path: string,
   expiresInSec = 7200,
 ): Promise<string> {
+  const r2 = lookupR2Url(bucket, path);
+  if (r2) return r2;
   if (PRIVATE_BUCKETS.has(bucket)) {
     const url = await signedUrl(bucket, path, expiresInSec);
     if (url) return url;
@@ -82,11 +85,15 @@ export async function signedUrl(
  */
 export async function resolveStorageUrl(input: string | null | undefined): Promise<string | null> {
   if (!input) return null;
+  // Already an R2 public URL — serve as-is.
+  if (isR2Url(input)) return input;
   // Signed URL pattern. Re-sign it because stored signed URLs can expire.
   const signed = input.match(/\/storage\/v1\/object\/sign\/([^/]+)\/(.+?)(?:\?.*)?$/);
   if (signed) {
     const bucket = signed[1];
     const path = decodeURIComponent(signed[2]);
+    const hit = lookupR2Url(bucket, path);
+    if (hit) return hit;
     if (PRIVATE_BUCKETS.has(bucket)) return signedUrl(bucket, path);
     return input;
   }
@@ -95,13 +102,17 @@ export async function resolveStorageUrl(input: string | null | undefined): Promi
   if (m) {
     const bucket = m[1];
     const path = decodeURIComponent(m[2]);
+    const hit = lookupR2Url(bucket, path);
+    if (hit) return hit;
     if (PRIVATE_BUCKETS.has(bucket)) return signedUrl(bucket, path);
     return input;
   }
   // Bucket-prefixed raw path, e.g. messenger-attachments/<user>/<file>.
   const [bucket, ...pathParts] = input.split("/");
-  if (bucket && pathParts.length > 0 && PRIVATE_BUCKETS.has(bucket)) {
-    return signedUrl(bucket, pathParts.join("/"));
+  if (bucket && pathParts.length > 0) {
+    const hit = lookupR2Url(bucket, pathParts.join("/"));
+    if (hit) return hit;
+    if (PRIVATE_BUCKETS.has(bucket)) return signedUrl(bucket, pathParts.join("/"));
   }
   return input;
 }
