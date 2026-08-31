@@ -22,6 +22,7 @@
 - [Legal & Compliance](mem://constraints/compliance) — 16+ age restriction, no health claims, GDPR visual rules.
 - [Global Design Patterns](mem://design/global-patterns) — Glassmorphism, Cinematic Hub 2.0, Lucide icons.
 - [Architecture Standards](mem://architecture/project-standards) — Video imports, AI throttling, Three.js type pinning.
+- [Cloudflare R2 storage](mem://architecture/r2-storage) — All uploads routed to R2 via supabase.storage interceptor, fallback to Supabase.
 - [Security & Performance](mem://architecture/security-and-performance) — RLS policies, daily reconciliation, mass indexing, SEO automation.
 - [Rebranding](mem://features/rebranding) — KitchenStars Arena, ProClass, Fairy Castles, Unique wordmark.
 - [Localization](mem://features/localization) — 12 languages, browser detection, profile persistence.

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { isR2Url, lookupR2Url } from "@/lib/r2Registry";
 
 const BUCKET = "eco-media";
 
@@ -19,6 +20,9 @@ export function useChallengeMediaUrl(url: string | null | undefined) {
   useEffect(() => {
     let cancelled = false;
     if (!url) { setSigned(null); return; }
+    if (isR2Url(url)) { setSigned(url); return; }
+    const r2 = lookupR2Url(BUCKET, toStoragePath(url));
+    if (r2) { setSigned(r2); return; }
     supabase.storage
       .from(BUCKET)
       .createSignedUrl(toStoragePath(url), 60 * 60)

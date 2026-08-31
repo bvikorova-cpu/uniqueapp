@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 import { brokeredPreviewStorage } from './previewAuthStorage';
 import { resolveProxy } from './proxyMap';
+import { rememberR2Object, lookupR2Url } from '@/lib/r2Registry';
 
 const SUPABASE_URL = "https://jufrdzeonywluwutvyxz.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1ZnJkemVvbnl3bHV3dXR2eXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMzU0MTgsImV4cCI6MjA3NDcxMTQxOH0.UOe-_WQoTeBGFmnezRHRcjFJaJd71a7rYlurDkI6h4Q";
@@ -152,3 +153,85 @@ let _userInflight: Promise<any> | null = null;
 supabase.auth.onAuthStateChange(() => {
   _userCache = null;
 });
+
+// ---------------------------------------------------------------------------
+// Cloudflare R2 upload interception.
+//
+// Every `supabase.storage.from(bucket).upload(path, file)` call in the app is
+// transparently routed to Cloudflare R2 (via the `upload-to-r2` edge function)
+// when VITE_USE_R2_UPLOADS is enabled. The object key mirrors the Supabase
+// layout (`<bucket>/<path>`), and `getPublicUrl` / `createSignedUrl` return the
+// R2 public URL for objects that were uploaded there — so components that read
+// uploaded files keep working without changes.
+//
+// Any failure falls back to the original Supabase Storage upload, so no flow
+// can break because of R2.
+// ---------------------------------------------------------------------------
+const R2_ENABLED = import.meta.env.VITE_USE_R2_UPLOADS === "true";
+
+async function r2UploadViaEdge(bucket: string, path: string, body: any, contentType?: string) {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session?.access_token) throw new Error("no session");
+
+  const file =
+    body instanceof File
+      ? body
+      : new File([body], path.split("/").pop() || "upload", {
+          type: contentType || (body as Blob)?.type || "application/octet-stream" });
+
+  const form = new FormData();
+  form.append("file", file);
+  form.append("key", `${bucket}/${path.replace(/^\/+/, "")}`);
+  form.append("pathPrefix", bucket);
+
+  const res = await fetch(`${SUPABASE_URL}/functions/v1/upload-to-r2`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${session.access_token}`,
+      apikey: SUPABASE_PUBLISHABLE_KEY },
+    body: form });
+
+  if (!res.ok) throw new Error(`r2 ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  const json = await res.json();
+  if (!json?.url) throw new Error("r2 returned no url");
+  return json as { url: string; key: string; bucket: string };
+}
+
+if (R2_ENABLED) {
+  const _origStorageFrom = supabase.storage.from.bind(supabase.storage);
+  (supabase.storage as any).from = (bucket: string) => {
+    const api: any = _origStorageFrom(bucket);
+
+    const upload = async (path: string, body: any, opts?: any) => {
+      try {
+        const { url } = await r2UploadViaEdge(bucket, path, body, opts?.contentType);
+        rememberR2Object(bucket, path, url);
+        return { data: { path, id: path, fullPath: `${bucket}/${path}` }, error: null } as any;
+      } catch (e) {
+        console.warn("[r2] upload failed, using Supabase Storage:", (e as any)?.message ?? e);
+        return api.upload(path, body, opts);
+      }
+    };
+
+    return new Proxy(api, {
+      get(target, prop, receiver) {
+        if (prop === "upload") return upload;
+        if (prop === "getPublicUrl") {
+          return (path: string, options?: any) => {
+            const hit = lookupR2Url(bucket, path);
+            if (hit) return { data: { publicUrl: hit } } as any;
+            return target.getPublicUrl(path, options);
+          };
+        }
+        if (prop === "createSignedUrl") {
+          return async (path: string, expiresIn: number, options?: any) => {
+            const hit = lookupR2Url(bucket, path);
+            if (hit) return { data: { signedUrl: hit, path }, error: null } as any;
+            return target.createSignedUrl(path, expiresIn, options);
+          };
+        }
+        const value = Reflect.get(target, prop, receiver);
+        return typeof value === "function" ? value.bind(target) : value;
+      } });
+  };
+}
