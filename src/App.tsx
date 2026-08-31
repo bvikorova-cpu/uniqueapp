@@ -305,6 +305,7 @@ import { ResetPassword,
   PhotoRestoration,
   AntiqueAppraisal,
   VideoAdGenerator,
+  AIVideoCreator,
   Handwriting,
   CreativeForge,
   Jobs,
@@ -965,6 +966,7 @@ const App = () => {
                         <Route path="/analyzer/history" element={<AnalyzerHistory />} />
                         <Route path="/analyzer/collections" element={<AnalyzerCollections />} />
                         <Route path="/video-ad-generator" element={<VideoAdGenerator />} />
+                        <Route path="/ai-video-creator" element={<AIVideoCreator />} />
                         <Route path="/kids-channel" element={<KidsChannel />} />
                         <Route path="/kids-channel/share/:token" element={<KidsShareView />} />
                         <Route path="/choose-adventure" element={<ChooseAdventure />} />

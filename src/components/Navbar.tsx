@@ -145,6 +145,7 @@ const Navbar = () => {
         { path: "/ai-generation", label: "AI Generation", icon: Sparkles },
         { path: "/analyzer", label: "Universal Analyzer", icon: Sparkles },
         { path: "/video-ad-generator", label: "Video Ad Generator", icon: Video },
+        { path: "/ai-video-creator", label: "AI Video Creator", icon: Video },
         { path: "/ai-tattoo", label: "AI Tattoo Designer", icon: ImageIcon },
         { path: "/ai-clone", label: "AI Personality Clone", icon: Bot },
         { path: "/pet-translator", label: "AI Pet Translator", icon: PawPrint },

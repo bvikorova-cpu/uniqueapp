@@ -201,6 +201,7 @@ export const CardCollectionsGallery = lazy(() => import("@/pages/CardCollections
 
 export const FashionStudio = lazy(() => import("@/pages/FashionStudio"));
 export const VideoAdGenerator = lazy(() => import("@/pages/VideoAdGenerator"));
+export const AIVideoCreator = lazy(() => import("@/pages/AIVideoCreator"));
 export const CreativeForge = lazy(() => import("@/pages/CreativeForge"));
 export const Handwriting = lazy(() => import("@/pages/Handwriting"));
 
