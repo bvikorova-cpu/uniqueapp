@@ -3819,14 +3819,90 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     ]
   },
   {
-    "path": "/wellness",
+    "path": "/wellness?tool=mandala",
     "label": "Wellness — Digital Mandala creator",
     "keywords": [
       "digital mandala",
       "mandala drawing",
       "mandala creator",
       "symmetrical drawing",
-      "mindfulness drawing"
+      "mindfulness drawing",
+      "open mandala",
+      "otvor mandalu",
+      "mandala vo wellness"
+    ]
+  },
+  {
+    "path": "/wellness?tool=breathing",
+    "label": "Wellness — Breathing Exercises",
+    "keywords": [
+      "breathing exercise",
+      "dychove cvicenie",
+      "dychanie",
+      "4 7 8 breathing",
+      "box breathing"
+    ]
+  },
+  {
+    "path": "/wellness?tool=grounding",
+    "label": "Wellness — 5-4-3-2-1 Grounding",
+    "keywords": [
+      "grounding",
+      "uzemnenie",
+      "panic attack",
+      "anxiety exercise",
+      "5 4 3 2 1"
+    ]
+  },
+  {
+    "path": "/wellness?tool=sounds",
+    "label": "Wellness — Nature Sounds",
+    "keywords": [
+      "nature sounds",
+      "zvuky prirody",
+      "rain sounds",
+      "ocean sounds",
+      "forest ambience"
+    ]
+  },
+  {
+    "path": "/wellness?tool=bodyscan",
+    "label": "Wellness — Body Scan Meditation",
+    "keywords": [
+      "body scan",
+      "body meditation",
+      "sken tela",
+      "relaxation meditation"
+    ]
+  },
+  {
+    "path": "/wellness?tool=challenges",
+    "label": "Wellness — Daily Challenges",
+    "keywords": [
+      "wellness challenges",
+      "daily wellness",
+      "denne vyzvy",
+      "wellness streak"
+    ]
+  },
+  {
+    "path": "/wellness?tool=chat",
+    "label": "Wellness — AI Mindfulness Coach",
+    "keywords": [
+      "mindfulness coach",
+      "wellness coach",
+      "mindfulness chat",
+      "coach vsimavosti"
+    ]
+  },
+  {
+    "path": "/wellness?tool=journal",
+    "label": "Wellness — Gratitude Journal",
+    "keywords": [
+      "gratitude journal",
+      "vdacnost",
+      "dennik vdacnosti",
+      "mood journal"
     ]
   },
   {

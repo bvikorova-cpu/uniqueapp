@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/generate-sitemap.mjs && node scripts/generate-jobs-sitemap.mjs && node scripts/validate-seo.mjs && node scripts/i18n-check.mjs && node scripts/check-routes.mjs",
+    "prebuild": "node scripts/generate-uni-catalog.mjs && node scripts/generate-sitemap.mjs && node scripts/generate-jobs-sitemap.mjs && node scripts/validate-seo.mjs && node scripts/i18n-check.mjs && node scripts/check-routes.mjs",
     "check:routes": "node scripts/check-routes.mjs",
     "check:routes:strict": "node scripts/check-routes.mjs --strict",
     "build": "NODE_OPTIONS=--max-old-space-size=8192 vite build",
