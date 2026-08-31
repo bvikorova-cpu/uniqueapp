@@ -67,7 +67,7 @@ Deno.serve(async (req) => {
 
   // Also email priority support team
   try {
-    const priorityEmail = Deno.env.get("PRIORITY_SUPPORT_EMAIL") ?? "priority@uniqueapp.fun";
+    const priorityEmail = Deno.env.get("PRIORITY_SUPPORT_EMAIL") ?? "uniqueapp.fun@gmail.com";
     for (const t of breached) {
       await supabase.functions.invoke("send-transactional-email", {
         body: {

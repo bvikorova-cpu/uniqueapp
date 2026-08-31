@@ -204,7 +204,7 @@ export const Certificate = ({ userName, courseName, completionDate }: Certificat
             <div className="text-center text-sm text-muted-foreground pt-8 border-t border-primary/10 space-y-2">
               <p className="font-medium">Accredited Education Provider</p>
               <p className="font-semibold text-primary">UNIQUE Education</p>
-              <p className="text-xs">www.unique-education.com | info@unique-education.com</p>
+              <p className="text-xs">www.unique-education.com | uniqueapp.fun@gmail.com</p>
             </div>
           </CardContent>
         </Card>
