@@ -459,6 +459,14 @@ const Megatalent = () => {
     if (file.size > maxBytes) { toast({ title: "File too large", description: `Max ${isImage ? '10MB' : '200MB'}`, variant: "destructive" }); return; }
     setUploading(true);
     try {
+      // Platform rule: no erotic/nude/sexual media.
+      const { screenMediaFile, NSFW_BLOCK_MESSAGE } = await import("@/lib/mediaModeration");
+      const verdict = await screenMediaFile(file);
+      if (!verdict.allowed) {
+        toast({ title: "Upload blocked", description: NSFW_BLOCK_MESSAGE, variant: "destructive" });
+        setUploading(false);
+        return;
+      }
       const fileExt = (file.name.split('.').pop() || (isImage ? 'jpg' : 'mp4')).toLowerCase();
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;
       const bucket = isImage ? 'media' : 'videos';

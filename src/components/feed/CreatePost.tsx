@@ -131,6 +131,15 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
       createdPostId = post.id;
 
 
+      // Platform rule: no erotic/nude/sexual media (images and videos alike).
+      {
+        const { screenMediaFile, NSFW_BLOCK_MESSAGE } = await import("@/lib/mediaModeration");
+        for (const file of files) {
+          const verdict = await screenMediaFile(file);
+          if (!verdict.allowed) throw new Error(NSFW_BLOCK_MESSAGE);
+        }
+      }
+
       for (const file of files) {
         const ext = (file.name.split(".").pop() || "").toLowerCase();
         if (!ALLOWED_EXT.has(ext)) {
