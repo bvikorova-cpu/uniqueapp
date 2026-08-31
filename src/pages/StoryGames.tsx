@@ -34,6 +34,7 @@ export default function StoryGames() {
   const [userId, setUserId] = useState<string | null>(null);
   const [streak, setStreak] = useState(0);
   const [longestStreak, setLongestStreak] = useState(0);
+  const [startingGame, setStartingGame] = useState(false);
 
   // Level derived from same thresholds as XPSystem
   const LEVEL_THRESHOLDS = [0, 50, 120, 200, 300, 420, 560, 720, 900, 1100];
