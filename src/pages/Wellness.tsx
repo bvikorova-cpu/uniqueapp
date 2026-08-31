@@ -78,7 +78,7 @@ const WELLNESS_TOOLS = [
 
 export default function Wellness() {
   const [activeTool, setActiveTool] = useState<string | null>(null);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [unlocked, setUnlocked] = useState<string[]>([]);
   const [unlocking, setUnlocking] = useState<string | null>(null);
   const { toast } = useToast();
@@ -88,12 +88,11 @@ export default function Wellness() {
   useEffect(() => {
     const requestedTool = searchParams.get("tool");
     if (!requestedTool || !WELLNESS_TOOLS.some((tool) => tool.id === requestedTool)) return;
-    setActiveTool(requestedTool);
-    setSearchParams((params) => {
-      params.delete("tool");
-      return params;
-    }, { replace: true });
-  }, [searchParams, setSearchParams]);
+    const timer = window.setTimeout(() => {
+      document.getElementById(`wellness-tool-${requestedTool}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 250);
+    return () => window.clearTimeout(timer);
+  }, [searchParams]);
 
   const handleSelectTool = async (toolId: string, cost: number) => {
     if (cost === 0 || unlocked.includes(toolId)) {
@@ -208,15 +207,16 @@ export default function Wellness() {
           {/* Tool Cards Grid */}
           <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
             {WELLNESS_TOOLS.filter(t => t.cost === 0).map((tool, i) => (
-              <WellnessToolCard
-                key={tool.id}
-                tool={tool}
-                hasAccess={tool.cost === 0 || unlocked.includes(tool.id)}
-                isPremium={tool.cost > 0}
-                cost={tool.cost}
-                onSelect={() => handleSelectTool(tool.id, tool.cost)}
-                index={i}
-              />
+              <div id={`wellness-tool-${tool.id}`} key={tool.id}>
+                <WellnessToolCard
+                  tool={tool}
+                  hasAccess={tool.cost === 0 || unlocked.includes(tool.id)}
+                  isPremium={tool.cost > 0}
+                  cost={tool.cost}
+                  onSelect={() => handleSelectTool(tool.id, tool.cost)}
+                  index={i}
+                />
+              </div>
             ))}
           </div>
 
@@ -238,15 +238,16 @@ export default function Wellness() {
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {WELLNESS_TOOLS.filter(t => t.cost > 0).map((tool, i) => (
-              <WellnessToolCard
-                key={tool.id}
-                tool={tool}
-                hasAccess={unlocked.includes(tool.id)}
-                isPremium={true}
-                cost={WELLNESS_AI_COST}
-                onSelect={() => handleSelectTool(tool.id, WELLNESS_AI_COST)}
-                index={i}
-              />
+              <div id={`wellness-tool-${tool.id}`} key={tool.id}>
+                <WellnessToolCard
+                  tool={tool}
+                  hasAccess={unlocked.includes(tool.id)}
+                  isPremium={true}
+                  cost={WELLNESS_AI_COST}
+                  onSelect={() => handleSelectTool(tool.id, WELLNESS_AI_COST)}
+                  index={i}
+                />
+              </div>
             ))}
           </div>
         </div>

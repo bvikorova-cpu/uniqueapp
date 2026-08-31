@@ -496,7 +496,7 @@ Never say that you cannot search or open a platform feature when a plausible mat
           }
         } catch { /* ignore malformed tool args */ }
       }
-      const navigationIntent = /\b(find|search|open|show|go|take|launch|finde|suche|offne|ouvrir|cherche|abre|busca|apri|cerca|najdi|vyhlada|vyhladaj|otvor|ukaz|zobraz|chod|prejdi|hladaj|chcem|nájdi|vyhľada|vyhľadaj|otvor|ukáž|zobraz|choď)\b/i.test(transcript);
+      const navigationIntent = /\b(find|search|open|show|go|take|launch|navigate|visit|finde|suche|offne|ouvrir|cherche|abre|busca|apri|cerca|najdi|vyhlada|vyhladaj|otvor|ukaz|zobraz|chod|prejdi|hladaj|chcem|nájdi|vyhľada|vyhľadaj|otvor|ukáž|zobraz|choď)\b/i.test(transcript);
       let usedFallback = false;
       if (!action && navigationIntent && matches.length > 0) {
         action = { type: "navigate", path: matches[0].path };
