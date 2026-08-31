@@ -1315,6 +1315,66 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_video_creations: {
+        Row: {
+          aspect_ratio: string
+          created_at: string
+          credits_spent: number
+          duration_seconds: number
+          error: string | null
+          id: string
+          music: string | null
+          narration: string | null
+          operation: Json | null
+          scene: string | null
+          segments: Json
+          segments_total: number
+          status: string
+          style: string | null
+          topic: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          aspect_ratio?: string
+          created_at?: string
+          credits_spent?: number
+          duration_seconds?: number
+          error?: string | null
+          id?: string
+          music?: string | null
+          narration?: string | null
+          operation?: Json | null
+          scene?: string | null
+          segments?: Json
+          segments_total?: number
+          status?: string
+          style?: string | null
+          topic: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          aspect_ratio?: string
+          created_at?: string
+          credits_spent?: number
+          duration_seconds?: number
+          error?: string | null
+          id?: string
+          music?: string | null
+          narration?: string | null
+          operation?: Json | null
+          scene?: string | null
+          segments?: Json
+          segments_total?: number
+          status?: string
+          style?: string | null
+          topic?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       album_photos: {
         Row: {
           album_id: string
