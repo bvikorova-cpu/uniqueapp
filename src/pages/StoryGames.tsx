@@ -247,6 +247,10 @@ export default function StoryGames() {
             {/* Main Content */}
             <div className="lg:col-span-3 space-y-6">
 
+              <div className="rounded-xl border border-primary/20 bg-white/80 backdrop-blur-md px-4 py-3 text-sm font-semibold text-gray-900 shadow">
+                Each game costs 1 credit to start. XP, streaks and leaderboards stay free.
+              </div>
+
               {/* Games Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {games.map((game, index) => (
