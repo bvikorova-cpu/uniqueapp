@@ -86,7 +86,7 @@ const AIVideoCreator = () => {
 
   const load = useCallback(async () => {
     if (!user) return;
-    const { data } = await supabase
+    const { data } = await (supabase as any)
       .from("ai_video_creations")
       .select("*")
       .order("created_at", { ascending: false })
@@ -142,7 +142,7 @@ const AIVideoCreator = () => {
   };
 
   const handleDelete = async (id: string) => {
-    await supabase.from("ai_video_creations").delete().eq("id", id);
+    await (supabase as any).from("ai_video_creations").delete().eq("id", id);
     setCreations((prev) => prev.filter((c) => c.id !== id));
   };
 
