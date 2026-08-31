@@ -21,9 +21,11 @@ export const AILocalGuide = ({ onBack }: Props) => {
     if (!form.location) { toast({ title: "Enter a location", variant: "destructive" }); return; }
     setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Login required");
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error("Please sign in to use this tool");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
+        headers: { Authorization: `Bearer ${token}` },
         body: {
           type: "travel_planner",
           prompt: `Act as a knowledgeable local guide for ${form.location}. ${form.question ? `Answer this specific question: ${form.question}` : "Provide an insider's guide including: best local restaurants (not tourist traps), hidden gems, cultural etiquette, safety tips, best times to visit popular attractions, local transportation hacks, and money-saving tips."} Be detailed and practical.`

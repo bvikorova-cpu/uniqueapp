@@ -21,9 +21,11 @@ export const AIBudgetCalculator = ({ onBack }: Props) => {
     if (!form.destination) { toast({ title: "Enter a destination", variant: "destructive" }); return; }
     setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Login required");
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error("Please sign in to use this tool");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
+        headers: { Authorization: `Bearer ${token}` },
         body: {
           type: "travel_planner",
           prompt: `Create a detailed travel budget breakdown for ${form.travelers} travelers visiting ${form.destination} for ${form.duration} days. Travel style: ${form.style}. Include: flights (estimated range), accommodation per night, daily food budget, local transportation, activities/attractions, shopping, insurance, visa costs if applicable, and emergency fund. Give totals per person and for the group. Use EUR currency. Format as a clear budget table.`

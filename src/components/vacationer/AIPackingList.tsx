@@ -21,9 +21,11 @@ export const AIPackingList = ({ onBack }: Props) => {
     if (!form.destination) { toast({ title: "Enter a destination", variant: "destructive" }); return; }
     setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Login required");
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error("Please sign in to use this tool");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
+        headers: { Authorization: `Bearer ${token}` },
         body: {
           type: "travel_planner",
           prompt: `Create a comprehensive packing list for a ${form.duration}-day trip to ${form.destination} during ${form.season}. Activities planned: ${form.activities || "general travel"}. Organize by categories: Clothing, Toiletries, Electronics, Documents, First Aid, Accessories. Include quantities and tips for each item.`

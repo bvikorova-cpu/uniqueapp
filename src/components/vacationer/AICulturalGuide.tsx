@@ -20,9 +20,11 @@ export const AICulturalGuide = ({ onBack }: Props) => {
     if (!destination) { toast({ title: "Enter a destination", variant: "destructive" }); return; }
     setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Login required");
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error("Please sign in to use this tool");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
+        headers: { Authorization: `Bearer ${token}` },
         body: {
           type: "travel_planner",
           prompt: `Provide a comprehensive cultural guide for travelers visiting ${destination}. Include: greeting customs, dress codes, dining etiquette, tipping culture, religious sensitivities, local gestures to avoid, basic phrases in the local language (with pronunciation), public behavior norms, photography rules, negotiation/bargaining customs, and important local holidays or events. Be respectful and thorough.`
