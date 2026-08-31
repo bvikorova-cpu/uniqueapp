@@ -102,7 +102,6 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   // Work & Career
   { id: "71", title: "Jobs", category: "Career", path: "/jobs" },
   { id: "73", title: "Brand Builder", category: "Career", path: "/brand-builder" },
-  { id: "74", title: "Brand Battle", category: "Career", path: "/brand-battle" },
   { id: "75", title: "Sports Predictor", category: "Career", path: "/sports-predictor" },
   { id: "76", title: "Lottery AI", category: "Career", path: "/lottery-ai" },
   { id: "77", title: "Monetization Ideas", category: "Career", path: "/monetization-ideas" },

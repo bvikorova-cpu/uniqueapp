@@ -397,6 +397,8 @@ export default function AboutPlatform() {
   };
 
   const filteredCategories = useMemo(() => { const q = query.trim().toLowerCase();
+    // Brand Arena is hidden from the public while under construction
+    const CATEGORIES = ALL_CATEGORIES.filter((c) => c.id !== "brand-arena");
     if (!q) return CATEGORIES;
     // Single-letter query = alphabetical index (match section title start)
     if (q.length === 1) {
