@@ -143,18 +143,11 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
       return;
     }
 
-    // Play audio for current scene if available
-    if (audioFiles && audioFiles[currentScene]) {
-      const audioSource = audioFiles[currentScene].startsWith('data:')
-        ? audioFiles[currentScene]
-        : `data:audio/mp3;base64,${audioFiles[currentScene]}`;
-      const audio = new Audio(audioSource);
-      audio.playbackRate = voiceSpeed; // Apply voice speed
-      audioRef.current = audio;
-      audio.play().catch(err => console.error('Audio playback error:', err));
-    }
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | null = null;
 
-    const interval = setInterval(() => {
+    const advance = () => {
+      if (cancelled) return;
       setCurrentScene((prev) => {
         if (prev >= scenes.length - 1) {
           setIsPlaying(false);
@@ -162,16 +155,42 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
         }
         return prev + 1;
       });
-    }, sceneDuration * 1000);
+    };
+
+    // Estimated reading time so text-only scenes are never cut short
+    const words = (scenes[currentScene] || '').trim().split(/\s+/).filter(Boolean).length;
+    const readingMs = Math.max(sceneDuration * 1000, (words / 2.2) * 1000 / Math.max(voiceSpeed, 0.5));
+
+    const raw = audioFiles?.[currentScene];
+    if (raw) {
+      const audioSource = raw.startsWith('data:') ? raw : `data:audio/mp3;base64,${raw}`;
+      const audio = new Audio(audioSource);
+      audio.playbackRate = voiceSpeed;
+      audioRef.current = audio;
+      // Advance only when the narration for this scene has actually finished
+      audio.onended = advance;
+      audio.onerror = () => {
+        timer = setTimeout(advance, readingMs);
+      };
+      audio.play().catch((err) => {
+        console.error('Audio playback error:', err);
+        timer = setTimeout(advance, readingMs);
+      });
+    } else {
+      timer = setTimeout(advance, readingMs);
+    }
 
     return () => {
-      clearInterval(interval);
+      cancelled = true;
+      if (timer) clearTimeout(timer);
       if (audioRef.current) {
+        audioRef.current.onended = null;
         audioRef.current.pause();
         audioRef.current = null;
       }
     };
-  }, [isPlaying, currentScene, scenes.length, sceneDuration, audioFiles, voiceSpeed]);
+  }, [isPlaying, currentScene, scenes, sceneDuration, audioFiles, voiceSpeed]);
+
 
   // Load an image (remote URL, base64 or blob) into a same-origin PNG data URL
   const loadImageData = async (
