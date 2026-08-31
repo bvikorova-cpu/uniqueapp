@@ -671,8 +671,10 @@ async function pollGeminiVideo(operationName: string):
 /** Poll a Veo operation. Returns { done, videoBase64?, error? } or null when unreachable. */
 export async function pollVertexVideo(op: { operationName: string; model: string; location: string }):
   Promise<{ done: boolean; videoBase64?: string; error?: string } | null> {
+  if (op.location === "gemini") return await pollGeminiVideo(op.operationName);
   const sa = getServiceAccount();
   if (!sa) return null;
+
   const projectId = Deno.env.get("GCP_PROJECT_ID") || sa.project_id;
   if (!projectId) return null;
   const token = await getAccessToken(sa);
