@@ -731,63 +731,15 @@ export function FairyPanoramaViewer({
     }
   }, [imageUrl]);
 
-  const playPoiAudio = async (poi: Poi) => {
-    // Stop any existing POI audio + main audio guide to avoid overlap
+  // Voice narration removed — hotspots are text-only now.
+  const playPoiAudio = async (_poi: Poi) => {
     if (poiAudioRef.current) {
       poiAudioRef.current.pause();
       poiAudioRef.current = null;
     }
-    if (elevenLabsAudioRef.current && isPlaying) {
-      elevenLabsAudioRef.current.pause();
-      setIsPlaying(false);
-    }
-
-    const cacheKey = `${poi.id}-${selectedLanguage}`;
-    let url = poiAudioCache[cacheKey];
-
-    if (!url) {
-      try {
-        const { data, error } = await supabase.functions.invoke('text-to-speech', {
-          body: { text: `${poi.title}. ${poi.narrative}`, language: selectedLanguage } });
-        if (error) throw error;
-        if (data?.audioContent) {
-          const binaryString = atob(data.audioContent);
-          const bytes = new Uint8Array(binaryString.length);
-          for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
-          const blob = new Blob([bytes], { type: 'audio/mpeg' });
-          url = URL.createObjectURL(blob);
-          setPoiAudioCache((prev) => ({ ...prev, [cacheKey]: url! }));
-        }
-      } catch (e) {
-        console.error('POI audio generation failed:', e);
-        // Browser TTS fallback so the experience still works
-        speakWithBrowser(`${poi.title}. ${poi.narrative}`, selectedLanguage);
-        return;
-      }
-
-    }
-
-    if (!url) return;
-    const audio = new Audio(url);
-    audio.preload = 'auto';
-    // iOS sometimes ignores volume set before play() — set both before and after.
-    audio.volume = isPoiMuted ? 0 : poiVolume;
-    poiAudioRef.current = audio;
-
-    try {
-      await audio.play();
-      // Re-apply volume after play() resolves (Safari quirk)
-      audio.volume = isPoiMuted ? 0 : poiVolume;
-    } catch (err: any) {
-      // NotAllowedError = no user gesture yet → queue and prompt
-      if (err?.name === 'NotAllowedError') {
-        pendingPoiRef.current = poi;
-        setNeedsGesture(true);
-      } else {
-        console.warn('POI audio play failed:', err);
-      }
-    }
+    return;
   };
+
 
   const handleGazeStart = (poiId: string) => {
     const poi = pois.find((p) => p.id === poiId);
