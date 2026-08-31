@@ -29,7 +29,19 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const formSchema = z.object({ name: z.string().min(2, "Brand name must be at least 2 characters"),
   category: z.string().min(1, "Please select a category"),
   description: z.string().min(10, "Description must be at least 10 characters"),
-  website: z.string().url("Please enter a valid URL"),
+  website: z
+    .string()
+    .trim()
+    .min(1, "Please enter a website")
+    .transform((v) => (/^https?:\/\//i.test(v) ? v : `https://${v}`))
+    .refine((v) => {
+      try {
+        const u = new URL(v);
+        return /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(u.hostname);
+      } catch {
+        return false;
+      }
+    }, "Please enter a valid URL"),
   logo: z.string().min(1, "Please upload a logo") });
 
 type FormData = z.infer<typeof formSchema>;
