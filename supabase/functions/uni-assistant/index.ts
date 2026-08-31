@@ -3,6 +3,7 @@
 import { corsHeaders } from "../_shared/cors.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { callOpenAI } from "../_shared/openai.ts";
+import { searchCatalog, isKnownPath } from "../_shared/uniCatalog.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
@@ -20,24 +21,15 @@ Never refuse just because a topic is outside the app. Answer general-knowledge q
 using what you know. If you truly don't know or the info may be outdated (live prices, today's
 weather, breaking news), say so briefly and suggest how the user can check.
 
-You can ALSO navigate the user inside the app to these routes:
-- "/" home
-- "/ai-mentor/hub" Personal AI Mentor coaches
-- "/megatalent" Megatalent contest
-- "/dating" Dating
-- "/bazaar" Bazaar marketplace
-- "/skills" Skills marketplace (P2P microservices)
-- "/education" Education / courses
-- "/kids" Kids channel
-- "/health" Health & Wellness
-- "/jobs" Jobs
-- "/wallet" Credits & wallet
-- "/notifications" Notifications
-- "/report-bug" Report a bug (beta rewards)
-- "/settings" Settings
+You can ALSO navigate the user anywhere inside the app — not only main sections, but also
+sub-sections, categories, tools and features. For every request a list of MATCHING DESTINATIONS
+from the app catalog is provided to you. When the user asks to find, search, open, show or go to
+anything on the platform, pick the best destination from that list and call the navigate tool with
+its exact path. Never say you cannot search the platform; if the list has any plausible match,
+navigate there and say in one sentence what you opened. Only if the list is empty, say the feature
+does not seem to exist and suggest the closest section.
+Never invent routes that are not in the provided list. For general knowledge questions, just answer.`;
 
-Only call the navigate tool when the user clearly asks to open/go to/show one of these.
-Never invent routes not listed above. For everything else, just answer the question.`;
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -65,11 +57,18 @@ Deno.serve(async (req) => {
       .maybeSingle();
     if ((creditRow?.credits_remaining ?? 0) < COST) return json({ error: "INSUFFICIENT_CREDITS" }, 402);
 
+    // Search the whole app catalog (routes + sub-sections/categories/tools)
+    const matches = searchCatalog(transcript, 25);
+    const catalogBlock = matches.length
+      ? matches.map((m) => `- "${m.path}" ${m.label}`).join("\n")
+      : "(no matching destination found)";
+
     // Call unified AI with tool calling
     const raw = await callOpenAI({
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "system", content: `The user is currently on route: ${currentRoute}` },
+        { role: "system", content: `MATCHING DESTINATIONS in the app catalog:\n${catalogBlock}` },
         { role: "user", content: transcript },
       ],
       model: "gpt-4o-mini",
@@ -77,7 +76,7 @@ Deno.serve(async (req) => {
         type: "function",
         function: {
           name: "navigate",
-          description: "Navigate the app to a route from the allowed list.",
+          description: "Navigate the app to one of the paths listed in MATCHING DESTINATIONS.",
           parameters: {
             type: "object",
             properties: {
@@ -93,11 +92,16 @@ Deno.serve(async (req) => {
     if (toolCall?.function?.name === "navigate") {
       try {
         const args = JSON.parse(toolCall.function.arguments || "{}");
-        if (typeof args.path === "string" && args.path.startsWith("/")) {
+        if (typeof args.path === "string" && args.path.startsWith("/") && isKnownPath(args.path)) {
           action = { type: "navigate", path: args.path };
         }
       } catch { /* ignore */ }
     }
+    // Fallback: user clearly wanted to find something and the catalog has a match.
+    if (!action && matches.length && /\b(find|search|open|show|go to|take me|najdi|vyhlada|otvor|ukaz|chcem)\b/i.test(transcript)) {
+      action = { type: "navigate", path: matches[0].path };
+    }
+
     const reply = String(msg.content ?? "").trim()
       || (action ? `Opening ${action.path} for you.` : "Okay.");
 
