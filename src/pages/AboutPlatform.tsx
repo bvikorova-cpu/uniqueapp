@@ -41,7 +41,7 @@ type Category = {
   sections: Section[];
 };
 
-const CATEGORIES: Category[] = [
+const ALL_CATEGORIES: Category[] = [
   { id: "social",
     title: "Social & Communication",
     icon: Users,
@@ -355,6 +355,9 @@ const CATEGORIES: Category[] = [
     ] },
 ];
 
+
+// Brand Arena is hidden from the public while it is still under construction
+const CATEGORIES: Category[] = ALL_CATEGORIES.filter((c) => c.id !== "brand-arena");
 const HERO_STATS = [
   { icon: Globe, label: "Sections", value: "60+" },
   { icon: Crown, label: "AI Tools", value: "40+" },

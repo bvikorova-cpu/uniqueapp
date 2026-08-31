@@ -116,9 +116,10 @@ const Navbar = () => {
     { path: "/brain-duel", label: "BrainDuel - Knowledge Battle", icon: Trophy },
   ];
 
-  const brandArenaServices = [
-    { path: "/brand-battle", label: "Brand Battle Arena", icon: Trophy },
-  ];
+  // Brand Arena is hidden from the public while it is being built — admins only
+  const brandArenaServices = isAdmin
+    ? [{ path: "/brand-battle", label: "Brand Battle Arena", icon: Trophy }]
+    : [];
 
   const kidsAcademyServices = [
     { path: "/kids", label: "Kids Academy Hub", icon: Sparkles },
@@ -387,6 +388,7 @@ const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
 
+            {isAdmin && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -417,6 +419,7 @@ const Navbar = () => {
                 })}
               </DropdownMenuContent>
             </DropdownMenu>
+            )}
 
 
             
@@ -759,7 +762,8 @@ const Navbar = () => {
               })}
             </div>
 
-            {/* Brand Arena Section */}
+            {/* Brand Arena Section — admin only while under construction */}
+            {isAdmin && (
             <div className="pt-2 pb-1">
               <div className="px-3 py-1.5 text-xs font-semibold bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500 bg-clip-text text-transparent flex items-center gap-2">
                 <Trophy className="h-3.5 w-3.5 text-amber-500" />
@@ -783,6 +787,7 @@ const Navbar = () => {
                 );
               })}
             </div>
+            )}
 
             {/* Kids Academy Section */}
             <div className="pt-2 pb-1">
