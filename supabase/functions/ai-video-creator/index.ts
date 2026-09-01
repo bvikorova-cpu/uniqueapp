@@ -164,11 +164,10 @@ serve(async (req) => {
       const op = row.operation as any;
       if (!op) return json({ status: "processing", progress: 0 });
 
-      const plan = SEGMENT_PLAN[row.duration_seconds] ?? [8];
-      const segments = Array.isArray(row.segments) ? [...(row.segments as any[])] : [];
       const result = await pollVertexVideo(op);
-      if (!result) return json({ status: "processing", progress: segments.length / plan.length });
-      if (!result.done) return json({ status: "processing", progress: segments.length / plan.length });
+      if (!result) return json({ status: "processing", progress: 0.3 });
+      if (!result.done) return json({ status: "processing", progress: 0.5 });
+
 
       if (result.error || !result.videoBase64) {
         const refundable = row.credits_spent > 0;
