@@ -85,6 +85,22 @@ const STYLE_PROMPTS: Record<string, string> = {
   duotone: "a high-contrast duotone print, two bold colors only, posterized tonal separation",
   silhouette: "a graphic silhouette portrait, solid dark shape against a bright gradient backdrop, crisp edges",
   holofoil: "a holographic foil print effect, iridescent rainbow sheen, metallic reflections, dark glossy base",
+  memoji: "a clean 3D avatar-sticker version of the person, smooth rounded shapes, simple glossy shading, flat background, messaging-sticker look",
+  pixelemoji: "a retro 16-bit pixel-art emoji portrait, chunky pixels, limited palette, crisp pixel edges",
+  emote: "a bold streaming chat emote, simplified exaggerated cartoon face, thick outlines, punchy expression, transparent-style flat background",
+  shonen: "a classic shonen anime portrait, large glossy eyes, sharp facial lines, detailed spiky hair, vivid saturated cel colors",
+  ghiblisoft: "a nostalgic hand-painted animation-film look, soft watercolor tones, gentle natural light, painterly backgrounds",
+  kawaii: "a cute kawaii chibi character, oversized head, tiny body, soft pastel colors, big sparkly eyes",
+  pixar3d: "a polished 3D animated-movie character render, rounded features, luminous eyes, detailed skin and hair texture, cinematic soft lighting",
+  webtoon: "a 2D webtoon comic panel style, bold clean outlines, cel shading, flat colors, halftone dot shading",
+  vectorgame: "a sharp vector illustration in the style of video-game cover art, bold outlines, crisp gradient shading, poster composition",
+  renaissanceportrait: "a classical renaissance oil portrait, period lace and pearls, heavy velvet fabrics, dark aristocratic background, chiaroscuro lighting",
+  victorian: "a regency-era portrait, pastel corseted gown, elaborate floral updo hairstyle, gloves, English garden or marble hall setting",
+  medievalqueen: "a cinematic medieval fantasy royal portrait, metal crown, embroidered cloak, fur mantle, dramatic torchlight in a stone castle",
+  redcarpet: "a modern red-carpet gala portrait, sparkling evening gown, diamond jewellery, flawless glam makeup, camera flashes in the background",
+  masquerade: "an opulent masquerade ball portrait, ornate venetian mask with feathers and gold filigree, candlelit ballroom, mysterious mood",
+  elfprincess: "an ethereal elven portrait, delicate tiara, luminous skin, flowing gown, magical enchanted forest light",
+  darkroyalty: "a gothic dark-royalty portrait, black lace gown, dark lipstick, crown of black crystals, moody mystical atmosphere",
 };
 
 
