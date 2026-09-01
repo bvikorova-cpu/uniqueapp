@@ -185,10 +185,15 @@ export default function GiftsInbox() {
             </div>
             <div className="shrink-0 text-right">
               <p className="text-sm font-semibold text-primary">
-                {mode === "in" ? `+${r.recipient_share_credits}` : `-${r.credits_spent}`}
+                {mode === "in"
+                  ? `+€${Number(r.recipient_share_eur || 0).toFixed(2)}`
+                  : `-${r.credits_spent}`}
               </p>
-              <p className="text-[10px] text-muted-foreground">credits</p>
+              <p className="text-[10px] text-muted-foreground">
+                {mode === "in" ? "earnings" : "credits"}
+              </p>
             </div>
+
           </div>
         ))}
       </div>
