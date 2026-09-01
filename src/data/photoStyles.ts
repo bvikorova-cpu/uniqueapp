@@ -18,6 +18,9 @@ export const PHOTO_STYLE_GROUPS = [
   "Craft & Pixel",
   "Classic & Photo",
   "Street & Graphic",
+  "Avatars & Emoji",
+  "Royal & Historical",
+  "Gala & Fantasy Royalty",
 ] as const;
 
 export const PHOTO_STYLES: PhotoStyle[] = [
@@ -95,6 +98,25 @@ export const PHOTO_STYLES: PhotoStyle[] = [
   { id: "duotone", label: "Duotone", emoji: "🎞️", group: "Street & Graphic" },
   { id: "silhouette", label: "Silhouette", emoji: "🌇", group: "Street & Graphic" },
   { id: "holofoil", label: "Holo foil", emoji: "✨", group: "Street & Graphic" },
+
+  { id: "memoji", label: "Avatar sticker", emoji: "🙂", group: "Avatars & Emoji" },
+  { id: "pixelemoji", label: "Pixel emoji", emoji: "🕹️", group: "Avatars & Emoji" },
+  { id: "emote", label: "Chat emote", emoji: "😂", group: "Avatars & Emoji" },
+  { id: "shonen", label: "Shonen anime", emoji: "⚔️", group: "Avatars & Emoji" },
+  { id: "ghiblisoft", label: "Soft animation film", emoji: "🍃", group: "Avatars & Emoji" },
+  { id: "kawaii", label: "Kawaii chibi", emoji: "🎀", group: "Avatars & Emoji" },
+  { id: "pixar3d", label: "3D movie character", emoji: "🎞️", group: "Avatars & Emoji" },
+  { id: "webtoon", label: "Webtoon comic", emoji: "📱", group: "Avatars & Emoji" },
+  { id: "vectorgame", label: "Game cover vector", emoji: "🎮", group: "Avatars & Emoji" },
+
+  { id: "renaissanceportrait", label: "Baroque portrait", emoji: "👑", group: "Royal & Historical" },
+  { id: "victorian", label: "Regency era", emoji: "🎻", group: "Royal & Historical" },
+  { id: "medievalqueen", label: "Medieval royal", emoji: "🛡️", group: "Royal & Historical" },
+
+  { id: "redcarpet", label: "Red carpet gala", emoji: "💎", group: "Gala & Fantasy Royalty" },
+  { id: "masquerade", label: "Masquerade ball", emoji: "🎭", group: "Gala & Fantasy Royalty" },
+  { id: "elfprincess", label: "Elven princess", emoji: "🧝", group: "Gala & Fantasy Royalty" },
+  { id: "darkroyalty", label: "Dark royalty", emoji: "🖤", group: "Gala & Fantasy Royalty" },
 ];
 
 
