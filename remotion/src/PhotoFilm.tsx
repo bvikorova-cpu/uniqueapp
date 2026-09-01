@@ -431,7 +431,7 @@ const PAYOUTS = [
   { who: "Lucia", what: "gifts", amount: "€128" },
   { who: "Marek", what: "skills", amount: "€340" },
   { who: "Nina", what: "bazaar", amount: "€96" },
-  { who: "Tomáš", what: "megatalent", amount: "€10 000" },
+  { who: "Tomáš", what: "megatalent", amount: "€1 240" },
 ];
 
 const PayoutProof: React.FC<SceneProps> = ({ dur }) => {
@@ -549,7 +549,7 @@ const SecTalent = makeSection({
   label: "Megatalent",
   head: "UKÁŽ SVOJ TALENT.",
   sub: "Hlasovanie, súboje, štvrťročná cena.",
-  earn: "€10 000 pre víťaza",
+  earn: "50 % zo zisku pre víťaza",
   tint: PINK,
 });
 

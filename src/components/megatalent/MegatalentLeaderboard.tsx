@@ -15,10 +15,11 @@ interface Props {
 
 type Period = "weekly" | "monthly" | "all_time";
 
-const PRIZE_POOL: Record<Period, { total: number; splits: number[] }> = {
-  weekly: { total: 500, splits: [250, 150, 100] },
-  monthly: { total: 2500, splits: [1500, 600, 400] },
-  all_time: { total: 0, splits: [] } };
+// Prize pool = 50% of Megatalent profit for the period, split between top 3.
+const PRIZE_SPLIT: Record<Period, number[]> = {
+  weekly: [50, 30, 20],
+  monthly: [50, 30, 20],
+  all_time: [] };
 
 export default function MegatalentLeaderboard({ category, categories }: Props) {
   const [period, setPeriod] = useState<Period>("weekly");
@@ -79,7 +80,7 @@ export default function MegatalentLeaderboard({ category, categories }: Props) {
     };
   }, [category, categories, period]);
 
-  const pool = PRIZE_POOL[period];
+  const splits = PRIZE_SPLIT[period];
 
   const rankIcon = (i: number) => {
     if (i === 0) return <Crown className="h-4 w-4 text-amber-400" />;
@@ -97,15 +98,15 @@ export default function MegatalentLeaderboard({ category, categories }: Props) {
             <h3 className="font-bold text-base">Talent Leaderboard</h3>
             <Badge variant="secondary" className="text-[10px]">TOP 100</Badge>
           </div>
-          {pool.total > 0 && (
+          {splits.length > 0 && (
             <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-black hover:opacity-90 gap-1">
-              <Gift className="h-3 w-3" /> €{pool.total} prize pool
+              <Gift className="h-3 w-3" /> 50% of Megatalent profit
             </Badge>
           )}
         </div>
-        {pool.splits.length > 0 && (
+        {splits.length > 0 && (
           <p className="text-[11px] text-muted-foreground mt-1">
-            1st €{pool.splits[0]} · 2nd €{pool.splits[1]} · 3rd €{pool.splits[2]}
+            Pool = 50% of Megatalent profit · 1st {splits[0]}% · 2nd {splits[1]}% · 3rd {splits[2]}%
           </p>
         )}
       </CardHeader>
@@ -131,7 +132,7 @@ export default function MegatalentLeaderboard({ category, categories }: Props) {
               <div className="space-y-1.5 max-h-[420px] overflow-y-auto pr-1">
                 {rows.map((r, i) => {
                   const isTop3 = i < 3;
-                  const prize = pool.splits[i];
+                  const prize = splits[i];
                   return (
                     <motion.div
                       key={r.id}
@@ -164,7 +165,7 @@ export default function MegatalentLeaderboard({ category, categories }: Props) {
                       <div className="text-right shrink-0">
                         <p className="text-xs font-bold">{(r.votes_count || 0).toLocaleString()}</p>
                         {prize ? (
-                          <p className="text-[10px] text-amber-400 font-semibold">€{prize}</p>
+                          <p className="text-[10px] text-amber-400 font-semibold">{prize}% of pool</p>
                         ) : (
                           <p className="text-[10px] text-muted-foreground">votes</p>
                         )}
