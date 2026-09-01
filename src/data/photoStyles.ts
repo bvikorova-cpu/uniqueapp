@@ -40,7 +40,14 @@ export const PHOTO_STYLE_GROUPS = [
   "Cinematic & Thriller",
   "Glamour & High Fashion",
   "Historic & Travel Scenes",
+  "Desert Adventure",
+  "Exotic Sea & Beaches",
+  "Wild Nature & Extremes",
+  "World Metropolises",
+  "Mountain Adventure",
+  "Aesthetic Getaways",
 ] as const;
+
 
 export const PHOTO_STYLES: PhotoStyle[] = [
   { id: "pencil", label: "Pencil sketch", emoji: "✏️", group: "Drawn" },
@@ -196,6 +203,28 @@ export const PHOTO_STYLES: PhotoStyle[] = [
 
   { id: "romeancient", label: "Ancient Rome", emoji: "🏛️", group: "Historic & Travel Scenes" },
   { id: "worldtravel", label: "Dream destination", emoji: "🌍", group: "Historic & Travel Scenes" },
+  { id: "pyramidsgiza", label: "Egyptian pyramids", emoji: "🐪", group: "Desert Adventure" },
+  { id: "saharadune", label: "Sahara caravan", emoji: "🏜️", group: "Desert Adventure" },
+  { id: "archaeologist", label: "Explorer / archaeologist", emoji: "🧭", group: "Desert Adventure" },
+
+  { id: "maldivesresort", label: "Maldives resort", emoji: "🏝️", group: "Exotic Sea & Beaches" },
+  { id: "tropicalbeach", label: "Wild tropical beach", emoji: "🌊", group: "Exotic Sea & Beaches" },
+  { id: "yachtsunset", label: "Yacht sunset", emoji: "🛥️", group: "Exotic Sea & Beaches" },
+
+  { id: "grandcanyon", label: "Grand Canyon", emoji: "🏞️", group: "Wild Nature & Extremes" },
+  { id: "auroraborealis", label: "Northern lights", emoji: "🌌", group: "Wild Nature & Extremes" },
+
+  { id: "tokyoshibuya", label: "Tokyo neon Shibuya", emoji: "🗼", group: "World Metropolises" },
+  { id: "newyorktaxi", label: "New York streets", emoji: "🚕", group: "World Metropolises" },
+  { id: "parisromance", label: "Paris café", emoji: "🥐", group: "World Metropolises" },
+
+  { id: "alpsski", label: "Alpine ski resort", emoji: "🎿", group: "Mountain Adventure" },
+  { id: "canadacamp", label: "Wilderness camp", emoji: "🏕️", group: "Mountain Adventure" },
+  { id: "mayantemple", label: "Lost Mayan temple", emoji: "🛕", group: "Mountain Adventure" },
+
+  { id: "tuscanyvineyard", label: "Tuscan vineyard", emoji: "🍷", group: "Aesthetic Getaways" },
+  { id: "santorini", label: "Greek Santorini", emoji: "🇬🇷", group: "Aesthetic Getaways" },
+  { id: "moroccanriad", label: "Moroccan riad", emoji: "🕌", group: "Aesthetic Getaways" },
 ];
 
 
