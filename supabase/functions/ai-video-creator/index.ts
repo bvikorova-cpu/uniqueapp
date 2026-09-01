@@ -12,18 +12,16 @@ const corsHeaders = {
 const json = (data: unknown, status = 200) =>
   new Response(JSON.stringify(data), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-/** Credit price per finished clip length. 30s = 60 credits (Veo 3.1 lite, < $5 cost). */
-const CREDIT_COSTS: Record<number, number> = { 8: 25, 10: 30, 15: 38, 20: 45, 25: 52, 30: 60 };
+/**
+ * One clip = ONE continuous 8s Veo generation. Chaining separate generations
+ * produced visually unrelated parts, so the creator now always renders a single
+ * coherent shot regardless of any requested length.
+ */
+const CLIP_SECONDS = 8;
+const CLIP_COST = 25;
+const CREDIT_COSTS: Record<number, number> = { 8: CLIP_COST };
+const SEGMENT_PLAN: Record<number, number[]> = { 8: [CLIP_SECONDS] };
 
-/** Segment plan — Veo generates at most 8s per call, so longer clips are chained. */
-const SEGMENT_PLAN: Record<number, number[]> = {
-  8: [8],
-  10: [6, 4],
-  15: [8, 6],
-  20: [8, 6, 6],
-  25: [8, 8, 6, 4],
-  30: [8, 8, 8, 6],
-};
 
 const BANNED = /\b(nude|naked|nsfw|porn|sex|sexual|erotic|fetish|nahá|nahy|erotick|porno)\b/i;
 
