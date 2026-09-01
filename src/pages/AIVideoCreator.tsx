@@ -84,8 +84,8 @@ const AIVideoCreator = () => {
   const [creations, setCreations] = useState<Creation[]>([]);
   const pollRef = useRef<number | null>(null);
 
-  const duration = CLIP_SECONDS;
-  const cost = CLIP_COST;
+  const [duration, setDuration] = useState(DURATIONS[0].seconds);
+  const cost = DURATIONS.find((d) => d.seconds === duration)?.cost ?? DURATIONS[0].cost;
 
 
   const load = useCallback(async () => {
