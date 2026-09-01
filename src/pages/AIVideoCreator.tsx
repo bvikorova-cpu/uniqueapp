@@ -19,9 +19,16 @@ import {
 } from "lucide-react";
 import heroAsset from "@/assets/section-videos/ai-video-creator.mp4.asset.json";
 
-/** One clip = one continuous 8s story, rendered in a single generation. */
-const CLIP_SECONDS = 8;
-const CLIP_COST = 25;
+/**
+ * One video = one continuous story. Longer lengths are rendered by extending the
+ * same video (+7s per step), so the delivered MP4 is a single seamless clip.
+ */
+const DURATIONS: { seconds: number; cost: number }[] = [
+  { seconds: 8, cost: 25 },
+  { seconds: 15, cost: 35 },
+  { seconds: 22, cost: 48 },
+  { seconds: 30, cost: 60 },
+];
 
 
 const STYLES = [
@@ -77,8 +84,8 @@ const AIVideoCreator = () => {
   const [creations, setCreations] = useState<Creation[]>([]);
   const pollRef = useRef<number | null>(null);
 
-  const duration = CLIP_SECONDS;
-  const cost = CLIP_COST;
+  const [duration, setDuration] = useState(DURATIONS[0].seconds);
+  const cost = DURATIONS.find((d) => d.seconds === duration)?.cost ?? DURATIONS[0].cost;
 
 
   const load = useCallback(async () => {
@@ -317,15 +324,26 @@ const AIVideoCreator = () => {
 
               <div className="space-y-2">
                 <Label>Length &amp; price</Label>
-                <div className="flex items-center justify-between rounded-xl border border-primary bg-primary/10 p-3">
-                  <div className="flex items-center gap-2 text-base font-black text-foreground">
-                    <Clock className="h-4 w-4 text-primary" /> {CLIP_SECONDS}s · one single story
-                  </div>
-                  <div className="text-sm font-semibold text-primary">{CLIP_COST} credits</div>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  {DURATIONS.map((d) => (
+                    <button
+                      key={d.seconds} type="button" onClick={() => setDuration(d.seconds)}
+                      className={`rounded-xl border p-3 text-center transition-all ${
+                        duration === d.seconds
+                          ? "border-primary bg-primary/15 shadow-sm"
+                          : "border-border bg-background/60 hover:border-primary/40"
+                      }`}
+                    >
+                      <span className="flex items-center justify-center gap-1 text-base font-black text-foreground">
+                        <Clock className="h-4 w-4 text-primary" /> {d.seconds}s
+                      </span>
+                      <span className="mt-0.5 block text-xs font-semibold text-primary">{d.cost} credits</span>
+                    </button>
+                  ))}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Every clip is rendered as one continuous shot, so the result is a single coherent
-                  story instead of several unrelated parts.
+                  Every length is delivered as <strong>one single video</strong> — the longer ones are
+                  rendered by continuing the very same shot, so there are no cuts and no unrelated parts.
                 </p>
               </div>
 
@@ -407,10 +425,12 @@ const AIVideoCreator = () => {
             <Card className="border-border bg-card/70 backdrop-blur-xl">
               <CardContent className="space-y-2 p-4 text-xs text-muted-foreground">
                 <p className="font-bold text-foreground">Credit price list</p>
-                <div className="flex justify-between">
-                  <span>One continuous {CLIP_SECONDS}s story clip</span>
-                  <span className="font-semibold text-primary">{CLIP_COST} credits</span>
-                </div>
+                {DURATIONS.map((d) => (
+                  <div key={d.seconds} className="flex justify-between">
+                    <span>{d.seconds}s · one continuous video</span>
+                    <span className="font-semibold text-primary">{d.cost} credits</span>
+                  </div>
+                ))}
 
               </CardContent>
             </Card>

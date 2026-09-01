@@ -520,7 +520,10 @@ function veoLocations(): string[] {
   return [primary, "us-east4", "europe-west4"].filter((l, i, a) => a.indexOf(l) === i);
 }
 
-/** Start a Veo generation. Returns { operationName, model, location } or null. */
+/** Start a Veo generation. Returns { operationName, model, location } or null.
+ *  When `videoBase64` is supplied the call is a Veo *extension*: Veo continues the
+ *  supplied clip and returns ONE merged video (source + 7 new seconds), which is how
+ *  longer clips stay a single continuous story instead of unrelated parts. */
 export async function startVertexVideo(opts: {
   prompt: string;
   durationSeconds?: number;
@@ -529,6 +532,8 @@ export async function startVertexVideo(opts: {
   resolution?: string;
   negativePrompt?: string;
   generateAudio?: boolean;
+  videoBase64?: string;
+  videoMime?: string;
 }): Promise<{ operationName: string; model: string; location: string } | null> {
   const sa = getServiceAccount();
   const projectId = sa ? (Deno.env.get("GCP_PROJECT_ID") || sa.project_id) : null;
@@ -536,6 +541,14 @@ export async function startVertexVideo(opts: {
   if (!sa || !projectId || !token) return null;
   const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
 
+  const isExtension = !!opts.videoBase64;
+  const instance: Record<string, unknown> = { prompt: opts.prompt };
+  if (isExtension) {
+    instance.video = {
+      bytesBase64Encoded: opts.videoBase64,
+      mimeType: opts.videoMime ?? "video/mp4",
+    };
+  }
 
   for (const model of (opts.models?.length ? opts.models : VEO_MODELS)) {
     for (const location of veoLocations()) {
@@ -545,12 +558,13 @@ export async function startVertexVideo(opts: {
         const res = await rawFetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-          signal: AbortSignal.timeout(30_000),
+          signal: AbortSignal.timeout(60_000),
           body: JSON.stringify({
-            instances: [{ prompt: opts.prompt }],
+            instances: [instance],
             parameters: {
-              durationSeconds: Math.min(Math.max(opts.durationSeconds ?? 8, 4), 8),
-              aspectRatio: opts.aspectRatio ?? "9:16",
+              durationSeconds: isExtension ? 7 : Math.min(Math.max(opts.durationSeconds ?? 8, 4), 8),
+              // Veo derives the orientation from the source clip on an extension.
+              ...(isExtension ? {} : { aspectRatio: opts.aspectRatio ?? "9:16" }),
               sampleCount: 1,
               generateAudio: opts.generateAudio ?? true,
               personGeneration: "allow_adult",
@@ -585,30 +599,40 @@ async function startGeminiVideo(opts: {
   models?: string[];
   resolution?: string;
   negativePrompt?: string;
+  videoBase64?: string;
+  videoMime?: string;
 }): Promise<{ operationName: string; model: string; location: string } | null> {
   const key = Deno.env.get("GEMINI_API_KEY");
   if (!key) return null;
   const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
 
+  const isExtension = !!opts.videoBase64;
+  const instance: Record<string, unknown> = { prompt: opts.prompt };
+  if (isExtension) {
+    instance.video = { bytesBase64Encoded: opts.videoBase64, mimeType: opts.videoMime ?? "video/mp4" };
+  }
+
   const models = (opts.models?.length ? opts.models : VEO_LITE_MODELS);
   for (const model of models) {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:predictLongRunning`;
-    const paramSets = [
-      {
-        durationSeconds: Math.min(Math.max(opts.durationSeconds ?? 8, 4), 8),
-        aspectRatio: opts.aspectRatio ?? "9:16",
-        ...(opts.resolution ? { resolution: opts.resolution } : {}),
-        ...(opts.negativePrompt ? { negativePrompt: opts.negativePrompt } : {}),
-      },
-      { aspectRatio: opts.aspectRatio ?? "9:16" },
-    ];
+    const paramSets = isExtension
+      ? [{ durationSeconds: 7, ...(opts.resolution ? { resolution: opts.resolution } : {}) }, { durationSeconds: 7 }]
+      : [
+        {
+          durationSeconds: Math.min(Math.max(opts.durationSeconds ?? 8, 4), 8),
+          aspectRatio: opts.aspectRatio ?? "9:16",
+          ...(opts.resolution ? { resolution: opts.resolution } : {}),
+          ...(opts.negativePrompt ? { negativePrompt: opts.negativePrompt } : {}),
+        },
+        { aspectRatio: opts.aspectRatio ?? "9:16" },
+      ];
     for (const parameters of paramSets) {
       try {
         const res = await rawFetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-          signal: AbortSignal.timeout(30_000),
-          body: JSON.stringify({ instances: [{ prompt: opts.prompt }], parameters }),
+          signal: AbortSignal.timeout(60_000),
+          body: JSON.stringify({ instances: [instance], parameters }),
         });
         if (!res.ok) {
           const text = await res.text().catch(() => "");
