@@ -316,24 +316,18 @@ const AIVideoCreator = () => {
 
               <div className="space-y-2">
                 <Label>Length &amp; price</Label>
-                <div className="grid grid-cols-3 gap-2">
-                  {DURATIONS.map((d) => (
-                    <button
-                      key={d.seconds} type="button" onClick={() => setDuration(d.seconds)}
-                      className={`rounded-xl border p-3 text-center transition-all ${
-                        duration === d.seconds
-                          ? "border-primary bg-primary/15 shadow-md"
-                          : "border-border bg-background/60 hover:border-primary/40"
-                      }`}
-                    >
-                      <div className="flex items-center justify-center gap-1 text-base font-black text-foreground">
-                        <Clock className="h-3.5 w-3.5 text-primary" /> {d.seconds}s
-                      </div>
-                      <div className="text-xs font-semibold text-primary">{d.credits} credits</div>
-                    </button>
-                  ))}
+                <div className="flex items-center justify-between rounded-xl border border-primary bg-primary/10 p-3">
+                  <div className="flex items-center gap-2 text-base font-black text-foreground">
+                    <Clock className="h-4 w-4 text-primary" /> {CLIP_SECONDS}s · one single story
+                  </div>
+                  <div className="text-sm font-semibold text-primary">{CLIP_COST} credits</div>
                 </div>
+                <p className="text-xs text-muted-foreground">
+                  Every clip is rendered as one continuous shot, so the result is a single coherent
+                  story instead of several unrelated parts.
+                </p>
               </div>
+
 
               <div className="rounded-xl border border-primary/25 bg-primary/5 p-3 text-xs text-muted-foreground">
                 <p className="flex items-center gap-1.5 font-bold text-foreground">
