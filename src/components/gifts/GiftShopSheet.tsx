@@ -187,8 +187,9 @@ export function GiftShopSheet({
             Unique Gifts
           </SheetTitle>
           <SheetDescription className="flex items-center gap-2">
-            Send an animated gift{recipientName ? ` to ${recipientName}` : postId ? " to this post" : ""}. The recipient keeps
-            50% of the value in credits.
+            Send an animated gift{recipientName ? ` to ${recipientName}` : postId ? " to this post" : ""}. The recipient earns
+            50% of the value in euros (withdrawable from €20).
+
           </SheetDescription>
         </SheetHeader>
 
