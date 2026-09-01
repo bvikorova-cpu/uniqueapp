@@ -215,14 +215,21 @@ export default function GiftsInbox() {
         Every gift you receive credits 50% of its value to your credit balance.
       </p>
 
+      <p className="mb-5 text-sm text-muted-foreground">
+        Every gift you receive earns you 50% of its value in euros. Withdraw once you reach €
+        {balance?.min_eur ?? 20}.
+      </p>
+
       <div className="mb-5 grid grid-cols-2 gap-3">
         <Card>
           <CardContent className="p-4">
             <p className="text-xs text-muted-foreground">Earned from gifts</p>
             <p className="flex items-center gap-1.5 text-2xl font-bold text-primary">
-              <Coins className="h-5 w-5" /> {earned}
+              <Euro className="h-5 w-5" /> {earnedEur.toFixed(2)}
             </p>
-            <p className="text-[11px] font-semibold text-foreground">≈ €{(earned * 0.3).toFixed(2)} value</p>
+            <p className="text-[11px] font-semibold text-foreground">
+              €{availableEur.toFixed(2)} available
+            </p>
             <p className="text-[11px] text-muted-foreground">{received.length} gifts received</p>
           </CardContent>
         </Card>
@@ -232,12 +239,13 @@ export default function GiftsInbox() {
             <p className="flex items-center gap-1.5 text-2xl font-bold">
               <Send className="h-5 w-5" /> {spent}
             </p>
-            <p className="text-[11px] font-semibold text-foreground">≈ €{(spent * 0.3).toFixed(2)} value</p>
+            <p className="flex items-center gap-1 text-[11px] font-semibold text-foreground">
+              <Coins className="h-3 w-3" /> credits
+            </p>
             <p className="text-[11px] text-muted-foreground">{sent.length} gifts sent</p>
           </CardContent>
         </Card>
       </div>
-
 
       <Card className="mb-5">
         <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
@@ -246,16 +254,22 @@ export default function GiftsInbox() {
             <div>
               <p className="text-sm font-medium">Payouts</p>
               <p className="text-xs text-muted-foreground">
-                Gift credits land in your credit balance and can be spent anywhere on Unique. Cash
-                payouts (min. €20) are handled in Earnings.
+                Gift earnings are paid in euros. Request a payout once your available balance reaches
+                €{balance?.min_eur ?? 20}. Withdrawn so far: €
+                {(balance?.withdrawn_eur ?? 0).toFixed(2)}.
               </p>
             </div>
           </div>
-          <Button asChild size="sm" variant="secondary">
-            <Link to="/earnings">Open Earnings</Link>
+          <Button
+            size="sm"
+            onClick={handleCashout}
+            disabled={cashingOut || availableEur < (balance?.min_eur ?? 20)}
+          >
+            {cashingOut ? "Processing…" : `Withdraw €${availableEur.toFixed(2)}`}
           </Button>
         </CardContent>
       </Card>
+
 
       <Card>
         <CardHeader className="pb-2">
