@@ -111,7 +111,7 @@ serve(async (req) => {
       }
       const prompt = `${BASE_RULES}\n\nStyle: ${stylePrompt}.${
         customPrompt ? ` Extra direction: ${customPrompt}.` : ""
-      }`;
+      }\n\nReminder: the style affects only technique, texture and lighting treatment — the eye colour, hair colour, clothing (including sleeve length and neckline) and props stay identical to the source photo.`;
       try {
         const out = await tryVertexImage(prompt, aspect, 1, [image]);
         const b64 = out?.data?.[0]?.b64_json;
