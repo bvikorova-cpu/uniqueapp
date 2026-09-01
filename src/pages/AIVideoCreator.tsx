@@ -388,7 +388,7 @@ const AIVideoCreator = () => {
                     {c.status === "processing" && (
                       <div className="flex items-center gap-2 rounded-xl bg-primary/10 p-3 text-xs font-semibold text-primary">
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        Rendering {(c.segments?.length ?? 0) + 1} / {c.segments_total} — a few minutes per part
+                        Rendering your clip — this takes a few minutes
                       </div>
                     )}
                     {c.status === "failed" && (
