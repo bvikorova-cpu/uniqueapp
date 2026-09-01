@@ -64,7 +64,10 @@ export function ProfileMilestones({ userId }: ProfileMilestonesProps) {
   if (!stats) return null;
 
   const xp = realXp;
-  const level = Math.max(1, realLevel);
+  // Level must ALWAYS be consistent with XP (100 XP per level), otherwise a stale
+  // `user_points.level` produces a negative "XP to go" value.
+  const level = Math.max(1, Math.floor(xp / 100) + 1, realLevel);
+
   const tier = [...TIERS].reverse().find((t) => level >= t.minLevel) ?? TIERS[0];
   const nextTier = TIERS.find((t) => t.minLevel > level);
   // Same math as the Rewards hero: 100 XP per level
@@ -114,7 +117,7 @@ export function ProfileMilestones({ userId }: ProfileMilestonesProps) {
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs">
               <span className="text-muted-foreground">Next: {nextLevel.name}</span>
-              <span className="font-semibold">{(nextLevel.min - xp).toLocaleString()} XP to go</span>
+              <span className="font-semibold">{Math.max(0, nextLevel.min - xp).toLocaleString()} XP to go</span>
             </div>
             <div className="h-2 rounded-full bg-muted overflow-hidden">
               <motion.div
