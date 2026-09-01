@@ -40,7 +40,14 @@ export const PHOTO_STYLE_GROUPS = [
   "Cinematic & Thriller",
   "Glamour & High Fashion",
   "Historic & Travel Scenes",
+  "Desert Adventure",
+  "Exotic Sea & Beaches",
+  "Wild Nature & Extremes",
+  "World Metropolises",
+  "Mountain Adventure",
+  "Aesthetic Getaways",
 ] as const;
+
 
 export const PHOTO_STYLES: PhotoStyle[] = [
   { id: "pencil", label: "Pencil sketch", emoji: "✏️", group: "Drawn" },
