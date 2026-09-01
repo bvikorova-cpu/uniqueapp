@@ -101,6 +101,15 @@ const STYLE_PROMPTS: Record<string, string> = {
   masquerade: "an opulent masquerade ball portrait, ornate venetian mask with feathers and gold filigree, candlelit ballroom, mysterious mood",
   elfprincess: "an ethereal elven portrait, delicate tiara, luminous skin, flowing gown, magical enchanted forest light",
   darkroyalty: "a gothic dark-royalty portrait, black lace gown, dark lipstick, crown of black crystals, moody mystical atmosphere",
+  headshot: "a polished corporate headshot, subject wearing a tailored blazer or suit, soft studio key light, clean modern office or neutral gray backdrop, sharp professional retouching",
+  success: "a luxury entrepreneur success portrait, confident pose, sharp designer suit, New York skyscraper or premium office or private jet stair background, golden cinematic light",
+  cyborg: "a cyborg cyber-enhanced portrait, half human half machine, glowing blue and red LED lines under the skin, brushed metal plating, high-tech visor, dark sci-fi lighting",
+  astronaut: "a realistic astronaut portrait in a detailed white space suit with helmet reflections, aboard a space station or with planet Earth in the background",
+  neonpunk: "an extreme-contrast neon night portrait, pink purple and turquoise neon glow, wet reflective street background, Blade Runner cinematic mood",
+  splatter: "a realistic face combined with expressive paint splatter and watercolor bleeds, dynamic ink splashes running off the edges, gallery art poster look",
+  glowlines: "a portrait built entirely from glowing neon light lines on a pure black background, luminous outlines, soft bloom",
+  zombie: "a post-apocalyptic survivor or zombie transformation, torn dirty clothing, grime and dramatic scars on the face, decayed skin tone, desaturated ruined city background",
+  vampire: "a gothic vampire portrait, pale porcelain skin, dark shadows around the eyes, deep red lips with subtle fangs, Victorian gothic clothing, candlelit dark atmosphere",
 };
 
 
