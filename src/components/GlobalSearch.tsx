@@ -74,6 +74,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "38", title: "Home Designer", category: "AI", path: "/home-designer" },
   { id: "39", title: "Photo Restoration", category: "AI", path: "/photo-restoration" },
   { id: "40", title: "Video Ad Generator", category: "AI", path: "/video-ad-generator" },
+  { id: "photo-styler", title: "Photo Styler", category: "AI", path: "/photo-styler" },
   { id: "41", title: "Handwriting", category: "AI", path: "/handwriting" },
   { id: "42", title: "Creative Forge", category: "AI", path: "/creative-forge" },
   { id: "43", title: "Recipe Generator", category: "Food", path: "/recipe-generator" },
