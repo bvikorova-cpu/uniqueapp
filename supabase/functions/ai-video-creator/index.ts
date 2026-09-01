@@ -72,10 +72,11 @@ serve(async (req) => {
 
     /* ---------------- CREATE ---------------- */
     if (action === "create") {
-      const duration = Number(body?.duration ?? 8);
+      // Always one continuous clip — the requested length is ignored on purpose.
+      const duration = CLIP_SECONDS;
       const plan = SEGMENT_PLAN[duration];
       const cost = CREDIT_COSTS[duration];
-      if (!plan || !cost) return json({ error: "Unsupported duration" }, 400);
+
 
       const topic = String(body?.topic ?? "").trim();
       if (topic.length < 3) return json({ error: "Please describe what the video is about." }, 400);
