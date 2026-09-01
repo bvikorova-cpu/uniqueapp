@@ -117,7 +117,7 @@ export function ProfileMilestones({ userId }: ProfileMilestonesProps) {
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs">
               <span className="text-muted-foreground">Next: {nextLevel.name}</span>
-              <span className="font-semibold">{(nextLevel.min - xp).toLocaleString()} XP to go</span>
+              <span className="font-semibold">{Math.max(0, nextLevel.min - xp).toLocaleString()} XP to go</span>
             </div>
             <div className="h-2 rounded-full bg-muted overflow-hidden">
               <motion.div
