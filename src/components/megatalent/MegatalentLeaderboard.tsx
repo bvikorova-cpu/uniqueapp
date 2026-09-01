@@ -98,15 +98,15 @@ export default function MegatalentLeaderboard({ category, categories }: Props) {
             <h3 className="font-bold text-base">Talent Leaderboard</h3>
             <Badge variant="secondary" className="text-[10px]">TOP 100</Badge>
           </div>
-          {pool.total > 0 && (
+          {splits.length > 0 && (
             <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-black hover:opacity-90 gap-1">
-              <Gift className="h-3 w-3" /> €{pool.total} prize pool
+              <Gift className="h-3 w-3" /> 50% of Megatalent profit
             </Badge>
           )}
         </div>
-        {pool.splits.length > 0 && (
+        {splits.length > 0 && (
           <p className="text-[11px] text-muted-foreground mt-1">
-            1st €{pool.splits[0]} · 2nd €{pool.splits[1]} · 3rd €{pool.splits[2]}
+            Pool = 50% of Megatalent profit · 1st {splits[0]}% · 2nd {splits[1]}% · 3rd {splits[2]}%
           </p>
         )}
       </CardHeader>
