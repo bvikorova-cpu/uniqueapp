@@ -21,6 +21,10 @@ export const PHOTO_STYLE_GROUPS = [
   "Avatars & Emoji",
   "Royal & Historical",
   "Gala & Fantasy Royalty",
+  "Professional & Business",
+  "Sci-Fi & Future",
+  "Modern Digital Art",
+  "Horror & Alt Reality",
 ] as const;
 
 export const PHOTO_STYLES: PhotoStyle[] = [
@@ -117,6 +121,18 @@ export const PHOTO_STYLES: PhotoStyle[] = [
   { id: "masquerade", label: "Masquerade ball", emoji: "🎭", group: "Gala & Fantasy Royalty" },
   { id: "elfprincess", label: "Elven princess", emoji: "🧝", group: "Gala & Fantasy Royalty" },
   { id: "darkroyalty", label: "Dark royalty", emoji: "🖤", group: "Gala & Fantasy Royalty" },
+  { id: "headshot", label: "Corporate headshot", emoji: "💼", group: "Professional & Business" },
+  { id: "success", label: "Money & success", emoji: "💰", group: "Professional & Business" },
+
+  { id: "cyborg", label: "Cyborg", emoji: "🤖", group: "Sci-Fi & Future" },
+  { id: "astronaut", label: "Astronaut", emoji: "🚀", group: "Sci-Fi & Future" },
+  { id: "neonpunk", label: "Neon punk", emoji: "🌆", group: "Sci-Fi & Future" },
+
+  { id: "splatter", label: "Splatter art", emoji: "🎨", group: "Modern Digital Art" },
+  { id: "glowlines", label: "Glow neon lines", emoji: "💫", group: "Modern Digital Art" },
+
+  { id: "zombie", label: "Zombie apocalypse", emoji: "🧟", group: "Horror & Alt Reality" },
+  { id: "vampire", label: "Vampire gothic", emoji: "🧛", group: "Horror & Alt Reality" },
 ];
 
 
