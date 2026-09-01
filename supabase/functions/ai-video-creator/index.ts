@@ -25,18 +25,6 @@ const SEGMENT_PLAN: Record<number, number[]> = { 8: [CLIP_SECONDS] };
 
 const BANNED = /\b(nude|naked|nsfw|porn|sex|sexual|erotic|fetish|nahá|nahy|erotick|porno)\b/i;
 
-function splitText(text: string, parts: number): string[] {
-  const clean = (text || "").trim();
-  if (!clean) return new Array(parts).fill("");
-  const sentences = clean.split(/(?<=[.!?])\s+/).filter(Boolean);
-  const out: string[] = new Array(parts).fill("");
-  sentences.forEach((s, i) => {
-    const idx = Math.min(parts - 1, Math.floor((i / Math.max(sentences.length, 1)) * parts));
-    out[idx] = (out[idx] ? out[idx] + " " : "") + s;
-  });
-  return out;
-}
-
 function buildPrompt(row: any): string {
   const bits: string[] = [];
   bits.push(`One single continuous shot telling one story: ${row.topic}.`);
@@ -52,12 +40,10 @@ function buildPrompt(row: any): string {
   return bits.join(" ");
 }
 
-
-async function startSegment(row: any, index: number) {
-  const plan: number[] = row.segment_plan ?? SEGMENT_PLAN[row.duration_seconds] ?? [8];
+async function startSegment(row: any) {
   return await startVertexVideo({
-    prompt: buildPrompt(row, index, plan.length),
-    durationSeconds: plan[index],
+    prompt: buildPrompt(row),
+    durationSeconds: CLIP_SECONDS,
     aspectRatio: row.aspect_ratio || "9:16",
     models: VEO_LITE_MODELS,
     resolution: "720p",
@@ -65,6 +51,7 @@ async function startSegment(row: any, index: number) {
     negativePrompt: "text, captions, subtitles, watermark, logo, nudity, violence",
   });
 }
+
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
