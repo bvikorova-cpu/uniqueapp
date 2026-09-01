@@ -180,6 +180,7 @@ export default function GiftsInbox() {
             <p className="flex items-center gap-1.5 text-2xl font-bold text-primary">
               <Coins className="h-5 w-5" /> {earned}
             </p>
+            <p className="text-[11px] font-semibold text-foreground">≈ €{(earned * 0.3).toFixed(2)} value</p>
             <p className="text-[11px] text-muted-foreground">{received.length} gifts received</p>
           </CardContent>
         </Card>
@@ -189,10 +190,12 @@ export default function GiftsInbox() {
             <p className="flex items-center gap-1.5 text-2xl font-bold">
               <Send className="h-5 w-5" /> {spent}
             </p>
+            <p className="text-[11px] font-semibold text-foreground">≈ €{(spent * 0.3).toFixed(2)} value</p>
             <p className="text-[11px] text-muted-foreground">{sent.length} gifts sent</p>
           </CardContent>
         </Card>
       </div>
+
 
       <Card className="mb-5">
         <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
