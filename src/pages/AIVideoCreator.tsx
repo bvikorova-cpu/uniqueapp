@@ -425,10 +425,12 @@ const AIVideoCreator = () => {
             <Card className="border-border bg-card/70 backdrop-blur-xl">
               <CardContent className="space-y-2 p-4 text-xs text-muted-foreground">
                 <p className="font-bold text-foreground">Credit price list</p>
-                <div className="flex justify-between">
-                  <span>One continuous {CLIP_SECONDS}s story clip</span>
-                  <span className="font-semibold text-primary">{CLIP_COST} credits</span>
-                </div>
+                {DURATIONS.map((d) => (
+                  <div key={d.seconds} className="flex justify-between">
+                    <span>{d.seconds}s · one continuous video</span>
+                    <span className="font-semibold text-primary">{d.cost} credits</span>
+                  </div>
+                ))}
 
               </CardContent>
             </Card>
