@@ -58,9 +58,18 @@ const STYLE_PROMPTS: Record<string, string> = {
 };
 
 const BASE_RULES =
-  "Redraw the person from the supplied photo in the requested art style. " +
-  "Keep the same face identity, pose, hair and framing so the person is clearly recognizable. " +
-  "Fully clothed, tasteful, no nudity, no sexual content. Output only the finished artwork image.";
+  "Restyle the EXACT person in the supplied photo. Only the rendering medium/art style may change — " +
+  "everything else must stay faithful to the source photo.\n" +
+  "Copy exactly, do not reinterpret or beautify: face identity and proportions, EYE COLOR, eyebrow and " +
+  "hair colour, hairstyle and hair length, skin tone, makeup, pose, head tilt, hand placement, camera " +
+  "angle and crop.\n" +
+  "Clothing must be reproduced exactly as worn in the photo: same garment type, same colour, same neckline, " +
+  "same sleeve length (if the photo shows bare shoulders or straps, keep them bare — never add sleeves, " +
+  "jackets or extra layers), same visible jewellery.\n" +
+  "Keep every object and background element that is visible in the photo (glasses, cups, table, props) in " +
+  "the same position; do not add or remove objects.\n" +
+  "Do not change the person's age, body shape or expression. Fully clothed, tasteful, no nudity, no sexual " +
+  "content. Output only the finished artwork image.";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
