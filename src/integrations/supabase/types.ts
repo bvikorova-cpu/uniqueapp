@@ -26235,6 +26235,30 @@ export type Database = {
         }
         Relationships: []
       }
+      gift_creator_balance: {
+        Row: {
+          earned_eur: number
+          gifts_received: number
+          updated_at: string
+          user_id: string
+          withdrawn_eur: number
+        }
+        Insert: {
+          earned_eur?: number
+          gifts_received?: number
+          updated_at?: string
+          user_id: string
+          withdrawn_eur?: number
+        }
+        Update: {
+          earned_eur?: number
+          gifts_received?: number
+          updated_at?: string
+          user_id?: string
+          withdrawn_eur?: number
+        }
+        Relationships: []
+      }
       gift_transactions: {
         Row: {
           conversation_id: string | null
@@ -26246,6 +26270,7 @@ export type Database = {
           post_id: string | null
           recipient_id: string
           recipient_share_credits: number
+          recipient_share_eur: number
           sender_id: string
         }
         Insert: {
@@ -26258,6 +26283,7 @@ export type Database = {
           post_id?: string | null
           recipient_id: string
           recipient_share_credits?: number
+          recipient_share_eur?: number
           sender_id: string
         }
         Update: {
@@ -26270,6 +26296,7 @@ export type Database = {
           post_id?: string | null
           recipient_id?: string
           recipient_share_credits?: number
+          recipient_share_eur?: number
           sender_id?: string
         }
         Relationships: [
@@ -71288,6 +71315,7 @@ export type Database = {
         Args: { p_amount: number; p_message?: string; p_recipient: string }
         Returns: Json
       }
+      gift_recipient_share_eur: { Args: { p_credits: number }; Returns: number }
       gift_xp: {
         Args: { _amount: number; _message?: string; _recipient: string }
         Returns: Json
