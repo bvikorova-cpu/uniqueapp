@@ -165,7 +165,7 @@ export default function MegatalentLeaderboard({ category, categories }: Props) {
                       <div className="text-right shrink-0">
                         <p className="text-xs font-bold">{(r.votes_count || 0).toLocaleString()}</p>
                         {prize ? (
-                          <p className="text-[10px] text-amber-400 font-semibold">€{prize}</p>
+                          <p className="text-[10px] text-amber-400 font-semibold">{prize}% of pool</p>
                         ) : (
                           <p className="text-[10px] text-muted-foreground">votes</p>
                         )}
