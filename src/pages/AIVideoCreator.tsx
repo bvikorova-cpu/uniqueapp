@@ -19,14 +19,10 @@ import {
 } from "lucide-react";
 import heroAsset from "@/assets/section-videos/ai-video-creator.mp4.asset.json";
 
-const DURATIONS = [
-  { seconds: 8, credits: 25 },
-  { seconds: 10, credits: 30 },
-  { seconds: 15, credits: 38 },
-  { seconds: 20, credits: 45 },
-  { seconds: 25, credits: 52 },
-  { seconds: 30, credits: 60 },
-];
+/** One clip = one continuous 8s story, rendered in a single generation. */
+const CLIP_SECONDS = 8;
+const CLIP_COST = 25;
+
 
 const STYLES = [
   "Cinematic film look",
