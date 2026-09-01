@@ -25,6 +25,21 @@ export const PHOTO_STYLE_GROUPS = [
   "Sci-Fi & Future",
   "Modern Digital Art",
   "Horror & Alt Reality",
+  "Toys & Figures",
+  "Film & Pop Culture",
+  "Exotic Techniques",
+  "Subculture & Street",
+  "Textures & Craft Materials",
+  "Sculpture & Classic Materials",
+  "Nature & Elements",
+  "Abstract & Optical Illusion",
+  "Film & Game Worlds",
+  "Storybook Worlds",
+  "Sci-Fi & Adventure Worlds",
+  "Career & Portrait Scenes",
+  "Cinematic & Thriller",
+  "Glamour & High Fashion",
+  "Historic & Travel Scenes",
 ] as const;
 
 export const PHOTO_STYLES: PhotoStyle[] = [
@@ -133,6 +148,54 @@ export const PHOTO_STYLES: PhotoStyle[] = [
 
   { id: "zombie", label: "Zombie apocalypse", emoji: "🧟", group: "Horror & Alt Reality" },
   { id: "vampire", label: "Vampire gothic", emoji: "🧛", group: "Horror & Alt Reality" },
+  { id: "brickfigure", label: "Brick figure", emoji: "🧱", group: "Toys & Figures" },
+  { id: "dollplastic", label: "Fashion doll", emoji: "💗", group: "Toys & Figures" },
+  { id: "vinylfigure", label: "Vinyl collectible", emoji: "🧸", group: "Toys & Figures" },
+
+  { id: "steampunkworld", label: "Steampunk world", emoji: "⚙️", group: "Film & Pop Culture" },
+  { id: "y2k", label: "Y2K glitch", emoji: "💽", group: "Film & Pop Culture" },
+  { id: "viking", label: "Viking / Norse", emoji: "🪓", group: "Film & Pop Culture" },
+
+  { id: "uvglow", label: "Glow in the dark", emoji: "🔮", group: "Exotic Techniques" },
+  { id: "doubleexposure", label: "Double exposure", emoji: "🏞️", group: "Exotic Techniques" },
+  { id: "glassmorph", label: "Crystal glass", emoji: "🧊", group: "Exotic Techniques" },
+
+  { id: "techwear", label: "Techwear ninja", emoji: "🥷", group: "Subculture & Street" },
+  { id: "trippy", label: "Psychedelic trippy", emoji: "🌀", group: "Subculture & Street" },
+
+  { id: "knitted", label: "Knitted / crochet", emoji: "🧶", group: "Textures & Craft Materials" },
+  { id: "porcelain", label: "Porcelain doll", emoji: "🏺", group: "Sculpture & Classic Materials" },
+
+  { id: "biophilia", label: "Nature fusion", emoji: "🌿", group: "Nature & Elements" },
+  { id: "elemental", label: "Fire / water / ice", emoji: "🔥", group: "Nature & Elements" },
+
+  { id: "opticalillusion", label: "Hidden landscape", emoji: "🌄", group: "Abstract & Optical Illusion" },
+  { id: "kintsugi", label: "Liquid gold / kintsugi", emoji: "🟡", group: "Abstract & Optical Illusion" },
+  { id: "smokeart", label: "Smoke portrait", emoji: "💨", group: "Abstract & Optical Illusion" },
+
+  { id: "sincity", label: "Noir comic accent", emoji: "🩸", group: "Film & Game Worlds" },
+  { id: "voxel", label: "Voxel blocks", emoji: "⬛", group: "Film & Game Worlds" },
+  { id: "magickingdom", label: "Magic kingdom", emoji: "🏰", group: "Storybook Worlds" },
+  { id: "enchantedforest", label: "Enchanted forest", emoji: "🍄", group: "Storybook Worlds" },
+  { id: "candyland", label: "Candy land", emoji: "🍭", group: "Storybook Worlds" },
+
+  { id: "spaceexplorer", label: "Space explorer", emoji: "👩‍🚀", group: "Sci-Fi & Adventure Worlds" },
+  { id: "cyberpunkcity", label: "Cyberpunk streets", emoji: "🌃", group: "Sci-Fi & Adventure Worlds" },
+  { id: "atlantis", label: "Atlantis underwater", emoji: "🧜", group: "Sci-Fi & Adventure Worlds" },
+  { id: "vikingwild", label: "Nordic wilderness", emoji: "🏔️", group: "Sci-Fi & Adventure Worlds" },
+
+  { id: "executiveoffice", label: "Executive office", emoji: "🏙️", group: "Career & Portrait Scenes" },
+  { id: "keynote", label: "Keynote speaker", emoji: "🎤", group: "Career & Portrait Scenes" },
+
+  { id: "neonoir", label: "Detective neo-noir", emoji: "🕵️", group: "Cinematic & Thriller" },
+  { id: "postapoc", label: "Action post-apocalypse", emoji: "🏚️", group: "Cinematic & Thriller" },
+  { id: "darkthrone", label: "Dark throne hall", emoji: "🗡️", group: "Cinematic & Thriller" },
+
+  { id: "metgala", label: "Gala red carpet", emoji: "📸", group: "Glamour & High Fashion" },
+  { id: "voguestudio", label: "Fashion magazine", emoji: "🖤", group: "Glamour & High Fashion" },
+
+  { id: "romeancient", label: "Ancient Rome", emoji: "🏛️", group: "Historic & Travel Scenes" },
+  { id: "worldtravel", label: "Dream destination", emoji: "🌍", group: "Historic & Travel Scenes" },
 ];
 
 
