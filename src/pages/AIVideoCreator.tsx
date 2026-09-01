@@ -19,9 +19,16 @@ import {
 } from "lucide-react";
 import heroAsset from "@/assets/section-videos/ai-video-creator.mp4.asset.json";
 
-/** One clip = one continuous 8s story, rendered in a single generation. */
-const CLIP_SECONDS = 8;
-const CLIP_COST = 25;
+/**
+ * One video = one continuous story. Longer lengths are rendered by extending the
+ * same video (+7s per step), so the delivered MP4 is a single seamless clip.
+ */
+const DURATIONS: { seconds: number; cost: number }[] = [
+  { seconds: 8, cost: 25 },
+  { seconds: 15, cost: 35 },
+  { seconds: 22, cost: 48 },
+  { seconds: 30, cost: 60 },
+];
 
 
 const STYLES = [
