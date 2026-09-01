@@ -18,7 +18,7 @@ interface ContestPeriod {
 
 const empty = { period_start: "",
   period_end: "",
-  prize_pool_eur: 10000,
+  prize_pool_eur: 0,
   title: "" };
 
 export default function AdminContestPeriods() {
