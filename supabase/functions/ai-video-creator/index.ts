@@ -186,34 +186,24 @@ serve(async (req) => {
         return json({ status: "failed", error: result.error ?? "Generation failed" });
       }
 
-      // Store the finished segment.
+      // Store the finished clip — one generation, one story, no chaining.
       const bytes = Uint8Array.from(atob(result.videoBase64), (c) => c.charCodeAt(0));
-      const path = `${user.id}/${row.id}/part-${segments.length + 1}.mp4`;
+      const path = `${user.id}/${row.id}/part-1.mp4`;
       const { error: upErr } = await supabase.storage
         .from("ai-video-creator")
         .upload(path, bytes, { contentType: "video/mp4", upsert: true });
       if (upErr) {
         console.error("[ai-video-creator] upload failed", upErr.message);
-        return json({ status: "processing", progress: segments.length / plan.length });
+        return json({ status: "processing", progress: 0.9 });
       }
-      segments.push({ path, seconds: plan[segments.length] });
-
-      if (segments.length >= plan.length) {
-        await supabase.from("ai_video_creations").update({
-          segments, status: "completed", operation: null, updated_at: new Date().toISOString(),
-        }).eq("id", row.id);
-        return json({ status: "completed", segments });
-      }
-
-      const nextOp = await startSegment({ ...row, segment_plan: plan }, segments.length);
+      const segments = [{ path, seconds: CLIP_SECONDS }];
       await supabase.from("ai_video_creations").update({
-        segments,
-        operation: nextOp,
-        status: nextOp ? "processing" : "completed",
+        segments, segments_total: 1, status: "completed", operation: null,
         updated_at: new Date().toISOString(),
       }).eq("id", row.id);
-      return json({ status: nextOp ? "processing" : "completed", segments, progress: segments.length / plan.length });
+      return json({ status: "completed", segments });
     }
+
 
     return json({ error: "Unknown action" }, 400);
   } catch (e) {
