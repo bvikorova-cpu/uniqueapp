@@ -78,13 +78,20 @@ serve(async (req) => {
     if (!styles.length) return json({ error: "Pick at least one style." }, 400);
 
     const cost = 3 * styles.length;
+    // Charged per rendered style (3 credits each), so the unit auth is 3.
     const auth = await requireAiCredits(req, corsHeaders, {
-      credits: cost,
+      credits: 3,
       usageType: "photo_styler",
       description: `Photo styler: ${styles.join(", ")}`,
       rateLimit: { bucket: "photo_styler", max: 12, windowSec: 60 },
     });
     if (auth.errorResponse) return auth.errorResponse;
+    if ((auth.credits ?? 0) < cost) {
+      return json(
+        { error: `Insufficient AI credits. Need ${cost}, have ${auth.credits ?? 0}.`, creditsRequired: cost },
+        402,
+      );
+    }
 
     const results: { style: string; image?: string; error?: string }[] = [];
     for (const style of styles) {
