@@ -15,10 +15,11 @@ interface Props {
 
 type Period = "weekly" | "monthly" | "all_time";
 
-const PRIZE_POOL: Record<Period, { total: number; splits: number[] }> = {
-  weekly: { total: 500, splits: [250, 150, 100] },
-  monthly: { total: 2500, splits: [1500, 600, 400] },
-  all_time: { total: 0, splits: [] } };
+// Prize pool = 50% of Megatalent profit for the period, split between top 3.
+const PRIZE_SPLIT: Record<Period, number[]> = {
+  weekly: [50, 30, 20],
+  monthly: [50, 30, 20],
+  all_time: [] };
 
 export default function MegatalentLeaderboard({ category, categories }: Props) {
   const [period, setPeriod] = useState<Period>("weekly");
