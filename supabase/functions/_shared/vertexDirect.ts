@@ -677,12 +677,17 @@ async function pollGeminiVideo(operationName: string):
       const dl = await rawFetch(uri, { headers: { "x-goog-api-key": key } });
       if (!dl.ok) return { done: true, error: `download failed (${dl.status})` };
       const buf = new Uint8Array(await dl.arrayBuffer());
-      let binary = "";
-      const chunk = 0x8000;
+      // Encode in 3-byte-aligned chunks: avoids building one huge binary string.
+      const chunk = 0x8000 - (0x8000 % 3);
+      const parts: string[] = [];
       for (let i = 0; i < buf.length; i += chunk) {
-        binary += String.fromCharCode(...buf.subarray(i, i + chunk));
+        const sub = buf.subarray(i, i + chunk);
+        let bin = "";
+        for (let j = 0; j < sub.length; j++) bin += String.fromCharCode(sub[j]);
+        parts.push(btoa(bin));
       }
-      return { done: true, videoBase64: btoa(binary) };
+      return { done: true, videoBase64: parts.join("") };
+
     }
     const filtered = resp?.raiMediaFilteredReasons?.[0];
     return { done: true, error: filtered ? String(filtered) : "Video generation returned no data." };
