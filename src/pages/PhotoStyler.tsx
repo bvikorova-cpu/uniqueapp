@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { shareLink } from "@/lib/shareLink";
 import {
   Brush, Download, ImagePlus, Loader2, Palette, Share2, ShieldCheck, Sparkles, Wand2, Zap,
 } from "lucide-react";
