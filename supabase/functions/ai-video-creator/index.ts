@@ -81,18 +81,24 @@ async function startStep(row: any, step: number, videoBase64?: string) {
   });
 }
 
+/** Decode base64 -> bytes in aligned chunks (keeps peak memory low). */
 function toBytes(b64: string): Uint8Array {
-  return Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+  const chunkChars = 0x8000 - (0x8000 % 4);
+  const parts: Uint8Array[] = [];
+  let total = 0;
+  for (let i = 0; i < b64.length; i += chunkChars) {
+    const bin = atob(b64.slice(i, i + chunkChars));
+    const part = new Uint8Array(bin.length);
+    for (let j = 0; j < bin.length; j++) part[j] = bin.charCodeAt(j);
+    parts.push(part);
+    total += part.length;
+  }
+  const out = new Uint8Array(total);
+  let off = 0;
+  for (const p of parts) { out.set(p, off); off += p.length; }
+  return out;
 }
 
-function toBase64(bytes: Uint8Array): string {
-  let binary = "";
-  const chunk = 0x8000;
-  for (let i = 0; i < bytes.length; i += chunk) {
-    binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
-  }
-  return btoa(binary);
-}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
