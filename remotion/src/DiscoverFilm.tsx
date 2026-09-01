@@ -496,7 +496,7 @@ const MODULES: Module[] = [
     accent2: "#f59e0b" },
   { badge: "Megatalent",
     title: "Become a Star.",
-    subtitle: "Global talent contest. €10,000 prize pool every quarter.",
+    subtitle: "Global talent contest. Prize pool = 50% of Megatalent profit.",
     perks: ["Compete across 30+ categories", "Live voting & watch parties", "Real cash payouts"],
     image: "discover/08-megatalent.jpg",
     accent: "#c084fc",
