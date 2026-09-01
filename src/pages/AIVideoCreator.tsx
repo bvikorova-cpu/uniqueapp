@@ -324,15 +324,26 @@ const AIVideoCreator = () => {
 
               <div className="space-y-2">
                 <Label>Length &amp; price</Label>
-                <div className="flex items-center justify-between rounded-xl border border-primary bg-primary/10 p-3">
-                  <div className="flex items-center gap-2 text-base font-black text-foreground">
-                    <Clock className="h-4 w-4 text-primary" /> {CLIP_SECONDS}s · one single story
-                  </div>
-                  <div className="text-sm font-semibold text-primary">{CLIP_COST} credits</div>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  {DURATIONS.map((d) => (
+                    <button
+                      key={d.seconds} type="button" onClick={() => setDuration(d.seconds)}
+                      className={`rounded-xl border p-3 text-center transition-all ${
+                        duration === d.seconds
+                          ? "border-primary bg-primary/15 shadow-sm"
+                          : "border-border bg-background/60 hover:border-primary/40"
+                      }`}
+                    >
+                      <span className="flex items-center justify-center gap-1 text-base font-black text-foreground">
+                        <Clock className="h-4 w-4 text-primary" /> {d.seconds}s
+                      </span>
+                      <span className="mt-0.5 block text-xs font-semibold text-primary">{d.cost} credits</span>
+                    </button>
+                  ))}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Every clip is rendered as one continuous shot, so the result is a single coherent
-                  story instead of several unrelated parts.
+                  Every length is delivered as <strong>one single video</strong> — the longer ones are
+                  rendered by continuing the very same shot, so there are no cuts and no unrelated parts.
                 </p>
               </div>
 
