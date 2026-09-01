@@ -27,6 +27,7 @@ import { ClubFilm, CLUB_DURATION } from "./ClubFilm";
 import { ViralFilm, VIRAL_DURATION } from "./ViralFilm";
 
 import { VERSIONS } from "./versions";
+import { SectionSpot, SECTIONS, SECTION_SPOT_DURATION } from "./SectionSpot";
 
 
 
@@ -230,6 +231,20 @@ export const RemotionRoot = () => (
 
 
 
+    {SECTIONS.flatMap((s) =>
+      (["sk", "en"] as const).map((lang) => (
+        <Composition
+          key={`${s.id}-${lang}`}
+          id={`section-${s.id}-${lang}`}
+          component={SectionSpot}
+          defaultProps={{ sectionId: s.id, lang }}
+          durationInFrames={SECTION_SPOT_DURATION}
+          fps={30}
+          width={1080}
+          height={1920}
+        />
+      )),
+    )}
     {["hype", "story", "money"].map((v) => (
       <Composition
         key={v}
