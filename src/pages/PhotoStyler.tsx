@@ -137,18 +137,33 @@ const PhotoStyler = () => {
 
   const share = async (r: StyledResult) => {
     if (!r.image) return;
+    // 1) Native file share (mobile / installed PWA)
     try {
       const blob = await (await fetch(r.image)).blob();
       const file = new File([blob], `unique-${r.style}.png`, { type: "image/png" });
-      if (navigator.canShare?.({ files: [file] })) {
+      if (typeof navigator.share === "function" && navigator.canShare?.({ files: [file] })) {
         await navigator.share({ files: [file], title: "My Unique artwork" });
         return;
       }
-      download(r);
-    } catch {
-      download(r);
+    } catch (e) {
+      if ((e as { name?: string })?.name === "AbortError") return;
+      // fall through to link share
     }
+    // 2) Fallback: share/copy the Photo Styler link (never silently download)
+    const res = await shareLink({
+      title: "Unique Photo Styler",
+      text: `My photo in ${styleLabel(r.style)} style — made with Unique Photo Styler.`,
+      url: `${window.location.origin}/photo-styler`,
+    });
+    if (res === "shared") return;
+    if (res === "copied") {
+      toast.success("Link copied — use Download to save the image.");
+      return;
+    }
+    if (res === "cancelled") return;
+    toast.error("Sharing is not available here. Use Download instead.");
   };
+
 
   const styleLabel = (id: string) => PHOTO_STYLES.find((s) => s.id === id)?.label ?? id;
 
