@@ -8,8 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { GiftVisual } from "@/components/gifts/GiftVisual";
-import { Gift, Inbox, Send, Coins, ArrowLeft, Wallet } from "lucide-react";
+import { Gift, Inbox, Send, Coins, ArrowLeft, Wallet, Euro } from "lucide-react";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 interface Row {
   id: string;
@@ -17,6 +18,7 @@ interface Row {
   recipient_id: string;
   credits_spent: number;
   recipient_share_credits: number;
+  recipient_share_eur: number | null;
   created_at: string;
   post_id: string | null;
   gift_catalog: { name: string; slug: string; animation: string; image_url: string | null } | null;
@@ -24,12 +26,17 @@ interface Row {
 
 type Profile = { id: string; full_name: string | null; username: string | null; avatar_url: string | null };
 
+type Balance = { earned_eur: number; withdrawn_eur: number; available_eur: number; min_eur: number };
+
 export default function GiftsInbox() {
   const { user } = useAuth();
   const [received, setReceived] = useState<Row[]>([]);
   const [sent, setSent] = useState<Row[]>([]);
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
+  const [balance, setBalance] = useState<Balance | null>(null);
+  const [cashingOut, setCashingOut] = useState(false);
   const [loading, setLoading] = useState(true);
+
 
   const load = useCallback(async () => {
     if (!user?.id) {
