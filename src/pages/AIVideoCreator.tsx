@@ -19,14 +19,10 @@ import {
 } from "lucide-react";
 import heroAsset from "@/assets/section-videos/ai-video-creator.mp4.asset.json";
 
-const DURATIONS = [
-  { seconds: 8, credits: 25 },
-  { seconds: 10, credits: 30 },
-  { seconds: 15, credits: 38 },
-  { seconds: 20, credits: 45 },
-  { seconds: 25, credits: 52 },
-  { seconds: 30, credits: 60 },
-];
+/** One clip = one continuous 8s story, rendered in a single generation. */
+const CLIP_SECONDS = 8;
+const CLIP_COST = 25;
+
 
 const STYLES = [
   "Cinematic film look",
@@ -77,12 +73,13 @@ const AIVideoCreator = () => {
   const [narration, setNarration] = useState("");
   const [music, setMusic] = useState(MUSIC_PRESETS[0]);
   const [aspectRatio, setAspectRatio] = useState<"9:16" | "16:9">("9:16");
-  const [duration, setDuration] = useState(8);
   const [submitting, setSubmitting] = useState(false);
   const [creations, setCreations] = useState<Creation[]>([]);
   const pollRef = useRef<number | null>(null);
 
-  const cost = DURATIONS.find((d) => d.seconds === duration)?.credits ?? 25;
+  const duration = CLIP_SECONDS;
+  const cost = CLIP_COST;
+
 
   const load = useCallback(async () => {
     if (!user) return;
@@ -320,24 +317,18 @@ const AIVideoCreator = () => {
 
               <div className="space-y-2">
                 <Label>Length &amp; price</Label>
-                <div className="grid grid-cols-3 gap-2">
-                  {DURATIONS.map((d) => (
-                    <button
-                      key={d.seconds} type="button" onClick={() => setDuration(d.seconds)}
-                      className={`rounded-xl border p-3 text-center transition-all ${
-                        duration === d.seconds
-                          ? "border-primary bg-primary/15 shadow-md"
-                          : "border-border bg-background/60 hover:border-primary/40"
-                      }`}
-                    >
-                      <div className="flex items-center justify-center gap-1 text-base font-black text-foreground">
-                        <Clock className="h-3.5 w-3.5 text-primary" /> {d.seconds}s
-                      </div>
-                      <div className="text-xs font-semibold text-primary">{d.credits} credits</div>
-                    </button>
-                  ))}
+                <div className="flex items-center justify-between rounded-xl border border-primary bg-primary/10 p-3">
+                  <div className="flex items-center gap-2 text-base font-black text-foreground">
+                    <Clock className="h-4 w-4 text-primary" /> {CLIP_SECONDS}s · one single story
+                  </div>
+                  <div className="text-sm font-semibold text-primary">{CLIP_COST} credits</div>
                 </div>
+                <p className="text-xs text-muted-foreground">
+                  Every clip is rendered as one continuous shot, so the result is a single coherent
+                  story instead of several unrelated parts.
+                </p>
               </div>
+
 
               <div className="rounded-xl border border-primary/25 bg-primary/5 p-3 text-xs text-muted-foreground">
                 <p className="flex items-center gap-1.5 font-bold text-foreground">
@@ -397,7 +388,7 @@ const AIVideoCreator = () => {
                     {c.status === "processing" && (
                       <div className="flex items-center gap-2 rounded-xl bg-primary/10 p-3 text-xs font-semibold text-primary">
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        Rendering {(c.segments?.length ?? 0) + 1} / {c.segments_total} — a few minutes per part
+                        Rendering your clip — this takes a few minutes
                       </div>
                     )}
                     {c.status === "failed" && (
@@ -416,12 +407,11 @@ const AIVideoCreator = () => {
             <Card className="border-border bg-card/70 backdrop-blur-xl">
               <CardContent className="space-y-2 p-4 text-xs text-muted-foreground">
                 <p className="font-bold text-foreground">Credit price list</p>
-                {DURATIONS.map((d) => (
-                  <div key={d.seconds} className="flex justify-between">
-                    <span>{d.seconds} second clip</span>
-                    <span className="font-semibold text-primary">{d.credits} credits</span>
-                  </div>
-                ))}
+                <div className="flex justify-between">
+                  <span>One continuous {CLIP_SECONDS}s story clip</span>
+                  <span className="font-semibold text-primary">{CLIP_COST} credits</span>
+                </div>
+
               </CardContent>
             </Card>
           </div>

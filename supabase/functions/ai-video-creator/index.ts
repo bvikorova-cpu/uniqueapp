@@ -12,56 +12,38 @@ const corsHeaders = {
 const json = (data: unknown, status = 200) =>
   new Response(JSON.stringify(data), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-/** Credit price per finished clip length. 30s = 60 credits (Veo 3.1 lite, < $5 cost). */
-const CREDIT_COSTS: Record<number, number> = { 8: 25, 10: 30, 15: 38, 20: 45, 25: 52, 30: 60 };
+/**
+ * One clip = ONE continuous 8s Veo generation. Chaining separate generations
+ * produced visually unrelated parts, so the creator now always renders a single
+ * coherent shot regardless of any requested length.
+ */
+const CLIP_SECONDS = 8;
+const CLIP_COST = 25;
+const CREDIT_COSTS: Record<number, number> = { 8: CLIP_COST };
+const SEGMENT_PLAN: Record<number, number[]> = { 8: [CLIP_SECONDS] };
 
-/** Segment plan — Veo generates at most 8s per call, so longer clips are chained. */
-const SEGMENT_PLAN: Record<number, number[]> = {
-  8: [8],
-  10: [6, 4],
-  15: [8, 6],
-  20: [8, 6, 6],
-  25: [8, 8, 6, 4],
-  30: [8, 8, 8, 6],
-};
 
 const BANNED = /\b(nude|naked|nsfw|porn|sex|sexual|erotic|fetish|nahá|nahy|erotick|porno)\b/i;
 
-function splitText(text: string, parts: number): string[] {
-  const clean = (text || "").trim();
-  if (!clean) return new Array(parts).fill("");
-  const sentences = clean.split(/(?<=[.!?])\s+/).filter(Boolean);
-  const out: string[] = new Array(parts).fill("");
-  sentences.forEach((s, i) => {
-    const idx = Math.min(parts - 1, Math.floor((i / Math.max(sentences.length, 1)) * parts));
-    out[idx] = (out[idx] ? out[idx] + " " : "") + s;
-  });
-  return out;
-}
-
-function buildPrompt(row: any, index: number, total: number): string {
-  const narrationParts = splitText(row.narration ?? "", total);
+function buildPrompt(row: any): string {
   const bits: string[] = [];
-  bits.push(`Topic: ${row.topic}.`);
+  bits.push(`One single continuous shot telling one story: ${row.topic}.`);
   if (row.scene) bits.push(`Scene / setting: ${row.scene}.`);
   if (row.style) bits.push(`Visual style: ${row.style}, cinematic, high production value.`);
-  if (total > 1) {
-    bits.push(
-      `This is part ${index + 1} of ${total} of one continuous shot — keep exactly the same characters, wardrobe, location, lighting and colour grading as the other parts, and continue the action naturally.`,
-    );
-  }
-  const line = narrationParts[index]?.trim();
+  bits.push(
+    "Keep the same characters, wardrobe, location, lighting and colour grading from the first frame to the last — no cuts, no scene changes, no jumping to a different place.",
+  );
+  const line = String(row.narration ?? "").trim();
   if (line) bits.push(`A voice narrates aloud, clearly and in sync with the visuals: ${line}`);
   if (row.music) bits.push(`Background music: ${row.music}, mixed under the narration.`);
   bits.push("No on-screen text, no captions, no watermark, no logos.");
   return bits.join(" ");
 }
 
-async function startSegment(row: any, index: number) {
-  const plan: number[] = row.segment_plan ?? SEGMENT_PLAN[row.duration_seconds] ?? [8];
+async function startSegment(row: any) {
   return await startVertexVideo({
-    prompt: buildPrompt(row, index, plan.length),
-    durationSeconds: plan[index],
+    prompt: buildPrompt(row),
+    durationSeconds: CLIP_SECONDS,
     aspectRatio: row.aspect_ratio || "9:16",
     models: VEO_LITE_MODELS,
     resolution: "720p",
@@ -69,6 +51,7 @@ async function startSegment(row: any, index: number) {
     negativePrompt: "text, captions, subtitles, watermark, logo, nudity, violence",
   });
 }
+
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -89,10 +72,11 @@ serve(async (req) => {
 
     /* ---------------- CREATE ---------------- */
     if (action === "create") {
-      const duration = Number(body?.duration ?? 8);
+      // Always one continuous clip — the requested length is ignored on purpose.
+      const duration = CLIP_SECONDS;
       const plan = SEGMENT_PLAN[duration];
       const cost = CREDIT_COSTS[duration];
-      if (!plan || !cost) return json({ error: "Unsupported duration" }, 400);
+
 
       const topic = String(body?.topic ?? "").trim();
       if (topic.length < 3) return json({ error: "Please describe what the video is about." }, 400);
@@ -145,7 +129,7 @@ serve(async (req) => {
         return json({ error: "Could not start the video job." }, 500);
       }
 
-      const op = await startSegment({ ...row, segment_plan: plan }, 0);
+      const op = await startSegment(row);
       if (!op) {
         await supabase.rpc("add_ai_credits", {
           p_user_id: user.id, p_amount: cost,
@@ -181,11 +165,10 @@ serve(async (req) => {
       const op = row.operation as any;
       if (!op) return json({ status: "processing", progress: 0 });
 
-      const plan = SEGMENT_PLAN[row.duration_seconds] ?? [8];
-      const segments = Array.isArray(row.segments) ? [...(row.segments as any[])] : [];
       const result = await pollVertexVideo(op);
-      if (!result) return json({ status: "processing", progress: segments.length / plan.length });
-      if (!result.done) return json({ status: "processing", progress: segments.length / plan.length });
+      if (!result) return json({ status: "processing", progress: 0.3 });
+      if (!result.done) return json({ status: "processing", progress: 0.5 });
+
 
       if (result.error || !result.videoBase64) {
         const refundable = row.credits_spent > 0;
@@ -203,34 +186,24 @@ serve(async (req) => {
         return json({ status: "failed", error: result.error ?? "Generation failed" });
       }
 
-      // Store the finished segment.
+      // Store the finished clip — one generation, one story, no chaining.
       const bytes = Uint8Array.from(atob(result.videoBase64), (c) => c.charCodeAt(0));
-      const path = `${user.id}/${row.id}/part-${segments.length + 1}.mp4`;
+      const path = `${user.id}/${row.id}/part-1.mp4`;
       const { error: upErr } = await supabase.storage
         .from("ai-video-creator")
         .upload(path, bytes, { contentType: "video/mp4", upsert: true });
       if (upErr) {
         console.error("[ai-video-creator] upload failed", upErr.message);
-        return json({ status: "processing", progress: segments.length / plan.length });
+        return json({ status: "processing", progress: 0.9 });
       }
-      segments.push({ path, seconds: plan[segments.length] });
-
-      if (segments.length >= plan.length) {
-        await supabase.from("ai_video_creations").update({
-          segments, status: "completed", operation: null, updated_at: new Date().toISOString(),
-        }).eq("id", row.id);
-        return json({ status: "completed", segments });
-      }
-
-      const nextOp = await startSegment({ ...row, segment_plan: plan }, segments.length);
+      const segments = [{ path, seconds: CLIP_SECONDS }];
       await supabase.from("ai_video_creations").update({
-        segments,
-        operation: nextOp,
-        status: nextOp ? "processing" : "completed",
+        segments, segments_total: 1, status: "completed", operation: null,
         updated_at: new Date().toISOString(),
       }).eq("id", row.id);
-      return json({ status: nextOp ? "processing" : "completed", segments, progress: segments.length / plan.length });
+      return json({ status: "completed", segments });
     }
+
 
     return json({ error: "Unknown action" }, 400);
   } catch (e) {
