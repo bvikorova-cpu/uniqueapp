@@ -80,7 +80,7 @@ export default function MegatalentLeaderboard({ category, categories }: Props) {
     };
   }, [category, categories, period]);
 
-  const pool = PRIZE_POOL[period];
+  const splits = PRIZE_SPLIT[period];
 
   const rankIcon = (i: number) => {
     if (i === 0) return <Crown className="h-4 w-4 text-amber-400" />;
