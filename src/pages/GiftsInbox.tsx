@@ -45,7 +45,8 @@ export default function GiftsInbox() {
     }
     setLoading(true);
     const select =
-      "id, sender_id, recipient_id, credits_spent, recipient_share_credits, created_at, post_id, gift_catalog:gift_id(name, slug, animation, image_url)";
+      "id, sender_id, recipient_id, credits_spent, recipient_share_credits, recipient_share_eur, created_at, post_id, gift_catalog:gift_id(name, slug, animation, image_url)";
+
     const [inRes, outRes] = await Promise.all([
       (supabase as any)
         .from("gift_transactions")
