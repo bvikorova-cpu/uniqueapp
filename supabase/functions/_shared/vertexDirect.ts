@@ -498,7 +498,8 @@ function wrapPcmAsWav(pcm: Uint8Array, sampleRate: number): Uint8Array {
  * ------------------------------------------------------------------ */
 
 const VEO_MODELS = [
-  Deno.env.get("GCP_VIDEO_MODEL") || "veo-3.1-fast-generate-preview",
+  Deno.env.get("GCP_VIDEO_MODEL") || "veo-3.1-generate-001",
+  "veo-3.1-fast-generate-001",
   "veo-3.0-fast-generate-001",
   "veo-3.0-generate-001",
   "veo-2.0-generate-001",
@@ -509,8 +510,8 @@ const VEO_MODELS = [
  * stays well under $5. Falls back to the fast tier if lite is not enabled.
  */
 export const VEO_LITE_MODELS = [
-  Deno.env.get("GCP_VIDEO_MODEL_LITE") || "veo-3.1-lite-generate-preview",
-  "veo-3.1-fast-generate-preview",
+  Deno.env.get("GCP_VIDEO_MODEL_LITE") || "veo-3.1-lite-generate-001",
+  "veo-3.1-fast-generate-001",
   "veo-3.0-fast-generate-001",
 ].filter((m, i, a) => a.indexOf(m) === i);
 
