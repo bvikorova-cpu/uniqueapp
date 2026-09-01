@@ -129,7 +129,7 @@ serve(async (req) => {
         return json({ error: "Could not start the video job." }, 500);
       }
 
-      const op = await startSegment({ ...row, segment_plan: plan }, 0);
+      const op = await startSegment(row);
       if (!op) {
         await supabase.rpc("add_ai_credits", {
           p_user_id: user.id, p_amount: cost,
