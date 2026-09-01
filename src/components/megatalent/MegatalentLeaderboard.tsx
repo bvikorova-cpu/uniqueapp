@@ -132,7 +132,7 @@ export default function MegatalentLeaderboard({ category, categories }: Props) {
               <div className="space-y-1.5 max-h-[420px] overflow-y-auto pr-1">
                 {rows.map((r, i) => {
                   const isTop3 = i < 3;
-                  const prize = pool.splits[i];
+                  const prize = splits[i];
                   return (
                     <motion.div
                       key={r.id}
