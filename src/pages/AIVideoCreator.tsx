@@ -73,12 +73,13 @@ const AIVideoCreator = () => {
   const [narration, setNarration] = useState("");
   const [music, setMusic] = useState(MUSIC_PRESETS[0]);
   const [aspectRatio, setAspectRatio] = useState<"9:16" | "16:9">("9:16");
-  const [duration, setDuration] = useState(8);
   const [submitting, setSubmitting] = useState(false);
   const [creations, setCreations] = useState<Creation[]>([]);
   const pollRef = useRef<number | null>(null);
 
-  const cost = DURATIONS.find((d) => d.seconds === duration)?.credits ?? 25;
+  const duration = CLIP_SECONDS;
+  const cost = CLIP_COST;
+
 
   const load = useCallback(async () => {
     if (!user) return;
