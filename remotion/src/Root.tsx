@@ -23,6 +23,7 @@ import { AccountFilm, ACCOUNT_DURATION } from "./AccountFilm";
 import { UniAssistantFilm, UNIASSISTANT_DURATION } from "./UniAssistantFilm";
 import { VerifiedFilm, VERIFIED_DURATION } from "./VerifiedFilm";
 import { ClubFilm, CLUB_DURATION } from "./ClubFilm";
+import { ViralFilm, VIRAL_DURATION } from "./ViralFilm";
 
 import { VERSIONS } from "./versions";
 
@@ -228,6 +229,14 @@ export const RemotionRoot = () => (
 
 
 
+    <Composition
+      id="viral-film"
+      component={ViralFilm}
+      durationInFrames={VIRAL_DURATION}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
     {VERSIONS.map((v) => (
       <Composition
         key={v.id}
