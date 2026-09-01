@@ -1,4 +1,5 @@
 import { Composition } from "remotion";
+import { PhotoFilm, photoFilmDuration } from "./PhotoFilm";
 import { PropertyVideo } from "./PropertyVideo";
 import { UniqueMarketing } from "./UniqueMarketing";
 import { UniqueMarketingV } from "./UniqueMarketingV";
@@ -229,6 +230,18 @@ export const RemotionRoot = () => (
 
 
 
+    {["hype", "story", "money"].map((v) => (
+      <Composition
+        key={v}
+        id={`unique-photo-${v}`}
+        component={PhotoFilm}
+        defaultProps={{ variant: v }}
+        durationInFrames={photoFilmDuration(v)}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+    ))}
     <Composition
       id="viral-film"
       component={ViralFilm}
