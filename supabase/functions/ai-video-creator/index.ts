@@ -37,23 +37,21 @@ function splitText(text: string, parts: number): string[] {
   return out;
 }
 
-function buildPrompt(row: any, index: number, total: number): string {
-  const narrationParts = splitText(row.narration ?? "", total);
+function buildPrompt(row: any): string {
   const bits: string[] = [];
-  bits.push(`Topic: ${row.topic}.`);
+  bits.push(`One single continuous shot telling one story: ${row.topic}.`);
   if (row.scene) bits.push(`Scene / setting: ${row.scene}.`);
   if (row.style) bits.push(`Visual style: ${row.style}, cinematic, high production value.`);
-  if (total > 1) {
-    bits.push(
-      `This is part ${index + 1} of ${total} of one continuous shot — keep exactly the same characters, wardrobe, location, lighting and colour grading as the other parts, and continue the action naturally.`,
-    );
-  }
-  const line = narrationParts[index]?.trim();
+  bits.push(
+    "Keep the same characters, wardrobe, location, lighting and colour grading from the first frame to the last — no cuts, no scene changes, no jumping to a different place.",
+  );
+  const line = String(row.narration ?? "").trim();
   if (line) bits.push(`A voice narrates aloud, clearly and in sync with the visuals: ${line}`);
   if (row.music) bits.push(`Background music: ${row.music}, mixed under the narration.`);
   bits.push("No on-screen text, no captions, no watermark, no logos.");
   return bits.join(" ");
 }
+
 
 async function startSegment(row: any, index: number) {
   const plan: number[] = row.segment_plan ?? SEGMENT_PLAN[row.duration_seconds] ?? [8];
