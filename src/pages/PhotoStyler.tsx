@@ -157,7 +157,7 @@ const PhotoStyler = () => {
       <Navbar />
       <main className="container mx-auto max-w-6xl px-4 py-6">
         {/* HERO */}
-        <div className="relative mb-6 h-[280px] w-full overflow-hidden rounded-3xl sm:h-[380px]">
+        <div className="relative mb-6 h-[420px] w-full overflow-hidden rounded-3xl sm:h-[460px]">
           <video
             autoPlay
             muted
@@ -165,42 +165,41 @@ const PhotoStyler = () => {
             playsInline
             src={heroAsset.url}
             className="absolute inset-0 h-full w-full object-cover"
-            style={{ filter: "brightness(1.08) saturate(1.15)" }}
+            style={{ filter: "brightness(1.05) saturate(1.15)" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/75 via-background/30 to-transparent" />
-          <div className="relative z-10 flex h-full flex-col justify-between p-4 sm:p-8">
+          <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-background via-background/70 to-transparent" />
+          <div className="relative z-10 flex h-full flex-col justify-end gap-3 p-4 sm:p-8">
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7 }}
-              className="max-w-lg space-y-3"
+              className="max-w-lg space-y-2"
             >
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-background/50 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-primary backdrop-blur-sm">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-background/70 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-primary backdrop-blur-sm">
                 <Sparkles className="h-3 w-3" /> {PHOTO_STYLES.length} art styles
               </span>
-              <div className="rounded-2xl border-2 border-primary/30 bg-background/40 p-4 shadow-xl backdrop-blur-md">
-                <h1 className="text-3xl font-black leading-none text-foreground sm:text-5xl">
-                  Photo <span className="text-primary">Styler</span>
-                </h1>
-                <p className="mt-3 text-sm font-semibold text-foreground/85 sm:text-base">
-                  Upload one photo and AI redraws you — pencil sketch, cartoon, anime, hippie 70s,
-                  watercolour, cyberpunk and dozens more. {PHOTO_STYLE_COST} credits per style.
-                </p>
-              </div>
+              <h1 className="text-3xl font-black leading-none text-foreground drop-shadow-lg sm:text-5xl">
+                Photo <span className="text-primary">Styler</span>
+              </h1>
+              <p className="text-sm font-semibold text-foreground/90 sm:text-base">
+                Upload one photo and AI redraws you — pencil sketch, cartoon, anime, hippie 70s,
+                watercolour, cyberpunk and more. {PHOTO_STYLE_COST} credits per style.
+              </p>
             </motion.div>
             <div className="flex flex-wrap items-center gap-2">
               <Badge className="gap-1 bg-primary/15 text-primary hover:bg-primary/20">
                 <Zap className="h-3 w-3" /> {totalBalance} credits
               </Badge>
-              <Badge variant="outline" className="gap-1 bg-background/60 backdrop-blur-sm">
+              <Badge variant="outline" className="gap-1 bg-background/70 backdrop-blur-sm">
                 <ShieldCheck className="h-3 w-3 text-primary" /> Your photo is never published
               </Badge>
-              <Badge variant="outline" className="gap-1 bg-background/60 backdrop-blur-sm">
+              <Badge variant="outline" className="gap-1 bg-background/70 backdrop-blur-sm">
                 <Download className="h-3 w-3" /> Download &amp; share
               </Badge>
             </div>
           </div>
         </div>
+
 
         {/* HOW IT WORKS */}
         <Card className="mb-6 border-primary/20 bg-card/70 backdrop-blur-xl">
