@@ -55,7 +55,38 @@ const STYLE_PROMPTS: Record<string, string> = {
   superhero: "an original comic superhero look, dynamic dramatic lighting, bold heroic costume design (no existing franchise characters)",
   cosmic: "a cosmic double-exposure portrait blended with nebulas and stars, deep indigo and violet glow",
   underwater: "an ethereal underwater portrait, caustic light rays, floating bubbles, teal water tones",
+
+  colorpencil: "a colored-pencil drawing, layered hatching in vivid pencil strokes, visible paper tooth",
+  scratchboard: "a scratchboard engraving, white scratched lines revealed on solid black ink, fine crosshatch texture",
+  caricature: "a friendly hand-drawn caricature, playfully exaggerated proportions, lively ink and watercolor finish",
+  chibi: "a cute chibi illustration, small rounded body proportions, big head, soft cel shading, kawaii palette",
+  manga: "a black-and-white manga panel, screentone dot shading, sharp inked lines, speed-line background",
+  sticker: "a die-cut vinyl sticker illustration, thick white border, bold flat colors, glossy highlights",
+  impressionist: "an impressionist painting, short broken brush strokes, dappled natural light, luminous soft palette",
+  postimpressionist: "a post-impressionist painting with thick swirling expressive brush strokes and vivid complementary colors",
+  acrylic: "an acrylic palette-knife painting, thick textured color slabs, bold edges, canvas weave visible",
+  surreal: "a surrealist dreamlike painting, soft impossible elements, muted otherworldly palette, smooth rendering",
+  disco70s: "a 1970s disco poster, warm amber and magenta glow, mirror-ball sparkle, grainy retro print",
+  retro90s: "a 1990s retro anime cel look, hand-painted cels, slight film grain, nostalgic muted colors",
+  glitch: "a digital glitch-art portrait, RGB channel shift, scanlines, datamosh fragments on dark background",
+  mythicgod: "a mythological deity painting, golden laurel and drapery, divine radiance, marble temple backdrop",
+  icequeen: "a frost-and-ice portrait, crystalline frozen accents, pale blue glow, snow particles in the air",
+  emberfire: "a fire-and-ember portrait, glowing sparks, warm orange rim light, smoky dark background",
+  forestspirit: "an enchanted forest-spirit portrait, mossy glowing flora, fireflies, soft emerald light",
+  origami: "a folded paper origami sculpture look, crisp geometric folds, soft studio light, paper fiber texture",
+  feltwool: "a needle-felted wool craft figure, fuzzy fiber texture, soft handmade look, cozy studio lighting",
+  toybrick: "a figure built from plastic toy building bricks, glossy studs, blocky shapes, tabletop studio light (generic, no branded toys)",
+  marble: "a classical white marble statue, carved stone texture, subtle veining, museum lighting",
+  bronze: "a patinated bronze sculpture bust, metallic sheen, greenish patina, gallery spotlight",
+  artnouveau: "an art-nouveau poster, ornate flowing linework, decorative floral border, muted gold and sage palette",
+  cubism: "a cubist painting, fragmented geometric planes, multiple viewpoints, bold angular color fields",
+  polaroid: "an instant polaroid snapshot, soft focus, slight overexposure, warm colour cast and white frame feel",
+  blueprint: "a technical blueprint drawing, white line work on deep cyan paper, measurement annotations",
+  duotone: "a high-contrast duotone print, two bold colors only, posterized tonal separation",
+  silhouette: "a graphic silhouette portrait, solid dark shape against a bright gradient backdrop, crisp edges",
+  holofoil: "a holographic foil print effect, iridescent rainbow sheen, metallic reflections, dark glossy base",
 };
+
 
 const BASE_RULES =
   "Restyle the EXACT person in the supplied photo. Only the rendering medium/art style may change — " +
