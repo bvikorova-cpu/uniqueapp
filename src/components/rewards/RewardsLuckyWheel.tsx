@@ -11,11 +11,12 @@ import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 const prizes = [
   { label: "0 XP", emoji: "💨", color: "text-muted-foreground" },
   { label: "500 XP", emoji: "⭐", color: "text-emerald-400" },
-  { label: "1000 XP", emoji: "⭐", color: "text-emerald-400" },
-  { label: "2500 XP", emoji: "🌟", color: "text-yellow-400" },
+  { label: "1000 XP", emoji: "💎", color: "text-cyan-400" },
+  { label: "2500 XP", emoji: "🔥", color: "text-orange-400" },
   { label: "10000 XP", emoji: "🏆", color: "text-amber-400" },
   { label: "Jackpot XP", emoji: "👑", color: "text-amber-300" },
 ];
+
 
 export default function RewardsLuckyWheel() {
   const [spinning, setSpinning] = useState(false);
