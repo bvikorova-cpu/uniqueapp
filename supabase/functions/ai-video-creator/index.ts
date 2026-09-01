@@ -239,11 +239,14 @@ serve(async (req) => {
       }
 
       // Veo returns the FULL merged video on every step, so we always store one file.
-      const bytes = toBytes(result.videoBase64);
+      const b64 = result.videoBase64;
+      result.videoBase64 = undefined; // release the poll result's reference
+      let bytes: Uint8Array | null = toBytes(b64);
       const path = `${user.id}/${row.id}/video.mp4`;
       const { error: upErr } = await supabase.storage
         .from("ai-video-creator")
         .upload(path, bytes, { contentType: "video/mp4", upsert: true });
+      bytes = null; // free the decoded copy before the next Veo request
       if (upErr) {
         console.error("[ai-video-creator] upload failed", upErr.message);
         return json({ status: "processing", progress: 0.9 });
@@ -253,7 +256,8 @@ serve(async (req) => {
 
       // More seconds requested → extend this very same video (one story, no cuts).
       if (step < extensions) {
-        const nextOp = await startStep(row, step + 1, toBase64(bytes));
+        const nextOp = await startStep(row, step + 1, b64);
+
         if (!nextOp) {
           // Keep what we already have rather than losing the video entirely.
           await supabase.from("ai_video_creations").update({
