@@ -69,7 +69,7 @@ export function PostGiftStrip({ postId }: PostGiftProps) {
 
 /**
  * Post-level gift action: same credit-based Unique Gifts catalog as chat.
- * The post author receives 50% of the gift value in credits.
+ * The post author earns 50% of the gift value in euros (withdrawable from €20).
  */
 export function PostGiftAction({ postId, authorId, authorName, currentUserId }: PostGiftProps) {
   const { gifts, reload } = usePostGifts(postId);
