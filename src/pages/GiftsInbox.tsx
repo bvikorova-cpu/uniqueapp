@@ -86,6 +86,15 @@ export default function GiftsInbox() {
       }
       setProfiles(map);
     }
+    const { data: bal } = await (supabase as any).rpc("get_gift_withdrawable");
+    if (bal && !bal.error) {
+      setBalance({
+        earned_eur: Number(bal.earned_eur ?? 0),
+        withdrawn_eur: Number(bal.withdrawn_eur ?? 0),
+        available_eur: Number(bal.available_eur ?? 0),
+        min_eur: Number(bal.min_eur ?? 20),
+      });
+    }
     setLoading(false);
   }, [user?.id]);
 
@@ -93,8 +102,28 @@ export default function GiftsInbox() {
     load();
   }, [load]);
 
-  const earned = received.reduce((s, r) => s + (r.recipient_share_credits || 0), 0);
+  const handleCashout = async () => {
+    setCashingOut(true);
+    const { data, error } = await (supabase as any).rpc("cashout_gift_earnings");
+    setCashingOut(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    if (data?.success) {
+      toast.success(`Payout requested: €${Number(data.amount_eur).toFixed(2)}`);
+      load();
+    } else if (data?.error === "below_minimum") {
+      toast.error(`Minimum payout is €${data.min_eur}. Available: €${Number(data.available_eur).toFixed(2)}`);
+    } else {
+      toast.error("Payout failed");
+    }
+  };
+
+  const earnedEur = balance?.earned_eur ?? received.reduce((s, r) => s + Number(r.recipient_share_eur || 0), 0);
+  const availableEur = balance?.available_eur ?? 0;
   const spent = sent.reduce((s, r) => s + (r.credits_spent || 0), 0);
+
 
   const name = (id: string) =>
     profiles[id]?.full_name || profiles[id]?.username || "Unique user";
