@@ -34,6 +34,12 @@ export const PHOTO_STYLE_GROUPS = [
   "Nature & Elements",
   "Abstract & Optical Illusion",
   "Film & Game Worlds",
+  "Storybook Worlds",
+  "Sci-Fi & Adventure Worlds",
+  "Career & Portrait Scenes",
+  "Cinematic & Thriller",
+  "Glamour & High Fashion",
+  "Historic & Travel Scenes",
 ] as const;
 
 export const PHOTO_STYLES: PhotoStyle[] = [
@@ -169,6 +175,27 @@ export const PHOTO_STYLES: PhotoStyle[] = [
 
   { id: "sincity", label: "Noir comic accent", emoji: "🩸", group: "Film & Game Worlds" },
   { id: "voxel", label: "Voxel blocks", emoji: "⬛", group: "Film & Game Worlds" },
+  { id: "magickingdom", label: "Magic kingdom", emoji: "🏰", group: "Storybook Worlds" },
+  { id: "enchantedforest", label: "Enchanted forest", emoji: "🍄", group: "Storybook Worlds" },
+  { id: "candyland", label: "Candy land", emoji: "🍭", group: "Storybook Worlds" },
+
+  { id: "spaceexplorer", label: "Space explorer", emoji: "👩‍🚀", group: "Sci-Fi & Adventure Worlds" },
+  { id: "cyberpunkcity", label: "Cyberpunk streets", emoji: "🌃", group: "Sci-Fi & Adventure Worlds" },
+  { id: "atlantis", label: "Atlantis underwater", emoji: "🧜", group: "Sci-Fi & Adventure Worlds" },
+  { id: "vikingwild", label: "Nordic wilderness", emoji: "🏔️", group: "Sci-Fi & Adventure Worlds" },
+
+  { id: "executiveoffice", label: "Executive office", emoji: "🏙️", group: "Career & Portrait Scenes" },
+  { id: "keynote", label: "Keynote speaker", emoji: "🎤", group: "Career & Portrait Scenes" },
+
+  { id: "neonoir", label: "Detective neo-noir", emoji: "🕵️", group: "Cinematic & Thriller" },
+  { id: "postapoc", label: "Action post-apocalypse", emoji: "🏚️", group: "Cinematic & Thriller" },
+  { id: "darkthrone", label: "Dark throne hall", emoji: "🗡️", group: "Cinematic & Thriller" },
+
+  { id: "metgala", label: "Gala red carpet", emoji: "📸", group: "Glamour & High Fashion" },
+  { id: "voguestudio", label: "Fashion magazine", emoji: "🖤", group: "Glamour & High Fashion" },
+
+  { id: "romeancient", label: "Ancient Rome", emoji: "🏛️", group: "Historic & Travel Scenes" },
+  { id: "worldtravel", label: "Dream destination", emoji: "🌍", group: "Historic & Travel Scenes" },
 ];
 
 
