@@ -211,9 +211,6 @@ export default function GiftsInbox() {
       <h1 className="mb-1 flex items-center gap-2 text-2xl font-bold">
         <Gift className="h-6 w-6 text-primary" /> My gifts
       </h1>
-      <p className="mb-5 text-sm text-muted-foreground">
-        Every gift you receive credits 50% of its value to your credit balance.
-      </p>
 
       <p className="mb-5 text-sm text-muted-foreground">
         Every gift you receive earns you 50% of its value in euros. Withdraw once you reach €
