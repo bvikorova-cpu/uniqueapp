@@ -69566,6 +69566,7 @@ export type Database = {
       }
       card_trash_add: { Args: { _collectible_id: string }; Returns: string }
       card_trash_recycle: { Args: { _trash_ids: string[] }; Returns: Json }
+      cashout_gift_earnings: { Args: never; Returns: Json }
       cashout_premium_video_earnings: { Args: never; Returns: Json }
       challenge_monthly_prize_pool_cents: { Args: never; Returns: number }
       challenge_period_key: { Args: { _type: string }; Returns: string }
@@ -70416,6 +70417,7 @@ export type Database = {
         }[]
       }
       get_fundraising_stats: { Args: never; Returns: Json }
+      get_gift_withdrawable: { Args: never; Returns: Json }
       get_guess_age_leaderboard: {
         Args: { _limit?: number }
         Returns: {
