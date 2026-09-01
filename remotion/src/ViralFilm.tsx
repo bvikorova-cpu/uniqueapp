@@ -299,7 +299,7 @@ const GetPaid: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const s = pop(frame, fps, 0, 13);
-  const count = Math.round(interpolate(frame, [10, 70], [0, 10000], { extrapolateRight: "clamp" }));
+  const count = Math.round(interpolate(frame, [10, 70], [0, 10000], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }));
   const pulse = 1 + Math.sin(frame / 5) * 0.02;
   return (
     <AbsoluteFill>
