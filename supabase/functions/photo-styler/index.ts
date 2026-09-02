@@ -163,6 +163,16 @@ const STYLE_PROMPTS: Record<string, string> = {
   glowlines: "a portrait built entirely from glowing neon light lines on a pure black background, luminous outlines, soft bloom",
   zombie: "a post-apocalyptic survivor or zombie transformation, torn dirty clothing, grime and dramatic scars on the face, decayed skin tone, desaturated ruined city background",
   vampire: "a gothic vampire portrait, pale porcelain skin, dark shadows around the eyes, deep red lips with subtle fangs, Victorian gothic clothing, candlelit dark atmosphere",
+  mummy: "an ancient Egyptian mummy transformation, aged linen bandages wrapped around the body and part of the face, dusty golden tomb with hieroglyphs and torchlight",
+  werewolf: "a werewolf transformation, subtle fur texture on the face, amber glowing eyes, sharp fangs, moonlit misty forest background, cinematic horror lighting",
+  witch: "a gothic witch or warlock portrait, wide-brimmed hat, dark flowing cloak, glowing green magic sparks, cauldron smoke and candles in a dark cottage",
+  ghost: "a translucent ghost apparition, pale desaturated skin, ethereal glow, semi-transparent edges dissolving into mist, haunted mansion corridor background",
+  skullday: "a Day of the Dead calavera portrait, ornate painted sugar-skull face makeup with flowers and patterns, marigolds and candles, festive night background",
+  frankenstein: "a classic movie-monster reanimation portrait, greenish grey skin tone, stitches and neck bolts, dim laboratory with electric arcs, black-and-white horror film mood",
+  demon: "a dark demon portrait, glowing red eyes, subtle horns, cracked ember skin texture, hellish smoke and firelight background",
+  alienhybrid: "a sci-fi alien hybrid portrait, subtly elongated features, iridescent skin sheen, large dark reflective eyes, UFO interior with cold blue light",
+  eerieclown: "a creepy carnival clown portrait, cracked white face paint, exaggerated smile makeup, tattered ruffled costume, dark abandoned circus tent background",
+
 };
 
 
