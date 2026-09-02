@@ -53,6 +53,7 @@ export const PHOTO_STYLE_GROUPS = [
   "World Holidays",
   "Bold & Glam Looks",
   "Uniforms & Costumes",
+  "Portrait & Editorial",
 ] as const;
 
 
@@ -310,6 +311,23 @@ export const PHOTO_STYLES: PhotoStyle[] = [
   { id: "sailoruniform", label: "Sailor", emoji: "⚓", group: "Uniforms & Costumes" },
   { id: "secretaryoffice", label: "Office secretary", emoji: "📎", group: "Uniforms & Costumes" },
   { id: "firefighter", label: "Firefighter", emoji: "🚒", group: "Uniforms & Costumes" },
+
+  { id: "luxuryhomesit", label: "Luxury home lounge", emoji: "🛋️", group: "Portrait & Editorial" },
+  { id: "marblevilla", label: "Marble villa portrait", emoji: "🏛️", group: "Portrait & Editorial" },
+  { id: "penthousewindow", label: "Penthouse window", emoji: "🌆", group: "Portrait & Editorial" },
+  { id: "mirrorselfie", label: "Mirror selfie", emoji: "🤳", group: "Portrait & Editorial" },
+  { id: "casualselfie", label: "Natural light selfie", emoji: "📱", group: "Portrait & Editorial" },
+  { id: "carselfie", label: "Car selfie", emoji: "🚗", group: "Portrait & Editorial" },
+  { id: "runwaymodel", label: "Runway model", emoji: "👠", group: "Portrait & Editorial" },
+  { id: "backstagemodel", label: "Backstage model", emoji: "🎬", group: "Portrait & Editorial" },
+  { id: "magazinecover", label: "Magazine cover", emoji: "📰", group: "Portrait & Editorial" },
+  { id: "vogueeditorial", label: "Fashion editorial", emoji: "🖤", group: "Portrait & Editorial" },
+  { id: "beautycloseup", label: "Beauty close-up", emoji: "💄", group: "Portrait & Editorial" },
+  { id: "glammakeover", label: "Glam makeover", emoji: "💅", group: "Portrait & Editorial" },
+  { id: "newhairstyle", label: "New hairstyle & color", emoji: "💇", group: "Portrait & Editorial" },
+  { id: "naturalnomakeup", label: "Clean natural makeup", emoji: "🌿", group: "Portrait & Editorial" },
+  { id: "studioheadshot", label: "Studio portrait", emoji: "📸", group: "Portrait & Editorial" },
+  { id: "blackwhiteportrait", label: "B&W fine art portrait", emoji: "⚫", group: "Portrait & Editorial" },
 ];
 
 
