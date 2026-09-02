@@ -72,7 +72,29 @@ export default function Suggestions() {
     toast.success("Thank you! Your suggestion was sent to the Unique team.");
     setTitle("");
     setDescription("");
+    loadMySuggestions();
   };
+
+  const loadMySuggestions = async () => {
+    if (!user) return;
+    setLoadingMine(true);
+    const { data, error } = await (supabase as any)
+      .from("platform_suggestions")
+      .select("id, category, title, description, status, response_message, response_at, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(50);
+    setLoadingMine(false);
+    if (error) {
+      console.error(error);
+      return;
+    }
+    setMySuggestions((data as MySuggestion[]) ?? []);
+  };
+
+  useEffect(() => {
+    loadMySuggestions();
+  }, [user?.id]);
 
   return (
     <div className="container mx-auto max-w-2xl px-4 py-8">
