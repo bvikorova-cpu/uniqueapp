@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useWallStreak } from "@/hooks/useWallStreak";
 import { format, parseISO } from "date-fns";
+import { localDateIso } from "@/lib/streakUtils";
 
 const milestones = [
   { days: 3, reward: "🔥", title: "Warm Up", xp: 50 },
@@ -21,7 +22,7 @@ export default function WallPostingStreaks() {
   const { data, isLoading } = useWallStreak();
   const currentStreak = data.currentStreak;
   const longestStreak = data.longestStreak;
-  const todayIso = new Date().toISOString().slice(0, 10);
+  const todayIso = localDateIso();
   const week = data.week;
 
   const scrollToComposer = () => {

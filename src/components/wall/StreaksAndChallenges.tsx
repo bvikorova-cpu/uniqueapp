@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { liveStreak } from "@/lib/streakUtils";
+import { liveStreak, localDateIso } from "@/lib/streakUtils";
 
 interface Challenge {
   id: string;
@@ -100,7 +100,7 @@ export function StreaksAndChallenges() {
   const currentXP = streakRow?.total_xp ?? 0;
   const level = Math.floor(currentXP / 200) + 1;
   const nextLevelXP = level * 200;
-  const todayXP = week?.find(d => d.day_date === new Date().toISOString().slice(0, 10))?.xp_earned ?? 0;
+  const todayXP = week?.find(d => d.day_date === localDateIso())?.xp_earned ?? 0;
 
   const { data: dbChallenges } = useQuery({
     queryKey: ["user-challenges", user?.id],
