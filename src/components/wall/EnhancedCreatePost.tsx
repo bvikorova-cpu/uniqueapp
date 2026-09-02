@@ -27,7 +27,6 @@ import {
   Sparkles,
   BarChart3,
   Mic,
-  Music
 } from "lucide-react";
 import { Tooltip,
   TooltipContent,
@@ -55,7 +54,6 @@ import { HashtagInput } from "./HashtagInput";
 import { TagFriendsDialog } from "./TagFriendsDialog";
 import { VoiceRecorder } from "./VoiceRecorder";
 
-import { MusicAttachPanel, type MusicAttachment } from "./MusicAttachPanel";
 import { AIContentAssistant } from "./AIContentAssistant";
 import { AnimatePresence } from "framer-motion";
 import { useHashtags } from "@/hooks/useHashtags";
@@ -105,8 +103,6 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
   const [showEvent, setShowEvent] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
-  const [showMusic, setShowMusic] = useState(false);
-  const [music, setMusic] = useState<MusicAttachment | null>(null);
   const [eventDraft, setEventDraft] = useState<PostEventDraft | null>(null);
 
   const [voiceFile, setVoiceFile] = useState<File | null>(null);
@@ -194,10 +190,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           audience: privacy,
           is_sensitive: isSensitive,
           sensitive_reason: isSensitive ? (sensitiveReason.trim() || null) : null,
-          event_id: createdEventId,
-          music_url: music?.url ?? null,
-          music_start_seconds: music?.startSeconds ?? 0,
-          music_end_seconds: music?.endSeconds ?? null } as any)
+          event_id: createdEventId } as any)
         .select()
         .single();
 
@@ -285,8 +278,6 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
       setPollData(null);
       setEventDraft(null);
       setVoiceFile(null);
-      setMusic(null);
-      setShowMusic(false);
       setTaggedFriends([]);
       onPostCreated();
     } catch (error: any) {
@@ -621,22 +612,6 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                 <TooltipContent>Voice Note</TooltipContent>
               </Tooltip>
 
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="flex-shrink-0 flex-col h-auto py-1 px-1 hover:bg-indigo-500/10 rounded-lg transition-all group"
-                    onClick={() => setShowMusic((v) => !v)}
-                  >
-                    <div className="p-1 rounded-full bg-indigo-500/10 group-hover:bg-indigo-500/20 transition-all">
-                      <Music className="h-3.5 w-3.5 text-indigo-600" />
-                    </div>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Music</TooltipContent>
-              </Tooltip>
 
               <AIContentAssistant
                 content={content}
@@ -645,23 +620,6 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             </div>
           </TooltipProvider>
 
-          {showMusic && (
-            <div className="mt-3">
-              <MusicAttachPanel
-                value={music}
-                onChange={(m) => {
-                  setMusic(m);
-                  if (m) {
-                    toast({ title: "Music attached", description: "It will play with your post media." });
-                  }
-                }}
-                previewMediaUrl={previewUrls[0] ?? null}
-                previewMediaType={
-                  files[0] ? (files[0].type.startsWith("video/") ? "video" : "image") : null
-                }
-              />
-            </div>
-          )}
 
 
 
