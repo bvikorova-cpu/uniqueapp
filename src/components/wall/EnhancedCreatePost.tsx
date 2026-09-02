@@ -54,7 +54,7 @@ import { TagFriendsDialog } from "./TagFriendsDialog";
 
 
 import { AIContentAssistant } from "./AIContentAssistant";
-import { AnimatePresence } from "framer-motion";
+
 import { useHashtags } from "@/hooks/useHashtags";
 import { usePolls } from "@/hooks/usePolls";
 import { MyCustomEmojis } from "@/components/common/MyCustomEmojis";
@@ -251,20 +251,6 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
         }
       }
 
-      // Voice note attachment
-      if (voiceFile) {
-        const voiceName = `${user.id}/voice-${Date.now()}.webm`;
-        const { error: voiceError } = await supabase.storage
-          .from("media")
-          .upload(voiceName, voiceFile, { contentType: voiceFile.type || "audio/webm" });
-        if (voiceError) throw voiceError;
-        const { data: { publicUrl: voiceUrl } } = supabase.storage.from("media").getPublicUrl(voiceName);
-        await supabase.from("media").insert({ post_id: post.id,
-          file_url: voiceUrl,
-          file_type: "audio",
-          file_name: voiceFile.name || "voice-note.webm" });
-      }
-
       // +20 XP + challenge tracking (toast for completion handled inside helper)
       trackChallengeAction("post", 20);
 
@@ -276,7 +262,6 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
       setPrivacy("public");
       setPollData(null);
       setEventDraft(null);
-      setVoiceFile(null);
       setTaggedFriends([]);
       onPostCreated();
     } catch (error: any) {
@@ -594,24 +579,6 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
               </Tooltip>
 
 
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="flex-shrink-0 flex-col h-auto py-1 px-1 hover:bg-pink-500/10 rounded-lg transition-all group"
-                    onClick={() => setShowVoiceRecorder(true)}
-                  >
-                    <div className="p-1 rounded-full bg-pink-500/10 group-hover:bg-pink-500/20 transition-all">
-                      <Mic className="h-3.5 w-3.5 text-pink-600" />
-                    </div>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Voice Note</TooltipContent>
-              </Tooltip>
-
-
               <AIContentAssistant
                 content={content}
                 onInsertContent={(text) => setContent((prev) => prev + " " + text)}
@@ -692,30 +659,6 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           />
         </div>
 
-        {/* Voice Recorder */}
-        <AnimatePresence>
-          {showVoiceRecorder && (
-            <VoiceRecorder
-              onRecorded={(file) => {
-                setVoiceFile(file);
-                setShowVoiceRecorder(false);
-                toast({ title: "🎙️ Voice note added!" });
-              }}
-              onCancel={() => setShowVoiceRecorder(false)}
-            />
-          )}
-        </AnimatePresence>
-
-        {/* Voice file preview */}
-        {voiceFile && !showVoiceRecorder && (
-          <div className="flex items-center gap-2 p-3 rounded-xl bg-accent/20 border border-white/5">
-            <Mic className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium flex-1">🎙️ Voice note attached</span>
-            <Button type="button" variant="ghost" size="sm" onClick={() => setVoiceFile(null)}>
-              <X className="w-4 h-4" />
-            </Button>
-          </div>
-        )}
 
         <Button 
           type="submit" 
