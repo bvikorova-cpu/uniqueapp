@@ -137,17 +137,6 @@ const stats = [
   { label: "Experiences", value: 33, suffix: "+" },
 ];
 
-import spotlightAvatars from "@/assets/spotlight-avatars.jpg";
-import spotlightRacing from "@/assets/spotlight-racing.jpg";
-import spotlightChef from "@/assets/spotlight-chef.jpg";
-import spotlightBeauty from "@/assets/spotlight-beauty.webp";
-
-const spotlightServices = [
-  { ...coreModules[4], spotlight: "🔥 Hot Now", image: spotlightBeauty },
-  { ...ecosystemModules[0], spotlight: "Most Popular", image: spotlightAvatars },
-  { ...ecosystemModules[4], spotlight: "Trending", image: spotlightRacing },
-  { ...ecosystemModules[3], spotlight: "New", image: spotlightChef },
-];
 
 // ── Animated Counter ──────────────────────────────────
 
@@ -175,12 +164,6 @@ const Index = () => {
   const navigate = useNavigate();
   const { recent, favorites, trackVisit, toggleFavorite, isFavorite } = useRecentServices();
   const [search, setSearch] = useState("");
-  const [spotlightIdx, setSpotlightIdx] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => setSpotlightIdx(i => (i + 1) % spotlightServices.length), 5000);
-    return () => clearInterval(timer);
-  }, []);
 
   const searchResults = useMemo(() => {
     if (!search.trim()) return [];
@@ -209,7 +192,6 @@ const Index = () => {
     navigate(path);
   };
 
-  const currentSpotlight = spotlightServices[spotlightIdx];
 
   return (
     <>
@@ -376,66 +358,6 @@ const Index = () => {
             src={sectionVideos.hero}
             label="Unique platform preview"
             caption="✨ Unique — your creative universe"
-          />
-        </section>
-        <section>
-          <SectionHeader icon={Star} title="Spotlight" badge="Featured" badgeClass="bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-yellow-600 border-yellow-500/30" />
-          <Card className="overflow-hidden border-border/30 shadow-xl group">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={spotlightIdx}
-                initial={{ opacity: 0, scale: 1.02 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.98 }}
-                transition={{ duration: 0.5 }}
-                className="relative cursor-pointer"
-                onClick={() => handleNavigate(currentSpotlight.path)}
-              >
-                {/* Background image */}
-                <img
-                  src={currentSpotlight.image}
-                  alt={currentSpotlight.title}
-                  className="w-full h-[220px] sm:h-[300px] object-cover"
-                  loading="lazy"
-                  width={800}
-                  height={512}
-                />
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                <div className={`absolute inset-0 bg-gradient-to-br ${currentSpotlight.gradient} opacity-30 mix-blend-overlay`} />
-
-                {/* Content */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
-                  <div className="flex items-end gap-4">
-                    <div className="flex-1">
-                      <Badge className="bg-white/20 text-white border-white/30 mb-3 backdrop-blur-sm">{currentSpotlight.spotlight}</Badge>
-                      <h3 className="text-2xl sm:text-4xl font-black text-white mb-1 drop-shadow-lg">{currentSpotlight.title}</h3>
-                      <p className="text-white/80 text-sm sm:text-base max-w-md">{currentSpotlight.description}</p>
-                    </div>
-                    <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0 group-hover:bg-white/30 transition-colors">
-                      <ArrowRight className="w-6 h-6 text-white" />
-                    </div>
-                  </div>
-
-                  {/* Dots */}
-                  <div className="flex justify-center gap-2 mt-5">
-                    {spotlightServices.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={(e) => { e.stopPropagation(); setSpotlightIdx(i); }}
-                        className={`h-2 rounded-full transition-all ${i === spotlightIdx ? 'bg-white w-8' : 'bg-white/40 w-2'}`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </Card>
-          <RewardedAdCard sectionKey="spotlight" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
-          <SectionVideoPreview
-            src={sectionVideos.megatalent}
-            label="Megatalent contest preview"
-            caption="🎤 Megatalent — growing quarterly cash prize"
           />
         </section>
         {favoriteModules.length > 0 && (
