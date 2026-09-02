@@ -469,6 +469,8 @@ const AdminCrawler = lazy(() => import("@/pages/admin/AdminCrawler"));
 const BugReportsManager = lazy(() => import("@/pages/admin/BugReportsManager"));
 const ReportBug = lazy(() => import("@/pages/ReportBug"));
 const MyBugReports = lazy(() => import("@/pages/MyBugReports"));
+const Suggestions = lazy(() => import("@/pages/Suggestions"));
+const AdminSuggestions = lazy(() => import("@/pages/admin/AdminSuggestions"));
 
 const AdminDunning = lazy(() => import("@/pages/admin/AdminDunning"));
 const AdminWinBack = lazy(() => import("@/pages/admin/AdminWinBack"));
