@@ -527,6 +527,8 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
         profiles: profMap.get(comment.user_id) || { id: comment.user_id, full_name: null, avatar_url: null } }));
 
       setComments(commentsWithProfiles);
+      setCommentsCount(commentsWithProfiles.length);
+
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } finally {
