@@ -520,7 +520,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       className="hidden md:flex fixed bottom-6 left-3 md:left-6 z-[9991] items-center gap-1.5 px-3 py-2 rounded-full bg-background/85 backdrop-blur-xl border border-primary/40 shadow-lg shadow-primary/20 text-xs font-bold text-primary"
     >
       <Sparkles className="h-3.5 w-3.5" />
-      Uni 🌐
+      <span className="notranslate" translate="no">Uni</span> 🌐
     </button>
   ) : null;
 
@@ -549,7 +549,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
                 </div>
                 <div>
                   <p className="font-black text-sm flex items-center gap-1.5">
-                    Uni
+                    <span className="notranslate" translate="no">Uni</span>
                     <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30">
                       Voice & chat
                     </span>

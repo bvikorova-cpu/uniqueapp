@@ -131,7 +131,7 @@ export const ProfileHero = ({ profile,
               }`}
               style={{ textShadow: "0 4px 24px rgba(0,0,0,0.6)" }}
             >
-              {profile.full_name || "No name"}
+              <span className="notranslate" translate="no">{profile.full_name || "No name"}</span>
             </h1>
 
             {(profile.occupation || profile.location) && (
