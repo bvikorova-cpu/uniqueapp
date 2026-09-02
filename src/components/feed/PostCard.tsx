@@ -1003,9 +1003,9 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
                       setShowImageModal(true);
                     }}
                     onReplyAdded={() => {
-                      setCommentsCount((prev) => prev + 1);
                       fetchComments();
                     }}
+
                     replies={comments}
                   />
                 ))
