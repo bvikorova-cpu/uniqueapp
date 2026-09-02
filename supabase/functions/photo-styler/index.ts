@@ -173,6 +173,39 @@ const STYLE_PROMPTS: Record<string, string> = {
   alienhybrid: "a sci-fi alien hybrid portrait, subtly elongated features, iridescent skin sheen, large dark reflective eyes, UFO interior with cold blue light",
   eerieclown: "a creepy carnival clown portrait, cracked white face paint, exaggerated smile makeup, tattered ruffled costume, dark abandoned circus tent background",
 
+  santaclaus: "a classic Santa Claus transformation, red velvet coat with white fur trim, wide black belt, red hat and a fluffy white beard, sack of gifts, snowy village night with warm lantern light",
+  mikulas: "a traditional Saint Nicholas look, long ornate bishop robe with gold embroidery, mitre and crozier, holding a basket of sweets, snowy old-town square in the evening",
+  christmaself: "a cheerful Christmas elf, green and red striped costume with pointed hat and curled shoes, Santa's toy workshop with wrapped presents in the background",
+  christmastree: "an elegant Christmas evening portrait, festive knitwear or a sparkling holiday dress, decorated Christmas tree with warm bokeh lights and presents behind",
+  christmasmarket: "a winter coat, scarf and gloves holding mulled wine at a European Christmas market at night, wooden stalls, string lights and gentle snowfall",
+  cozysweater: "a cozy oversized knitted winter sweater, warm cabin interior with a fireplace, blankets and hot cocoa, soft golden light",
+  nutcracker: "a theatrical nutcracker ballet look, ornate military-style jacket with gold braiding or a tulle ballet costume, snowy stage set with soft spotlights",
+  gingerbread: "a gingerbread-house winter wonderland scene, candy canes, icing decorations and pastel sweets, festive baker outfit",
+  newyearparty: "a glamorous New Year's Eve party look, sequin dress or sharp tuxedo, champagne glass, confetti in the air and golden balloons",
+  fireworksnight: "standing on a rooftop or balcony at midnight in elegant party clothing, huge colourful fireworks exploding over a city skyline",
+  goldglitter: "a luxurious gold-glitter gala portrait, shimmering metallic outfit, sparkling bokeh and falling golden confetti on a dark backdrop",
+  riocarnival: "a vibrant Rio carnival costume with a huge feathered headdress and sequins, samba parade street with colourful floats and dancers (tasteful, fully covered costume)",
+  venicecarnival: "an opulent Venetian carnival look, ornate baroque mask, cloak and tricorn hat, misty canals and stone bridges of Venice at dusk",
+  easterspring: "a pastel spring outfit in a blooming meadow with painted Easter eggs, daffodils, baskets and soft morning light",
+  easterbunny: "a playful Easter bunny costume with soft ears, pastel colours, basket of decorated eggs, sunny garden background",
+  eastertradition: "a traditional folk Easter look, embroidered folk costume, willow branches and hand-painted eggs, rustic village courtyard in spring",
+  springblossom: "a light spring outfit under blooming cherry blossom trees, drifting pink petals and soft sunlight",
+  halloweenparty: "a fun Halloween costume party look, tasteful spooky costume and makeup, carved jack-o-lanterns, cobwebs, purple and orange party lighting",
+  pumpkinfield: "an autumn outfit with a plaid shirt and hat in a golden pumpkin patch at sunset, hay bales and falling leaves",
+  hauntedcostume: "a stylish haunted-mansion costume portrait, dark elegant costume with a cape, candles, bats and fog in a gothic mansion hall",
+  valentine: "a romantic Valentine's portrait, elegant red or blush outfit, roses, heart balloons and warm candlelight bokeh",
+  chinesenewyear: "a festive Chinese New Year look, red and gold traditional attire, red lanterns, dragon decorations and fireworks in the background",
+  diwali: "a Diwali celebration portrait, richly embroidered festive traditional Indian attire, hundreds of glowing diya oil lamps, rangoli patterns and warm golden light",
+  holifestival: "a Holi festival of colours scene, white clothing splashed with vivid pink, yellow and blue powder, clouds of colour powder in the air, joyful crowd behind",
+  thanksgiving: "a warm autumn Thanksgiving family-dinner scene, cozy knit outfit, table with roast turkey, pumpkins and candles, warm home lighting",
+  stpatrick: "a cheerful St. Patrick's Day look, green outfit with a shamrock and a green hat, Irish pub street parade with green decorations",
+  oktoberfest: "a traditional Bavarian Oktoberfest look, dirndl or lederhosen outfit, beer tent with wooden benches, pretzels and festive garlands",
+  eidcelebration: "an elegant Eid celebration portrait, refined modest festive attire with delicate embroidery, crescent moon lanterns and ornate arches with warm golden light",
+  hanukkah: "a warm Hanukkah evening portrait, elegant blue and silver attire, glowing menorah candles, cozy family interior",
+  diadelosmuertos: "a festive Día de Muertos celebration look, elegant embroidered outfit with marigold flower crown, decorative sugar-skull face art, colourful altar and candles at night",
+  midsummer: "a Scandinavian midsummer festival look, white linen clothing and a wildflower wreath in the hair, maypole and green meadow in soft northern evening light",
+  songkran: "a joyful Songkran Thai water-festival scene, bright floral shirt, splashing water droplets frozen in the air, colourful Thai street celebration in the sun",
+
 };
 
 
@@ -190,6 +223,17 @@ const BASE_RULES =
   "Do not change the person's age, body shape or expression. Fully clothed, tasteful, no nudity, no sexual " +
   "content. Output only the finished artwork image.";
 
+const OUTFIT_RULES =
+  "Restyle the EXACT person in the supplied photo. The art style, the OUTFIT and the scene may change to " +
+  "match the chosen theme.\n" +
+  "Copy exactly, do not reinterpret or beautify: face identity and proportions, EYE COLOR, eyebrow and " +
+  "hair colour, skin tone, age, body shape and expression. Keep the pose and camera angle close to the source.\n" +
+  "Replace the clothing with a complete, well-fitted themed costume that matches the requested style, " +
+  "including matching accessories, hair styling and background. The costume must always be fully covering " +
+  "and tasteful.\n" +
+  "Do not change the person's age or body shape. No nudity, no lingerie, no sexual or suggestive content. " +
+  "Output only the finished artwork image.";
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -198,6 +242,7 @@ serve(async (req) => {
     const image = String(body?.image ?? "");
     const styles: string[] = Array.isArray(body?.styles) ? body.styles.slice(0, 4).map(String) : [];
     const customPrompt = String(body?.customPrompt ?? "").slice(0, 300);
+    const changeOutfit = body?.changeOutfit === true;
     const aspect = body?.aspect === "9:16" || body?.aspect === "16:9" ? body.aspect : "1:1";
 
     if (!image.startsWith("data:image/") && !/^https?:\/\//.test(image)) {
@@ -228,9 +273,13 @@ serve(async (req) => {
         results.push({ style, error: "Unknown style" });
         continue;
       }
-      const prompt = `${BASE_RULES}\n\nStyle: ${stylePrompt}.${
+      const prompt = `${changeOutfit ? OUTFIT_RULES : BASE_RULES}\n\nStyle: ${stylePrompt}.${
         customPrompt ? ` Extra direction: ${customPrompt}.` : ""
-      }\n\nReminder: the style affects only technique, texture and lighting treatment — the eye colour, hair colour, clothing (including sleeve length and neckline) and props stay identical to the source photo.`;
+      }\n\nReminder: ${
+        changeOutfit
+          ? "the face identity, eye colour, hair colour and skin tone stay identical to the source photo; the outfit, accessories and background follow the chosen theme."
+          : "the style affects only technique, texture and lighting treatment — the eye colour, hair colour, clothing (including sleeve length and neckline) and props stay identical to the source photo."
+      }`;
       try {
         const out = await tryVertexImage(prompt, aspect, 1, [image]);
         const b64 = out?.data?.[0]?.b64_json;
