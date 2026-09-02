@@ -1,15 +1,29 @@
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { CommentReactionPicker } from "./CommentReactionPicker";
 import { EnhancedCommentInput } from "./EnhancedCommentInput";
 import { VoiceCommentPlayer } from "@/components/wall/VoiceCommentPlayer";
 import { VerifiedBadge, getVerifiedRingClass } from "@/components/verified/VerifiedBadge";
-import { MapPin, MessageCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { MapPin, MessageCircle, ChevronDown, ChevronUp, Pencil, Trash2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useRewardsCosmeticsFor } from "@/hooks/useRewardsCosmetics";
 import { rewardsFrameClass, rewardsNameClass } from "@/lib/rewardsCosmeticStyles";
 import { enUS } from "date-fns/locale";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 
 interface CommentItemProps {
@@ -31,6 +45,48 @@ export const CommentItem = ({
 }: CommentItemProps) => {
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [showReplies, setShowReplies] = useState(true);
+  const { user } = useAuth();
+  const isOwner = !!user && user.id === comment.user_id;
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState(comment.content || "");
+  const [saving, setSaving] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const handleSaveEdit = async () => {
+    const trimmed = editValue.trim();
+    if (!trimmed) return;
+    setSaving(true);
+    const { error } = await supabase
+      .from("post_comments")
+      .update({ content: trimmed })
+      .eq("id", comment.id)
+      .eq("user_id", user!.id);
+    setSaving(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    comment.content = trimmed;
+    setIsEditing(false);
+    toast.success("Comment updated");
+    onReplyAdded();
+  };
+
+  const handleDelete = async () => {
+    const { error } = await supabase
+      .from("post_comments")
+      .delete()
+      .eq("id", comment.id)
+      .eq("user_id", user!.id);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    setConfirmDelete(false);
+    toast.success("Comment deleted");
+    onReplyAdded();
+  };
+
 
   const authorCosmetics = useRewardsCosmeticsFor(comment.user_id);
   const authorFrame = rewardsFrameClass(authorCosmetics.avatar_frame);
