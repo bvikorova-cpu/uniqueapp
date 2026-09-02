@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Lightbulb, Loader2, RefreshCw } from "lucide-react";
+import { Lightbulb, Loader2, MessageSquare, RefreshCw } from "lucide-react";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { AdminPageShell, AdminGlassCard } from "@/components/admin/AdminPageShell";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
@@ -21,6 +21,8 @@ interface Suggestion {
   page_url: string | null;
   status: string;
   admin_notes: string | null;
+  response_message: string | null;
+  response_at: string | null;
   created_at: string;
 }
 
@@ -39,6 +41,7 @@ export default function AdminSuggestions() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
   const [notes, setNotes] = useState<Record<string, string>>({});
+  const [responses, setResponses] = useState<Record<string, string>>({});
   const [savingId, setSavingId] = useState<string | null>(null);
 
   const load = async () => {
@@ -77,6 +80,31 @@ export default function AdminSuggestions() {
       return;
     }
     toast.success("Saved");
+    load();
+  };
+
+  const sendReply = async (id: string) => {
+    const message = (responses[id] ?? "").trim();
+    if (!message) {
+      toast.error("Please write a reply first.");
+      return;
+    }
+    setSavingId(id);
+    const { error } = await (supabase as any)
+      .from("platform_suggestions")
+      .update({
+        response_message: message,
+        response_at: new Date().toISOString(),
+        reviewed_at: new Date().toISOString(),
+      })
+      .eq("id", id);
+    setSavingId(null);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("Reply sent");
+    setResponses((r) => ({ ...r, [id]: "" }));
     load();
   };
 
@@ -176,6 +204,38 @@ export default function AdminSuggestions() {
                       {savingId === r.id ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save notes"}
                     </Button>
                   </div>
+
+                  {r.response_message ? (
+                    <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3 space-y-1">
+                      <div className="text-xs font-semibold text-emerald-600">Reply sent</div>
+                      <p className="text-sm whitespace-pre-wrap">{r.response_message}</p>
+                      <div className="text-xs text-muted-foreground">
+                        {r.response_at && formatDistanceToNow(new Date(r.response_at), { addSuffix: true })}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <Textarea
+                        rows={3}
+                        placeholder="Write a reply to the user..."
+                        value={responses[r.id] ?? ""}
+                        onChange={(e) => setResponses((prev) => ({ ...prev, [r.id]: e.target.value }))}
+                      />
+                      <Button
+                        size="sm"
+                        disabled={savingId === r.id}
+                        onClick={() => sendReply(r.id)}
+                        className="gap-2"
+                      >
+                        {savingId === r.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <MessageSquare className="h-4 w-4" />
+                        )}
+                        Reply
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </AdminGlassCard>
             ))}

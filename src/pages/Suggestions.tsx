@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -7,9 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Lightbulb, Loader2, ArrowLeft } from "lucide-react";
+import { Lightbulb, Loader2, ArrowLeft, MessageCircleReply } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
 
 const CATEGORIES = [
   { value: "general", label: "General feedback" },
@@ -20,6 +22,17 @@ const CATEGORIES = [
   { value: "content", label: "Content & moderation" },
 ];
 
+interface MySuggestion {
+  id: string;
+  category: string;
+  title: string;
+  description: string;
+  status: string;
+  response_message: string | null;
+  response_at: string | null;
+  created_at: string;
+}
+
 export default function Suggestions() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -28,6 +41,8 @@ export default function Suggestions() {
   const [description, setDescription] = useState("");
   const [email, setEmail] = useState(user?.email ?? "");
   const [submitting, setSubmitting] = useState(false);
+  const [mySuggestions, setMySuggestions] = useState<MySuggestion[]>([]);
+  const [loadingMine, setLoadingMine] = useState(true);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,7 +72,29 @@ export default function Suggestions() {
     toast.success("Thank you! Your suggestion was sent to the Unique team.");
     setTitle("");
     setDescription("");
+    loadMySuggestions();
   };
+
+  const loadMySuggestions = async () => {
+    if (!user) return;
+    setLoadingMine(true);
+    const { data, error } = await (supabase as any)
+      .from("platform_suggestions")
+      .select("id, category, title, description, status, response_message, response_at, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(50);
+    setLoadingMine(false);
+    if (error) {
+      console.error(error);
+      return;
+    }
+    setMySuggestions((data as MySuggestion[]) ?? []);
+  };
+
+  useEffect(() => {
+    loadMySuggestions();
+  }, [user?.id]);
 
   return (
     <div className="container mx-auto max-w-2xl px-4 py-8">
@@ -151,6 +188,48 @@ export default function Suggestions() {
             Send suggestion
           </Button>
         </form>
+
+        {user && (
+          <div className="pt-6 border-t space-y-3">
+            <h2 className="font-semibold flex items-center gap-2">
+              <MessageCircleReply className="h-4 w-4 text-primary" />
+              Your suggestions & replies
+            </h2>
+            {loadingMine ? (
+              <div className="flex justify-center py-6">
+                <Loader2 className="h-5 w-5 animate-spin text-primary" />
+              </div>
+            ) : mySuggestions.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No suggestions yet.</p>
+            ) : (
+              <div className="space-y-3">
+                {mySuggestions.map((s) => (
+                  <div key={s.id} className="rounded-lg border bg-card p-3 space-y-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Badge variant="outline">{s.status}</Badge>
+                      <span className="text-xs text-muted-foreground">
+                        {formatDistanceToNow(new Date(s.created_at), { addSuffix: true })}
+                      </span>
+                    </div>
+                    <div className="font-medium text-sm">{s.title}</div>
+                    <p className="text-sm text-muted-foreground line-clamp-3">{s.description}</p>
+                    {s.response_message && (
+                      <div className="rounded-md border border-emerald-500/20 bg-emerald-500/5 p-3 space-y-1">
+                        <div className="text-xs font-semibold text-emerald-600 flex items-center gap-1">
+                          <MessageCircleReply className="h-3 w-3" /> Reply from Unique team
+                        </div>
+                        <p className="text-sm whitespace-pre-wrap">{s.response_message}</p>
+                        <div className="text-xs text-muted-foreground">
+                          {s.response_at && formatDistanceToNow(new Date(s.response_at), { addSuffix: true })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </Card>
     </div>
   );
