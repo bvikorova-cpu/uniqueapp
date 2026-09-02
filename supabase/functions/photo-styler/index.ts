@@ -273,6 +273,7 @@ serve(async (req) => {
     const styles: string[] = Array.isArray(body?.styles) ? body.styles.slice(0, 4).map(String) : [];
     const customPrompt = String(body?.customPrompt ?? "").slice(0, 300);
     const changeOutfit = body?.changeOutfit === true;
+    const photoreal = body?.photoreal === true;
     const aspect = body?.aspect === "9:16" || body?.aspect === "16:9" ? body.aspect : "1:1";
 
     if (!image.startsWith("data:image/") && !/^https?:\/\//.test(image)) {
