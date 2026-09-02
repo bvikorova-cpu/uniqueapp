@@ -26,7 +26,6 @@ import {
 
   Sparkles,
   BarChart3,
-  Mic,
 } from "lucide-react";
 import { Tooltip,
   TooltipContent,
@@ -52,7 +51,7 @@ import { SchedulePostDialog } from "./SchedulePostDialog";
 import { CreatePollDialog } from "./CreatePollDialog";
 import { HashtagInput } from "./HashtagInput";
 import { TagFriendsDialog } from "./TagFriendsDialog";
-import { VoiceRecorder } from "./VoiceRecorder";
+
 
 import { AIContentAssistant } from "./AIContentAssistant";
 import { AnimatePresence } from "framer-motion";
