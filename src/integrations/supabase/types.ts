@@ -46457,6 +46457,54 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_suggestions: {
+        Row: {
+          admin_notes: string | null
+          category: string
+          created_at: string
+          description: string
+          email: string | null
+          id: string
+          page_url: string | null
+          response_at: string | null
+          response_message: string | null
+          reviewed_at: string | null
+          status: string
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          category?: string
+          created_at?: string
+          description: string
+          email?: string | null
+          id?: string
+          page_url?: string | null
+          response_at?: string | null
+          response_message?: string | null
+          reviewed_at?: string | null
+          status?: string
+          title: string
+          user_id?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          category?: string
+          created_at?: string
+          description?: string
+          email?: string | null
+          id?: string
+          page_url?: string | null
+          response_at?: string | null
+          response_message?: string | null
+          reviewed_at?: string | null
+          status?: string
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       poll_options: {
         Row: {
           created_at: string
