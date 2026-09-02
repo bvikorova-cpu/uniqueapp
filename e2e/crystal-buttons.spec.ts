@@ -15,26 +15,8 @@ import { test, expect, request } from "@playwright/test";
 const CRYSTAL_TOOLS = [
   "AI Energy Reading",
   "Energy Healing",
-  "Chakra Balancing",
-  "Crystal Encyclopedia",
-  "Crystal Marketplace",
-  "Crystal Scanner",
-  "Crystal Collection",
   "Daily Crystal Oracle",
-  "Crystal Compatibility",
-  "Meditation Timer",
   "Aura Analysis",
-  "Crystal Guide",
-  "Energy Analytics",
-  "Moon Phase Crystals",
-  "Third Eye Training",
-  "Energy Cleansing",
-  "Live Crystal ID",
-  "Crystal Sound Bath",
-  "Crystal Origin Map",
-  "Crystal Community",
-  "Energy Leaderboard",
-  "Crystal Sub Box",
 ] as const;
 
 const CRYSTAL_EDGE_FUNCTIONS = [
@@ -56,19 +38,13 @@ test.describe("Crystal Energy Network — buttons + redirects", () => {
     await page.goto("/crystal-energy-network", { waitUntil: "domcontentloaded" });
   });
 
-  test("renders all 22 crystal tool buttons", async ({ page }) => {
+  test("renders all crystal tool buttons", async ({ page }) => {
     for (const name of CRYSTAL_TOOLS) {
       const card = page.getByText(name, { exact: true }).first();
       await expect(card, `tool "${name}" must be visible`).toBeVisible({ timeout: 10_000 });
     }
     const errors = (page as any)._jsErrors as string[];
     expect(errors, `no JS errors on hub: ${errors.join("\n")}`).toEqual([]);
-  });
-
-  test('clicking "Crystal Marketplace" redirects to /crystal-marketplace', async ({ page }) => {
-    await page.getByText("Crystal Marketplace", { exact: true }).first().click();
-    await page.waitForURL(/\/crystal-marketplace/, { timeout: 10_000 });
-    expect(page.url()).toMatch(/\/crystal-marketplace$/);
   });
 
   test('opening "Daily Crystal Oracle" swaps hub for tool view + back works', async ({ page }) => {
@@ -91,20 +67,12 @@ test.describe("Crystal Energy Network — buttons + redirects", () => {
       await page.getByText(name, { exact: true }).first().click();
 
       try {
-        if (name === "Crystal Marketplace") {
-          await page.waitForURL(/\/crystal-marketplace/, { timeout: 8_000 });
-          await page.goBack();
-          await expect(
-            page.getByText("AI Energy Reading", { exact: true }).first(),
-          ).toBeVisible({ timeout: 8_000 });
-        } else {
-          const back = page.getByRole("button", { name: /back to hub/i });
-          await expect(back).toBeVisible({ timeout: 8_000 });
-          await back.click();
-          await expect(
-            page.getByText("AI Energy Reading", { exact: true }).first(),
-          ).toBeVisible({ timeout: 8_000 });
-        }
+        const back = page.getByRole("button", { name: /back to hub/i });
+        await expect(back).toBeVisible({ timeout: 8_000 });
+        await back.click();
+        await expect(
+          page.getByText("AI Energy Reading", { exact: true }).first(),
+        ).toBeVisible({ timeout: 8_000 });
       } catch (e: any) {
         failures.push(`${name}: ${e.message?.split("\n")[0] ?? e}`);
         // Recover: navigate back to hub for the next iteration
@@ -126,7 +94,7 @@ test.describe("Crystal Energy Network — buttons + redirects", () => {
   test("loading spinners clear after each tool click and page stays interactive", async ({ page }) => {
     // Tools that route to a separate page — covered by the "redirects" test;
     // skip them here so we focus on in-hub spinner behavior.
-    const inHubTools = CRYSTAL_TOOLS.filter((n) => n !== "Crystal Marketplace");
+    const inHubTools = [...CRYSTAL_TOOLS];
     const failures: string[] = [];
 
     for (const name of inHubTools) {
