@@ -137,17 +137,6 @@ const stats = [
   { label: "Experiences", value: 33, suffix: "+" },
 ];
 
-import spotlightAvatars from "@/assets/spotlight-avatars.jpg";
-import spotlightRacing from "@/assets/spotlight-racing.jpg";
-import spotlightChef from "@/assets/spotlight-chef.jpg";
-import spotlightBeauty from "@/assets/spotlight-beauty.webp";
-
-const spotlightServices = [
-  { ...coreModules[4], spotlight: "🔥 Hot Now", image: spotlightBeauty },
-  { ...ecosystemModules[0], spotlight: "Most Popular", image: spotlightAvatars },
-  { ...ecosystemModules[4], spotlight: "Trending", image: spotlightRacing },
-  { ...ecosystemModules[3], spotlight: "New", image: spotlightChef },
-];
 
 // ── Animated Counter ──────────────────────────────────
 
