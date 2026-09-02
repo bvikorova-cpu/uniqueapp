@@ -364,6 +364,26 @@ export function GlobalSearch() {
 
         <ScrollArea className="max-h-[400px]">
           <div className="p-2 space-y-3">
+            {/* Quick starts — shown before the user types anything */}
+            {!query.trim() && !selectedCategory && (
+              <div>
+                <p className="px-2 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  Try this first
+                </p>
+                <div className="flex flex-wrap gap-1.5 px-2 pb-1">
+                  {QUICK_STARTS.map((q) => (
+                    <button
+                      key={q.path}
+                      onClick={() => handleResultClick(q.path)}
+                      className="rounded-full border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-medium hover:bg-primary/10 transition-colors"
+                    >
+                      {q.emoji} {q.title}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* People autocomplete — starts at 1 character */}
             {query.trim().length >= 1 && (
               <div>
