@@ -202,15 +202,8 @@ export async function tryVertexImage(
   const imageParts: Array<Record<string, unknown>> = [];
   const refs = Array.isArray(refImages) ? refImages : refImages ? [refImages] : [];
   for (const ref of refs.slice(0, 3)) {
-    const labelledRef = typeof ref === "object" && ref !== null
-      ? ref as { image?: unknown; label?: unknown }
-      : null;
-    const source = labelledRef ? String(labelledRef.image ?? "") : String(ref);
-    const inline = await toInlineImage(source, rawFetch);
-    if (inline) {
-      if (labelledRef?.label) imageParts.push({ text: String(labelledRef.label) });
-      imageParts.push({ inlineData: inline });
-    }
+    const inline = await toInlineImage(String(ref), rawFetch);
+    if (inline) imageParts.push({ inlineData: inline });
   }
 
   const models = [
