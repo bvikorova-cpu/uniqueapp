@@ -83,6 +83,31 @@ export default function AdminSuggestions() {
     load();
   };
 
+  const sendReply = async (id: string) => {
+    const message = (responses[id] ?? "").trim();
+    if (!message) {
+      toast.error("Please write a reply first.");
+      return;
+    }
+    setSavingId(id);
+    const { error } = await (supabase as any)
+      .from("platform_suggestions")
+      .update({
+        response_message: message,
+        response_at: new Date().toISOString(),
+        reviewed_at: new Date().toISOString(),
+      })
+      .eq("id", id);
+    setSavingId(null);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("Reply sent");
+    setResponses((r) => ({ ...r, [id]: "" }));
+    load();
+  };
+
   return (
     <AdminGuard>
       <AdminPageShell>
