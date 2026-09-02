@@ -8,6 +8,10 @@ export interface WallStats {
   streak: number;
 }
 
+// Lightweight module-level cache so multiple mounts / remounts don't refetch
+let statsCache: { data: WallStats; at: number; userId?: string | null } | null = null;
+const CACHE_TTL = 5 * 60 * 1000;
+
 export function useWallStats(userId?: string | null, enabled = true) { const [stats, setStats] = useState<WallStats>({
     postsToday: 0,
     activeUsers: 0,
@@ -19,7 +23,11 @@ export function useWallStats(userId?: string | null, enabled = true) { const [st
 
     let cancelled = false;
 
-    const load = async () => {
+    const load = async (force = false) => {
+      if (!force && statsCache && statsCache.userId === userId && Date.now() - statsCache.at < CACHE_TTL) {
+        setStats(statsCache.data);
+        return;
+      }
       const startOfDay = new Date();
       startOfDay.setHours(0, 0, 0, 0);
       const iso = startOfDay.toISOString();
@@ -44,15 +52,17 @@ export function useWallStats(userId?: string | null, enabled = true) { const [st
       }
 
 
-      if (cancelled) return;
-      setStats({ postsToday: postsRes.count ?? 0,
+      const next: WallStats = { postsToday: postsRes.count ?? 0,
         activeUsers: (activeRes.count ?? 0) || (usersRes.count ?? 0),
         interactionsToday: (likesRes.count ?? 0) + (commentsRes.count ?? 0),
-        streak });
+        streak };
+      statsCache = { data: next, at: Date.now(), userId };
+      if (cancelled) return;
+      setStats(next);
     };
 
     load();
-    const t = setInterval(load, 60_000);
+    const t = setInterval(() => load(true), CACHE_TTL);
     return () => {
       cancelled = true;
       clearInterval(t);
