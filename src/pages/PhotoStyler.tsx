@@ -38,6 +38,7 @@ const PhotoStyler = () => {
   const [customPrompt, setCustomPrompt] = useState("");
   const [aspect, setAspect] = useState<"1:1" | "9:16" | "16:9">("1:1");
   const [changeOutfit, setChangeOutfit] = useState(false);
+  const [photoreal, setPhotoreal] = useState(false);
   const [busy, setBusy] = useState(false);
   const [screening, setScreening] = useState(false);
   const [results, setResults] = useState<StyledResult[]>([]);
