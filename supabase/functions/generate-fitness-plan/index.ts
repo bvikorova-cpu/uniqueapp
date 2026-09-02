@@ -269,7 +269,7 @@ IMPORTANT: "meal_plan.days" must contain EXACTLY ${n} entries numbered 1..${n} (
       .from("fitness_plans")
       .update({
         workout_plan: { ...(planData.workout_plan || {}), days: workoutDays, total_days: days, details },
-        meal_plan: { ...(planData.meal_plan || {}), days: mealDays, total_days: days, details },
+        meal_plan: { ...(mealData?.meal_plan || {}), days: mealDays, total_days: days, details },
 
         summary: planData.summary || "",
         status: "completed",
