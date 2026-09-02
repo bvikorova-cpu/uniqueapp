@@ -359,7 +359,7 @@ serve(async (req) => {
       try {
         const ref = STYLE_REFS[style];
         const refPrompt = ref
-          ? `${prompt}\n\nBRAND REFERENCE: a second image is supplied purely as a brand reference. Copy its Unique branding exactly — the mascot / car design, the purple-to-hot-pink gradient, the white calligraphic 'U' with the sparkle, the logo tile placement and the 'www.uniqueapp.fun' text placement. Never copy the person from the reference image; the person must come from the first photo. Never print any text on the mascot's body.`
+          ? `${prompt}\n\nTWO IMAGES ARE SUPPLIED.\nIMAGE 1 = THE USER PHOTO. The person in the final artwork MUST be this exact person: same face identity, eye colour, hair colour and length, skin tone, age, gender and body shape. This is the only human that may appear in the output.\nIMAGE 2 = BRAND REFERENCE ONLY. Use it exclusively for the Unique branding: mascot design and proportions / car design, the purple-to-hot-pink gradient, the white calligraphic 'U' with the sparkle, the logo tile and the 'www.uniqueapp.fun' text placement.\nSTRICT: the human being in IMAGE 2 (the girl) must NOT appear, must not be copied, blended, mirrored or used as inspiration for the face, hair, clothing, pose or body. If the user photo shows a man, child or older person, the output must show that person — never the reference girl. Exactly ONE person in the output, taken from IMAGE 1. Never print any text on the mascot's body.`
           : prompt;
         const out = await tryVertexImage(refPrompt, aspect, 1, ref ? [image, ref] : [image]);
         const b64 = out?.data?.[0]?.b64_json;
