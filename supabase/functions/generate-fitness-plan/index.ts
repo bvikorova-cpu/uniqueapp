@@ -95,14 +95,12 @@ serve(async (req) => {
 
     const days = PLAN_DAYS[resolvedType];
     // Ask the model for a compact repeatable rotation, then expand it to the full day count
-    const cycleDays = Math.min(days, 14);
+    const cycleDays = Math.min(days, 7);
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
-    const prompt = `You are a certified personal trainer and nutritionist. Create a detailed, personalized ${days}-day weight loss plan.
-
-USER PROFILE:
+    const profileBlock = `USER PROFILE:
 - Age: ${plan.age} years
 - Gender: ${plan.gender}
 - Height: ${plan.height_cm} cm
@@ -111,79 +109,7 @@ USER PROFILE:
 - Activity level: ${plan.activity_level}
 - Fitness goal: ${plan.fitness_goal}
 ${plan.dietary_restrictions?.length ? `- Dietary restrictions: ${plan.dietary_restrictions.join(", ")}` : ""}
-${plan.health_conditions?.length ? `- Health conditions: ${plan.health_conditions.join(", ")}` : ""}
-
-Generate a JSON response with this EXACT structure:
-{
-  "summary": "Brief personalized overview (2-3 sentences)",
-  "daily_calories": 1800,
-  "daily_protein_g": 120,
-  "daily_carbs_g": 200,
-  "daily_fats_g": 60,
-  "workout_plan": {
-    "days": [
-      {
-        "day": 1,
-        "title": "Upper Body Strength",
-        "duration_min": 45,
-        "calories_burned": 300,
-        "exercises": [
-          {
-            "name": "Push-ups",
-            "sets": 3,
-            "reps": "12-15",
-            "rest_sec": 60,
-            "notes": "Keep core tight"
-          }
-        ],
-        "warmup": "5 min light cardio",
-        "cooldown": "5 min stretching"
-      }
-    ]
-  },
-  "meal_plan": {
-    "days": [
-      {
-        "day": 1,
-        "total_calories": 1800,
-        "meals": {
-          "breakfast": { "name": "Oatmeal with berries", "calories": 350, "protein_g": 15, "ingredients": ["80g oats", "100g berries", "200ml milk"] },
-          "snack1": { "name": "Apple with almond butter", "calories": 200, "protein_g": 6, "ingredients": ["1 apple", "15g almond butter"] },
-          "lunch": { "name": "Chicken salad", "calories": 500, "protein_g": 40, "ingredients": ["200g chicken breast", "mixed greens", "olive oil dressing"] },
-          "snack2": { "name": "Greek yogurt", "calories": 150, "protein_g": 15, "ingredients": ["150g Greek yogurt", "10g honey"] },
-          "dinner": { "name": "Salmon with vegetables", "calories": 600, "protein_g": 44, "ingredients": ["200g salmon", "200g broccoli", "100g sweet potato"] }
-        }
-      }
-    ]
-  },
-  "tips": ["Drink 2-3L water daily", "Sleep 7-8 hours", "Track progress weekly"]
-}
-
-IMPORTANT: Generate EXACTLY ${cycleDays} days (a repeatable rotation) in BOTH "workout_plan.days" AND "meal_plan.days" — both arrays must have ${cycleDays} entries numbered 1..${cycleDays}. This rotation will be repeated to cover the full ${days}-day program. Include 1-2 rest days per week (rest day = title "Active Recovery / Rest", empty or light exercises). Keep exercise notes and ingredient lists short. Make meals realistic and diverse. All measurements in grams/ml.`;
-
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: "You are a professional fitness coach and nutritionist. Always respond with valid JSON only." },
-          { role: "user", content: prompt },
-        ],
-        response_format: { type: "json_object" },
-        max_tokens: 16000 }) });
-
-    if (!aiResponse.ok) {
-      const errText = await aiResponse.text();
-      console.error("AI gateway error:", aiResponse.status, errText);
-      await serviceClient.from("fitness_plans").update({ status: "failed" }).eq("id", plan_row_id);
-      throw new Error("AI generation failed");
-    }
-
-    const aiData = await aiResponse.json();
-    const content = aiData.choices[0].message.content;
+${plan.health_conditions?.length ? `- Health conditions: ${plan.health_conditions.join(", ")}` : ""}`;
 
     // Tolerant JSON extraction: handles fenced blocks and truncated output
     const repairJson = (raw: string): any => {
@@ -193,7 +119,6 @@ IMPORTANT: Generate EXACTLY ${cycleDays} days (a repeatable rotation) in BOTH "w
       if (start < 0) throw new Error("no json");
       s = s.slice(start);
       try { return JSON.parse(s); } catch { /* fall through to repair */ }
-      // Close unterminated string / trim trailing partial token, then balance braces
       let inStr = false, esc = false;
       const stack: string[] = [];
       let lastSafe = -1;
@@ -208,7 +133,6 @@ IMPORTANT: Generate EXACTLY ${cycleDays} days (a repeatable rotation) in BOTH "w
         if (c === "}" || c === "]") lastSafe = i;
       }
       let candidate = s.slice(0, lastSafe + 1);
-      // recompute stack for candidate
       inStr = false; esc = false;
       const st2: string[] = [];
       for (let i = 0; i < candidate.length; i++) {
@@ -224,13 +148,88 @@ IMPORTANT: Generate EXACTLY ${cycleDays} days (a repeatable rotation) in BOTH "w
       return JSON.parse(candidate);
     };
 
-    let planData;
+    const callAI = async (userPrompt: string): Promise<any> => {
+      const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash",
+          messages: [
+            { role: "system", content: "You are a professional fitness coach and nutritionist. Always respond with valid JSON only." },
+            { role: "user", content: userPrompt },
+          ],
+          response_format: { type: "json_object" },
+          max_tokens: 16000 }) });
+      if (!aiResponse.ok) {
+        const errText = await aiResponse.text();
+        console.error("AI gateway error:", aiResponse.status, errText);
+        throw new Error("AI generation failed");
+      }
+      const aiData = await aiResponse.json();
+      return repairJson(aiData.choices?.[0]?.message?.content ?? "");
+    };
+
+    const workoutPrompt = `You are a certified personal trainer. Create the workout rotation for a personalized ${days}-day plan.
+
+${profileBlock}
+
+Respond with JSON ONLY in this EXACT structure:
+{
+  "summary": "Brief personalized overview of the whole ${days}-day plan (2-3 sentences)",
+  "daily_calories": 1800,
+  "daily_protein_g": 120,
+  "daily_carbs_g": 200,
+  "daily_fats_g": 60,
+  "tips": ["Drink 2-3L water daily", "Sleep 7-8 hours", "Track progress weekly"],
+  "workout_plan": { "days": [ { "day": 1, "title": "Upper Body Strength", "duration_min": 45, "calories_burned": 300, "warmup": "5 min light cardio", "cooldown": "5 min stretching", "exercises": [ { "name": "Push-ups", "sets": 3, "reps": "12-15", "rest_sec": 60, "notes": "Keep core tight" } ] } ] }
+}
+
+IMPORTANT: "workout_plan.days" must contain EXACTLY ${cycleDays} entries numbered 1..${cycleDays} (a repeatable weekly rotation, repeated to cover ${days} days). Include 1-2 rest days (title "Active Recovery / Rest"). Keep notes short.`;
+
+    const mealPrompt = (n: number) => `You are a certified nutritionist. Create the meal rotation for a personalized ${days}-day plan.
+
+${profileBlock}
+
+Respond with JSON ONLY in this EXACT structure:
+{
+  "meal_plan": { "days": [ { "day": 1, "total_calories": 1800, "meals": {
+    "breakfast": { "name": "Oatmeal with berries", "calories": 350, "protein_g": 15, "ingredients": ["80g oats", "100g berries", "200ml milk"] },
+    "snack1": { "name": "Apple with almond butter", "calories": 200, "protein_g": 6, "ingredients": ["1 apple", "15g almond butter"] },
+    "lunch": { "name": "Chicken salad", "calories": 500, "protein_g": 40, "ingredients": ["200g chicken breast", "mixed greens", "olive oil dressing"] },
+    "snack2": { "name": "Greek yogurt", "calories": 150, "protein_g": 15, "ingredients": ["150g Greek yogurt", "10g honey"] },
+    "dinner": { "name": "Salmon with vegetables", "calories": 600, "protein_g": 44, "ingredients": ["200g salmon", "200g broccoli", "100g sweet potato"] } } } ] }
+}
+
+IMPORTANT: "meal_plan.days" must contain EXACTLY ${n} entries numbered 1..${n} (a repeatable rotation, repeated to cover ${days} days). Diverse realistic meals, short ingredient lists, grams/ml. Respect dietary restrictions.`;
+
+    let planData: any;
+    let mealData: any;
     try {
-      planData = repairJson(content);
+      const [w, m] = await Promise.all([
+        callAI(workoutPrompt),
+        callAI(mealPrompt(cycleDays)),
+      ]);
+      planData = w;
+      mealData = m;
     } catch (e) {
-      console.error("Parse error:", e, "Content tail:", String(content).slice(-500));
+      console.error("Generation error:", e);
       await serviceClient.from("fitness_plans").update({ status: "failed" }).eq("id", plan_row_id);
-      throw new Error("Failed to parse AI response");
+      throw new Error("Failed to generate plan");
+    }
+
+    const validMealDays = (d: any) =>
+      (Array.isArray(d?.meal_plan?.days) ? d.meal_plan.days : []).filter((x: any) => x && x.meals);
+
+    // Retry the meal plan alone (smaller rotation) if the model returned nothing usable
+    if (!validMealDays(mealData).length) {
+      for (const n of [5, 3]) {
+        try {
+          mealData = await callAI(mealPrompt(n));
+          if (validMealDays(mealData).length) break;
+        } catch (e) { console.error("Meal retry failed:", e); }
+      }
     }
 
     // Expand a generated cycle into the full requested day count so nothing is missing.
@@ -246,8 +245,17 @@ IMPORTANT: Generate EXACTLY ${cycleDays} days (a repeatable rotation) in BOTH "w
       return out;
     };
 
-    const workoutDays = expandDays(planData?.workout_plan?.days, days);
-    const mealDays = expandDays(planData?.meal_plan?.days, days);
+    const workoutDays = expandDays(
+      (Array.isArray(planData?.workout_plan?.days) ? planData.workout_plan.days : []).filter((x: any) => x && (x.title || x.exercises)),
+      days,
+    );
+    const mealDays = expandDays(validMealDays(mealData), days);
+
+    if (!workoutDays.length || !mealDays.length) {
+      await serviceClient.from("fitness_plans").update({ status: "failed" }).eq("id", plan_row_id);
+      throw new Error("Plan generation incomplete, please try again");
+    }
+
 
     const details = {
       daily_calories: planData.daily_calories,
