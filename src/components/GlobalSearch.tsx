@@ -209,6 +209,18 @@ const CATEGORY_COLORS: Record<string, string> = { "Main": "bg-primary/10 text-pr
   "Rewards": "bg-fuchsia-500/10 text-fuchsia-500",
   "Account": "bg-slate-500/10 text-slate-500" };
 
+// Quick starts shown before the user types — helps newcomers orient themselves.
+const QUICK_STARTS: { title: string; path: string; emoji: string }[] = [
+  { title: "Wall", path: "/wall", emoji: "🗣️" },
+  { title: "Guided tour", path: "/about-platform", emoji: "🧭" },
+  { title: "Megatalent", path: "/megatalent", emoji: "👑" },
+  { title: "Games", path: "/games-hub", emoji: "🎮" },
+  { title: "AI Credits", path: "/ai-credits", emoji: "✨" },
+  { title: "Rewards", path: "/rewards", emoji: "🏆" },
+  { title: "Marketplace", path: "/marketplace", emoji: "🛠️" },
+  { title: "Kids", path: "/kids", emoji: "🧒" },
+];
+
 export function GlobalSearch() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
