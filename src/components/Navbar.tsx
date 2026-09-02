@@ -9,7 +9,7 @@ import { DropdownMenu,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Sun, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, DollarSign, Image, Gem, Building2, Coffee, Bot, Globe, Lock, Mic2, Car, Clock, Dna, Scale, Shield, AlertTriangle, TrendingUp, Ghost, PenTool, Ticket, Info, Megaphone, Scissors, Diamond, RefreshCw, Cake, Library, Film, Puzzle } from "lucide-react";
+import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Sun, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, DollarSign, Image, Gem, Building2, Coffee, Bot, Globe, Lock, Mic2, Car, Clock, Dna, Scale, Shield, AlertTriangle, TrendingUp, Ghost, PenTool, Ticket, Info, Megaphone, Scissors, Diamond, RefreshCw, Cake, Library, Film, Puzzle, Compass, ChevronDown, Pin, PinOff } from "lucide-react";
 import { useTheme } from "next-themes";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import MessagesBell from "@/components/messenger/MessagesBell";
@@ -29,6 +29,7 @@ import { MobileCreditsPill } from "@/components/wall/MobileCreditsPill";
 import { useAuth } from "@/contexts/AuthContext";
 import { MemberBadge } from "@/components/club/MemberBadge";
 import { BetaTesterNotice } from "@/components/onboarding/BetaTesterNotice";
+import { useShortcuts } from "@/hooks/useShortcuts";
 
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
@@ -38,6 +39,8 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
+  const { shortcuts, toggle: toggleShortcutPath } = useShortcuts();
+  const [openMobileGroup, setOpenMobileGroup] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) {
