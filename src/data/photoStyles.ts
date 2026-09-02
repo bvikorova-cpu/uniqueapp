@@ -51,6 +51,8 @@ export const PHOTO_STYLE_GROUPS = [
   "Easter & Spring Holidays",
   "Halloween Party",
   "World Holidays",
+  "Bold & Glam Looks",
+  "Uniforms & Costumes",
 ] as const;
 
 
@@ -242,6 +244,7 @@ export const PHOTO_STYLES: PhotoStyle[] = [
   { id: "moroccanriad", label: "Moroccan riad", emoji: "🕌", group: "Aesthetic Getaways" },
 
   { id: "santaclaus", label: "Santa Claus", emoji: "🎅", group: "Christmas & Winter Holidays" },
+  { id: "santafemale", label: "Mrs. Santa", emoji: "🤶", group: "Christmas & Winter Holidays" },
   { id: "mikulas", label: "St. Nicholas", emoji: "⛪", group: "Christmas & Winter Holidays" },
   { id: "christmaself", label: "Christmas elf", emoji: "🧝", group: "Christmas & Winter Holidays" },
   { id: "christmastree", label: "Christmas tree evening", emoji: "🎄", group: "Christmas & Winter Holidays" },
@@ -277,6 +280,26 @@ export const PHOTO_STYLES: PhotoStyle[] = [
   { id: "diadelosmuertos", label: "Día de Muertos fiesta", emoji: "🌺", group: "World Holidays" },
   { id: "midsummer", label: "Midsummer festival", emoji: "🌻", group: "World Holidays" },
   { id: "songkran", label: "Songkran water festival", emoji: "💦", group: "World Holidays" },
+
+  { id: "bikinibeach", label: "Beach swimwear", emoji: "👙", group: "Bold & Glam Looks" },
+  { id: "poolsideglam", label: "Poolside glam", emoji: "🏖️", group: "Bold & Glam Looks" },
+  { id: "satinlingerie", label: "Satin lingerie set", emoji: "🎀", group: "Bold & Glam Looks" },
+  { id: "silkrobe", label: "Silk robe morning", emoji: "🕊️", group: "Bold & Glam Looks" },
+  { id: "gymfitness", label: "Gym fitness look", emoji: "💪", group: "Bold & Glam Looks" },
+  { id: "leatherbiker", label: "Leather biker", emoji: "🏍️", group: "Bold & Glam Looks" },
+  { id: "slitgown", label: "Evening slit gown", emoji: "💃", group: "Bold & Glam Looks" },
+  { id: "latexstage", label: "Latex stage look", emoji: "🖤", group: "Bold & Glam Looks" },
+
+  { id: "schoolgirluniform", label: "Schoolgirl uniform", emoji: "🎒", group: "Uniforms & Costumes" },
+  { id: "nurseuniform", label: "Nurse", emoji: "🩺", group: "Uniforms & Costumes" },
+  { id: "flightattendant", label: "Flight attendant", emoji: "✈️", group: "Uniforms & Costumes" },
+  { id: "policeuniform", label: "Police officer", emoji: "👮", group: "Uniforms & Costumes" },
+  { id: "frenchmaid", label: "Maid costume", emoji: "🧹", group: "Uniforms & Costumes" },
+  { id: "cheerleader", label: "Cheerleader", emoji: "📣", group: "Uniforms & Costumes" },
+  { id: "cowgirl", label: "Cowgirl / cowboy", emoji: "🤠", group: "Uniforms & Costumes" },
+  { id: "sailoruniform", label: "Sailor", emoji: "⚓", group: "Uniforms & Costumes" },
+  { id: "secretaryoffice", label: "Office secretary", emoji: "📎", group: "Uniforms & Costumes" },
+  { id: "firefighter", label: "Firefighter", emoji: "🚒", group: "Uniforms & Costumes" },
 ];
 
 
