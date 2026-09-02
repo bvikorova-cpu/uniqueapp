@@ -46,6 +46,11 @@ export const PHOTO_STYLE_GROUPS = [
   "World Metropolises",
   "Mountain Adventure",
   "Aesthetic Getaways",
+  "Christmas & Winter Holidays",
+  "New Year & Carnival",
+  "Easter & Spring Holidays",
+  "Halloween Party",
+  "World Holidays",
 ] as const;
 
 
@@ -235,7 +240,45 @@ export const PHOTO_STYLES: PhotoStyle[] = [
   { id: "tuscanyvineyard", label: "Tuscan vineyard", emoji: "🍷", group: "Aesthetic Getaways" },
   { id: "santorini", label: "Greek Santorini", emoji: "🇬🇷", group: "Aesthetic Getaways" },
   { id: "moroccanriad", label: "Moroccan riad", emoji: "🕌", group: "Aesthetic Getaways" },
+
+  { id: "santaclaus", label: "Santa Claus", emoji: "🎅", group: "Christmas & Winter Holidays" },
+  { id: "mikulas", label: "St. Nicholas", emoji: "⛪", group: "Christmas & Winter Holidays" },
+  { id: "christmaself", label: "Christmas elf", emoji: "🧝", group: "Christmas & Winter Holidays" },
+  { id: "christmastree", label: "Christmas tree evening", emoji: "🎄", group: "Christmas & Winter Holidays" },
+  { id: "christmasmarket", label: "Christmas market", emoji: "🕯️", group: "Christmas & Winter Holidays" },
+  { id: "cozysweater", label: "Cozy sweater winter", emoji: "🧣", group: "Christmas & Winter Holidays" },
+  { id: "nutcracker", label: "Nutcracker ballet", emoji: "🩰", group: "Christmas & Winter Holidays" },
+  { id: "gingerbread", label: "Gingerbread world", emoji: "🍪", group: "Christmas & Winter Holidays" },
+
+  { id: "newyearparty", label: "New Year party", emoji: "🥂", group: "New Year & Carnival" },
+  { id: "fireworksnight", label: "Fireworks midnight", emoji: "🎆", group: "New Year & Carnival" },
+  { id: "goldglitter", label: "Gold glitter gala", emoji: "✨", group: "New Year & Carnival" },
+  { id: "riocarnival", label: "Rio carnival", emoji: "🪶", group: "New Year & Carnival" },
+  { id: "venicecarnival", label: "Venice carnival", emoji: "🎭", group: "New Year & Carnival" },
+
+  { id: "easterspring", label: "Easter meadow", emoji: "🐣", group: "Easter & Spring Holidays" },
+  { id: "easterbunny", label: "Easter bunny", emoji: "🐰", group: "Easter & Spring Holidays" },
+  { id: "eastertradition", label: "Folk Easter", emoji: "🥚", group: "Easter & Spring Holidays" },
+  { id: "springblossom", label: "Cherry blossom spring", emoji: "🌸", group: "Easter & Spring Holidays" },
+
+  { id: "halloweenparty", label: "Halloween party", emoji: "🎃", group: "Halloween Party" },
+  { id: "pumpkinfield", label: "Pumpkin field", emoji: "🧡", group: "Halloween Party" },
+  { id: "hauntedcostume", label: "Haunted costume", emoji: "🦇", group: "Halloween Party" },
+
+  { id: "valentine", label: "Valentine's day", emoji: "💘", group: "World Holidays" },
+  { id: "chinesenewyear", label: "Chinese New Year", emoji: "🐉", group: "World Holidays" },
+  { id: "diwali", label: "Diwali lights", emoji: "🪔", group: "World Holidays" },
+  { id: "holifestival", label: "Holi colours", emoji: "🎨", group: "World Holidays" },
+  { id: "thanksgiving", label: "Thanksgiving", emoji: "🦃", group: "World Holidays" },
+  { id: "stpatrick", label: "St. Patrick's day", emoji: "🍀", group: "World Holidays" },
+  { id: "oktoberfest", label: "Oktoberfest", emoji: "🍺", group: "World Holidays" },
+  { id: "eidcelebration", label: "Eid celebration", emoji: "🌙", group: "World Holidays" },
+  { id: "hanukkah", label: "Hanukkah", emoji: "🕎", group: "World Holidays" },
+  { id: "diadelosmuertos", label: "Día de Muertos fiesta", emoji: "🌺", group: "World Holidays" },
+  { id: "midsummer", label: "Midsummer festival", emoji: "🌻", group: "World Holidays" },
+  { id: "songkran", label: "Songkran water festival", emoji: "💦", group: "World Holidays" },
 ];
+
 
 
 export const PHOTO_STYLE_COST = 3;
