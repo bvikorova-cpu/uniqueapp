@@ -12,11 +12,13 @@ export interface WallStats {
 let statsCache: { data: WallStats; at: number; userId?: string | null } | null = null;
 const CACHE_TTL = 5 * 60 * 1000;
 
-export function useWallStats(userId?: string | null, enabled = true) { const [stats, setStats] = useState<WallStats>({
-    postsToday: 0,
-    activeUsers: 0,
-    interactionsToday: 0,
-    streak: 0 });
+export function useWallStats(userId?: string | null, enabled = true) { const [stats, setStats] = useState<WallStats>(
+    statsCache && statsCache.userId === userId ? statsCache.data : {
+      postsToday: 0,
+      activeUsers: 0,
+      interactionsToday: 0,
+      streak: 0 });
+
 
   useEffect(() => {
     if (!enabled) return;
