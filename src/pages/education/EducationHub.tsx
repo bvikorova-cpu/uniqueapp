@@ -16,6 +16,7 @@ const __HIW_EDUCATIONHUB = { title: 'Education Hub', intro: 'The starting point 
 
 
 const FEATURES = [
+  { to: "/education/lessons", icon: BookOpen, title: "Lessons & Exercises", desc: "16 lessons · 15 XP + 10 XP each" },
   { to: "/education/daily", icon: Flame, title: "Daily Challenge", desc: "5 questions · 50 XP" },
   { to: "/education/flashcards", icon: Layers, title: "Flashcards", desc: "AI decks + spaced repetition" },
   { to: "/education/skill-tree", icon: GraduationCap, title: "Skill Tree", desc: "Unlock topics step by step" },
