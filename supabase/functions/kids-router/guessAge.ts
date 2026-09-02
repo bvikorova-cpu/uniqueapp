@@ -254,15 +254,28 @@ export async function handleGuessAge(
       .select("points, correct_guesses, total_guesses")
       .eq("user_id", userId)
       .maybeSingle();
-    const { count: receivedGuesses } = await admin
-      .from("guess_age_guesses")
-      .select("id", { count: "exact", head: true })
-      .eq("profile_user_id", userId);
-    const { count: receivedCorrect } = await admin
-      .from("guess_age_guesses")
-      .select("id", { count: "exact", head: true })
-      .eq("profile_user_id", userId)
-      .eq("is_correct", true);
+    // Only count guesses tied to an existing photo, so per-photo numbers and the
+    // aggregate stats always match (legacy rows have photo_id = null).
+    const { data: myPhotoRows } = await admin
+      .from("guess_age_photos")
+      .select("id")
+      .eq("user_id", userId);
+    const myPhotoIds = (myPhotoRows ?? []).map((r: any) => r.id as string);
+    let receivedGuesses = 0;
+    let receivedCorrect = 0;
+    if (myPhotoIds.length) {
+      const { count: total } = await admin
+        .from("guess_age_guesses")
+        .select("id", { count: "exact", head: true })
+        .in("photo_id", myPhotoIds);
+      const { count: correct } = await admin
+        .from("guess_age_guesses")
+        .select("id", { count: "exact", head: true })
+        .in("photo_id", myPhotoIds)
+        .eq("is_correct", true);
+      receivedGuesses = total ?? 0;
+      receivedCorrect = correct ?? 0;
+    }
 
     let photoUrl: string | null = null;
     if (profile?.photo_path) photoUrl = await signPhoto(profile.photo_path as string);
