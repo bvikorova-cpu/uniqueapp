@@ -276,9 +276,9 @@ const STYLE_REFS: Record<string, string> = {
 };
 
 const BASE_RULES =
-  "Restyle the EXACT person in the supplied photo. Only the rendering medium/art style may change — " +
+  "Restyle EVERY person in the supplied photo. Preserve the exact number of people and each distinct identity. Only the rendering medium/art style may change — " +
   "everything else must stay faithful to the source photo.\n" +
-  "Copy exactly, do not reinterpret or beautify: face identity and proportions, EYE COLOR, eyebrow and " +
+  "For every person copy exactly, do not reinterpret or beautify: face identity and proportions, EYE COLOR, eyebrow and " +
   "hair colour, hairstyle and hair length, skin tone, makeup, pose, head tilt, hand placement, camera " +
   "angle and crop.\n" +
   "Clothing must be reproduced exactly as worn in the photo: same garment type, same colour, same neckline, " +
@@ -290,9 +290,9 @@ const BASE_RULES =
   "content. Output only the finished artwork image.";
 
 const OUTFIT_RULES =
-  "Restyle the EXACT person in the supplied photo. The art style, the OUTFIT and the scene may change to " +
+  "Restyle EVERY person in the supplied photo. Preserve the exact number of people and each distinct identity. The art style, OUTFITS and scene may change to " +
   "match the chosen theme.\n" +
-  "Copy exactly, do not reinterpret or beautify: face identity and proportions, EYE COLOR, eyebrow and " +
+  "For every person copy exactly, do not reinterpret or beautify: face identity and proportions, EYE COLOR, eyebrow and " +
   "hair colour, skin tone, age, body shape and expression. Keep the pose and camera angle close to the source.\n" +
   "Replace the clothing with a complete, well-fitted themed costume that matches the requested style, " +
   "including matching accessories, hair styling and background. The costume must always be fully covering " +
@@ -353,8 +353,8 @@ serve(async (req) => {
         customPrompt ? ` Extra direction: ${customPrompt}.` : ""
       }\n\nReminder: ${
         changeOutfit
-          ? "the face identity, eye colour, hair colour and skin tone stay identical to the source photo; the outfit, accessories and background follow the chosen theme."
-          : "the style affects only technique, texture and lighting treatment — the eye colour, hair colour, clothing (including sleeve length and neckline) and props stay identical to the source photo."
+          ? "every person's face identity, eye colour, hair colour and skin tone stay identical to the source photo; outfits, accessories and background follow the chosen theme."
+          : "the style affects only technique, texture and lighting treatment — every person's eye colour, hair colour, clothing (including sleeve length and neckline) and props stay identical to the source photo."
       }${photoreal ? REALISM_RULES : ""}`;
       try {
         const ref = STYLE_REFS[style];
