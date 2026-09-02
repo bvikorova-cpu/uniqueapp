@@ -5,6 +5,7 @@ import { Brain, Layers, Flame, Trophy, Award, Calculator, FileText, Users, Gradu
 import { useEducationStats } from "@/hooks/useEducationStats";
 import { Helmet } from "react-helmet-async";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { LearningPathProgress } from "@/components/education/LearningPathProgress";
 
 const __HIW_EDUCATIONHUB_STEPS = [
   { title: 'Browse the tools', desc: 'AI Tutor, Math Solver, Flashcards, Notes, Skill Tree, Study Groups.' },
@@ -49,6 +50,10 @@ export default function EducationHub() {
           <Stat label="Streak" value={`${stats?.currentStreak ?? 0}🔥`} />
           <Stat label="Best Streak" value={stats?.bestStreak ?? 0} />
           <Stat label="Today" value={stats?.todayCompleted ? "✅" : "—"} />
+        </div>
+
+        <div className="mb-8">
+          <LearningPathProgress currentXP={stats?.currentXP ?? 0} />
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
