@@ -80,7 +80,7 @@ export function StoryNarrative({
   } else if (roomIndex >= content.rooms.length) {
     // Outro
     narrativeText = content.outro;
-    title = "Unikol si!";
+    title = "You escaped!";
   } else {
     narrativeText = content.rooms[roomIndex];
     title = roomName;

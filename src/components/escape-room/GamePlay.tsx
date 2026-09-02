@@ -222,9 +222,28 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
               .eq("id", sessionId);
             if (error) console.error("Failed to save escape session:", error);
           }
+
+          // Award XP for finishing all rooms (deduped per session)
+          let xpAwarded = 0;
+          try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              const { error: xpError } = await supabase.rpc("award_xp", {
+                _user_id: user.id,
+                _amount: 50,
+                _source: "escape_room_completed",
+                _ref_id: sessionId ?? `escape-${roomId}-${Date.now()}`,
+              });
+              if (xpError) console.error("Failed to award escape room XP:", xpError);
+              else xpAwarded = 50;
+            }
+          } catch (e) {
+            console.error("XP award failed:", e);
+          }
+
           toast({
             title: "🎉 Congratulations!",
-            description: `You escaped in ${Math.floor(time / 60)}:${(time % 60).toString().padStart(2, '0')} — score ${score} • +1 leaderboard point!`
+            description: `You escaped in ${Math.floor(time / 60)}:${(time % 60).toString().padStart(2, '0')} — score ${score}${xpAwarded ? ` • +${xpAwarded} XP` : ''} • +1 leaderboard point!`
           });
           setTimeout(onExit, 3000);
         }}
