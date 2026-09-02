@@ -175,7 +175,7 @@ const PhotoStyler = () => {
       <Navbar />
       <main className="container mx-auto max-w-6xl px-4 py-6">
         {/* HERO */}
-        <div className="relative mb-6 h-[420px] w-full overflow-hidden rounded-3xl sm:h-[460px]">
+        <div className="relative mb-6 h-[260px] w-full overflow-hidden rounded-3xl sm:h-[460px]">
           <video
             autoPlay
             muted
@@ -183,7 +183,7 @@ const PhotoStyler = () => {
             playsInline
             src={heroAsset.url}
             className="absolute inset-0 h-full w-full object-cover"
-            style={{ filter: "brightness(1.05) saturate(1.15)" }}
+            style={{ transform: "translateZ(0)" }}
           />
           <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-background via-background/70 to-transparent" />
           <div className="relative z-10 flex h-full flex-col justify-end gap-3 p-4 sm:p-8">
@@ -193,7 +193,7 @@ const PhotoStyler = () => {
               transition={{ duration: 0.7 }}
               className="max-w-lg space-y-2"
             >
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-background/70 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-primary backdrop-blur-sm">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-background/70 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
                 <Sparkles className="h-3 w-3" /> {PHOTO_STYLES.length} art styles
               </span>
               <h1 className="text-3xl font-black leading-none text-foreground drop-shadow-lg sm:text-5xl">
@@ -208,10 +208,10 @@ const PhotoStyler = () => {
               <Badge className="gap-1 bg-primary/15 text-primary hover:bg-primary/20">
                 <Zap className="h-3 w-3" /> {totalBalance} credits
               </Badge>
-              <Badge variant="outline" className="gap-1 bg-background/70 backdrop-blur-sm">
+              <Badge variant="outline" className="gap-1 bg-background/70">
                 <ShieldCheck className="h-3 w-3 text-primary" /> Your photo is never published
               </Badge>
-              <Badge variant="outline" className="gap-1 bg-background/70 backdrop-blur-sm">
+              <Badge variant="outline" className="gap-1 bg-background/70">
                 <Download className="h-3 w-3" /> Download &amp; share
               </Badge>
             </div>
@@ -220,7 +220,7 @@ const PhotoStyler = () => {
 
 
         {/* HOW IT WORKS */}
-        <Card className="mb-6 border-primary/20 bg-card/70 backdrop-blur-xl">
+        <Card className="mb-6 border-primary/20 bg-card/70">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
               <Palette className="h-5 w-5 text-primary" /> How it works
@@ -244,7 +244,7 @@ const PhotoStyler = () => {
 
         <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
           {/* LEFT: upload + styles */}
-          <Card className="border-primary/20 bg-card/80 backdrop-blur-xl">
+          <Card className="border-primary/20 bg-card/80">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary" /> Your photo
@@ -296,7 +296,7 @@ const PhotoStyler = () => {
                             type="button"
                             onClick={() => toggleStyle(s.id)}
                             aria-pressed={active}
-                            className={`rounded-full border px-2.5 py-1.5 text-xs font-semibold transition-all ${
+                            className={`rounded-full border px-2.5 py-1.5 text-xs font-semibold transition-colors ${
                               active
                                 ? "border-primary bg-primary/15 text-primary shadow-sm"
                                 : "border-border bg-background/60 text-muted-foreground hover:border-primary/40"
@@ -383,7 +383,7 @@ const PhotoStyler = () => {
                       key={a}
                       type="button"
                       onClick={() => setAspect(a)}
-                      className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-all ${
+                      className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
                         aspect === a
                           ? "border-primary bg-primary/15 text-primary"
                           : "border-border bg-background/60 text-muted-foreground hover:border-primary/40"
@@ -416,7 +416,7 @@ const PhotoStyler = () => {
           </Card>
 
           {/* RIGHT: results */}
-          <Card className="border-primary/20 bg-card/80 backdrop-blur-xl">
+          <Card className="border-primary/20 bg-card/80">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Brush className="h-5 w-5 text-primary" /> Your artworks
