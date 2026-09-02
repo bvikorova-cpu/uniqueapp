@@ -246,6 +246,7 @@ const Navbar = () => {
       category: "About",
       items: [
         { path: "/about-platform", label: "About the Platform — Full Tour", icon: Info },
+        { path: "/suggestions", label: "Suggestions", icon: MessageSquare },
       ] },
     {
       category: "Legal",
