@@ -68,7 +68,7 @@ export default function IQLeaderboard() {
                       <AvatarFallback>{(row.display_name ?? "?")[0]}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold truncate">{row.display_name ?? "Anonymous"}</p>
+                      <p className="font-semibold truncate" translate="no">{row.display_name ?? "Anonymous"}</p>
                       <p className="text-xs text-muted-foreground">{row.total_tests} tests</p>
                     </div>
                     <Badge variant="outline" className="border-primary/40">{row.tier ?? "Bronze"}</Badge>

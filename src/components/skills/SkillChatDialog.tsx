@@ -222,7 +222,7 @@ export function SkillChatDialog({ open, onOpenChange, offeringId, offeringTitle,
       <DialogContent className="sm:max-w-[560px] flex flex-col h-[600px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <MessageCircle className="h-5 w-5" /> {otherName || "Chat"}
+            <MessageCircle className="h-5 w-5" /> <span translate="no" className="notranslate">{otherName || "Chat"}</span>
           </DialogTitle>
           <DialogDescription className="truncate">{offeringTitle}</DialogDescription>
         </DialogHeader>
