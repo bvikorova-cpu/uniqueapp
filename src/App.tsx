@@ -1042,6 +1042,8 @@ const App = () => {
                         <Route path="/admin/bug-reports" element={<ProtectedRoute requireAdmin={true}><BugReportsManager /></ProtectedRoute>} />
                         <Route path="/report-bug" element={<ReportBug />} />
                         <Route path="/my-bug-reports" element={<ProtectedRoute><MyBugReports /></ProtectedRoute>} />
+                        <Route path="/suggestions" element={<Suggestions />} />
+                        <Route path="/admin/suggestions" element={<ProtectedRoute requireAdmin={true}><AdminSuggestions /></ProtectedRoute>} />
 
 
                         <Route path="/admin/pwa-stats" element={<ProtectedRoute requireAdmin={true}><AdminPwaStats /></ProtectedRoute>} />
