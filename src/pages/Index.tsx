@@ -164,12 +164,6 @@ const Index = () => {
   const navigate = useNavigate();
   const { recent, favorites, trackVisit, toggleFavorite, isFavorite } = useRecentServices();
   const [search, setSearch] = useState("");
-  const [spotlightIdx, setSpotlightIdx] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => setSpotlightIdx(i => (i + 1) % spotlightServices.length), 5000);
-    return () => clearInterval(timer);
-  }, []);
 
   const searchResults = useMemo(() => {
     if (!search.trim()) return [];
