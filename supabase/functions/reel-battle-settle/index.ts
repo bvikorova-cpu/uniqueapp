@@ -9,10 +9,9 @@ const corsHeaders = {
  * Settles expired clip duels:
  *  - participant with most net votes (likes - dislikes) receives 160 coins (80% of the 200 pot) + 10 XP
  *  - loser receives nothing
- *  - tie / missing opponent -> entry fee (100) refunded to each participant
+ *  - tie / missing opponent -> no payout at all, the entry fee is never refunded
  *  - the duel and all its rows (participants, votes, comments) are deleted afterwards
  */
-const ENTRY_COINS = 100;
 const WIN_COINS = 160; // 80% of the 200 coin pot
 const WIN_XP = 10;
 
