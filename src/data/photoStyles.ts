@@ -333,9 +333,15 @@ export const PHOTO_STYLES: PhotoStyle[] = [
   { id: "uniquephone", label: "Holding phone with Unique", emoji: "📱", group: "Unique Brand" },
   { id: "uniquetshirt", label: "Unique logo T-shirt", emoji: "👕", group: "Unique Brand" },
   { id: "uniqueflag", label: "Waving Unique flag", emoji: "🚩", group: "Unique Brand" },
-  { id: "uniquemascot", label: "With the Unique mascot", emoji: "🧸", group: "Unique Brand" },
+  { id: "uniquemascot", label: "With the Unique logo mascot", emoji: "🧸", group: "Unique Brand" },
   { id: "uniquebillboard", label: "Next to Unique billboard", emoji: "🪧", group: "Unique Brand" },
   { id: "uniquefanselfie", label: "Unique fan selfie", emoji: "✨", group: "Unique Brand" },
+  { id: "uniquecar", label: "Next to a Unique car", emoji: "🚗", group: "Unique Brand" },
+  { id: "uniquecoffee", label: "Holding Unique coffee", emoji: "☕", group: "Unique Brand" },
+  { id: "uniquecap", label: "Wearing Unique cap", emoji: "🧢", group: "Unique Brand" },
+  { id: "uniqueposter", label: "On a Unique poster", emoji: "🖼️", group: "Unique Brand" },
+  { id: "uniquetote", label: "With Unique tote bag", emoji: "🛍️", group: "Unique Brand" },
+  { id: "uniquelaptop", label: "At a Unique laptop", emoji: "💻", group: "Unique Brand" },
 ];
 
 
