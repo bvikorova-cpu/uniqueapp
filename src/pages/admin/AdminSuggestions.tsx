@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Lightbulb, Loader2, RefreshCw } from "lucide-react";
+import { Lightbulb, Loader2, MessageSquare, RefreshCw } from "lucide-react";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { AdminPageShell, AdminGlassCard } from "@/components/admin/AdminPageShell";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
@@ -219,7 +219,7 @@ export default function AdminSuggestions() {
                         rows={3}
                         placeholder="Write a reply to the user..."
                         value={responses[r.id] ?? ""}
-                        onChange={(e) => setResponses((r) => ({ ...r, [id]: e.target.value }))}
+                        onChange={(e) => setResponses((prev) => ({ ...prev, [r.id]: e.target.value }))}
                       />
                       <Button
                         size="sm"
