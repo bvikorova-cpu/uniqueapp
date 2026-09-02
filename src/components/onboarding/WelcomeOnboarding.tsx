@@ -55,7 +55,18 @@ export function WelcomeOnboarding() {
   }, [user?.id]);
 
   const finish = () => {
-    if (user) localStorage.setItem(`${STORAGE_KEY}_${user.id}`, JSON.stringify({ at: Date.now(), interests: selected }));
+    if (user) {
+      localStorage.setItem(`${STORAGE_KEY}_${user.id}`, JSON.stringify({ at: Date.now(), interests: selected }));
+      // Pin the picked interests to the navbar "For you" menu so the user always
+      // has a short list of their own sections to come back to.
+      const picked = INTERESTS.filter((i) => selected.includes(i.id));
+      if (picked.length) {
+        addShortcuts(
+          user.id,
+          picked.map((i) => ({ path: i.hub, label: i.label, emoji: i.emoji })),
+        );
+      }
+    }
     setOpen(false);
   };
 
