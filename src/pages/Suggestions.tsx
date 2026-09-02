@@ -188,6 +188,48 @@ export default function Suggestions() {
             Send suggestion
           </Button>
         </form>
+
+        {user && (
+          <div className="pt-6 border-t space-y-3">
+            <h2 className="font-semibold flex items-center gap-2">
+              <MessageCircleReply className="h-4 w-4 text-primary" />
+              Your suggestions & replies
+            </h2>
+            {loadingMine ? (
+              <div className="flex justify-center py-6">
+                <Loader2 className="h-5 w-5 animate-spin text-primary" />
+              </div>
+            ) : mySuggestions.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No suggestions yet.</p>
+            ) : (
+              <div className="space-y-3">
+                {mySuggestions.map((s) => (
+                  <div key={s.id} className="rounded-lg border bg-card p-3 space-y-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Badge variant="outline">{s.status}</Badge>
+                      <span className="text-xs text-muted-foreground">
+                        {formatDistanceToNow(new Date(s.created_at), { addSuffix: true })}
+                      </span>
+                    </div>
+                    <div className="font-medium text-sm">{s.title}</div>
+                    <p className="text-sm text-muted-foreground line-clamp-3">{s.description}</p>
+                    {s.response_message && (
+                      <div className="rounded-md border border-emerald-500/20 bg-emerald-500/5 p-3 space-y-1">
+                        <div className="text-xs font-semibold text-emerald-600 flex items-center gap-1">
+                          <MessageCircleReply className="h-3 w-3" /> Reply from Unique team
+                        </div>
+                        <p className="text-sm whitespace-pre-wrap">{s.response_message}</p>
+                        <div className="text-xs text-muted-foreground">
+                          {s.response_at && formatDistanceToNow(new Date(s.response_at), { addSuffix: true })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </Card>
     </div>
   );
