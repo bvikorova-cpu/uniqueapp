@@ -9,7 +9,7 @@ import { DropdownMenu,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Sun, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, DollarSign, Image, Gem, Building2, Coffee, Bot, Globe, Lock, Mic2, Car, Clock, Dna, Scale, Shield, AlertTriangle, TrendingUp, Ghost, PenTool, Ticket, Info, Megaphone, Scissors, Diamond, RefreshCw, Cake, Library, Film, Puzzle } from "lucide-react";
+import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Sun, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, DollarSign, Image, Gem, Building2, Coffee, Bot, Globe, Lock, Mic2, Car, Clock, Dna, Scale, Shield, AlertTriangle, TrendingUp, Ghost, PenTool, Ticket, Info, Megaphone, Scissors, Diamond, RefreshCw, Cake, Library, Film, Puzzle, Compass, ChevronDown, Pin, PinOff } from "lucide-react";
 import { useTheme } from "next-themes";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import MessagesBell from "@/components/messenger/MessagesBell";
@@ -29,6 +29,7 @@ import { MobileCreditsPill } from "@/components/wall/MobileCreditsPill";
 import { useAuth } from "@/contexts/AuthContext";
 import { MemberBadge } from "@/components/club/MemberBadge";
 import { BetaTesterNotice } from "@/components/onboarding/BetaTesterNotice";
+import { useShortcuts } from "@/hooks/useShortcuts";
 
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
@@ -38,6 +39,8 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
+  const { shortcuts, toggle: toggleShortcutPath } = useShortcuts();
+  const [openMobileGroup, setOpenMobileGroup] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -257,6 +260,23 @@ const Navbar = () => {
 
   const otherServices = otherServiceGroups.flatMap((g) => g.items);
 
+  // All known destinations — used to resolve a nice label when pinning the
+  // current page to the personal "For you" menu.
+  const allNavItems = [
+    ...mainNavItems,
+    ...clipBattlesServices,
+    ...challengeServices,
+    ...learningServices,
+    ...kidsAcademyServices,
+    ...otherServices,
+  ];
+  const currentNavItem = allNavItems.find((i) => i.path === location.pathname);
+  const isCurrentPinned = shortcuts.some((s) => s.path === location.pathname);
+  const pinCurrentPage = () => {
+    if (!currentNavItem) return;
+    toggleShortcutPath({ path: currentNavItem.path, label: currentNavItem.label });
+  };
+
   const isClipBattlesServiceActive = clipBattlesServices.some(item => location.pathname === item.path);
   const isLearningServiceActive = learningServices.some(item => location.pathname === item.path);
   const isBrandArenaActive = brandArenaServices.some(item => location.pathname === item.path) || location.pathname.startsWith('/brand-battle');
@@ -297,6 +317,50 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex flex-1 min-w-0 items-baseline space-x-1 -mt-2 overflow-x-auto scrollbar-hide [&>*]:shrink-0 [&_button]:whitespace-nowrap">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="text-primary">
+                  <Compass className="h-4 w-4" />
+                  For you
+                  {shortcuts.length > 0 && (
+                    <Badge variant="secondary" className="ml-1 text-[10px] px-1.5">{shortcuts.length}</Badge>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-64 bg-popover/95 backdrop-blur-xl border-border/50">
+                <DropdownMenuLabel className="text-xs uppercase tracking-wide text-muted-foreground">
+                  Your shortcuts
+                </DropdownMenuLabel>
+                {shortcuts.length === 0 ? (
+                  <div className="px-2 py-3 text-xs text-muted-foreground">
+                    No shortcuts yet. Pin any page you like and it will show up here.
+                  </div>
+                ) : (
+                  shortcuts.map((s) => (
+                    <DropdownMenuItem key={s.path} asChild>
+                      <Link to={s.path} className="w-full cursor-pointer">
+                        <span className="mr-2">{s.emoji || "\u2b50"}</span>
+                        {s.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))
+                )}
+                <DropdownMenuSeparator />
+                {currentNavItem && (
+                  <DropdownMenuItem onClick={pinCurrentPage} className="cursor-pointer">
+                    {isCurrentPinned ? <PinOff className="h-4 w-4 mr-2" /> : <Pin className="h-4 w-4 mr-2" />}
+                    {isCurrentPinned ? "Unpin this page" : "Pin this page"}
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem asChild>
+                  <Link to="/about-platform" className="w-full cursor-pointer">
+                    <Info className="h-4 w-4 mr-2" />
+                    Guided tour — what is where
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant={isChallengeServiceActive ? "premium" : "ghost"}>
@@ -652,6 +716,47 @@ const Navbar = () => {
 
             <MobileCreditsPill />
 
+            {/* For you — personal shortcuts */}
+            <div className="pt-2 pb-1">
+              <div className="px-3 py-1.5 text-xs font-semibold text-primary flex items-center gap-2">
+                <Compass className="h-3.5 w-3.5" />
+                For you
+              </div>
+              {shortcuts.length === 0 ? (
+                <p className="px-3 pb-1 text-xs text-muted-foreground">
+                  Pin your favourite pages and they will appear here.
+                </p>
+              ) : (
+                shortcuts.map((s) => (
+                  <Link key={s.path} to={s.path} onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start text-sm py-2" size="sm">
+                      <span className="mr-1">{s.emoji || "\u2b50"}</span>
+                      {s.label}
+                    </Button>
+                  </Link>
+                ))
+              )}
+              {currentNavItem && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start text-sm mt-1"
+                  onClick={pinCurrentPage}
+                >
+                  {isCurrentPinned ? <PinOff className="h-4 w-4 mr-2" /> : <Pin className="h-4 w-4 mr-2" />}
+                  {isCurrentPinned ? "Unpin this page" : "Pin this page"}
+                </Button>
+              )}
+              <Link to="/about-platform" onClick={() => setIsMenuOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start text-sm py-2 text-primary" size="sm">
+                  <Info className="h-4 w-4" />
+                  Guided tour — what is where
+                </Button>
+              </Link>
+            </div>
+
+            <div className="border-t border-border/50 my-2" />
+
             {/* VIP Membership Club */}
             <Link to="/club" onClick={() => setIsMenuOpen(false)}>
               <Button
@@ -823,10 +928,19 @@ const Navbar = () => {
               </div>
               {otherServiceGroups.map((group) => (
                 <div key={group.category} className="mt-2">
-                  <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70 border-t border-border/40 pt-2">
-                    {group.category}
-                  </div>
-                  {group.items.map((item) => {
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setOpenMobileGroup((g) => (g === group.category ? null : group.category))
+                    }
+                    className="w-full flex items-center justify-between px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80 border-t border-border/40"
+                  >
+                    <span>{group.category} <span className="font-normal normal-case opacity-70">({group.items.length})</span></span>
+                    <ChevronDown
+                      className={`h-4 w-4 transition-transform ${openMobileGroup === group.category ? "rotate-180" : ""}`}
+                    />
+                  </button>
+                  {openMobileGroup === group.category && group.items.map((item) => {
                     const Icon = item.icon;
                     const isActive = location.pathname === item.path;
                     return (
