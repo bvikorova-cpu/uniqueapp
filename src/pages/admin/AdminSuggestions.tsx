@@ -85,7 +85,7 @@ export default function AdminSuggestions() {
       <AdminPageShell>
         <AdminPageHeader
           title="User suggestions"
-          description="Ideas and feedback submitted by users"
+          subtitle="Ideas and feedback submitted by users"
           icon={Lightbulb}
         />
 
