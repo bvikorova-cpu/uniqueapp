@@ -1,7 +1,7 @@
 
 ## Photo Styler — Unique Brand
-- [ ] Maskot: logo + www.uniqueapp.fun dole v rohu (nie pod maskota)
-- [ ] Maskot: používateľ v normálnom oblečení (nemusí byť presne z fotky)
+- [x] Maskot: logo + www.uniqueapp.fun dole v rohu (nie pod maskota)
+- [x] Maskot: používateľ v normálnom oblečení (nemusí byť presne z fotky)
 - [x] Photo Styler: pridané štýly hračky/pop-kultúra/textúry/scény so zámenou pozadia (celkovo 128)
 
 ## Viral video (TikTok/IG)
