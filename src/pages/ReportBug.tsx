@@ -14,7 +14,7 @@ import { Bug, Gift, Loader2, ArrowLeft } from "lucide-react";
 
 type Severity = "minor" | "major" | "critical";
 
-const REWARDS: Record<Severity, number> = { minor: 5, major: 25, critical: 50 };
+const REWARDS: Record<Severity, number> = { minor: 1, major: 5, critical: 10 };
 
 export default function ReportBug() {
   const { user } = useAuth();
@@ -84,7 +84,7 @@ export default function ReportBug() {
           <div className="text-sm">
             <div className="font-semibold">Reward for confirmed bugs</div>
             <div className="text-muted-foreground">
-              Minor +5 · Major +25 · Critical/security +50 AI credits
+              Minor +1 · Major +5 · Critical/security +10 AI credits — credits are granted only after admin approval
             </div>
           </div>
         </div>
