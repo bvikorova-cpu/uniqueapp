@@ -22,6 +22,17 @@ const CATEGORIES = [
   { value: "content", label: "Content & moderation" },
 ];
 
+interface MySuggestion {
+  id: string;
+  category: string;
+  title: string;
+  description: string;
+  status: string;
+  response_message: string | null;
+  response_at: string | null;
+  created_at: string;
+}
+
 export default function Suggestions() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -30,6 +41,8 @@ export default function Suggestions() {
   const [description, setDescription] = useState("");
   const [email, setEmail] = useState(user?.email ?? "");
   const [submitting, setSubmitting] = useState(false);
+  const [mySuggestions, setMySuggestions] = useState<MySuggestion[]>([]);
+  const [loadingMine, setLoadingMine] = useState(true);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
