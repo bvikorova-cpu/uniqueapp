@@ -2,6 +2,7 @@ import "../_shared/aiRedirect.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 import { tryVertexImage } from "../_shared/vertexDirect.ts";
+import { CAR_REFERENCE, MASCOT_REFERENCE } from "./brandReferences.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -268,11 +269,10 @@ const STYLE_PROMPTS: Record<string, string> = {
 };
 
 
-/** Brand reference photos (uploaded by the owner) used as a second input image. */
-const REF_BASE = "https://uniqueapp.fun";
+/** Object-only brand references. They deliberately contain no person whose identity could leak into output. */
 const STYLE_REFS: Record<string, string> = {
-  uniquemascot: `${REF_BASE}/__l5e/assets-v1/8bc42e86-e7e6-4598-9195-2ce02d85e767/unique-ref-mascot.png`,
-  uniquecar: `${REF_BASE}/__l5e/assets-v1/3699b37c-5185-4494-866a-db87769424a2/unique-ref-car.png`,
+  uniquemascot: MASCOT_REFERENCE,
+  uniquecar: CAR_REFERENCE,
 };
 
 const BASE_RULES =
@@ -364,7 +364,7 @@ serve(async (req) => {
         const inputs = ref
           ? [
             { label: "USER SOURCE PHOTO — use ALL people from this image as the only human subjects:", image },
-            { label: "BRAND REFERENCE — copy ONLY the mascot/car and branding; completely ignore the girl:", image: ref },
+            { label: "OBJECT-ONLY BRAND REFERENCE — copy ONLY the mascot/car and branding. It contains no human subject:", image: ref },
           ]
           : [image];
         const out = await tryVertexImage(refPrompt, aspect, 1, inputs);
