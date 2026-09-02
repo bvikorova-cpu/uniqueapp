@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useRef, useCallback } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback, lazy, Suspense } from "react";
 import { useWallRealtime } from "@/hooks/useWallRealtime";
 import { Sparkles } from "lucide-react";
 
@@ -32,13 +32,13 @@ import { CloseFriendsDialog } from "@/components/wall/CloseFriendsDialog";
 import { useUserMutes } from "@/hooks/useUserMutes";
 
 import { useQuery } from "@tanstack/react-query";
-import WallMessages from "./wall/WallMessages";
-import WallFriends from "./wall/WallFriends";
-import WallVideos from "./wall/WallVideos";
-import WallSaved from "./wall/WallSaved";
-import WallTrending from "./wall/WallTrending";
-import WallInfo from "./wall/WallInfo";
-import WallMemories from "./wall/WallMemories";
+const WallMessages = lazy(() => import("./wall/WallMessages"));
+const WallFriends = lazy(() => import("./wall/WallFriends"));
+const WallVideos = lazy(() => import("./wall/WallVideos"));
+const WallSaved = lazy(() => import("./wall/WallSaved"));
+const WallTrending = lazy(() => import("./wall/WallTrending"));
+const WallInfo = lazy(() => import("./wall/WallInfo"));
+const WallMemories = lazy(() => import("./wall/WallMemories"));
 import WallCinematicHero from "@/components/wall/WallCinematicHero";
 import { useWallStats } from "@/hooks/useWallStats";
 import WallAIToolsGrid from "@/components/wall/WallAIToolsGrid";
@@ -656,19 +656,19 @@ const Feed = () => {
   const renderContent = () => {
     switch (currentPath) {
       case '/wall/messages':
-        return <WallMessages />;
+        return <Suspense fallback={<div className="flex justify-center py-10"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}><WallMessages /></Suspense>;
       case '/wall/friends':
-        return <WallFriends />;
+        return <Suspense fallback={<div className="flex justify-center py-10"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}><WallFriends /></Suspense>;
       case '/wall/videos':
-        return <WallVideos />;
+        return <Suspense fallback={<div className="flex justify-center py-10"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}><WallVideos /></Suspense>;
       case '/wall/saved':
-        return <WallSaved />;
+        return <Suspense fallback={<div className="flex justify-center py-10"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}><WallSaved /></Suspense>;
       case '/wall/trending':
-        return <WallTrending />;
+        return <Suspense fallback={<div className="flex justify-center py-10"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}><WallTrending /></Suspense>;
       case '/wall/info':
-        return <WallInfo />;
+        return <Suspense fallback={<div className="flex justify-center py-10"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}><WallInfo /></Suspense>;
       case '/wall/memories':
-        return <WallMemories />;
+        return <Suspense fallback={<div className="flex justify-center py-10"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}><WallMemories /></Suspense>;
       default: {
         // Default Feed content
         const WALL_TABS = [

@@ -667,6 +667,8 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
                     <img
                       src={post.media[0].file_url}
                       alt="Post media"
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover/image:bg-black/10 transition-all flex items-center justify-center opacity-0 group-hover/image:opacity-100">
@@ -707,6 +709,8 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
                             <img
                               src={media.file_url}
                               alt={`Post media ${idx + 1}`}
+                              loading="lazy"
+                              decoding="async"
                               className="w-full h-full object-contain transition-transform duration-500 group-hover/image:scale-105"
                             />
                             <div className="absolute inset-0 bg-black/0 group-hover/image:bg-black/10 transition-all flex items-center justify-center opacity-0 group-hover/image:opacity-100">
