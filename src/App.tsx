@@ -421,6 +421,8 @@ const EducationHub = lazy(() => import("@/pages/education/EducationHub"));
 const FlashcardDecks = lazy(() => import("@/pages/education/FlashcardDecks"));
 const FlashcardDeckDetail = lazy(() => import("@/pages/education/FlashcardDeckDetail"));
 const DailyChallenge = lazy(() => import("@/pages/education/DailyChallenge"));
+const EducationLessons = lazy(() => import("@/pages/education/Lessons"));
+const EducationLessonDetail = lazy(() => import("@/pages/education/LessonDetail"));
 const EduAchievements = lazy(() => import("@/pages/education/Achievements"));
 const EduLeague = lazy(() => import("@/pages/education/League"));
 const EduMathSolver = lazy(() => import("@/pages/education/MathSolver"));
@@ -606,6 +608,8 @@ const App = () => {
                         <Route path="/education/flashcards" element={<ProtectedRoute><FlashcardDecks /></ProtectedRoute>} />
                         <Route path="/education/flashcards/:deckId" element={<ProtectedRoute><FlashcardDeckDetail /></ProtectedRoute>} />
                         <Route path="/education/daily" element={<ProtectedRoute><DailyChallenge /></ProtectedRoute>} />
+                        <Route path="/education/lessons" element={<EducationLessons />} />
+                        <Route path="/education/lessons/:courseKey/:lessonKey" element={<EducationLessonDetail />} />
                         <Route path="/education/achievements" element={<ProtectedRoute><EduAchievements /></ProtectedRoute>} />
                         <Route path="/education/league" element={<EduLeague />} />
                         <Route path="/education/math-solver" element={<ProtectedRoute><EduMathSolver /></ProtectedRoute>} />
