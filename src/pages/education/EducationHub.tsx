@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
-import { Brain, Layers, Flame, Trophy, Award, Calculator, FileText, Users, GraduationCap, Sparkles } from "lucide-react";
+import { Brain, Layers, Flame, Trophy, Award, Calculator, FileText, Users, GraduationCap, Sparkles, BookOpen } from "lucide-react";
 import { useEducationStats } from "@/hooks/useEducationStats";
 import { Helmet } from "react-helmet-async";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
