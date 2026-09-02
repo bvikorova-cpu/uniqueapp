@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { liveStreak, localDateIso } from "@/lib/streakUtils";
+import { useUserXp } from "@/hooks/useUserXp";
 
 interface Challenge {
   id: string;
@@ -97,7 +98,9 @@ export function StreaksAndChallenges() {
   const streakDays = liveStreak(streakRow?.current_streak ?? 0, streakRow?.last_active_date ?? null);
   const weekDays = ["M", "T", "W", "T", "F", "S", "S"];
   const activeWeekDays = weekDays.map((_, i) => week?.[i]?.is_active ?? false);
-  const currentXP = streakRow?.total_xp ?? 0;
+  // Level uses the platform-wide XP (`user_xp`) so it matches the profile everywhere.
+  const { xp: globalXp } = useUserXp(user?.id ?? null);
+  const currentXP = globalXp;
   const level = Math.floor(currentXP / 200) + 1;
   const nextLevelXP = level * 200;
   const todayXP = week?.find(d => d.day_date === localDateIso())?.xp_earned ?? 0;
