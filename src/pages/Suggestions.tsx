@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -7,9 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Lightbulb, Loader2, ArrowLeft } from "lucide-react";
+import { Lightbulb, Loader2, ArrowLeft, MessageCircleReply } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
 
 const CATEGORIES = [
   { value: "general", label: "General feedback" },
