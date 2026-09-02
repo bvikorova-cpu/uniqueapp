@@ -52,14 +52,12 @@ Deno.serve(async (req) => {
         if (score(a) > score(b)) winnerId = a.user_id;
         else if (score(b) > score(a)) winnerId = b.user_id;
 
+        // Tie -> nobody wins, no refunds.
         if (winnerId) {
           payouts = [{ user_id: winnerId, amount: WIN_COINS, reason: "battle_win" }];
-        } else {
-          payouts = list.map((p) => ({ user_id: p.user_id, amount: ENTRY_COINS, reason: "battle_refund" }));
         }
-      } else if (list.length === 1) {
-        payouts = [{ user_id: list[0].user_id, amount: ENTRY_COINS, reason: "battle_refund" }];
       }
+      // Missing opponent -> no payout, the entry fee stays in the pot.
 
       for (const payout of payouts) {
         if (payout.reason === "battle_win") {
