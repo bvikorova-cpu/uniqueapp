@@ -27,7 +27,6 @@ import {
   Sparkles,
   BarChart3,
   Mic,
-  Music
 } from "lucide-react";
 import { Tooltip,
   TooltipContent,
@@ -104,7 +103,6 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
   const [showEvent, setShowEvent] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
-  const [showMusic, setShowMusic] = useState(false);
   const [eventDraft, setEventDraft] = useState<PostEventDraft | null>(null);
 
   const [voiceFile, setVoiceFile] = useState<File | null>(null);
@@ -280,8 +278,6 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
       setPollData(null);
       setEventDraft(null);
       setVoiceFile(null);
-      setMusic(null);
-      setShowMusic(false);
       setTaggedFriends([]);
       onPostCreated();
     } catch (error: any) {
