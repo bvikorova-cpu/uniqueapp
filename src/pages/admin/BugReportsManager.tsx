@@ -63,7 +63,7 @@ const SEVERITY_COLORS: Record<Severity, string> = { minor: "bg-slate-500/10 text
 export default function BugReportsManager() {
   const [reports, setReports] = useState<BugReport[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filterStatus, setFilterStatus] = useState<Status | "all">("all");
+  const [filterStatus, setFilterStatus] = useState<Status | "all" | "pending">("pending");
   const [filterSeverity, setFilterSeverity] = useState<Severity | "all">("all");
   const [selected, setSelected] = useState<BugReport | null>(null);
   const [notes, setNotes] = useState("");
@@ -107,7 +107,10 @@ export default function BugReportsManager() {
     () =>
       reports.filter(
         (r) =>
-          (filterStatus === "all" || r.status === filterStatus) &&
+          (filterStatus === "all" ||
+            (filterStatus === "pending"
+              ? ["new", "triage"].includes(r.status)
+              : r.status === filterStatus)) &&
           (filterSeverity === "all" || r.severity === filterSeverity)
       ),
     [reports, filterStatus, filterSeverity]
@@ -229,9 +232,10 @@ export default function BugReportsManager() {
         <Card className="p-4 flex flex-wrap gap-3 items-center mb-4">
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Status:</span>
-            <Select value={filterStatus} onValueChange={(v) => setFilterStatus(v as Status | "all")}>
+            <Select value={filterStatus} onValueChange={(v) => setFilterStatus(v as Status | "all" | "pending")}>
               <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
               <SelectContent>
+                <SelectItem value="pending">Pending approval</SelectItem>
                 <SelectItem value="all">All</SelectItem>
                 <SelectItem value="new">New</SelectItem>
                 <SelectItem value="triage">Triage</SelectItem>
