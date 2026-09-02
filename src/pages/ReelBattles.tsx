@@ -90,6 +90,10 @@ export default function ReelBattles() {
     if (!session) { navigate("/auth"); return; }
     setUserId(session.user.id);
 
+    // Settle & remove duels whose voting deadline has passed (winner gets the prize pool)
+    try { await supabase.functions.invoke("reel-battle-settle"); } catch { /* non-blocking */ }
+
+
     const [{ data: xpData }, { data: hubData }] = await Promise.all([
       supabase.from("user_xp").select("total_xp").eq("user_id", session.user.id).maybeSingle(),
       supabase.from("hub_xp").select("xp").eq("user_id", session.user.id).eq("hub", "reel_battles").maybeSingle(),

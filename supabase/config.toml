@@ -453,3 +453,6 @@ verify_jwt = true
 
 [functions.create-megatalent-tip]
 verify_jwt = true
+
+[functions.reel-battle-settle]
+verify_jwt = true
