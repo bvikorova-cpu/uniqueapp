@@ -99,12 +99,12 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [showSchedule, setShowSchedule] = useState(false);
   const [showPoll, setShowPoll] = useState(false);
   const [showTagFriends, setShowTagFriends] = useState(false);
-  const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
+  
   const [showEvent, setShowEvent] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
   const [eventDraft, setEventDraft] = useState<PostEventDraft | null>(null);
 
-  const [voiceFile, setVoiceFile] = useState<File | null>(null);
+  
   const [pollData, setPollData] = useState<{ question: string; options: string[]; endsAt: Date } | null>(null);
   const [isSensitive, setIsSensitive] = useState(false);
   const [sensitiveReason, setSensitiveReason] = useState("");
