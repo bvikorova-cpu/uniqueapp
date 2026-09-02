@@ -38,6 +38,7 @@ const PhotoStyler = () => {
   const [customPrompt, setCustomPrompt] = useState("");
   const [aspect, setAspect] = useState<"1:1" | "9:16" | "16:9">("1:1");
   const [changeOutfit, setChangeOutfit] = useState(false);
+  const [photoreal, setPhotoreal] = useState(false);
   const [busy, setBusy] = useState(false);
   const [screening, setScreening] = useState(false);
   const [results, setResults] = useState<StyledResult[]>([]);
@@ -113,7 +114,7 @@ const PhotoStyler = () => {
     setResults([]);
     try {
       const { data, error } = await supabase.functions.invoke("photo-styler", {
-        body: { image: photo, styles: selected, customPrompt, aspect, changeOutfit },
+        body: { image: photo, styles: selected, customPrompt, aspect, changeOutfit, photoreal },
       });
       if (error) throw new Error(error.message);
       if ((data as any)?.error) throw new Error((data as any).error);
@@ -332,6 +333,33 @@ const PhotoStyler = () => {
                     <span className="block text-sm font-semibold">Change outfit to match the style</span>
                     <span className="block text-xs text-muted-foreground">
                       Works with every style — AI dresses you in a themed costume. Off = your original clothes are kept.
+                    </span>
+                  </span>
+                </button>
+              </div>
+
+              <div className="rounded-xl border border-border bg-background/60 p-3">
+                <button
+                  type="button"
+                  onClick={() => setPhotoreal((v) => !v)}
+                  className="flex w-full items-start gap-3 text-left"
+                >
+                  <span
+                    className={`mt-0.5 flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${
+                      photoreal ? "bg-primary" : "bg-muted"
+                    }`}
+                  >
+                    <span
+                      className={`h-4 w-4 rounded-full bg-background shadow transition-transform ${
+                        photoreal ? "translate-x-4" : "translate-x-0.5"
+                      }`}
+                    />
+                  </span>
+                  <span>
+                    <span className="block text-sm font-semibold">Photorealistic result (real photo look)</span>
+                    <span className="block text-xs text-muted-foreground">
+                      On = output looks like a real camera photo instead of a drawing or animation. Best for costume,
+                      holiday and travel styles.
                     </span>
                   </span>
                 </button>

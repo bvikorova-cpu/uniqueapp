@@ -264,6 +264,15 @@ const OUTFIT_RULES =
   "Do not change the person's age or body shape. No nudity, no lingerie, no sexual or suggestive content. " +
   "Output only the finished artwork image.";
 
+const REALISM_RULES =
+  "\n\nRENDERING MODE — PHOTOREALISTIC: the final image must look like a real photograph taken with a " +
+  "professional camera (full-frame DSLR, 50-85mm lens, shallow depth of field), NOT a drawing, painting, " +
+  "cartoon, anime, 3D render or digital illustration. Real human skin with pores, fine hair strands, " +
+  "realistic fabric weave and stitching, physically correct lighting, shadows and reflections, natural " +
+  "colour grading, subtle photographic grain. Absolutely no illustration outlines, no painterly brush " +
+  "strokes, no stylised eyes, no smoothed plastic skin. Treat the chosen style only as wardrobe, scene, " +
+  "props and lighting direction — realise it as a real-world photo shoot.";
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -273,6 +282,7 @@ serve(async (req) => {
     const styles: string[] = Array.isArray(body?.styles) ? body.styles.slice(0, 4).map(String) : [];
     const customPrompt = String(body?.customPrompt ?? "").slice(0, 300);
     const changeOutfit = body?.changeOutfit === true;
+    const photoreal = body?.photoreal === true;
     const aspect = body?.aspect === "9:16" || body?.aspect === "16:9" ? body.aspect : "1:1";
 
     if (!image.startsWith("data:image/") && !/^https?:\/\//.test(image)) {
@@ -309,7 +319,7 @@ serve(async (req) => {
         changeOutfit
           ? "the face identity, eye colour, hair colour and skin tone stay identical to the source photo; the outfit, accessories and background follow the chosen theme."
           : "the style affects only technique, texture and lighting treatment — the eye colour, hair colour, clothing (including sleeve length and neckline) and props stay identical to the source photo."
-      }`;
+      }${photoreal ? REALISM_RULES : ""}`;
       try {
         const out = await tryVertexImage(prompt, aspect, 1, [image]);
         const b64 = out?.data?.[0]?.b64_json;
