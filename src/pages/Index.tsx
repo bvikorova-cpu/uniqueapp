@@ -192,7 +192,6 @@ const Index = () => {
     navigate(path);
   };
 
-  const currentSpotlight = spotlightServices[spotlightIdx];
 
   return (
     <>
