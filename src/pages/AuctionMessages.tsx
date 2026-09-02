@@ -193,7 +193,7 @@ export default function AuctionMessages() {
                     </Avatar>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <p className="truncate font-semibold">{t.other?.full_name || t.other?.username || "User"}</p>
+                        <p className="truncate font-semibold" translate="no">{t.other?.full_name || t.other?.username || "User"}</p>
                         {t.unreadCount > 0 && <Badge variant="destructive">{t.unreadCount}</Badge>}
                         <Badge variant="outline" className="ml-auto shrink-0 text-[10px] uppercase">
                           {t.isSelling ? "Selling" : "Bidding"}

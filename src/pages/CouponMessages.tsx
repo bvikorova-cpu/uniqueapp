@@ -259,7 +259,7 @@ export default function CouponMessages() {
                                   {displayName(t.other).slice(0, 2).toUpperCase()}
                                 </AvatarFallback>
                               </Avatar>
-                              <span className="truncate text-sm font-medium">{displayName(t.other)}</span>
+                              <span className="truncate text-sm font-medium" translate="no">{displayName(t.other)}</span>
                               {t.isSelling && <Badge variant="secondary" className="text-[10px]">Selling</Badge>}
                             </div>
                             <p className="mt-0.5 truncate text-sm font-semibold">

@@ -165,7 +165,7 @@ export function AuctionChatDialog({ open, onOpenChange, auctionId, auctionTitle,
       <DialogContent className="flex h-[600px] flex-col sm:max-w-[560px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <MessageCircle className="h-5 w-5" /> {otherName || "Chat"}
+            <MessageCircle className="h-5 w-5" /> <span translate="no" className="notranslate">{otherName || "Chat"}</span>
           </DialogTitle>
           <DialogDescription className="truncate">{auctionTitle}</DialogDescription>
         </DialogHeader>
