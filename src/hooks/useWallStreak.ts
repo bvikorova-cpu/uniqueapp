@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { liveStreak } from "@/lib/streakUtils";
 
 export interface WallStreakWeekDay {
   day_date: string;
@@ -54,7 +55,7 @@ export function useWallStreak() {
       const week = (weekRes.data ?? []) as WallStreakWeekDay[];
 
       return {
-        currentStreak: row?.current_streak ?? 0,
+        currentStreak: liveStreak(row?.current_streak ?? 0, row?.last_active_date ?? null),
         longestStreak: Math.max(row?.longest_streak ?? 0, row?.current_streak ?? 0),
         totalXp: row?.total_xp ?? 0,
         lastActiveDate: row?.last_active_date ?? null,
