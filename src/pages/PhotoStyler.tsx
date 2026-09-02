@@ -337,6 +337,33 @@ const PhotoStyler = () => {
                 </button>
               </div>
 
+              <div className="rounded-xl border border-border bg-background/60 p-3">
+                <button
+                  type="button"
+                  onClick={() => setPhotoreal((v) => !v)}
+                  className="flex w-full items-start gap-3 text-left"
+                >
+                  <span
+                    className={`mt-0.5 flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${
+                      photoreal ? "bg-primary" : "bg-muted"
+                    }`}
+                  >
+                    <span
+                      className={`h-4 w-4 rounded-full bg-background shadow transition-transform ${
+                        photoreal ? "translate-x-4" : "translate-x-0.5"
+                      }`}
+                    />
+                  </span>
+                  <span>
+                    <span className="block text-sm font-semibold">Photorealistic result (real photo look)</span>
+                    <span className="block text-xs text-muted-foreground">
+                      On = output looks like a real camera photo instead of a drawing or animation. Best for costume,
+                      holiday and travel styles.
+                    </span>
+                  </span>
+                </button>
+              </div>
+
               <div className="space-y-1.5">
                 <Label>Extra direction (optional)</Label>
                 <Input
