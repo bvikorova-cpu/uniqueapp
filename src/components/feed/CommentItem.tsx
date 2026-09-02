@@ -203,7 +203,31 @@ export const CommentItem = ({
                 Reply
               </Button>
             )}
+
+            {isOwner && !isEditing && (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-5 px-1.5 text-[10px] gap-1"
+                  onClick={() => setIsEditing(true)}
+                >
+                  <Pencil className="h-3 w-3" />
+                  Edit
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-5 px-1.5 text-[10px] gap-1 text-destructive"
+                  onClick={() => setConfirmDelete(true)}
+                >
+                  <Trash2 className="h-3 w-3" />
+                  Delete
+                </Button>
+              </>
+            )}
           </div>
+
           
           {/* Reply input */}
           {showReplyInput && (
