@@ -84,6 +84,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
   const { muteUser, unmuteUser, mutedIds } = useUserMutes();
   const isAuthorMuted = mutedIds.includes(post.user_id);
   const [deleting, setDeleting] = useState(false);
+  const [contentExpanded, setContentExpanded] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(post.likes_count || 0);
   const [commentsCount, setCommentsCount] = useState(post.comments_count || 0);
