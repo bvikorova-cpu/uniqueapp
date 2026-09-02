@@ -155,6 +155,16 @@ export const PHOTO_STYLES: PhotoStyle[] = [
 
   { id: "zombie", label: "Zombie apocalypse", emoji: "🧟", group: "Horror & Alt Reality" },
   { id: "vampire", label: "Vampire gothic", emoji: "🧛", group: "Horror & Alt Reality" },
+  { id: "mummy", label: "Mummy", emoji: "🪦", group: "Horror & Alt Reality" },
+  { id: "werewolf", label: "Werewolf", emoji: "🐺", group: "Horror & Alt Reality" },
+  { id: "witch", label: "Witch / warlock", emoji: "🧙", group: "Horror & Alt Reality" },
+  { id: "ghost", label: "Ghost", emoji: "👻", group: "Horror & Alt Reality" },
+  { id: "skullday", label: "Day of the Dead", emoji: "💀", group: "Horror & Alt Reality" },
+  { id: "frankenstein", label: "Monster lab", emoji: "⚡", group: "Horror & Alt Reality" },
+  { id: "demon", label: "Demon", emoji: "😈", group: "Horror & Alt Reality" },
+  { id: "alienhybrid", label: "Alien hybrid", emoji: "👽", group: "Horror & Alt Reality" },
+  { id: "eerieclown", label: "Creepy clown", emoji: "🤡", group: "Horror & Alt Reality" },
+
   { id: "brickfigure", label: "Brick figure", emoji: "🧱", group: "Toys & Figures" },
   { id: "dollplastic", label: "Fashion doll", emoji: "💗", group: "Toys & Figures" },
   { id: "vinylfigure", label: "Vinyl collectible", emoji: "🧸", group: "Toys & Figures" },
