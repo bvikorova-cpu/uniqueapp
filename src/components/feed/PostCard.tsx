@@ -859,17 +859,35 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
         {/* Content */}
         {(() => {
           const text = post.content || "";
+          const isLong = text.length > 320 || text.split("\n").length > 6;
           return (
             <>
               {text && (
-                <p className="text-base text-foreground mb-4 leading-relaxed whitespace-pre-wrap line-clamp-6">
-                  {text}
-                </p>
+                <>
+                  <p
+                    className={`text-base text-foreground leading-relaxed whitespace-pre-wrap ${
+                      isLong && !contentExpanded ? "line-clamp-6" : ""
+                    }`}
+                  >
+                    {text}
+                  </p>
+                  {isLong && (
+                    <button
+                      type="button"
+                      onClick={() => setContentExpanded((v) => !v)}
+                      className="mt-1 mb-3 text-sm font-medium text-primary hover:underline"
+                    >
+                      {contentExpanded ? "Show less" : "Show more"}
+                    </button>
+                  )}
+                  {!isLong && <div className="mb-4" />}
+                </>
               )}
               <PostLinkEmbed content={text} />
             </>
           );
         })()}
+
 
 
 
