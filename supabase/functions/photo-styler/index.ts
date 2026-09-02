@@ -236,6 +236,22 @@ const STYLE_PROMPTS: Record<string, string> = {
   secretaryoffice: "a sharp office look, tailored pencil skirt or trousers with a blouse and blazer, glasses, modern glass office with city view Tasteful, classy and fully non-explicit: the subject is an adult, fully covered in the described clothing, no nudity, no suggestive posing, editorial fashion photography mood.",
   firefighter: "a firefighter look, heavy protective jacket with reflective stripes and helmet, fire station with a red engine in the background Tasteful, classy and fully non-explicit: the subject is an adult, fully covered in the described clothing, no nudity, no suggestive posing, editorial fashion photography mood.",
 
+  luxuryhomesit: "an elegant lifestyle portrait sitting in a luxury modern mansion interior, designer sofa, marble floor, tall windows with warm daylight, tasteful upscale outfit, shallow depth of field",
+  marblevilla: "a refined portrait inside a marble villa with columns, gold accents and a grand staircase, soft cinematic lighting, luxury magazine mood",
+  penthousewindow: "a portrait standing by a floor-to-ceiling penthouse window at golden hour, city skyline behind, elegant modern outfit, cinematic rim light",
+  mirrorselfie: "a casual full-length mirror selfie taken with a smartphone, modern bedroom or boutique mirror, natural pose, phone visible in hand, realistic phone-camera look",
+  casualselfie: "a natural selfie taken at arm's length in soft daylight, slightly wide-angle phone lens perspective, relaxed friendly expression, everyday realistic look",
+  carselfie: "a selfie taken inside a modern car, seatbelt and window daylight, natural phone-camera perspective, casual stylish outfit",
+  runwaymodel: "a high-fashion model walking a runway during a fashion show, designer outfit, catwalk lights, blurred audience and photographers, confident stride, editorial fashion photography",
+  backstagemodel: "a backstage fashion-week portrait, clothing racks, mirrors with bulbs, stylists blurred in the background, couture outfit, candid editorial mood",
+  magazinecover: "a glossy fashion magazine cover portrait, studio lighting, bold styling, professional retouch quality, clean composition with space for cover typography (do not add readable text)",
+  vogueeditorial: "a high-end fashion editorial photograph, dramatic studio lighting, sculptural pose, designer styling, minimalist backdrop, printed-magazine quality",
+  beautycloseup: "a beauty close-up portrait, flawless professional makeup, glowing skin, soft beauty-dish lighting, catchlights in the eyes, cosmetics-campaign quality",
+  glammakeover: "a full glam makeover: professional evening makeup with contour, lashes and glossy lips, styled hair, elegant outfit, glamorous studio lighting — keep the same facial features and identity",
+  newhairstyle: "a hair-salon transformation portrait with a fresh modern hairstyle and tasteful new hair colour, salon lighting, polished styling — same face and identity",
+  naturalnomakeup: "a clean 'no-makeup makeup' portrait, dewy natural skin, minimal neutral tones, soft window light, fresh skincare-campaign look",
+  studioheadshot: "a professional studio portrait on a seamless backdrop, three-point lighting, sharp focus on the eyes, polished but natural retouch",
+  blackwhiteportrait: "a fine-art black and white portrait, dramatic chiaroscuro lighting, rich grain, deep contrast, timeless gallery mood",
 };
 
 
