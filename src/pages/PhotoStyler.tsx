@@ -34,7 +34,7 @@ const PhotoStyler = () => {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [photo, setPhoto] = useState<string | null>(null);
-  const [selected, setSelected] = useState<string[]>(["pencil"]);
+  const [selected, setSelected] = useState<string[]>([]);
   const [customPrompt, setCustomPrompt] = useState("");
   const [aspect, setAspect] = useState<"1:1" | "9:16" | "16:9">("1:1");
   const [changeOutfit, setChangeOutfit] = useState(false);
