@@ -8,6 +8,7 @@ import { Sparkles, Trophy, Gift, ArrowRight, Check } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { triggerRewardConfetti } from "@/utils/confetti";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { addShortcuts } from "@/lib/userShortcuts";
 
 const INTERESTS = [
   { id: "talent", label: "Megatalent", emoji: "🎤", hub: "/megatalent" },
