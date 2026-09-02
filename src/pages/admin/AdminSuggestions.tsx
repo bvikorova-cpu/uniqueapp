@@ -204,6 +204,38 @@ export default function AdminSuggestions() {
                       {savingId === r.id ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save notes"}
                     </Button>
                   </div>
+
+                  {r.response_message ? (
+                    <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3 space-y-1">
+                      <div className="text-xs font-semibold text-emerald-600">Reply sent</div>
+                      <p className="text-sm whitespace-pre-wrap">{r.response_message}</p>
+                      <div className="text-xs text-muted-foreground">
+                        {r.response_at && formatDistanceToNow(new Date(r.response_at), { addSuffix: true })}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <Textarea
+                        rows={3}
+                        placeholder="Write a reply to the user..."
+                        value={responses[r.id] ?? ""}
+                        onChange={(e) => setResponses((r) => ({ ...r, [id]: e.target.value }))}
+                      />
+                      <Button
+                        size="sm"
+                        disabled={savingId === r.id}
+                        onClick={() => sendReply(r.id)}
+                        className="gap-2"
+                      >
+                        {savingId === r.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <MessageSquare className="h-4 w-4" />
+                        )}
+                        Reply
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </AdminGlassCard>
             ))}
