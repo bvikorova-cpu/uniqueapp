@@ -126,7 +126,35 @@ export const CommentItem = ({
             </div>
           )}
           
-          <p className="text-xs text-foreground/90 mt-0.5">{comment.content}</p>
+          {isEditing ? (
+            <div className="mt-1 space-y-1">
+              <Textarea
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                className="text-xs min-h-[60px]"
+                maxLength={2000}
+              />
+              <div className="flex gap-1">
+                <Button size="sm" className="h-6 text-[10px]" disabled={saving} onClick={handleSaveEdit}>
+                  Save
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 text-[10px]"
+                  onClick={() => {
+                    setEditValue(comment.content || "");
+                    setIsEditing(false);
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <p className="text-xs text-foreground/90 mt-0.5 whitespace-pre-wrap break-words">{comment.content}</p>
+          )}
+
           
           {/* Comment Media */}
           {comment.image_url && (
