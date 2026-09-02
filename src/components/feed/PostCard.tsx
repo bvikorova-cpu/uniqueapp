@@ -755,7 +755,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
                 className={`font-semibold text-base truncate cursor-pointer hover:underline ${rewardsNameClass(authorCosmetics.name_color)}`}
                 onClick={(e) => handleUserClick(e, post.user_id)}
               >
-                {post.profiles?.full_name || (post.profiles as any)?.username || "User"}
+                <span className="notranslate" translate="no">{post.profiles?.full_name || (post.profiles as any)?.username || "User"}</span>
               </p>
               <VerifiedFounderBadge 
                 userName={post.profiles?.full_name || (post.profiles as any)?.username || ""} 
