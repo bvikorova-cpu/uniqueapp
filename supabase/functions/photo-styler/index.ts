@@ -350,7 +350,11 @@ serve(async (req) => {
           : "the style affects only technique, texture and lighting treatment — the eye colour, hair colour, clothing (including sleeve length and neckline) and props stay identical to the source photo."
       }${photoreal ? REALISM_RULES : ""}`;
       try {
-        const out = await tryVertexImage(prompt, aspect, 1, [image]);
+        const ref = STYLE_REFS[style];
+        const refPrompt = ref
+          ? `${prompt}\n\nBRAND REFERENCE: a second image is supplied purely as a brand reference. Copy its Unique branding exactly — the mascot / car design, the purple-to-hot-pink gradient, the white calligraphic 'U' with the sparkle, the logo tile placement and the 'www.uniqueapp.fun' text placement. Never copy the person from the reference image; the person must come from the first photo. Never print any text on the mascot's body.`
+          : prompt;
+        const out = await tryVertexImage(refPrompt, aspect, 1, ref ? [image, ref] : [image]);
         const b64 = out?.data?.[0]?.b64_json;
         if (b64) results.push({ style, image: `data:image/png;base64,${b64}` });
         else results.push({ style, error: "The image model returned nothing. Try again." });
