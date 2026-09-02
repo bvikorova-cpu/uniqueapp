@@ -93,7 +93,7 @@ export function StreaksAndChallenges() {
       return (data ?? []) as Array<{ day_date: string; is_active: boolean; xp_earned: number }>;
     } });
 
-  const streakDays = streakRow?.current_streak ?? 0;
+  const streakDays = liveStreak(streakRow?.current_streak ?? 0, streakRow?.last_active_date ?? null);
   const weekDays = ["M", "T", "W", "T", "F", "S", "S"];
   const activeWeekDays = weekDays.map((_, i) => week?.[i]?.is_active ?? false);
   const currentXP = streakRow?.total_xp ?? 0;
