@@ -264,6 +264,15 @@ const OUTFIT_RULES =
   "Do not change the person's age or body shape. No nudity, no lingerie, no sexual or suggestive content. " +
   "Output only the finished artwork image.";
 
+const REALISM_RULES =
+  "\n\nRENDERING MODE — PHOTOREALISTIC: the final image must look like a real photograph taken with a " +
+  "professional camera (full-frame DSLR, 50-85mm lens, shallow depth of field), NOT a drawing, painting, " +
+  "cartoon, anime, 3D render or digital illustration. Real human skin with pores, fine hair strands, " +
+  "realistic fabric weave and stitching, physically correct lighting, shadows and reflections, natural " +
+  "colour grading, subtle photographic grain. Absolutely no illustration outlines, no painterly brush " +
+  "strokes, no stylised eyes, no smoothed plastic skin. Treat the chosen style only as wardrobe, scene, " +
+  "props and lighting direction — realise it as a real-world photo shoot.";
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
