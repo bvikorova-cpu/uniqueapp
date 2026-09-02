@@ -102,7 +102,6 @@ const Navbar = () => {
 
   const clipBattlesServices = [
     { path: "/clip-battles", label: "Clip Battles", icon: Film },
-    { path: "/face-insight", label: "Face Insight Studio", icon: Sparkles },
   ];
 
   const challengeServices = [
