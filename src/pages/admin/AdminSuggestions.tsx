@@ -21,6 +21,8 @@ interface Suggestion {
   page_url: string | null;
   status: string;
   admin_notes: string | null;
+  response_message: string | null;
+  response_at: string | null;
   created_at: string;
 }
 
