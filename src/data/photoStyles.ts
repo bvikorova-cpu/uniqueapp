@@ -54,6 +54,7 @@ export const PHOTO_STYLE_GROUPS = [
   "Bold & Glam Looks",
   "Uniforms & Costumes",
   "Portrait & Editorial",
+  "Unique Brand",
 ] as const;
 
 
@@ -328,6 +329,13 @@ export const PHOTO_STYLES: PhotoStyle[] = [
   { id: "naturalnomakeup", label: "Clean natural makeup", emoji: "🌿", group: "Portrait & Editorial" },
   { id: "studioheadshot", label: "Studio portrait", emoji: "📸", group: "Portrait & Editorial" },
   { id: "blackwhiteportrait", label: "B&W fine art portrait", emoji: "⚫", group: "Portrait & Editorial" },
+
+  { id: "uniquephone", label: "Holding phone with Unique", emoji: "📱", group: "Unique Brand" },
+  { id: "uniquetshirt", label: "Unique logo T-shirt", emoji: "👕", group: "Unique Brand" },
+  { id: "uniqueflag", label: "Waving Unique flag", emoji: "🚩", group: "Unique Brand" },
+  { id: "uniquemascot", label: "With the Unique mascot", emoji: "🧸", group: "Unique Brand" },
+  { id: "uniquebillboard", label: "Next to Unique billboard", emoji: "🪧", group: "Unique Brand" },
+  { id: "uniquefanselfie", label: "Unique fan selfie", emoji: "✨", group: "Unique Brand" },
 ];
 
 
