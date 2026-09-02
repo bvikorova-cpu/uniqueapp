@@ -37,19 +37,30 @@ export const CrystalOracleTool = () => {
     try {
       const { data, error } = await supabase.functions.invoke("crystal-ai-tool", {
         body: { toolType: "oracle", textInput: `Crystal: ${crystal.name}. Properties: ${crystal.properties}. Chakra: ${crystal.chakra}. Element: ${crystal.element}.` } });
-      
+
+      if (error) {
+        const msg = String((error as any)?.message ?? "");
+        toast.error(
+          /402|credit/i.test(msg)
+            ? "Not enough credits for AI guidance — showing the basic crystal reading instead."
+            : "AI guidance failed — showing the basic crystal reading instead.",
+        );
+      }
+
       const guidance = error ? crystal.properties : data?.analysis || crystal.properties;
       const today = new Date().toISOString().split("T")[0];
-      
-      const { data: draw } = await (supabase as any).from("crystal_oracle_draws").insert({ user_id: session.user.id,
+
+      const { data: draw, error: insertError } = await (supabase as any).from("crystal_oracle_draws").insert({ user_id: session.user.id,
         crystal_name: crystal.name,
         mantra: crystal.mantra,
         guidance,
         drawn_at: today }).select().single();
+      if (insertError) toast.error("Could not save your draw. Please try again.");
 
       setTodayDraw(draw || { crystal_name: crystal.name, mantra: crystal.mantra, guidance });
-      toast.success(`Your daily crystal has been revealed! ${ORACLE_COST} credits used ✨`);
-    } catch {
+      if (!error) toast.success(`Your daily crystal has been revealed! ${ORACLE_COST} credits used ✨`);
+    } catch (e: any) {
+      toast.error(e?.message ? `Oracle failed: ${e.message}` : "Oracle failed. Please try again.");
       // Fallback without AI
       const today = new Date().toISOString().split("T")[0];
       const { data: draw } = await (supabase as any).from("crystal_oracle_draws").insert({
@@ -60,6 +71,7 @@ export const CrystalOracleTool = () => {
         drawn_at: today }).select().single();
       setTodayDraw(draw || { crystal_name: crystal.name, mantra: crystal.mantra, guidance: crystal.properties });
     }
+
     setDrawing(false);
   };
 
