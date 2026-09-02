@@ -9,11 +9,12 @@ export interface EducationStats {
 }
 
 /**
- * Pulls live education stats for the current user:
- *  - currentXP from `user_points.total_points`
- *  - login_streak as the daily challenge streak proxy
- *  - todayCompleted = education daily completion for today
- *  - bestStreak = `user_points.longest_streak`
+ * Pulls live education stats for the current user.
+ * currentXP is EDUCATION-SPECIFIC (not global platform points), derived from
+ * real activity inside the Education Hub:
+ *   daily challenge completions (20 XP), completed lessons (15 XP),
+ *   exercise submissions (10 XP), math solves (5 XP),
+ *   plus educational_progress lessons (10 XP) and stars (5 XP).
  */
 export const useEducationStats = () => {
   return useQuery({
@@ -25,30 +26,58 @@ export const useEducationStats = () => {
       }
 
       const today = new Date().toISOString().slice(0, 10);
+      const uid = user.id;
 
-      const [{ data: points }, { data: todayCompletions }] = await Promise.all([
+      const [
+        { data: points },
+        { data: todayCompletions },
+        { count: dailyCount },
+        { count: lessonCount },
+        { count: exerciseCount },
+        { count: mathCount },
+        { data: progressRows },
+      ] = await Promise.all([
         supabase
           .from("user_points")
-          .select("total_points, login_streak, longest_streak")
-          .eq("user_id", user.id)
+          .select("login_streak, longest_streak")
+          .eq("user_id", uid)
           .maybeSingle(),
         supabase
           .from("education_daily_completions")
           .select("id, education_daily_challenges!inner(challenge_date)")
-          .eq("user_id", user.id)
+          .eq("user_id", uid)
           .eq("education_daily_challenges.challenge_date", today)
           .limit(1),
+        supabase.from("education_daily_completions").select("id", { count: "exact", head: true }).eq("user_id", uid),
+        supabase.from("education_lesson_progress").select("id", { count: "exact", head: true }).eq("user_id", uid),
+        supabase.from("education_exercise_submissions").select("id", { count: "exact", head: true }).eq("user_id", uid),
+        supabase.from("education_math_solves").select("id", { count: "exact", head: true }).eq("user_id", uid),
+        supabase.from("educational_progress").select("lessons_completed, stars_earned").eq("user_id", uid),
       ]);
+
+      const progressXP = (progressRows ?? []).reduce(
+        (sum: number, r: any) => sum + (r.lessons_completed ?? 0) * 10 + (r.stars_earned ?? 0) * 5,
+        0,
+      );
+
+      const currentXP =
+        (dailyCount ?? 0) * 20 +
+        (lessonCount ?? 0) * 15 +
+        (exerciseCount ?? 0) * 10 +
+        (mathCount ?? 0) * 5 +
+        progressXP;
 
       const todayCompleted = (todayCompletions?.length ?? 0) > 0;
       const currentStreak = Math.max(points?.login_streak ?? 0, todayCompleted ? 1 : 0);
-      return { currentXP: points?.total_points ?? 0,
+      return {
+        currentXP,
         currentStreak,
         bestStreak: Math.max(points?.longest_streak ?? 0, currentStreak),
         todayCompleted };
     },
     staleTime: 60_000 });
 };
+
 
 export interface EducationLeaderRow {
   user_id: string;
