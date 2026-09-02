@@ -7,10 +7,15 @@ const corsHeaders = {
 
 /**
  * Settles expired clip duels:
- *  - participant with most net votes (likes - dislikes) receives the full prize pool in battle coins
- *  - tie / missing opponent -> entry fee refunded to each participant
+ *  - participant with most net votes (likes - dislikes) receives 160 coins (80% of the 200 pot) + 10 XP
+ *  - loser receives nothing
+ *  - tie / missing opponent -> entry fee (100) refunded to each participant
  *  - the duel and all its rows (participants, votes, comments) are deleted afterwards
  */
+const ENTRY_COINS = 100;
+const WIN_COINS = 160; // 80% of the 200 coin pot
+const WIN_XP = 10;
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
@@ -49,15 +54,24 @@ Deno.serve(async (req) => {
         else if (score(b) > score(a)) winnerId = b.user_id;
 
         if (winnerId) {
-          payouts = [{ user_id: winnerId, amount: Number(battle.prize_pool ?? 200), reason: "battle_win" }];
+          payouts = [{ user_id: winnerId, amount: WIN_COINS, reason: "battle_win" }];
         } else {
-          payouts = list.map((p) => ({ user_id: p.user_id, amount: 100, reason: "battle_refund" }));
+          payouts = list.map((p) => ({ user_id: p.user_id, amount: ENTRY_COINS, reason: "battle_refund" }));
         }
       } else if (list.length === 1) {
-        payouts = [{ user_id: list[0].user_id, amount: 100, reason: "battle_refund" }];
+        payouts = [{ user_id: list[0].user_id, amount: ENTRY_COINS, reason: "battle_refund" }];
       }
 
       for (const payout of payouts) {
+        if (payout.reason === "battle_win") {
+          const { error: xe } = await supabase.rpc("award_xp", {
+            _user_id: payout.user_id,
+            _amount: WIN_XP,
+            _source: "reel_battle_win",
+            _ref_id: battle.id,
+          });
+          if (xe) console.error("xp award failed", battle.id, payout.user_id, xe.message);
+        }
         const { error: ce } = await supabase.rpc("battle_coins_apply", {
           _user_id: payout.user_id,
           _module: "reel_battles",
@@ -76,7 +90,7 @@ Deno.serve(async (req) => {
       const { error: de } = await supabase.from("reel_battles").delete().eq("id", battle.id);
       if (de) throw de;
 
-      results.push({ battle_id: battle.id, winner_user_id: winnerId, payouts });
+      results.push({ battle_id: battle.id, winner_user_id: winnerId, payouts, win_xp: winnerId ? WIN_XP : 0 });
     }
 
     return new Response(JSON.stringify({ success: true, settled: results.length, results }), {
