@@ -41,6 +41,7 @@ export default function AdminSuggestions() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
   const [notes, setNotes] = useState<Record<string, string>>({});
+  const [responses, setResponses] = useState<Record<string, string>>({});
   const [savingId, setSavingId] = useState<string | null>(null);
 
   const load = async () => {
