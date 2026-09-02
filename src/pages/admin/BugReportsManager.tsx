@@ -140,7 +140,7 @@ export default function BugReportsManager() {
     }
     toast.success(
       status === "confirmed"
-        ? "Confirmed — credits granted automatically."
+        ? "Approved — reward credits granted (minor 1 / major 5 / critical 10)."
         : `Status set to ${status}`
     );
     await load();
