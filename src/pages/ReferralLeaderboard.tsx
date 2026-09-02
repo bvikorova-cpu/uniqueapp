@@ -143,7 +143,7 @@ export default function ReferralLeaderboard() {
                     <AvatarFallback>{(r.display_name || "U").slice(0, 2).toUpperCase()}</AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
-                    <div className="font-bold truncate">{r.display_name}</div>
+                    <div className="font-bold truncate" translate="no">{r.display_name}</div>
                     <div className="text-xs text-muted-foreground flex items-center gap-1">
                       <Gift className="h-3 w-3" />
                       {r.successful_referrals} referral{r.successful_referrals === 1 ? "" : "s"}
