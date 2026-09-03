@@ -5,3 +5,7 @@
 - [ ] jasný "zarábaj" blok (výplaty v EUR)
 - [ ] 3 verzie videa na výber
 - [x] Photo Styler: pridané štýly hračky/pop-kultúra/textúry/scény so zámenou pozadia (celkovo 128)
+
+## About Platform (2026-09-03)
+- [x] Add missing sections (Unlock Videos, Unique Gifts, Suggestions, AI Video Creator, Photo Styler, Fairytale Book, Guess My Age, Spin & Solve)
+- [x] Remove hero stats cards (60+ Sections / 40+ AI Tools / 15+ Arenas / 30+ Communities)
