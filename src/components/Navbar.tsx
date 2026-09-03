@@ -124,8 +124,8 @@ const Navbar = () => {
     : [];
 
   const kidsAcademyServices = [
-    { path: "/kids", label: "Kids Academy Hub", icon: Sparkles },
-    { path: "/kids-channel", label: "Kids Channel", icon: Video },
+    { path: "/kids-channel", label: "Kids Channel Hub", icon: Sparkles },
+    { path: "/kids-channel/certificate-gallery", label: "Kids Certificates", icon: Video },
     { path: "/coloring-pages", label: "Coloring Pages", icon: Palette },
     { path: "/kids-puzzles", label: "Kids Puzzles", icon: Puzzle },
     { path: "/kids-homework", label: "Homework Helper (6-12y)", icon: BookOpen },
@@ -134,7 +134,7 @@ const Navbar = () => {
     { path: "/kids-drawing-buddy", label: "Drawing Buddy (6-12y)", icon: Palette },
     { path: "/kids-reading-companion", label: "Reading Companion (6-12y)", icon: BookOpen },
     { path: "/fairytale-book", label: "Fairytale Book Generator", icon: BookOpen },
-    { path: "/kids-academy?tab=cards", label: "Kids Collectibles (cards)", icon: Library },
+    { path: "/kids-academy", label: "Kids Collectibles (cards)", icon: Library },
     { path: "/teen-career-counselor", label: "Career Counselor (13-18y)", icon: Briefcase },
   ];
 
