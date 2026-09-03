@@ -26,6 +26,7 @@ import { VerifiedFilm, VERIFIED_DURATION } from "./VerifiedFilm";
 import { ClubFilm, CLUB_DURATION } from "./ClubFilm";
 import { ViralFilm, VIRAL_DURATION } from "./ViralFilm";
 
+import { WallGuideFilm, WALLGUIDE_DURATION } from "./WallGuideFilm";
 import { VERSIONS } from "./versions";
 import { SectionSpot, SECTIONS, SECTION_SPOT_DURATION } from "./SectionSpot";
 
@@ -42,6 +43,14 @@ export const RemotionRoot = () => (
       fps={30}
       width={1920}
       height={540}
+    />
+    <Composition
+      id="wall-guide"
+      component={WallGuideFilm}
+      durationInFrames={WALLGUIDE_DURATION}
+      fps={30}
+      width={1920}
+      height={1080}
     />
     <Composition
       id="unique-marketing"
