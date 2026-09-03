@@ -203,7 +203,8 @@ const Shot: React.FC<{
   duration: number;
   width?: number;
   height?: number;
-}> = ({ src, focus, duration, width = 1000, height = 860 }) => {
+  glow?: string;
+}> = ({ src, focus, duration, width = 1000, height = 860, glow = C.pink }) => {
   const frame = useCurrentFrame();
   const enter = spring({ frame, fps: FPS, config: { damping: 200 }, durationInFrames: 26 });
   const zoom = interpolate(frame, [0, duration], [focus.zoom, focus.zoomTo ?? focus.zoom + 0.07], {
@@ -220,8 +221,8 @@ const Shot: React.FC<{
         height,
         borderRadius: 28,
         overflow: "hidden",
-        border: "3px solid rgba(255,255,255,0.16)",
-        boxShadow: "0 40px 120px rgba(0,0,0,0.6)",
+        border: `4px solid ${glow}aa`,
+        boxShadow: `0 40px 120px rgba(0,0,0,0.6), 0 0 70px ${glow}55`,
         background: "#fff",
         opacity: op,
         transform: `translateY(${interpolate(enter, [0, 1], [50, 0])}px) scale(${interpolate(
@@ -671,9 +672,9 @@ const CH_D = 132;
 
 const ITEMS: Item[] = [
   { d: 96, render: (d) => <Intro duration={d} /> },
-  ...CHAPTERS.map((c) => ({
+  ...CHAPTERS.map((c, i) => ({
     d: CH_D,
-    render: (d: number) => <Chapter {...c} duration={d} />,
+    render: (d: number) => <Chapter {...c} duration={d} idx={i} />,
   })),
   { d: 110, render: (d) => <Outro duration={d} /> },
 ];
@@ -694,6 +695,7 @@ export const WallGuideFilm: React.FC = () => {
           </Sequence>
         );
       })}
+      <LogoBadge />
       <ProgressBar total={WALLGUIDE_DURATION} />
     </AbsoluteFill>
   );
