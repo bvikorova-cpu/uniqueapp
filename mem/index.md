@@ -13,6 +13,8 @@
 - Credit modules (9 total): Voice Chat (1cr), Drawing (2cr), Reading (2cr), Homework (2cr), Story (3cr), Career (5cr), Coloring (5cr) + Academy banner + GoldPass (neutralized to false).
 - Content: Erotic/nude/sexual content BANNED platform-wide; every upload surface must call screenMediaFile() before upload.
 - IP: No third-party brands/characters (Disney, Pixar, Marvel, DC, Barbie, Harry Potter…) in assets, labels or copy — no licenses.
+- Credits: ONE wallet = `ai_credits` + `ai_credits_ledger`. Never create/read a per-module `*_credits` table. Test credit gates from a second clean account.
+
 
 ## Core extra
 - Avatar ring: equipped cosmetic frame first, else verification tier ring (gold for Verified/VIP) — same on every surface.
@@ -40,6 +42,7 @@
 - [Admin Stripe Payout](mem://features/admin-stripe-payout) — Automated withdrawal wiring.
 - [Kids & Teen AI Credit Matrix](mem://features/kids-teen-ai-credit-matrix) — Credit tables, costs, and edge functions for all Kids & Teen AI modules.
 - [AI Credits Grant Policy](mem://features/ai-credits-policy) — STRIKTNÉ: žiadne nové automatické granty ai_credits bez schválenia. Schválené iba: monthly +10, founding +50, Stripe, promo, referral, gift, auto-recharge. Ledger + trigger auditujú každú zmenu.
+- [Single credit wallet](mem://constraints/single-credit-wallet) — Zákaz per-module `*_credits` tabuliek; iba `ai_credits` + ledger; incident 2026-09-03 a cross-user test pravidlo.
 - [Social & Dating audit fixes](mem://features/social-dating-audit-batch) — 24h refund, DM mute, confession sanitize, coffee no-show strikes.
 - [DM Consolidation](mem://features/dm-consolidation) — Direct messages unified onto conversations schema via RPC; legacy `direct_messages` deprecated.
 - [Unlock Videos](mem://features/unlock-videos) — /unlock-videos: video locks at 50%, unlock 1 credit, 50/50 split with creator.
