@@ -164,11 +164,8 @@ const EditProfile = () => {
         id: !!p.is_verified,
         payment: !!p.stripe_connect_charges_enabled });
 
-      // voice intro
-      const { data: vi } = await supabase
-        .from("profile_voice_intros").select("audio_url, transcript").eq("user_id", userId).maybeSingle();
-      if (vi) setVoiceIntro({ url: vi.audio_url, transcript: vi.transcript });
     } catch (error: any) {
+
       toast({ title: "Error loading profile", description: error.message, variant: "destructive" });
     } finally {
       setLoading(false);
