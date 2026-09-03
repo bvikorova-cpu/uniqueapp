@@ -1,6 +1,7 @@
 # Project Memory
 
 ## Core
+- STRICT: Only real data everywhere. No mock, random, demo or placeholder numbers/names — show 0 or empty state instead.
 - AI text output: NEVER raw markdown (###, **, ---). Always render via `AiMarkdown` component.
 - Language: 12-language support (SK, EN, HU, etc.) with auto-detection.
 - Currency: EUR (€) exclusively.
@@ -52,3 +53,4 @@
 - [Monthly battle champions](mem://features/monthly-battle-champions) — Fixed TOP 3 rewards (5000/2500/1000 credits + badges) in KitchenStars, Reel Battles, MegaTalent; no % cash prizes.
 - [Marketplace contact filter](mem://features/contact-filter) — Contacts scrubbed from listings/early chat; unlock costs 2 credits.
 - [Real names everywhere](mem://preferences/real-names-everywhere) — Never show "User"/"Anonymous"; profiles_public must stay security-definer.
+- [No fake data](mem://constraints/no-fake-data) — Every number, list and name must come from real DB data; no mock/random/placeholder values anywhere.
