@@ -67,3 +67,20 @@ export const rewardsFrameClass = (slug?: string | null) => (slug ? REWARDS_FRAME
 export const rewardsNameClass = (slug?: string | null) => (slug ? REWARDS_NAME_STYLE[slug] ?? "" : "");
 export const rewardsThemeClass = (slug?: string | null) => (slug ? REWARDS_THEME_STYLE[slug] ?? "" : "");
 export const rewardsBorderClass = (slug?: string | null) => (slug ? REWARDS_BORDER_STYLE[slug] ?? "" : "");
+
+/** Tier ring fallback used platform-wide when no cosmetic frame is equipped. */
+export const TIER_RING_STYLE: Record<string, string> = {
+  verified: "ring-4 ring-amber-400 shadow-[0_0_18px_rgba(251,191,36,0.6)]",
+  plus: "ring-4 ring-pink-400 shadow-[0_0_18px_rgba(244,114,182,0.55)]",
+  pro: "ring-4 ring-purple-400 shadow-[0_0_18px_rgba(192,132,252,0.55)]",
+};
+
+export const tierRingClass = (tier?: string | null) => (tier ? TIER_RING_STYLE[tier] ?? "" : "");
+
+/**
+ * Single source of truth for the avatar ring across the whole platform:
+ * equipped cosmetic frame wins, otherwise the verification tier ring
+ * (gold for Verified/VIP) is used so status is consistent everywhere.
+ */
+export const avatarRingClass = (c?: { avatar_frame?: string | null; verification_tier?: string | null } | null) =>
+  rewardsFrameClass(c?.avatar_frame) || tierRingClass(c?.verification_tier);
