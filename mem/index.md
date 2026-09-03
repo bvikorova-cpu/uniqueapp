@@ -13,6 +13,9 @@
 - Content: Erotic/nude/sexual content BANNED platform-wide; every upload surface must call screenMediaFile() before upload.
 - IP: No third-party brands/characters (Disney, Pixar, Marvel, DC, Barbie, Harry Potter…) in assets, labels or copy — no licenses.
 
+## Core extra
+- Avatar ring: equipped cosmetic frame first, else verification tier ring (gold for Verified/VIP) — same on every surface.
+
 ## Memories
 - [IP-safe content only](mem://constraints/ip-safe-content) — Forbidden brands/characters; Kids Shows catalog removed, gifts rebranded to fantasy/heroes.
 - [No erotic/nude content](mem://constraints/no-adult-content) — Platform-wide NSFW ban; pre-upload screening via screenMediaFile + strict moderate-image/text.
@@ -48,3 +51,4 @@
 - [Battle Coins](mem://features/battle-coins) — Separate game currency for KitchenStars + Reel Battles: 1 credit = 100 coins, one-way, cosmetics only.
 - [Monthly battle champions](mem://features/monthly-battle-champions) — Fixed TOP 3 rewards (5000/2500/1000 credits + badges) in KitchenStars, Reel Battles, MegaTalent; no % cash prizes.
 - [Marketplace contact filter](mem://features/contact-filter) — Contacts scrubbed from listings/early chat; unlock costs 2 credits.
+- [Real names everywhere](mem://preferences/real-names-everywhere) — Never show "User"/"Anonymous"; profiles_public must stay security-definer.
