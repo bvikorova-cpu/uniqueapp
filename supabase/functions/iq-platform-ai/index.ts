@@ -125,8 +125,7 @@ serve(async (req) => {
     const parsed = JSON.parse(content);
 
     await supabase
-      .rpc("deduct_ai_credits", { p_user_id: user.id, p_amount: creditCost, p_reason: `iq_ai:${action}`, p_source: "iq_platform_ai" })
-      .eq("user_id", user.id);
+      .rpc("deduct_ai_credits", { p_user_id: user.id, p_amount: creditCost, p_reason: `iq_ai:${action}`, p_source: "iq_platform_ai" });
 
     return new Response(JSON.stringify({ ...parsed, credits_used: creditCost, credits_remaining: remaining - creditCost }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
