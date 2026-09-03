@@ -76,10 +76,11 @@ export const KIDS_MODULE_CREDITS: Record<
     ],
   },
   academy: {
-    title: "Kids Academy — credit costs",
+    title: "Kids Collectibles — credit costs",
     items: [
-      { label: "AI action (lesson, hint, explanation)", cost: "3 credits" },
-      { label: "Puzzles, collectibles, games", cost: "Free" },
+      { label: "Draw a collectible card", cost: "1 credit" },
+      { label: "Collect a puzzle piece", cost: "1 credit" },
+      { label: "Browsing sets & albums", cost: "Free" },
     ],
   },
 };

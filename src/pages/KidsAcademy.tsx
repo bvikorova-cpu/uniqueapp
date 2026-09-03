@@ -20,15 +20,17 @@ const KidsAcademy = () => {
     <div className="min-h-screen bg-background">
       <FloatingHowItWorks title={__HIW_KIDSACADEMY.title} intro={__HIW_KIDSACADEMY.intro} steps={__HIW_KIDSACADEMY.steps} />
       <Navbar />
-      <main className="container mx-auto px-4 py-6 mt-16">
-        <div className="max-w-6xl mx-auto space-y-4">
-          <Button asChild variant="outline" className="gap-2">
-            <Link to="/kids-puzzles">
-              <PuzzleIcon className="h-4 w-4" /> Kids Puzzles — collect pieces for 1 credit
-            </Link>
-          </Button>
-          <KidsModuleCreditNote module="academy" />
+      <main className="container mx-auto px-4 pb-10 pt-4 mt-16">
+        <div className="max-w-6xl mx-auto space-y-6">
           <KidsCollectibles />
+          <div className="grid gap-4 md:grid-cols-2 md:items-start">
+            <KidsModuleCreditNote module="academy" />
+            <Button asChild variant="outline" className="gap-2 w-full md:w-auto justify-center">
+              <Link to="/kids-puzzles">
+                <PuzzleIcon className="h-4 w-4" /> Kids Puzzles — collect pieces for 1 credit
+              </Link>
+            </Button>
+          </div>
         </div>
       </main>
     </div>
