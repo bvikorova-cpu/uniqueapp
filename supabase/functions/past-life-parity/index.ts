@@ -72,7 +72,7 @@ serve(async (req) => {
     const admin = createClient(supabaseUrl, serviceKey);
 
     const { data: creditsRow } = await admin
-      .from("past_life_credits")
+      .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
@@ -121,10 +121,11 @@ serve(async (req) => {
       return json({ error: "Failed to save reading" }, 500);
     }
 
-    await admin
-      .from("past_life_credits")
-      .update({ credits_remaining: balance - PARITY_COST, updated_at: new Date().toISOString() })
-      .eq("user_id", user.id);
+    await admin.rpc("deduct_ai_credits", {
+      p_user_id: user.id,
+      p_amount: PARITY_COST,
+      p_reason: "past_life_parity",
+      p_source: "past_life" });
 
     return json({ success: true,
       result: inserted,

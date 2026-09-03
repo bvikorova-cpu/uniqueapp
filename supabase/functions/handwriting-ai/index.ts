@@ -50,17 +50,19 @@ async function callAI(body: unknown, attempt = 0): Promise<string> {
 
 async function chargeCredits(supabase: any, userId: string, cost: number) {
   const { data: credits } = await supabase
-    .from("handwriting_credits")
-    .select("*")
+    .from("ai_credits")
+    .select("credits_remaining")
     .eq("user_id", userId)
     .maybeSingle();
   if (!credits || (credits.credits_remaining ?? 0) < cost) {
     throw new Error("Insufficient credits");
   }
-  await supabase
-    .from("handwriting_credits")
-    .update({ credits_remaining: credits.credits_remaining - cost })
-    .eq("user_id", userId);
+  const { error: dedErr } = await supabase.rpc("deduct_ai_credits", {
+    p_user_id: userId,
+    p_amount: cost,
+    p_reason: "handwriting_ai",
+    p_source: "handwriting" });
+  if (dedErr) throw new Error("Insufficient credits");
   return credits;
 }
 

@@ -68,7 +68,7 @@ serve(async (req) => {
 
     // Ensure credits row exists, then check balance.
     const { data: creditsRow } = await supabaseAdmin
-      .from("past_life_credits")
+      .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
@@ -181,10 +181,11 @@ Generate exactly ${livesCount} past ${livesCount === 1 ? "life" : "lives"}. Make
     }
 
     // Deduct credits AFTER successful save.
-    const { error: deductErr } = await supabaseAdmin
-      .from("past_life_credits")
-      .update({ credits_remaining: currentCredits - cost, updated_at: new Date().toISOString() })
-      .eq("user_id", user.id);
+    const { error: deductErr } = await supabaseAdmin.rpc("deduct_ai_credits", {
+      p_user_id: user.id,
+      p_amount: cost,
+      p_reason: "past_life_regression",
+      p_source: "past_life" });
 
     if (deductErr) {
       console.error("Deduct failed (reading still saved):", deductErr);

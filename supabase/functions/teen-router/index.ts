@@ -62,7 +62,7 @@ serve(async (req) => {
 
     // Pre-check balance
     const { data: credits } = await admin
-      .from("teen_credits")
+      .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
@@ -95,10 +95,11 @@ serve(async (req) => {
     const reply = aiJson?.choices?.[0]?.message?.content ?? "";
 
     // Deduct credits AFTER successful AI response
-    await admin
-      .from("teen_credits")
-      .update({ credits_remaining: balance - cost })
-      .eq("user_id", user.id);
+    await admin.rpc("deduct_ai_credits", {
+      p_user_id: user.id,
+      p_amount: cost,
+      p_reason: `teen_${module}`,
+      p_source: "teen_hub" });
 
     // Log usage
     await admin.from("teen_module_usage").insert({

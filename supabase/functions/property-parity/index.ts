@@ -41,11 +41,11 @@ serve(async (req) => {
     if (!cfg) return new Response(JSON.stringify({ error: "Invalid action" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
     const { data: credits } = await supabaseAdmin
-      .from("property_parity_credits")
-      .select("balance")
+      .from("ai_credits")
+      .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
-    const balance = credits?.balance ?? 0;
+    const balance = credits?.credits_remaining ?? 0;
     if (balance < PARITY_COST) {
       return new Response(JSON.stringify({ requiresPayment: true, cost: PARITY_COST, balance }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
@@ -74,9 +74,11 @@ serve(async (req) => {
     try { result = JSON.parse(content); } catch { result = { raw: content }; }
 
     await supabaseAdmin.from(cfg.table).insert({ user_id: user.id, input: payload ?? {}, result });
-    await supabaseAdmin
-      .from("property_parity_credits")
-      .upsert({ user_id: user.id, balance: balance - PARITY_COST, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
+    await supabaseAdmin.rpc("deduct_ai_credits", {
+      p_user_id: user.id,
+      p_amount: PARITY_COST,
+      p_reason: `property_${action}`,
+      p_source: "property" });
 
     return new Response(JSON.stringify({ result, cost: PARITY_COST, balance: balance - PARITY_COST }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });

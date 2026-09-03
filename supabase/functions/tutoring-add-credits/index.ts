@@ -83,26 +83,12 @@ serve(async (req) => {
     const credits = PRICE_TO_CREDITS[priceId];
 
     // Apply: upsert tutoring_credits + write audit trail in a single logical step
-    const { data: existingCredits } = await supabaseAdmin
-      .from("tutoring_credits")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    if (existingCredits) {
-      const { error } = await supabaseAdmin
-        .from("tutoring_credits")
-        .update({ credits_remaining: existingCredits.credits_remaining + credits,
-          total_credits_purchased: existingCredits.total_credits_purchased + credits,
-          updated_at: new Date().toISOString() })
-        .eq("user_id", user.id);
-      if (error) throw error;
-    } else {
-      const { error } = await supabaseAdmin.from("tutoring_credits").insert({ user_id: user.id,
-        credits_remaining: credits,
-        total_credits_purchased: credits });
-      if (error) throw error;
-    }
+    const { error: addErr } = await supabaseAdmin.rpc("add_ai_credits", {
+      p_user_id: user.id,
+      p_amount: credits,
+      p_reason: "tutoring_credits_purchase",
+      p_source: "stripe" });
+    if (addErr) throw addErr;
 
     // Audit log (also acts as idempotency key via unique stripe_session_id index)
     const { error: txErr } = await supabaseAdmin

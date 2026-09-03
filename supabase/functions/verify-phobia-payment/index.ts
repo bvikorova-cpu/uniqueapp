@@ -49,21 +49,12 @@ serve(async (req) => {
     if (type === "phobia_credits" && metaUserId) {
       const credits = parseInt(session.metadata?.credits || "0");
       if (credits > 0) {
-        const { data: existing } = await supabase
-          .from("phobia_credits")
-          .select("*")
-          .eq("user_id", metaUserId)
-          .maybeSingle();
-
-        if (existing) { await supabase.from("phobia_credits").update({
-            credits_remaining: existing.credits_remaining + credits,
-            total_credits_purchased: existing.total_credits_purchased + credits,
-            updated_at: new Date().toISOString() }).eq("user_id", metaUserId);
-        } else { await supabase.from("phobia_credits").insert({
-            user_id: metaUserId,
-            credits_remaining: 5 + credits,
-            total_credits_purchased: credits });
-        }
+        // Unified wallet top-up (ai_credits + ledger row)
+        await supabase.rpc("add_ai_credits", {
+          p_user_id: metaUserId,
+          p_amount: credits,
+          p_reason: "phobia_credits_purchase",
+          p_source: "stripe" });
       }
 
       return new Response(JSON.stringify({ success: true, serviceType: `${credits} credits` }), {
