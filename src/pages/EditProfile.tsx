@@ -748,7 +748,7 @@ const EditProfile = () => {
                   accentColor={profile.accent_color || "#f59e0b"}
                   theme={(profile.profile_theme as ProfileTheme) || "default"}
                   verifiedCount={Object.values(verifiedState).filter(Boolean).length}
-                  voiceIntroUrl={voiceIntro.url}
+                  voiceIntroUrl={null}
                 />
               </div>
             </div>
