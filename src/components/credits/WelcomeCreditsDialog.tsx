@@ -32,7 +32,7 @@ export function WelcomeCreditsDialog() {
             <Sparkles className="h-5 w-5 text-accent" />
           </DialogTitle>
           <DialogDescription className="text-center text-base pt-2">
-            We've added <span className="font-bold text-primary">10 free credits</span> to your account to get you started.
+            We've added <span className="font-bold text-primary">5 free credits</span> to your account to get you started.
           </DialogDescription>
         </DialogHeader>
 
