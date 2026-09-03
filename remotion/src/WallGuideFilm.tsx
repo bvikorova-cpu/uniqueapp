@@ -28,19 +28,82 @@ const C = {
 
 /* ---------------- shared layers ---------------- */
 
+/** rotating vivid palettes — one per chapter beat */
+const PALETTES: [string, string, string][] = [
+  ["#8b5cf6", "#ec4899", "#fbbf24"],
+  ["#06b6d4", "#8b5cf6", "#f472b6"],
+  ["#f97316", "#ec4899", "#facc15"],
+  ["#22c55e", "#06b6d4", "#a3e635"],
+  ["#6366f1", "#d946ef", "#38bdf8"],
+  ["#ef4444", "#f59e0b", "#ec4899"],
+  ["#14b8a6", "#3b82f6", "#c084fc"],
+];
+
+const paletteFor = (i: number): [string, string, string] =>
+  PALETTES[i % PALETTES.length] as [string, string, string];
+
+const hexToRgb = (h: string) => {
+  const n = parseInt(h.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+};
+const mix = (a: string, b: string, t: number) => {
+  const A = hexToRgb(a);
+  const B = hexToRgb(b);
+  return `rgb(${A.map((v, i) => Math.round(v + ((B[i] as number) - v) * t)).join(",")})`;
+};
+
 const Backdrop: React.FC = () => {
   const frame = useCurrentFrame();
   const drift = Math.sin(frame / 90) * 40;
   const drift2 = Math.cos(frame / 70) * 30;
+  // smoothly travel through the palettes across the whole film
+  const cycle = frame / 150;
+  const idx = Math.floor(cycle);
+  const t = cycle - idx;
+  const p1 = paletteFor(idx);
+  const p2 = paletteFor(idx + 1);
+  const c1 = mix(p1[0], p2[0], t);
+  const c2 = mix(p1[1], p2[1], t);
+  const c3 = mix(p1[2], p2[2], t);
+
   return (
     <AbsoluteFill style={{ backgroundColor: C.bg }}>
       <AbsoluteFill
         style={{
-          background: `radial-gradient(1200px 800px at ${20 + drift / 6}% ${18 + drift2 / 8}%, rgba(139,92,246,0.42), transparent 60%),
-                       radial-gradient(1000px 700px at ${82 - drift / 8}% ${78 + drift / 10}%, rgba(236,72,153,0.32), transparent 62%),
+          background: `radial-gradient(1300px 900px at ${18 + drift / 5}% ${16 + drift2 / 7}%, ${c1}, transparent 62%),
+                       radial-gradient(1100px 800px at ${84 - drift / 7}% ${80 + drift / 9}%, ${c2}, transparent 64%),
+                       radial-gradient(900px 700px at ${52 + drift2 / 5}% ${50 - drift / 9}%, ${c3}, transparent 58%),
                        linear-gradient(160deg, ${C.bg} 0%, ${C.bg2} 55%, ${C.bg} 100%)`,
+          opacity: 0.62,
         }}
       />
+      <AbsoluteFill
+        style={{
+          background: `linear-gradient(200deg, rgba(11,6,22,0.55) 0%, rgba(11,6,22,0.2) 45%, rgba(11,6,22,0.7) 100%)`,
+        }}
+      />
+      {/* floating logo confetti */}
+      {[0, 1, 2, 3, 4, 5].map((i) => {
+        const speed = 0.5 + i * 0.17;
+        const x = (i * 17 + 6 + ((frame * speed) / 8) % 110) % 110 - 5;
+        const y = 12 + Math.sin(frame / (50 + i * 12) + i) * 34 + i * 9;
+        return (
+          <Img
+            key={i}
+            src={staticFile("home/logo.png")}
+            style={{
+              position: "absolute",
+              left: `${x}%`,
+              top: `${y}%`,
+              width: 70 + i * 14,
+              height: 70 + i * 14,
+              borderRadius: 22,
+              opacity: 0.1,
+              transform: `rotate(${Math.sin(frame / 70 + i) * 16}deg)`,
+            }}
+          />
+        );
+      })}
       <AbsoluteFill
         style={{
           opacity: 0.1,
@@ -53,6 +116,58 @@ const Backdrop: React.FC = () => {
     </AbsoluteFill>
   );
 };
+
+/** persistent brand badge */
+const LogoBadge: React.FC = () => {
+  const frame = useCurrentFrame();
+  const pulse = 0.55 + Math.sin(frame / 18) * 0.25;
+  return (
+    <div
+      style={{
+        position: "absolute",
+        top: 40,
+        right: 52,
+        display: "flex",
+        alignItems: "center",
+        gap: 16,
+        padding: "12px 24px 12px 12px",
+        borderRadius: 999,
+        background: "rgba(255,255,255,0.1)",
+        border: "1px solid rgba(255,255,255,0.22)",
+        boxShadow: `0 0 ${40 * pulse}px rgba(236,72,153,${0.4 * pulse})`,
+      }}
+    >
+      <Img
+        src={staticFile("home/logo.png")}
+        style={{ width: 56, height: 56, borderRadius: 16 }}
+      />
+      <div style={{ lineHeight: 1 }} translate="no">
+        <div
+          style={{
+            fontFamily: display.fontFamily,
+            fontSize: 34,
+            color: C.white,
+          }}
+        >
+          Unique
+        </div>
+        <div
+          style={{
+            marginTop: 4,
+            fontFamily: body.fontFamily,
+            fontWeight: 800,
+            fontSize: 16,
+            letterSpacing: 2.5,
+            color: C.gold,
+          }}
+        >
+          WALL GUIDE
+        </div>
+      </div>
+    </div>
+  );
+};
+
 
 const ProgressBar: React.FC<{ total: number }> = ({ total }) => {
   const frame = useCurrentFrame();
@@ -89,7 +204,8 @@ const Shot: React.FC<{
   duration: number;
   width?: number;
   height?: number;
-}> = ({ src, focus, duration, width = 1000, height = 860 }) => {
+  glow?: string;
+}> = ({ src, focus, duration, width = 1000, height = 860, glow = C.pink }) => {
   const frame = useCurrentFrame();
   const enter = spring({ frame, fps: FPS, config: { damping: 200 }, durationInFrames: 26 });
   const zoom = interpolate(frame, [0, duration], [focus.zoom, focus.zoomTo ?? focus.zoom + 0.07], {
@@ -106,8 +222,8 @@ const Shot: React.FC<{
         height,
         borderRadius: 28,
         overflow: "hidden",
-        border: "3px solid rgba(255,255,255,0.16)",
-        boxShadow: "0 40px 120px rgba(0,0,0,0.6)",
+        border: `4px solid ${glow}aa`,
+        boxShadow: `0 40px 120px rgba(0,0,0,0.6), 0 0 70px ${glow}55`,
         background: "#fff",
         opacity: op,
         transform: `translateY(${interpolate(enter, [0, 1], [50, 0])}px) scale(${interpolate(
@@ -143,8 +259,10 @@ const Chapter: React.FC<{
   focus: Focus;
   duration: number;
   flip?: boolean;
-}> = ({ no, title, lead, bullets, src, focus, duration, flip }) => {
+  idx?: number;
+}> = ({ no, title, lead, bullets, src, focus, duration, flip, idx = 0 }) => {
   const frame = useCurrentFrame();
+  const [a1, a2, a3] = paletteFor(idx);
   const titleSp = spring({ frame, fps: FPS, config: { damping: 18, stiffness: 130 } });
   const leadOp = interpolate(frame, [12, 34], [0, 1], { extrapolateRight: "clamp" });
   const out = interpolate(frame, [duration - 12, duration], [1, 0], {
@@ -168,18 +286,25 @@ const Chapter: React.FC<{
       <div style={{ width: 720, transform: `translateY(${bob}px)` }}>
         <div
           style={{
-            display: "inline-block",
-            padding: "8px 20px",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 12,
+            padding: "8px 22px 8px 10px",
             borderRadius: 999,
-            background: `linear-gradient(90deg, ${C.purple}, ${C.pink})`,
+            background: `linear-gradient(90deg, ${a1}, ${a2})`,
             fontFamily: body.fontFamily,
             fontWeight: 900,
             fontSize: 24,
             letterSpacing: 3,
             color: C.white,
             opacity: leadOp,
+            boxShadow: `0 12px 40px ${a2}66`,
           }}
         >
+          <Img
+            src={staticFile("home/logo.png")}
+            style={{ width: 34, height: 34, borderRadius: 10 }}
+          />
           {no}
         </div>
         <div
@@ -188,14 +313,18 @@ const Chapter: React.FC<{
             fontFamily: display.fontFamily,
             fontSize: 88,
             lineHeight: 1.02,
-            color: C.white,
+            backgroundImage: `linear-gradient(100deg, #ffffff 10%, ${a3} 55%, ${a2} 95%)`,
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            color: "transparent",
             transform: `translateX(${interpolate(titleSp, [0, 1], [flip ? 60 : -60, 0])}px)`,
             opacity: titleSp,
-            textShadow: "0 14px 50px rgba(0,0,0,0.55)",
+            filter: "drop-shadow(0 14px 46px rgba(0,0,0,0.55))",
           }}
         >
           {title}
         </div>
+
         <div
           style={{
             marginTop: 18,
@@ -217,6 +346,7 @@ const Chapter: React.FC<{
               fps: FPS,
               config: { damping: 16, stiffness: 140 },
             });
+            const dot = [a1, a2, a3, C.gold][i % 4];
             return (
               <div
                 key={b}
@@ -226,8 +356,9 @@ const Chapter: React.FC<{
                   gap: 18,
                   padding: "16px 22px",
                   borderRadius: 18,
-                  background: "rgba(255,255,255,0.07)",
-                  border: "1px solid rgba(255,255,255,0.14)",
+                  background: `linear-gradient(90deg, ${dot}33, rgba(255,255,255,0.06))`,
+                  border: `1px solid ${dot}66`,
+                  borderLeft: `6px solid ${dot}`,
                   opacity: sp,
                   transform: `translateX(${interpolate(sp, [0, 1], [flip ? 40 : -40, 0])}px)`,
                 }}
@@ -238,8 +369,8 @@ const Chapter: React.FC<{
                     height: 14,
                     borderRadius: 999,
                     flexShrink: 0,
-                    background: i % 2 ? C.pink : C.gold,
-                    boxShadow: `0 0 22px ${i % 2 ? C.pink : C.gold}`,
+                    background: dot,
+                    boxShadow: `0 0 24px ${dot}`,
                   }}
                 />
                 <div
@@ -260,7 +391,8 @@ const Chapter: React.FC<{
       </div>
 
       {/* screenshot */}
-      <Shot src={src} focus={focus} duration={duration} />
+      <Shot src={src} focus={focus} duration={duration} glow={a2} />
+
     </AbsoluteFill>
   );
 };
@@ -541,9 +673,9 @@ const CH_D = 132;
 
 const ITEMS: Item[] = [
   { d: 96, render: (d) => <Intro duration={d} /> },
-  ...CHAPTERS.map((c) => ({
+  ...CHAPTERS.map((c, i) => ({
     d: CH_D,
-    render: (d: number) => <Chapter {...c} duration={d} />,
+    render: (d: number) => <Chapter {...c} duration={d} idx={i} />,
   })),
   { d: 110, render: (d) => <Outro duration={d} /> },
 ];
@@ -564,6 +696,7 @@ export const WallGuideFilm: React.FC = () => {
           </Sequence>
         );
       })}
+      <LogoBadge />
       <ProgressBar total={WALLGUIDE_DURATION} />
     </AbsoluteFill>
   );
