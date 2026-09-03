@@ -17,7 +17,7 @@ interface CreditOverrideDialogProps {
 const CREDIT_TYPES = [
   { id: 'ai_credits', name: 'AI Credits', table: 'ai_credits', field: 'credits_remaining' },
   { id: 'analyzer_credits', name: 'Analyzer Credits', table: 'analyzer_credits', field: 'credits_remaining' },
-  { id: 'iq_credits', name: 'IQ Credits', table: 'brain_duel_credits', field: 'credits' },
+  { id: 'brain_duel_credits', name: 'Brain Duel Credits', table: 'brain_duel_credits', field: 'credits' },
   { id: 'antique_credits', name: 'Antique Credits', table: 'antique_credits', field: 'credits_remaining' },
   { id: 'astrology_credits', name: 'Astrology Credits', table: 'astrology_credits', field: 'credits_remaining' },
 ];
