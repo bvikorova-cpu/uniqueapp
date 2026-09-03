@@ -1100,3 +1100,69 @@ body:has([data-state="open"][role="dialog"]) [data-floating-hiw] {
     animation: none;
   }
 }
+
+/* ==========================================================
+   Machine-translation safety (Google Translate / Chrome)
+   Translated strings are often 20-60% longer than English.
+   Prevent labels from overlapping or spilling out of layout.
+   ========================================================== */
+
+/* Tabs: never let triggers overlap - shrink & scroll instead */
+[role="tablist"] {
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+[role="tablist"]::-webkit-scrollbar { display: none; }
+[role="tab"] {
+  min-width: 0;
+}
+[role="tab"] > * {
+  min-width: 0;
+}
+
+/* Chrome/Google Translate marks the document with these classes */
+html.translated-ltr,
+html.translated-rtl {
+  --translated: 1;
+}
+
+.translated-ltr [role="tab"],
+.translated-rtl [role="tab"] {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.15;
+  text-align: center;
+}
+
+/* Buttons, badges and nav labels: wrap instead of overflowing */
+.translated-ltr button,
+.translated-rtl button,
+.translated-ltr [role="button"],
+.translated-rtl [role="button"] {
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+.translated-ltr .truncate,
+.translated-rtl .truncate {
+  min-width: 0;
+}
+
+/* Bottom mobile nav / any flex row of labels */
+.translated-ltr nav a,
+.translated-rtl nav a,
+.translated-ltr nav button,
+.translated-rtl nav button {
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+/* Grid-based tab rows keep equal columns and clip cleanly */
+.translated-ltr [role="tablist"].grid > [role="tab"],
+.translated-rtl [role="tablist"].grid > [role="tab"] {
+  overflow: hidden;
+  font-size: 0.75rem;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
