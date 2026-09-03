@@ -92,10 +92,14 @@ export function ProfileVerificationCard() {
           </div>
           <div>
             <div className="font-bold text-sm">Verified</div>
-            <div className="text-xs text-muted-foreground inline-flex items-center gap-1">
-              <Coins className="w-3 h-3 text-amber-500" />
-              <span className="font-semibold text-foreground">{VERIFIED_CREDIT_COST} credits</span> one-time
-            </div>
+            {isVerified ? (
+              <div className="text-xs text-muted-foreground">Lifetime badge — unlocked</div>
+            ) : (
+              <div className="text-xs text-muted-foreground inline-flex items-center gap-1">
+                <Coins className="w-3 h-3 text-amber-500" />
+                <span className="font-semibold text-foreground">{VERIFIED_CREDIT_COST} credits</span> one-time
+              </div>
+            )}
           </div>
         </div>
         <ul className="space-y-1 mb-4">
