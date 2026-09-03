@@ -86,7 +86,6 @@ const EditProfile = () => {
   const [uploadingCover, setUploadingCover] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
 
-  const [voiceIntro, setVoiceIntro] = useState<{ url: string | null; transcript: string | null }>({ url: null, transcript: null });
   const [verifiedState, setVerifiedState] = useState<VerifiedBadgesState>({ email: false, phone: false, id: false, payment: false });
 
   const [profile, setProfile] = useState<ProfileData>({
