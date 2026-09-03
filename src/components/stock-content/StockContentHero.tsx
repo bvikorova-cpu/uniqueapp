@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { ImageIcon, Download, Users, TrendingUp } from "lucide-react";
 import heroVideo from "@/assets/stock-content-hero.mp4.asset.json";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
@@ -11,18 +12,34 @@ const stats = [
 ];
 
 export function StockContentHero() {
-  const [liveStats, setLiveStats] = useState({ assets: 0, downloads: 0, creators: 0, revenue: 0 });
+  // Real marketplace numbers only — counted from the database.
+  const [liveStats, setLiveStats] = useState<{ assets: number; downloads: number; creators: number; revenue: number } | null>(null);
 
   useEffect(() => {
-    setLiveStats({ assets: 12450, downloads: 89200, creators: 3240, revenue: 245000 });
-    const interval = setInterval(() => { setLiveStats({
-        assets: Math.floor(Math.random() * 500) + 12200,
-        downloads: Math.floor(Math.random() * 3000) + 88000,
-        creators: Math.floor(Math.random() * 200) + 3100,
-        revenue: Math.floor(Math.random() * 15000) + 240000 });
-    }, 3000);
-    return () => clearInterval(interval);
+    let cancelled = false;
+    (async () => {
+      const [assets, downloads, creators, sales] = await Promise.all([
+        supabase.from("stock_content_items").select("*", { count: "exact", head: true }),
+        supabase.from("stock_content_downloads").select("*", { count: "exact", head: true }),
+        supabase.from("stock_creator_earnings").select("*", { count: "exact", head: true }),
+        supabase.from("stock_content_sales").select("amount_paid").eq("status", "completed"),
+      ]);
+      if (cancelled) return;
+      const revenue = (sales.data ?? []).reduce(
+        (sum: number, row: { amount_paid: number | null }) => sum + Number(row.amount_paid ?? 0),
+        0,
+      );
+      setLiveStats({
+        assets: assets.count ?? 0,
+        downloads: downloads.count ?? 0,
+        creators: creators.count ?? 0,
+        revenue });
+    })();
+    return () => { cancelled = true; };
   }, []);
+
+
+
 
   return (
     <div className="relative w-full h-[480px] md:h-[420px] rounded-2xl overflow-hidden mb-8">
@@ -50,12 +67,12 @@ export function StockContentHero() {
       <div className="absolute bottom-3 left-3 right-3 grid grid-cols-4 gap-1.5 md:gap-2">
         {stats.map((stat) => {
           const Icon = stat.icon;
-          const val = liveStats[stat.key as keyof typeof liveStats];
+          const val = liveStats ? liveStats[stat.key as keyof typeof liveStats] : null;
           return (
             <div key={stat.key} className="bg-blue-950/50 backdrop-blur-md border border-blue-400/40 rounded-xl p-2 md:p-3 text-center">
               <Icon className="h-3.5 w-3.5 md:h-4 md:w-4 text-blue-300 mx-auto mb-0.5" />
               <p className="text-sm md:text-lg font-bold text-white drop-shadow-md leading-tight">
-                {stat.key === "revenue" ? `€${(val / 1000).toFixed(0)}K` : val.toLocaleString()}
+                {val === null ? "—" : stat.key === "revenue" ? `€${val.toLocaleString(undefined, { maximumFractionDigits: 0 })}` : val.toLocaleString()}
               </p>
               <p className="text-[10px] md:text-xs text-white/80 font-medium truncate">{stat.label}</p>
             </div>

@@ -1,30 +1,12 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Activity, Flame, BookOpen, Clock, Trophy } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
-
-const generateHeatmapData = () => {
-  const weeks = 12;
-  const days = 7;
-  const data: { week: number; day: number; value: number; date: string }[] = [];
-  const now = new Date();
-  for (let w = weeks - 1; w >= 0; w--) {
-    for (let d = 0; d < days; d++) {
-      const date = new Date(now);
-      date.setDate(date.getDate() - (w * 7 + (6 - d)));
-      data.push({
-        week: weeks - 1 - w,
-        day: d,
-        value: Math.random() > 0.3 ? Math.floor(Math.random() * 5) : 0,
-        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) });
-    }
-  }
-  return data;
-};
 
 const dayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -36,10 +18,62 @@ const getColor = (value: number) => {
   return "bg-emerald-500/90";
 };
 
+const isoDay = (d: Date) => d.toISOString().slice(0, 10);
+
+/**
+ * Real learning activity only: every cell is the number of lessons the signed-in
+ * user actually completed on that day. No simulated or random values.
+ */
 export function StudentProgressHeatmapView({ onBack }: Props) {
-  const heatmapData = useMemo(() => generateHeatmapData(), []);
+  const [completedByDay, setCompletedByDay] = useState<Record<string, number> | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth.user?.id;
+      if (!uid) { if (!cancelled) setCompletedByDay({}); return; }
+      const since = new Date();
+      since.setDate(since.getDate() - 12 * 7);
+      const { data } = await supabase
+        .from("education_lesson_progress")
+        .select("completed_at")
+        .eq("user_id", uid)
+        .gte("completed_at", since.toISOString());
+      if (cancelled) return;
+      const map: Record<string, number> = {};
+      (data ?? []).forEach((row: { completed_at: string | null }) => {
+        if (!row.completed_at) return;
+        const key = isoDay(new Date(row.completed_at));
+        map[key] = (map[key] || 0) + 1;
+      });
+      setCompletedByDay(map);
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const heatmapData = useMemo(() => {
+    const map = completedByDay ?? {};
+    const out: { week: number; day: number; value: number; date: string; iso: string }[] = [];
+    const now = new Date();
+    for (let w = 11; w >= 0; w--) {
+      for (let d = 0; d < 7; d++) {
+        const date = new Date(now);
+        date.setDate(date.getDate() - (w * 7 + (6 - d)));
+        const iso = isoDay(date);
+        out.push({
+          week: 11 - w,
+          day: d,
+          value: map[iso] || 0,
+          iso,
+          date: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }) });
+      }
+    }
+    return out;
+  }, [completedByDay]);
+
   const totalDays = heatmapData.filter(d => d.value > 0).length;
-  const totalHours = heatmapData.reduce((s, d) => s + d.value, 0);
+  const totalLessons = heatmapData.reduce((s, d) => s + d.value, 0);
   const currentStreak = (() => {
     let streak = 0;
     for (let i = heatmapData.length - 1; i >= 0; i--) {
@@ -54,9 +88,15 @@ export function StudentProgressHeatmapView({ onBack }: Props) {
     return max;
   })();
 
+  const weekTotals = [0, 1, 2].map((back) => {
+    const startIndex = heatmapData.length - 7 * (back + 1);
+    const slice = heatmapData.slice(Math.max(0, startIndex), heatmapData.length - 7 * back);
+    return slice.reduce((s, d) => s + d.value, 0);
+  });
+
   return (
     <>
-      <FloatingHowItWorks title={"Student Progress Heatmap View - How it works"} steps={[{ title: 'Open', desc: 'Access the Student Progress Heatmap View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Student Progress Heatmap View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <FloatingHowItWorks title={"Student Progress Heatmap View - How it works"} steps={[{ title: 'Open', desc: 'Access the Student Progress Heatmap View section from its module.' }, { title: 'Explore', desc: 'Review your real completed lessons per day.' }, { title: 'Interact', desc: 'Hover a cell to see the exact date and lesson count.' }, { title: 'Review', desc: 'Streaks and totals update as you complete lessons.' }]} />
       <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="flex items-center gap-3 mb-6">
@@ -65,7 +105,7 @@ export function StudentProgressHeatmapView({ onBack }: Props) {
         </div>
         <div>
           <h2 className="text-2xl font-black">Student Progress Heatmap</h2>
-          <p className="text-sm text-muted-foreground">Your learning activity over time</p>
+          <p className="text-sm text-muted-foreground">Your real learning activity over time</p>
         </div>
       </div>
 
@@ -87,35 +127,46 @@ export function StudentProgressHeatmapView({ onBack }: Props) {
         </Card>
         <Card className="p-4 text-center">
           <Clock className="w-6 h-6 text-blue-500 mx-auto mb-1" />
-          <p className="text-2xl font-black">{totalHours}h</p>
-          <p className="text-xs text-muted-foreground">Study Hours</p>
+          <p className="text-2xl font-black">{totalLessons}</p>
+          <p className="text-xs text-muted-foreground">Lessons Completed</p>
         </Card>
       </div>
 
       <Card className="mb-6">
         <CardContent className="pt-6">
           <h3 className="text-lg font-bold mb-4">Learning Activity — Last 12 Weeks</h3>
-          <div className="overflow-x-auto">
-            <div className="flex gap-0.5 min-w-[500px]">
-              <div className="flex flex-col gap-0.5 mr-2 text-[10px] text-muted-foreground pt-0">
-                {dayLabels.map(d => <div key={d} className="h-4 flex items-center">{d}</div>)}
-              </div>
-              {Array.from({ length: 12 }, (_, w) => (
-                <div key={w} className="flex flex-col gap-0.5">
-                  {Array.from({ length: 7 }, (_, d) => {
-                    const cell = heatmapData.find(c => c.week === w && c.day === d);
-                    return (
-                      <div
-                        key={d}
-                        className={`w-4 h-4 rounded-sm ${getColor(cell?.value || 0)} hover:ring-2 hover:ring-emerald-500/50 cursor-pointer transition-all`}
-                        title={`${cell?.date}: ${cell?.value || 0} hours`}
-                      />
-                    );
-                  })}
+          {completedByDay === null ? (
+            <p className="text-sm text-muted-foreground">Loading your activity…</p>
+          ) : (
+            <>
+              <div className="overflow-x-auto">
+                <div className="flex gap-0.5 min-w-[500px]">
+                  <div className="flex flex-col gap-0.5 mr-2 text-[10px] text-muted-foreground pt-0">
+                    {dayLabels.map(d => <div key={d} className="h-4 flex items-center">{d}</div>)}
+                  </div>
+                  {Array.from({ length: 12 }, (_, w) => (
+                    <div key={w} className="flex flex-col gap-0.5">
+                      {Array.from({ length: 7 }, (_, d) => {
+                        const cell = heatmapData.find(c => c.week === w && c.day === d);
+                        return (
+                          <div
+                            key={d}
+                            className={`w-4 h-4 rounded-sm ${getColor(cell?.value || 0)} hover:ring-2 hover:ring-emerald-500/50 cursor-pointer transition-all`}
+                            title={`${cell?.date}: ${cell?.value || 0} lessons`}
+                          />
+                        );
+                      })}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+              {totalLessons === 0 && (
+                <p className="text-sm text-muted-foreground mt-3">
+                  No completed lessons yet — finish a lesson and it will appear here.
+                </p>
+              )}
+            </>
+          )}
           <div className="flex items-center gap-2 mt-4 justify-end text-xs text-muted-foreground">
             <span>Less</span>
             <div className="flex gap-0.5">
@@ -132,19 +183,14 @@ export function StudentProgressHeatmapView({ onBack }: Props) {
         <CardContent className="pt-6">
           <h3 className="text-lg font-bold mb-3">Weekly Summary</h3>
           <div className="space-y-2">
-            {["This Week", "Last Week", "2 Weeks Ago"].map((label, i) => {
-              const hours = Math.floor(Math.random() * 15) + 3;
-              const lessons = Math.floor(Math.random() * 8) + 1;
-              return (
-                <div key={label} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                  <span className="font-medium text-sm">{label}</span>
-                  <div className="flex items-center gap-4 text-sm">
-                    <Badge variant="outline"><Clock className="w-3 h-3 mr-1" />{hours}h studied</Badge>
-                    <Badge variant="outline"><BookOpen className="w-3 h-3 mr-1" />{lessons} lessons</Badge>
-                  </div>
+            {["This Week", "Last Week", "2 Weeks Ago"].map((label, i) => (
+              <div key={label} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                <span className="font-medium text-sm">{label}</span>
+                <div className="flex items-center gap-4 text-sm">
+                  <Badge variant="outline"><BookOpen className="w-3 h-3 mr-1" />{weekTotals[i]} lessons</Badge>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>

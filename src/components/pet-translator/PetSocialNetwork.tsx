@@ -155,7 +155,6 @@ export default function PetSocialNetwork() {
       caption: form.caption.trim() || null,
       media_url,
       media_type,
-      score: Math.floor(60 + Math.random() * 41),
     });
     setCreating(false);
     if (error) { toast.error(error.message); return; }
