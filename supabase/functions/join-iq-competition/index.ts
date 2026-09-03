@@ -66,14 +66,14 @@ serve(async (req) => {
       throw new Error("Competition is full");
     }
 
-    // Check user credits (correct column: balance)
+    // Check unified platform credits
     const { data: creditsData } = await supabaseAdmin
-      .from("iq_credits")
-      .select("balance")
+      .from("ai_credits")
+      .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
 
-    const currentCredits = creditsData?.balance ?? 0;
+    const currentCredits = creditsData?.credits_remaining ?? 0;
     if (currentCredits < competition.entry_fee) {
       throw new Error("Insufficient credits");
     }
@@ -93,18 +93,12 @@ serve(async (req) => {
 
     if (participationError) throw participationError;
 
-    // Deduct entry fee via service role (clients can no longer write balance)
-    if (creditsData) {
-      await supabaseAdmin
-        .from("iq_credits")
-        .update({ balance: currentCredits - competition.entry_fee })
-        .eq("user_id", user.id);
-    } else {
-      await supabaseAdmin
-        .from("iq_credits")
-        .insert({ user_id: user.id, balance: 0 });
-      // (would-be-deduction blocked because user has no balance yet)
-    }
+    // Deduct entry fee from unified platform credits
+    await supabaseAdmin.rpc("deduct_ai_credits", {
+      p_user_id: user.id,
+      p_amount: competition.entry_fee,
+      p_reason: "iq_competition_entry",
+      p_source: "iq_competition" });
 
     return new Response(
       JSON.stringify({ success: true,

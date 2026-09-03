@@ -43,8 +43,7 @@ serve(async (req) => {
       }
       await svc.from("iq_duels").update({ status: "cancelled", finished_at: new Date().toISOString() }).eq("id", duelId).eq("status", "waiting");
       // Refund
-      const { data: c } = await svc.from("iq_credits").select("balance").eq("user_id", user.id).maybeSingle();
-      if (c) await svc.from("iq_credits").update({ balance: c.balance + duel.entry_fee }).eq("user_id", user.id);
+      await svc.rpc("add_ai_credits", { p_user_id: user.id, p_amount: duel.entry_fee, p_reason: "iq_duel_refund", p_source: "iq_duel" });
       return new Response(JSON.stringify({ ok: true, refunded: duel.entry_fee }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
@@ -83,8 +82,7 @@ serve(async (req) => {
         finished_at: new Date().toISOString() }).eq("id", duelId);
 
       if (winnerId) {
-        const { data: wc } = await svc.from("iq_credits").select("balance").eq("user_id", winnerId).maybeSingle();
-        if (wc) await svc.from("iq_credits").update({ balance: wc.balance + updated.prize }).eq("user_id", winnerId);
+        await svc.rpc("add_ai_credits", { p_user_id: winnerId, p_amount: updated.prize, p_reason: "iq_duel_prize", p_source: "iq_duel" });
       }
     }
 

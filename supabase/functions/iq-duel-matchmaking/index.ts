@@ -41,8 +41,8 @@ serve(async (req) => {
     );
 
     // Check & deduct credits
-    const { data: credits } = await svc.from("iq_credits").select("balance").eq("user_id", user.id).maybeSingle();
-    if (!credits || credits.balance < cfg.credits) {
+    const { data: credits } = await svc.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
+    if (!credits || (credits.credits_remaining ?? 0) < cfg.credits) {
       return new Response(JSON.stringify({ error: "Insufficient credits" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
@@ -70,7 +70,7 @@ serve(async (req) => {
         return new Response(JSON.stringify({ error: "Duel was taken, try again" }), { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       // Deduct credits
-      await svc.from("iq_credits").update({ balance: credits.balance - cfg.credits }).eq("user_id", user.id);
+      await svc.rpc("deduct_ai_credits", { p_user_id: user.id, p_amount: cfg.credits, p_reason: `iq_duel:${mode}`, p_source: "iq_duel" });
       return new Response(JSON.stringify({ duel: joined, role: "opponent" }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
@@ -98,7 +98,7 @@ serve(async (req) => {
       .single();
     if (createErr) throw createErr;
 
-    await svc.from("iq_credits").update({ balance: credits.balance - cfg.credits }).eq("user_id", user.id);
+    await svc.rpc("deduct_ai_credits", { p_user_id: user.id, p_amount: cfg.credits, p_reason: `iq_duel:${mode}`, p_source: "iq_duel" });
     return new Response(JSON.stringify({ duel: created, role: "host" }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (err) {
     return new Response(JSON.stringify({ error: err instanceof Error ? err.message : String(err) }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
