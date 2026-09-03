@@ -2,7 +2,6 @@ import "../_shared/aiRedirect.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 import { tryVertexImage } from "../_shared/vertexDirect.ts";
-import { CAR_REFERENCE, MASCOT_REFERENCE } from "./brandReferences.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -257,10 +256,10 @@ const STYLE_PROMPTS: Record<string, string> = {
   uniquephone: "a lifestyle photo of the person holding a modern smartphone towards the camera; the phone screen clearly shows the Unique app open, displaying the official Unique app logo: a glossy rounded-square icon with a smooth gradient from violet-purple (left) to hot pink (right), a large white calligraphic script letter 'U' centred on it and a bright four-point white sparkle star at the top right of the U. Directly UNDER the logo render the exact clean sans-serif text 'www.uniqueapp.fun' — spelled exactly that way, sharp and perfectly legible. Bright natural lighting, sharp screen, realistic reflections",
   uniquetshirt: "a lifestyle photo of the person wearing a clean white or black T-shirt printed on the chest with the official Unique app logo: a glossy rounded-square icon with a smooth gradient from violet-purple (left) to hot pink (right), a large white calligraphic script letter 'U' centred on it and a bright four-point white sparkle star at the top right of the U. Directly UNDER the logo render the exact clean sans-serif text 'www.uniqueapp.fun' — spelled exactly that way, sharp and perfectly legible. Studio-quality lighting, the print is flat on the fabric, undistorted and fully readable",
   uniqueflag: "a photo of the person proudly waving a large fabric flag in the wind; the flag shows the official Unique app logo: a glossy rounded-square icon with a smooth gradient from violet-purple (left) to hot pink (right), a large white calligraphic script letter 'U' centred on it and a bright four-point white sparkle star at the top right of the U. Directly UNDER the logo render the exact clean sans-serif text 'www.uniqueapp.fun' — spelled exactly that way, sharp and perfectly legible. Outdoor golden-hour light, dynamic joyful pose",
-  uniquemascot: "a fun photo with a strict left-right composition: the walking brand mascot stands on the LEFT side of the frame and every person from the user photo stands on the RIGHT side of the frame. The mascot is a full-body plush character in a purple-to-hot-pink gradient: a big rounded head shaped like the Unique logo tile with a large white calligraphic script 'U' and a white four-point sparkle on the front of the head, plus a chubby plush body, two short arms with mitten hands and two short legs with big soft feet, standing upright at human height, waving one hand at the camera. The head has NO eyes, NO mouth, NO nose, NO facial features at all, and the mascot's body carries NO text or website address - only the U and the sparkle. CRITICAL: the people are NOT in costume. Keep every person in normal, modern, everyday clothing - never add a clown, jester, harlequin, circus, carnival or mascot costume, never add hats, colourful patchwork, stripes, bells or face paint to any person. Only the mascot is a costumed character. In the bottom corner of the image render the official Unique app logo: a glossy rounded-square icon with a smooth gradient from violet-purple (left) to hot pink (right), a large white calligraphic script letter 'U' centred on it and a bright four-point white sparkle star at the top right of the U, and the exact clean sans-serif text 'www.uniqueapp.fun' - spelled exactly that way, sharp and perfectly legible. Cheerful bright realistic scene, everyone facing camera",
+  uniquemascot: "a fun photo of the person standing next to a full-body walking plush mascot character in a purple-to-hot-pink gradient costume: a big rounded head shaped like the Unique logo tile with a large white calligraphic script 'U' and a white four-point sparkle on the front of the head, plus a chubby plush body, two short arms with mitten hands and two short legs with big soft feet, standing upright on the ground at human height. The head has NO eyes, NO mouth, NO nose, NO facial features at all - only the U and the sparkle. The mascot waves one hand at the camera next to the person. Directly under the mascot render the official Unique app logo: a glossy rounded-square icon with a smooth gradient from violet-purple (left) to hot pink (right), a large white calligraphic script letter 'U' centred on it and a bright four-point white sparkle star at the top right of the U, and the exact clean sans-serif text 'www.uniqueapp.fun' - spelled exactly that way, sharp and perfectly legible. Cheerful bright scene, both facing camera",
   uniquebillboard: "a photo of the person standing on a city street in front of a huge advertising billboard displaying the official Unique app logo: a glossy rounded-square icon with a smooth gradient from violet-purple (left) to hot pink (right), a large white calligraphic script letter 'U' centred on it and a bright four-point white sparkle star at the top right of the U. Directly UNDER the logo render the exact clean sans-serif text 'www.uniqueapp.fun' — spelled exactly that way, sharp and perfectly legible. Evening urban lighting, the billboard glows, text is crisp and perfectly readable",
   uniquefanselfie: "an enthusiastic fan selfie: the person smiles at the camera holding up a phone or card showing the official Unique app logo: a glossy rounded-square icon with a smooth gradient from violet-purple (left) to hot pink (right), a large white calligraphic script letter 'U' centred on it and a bright four-point white sparkle star at the top right of the U. Directly UNDER the logo render the exact clean sans-serif text 'www.uniqueapp.fun' — spelled exactly that way, sharp and perfectly legible, with subtle purple-pink brand lighting around them, modern social-media look",
-  uniquecar: "a lifestyle photo of every person from the user photo together beside a sleek modern car wrapped in glossy Unique brand colours — violet-purple to hot-pink gradient — with the official Unique app logo on the driver's door: a glossy rounded-square icon with a smooth gradient from violet-purple (left) to hot pink (right), a large white calligraphic script letter 'U' centred on it and a bright four-point white sparkle star at the top right of the U. Directly UNDER the logo render the exact clean sans-serif text 'www.uniqueapp.fun' — spelled exactly that way, sharp and perfectly legible. Sunny outdoor location, natural confident poses, the logo and website text are crisp and readable",
+  uniquecar: "a lifestyle photo of the person leaning against a sleek modern car wrapped in glossy Unique brand colours — violet-purple to hot-pink gradient — with the official Unique app logo on the driver's door: a glossy rounded-square icon with a smooth gradient from violet-purple (left) to hot pink (right), a large white calligraphic script letter 'U' centred on it and a bright four-point white sparkle star at the top right of the U. Directly UNDER the logo render the exact clean sans-serif text 'www.uniqueapp.fun' — spelled exactly that way, sharp and perfectly legible. Sunny outdoor location, confident pose, the logo and website text are crisp and readable",
   uniquecoffee: "a lifestyle photo of the person holding a takeaway coffee cup branded with the official Unique app logo: a glossy rounded-square icon with a smooth gradient from violet-purple (left) to hot pink (right), a large white calligraphic script letter 'U' centred on it and a bright four-point white sparkle star at the top right of the U. Directly UNDER the logo render the exact clean sans-serif text 'www.uniqueapp.fun' — spelled exactly that way, sharp and perfectly legible. Café terrace or bright workspace background, natural light, the logo and website text are sharp on the cup sleeve",
   uniquecap: "a lifestyle photo of the person wearing a trendy baseball cap embroidered with the official Unique app logo: a glossy rounded-square icon with a smooth gradient from violet-purple (left) to hot pink (right), a large white calligraphic script letter 'U' centred on it and a bright four-point white sparkle star at the top right of the U. Directly UNDER the logo render the exact clean sans-serif text 'www.uniqueapp.fun' — spelled exactly that way, sharp and perfectly legible. Casual streetwear outfit, urban background, the logo and website text are clearly visible on the front of the cap",
   uniqueposter: "a photo of the person posing in front of a wall covered with stylish promotional posters; the largest poster shows the official Unique app logo: a glossy rounded-square icon with a smooth gradient from violet-purple (left) to hot pink (right), a large white calligraphic script letter 'U' centred on it and a bright four-point white sparkle star at the top right of the U. Directly UNDER the logo render the exact clean sans-serif text 'www.uniqueapp.fun' — spelled exactly that way, sharp and perfectly legible. Editorial street-style lighting, the website text is perfectly readable",
@@ -269,16 +268,10 @@ const STYLE_PROMPTS: Record<string, string> = {
 };
 
 
-/** Object-only brand references. They deliberately contain no person whose identity could leak into output. */
-const STYLE_REFS: Record<string, string> = {
-  uniquemascot: MASCOT_REFERENCE,
-  uniquecar: CAR_REFERENCE,
-};
-
 const BASE_RULES =
-  "Restyle EVERY person in the supplied photo. Preserve the exact number of people and each distinct identity. Only the rendering medium/art style may change — " +
+  "Restyle the EXACT person in the supplied photo. Only the rendering medium/art style may change — " +
   "everything else must stay faithful to the source photo.\n" +
-  "For every person copy exactly, do not reinterpret or beautify: face identity and proportions, EYE COLOR, eyebrow and " +
+  "Copy exactly, do not reinterpret or beautify: face identity and proportions, EYE COLOR, eyebrow and " +
   "hair colour, hairstyle and hair length, skin tone, makeup, pose, head tilt, hand placement, camera " +
   "angle and crop.\n" +
   "Clothing must be reproduced exactly as worn in the photo: same garment type, same colour, same neckline, " +
@@ -290,9 +283,9 @@ const BASE_RULES =
   "content. Output only the finished artwork image.";
 
 const OUTFIT_RULES =
-  "Restyle EVERY person in the supplied photo. Preserve the exact number of people and each distinct identity. The art style, OUTFITS and scene may change to " +
+  "Restyle the EXACT person in the supplied photo. The art style, the OUTFIT and the scene may change to " +
   "match the chosen theme.\n" +
-  "For every person copy exactly, do not reinterpret or beautify: face identity and proportions, EYE COLOR, eyebrow and " +
+  "Copy exactly, do not reinterpret or beautify: face identity and proportions, EYE COLOR, eyebrow and " +
   "hair colour, skin tone, age, body shape and expression. Keep the pose and camera angle close to the source.\n" +
   "Replace the clothing with a complete, well-fitted themed costume that matches the requested style, " +
   "including matching accessories, hair styling and background. The costume must always be fully covering " +
@@ -353,30 +346,11 @@ serve(async (req) => {
         customPrompt ? ` Extra direction: ${customPrompt}.` : ""
       }\n\nReminder: ${
         changeOutfit
-          ? "every person's face identity, eye colour, hair colour and skin tone stay identical to the source photo; outfits, accessories and background follow the chosen theme."
-          : "the style affects only technique, texture and lighting treatment — every person's eye colour, hair colour, clothing (including sleeve length and neckline) and props stay identical to the source photo."
+          ? "the face identity, eye colour, hair colour and skin tone stay identical to the source photo; the outfit, accessories and background follow the chosen theme."
+          : "the style affects only technique, texture and lighting treatment — the eye colour, hair colour, clothing (including sleeve length and neckline) and props stay identical to the source photo."
       }${photoreal ? REALISM_RULES : ""}`;
       try {
-        const ref = STYLE_REFS[style];
-        const isMascot = style === "uniquemascot";
-        const refPrompt = ref
-          ? `${prompt}\n\nTWO IMAGES ARE SUPPLIED AND EACH IS LABELLED.\nUSER SOURCE PHOTO is the sole identity and people source. Preserve EVERY person visible in it. Keep the exact number of people, their distinct faces, ages, genders, skin tones, hair and family grouping. Do not omit, merge or replace anyone.\nCLOTHING RULE: ${
-            isMascot
-              ? "keep every person in normal, modern, everyday clothing. It does not need to match the source photo exactly, but must be tasteful, fully covering and never a costume."
-              : "keep every person in their own normal everyday clothes from USER SOURCE PHOTO."
-          } Never dress a person in a mascot, clown, jester, harlequin, circus or carnival costume and never add face paint or novelty hats.\nCOMPOSITION RULE: when a mascot is present it stands on the LEFT side of the frame and the real people stand on the RIGHT side.\nBRAND REFERENCE is an object/branding reference only. Copy only the mascot or car design, purple-to-hot-pink gradient, white calligraphic 'U' with sparkle, logo tile and website placement.\nABSOLUTE EXCLUSION: ignore and remove the girl shown in the BRAND REFERENCE. She is not a subject and must never appear, be copied, blended, mirrored, or influence any face, body, hair, clothes or pose. All humans in the result must come only from USER SOURCE PHOTO. ${
-            isMascot
-              ? "LOGO PLACEMENT: render the Unique logo and www.uniqueapp.fun in the bottom corner of the final image, not on any person or mascot."
-              : "Never print text on the mascot's body."
-          }`
-          : prompt;
-        const inputs = ref
-          ? [
-            { label: "USER SOURCE PHOTO — use ALL people from this image as the only human subjects:", image },
-            { label: "OBJECT-ONLY BRAND REFERENCE — copy ONLY the mascot/car and branding. It contains no human subject:", image: ref },
-          ]
-          : [image];
-        const out = await tryVertexImage(refPrompt, aspect, 1, inputs);
+        const out = await tryVertexImage(prompt, aspect, 1, [image]);
         const b64 = out?.data?.[0]?.b64_json;
         if (b64) results.push({ style, image: `data:image/png;base64,${b64}` });
         else results.push({ style, error: "The image model returned nothing. Try again." });

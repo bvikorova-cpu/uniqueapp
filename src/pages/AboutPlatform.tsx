@@ -85,6 +85,24 @@ const ALL_CATEGORIES: Category[] = [
         details: "Share your unique referral code. Every friend who signs up and spends credits earns you a recurring percentage for life. Anti-fraud filters detect duplicate signups and self-referrals. Real-time leaderboard rewards top recruiters with bonus credits.",
         pricing: "Free • You earn 10% lifetime of referred user spend",
         capabilities: ["Custom personal code", "Shareable referral link", "Tracking dashboard with stats", "Monthly leaderboard prizes", "Anti-abuse fraud detection", "Tiered milestones (10/50/100 referrals)", "Auto-payout to credit wallet", "Email invite tool"] },
+      { path: "/unlock-videos", title: "Unlock Videos", icon: Video,
+        blurb: "Creator videos that pause at the halfway point — unlock the rest for 1 video credit.",
+        features: ["Half-free preview", "1-credit unlock", "Creator earnings 50/50", "Boosted placement", "Video credit packs", "Own video wallet"],
+        details: "A creator video feed with a built-in paywall: every video plays free until exactly 50%, then pauses and offers an unlock for 1 video credit. Creators earn 50% of every unlock, accumulate pending credits and get paid out into their video wallet. Owners can boost videos for top-of-feed, Hot or Featured placement.",
+        pricing: "Unlock 1 video credit • Packs 10/€5, 20/€10, 30/€15 • Boosts 5-25 credits",
+        capabilities: ["Automatic 50% paywall", "1-credit unlock per video", "50% creator / 50% platform split", "Separate video-credits wallet with ledger", "Boost tiers: quick, daily, mega", "Creator dashboard with earnings", "Admin payout management", "Publish/unpublish and edit anytime"] },
+      { path: "/credit-gifts", title: "Unique Gifts", icon: Gift,
+        blurb: "Animated paid gifts for chats, posts and streams — 360+ designs.",
+        features: ["360+ animated gifts", "Send in chats & posts", "50% creator share", "Gift inbox", "Earnings in EUR", "Payout requests"],
+        details: "Send animated Unique Gifts in messenger, on Wall posts and during streams. Each gift costs credits; the creator of the gift earns 50% of every purchase, tracked in a personal Gift Inbox with EUR conversion (0.25 € per credit) and payout requests.",
+        pricing: "Gifts from 1 credit • Creators earn 50% per gift",
+        capabilities: ["Animated gift catalog (360+)", "Send in chat, posts, streams", "Creator 50% revenue share", "Gift Inbox with earnings", "EUR value display", "Payout request flow", "Gift history", "Rarity tiers"] },
+      { path: "/suggestions", title: "Ideas & Suggestions", icon: MessageCircle,
+        blurb: "Suggest features, vote on ideas and read official answers.",
+        features: ["Submit ideas", "Community voting", "Official responses", "Status tracking", "Categories", "Admin answers"],
+        details: "The feedback hub between users and the Unique team. Submit feature ideas or improvements, vote on suggestions from others, and track statuses from 'under review' to 'shipped'. The team answers publicly so everyone sees the reasoning.",
+        pricing: "Free",
+        capabilities: ["Submit feature requests", "Upvote community ideas", "Status labels (review/planned/shipped)", "Official team responses", "Category filters", "Moderated by admins"] },
     ] },
   { id: "dating",
     title: "Dating & Relationships",
@@ -161,6 +179,30 @@ const ALL_CATEGORIES: Category[] = [
       { path: "/wine-pairing", title: "Wine Pairing", icon: Sparkles, blurb: "AI pairs the perfect wine to any dish in seconds.", features: ["Dish-to-wine", "Region picks", "Price tiers", "Save favorites", "Cellar tracker", "Wine education"], details: "Tell AI what you're cooking — get 3 wine recommendations across price tiers with region, vintage and tasting notes. Track your home cellar, save favorites and learn about regions with built-in wine education.", pricing: "3 credits per pairing • Cellar tracking free", capabilities: ["Dish-to-wine pairing", "Region recommendations", "Price tier options", "Cellar tracker", "Favorites library", "Wine education modules", "Tasting note logger", "Shopping list export"] },
       { path: "/lie-detector", title: "Lie Detector", icon: Shield, blurb: "Voice, text, body-language and screenshot truth scoring. Entertainment only.", features: ["Voice heatmaps", "Body language", "Chat imports", "Detective ranks", "Screenshot analysis", "Multi-modal scoring"], details: "Entertainment-only truth scoring across multiple modalities. Voice tonality heatmaps, body-language analysis from video, chat screenshot pattern detection. Rank up as a detective by analyzing more samples. Not forensic-grade.", pricing: "5 credits per voice scan • 8 per video scan", capabilities: ["Voice stress heatmap", "Body language video scan", "Chat screenshot analysis", "Multi-modal combined score", "Detective rank progression", "Sample history", "Shareable verdicts", "Disclaimer-locked outputs"] },
       { path: "/stock-content-library", title: "Stock Content Library", icon: ImageIcon, blurb: "Royalty-free AI-generated images, videos and audio.", features: ["Curated packs", "Commercial license", "Collections", "Daily drops", "Search by mood", "Bulk download"], details: "A growing library of AI-generated stock content — images, short videos, audio loops — all with commercial license. New packs daily, curated by theme. Search by mood, color or subject. Bulk download discounts.", pricing: "Single asset 3-10 credits • Pack discounts available", capabilities: ["Image, video, audio library", "Commercial license on all assets", "Curated theme packs", "Daily new drops", "Search by mood/color/subject", "Bulk download discounts", "Save to collections", "Submit your own (with approval)"] },
+      { path: "/ai-video-creator", title: "AI Video Creator", icon: Video,
+        blurb: "Generate short AI videos from a theme — powered by Veo 3.1 Lite.",
+        features: ["Theme picker", "Veo 3.1 Lite", "Chained 8s parts", "Vertical 9:16", "Download MP4", "Private library"],
+        details: "Pick a theme, describe your scene and generate a short AI video with Veo 3.1 Lite. Longer clips are rendered as ordered 8-second parts and played back-to-back as one seamless video. Every clip is stored in your private library with download links.",
+        pricing: "Per-generation credit cost shown before render",
+        capabilities: ["Theme & style picker", "Veo 3.1 Lite generation", "Chained multi-part playback", "Vertical and horizontal formats", "MP4 download per part", "Private generation library", "NSFW moderation", "Signed-URL secure playback"] },
+      { path: "/photo-styler", title: "Photo Styler", icon: Palette,
+        blurb: "Turn any photo into 128+ art styles — sketches, portraits, Unique Brand merch.",
+        features: ["128+ styles", "Photoreal mode", "Unique Brand category", "Sketch & portrait", "HD download", "Instant preview"],
+        details: "Upload a photo and restyle it into pencil sketches, oil portraits, editorial shots and more — 128+ curated styles including a photorealistic mode. The Unique Brand category places you with Unique merch: phone mockups, logo tees, flags, mascot, billboards, cars and more, always with www.uniqueapp.fun.",
+        pricing: "3 credits per styled photo",
+        capabilities: ["128+ art styles", "Photorealistic mode", "Unique Brand merch styles", "Pencil sketch & editorial portrait", "Instant preview", "HD download", "NSFW image moderation", "Mobile-friendly upload"] },
+      { path: "/fairytale-book", title: "Fairytale Book", icon: BookOpen,
+        blurb: "Generate a personalized illustrated fairytale book from a photo.",
+        features: ["Photo-to-hero", "Illustrated pages", "AI story writer", "Multi-page book", "PDF export", "Kids-friendly"],
+        details: "Upload a photo and AI turns the person into the hero of a fully illustrated fairytale book — custom story, consistent character art across pages and a downloadable PDF keepsake. Perfect gift for kids and families.",
+        pricing: "Credit cost shown before generation",
+        capabilities: ["Face-to-character illustration", "Multi-page generated story", "Consistent character across pages", "PDF export", "Kids-safe content filters", "Re-generate individual pages"] },
+      { path: "/guess-age", title: "Guess My Age", icon: Clock,
+        blurb: "Upload a selfie and let AI guess your age — then share the verdict.",
+        features: ["AI age guess", "Fun share cards", "Instant result", "Photo analysis", "Share to Wall", "Retry anytime"],
+        details: "A quick, fun AI tool: upload a selfie, get an instant age estimate with a playful breakdown, and share the result card to the Wall. Pure entertainment — no data stored beyond your result.",
+        pricing: "Small credit cost per guess",
+        capabilities: ["Instant AI age estimate", "Shareable result card", "Wall sharing", "Retry with new photos", "Entertainment disclaimer", "Private by default"] },
     ] },
   {
     id: "health",
@@ -208,6 +250,12 @@ const ALL_CATEGORIES: Category[] = [
       { path: "/cooking", title: "Cooking Hub", icon: ChefHat, blurb: "AI recipes, chef chat, meal plans and scanner.", features: ["AI recipes", "Chef chat", "Meal plans", "Scanner", "Pantry tracking", "Video tutorials"], details: "Generate recipes from ingredients you have, chat with an AI chef for technique questions, build weekly meal plans, scan pantry items to track inventory. Video tutorials for cooking techniques.", pricing: "AI recipe 3 credits • Meal plan 8 credits • Chef chat 2 credits/session", capabilities: ["AI recipe generation from ingredients", "AI chef chat", "Weekly meal plans", "Pantry scanner", "Inventory tracking", "Video technique tutorials", "Save & share recipes", "Dietary filters"] },
       { path: "/coffee", title: "Coffee Community", icon: Coffee, blurb: "Cafe check-ins, ratings, dating events and reviews.", features: ["Cafe check-ins", "Reviews", "Events", "Matches", "Roast library", "Brewing guides"], details: "Coffee enthusiast community. Check in at cafes, leave reviews, browse roast library, follow brewing guides. Coffee dating events match people over shared coffee preferences in local cafes.", pricing: "Free • Premium roast guides 3 credits", capabilities: ["Cafe check-in with map", "Review system", "Roast library", "Brewing guides", "Coffee dating events", "Local meetups", "Preference matching", "Photo gallery"] },
       { path: "/virtual-pet", title: "Virtual Pet", icon: PawPrint, blurb: "Adopt, feed, train and breed virtual pets with mini-games.", features: ["Pet care", "Mini-games", "Breeding", "Battles", "Customization", "Pet shop"], details: "Adopt and raise virtual pets — feed, train, play mini-games, breed for unique offspring, battle other pets. Customize appearances, buy accessories in the pet shop, build a lasting bond. Pets evolve over time.", pricing: "Free starter pet • Premium pets & shop items in credits", capabilities: ["Multiple pet species", "Care mechanics (feed/play/train)", "Mini-games for XP", "Breeding system", "PvP battles", "Customization & accessories", "Pet shop", "Evolution stages"] },
+      { path: "/spin-solve", title: "Spin & Solve", icon: Zap,
+        blurb: "Wheel-of-fortune riddles — spin, guess letters, solve the puzzle for rewards.",
+        features: ["Riddle wheel", "Easy & hard tiers", "Letter guessing", "XP rewards", "Daily puzzles", "Streak bonuses"],
+        details: "A wheel-of-fortune style word game: spin the wheel, buy letters and solve riddles across categories. Easy puzzles are cheap to enter; harder riddles cost more credits but pay out bigger XP and rewards. Daily puzzles and streak bonuses keep you coming back.",
+        pricing: "Entry from 1 credit • Hard riddles cost more, pay more",
+        capabilities: ["Wheel spin mechanics", "Letter-by-letter solving", "Easy / hard credit tiers", "XP & credit rewards", "Daily new puzzles", "Streak bonuses", "Category variety", "Battle Pass unlock"] },
     ] },
   { id: "marketplaces",
     title: "Marketplaces & Commerce",
@@ -358,12 +406,6 @@ const ALL_CATEGORIES: Category[] = [
 
 // Brand Arena is hidden from the public while it is still under construction
 const CATEGORIES: Category[] = ALL_CATEGORIES.filter((c) => c.id !== "brand-arena");
-const HERO_STATS = [
-  { icon: Globe, label: "Sections", value: "60+" },
-  { icon: Crown, label: "AI Tools", value: "40+" },
-  { icon: Trophy, label: "Arenas", value: "15+" },
-  { icon: Heart, label: "Communities", value: "30+" },
-];
 
 export default function AboutPlatform() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -498,22 +540,6 @@ export default function AboutPlatform() {
               pricing for every feature, and how to use it. Skim, search, expand for deep details, or jump straight in.
             </motion.p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto w-full"
-            >
-              {HERO_STATS.map((stat) => (
-                <div key={stat.label} className="bg-card/45 backdrop-blur-md rounded-xl p-3 text-center border border-border/60">
-                  <div className="flex items-center justify-center gap-1.5 mb-1">
-                    <stat.icon className="w-4 h-4 text-primary" />
-                    <span className="text-xl sm:text-2xl font-black text-foreground">{stat.value}</span>
-                  </div>
-                  <span className="text-xs text-muted-foreground font-medium">{stat.label}</span>
-                </div>
-              ))}
-            </motion.div>
           </div>
 
           <div className="absolute bottom-4 right-4 flex gap-2 z-20">
