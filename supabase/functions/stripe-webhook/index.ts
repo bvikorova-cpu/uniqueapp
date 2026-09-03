@@ -698,20 +698,11 @@ serve(async (req) => {
                     .from("profiles").select("id").eq("email", email).maybeSingle();
                   if (prof?.id) {
                     const credits = TUTORING_PRICE_TO_CREDITS[priceId];
-                    const { data: cur } = await supabase
-                      .from("tutoring_credits")
-                      .select("*")
-                      .eq("user_id", prof.id)
-                      .maybeSingle();
-                    if (cur) { await supabase.from("tutoring_credits").update({
-                        credits_remaining: cur.credits_remaining + credits,
-                        total_credits_purchased: cur.total_credits_purchased + credits,
-                        updated_at: new Date().toISOString() }).eq("user_id", prof.id);
-                    } else { await supabase.from("tutoring_credits").insert({
-                        user_id: prof.id,
-                        credits_remaining: credits,
-                        total_credits_purchased: credits });
-                    }
+                    await supabase.rpc("add_ai_credits", {
+                      p_user_id: prof.id,
+                      p_amount: credits,
+                      p_reason: "tutoring_credits_purchase",
+                      p_source: "stripe_webhook" });
                     await supabase.from("tutoring_credit_transactions").insert({ user_id: prof.id,
                       delta: credits,
                       reason: "stripe_webhook",
