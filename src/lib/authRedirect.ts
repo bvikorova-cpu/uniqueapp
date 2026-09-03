@@ -1,19 +1,12 @@
 /**
  * Origin used in Supabase auth email links.
- * Never emit localhost/127.0.0.1 links — a user opening the confirmation mail
- * on a phone would hit ERR_CONNECTION_REFUSED. Fall back to the live domain.
+ * Auth emails must always return to the public site. Deriving this value from
+ * window.location would leak preview or localhost origins into emails.
  */
 const PRODUCTION_ORIGIN = "https://uniqueapp.fun";
 
 export function authOrigin(): string {
-  if (typeof window === "undefined") return PRODUCTION_ORIGIN;
-  const { origin, hostname } = window.location;
-  const isLocal =
-    hostname === "localhost" ||
-    hostname === "127.0.0.1" ||
-    hostname === "0.0.0.0" ||
-    hostname.endsWith(".local");
-  return isLocal ? PRODUCTION_ORIGIN : origin;
+  return PRODUCTION_ORIGIN;
 }
 
 export function authRedirect(path = "/"): string {
