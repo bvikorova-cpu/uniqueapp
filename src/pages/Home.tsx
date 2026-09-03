@@ -156,7 +156,13 @@ const Home = () => {
           <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold text-white leading-tight drop-shadow-2xl">
             {"Welcome to"}{" "}
             <span className="relative inline-block">
-              <span className="bg-gradient-to-r from-[#9C27B0] via-[#E91E63] to-[#FF4081] bg-clip-text text-transparent animate-glow drop-shadow-[0_0_30px_rgba(156,39,176,0.5)]">
+              <span
+                className="bg-gradient-to-r from-[#9C27B0] via-[#E91E63] to-[#FF4081] bg-clip-text text-transparent animate-glow drop-shadow-[0_0_30px_rgba(156,39,176,0.5)]"
+                style={{
+                  WebkitTextStroke: "1.5px rgba(255,255,255,0.85)",
+                  textShadow: "0 2px 10px rgba(0,0,0,0.45), 0 0 24px rgba(156,39,176,0.6)",
+                }}
+              >
                 {displayedText}
                 <span className="animate-blink">|</span>
               </span>
