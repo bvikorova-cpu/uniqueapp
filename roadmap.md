@@ -9,3 +9,5 @@
 ## About Platform (2026-09-03)
 - [x] Add missing sections (Unlock Videos, Unique Gifts, Suggestions, AI Video Creator, Photo Styler, Fairytale Book, Guess My Age, Spin & Solve)
 - [x] Remove hero stats cards (60+ Sections / 40+ AI Tools / 15+ Arenas / 30+ Communities)
+
+- [ ] Ukončené duely: skryť hneď v UI + hodinové čistenie DB (completed_at > 5 min)

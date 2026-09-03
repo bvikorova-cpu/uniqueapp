@@ -230,6 +230,7 @@ export const FriendChallenges = () => {
         .from('brain_duel_friend_challenges')
         .select('*')
         .or(`challenger_id.eq.${user.id},challenged_id.eq.${user.id}`)
+        .not('status', 'in', '("completed","declined","expired","cancelled")')
         .order('created_at', { ascending: false });
 
       if (error) throw error;

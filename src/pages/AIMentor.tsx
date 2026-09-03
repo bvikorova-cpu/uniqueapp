@@ -18,7 +18,6 @@ import { AchievementBadges } from "@/components/mentor/AchievementBadges";
 import { MoodTracker } from "@/components/mentor/MoodTracker";
 import { AIActionPlans } from "@/components/mentor/AIActionPlans";
 import { GamificationXP } from "@/components/mentor/GamificationXP";
-import { VoiceCoaching } from "@/components/mentor/VoiceCoaching";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -207,7 +206,6 @@ const AIMentor = () => {
             </div>
 
             {/* Voice Coaching */}
-            <VoiceCoaching />
 
             {/* AI Action Plans */}
             <AIActionPlans />
