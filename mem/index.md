@@ -13,6 +13,8 @@
 - Credit modules (9 total): Voice Chat (1cr), Drawing (2cr), Reading (2cr), Homework (2cr), Story (3cr), Career (5cr), Coloring (5cr) + Academy banner + GoldPass (neutralized to false).
 - Content: Erotic/nude/sexual content BANNED platform-wide; every upload surface must call screenMediaFile() before upload.
 - IP: No third-party brands/characters (Disney, Pixar, Marvel, DC, Barbie, Harry Potter…) in assets, labels or copy — no licenses.
+- Credits: ONE wallet = `ai_credits` + `ai_credits_ledger`. Never create/read a per-module `*_credits` table. Test credit gates from a second clean account.
+
 
 ## Core extra
 - Avatar ring: equipped cosmetic frame first, else verification tier ring (gold for Verified/VIP) — same on every surface.
