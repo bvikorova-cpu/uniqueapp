@@ -145,6 +145,7 @@ const Profile = () => {
   const { user, loading: authLoading } = useAuth();
   const cachedProfile = profileFromStoredSnapshot(userId);
   const [profile, setProfile] = useState<Profile | null>(() => cachedProfile);
+  const [profileTab, setProfileTab] = useState<string>("posts");
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(() => !cachedProfile);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
