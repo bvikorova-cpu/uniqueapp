@@ -15,5 +15,5 @@
 - [ ] Zjednotiť rámik avatara (VIP/founder gold vs. modrý default) naprieč platformou
 
 ## Aktuálne opravy (2026-09-03)
-- [ ] IQ kredity: odstrániť zostávajúcu 402 chybu pre bežných používateľov a overiť ledger
-- [ ] Home hero: spraviť slovo Unique jasne biele s kontrastným orámovaním
+- [x] IQ kredity: odstránená stará/dvojitá iq_credits kontrola; štart používa jednotnú ai_credits peňaženku
+- [x] Home hero: slovo Unique je biele s výrazným fialovým orámovaním
