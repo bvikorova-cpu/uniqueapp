@@ -26,7 +26,7 @@ type ViewType = "hub" | "planner" | "packing" | "localguide" | "budget" | "cultu
 interface Destination {
   id: string; name: string; description: string; location: string; created_at: string; user_id: string;
   photos?: { id: string; photo_url: string }[];
-  reviews?: { id: string; rating: number; comment: string; user_id: string; profiles?: { full_name: string | null; avatar_url: string | null } | null }[];
+  reviews?: { id: string; rating: number; comment: string; user_id: string; profiles?: { full_name: string | null; username?: string | null; avatar_url: string | null } | null }[];
 }
 
 const FEATURE_CARDS = [
@@ -320,7 +320,7 @@ const Vacationer = () => {
                   </div>
                   {selectedDestination.reviews?.length ? (
                     <div className="space-y-3">{selectedDestination.reviews.map(r => (
-                      <Card key={r.id}><CardContent className="pt-4"><div className="flex items-start gap-3"><Avatar className="h-10 w-10">{r.profiles?.avatar_url ? <img src={r.profiles.avatar_url} alt="" className="h-full w-full object-cover rounded-full" /> : <AvatarFallback>{(r.profiles?.full_name?.[0] || "U").toUpperCase()}</AvatarFallback>}</Avatar><div className="flex-1 space-y-2"><div className="flex items-center justify-between"><span className="font-semibold">{r.profiles?.full_name || "User"}</span><div className="flex">{[1,2,3,4,5].map(s => <Star key={s} className={`h-4 w-4 ${s <= r.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/30"}`} />)}</div></div><p className="text-sm text-muted-foreground">{r.comment}</p></div></div></CardContent></Card>
+                      <Card key={r.id}><CardContent className="pt-4"><div className="flex items-start gap-3"><Avatar className="h-10 w-10">{r.profiles?.avatar_url ? <img src={r.profiles.avatar_url} alt="" className="h-full w-full object-cover rounded-full" /> : <AvatarFallback>{(r.profiles?.full_name?.[0] || r.profiles?.username?.[0] || "M").toUpperCase()}</AvatarFallback>}</Avatar><div className="flex-1 space-y-2"><div className="flex items-center justify-between"><span className="font-semibold">{r.profiles?.full_name || r.profiles?.username || "Member"}</span><div className="flex">{[1,2,3,4,5].map(s => <Star key={s} className={`h-4 w-4 ${s <= r.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/30"}`} />)}</div></div><p className="text-sm text-muted-foreground">{r.comment}</p></div></div></CardContent></Card>
                     ))}</div>
                   ) : <p className="text-center text-muted-foreground py-6">No reviews yet.</p>}
                 </div>

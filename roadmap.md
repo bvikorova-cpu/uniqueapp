@@ -11,3 +11,5 @@
 - [x] Remove hero stats cards (60+ Sections / 40+ AI Tools / 15+ Arenas / 30+ Communities)
 
 - [ ] Ukončené duely: skryť hneď v UI + hodinové čistenie DB (completed_at > 5 min)
+
+- [ ] Zjednotiť rámik avatara (VIP/founder gold vs. modrý default) naprieč platformou
