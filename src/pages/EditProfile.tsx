@@ -23,7 +23,6 @@ import { SkillsEditor, Skill } from "@/components/profile/edit/SkillsEditor";
 import { PrivacyAndStyle, FieldVisibility, ProfileTheme } from "@/components/profile/edit/PrivacyAndStyle";
 import { VerifiedBadges, VerifiedBadgesState } from "@/components/profile/edit/VerifiedBadges";
 import { ShareQRSection } from "@/components/profile/edit/ShareQRSection";
-import { VoiceIntroRecorder } from "@/components/profile/edit/VoiceIntroRecorder";
 import { PersonalityTest } from "@/components/profile/edit/PersonalityTest";
 import { AnimatedAvatarStudio } from "@/components/profile/edit/AnimatedAvatarStudio";
 import { ProfileAnalytics } from "@/components/profile/edit/ProfileAnalytics";
@@ -87,7 +86,6 @@ const EditProfile = () => {
   const [uploadingCover, setUploadingCover] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
 
-  const [voiceIntro, setVoiceIntro] = useState<{ url: string | null; transcript: string | null }>({ url: null, transcript: null });
   const [verifiedState, setVerifiedState] = useState<VerifiedBadgesState>({ email: false, phone: false, id: false, payment: false });
 
   const [profile, setProfile] = useState<ProfileData>({
@@ -165,11 +163,8 @@ const EditProfile = () => {
         id: !!p.is_verified,
         payment: !!p.stripe_connect_charges_enabled });
 
-      // voice intro
-      const { data: vi } = await supabase
-        .from("profile_voice_intros").select("audio_url, transcript").eq("user_id", userId).maybeSingle();
-      if (vi) setVoiceIntro({ url: vi.audio_url, transcript: vi.transcript });
     } catch (error: any) {
+
       toast({ title: "Error loading profile", description: error.message, variant: "destructive" });
     } finally {
       setLoading(false);
@@ -415,7 +410,6 @@ const EditProfile = () => {
     { key: "languages", label: "Language", done: (profile.languages?.length || 0) >= 1, weight: 4 },
     { key: "phone", label: "Phone number", done: !!profile.phone?.trim(), weight: 4 },
     { key: "username", label: "Username/handle", done: !!profile.username?.trim(), weight: 6 },
-    { key: "voice", label: "Voice intro", done: !!voiceIntro.url, weight: 6 },
     { key: "animated", label: "Animated avatar", done: !!profile.animated_avatar_url, weight: 4 },
     { key: "verified", label: "2+ verifications", done: Object.values(verifiedState).filter(Boolean).length >= 2, weight: 4 },
   ];
@@ -486,14 +480,6 @@ const EditProfile = () => {
               onDescriptionChange={setAvatarDescription}
               onUpload={handleImageUpload}
               onGenerate={handleGenerateAvatar}
-            />
-
-            <VoiceIntroRecorder
-              userId={profile.id}
-              audioUrl={voiceIntro.url}
-              transcript={voiceIntro.transcript}
-              onSaved={(url, t) => setVoiceIntro({ url, transcript: t })}
-              onRemove={() => setVoiceIntro({ url: null, transcript: null })}
             />
 
             <AnimatedAvatarStudio
@@ -758,7 +744,7 @@ const EditProfile = () => {
                   accentColor={profile.accent_color || "#f59e0b"}
                   theme={(profile.profile_theme as ProfileTheme) || "default"}
                   verifiedCount={Object.values(verifiedState).filter(Boolean).length}
-                  voiceIntroUrl={voiceIntro.url}
+                  voiceIntroUrl={null}
                 />
               </div>
             </div>
