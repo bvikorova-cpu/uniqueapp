@@ -26,6 +26,7 @@ import { finishMeTrace,
 import MePerfOverlay from "@/components/debug/MePerfOverlay";
 
 const PostCard = lazy(() => import("@/components/feed/PostCard"));
+const RewardsCosmetics = lazy(() => import("@/components/rewards/RewardsCosmetics"));
 
 const StreakMultiplierCard = lazy(() => import("@/components/gamification/StreakMultiplierCard").then((m) => ({ default: m.StreakMultiplierCard })));
 const ProfileMilestones = lazy(() => import("@/components/profile/ProfileMilestones").then((m) => ({ default: m.ProfileMilestones })));
