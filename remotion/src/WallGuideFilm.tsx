@@ -475,13 +475,13 @@ const CHAPTERS: Omit<React.ComponentProps<typeof Chapter>, "duration">[] = [
     title: "Wall videos & stories tab",
     lead: "The Videos tab is the short-video side of the Wall — upload from the same page.",
     bullets: [
-      "Videos / Stories switch at the top",
+      "Open Videos from the Wall tab row",
       "Upload Video for your own short clip",
       "Feeds load 10 videos at a time for speed",
       "Nudity and adult content is removed automatically",
     ],
-    src: "wallguide/s6-videos.png",
-    focus: { x: 50, y: 12, zoom: 1.5, zoomTo: 1.58 },
+    src: "wallguide/s1-overview.png",
+    focus: { x: 50, y: 10, zoom: 1.3, zoomTo: 1.4 },
   },
   {
     no: "08 · SAVED",
