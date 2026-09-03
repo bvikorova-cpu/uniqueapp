@@ -712,23 +712,6 @@ const Profile = () => {
           </div>
         )}
 
-        {currentUserId === userId && (
-          <Card className="p-4 mb-6 flex items-center justify-between gap-3 border-primary/30 bg-primary/5">
-            <div>
-              <p className="font-bold text-sm">Cosmetics catalog</p>
-              <p className="text-xs text-muted-foreground">Pick frames, badges & themes for your profile</p>
-            </div>
-            <Button
-              size="sm"
-              onClick={() => {
-                setProfileTab("cosmetics");
-                setTimeout(() => document.getElementById("profile-tabs")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
-              }}
-            >
-              Open
-            </Button>
-          </Card>
-        )}
 
         {/* Tabs Section - Central Hub */}
         <Tabs id="profile-tabs" value={profileTab} onValueChange={setProfileTab} className="w-full scroll-mt-24">
