@@ -53,10 +53,10 @@ export function useRewardsCosmetics(userIds: (string | null | undefined)[]): Rew
       // Tier-aware ring: VIP / Verified users keep their gold (or tier) frame everywhere.
       const { data: tiers } = await supabase
         .from("profiles_public")
-        .select("id, verification_tier")
+        .select("id, verification_tier" as never)
         .in("id", ids);
       if (!alive) return;
-      ((tiers as { id: string; verification_tier: string | null }[]) || []).forEach((row) => {
+      ((tiers as unknown as { id: string; verification_tier: string | null }[]) || []).forEach((row) => {
         next[row.id] = { ...next[row.id], verification_tier: row.verification_tier };
       });
       ids.forEach((id) => cache.set(id, next[id] ?? {}));
