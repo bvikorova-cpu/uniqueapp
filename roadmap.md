@@ -13,3 +13,7 @@
 - [ ] Ukončené duely: skryť hneď v UI + hodinové čistenie DB (completed_at > 5 min)
 
 - [ ] Zjednotiť rámik avatara (VIP/founder gold vs. modrý default) naprieč platformou
+
+## Aktuálne opravy (2026-09-03)
+- [ ] IQ kredity: odstrániť zostávajúcu 402 chybu pre bežných používateľov a overiť ledger
+- [ ] Home hero: spraviť slovo Unique jasne biele s kontrastným orámovaním
