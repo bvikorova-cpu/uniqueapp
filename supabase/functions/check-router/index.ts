@@ -378,7 +378,7 @@ serve(async (req) => {
     }
 
     if (action === "phobia") {
-      const { data: credits } = await sb.from("phobia_credits").select("*").eq("user_id", user.id).maybeSingle();
+      const { data: credits } = await sb.from("ai_credits").select("credits_remaining, total_credits_purchased").eq("user_id", user.id).maybeSingle();
       const customers = await stripe.customers.list({ email: user.email!, limit: 1 });
       let subscribed = false, subscription_end: string | null = null;
       if (customers.data.length > 0) {
