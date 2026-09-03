@@ -23,7 +23,6 @@ import { SkillsEditor, Skill } from "@/components/profile/edit/SkillsEditor";
 import { PrivacyAndStyle, FieldVisibility, ProfileTheme } from "@/components/profile/edit/PrivacyAndStyle";
 import { VerifiedBadges, VerifiedBadgesState } from "@/components/profile/edit/VerifiedBadges";
 import { ShareQRSection } from "@/components/profile/edit/ShareQRSection";
-import { VoiceIntroRecorder } from "@/components/profile/edit/VoiceIntroRecorder";
 import { PersonalityTest } from "@/components/profile/edit/PersonalityTest";
 import { AnimatedAvatarStudio } from "@/components/profile/edit/AnimatedAvatarStudio";
 import { ProfileAnalytics } from "@/components/profile/edit/ProfileAnalytics";
@@ -486,14 +485,6 @@ const EditProfile = () => {
               onDescriptionChange={setAvatarDescription}
               onUpload={handleImageUpload}
               onGenerate={handleGenerateAvatar}
-            />
-
-            <VoiceIntroRecorder
-              userId={profile.id}
-              audioUrl={voiceIntro.url}
-              transcript={voiceIntro.transcript}
-              onSaved={(url, t) => setVoiceIntro({ url, transcript: t })}
-              onRemove={() => setVoiceIntro({ url: null, transcript: null })}
             />
 
             <AnimatedAvatarStudio
