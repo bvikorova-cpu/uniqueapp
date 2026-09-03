@@ -1,44 +1,22 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Crown, Sparkles, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useFoundingMember } from "@/hooks/useFoundingMember";
-import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
-import { toast } from "sonner";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const DISMISS_KEY = "founding_banner_dismissed_v1";
 
 /**
- * Promotes the limited Founding Members programme on the homepage.
- * Hidden once the user has claimed, dismissed, or the cohort is full.
+ * Friendly home note about the Founding Members programme.
+ * Hidden once the user has dismissed it or the cohort is full.
  */
 export function FoundingMembersBanner() {
-  const { user } = useAuth();
-  const { remaining, isFoundingMember, claim, loading } = useFoundingMember();
+  const { remaining, isFoundingMember, loading } = useFoundingMember();
   const [dismissed, setDismissed] = useState<boolean>(
     typeof window !== "undefined" && localStorage.getItem(DISMISS_KEY) === "1"
   );
-  const [claiming, setClaiming] = useState(false);
 
   if (loading || isFoundingMember || dismissed || remaining <= 0) return null;
-
-  const onClaim = async () => {
-    if (!user) {
-      toast.info("Sign in to claim your Founding Member badge");
-      return;
-    }
-    setClaiming(true);
-    const res = await claim();
-    setClaiming(false);
-    if (res.ok && res.memberNumber) {
-      toast.success(`You are Founding Member #${res.memberNumber}!`, { description: "Permanent Verified Founder badge unlocked." });
-    } else if (res.reason === "cohort_full") {
-      toast.error("All 1 000 Founding Member slots are taken.");
-    } else {
-      toast.error("Could not claim right now. Try again later.");
-    }
-  };
 
   const onDismiss = () => {
     setDismissed(true);
@@ -47,7 +25,7 @@ export function FoundingMembersBanner() {
 
   return (
     <>
-      <FloatingHowItWorks title={"Founding Members Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the Founding Members Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Founding Members Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <FloatingHowItWorks title={"Founding Members - How it works"} steps={[{ title: 'Open', desc: 'Access the Founding Members Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Founding Members Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <AnimatePresence>
       <motion.div
         initial={{ opacity: 0, y: -8 }}
@@ -69,21 +47,14 @@ export function FoundingMembersBanner() {
           </div>
           <div className="flex-1 min-w-[180px]">
             <h3 className="font-black text-base sm:text-lg flex items-center gap-2">
-              Become a Founding Member
+              Welcome to the family
               <Sparkles className="h-4 w-4 text-amber-400" />
             </h3>
             <p className="text-xs sm:text-sm text-muted-foreground">
-              Only <span className="font-bold text-amber-300">{remaining}</span> of 1 000 slots left ·
-              permanent Verified Founder badge.
+              The first 1 000 registered members receive a permanent Verified Founder badge.
+              Only <span className="font-bold text-amber-300">{remaining}</span> slots are still available.
             </p>
           </div>
-          <Button
-            onClick={onClaim}
-            disabled={claiming}
-            className="bg-gradient-to-r from-amber-500 to-yellow-400 text-black hover:from-amber-400 hover:to-yellow-300 font-bold shadow-lg"
-          >
-            {claiming ? "Claiming…" : "Claim my badge"}
-          </Button>
         </div>
       </motion.div>
     </AnimatePresence>
