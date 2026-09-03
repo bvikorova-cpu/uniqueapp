@@ -10,7 +10,7 @@ import MegatalentPinButton from "@/components/megatalent/MegatalentPinButton";
 import SubmissionBoostCountdown from "@/components/megatalent/SubmissionBoostCountdown";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRewardsCosmeticsFor } from "@/hooks/useRewardsCosmetics";
-import { rewardsFrameClass, rewardsNameClass } from "@/lib/rewardsCosmeticStyles";
+import { avatarRingClass, rewardsNameClass } from "@/lib/rewardsCosmeticStyles";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface SubmissionCardProps {
@@ -43,7 +43,7 @@ export default function MegaTalentSubmissionCard({ submission,
   const isTopPremium = submission.subscriptionTier === "top_premium";
   const displayVotes = (submission.votes_count || 0).toLocaleString();
   const cosmetics = useRewardsCosmeticsFor(submission.user_id);
-  const frameClass = rewardsFrameClass(cosmetics.avatar_frame);
+  const frameClass = avatarRingClass(cosmetics);
 
 
   return (

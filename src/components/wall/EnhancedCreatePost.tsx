@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRewardsCosmeticsFor } from "@/hooks/useRewardsCosmetics";
-import { rewardsFrameClass } from "@/lib/rewardsCosmeticStyles";
+import { avatarRingClass } from "@/lib/rewardsCosmeticStyles";
 import { 
   Image, 
   Video, 
@@ -87,7 +87,7 @@ const emojiList = [
 
 export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreatePostProps) {
   const myCosmetics = useRewardsCosmeticsFor(userProfile?.id);
-  const myFrame = rewardsFrameClass(myCosmetics.avatar_frame);
+  const myFrame = avatarRingClass(myCosmetics);
   const [content, setContent] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);

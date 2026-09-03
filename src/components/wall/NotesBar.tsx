@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import InfoHint from "@/components/common/InfoHint";
 import { useRewardsCosmetics } from "@/hooks/useRewardsCosmetics";
-import { rewardsFrameClass } from "@/lib/rewardsCosmeticStyles";
+import { avatarRingClass } from "@/lib/rewardsCosmeticStyles";
 
 interface NoteRow {
   id: string;
@@ -34,7 +34,7 @@ export const NotesBar = () => {
   const [submitting, setSubmitting] = useState(false);
   const [viewing, setViewing] = useState<NoteRow | null>(null);
   const cosmetics = useRewardsCosmetics([me, ...notes.map((n) => n.user_id), viewing?.user_id]);
-  const frameFor = (id?: string | null) => rewardsFrameClass(id ? cosmetics[id]?.avatar_frame : undefined);
+  const frameFor = (id?: string | null) => avatarRingClass(id ? cosmetics[id] : undefined);
 
   const load = useCallback(async () => {
     const { data: notesData, error } = await supabase

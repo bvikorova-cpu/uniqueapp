@@ -4,7 +4,7 @@ import { Edit, MapPin, Briefcase, Sparkles, TrendingUp, Users, Trophy, Zap } fro
 import { lazy, ReactNode, Suspense } from "react";
 import { VerifiedBadge, getVerifiedRingClass, TIER_META, normalizeTier } from "@/components/verified/VerifiedBadge";
 import { useRewardsCosmeticsFor } from "@/hooks/useRewardsCosmetics";
-import { rewardsFrameClass, rewardsNameClass, rewardsThemeClass, rewardsBorderClass } from "@/lib/rewardsCosmeticStyles";
+import { rewardsFrameClass, tierRingClass, rewardsNameClass, rewardsThemeClass, rewardsBorderClass } from "@/lib/rewardsCosmeticStyles";
 
 const VerifiedFounderBadge = lazy(() =>
   import("@/components/wall/VerifiedFounderBadge").then((m) => ({ default: m.VerifiedFounderBadge })),
@@ -56,7 +56,7 @@ export const ProfileHero = ({ profile,
   const cosmetics = useRewardsCosmeticsFor(userId || profile.id);
   const themeClass = rewardsThemeClass(cosmetics.profile_theme);
   const borderClass = rewardsBorderClass(cosmetics.animated_border);
-  const frameClass = rewardsFrameClass(cosmetics.avatar_frame);
+  const frameClass = rewardsFrameClass(cosmetics.avatar_frame) || tierRingClass(cosmetics.verification_tier);
 
 
   return (
