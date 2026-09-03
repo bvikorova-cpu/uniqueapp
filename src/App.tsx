@@ -416,6 +416,8 @@ import { ResetPassword,
   BrandKits } from "@/routes/lazyPages";
 
 const AdminRefunds = lazy(() => import("@/pages/admin/AdminRefunds"));
+const AdminPayments = lazy(() => import("@/pages/admin/AdminPayments"));
+
 // Education vertical
 const EducationHub = lazy(() => import("@/pages/education/EducationHub"));
 const FlashcardDecks = lazy(() => import("@/pages/education/FlashcardDecks"));
@@ -1020,6 +1022,8 @@ const App = () => {
                         <Route path="/admin/iq" element={<ProtectedRoute requireAdmin={true}><AdminIQDashboard /></ProtectedRoute>} />
                         <Route path="/admin/iq-analytics" element={<ProtectedRoute requireAdmin={true}><AdminIQAnalytics /></ProtectedRoute>} />
                         <Route path="/admin/refunds" element={<ProtectedRoute requireAdmin={true}><AdminRefunds /></ProtectedRoute>} />
+                        <Route path="/admin/payments" element={<ProtectedRoute requireAdmin={true}><AdminPayments /></ProtectedRoute>} />
+
                         <Route path="/admin/disputes" element={<ProtectedRoute requireAdmin={true}><AdminDisputes /></ProtectedRoute>} />
                         <Route path="/admin/reconciliation" element={<ProtectedRoute requireAdmin={true}><AdminReconciliation /></ProtectedRoute>} />
                         <Route path="/admin/referral-fraud" element={<ProtectedRoute requireAdmin={true}><AdminReferralFraud /></ProtectedRoute>} />
