@@ -23,7 +23,11 @@ export function getDirection(languageCode: string): "ltr" | "rtl" {
 export function applyRTLToDocument(languageCode: string): void {
   const direction = getDirection(languageCode);
   document.documentElement.dir = direction;
-  document.documentElement.lang = languageCode;
+  const html = document.documentElement;
+  const isMachineTranslated =
+    html.classList.contains("translated-ltr") || html.classList.contains("translated-rtl");
+  if (!isMachineTranslated) html.lang = languageCode;
+
   
   // Add or remove RTL class for custom styling
   if (direction === "rtl") {
