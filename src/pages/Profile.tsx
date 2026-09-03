@@ -313,10 +313,18 @@ const Profile = () => {
 
         if (cancelled) return;
         const friendsData = friendsRes.data;
+        // Deduplicate: a friendship can exist as two reciprocal rows.
+        const uniqueFriendIds = new Set(
+          (friendsData ?? []).map((r: { user_id: string; friend_id: string }) =>
+            r.user_id === userId ? r.friend_id : r.user_id,
+          ),
+        );
+        uniqueFriendIds.delete(userId);
         setStats({ postsCount: postsCountRes.count ?? 0,
           likesGiven: likesRes.count || 0,
           commentsGiven: commentsRes.count || 0,
-          friendsCount: friendsData?.length || 0,
+          friendsCount: uniqueFriendIds.size,
+
           submissionsCount: submissionsRes.count || 0,
           completedCoursesCount: coursesRes.count || 0,
           xp: pointsRes.data?.total_points ?? 0,
