@@ -49,7 +49,7 @@ describe("useUnifiedCredits", () => {
     safeInvokeMock.mockReset();
   });
 
-  it("aggregates credits from all credit tables", async () => {
+  it("reads the unified ai_credits wallet", async () => {
     getUserMock.mockResolvedValue({ data: { user: { id: "u1" } } });
     const values: Record<string, number> = { handwriting_credits: 10,
       past_life_credits: 5,
@@ -63,8 +63,8 @@ describe("useUnifiedCredits", () => {
 
     const { result } = renderHook(() => useUnifiedCredits(), { wrapper });
     await waitFor(() => expect(result.current.isLoading).toBe(false));
-    expect(result.current.totalCredits).toBe(27);
-    expect(result.current.creditBalances?.handwriting).toBe(10);
+    expect(result.current.totalCredits).toBe(5);
+    expect(result.current.creditBalances?.handwriting).toBe(3);
     expect(result.current.creditBalances?.creativeForge).toBe(5);
   });
 
