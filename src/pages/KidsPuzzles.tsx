@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { Coins, Info, Puzzle as PuzzleIcon, Sparkles } from "lucide-react";
 import { KIDS_PUZZLES, PIECE_COST, PUZZLE_LEVELS, totalPieces, type KidsPuzzle } from "@/data/kidsPuzzles";
 import { PuzzleCollection } from "@/components/kids/puzzles/PuzzleCollection";
+import puzzlesHero from "@/assets/kids-puzzles-hero.mp4.asset.json";
 
 const HIW_STEPS = [
   { title: "Pick a puzzle", desc: "Choose one of the illustrated kids puzzles." },
