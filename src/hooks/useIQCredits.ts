@@ -61,23 +61,21 @@ export const useIQCredits = () => {
 
   const spendCredits = useMutation({
     mutationFn: async (amount: number) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
-      if (!credits || ((credits as any).credits_remaining ?? 0) < amount) {
-        throw new Error("Insufficient credits");
-      }
-
-      const { error } = await supabase
-        .from("ai_credits")
-        .update({ credits_remaining: (credits as any).credits_remaining - amount })
-        .eq("user_id", user.id);
-
+      // Unified credit spend (writes the ledger server-side)
+      const { data, error } = await supabase.rpc("spend_ai_credits" as any, {
+        _amount: amount,
+        _reason: "iq_platform",
+        _source: "iq_platform" });
       if (error) throw error;
+      if (!(data as any)?.ok) {
+        throw new Error((data as any)?.error === "insufficient" ? "Insufficient credits" : "Credit charge failed");
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["iq-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
     } });
+
 
   return { credits: (credits as any)?.credits_remaining || 0,
     isLoading,
