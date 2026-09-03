@@ -66,14 +66,14 @@ serve(async (req) => {
       throw new Error("Competition is full");
     }
 
-    // Check user credits (correct column: balance)
+    // Check unified platform credits
     const { data: creditsData } = await supabaseAdmin
-      .from("iq_credits")
-      .select("balance")
+      .from("ai_credits")
+      .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
 
-    const currentCredits = creditsData?.balance ?? 0;
+    const currentCredits = creditsData?.credits_remaining ?? 0;
     if (currentCredits < competition.entry_fee) {
       throw new Error("Insufficient credits");
     }

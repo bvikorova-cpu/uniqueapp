@@ -37,14 +37,14 @@ serve(async (req) => {
     const creditCost = CREDIT_COSTS[action];
     if (!creditCost) throw new Error(`Unknown action: ${action}`);
 
-    // Use iq_credits table
+    // Unified platform credits (ai_credits)
     const { data: credits } = await supabase
-      .from("iq_credits")
-      .select("balance")
+      .from("ai_credits")
+      .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
 
-    const remaining = credits?.balance || 0;
+    const remaining = credits?.credits_remaining || 0;
     if (remaining < creditCost) {
       return new Response(JSON.stringify({ error: `Not enough credits. Need ${creditCost}, have ${remaining}.` }), {
         status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -125,8 +125,7 @@ serve(async (req) => {
     const parsed = JSON.parse(content);
 
     await supabase
-      .from("iq_credits")
-      .update({ balance: remaining - creditCost })
+      .rpc("deduct_ai_credits", { p_user_id: user.id, p_amount: creditCost, p_reason: `iq_ai:${action}`, p_source: "iq_platform_ai" })
       .eq("user_id", user.id);
 
     return new Response(JSON.stringify({ ...parsed, credits_used: creditCost, credits_remaining: remaining - creditCost }), {
