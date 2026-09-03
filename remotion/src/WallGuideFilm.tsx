@@ -39,7 +39,8 @@ const PALETTES: [string, string, string][] = [
   ["#14b8a6", "#3b82f6", "#c084fc"],
 ];
 
-const paletteFor = (i: number) => PALETTES[i % PALETTES.length];
+const paletteFor = (i: number): [string, string, string] =>
+  PALETTES[i % PALETTES.length] as [string, string, string];
 
 const hexToRgb = (h: string) => {
   const n = parseInt(h.slice(1), 16);
@@ -48,7 +49,7 @@ const hexToRgb = (h: string) => {
 const mix = (a: string, b: string, t: number) => {
   const A = hexToRgb(a);
   const B = hexToRgb(b);
-  return `rgb(${A.map((v, i) => Math.round(v + (B[i] - v) * t)).join(",")})`;
+  return `rgb(${A.map((v, i) => Math.round(v + ((B[i] as number) - v) * t)).join(",")})`;
 };
 
 const Backdrop: React.FC = () => {
