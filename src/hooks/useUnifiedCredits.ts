@@ -23,39 +23,28 @@ export const useUnifiedCredits = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      // Fetch all credit tables in parallel
-      const [
-        handwritingRes,
-        pastLifeRes,
-        anonymousDateRes,
-        lieDetectorRes,
-        paidAiRes,
-        freeTierRes,
-      ] = await Promise.all([
-        supabase.from("handwriting_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle(),
-        supabase.from("past_life_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle(),
-        supabase.from("anonymous_dating_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle(),
-        supabase.from("lie_detector_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle(),
+      // Single wallet: every module spends from `ai_credits`.
+      const [paidAiRes, freeTierRes] = await Promise.all([
         supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle(),
         (supabase as any).from("free_tier_credits").select("balance").eq("user_id", user.id).maybeSingle(),
       ]);
 
       const creativeForgeFree = (freeTierRes.data as any)?.balance || 0;
       const creativeForgePaid = paidAiRes.data?.credits_remaining || 0;
+      const wallet = creativeForgePaid;
 
-      return { handwriting: handwritingRes.data?.credits_remaining || 0,
-        pastLife: pastLifeRes.data?.credits_remaining || 0,
-        anonymousDate: anonymousDateRes.data?.credits_remaining || 0,
-        lieDetector: lieDetectorRes.data?.credits_remaining || 0,
+      return { handwriting: wallet,
+        pastLife: wallet,
+        anonymousDate: wallet,
+        lieDetector: wallet,
         creativeForge: creativeForgeFree + creativeForgePaid,
         creativeForgeFree,
         creativeForgePaid } as CreditBalance;
     } });
 
-  // Calculate total credits
-  const totalCredits = creditBalances
-    ? creditBalances.handwriting + creditBalances.pastLife + creditBalances.anonymousDate + creditBalances.lieDetector + creditBalances.creativeForge
-    : 0;
+  // Unified wallet balance (no per-module silos)
+  const totalCredits = creditBalances ? creditBalances.creativeForge : 0;
+
 
   // Purchase credits for a specific service
   const purchaseCredits = async (
