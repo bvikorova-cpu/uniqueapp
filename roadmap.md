@@ -17,3 +17,4 @@
 ## Aktuálne opravy (2026-09-03)
 - [x] IQ kredity: odstránená stará/dvojitá iq_credits kontrola; štart používa jednotnú ai_credits peňaženku
 - [x] Home hero: slovo Unique je biele s výrazným fialovým orámovaním
+- [x] Auth e-maily: potvrdenie a reset vždy smerujú na https://uniqueapp.fun, nikdy na localhost/preview
