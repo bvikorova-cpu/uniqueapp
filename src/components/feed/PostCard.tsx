@@ -42,7 +42,7 @@ import { SensitiveOverlay } from "./SensitiveOverlay";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRewardsCosmeticsFor } from "@/hooks/useRewardsCosmetics";
-import { rewardsFrameClass, rewardsNameClass } from "@/lib/rewardsCosmeticStyles";
+import { avatarRingClass, rewardsNameClass } from "@/lib/rewardsCosmeticStyles";
 import { Popover,
   PopoverContent,
   PopoverTrigger } from "@/components/ui/popover";
@@ -746,7 +746,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
         {/* Author Info */}
         <div className="flex items-center gap-3">
           <Avatar 
-            className={`h-10 w-10 cursor-pointer transition-all ${rewardsFrameClass(authorCosmetics.avatar_frame) || verifiedRing || "ring-2 ring-primary/10 hover:ring-primary/30"}`}
+            className={`h-10 w-10 cursor-pointer transition-all ${avatarRingClass(authorCosmetics) || verifiedRing || "ring-2 ring-primary/10 hover:ring-primary/30"}`}
             onClick={(e) => handleUserClick(e, post.user_id)}
           >
             <AvatarImage src={post.profiles?.avatar_url || undefined} />

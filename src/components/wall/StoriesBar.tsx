@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { Plus, Play, Camera, Video, Megaphone, Loader2, Trash2, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRewardsCosmetics } from "@/hooks/useRewardsCosmetics";
-import { rewardsFrameClass } from "@/lib/rewardsCosmeticStyles";
+import { avatarRingClass } from "@/lib/rewardsCosmeticStyles";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -81,7 +81,7 @@ export const StoriesBar = () => {
     viewingStory?.user_id,
   ]);
   const storyFrame = (id?: string | null) =>
-    rewardsFrameClass(id ? storyCosmetics[id]?.avatar_frame : undefined);
+    avatarRingClass(id ? storyCosmetics[id] : undefined);
 
   const previewUrl = useMemo(
     () => (selectedFile ? URL.createObjectURL(selectedFile) : null),

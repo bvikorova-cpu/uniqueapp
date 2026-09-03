@@ -8,6 +8,8 @@ export type RewardsCosmeticSlugs = {
   name_color?: string;
   profile_theme?: string;
   animated_border?: string;
+  /** verification tier of the user (verified / plus / pro), used for the global tier ring */
+  verification_tier?: string | null;
 };
 
 export type RewardsCosmeticsMap = Record<string, RewardsCosmeticSlugs>;
@@ -47,6 +49,15 @@ export function useRewardsCosmetics(userIds: (string | null | undefined)[]): Rew
       ids.forEach((id) => { next[id] = {}; });
       ((data as { user_id: string; category: string; slug: string }[]) || []).forEach((row) => {
         next[row.user_id] = { ...next[row.user_id], [row.category]: row.slug };
+      });
+      // Tier-aware ring: VIP / Verified users keep their gold (or tier) frame everywhere.
+      const { data: tiers } = await supabase
+        .from("profiles_public")
+        .select("id, verification_tier")
+        .in("id", ids);
+      if (!alive) return;
+      ((tiers as { id: string; verification_tier: string | null }[]) || []).forEach((row) => {
+        next[row.id] = { ...next[row.id], verification_tier: row.verification_tier };
       });
       ids.forEach((id) => cache.set(id, next[id] ?? {}));
       setMap(next);

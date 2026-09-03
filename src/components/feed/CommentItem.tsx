@@ -9,7 +9,7 @@ import { VerifiedBadge, getVerifiedRingClass } from "@/components/verified/Verif
 import { MapPin, MessageCircle, ChevronDown, ChevronUp, Pencil, Trash2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useRewardsCosmeticsFor } from "@/hooks/useRewardsCosmetics";
-import { rewardsFrameClass, rewardsNameClass } from "@/lib/rewardsCosmeticStyles";
+import { avatarRingClass, rewardsNameClass } from "@/lib/rewardsCosmeticStyles";
 import { enUS } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -89,7 +89,7 @@ export const CommentItem = ({
 
 
   const authorCosmetics = useRewardsCosmeticsFor(comment.user_id);
-  const authorFrame = rewardsFrameClass(authorCosmetics.avatar_frame);
+  const authorFrame = avatarRingClass(authorCosmetics);
   const authorName = rewardsNameClass(authorCosmetics.name_color);
 
   const commentReplies = replies.filter(r => r.parent_comment_id === comment.id);
