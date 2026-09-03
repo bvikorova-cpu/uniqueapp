@@ -42,6 +42,7 @@
 - [Admin Stripe Payout](mem://features/admin-stripe-payout) — Automated withdrawal wiring.
 - [Kids & Teen AI Credit Matrix](mem://features/kids-teen-ai-credit-matrix) — Credit tables, costs, and edge functions for all Kids & Teen AI modules.
 - [AI Credits Grant Policy](mem://features/ai-credits-policy) — STRIKTNÉ: žiadne nové automatické granty ai_credits bez schválenia. Schválené iba: monthly +10, founding +50, Stripe, promo, referral, gift, auto-recharge. Ledger + trigger auditujú každú zmenu.
+- [Single credit wallet](mem://constraints/single-credit-wallet) — Zákaz per-module `*_credits` tabuliek; iba `ai_credits` + ledger; incident 2026-09-03 a cross-user test pravidlo.
 - [Social & Dating audit fixes](mem://features/social-dating-audit-batch) — 24h refund, DM mute, confession sanitize, coffee no-show strikes.
 - [DM Consolidation](mem://features/dm-consolidation) — Direct messages unified onto conversations schema via RPC; legacy `direct_messages` deprecated.
 - [Unlock Videos](mem://features/unlock-videos) — /unlock-videos: video locks at 50%, unlock 1 credit, 50/50 split with creator.
