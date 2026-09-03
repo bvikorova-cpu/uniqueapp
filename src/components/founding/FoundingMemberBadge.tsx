@@ -9,7 +9,7 @@ interface Props {
 }
 
 /**
- * Permanent recognition badge for the first 100 platform members.
+ * Permanent recognition badge for the first 1 000 platform members.
  * Public — anyone can see who is a Founding Member.
  */
 export function FoundingMemberBadge({ memberNumber, size = "md", className = "" }: Props) {
@@ -26,7 +26,7 @@ export function FoundingMemberBadge({ memberNumber, size = "md", className = "" 
           </Badge>
         </TooltipTrigger>
         <TooltipContent>
-          <p className="text-xs">One of the first 100 members of Unique. Permanent recognition.</p>
+          <p className="text-xs">One of the first 1 000 members of Unique. Permanent recognition.</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

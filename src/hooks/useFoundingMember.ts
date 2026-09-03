@@ -10,14 +10,14 @@ export interface FoundingMemberState {
 }
 
 /**
- * Live state for the Founding Members programme (first 100 members).
+ * Live state for the Founding Members programme (first 1 000 members).
  * - `memberNumber`/`isFoundingMember`: status of the current authenticated user.
- * - `remaining`: how many of the 100 slots are still available (public).
+ * - `remaining`: how many of the 1 000 slots are still available (public).
  */
 export function useFoundingMember(): FoundingMemberState & { claim: () => Promise<{ ok: boolean; reason?: string; memberNumber?: number }>; refresh: () => Promise<void> } {
   const { user } = useAuth();
   const [memberNumber, setMemberNumber] = useState<number | null>(null);
-  const [remaining, setRemaining] = useState<number>(100);
+  const [remaining, setRemaining] = useState<number>(1000);
   const [loading, setLoading] = useState<boolean>(true);
 
   const refresh = useCallback(async () => {

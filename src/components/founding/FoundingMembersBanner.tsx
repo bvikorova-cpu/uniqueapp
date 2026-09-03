@@ -32,9 +32,9 @@ export function FoundingMembersBanner() {
     const res = await claim();
     setClaiming(false);
     if (res.ok && res.memberNumber) {
-      toast.success(`You are Founding Member #${res.memberNumber}!`, { description: "+50 AI credits added to your account." });
+      toast.success(`You are Founding Member #${res.memberNumber}!`, { description: "Permanent Verified Founder badge unlocked." });
     } else if (res.reason === "cohort_full") {
-      toast.error("All 100 Founding Member slots are taken.");
+      toast.error("All 1 000 Founding Member slots are taken.");
     } else {
       toast.error("Could not claim right now. Try again later.");
     }
@@ -73,8 +73,8 @@ export function FoundingMembersBanner() {
               <Sparkles className="h-4 w-4 text-amber-400" />
             </h3>
             <p className="text-xs sm:text-sm text-muted-foreground">
-              Only <span className="font-bold text-amber-300">{remaining}</span> of 100 slots left ·
-              permanent badge · <span className="font-bold">+50 AI credits</span> bonus.
+              Only <span className="font-bold text-amber-300">{remaining}</span> of 1 000 slots left ·
+              permanent Verified Founder badge.
             </p>
           </div>
           <Button
