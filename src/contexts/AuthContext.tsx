@@ -1,3 +1,4 @@
+import { authRedirect } from "@/lib/authRedirect";
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -133,7 +134,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 
   const signUp = async (email: string, password: string, fullName: string) => {
-    const redirectUrl = `${window.location.origin}/`;
+    const redirectUrl = authRedirect("/");
 
     const { data, error } = await supabase.auth.signUp({ email,
       password,
