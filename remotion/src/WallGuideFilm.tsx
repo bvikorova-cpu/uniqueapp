@@ -344,6 +344,7 @@ const Chapter: React.FC<{
               fps: FPS,
               config: { damping: 16, stiffness: 140 },
             });
+            const dot = [a1, a2, a3, C.gold][i % 4];
             return (
               <div
                 key={b}
@@ -353,8 +354,9 @@ const Chapter: React.FC<{
                   gap: 18,
                   padding: "16px 22px",
                   borderRadius: 18,
-                  background: "rgba(255,255,255,0.07)",
-                  border: "1px solid rgba(255,255,255,0.14)",
+                  background: `linear-gradient(90deg, ${dot}33, rgba(255,255,255,0.06))`,
+                  border: `1px solid ${dot}66`,
+                  borderLeft: `6px solid ${dot}`,
                   opacity: sp,
                   transform: `translateX(${interpolate(sp, [0, 1], [flip ? 40 : -40, 0])}px)`,
                 }}
@@ -365,8 +367,8 @@ const Chapter: React.FC<{
                     height: 14,
                     borderRadius: 999,
                     flexShrink: 0,
-                    background: i % 2 ? C.pink : C.gold,
-                    boxShadow: `0 0 22px ${i % 2 ? C.pink : C.gold}`,
+                    background: dot,
+                    boxShadow: `0 0 24px ${dot}`,
                   }}
                 />
                 <div
@@ -387,7 +389,8 @@ const Chapter: React.FC<{
       </div>
 
       {/* screenshot */}
-      <Shot src={src} focus={focus} duration={duration} />
+      <Shot src={src} focus={focus} duration={duration} glow={a2} />
+
     </AbsoluteFill>
   );
 };
