@@ -50,7 +50,7 @@ export function useVideoCredits() {
     setLoading(true);
     try {
       const { data, error } = await (supabase as any)
-        .from("video_credits")
+        .from("ai_credits")
         .select("credits_remaining")
         .eq("user_id", user.id)
         .maybeSingle();

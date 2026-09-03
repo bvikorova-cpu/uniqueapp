@@ -111,12 +111,11 @@ export const MysteryBox = () => {
       const randomGift = eligibleGifts[Math.floor(Math.random() * eligibleGifts.length)];
 
       // Deduct credits
-      const { error: creditError } = await supabase
-        .from("secret_santa_credits")
-        .update({ credits_remaining: credits - selectedTierData.cost })
-        .eq("user_id", user.id);
+      const { error: creditError } = await supabase.rpc("deduct_secret_santa_credits", {
+        p_user_id: user.id,
+        p_amount: selectedTierData.cost });
 
-      if (creditError) throw creditError;
+      if (creditError) throw new Error("Not enough credits");
 
       // Record mystery box
       const { error: boxError } = await supabase

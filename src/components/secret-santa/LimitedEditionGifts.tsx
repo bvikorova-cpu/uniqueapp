@@ -265,11 +265,10 @@ export const LimitedEditionGifts = ({ onSelectGift }: LimitedEditionGiftsProps) 
       if (!user) throw new Error("Not authenticated");
       if (credits < selectedGift.value) throw new Error("Not enough credits");
 
-      const { error: creditError } = await supabase
-        .from("secret_santa_credits")
-        .update({ credits_remaining: credits - selectedGift.value })
-        .eq("user_id", user.id);
-      if (creditError) throw creditError;
+      const { error: creditError } = await supabase.rpc("deduct_secret_santa_credits", {
+        p_user_id: user.id,
+        p_amount: selectedGift.value });
+      if (creditError) throw new Error("Not enough credits");
 
       const { error: giftError } = await supabase
         .from("secret_santa_gifts")
