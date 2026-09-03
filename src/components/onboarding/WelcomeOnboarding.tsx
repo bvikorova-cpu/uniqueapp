@@ -197,7 +197,7 @@ export function WelcomeOnboarding() {
                     transition={{ delay: 0.3 }}
                     className="text-5xl font-black bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent"
                   >
-                    +10 credits
+                    +5 credits
                   </motion.div>
                   <p className="text-muted-foreground mt-2">Welcome gift unlocked. Start exploring now.</p>
                 </div>
