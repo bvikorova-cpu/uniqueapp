@@ -40,8 +40,12 @@ export const LanguageSwitcher = ({ className, compact }: Props) => {
     await loadLocale(code);
     await i18n.changeLanguage(code);
     try {
-      document.documentElement.lang = code;
+      const html = document.documentElement;
+      const isMachineTranslated =
+        html.classList.contains("translated-ltr") || html.classList.contains("translated-rtl");
+      if (!isMachineTranslated) html.lang = code;
     } catch {}
+
   };
 
   return (
