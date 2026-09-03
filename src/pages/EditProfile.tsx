@@ -414,7 +414,6 @@ const EditProfile = () => {
     { key: "languages", label: "Language", done: (profile.languages?.length || 0) >= 1, weight: 4 },
     { key: "phone", label: "Phone number", done: !!profile.phone?.trim(), weight: 4 },
     { key: "username", label: "Username/handle", done: !!profile.username?.trim(), weight: 6 },
-    { key: "voice", label: "Voice intro", done: !!voiceIntro.url, weight: 6 },
     { key: "animated", label: "Animated avatar", done: !!profile.animated_avatar_url, weight: 4 },
     { key: "verified", label: "2+ verifications", done: Object.values(verifiedState).filter(Boolean).length >= 2, weight: 4 },
   ];
