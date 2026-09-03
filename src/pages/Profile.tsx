@@ -717,6 +717,7 @@ const Profile = () => {
           <div className="-mx-1 overflow-x-auto scrollbar-hide">
             <TabsList className="inline-flex w-max min-w-full gap-1 h-auto p-1">
               <TabsTrigger value="posts">Posts</TabsTrigger>
+              {currentUserId === userId && <TabsTrigger value="cosmetics">Cosmetics</TabsTrigger>}
             </TabsList>
           </div>
           
@@ -735,6 +736,15 @@ const Profile = () => {
               ))
             )}
           </TabsContent>
+
+          {currentUserId === userId && (
+            <TabsContent value="cosmetics" className="mt-4">
+              <Suspense fallback={<div className="flex justify-center py-10"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+                <RewardsCosmetics />
+              </Suspense>
+            </TabsContent>
+          )}
+
         </Tabs>
 
         <FollowersModal
