@@ -42,6 +42,13 @@ serve(async (req) => {
 
     const aiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!aiKey) throw new Error("Missing LOVABLE_API_KEY");
+    // Unified wallet gate: ai_credits only (no per-module credit tables).
+    const { data: walletRow } = await supabaseAdmin
+      .from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
+    if ((walletRow?.credits_remaining ?? 0) < PARITY_COST) {
+      return new Response(JSON.stringify({ error: "Insufficient credits" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: { Authorization: `Bearer ${aiKey}`, "Content-Type": "application/json" },
@@ -68,7 +75,7 @@ serve(async (req) => {
     try { result = JSON.parse(content); } catch { result = { raw: content }; }
 
     await supabaseAdmin.from(cfg.table).insert({ user_id: user.id, input: payload ?? {}, result });
-    await supabaseAdmin.from("membership_parity_credits").insert({ user_id: user.id, action, credits_spent: PARITY_COST });
+    await supabaseAdmin.rpc("deduct_ai_credits", { p_user_id: user.id, p_amount: PARITY_COST, p_reason: `membership-parity:${action}`, p_source: "membership-parity" });
 
     return new Response(JSON.stringify({ result, cost: PARITY_COST }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
