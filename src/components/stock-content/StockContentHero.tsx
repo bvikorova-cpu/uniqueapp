@@ -38,8 +38,8 @@ export function StockContentHero() {
     return () => { cancelled = true; };
   }, []);
 
-  return () => clearInterval(interval);
-  }, []);
+
+
 
   return (
     <div className="relative w-full h-[480px] md:h-[420px] rounded-2xl overflow-hidden mb-8">
