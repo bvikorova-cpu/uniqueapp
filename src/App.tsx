@@ -532,8 +532,18 @@ const queryClient = new QueryClient({ defaultOptions: {
 
 const App = () => {
   useEffect(() => {
-    document.documentElement.lang = "en";
+    // Never fight Chrome/Google Translate: it flips <html lang> to the target
+    // language and adds a "translated-*" class. Overwriting lang breaks its
+    // revert-to-original UI (empty language list in the translate bar).
+    const html = document.documentElement;
+    const isMachineTranslated =
+      html.classList.contains("translated-ltr") ||
+      html.classList.contains("translated-rtl");
+    if (!isMachineTranslated && !html.lang) {
+      html.lang = "en";
+    }
   }, []);
+
 
   // A11Y: Auto-detect prefers-reduced-motion and apply system-wide
   useEffect(() => {
