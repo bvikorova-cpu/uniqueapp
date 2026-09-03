@@ -68261,6 +68261,9 @@ export type Database = {
           total_reviews: number | null
           user_type: string | null
           username: string | null
+          verification_tier:
+            | Database["public"]["Enums"]["verification_tier"]
+            | null
           website: string | null
         }
         Insert: {
@@ -68299,6 +68302,9 @@ export type Database = {
           total_reviews?: number | null
           user_type?: string | null
           username?: string | null
+          verification_tier?:
+            | Database["public"]["Enums"]["verification_tier"]
+            | null
           website?: string | null
         }
         Update: {
@@ -68337,6 +68343,9 @@ export type Database = {
           total_reviews?: number | null
           user_type?: string | null
           username?: string | null
+          verification_tier?:
+            | Database["public"]["Enums"]["verification_tier"]
+            | null
           website?: string | null
         }
         Relationships: []
