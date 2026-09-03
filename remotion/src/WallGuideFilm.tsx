@@ -257,8 +257,10 @@ const Chapter: React.FC<{
   focus: Focus;
   duration: number;
   flip?: boolean;
-}> = ({ no, title, lead, bullets, src, focus, duration, flip }) => {
+  idx?: number;
+}> = ({ no, title, lead, bullets, src, focus, duration, flip, idx = 0 }) => {
   const frame = useCurrentFrame();
+  const [a1, a2, a3] = paletteFor(idx);
   const titleSp = spring({ frame, fps: FPS, config: { damping: 18, stiffness: 130 } });
   const leadOp = interpolate(frame, [12, 34], [0, 1], { extrapolateRight: "clamp" });
   const out = interpolate(frame, [duration - 12, duration], [1, 0], {
@@ -282,18 +284,25 @@ const Chapter: React.FC<{
       <div style={{ width: 720, transform: `translateY(${bob}px)` }}>
         <div
           style={{
-            display: "inline-block",
-            padding: "8px 20px",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 12,
+            padding: "8px 22px 8px 10px",
             borderRadius: 999,
-            background: `linear-gradient(90deg, ${C.purple}, ${C.pink})`,
+            background: `linear-gradient(90deg, ${a1}, ${a2})`,
             fontFamily: body.fontFamily,
             fontWeight: 900,
             fontSize: 24,
             letterSpacing: 3,
             color: C.white,
             opacity: leadOp,
+            boxShadow: `0 12px 40px ${a2}66`,
           }}
         >
+          <Img
+            src={staticFile("home/logo.png")}
+            style={{ width: 34, height: 34, borderRadius: 10 }}
+          />
           {no}
         </div>
         <div
@@ -302,14 +311,18 @@ const Chapter: React.FC<{
             fontFamily: display.fontFamily,
             fontSize: 88,
             lineHeight: 1.02,
-            color: C.white,
+            backgroundImage: `linear-gradient(100deg, #ffffff 10%, ${a3} 55%, ${a2} 95%)`,
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            color: "transparent",
             transform: `translateX(${interpolate(titleSp, [0, 1], [flip ? 60 : -60, 0])}px)`,
             opacity: titleSp,
-            textShadow: "0 14px 50px rgba(0,0,0,0.55)",
+            filter: "drop-shadow(0 14px 46px rgba(0,0,0,0.55))",
           }}
         >
           {title}
         </div>
+
         <div
           style={{
             marginTop: 18,
