@@ -74,7 +74,7 @@ export default function Settings() {
     }
     setChangingPassword(true);
     const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
-      redirectTo: `${window.location.origin}/reset-password` });
+      redirectTo: `${authRedirect("/reset-password")}` });
     setChangingPassword(false);
     if (error) { if (isEmailRateLimitError(error.message)) setResetCooldown(user.email);
       sonnerToast.error(isEmailRateLimitError(error.message) ? "Too many email requests" : error.message, {

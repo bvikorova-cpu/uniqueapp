@@ -27,7 +27,7 @@ export function SocialAuth() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: authRedirect("/auth/callback"),
         queryParams: { prompt: "select_account" } } });
     if (error) { setLoadingGoogle(false);
       toast({
@@ -48,7 +48,7 @@ export function SocialAuth() {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: authRedirect("/auth/callback"),
         shouldCreateUser: true } });
     setLoadingMagic(false);
     if (error) { toast({

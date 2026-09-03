@@ -150,7 +150,7 @@ const Auth = () => {
     const { error } = await supabase.auth.resend({
       type: "signup",
       email: unconfirmedEmail,
-      options: { emailRedirectTo: `${window.location.origin}/` } });
+      options: { emailRedirectTo: authRedirect("/") } });
     if (error) {
       toast({ variant: "destructive", title: "Resend failed", description: error.message });
     } else {
@@ -217,7 +217,7 @@ const Auth = () => {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/`,
+        emailRedirectTo: authRedirect("/"),
         data: { full_name: fullName,
           phone: phone,
           company_name: companyName || null,
@@ -322,7 +322,7 @@ const Auth = () => {
     }
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password` });
+      redirectTo: `${authRedirect("/reset-password")}` });
 
     setLoading(false);
 
