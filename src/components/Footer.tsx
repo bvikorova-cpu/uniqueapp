@@ -107,15 +107,6 @@ const Footer = () => {
                   uniqueapp.fun@gmail.com
                 </a>
               </li>
-              <li>
-                <a 
-                  href="mailto:uniqueapp.fun@gmail.com" 
-                  className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
-                >
-                  <ExternalLink className="h-3 w-3" />
-                  uniqueapp.fun@gmail.com
-                </a>
-              </li>
             </ul>
           </div>
 
