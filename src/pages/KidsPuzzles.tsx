@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { Coins, Info, Puzzle as PuzzleIcon, Sparkles } from "lucide-react";
 import { KIDS_PUZZLES, PIECE_COST, PUZZLE_LEVELS, totalPieces, type KidsPuzzle } from "@/data/kidsPuzzles";
 import { PuzzleCollection } from "@/components/kids/puzzles/PuzzleCollection";
+import puzzlesHero from "@/assets/kids-puzzles-hero.mp4.asset.json";
 
 const HIW_STEPS = [
   { title: "Pick a puzzle", desc: "Choose one of the illustrated kids puzzles." },
@@ -58,19 +59,25 @@ const KidsPuzzles = () => {
             <PuzzleCollection puzzle={puzzle} onBack={() => setActive(null)} />
           ) : (
             <>
-              <Card className="p-5 sm:p-7 border-2 border-primary/25 bg-gradient-to-br from-primary/10 via-card/80 to-accent/10 backdrop-blur-xl">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                    <PuzzleIcon className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Kids Puzzles</h1>
-                    <p className="text-xs sm:text-sm text-muted-foreground">
-                      {KIDS_PUZZLES.length} illustrated puzzles · 16 to 144 pieces · {PIECE_COST} credit per piece · ✓ keep or ✗ scrap · 10 scraps = 1 credit
-                    </p>
-                  </div>
+              <div className="relative overflow-hidden rounded-3xl border-2 border-primary/25 shadow-lg">
+                <video
+                  src={puzzlesHero.url}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
+                  className="w-full h-[220px] sm:h-[340px] object-cover"
+                  aria-label="Kids Puzzles hero animation"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/25 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7">
+                  <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-foreground drop-shadow">Kids Puzzles</h1>
+                  <p className="mt-1 text-xs sm:text-sm text-muted-foreground max-w-xl">
+                    {KIDS_PUZZLES.length} illustrated puzzles · 16 to 144 pieces · {PIECE_COST} credit per piece · ✓ keep or ✗ scrap · 10 scraps = 1 credit
+                  </p>
                 </div>
-              </Card>
+              </div>
 
               <Card className="p-4 sm:p-5 border border-primary/20 bg-card/80">
                 <div className="flex items-center gap-2 mb-3">
