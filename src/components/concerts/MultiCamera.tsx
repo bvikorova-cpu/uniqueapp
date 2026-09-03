@@ -22,7 +22,6 @@ export const MultiCamera = ({ onBack }: Props) => {
   const [isMuted, setIsMuted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [viewerCount] = useState(Math.floor(Math.random() * 5000) + 1000);
 
   const currentCam = CAMERA_ANGLES.find(c => c.id === activeCamera)!;
 
@@ -61,7 +60,6 @@ export const MultiCamera = ({ onBack }: Props) => {
           <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-20">
             <div className="flex items-center gap-2">
               <Badge className="bg-red-500 text-white border-0 animate-pulse">● LIVE</Badge>
-              <Badge variant="outline" className="bg-black/50 text-white border-white/20">{viewerCount.toLocaleString()} watching</Badge>
             </div>
             <Badge variant="outline" className="bg-black/50 text-white border-white/20">
               <Camera className="w-3 h-3 mr-1" /> {currentCam.label}

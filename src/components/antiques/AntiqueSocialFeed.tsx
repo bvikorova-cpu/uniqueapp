@@ -40,7 +40,7 @@ export const AntiqueSocialFeed = () => {
       image_url: d.image_url,
       caption: d.description || d.analysis_type + " analysis",
       user_id: d.user_id,
-      likes: Math.floor(Math.random() * 50),
+      likes: 0,
       created_at: d.created_at || new Date().toISOString() })));
     setLoading(false);
   };

@@ -8,7 +8,6 @@ const KEY = "iq_duel_lobby_ready";
 
 export default function IQDuelLobby() {
   const [ready, setReady] = useState(false);
-  const [opponents] = useState(() => Math.floor(Math.random() * 8) + 2);
 
   useEffect(() => { setReady(localStorage.getItem(KEY) === "1"); }, []);
 
@@ -33,7 +32,6 @@ export default function IQDuelLobby() {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        <div className="text-sm">Players online: <span className="text-primary font-semibold">{opponents}</span></div>
         <Button onClick={toggle} variant={ready ? "default" : "outline"} className="w-full">
           {ready ? "Ready ✓" : "Mark Ready"}
         </Button>
