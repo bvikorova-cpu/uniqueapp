@@ -60,33 +60,26 @@ export default function IQTestRunner({ open, onClose, category, title, timeLimit
     reset();
     (async () => {
       setLoading(true);
-      // Charge credits for starting an IQ test
-      const { data: spend, error: spendError } = await supabase.rpc("spend_ai_credits" as any, {
-        _amount: IQ_TEST_CREDIT_COST,
-        _reason: `iq_test:${category}`,
-        _source: "iq_platform" });
-      if (spendError || !(spend as any)?.ok) {
+      // One server-side transaction starts the session and charges the unified wallet.
+      const { data, error } = await supabase.functions.invoke("iq-start-test", {
+        body: { category },
+      });
+      if (error || data?.error) {
         setLoading(false);
+        const insufficient = error?.message?.includes("402") || data?.error === "Insufficient credits";
         toast({
-          title: (spend as any)?.error === "insufficient" ? "Not enough credits" : "Cannot start test",
-          description: (spend as any)?.error === "insufficient"
+          title: insufficient ? "Not enough credits" : "Cannot start test",
+          description: insufficient
             ? `You need ${IQ_TEST_CREDIT_COST} credits to start this test.`
-            : (spendError?.message ?? "Credit charge failed"),
+            : (data?.error ?? error?.message ?? "Could not start the test"),
           variant: "destructive",
         });
         onClose();
         return;
       }
       qc.invalidateQueries({ queryKey: ["ai-credits"] });
-
-      const { data, error } = await supabase.rpc("start_iq_test", { _category: category });
       setLoading(false);
-      if (error) {
-        toast({ title: "Cannot start test", description: error.message.replace(/_/g, " "), variant: "destructive" });
-        onClose();
-        return;
-      }
-      const row = (data as any[])?.[0];
+      const row = data;
       if (!row) { toast({ title: "No questions returned", variant: "destructive" }); onClose(); return; }
       setSessionId(row.session_id);
       setQuestions(row.questions ?? []);

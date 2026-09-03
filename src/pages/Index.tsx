@@ -236,7 +236,14 @@ const Index = () => {
             style={{ textShadow: "0 4px 30px rgba(0,0,0,0.5)" }}
           >
             Welcome to{" "}
-            <span className="bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-300 bg-clip-text text-transparent">
+            <span
+              className="text-white"
+              style={{
+                WebkitTextStroke: "2px hsl(var(--primary))",
+                paintOrder: "stroke fill",
+                textShadow: "0 3px 0 hsl(var(--primary)), 0 5px 18px rgba(0,0,0,0.9)",
+              }}
+            >
               Unique
             </span>
           </h1>
