@@ -3095,7 +3095,7 @@ async function handler(req: Request): Promise<Response> {
             : creditType === "shadow_arena" ? "shadow_arena_credits"
             : creditType === "collectibles" ? "collectibles_credits"
             : creditType === "character_arena" ? "character_credits"
-            : creditType === "iq" ? "iq_credits"
+            : creditType === "iq" ? "ai_credits"
             : creditType === "handwriting" ? "ai_credits"
             : creditType === "creative_forge" ? "ai_credits"
             : creditType } });
