@@ -1,3 +1,4 @@
+import { authRedirect } from "@/lib/authRedirect";
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
