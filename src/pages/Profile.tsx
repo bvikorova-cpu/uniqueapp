@@ -255,7 +255,7 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (!userId) return;
+      if (!userId || authLoading) return;
 
       try {
         // Critical path: profile only. Posts/feed widgets are loaded after paint.
@@ -318,7 +318,7 @@ const Profile = () => {
 
 
     fetchProfile();
-  }, [user, userId, toast]);
+  }, [authLoading, user, userId, toast]);
 
   useEffect(() => {
     if (!detailsReady || !userId || !profile) return;
