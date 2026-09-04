@@ -17,6 +17,8 @@ import { AlertDialog,
   AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Check, Loader2, Search, UserMinus, ArrowLeft, Users, X } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { searchProfiles, type PublicProfileResult } from "@/lib/searchProfiles";
+import { UserPlus } from "lucide-react";
 
 interface Friend {
   id: string;
@@ -40,6 +42,10 @@ const Friends = () => {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [removingId, setRemovingId] = useState<string | null>(null);
+  const [people, setPeople] = useState<PublicProfileResult[]>([]);
+  const [peopleLoading, setPeopleLoading] = useState(false);
+  const [addingId, setAddingId] = useState<string | null>(null);
+  const [sentIds, setSentIds] = useState<string[]>([]);
   const [requestActionId, setRequestActionId] = useState<string | null>(null);
   const activeTab = searchParams.get("tab") === "requests" ? "requests" : "friends";
 
@@ -126,6 +132,39 @@ const Friends = () => {
     );
   }, [friends, query]);
 
+  // Global people search (find users who are not friends yet)
+  useEffect(() => {
+    const q = query.trim();
+    if (q.length < 1) { setPeople([]); return; }
+    let cancelled = false;
+    setPeopleLoading(true);
+    const t = setTimeout(async () => {
+      const rows = await searchProfiles(q, { limit: 12 });
+      if (cancelled) return;
+      const friendIds = new Set(friends.map((f) => f.id));
+      setPeople(rows.filter((r) => !friendIds.has(r.id)));
+      setPeopleLoading(false);
+    }, 250);
+    return () => { cancelled = true; clearTimeout(t); setPeopleLoading(false); };
+  }, [query, friends]);
+
+  const handleSendRequest = async (userId: string) => {
+    if (!currentUserId) return;
+    setAddingId(userId);
+    try {
+      const { error } = await supabase
+        .from("friendships")
+        .insert({ user_id: currentUserId, friend_id: userId, status: "pending" });
+      if (error) throw error;
+      setSentIds((prev) => [...prev, userId]);
+      toast({ title: "Friend request sent" });
+    } catch (e: any) {
+      toast({ title: "Could not send request", description: e.message, variant: "destructive" });
+    } finally {
+      setAddingId(null);
+    }
+  };
+
   const handleRemove = async (friendshipId: string, name: string) => {
     setRemovingId(friendshipId);
     try {
@@ -186,7 +225,7 @@ const Friends = () => {
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search friends by name or username..."
+            placeholder="Search people by name or username..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="pl-9"
@@ -257,6 +296,61 @@ const Friends = () => {
                 </AlertDialog>
               </Card>
             ))}
+          </div>
+        )}
+
+        {query.trim().length > 0 && (
+          <div className="mt-6">
+            <div className="flex items-center gap-2 mb-3">
+              <Search className="h-4 w-4 text-primary" />
+              <h2 className="text-lg font-semibold">People on Unique</h2>
+            </div>
+            {peopleLoading ? (
+              <div className="flex justify-center py-6">
+                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+              </div>
+            ) : people.length === 0 ? (
+              <Card className="p-6 text-center text-muted-foreground">No people found.</Card>
+            ) : (
+              <div className="space-y-2">
+                {people.map((p) => (
+                  <Card key={p.id} className="p-3 flex items-center gap-3">
+                    <button
+                      onClick={() => navigate(`/profile/${p.id}`)}
+                      className="flex items-center gap-3 flex-1 min-w-0 text-left"
+                    >
+                      <Avatar className="h-12 w-12 shrink-0">
+                        <AvatarImage src={p.avatar_url || undefined} />
+                        <AvatarFallback>
+                          {(p.full_name?.[0] || p.username?.[0] || "U").toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0">
+                        <div className="font-medium truncate" translate="no">{p.full_name || p.username || "Member"}</div>
+                        {p.username && (
+                          <div className="text-xs text-muted-foreground truncate" translate="no">@{p.username}</div>
+                        )}
+                      </div>
+                    </button>
+                    <Button
+                      size="sm"
+                      variant={sentIds.includes(p.id) ? "secondary" : "default"}
+                      disabled={addingId === p.id || sentIds.includes(p.id)}
+                      onClick={() => handleSendRequest(p.id)}
+                      className="shrink-0"
+                    >
+                      {addingId === p.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : sentIds.includes(p.id) ? (
+                        <><Check className="h-4 w-4 mr-1" />Sent</>
+                      ) : (
+                        <><UserPlus className="h-4 w-4 mr-1" />Add</>
+                      )}
+                    </Button>
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
