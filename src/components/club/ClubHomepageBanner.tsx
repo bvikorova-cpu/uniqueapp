@@ -29,7 +29,7 @@ export function ClubHomepageBanner() {
               </h3>
               <p className="text-xs md:text-sm text-white/80 mt-1 flex items-center gap-1.5">
                 <HandHeart className="h-3.5 w-3.5 text-pink-300 shrink-0" />
-                10% of every payment supports good causes. Gold ring, priority access, NFC card.
+                Gold ring badge, priority access and your NFC membership card.
               </p>
             </div>
             <div className="shrink-0 w-full md:w-auto">

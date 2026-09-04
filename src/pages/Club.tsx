@@ -68,7 +68,7 @@ export default function Club() {
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-pink-50 to-amber-50 dark:from-purple-950 dark:via-pink-950 dark:to-amber-950 pb-24">
       <Helmet>
         <title>Unique VIP Club — Join the movement that supports good</title>
-        <meta name="description" content="Get your Unique VIP Club membership card. €20 digital or €30 physical, then €1.50/month. 10% of every payment supports good causes." />
+        <meta name="description" content="Get your Unique VIP Club membership card. €20 digital or €30 physical, then €1.50/month." />
       </Helmet>
 
       {/* HERO VIDEO */}
@@ -93,10 +93,10 @@ export default function Club() {
                 <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-300">Unique VIP Club</span>
               </div>
               <h1 className="text-2xl sm:text-4xl md:text-5xl font-black text-white drop-shadow-lg">
-                Join the VIP Club <span className="bg-gradient-to-r from-amber-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">that supports good</span>
+                Join the VIP Club <span className="bg-gradient-to-r from-amber-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">and unlock every perk</span>
               </h1>
               <p className="text-white/90 text-xs sm:text-base font-semibold mt-1 drop-shadow">
-                €20 or €30 · then €1.50/month · 10% goes to good causes
+                €20 or €30 · then €1.50/month
               </p>
             </motion.div>
           </div>
@@ -127,7 +127,7 @@ export default function Club() {
               Join the VIP Club
             </span>
             <br />
-            <span className="text-foreground">that supports good.</span>
+            <span className="text-foreground">with every perk.</span>
           </motion.h1>
 
           <motion.p
@@ -136,7 +136,7 @@ export default function Club() {
             transition={{ delay: 0.3 }}
             className="text-lg md:text-2xl text-muted-foreground max-w-3xl mx-auto mt-6"
           >
-            One card. Every perk on Unique. And <strong className="text-pink-600 dark:text-pink-400">10% of every payment</strong> goes to real people in real need.
+            One card. Every perk on Unique — gold ring badge, priority access and your NFC membership card.
           </motion.p>
 
         </div>
@@ -233,7 +233,7 @@ export default function Club() {
           </div>
 
           <p className="text-center text-xs text-muted-foreground mt-6">
-            Cancel any time by contacting support. 10% of every payment goes to the Unique Good Fund.
+            Cancel any time by contacting support.
           </p>
 
 
@@ -304,8 +304,7 @@ export default function Club() {
             <li><strong>1.</strong> Pick Digital (€20) or Physical (€30). Pay once + €1.50/month.</li>
             <li><strong>2.</strong> Your gold ring and member perks activate instantly.</li>
             <li><strong>3.</strong> Physical cardholders receive a laser-engraved NFC card in the mail.</li>
-            <li><strong>4.</strong> Every month, €0.15 from your fee goes to the Unique Good Fund.</li>
-            <li><strong>5.</strong> Cancel any time by contacting support — no strings attached.</li>
+            <li><strong>4.</strong> Cancel any time by contacting support — no strings attached.</li>
           </ol>
         </Card>
       </section>
@@ -314,12 +313,6 @@ export default function Club() {
       <section className="max-w-3xl mx-auto px-4 mb-16">
         <h2 className="text-3xl font-black text-center mb-8">Frequently asked</h2>
         <Accordion type="single" collapsible className="space-y-2">
-          <AccordionItem value="q1" className="border rounded-lg px-4">
-            <AccordionTrigger>Where does the 10% actually go?</AccordionTrigger>
-            <AccordionContent>
-              10% of every payment (signup + monthly) is recorded in the Good Fund ledger and paid out to verified crisis campaigns on Unique.
-            </AccordionContent>
-          </AccordionItem>
           <AccordionItem value="q2" className="border rounded-lg px-4">
             <AccordionTrigger>Can I cancel?</AccordionTrigger>
             <AccordionContent>
