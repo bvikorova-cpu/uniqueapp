@@ -380,7 +380,7 @@ export default function HealthyChallenge() {
           </div>
         </div>
 
-        <LivePrizePoolCard accent="rose" challengeLabel="Healthy Challenge" />
+        <LivePrizePoolCard challenge="healthy" accent="rose" challengeLabel="Healthy Challenge" />
 
         <ChallengeProUpsell accent="orange" challenge="healthy" />
 
