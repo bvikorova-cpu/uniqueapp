@@ -17,6 +17,7 @@ import { canonicalUrl } from "@/lib/canonicalUrl";
 import { sectionVideos } from "@/components/sectionVideos";
 import { Link } from "react-router-dom";
 import { EcoComments } from "@/components/eco/EcoComments";
+import { LivePrizePoolCard } from "@/components/challenges/LivePrizePoolCard";
 import { ChallengeProUpsell } from "@/components/challenges/ChallengeProUpsell";
 import { ChallengeProBadge } from "@/components/challenges/ChallengeProBadge";
 import { useChallengeProSet, useChallengePro } from "@/hooks/useChallengePro";
@@ -386,6 +387,8 @@ export default function EcoChallenge() {
             <div className="flex items-center gap-1.5 bg-yellow-500/20 border border-yellow-300/40 rounded-full px-2.5 py-1 text-yellow-100" title="Time left until this month's champion is auto-crowned"><Timer className="w-3.5 h-3.5" /> Month ends in {countdown}</div>
           </div>
         </div>
+
+        <LivePrizePoolCard accent="emerald" challengeLabel="Eco Challenge" />
 
         <ChallengeProUpsell accent="emerald" challenge="eco" />
 

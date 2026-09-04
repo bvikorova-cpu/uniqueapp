@@ -33,7 +33,7 @@ export default function ContestStatsSidebar({ subscriptionTier, totalVotes }: Co
               transition={{ type: "spring", delay: 0.2 }}
               className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-yellow-500 to-amber-500 bg-clip-text text-transparent"
             >
-              €{stats?.prizePool ? stats.prizePool.toLocaleString("en-US") : "—"}
+              {stats ? stats.prizePoolFormatted : "…"}
             </motion.div>
             <p className="text-xs text-muted-foreground mt-1">Prize Pool — 50% of subscription profit (grows live)</p>
           </div>
