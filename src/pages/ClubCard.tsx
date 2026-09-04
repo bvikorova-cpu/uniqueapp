@@ -119,7 +119,7 @@ export default function ClubCard() {
               <div>Renews: {membership.current_period_end ? new Date(membership.current_period_end).toLocaleDateString() : "—"}</div>
             </div>
             <div className="text-white/60 text-[10px] leading-tight">
-              This card entitles the holder to all Unique VIP Club benefits. Powered by love, supporting good causes. uniqueapp.fun
+              This card entitles the holder to all Unique VIP Club benefits. uniqueapp.fun
             </div>
           </div>
         </motion.div>
