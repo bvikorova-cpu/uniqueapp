@@ -268,7 +268,40 @@ const Profile = () => {
         );
 
         if (profileRes.error) throw profileRes.error;
-        const profileData = profileRes.data ?? (user && userId === user.id ? createOwnProfileSnapshot(user) : null);
+        let profileData = profileRes.data ?? (user && userId === user.id ? createOwnProfileSnapshot(user) : null);
+
+        // public_profiles is security-invoker and the profiles table deliberately
+        // exposes full rows only to their owner. Load the safe public identity via
+        // the existing SECURITY DEFINER RPC when viewing another user's profile.
+        if (!profileData && userId !== user?.id) {
+          const { data: basicProfiles, error: basicProfileError } = await supabase.rpc("get_profiles_basic", {
+            _ids: [userId],
+          });
+          if (basicProfileError) throw basicProfileError;
+          const basicProfile = basicProfiles?.[0];
+          if (basicProfile) {
+            profileData = {
+              id: basicProfile.id,
+              full_name: basicProfile.full_name,
+              avatar_url: basicProfile.avatar_url,
+              bio: null,
+              location: null,
+              website: null,
+              interests: null,
+              occupation: null,
+              company: null,
+              headline: null,
+              username: basicProfile.username,
+              social_links: null,
+              open_to_work: null,
+              open_to_work_details: null,
+              profile_music_url: null,
+              profile_music_title: null,
+              bio_translations: null,
+              verification_tier: basicProfile.verification_tier,
+            };
+          }
+        }
         setProfile(profileData);
         setLoading(false);
         markMeFirstPaint();
