@@ -8,7 +8,7 @@ export type ChallengeTier = "pro" | "top" | null;
 /**
  * Challenge PRO (€3/mo) & TOP (€5/mo) subscription state.
  * - PRO: entry to the monthly cash prize pool + gold badge.
- * - TOP: everything in PRO + higher pool share + 1,000,000 ai_credits monthly
+ * - TOP: everything in PRO + higher share of the monthly cash prize pool
  *        (non-cashable) + TOP badge + submissions auto-pinned to top of feed.
  */
 export type ChallengeKind = "eco" | "healthy";
