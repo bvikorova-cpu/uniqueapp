@@ -17,7 +17,7 @@ export function ChallengeProBadge({ className,
   if (tier === "top") {
     return (
       <span
-        title="Challenge TOP — cash prize pool + 1M credits monthly, pinned in feed"
+        title="Challenge TOP — larger share of the monthly cash prize pool, pinned in feed"
         aria-label="Challenge TOP"
         className={cn(
           "inline-flex items-center gap-1 rounded-full font-bold shadow-sm ring-1",

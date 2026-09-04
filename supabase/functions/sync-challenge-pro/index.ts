@@ -1,9 +1,8 @@
 // Sync the current user's Challenge PRO / TOP subscription status from Stripe
 // into public.challenge_pro_subscribers. Returns { active, activeUntil, tier }.
 // TOP tier (€5/mo): monthly cash prize pool entry (no XP rewards).
-// period (tracked via top_last_grant_period). AI credits (1,000,000) + 5%
-// cash prize pool remain WIN-ONLY (see award_eco_monthly_winner /
-// award_healthy_monthly_winner SQL functions).
+// period (tracked via top_last_grant_period). Prizes are cash-only and
+// WIN-ONLY (see award_eco_monthly_winner / award_healthy_monthly_winner).
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
