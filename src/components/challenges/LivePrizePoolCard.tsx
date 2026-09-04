@@ -1,20 +1,22 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Heart, Building2, Users, RefreshCw } from "lucide-react";
-import { useChallengePrizePool, formatEuroCents } from "@/hooks/useChallengePrizePool";
+import { useChallengePrizePool, formatEuroCents, type ChallengePoolKind } from "@/hooks/useChallengePrizePool";
 
 interface LivePrizePoolCardProps {
   /** Visual accent matching the challenge page. */
   accent?: "emerald" | "rose";
   challengeLabel: string;
+  /** Which challenge pool to show — eco and healthy are fully separate. */
+  challenge: ChallengePoolKind;
 }
 
 /**
  * Real-time monthly pool collected from active PRO / TOP subscriptions.
  * No estimates — the numbers come from the database and refresh live.
  */
-export const LivePrizePoolCard = ({ accent = "emerald", challengeLabel }: LivePrizePoolCardProps) => {
-  const { data, isLoading, isFetching } = useChallengePrizePool();
+export const LivePrizePoolCard = ({ accent = "emerald", challengeLabel, challenge }: LivePrizePoolCardProps) => {
+  const { data, isLoading, isFetching } = useChallengePrizePool(challenge);
 
   const ring = accent === "rose" ? "border-rose-300/40" : "border-emerald-300/40";
   const bg =
@@ -41,7 +43,7 @@ export const LivePrizePoolCard = ({ accent = "emerald", challengeLabel }: LivePr
           {isLoading ? "…" : formatEuroCents(data?.revenueCents ?? 0)}
         </p>
         <p className="text-xs text-white/75 mt-1">
-          Collected from {data?.subscribers ?? 0} active subscriptions
+          Collected from {data?.subscribers ?? 0} active {challengeLabel} subscriptions
           {data ? ` (${data.proCount}× PRO €3 · ${data.topCount}× TOP €5)` : ""}
         </p>
 

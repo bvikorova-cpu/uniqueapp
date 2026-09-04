@@ -267,6 +267,94 @@ async function syncFanClubMembership(
   }
 }
 
+/**
+ * Challenge PRO / TOP subscriptions → public.challenge_pro_subscribers.
+ * Runs straight from the Stripe webhook so the live prize pool grows the
+ * moment the first payment succeeds (no need for the user to open the page).
+ */
+async function syncChallengeSubscription(
+  supabase: ReturnType<typeof createClient>,
+  stripe: Stripe,
+  sub: Stripe.Subscription,
+): Promise<void> {
+  try {
+    const md = (sub.metadata ?? {}) as Record<string, string>;
+    let kind = String(md.type || md.product || "");
+
+    if (!kind.startsWith("challenge_")) {
+      // Fallback: derive from the product / price name.
+      const item: any = sub.items?.data?.[0];
+      const prod = item?.price?.product;
+      let name = "";
+      if (typeof prod === "object" && prod) name = String((prod as any).name || "");
+      else if (typeof prod === "string") {
+        try {
+          const p = await stripe.products.retrieve(prod);
+          name = String((p as any)?.name || "");
+        } catch { /* ignore */ }
+      }
+      name = (name || item?.price?.nickname || "").toLowerCase();
+      if (!name.includes("challenge")) return;
+      const t = name.includes("top") ? "top" : "pro";
+      kind = name.includes("eco")
+        ? `challenge_${t}_eco`
+        : name.includes("healthy")
+          ? `challenge_${t}_healthy`
+          : `challenge_${t}`;
+    }
+
+    const tier: "pro" | "top" = kind.includes("top") ? "top" : "pro";
+    const challenges: Array<"eco" | "healthy"> = kind.endsWith("_eco")
+      ? ["eco"]
+      : kind.endsWith("_healthy")
+        ? ["healthy"]
+        : ["eco", "healthy"]; // legacy combined plan
+
+    // Resolve the buyer.
+    let userId: string | null = (md.user_id as string) || null;
+    const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
+    if (!userId && customerId) {
+      const cust = await stripe.customers.retrieve(customerId);
+      if (!cust.deleted) {
+        const email = (cust as Stripe.Customer).email;
+        if (email) {
+          const { data: prof } = await supabase
+            .from("profiles").select("id").eq("email", email).maybeSingle();
+          userId = (prof as any)?.id ?? null;
+        }
+      }
+    }
+    if (!userId) { log("challenge: no user resolvable", { sub: sub.id }); return; }
+
+    const active = sub.status === "active" || sub.status === "trialing";
+    const item: any = sub.items?.data?.[0];
+    const endTs = (sub as any).current_period_end ?? item?.current_period_end ?? 0;
+
+    for (const ch of challenges) {
+      if (!active || !endTs) {
+        await supabase.from("challenge_pro_subscribers")
+          .delete().eq("user_id", userId).eq("challenge", ch);
+        continue;
+      }
+      const { error } = await supabase.from("challenge_pro_subscribers").upsert({
+        user_id: userId,
+        challenge: ch,
+        tier,
+        active_until: new Date(endTs * 1000).toISOString(),
+        stripe_subscription_id: sub.id,
+        stripe_customer_id: customerId ?? null,
+        updated_at: new Date().toISOString() },
+      { onConflict: "user_id,challenge" });
+      if (error) log("challenge upsert failed", { ch, err: error.message });
+    }
+    log("challenge subscription synced", { user: userId, tier, challenges, active });
+  } catch (e) {
+    log("challenge sync error", { err: (e as Error).message });
+  }
+}
+
+
+
 // ─── Kids Gold Pass: product/price IDs that grant unlimited Kids access ──
 // Must stay in sync with TIER_PRODUCTS.kids / TIER_PRICE_IDS.kids in check-subscription.
 const KIDS_GOLD_PRODUCT_IDS = new Set<string>([
@@ -1641,6 +1729,7 @@ serve(async (req) => {
 
         // ── Megatalent: instantly sync subscription state so premium unlocks ──
         await syncMegatalentSubscription(supabase, stripe, sub);
+        await syncChallengeSubscription(supabase, stripe, sub);
 
         // ── Fan Club: sync membership status (active / past_due / canceled) ──
         await syncFanClubMembership(supabase, stripe, sub);
@@ -1734,6 +1823,7 @@ serve(async (req) => {
 
         // ── Megatalent: deactivate subscription row immediately ─────────────
         await syncMegatalentSubscription(supabase, stripe, sub);
+        await syncChallengeSubscription(supabase, stripe, sub);
 
         // ── Fan Club: mark membership as canceled/expired ──
         await syncFanClubMembership(supabase, stripe, sub);

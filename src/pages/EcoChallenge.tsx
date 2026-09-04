@@ -388,7 +388,7 @@ export default function EcoChallenge() {
           </div>
         </div>
 
-        <LivePrizePoolCard accent="emerald" challengeLabel="Eco Challenge" />
+        <LivePrizePoolCard challenge="eco" accent="emerald" challengeLabel="Eco Challenge" />
 
         <ChallengeProUpsell accent="emerald" challenge="eco" />
 
