@@ -75,12 +75,9 @@ const Feed = () => {
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [moreToolsOpen, setMoreToolsOpen] = useState(false);
   const [feedTab, setFeedTab] = useState<FeedTab>("for-you");
-  const [verifiedOnly, setVerifiedOnly] = useState<boolean>(() => {
-    try { return localStorage.getItem("wall.verifiedOnly") === "1"; } catch { return false; }
-  });
-  useEffect(() => {
-    try { localStorage.setItem("wall.verifiedOnly", verifiedOnly ? "1" : "0"); } catch {}
-  }, [verifiedOnly]);
+  // Always open Wall with every user's posts visible. A previously persisted
+  // "verified only" choice could silently hide posts from regular accounts.
+  const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const VALID_VIEWS = ["feed", "ai-tools", "streaks", "ranks", "badges", "challenges"] as const;
   const urlTab = searchParams.get("tab") ?? "feed";
