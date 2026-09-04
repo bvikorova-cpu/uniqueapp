@@ -10098,6 +10098,45 @@ export type Database = {
         }
         Relationships: []
       }
+      charity_beneficiaries: {
+        Row: {
+          created_at: string
+          id: string
+          module: string
+          org_city: string | null
+          org_iban: string | null
+          org_name: string
+          org_type: string
+          org_website: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          module: string
+          org_city?: string | null
+          org_iban?: string | null
+          org_name: string
+          org_type: string
+          org_website?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          module?: string
+          org_city?: string | null
+          org_iban?: string | null
+          org_name?: string
+          org_type?: string
+          org_website?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       chat_credits: {
         Row: {
           created_at: string
@@ -71416,6 +71455,10 @@ export type Database = {
       }
       has_bazaar_contact_unlock: {
         Args: { _item_id: string; _user_id: string }
+        Returns: boolean
+      }
+      has_charity_beneficiary: {
+        Args: { _module: string; _user_id: string }
         Returns: boolean
       }
       has_confession_access: {
