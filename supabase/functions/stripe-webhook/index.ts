@@ -2180,6 +2180,73 @@ serve(async (req) => {
         } catch (e) {
           log("donation renewal handler error", { err: (e as Error).message });
         }
+        // ─── MEGATALENT CONTEST PRIZE POOL ─────────────────────────────
+        // Runs for EVERY paid Megatalent invoice, with or without referral.
+        // Platform share = tier price − €5 referral (only if an approved
+        // attribution exists). Idempotent via admin_audit_log invoice check.
+        try {
+          const mtTier = (inv as any).lines?.data
+            ?.map((ln: any) => MEGATALENT_PRICE_TO_TIER[ln.price?.id])
+            .find(Boolean) as "premium" | "top_premium" | undefined;
+          const paidCentsMt = (inv as any).amount_paid ?? 0;
+
+          if (mtTier && inv.id && paidCentsMt > 0) {
+            const { data: alreadyFunded } = await supabase
+              .from("admin_audit_log")
+              .select("id")
+              .eq("action", "mt_pool_funded")
+              .contains("details", { invoice_id: inv.id })
+              .maybeSingle();
+
+            if (alreadyFunded) {
+              log("mt pool: already funded for invoice", { invoice: inv.id });
+            } else {
+              // Does the buyer have an approved referral? Then €5 goes to them.
+              let hasReferral = false;
+              let mtEmail: string | null = (inv as any).customer_email ?? null;
+              const mtCustomerId = typeof inv.customer === "string"
+                ? inv.customer
+                : (inv.customer as any)?.id;
+              if (!mtEmail && mtCustomerId) {
+                try {
+                  const c = await stripe.customers.retrieve(mtCustomerId);
+                  if (!c.deleted) mtEmail = (c as Stripe.Customer).email ?? null;
+                } catch (_e) { /* ignore */ }
+              }
+              if (mtEmail) {
+                const { data: prof } = await supabase
+                  .from("profiles").select("id").eq("email", mtEmail).maybeSingle();
+                if ((prof as any)?.id) {
+                  const { data: at } = await supabase
+                    .from("referral_attributions")
+                    .select("status")
+                    .eq("referred_user_id", (prof as any).id)
+                    .maybeSingle();
+                  hasReferral = (at as any)?.status === "approved";
+                }
+              }
+
+              const tierPrice = MEGATALENT_TIER_PRICE[mtTier] ?? 10;
+              const platformEur = Math.max(0, tierPrice - (hasReferral ? 5 : 0));
+
+              const { error: poolErr } = await supabase
+                .rpc("mt_add_platform_share", { _amount_eur: platformEur });
+              if (poolErr) {
+                log("mt_add_platform_share failed", { err: poolErr.message });
+              } else {
+                await supabase.from("admin_audit_log").insert({
+                  admin_id: "00000000-0000-0000-0000-000000000000",
+                  action: "mt_pool_funded",
+                  target_type: "mt_contest_settings",
+                  details: { invoice_id: inv.id, tier: mtTier, platform_eur: platformEur, has_referral: hasReferral } });
+                log("mt pool funded", { invoice: inv.id, platformEur, tier: mtTier });
+              }
+            }
+          }
+        } catch (poolCatch) {
+          log("mt pool handler error", { err: (poolCatch as Error).message });
+        }
+
         // ─── RECURRING REFERRAL REWARD ─────────────────────────────────
         // Credit referrer on EVERY successful subscription invoice (initial
         // + every renewal). Idempotent via unique source_invoice_id.
