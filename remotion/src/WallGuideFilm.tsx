@@ -10,6 +10,7 @@ import {
 } from "remotion";
 import { loadFont as loadDisplay } from "@remotion/google-fonts/LobsterTwo";
 import { loadFont as loadBody } from "@remotion/google-fonts/Inter";
+import { WALLGUIDE_COPY, type WallGuideCopy, type WallGuideLang } from "./wallGuideCopy";
 
 const display = loadDisplay("normal", { weights: ["700"] });
 const body = loadBody("normal", { weights: ["400", "600", "700", "900"] });
@@ -118,7 +119,7 @@ const Backdrop: React.FC = () => {
 };
 
 /** persistent brand badge */
-const LogoBadge: React.FC = () => {
+const LogoBadge: React.FC<{ label: string }> = ({ label }) => {
   const frame = useCurrentFrame();
   const pulse = 0.55 + Math.sin(frame / 18) * 0.25;
   return (
@@ -161,7 +162,7 @@ const LogoBadge: React.FC = () => {
             color: C.gold,
           }}
         >
-          WALL GUIDE
+          {label}
         </div>
       </div>
     </div>
@@ -399,7 +400,7 @@ const Chapter: React.FC<{
 
 /* ---------------- intro / outro ---------------- */
 
-const Intro: React.FC<{ duration: number }> = ({ duration }) => {
+const Intro: React.FC<{ duration: number; copy: WallGuideCopy }> = ({ duration, copy }) => {
   const frame = useCurrentFrame();
   const logo = spring({ frame, fps: FPS, config: { damping: 11, stiffness: 110 } });
   const t1 = interpolate(frame, [16, 40], [0, 1], { extrapolateRight: "clamp" });
@@ -432,7 +433,7 @@ const Intro: React.FC<{ duration: number }> = ({ duration }) => {
           transform: `translateY(${interpolate(t1, [0, 1], [40, 0])}px)`,
         }}
       >
-        The Wall
+        {copy.introTitle}
       </div>
       <div
         style={{
@@ -445,7 +446,7 @@ const Intro: React.FC<{ duration: number }> = ({ duration }) => {
           opacity: t2,
         }}
       >
-        COMPLETE STEP-BY-STEP GUIDE
+        {copy.introKicker}
       </div>
       <div
         style={{
@@ -457,13 +458,13 @@ const Intro: React.FC<{ duration: number }> = ({ duration }) => {
           opacity: t2,
         }}
       >
-        Post, react, earn XP — everything the Wall can do
+        {copy.introLead}
       </div>
     </AbsoluteFill>
   );
 };
 
-const Outro: React.FC<{ duration: number }> = ({ duration }) => {
+const Outro: React.FC<{ duration: number; copy: WallGuideCopy }> = ({ duration, copy }) => {
   const frame = useCurrentFrame();
   const sp = spring({ frame, fps: FPS, config: { damping: 14, stiffness: 120 } });
   const t2 = interpolate(frame, [24, 50], [0, 1], { extrapolateRight: "clamp" });
@@ -480,7 +481,7 @@ const Outro: React.FC<{ duration: number }> = ({ duration }) => {
           textAlign: "center",
         }}
       >
-        Your Wall is waiting
+        {copy.outroTitle}
       </div>
       <div
         style={{
@@ -494,7 +495,7 @@ const Outro: React.FC<{ duration: number }> = ({ duration }) => {
           maxWidth: 1200,
         }}
       >
-        Share a post (+20 XP) · Comment (+10 XP) · Add a story (+15 XP) · Build your streak every day
+        {copy.outroLead}
       </div>
       <div
         style={{
@@ -521,173 +522,44 @@ const Outro: React.FC<{ duration: number }> = ({ duration }) => {
 
 type Item = { d: number; render: (d: number) => React.ReactNode };
 
-const CHAPTERS: Omit<React.ComponentProps<typeof Chapter>, "duration">[] = [
-  {
-    no: "01 · LAYOUT",
-    title: "Three columns, one feed",
-    lead: "Open the Wall from the top menu. The screen is split into three working areas.",
-    bullets: [
-      "Left: your profile card, composer, privacy & Creator Studio",
-      "Middle: hero, search, stories, filters and the post feed",
-      "Right: theme colors, Watch & Earn XP, friends, streak, trending",
-    ],
-    src: "wallguide/s1-overview.png",
-    focus: { x: 50, y: 22, zoom: 1.02, zoomTo: 1.1 },
-  },
-  {
-    no: "02 · CREATE A POST",
-    title: "Share your first post",
-    lead: "Type in “What’s on your mind?”, attach media, choose who can see it, then hit Share Post.",
-    bullets: [
-      "Add to post: photo, video, feeling, location, tag friends",
-      "Extras: AI helper, 24h expiry, poll, event, background",
-      "Audience selector: Public, Friends or Close Friends",
-      "Share Post gives you +20 XP",
-    ],
-    src: "wallguide/s2-composer.png",
-    focus: { x: 22, y: 45, zoom: 1.25, zoomTo: 1.34 },
-    flip: true,
-  },
-  {
-    no: "03 · STORIES & NOTES",
-    title: "Stories and 24h notes",
-    lead: "Above the feed you have two fast formats that disappear after 24 hours.",
-    bullets: [
-      "Your Story: photo or video, text sits at the bottom, likes + comments",
-      "24h notes: a short thought your friends see for one day",
-      "Selected background is highlighted while you create",
-      "Stories give +15 XP",
-    ],
-    src: "wallguide/s1-overview.png",
-    focus: { x: 50, y: 60, zoom: 1.35, zoomTo: 1.45 },
-  },
-  {
-    no: "04 · FILTERS",
-    title: "Choose what you see",
-    lead: "The filter row rebuilds the feed instantly — no reload needed.",
-    bullets: [
-      "For You: personalised by the interests you picked in onboarding",
-      "Follow / Friends: only people you follow or your friends",
-      "Trending & Latest: hottest posts vs. newest posts",
-      "Verified only: posts from verified members",
-    ],
-    src: "wallguide/s3-tabs-stories.png",
-    focus: { x: 50, y: 82, zoom: 1.3, zoomTo: 1.4 },
-    flip: true,
-  },
-  {
-    no: "05 · POST ACTIONS",
-    title: "React, comment, gift, save",
-    lead: "Every post carries the same action bar under the content.",
-    bullets: [
-      "React: hold for the full emoji reaction picker",
-      "Comment: your comments can be edited or deleted anytime",
-      "Gift: send a paid Unique gift — the creator keeps 50%",
-      "Bookmark: save the post to read later",
-    ],
-    src: "wallguide/s4-post.png",
-    focus: { x: 50, y: 56, zoom: 1.3, zoomTo: 1.4 },
-  },
-  {
-    no: "06 · LONG POSTS",
-    title: "Show more, follow, report",
-    lead: "Long texts are collapsed — Show more opens the full post, Show less closes it again.",
-    bullets: [
-      "Gold ring = Verified Founder or VIP member",
-      "Follow / Unfollow right from the post",
-      "Report sends the post to moderation",
-      "Names always show the real profile name",
-    ],
-    src: "wallguide/s4-post.png",
-    focus: { x: 50, y: 84, zoom: 1.28, zoomTo: 1.38 },
-    flip: true,
-  },
-  {
-    no: "07 · VIDEOS",
-    title: "Wall videos & stories tab",
-    lead: "The Videos tab is the short-video side of the Wall — upload from the same page.",
-    bullets: [
-      "Open Videos from the Wall tab row",
-      "Upload Video for your own short clip",
-      "Feeds load 10 videos at a time for speed",
-      "Nudity and adult content is removed automatically",
-    ],
-    src: "wallguide/s1-overview.png",
-    focus: { x: 50, y: 10, zoom: 1.3, zoomTo: 1.4 },
-  },
-  {
-    no: "08 · SAVED",
-    title: "Everything you bookmarked",
-    lead: "Saved collects every post you bookmarked, so nothing good gets lost in the feed.",
-    bullets: [
-      "Open from More → Saved",
-      "Remove a bookmark to clear the list",
-      "Works for text, photo and video posts",
-    ],
-    src: "wallguide/s7-saved.png",
-    focus: { x: 50, y: 25, zoom: 1.15, zoomTo: 1.25 },
-    flip: true,
-  },
-  {
-    no: "09 · FRIENDS",
-    title: "Friends & requests",
-    lead: "The Friends tab manages your whole network in one place.",
-    bullets: [
-      "All friends, incoming and outgoing requests",
-      "Search: type one letter and suggestions appear",
-      "Close Friends is a private circle for sensitive posts",
-      "Accepted requests land in your bell notifications",
-    ],
-    src: "wallguide/s8-friends.png",
-    focus: { x: 50, y: 30, zoom: 1.12, zoomTo: 1.22 },
-  },
-  {
-    no: "10 · MESSAGES",
-    title: "Direct messages",
-    lead: "Messages opens the messenger — private chats with your friends.",
-    bullets: [
-      "Text, media and gift messages",
-      "Mute a conversation whenever you need quiet",
-      "Unread counter sits in the top bar",
-    ],
-    src: "wallguide/s9-messenger.png",
-    focus: { x: 50, y: 28, zoom: 1.12, zoomTo: 1.22 },
-    flip: true,
-  },
-  {
-    no: "11 · XP & REWARDS",
-    title: "Earn while you scroll",
-    lead: "The right column turns activity into XP, levels and streaks.",
-    bullets: [
-      "Watch & Earn XP: 15s ad = +1 XP, unlimited",
-      "Post +20 · Comment +10 · Story +15",
-      "Daily streak resets if you skip a day",
-      "Theme colors instantly restyle your whole Wall",
-    ],
-    src: "wallguide/s1-overview.png",
-    focus: { x: 92, y: 45, zoom: 1.45, zoomTo: 1.55 },
-  },
+type Layout = { src: string; focus: Focus; flip?: boolean };
+
+const LAYOUTS: Layout[] = [
+  { src: "wallguide/s1-overview.png", focus: { x: 50, y: 22, zoom: 1.02, zoomTo: 1.1 } },
+  { src: "wallguide/s2-composer.png", focus: { x: 22, y: 45, zoom: 1.25, zoomTo: 1.34 }, flip: true },
+  { src: "wallguide/s1-overview.png", focus: { x: 50, y: 60, zoom: 1.35, zoomTo: 1.45 } },
+  { src: "wallguide/s3-tabs-stories.png", focus: { x: 50, y: 82, zoom: 1.3, zoomTo: 1.4 }, flip: true },
+  { src: "wallguide/s4-post.png", focus: { x: 50, y: 56, zoom: 1.3, zoomTo: 1.4 } },
+  { src: "wallguide/s4-post.png", focus: { x: 50, y: 84, zoom: 1.28, zoomTo: 1.38 }, flip: true },
+  { src: "wallguide/s1-overview.png", focus: { x: 50, y: 10, zoom: 1.3, zoomTo: 1.4 } },
+  { src: "wallguide/s7-saved.png", focus: { x: 50, y: 25, zoom: 1.15, zoomTo: 1.25 }, flip: true },
+  { src: "wallguide/s8-friends.png", focus: { x: 50, y: 30, zoom: 1.12, zoomTo: 1.22 } },
+  { src: "wallguide/s9-messenger.png", focus: { x: 50, y: 28, zoom: 1.12, zoomTo: 1.22 }, flip: true },
+  { src: "wallguide/s1-overview.png", focus: { x: 92, y: 45, zoom: 1.45, zoomTo: 1.55 } },
 ];
 
 const CH_D = 132;
 
-const ITEMS: Item[] = [
-  { d: 96, render: (d) => <Intro duration={d} /> },
-  ...CHAPTERS.map((c, i) => ({
-    d: CH_D,
-    render: (d: number) => <Chapter {...c} duration={d} idx={i} />,
-  })),
-  { d: 110, render: (d) => <Outro duration={d} /> },
-];
+export const WALLGUIDE_DURATION = 96 + LAYOUTS.length * CH_D + 110;
 
-export const WALLGUIDE_DURATION = ITEMS.reduce((a, b) => a + b.d, 0);
-
-export const WallGuideFilm: React.FC = () => {
+export const WallGuideFilm: React.FC<{ lang?: WallGuideLang }> = ({ lang = "en" }) => {
+  const copy = WALLGUIDE_COPY[lang] ?? WALLGUIDE_COPY.en;
+  const items: Item[] = [
+    { d: 96, render: (d) => <Intro duration={d} copy={copy} /> },
+    ...LAYOUTS.map((l, i) => ({
+      d: CH_D,
+      render: (d: number) => {
+        const c = copy.chapters[i] ?? WALLGUIDE_COPY.en.chapters[i]!;
+        return <Chapter {...l} {...c} duration={d} idx={i} />;
+      },
+    })),
+    { d: 110, render: (d) => <Outro duration={d} copy={copy} /> },
+  ];
   let at = 0;
   return (
     <AbsoluteFill style={{ backgroundColor: C.bg }}>
       <Backdrop />
-      {ITEMS.map((it, i) => {
+      {items.map((it, i) => {
         const from = at;
         at += it.d;
         return (
@@ -696,7 +568,7 @@ export const WallGuideFilm: React.FC = () => {
           </Sequence>
         );
       })}
-      <LogoBadge />
+      <LogoBadge label={copy.badge} />
       <ProgressBar total={WALLGUIDE_DURATION} />
     </AbsoluteFill>
   );

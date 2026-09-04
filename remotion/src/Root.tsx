@@ -51,6 +51,25 @@ export const RemotionRoot = () => (
       fps={30}
       width={1920}
       height={1080}
+      defaultProps={{ lang: "en" as const }}
+    />
+    <Composition
+      id="wall-guide-sk"
+      component={WallGuideFilm}
+      durationInFrames={WALLGUIDE_DURATION}
+      fps={30}
+      width={1920}
+      height={1080}
+      defaultProps={{ lang: "sk" as const }}
+    />
+    <Composition
+      id="wall-guide-hu"
+      component={WallGuideFilm}
+      durationInFrames={WALLGUIDE_DURATION}
+      fps={30}
+      width={1920}
+      height={1080}
+      defaultProps={{ lang: "hu" as const }}
     />
     <Composition
       id="unique-marketing"
