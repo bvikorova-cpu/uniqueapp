@@ -2,8 +2,10 @@ import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+export type ChallengePoolKind = "eco" | "healthy";
+
 export interface ChallengePrizePool {
-  /** Total active monthly subscription revenue in cents (PRO €3 + TOP €5). */
+  /** Monthly subscription revenue of THIS challenge in cents (PRO €3 + TOP €5). */
   revenueCents: number;
   /** 50% — paid to the monthly champion. */
   winnerCents: number;
@@ -21,31 +23,36 @@ const euro = (cents: number) =>
 
 export const formatEuroCents = euro;
 
+/** Monthly price per tier, in cents — must match Stripe. */
+const TIER_CENTS: Record<string, number> = { pro: 300, top: 500 };
+
 /**
- * Live monthly prize pool for the Eco / Healthy Challenge.
- * Values come straight from the DB (active PRO/TOP subscriptions), refresh every
- * 15s and update instantly through realtime on `challenge_pro_subscribers`.
+ * Live monthly prize pool for one challenge (eco or healthy).
+ * Each challenge has its OWN pool: only active subscriptions of that challenge
+ * are counted (Megatalent has a separate pool of its own).
+ * Refreshes every 15s and instantly through realtime.
  */
-export const useChallengePrizePool = () => {
+export const useChallengePrizePool = (challenge: ChallengePoolKind) => {
   const queryClient = useQueryClient();
 
   const query = useQuery<ChallengePrizePool>({
-    queryKey: ["challenge-prize-pool"],
+    queryKey: ["challenge-prize-pool", challenge],
     staleTime: 0,
     refetchInterval: 15_000,
     refetchOnWindowFocus: true,
     queryFn: async () => {
       const nowIso = new Date().toISOString();
-      const [revenueRes, subsRes] = await Promise.all([
-        supabase.rpc("challenge_monthly_revenue_cents"),
-        supabase
-          .from("challenge_pro_subscribers")
-          .select("tier")
-          .gt("active_until", nowIso),
-      ]);
+      const { data } = await supabase
+        .from("challenge_pro_subscribers")
+        .select("tier")
+        .eq("challenge", challenge)
+        .gt("active_until", nowIso);
 
-      const revenueCents = Number(revenueRes.data ?? 0);
-      const rows = (subsRes.data ?? []) as Array<{ tier: string | null }>;
+      const rows = (data ?? []) as Array<{ tier: string | null }>;
+      const revenueCents = rows.reduce(
+        (sum, r) => sum + (TIER_CENTS[r.tier === "top" ? "top" : "pro"] ?? 0),
+        0,
+      );
 
       // Same floor math as the SQL award functions (50 / 20 / rest).
       const winnerCents = Math.floor(revenueCents * 0.5);
@@ -57,7 +64,7 @@ export const useChallengePrizePool = () => {
         charityCents,
         platformCents: revenueCents - winnerCents - charityCents,
         subscribers: rows.length,
-        proCount: rows.filter((r) => r.tier === "pro").length,
+        proCount: rows.filter((r) => r.tier !== "top").length,
         topCount: rows.filter((r) => r.tier === "top").length,
       };
     },
@@ -65,16 +72,16 @@ export const useChallengePrizePool = () => {
 
   useEffect(() => {
     const channel = supabase
-      .channel("challenge-prize-pool-live")
+      .channel(`challenge-prize-pool-live-${challenge}`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "challenge_pro_subscribers" },
-        () => queryClient.invalidateQueries({ queryKey: ["challenge-prize-pool"] }),
+        () => queryClient.invalidateQueries({ queryKey: ["challenge-prize-pool", challenge] }),
       )
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
-  }, [queryClient]);
+  }, [queryClient, challenge]);
 
   return query;
 };
