@@ -19,9 +19,14 @@ const totalCategories = categoryGroups.reduce(
   0,
 );
 
-const fmt = new Intl.NumberFormat("en-US", { style: "currency",
-  currency: "EUR",
-  maximumFractionDigits: 0 });
+/** Small live pools need cents; large ones stay clean. */
+const formatEur = (v: number) =>
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: v > 0 && v < 1000 ? 2 : 0,
+    maximumFractionDigits: v > 0 && v < 1000 ? 2 : 0,
+  }).format(v);
 
 export const useMegatalentContestStats = () => {
   const queryClient = useQueryClient();
@@ -91,7 +96,7 @@ export const useMegatalentContestStats = () => {
         .maybeSingle();
 
       return { prizePool,
-        prizePoolFormatted: fmt.format(prizePool),
+        prizePoolFormatted: formatEur(prizePool),
         categoryCount: totalCategories,
         activeTalents,
         lastWinnerPrize: lastWinner?.prize_amount ?? null,

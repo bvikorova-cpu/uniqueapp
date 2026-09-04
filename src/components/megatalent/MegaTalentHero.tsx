@@ -34,7 +34,7 @@ export default function MegaTalentHero({ totalVotes, isSubscribed, subscriptionT
   }, []);
 
   // Stable defaults prevent hero "flash of empty" (TBA / em-dash) before query resolves
-  const prizePoolLabel = stats?.prizePool ? stats.prizePoolFormatted : "—";
+  const prizePoolLabel = stats ? stats.prizePoolFormatted : "…";
   const categoryLabel = stats ? `${stats.categoryCount}` : "36";
 
 
