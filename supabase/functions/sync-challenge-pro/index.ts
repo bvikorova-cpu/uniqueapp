@@ -1,6 +1,6 @@
 // Sync the current user's Challenge PRO / TOP subscription status from Stripe
 // into public.challenge_pro_subscribers. Returns { active, activeUntil, tier }.
-// TOP tier (€5/mo): grants **500,000 XP guaranteed** once per Stripe billing
+// TOP tier (€5/mo): monthly cash prize pool entry (no XP rewards).
 // period (tracked via top_last_grant_period). AI credits (1,000,000) + 5%
 // cash prize pool remain WIN-ONLY (see award_eco_monthly_winner /
 // award_healthy_monthly_winner SQL functions).
@@ -161,28 +161,13 @@ serve(async (req) => {
       let xpForThis = 0;
 
       if (shouldGrantTopXp && !upsertErr) {
-        xpForThis = 500000;
-        const { data: xpRow } = await admin
-          .from("user_xp")
-          .select("total_xp")
-          .eq("user_id", user.id)
-          .maybeSingle();
-        const current = (xpRow as any)?.total_xp ?? 0;
-        const { error: xpErr } = await admin
-          .from("user_xp")
-          .upsert({ user_id: user.id, total_xp: current + xpForThis }, { onConflict: "user_id" });
-        xpUpsertOk = !xpErr;
-        if (xpErr) { xpErrorMsg = xpErr.message; xpForThis = 0; }
-
-        if (!xpErr) {
-          grantedXp += 500000;
-          await admin.from("notifications").insert({
-            user_id: user.id,
-            type: "challenge_top_monthly",
-            title: "👑 TOP monthly bonus",
-            message: `You received your guaranteed 500,000 XP for being a ${ch === "eco" ? "Eco" : "Healthy"} Challenge TOP subscriber this month!`,
-            data: { xp: 500000, period: periodKey, challenge: ch } });
-        }
+        // XP rewards removed — Challenge prizes are cash only (50% winner / 20% charity / 30% platform).
+        await admin.from("notifications").insert({
+          user_id: user.id,
+          type: "challenge_top_monthly",
+          title: "👑 TOP subscriber active",
+          message: `Your ${ch === "eco" ? "Eco" : "Healthy"} Challenge TOP plan is active this month — you are in the cash prize pool.`,
+          data: { period: periodKey, challenge: ch } });
       }
 
       const auditResult: "granted" | "skipped_already_granted" | "skipped_wrong_tier" | "error" =
