@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { categoryGroups } from "@/components/megatalent/megatalentConstants";
 
@@ -23,9 +24,26 @@ const fmt = new Intl.NumberFormat("en-US", { style: "currency",
   maximumFractionDigits: 0 });
 
 export const useMegatalentContestStats = () => {
+  const queryClient = useQueryClient();
+
+  // Live updates: the pool grows with every paid Megatalent subscription.
+  useEffect(() => {
+    const channel = supabase
+      .channel("megatalent-contest-stats-live")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "mt_contest_settings" },
+        () => queryClient.invalidateQueries({ queryKey: ["megatalent-contest-stats"] }),
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [queryClient]);
+
   return useQuery<ContestStats>({
     queryKey: ["megatalent-contest-stats"],
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
+    refetchInterval: 15_000,
+    refetchOnWindowFocus: true,
     queryFn: async () => {
       const today = new Date().toISOString().slice(0, 10);
 
