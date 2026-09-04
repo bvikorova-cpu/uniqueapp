@@ -12,6 +12,7 @@
 ## Memories
 - [Monetization Rules](mem://features/monetization) — Revenue splits (e.g., 80/20 for Brand Collabs & Megatalent), paid-only strategy, Stripe Connect, and recurring referrals.
 - [Gamification System](mem://features/gamification-unified) — Unified streaks, challenges, XP rewards across all hubs, and Lucky Wheel mechanics.
+- [Charity split](mem://features/charity-split) — Eco/Healthy/Megatalent cash prizes split 50/20/30 with mandatory shelter or children's home.
 - [Megatalent Mechanics](mem://features/megatalent-mechanics) — 80/20 escrow payouts, Watch Party, 100k bonus votes, and 24h stories.
 - [Special Roles](mem://auth/special-roles) — Verified Founder badge and admin management.
 - [Legal & Compliance](mem://constraints/compliance) — 16+ age restriction, no health claims, GDPR visual rules.
