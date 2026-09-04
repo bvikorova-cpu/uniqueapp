@@ -156,7 +156,7 @@ export function ChallengeProUpsell({
                 </span>
               </li>
               <li>
-                <b>20% goes to an animal shelter or children’s home</b> chosen by the winner — selecting one is mandatory to take part
+                <b>20% goes to a charity chosen by the winner</b> — animal shelter, children’s home, oncology centre or a centre for the visually / hearing impaired; selecting one is mandatory to take part
               </li>
               <li>
                 30% stays with the platform

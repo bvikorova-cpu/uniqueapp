@@ -106,7 +106,7 @@ export default function AdminMegatalentPayouts() {
                           {r.category} · {r.month}/{r.year} · {r.total_votes} votes · user {r.user_id.slice(0, 8)}
                         </p>
                         <p className="text-xs text-muted-foreground truncate">
-                          Charity: {r.charity_name || "⚠️ not selected"}{r.charity_type ? ` (${r.charity_type === "childrens_home" ? "children's home" : "animal shelter"})` : ""}{r.charity_iban ? ` · IBAN ${r.charity_iban}` : " · IBAN missing"}
+                          Charity: {r.charity_name || "⚠️ not selected"}{r.charity_type ? ` (${r.charity_type.replace(/_/g, " ")})` : ""}{r.charity_iban ? ` · IBAN ${r.charity_iban}` : " · IBAN missing"}
                         </p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
