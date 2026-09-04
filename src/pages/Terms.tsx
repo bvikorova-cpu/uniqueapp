@@ -139,7 +139,7 @@ const Terms = () => {
 
               <h3>Memberships</h3>
               <ul>
-                <li><strong>Unique VIP Club</strong> — €20 digital / €30 physical signup + €1.50/month. <strong>10%</strong> of every VIP payment is routed to the <em>Unique Good Fund</em>.</li>
+                <li><strong>Unique VIP Club</strong> — €20 digital / €30 physical signup + €1.50/month.</li>
                 <li><strong>Unique Verified</strong> — €15 / €40 / €150 monthly tiers (no revenue share; platform product).</li>
                 <li><strong>Challenge TOP</strong> — €5/month (platform product).</li>
               </ul>
