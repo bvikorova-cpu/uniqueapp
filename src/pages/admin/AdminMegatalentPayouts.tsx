@@ -20,6 +20,10 @@ interface Winner {
   paid_at: string | null;
   payout_reference: string | null;
   created_at: string;
+  charity_name: string | null;
+  charity_type: string | null;
+  charity_iban: string | null;
+  charity_amount: number | null;
 }
 
 export default function AdminMegatalentPayouts() {
@@ -33,7 +37,7 @@ export default function AdminMegatalentPayouts() {
     try {
       const { data, error } = await (supabase as any)
         .from("megatalent_winners")
-        .select("id, user_id, category, month, year, total_votes, prize_amount, paid_at, payout_reference, created_at")
+        .select("id, user_id, category, month, year, total_votes, prize_amount, paid_at, payout_reference, created_at, charity_name, charity_type, charity_iban, charity_amount")
         .order("created_at", { ascending: false })
         .limit(200);
       if (error) throw error;
@@ -54,7 +58,7 @@ export default function AdminMegatalentPayouts() {
       const { error } = await (supabase as any).rpc("admin_mark_megatalent_paid", { _winner_id: id,
         _reference: refs[id] || null });
       if (error) throw error;
-      toast.success("Marked as paid (80% to creator, 20% platform)");
+      toast.success("Marked as paid (50% winner, 20% charity, 30% platform)");
       await load();
     } catch (e: any) {
       toast.error(e?.message ?? "Update failed");
@@ -68,7 +72,7 @@ export default function AdminMegatalentPayouts() {
 
   return (
     <>
-      <SEO title="Megatalent Payouts — Admin" description="Release prize payouts for Megatalent winners (80/20 split)." />
+      <SEO title="Megatalent Payouts — Admin" description="Release prize payouts for Megatalent winners (50% winner / 20% charity / 30% platform)." />
       <Navbar />
       <main className="container mx-auto max-w-5xl px-4 py-8">
         <h1 className="text-2xl font-bold mb-6 flex items-center gap-2">
@@ -89,16 +93,20 @@ export default function AdminMegatalentPayouts() {
             ) : (
               <ul className="space-y-3">
                 {pending.map((r) => {
-                  const creator = +(Number(r.prize_amount) * 0.8).toFixed(2);
-                  const platform = +(Number(r.prize_amount) - creator).toFixed(2);
+                  const creator = +(Number(r.prize_amount) * 0.5).toFixed(2);
+                  const charity = +(Number(r.prize_amount) * 0.2).toFixed(2);
+                  const platform = +(Number(r.prize_amount) - creator - charity).toFixed(2);
                   return (
                     <li key={r.id} className="flex flex-col gap-2 rounded-lg border border-border/60 p-3 sm:flex-row sm:items-center sm:justify-between">
                       <div className="min-w-0">
                         <p className="font-medium truncate">
-                          €{Number(r.prize_amount).toFixed(2)} <span className="text-xs text-muted-foreground">→ creator €{creator} · platform €{platform}</span>
+                          €{Number(r.prize_amount).toFixed(2)} <span className="text-xs text-muted-foreground">→ winner €{creator} · charity €{charity} · platform €{platform}</span>
                         </p>
                         <p className="text-xs text-muted-foreground truncate">
                           {r.category} · {r.month}/{r.year} · {r.total_votes} votes · user {r.user_id.slice(0, 8)}
+                        </p>
+                        <p className="text-xs text-muted-foreground truncate">
+                          Charity: {r.charity_name || "⚠️ not selected"}{r.charity_type ? ` (${r.charity_type === "childrens_home" ? "children's home" : "animal shelter"})` : ""}{r.charity_iban ? ` · IBAN ${r.charity_iban}` : " · IBAN missing"}
                         </p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">

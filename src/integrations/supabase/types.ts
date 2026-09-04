@@ -21513,33 +21513,51 @@ export type Database = {
       eco_monthly_winners: {
         Row: {
           cash_prize_cents: number
+          charity_cents: number
+          charity_iban: string | null
+          charity_name: string | null
+          charity_paid_at: string | null
+          charity_type: string | null
           created_at: string
           credits_awarded: number
           days_completed: number
           id: string
           month_key: string
+          platform_cents: number
           total_votes: number
           user_id: string
           xp_awarded: number
         }
         Insert: {
           cash_prize_cents?: number
+          charity_cents?: number
+          charity_iban?: string | null
+          charity_name?: string | null
+          charity_paid_at?: string | null
+          charity_type?: string | null
           created_at?: string
           credits_awarded?: number
           days_completed: number
           id?: string
           month_key: string
+          platform_cents?: number
           total_votes: number
           user_id: string
           xp_awarded?: number
         }
         Update: {
           cash_prize_cents?: number
+          charity_cents?: number
+          charity_iban?: string | null
+          charity_name?: string | null
+          charity_paid_at?: string | null
+          charity_type?: string | null
           created_at?: string
           credits_awarded?: number
           days_completed?: number
           id?: string
           month_key?: string
+          platform_cents?: number
           total_votes?: number
           user_id?: string
           xp_awarded?: number
@@ -28612,33 +28630,51 @@ export type Database = {
       healthy_monthly_winners: {
         Row: {
           cash_prize_cents: number
+          charity_cents: number
+          charity_iban: string | null
+          charity_name: string | null
+          charity_paid_at: string | null
+          charity_type: string | null
           created_at: string
           credits_awarded: number
           days_completed: number
           id: string
           month_key: string
+          platform_cents: number
           total_votes: number
           user_id: string
           xp_awarded: number
         }
         Insert: {
           cash_prize_cents?: number
+          charity_cents?: number
+          charity_iban?: string | null
+          charity_name?: string | null
+          charity_paid_at?: string | null
+          charity_type?: string | null
           created_at?: string
           credits_awarded?: number
           days_completed: number
           id?: string
           month_key: string
+          platform_cents?: number
           total_votes: number
           user_id: string
           xp_awarded?: number
         }
         Update: {
           cash_prize_cents?: number
+          charity_cents?: number
+          charity_iban?: string | null
+          charity_name?: string | null
+          charity_paid_at?: string | null
+          charity_type?: string | null
           created_at?: string
           credits_awarded?: number
           days_completed?: number
           id?: string
           month_key?: string
+          platform_cents?: number
           total_votes?: number
           user_id?: string
           xp_awarded?: number
@@ -40040,41 +40076,62 @@ export type Database = {
       megatalent_winners: {
         Row: {
           category: Database["public"]["Enums"]["talent_category"]
+          charity_amount: number | null
+          charity_iban: string | null
+          charity_name: string | null
+          charity_paid_at: string | null
+          charity_type: string | null
           created_at: string
           id: string
           month: number
           paid_at: string | null
           payout_reference: string | null
+          platform_amount: number | null
           prize_amount: number
           submission_id: string | null
           total_votes: number
           user_id: string
+          winner_amount: number | null
           year: number
         }
         Insert: {
           category: Database["public"]["Enums"]["talent_category"]
+          charity_amount?: number | null
+          charity_iban?: string | null
+          charity_name?: string | null
+          charity_paid_at?: string | null
+          charity_type?: string | null
           created_at?: string
           id?: string
           month: number
           paid_at?: string | null
           payout_reference?: string | null
+          platform_amount?: number | null
           prize_amount?: number
           submission_id?: string | null
           total_votes?: number
           user_id: string
+          winner_amount?: number | null
           year: number
         }
         Update: {
           category?: Database["public"]["Enums"]["talent_category"]
+          charity_amount?: number | null
+          charity_iban?: string | null
+          charity_name?: string | null
+          charity_paid_at?: string | null
+          charity_type?: string | null
           created_at?: string
           id?: string
           month?: number
           paid_at?: string | null
           payout_reference?: string | null
+          platform_amount?: number | null
           prize_amount?: number
           submission_id?: string | null
           total_votes?: number
           user_id?: string
+          winner_amount?: number | null
           year?: number
         }
         Relationships: [
@@ -69664,7 +69721,10 @@ export type Database = {
       card_trash_recycle: { Args: { _trash_ids: string[] }; Returns: Json }
       cashout_gift_earnings: { Args: never; Returns: Json }
       cashout_premium_video_earnings: { Args: never; Returns: Json }
+      challenge_monthly_charity_cents: { Args: never; Returns: number }
+      challenge_monthly_platform_cents: { Args: never; Returns: number }
       challenge_monthly_prize_pool_cents: { Args: never; Returns: number }
+      challenge_monthly_revenue_cents: { Args: never; Returns: number }
       challenge_period_key: { Args: { _type: string }; Returns: string }
       challenge_tier: { Args: { _user_id: string }; Returns: string }
       character_power_leaderboard: {
