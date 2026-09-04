@@ -1729,6 +1729,7 @@ serve(async (req) => {
 
         // ── Megatalent: instantly sync subscription state so premium unlocks ──
         await syncMegatalentSubscription(supabase, stripe, sub);
+        await syncChallengeSubscription(supabase, stripe, sub);
 
         // ── Fan Club: sync membership status (active / past_due / canceled) ──
         await syncFanClubMembership(supabase, stripe, sub);
@@ -1822,6 +1823,7 @@ serve(async (req) => {
 
         // ── Megatalent: deactivate subscription row immediately ─────────────
         await syncMegatalentSubscription(supabase, stripe, sub);
+        await syncChallengeSubscription(supabase, stripe, sub);
 
         // ── Fan Club: mark membership as canceled/expired ──
         await syncFanClubMembership(supabase, stripe, sub);
