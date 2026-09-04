@@ -10,11 +10,12 @@ import { ChallengeRulesDialog } from "./ChallengeRulesDialog";
 
 /**
  * Upsell card for the Challenge subscriptions.
- *  - PRO tier: €3/month · 2× monthly winner XP (200,000) + gold badge.
- *  - TOP tier: €5/month · everything in PRO + **500,000 XP guaranteed every month**
+ *  - PRO tier: €3/month · gold badge + entry to the monthly cash prize.
+ *  - TOP tier: €5/month · everything in PRO + pinned submission
  *    (auto-granted), TOP badge, and submissions pinned to top of feed.
  *  - Monthly winner (any tier): 100 AI credits (non-transferable) + 50% of the
- *    total profit of the challenge section, paid out in cash (min. €10 payout,
+ *    monthly subscription pool in cash; 20% goes to the shelter / children's home
+ *    the winner selected, 30% stays with the platform (min. €10 payout,
  *    otherwise it rolls over to the next month).
  */
 
@@ -83,8 +84,8 @@ export function ChallengeProUpsell({
               </p>
               <p className="text-xs text-white/80 mt-1">
                 {isTop
-                  ? "TOP badge · Pinned in feed · 500,000 XP guaranteed / month"
-                  : "2× monthly prize (200,000 XP) · Gold badge next to your name"}
+                  ? "TOP badge · Pinned in feed · entry to the monthly cash prize"
+                  : "Gold badge · entry to the monthly cash prize"}
                 {activeUntil && <> · Renews {new Date(activeUntil).toLocaleDateString()}</>}
               </p>
 
@@ -149,10 +150,16 @@ export function ChallengeProUpsell({
                 <b>100 AI credits</b> — non-transferable, usable across the whole platform
               </li>
               <li>
-                <b>50% of the total profit of the {section} section</b> paid out in cash{" "}
+                <b>50% of the monthly {section} subscription pool</b> paid out in cash{" "}
                 <span className="text-white/70">
                   (paid once it reaches at least €10; below that it rolls over to the next month)
                 </span>
+              </li>
+              <li>
+                <b>20% goes to an animal shelter or children’s home</b> chosen by the winner — selecting one is mandatory to take part
+              </li>
+              <li>
+                30% stays with the platform
               </li>
             </ul>
           </div>
@@ -174,7 +181,7 @@ export function ChallengeProUpsell({
             <ul className="space-y-2 text-sm text-white/90 flex-1">
               <li className="flex items-start gap-2">
                 <Trophy className={`w-4 h-4 mt-0.5 shrink-0 ${highlight}`} />
-                <span><b>200,000 XP</b> monthly prize (2×)</span>
+                <span>Entry to the <b>monthly cash prize</b> (50% of pool)</span>
               </li>
               <li className="flex items-start gap-2">
                 <Check className={`w-4 h-4 mt-0.5 shrink-0 ${highlight}`} />
@@ -213,7 +220,7 @@ export function ChallengeProUpsell({
               </li>
               <li className="flex items-start gap-2">
                 <Zap className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
-                <span><b>500,000 XP guaranteed</b> every month — auto-granted</span>
+                <span><b>Higher visibility</b> every month — auto-applied</span>
               </li>
               <li className="flex items-start gap-2">
                 <Crown className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
@@ -225,7 +232,7 @@ export function ChallengeProUpsell({
               </li>
               <li className="flex items-start gap-2">
                 <Trophy className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
-                <span>If you <b>win</b>: 100 AI credits + 50% of section profit in cash (see banner above)</span>
+                <span>If you <b>win</b>: 100 AI credits + 50% of the pool in cash (20% to your chosen charity)</span>
               </li>
             </ul>
             <Button

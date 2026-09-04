@@ -22,6 +22,9 @@ interface Winner {
   days_completed: number;
   total_votes: number;
   xp_awarded: number;
+  cash_prize_cents?: number | null;
+  charity_cents?: number | null;
+  charity_name?: string | null;
   profile?: { full_name: string | null; avatar_url: string | null } | null;
 }
 
@@ -100,7 +103,7 @@ export default function EcoChallengeHistory() {
         </div>
 
         <h1 className="text-2xl sm:text-3xl font-black mb-1">Monthly History & Champions</h1>
-        <p className="text-sm text-muted-foreground mb-4">Browse leaderboards across past months and see who won the 100,000&nbsp;XP prize.</p>
+        <p className="text-sm text-muted-foreground mb-4">Browse leaderboards across past months and see who won the monthly cash prize — 50% champion, 20% shelter or children’s home, 30% platform.</p>
 
         <Card className="mb-6">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
@@ -123,7 +126,7 @@ export default function EcoChallengeHistory() {
                 <div className="flex-1">
                   <p className="font-semibold">🏆 Champion: {winnerOfSelected.profile?.full_name || "User"}</p>
                   <p className="text-xs text-muted-foreground">
-                    {winnerOfSelected.days_completed} days · {winnerOfSelected.total_votes} votes · +{winnerOfSelected.xp_awarded.toLocaleString()} XP
+                    {winnerOfSelected.days_completed} days · {winnerOfSelected.total_votes} votes · €{((winnerOfSelected.cash_prize_cents || 0) / 100).toFixed(2)} won · €{((winnerOfSelected.charity_cents || 0) / 100).toFixed(2)} to {winnerOfSelected.charity_name || "charity"}
                   </p>
                 </div>
               </div>
@@ -142,7 +145,7 @@ export default function EcoChallengeHistory() {
                       <p className="font-semibold">{r.profile?.full_name || "User"}</p>
                       <p className="text-xs text-muted-foreground">{r.days_completed} days · {r.total_votes} votes</p>
                     </div>
-                    {r.rank === 1 && !isCurrent && <Badge className="bg-yellow-500">100k XP</Badge>}
+                    {r.rank === 1 && !isCurrent && <Badge className="bg-yellow-500">50% of pool</Badge>}
                   </li>
                 ))}
               </ol>
@@ -167,7 +170,7 @@ export default function EcoChallengeHistory() {
                     {w.profile?.avatar_url && <img src={w.profile.avatar_url} className="w-9 h-9 rounded-full" alt="" />}
                     <div className="flex-1">
                       <p className="font-semibold">{monthLabel(w.month_key)} — {w.profile?.full_name || "User"}</p>
-                      <p className="text-xs text-muted-foreground">{w.days_completed} days · {w.total_votes} votes · +{w.xp_awarded.toLocaleString()} XP</p>
+                      <p className="text-xs text-muted-foreground">{w.days_completed} days · {w.total_votes} votes · €{((w.cash_prize_cents || 0) / 100).toFixed(2)} won · €{((w.charity_cents || 0) / 100).toFixed(2)} to {w.charity_name || "charity"}</p>
                     </div>
                   </button>
                 ))}

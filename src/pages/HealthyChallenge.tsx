@@ -21,6 +21,8 @@ import { useChallengeProSet, useChallengePro } from "@/hooks/useChallengePro";
 import { ChallengeLockedCard } from "@/components/challenges/ChallengeLockedCard";
 import { ChallengeImage, ChallengeVideo } from "@/components/challenges/ChallengeMedia";
 import { ChallengeSubscriptionPanel } from "@/components/challenges/ChallengeSubscriptionPanel";
+import CharityBeneficiaryCard from "@/components/charity/CharityBeneficiaryCard";
+import { useCharityBeneficiary } from "@/hooks/useCharityBeneficiary";
 import { ChallengeSubmissionActions } from "@/components/challenges/ChallengeSubmissionActions";
 
 interface Challenge {
@@ -68,7 +70,7 @@ const HIW_STEPS = [
   { title: "4. Earn XP for every valid submission", desc: "Every accepted submission credits +XP (default +50 XP). The same day counts only once — extra tries on the same day are blocked." },
   { title: "5. Vote & comment", desc: "Only registered users can vote and comment. You can't vote for yourself. One vote per submission. Comments follow the same registered-only rule as votes and can be deleted by their author." },
   { title: "6. Climb the leaderboard", desc: "Monthly ranking = number of days with an accepted submission in this calendar month (UTC). One submission per month keeps you in the race; more submissions rank you higher. Ties are broken by total votes that month." },
-  { title: "7. Win the monthly prize", desc: "Participation requires a paid plan — PRO (€3/mo) or TOP (€5/mo); there is no free entry. On the 1st of the next month the top healthy hero receives 200,000 XP (PRO) or 500,000 XP (TOP) + a champion badge. Only one winner per month." },
+  { title: "7. Win the monthly prize", desc: "Participation requires a paid plan — PRO (€3/mo) or TOP (€5/mo); there is no free entry. On the 1st of the next month the monthly subscription pool is split: 50% cash to the champion, 20% cash to the animal shelter or children’s home the champion selected, 30% to the platform. Only one winner per month — no XP prize." },
   { title: "8. Boost your submission", desc: "Optional: spend 5 credits to pin your submission for 24 hours at the top of the feed. Boost does not add votes — only visibility." },
   { title: "9. Fair play & moderation", desc: "Duplicate accounts, fake proof, offensive content or spam get hidden by admins and disqualified from the monthly prize." },
   { title: "10. Sponsors welcome", desc: "Fitness brands, gyms and nutrition companies can sponsor a challenge — logo appears on the challenge card and in the feed." },
@@ -214,6 +216,7 @@ export default function HealthyChallenge() {
       return;
     }
     if (!user) { toast({ title: "Sign in required", variant: "destructive" }); return; }
+    if (!charityBeneficiary) { toast({ title: "Charity beneficiary required", description: "Choose the animal shelter or children's home that receives 20% of your prize.", variant: "destructive" }); return; }
     if (!challenge) { toast({ title: "Loading…", description: "Please try again in a second.", variant: "destructive" }); return; }
     if (description.trim().length < 10) { toast({ title: "Describe your effort (min 10 chars)", variant: "destructive" }); return; }
     if (mySubmissionToday) { toast({
@@ -311,6 +314,7 @@ export default function HealthyChallenge() {
   );
   const proSet = useChallengeProSet(proUserIds, "healthy");
   const { isPro, loading: proLoading } = useChallengePro("healthy");
+  const { beneficiary: charityBeneficiary } = useCharityBeneficiary("healthy");
 
   const [countdown, setCountdown] = useState<string>(fmtCountdown(msUntilMonthEnd()));
   useEffect(() => {
@@ -330,10 +334,10 @@ export default function HealthyChallenge() {
     <div className="min-h-screen bg-gradient-to-b from-orange-50 via-rose-50 to-sky-50 dark:from-orange-950/40 dark:via-rose-950/40 dark:to-sky-950/40">
       <Helmet>
         <title>Healthy Challenge — Unique</title>
-        <meta name="description" content="Join the Healthy Challenge on Unique. Share one healthy action per month, vote for the best submissions and win XP rewards." />
+        <meta name="description" content="Join the Healthy Challenge on Unique. Share one healthy action per month, vote for the best submissions and win a cash prize — 20% always goes to a shelter or children’s home." />
         <link rel="canonical" href={canonicalUrl("/healthy-challenge")} />
         <meta property="og:title" content="Healthy Challenge — Unique" />
-        <meta property="og:description" content="Join the Healthy Challenge on Unique. Share one healthy action per month, vote for the best submissions and win XP rewards." />
+        <meta property="og:description" content="Join the Healthy Challenge on Unique. Share one healthy action per month, vote for the best submissions and win a cash prize — 20% always goes to a shelter or children’s home." />
         <meta property="og:url" content={canonicalUrl("/healthy-challenge")} />
         <meta property="og:type" content="website" />
       </Helmet>
@@ -361,14 +365,14 @@ export default function HealthyChallenge() {
             💪 HEALTHY <span className="text-orange-300">CHALLENGE</span>
           </h1>
           <p className="text-sm sm:text-base text-white/85 font-semibold mt-2 drop-shadow max-w-xl">
-            At least 1 photo or video per month — no daily posting required. Paid entry only — <b className="text-yellow-300">PRO €3/mo (200,000 XP)</b> or <b className="text-pink-300">TOP €5/mo (500,000 XP)</b>.
+            At least 1 photo or video per month — no daily posting required. Paid entry only — <b className="text-yellow-300">PRO €3/mo</b> or <b className="text-pink-300">TOP €5/mo</b>. Monthly pool: <b className="text-emerald-300">50% champion</b> · <b className="text-pink-300">20% shelter / children’s home</b> · 30% platform.
           </p>
 
           <p className="text-xs sm:text-sm text-white/70 font-medium mt-1.5 italic max-w-xl">
             🌍 A global fight against overweight and obesity — one healthy step at a time.
           </p>
           <div className="mt-3 flex flex-wrap gap-2 text-xs">
-            <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Trophy className="w-3.5 h-3.5" /> PRO 200k · TOP 500k</div>
+            <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Trophy className="w-3.5 h-3.5" /> 50 / 20 / 30 split</div>
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Calendar className="w-3.5 h-3.5" /> Min. 1× per month</div>
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Activity className="w-3.5 h-3.5" /> Run · Eat · Train</div>
             <div className="flex items-center gap-1.5 bg-yellow-500/20 border border-yellow-300/40 rounded-full px-2.5 py-1 text-yellow-100" title="Time left until this month's champion is auto-crowned"><Timer className="w-3.5 h-3.5" /> Month ends in {countdown}</div>
@@ -389,6 +393,7 @@ export default function HealthyChallenge() {
 
           <TabsContent value="today" className="space-y-4">
             {user && <ChallengeSubscriptionPanel challenge="healthy" />}
+            {user && <CharityBeneficiaryCard module="healthy" label="Every monthly prize is split" />}
             {challenge && (
               <Card className="border-orange-200 dark:border-orange-900">
                 <CardHeader>
@@ -551,9 +556,7 @@ export default function HealthyChallenge() {
                         </div>
                         {r.rank === 1 && (
                           <Badge className="bg-yellow-500">
-                            {((proSet as any).tierOf?.(r.user_id) ?? "pro") === "top"
-                              ? "500k XP"
-                              : "200k XP"}
+                            50% of pool
                           </Badge>
                         )}
                       </li>
@@ -580,7 +583,7 @@ export default function HealthyChallenge() {
                         <Trophy className="w-6 h-6 text-yellow-500" />
                         <div className="flex-1">
                           <p className="font-semibold">{w.month_key}</p>
-                          <p className="text-xs text-muted-foreground">{w.days_completed} days · {w.total_votes} votes · +{w.xp_awarded.toLocaleString()} XP</p>
+                          <p className="text-xs text-muted-foreground">{w.days_completed} days · {w.total_votes} votes · €{((w.cash_prize_cents || 0) / 100).toFixed(2)} won · €{((w.charity_cents || 0) / 100).toFixed(2)} to {w.charity_name || "charity"}</p>
                         </div>
                       </Link>
                     ))}

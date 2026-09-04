@@ -15,6 +15,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ReferralProgram } from "@/components/megatalent/ReferralProgram";
 import { MegaTalentGuide } from "@/components/megatalent/MegaTalentGuide";
 import { SEO } from "@/components/SEO";
+import CharityBeneficiaryCard from "@/components/charity/CharityBeneficiaryCard";
+import { useCharityBeneficiary } from "@/hooks/useCharityBeneficiary";
 import { AnimatedVoteCounter } from "@/components/megatalent/AnimatedVoteCounter";
 import { VoteBoostTooltip } from "@/components/megatalent/VoteBoostTooltip";
 
@@ -81,6 +83,7 @@ const Megatalent = () => {
   const [uploadedThumbnailUrl, setUploadedThumbnailUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const { beneficiary: charityBeneficiary } = useCharityBeneficiary("megatalent");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [submissions, setSubmissions] = useState<any[]>([]);
@@ -508,6 +511,10 @@ const Megatalent = () => {
     if (!title.trim()) { toast({ title: "Error", description: "Title is required", variant: "destructive" }); return; }
     if (!description.trim()) { toast({ title: "Error", description: "Description is required", variant: "destructive" }); return; }
     if (!uploadedFile) { toast({ title: "Error", description: "Please upload media first", variant: "destructive" }); return; }
+    if (!charityBeneficiary) {
+      toast({ title: "Charity beneficiary required", description: "Choose the animal shelter or children's home that receives 20% of your prize.", variant: "destructive" });
+      return;
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
     setSubmitting(true);
@@ -720,9 +727,11 @@ const Megatalent = () => {
                       )}
                       <Input placeholder="Title..." value={title} onChange={(e) => setTitle(e.target.value)} maxLength={100} />
                       <Textarea placeholder="Description..." className="min-h-20" value={description} onChange={(e) => setDescription(e.target.value)} maxLength={500} />
+                      <CharityBeneficiaryCard module="megatalent" label="Every MegaTalent prize is split" />
                       <Button className="w-full bg-gradient-to-r from-yellow-600 to-yellow-800 text-white font-bold" onClick={handleSubmit} disabled={submitting || uploading}>
                         {submitting ? "Publishing..." : "Publish"}
                       </Button>
+
                     </CardContent>
                   </Card>
                 </div>
