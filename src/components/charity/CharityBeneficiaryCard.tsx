@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { HeartHandshake, CheckCircle2, Loader2, Pencil } from "lucide-react";
 import { toast } from "sonner";
-import { useCharityBeneficiary, type CharityModule } from "@/hooks/useCharityBeneficiary";
+import { useCharityBeneficiary, CHARITY_ORG_TYPES, type CharityModule, type CharityOrgType } from "@/hooks/useCharityBeneficiary";
 
 interface Props {
   module: CharityModule;
@@ -15,16 +15,15 @@ interface Props {
   label?: string;
 }
 
-const TYPE_LABEL: Record<string, string> = {
-  animal_shelter: "Animal shelter",
-  childrens_home: "Children's home",
-};
+const TYPE_LABEL: Record<string, string> = Object.fromEntries(
+  CHARITY_ORG_TYPES.map((t) => [t.value, t.label]),
+);
 
 export default function CharityBeneficiaryCard({ module, label }: Props) {
   const { beneficiary, loading, save } = useCharityBeneficiary(module);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [orgType, setOrgType] = useState<"animal_shelter" | "childrens_home">("animal_shelter");
+  const [orgType, setOrgType] = useState<CharityOrgType>("animal_shelter");
   const [orgName, setOrgName] = useState("");
   const [orgCity, setOrgCity] = useState("");
   const [orgWebsite, setOrgWebsite] = useState("");
@@ -42,7 +41,7 @@ export default function CharityBeneficiaryCard({ module, label }: Props) {
 
   const submit = async () => {
     if (orgName.trim().length < 3) {
-      toast.error("Enter the full name of the shelter or children's home");
+      toast.error("Enter the full official name of the organisation");
       return;
     }
     setSaving(true);
@@ -72,8 +71,9 @@ export default function CharityBeneficiaryCard({ module, label }: Props) {
           )}
         </CardTitle>
         <p className="text-xs text-muted-foreground">
-          {label || "Every winner shares the prize"}: <b>50% you</b> · <b>20% your chosen animal shelter or children's home</b> · 30% platform.
-          Choose the organisation before your first entry — it cannot be skipped.
+          {label || "Every winner shares the prize"}: <b>50% you</b> · <b>20% your chosen charity</b> · 30% platform.
+          Eligible: animal shelters, children’s homes, oncology centres and centres for people with disabilities
+          (visually or hearing impaired). Choose the organisation before your first entry — it cannot be skipped.
         </p>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -88,15 +88,16 @@ export default function CharityBeneficiaryCard({ module, label }: Props) {
               <Select value={orgType} onValueChange={(v) => setOrgType(v as any)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="animal_shelter">Animal shelter</SelectItem>
-                  <SelectItem value="childrens_home">Children's home</SelectItem>
+                  {CHARITY_ORG_TYPES.map((t) => (
+                    <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label className="text-xs">Official name *</Label>
-                <Input value={orgName} onChange={(e) => setOrgName(e.target.value)} placeholder="e.g. Happy Paws Shelter" />
+                <Input value={orgName} onChange={(e) => setOrgName(e.target.value)} placeholder="e.g. Happy Paws Shelter / City Oncology Centre" />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs">City / region</Label>

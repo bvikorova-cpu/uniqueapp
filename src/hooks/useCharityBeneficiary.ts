@@ -4,11 +4,28 @@ import { useAuth } from "@/contexts/AuthContext";
 
 export type CharityModule = "eco" | "healthy" | "megatalent";
 
+export type CharityOrgType =
+  | "animal_shelter"
+  | "childrens_home"
+  | "oncology_center"
+  | "visually_impaired_center"
+  | "hearing_impaired_center"
+  | "disability_center";
+
+export const CHARITY_ORG_TYPES: { value: CharityOrgType; label: string }[] = [
+  { value: "animal_shelter", label: "Animal shelter" },
+  { value: "childrens_home", label: "Children's home" },
+  { value: "oncology_center", label: "Oncology centre" },
+  { value: "visually_impaired_center", label: "Centre for the visually impaired" },
+  { value: "hearing_impaired_center", label: "Centre for the hearing impaired" },
+  { value: "disability_center", label: "Centre for people with disabilities" },
+];
+
 export interface CharityBeneficiary {
   id: string;
   user_id: string;
   module: CharityModule;
-  org_type: "animal_shelter" | "childrens_home";
+  org_type: CharityOrgType;
   org_name: string;
   org_city: string | null;
   org_website: string | null;

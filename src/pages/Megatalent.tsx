@@ -512,7 +512,7 @@ const Megatalent = () => {
     if (!description.trim()) { toast({ title: "Error", description: "Description is required", variant: "destructive" }); return; }
     if (!uploadedFile) { toast({ title: "Error", description: "Please upload media first", variant: "destructive" }); return; }
     if (!charityBeneficiary) {
-      toast({ title: "Charity beneficiary required", description: "Choose the animal shelter or children's home that receives 20% of your prize.", variant: "destructive" });
+      toast({ title: "Charity beneficiary required", description: "Choose the charity that receives 20% of your prize — an animal shelter, children’s home, oncology centre or a centre for people with disabilities.", variant: "destructive" });
       return;
     }
     const { data: { user } } = await supabase.auth.getUser();
