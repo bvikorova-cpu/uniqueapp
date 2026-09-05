@@ -72139,6 +72139,7 @@ export type Database = {
         Args: { _user: string }
         Returns: undefined
       }
+      reconcile_vote_counts: { Args: never; Returns: Json }
       record_daily_activity: {
         Args: { _xp?: number }
         Returns: {
