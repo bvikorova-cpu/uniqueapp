@@ -212,10 +212,9 @@ serve(async (req) => {
     };
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     const preferOpenAI = (Deno.env.get("AI_PROVIDER") ?? "").toLowerCase() === "openai";
     const rawFetch = ((globalThis as any).__ORIGINAL_FETCH__ as typeof fetch | undefined) ?? fetch;
-    if (!LOVABLE_API_KEY && !LOVABLE_API_KEY) {
+    if (!LOVABLE_API_KEY) {
       await refund();
       return json({ error: "AI service is not configured" }, 500);
     }
