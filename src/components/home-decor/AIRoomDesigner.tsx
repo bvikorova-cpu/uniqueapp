@@ -237,8 +237,23 @@ export function AIRoomDesigner({ onDesignComplete }: AIRoomDesignerProps) {
                   <SelectItem value="kitchen">Kitchen</SelectItem>
                   <SelectItem value="bathroom">Bathroom</SelectItem>
                   <SelectItem value="dining-room">Dining Room</SelectItem>
-                  <SelectItem value="office">Office</SelectItem>
+                  <SelectItem value="office">Home Office</SelectItem>
                   <SelectItem value="kids-room">Kids Room</SelectItem>
+                  <SelectItem value="hallway">Hallway / Entry</SelectItem>
+                  <SelectItem value="staircase">Staircase</SelectItem>
+                  <SelectItem value="attic">Attic / Loft</SelectItem>
+                  <SelectItem value="basement">Basement</SelectItem>
+                  <SelectItem value="laundry-room">Laundry Room</SelectItem>
+                  <SelectItem value="garage">Garage</SelectItem>
+                  <SelectItem value="balcony">Balcony</SelectItem>
+                  <SelectItem value="terrace">Terrace / Patio</SelectItem>
+                  <SelectItem value="garden">Garden</SelectItem>
+                  <SelectItem value="backyard">Backyard</SelectItem>
+                  <SelectItem value="pool-area">Pool Area</SelectItem>
+                  <SelectItem value="driveway">Driveway</SelectItem>
+                  <SelectItem value="house-exterior">Whole House Exterior</SelectItem>
+                  <SelectItem value="facade">House Facade</SelectItem>
+                  <SelectItem value="fence-front-yard">Fence & Front Yard</SelectItem>
                 </SelectContent>
               </Select>
             </div>
