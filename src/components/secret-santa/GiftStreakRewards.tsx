@@ -80,47 +80,24 @@ export const GiftStreakRewards = () => {
       // Record the claim
       const { error: claimError } = await supabase
         .from("secret_santa_streak_rewards")
-        .insert({ user_id: currentUserId, streak_milestone: milestone, reward_credits: reward });
+        .insert({ user_id: currentUserId, streak_milestone: milestone, reward_credits: 0 });
       if (claimError) throw claimError;
 
-      // Add to unified ai_credits + write ledger row
-      const { data: creditRow } = await supabase
-        .from("ai_credits")
-        .select("credits_remaining")
-        .eq("user_id", currentUserId)
-        .maybeSingle();
-
-      const balanceBefore = creditRow?.credits_remaining || 0;
-      const newBalance = balanceBefore + reward;
-      if (creditRow) {
-        const { error: upErr } = await supabase
-          .from("ai_credits")
-          .update({ credits_remaining: newBalance })
-          .eq("user_id", currentUserId);
-        if (upErr) throw upErr;
-      } else {
-        const { error: insErr } = await supabase
-          .from("ai_credits")
-          .insert({ user_id: currentUserId, credits_remaining: reward, total_credits_purchased: 0 } as any);
-        if (insErr) throw insErr;
-      }
-
-      await supabase.from("ai_credits_ledger").insert({
-        user_id: currentUserId,
-        delta: reward,
-        balance_before: balanceBefore,
-        balance_after: newBalance,
-        reason: "santa_streak_milestone",
-        metadata: { milestone_days: milestone },
-      } as any);
+      // Streak milestones pay XP only — never AI credits
+      const { error: xpErr } = await supabase.rpc("award_xp", {
+        _user_id: currentUserId,
+        _amount: reward * 100,
+        _source: "santa_streak_milestone",
+        _ref_id: String(milestone),
+      });
+      if (xpErr) throw xpErr;
     },
     onSuccess: (_, { reward }) => {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 100);
-      toast.success(`Claimed ${reward} credits! 🔥`);
+      toast.success(`Claimed ${(reward * 100).toLocaleString()} XP! 🔥`);
       queryClient.invalidateQueries({ queryKey: ["santa-streak-rewards"] });
-      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
-      queryClient.invalidateQueries({ queryKey: ["secret-santa-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["user-xp"] });
     },
     onError: (e: any) => toast.error(e?.message || "Failed to claim reward") });
 
