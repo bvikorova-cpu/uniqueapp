@@ -15,6 +15,7 @@ export const EmailHeader = ({ siteUrl }: Props) => (
         height={72}
         style={styles.logo}
       />
+      <Text style={styles.brandName}>Unique</Text>
     </a>
     <Text style={styles.tagline}>Connect · Create · Earn</Text>
   </Section>
