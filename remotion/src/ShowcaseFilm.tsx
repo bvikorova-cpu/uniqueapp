@@ -21,8 +21,8 @@ const LOBSTER = loadLobster("normal", { weights: ["700"] }).fontFamily;
 const INK = "#07030d";
 const CREAM = "#fff5fb";
 
-const TITLE_LEN = 34; // section title card
-const SHOT_LEN = 66; // per screenshot
+const TITLE_LEN = 24; // section title card
+const SHOT_LEN = 44; // per screenshot
 const INTRO_LEN = 78;
 const OUTRO_LEN = 84;
 
