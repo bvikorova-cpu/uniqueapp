@@ -181,8 +181,9 @@ export const VirtualMakeup = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="glam">💄 Glam (Dramatic)</SelectItem>
-                <SelectItem value="natural">🌸 Natural (Fresh)</SelectItem>
+                {MAKEUP_STYLES.map((s) => (
+                  <SelectItem key={s.value} value={s.prompt}>{s.label}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
