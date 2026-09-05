@@ -279,40 +279,18 @@ async function applyPurchase(
   }
 
 
-  // Generic credits handler — covers most *_credits product types
+  // Generic credits handler — EVERY *_credits product type tops up the single
+  // unified `ai_credits` wallet and writes an `ai_credits_ledger` row.
   if (productType.endsWith("_credits") && credits > 0) {
-    const tableMap: Record<string, string> = {
-      ai_credits: "ai_credits",
-      analyzer_credits: "analyzer_credits",
-      antique_credits: "antique_credits",
-      astrology_credits: "astrology_credits",
-      handwriting_credits: "ai_credits",
-      messenger_ai_credits: "ai_credits",
-      photo_credits: "photo_credits",
-      character_credits: "character_credits",
-      emotion_credits: "emotion_credits",
-      video_ad_credits: "ai_credits",
-      lie_detector_credits: "ai_credits",
-      collectibles_credits: "ai_credits" };
-    const table = tableMap[productType];
-    if (table) {
-      // @ts-ignore dynamic table name
-      const { data: existing } = await db.from(table).select("*").eq("user_id", userId).maybeSingle();
-      if (existing) { // @ts-ignore
-        await db.from(table)
-          .update({
-            credits_remaining: (existing.credits_remaining ?? 0) + credits,
-            total_credits_purchased: (existing.total_credits_purchased ?? 0) + credits })
-          .eq("user_id", userId);
-      } else { // @ts-ignore
-        await db.from(table).insert({
-          user_id: userId,
-          credits_remaining: credits,
-          total_credits_purchased: credits });
-      }
-    }
+    const { error: addErr } = await db.rpc("add_ai_credits", {
+      p_user_id: userId,
+      p_amount: credits,
+      p_reason: `purchase:${productType}`,
+      p_source: "stripe" });
+    if (addErr) console.error("[verify-payment] add_ai_credits failed", addErr);
     return;
   }
+
 
 
   // AI Personality Clone subscriptions — record in clone_subscriptions
