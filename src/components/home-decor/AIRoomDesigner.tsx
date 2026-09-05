@@ -15,6 +15,25 @@ import { useNavigate } from "react-router-dom";
 
 const DESIGN_COST = 30;
 
+// Contemporary 2026 interior directions — each carries its own AI descriptor.
+const ROOM_STYLES: { value: string; label: string; prompt: string }[] = [
+  { value: "modern-luxe", label: "Modern Luxe", prompt: "modern luxe: warm neutrals, fluted wood panels, curved sofa, brushed brass, large-format stone" },
+  { value: "warm-minimal", label: "Warm Minimal", prompt: "warm minimalism: clean lines, oat and sand tones, soft boucle textiles, hidden storage, no clutter" },
+  { value: "japandi", label: "Japandi", prompt: "japandi: low oak furniture, linen, paper lamps, matte black accents, calm negative space" },
+  { value: "scandi-2026", label: "Scandi Contemporary", prompt: "contemporary scandinavian: pale oak, off-white walls, soft arches, sculptural lighting" },
+  { value: "organic-modern", label: "Organic Modern", prompt: "organic modern: rounded shapes, travertine, plaster walls, olive tree, natural textures" },
+  { value: "soft-industrial", label: "Soft Industrial", prompt: "soft industrial loft: micro-cement, black steel frames, leather, warm layered lighting" },
+  { value: "dark-academia", label: "Dark Moody", prompt: "dark moody interior: deep green or charcoal walls, walnut, ribbed glass, warm pools of light" },
+  { value: "mid-century-2026", label: "Mid-Century Revival", prompt: "updated mid-century: walnut, tapered legs, mustard and rust accents, graphic rug" },
+  { value: "boho-modern", label: "Boho Modern", prompt: "modern boho: rattan, terracotta, layered textiles, plants, arched niches — clean not cluttered" },
+  { value: "gallery-white", label: "Gallery Minimal", prompt: "gallery minimal: crisp white, museum-style art wall, track lighting, single statement chair" },
+  { value: "smart-tech", label: "Smart Tech Home", prompt: "smart tech interior: hidden LED strips, integrated screens, matte lacquer, monochrome palette" },
+  { value: "coastal-modern", label: "Coastal Modern", prompt: "coastal modern: whitewashed wood, sand and sea-glass palette, linen, airy and bright" },
+  { value: "maximal-color", label: "Colour Maximalism", prompt: "colour maximalism: bold saturated palette, patterned tiles, velvet, art-forward mix" },
+  { value: "kids-playful", label: "Playful Family", prompt: "playful family room: soft rounded furniture, washable fabrics, smart toy storage, cheerful pastels" },
+];
+
+
 interface AIRoomDesignerProps {
   onDesignComplete?: () => void;
 }
@@ -75,7 +94,9 @@ export function AIRoomDesigner({ onDesignComplete }: AIRoomDesignerProps) {
         .from("home-designs")
         .getPublicUrl(`${user.id}/${fileName}`);
 
-      const promptText = `Redesign this ${roomType.replace(/-/g, " ")} in ${stylePreference} style. ${customPrompt || ""}`.trim();
+      const styleDef = ROOM_STYLES.find((s) => s.value === stylePreference);
+      const promptText = `Restyle this exact ${roomType.replace(/-/g, " ")} in ${styleDef?.label || stylePreference} style (${styleDef?.prompt || stylePreference}). Keep the same camera angle, walls, proportions and window/door openings as the uploaded photo — do not invent windows or extra daylight. Change only furniture, decor, finishes and lighting. ${customPrompt || ""}`.trim();
+
 
       const { data, error } = await safeInvoke("generate-gift-message", {
         body: {
@@ -228,14 +249,12 @@ export function AIRoomDesigner({ onDesignComplete }: AIRoomDesignerProps) {
                 <SelectTrigger>
                   <SelectValue placeholder="Select style" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="modern">Modern</SelectItem>
-                  <SelectItem value="minimalist">Minimalist</SelectItem>
-                  <SelectItem value="scandinavian">Scandinavian</SelectItem>
-                  <SelectItem value="industrial">Industrial</SelectItem>
-                  <SelectItem value="bohemian">Bohemian</SelectItem>
-                  <SelectItem value="traditional">Traditional</SelectItem>
+                <SelectContent className="max-h-72">
+                  {ROOM_STYLES.map((s) => (
+                    <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+                  ))}
                 </SelectContent>
+
               </Select>
             </div>
           </div>
