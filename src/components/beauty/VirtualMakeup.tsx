@@ -15,7 +15,7 @@ export const VirtualMakeup = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [makeupStyle, setMakeupStyle] = useState("glam");
+  const [makeupStyle, setMakeupStyle] = useState(MAKEUP_STYLES[0].prompt);
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
