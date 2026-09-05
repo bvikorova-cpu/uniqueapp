@@ -722,8 +722,19 @@ A vivid one-line description of the dish.
       const stylePrefix = IMAGE_TYPES[type];
       const subject = customPrompt || reqBody.title || reqBody.description || `a ${type.replace(/_/g, " ")}`;
       const sourceImage = typeof reqBody.originalImageUrl === "string" ? reqBody.originalImageUrl : "";
+      const isExteriorSpace = /exterior|facade|garden|backyard|terrace|patio|balcony|pool|driveway|fence|front yard|garage/i.test(String(subject));
       const imgPrompt = sourceImage
-        ? `Photorealistic interior redesign of THIS EXACT room. ${subject}
+        ? (isExteriorSpace
+          ? `Photorealistic redesign of THIS EXACT outdoor/exterior space. ${subject}
+
+STRICT RULES:
+- Keep the identical camera position, focal length, perspective and framing as the uploaded photo.
+- Keep the real architecture and layout exactly: same house shape, roofline, windows, doors, fence lines, paths, plot boundaries and existing large trees/structures.
+- Do NOT add, move, remove or invent buildings, windows, doors, pools, ponds or extra structures that are not in the photo.
+- Only change surfaces, materials, colors, planting/landscaping details, outdoor furniture, decor and lighting.
+- Contemporary 2026 design quality, magazine photography, realistic lighting matching the original photo.
+- Output an image only, no text.`
+          : `Photorealistic interior redesign of THIS EXACT room. ${subject}
 
 STRICT RULES:
 - Keep the identical camera position, focal length, perspective and framing as the uploaded photo.
@@ -731,7 +742,7 @@ STRICT RULES:
 - Do NOT add, move, remove or invent windows, doors, balconies, fireplaces or extra daylight sources. If the photo has no window, the result must have no window.
 - Only change furniture, decor, textiles, wall/floor finishes and lighting fixtures.
 - Contemporary 2026 interior-design quality, magazine photography, realistic lighting matching the original photo.
-- Output an image only, no text.`
+- Output an image only, no text.`)
         : `${stylePrefix} Subject: ${subject}`;
 
       // Vertex AI first (with the uploaded room as reference), gateway as fallback.
