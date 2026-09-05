@@ -706,6 +706,15 @@ const Profile = () => {
           </Card>
         )}
 
+        {/* Referral money counter — own profile only, real DB totals */}
+        {currentUserId === userId && userId && (
+          <div className="mb-4">
+            <ReferralEarningsCounter userId={userId} />
+          </div>
+        )}
+
+
+
 
         {extendedReady ? (
         <Suspense fallback={<LazyProfileSectionFallback />}>
