@@ -306,14 +306,14 @@ serve(async (req) => {
 
     // Real image-to-image edit: Vertex AI first (primary), Lovable Gateway as fallback
     const editUploadedImage = async (sourceUrl: string, instruction: string) => {
-      const editPrompt =
+      const editInstruction =
         `Edit this photo: ${instruction}. Keep the original subject, face, composition and identity intact. ` +
         `Output the edited photo as an image. Do not reply with text.`;
 
       // 1) Vertex AI direct (supports reference images for real edits)
       try {
         const { tryVertexImage } = await import("../_shared/vertexDirect.ts");
-        const vertex = await tryVertexImage(editPrompt, undefined, 1, [sourceUrl]);
+        const vertex = await tryVertexImage(editInstruction, undefined, 1, [sourceUrl]);
         const vertexB64 = vertex?.data?.[0]?.b64_json;
         if (typeof vertexB64 === "string" && vertexB64) {
           return `data:image/png;base64,${vertexB64}`;
@@ -338,7 +338,7 @@ serve(async (req) => {
               {
                 role: "user",
                 content: [
-                  { type: "text", text: editPrompt },
+                  { type: "text", text: editInstruction },
                   { type: "image_url", image_url: { url: sourceDataUrl } },
                 ],
               },
