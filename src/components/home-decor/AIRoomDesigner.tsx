@@ -94,7 +94,9 @@ export function AIRoomDesigner({ onDesignComplete }: AIRoomDesignerProps) {
         .from("home-designs")
         .getPublicUrl(`${user.id}/${fileName}`);
 
-      const promptText = `Redesign this ${roomType.replace(/-/g, " ")} in ${stylePreference} style. ${customPrompt || ""}`.trim();
+      const styleDef = ROOM_STYLES.find((s) => s.value === stylePreference);
+      const promptText = `Restyle this exact ${roomType.replace(/-/g, " ")} in ${styleDef?.label || stylePreference} style (${styleDef?.prompt || stylePreference}). Keep the same camera angle, walls, proportions and window/door openings as the uploaded photo — do not invent windows or extra daylight. Change only furniture, decor, finishes and lighting. ${customPrompt || ""}`.trim();
+
 
       const { data, error } = await safeInvoke("generate-gift-message", {
         body: {
