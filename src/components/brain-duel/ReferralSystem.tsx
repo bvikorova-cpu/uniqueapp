@@ -64,7 +64,7 @@ export const ReferralSystem = () => {
       return data;
     },
     onSuccess: (data) => {
-      toast.success(`🎉 Referral bonus! +${data.bonusCredits} credits added!`);
+      toast.success(`🎉 Referral bonus! +${(data.bonusXp ?? 1000).toLocaleString()} XP added!`);
       setReferralInput("");
       queryClient.invalidateQueries({ queryKey: ["brain-duel-credits"] });
       queryClient.invalidateQueries({ queryKey: ["brain-duel-referrals"] });
