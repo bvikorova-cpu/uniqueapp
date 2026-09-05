@@ -9,37 +9,10 @@ interface PaymentVerificationResult {
   error?: string;
 }
 
-interface CreditTableConfig {
-  tableName: string;
-  creditsColumn: string;
-  totalColumn: string;
-}
+// UNIFIED WALLET: every credit purchase (whatever the legacy `*_credits`
+// product type) lands in the single `ai_credits` wallet and is written to
+// `ai_credits_ledger` via the `add_ai_credits` RPC. No per-module tables.
 
-// Mapping of credit types to their table configurations
-const CREDIT_TABLE_CONFIG: Record<string, CreditTableConfig> = {
-  brain_duel_credits: { tableName: "brain_duel_credits", creditsColumn: "credits", totalColumn: "credits" },
-  analyzer_credits: { tableName: "analyzer_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  ai_credits: { tableName: "ai_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  ai_studio_credits: { tableName: "ai_studio_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  emotion_credits: { tableName: "emotion_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  photo_credits: { tableName: "photo_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  handwriting_credits: { tableName: "ai_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  past_life_credits: { tableName: "ai_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  lie_detector_credits: { tableName: "ai_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  creative_forge_credits: { tableName: "creative_forge_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  messenger_ai_credits: { tableName: "ai_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  brand_battle_credits: { tableName: "brand_battle_credits", creditsColumn: "credits", totalColumn: "credits" },
-  iq_credits: { tableName: "ai_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  cooking_credits: { tableName: "cooking_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  tutoring_credits: { tableName: "ai_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  video_credits: { tableName: "ai_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  video_ad_credits: { tableName: "video_ad_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  secret_santa_credits: { tableName: "ai_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  shadow_credits: { tableName: "shadow_credits", creditsColumn: "credits", totalColumn: "credits" },
-  character_credits: { tableName: "character_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  coloring_credits: { tableName: "coloring_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  antique_credits: { tableName: "antique_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" },
-  astrology_credits: { tableName: "astrology_credits", creditsColumn: "credits_remaining", totalColumn: "total_credits_purchased" } };
 
 /**
  * Verifies a Stripe payment and adds credits with idempotency protection
