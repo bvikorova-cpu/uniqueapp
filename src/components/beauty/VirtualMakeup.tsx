@@ -11,11 +11,26 @@ import { useAICredits } from "@/hooks/useAICredits";
 import { downloadImage } from "@/utils/downloadImage";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
+const MAKEUP_STYLES: { label: string; prompt: string }[] = [
+  { label: "💄 Glam (Dramatic)", prompt: "dramatic glam evening makeup with bold smokey eyes, winged eyeliner, contoured cheekbones and glossy bold lips" },
+  { label: "🌸 Natural (Fresh)", prompt: "fresh natural no-makeup makeup look with dewy skin, soft blush, groomed brows and nude lips" },
+  { label: "🌙 Smokey Eye", prompt: "intense smokey eye makeup with dark blended eyeshadow, kohl liner, mascara and neutral matte lips" },
+  { label: "💋 Red Carpet", prompt: "classic red carpet makeup with flawless matte base, sharp winged liner, long lashes and iconic red lipstick" },
+  { label: "✨ Glitter Party", prompt: "festive party makeup with shimmering glitter eyeshadow, highlighter glow, metallic accents and glossy lips" },
+  { label: "🖤 Gothic", prompt: "gothic makeup with pale matte skin, dark smokey eyes, black or deep plum lipstick and dramatic liner" },
+  { label: "🌅 Bronze Goddess", prompt: "sun-kissed bronze makeup with warm golden eyeshadow, bronzed glowing skin, peachy blush and caramel lips" },
+  { label: "🎀 Soft Romantic", prompt: "soft romantic makeup with rosy pink tones, fluttery lashes, subtle shimmer and rose-tinted lips" },
+  { label: "👰 Bridal", prompt: "elegant bridal makeup with luminous flawless skin, soft neutral eyeshadow, defined lashes and soft pink lips" },
+  { label: "🎨 Editorial (Avant-garde)", prompt: "creative editorial avant-garde makeup with bold graphic liner, artistic color accents and high-fashion finish" },
+  { label: "💜 Retro 90s", prompt: "90s retro makeup with brown lip liner and nude-brown lips, matte skin, thin defined brows and frosted eyeshadow" },
+  { label: "🌈 Festival", prompt: "colorful festival makeup with vibrant eyeshadow, face gems and glitter accents, glossy lips and playful creative details" },
+];
+
 export const VirtualMakeup = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [makeupStyle, setMakeupStyle] = useState("glam");
+  const [makeupStyle, setMakeupStyle] = useState(MAKEUP_STYLES[0].prompt);
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -181,8 +196,9 @@ export const VirtualMakeup = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="glam">💄 Glam (Dramatic)</SelectItem>
-                <SelectItem value="natural">🌸 Natural (Fresh)</SelectItem>
+                {MAKEUP_STYLES.map((s) => (
+                  <SelectItem key={s.label} value={s.prompt}>{s.label}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
