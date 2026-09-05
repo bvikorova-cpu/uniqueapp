@@ -69,19 +69,16 @@ export const useAICredits = () => {
       if (data) {
         setCredits(data);
       } else {
-        const { data: newCredits, error: insertError } = await supabase
-          .from('ai_credits')
-          .insert({
-            user_id: userId,
-            credits_remaining: 0,
-            total_credits_purchased: 0,
-          })
-          .select()
-          .single();
-        if (insertError) throw insertError;
-        if (currentUserIdRef.current !== userId) return;
-        if (newCredits) setCredits(newCredits);
+        // No wallet row yet — it is created server-side (signup trigger / first
+        // top-up). Never insert from the client: a stale session makes the RLS
+        // check fail and floods the console with 42501 errors.
+        setCredits({
+          credits_remaining: 0,
+          total_credits_purchased: 0,
+          last_used_at: null,
+        });
       }
+
     } catch (error) {
       console.error('Load credits error:', error);
     } finally {
