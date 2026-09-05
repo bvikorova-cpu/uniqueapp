@@ -1,8 +1,16 @@
 import { bundle } from "@remotion/bundler";
 import { renderMedia, selectComposition, openBrowser } from "@remotion/renderer";
 import path from "path";
+import { fileURLToPath } from "url";
+
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+const projectRoot = path.resolve(scriptDir, "..");
 const ids = process.argv.slice(2);
-const bundled = await bundle({ entryPoint: path.resolve("src/index.ts"), webpackOverride: (c) => c });
+if (ids.length === 0) throw new Error("Pass at least one showcase composition ID");
+const bundled = await bundle({
+  entryPoint: path.join(projectRoot, "src/showcase-index.tsx"),
+  webpackOverride: (c) => c,
+});
 const browser = await openBrowser("chrome", {
   browserExecutable: process.env.PUPPETEER_EXECUTABLE_PATH ?? "/bin/chromium",
   chromiumOptions: { args: ["--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage"] },
