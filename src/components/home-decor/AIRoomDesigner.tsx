@@ -95,7 +95,11 @@ export function AIRoomDesigner({ onDesignComplete }: AIRoomDesignerProps) {
         .getPublicUrl(`${user.id}/${fileName}`);
 
       const styleDef = ROOM_STYLES.find((s) => s.value === stylePreference);
-      const promptText = `Restyle this exact ${roomType.replace(/-/g, " ")} in ${styleDef?.label || stylePreference} style (${styleDef?.prompt || stylePreference}). Keep the same camera angle, walls, proportions and window/door openings as the uploaded photo — do not invent windows or extra daylight. Change only furniture, decor, finishes and lighting. ${customPrompt || ""}`.trim();
+      const isExterior = /exterior|facade|garden|backyard|terrace|balcony|pool|driveway|fence|garage/.test(roomType);
+      const keepRule = isExterior
+        ? "Keep the exact same camera angle, house architecture, roofline, windows, doors, fence lines, paths and overall layout as the uploaded photo — do not invent or remove buildings, windows, doors, trees or structures. Change only surfaces, materials, colors, landscaping details, furniture, decor and lighting."
+        : "Keep the same camera angle, walls, proportions and window/door openings as the uploaded photo — do not invent windows or extra daylight. Change only furniture, decor, finishes and lighting.";
+      const promptText = `Restyle this exact ${roomType.replace(/-/g, " ")} in ${styleDef?.label || stylePreference} style (${styleDef?.prompt || stylePreference}). ${keepRule} ${customPrompt || ""}`.trim();
 
 
       const { data, error } = await safeInvoke("generate-gift-message", {
@@ -237,8 +241,23 @@ export function AIRoomDesigner({ onDesignComplete }: AIRoomDesignerProps) {
                   <SelectItem value="kitchen">Kitchen</SelectItem>
                   <SelectItem value="bathroom">Bathroom</SelectItem>
                   <SelectItem value="dining-room">Dining Room</SelectItem>
-                  <SelectItem value="office">Office</SelectItem>
+                  <SelectItem value="office">Home Office</SelectItem>
                   <SelectItem value="kids-room">Kids Room</SelectItem>
+                  <SelectItem value="hallway">Hallway / Entry</SelectItem>
+                  <SelectItem value="staircase">Staircase</SelectItem>
+                  <SelectItem value="attic">Attic / Loft</SelectItem>
+                  <SelectItem value="basement">Basement</SelectItem>
+                  <SelectItem value="laundry-room">Laundry Room</SelectItem>
+                  <SelectItem value="garage">Garage</SelectItem>
+                  <SelectItem value="balcony">Balcony</SelectItem>
+                  <SelectItem value="terrace">Terrace / Patio</SelectItem>
+                  <SelectItem value="garden">Garden</SelectItem>
+                  <SelectItem value="backyard">Backyard</SelectItem>
+                  <SelectItem value="pool-area">Pool Area</SelectItem>
+                  <SelectItem value="driveway">Driveway</SelectItem>
+                  <SelectItem value="house-exterior">Whole House Exterior</SelectItem>
+                  <SelectItem value="facade">House Facade</SelectItem>
+                  <SelectItem value="fence-front-yard">Fence & Front Yard</SelectItem>
                 </SelectContent>
               </Select>
             </div>
