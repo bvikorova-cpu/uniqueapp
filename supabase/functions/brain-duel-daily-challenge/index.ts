@@ -195,17 +195,18 @@ serve(async (req) => {
         .single();
 
       let reward = 0;
+      let rewardXp = 0;
       if (score >= Math.ceil((questions.length || 5) * 0.6)) {
-        reward = challenge.reward_credits || 10;
-        await supabase.rpc("add_ai_credits", {
-          p_user_id: user.id,
-          p_amount: reward,
-          p_reason: "brain_duel_daily_challenge_reward",
-          p_source: "brain_duel"
+        rewardXp = (challenge.reward_credits || 10) * 100;
+        await supabase.rpc("award_xp", {
+          _user_id: user.id,
+          _amount: rewardXp,
+          _source: "brain_duel_daily_challenge_reward",
+          _ref_id: String(challengeId),
         });
       }
 
-      return new Response(JSON.stringify({ entry, score, total: questions.length, reward }), {
+      return new Response(JSON.stringify({ entry, score, total: questions.length, reward, rewardXp }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
