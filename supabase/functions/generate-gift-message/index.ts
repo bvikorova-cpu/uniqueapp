@@ -284,16 +284,13 @@ Clearly depict this exact location. Include rich searchable details such as furn
     }
     // ─── END STORY VIDEO PIPELINE ───
 
-    // Module-specific ledgers below (secret_santa_credits, kids_*_credits, teen_career_credits)
-    // already act as the credit gate for legacy gift + kids flows. Universal AI helpers
-    // (mentor_chat, chef_chat, legal, etc.) still need the unified ai_credits gate.
-    // We therefore only apply requireAiCredits when NO module-specific ledger applies,
-    // to prevent the user being charged twice (Bug fix 2026-04-30).
+    // UNIFIED WALLET: every module (including kids/teen flows) charges the single
+    // `ai_credits` wallet through requireAiCredits. No per-module credit ledgers.
     const __style = reqBody.style;
     const __giftType = reqBody.giftType;
     const __type = reqBody.type;
-    const __KIDS_TYPES = new Set(["teen_career"]);
-    const __hasKidsLedger = __type && __KIDS_TYPES.has(__type);
+    const __hasKidsLedger = false;
+
 
     // Unified AI credits gate. Legacy Secret-Santa gifts (style/giftType) and universal
     // helpers both now deduct from `ai_credits` (3 credits) so users don't hit a 402
