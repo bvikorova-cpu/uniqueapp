@@ -319,6 +319,7 @@ Clearly depict this exact location. Include rich searchable details such as furn
       chef_chat: 3,
       wine_pairing: 3,
       weekly_meal_plan: 5,
+      teen_career: 5,
     };
     if (!__hasKidsLedger && !__firstAidFollowup) {
       const __isLegacyGift = !!__style || !!__giftType;
@@ -361,45 +362,7 @@ Clearly depict this exact location. Include rich searchable details such as furn
     if (!user) throw new Error("Not authenticated");
 
 
-    // ─── KIDS HUB-SPECIFIC CREDIT GATING (paid-only model) ───
-    // Each kids module has its own credit ledger. Deduct from the right table here
-    // before invoking the AI. If insufficient, return 402.
-    const KIDS_CREDIT_MAP: Record<string, { table: string; cost: number }> = {
-      teen_career:  { table: "teen_career_credits",  cost: 5 } };
-    const kidsCfg = type ? KIDS_CREDIT_MAP[type] : undefined;
-    if (kidsCfg) {
-      const adminClient = createClient(
-        Deno.env.get("SUPABASE_URL") ?? "",
-        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-      );
-      const { data: kidsRow } = await adminClient
-        .from(kidsCfg.table)
-        .select("credits_remaining")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      const kidsBalance = kidsRow?.credits_remaining ?? 0;
-      if (kidsBalance < kidsCfg.cost) {
-        return new Response(
-          JSON.stringify({
-            error: `Insufficient credits. Need ${kidsCfg.cost}, have ${kidsBalance}.`,
-            creditsRequired: kidsCfg.cost,
-            creditsRemaining: kidsBalance }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      // Atomic optimistic-concurrency deduction
-      const { error: deductErr } = await adminClient
-        .from(kidsCfg.table)
-        .update({ credits_remaining: kidsBalance - kidsCfg.cost })
-        .eq("user_id", user.id)
-        .eq("credits_remaining", kidsBalance);
-      if (deductErr) {
-        return new Response(
-          JSON.stringify({ error: "Failed to deduct credits, please retry" }),
-          { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-    }
+    // (Kids/teen credit gating now handled by the unified ai_credits gate above.)
 
     // (Legacy per-module balance fetch removed — unified ai_credits gate handles this.)
 
