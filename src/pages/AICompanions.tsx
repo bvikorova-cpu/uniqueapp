@@ -297,9 +297,20 @@ const AICompanions = () => {
                   <CardHeader className="pb-2">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="p-3 bg-primary/10 rounded-xl">
-                          <Icon className="h-6 w-6 text-primary" />
-                        </div>
+                        {character.avatar_url ? (
+                          <img
+                            src={character.avatar_url}
+                            alt={character.name}
+                            loading="lazy"
+                            width={512}
+                            height={512}
+                            className="h-14 w-14 rounded-xl object-cover border border-primary/20 shrink-0"
+                          />
+                        ) : (
+                          <div className="p-3 bg-primary/10 rounded-xl">
+                            <Icon className="h-6 w-6 text-primary" />
+                          </div>
+                        )}
                         <div>
                           <CardTitle className="text-lg">{character.name}</CardTitle>
                           <CardDescription className="text-xs capitalize">{character.personality_type}</CardDescription>
