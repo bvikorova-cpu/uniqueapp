@@ -436,11 +436,10 @@ const CTA: React.FC<SP> = ({ dur, def, c }) => {
         <Img
           src={staticFile("images/unique-logo.png")}
           style={{
-            width: 360,
-            height: 360,
-            borderRadius: 90,
+            width: 380,
+            height: 380,
             transform: `scale(${glow * interpolate(logo, [0, 1], [0.4, 1])})`,
-            boxShadow: `0 0 80px ${PURPLE}, 0 0 150px ${PINK}`,
+            filter: `drop-shadow(0 0 45px ${PINK}) drop-shadow(0 0 90px ${PURPLE})`,
           }}
         />
         <div
