@@ -304,10 +304,28 @@ serve(async (req) => {
       return `data:${blob.type || "image/jpeg"};base64,${btoa(binary)}`;
     };
 
-    // Real image-to-image edit: sends the uploaded image + instruction to a Gemini image model
+    // Real image-to-image edit: Vertex AI first (primary), Lovable Gateway as fallback
     const editUploadedImage = async (sourceUrl: string, instruction: string) => {
+      const editPrompt =
+        `Edit this photo: ${instruction}. Keep the original subject, face, composition and identity intact. ` +
+        `Output the edited photo as an image. Do not reply with text.`;
+
+      // 1) Vertex AI direct (supports reference images for real edits)
+      try {
+        const { tryVertexImage } = await import("../_shared/vertexDirect.ts");
+        const vertex = await tryVertexImage(editPrompt, undefined, 1, [sourceUrl]);
+        const vertexB64 = vertex?.data?.[0]?.b64_json;
+        if (typeof vertexB64 === "string" && vertexB64) {
+          return `data:image/png;base64,${vertexB64}`;
+        }
+        console.warn("Vertex image edit returned no image, falling back to gateway");
+      } catch (e) {
+        console.warn("Vertex image edit error:", e instanceof Error ? e.message : String(e));
+      }
+
       if (!LOVABLE_API_KEY) throw new Error("Image editing is not configured");
       const sourceDataUrl = await sourceAsDataUrl(sourceUrl);
+
       const models = ["google/gemini-3.1-flash-image", "google/gemini-2.5-flash-image"];
       let lastErr = "";
       for (const model of models) {
