@@ -13,7 +13,9 @@ export function HeroSlideshow() {
       <img
         src={heroImage}
         alt="Unique — abstract iridescent spiral"
-        fetchPriority="high"
+        // React 18 forwards only the lowercase attribute without warning
+        {...{ fetchpriority: "high" }}
+
         decoding="async"
         className="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none"
         style={{ filter: "brightness(1.02) saturate(1.1)" }}
