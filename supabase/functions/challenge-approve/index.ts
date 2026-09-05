@@ -50,32 +50,21 @@ Deno.serve(async (req) => {
     }
 
     let granted = 0;
+    let grantedXp = 0;
     if (decision === 'approved') {
       const { data: ch } = await admin
         .from('influking_weekly_challenges')
         .select('reward_credits').eq('id', sub.challenge_id).maybeSingle();
-      granted = ch?.reward_credits ?? 0;
+      grantedXp = (ch?.reward_credits ?? 0) * 100;
 
-      if (granted > 0) {
-        const { data: wallet } = await admin
-          .from('ai_credits').select('id, credits_remaining, total_credits_purchased')
-          .eq('user_id', sub.user_id).maybeSingle();
-
-        if (wallet) { await admin.from('ai_credits').update({
-            credits_remaining: wallet.credits_remaining + granted,
-            total_credits_purchased: wallet.total_credits_purchased + granted,
-            updated_at: new Date().toISOString() }).eq('id', wallet.id);
-        } else { await admin.from('ai_credits').insert({
-            user_id: sub.user_id,
-            credits_remaining: granted,
-            total_credits_purchased: granted });
-        }
-
-        await admin.from('ai_credits_ledger').insert({
-          user_id: sub.user_id,
-          delta: granted,
-          reason: 'influking_challenge_reward',
-          metadata: { submission_id, challenge_id: sub.challenge_id } }).then(() => {}, () => {}); // ledger optional
+      // Challenge rewards pay XP only — never AI credits
+      if (grantedXp > 0) {
+        await admin.rpc('award_xp', {
+          _user_id: sub.user_id,
+          _amount: grantedXp,
+          _source: 'influking_challenge_reward',
+          _ref_id: String(submission_id),
+        });
       }
     }
 
