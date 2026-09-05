@@ -95,7 +95,11 @@ export function AIRoomDesigner({ onDesignComplete }: AIRoomDesignerProps) {
         .getPublicUrl(`${user.id}/${fileName}`);
 
       const styleDef = ROOM_STYLES.find((s) => s.value === stylePreference);
-      const promptText = `Restyle this exact ${roomType.replace(/-/g, " ")} in ${styleDef?.label || stylePreference} style (${styleDef?.prompt || stylePreference}). Keep the same camera angle, walls, proportions and window/door openings as the uploaded photo — do not invent windows or extra daylight. Change only furniture, decor, finishes and lighting. ${customPrompt || ""}`.trim();
+      const isExterior = /exterior|facade|garden|backyard|terrace|balcony|pool|driveway|fence|garage/.test(roomType);
+      const keepRule = isExterior
+        ? "Keep the exact same camera angle, house architecture, roofline, windows, doors, fence lines, paths and overall layout as the uploaded photo — do not invent or remove buildings, windows, doors, trees or structures. Change only surfaces, materials, colors, landscaping details, furniture, decor and lighting."
+        : "Keep the same camera angle, walls, proportions and window/door openings as the uploaded photo — do not invent windows or extra daylight. Change only furniture, decor, finishes and lighting.";
+      const promptText = `Restyle this exact ${roomType.replace(/-/g, " ")} in ${styleDef?.label || stylePreference} style (${styleDef?.prompt || stylePreference}). ${keepRule} ${customPrompt || ""}`.trim();
 
 
       const { data, error } = await safeInvoke("generate-gift-message", {
