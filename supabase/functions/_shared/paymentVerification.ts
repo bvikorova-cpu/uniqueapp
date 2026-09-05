@@ -101,58 +101,19 @@ export async function verifyAndProcessPayment(
     }
   }
 
-  // 7. Add credits to the appropriate table
-  const tableConfig = CREDIT_TABLE_CONFIG[creditType];
-  if (!tableConfig) {
-    console.error(`[PAYMENT-VERIFICATION] Unknown credit type: ${creditType}`);
-    return { success: false, error: `Unknown credit type: ${creditType}` };
-  }
-
+  // 7. Add credits to the UNIFIED ai_credits wallet (+ ledger row)
   try {
-    // Get current credits
-    const { data: currentCredits } = await supabaseAdmin
-      .from(tableConfig.tableName)
-      .select("*")
-      .eq("user_id", userId)
-      .maybeSingle();
+    const { error: rpcError } = await supabaseAdmin.rpc("add_ai_credits", {
+      _user_id: userId,
+      _amount: creditsToAdd,
+      _reason: `purchase:${creditType}`,
+      _source: "stripe" });
+    if (rpcError) throw rpcError;
 
-    if (currentCredits) { // Update existing record
-      const updateData: Record<string, any> = {
-        updated_at: new Date().toISOString() };
-      updateData[tableConfig.creditsColumn] = (currentCredits[tableConfig.creditsColumn] || 0) + creditsToAdd;
-      if (tableConfig.totalColumn !== tableConfig.creditsColumn) {
-        updateData[tableConfig.totalColumn] = (currentCredits[tableConfig.totalColumn] || 0) + creditsToAdd;
-      }
-
-      const { error: updateError } = await supabaseAdmin
-        .from(tableConfig.tableName)
-        .update(updateData)
-        .eq("user_id", userId);
-
-      if (updateError) {
-        throw updateError;
-      }
-    } else { // Create new record
-      const insertData: Record<string, any> = {
-        user_id: userId };
-      insertData[tableConfig.creditsColumn] = creditsToAdd;
-      if (tableConfig.totalColumn !== tableConfig.creditsColumn) {
-        insertData[tableConfig.totalColumn] = creditsToAdd;
-      }
-
-      const { error: insertError } = await supabaseAdmin
-        .from(tableConfig.tableName)
-        .insert(insertData);
-
-      if (insertError) {
-        throw insertError;
-      }
-    }
-
-    console.log(`[PAYMENT-VERIFICATION] Added ${creditsToAdd} ${creditType} to user ${userId}`);
+    console.log(`[PAYMENT-VERIFICATION] Added ${creditsToAdd} credits (${creditType}) to ai_credits for user ${userId}`);
   } catch (error) {
     console.error(`[PAYMENT-VERIFICATION] Failed to add credits:`, error);
-    
+
     // Mark as failed
     await supabaseAdmin
       .from("payment_verifications")
@@ -161,6 +122,7 @@ export async function verifyAndProcessPayment(
 
     return { success: false, error: "Failed to add credits" };
   }
+
 
   // 8. Mark as completed
   await supabaseAdmin
