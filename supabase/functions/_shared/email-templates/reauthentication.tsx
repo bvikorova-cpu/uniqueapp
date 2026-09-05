@@ -2,6 +2,7 @@
 import * as React from 'npm:react@18.3.1'
 import { Body, Container, Head, Heading, Html, Link, Preview, Section, Text } from 'npm:@react-email/components@0.0.22'
 import { styles } from './_brand.ts'
+import { EmailHeader } from './EmailHeader.tsx'
 
 interface Props { siteName: string; siteUrl: string; recipient: string; token: string }
 
@@ -11,10 +12,7 @@ export const ReauthenticationEmail = ({ siteName, siteUrl, recipient, token }: P
     <Preview>Your Unique verification code: {token}</Preview>
     <Body style={styles.main}>
       <Container style={styles.container}>
-        <Section style={styles.header}>
-          <Heading style={styles.brandName}>Unique</Heading>
-          <Text style={styles.tagline}>Connect · Create · Earn</Text>
-        </Section>
+        <EmailHeader siteUrl={siteUrl} />
         <Section style={styles.body}>
           <Heading style={styles.h1}>Verification code</Heading>
           <Text style={styles.text}>Use the code below to confirm a sensitive action on <strong>{siteName}</strong> as <Link href={`mailto:${recipient}`} style={styles.link}>{recipient}</Link>.</Text>
