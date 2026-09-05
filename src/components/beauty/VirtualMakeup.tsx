@@ -197,7 +197,7 @@ export const VirtualMakeup = () => {
               </SelectTrigger>
               <SelectContent>
                 {MAKEUP_STYLES.map((s) => (
-                  <SelectItem key={s.value} value={s.prompt}>{s.label}</SelectItem>
+                  <SelectItem key={s.label} value={s.prompt}>{s.label}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
