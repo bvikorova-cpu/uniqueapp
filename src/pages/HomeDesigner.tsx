@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sparkles, Home, ArrowLeft } from "lucide-react";
@@ -14,16 +13,6 @@ type ActiveView = "hub" | "ai-designer";
 
 const HomeDesigner = () => {
   const [activeView, setActiveView] = useState<ActiveView>("hub");
-  const [stats, setStats] = useState({ designs: 0 });
-
-  useEffect(() => {
-    loadStats();
-  }, []);
-
-  const loadStats = async () => {
-    const d = await supabase.from("ai_room_designs").select("*", { count: "exact", head: true });
-    setStats({ designs: d.count || 0 });
-  };
 
   const tools = [
     { id: "ai-designer" as const, icon: Sparkles, title: "AI Room Designer", desc: "Transform rooms with AI", cost: "30 Credits" },
