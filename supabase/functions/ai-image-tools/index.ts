@@ -338,7 +338,7 @@ serve(async (req) => {
               {
                 role: "user",
                 content: [
-                  { type: "text", text: `Edit this image: ${instruction}. Keep the original subject, composition and identity intact unless the instruction says otherwise. Return only the edited image.` },
+                  { type: "text", text: editPrompt },
                   { type: "image_url", image_url: { url: sourceDataUrl } },
                 ],
               },
