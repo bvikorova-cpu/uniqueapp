@@ -69,15 +69,14 @@ export const GiftChallenges = () => {
         p_challenge_id: challengeId,
       });
       if (error) throw error;
-      return data as { ok: boolean; credits_awarded: number };
+      return data as { ok: boolean; xp_awarded: number };
     },
     onSuccess: (_, { rewardCredits }) => {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 100);
-      toast.success(`Claimed ${rewardCredits} AI credits! 🎉`);
+      toast.success(`Claimed ${(rewardCredits * 100).toLocaleString()} XP! 🎉`);
       queryClient.invalidateQueries({ queryKey: ["santa-challenge-progress"] });
-      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
-      queryClient.invalidateQueries({ queryKey: ["secret-santa-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["user-xp"] });
     },
     onError: (e: any) => toast.error(e?.message || "Failed to claim reward") });
 
@@ -132,7 +131,7 @@ export const GiftChallenges = () => {
               <div className="flex items-center justify-between mb-1">
                 <h4 className="font-bold text-sm text-gray-800">{challenge.title}</h4>
                 <span className="text-xs font-bold text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full">
-                  💎 {challenge.reward_credits}
+                  ⭐ {((challenge.reward_credits || 0) * 100).toLocaleString()} XP
                 </span>
               </div>
               <p className="text-xs text-gray-500 mb-2">{challenge.description}</p>
@@ -150,7 +149,7 @@ export const GiftChallenges = () => {
                   className="mt-2 w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-xs"
                 >
                   {claimReward.isPending ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Star className="h-3 w-3 mr-1" />}
-                  Claim {challenge.reward_credits} Credits
+                  Claim {((challenge.reward_credits || 0) * 100).toLocaleString()} XP
                 </Button>
               )}
 
@@ -176,7 +175,7 @@ export const GiftChallenges = () => {
           <Target className="h-10 w-10 text-white" />
         </div>
         <h2 className="text-2xl font-bold text-gray-800 mb-2">Daily & Weekly Challenges</h2>
-        <p className="text-gray-500 text-sm">Complete challenges to earn bonus credits! Progress is tracked automatically.</p>
+        <p className="text-gray-500 text-sm">Complete challenges to earn bonus XP! Progress is tracked automatically.</p>
       </Card>
 
       {/* Daily Challenges */}

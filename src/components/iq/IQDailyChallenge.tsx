@@ -73,7 +73,7 @@ export default function IQDailyChallenge() {
         <CardTitle className="flex items-center gap-2">
           <Calendar className="h-5 w-5 text-primary" /> Daily Challenge
           <Badge className="ml-auto bg-gradient-to-r from-primary to-accent border-0">
-            <Sparkles className="h-3 w-3 mr-1" /> +{data.reward_credits} credits
+            <Sparkles className="h-3 w-3 mr-1" /> +{((data.reward_credits || 0) * 100).toLocaleString()} XP
           </Badge>
         </CardTitle>
         <CardDescription>{data.difficulty?.toUpperCase()} · One per day</CardDescription>

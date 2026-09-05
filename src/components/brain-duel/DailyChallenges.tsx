@@ -147,7 +147,7 @@ export const DailyChallenges = () => {
               <div className="flex gap-3 text-xs">
                 <span className="flex items-center gap-1"><Zap className="h-3 w-3 text-amber-400" /> {challenge.question_count} questions</span>
                 <span className="flex items-center gap-1"><Clock className="h-3 w-3 text-blue-400" /> {challenge.time_limit}s limit</span>
-                <span className="flex items-center gap-1"><Star className="h-3 w-3 text-emerald-400" /> {challenge.reward_credits} credits</span>
+                <span className="flex items-center gap-1"><Star className="h-3 w-3 text-emerald-400" /> {((challenge.reward_credits || 0) * 100).toLocaleString()} XP</span>
               </div>
             </div>
 

@@ -54,16 +54,17 @@ serve(async (req) => {
     }
 
 
-    // Award credits to the WINNER — no matter who called finish-match.
+    // Award XP to the WINNER — no matter who called finish-match. Never AI credits.
     const isPlayerWinner = winnerId === user.id;
     if (didTransition && winnerId && winnerId !== "ai_bot" && match.win_reward) {
-      const { error: awardError } = await supabase.rpc("add_ai_credits", {
-        p_user_id: winnerId,
-        p_amount: match.win_reward,
-        p_reason: "brain_duel_win_reward",
-        p_source: "brain_duel"
+      const winXp = Number(match.win_reward) * 100;
+      const { error: awardError } = await supabase.rpc("award_xp", {
+        _user_id: winnerId,
+        _amount: winXp,
+        _source: "brain_duel_win_reward",
+        _ref_id: match_id,
       });
-      if (awardError) console.error("Award credits failed:", awardError);
+      if (awardError) console.error("Award XP failed:", awardError);
 
       // Tell the winner they won, even if the loser closed the match.
       if (!isPlayerWinner) {
@@ -71,7 +72,7 @@ serve(async (req) => {
           user_id: winnerId,
           type: "brain_duel_win",
           title: "You won a Brain Duel!",
-          message: `Your opponent finished the duel — you won ${match.win_reward} credits.`,
+          message: `Your opponent finished the duel — you won ${winXp} XP.`,
           related_id: match_id,
           metadata: { match_id },
         }).then(({ error }) => { if (error) console.error("Notify winner failed:", error); });

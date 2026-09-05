@@ -54,30 +54,29 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const BONUS_CREDITS = 10;
+    const BONUS_XP = 1000;
 
     // Create referral record
     await supabase.from("brain_duel_referrals").insert({ referrer_id: codeData.user_id,
       referred_id: user.id,
       referral_code: referralCode.toUpperCase(),
-      bonus_credits_awarded: BONUS_CREDITS,
+      bonus_credits_awarded: 0,
       status: "completed",
       completed_at: new Date().toISOString() });
 
     // Update referral code stats
     await supabase
       .from("brain_duel_referral_codes")
-      .update({ total_referrals: (codeData.total_referrals || 0) + 1,
-        total_bonus_credits: (codeData.total_bonus_credits || 0) + BONUS_CREDITS })
+      .update({ total_referrals: (codeData.total_referrals || 0) + 1 })
       .eq("id", codeData.id);
 
-    // Add credits to both users
+    // Award XP to both users — never AI credits
     for (const uid of [user.id, codeData.user_id]) {
-      await supabase.rpc("add_ai_credits", {
-        p_user_id: uid,
-        p_amount: BONUS_CREDITS,
-        p_reason: "brain_duel_referral_bonus",
-        p_source: "brain_duel"
+      await supabase.rpc("award_xp", {
+        _user_id: uid,
+        _amount: BONUS_XP,
+        _source: "brain_duel_referral_bonus",
+        _ref_id: `${codeData.id}:${user.id}`,
       });
     }
 
@@ -87,15 +86,15 @@ serve(async (req) => {
         user_id: user.id,
         type: "referral",
         title: "Referral Bonus!",
-        message: `You earned ${BONUS_CREDITS} bonus credits from using a referral code!` },
+        message: `You earned ${BONUS_XP} XP from using a referral code!` },
       {
         user_id: codeData.user_id,
         type: "referral",
         title: "Referral Reward!",
-        message: `Someone used your referral code! You earned ${BONUS_CREDITS} bonus credits!` },
+        message: `Someone used your referral code! You earned ${BONUS_XP} XP!` },
     ]);
 
-    return new Response(JSON.stringify({ success: true, bonusCredits: BONUS_CREDITS }), {
+    return new Response(JSON.stringify({ success: true, bonusXp: BONUS_XP }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     console.error("Error:", error);

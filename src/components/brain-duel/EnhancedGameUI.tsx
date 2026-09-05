@@ -282,7 +282,7 @@ export const EnhancedGameUI = ({ match,
       <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
         <span>Entry: {match.entry_cost} credits</span>
         <span>•</span>
-        <span className="text-green-500 font-semibold">Win: +{match.win_reward} credits</span>
+        <span className="text-green-500 font-semibold">Win: +{(match.win_reward * 100).toLocaleString()} XP</span>
       </div>
     </div>
     </>
