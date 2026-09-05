@@ -357,13 +357,18 @@ async function actionClaimAchievement(req: Request, body: any) {
   if (claimErr) throw claimErr;
   if (!claimed) throw new Error("Already claimed");
 
-  if (ach.reward_credits > 0) {
-    const { data: prof } = await sb.from("profiles").select("credits").eq("user_id", user.id).maybeSingle();
-    const cur = (prof as any)?.credits ?? 0;
-    await sb.from("profiles").update({ credits: cur + ach.reward_credits }).eq("user_id", user.id);
+  // Achievements pay XP only — never AI credits
+  const bonusXp = (ach.reward_credits ?? 0) * 100;
+  if (bonusXp > 0) {
+    await sb.rpc("award_xp", {
+      _user_id: user.id,
+      _amount: bonusXp,
+      _source: "mt_achievement_reward",
+      _ref_id: String(ach.id),
+    });
   }
 
-  return json({ ok: true, xp: ach.reward_xp, credits: ach.reward_credits });
+  return json({ ok: true, xp: (ach.reward_xp ?? 0) + bonusXp, credits: 0 });
 }
 
 async function actionQuestIncrement(req: Request, body: any) {
