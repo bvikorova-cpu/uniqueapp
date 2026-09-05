@@ -259,9 +259,7 @@ export default function Rewards() {
                   </div>
 
 
-                  <div className="mb-8">
-                    <XpToCreditsConverter userId={user.id} />
-                  </div>
+
 
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                     <div className="lg:col-span-2 space-y-6">
