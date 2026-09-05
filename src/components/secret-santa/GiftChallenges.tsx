@@ -69,15 +69,14 @@ export const GiftChallenges = () => {
         p_challenge_id: challengeId,
       });
       if (error) throw error;
-      return data as { ok: boolean; credits_awarded: number };
+      return data as { ok: boolean; xp_awarded: number };
     },
     onSuccess: (_, { rewardCredits }) => {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 100);
-      toast.success(`Claimed ${rewardCredits} AI credits! 🎉`);
+      toast.success(`Claimed ${(rewardCredits * 100).toLocaleString()} XP! 🎉`);
       queryClient.invalidateQueries({ queryKey: ["santa-challenge-progress"] });
-      queryClient.invalidateQueries({ queryKey: ["ai-credits"] });
-      queryClient.invalidateQueries({ queryKey: ["secret-santa-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["user-xp"] });
     },
     onError: (e: any) => toast.error(e?.message || "Failed to claim reward") });
 
