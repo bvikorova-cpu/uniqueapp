@@ -495,16 +495,14 @@ async function handler(req: Request): Promise<Response> {
             description: `AI Credits auto-recharge: ${row.package_credits} credits`,
             metadata: { user_id: userId, credits: String(row.package_credits), kind: "ai_credits_auto_recharge" } });
 
-          const totalPurchased = Number(creditsRow?.total_credits_purchased ?? 0) + Number(row.package_credits);
-          const newBalance = current + Number(row.package_credits);
-          if (creditsRow) { await supa.from("ai_credits").update({
-              credits_remaining: newBalance,
-              total_credits_purchased: totalPurchased }).eq("user_id", userId);
-          } else { await supa.from("ai_credits").insert({
-              user_id: userId,
-              credits_remaining: newBalance,
-              total_credits_purchased: totalPurchased });
-          }
+          // Unified wallet top-up (writes ai_credits + ai_credits_ledger)
+          const { error: addErr } = await supa.rpc("add_ai_credits", {
+            p_user_id: userId,
+            p_amount: Number(row.package_credits),
+            p_reason: "auto_recharge",
+            p_source: "stripe" });
+          if (addErr) console.error("[create-checkout] auto-recharge add_ai_credits failed", addErr);
+
 
           await supa.from("ai_credits_auto_recharge").update({ last_recharge_at: new Date().toISOString(),
             last_recharge_status: "succeeded",

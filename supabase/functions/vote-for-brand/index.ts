@@ -205,28 +205,14 @@ async function updateVotingStreak(supabaseClient: any, userId: string, today: st
 
 async function updateUserCredits(supabaseClient: any, userId: string, voteCredits: number, bonusCredits: number) {
   const totalCredits = voteCredits + bonusCredits;
-  
-  // Get or create credits record
-  let { data: credits } = await supabaseClient
-    .from("brand_battle_credits")
-    .select("*")
-    .eq("user_id", userId)
-    .single();
+  if (totalCredits <= 0) return;
 
-  if (!credits) { // Create new credits record
-    await supabaseClient
-      .from("brand_battle_credits")
-      .insert({
-        user_id: userId,
-        credits_balance: totalCredits,
-        total_credits_earned: totalCredits,
-        total_credits_spent: 0 });
-  } else { // Update existing credits
-    await supabaseClient
-      .from("brand_battle_credits")
-      .update({
-        credits_balance: credits.credits_balance + totalCredits,
-        total_credits_earned: credits.total_credits_earned + totalCredits })
-      .eq("user_id", userId);
-  }
+  // Unified wallet: earned voting credits go to ai_credits (+ ledger row)
+  const { error } = await supabaseClient.rpc("add_ai_credits", {
+    p_user_id: userId,
+    p_amount: totalCredits,
+    p_reason: "brand_battle_vote_reward",
+    p_source: "brand_arena" });
+  if (error) console.error("[vote-for-brand] add_ai_credits failed", error);
 }
+
