@@ -9,7 +9,8 @@ export const brand = { primary: '#a855f7', // purple-500
   cardBg: '#faf7ff',
   border: '#ece4ff',
   radius: '14px',
-  font: "'Inter', 'Helvetica Neue', Arial, sans-serif" }
+  font: "'Inter', 'Helvetica Neue', Arial, sans-serif",
+  logoUrl: 'https://uniqueapp.fun/pwa-192x192.png' }
 
 export const styles = {
   main: { backgroundColor: '#f4eeff', fontFamily: brand.font, margin: 0, padding: '24px 0' },
@@ -20,8 +21,14 @@ export const styles = {
     overflow: 'hidden' as const,
     boxShadow: '0 8px 32px rgba(168,85,247,0.18)' },
   header: { background: brand.gradient,
-    padding: '36px 24px',
+    padding: '32px 24px 28px',
     textAlign: 'center' as const },
+  logo: { width: '72px',
+    height: '72px',
+    borderRadius: '18px',
+    margin: '0 auto 10px',
+    display: 'block',
+    boxShadow: '0 6px 18px rgba(0,0,0,0.18)' },
   brandName: { fontFamily: "'Lobster Two', 'Georgia', serif",
     fontWeight: 700,
     fontSize: '44px',
@@ -31,7 +38,7 @@ export const styles = {
     textShadow: '0 2px 8px rgba(0,0,0,0.15)' },
   tagline: { color: 'rgba(255,255,255,0.92)',
     fontSize: '13px',
-    margin: '6px 0 0',
+    margin: '8px 0 0',
     letterSpacing: '2px',
     textTransform: 'uppercase' as const },
   body: { padding: '32px 32px 24px' },

@@ -2,6 +2,7 @@
 import * as React from 'npm:react@18.3.1'
 import { Body, Button, Container, Head, Heading, Html, Link, Preview, Section, Text } from 'npm:@react-email/components@0.0.22'
 import { styles } from './_brand.ts'
+import { EmailHeader } from './EmailHeader.tsx'
 
 interface Props { siteName: string; siteUrl: string; recipient: string; confirmationUrl: string }
 
@@ -11,10 +12,7 @@ export const RecoveryEmail = ({ siteName, siteUrl, recipient, confirmationUrl }:
     <Preview>Reset your Unique password 🔐</Preview>
     <Body style={styles.main}>
       <Container style={styles.container}>
-        <Section style={styles.header}>
-          <Heading style={styles.brandName}>Unique</Heading>
-          <Text style={styles.tagline}>Connect · Create · Earn</Text>
-        </Section>
+        <EmailHeader siteUrl={siteUrl} />
         <Section style={styles.body}>
           <Heading style={styles.h1}>Reset your password 🔐</Heading>
           <Text style={styles.text}>We received a request to reset the password for <Link href={`mailto:${recipient}`} style={styles.link}>{recipient}</Link> on <strong>{siteName}</strong>.</Text>
