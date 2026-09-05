@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sparkles, Home, ArrowLeft } from "lucide-react";
@@ -14,16 +13,6 @@ type ActiveView = "hub" | "ai-designer";
 
 const HomeDesigner = () => {
   const [activeView, setActiveView] = useState<ActiveView>("hub");
-  const [stats, setStats] = useState({ designs: 0 });
-
-  useEffect(() => {
-    loadStats();
-  }, []);
-
-  const loadStats = async () => {
-    const d = await supabase.from("ai_room_designs").select("*", { count: "exact", head: true });
-    setStats({ designs: d.count || 0 });
-  };
 
   const tools = [
     { id: "ai-designer" as const, icon: Sparkles, title: "AI Room Designer", desc: "Transform rooms with AI", cost: "30 Credits" },
@@ -44,7 +33,7 @@ const HomeDesigner = () => {
       /><Navbar />
       <div className="container mx-auto px-4 pt-20 pb-8">
         <Button variant="ghost" onClick={() => setActiveView("hub")} className="mb-4"><ArrowLeft className="mr-2 h-4 w-4" /> Dashboard</Button>
-        <AIRoomDesigner onDesignComplete={loadStats} />
+        <AIRoomDesigner />
       </div>
     </div>
   );
@@ -77,13 +66,6 @@ const HomeDesigner = () => {
               </p>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }}
-              className="mt-6 max-w-[200px]">
-              <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-xl p-3 sm:p-4 text-center">
-                <p className="text-2xl sm:text-3xl font-black text-white">{stats.designs || "—"}</p>
-                <p className="text-white/70 text-xs sm:text-sm">AI Designs</p>
-              </div>
-            </motion.div>
           </div>
         </div>
       </section>
