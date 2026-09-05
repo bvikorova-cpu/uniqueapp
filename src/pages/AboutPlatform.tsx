@@ -46,7 +46,7 @@ const ALL_CATEGORIES: Category[] = [
     title: "Social & Communication",
     icon: Users,
     accent: "text-violet-500",
-    intro: "Your daily home base — feed, friends, groups, pages, events, messenger and real-time stories.",
+    intro: "Your daily home base — feed, friends, messenger and real-time stories.",
     sections: [
       {
         path: "/wall", title: "The Wall", icon: MessageSquare,
@@ -54,7 +54,7 @@ const ALL_CATEGORIES: Category[] = [
         features: ["Stories (24h)", "Reactions, comments, shares", "Saved posts & memories", "Trending tab", "Friend & follow graph", "Reels-style videos"],
         details: "The Wall is the social heart of Unique. It blends a chronological friend feed with an algorithmic discovery layer that surfaces trending creators, communities and viral clips. Post text, photos, multi-image carousels, short videos, polls and 24-hour stories — everything supports reactions, threaded comments and shares with built-in moderation. Saved posts become searchable memories you can revisit any time.",
         pricing: "Free to use • Boosted posts and creator tips paid in credits",
-        capabilities: ["Friend requests & follow graph", "Mute, block, report", "Hashtags & mentions", "Image and video upload up to 4K", "Story highlights archive", "Cross-post to Pages and Groups", "Verified badges", "Algorithm preference controls"] },
+        capabilities: ["Friend requests & follow graph", "Mute, block, report", "Hashtags & mentions", "Image and video upload up to 4K", "Story highlights archive", "Verified badges", "Algorithm preference controls"] },
       { path: "/messenger", title: "Messenger", icon: Mail,
         blurb: "1:1 and group chats with media, voice, video calls and reactions.",
         features: ["Privacy-first messaging", "Voice & video calls", "Group chats up to 100", "Pinned messages", "Media gallery", "Disappearing messages"],
