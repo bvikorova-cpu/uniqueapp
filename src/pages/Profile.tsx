@@ -18,6 +18,7 @@ import { ClubMembershipCard } from "@/components/profile/ClubMembershipCard";
 import { BillingOverviewCard } from "@/components/profile/BillingOverviewCard";
 
 import { XpBreakdown } from "@/components/profile/XpBreakdown";
+import { ReferralEarningsCounter } from "@/components/referral/ReferralEarningsCounter";
 import { finishMeTrace,
   markMeFirstPaint,
   readMeProfileSnapshot,
@@ -705,6 +706,15 @@ const Profile = () => {
             </Button>
           </Card>
         )}
+
+        {/* Referral money counter — own profile only, real DB totals */}
+        {currentUserId === userId && userId && (
+          <div className="mb-4">
+            <ReferralEarningsCounter userId={userId} />
+          </div>
+        )}
+
+
 
 
         {extendedReady ? (
