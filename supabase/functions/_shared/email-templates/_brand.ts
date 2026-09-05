@@ -10,7 +10,7 @@ export const brand = { primary: '#a855f7', // purple-500
   border: '#ece4ff',
   radius: '14px',
   font: "'Inter', 'Helvetica Neue', Arial, sans-serif",
-  logoUrl: 'https://uniqueapp.fun/pwa-192x192.png' }
+  logoUrl: 'https://www.uniqueapp.fun/unique-icon-v4-192.png' }
 
 export const styles = {
   main: { backgroundColor: '#f4eeff', fontFamily: brand.font, margin: 0, padding: '24px 0' },
