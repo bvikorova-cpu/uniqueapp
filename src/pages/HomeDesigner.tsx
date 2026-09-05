@@ -33,7 +33,7 @@ const HomeDesigner = () => {
       /><Navbar />
       <div className="container mx-auto px-4 pt-20 pb-8">
         <Button variant="ghost" onClick={() => setActiveView("hub")} className="mb-4"><ArrowLeft className="mr-2 h-4 w-4" /> Dashboard</Button>
-        <AIRoomDesigner onDesignComplete={loadStats} />
+        <AIRoomDesigner />
       </div>
     </div>
   );
