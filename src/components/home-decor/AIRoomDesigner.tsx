@@ -228,14 +228,12 @@ export function AIRoomDesigner({ onDesignComplete }: AIRoomDesignerProps) {
                 <SelectTrigger>
                   <SelectValue placeholder="Select style" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="modern">Modern</SelectItem>
-                  <SelectItem value="minimalist">Minimalist</SelectItem>
-                  <SelectItem value="scandinavian">Scandinavian</SelectItem>
-                  <SelectItem value="industrial">Industrial</SelectItem>
-                  <SelectItem value="bohemian">Bohemian</SelectItem>
-                  <SelectItem value="traditional">Traditional</SelectItem>
+                <SelectContent className="max-h-72">
+                  {ROOM_STYLES.map((s) => (
+                    <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+                  ))}
                 </SelectContent>
+
               </Select>
             </div>
           </div>
