@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -140,6 +140,7 @@ const CompanionChat = () => {
             <CardHeader className="border-b py-3 bg-card/90">
               <div className="flex items-center gap-3">
                 <Avatar className="ring-2 ring-primary/30">
+                  {character.avatar_url && <AvatarImage src={character.avatar_url} alt={character.name} />}
                   <AvatarFallback className="bg-primary/20 text-primary font-bold">
                     {character.name[0]}
                   </AvatarFallback>
@@ -176,6 +177,7 @@ const CompanionChat = () => {
                   <div className={`flex gap-2 max-w-[85%] ${message.role === "user" ? "flex-row-reverse" : ""}`}>
                     {message.role !== "user" && (
                       <Avatar className="h-7 w-7 flex-shrink-0">
+                        {character.avatar_url && <AvatarImage src={character.avatar_url} alt={character.name} />}
                         <AvatarFallback className="bg-primary/20 text-primary text-xs">{character.name[0]}</AvatarFallback>
                       </Avatar>
                     )}
@@ -198,6 +200,7 @@ const CompanionChat = () => {
               {loading && (
                 <div className="flex items-center gap-2">
                   <Avatar className="h-7 w-7">
+                    {character.avatar_url && <AvatarImage src={character.avatar_url} alt={character.name} />}
                     <AvatarFallback className="bg-primary/20 text-primary text-xs">{character.name[0]}</AvatarFallback>
                   </Avatar>
                   <div className="bg-muted rounded-2xl rounded-bl-md px-4 py-3">
