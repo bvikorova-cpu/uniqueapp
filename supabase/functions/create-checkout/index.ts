@@ -3077,26 +3077,9 @@ async function handler(req: Request): Promise<Response> {
           user_id: userId,
           credits: String(credits),
           type: `${creditType}_credits`,
-          // verify-credits-payment uses `credit_type` directly as the table name.
-          credit_type:
-            creditType === "science" ? "science_credits"
-            : creditType === "homework" ? "homework_credits"
-            : creditType === "chat" ? "chat_credits"
-            : creditType === "kids_drawing" ? "kids_drawing_credits"
-            : creditType === "kids_reading" ? "kids_reading_credits"
-            : creditType === "kids_story" ? "kids_story_credits"
-            : creditType === "kids_academy" ? "kids_academy_credits"
-            : creditType === "teen_career" ? "ai_credits"
-            : creditType === "teen_hub" ? "ai_credits"
-            : creditType === "coloring" ? "coloring_credits"
-            : creditType === "creative_forge" ? "ai_credits"
-            : creditType === "shadow_arena" ? "shadow_arena_credits"
-            : creditType === "collectibles" ? "collectibles_credits"
-            : creditType === "character_arena" ? "character_credits"
-            : creditType === "iq" ? "ai_credits"
-            : creditType === "handwriting" ? "ai_credits"
-            : creditType === "creative_forge" ? "ai_credits"
-            : creditType } });
+          // All purchased credits land in the unified `ai_credits` wallet.
+          credit_type: "ai_credits",
+          credit_module: creditType } });
 
       return successResponse({ url: session.url, session_id: session.id });
     }
