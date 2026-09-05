@@ -9,7 +9,8 @@ export const brand = { primary: '#a855f7', // purple-500
   cardBg: '#faf7ff',
   border: '#ece4ff',
   radius: '14px',
-  font: "'Inter', 'Helvetica Neue', Arial, sans-serif" }
+  font: "'Inter', 'Helvetica Neue', Arial, sans-serif",
+  logoUrl: 'https://uniqueapp.fun/pwa-192x192.png' }
 
 export const styles = {
   main: { backgroundColor: '#f4eeff', fontFamily: brand.font, margin: 0, padding: '24px 0' },
