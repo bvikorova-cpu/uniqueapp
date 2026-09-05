@@ -433,18 +433,16 @@ const CTA: React.FC<SP> = ({ dur, def, c }) => {
       <Photo src={def.image} dur={dur} zoom={[1.16, 1.32]} tint={PURPLE} dark={0.85} />
       <AbsoluteFill style={{ background: "rgba(8,3,15,0.72)" }} />
       <AbsoluteFill style={{ justifyContent: "center", alignItems: "center", gap: 24, padding: 60 }}>
-        <div
+        <Img
+          src={staticFile("images/unique-logo.png")}
           style={{
-            fontFamily: LOBSTER,
-            fontWeight: 700,
-            fontSize: 190,
-            color: CREAM,
+            width: 360,
+            height: 360,
+            borderRadius: 90,
             transform: `scale(${glow * interpolate(logo, [0, 1], [0.4, 1])})`,
-            textShadow: `0 0 80px ${PURPLE}, 0 0 150px ${PINK}`,
+            boxShadow: `0 0 80px ${PURPLE}, 0 0 150px ${PINK}`,
           }}
-        >
-          Unique
-        </div>
+        />
         <div
           style={{
             fontFamily: ANTON,
