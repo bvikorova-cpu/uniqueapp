@@ -722,7 +722,33 @@ A vivid one-line description of the dish.
       const stylePrefix = IMAGE_TYPES[type];
       const subject = customPrompt || reqBody.title || reqBody.description || `a ${type.replace(/_/g, " ")}`;
       const sourceImage = typeof reqBody.originalImageUrl === "string" ? reqBody.originalImageUrl : "";
-      const imgPrompt = `${stylePrefix} Subject: ${subject}${sourceImage ? ". Preserve the uploaded room's architecture, camera angle, doors and windows while applying the requested redesign." : ""}`;
+      const imgPrompt = sourceImage
+        ? `Photorealistic interior redesign of THIS EXACT room. ${subject}
+
+STRICT RULES:
+- Keep the identical camera position, focal length, perspective and framing as the uploaded photo.
+- Keep the real architecture exactly: same walls, same room proportions, same ceiling height, same floor layout.
+- Do NOT add, move, remove or invent windows, doors, balconies, fireplaces or extra daylight sources. If the photo has no window, the result must have no window.
+- Only change furniture, decor, textiles, wall/floor finishes and lighting fixtures.
+- Contemporary 2026 interior-design quality, magazine photography, realistic lighting matching the original photo.
+- Output an image only, no text.`
+        : `${stylePrefix} Subject: ${subject}`;
+
+      // Vertex AI first (with the uploaded room as reference), gateway as fallback.
+      if (sourceImage) {
+        try {
+          const vertex = await tryVertexImage(imgPrompt, undefined, 1, [sourceImage]);
+          const vb64 = vertex?.data?.[0]?.b64_json;
+          if (vb64) {
+            const vUrl = `data:image/png;base64,${vb64}`;
+            await __deduct().catch((e) => console.error("deduct failed:", e));
+            return new Response(JSON.stringify({ imageUrl: vUrl, templateImageUrl: vUrl, url: vUrl, image: vUrl }),
+              { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+          }
+        } catch (e) {
+          console.error("vertex room redesign failed:", e);
+        }
+      }
 
       const useGateway = Boolean(LOVABLE_API_KEY);
       const gatewayBody = sourceImage
@@ -744,6 +770,7 @@ A vivid one-line description of the dish.
             quality: "low",
             n: 1,
           };
+
       const imgResp = await fetch(
         useGateway
           ? "https://ai.gateway.lovable.dev/v1/images/generations"
