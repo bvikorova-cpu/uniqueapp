@@ -2191,15 +2191,18 @@ serve(async (req) => {
           const paidCentsMt = (inv as any).amount_paid ?? 0;
 
           if (mtTier && inv.id && paidCentsMt > 0) {
-            const { data: alreadyFunded } = await supabase
-              .from("admin_audit_log")
-              .select("id")
-              .eq("action", "mt_pool_funded")
-              .contains("details", { invoice_id: inv.id })
-              .maybeSingle();
+            // Claim the invoice FIRST — the unique partial index on
+            // admin_audit_log((details->>'invoice_id')) WHERE action='mt_pool_funded'
+            // makes this atomic, so concurrent Stripe retries can never
+            // double-fund the pool (safe at any user volume).
+            const { error: claimErr } = await supabase.from("admin_audit_log").insert({
+              admin_id: "00000000-0000-0000-0000-000000000000",
+              action: "mt_pool_funded",
+              target_type: "mt_contest_settings",
+              details: { invoice_id: inv.id, tier: mtTier, platform_eur: null, has_referral: null } });
 
-            if (alreadyFunded) {
-              log("mt pool: already funded for invoice", { invoice: inv.id });
+            if (claimErr) {
+              log("mt pool: already funded for invoice", { invoice: inv.id, err: claimErr.message });
             } else {
               // Does the buyer have an approved referral? Then €5 goes to them.
               let hasReferral = false;
@@ -2233,16 +2236,21 @@ serve(async (req) => {
                 .rpc("mt_add_platform_share", { _amount_eur: platformEur });
               if (poolErr) {
                 log("mt_add_platform_share failed", { err: poolErr.message });
+                // Release the claim so a Stripe retry can fund it again.
+                await supabase.from("admin_audit_log")
+                  .delete()
+                  .eq("action", "mt_pool_funded")
+                  .contains("details", { invoice_id: inv.id });
               } else {
-                await supabase.from("admin_audit_log").insert({
-                  admin_id: "00000000-0000-0000-0000-000000000000",
-                  action: "mt_pool_funded",
-                  target_type: "mt_contest_settings",
-                  details: { invoice_id: inv.id, tier: mtTier, platform_eur: platformEur, has_referral: hasReferral } });
+                await supabase.from("admin_audit_log")
+                  .update({ details: { invoice_id: inv.id, tier: mtTier, platform_eur: platformEur, has_referral: hasReferral } })
+                  .eq("action", "mt_pool_funded")
+                  .contains("details", { invoice_id: inv.id });
                 log("mt pool funded", { invoice: inv.id, platformEur, tier: mtTier });
               }
             }
           }
+
         } catch (poolCatch) {
           log("mt pool handler error", { err: (poolCatch as Error).message });
         }
