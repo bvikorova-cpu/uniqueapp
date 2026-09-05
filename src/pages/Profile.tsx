@@ -18,6 +18,7 @@ import { ClubMembershipCard } from "@/components/profile/ClubMembershipCard";
 import { BillingOverviewCard } from "@/components/profile/BillingOverviewCard";
 
 import { XpBreakdown } from "@/components/profile/XpBreakdown";
+import { ReferralEarningsCounter } from "@/components/referral/ReferralEarningsCounter";
 import { finishMeTrace,
   markMeFirstPaint,
   readMeProfileSnapshot,
