@@ -12,7 +12,8 @@ for (const id of ids) {
   const c = await selectComposition({ serveUrl: bundled, id, puppeteerInstance: browser });
   const out = `/mnt/documents/unique-${id}.mp4`;
   const t = Date.now();
-  await renderMedia({ composition: c, serveUrl: bundled, codec: "h264", outputLocation: out, puppeteerInstance: browser, muted: true, concurrency: 4, crf: 22 });
+  await renderMedia({ composition: c, serveUrl: bundled, codec: "h264", outputLocation: out, puppeteerInstance: browser, muted: true, concurrency: 8, crf: 23, scale: 2/3, imageFormat: "jpeg", jpegQuality: 90,
+    onProgress: (pr) => { if (pr.renderedFrames % 300 === 0) console.log("PROG", id, pr.renderedFrames, "/", c.durationInFrames, ((Date.now()-t)/1000).toFixed(0)+"s"); } });
   console.log("DONE", out, c.durationInFrames, "frames", ((Date.now()-t)/1000).toFixed(0)+"s");
 }
 await browser.close({ silent: false });

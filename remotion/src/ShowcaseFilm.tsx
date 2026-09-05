@@ -72,12 +72,6 @@ const Backdrop: React.FC<{ tint: string; seed: number }> = ({ tint, seed }) => {
           }}
         />
       ))}
-      <AbsoluteFill
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(0deg, rgba(255,255,255,0.035) 0 2px, transparent 2px 5px)",
-        }}
-      />
     </AbsoluteFill>
   );
 };
@@ -125,7 +119,7 @@ const Intro: React.FC<{ lang: ShowLang; sectionCount: number }> = ({ lang, secti
       >
         <Img
           src={staticFile("home/logo.png")}
-          style={{ width: 240, height: 240, borderRadius: 60, transform: `scale(${logoScale})`, boxShadow: "0 30px 90px rgba(255,45,148,.5)" }}
+          style={{ width: 240, height: 240, borderRadius: 60, transform: `scale(${logoScale})`, boxShadow: "0 14px 34px rgba(255,45,148,.5)" }}
         />
         <div
           style={{
@@ -301,7 +295,7 @@ const Shot: React.FC<{
             padding: 12,
             background: "linear-gradient(160deg, #ffffff33, #ffffff0d)",
             border: `3px solid ${section.tint}88`,
-            boxShadow: `0 50px 120px ${section.tint}55, 0 0 0 2px #ffffff18`,
+            boxShadow: `0 18px 40px ${section.tint}44`,
             overflow: "hidden",
             transform: `translateY(${interpolate(enter, [0, 1], [140, 0])}px) rotate(${tilt}deg) scale(${interpolate(
               enter,
