@@ -104,10 +104,10 @@ export async function verifyAndProcessPayment(
   // 7. Add credits to the UNIFIED ai_credits wallet (+ ledger row)
   try {
     const { error: rpcError } = await supabaseAdmin.rpc("add_ai_credits", {
-      _user_id: userId,
-      _amount: creditsToAdd,
-      _reason: `purchase:${creditType}`,
-      _source: "stripe" });
+      p_user_id: userId,
+      p_amount: creditsToAdd,
+      p_reason: `purchase:${creditType}`,
+      p_source: "stripe" });
     if (rpcError) throw rpcError;
 
     console.log(`[PAYMENT-VERIFICATION] Added ${creditsToAdd} credits (${creditType}) to ai_credits for user ${userId}`);
