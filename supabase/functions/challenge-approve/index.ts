@@ -73,7 +73,7 @@ Deno.serve(async (req) => {
       reviewed_at: new Date().toISOString(),
       reward_credits_granted: granted }).eq('id', submission_id);
 
-    return new Response(JSON.stringify({ ok: true, granted }), {
+    return new Response(JSON.stringify({ ok: true, granted, grantedXp }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   } catch (e) {
     return new Response(JSON.stringify({ error: String(e) }), {
