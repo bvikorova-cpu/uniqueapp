@@ -7,6 +7,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Trophy, Crown, Medal, Loader2, Gift } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { getRankingBoostFactor } from "@/hooks/useMegaTalentTier";
 
 interface Props {
   category: string;
@@ -56,16 +57,33 @@ export default function MegatalentLeaderboard({ category, categories }: Props) {
         const subs = (data as any[]) || [];
         const userIds = [...new Set(subs.map((s) => s.user_id))];
         let profiles: Record<string, any> = {};
+        const tiers: Record<string, string> = {};
         if (userIds.length > 0) {
-          const { data: pData } = await supabase
-            .from("profiles")
-            .select("id, full_name, avatar_url")
-            .in("id", userIds);
+          const [{ data: pData }, { data: sData }] = await Promise.all([
+            supabase.from("profiles").select("id, full_name, avatar_url").in("id", userIds),
+            supabase
+              .from("megatalent_subscriptions")
+              .select("user_id, tier")
+              .in("user_id", userIds)
+              .eq("status", "active"),
+          ]);
           (pData || []).forEach((p: any) => {
             profiles[p.id] = p;
           });
+          (sData || []).forEach((s: any) => {
+            tiers[s.user_id] = s.tier;
+          });
         }
-        const enriched = subs.map((s) => ({ ...s, profiles: profiles[s.user_id] }));
+        // TOP Premium = 2x ranking boost. Displayed vote count stays real.
+        const enriched = subs
+          .map((s) => ({
+            ...s,
+            profiles: profiles[s.user_id],
+            tier: tiers[s.user_id] ?? null,
+            ranking_score:
+              (s.votes_count || 0) * getRankingBoostFactor((tiers[s.user_id] as any) ?? null),
+          }))
+          .sort((a, b) => b.ranking_score - a.ranking_score);
         if (!cancelled) setRows(enriched);
       } catch (e) {
         console.error("leaderboard load", e);
