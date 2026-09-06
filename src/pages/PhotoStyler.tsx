@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import heroAsset from "@/assets/section-videos/photo-styler.mp4.asset.json";
 import { PHOTO_STYLES, PHOTO_STYLE_COST, PHOTO_STYLE_CATEGORIES } from "@/data/photoStyles";
+import { addUniqueWatermark } from "@/lib/watermarkImage";
 
 interface StyledResult {
   style: string;
@@ -28,6 +29,8 @@ interface StyledResult {
 
 const MAX_STYLES = 4;
 const MAX_FILE_MB = 12;
+const WATERMARK_REMOVAL_COST = 1;
+
 
 const PhotoStyler = () => {
   const { user } = useAuth();
@@ -43,6 +46,10 @@ const PhotoStyler = () => {
   const [busy, setBusy] = useState(false);
   const [screening, setScreening] = useState(false);
   const [results, setResults] = useState<StyledResult[]>([]);
+  const [marked, setMarked] = useState<Record<string, string>>({});
+  const [unlocked, setUnlocked] = useState<string[]>([]);
+  const [unlocking, setUnlocking] = useState<string | null>(null);
+
 
   const cost = selected.length * PHOTO_STYLE_COST;
 
@@ -140,6 +147,15 @@ const PhotoStyler = () => {
       if ((data as any)?.error) throw new Error((data as any).error);
       const list = ((data as any)?.results ?? []) as StyledResult[];
       setResults(list);
+      setUnlocked([]);
+      // Brand every artwork with the small Unique logo + uniqueapp.fun label.
+      const marks: Record<string, string> = {};
+      await Promise.all(
+        list.filter((r) => r.image).map(async (r) => {
+          marks[r.style] = await addUniqueWatermark(r.image as string);
+        }),
+      );
+      setMarked(marks);
       const ok = list.filter((r) => r.image).length;
       toast.success(`${ok} artwork(s) ready — ${ok * PHOTO_STYLE_COST} credits used.`);
       await refresh();
@@ -150,22 +166,59 @@ const PhotoStyler = () => {
     }
   };
 
+  /** The image the user sees / saves: watermarked unless they paid to remove it. */
+  const finalImage = (r: StyledResult) =>
+    (unlocked.includes(r.style) ? r.image : marked[r.style] ?? r.image) as string | undefined;
+
+  const removeWatermark = async (r: StyledResult) => {
+    if (!r.image || unlocked.includes(r.style)) return;
+    if (!user) {
+      toast.error("Please sign in first.");
+      return;
+    }
+    setUnlocking(r.style);
+    try {
+      const { data: ok, error } = await supabase.rpc("deduct_ai_credits", {
+        p_user_id: user.id,
+        p_amount: WATERMARK_REMOVAL_COST,
+        p_reason: `Photo Styler — remove watermark (${styleLabel(r.style)})`,
+        p_source: "photo-styler",
+      });
+      if (error) throw new Error(error.message);
+      if (ok === false) throw new Error(`Not enough credits — removing the logo costs ${WATERMARK_REMOVAL_COST} credit.`);
+      setUnlocked((prev) => [...prev, r.style]);
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      await refresh();
+      toast.success("Logo removed — download the clean image.");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not remove the logo.");
+    } finally {
+      setUnlocking(null);
+    }
+  };
+
   const download = (r: StyledResult) => {
-    if (!r.image) return;
+    const src = finalImage(r);
+    if (!src) return;
     const a = document.createElement("a");
-    a.href = r.image;
+    a.href = src;
     a.download = `unique-${r.style}.png`;
     a.click();
   };
 
   const share = async (r: StyledResult) => {
-    if (!r.image) return;
+    const src = finalImage(r);
+    if (!src) return;
     // 1) Native file share (mobile / installed PWA)
     try {
-      const blob = await (await fetch(r.image)).blob();
+      const blob = await (await fetch(src)).blob();
       const file = new File([blob], `unique-${r.style}.png`, { type: "image/png" });
       if (typeof navigator.share === "function" && navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file], title: "My Unique artwork" });
+        await navigator.share({
+          files: [file],
+          title: "My Unique artwork",
+          text: `My photo in ${styleLabel(r.style)} style — made with Unique Photo Styler · uniqueapp.fun`,
+        });
         return;
       }
     } catch (e) {
@@ -186,6 +239,7 @@ const PhotoStyler = () => {
     if (res === "cancelled") return;
     toast.error("Sharing is not available here. Use Download instead.");
   };
+
 
 
   const styleLabel = (id: string) => PHOTO_STYLES.find((s) => s.id === id)?.label ?? id;
@@ -508,11 +562,11 @@ const PhotoStyler = () => {
                     {r.image ? (
                       <>
                         <img
-                          src={r.image}
+                          src={finalImage(r) ?? r.image}
                           alt={`${styleLabel(r.style)} version of the uploaded photo`}
                           className="w-full rounded-xl object-cover"
                         />
-                        <div className="flex items-center justify-between gap-2 px-1 pb-1">
+                        <div className="flex items-center justify-between gap-2 px-1">
                           <span className="text-xs font-bold text-foreground">{styleLabel(r.style)}</span>
                           <div className="flex gap-1">
                             <Button size="icon" variant="ghost" onClick={() => download(r)} aria-label="Download artwork">
@@ -523,8 +577,34 @@ const PhotoStyler = () => {
                             </Button>
                           </div>
                         </div>
+                        <div className="px-1 pb-1">
+                          {unlocked.includes(r.style) ? (
+                            <p className="text-[11px] font-semibold text-primary">Clean version — logo removed ✓</p>
+                          ) : (
+                            <div className="space-y-1">
+                              <p className="text-[11px] text-muted-foreground">
+                                Saved with the small Unique logo and uniqueapp.fun in the corner.
+                              </p>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-7 w-full text-[11px]"
+                                disabled={unlocking === r.style}
+                                onClick={() => removeWatermark(r)}
+                              >
+                                {unlocking === r.style ? (
+                                  <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                                ) : (
+                                  <Zap className="mr-1 h-3 w-3" />
+                                )}
+                                Remove logo — {WATERMARK_REMOVAL_COST} credit
+                              </Button>
+                            </div>
+                          )}
+                        </div>
                       </>
                     ) : (
+
                       <div className="p-3 text-xs text-muted-foreground">
                         <p className="font-bold text-foreground">{styleLabel(r.style)}</p>
                         <p>{r.error ?? "Failed"} — no credits were charged for this style.</p>
