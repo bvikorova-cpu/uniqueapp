@@ -1511,7 +1511,7 @@ async function handler(req: Request): Promise<Response> {
       const kind = String(body.kind || "");
       const cancelPath = "/rewards?payment=canceled";
       const successPath = "/rewards?payment=success&session_id={CHECKOUT_SESSION_ID}";
-      let line_items: Array<{ price_data: { tax_behavior: "inclusive" as const, currency: string; product_data: { name: string }; unit_amount: number }; quantity: number }> = [];
+      let line_items: Array<{ price_data: { tax_behavior?: string; currency: string; product_data: { name: string }; unit_amount: number }; quantity: number }> = [];
       const metadata: Record<string, string> = { user_id: uid, kind, type: "rewards_checkout", product: "rewards_checkout" };
 
       if (kind === "battle_pass_premium") {
