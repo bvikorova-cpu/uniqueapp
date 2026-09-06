@@ -24,19 +24,39 @@ export async function addUniqueWatermark(src: string): Promise<string> {
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
     const unit = Math.min(canvas.width, canvas.height);
-    const logoSize = Math.round(unit * 0.11);
-    const pad = Math.round(unit * 0.035);
-    const fontSize = Math.max(10, Math.round(unit * 0.032));
+    const logoSize = Math.round(unit * 0.07);
+    const pad = Math.round(unit * 0.028);
+    const fontSize = Math.max(9, Math.round(unit * 0.026));
+    const gap = Math.round(logoSize * 0.35);
 
-    const x = canvas.width - pad - logoSize;
-    const y = canvas.height - pad - logoSize - fontSize * 1.35;
+    ctx.font = `600 ${fontSize}px system-ui, -apple-system, "Segoe UI", sans-serif`;
+    const label = "uniqueapp.fun";
+    const textW = ctx.measureText(label).width;
+
+    // Compact horizontal pill in the bottom-left corner so it never sits on the artwork text.
+    const boxH = Math.round(logoSize * 1.34);
+    const boxW = Math.round(logoSize + gap + textW + logoSize * 0.6);
+    const bx = pad;
+    const by = canvas.height - pad - boxH;
+    const br = boxH / 2;
 
     ctx.save();
-    ctx.shadowColor = "rgba(0,0,0,0.45)";
-    ctx.shadowBlur = Math.round(unit * 0.012);
+    ctx.beginPath();
+    ctx.moveTo(bx + br, by);
+    ctx.arcTo(bx + boxW, by, bx + boxW, by + boxH, br);
+    ctx.arcTo(bx + boxW, by + boxH, bx, by + boxH, br);
+    ctx.arcTo(bx, by + boxH, bx, by, br);
+    ctx.arcTo(bx, by, bx + boxW, by, br);
+    ctx.closePath();
+    ctx.fillStyle = "rgba(0,0,0,0.42)";
+    ctx.fill();
+
+    const x = bx + Math.round((boxH - logoSize) / 2);
+    const y = by + Math.round((boxH - logoSize) / 2);
     try {
       const logo = await loadImage(LOGO_URL);
-      const radius = logoSize * 0.22;
+      const radius = logoSize * 0.24;
+      ctx.save();
       ctx.beginPath();
       ctx.moveTo(x + radius, y);
       ctx.arcTo(x + logoSize, y, x + logoSize, y + logoSize, radius);
@@ -44,7 +64,6 @@ export async function addUniqueWatermark(src: string): Promise<string> {
       ctx.arcTo(x, y + logoSize, x, y, radius);
       ctx.arcTo(x, y, x + logoSize, y, radius);
       ctx.closePath();
-      ctx.save();
       ctx.clip();
       ctx.drawImage(logo, x, y, logoSize, logoSize);
       ctx.restore();
@@ -52,12 +71,12 @@ export async function addUniqueWatermark(src: string): Promise<string> {
       /* logo missing — keep the URL label only */
     }
 
-    ctx.font = `600 ${fontSize}px system-ui, -apple-system, "Segoe UI", sans-serif`;
-    ctx.textAlign = "right";
-    ctx.textBaseline = "top";
-    ctx.fillStyle = "rgba(255,255,255,0.95)";
-    ctx.fillText("uniqueapp.fun", canvas.width - pad, y + logoSize + fontSize * 0.35);
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "rgba(255,255,255,0.96)";
+    ctx.fillText(label, x + logoSize + gap, by + boxH / 2 + 1);
     ctx.restore();
+
 
     return canvas.toDataURL("image/png");
   } catch {
