@@ -55,7 +55,6 @@ serve(async (req) => {
       // Fallback: create inline price (test mode safe)
       sessionParams.line_items = [{
         price_data: {
-          tax_behavior: "inclusive" as const,
           currency: "eur",
           recurring: { interval: "month" },
           unit_amount: Math.round(tierCfg.price_eur * 100),
@@ -63,9 +62,6 @@ serve(async (req) => {
         quantity: 1 }];
     }
 
-    (sessionParams as any).automatic_tax = { enabled: true };
-    (sessionParams as any).tax_id_collection = { enabled: true };
-    if ((sessionParams as any).customer) (sessionParams as any).customer_update = { address: "auto", name: "auto" };
     const session = await stripe.checkout.sessions.create(sessionParams);
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

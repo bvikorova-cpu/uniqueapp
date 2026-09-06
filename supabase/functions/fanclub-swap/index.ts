@@ -57,7 +57,6 @@ serve(async (req) => {
         {
           id: item.id,
           price_data: {
-            tax_behavior: "inclusive" as const,
             currency: to.currency || "eur",
             recurring: { interval: "month" },
             unit_amount: to.price_cents,

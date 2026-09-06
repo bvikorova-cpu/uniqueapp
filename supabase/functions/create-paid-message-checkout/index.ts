@@ -84,15 +84,11 @@ serve(async (req) => {
 
     const origin = req.headers.get("origin") ?? "https://uniqueapp.fun";
     const session = await stripe.checkout.sessions.create({ customer: customerId,
-      automatic_tax: { enabled: true },
-      tax_id_collection: { enabled: true },
-      ...(customerId ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
       customer_email: customerId ? undefined : user.email,
       mode: "payment",
       line_items: [
         {
           price_data: {
-            tax_behavior: "inclusive" as const,
             currency: "eur",
             unit_amount: amountCents,
             product_data: {

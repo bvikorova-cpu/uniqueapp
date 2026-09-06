@@ -69,9 +69,6 @@ serve(async (req) => {
 
     const origin = req.headers.get("origin") || "https://uniqueapp.fun";
     const session = await stripe.checkout.sessions.create({
-      automatic_tax: { enabled: true },
-      tax_id_collection: { enabled: true },
-      ...(campaign.stripe_customer_id || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
       mode: "subscription",
       customer: campaign.stripe_customer_id || undefined,
       customer_email: campaign.stripe_customer_id ? undefined : campaign.email,
