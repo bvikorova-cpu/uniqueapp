@@ -33,12 +33,12 @@ export async function addUniqueWatermark(src: string): Promise<string> {
     const label = "uniqueapp.fun";
     const textW = ctx.measureText(label).width;
 
-    // Compact horizontal pill in the bottom-left corner so it never sits on the artwork text.
-    const boxH = Math.round(logoSize * 1.34);
-    const boxW = Math.round(logoSize + gap + textW + logoSize * 0.6);
-    const bx = pad;
-    const by = canvas.height - pad - boxH;
-    const br = boxH / 2;
+    // Vertical pill in the bottom-right corner: URL sits above the logo so text stays higher.
+    const boxW = Math.round(Math.max(logoSize * 1.45, textW + logoSize * 0.55));
+    const boxH = Math.round(logoSize * 2.25);
+    const bx = canvas.width - pad - boxW;
+    const by = canvas.height - pad - boxH - Math.round(unit * 0.035);
+    const br = boxW / 2;
 
     ctx.save();
     ctx.beginPath();
@@ -51,30 +51,30 @@ export async function addUniqueWatermark(src: string): Promise<string> {
     ctx.fillStyle = "rgba(0,0,0,0.42)";
     ctx.fill();
 
-    const x = bx + Math.round((boxH - logoSize) / 2);
-    const y = by + Math.round((boxH - logoSize) / 2);
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "rgba(255,255,255,0.96)";
+    ctx.fillText(label, bx + boxW / 2, by + fontSize * 0.9);
+
+    const logoX = bx + (boxW - logoSize) / 2;
+    const logoY = by + boxH - logoSize - Math.round(logoSize * 0.22);
     try {
       const logo = await loadImage(LOGO_URL);
       const radius = logoSize * 0.24;
       ctx.save();
       ctx.beginPath();
-      ctx.moveTo(x + radius, y);
-      ctx.arcTo(x + logoSize, y, x + logoSize, y + logoSize, radius);
-      ctx.arcTo(x + logoSize, y + logoSize, x, y + logoSize, radius);
-      ctx.arcTo(x, y + logoSize, x, y, radius);
-      ctx.arcTo(x, y, x + logoSize, y, radius);
+      ctx.moveTo(logoX + radius, logoY);
+      ctx.arcTo(logoX + logoSize, logoY, logoX + logoSize, logoY + logoSize, radius);
+      ctx.arcTo(logoX + logoSize, logoY + logoSize, logoX, logoY + logoSize, radius);
+      ctx.arcTo(logoX, logoY + logoSize, logoX, logoY, radius);
+      ctx.arcTo(logoX, logoY, logoX + logoSize, logoY, radius);
       ctx.closePath();
       ctx.clip();
-      ctx.drawImage(logo, x, y, logoSize, logoSize);
+      ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
       ctx.restore();
     } catch {
       /* logo missing — keep the URL label only */
     }
-
-    ctx.textAlign = "left";
-    ctx.textBaseline = "middle";
-    ctx.fillStyle = "rgba(255,255,255,0.96)";
-    ctx.fillText(label, x + logoSize + gap, by + boxH / 2 + 1);
     ctx.restore();
 
 
