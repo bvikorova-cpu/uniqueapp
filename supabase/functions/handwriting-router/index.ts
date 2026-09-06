@@ -138,6 +138,9 @@ Deno.serve(async (req) => {
           .single();
         if (insErr) return json({ error: "Could not create subscription record" }, 500);
         const session = await stripe.checkout.sessions.create({
+          automatic_tax: { enabled: true },
+          tax_id_collection: { enabled: true },
+          ...(customerId ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
           customer: customerId,
           line_items: [{ price: PRICES.couples, quantity: 1 }],
           mode: "subscription",
@@ -238,6 +241,9 @@ Deno.serve(async (req) => {
             .eq("id", subId);
         }
         const session = await stripe.checkout.sessions.create({
+          automatic_tax: { enabled: true },
+          tax_id_collection: { enabled: true },
+          ...(customerId ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
           customer: customerId,
           line_items: [{ price: PRICES.hr_pro, quantity: 1 }],
           mode: "subscription",

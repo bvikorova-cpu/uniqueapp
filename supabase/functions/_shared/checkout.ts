@@ -123,6 +123,7 @@ export function createCheckoutHandler(config: CheckoutConfig) { const log = crea
           description: config.productDescription });
         
         const priceData: Stripe.PriceCreateParams = { product: product.id,
+          tax_behavior: "inclusive",
           unit_amount: config.priceAmount,
           currency: config.currency || "eur",
           lookup_key: config.lookupKey };
@@ -138,6 +139,9 @@ export function createCheckoutHandler(config: CheckoutConfig) { const log = crea
       if (!priceId) throw new Error("Could not determine price ID");
       
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{ price: priceId, quantity: config.quantity || 1 }],
@@ -208,6 +212,9 @@ export function createDynamicCheckoutHandler(config: DynamicCheckoutConfig) { co
       }
       
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{ price: priceId, quantity: 1 }],
@@ -273,6 +280,9 @@ export function createCreditsCheckoutHandler(
       const origin = req.headers.get("origin") || "";
       
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{ price: priceIds[credits], quantity: 1 }],
@@ -349,6 +359,9 @@ export function createFlexibleCheckoutHandler(config: FlexibleCheckoutConfig) { 
       }
 
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{ price: priceId, quantity: 1 }],
@@ -432,6 +445,9 @@ export function createServiceCheckoutHandler(config: ServiceCheckoutConfig) { co
       const mode = config.subscriptionServices?.includes(serviceType) ? "subscription" : "payment";
 
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{ price: priceId, quantity: 1 }],
@@ -509,6 +525,9 @@ export function createPackageCheckoutHandler(config: PackageCheckoutConfig) { co
       const origin = req.headers.get("origin") || "";
 
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{ price: selectedPackage.price, quantity: 1 }],

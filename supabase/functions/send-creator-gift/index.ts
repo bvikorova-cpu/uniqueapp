@@ -86,10 +86,13 @@ serve(async (req) => {
     }
 
     const session = await stripe.checkout.sessions.create({
+      automatic_tax: { enabled: true },
+      tax_id_collection: { enabled: true },
       mode: "payment",
       customer_email: user.email,
       line_items: [{
         price_data: {
+          tax_behavior: "inclusive" as const,
           currency: "eur",
           product_data: {
             name: `${gift.icon ?? "🎁"} ${gift.name}`,

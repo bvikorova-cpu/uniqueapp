@@ -63,6 +63,7 @@ serve(async (req) => {
       ? { price: tier.stripe_price_id as string, quantity: 1 }
       : {
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             recurring: { interval: "month" as const },
             product_data: { name: `Creator tier: ${tier.name}` },
@@ -82,6 +83,9 @@ serve(async (req) => {
     }
 
     const session = await stripe.checkout.sessions.create({
+      automatic_tax: { enabled: true },
+      tax_id_collection: { enabled: true },
+      ...(customerId ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       mode: "subscription",

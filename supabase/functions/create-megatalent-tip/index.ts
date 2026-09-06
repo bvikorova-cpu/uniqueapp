@@ -66,12 +66,15 @@ Deno.serve(async (req) => {
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
 
     const session = await stripe.checkout.sessions.create({
+      automatic_tax: { enabled: true },
+      tax_id_collection: { enabled: true },
       customer_email: user.email ?? undefined,
       mode: "payment",
       payment_method_types: ["card"],
       line_items: [
         {
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             product_data: {
               name: "Megatalent Tip",

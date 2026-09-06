@@ -55,11 +55,15 @@ serve(async (req) => {
 
     const origin = req.headers.get("origin") || DEFAULT_ORIGIN;
     const session = await stripe.checkout.sessions.create({
+      automatic_tax: { enabled: true },
+      tax_id_collection: { enabled: true },
+      ...(customerId ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
       customer: customerId,
       mode: "subscription",
       line_items: [
         {
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: club.currency || "eur",
             recurring: { interval: "month" },
             unit_amount: club.price_cents,

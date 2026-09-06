@@ -110,12 +110,16 @@ serve(async (req) => {
     const customerId = customers.data[0]?.id;
 
     const session = await stripe.checkout.sessions.create({
+      automatic_tax: { enabled: true },
+      tax_id_collection: { enabled: true },
+      ...(customerId ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       mode: "payment",
       line_items: [
         {
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             unit_amount: priceCents,
             product_data: {

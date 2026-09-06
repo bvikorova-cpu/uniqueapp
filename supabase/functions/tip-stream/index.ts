@@ -34,10 +34,13 @@ Deno.serve(async (req) => {
     const origin = req.headers.get('origin') ?? 'https://uniqueapp.fun';
 
     const session = await stripe.checkout.sessions.create({
+      automatic_tax: { enabled: true },
+      tax_id_collection: { enabled: true },
       mode: 'payment',
       payment_method_types: ['card'],
       line_items: [{
         price_data: {
+          tax_behavior: "inclusive" as const,
           currency: 'eur',
           product_data: { name: `Tip for live stream`, description: message?.slice(0, 200) ?? undefined },
           unit_amount: amountCents },
