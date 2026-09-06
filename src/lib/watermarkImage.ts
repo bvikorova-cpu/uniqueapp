@@ -2,7 +2,7 @@
  * Adds a small Unique logo + uniqueapp.fun label into the bottom-right corner
  * of a generated image. Users can pay 1 credit to get the clean version.
  */
-const LOGO_URL = "/unique-icon-v4-192.png";
+const LOGO_URL = "/unique-icon-v5-192.png";
 
 const loadImage = (src: string) =>
   new Promise<HTMLImageElement>((resolve, reject) => {
