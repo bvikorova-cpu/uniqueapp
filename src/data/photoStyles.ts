@@ -642,6 +642,31 @@ export const PHOTO_STYLES: PhotoStyle[] = [
   { id: "hiphopstudio", label: "Hip-hop studio", emoji: "🧢", group: "Dance & Circus" },
   { id: "iceskating", label: "Ice dance", emoji: "⛸️", group: "Dance & Circus" },
   { id: "poledance", label: "Pole artistry", emoji: "✨", group: "Dance & Circus" },
+
+  { id: "motivgodfirst", label: "God first", emoji: "🙏", group: "Motivational Quotes" },
+  { id: "motivdreambig", label: "Dream big", emoji: "🌟", group: "Motivational Quotes" },
+  { id: "motivneverquit", label: "Never quit", emoji: "🔥", group: "Motivational Quotes" },
+  { id: "motivbelieve", label: "Believe", emoji: "💫", group: "Motivational Quotes" },
+  { id: "motivgrateful", label: "Grateful", emoji: "🕊️", group: "Motivational Quotes" },
+  { id: "motivstrongwoman", label: "Strong woman", emoji: "👑", group: "Motivational Quotes" },
+  { id: "motivfaith", label: "Faith over fear", emoji: "✝️", group: "Motivational Quotes" },
+  { id: "motivrise", label: "Rise up", emoji: "🌄", group: "Motivational Quotes" },
+  { id: "motivbekind", label: "Be kind", emoji: "💗", group: "Motivational Quotes" },
+  { id: "motivnolimits", label: "No limits", emoji: "🚀", group: "Motivational Quotes" },
+  { id: "motivhustle", label: "Hustle", emoji: "💼", group: "Motivational Quotes" },
+  { id: "motivpeace", label: "Inner peace", emoji: "🧘", group: "Motivational Quotes" },
+  { id: "motivshine", label: "Shine", emoji: "✨", group: "Motivational Quotes" },
+  { id: "motivbrave", label: "Be brave", emoji: "🦁", group: "Motivational Quotes" },
+  { id: "motivblessed", label: "Blessed", emoji: "🙌", group: "Motivational Quotes" },
+  { id: "motivfocus", label: "Stay focused", emoji: "🎯", group: "Motivational Quotes" },
+  { id: "motivlove", label: "Choose love", emoji: "❤️", group: "Motivational Quotes" },
+  { id: "motivnewday", label: "New day", emoji: "🌅", group: "Motivational Quotes" },
+  { id: "motivqueen", label: "Queen energy", emoji: "👸", group: "Motivational Quotes" },
+  { id: "motivkeepgoing", label: "Keep going", emoji: "🏃", group: "Motivational Quotes" },
+  { id: "motivsmile", label: "Smile more", emoji: "😊", group: "Motivational Quotes" },
+  { id: "motivpurpose", label: "Live with purpose", emoji: "🧭", group: "Motivational Quotes" },
+  { id: "motivmiracle", label: "Be the miracle", emoji: "🌈", group: "Motivational Quotes" },
+  { id: "motivlegacy", label: "Build a legacy", emoji: "🏛️", group: "Motivational Quotes" },
 ];
 
 
@@ -660,6 +685,7 @@ export const PHOTO_STYLE_CATEGORIES: { name: string; emoji: string; groups: stri
   { name: "Work & Royalty", emoji: "👔", groups: ["Professions & Uniforms Extra", "Professional & Business", "Career & Portrait Scenes", "Royal & Historical"] },
   { name: "Sports & Music", emoji: "🏆", groups: ["Sports & Action", "Music & Stage", "Cars & Motorsport"] },
   { name: "Everyday, Food & Nature", emoji: "🌿", groups: ["Food & Café Scenes", "Animals & Companions", "Seasons & Weather"] },
+  { name: "Motivation & Quotes", emoji: "💬", groups: ["Motivational Quotes"] },
   { name: "Unique Brand", emoji: "✨", groups: ["Unique Brand"] },
 ];
 
