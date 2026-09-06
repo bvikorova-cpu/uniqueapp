@@ -25,21 +25,27 @@ export async function addUniqueWatermark(src: string): Promise<string> {
 
     const unit = Math.min(canvas.width, canvas.height);
     const logoSize = Math.round(unit * 0.07);
-    const pad = Math.round(unit * 0.028);
-    const fontSize = Math.max(9, Math.round(unit * 0.024));
+    const pad = Math.round(unit * 0.032);
 
-    ctx.font = `600 ${fontSize}px system-ui, -apple-system, "Segoe UI", sans-serif`;
+    // Fit the full "uniqueapp.fun" label to the left of the right edge.
+    let fontSize = Math.max(9, Math.round(unit * 0.024));
     const label = "uniqueapp.fun";
-    const textW = ctx.measureText(label).width;
+    let textW = 0;
+
+    ctx.save();
+    do {
+      ctx.font = `600 ${fontSize}px system-ui, -apple-system, "Segoe UI", sans-serif`;
+      textW = ctx.measureText(label).width;
+      if (textW > logoSize + pad * 2) fontSize--;
+    } while (fontSize > 9 && textW > logoSize + pad * 2);
 
     // Logo in the bottom-right corner, URL directly above it — no background bubble.
     const logoX = canvas.width - pad - logoSize;
-    const logoY = canvas.height - pad - logoSize - Math.round(unit * 0.035);
-    const textX = logoX + logoSize / 2;
-    const textY = logoY - Math.round(logoSize * 0.18);
+    const logoY = canvas.height - pad - logoSize - Math.round(unit * 0.012);
+    const textX = logoX + logoSize - pad;
+    const textY = logoY - Math.round(logoSize * 0.12);
 
-    ctx.save();
-    ctx.textAlign = "center";
+    ctx.textAlign = "right";
     ctx.textBaseline = "bottom";
 
     // Subtle outline/shadow for readability on any background.
