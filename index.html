@@ -3,11 +3,8 @@
   <head>
     <meta charset="UTF-8" />
 
-    <!-- Performance: preconnect to Supabase. NOTE: no `crossorigin` attr — supabase-js
-         uses fetch without credentials, so a credentialed preconnect would not match
-         the real request and Lighthouse flags it as "unused preconnect". -->
-    <link rel="preconnect" href="https://jufrdzeonywluwutvyxz.supabase.co" />
-    <link rel="dns-prefetch" href="https://jufrdzeonywluwutvyxz.supabase.co" />
+    <!-- Supabase preconnect removed: supabase-js uses fetch without credentials,
+         so the preconnect was flagged as unused and added no LCP benefit. -->
     <!-- Lobster Two is the brand wordmark font used across Unique (logo, hero, dating modal).
          Loaded globally because it is part of the brand identity. Other niche fonts
          remain lazy-injected via src/utils/lazyFonts.ts. -->

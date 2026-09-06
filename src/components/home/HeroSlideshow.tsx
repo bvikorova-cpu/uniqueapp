@@ -15,7 +15,7 @@ export function HeroSlideshow() {
         alt="Unique — abstract iridescent spiral"
         // React 18 forwards only the lowercase attribute without warning
         {...{ fetchpriority: "high" }}
-
+        loading="eager"
         decoding="async"
         className="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none"
         style={{ filter: "brightness(1.02) saturate(1.1)" }}
