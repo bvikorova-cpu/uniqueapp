@@ -258,16 +258,17 @@ export const FriendChallenges = () => {
 
       // Fetch profiles for challengers and challenged users
       const userIds = new Set<string>();
-      data?.forEach((challenge) => {
+      fresh.forEach((challenge) => {
         userIds.add(challenge.challenger_id);
         userIds.add(challenge.challenged_id);
       });
 
       const profiles = await fetchPublicProfilesByIds(Array.from(userIds));
 
-      return data?.map((challenge) => ({ ...challenge,
+      return fresh.map((challenge) => ({ ...challenge,
         challenger_profile: profiles.find((p) => p.id === challenge.challenger_id),
-        challenged_profile: profiles.find((p) => p.id === challenge.challenged_id) })) || [];
+        challenged_profile: profiles.find((p) => p.id === challenge.challenged_id) }));
+
     } });
 
   // Create challenge mutation
