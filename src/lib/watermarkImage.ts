@@ -26,38 +26,31 @@ export async function addUniqueWatermark(src: string): Promise<string> {
     const unit = Math.min(canvas.width, canvas.height);
     const logoSize = Math.round(unit * 0.07);
     const pad = Math.round(unit * 0.028);
-    const fontSize = Math.max(9, Math.round(unit * 0.026));
-    const gap = Math.round(logoSize * 0.35);
+    const fontSize = Math.max(9, Math.round(unit * 0.024));
 
     ctx.font = `600 ${fontSize}px system-ui, -apple-system, "Segoe UI", sans-serif`;
     const label = "uniqueapp.fun";
     const textW = ctx.measureText(label).width;
 
-    // Vertical pill in the bottom-right corner: URL sits above the logo so text stays higher.
-    const boxW = Math.round(Math.max(logoSize * 1.45, textW + logoSize * 0.55));
-    const boxH = Math.round(logoSize * 2.25);
-    const bx = canvas.width - pad - boxW;
-    const by = canvas.height - pad - boxH - Math.round(unit * 0.035);
-    const br = boxW / 2;
+    // Logo in the bottom-right corner, URL directly above it — no background bubble.
+    const logoX = canvas.width - pad - logoSize;
+    const logoY = canvas.height - pad - logoSize - Math.round(unit * 0.035);
+    const textX = logoX + logoSize / 2;
+    const textY = logoY - Math.round(logoSize * 0.18);
 
     ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(bx + br, by);
-    ctx.arcTo(bx + boxW, by, bx + boxW, by + boxH, br);
-    ctx.arcTo(bx + boxW, by + boxH, bx, by + boxH, br);
-    ctx.arcTo(bx, by + boxH, bx, by, br);
-    ctx.arcTo(bx, by, bx + boxW, by, br);
-    ctx.closePath();
-    ctx.fillStyle = "rgba(0,0,0,0.42)";
-    ctx.fill();
-
     ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillStyle = "rgba(255,255,255,0.96)";
-    ctx.fillText(label, bx + boxW / 2, by + fontSize * 0.9);
+    ctx.textBaseline = "bottom";
 
-    const logoX = bx + (boxW - logoSize) / 2;
-    const logoY = by + boxH - logoSize - Math.round(logoSize * 0.22);
+    // Subtle outline/shadow for readability on any background.
+    ctx.shadowColor = "rgba(0,0,0,0.55)";
+    ctx.shadowBlur = Math.max(2, Math.round(unit * 0.006));
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+
+    ctx.fillStyle = "rgba(255,255,255,0.96)";
+    ctx.fillText(label, textX, textY);
+
     try {
       const logo = await loadImage(LOGO_URL);
       const radius = logoSize * 0.24;
@@ -76,6 +69,7 @@ export async function addUniqueWatermark(src: string): Promise<string> {
       /* logo missing — keep the URL label only */
     }
     ctx.restore();
+
 
 
     return canvas.toDataURL("image/png");
