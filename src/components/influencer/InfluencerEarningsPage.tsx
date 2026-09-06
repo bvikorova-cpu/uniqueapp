@@ -227,7 +227,7 @@ export const InfluencerEarningsPage = () => {
   const available = Math.max(0, pendingBalance - lockedInWithdrawals);
   const grossFromGifts = (gifts || []).reduce((s, g) => s + Number(g.amount || 0), 0);
   const platformFee = (gifts || []).reduce(
-    (s, g) => s + Number(g.platform_commission ?? Number(g.amount || 0) * 0.2), 0);
+    (s, g) => s + Number(g.platform_commission ?? Number(g.amount || 0) * 0.15), 0);
 
   return (
     <div className="space-y-6">
