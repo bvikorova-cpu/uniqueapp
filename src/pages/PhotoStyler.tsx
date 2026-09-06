@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { shareLink } from "@/lib/shareLink";
 import {
   Brush, Download, ImagePlus, Loader2, Palette, Share2, ShieldCheck, Sparkles, Wand2, Zap,
+  ChevronDown,
 } from "lucide-react";
 import heroAsset from "@/assets/section-videos/photo-styler.mp4.asset.json";
 import { PHOTO_STYLES, PHOTO_STYLE_COST, PHOTO_STYLE_GROUPS, PHOTO_STYLE_CATEGORIES } from "@/data/photoStyles";
