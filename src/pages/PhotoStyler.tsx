@@ -562,11 +562,11 @@ const PhotoStyler = () => {
                     {r.image ? (
                       <>
                         <img
-                          src={r.image}
+                          src={finalImage(r) ?? r.image}
                           alt={`${styleLabel(r.style)} version of the uploaded photo`}
                           className="w-full rounded-xl object-cover"
                         />
-                        <div className="flex items-center justify-between gap-2 px-1 pb-1">
+                        <div className="flex items-center justify-between gap-2 px-1">
                           <span className="text-xs font-bold text-foreground">{styleLabel(r.style)}</span>
                           <div className="flex gap-1">
                             <Button size="icon" variant="ghost" onClick={() => download(r)} aria-label="Download artwork">
@@ -577,8 +577,34 @@ const PhotoStyler = () => {
                             </Button>
                           </div>
                         </div>
+                        <div className="px-1 pb-1">
+                          {unlocked.includes(r.style) ? (
+                            <p className="text-[11px] font-semibold text-primary">Clean version — logo removed ✓</p>
+                          ) : (
+                            <div className="space-y-1">
+                              <p className="text-[11px] text-muted-foreground">
+                                Saved with the small Unique logo and uniqueapp.fun in the corner.
+                              </p>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-7 w-full text-[11px]"
+                                disabled={unlocking === r.style}
+                                onClick={() => removeWatermark(r)}
+                              >
+                                {unlocking === r.style ? (
+                                  <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                                ) : (
+                                  <Zap className="mr-1 h-3 w-3" />
+                                )}
+                                Remove logo — {WATERMARK_REMOVAL_COST} credit
+                              </Button>
+                            </div>
+                          )}
+                        </div>
                       </>
                     ) : (
+
                       <div className="p-3 text-xs text-muted-foreground">
                         <p className="font-bold text-foreground">{styleLabel(r.style)}</p>
                         <p>{r.error ?? "Failed"} — no credits were charged for this style.</p>
