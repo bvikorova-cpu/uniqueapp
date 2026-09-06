@@ -33,9 +33,14 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 flex-wrap">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">U</span>
-              </div>
+              <img
+                src="/unique-icon-v5-192.png"
+                alt="Unique logo"
+                width={32}
+                height={32}
+                loading="lazy"
+                className="h-8 w-8 rounded-lg"
+              />
               <span className="font-bold text-xl">UNIQUE</span>
             </div>
             <p className="text-sm text-muted-foreground">
