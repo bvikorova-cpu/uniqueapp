@@ -902,7 +902,9 @@ serve(async (req) => {
         continue;
       }
       const kidsBoost = style.startsWith("kid")
-        ? " Ultra vivid, joyful children's-storybook look: highly saturated candy colours (hot pink, turquoise, sunny yellow, lime), sparkles, confetti, glitter and rainbow light, cute fluffy animal friends nearby (kittens, puppies, bunnies) with big shiny eyes, soft round shapes, bright cheerful daylight, playful and magical, absolutely nothing dark or dull."
+        ? photoreal
+          ? " Photorealistic children's lifestyle scene: real kids and real fluffy animals, vivid candy colours as real props and clothing, natural confetti/glitter caught in real light, bright cheerful daylight, shallow depth of field, professional lifestyle photography. No cartoon outlines, no illustration, no 3D render, no storybook painting."
+          : " Ultra vivid, joyful children's-storybook look: highly saturated candy colours (hot pink, turquoise, sunny yellow, lime), sparkles, confetti, glitter and rainbow light, cute fluffy animal friends nearby (kittens, puppies, bunnies) with big shiny eyes, soft round shapes, bright cheerful daylight, playful and magical, absolutely nothing dark or dull."
         : "";
       // Styles that are explicitly an art medium keep their look; everything
       // else (costumes, professions, buildings, emotions, places, motivation…)
