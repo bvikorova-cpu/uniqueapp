@@ -30,7 +30,7 @@ export function AiSleepStoryCard() {
                   <Sparkles className="w-3 h-3" /> 3 credits
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground">Custom calming bedtime story</p>
+              <p className="text-xs text-muted-foreground">Custom bedtime story with calming voice</p>
             </div>
           </div>
         </Card>
@@ -47,7 +47,7 @@ export function AiSleepStoryCard() {
           disabled={theme.length < 3 || generate.isPending}
           className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold">
           <Sparkles className="w-4 h-4 mr-2" />
-          {generate.isPending ? "Writing your story..." : "Generate Story (3 credits)"}
+          {generate.isPending ? "Writing & narrating..." : "Generate Story (3 credits)"}
         </Button>
 
         {stories.length > 0 && (

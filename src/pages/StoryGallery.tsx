@@ -232,6 +232,7 @@ export default function StoryGallery() {
           <StoryVideoPlayer
             scenes={playingStory.scenes.map(s => s.text)}
             images={playingStory.images}
+            audioFiles={playingStory.audio_files || undefined}
             sceneDuration={playingStory.scene_duration}
           />
         </div>
