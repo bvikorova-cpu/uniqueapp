@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import heroAsset from "@/assets/section-videos/photo-styler.mp4.asset.json";
 import { PHOTO_STYLES, PHOTO_STYLE_COST, PHOTO_STYLE_CATEGORIES } from "@/data/photoStyles";
+import { addUniqueWatermark } from "@/lib/watermarkImage";
 
 interface StyledResult {
   style: string;
@@ -28,6 +29,8 @@ interface StyledResult {
 
 const MAX_STYLES = 4;
 const MAX_FILE_MB = 12;
+const WATERMARK_REMOVAL_COST = 1;
+
 
 const PhotoStyler = () => {
   const { user } = useAuth();
