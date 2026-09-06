@@ -25,23 +25,36 @@ export function SectionVideoPreview({ src,
   const [isReady, setIsReady] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
-  // Mount video once it's near viewport
+  // Mount video only after the page finished loading AND it's near viewport
   useEffect(() => {
     const el = figureRef.current;
     if (!el) return;
     if (shouldLoad) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          setShouldLoad(true);
-          io.disconnect();
-        }
-      },
-      { rootMargin: "200px 0px", threshold: 0.01 }
-    );
-    io.observe(el);
-    return () => io.disconnect();
+    let io: IntersectionObserver | null = null;
+    const start = () => {
+      if (!figureRef.current) return;
+      io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            setShouldLoad(true);
+            io?.disconnect();
+          }
+        },
+        { rootMargin: "200px 0px", threshold: 0.01 }
+      );
+      io.observe(figureRef.current);
+    };
+    if (document.readyState === "complete") {
+      start();
+    } else {
+      window.addEventListener("load", start, { once: true });
+    }
+    return () => {
+      io?.disconnect();
+      window.removeEventListener("load", start);
+    };
   }, [shouldLoad]);
+
 
   // Track visibility for play/pause
   useEffect(() => {
