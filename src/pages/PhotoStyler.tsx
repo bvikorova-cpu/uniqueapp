@@ -143,7 +143,16 @@ const PhotoStyler = () => {
       const { data, error } = await supabase.functions.invoke("photo-styler", {
         body: { image: photo, styles: selected, customPrompt, aspect, changeOutfit, photoreal },
       });
-      if (error) throw new Error(error.message);
+      if (error) {
+        // functions.invoke hides the body on non-2xx — read the real server message.
+        let msg = error.message;
+        const ctx = (error as unknown as { context?: Response }).context;
+        try {
+          const body = await ctx?.clone().json();
+          if (body?.error) msg = String(body.error);
+        } catch { /* keep default message */ }
+        throw new Error(msg);
+      }
       if ((data as any)?.error) throw new Error((data as any).error);
       const list = ((data as any)?.results ?? []) as StyledResult[];
       setResults(list);
