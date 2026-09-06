@@ -3,7 +3,7 @@ import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { Button } from "@/components/ui/button";
-import { Info } from "lucide-react";
+import { Info, Volume2, VolumeX } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Hotspot {
@@ -17,6 +17,7 @@ interface PanoramaViewerProps {
   imageUrl: string;
   hotspots?: Hotspot[];
   onHotspotClick?: (hotspot: Hotspot) => void;
+  audioGuideText?: string;
 }
 
 function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
@@ -78,8 +79,26 @@ export function PanoramaViewer({
   imageUrl, 
   hotspots = [], 
   onHotspotClick,
+  audioGuideText 
 }: PanoramaViewerProps) {
+  const [isPlaying, setIsPlaying] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+
+  const handleSpeak = () => {
+    if (!audioGuideText) return;
+
+    if (isPlaying) {
+      window.speechSynthesis.cancel();
+      setIsPlaying(false);
+    } else {
+      const utterance = new SpeechSynthesisUtterance(audioGuideText);
+      utterance.rate = 0.9;
+      utterance.pitch = 1;
+      utterance.onend = () => setIsPlaying(false);
+      window.speechSynthesis.speak(utterance);
+      setIsPlaying(true);
+    }
+  };
 
   return (
     <div className="relative w-full h-screen">

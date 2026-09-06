@@ -147,6 +147,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "110", title: "Kids Reading Companion", category: "Kids", path: "/kids-reading-companion" },
   { id: "111", title: "Teen Career Counselor", category: "Kids", path: "/teen-career-counselor" },
   { id: "112", title: "Choose Adventure", category: "Kids", path: "/choose-adventure" },
+  { id: "113", title: "Kids Voice Chat", category: "Kids", path: "/kids-voice-chat" },
   { id: "114", title: "Create Character", category: "Kids", path: "/create-character" },
   { id: "115", title: "Character Gallery", category: "Kids", path: "/character-gallery" },
   { id: "116", title: "Character Battle", category: "Kids", path: "/kids-stories/battle" },

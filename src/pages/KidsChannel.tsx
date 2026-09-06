@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, Play, Star, Sparkles, Crown, BookOpen, Trophy, Moon, CreditCard, Video, Castle, Palette, Unlock, Library, BarChart3 } from "lucide-react";
+import { Heart, Play, Star, Sparkles, Crown, BookOpen, Volume2, Trophy, Moon, CreditCard, Video, Castle, Palette, Unlock, Shield, Library, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
 import castleBg from "@/assets/kids/fairy-castle-bg.jpg";
 import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
@@ -112,6 +112,7 @@ const KidsChannel = () => {
   const { hasGoldPass, loading: goldPassLoading } = useKidsGoldPass();
 
   const AI_FEATURES = [
+    { path: '/kids-stories/voice-chat', name: 'Character Chat' },
     { path: '/kids-story-creator', name: 'Story Creator' },
     { path: '/kids-homework', name: 'AI Homework Helper' },
   ];
@@ -198,6 +199,22 @@ const KidsChannel = () => {
 
         {/* Interactive Features Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-8">
+          <FeatureCard
+            title="Chat with Characters! 💬"
+            description="Have real conversations with your favorite characters!"
+            icon={Volume2}
+            iconColor="text-green-500"
+            gradient="from-green-100/95 to-emerald-100/95"
+            badges={[
+              { text: "Voice Interactive", color: "bg-green-500 text-white" },
+              { text: "Parent Check", color: "bg-purple-600 text-white", icon: Shield },
+            ]}
+            onClick={() => handleFeatureNavigation('/kids-stories/voice-chat', 'Character Chat', true)}
+            delay={0}
+            hasGoldPass={hasGoldPass}
+            showUnlocked
+          />
+
           <FeatureCard
             title="Story Games! 🎮"
             description="Solve puzzles and play games to unlock the next part of your story!"
