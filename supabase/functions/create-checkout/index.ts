@@ -960,8 +960,7 @@ async function handler(req: Request): Promise<Response> {
         success_url: `${origin}${cfg.successPath}`,
         cancel_url: `${origin}${cfg.cancelPath}`,
         ...(isSubscription
-          ? {
-              billing_address_collection: "required" as const,
+          ? { billing_address_collection: "required" as const }
           : {}),
         metadata: {
           user_id: userId ?? "",

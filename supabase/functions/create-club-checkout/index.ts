@@ -62,8 +62,6 @@ serve(async (req) => {
         referral_code: referralCode ?? "" },
       ...(tier === "physical"
         ? { billing_address_collection: "required" as const,
-            ...(customerId
-              : {}),
             shipping_address_collection: {
               allowed_countries: [
                 "SK","CZ","HU","AT","DE","PL","FR","IT","ES","NL","BE","IE","PT","SE","DK","FI","GR","RO","BG","HR","SI","LT","LV","EE","LU","MT","CY","GB","US","CA","AU","CH","NO"
