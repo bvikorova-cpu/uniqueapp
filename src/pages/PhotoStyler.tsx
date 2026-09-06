@@ -46,6 +46,10 @@ const PhotoStyler = () => {
   const [busy, setBusy] = useState(false);
   const [screening, setScreening] = useState(false);
   const [results, setResults] = useState<StyledResult[]>([]);
+  const [marked, setMarked] = useState<Record<string, string>>({});
+  const [unlocked, setUnlocked] = useState<string[]>([]);
+  const [unlocking, setUnlocking] = useState<string | null>(null);
+
 
   const cost = selected.length * PHOTO_STYLE_COST;
 
