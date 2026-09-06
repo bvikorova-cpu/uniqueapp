@@ -257,15 +257,15 @@ const PhotoStyler = () => {
           </CardContent>
         </Card>
 
-        <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="grid min-w-0 gap-6 lg:grid-cols-[1.05fr_0.95fr]">
           {/* LEFT: upload + styles */}
-          <Card className="border-primary/20 bg-card/80">
+          <Card className="min-w-0 border-primary/20 bg-card/80">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary" /> Your photo
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-5">
+            <CardContent className="min-w-0 space-y-5 p-4 sm:p-6">
               <input
                 ref={fileRef}
                 type="file"
@@ -303,7 +303,7 @@ const PhotoStyler = () => {
                 <Input
                   value={styleQuery}
                   onChange={(e) => setStyleQuery(e.target.value)}
-                  placeholder="Search all 290+ styles (Paris, anime, beach…)"
+                  placeholder="Search styles (Paris, anime, beach…)"
                   className="h-9 text-sm"
                 />
 
@@ -468,7 +468,7 @@ const PhotoStyler = () => {
           </Card>
 
           {/* RIGHT: results */}
-          <Card className="border-primary/20 bg-card/80">
+          <Card className="min-w-0 border-primary/20 bg-card/80">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Brush className="h-5 w-5 text-primary" /> Your artworks
