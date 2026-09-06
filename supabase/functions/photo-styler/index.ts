@@ -897,13 +897,18 @@ serve(async (req) => {
       const kidsBoost = style.startsWith("kid")
         ? " Ultra vivid, joyful children's-storybook look: highly saturated candy colours (hot pink, turquoise, sunny yellow, lime), sparkles, confetti, glitter and rainbow light, cute fluffy animal friends nearby (kittens, puppies, bunnies) with big shiny eyes, soft round shapes, bright cheerful daylight, playful and magical, absolutely nothing dark or dull."
         : "";
+      // Styles that are explicitly an art medium keep their look; everything
+      // else (costumes, professions, buildings, emotions, places, motivation…)
+      // is rendered as a real photograph instead of a CGI/illustration look.
+      const isArtMedium = ART_MEDIUM_RE.test(stylePrompt);
+      const autoReal = !isArtMedium && !style.startsWith("kid") ? REALISM_RULES : "";
       const prompt = `${changeOutfit ? OUTFIT_RULES : BASE_RULES}\n\nStyle: ${stylePrompt}.${kidsBoost}${
         customPrompt ? ` Extra direction: ${customPrompt}.` : ""
       }\n\nReminder: ${
         changeOutfit
           ? "the face identity, eye colour, hair colour and skin tone stay identical to the source photo; the outfit, accessories and background follow the chosen theme."
           : "the style affects only technique, texture and lighting treatment — the eye colour, hair colour, clothing (including sleeve length and neckline) and props stay identical to the source photo."
-      }${photoreal ? REALISM_RULES : ""}`;
+      }${photoreal ? REALISM_RULES : autoReal}`;
       try {
         const out = await tryVertexImage(prompt, aspect, 1, [image]);
         const b64 = out?.data?.[0]?.b64_json;
