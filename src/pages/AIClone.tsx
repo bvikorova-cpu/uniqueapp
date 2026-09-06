@@ -90,9 +90,9 @@ export default function AIClone() {
     <div className="min-h-screen bg-background">
       <FloatingHowItWorks
         title="Personality Clone"
-        intro="Create your AI clone \u2014 voice, style and personality."
+        intro="Create your AI clone \u2014 style and personality."
         steps={[
-          { title: "Upload samples", desc: "Photos, voice recordings, writing samples." },
+          { title: "Upload samples", desc: "Photos, writing samples." },
           { title: "Train the clone", desc: "AI learns your tone and appearance." },
           { title: "Chat with your clone", desc: "Practice interviews, pitches, presentations." },
           { title: "Generate content", desc: "Let the clone reply to fans or write drafts." },

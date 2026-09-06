@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Download, Volume2, VolumeX, BookOpen, Loader2, Plus, Sparkles, Wand2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, BookOpen, Loader2, Plus, Sparkles, Wand2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useKidsStoryCredits } from "@/hooks/useKidsStoryCredits";
@@ -26,12 +26,9 @@ const ILLUSTRATE_COST = 2;
 
 export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, continuingStory }: StorybookDisplayProps) => {
   const [currentPage, setCurrentPage] = useState(0);
-  const [isReading, setIsReading] = useState(false);
-  const [readingPage, setReadingPage] = useState<number | null>(null);
   const [pageIllustrations, setPageIllustrations] = useState<Record<number, string>>({});
   const [illustratingPage, setIllustratingPage] = useState<number | null>(null);
   const [illustratingAll, setIllustratingAll] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const { refresh: refreshCredits, balance: storyCredits } = useKidsStoryCredits();
   const { hasGoldPass } = useKidsGoldPass();
 
@@ -46,105 +43,6 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
   if (pages.length === 0) pages.push("(This story is empty.)");
 
   const totalPages = pages.length;
-
-  const stopPlayback = () => {
-    audioRef.current?.pause();
-    audioRef.current = null;
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-    }
-    setIsReading(false);
-    setReadingPage(null);
-  };
-
-  const speakWithBrowser = (text: string, pageIndex: number): boolean => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
-      return false;
-    }
-    try {
-      window.speechSynthesis.cancel();
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.rate = 0.95;
-      utter.pitch = 1.1;
-      utter.lang = navigator.language || "en-US";
-      utter.onend = () => {
-        setIsReading(false);
-        setReadingPage(null);
-      };
-      utter.onerror = () => {
-        setIsReading(false);
-        setReadingPage(null);
-      };
-      setIsReading(true);
-      setReadingPage(pageIndex);
-      window.speechSynthesis.speak(utter);
-      return true;
-    } catch (err) {
-      console.error("Browser TTS error:", err);
-      return false;
-    }
-  };
-
-  const handleReadAloud = async (pageIndex: number) => {
-    if (isReading) {
-      stopPlayback();
-      return;
-    }
-
-    const text = pages[pageIndex];
-    if (!text) {
-      toast.error("Nothing to read on this page");
-      return;
-    }
-
-    setIsReading(true);
-    setReadingPage(pageIndex);
-
-    try {
-      const { data, error } = await supabase.functions.invoke("kids-story-tts", {
-        body: { text } });
-
-      if (error) throw error;
-
-      const audioBase64: string | undefined =
-        typeof data === "string" ? data : (data?.audioContent || data?.audio);
-
-      if (!audioBase64) throw new Error("No audio returned");
-
-      const mimeType = (data && data.mimeType) || "audio/mpeg";
-      const audio = new Audio(`data:${mimeType};base64,${audioBase64}`);
-      audioRef.current = audio;
-
-      audio.onended = () => {
-        setIsReading(false);
-        setReadingPage(null);
-      };
-      audio.onerror = () => {
-        setIsReading(false);
-        setReadingPage(null);
-      };
-
-      await audio.play();
-    } catch (err) {
-      console.error("Read aloud error:", err);
-      // Fallback: try the browser's built-in voice so the feature still works.
-      const ok = speakWithBrowser(text, pageIndex);
-      if (!ok) {
-        toast.error("Read aloud is not available right now");
-        setIsReading(false);
-        setReadingPage(null);
-      }
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      audioRef.current?.pause();
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-      }
-    };
-  }, []);
 
   const illustratePage = async (pageIndex: number): Promise<boolean> => {
     if (illustratingPage !== null) return false;
@@ -278,9 +176,7 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
                 transition={{ duration: 0.3 }}
                 className="flex-1"
               >
-                <p className={`text-foreground/80 leading-relaxed text-base whitespace-pre-wrap ${
-                  readingPage === currentPage ? "bg-primary/5 rounded-lg p-2 border border-primary/20" : ""
-                }`}>
+                <p className="text-foreground/80 leading-relaxed text-base whitespace-pre-wrap">
                   {pages[currentPage]}
                 </p>
               </motion.div>
@@ -324,16 +220,6 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
 
         {/* Action bar */}
         <div className="bg-card/50 backdrop-blur-sm px-6 py-4 border-t border-border/50 flex flex-wrap gap-3 justify-center">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleReadAloud(currentPage)}
-            className="gap-2"
-          >
-            {isReading ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-            {isReading ? "Stop Reading" : "Read Aloud"}
-          </Button>
-
           <Button
             variant="outline"
             size="sm"

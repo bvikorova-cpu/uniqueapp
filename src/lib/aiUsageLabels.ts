@@ -15,7 +15,7 @@ const LABELS: Record<string, string> = {
   coloring_page_generation: "Coloring page",
   gift_credits: "Gifted credits",
   gift_message: "Gift message",
-  mentor_voice_coaching: "Voice coaching",
+  mentor_voice_coaching: "AI coaching",
   teen_career_credits: "Teen career",
   homework_credits: "Homework helper",
   story_generation: "Story generator",

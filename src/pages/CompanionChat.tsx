@@ -116,7 +116,7 @@ const CompanionChat = () => {
         steps={[
           { title: 'Say hi', desc: 'Type a message and press Send. The companion replies in-character.' },
         { title: 'Credits per reply', desc: 'Each message costs 2 credits (4 for premium companions).' },
-        { title: 'Customize the vibe', desc: 'Adjust tone, memory, and voice in the companion settings.' },
+        { title: 'Customize the vibe', desc: 'Adjust tone and memory in the companion settings.' },
         { title: 'Buy more credits', desc: 'Open the Credit Store when you run low.' }
         ]}
       />

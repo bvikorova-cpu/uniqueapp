@@ -175,7 +175,7 @@ const AICompanions = () => {
         steps={[
           { title: 'Pick a companion', desc: 'Browse characters by mood, style, or use-case.' },
         { title: 'Start chatting', desc: 'Each message costs 2 credits (4 for premium companions).' },
-        { title: 'Customize', desc: 'Set tone, memory, and voice with the AI companion tools.' },
+        { title: 'Customize', desc: 'Set tone and memory with the AI companion tools.' },
         { title: 'Buy more credits', desc: 'Top up in the Credit Store whenever you run out.' }
         ]}
       />

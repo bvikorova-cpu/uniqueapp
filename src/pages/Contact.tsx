@@ -15,7 +15,6 @@ import { ContactHero } from "@/components/contact/ContactHero";
 import { SystemStatusWidget } from "@/components/contact/SystemStatusWidget";
 import { ContactFAQ } from "@/components/contact/ContactFAQ";
 import { MyTickets } from "@/components/contact/MyTickets";
-import { VoiceRecorder } from "@/components/contact/VoiceRecorder";
 import { ScreenRecorder } from "@/components/contact/ScreenRecorder";
 
 
@@ -57,7 +56,6 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
   const [files, setFiles] = useState<File[]>([]);
-  const [voiceBlob, setVoiceBlob] = useState<Blob | null>(null);
   const [screenBlob, setScreenBlob] = useState<Blob | null>(null);
   const [faqList, setFaqList] = useState<FAQ[]>([]);
   const [triageRunning, setTriageRunning] = useState(false);
@@ -158,7 +156,6 @@ const Contact = () => {
           description: "Anonymous tickets can't upload attachments. Please log in to include files." });
       }
 
-      const voicePath = voiceBlob && voiceBlob.size > 0 ? await uploadBlob(voiceBlob, "webm", "voice") : null;
       const screenPath = screenBlob && screenBlob.size > 0 ? await uploadBlob(screenBlob, "webm", "screen") : null;
 
       const { data: inserted, error } = await supabase
@@ -171,7 +168,6 @@ const Contact = () => {
           category: data.category,
           priority: data.priority,
           attachments: uploadedAttachments,
-          voice_url: voicePath,
           screen_recording_url: screenPath,
           ai_suggested_category: triageResult?.category ?? null,
           ai_suggested_faq_id: triageResult?.suggested_faq_id || null,
@@ -187,7 +183,6 @@ const Contact = () => {
         description: `Your reference: ${inserted.ticket_number}` });
       form.reset({ name: data.name, email: data.email, subject: "", message: "", category: "support", priority: "normal", honeypot: "" });
       setFiles([]);
-      setVoiceBlob(null);
       setScreenBlob(null);
       setTriageResult(null);
     } catch (e) {
@@ -422,7 +417,6 @@ const Contact = () => {
                     Attach ({files.length}/3)
                   </Button>
 
-                  <VoiceRecorder onRecorded={setVoiceBlob} />
                   <ScreenRecorder onRecorded={setScreenBlob} />
                 </div>
 

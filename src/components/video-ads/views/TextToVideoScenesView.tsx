@@ -71,7 +71,7 @@ export const TextToVideoScenesView = ({ onBack }: { onBack: () => void }) => {
         <Card>
           <CardHeader><CardTitle>Settings</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div><Label>Script *</Label><Textarea rows={6} value={script} onChange={e => setScript(e.target.value)} placeholder="Insert whole voiceover/script..." /></div>
+            <div><Label>Script *</Label><Textarea rows={6} value={script} onChange={e => setScript(e.target.value)} placeholder="Insert whole script..." /></div>
             <div className="grid grid-cols-2 gap-3">
               <div><Label>Aspect</Label>
                 <select className="w-full mt-1 p-2 rounded-md border bg-background" value={aspect} onChange={e => setAspect(e.target.value)}>
@@ -115,7 +115,7 @@ export const TextToVideoScenesView = ({ onBack }: { onBack: () => void }) => {
                     <div className="font-bold flex justify-between">Scene {s.sceneNumber} <Badge variant="secondary">{s.durationSeconds}s</Badge></div>
                     <p>{s.visualPrompt}</p>
                     <div className="flex flex-wrap gap-1 text-xs"><Badge variant="outline">📷 {s.cameraMove}</Badge><Badge variant="outline">💡 {s.lighting}</Badge><Badge variant="outline">😊 {s.mood}</Badge></div>
-                    <p className="text-muted-foreground">VO: "{s.voiceoverLine}"</p>
+                    
                     {s.textOverlay && <Badge variant="secondary">Text: {s.textOverlay}</Badge>}
                   </CardContent></Card>
                 ))}

@@ -116,7 +116,7 @@ export const UrlToVideoView = ({ onBack }: { onBack: () => void }) => {
                   <Card key={i} className="mb-2 bg-muted/30"><CardContent className="pt-3 text-sm space-y-1">
                     <div className="font-medium">Scene {i + 1} ({s.duration})</div>
                     <p>{s.description}</p>
-                    <p className="text-muted-foreground">VO: "{s.voiceover}"</p>
+                    
                     {s.textOverlay && <Badge variant="secondary">Text: {s.textOverlay}</Badge>}
                   </CardContent></Card>
                 ))}</div>

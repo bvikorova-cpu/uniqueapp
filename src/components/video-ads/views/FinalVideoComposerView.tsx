@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Film, Download, Plus, Trash2, Upload, Wand2 } from "lucide-react";
+import { Loader2, Film, Download, Plus, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { handleEdgeError } from "@/lib/handleEdgeError";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -14,39 +14,18 @@ import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
-const VOICES = [
-  { id: 'JBFqnCBsd6RMkjVDRZzb', name: 'George (M)' },
-  { id: 'EXAVITQu4vr4xnSDxMaL', name: 'Sarah (F)' },
-  { id: 'IKne3meq5aSn9XLyUdCD', name: 'Charlie (M)' },
-  { id: 'XrExE9yKIg1WjnnlVkGX', name: 'Matilda (F)' },
-];
-
 interface SceneImg { id: string; file: File; preview: string; }
 interface Sfx { id: string; prompt: string; duration: number; volume: number; audio?: Uint8Array; previewUrl?: string; loading?: boolean; }
-
-interface ClonedVoice { voiceId: string; name: string; description?: string; createdAt: number; }
 
 export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
   const [scenes, setScenes] = useState<SceneImg[]>([]);
   const [perScene, setPerScene] = useState(3);
-  const [voText, setVoText] = useState("");
-  const [voiceId, setVoiceId] = useState(VOICES[0].id);
-  const [customVoiceId, setCustomVoiceId] = useState("");
-  const [clonedVoices, setClonedVoices] = useState<ClonedVoice[]>([]);
-  const [voAudio, setVoAudio] = useState<Uint8Array | null>(null);
-  const [voUrl, setVoUrl] = useState<string | null>(null);
-  const [voLoading, setVoLoading] = useState(false);
-  const VO_VOL_KEY = 'video-ad:vo-volume';
   const SFX_VOL_KEY = 'video-ad:sfx-volumes';
   const SFX_DEFAULT_VOL_KEY = 'video-ad:sfx-default-volume';
   const readVolMap = (): Record<string, number> => {
     try { return JSON.parse(localStorage.getItem(SFX_VOL_KEY) || '{}'); } catch { return {}; }
   };
   const [sfxList, setSfxList] = useState<Sfx[]>([]);
-  const [voVolume, setVoVolume] = useState<number>(() => {
-    const v = parseFloat(localStorage.getItem(VO_VOL_KEY) || '');
-    return isNaN(v) ? 1.0 : v;
-  });
   const [rendering, setRendering] = useState(false);
   const [progress, setProgress] = useState(0);
   const [outputUrl, setOutputUrl] = useState<string | null>(null);
@@ -54,42 +33,6 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
   const [loadingFfmpeg, setLoadingFfmpeg] = useState(false);
   const ffmpegRef = useRef<FFmpeg | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const LAST_VOICE_KEY = 'video-ad:last-voice-id';
-
-  useEffect(() => {
-    const KEY = 'video-ad:cloned-voices';
-    const load = () => {
-      try {
-        const list: ClonedVoice[] = JSON.parse(localStorage.getItem(KEY) || '[]');
-        setClonedVoices(list);
-        const saved = localStorage.getItem(LAST_VOICE_KEY) || '';
-        setCustomVoiceId(prev => {
-          if (prev) return prev;
-          if (saved && list.find(v => v.voiceId === saved)) return saved;
-          return list[0]?.voiceId || '';
-        });
-      } catch {}
-    };
-    load();
-    window.addEventListener('cloned-voices-updated', load);
-    window.addEventListener('storage', load);
-    return () => {
-      window.removeEventListener('cloned-voices-updated', load);
-      window.removeEventListener('storage', load);
-    };
-  }, []);
-
-  useEffect(() => {
-    try {
-      if (customVoiceId) localStorage.setItem(LAST_VOICE_KEY, customVoiceId);
-      else localStorage.removeItem(LAST_VOICE_KEY);
-    } catch {}
-  }, [customVoiceId]);
-
-  useEffect(() => {
-    try { localStorage.setItem(VO_VOL_KEY, String(voVolume)); } catch {}
-  }, [voVolume]);
 
   useEffect(() => {
     try {
@@ -118,7 +61,6 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
   useEffect(() => () => {
     scenes.forEach(s => URL.revokeObjectURL(s.preview));
     sfxList.forEach(s => s.previewUrl && URL.revokeObjectURL(s.previewUrl));
-    if (voUrl) URL.revokeObjectURL(voUrl);
     if (outputUrl) URL.revokeObjectURL(outputUrl);
   }, []);
 
@@ -129,24 +71,6 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
   };
 
   const removeScene = (id: string) => setScenes(s => s.filter(x => x.id !== id));
-
-  const generateVoice = async () => {
-    if (!voText.trim()) { toast.error("Enter voiceover text"); return; }
-    setVoLoading(true); setVoAudio(null); setVoUrl(null);
-    try {
-      const finalVoiceId = customVoiceId.trim() || voiceId;
-      const { data, error } = await supabase.functions.invoke('video-ad-tts', {
-        body: { text: voText, voiceId: finalVoiceId } });
-      if (error || data?.error) { handleEdgeError(error || data, { context: 'TTS' }); return; }
-      const bin = atob(data.audioBase64);
-      const bytes = new Uint8Array(bin.length);
-      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-      setVoAudio(bytes);
-      setVoUrl(URL.createObjectURL(new Blob([bytes], { type: data.mimeType })));
-      toast.success(`Voiceover finished (${data.credits_used} CR)`);
-    } catch (e) { handleEdgeError(e, { context: 'TTS' }); }
-    finally { setVoLoading(false); }
-  };
 
   const addSfx = () => {
     const id = crypto.randomUUID();
@@ -163,12 +87,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
   };
   const removeSfx = (id: string) => setSfxList(l => l.filter(s => s.id !== id));
 
-  const DEFAULT_VO_VOL = 1.0;
   const DEFAULT_SFX_VOL = 0.6;
-  const resetVoVolume = () => {
-    setVoVolume(DEFAULT_VO_VOL);
-    toast.success("VO volume restored to 100%");
-  };
   const resetSfxVolume = (id: string) => {
     setSfxList(l => l.map(s => s.id === id ? { ...s, volume: DEFAULT_SFX_VOL } : s));
     try { localStorage.setItem(SFX_DEFAULT_VOL_KEY, String(DEFAULT_SFX_VOL)); } catch {}
@@ -234,12 +153,6 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
       const filterParts: string[] = [];
       let inputIdx = 0;
 
-      if (voAudio) {
-        await ff.writeFile("vo.mp3", voAudio);
-        audioInputs.push("-i", "vo.mp3");
-        filterParts.push(`[${inputIdx}:a]volume=${voVolume.toFixed(2)}[a${inputIdx}]`);
-        inputIdx++;
-      }
       const validSfx = sfxList.filter(s => s.audio);
       for (let i = 0; i < validSfx.length; i++) {
         await ff.writeFile(`sfx${i}.mp3`, validSfx[i].audio!);
@@ -278,7 +191,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
       <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-fuchsia-500 to-purple-600 flex items-center justify-center"><Film className="w-6 h-6 text-white" /></div>
-        <div><h2 className="text-2xl font-black">Final Video Composer</h2><p className="text-sm text-muted-foreground">Combine scene images + cloned voice + SFX → MP4 (9:16)</p></div>
+        <div><h2 className="text-2xl font-black">Final Video Composer</h2><p className="text-sm text-muted-foreground">Combine scene images + SFX → MP4 (9:16)</p></div>
         <Badge className="ml-auto bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white">Render in browser</Badge>
       </div>
 
@@ -305,69 +218,10 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
           </CardContent>
         </Card>
 
-        {/* VOICE */}
-        <Card>
-          <CardHeader><CardTitle className="text-base">2. Voiceover (custom voice)</CardTitle></CardHeader>
-          <CardContent className="space-y-3">
-            <Textarea rows={4} maxLength={5000} placeholder="Text na nahovorenie..." value={voText} onChange={e => setVoText(e.target.value)} />
-            <div>
-              <Label className="text-xs">Hlas</Label>
-              <select className="w-full p-2 rounded-md border bg-background text-sm" value={voiceId} onChange={e => setVoiceId(e.target.value)}>
-                {VOICES.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}
-              </select>
-            </div>
-            {clonedVoices.length > 0 && (
-              <div>
-                <Label className="text-xs flex items-center justify-between">
-                  <span>🎤 Your cloned voices ({clonedVoices.length})</span>
-                  <button type="button" onClick={() => setCustomVoiceId("")} className="text-xs text-muted-foreground hover:text-foreground underline">Clear</button>
-                </Label>
-                <select className="w-full p-2 rounded-md border bg-background text-sm" value={customVoiceId} onChange={e => setCustomVoiceId(e.target.value)}>
-                  <option value="">— use voice above —</option>
-                  {clonedVoices.map(v => <option key={v.voiceId} value={v.voiceId}>{v.name}</option>)}
-                </select>
-              </div>
-            )}
-            <div>
-              <Label className="text-xs">Custom cloned voiceId (manual)</Label>
-              <Input className="font-mono text-xs" placeholder="z Voice Cloning karty" value={customVoiceId} onChange={e => setCustomVoiceId(e.target.value)} />
-            </div>
-            <Button onClick={generateVoice} disabled={voLoading} className="w-full bg-gradient-to-r from-pink-500 to-rose-600">
-              {voLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Wand2 className="mr-2 h-4 w-4" />Generate VO (5 CR)</>}
-            </Button>
-            {voUrl && <audio src={voUrl} controls className="w-full" />}
-            <div>
-              <Label className="text-xs flex items-center justify-between">
-                <span>🔊 Voiceover Volume</span>
-                <span className="flex items-center gap-2">
-                  <span className="font-mono">{Math.round(voVolume * 100)}%</span>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <button type="button" className="text-[10px] underline text-muted-foreground hover:text-foreground">Reset</button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Reset voiceover volume?</AlertDialogTitle>
-                        <AlertDialogDescription>VO volume will be reset to the default 100%.</AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={resetVoVolume}>Reset</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </span>
-              </Label>
-              <input type="range" min={0} max={2} step={0.05} value={voVolume} onChange={e => setVoVolume(Number(e.target.value))} className="w-full accent-pink-500" />
-              <p className="text-[10px] text-muted-foreground">0% = silent, 100% = original, 200% = amplified</p>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* SFX */}
         <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-base">3. Sound Effects</CardTitle>
+            <CardTitle className="text-base">2. Sound Effects</CardTitle>
             <div className="flex gap-2">
               {sfxList.length > 0 && (
                 <AlertDialog>
@@ -413,7 +267,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
 
         {/* RENDER */}
         <Card className="lg:col-span-2 border-fuchsia-500/30">
-          <CardHeader><CardTitle className="text-base">4. Render final video</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-base">3. Render final video</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             <Button onClick={render} disabled={rendering || loadingFfmpeg || scenes.length === 0} className="w-full bg-gradient-to-r from-fuchsia-500 to-purple-600">
               {loadingFfmpeg ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Loading ffmpeg.wasm...</> :
@@ -428,8 +282,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
                 </Button>
               </div>
             )}
-            <p className="text-xs text-muted-foreground">Tip: First clone a voice in "Voice Cloning", copy the voiceId, paste it here into "Custom cloned voiceId", and generate a voiceover with your own voice.</p>
-          </CardContent>
+                      </CardContent>
         </Card>
       </div>
     </div>

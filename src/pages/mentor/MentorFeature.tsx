@@ -408,10 +408,7 @@ function SummariesPanel() {
 function VoiceJournalPanel() {
   const { data, refetch } = useMentor("voice.list");
   const [text, setText] = useState("");
-  const [recording, setRecording] = useState(false);
   const [transcribing, setTranscribing] = useState(false);
-  const recRef = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const transcribeBlob = async (blob: Blob, format: "webm" | "mp3" | "wav" | "m4a") => {
@@ -433,27 +430,6 @@ function VoiceJournalPanel() {
       setTranscribing(false);
     }
   };
-
-  const start = async () => {
-    try {
-      if (!navigator.mediaDevices?.getUserMedia) {
-        toast.error("Microphone not available. Use file upload or type below.");
-        return;
-      }
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const rec = new MediaRecorder(stream); recRef.current = rec; chunksRef.current = [];
-      rec.ondataavailable = (e) => chunksRef.current.push(e.data);
-      rec.onstop = async () => {
-        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
-        await transcribeBlob(blob, "webm");
-        stream.getTracks().forEach((t) => t.stop());
-      };
-      rec.start(); setRecording(true);
-    } catch (e: any) {
-      toast.error(e.message ?? "Mic access denied — use file upload instead");
-    }
-  };
-  const stop = () => { recRef.current?.stop(); setRecording(false); };
 
   const onFile = async (ev: React.ChangeEvent<HTMLInputElement>) => {
     const f = ev.target.files?.[0];
@@ -477,10 +453,7 @@ function VoiceJournalPanel() {
       <h1 className="text-2xl font-black mb-4">Voice Journal</h1>
       <Card className="bg-card/80 mb-4"><CardContent className="p-4 space-y-3">
         <div className="flex flex-wrap gap-2">
-          <Button onClick={recording ? stop : start} variant={recording ? "destructive" : "default"} disabled={transcribing}>
-            {recording ? "⏹ Stop" : "🎙️ Record"}
-          </Button>
-          <Button variant="outline" onClick={() => fileInputRef.current?.click()} disabled={transcribing || recording}>
+          <Button variant="outline" onClick={() => fileInputRef.current?.click()} disabled={transcribing}>
             📁 Upload audio
           </Button>
           <input ref={fileInputRef} type="file" accept="audio/*,.webm,.mp3,.wav,.m4a" className="hidden" onChange={onFile} />
@@ -488,7 +461,7 @@ function VoiceJournalPanel() {
         {transcribing && <p className="text-xs text-muted-foreground">Transcribing…</p>}
         <Textarea rows={5} placeholder="Or type your entry directly here…" value={text} onChange={(e) => setText(e.target.value)} />
         <Button onClick={save} disabled={!text.trim() || transcribing}>Save with emotion detection</Button>
-        <p className="text-[10px] text-muted-foreground">No mic? Upload an audio file or type your entry — AI will still detect emotion + add insights.</p>
+        <p className="text-[10px] text-muted-foreground">Upload an audio file or type your entry — AI will detect emotion + add insights.</p>
       </CardContent></Card>
       <div className="space-y-2">{(data?.entries ?? []).map((e: any) => (
         <Card key={e.id} className="bg-card/80"><CardContent className="p-3 text-sm">

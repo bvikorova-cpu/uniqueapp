@@ -12,15 +12,13 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 interface StoryVideoPlayerProps {
   scenes: string[];
   images: string[];
-  audioFiles?: string[];
   sceneDuration?: number;
 }
 
-export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5 }: StoryVideoPlayerProps) => {
+export const StoryVideoPlayer = ({ scenes, images, sceneDuration = 5 }: StoryVideoPlayerProps) => {
   const [currentScene, setCurrentScene] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const backgroundMusicRef = useRef<HTMLAudioElement | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [isExportingPDF, setIsExportingPDF] = useState(false);
@@ -28,7 +26,6 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
   const [backgroundMusicEnabled, setBackgroundMusicEnabled] = useState(false);
   const [musicVolume, setMusicVolume] = useState(0.3);
   const [musicTheme, setMusicTheme] = useState<'lullaby' | 'adventure' | 'fairytale'>('lullaby');
-  const [voiceSpeed, setVoiceSpeed] = useState(1.0);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -135,13 +132,7 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
   }, [backgroundMusicEnabled, isPlaying, musicVolume, musicTheme]);
 
   useEffect(() => {
-    if (!isPlaying) {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-      }
-      return;
-    }
+    if (!isPlaying) return;
 
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout> | null = null;
@@ -159,37 +150,15 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
 
     // Estimated reading time so text-only scenes are never cut short
     const words = (scenes[currentScene] || '').trim().split(/\s+/).filter(Boolean).length;
-    const readingMs = Math.max(sceneDuration * 1000, (words / 2.2) * 1000 / Math.max(voiceSpeed, 0.5));
+    const readingMs = Math.max(sceneDuration * 1000, (words / 2.2) * 1000);
 
-    const raw = audioFiles?.[currentScene];
-    if (raw) {
-      const audioSource = raw.startsWith('data:') ? raw : `data:audio/mp3;base64,${raw}`;
-      const audio = new Audio(audioSource);
-      audio.playbackRate = voiceSpeed;
-      audioRef.current = audio;
-      // Advance only when the narration for this scene has actually finished
-      audio.onended = advance;
-      audio.onerror = () => {
-        timer = setTimeout(advance, readingMs);
-      };
-      audio.play().catch((err) => {
-        console.error('Audio playback error:', err);
-        timer = setTimeout(advance, readingMs);
-      });
-    } else {
-      timer = setTimeout(advance, readingMs);
-    }
+    timer = setTimeout(advance, readingMs);
 
     return () => {
       cancelled = true;
       if (timer) clearTimeout(timer);
-      if (audioRef.current) {
-        audioRef.current.onended = null;
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
     };
-  }, [isPlaying, currentScene, scenes, sceneDuration, audioFiles, voiceSpeed]);
+  }, [isPlaying, currentScene, scenes, sceneDuration]);
 
 
   // Load an image (remote URL, base64 or blob) into a same-origin PNG data URL
@@ -602,42 +571,6 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
               </div>
             </>
           )}
-        </div>
-
-        {/* Voice Narration Controls */}
-        <div className="bg-white/50 backdrop-blur-sm rounded-lg p-4 border border-purple-200 space-y-3">
-          <Label className="text-sm font-semibold text-purple-800">
-            Voice Narration Speed
-          </Label>
-          
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-purple-700 min-w-[3rem]">Slow</span>
-            <Slider
-              value={[voiceSpeed * 100]}
-              onValueChange={(value) => setVoiceSpeed(value[0] / 100)}
-              min={50}
-              max={200}
-              step={10}
-              className="flex-1"
-            />
-            <span className="text-xs text-purple-700 min-w-[3rem]">Fast</span>
-          </div>
-          
-          <div className="text-center">
-            <span className="text-sm text-purple-600 font-medium">
-              {voiceSpeed}x
-            </span>
-            {voiceSpeed !== 1.0 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setVoiceSpeed(1.0)}
-                className="ml-2 text-xs"
-              >
-                Reset
-              </Button>
-            )}
-          </div>
         </div>
 
         {/* PDF Layout Options */}

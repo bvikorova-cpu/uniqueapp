@@ -33,7 +33,6 @@ export const TheaterPlayer = ({ storyData, sceneDuration, onBack }: TheaterPlaye
           <StoryVideoPlayer
             scenes={storyData.scenes}
             images={storyData.images}
-            audioFiles={storyData.audioFiles}
             sceneDuration={sceneDuration}
           />
         </div>

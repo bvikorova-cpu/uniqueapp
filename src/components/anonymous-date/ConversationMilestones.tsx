@@ -5,14 +5,12 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   messageCount: number;
   matchAgeHours: number;
-  voiceMessageSent: boolean;
 }
 
-export const ConversationMilestones = ({ messageCount, matchAgeHours, voiceMessageSent }: Props) => {
+export const ConversationMilestones = ({ messageCount, matchAgeHours }: Props) => {
   const milestones = [
     { icon: Clock, label: "First Hour", unlocked: matchAgeHours >= 1, gradient: "from-amber-500 to-orange-500" },
     { icon: MessageSquare, label: "10 Messages", unlocked: messageCount >= 10, gradient: "from-cyan-500 to-blue-500" },
-    { icon: Sparkles, label: "Voice Note", unlocked: voiceMessageSent, gradient: "from-violet-500 to-primary" },
     { icon: Award, label: "100 Messages", unlocked: messageCount >= 100, gradient: "from-pink-500 to-rose-500" },
     { icon: Award, label: "24h Together", unlocked: matchAgeHours >= 24, gradient: "from-emerald-500 to-teal-500" },
   ];

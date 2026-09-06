@@ -513,7 +513,6 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
         <ConversationMilestones
           messageCount={messages.length}
           matchAgeHours={matchAgeHours}
-          voiceMessageSent={false}
         />
       </div>
 

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAnonymousDate } from "@/hooks/useAnonymousDate";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Search, UserPlus, Heart, MessageCircle, CreditCard, Eye, Mic, Loader2, Gift, Sparkles, Shield } from "lucide-react";
+import { ArrowLeft, Search, UserPlus, Heart, MessageCircle, CreditCard, Eye, Loader2, Gift, Sparkles, Shield } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
@@ -60,7 +60,7 @@ const DATING_TOOLS = [
     icon: MessageCircle,
     credits: "1-3" as any,
     gradient: "bg-gradient-to-r from-primary to-accent",
-    features: ["Text messages (1 credit)", "Voice messages (3 credits)", "Real-time chat", "Countdown timer"] },
+    features: ["Text messages (1 credit)", "Real-time chat", "Countdown timer"] },
   { id: "credits",
     title: "Credit Store",
     description: "Purchase credits to unlock premium dating features",
@@ -517,7 +517,6 @@ export default function AnonymousDate() {
                       {[
                         { icon: Search, label: "New Match", cost: "5", emoji: "🔍" },
                         { icon: MessageCircle, label: "Text Msg", cost: "1", emoji: "💬" },
-                        { icon: Mic, label: "Voice Msg", cost: "3", emoji: "🎤" },
                         { icon: Eye, label: "Hint", cost: "5", emoji: "💡" },
                         { icon: Gift, label: "Gift", cost: "10", emoji: "🎁" },
                         { icon: Eye, label: "Early Reveal", cost: "15", emoji: "👀" },

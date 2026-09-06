@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Film, Loader2, Download, Sparkles, Play } from "lucide-react";
@@ -15,10 +14,9 @@ import { supabase } from "@/integrations/supabase/client";
 
 type Scene = {
   description: string;
-  voiceover: string;
+  caption: string;
   visuals: string;
   imageUrl?: string;
-  audioUrl?: string;
   durationMs: number;
 };
 
@@ -63,7 +61,6 @@ export const AiVideoBuilderView = ({ onBack }: { onBack: () => void }) => {
     aspect: "9:16",
     sceneCount: "4",
   });
-  const [withVoiceover, setWithVoiceover] = useState(true);
   const [scenes, setScenes] = useState<Scene[]>([]);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
@@ -101,7 +98,7 @@ export const AiVideoBuilderView = ({ onBack }: { onBack: () => void }) => {
 
       const planned: Scene[] = raw.slice(0, Number(form.sceneCount)).map((s) => ({
         description: String(s.description ?? ""),
-        voiceover: String(s.voiceover ?? s.description ?? ""),
+        caption: String(s.voiceover ?? s.description ?? ""),
         visuals: String(s.visuals ?? s.description ?? ""),
         durationMs: 3500,
       }));
@@ -120,21 +117,6 @@ export const AiVideoBuilderView = ({ onBack }: { onBack: () => void }) => {
         if (imgErr) throw imgErr;
         if (img?.error) throw new Error(img.error);
         planned[i].imageUrl = img?.imageUrl ?? img?.result?.imageUrl;
-      }
-
-      if (withVoiceover) {
-        for (let i = 0; i < total; i++) {
-          setStatus(`Recording voiceover ${i + 1}/${total}…`);
-          setProgress(70 + Math.round((i / total) * 25));
-          try {
-            const { data: tts } = await supabase.functions.invoke("text-to-speech", {
-              body: { text: planned[i].voiceover.slice(0, 300), language: "en" },
-            });
-            if (tts?.audioUrl) planned[i].audioUrl = tts.audioUrl;
-          } catch {
-            // voiceover is optional — keep the scene silent on failure
-          }
-        }
       }
 
       setScenes(planned);
@@ -164,45 +146,18 @@ export const AiVideoBuilderView = ({ onBack }: { onBack: () => void }) => {
     setStatus("Rendering video…");
     setProgress(0);
 
-    let audioCtx: AudioContext | null = null;
     try {
       const images = await Promise.all(
         scenes.map((s) => (s.imageUrl ? loadImage(s.imageUrl).catch(() => null) : Promise.resolve(null)))
       );
 
       const prepared = [...scenes];
-      const audioBuffers: (AudioBuffer | null)[] = [];
-      if (scenes.some((s) => s.audioUrl)) {
-        audioCtx = new AudioContext();
-        for (const s of scenes) {
-          if (!s.audioUrl) {
-            audioBuffers.push(null);
-            continue;
-          }
-          try {
-            const buf = await (await fetch(s.audioUrl)).arrayBuffer();
-            const decoded = await audioCtx.decodeAudioData(buf);
-            audioBuffers.push(decoded);
-          } catch {
-            audioBuffers.push(null);
-          }
-        }
-        prepared.forEach((s, i) => {
-          const d = audioBuffers[i]?.duration;
-          if (d) s.durationMs = Math.max(2200, Math.round(d * 1000) + 600);
-        });
-      }
 
       const canvasStream = canvas.captureStream(30);
-      let stream = canvasStream;
-      let dest: MediaStreamAudioDestinationNode | null = null;
-      if (audioCtx && audioBuffers.some(Boolean)) {
-        dest = audioCtx.createMediaStreamDestination();
-        stream = new MediaStream([...canvasStream.getVideoTracks(), ...dest.stream.getAudioTracks()]);
-      }
+      const stream = canvasStream;
 
-      const mime = MediaRecorder.isTypeSupported("video/webm;codecs=vp9,opus")
-        ? "video/webm;codecs=vp9,opus"
+      const mime = MediaRecorder.isTypeSupported("video/webm;codecs=vp9")
+        ? "video/webm;codecs=vp9"
         : "video/webm";
       const recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 4_000_000 });
       const chunks: BlobPart[] = [];
@@ -218,13 +173,6 @@ export const AiVideoBuilderView = ({ onBack }: { onBack: () => void }) => {
       for (let i = 0; i < prepared.length; i++) {
         const scene = prepared[i];
         const img = images[i];
-        const buffer = audioBuffers[i];
-        if (audioCtx && dest && buffer) {
-          const src = audioCtx.createBufferSource();
-          src.buffer = buffer;
-          src.connect(dest);
-          src.start();
-        }
 
         const start = performance.now();
         await new Promise<void>((resolve) => {
@@ -258,7 +206,7 @@ export const AiVideoBuilderView = ({ onBack }: { onBack: () => void }) => {
             ctx.font = `800 ${fontSize}px Inter, Arial, sans-serif`;
             ctx.fillStyle = "#ffffff";
             ctx.textAlign = "center";
-            const lines = wrapText(ctx, scene.voiceover || scene.description, w * 0.84);
+            const lines = wrapText(ctx, scene.caption || scene.description, w * 0.84);
             lines.forEach((line, idx) => {
               ctx.fillText(line, w / 2, h * 0.86 + idx * fontSize * 1.22 - (lines.length - 1) * fontSize * 0.6);
             });
@@ -284,7 +232,6 @@ export const AiVideoBuilderView = ({ onBack }: { onBack: () => void }) => {
       toast.error(e?.message || "Render failed");
       setStatus("");
     } finally {
-      audioCtx?.close().catch(() => undefined);
       setBusy(false);
     }
   };
@@ -301,7 +248,7 @@ export const AiVideoBuilderView = ({ onBack }: { onBack: () => void }) => {
           </div>
           <div>
             <h2 className="text-2xl font-black">AI Video Generator</h2>
-            <p className="text-muted-foreground text-sm">Script → AI scenes → animated video with voiceover</p>
+            <p className="text-muted-foreground text-sm">Script → AI scenes → animated video</p>
           </div>
           <Badge className="ml-auto bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white border-0">
             <Sparkles className="w-3 h-3 mr-1" />1 + 5 CR / scene
@@ -366,13 +313,6 @@ export const AiVideoBuilderView = ({ onBack }: { onBack: () => void }) => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex items-center justify-between rounded-lg border p-3">
-              <div>
-                <p className="text-sm font-semibold">AI voiceover</p>
-                <p className="text-xs text-muted-foreground">Narrate every scene</p>
-              </div>
-              <Switch checked={withVoiceover} onCheckedChange={setWithVoiceover} />
-            </div>
             <Button className="w-full" onClick={buildScenes} disabled={busy}>
               {busy ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
               Generate scenes
@@ -418,7 +358,7 @@ export const AiVideoBuilderView = ({ onBack }: { onBack: () => void }) => {
                     {s.imageUrl && <img src={s.imageUrl} alt={`Scene ${i + 1}`} className="w-full aspect-video object-cover" />}
                     <div className="p-3">
                       <p className="text-xs font-bold mb-1">Scene {i + 1}</p>
-                      <p className="text-xs text-muted-foreground">{s.voiceover}</p>
+                      <p className="text-xs text-muted-foreground">{s.caption}</p>
                     </div>
                   </div>
                 ))}
@@ -426,7 +366,7 @@ export const AiVideoBuilderView = ({ onBack }: { onBack: () => void }) => {
             )}
             {!scenes.length && !busy && (
               <p className="text-sm text-muted-foreground text-center py-10">
-                Fill in the setup and generate scenes — the AI writes the storyboard, creates every visual, adds a voiceover and renders a downloadable video.
+                Fill in the setup and generate scenes — the AI writes the storyboard, creates every visual, and renders a downloadable video.
               </p>
             )}
           </CardContent>

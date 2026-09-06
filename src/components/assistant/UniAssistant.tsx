@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Mic, Sparkles, X, Loader2, Volume2 } from "lucide-react";
+import { Sparkles, X, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { ToastAction } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import { useOverlayOpen } from "@/hooks/useOverlayOpen";
 import { UNI_OPEN_EVENT, useAssistantsHidden, useOpenRequest, setAssistantsHidden } from "@/lib/assistantBus";
@@ -26,23 +25,21 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
   const assistantsHidden = useAssistantsHidden();
   useOpenRequest(UNI_OPEN_EVENT, () => setOpen(true));
 
-  const [listening, setListening] = useState(false);
   const [thinking, setThinking] = useState(false);
-  const [speaking, setSpeaking] = useState(false);
-  const [transcript, setTranscript] = useState("");
   const [typed, setTyped] = useState("");
 
   const [turns, setTurns] = useState<Turn[]>([]);
-  const [handsFree, setHandsFree] = useState(false);
   const turnsRef = useRef<Turn[]>([]);
-  const handsFreeRef = useRef(false);
-  const openRef = useRef(false);
   const [caption, setCaption] = useState<{ role: "user" | "assistant"; text: string } | null>(null);
   const [showOnboarding, setShowOnboarding] = useState<boolean>(() => {
     if (typeof window === "undefined") return true;
     return localStorage.getItem("uni-onboarding-seen") !== "1";
   });
   const captionTimerRef = useRef<number | null>(null);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { toast } = useToast();
 
   const sanitizeVisibleText = (value: string) =>
     value
@@ -59,178 +56,8 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       captionTimerRef.current = window.setTimeout(() => setCaption(null), autoHideMs);
     }
   };
-  const recognitionRef = useRef<any>(null);
-  const latestHeardRef = useRef<string>("");
-  const sentRef = useRef(false);
-  const silenceTimerRef = useRef<number | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { toast } = useToast();
-
-  const supported = typeof window !== "undefined" &&
-    ("webkitSpeechRecognition" in window || "SpeechRecognition" in window);
-
 
   useEffect(() => { turnsRef.current = turns; }, [turns]);
-  useEffect(() => { handsFreeRef.current = handsFree; }, [handsFree]);
-  useEffect(() => {
-    openRef.current = open;
-    if (!open) {
-      setHandsFree(false);
-      stopSpeaking();
-      try { recognitionRef.current?.abort?.(); } catch { /* noop */ }
-      setListening(false);
-    }
-  }, [open]);
-  // Voice lists load asynchronously in most browsers — warm them up early.
-  useEffect(() => {
-    try { window.speechSynthesis?.getVoices?.(); } catch { /* noop */ }
-  }, []);
-  useEffect(() => {
-    return () => {
-      try { recognitionRef.current?.stop?.(); } catch {}
-      try { window.speechSynthesis?.cancel?.(); } catch {}
-      try { audioRef.current?.pause(); } catch {}
-    };
-  }, []);
-
-  const stopSpeaking = () => {
-    try { window.speechSynthesis?.cancel?.(); } catch {}
-    try {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.src = "";
-        audioRef.current = null;
-      }
-    } catch {}
-    setSpeaking(false);
-  };
-
-  /** Strip markdown / symbols a human would never read out loud. */
-  const toSpeech = (text: string) =>
-    text
-      .replace(/```[\s\S]*?```/g, " ")
-      .replace(/[*_`#>]/g, "")
-      .replace(/\[(.*?)\]\((.*?)\)/g, "$1")
-      .replace(/^\s*[-•]\s*/gm, "")
-      .replace(/\s+/g, " ")
-      .trim();
-
-  /** Language the UI (and therefore the conversation) is currently in. */
-  const uiLang = () => {
-    try {
-      const stored = localStorage.getItem("preferred_language");
-      if (stored) return stored;
-    } catch { /* noop */ }
-    return (document.documentElement.lang || navigator.language || "en").split("-")[0];
-  };
-
-  /** Detect the language actually used in a piece of text, so a Spanish answer is
-   *  never read out by an English voice (which is what causes a heavy accent). */
-  const detectLang = (text: string): string => {
-    const t = text.toLowerCase();
-    if (/[\u3040-\u30ff]/.test(text)) return "ja";
-    if (/[\uac00-\ud7af]/.test(text)) return "ko";
-    if (/[\u4e00-\u9fff]/.test(text)) return "zh";
-    if (/[\u0400-\u04ff]/.test(text)) return "ru";
-    if (/[\u0600-\u06ff]/.test(text)) return "ar";
-    const hints: Record<string, RegExp> = {
-      sk: /\b(ďakujem|prosím|môžeš|nájdeš|takže|nie je|ahoj|kredity|stránke)\b|[ľĺňŕôä]/,
-      cs: /\b(děkuji|prosím|můžeš|najdeš|takže|ahoj|jsem|jsi)\b|[ěřůň]/,
-      de: /\b(und|nicht|ich|kannst|bitte|danke|deine|hier|sind)\b|[äöüß]/,
-      es: /\b(y|para|puedes|gracias|por favor|tus|está|aquí|hola)\b|[ñ¿¡]/,
-      fr: /\b(et|pour|vous|merci|s'il|votre|ici|bonjour|est)\b|[çœ]/,
-      it: /\b(e|per|puoi|grazie|tuo|qui|ciao|sono|della)\b/,
-      hu: /\b(és|nem|köszönöm|kérem|tudsz|itt|szia|van)\b|[őű]/,
-      pl: /\b(dziękuję|proszę|możesz|jest|tutaj|cześć)\b|[ąęśćźżł]/,
-    };
-    const scores = Object.entries(hints)
-      .map(([code, rx]) => [code, (t.match(new RegExp(rx.source, "gi")) ?? []).length] as const)
-      .sort((a, b) => b[1] - a[1]);
-    if (scores[0] && scores[0][1] >= 2) return scores[0][0];
-    if (/\b(the|and|you|your|here|please|thanks|can)\b/.test(t)) return "en";
-    return uiLang();
-  };
-
-  /** Pick a natural-sounding voice that natively speaks `lang`. */
-  const pickVoice = (lang: string) => {
-    const voices = window.speechSynthesis?.getVoices?.() ?? [];
-    if (!voices.length) return null;
-    const base = lang.split("-")[0].toLowerCase();
-    let pool = voices.filter((v) => v.lang?.toLowerCase().replace("_", "-").startsWith(base));
-    // No native voice installed for this language: fall back to the browser
-    // default rather than forcing a mismatched (accented) voice.
-    if (!pool.length) pool = voices.filter((v) => v.default);
-    if (!pool.length) return null;
-    const preferred = [/neural/i, /natural/i, /premium/i, /enhanced/i, /siri/i, /google/i, /microsoft/i];
-    for (const rx of preferred) {
-      const hit = pool.find((v) => rx.test(v.name));
-      if (hit) return hit;
-    }
-    return pool[0] ?? null;
-  };
-
-  const speakBrowser = (text: string, onDone?: () => void) => {
-    try {
-      window.speechSynthesis.cancel();
-      const clean = toSpeech(text);
-      if (!clean) { onDone?.(); return; }
-      const lang = detectLang(clean);
-      const voice = pickVoice(lang);
-      // Split into sentences so pauses land where a person would breathe.
-      const parts = clean.match(/[^.!?…]+[.!?…]*/g)?.map((p) => p.trim()).filter(Boolean) ?? [clean];
-      setSpeaking(true);
-      parts.forEach((part, i) => {
-        const u = new SpeechSynthesisUtterance(part);
-        if (voice) u.voice = voice;
-        // Always tag the utterance with the text's own language so engines with
-        // multilingual voices switch pronunciation instead of adding an accent.
-        u.lang = voice?.lang && voice.lang.toLowerCase().startsWith(lang) ? voice.lang : lang;
-        u.rate = 0.98;
-        u.pitch = 1;
-        u.volume = 1;
-        if (i === parts.length - 1) {
-          u.onend = () => { setSpeaking(false); onDone?.(); };
-          u.onerror = () => { setSpeaking(false); onDone?.(); };
-        }
-        window.speechSynthesis.speak(u);
-      });
-    } catch {
-      setSpeaking(false);
-      onDone?.();
-    }
-  };
-
-  const speak = async (text: string, onDone?: () => void) => {
-    stopSpeaking();
-    const clean = toSpeech(text);
-    if (!clean) { onDone?.(); return; }
-    const lang = detectLang(clean);
-
-    // Preferred path: neural TTS with a native-speaker pronunciation profile for
-    // the detected language (correct phonemes, stress and intonation, no accent).
-    try {
-      const { data, error } = await supabase.functions.invoke("uni-tts", {
-        body: { text: clean.slice(0, 800), lang },
-      });
-      if (!error && data instanceof Blob && data.size > 1000) {
-        const audio = new Audio(URL.createObjectURL(data));
-        audioRef.current = audio;
-        setSpeaking(true);
-        audio.onended = () => { setSpeaking(false); audioRef.current = null; onDone?.(); };
-        audio.onerror = () => { setSpeaking(false); audioRef.current = null; speakBrowser(text, onDone); };
-        await audio.play();
-        return;
-      }
-    } catch { /* fall through to the browser voice */ }
-
-
-    // Fallback: best installed native voice for the detected language.
-    speakBrowser(text, onDone);
-  };
-
-
 
   const send = async (text: string) => {
     if (!text.trim()) return;
@@ -292,14 +119,6 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       const reply = sanitizeVisibleText(payload?.reply ?? payload?.message ?? payload?.text ?? payload?.result ?? "Okay.");
       setTurns((t) => [...t, { role: "assistant", content: reply }]);
       showCaption("assistant", reply);
-      speak(reply, () => {
-        // Hands-free conversation: reopen the mic as soon as Uni stops talking.
-        if (handsFreeRef.current && openRef.current) {
-          window.setTimeout(() => {
-            if (handsFreeRef.current && openRef.current) void startListening();
-          }, 250);
-        }
-      });
       if (payload?.action?.type === "navigate" && payload.action.path) {
         setTimeout(() => navigate(payload.action.path), 400);
       }
@@ -307,162 +126,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       toast({ title: "Uni error", description: e?.message ?? "Try again", variant: "destructive" });
     } finally {
       setThinking(false);
-      setTranscript("");
     }
-  };
-
-
-  const startListening = async () => {
-    if (!supported) {
-      toast({
-        title: "Voice not supported",
-        description: "This browser has no speech recognition — type your question below instead.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Ask for the microphone explicitly first: on mobile, SpeechRecognition
-    // often fails silently ("not-allowed") when permission was never granted.
-    const inIframe = typeof window !== "undefined" && window.self !== window.top;
-    try {
-      if (!navigator.mediaDevices?.getUserMedia) throw new Error("unsupported");
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach((t) => t.stop());
-    } catch {
-      toast({
-        title: "Microphone blocked",
-        description: inIframe
-          ? "The preview window can't use the microphone. Open the app in its own browser tab (or install the app) and tap the mic again."
-          : "Allow microphone access in your browser settings, then tap the mic again.",
-        variant: "destructive",
-        action: inIframe ? (
-          <ToastAction altText="Open in new tab" onClick={() => window.open(window.location.href, "_blank", "noopener")}>
-            Open app
-          </ToastAction>
-        ) : undefined,
-      });
-      return;
-    }
-
-
-    // Speaking output would be picked up by the mic — stop it before listening.
-    stopSpeaking();
-    try { recognitionRef.current?.abort?.(); } catch { /* noop */ }
-
-    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    const rec = new SR();
-    // Continuous + interim keeps the session alive on mobile, where a short pause
-    // otherwise ends recognition before any final result is emitted.
-    rec.continuous = true;
-    rec.interimResults = true;
-    rec.maxAlternatives = 1;
-    // Listen in the language the user picked in the app, so foreign speech is
-    // transcribed natively instead of being forced through English phonetics.
-    rec.lang = (() => {
-      const base = uiLang();
-      const map: Record<string, string> = {
-        en: "en-US", sk: "sk-SK", cs: "cs-CZ", de: "de-DE", es: "es-ES", fr: "fr-FR",
-        it: "it-IT", hu: "hu-HU", ru: "ru-RU", ja: "ja-JP", ko: "ko-KR", zh: "zh-CN",
-      };
-      return map[base] || navigator.language || "en-US";
-    })();
-
-
-    // Buffer everything we hear; we finalise ourselves after a short silence so
-    // nothing is lost when the engine never flags a result as final.
-    latestHeardRef.current = "";
-    sentRef.current = false;
-
-    const clearSilence = () => {
-      if (silenceTimerRef.current) {
-        window.clearTimeout(silenceTimerRef.current);
-        silenceTimerRef.current = null;
-      }
-    };
-
-    const finalise = (reason: "silence" | "end") => {
-      clearSilence();
-      const heard = latestHeardRef.current.trim();
-      if (sentRef.current) return;
-      if (heard) {
-        sentRef.current = true;
-        try { rec.stop(); } catch { /* noop */ }
-        setListening(false);
-        send(heard);
-      } else if (reason === "end") {
-        setListening(false);
-        // In hands-free mode silence is normal — keep quiet and just wait for the
-        // user to tap again instead of nagging with a toast every pause.
-        if (!handsFreeRef.current) {
-          toast({
-            title: "I didn't catch that",
-            description: "Speak a bit closer to the mic, or type your question below.",
-          });
-        }
-      }
-    };
-
-    rec.onresult = (e: any) => {
-      let interim = "";
-      let final = "";
-      for (let i = 0; i < e.results.length; i++) {
-        const r = e.results[i];
-        if (r.isFinal) final += r[0].transcript + " ";
-        else interim += r[0].transcript + " ";
-      }
-      const live = (final + interim).trim();
-      if (live) {
-        latestHeardRef.current = live;
-        setTranscript(live);
-        showCaption("user", live);
-      }
-      clearSilence();
-      silenceTimerRef.current = window.setTimeout(() => finalise("silence"), 1300);
-    };
-    rec.onspeechend = () => {
-      clearSilence();
-      silenceTimerRef.current = window.setTimeout(() => finalise("silence"), 800);
-    };
-    rec.onerror = (e: any) => {
-      const code = String(e?.error ?? "");
-      if (code === "aborted") return;
-      if (code === "no-speech") {
-        // Not fatal in continuous mode — keep whatever we already heard.
-        finalise("end");
-        return;
-      }
-      clearSilence();
-      setListening(false);
-      const description =
-        code === "not-allowed" || code === "service-not-allowed"
-          ? "Microphone access was denied. Allow it in your browser settings and try again."
-          : code === "network"
-            ? "Speech recognition needs an internet connection."
-            : "Voice input failed. You can type your question below.";
-      toast({ title: "Voice call failed", description, variant: "destructive" });
-    };
-    rec.onend = () => finalise("end");
-    recognitionRef.current = rec;
-    setListening(true);
-    setTranscript("");
-    try {
-      rec.start();
-    } catch {
-      setListening(false);
-      toast({
-        title: "Couldn't start the mic",
-        description: "Close other tabs using the microphone and try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-
-
-  const stopListening = () => {
-    try { recognitionRef.current?.stop?.(); } catch {}
-    setListening(false);
   };
 
   const dismissOnboarding = () => {
@@ -474,15 +138,14 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
 
   const uniButton = (
     <button
-      aria-label="Open Uni — voice AI assistant (like Siri)"
-      title="Uni · Voice AI assistant (like Siri) — tap to talk"
+      aria-label="Open Uni — AI assistant"
+      title="Uni · AI assistant — tap to chat"
       onClick={() => setOpen(true)}
       className="relative h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-xl shadow-primary/40 flex items-center justify-center hover:scale-110 transition-transform"
     >
-      {/* Siri-like pulsing halo so users recognize this as a voice AI */}
       <span className="absolute inset-0 rounded-full bg-primary/40 animate-ping" aria-hidden="true" />
       <span className="absolute -inset-1 rounded-full border border-primary/40" aria-hidden="true" />
-      <Mic className="h-6 w-6 text-white relative" />
+      <Sparkles className="h-6 w-6 text-white relative" />
     </button>
   );
 
@@ -551,32 +214,13 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
                   <p className="font-black text-sm flex items-center gap-1.5">
                     <span className="notranslate" translate="no">Uni</span>
                     <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30">
-                      Voice & chat
+                      Chat
                     </span>
                   </p>
-                  <p className="text-[10px] text-muted-foreground">Talk or type — Uni remembers the conversation · 5 credits per reply</p>
+                  <p className="text-[10px] text-muted-foreground">Type to chat — Uni remembers the conversation · 5 credits per reply</p>
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                <button
-                  onClick={() => {
-                    const next = !handsFree;
-                    setHandsFree(next);
-                    handsFreeRef.current = next;
-                    if (next && !listening && !thinking && !speaking) void startListening();
-                    if (!next) { stopSpeaking(); stopListening(); }
-                  }}
-                  aria-pressed={handsFree}
-                  title="Hands-free conversation — Uni keeps listening after each answer"
-                  className={cn(
-                    "text-[10px] font-bold px-2 py-1 rounded-full border transition-colors",
-                    handsFree
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-muted/60 text-muted-foreground border-border hover:text-foreground"
-                  )}
-                >
-                  {handsFree ? "Conversation on" : "Conversation"}
-                </button>
                 <button onClick={() => setOpen(false)} className="p-1 hover:bg-muted rounded">
                   <X className="h-4 w-4" />
                 </button>
@@ -595,17 +239,17 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
                   </button>
                   <div className="flex items-start gap-3 pr-6">
                     <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0 shadow-lg">
-                      <Mic className="h-4 w-4 text-white" />
+                      <Sparkles className="h-4 w-4 text-white" />
                     </div>
                     <p className="text-sm font-semibold leading-snug self-center">
-                      Uni talks with you like a person. Tap the mic to speak, or type below — turn on "Conversation" for hands-free back-and-forth.
+                      Uni chats with you like a person. Type below to get started.
                     </p>
                   </div>
                 </div>
               )}
               {turns.length === 0 && !showOnboarding && (
                 <div className="text-xs text-muted-foreground p-3 rounded-lg bg-muted/50">
-                  <p className="font-semibold mb-1">Try saying:</p>
+                  <p className="font-semibold mb-1">Try asking:</p>
                   <ul className="space-y-0.5">
                     <li>• "Open Megatalent"</li>
                     <li>• "Go to my wallet"</li>
@@ -619,43 +263,8 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
                   {t.content}
                 </div>
               ))}
-              {transcript && listening && (
-                <div className="text-sm p-2.5 rounded-lg bg-primary/5 border border-primary/20 italic ml-6">
-                  {transcript}…
-                </div>
-              )}
             </div>
 
-            <div className="flex items-center justify-center gap-3 pt-2 border-t border-border">
-              {listening ? (
-                <Button onClick={stopListening} variant="destructive" size="lg" className="rounded-full h-14 w-14 p-0">
-                  <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }}>
-                    <Mic className="h-6 w-6" />
-                  </motion.div>
-                </Button>
-              ) : thinking ? (
-                <Button disabled size="lg" className="rounded-full h-14 w-14 p-0">
-                  <Loader2 className="h-6 w-6 animate-spin" />
-                </Button>
-              ) : speaking ? (
-                <Button
-                  onClick={() => { stopSpeaking(); void startListening(); }}
-                  title="Interrupt Uni and speak"
-                  size="lg"
-                  className="rounded-full h-14 w-14 p-0"
-                  variant="secondary"
-                >
-                  <Volume2 className="h-6 w-6" />
-                </Button>
-              ) : (
-                <Button onClick={startListening} size="lg" className="rounded-full h-14 w-14 p-0 bg-gradient-to-br from-primary to-accent">
-                  <Mic className="h-6 w-6" />
-                </Button>
-              )}
-            </div>
-
-            {/* Text fallback — works even when the browser has no speech
-                recognition or the mic permission is blocked. */}
             <form
               className="flex items-center gap-2"
               onSubmit={(e) => {
@@ -669,17 +278,18 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
               <input
                 value={typed}
                 onChange={(e) => setTyped(e.target.value)}
-                placeholder="…or type your question"
+                placeholder="Type your question"
                 aria-label="Type a message to Uni"
                 className="flex-1 h-10 rounded-full border border-border bg-background px-4 text-sm outline-none focus:border-primary"
+                autoFocus
               />
               <Button type="submit" size="sm" className="rounded-full" disabled={thinking || !typed.trim()}>
-                Send
+                {thinking ? <Loader2 className="h-4 w-4 animate-spin" /> : "Send"}
               </Button>
             </form>
 
             <p className="text-[10px] text-center text-muted-foreground">
-              {listening ? "Listening…" : thinking ? "Uni is thinking…" : speaking ? "Uni is speaking…" : supported ? "Tap the mic and speak, or type below" : "Voice input is unavailable in this browser — type below"}
+              {thinking ? "Uni is thinking…" : "Type your question above"}
             </p>
 
           </motion.div>
@@ -690,7 +300,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
 
   const captionBar = (
     <AnimatePresence>
-      {caption && (listening || speaking || thinking || open) && (
+      {caption && (thinking || open) && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

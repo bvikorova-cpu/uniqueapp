@@ -25,7 +25,7 @@ const PACKAGES = [
     icon: Star,
     gradient: "from-pink-500 to-rose-500",
     popular: true,
-    features: ["5-6 matches", "Voice messages", "Profile hints", "Best value"] },
+    features: ["5-6 matches", "Profile hints", "Best value"] },
   { id: "premium",
     name: "Premium",
     credits: 100,

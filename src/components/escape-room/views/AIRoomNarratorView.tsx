@@ -64,7 +64,7 @@ export function AIRoomNarratorView({ onBack }: { onBack: () => void }) {
               <Textarea placeholder="Players just opened the hidden vault..." value={scene} onChange={e => setScene(e.target.value)} rows={4} />
             </div>
             <div>
-              <label className="text-sm font-medium mb-1 block">Voice Style</label>
+              <label className="text-sm font-medium mb-1 block">Narration Style</label>
               <Select value={voiceStyle} onValueChange={setVoiceStyle}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>

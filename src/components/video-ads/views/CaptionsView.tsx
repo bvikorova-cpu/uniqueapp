@@ -58,7 +58,7 @@ export const CaptionsView = ({ onBack }: { onBack: () => void }) => {
         <Card>
           <CardHeader><CardTitle>Settings</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div><Label>Script / Voiceover *</Label><Textarea rows={6} value={script} onChange={e => setScript(e.target.value)} placeholder="Paste the entire voiceover..." /></div>
+            <div><Label>Script *</Label><Textarea rows={6} value={script} onChange={e => setScript(e.target.value)} placeholder="Paste the entire script..." /></div>
             <div><Label>Duration (s)</Label><Input type="number" value={duration} onChange={e => setDuration(parseInt(e.target.value) || 30)} min={5} max={300} /></div>
             <div><Label>Style</Label><Input value={style} onChange={e => setStyle(e.target.value)} placeholder="modern bold, minimal, neon..." /></div>
             <div><Label>Jazyk</Label>

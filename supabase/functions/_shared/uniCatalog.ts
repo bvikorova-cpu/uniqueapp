@@ -2354,16 +2354,6 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     ]
   },
   {
-    "path": "/kids-stories/voice-chat",
-    "label": "Kids Stories — Voice Chat",
-    "keywords": [
-      "kids",
-      "stories",
-      "voice",
-      "chat"
-    ]
-  },
-  {
     "path": "/kids-story-creator",
     "label": "Kids Story Creator",
     "keywords": [
@@ -2378,25 +2368,6 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     "keywords": [
       "kids",
       "story",
-      "pricing"
-    ]
-  },
-  {
-    "path": "/kids-voice-chat",
-    "label": "Kids Voice Chat",
-    "keywords": [
-      "kids",
-      "voice",
-      "chat"
-    ]
-  },
-  {
-    "path": "/kids-voice-chat-pricing",
-    "label": "Kids Voice Chat Pricing",
-    "keywords": [
-      "kids",
-      "voice",
-      "chat",
       "pricing"
     ]
   },

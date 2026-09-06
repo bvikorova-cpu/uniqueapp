@@ -35,7 +35,6 @@ export function BodyScanMeditation() {
   const [sessionStartTime, setSessionStartTime] = useState<number>(0);
   const [completedParts, setCompletedParts] = useState<Set<number>>(new Set());
   const intervalRef = useRef<number | null>(null);
-  const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
   const { logSession, updateStats } = useWellnessProgress();
 
   const currentPart = bodyParts[currentPartIndex];
@@ -43,28 +42,14 @@ export function BodyScanMeditation() {
   const progress = (totalElapsed / totalDuration) * 100;
   const isComplete = completedParts.size === bodyParts.length;
 
-  const speak = (text: string) => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.8;
-      utterance.pitch = 1;
-      speechRef.current = utterance;
-      window.speechSynthesis.speak(utterance);
-    }
-  };
-
   const startMeditation = () => {
     setIsPlaying(true);
     setSessionStartTime(Date.now());
-    speak(currentPart.instructions);
     updateStats({ activityType: "body_scan" }).catch(console.error);
   };
 
   const pauseMeditation = () => {
     setIsPlaying(false);
-    window.speechSynthesis.cancel();
   };
 
   const resetMeditation = () => {
@@ -73,7 +58,6 @@ export function BodyScanMeditation() {
     setTimeLeft(bodyParts[0].duration);
     setTotalElapsed(0);
     setCompletedParts(new Set());
-    window.speechSynthesis.cancel();
     if (intervalRef.current) clearInterval(intervalRef.current);
   };
 
@@ -86,11 +70,9 @@ export function BodyScanMeditation() {
             const nextIndex = currentPartIndex + 1;
             if (nextIndex < bodyParts.length) {
               setCurrentPartIndex(nextIndex);
-              speak(bodyParts[nextIndex].instructions);
               return bodyParts[nextIndex].duration;
             } else {
               setIsPlaying(false);
-              speak("Body scan meditation is complete. Slowly open your eyes and return to the present moment.");
               const durationSeconds = Math.floor((Date.now() - sessionStartTime) / 1000);
               logSession({ sessionType: "body_scan", durationSeconds, completed: true }).catch(console.error);
               return 0;
@@ -133,7 +115,7 @@ export function BodyScanMeditation() {
               </Badge>
             )}
           </CardTitle>
-          <CardDescription>Progressively focus on each body part and release tension with audio guidance</CardDescription>
+          <CardDescription>Progressively focus on each body part and release tension</CardDescription>
         </CardHeader>
         <CardContent className="relative">
           <div className="grid md:grid-cols-2 gap-6">

@@ -154,7 +154,7 @@ const SafetyRoleplay = () => {
       <Tabs value={tab} onValueChange={(v) => setTab(v as any)}>
         <TabsList className="bg-card/50 backdrop-blur-md">
           <TabsTrigger value="play"><Gamepad2 className="h-3 w-3 mr-1" /> Quick Play</TabsTrigger>
-          <TabsTrigger value="voice"><Mic className="h-3 w-3 mr-1" /> AI Voice Coach</TabsTrigger>
+          <TabsTrigger value="voice"><Mic className="h-3 w-3 mr-1" /> AI Roleplay Coach</TabsTrigger>
           <TabsTrigger value="leaderboard"><Crown className="h-3 w-3 mr-1" /> Leaderboard</TabsTrigger>
         </TabsList>
 
@@ -191,7 +191,7 @@ const SafetyRoleplay = () => {
           <Card className="border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 to-card/60 backdrop-blur-md">
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
-                <Mic className="h-4 w-4 text-indigo-400" /> AI Voice Coach
+                <Mic className="h-4 w-4 text-indigo-400" /> AI Roleplay Coach
               </CardTitle>
               <CardDescription className="text-xs">Type your response — AI scores assertiveness, empathy, safety. (6 cr)</CardDescription>
             </CardHeader>

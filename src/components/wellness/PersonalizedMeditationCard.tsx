@@ -30,7 +30,7 @@ export function PersonalizedMeditationCard() {
                   <Sparkles className="w-3 h-3" /> 3 credits
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground">AI script + voiceover for your exact need</p>
+              <p className="text-xs text-muted-foreground">AI-written script for your exact need</p>
             </div>
           </div>
         </Card>
