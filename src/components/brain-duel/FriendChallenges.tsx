@@ -235,6 +235,27 @@ export const FriendChallenges = () => {
 
       if (error) throw error;
 
+      // Finished / abandoned duels disappear 30 minutes after they were started.
+      const cutoff = Date.now() - 30 * 60 * 1000;
+      const stale: string[] = [];
+      const fresh = (data || []).filter((c) => {
+        const started = new Date((c as { updated_at?: string; created_at: string }).updated_at || c.created_at).getTime();
+        const isPending = String(c.status) === 'pending';
+        if (!isPending && started < cutoff) {
+          stale.push(c.id);
+          return false;
+        }
+        return true;
+      });
+
+      if (stale.length > 0) {
+        await supabase
+          .from('brain_duel_friend_challenges')
+          .update({ status: 'expired' })
+          .in('id', stale);
+      }
+
+
       // Fetch profiles for challengers and challenged users
       const userIds = new Set<string>();
       data?.forEach((challenge) => {
