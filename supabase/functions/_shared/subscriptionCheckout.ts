@@ -38,9 +38,6 @@ export async function createSubscriptionCheckout(
   const origin = req.headers.get("origin") ?? "https://uniqueapp.fun";
 
   const session = await stripe.checkout.sessions.create({
-    automatic_tax: { enabled: true },
-    tax_id_collection: { enabled: true },
-    ...(customerId ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
     customer: customerId,
     customer_email: customerId ? undefined : userData.user.email,
     line_items: [{ price: priceId, quantity: 1 }],

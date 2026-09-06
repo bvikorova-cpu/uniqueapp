@@ -49,8 +49,6 @@ Deno.serve(async (req) => {
     const origin = req.headers.get("origin") || "https://uniqueapp.fun";
 
     const session = await stripe.checkout.sessions.create({
-      automatic_tax: { enabled: true },
-      tax_id_collection: { enabled: true },
       customer_email: user.email,
       line_items: [
         {

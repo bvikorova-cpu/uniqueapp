@@ -43,9 +43,6 @@ serve(async (req) => {
     // Subscription mode with one-time signup fee as an extra line item (Stripe allows
     // mixing one-time + recurring line items in subscription-mode Checkout).
     const finalSession = await stripe.checkout.sessions.create({
-      automatic_tax: { enabled: true },
-      tax_id_collection: { enabled: true },
-      ...(customerId ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
       mode: "subscription",
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
@@ -65,9 +62,6 @@ serve(async (req) => {
         referral_code: referralCode ?? "" },
       ...(tier === "physical"
         ? { billing_address_collection: "required" as const,
-            ...(customerId
-              ? { customer_update: { shipping: "auto" as const, address: "auto" as const, name: "auto" as const } }
-              : {}),
             shipping_address_collection: {
               allowed_countries: [
                 "SK","CZ","HU","AT","DE","PL","FR","IT","ES","NL","BE","IE","PT","SE","DK","FI","GR","RO","BG","HR","SI","LT","LV","EE","LU","MT","CY","GB","US","CA","AU","CH","NO"
