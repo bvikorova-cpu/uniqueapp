@@ -311,61 +311,72 @@ const PhotoStyler = () => {
                   className="h-9 text-sm"
                 />
 
-                {!styleQuery.trim() && (
-                  <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1">
-                    {PHOTO_STYLE_CATEGORIES.map((c) => {
-                      const active = c.name === category;
-                      return (
-                        <button
-                          key={c.name}
-                          type="button"
-                          onClick={() => setCategory(c.name)}
-                          aria-pressed={active}
-                          className={`whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-bold transition-colors ${
-                            active
-                              ? "border-primary bg-primary text-primary-foreground shadow-sm"
-                              : "border-border bg-background/60 text-muted-foreground hover:border-primary/40"
-                          }`}
-                        >
-                          <span className="mr-1">{c.emoji}</span>
-                          {c.name}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-
-                {grouped.length === 0 && (
+                {categories.length === 0 && (
                   <p className="text-xs text-muted-foreground">No style matches “{styleQuery}”.</p>
                 )}
 
-                {grouped.map(({ group, items }) => (
+                <div className="space-y-2">
+                  {categories.map((c) => {
+                    const open = openCategories.includes(c.name) || !!styleQuery.trim();
+                    return (
+                      <div key={c.name} className="overflow-hidden rounded-xl border border-border bg-background/50">
+                        <button
+                          type="button"
+                          onClick={() => toggleCategory(c.name)}
+                          aria-expanded={open}
+                          className="flex w-full items-center justify-between gap-2 px-3 py-2.5 text-left"
+                        >
+                          <span className="flex min-w-0 items-center gap-2 text-sm font-bold">
+                            <span>{c.emoji}</span>
+                            <span className="truncate">{c.name}</span>
+                          </span>
+                          <span className="flex shrink-0 items-center gap-2">
+                            <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
+                              {c.count}
+                            </span>
+                            <ChevronDown
+                              className={`h-4 w-4 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
+                            />
+                          </span>
+                        </button>
 
-                  <div key={group} className="space-y-1.5">
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{group}</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {items.map((s) => {
-                        const active = selected.includes(s.id);
-                        return (
-                          <button
-                            key={s.id}
-                            type="button"
-                            onClick={() => toggleStyle(s.id)}
-                            aria-pressed={active}
-                            className={`rounded-full border px-2.5 py-1.5 text-xs font-semibold transition-colors ${
-                              active
-                                ? "border-primary bg-primary/15 text-primary shadow-sm"
-                                : "border-border bg-background/60 text-muted-foreground hover:border-primary/40"
-                            }`}
-                          >
-                            <span className="mr-1">{s.emoji}</span>
-                            {s.label}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
+                        {open && (
+                          <div className="space-y-3 border-t border-border/60 px-3 py-3">
+                            {c.groups.map(({ group, items }) => (
+                              <div key={group} className="space-y-1.5">
+                                <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                                  {group}
+                                </p>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {items.map((s) => {
+                                    const active = selected.includes(s.id);
+                                    return (
+                                      <button
+                                        key={s.id}
+                                        type="button"
+                                        onClick={() => toggleStyle(s.id)}
+                                        aria-pressed={active}
+                                        className={`max-w-full rounded-full border px-2.5 py-1.5 text-xs font-semibold transition-colors ${
+                                          active
+                                            ? "border-primary bg-primary/15 text-primary shadow-sm"
+                                            : "border-border bg-background/60 text-muted-foreground hover:border-primary/40"
+                                        }`}
+                                      >
+                                        <span className="mr-1">{s.emoji}</span>
+                                        {s.label}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
               </div>
 
               <div className="rounded-xl border border-border bg-background/60 p-3">
