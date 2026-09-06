@@ -404,4 +404,19 @@ export const PHOTO_STYLES: PhotoStyle[] = [
 
 
 
+/** Top-level categories used by the Photo Styler picker. */
+export const PHOTO_STYLE_CATEGORIES: { name: string; emoji: string; groups: string[] }[] = [
+  { name: "Art & Drawing", emoji: "🎨", groups: ["Drawn", "Painted", "Classic & Photo", "Modern Digital Art", "Abstract & Optical Illusion", "Exotic Techniques"] },
+  { name: "Cartoon & Avatars", emoji: "😃", groups: ["Cartoon & Anime", "Avatars & Emoji", "Toys & Figures"] },
+  { name: "Craft & Materials", emoji: "🧶", groups: ["Craft & Pixel", "Textures & Craft Materials", "Sculpture & Classic Materials"] },
+  { name: "Travel & Cities", emoji: "🌍", groups: ["Famous Landmarks", "World Metropolises", "Aesthetic Getaways", "Exotic Sea & Beaches", "Mountain Adventure", "Wild Nature & Extremes", "Desert Adventure", "Historic & Travel Scenes"] },
+  { name: "Fantasy & Sci-Fi", emoji: "🪄", groups: ["Fantasy", "Sci-Fi & Future", "Sci-Fi & Adventure Worlds", "Storybook Worlds", "Film & Game Worlds", "Nature & Elements"] },
+  { name: "Glam & Fashion", emoji: "💄", groups: ["Glamour & High Fashion", "Bold & Glam Looks", "Portrait & Editorial", "Gala & Fantasy Royalty", "Uniforms & Costumes"] },
+  { name: "Retro & Street", emoji: "🕶️", groups: ["Retro & Neon", "Street & Graphic", "Subculture & Street", "Film & Pop Culture"] },
+  { name: "Horror & Dark", emoji: "👻", groups: ["Horror & Alt Reality", "Cinematic & Thriller"] },
+  { name: "Holidays & Parties", emoji: "🎉", groups: ["Christmas & Winter Holidays", "New Year & Carnival", "Easter & Spring Holidays", "Halloween Party", "World Holidays"] },
+  { name: "Work & Royalty", emoji: "👔", groups: ["Professional & Business", "Career & Portrait Scenes", "Royal & Historical"] },
+  { name: "Unique Brand", emoji: "✨", groups: ["Unique Brand"] },
+];
+
 export const PHOTO_STYLE_COST = 3;
