@@ -70437,6 +70437,10 @@ export type Database = {
         Args: { _user_id: string }
         Returns: number
       }
+      get_creator_earnings_summary: {
+        Args: { _user_id: string }
+        Returns: Json
+      }
       get_current_user_id: { Args: never; Returns: string }
       get_dating_likes_you: {
         Args: never
