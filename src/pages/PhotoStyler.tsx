@@ -44,10 +44,25 @@ const PhotoStyler = () => {
   const [results, setResults] = useState<StyledResult[]>([]);
 
   const cost = selected.length * PHOTO_STYLE_COST;
-  const grouped = useMemo(
-    () => PHOTO_STYLE_GROUPS.map((g) => ({ group: g, items: PHOTO_STYLES.filter((s) => s.group === g) })),
-    [],
-  );
+
+  const [category, setCategory] = useState<string>(PHOTO_STYLE_CATEGORIES[0].name);
+  const [styleQuery, setStyleQuery] = useState("");
+
+  const grouped = useMemo(() => {
+    const q = styleQuery.trim().toLowerCase();
+    const groups = q
+      ? PHOTO_STYLE_GROUPS
+      : (PHOTO_STYLE_CATEGORIES.find((c) => c.name === category)?.groups ?? []);
+    return groups
+      .map((g) => ({
+        group: g,
+        items: PHOTO_STYLES.filter(
+          (s) => s.group === g && (!q || s.label.toLowerCase().includes(q) || g.toLowerCase().includes(q)),
+        ),
+      }))
+      .filter((g) => g.items.length > 0);
+  }, [category, styleQuery]);
+
 
   const toggleStyle = (id: string) => {
     setSelected((prev) => {
