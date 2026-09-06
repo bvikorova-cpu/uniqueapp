@@ -637,6 +637,7 @@ serve(async (req) => {
         if (b64) results.push({ style, image: `data:image/png;base64,${b64}` });
         else results.push({ style, error: "The image model returned nothing. Try again." });
       } catch (e) {
+        console.error(`[photo-styler] style ${style} failed:`, e instanceof Error ? e.message : e);
         results.push({ style, error: e instanceof Error ? e.message : "Generation failed" });
       }
     }
