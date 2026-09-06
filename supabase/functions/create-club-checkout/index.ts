@@ -43,6 +43,9 @@ serve(async (req) => {
     // Subscription mode with one-time signup fee as an extra line item (Stripe allows
     // mixing one-time + recurring line items in subscription-mode Checkout).
     const finalSession = await stripe.checkout.sessions.create({
+      automatic_tax: { enabled: true },
+      tax_id_collection: { enabled: true },
+      ...(customerId ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
       mode: "subscription",
       customer: customerId,
       customer_email: customerId ? undefined : user.email,

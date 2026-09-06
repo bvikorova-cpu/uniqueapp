@@ -207,6 +207,7 @@ export async function createOneOffSession(
     ? { price: product.priceId, quantity: 1 }
     : { quantity: 1,
         price_data: {
+          tax_behavior: "inclusive" as const,
           currency: product.currency || "eur",
           unit_amount: input.amount ?? product.amount ?? 100,
           product_data: {
@@ -221,6 +222,9 @@ export async function createOneOffSession(
   }session_id={CHECKOUT_SESSION_ID}`;
 
   const session = await stripe.checkout.sessions.create({
+    automatic_tax: { enabled: true },
+    tax_id_collection: { enabled: true },
+    ...(customerId ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
     customer: customerId,
     customer_email: customerId ? undefined : input.userEmail,
     line_items: [lineItem as any],

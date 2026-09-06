@@ -302,6 +302,9 @@ async function handler(req: Request): Promise<Response> {
       const price = await stripe.prices.retrieve(priceId);
       const mode: "subscription" | "payment" = price.recurring ? "subscription" : "payment";
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{ price: priceId, quantity: 1 }],
@@ -322,6 +325,9 @@ async function handler(req: Request): Promise<Response> {
       }
       const EXCLUSIVE_PRICE_ID = "price_1TvKozGaXSfGtYFtBc5ZV6td"; // €100,000 / month
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{ price: EXCLUSIVE_PRICE_ID, quantity: 1 }],
@@ -363,6 +369,9 @@ async function handler(req: Request): Promise<Response> {
         metadata: { user_id: userId ?? "", module: "pet_translator", price_id: priceId } };
       if (customerId) sessionParams.customer = customerId;
       else if (email) sessionParams.customer_email = email;
+      (sessionParams as any).automatic_tax = { enabled: true };
+      (sessionParams as any).tax_id_collection = { enabled: true };
+      if ((sessionParams as any).customer) (sessionParams as any).customer_update = { address: "auto", name: "auto" };
       const session = await stripe.checkout.sessions.create(sessionParams);
       return successResponse({ url: session.url, mode });
     }
@@ -411,6 +420,9 @@ async function handler(req: Request): Promise<Response> {
       if (action === "save_setup_link") {
         const customer = await ensureCustomer();
         const session = await stripe.checkout.sessions.create({
+          automatic_tax: { enabled: true },
+          tax_id_collection: { enabled: true },
+          ...(customer.id ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
           mode: "setup",
           customer: customer.id,
           payment_method_types: ["card"],
@@ -564,10 +576,14 @@ async function handler(req: Request): Promise<Response> {
 
       // Default: purchase → create subscription checkout
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             unit_amount: 100,
             recurring: { interval: "month" as const },
@@ -620,10 +636,14 @@ async function handler(req: Request): Promise<Response> {
       if (oErr || !order) throw new Error(oErr?.message || "Failed to create order");
 
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             unit_amount: amountCents,
             product_data: { name: `Coupon: ${coupon.title}` } },
@@ -836,6 +856,7 @@ async function handler(req: Request): Promise<Response> {
         customer_email: customerId ? undefined : (donorEmail || email),
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             unit_amount: amountCents,
             product_data: {
@@ -873,6 +894,9 @@ async function handler(req: Request): Promise<Response> {
         }
       }
 
+      (sessionParams as any).automatic_tax = { enabled: true };
+      (sessionParams as any).tax_id_collection = { enabled: true };
+      if ((sessionParams as any).customer) (sessionParams as any).customer_update = { address: "auto", name: "auto" };
       const session = await stripe.checkout.sessions.create(sessionParams as any);
 
       return successResponse({ url: session.url, session_id: session.id });
@@ -953,6 +977,9 @@ async function handler(req: Request): Promise<Response> {
       }
       const isSubscription = mode === "subscription";
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{ price: String(body.priceId), quantity: 1 }],
@@ -1071,6 +1098,7 @@ async function handler(req: Request): Promise<Response> {
         customer_email: customerId ? undefined : email,
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             product_data: { name: pkg.name },
             unit_amount: pkg.amount,
@@ -1086,6 +1114,9 @@ async function handler(req: Request): Promise<Response> {
             coverage_level: key,
             user_id: userId ?? "" } };
       }
+      (sessionParams as any).automatic_tax = { enabled: true };
+      (sessionParams as any).tax_id_collection = { enabled: true };
+      if ((sessionParams as any).customer) (sessionParams as any).customer_update = { address: "auto", name: "auto" };
       const session = await stripe.checkout.sessions.create(sessionParams as any);
       if (userId) {
         const admin = createSupabaseAdminClient();
@@ -1150,6 +1181,9 @@ async function handler(req: Request): Promise<Response> {
           .single();
         if (planError) throw planError;
         const session = await stripe.checkout.sessions.create({
+          automatic_tax: { enabled: true },
+          tax_id_collection: { enabled: true },
+          ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
           customer: customerId || undefined,
           customer_email: customerId ? undefined : email,
           line_items: [{ price: priceId, quantity: 1 }],
@@ -1176,12 +1210,16 @@ async function handler(req: Request): Promise<Response> {
         const pkg = HORSE_PACKS[pkgKey];
         if (!pkg) return errorResponse("Invalid horse_currency package", 400);
         const session = await stripe.checkout.sessions.create({
+          automatic_tax: { enabled: true },
+          tax_id_collection: { enabled: true },
+          ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
           customer: customerId || undefined,
           customer_email: customerId ? undefined : email,
           mode: "payment",
           line_items: [{
             quantity: 1,
             price_data: {
+              tax_behavior: "inclusive" as const,
               currency: "eur",
               product_data: { name: pkg.name, description: "Horse Racing Arena currency" },
               unit_amount: Math.round(pkg.price * 100) } }],
@@ -1209,12 +1247,16 @@ async function handler(req: Request): Promise<Response> {
         const productId = String(body.productId || "");
         if (!productId) return errorResponse("productId required", 400);
         const session = await stripe.checkout.sessions.create({
+          automatic_tax: { enabled: true },
+          tax_id_collection: { enabled: true },
+          ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
           customer: customerId || undefined,
           customer_email: customerId ? undefined : email,
           mode: "payment",
           line_items: [{
             quantity: 1,
             price_data: {
+              tax_behavior: "inclusive" as const,
               currency: "eur",
               product_data: { name: "AR Product Preview", description: "AR preview session" },
               unit_amount: 99 } }],
@@ -1256,12 +1298,16 @@ async function handler(req: Request): Promise<Response> {
           .single();
         if (orderError) throw orderError;
         const session = await stripe.checkout.sessions.create({
+          automatic_tax: { enabled: true },
+          tax_id_collection: { enabled: true },
+          ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
           customer: customerId || undefined,
           customer_email: customerId ? undefined : email,
           mode: "payment",
           line_items: [{
             quantity: 1,
             price_data: {
+              tax_behavior: "inclusive" as const,
               currency: "eur",
               product_data: {
                 name: item.title,
@@ -1334,6 +1380,7 @@ async function handler(req: Request): Promise<Response> {
           line_items: [{
             quantity: 1,
             price_data: {
+              tax_behavior: "inclusive" as const,
               currency: "eur",
               unit_amount: Math.round(amount * 100),
               product_data: { name: `Auction buyout: ${auction.title}`.slice(0, 250) } } }],
@@ -1353,6 +1400,9 @@ async function handler(req: Request): Promise<Response> {
             application_fee_amount: Math.round(commissionAmount * 100),
             transfer_data: { destination: sellerConnectId } };
         }
+        (sessionParams as any).automatic_tax = { enabled: true };
+        (sessionParams as any).tax_id_collection = { enabled: true };
+        if ((sessionParams as any).customer) (sessionParams as any).customer_update = { address: "auto", name: "auto" };
         const session = await stripe.checkout.sessions.create(sessionParams as any);
         return successResponse({ url: session.url, session_id: session.id, auto_split: !!sellerConnectId });
       }
@@ -1388,6 +1438,9 @@ async function handler(req: Request): Promise<Response> {
     if (body.product && B18B_FIXED_SUB[String(body.product)]) {
       const cfg = B18B_FIXED_SUB[String(body.product)];
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{ price: cfg.priceId, quantity: 1 }],
@@ -1412,6 +1465,9 @@ async function handler(req: Request): Promise<Response> {
       const priceId = SCHOOL_TIERS[tier];
       if (!priceId) return errorResponse(`Invalid school tier: ${tier}. Valid: ${Object.keys(SCHOOL_TIERS).join(", ")}`, 400);
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{ price: priceId, quantity: 1 }],
@@ -1430,6 +1486,9 @@ async function handler(req: Request): Promise<Response> {
       const isLifetime = body.isLifetime === true;
       const mode: "payment" | "subscription" = isLifetime ? "payment" : "subscription";
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{ price: String(body.priceId), quantity: 1 }],
@@ -1452,7 +1511,7 @@ async function handler(req: Request): Promise<Response> {
       const kind = String(body.kind || "");
       const cancelPath = "/rewards?payment=canceled";
       const successPath = "/rewards?payment=success&session_id={CHECKOUT_SESSION_ID}";
-      let line_items: Array<{ price_data: { currency: string; product_data: { name: string }; unit_amount: number }; quantity: number }> = [];
+      let line_items: Array<{ price_data: { tax_behavior: "inclusive" as const, currency: string; product_data: { name: string }; unit_amount: number }; quantity: number }> = [];
       const metadata: Record<string, string> = { user_id: uid, kind, type: "rewards_checkout", product: "rewards_checkout" };
 
       if (kind === "battle_pass_premium") {
@@ -1469,6 +1528,7 @@ async function handler(req: Request): Promise<Response> {
         metadata.season_id = String(season.id);
         line_items = [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             product_data: { name: `Battle Pass Premium · ${season.name}` },
             unit_amount: Math.round(eur * 100) },
@@ -1484,6 +1544,7 @@ async function handler(req: Request): Promise<Response> {
         metadata.qty = String(qty);
         line_items = [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             product_data: { name: `Streak Freeze · ${pack.label} (×${qty})` },
             unit_amount: Math.round(pack.eur * 100) },
@@ -1493,6 +1554,9 @@ async function handler(req: Request): Promise<Response> {
       }
 
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items,
@@ -1520,11 +1584,15 @@ async function handler(req: Request): Promise<Response> {
       const platformFee = Number(stream.access_price) * 0.1;
       const creatorPayout = Number(stream.access_price) - platformFee;
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         mode: "payment",
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             product_data: {
               name: `Live Stream Access: ${stream.title}`,
@@ -1558,6 +1626,9 @@ async function handler(req: Request): Promise<Response> {
       if (!priceId) return errorResponse(`Invalid tier: ${tier}. Use 'premium' or 'top_premium'.`, 400);
       const referralCode = (body.referralCode ? String(body.referralCode).trim().toUpperCase() : "") || "";
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{ price: priceId, quantity: 1 }],
@@ -1583,12 +1654,16 @@ async function handler(req: Request): Promise<Response> {
       const category = String(body.category || "");
       if (!submission_id || !category) return errorResponse("Missing submission_id/category", 400);
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         mode: "payment",
         payment_method_types: ["card"],
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             product_data: { name: "Megatalent Spotlight Boost (24h)" },
             unit_amount: 499 },
@@ -1623,12 +1698,16 @@ async function handler(req: Request): Promise<Response> {
       const platformFee = Math.round((amt * 2000) / 10000); // 20% platform fee
       const creatorAmount = amt - platformFee;
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         mode: "payment",
         payment_method_types: ["card"],
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             product_data: {
               name: "Megatalent Tip",
@@ -1656,11 +1735,15 @@ async function handler(req: Request): Promise<Response> {
 
     if (body.product === "megatalent_vip") {
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         mode: "subscription",
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             recurring: { interval: "month" },
             product_data: { name: "Megatalent VIP Viewer Pass",
@@ -1688,11 +1771,15 @@ async function handler(req: Request): Promise<Response> {
         ? `Song Request (${(metadata as any)?.tier || "standard"}) — ${(metadata as any)?.song || ""}`
         : `Collectible Ticket — ${(metadata as any)?.artist || ""} ${(metadata as any)?.edition || ""} Edition`;
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         mode: "payment",
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             product_data: { name },
             unit_amount: amount },
@@ -1738,11 +1825,15 @@ async function handler(req: Request): Promise<Response> {
       const priceEur = Number((ticketType as any).price);
       const unit = Math.round(priceEur * 100);
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         mode: "payment",
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             product_data: {
               name: `${String((ticketType as any).name).toUpperCase()} Ticket - ${(ticketType as any).live_concert_streams.title}`,
@@ -1778,6 +1869,9 @@ async function handler(req: Request): Promise<Response> {
       const coins = Number(body.coins || 100);
       const priceId = "price_1SVehXGaXSfGtYFtgUbBfnFe";
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{ price: priceId, quantity: 1 }],
@@ -1822,11 +1916,15 @@ async function handler(req: Request): Promise<Response> {
       const comedianAmount = Number((priceEur - platformCommission).toFixed(2));
 
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         mode: "payment",
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             product_data: { name: `Comedy Ticket — ${(show as any).title}` },
             unit_amount: unit },
@@ -1945,10 +2043,14 @@ async function handler(req: Request): Promise<Response> {
       }
 
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             product_data: {
               name: requestType === "shoutout" ? "Personal Video Shoutout" : "Paid Message to Creator",
@@ -2023,12 +2125,16 @@ async function handler(req: Request): Promise<Response> {
       const highlight = amt >= 5000 ? "#ef4444" : amt >= 2000 ? "#f97316" : amt >= 1000 ? "#eab308" : amt >= 500 ? "#a855f7" : "#3b82f6";
 
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         mode: "payment",
         payment_method_types: ["card"],
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             product_data: {
               name: `Super Chat — ${stream.title || "Live stream"}`,
@@ -2088,6 +2194,7 @@ async function handler(req: Request): Promise<Response> {
         payment_method_types: ["card"],
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             product_data: {
               name: `Tip for ${recipient.full_name ?? recipient.username ?? "creator"}`,
@@ -2110,6 +2217,9 @@ async function handler(req: Request): Promise<Response> {
           transfer_data: { destination: destinationAccount },
           description: `Tip from ${email ?? userId} → ${recipientId}` };
       }
+      (sessionParams as any).automatic_tax = { enabled: true };
+      (sessionParams as any).tax_id_collection = { enabled: true };
+      if ((sessionParams as any).customer) (sessionParams as any).customer_update = { address: "auto", name: "auto" };
       const session = await stripe.checkout.sessions.create(
         sessionParams as any,
         { idempotencyKey: `profile-tip-${userId}-${requestKey}` },
@@ -2152,6 +2262,7 @@ async function handler(req: Request): Promise<Response> {
         customer_email: customerId ? undefined : email,
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             product_data: {
               name: merch.name,
@@ -2173,6 +2284,9 @@ async function handler(req: Request): Promise<Response> {
       if (!merch.is_digital) { sessionConfig.shipping_address_collection = {
           allowed_countries: ["AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE"] };
       }
+      (sessionConfig as any).automatic_tax = { enabled: true };
+      (sessionConfig as any).tax_id_collection = { enabled: true };
+      if ((sessionConfig as any).customer) (sessionConfig as any).customer_update = { address: "auto", name: "auto" };
       const session = await stripe.checkout.sessions.create(sessionConfig as any);
       await admin.from("creator_merch_orders").insert({ buyer_id: userId,
         creator_id: merch.creator_id,
@@ -2226,10 +2340,14 @@ async function handler(req: Request): Promise<Response> {
         return errorResponse("Failed to create order", 500);
       }
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             product_data: {
               name: offering.title,
@@ -2281,11 +2399,15 @@ async function handler(req: Request): Promise<Response> {
       const platformFeeCents = Math.round(amountCents * PLATFORM_FEE_PCT);
       const netCents = amountCents - platformFeeCents;
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         mode: "payment",
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             product_data: {
               name: `Brand campaign: ${campaign.campaign_name}`,
@@ -2359,6 +2481,9 @@ async function handler(req: Request): Promise<Response> {
           subscription_status: "pending" });
       }
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{ price: TIER_PRICES[tier], quantity: 1 }],
@@ -2378,6 +2503,9 @@ async function handler(req: Request): Promise<Response> {
       const priceId = String(body.priceId || "");
       if (!priceId) return errorResponse("priceId is required", 400);
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{ price: priceId, quantity: 1 }],
@@ -2440,10 +2568,14 @@ async function handler(req: Request): Promise<Response> {
         return errorResponse("Failed to create payment record", 500);
       }
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             product_data: {
               name: `Campaign: ${campaign.campaign_name}`,
@@ -2535,6 +2667,7 @@ async function handler(req: Request): Promise<Response> {
         customer_email: email,
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             unit_amount: Math.round(amount * 100),
             product_data: {
@@ -2556,6 +2689,9 @@ async function handler(req: Request): Promise<Response> {
           application_fee_amount: Math.round(commissionAmount * 100),
           transfer_data: { destination: sellerConnectId } };
       }
+      (sessionParams as any).automatic_tax = { enabled: true };
+      (sessionParams as any).tax_id_collection = { enabled: true };
+      if ((sessionParams as any).customer) (sessionParams as any).customer_update = { address: "auto", name: "auto" };
       const session = await stripe.checkout.sessions.create(sessionParams as any);
       await admin.from("bazaar_orders").update({ stripe_session_id: session.id }).eq("id", order.id);
       return successResponse({ url: session.url, session_id: session.id, order_id: order.id, auto_split: !!sellerConnectId });
@@ -2573,11 +2709,15 @@ async function handler(req: Request): Promise<Response> {
       if (!authorUserId || !TIERS[tier]) return errorResponse("Invalid tier or authorUserId", 400);
       const t = TIERS[tier];
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         mode: "subscription",
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             recurring: { interval: "month" },
             product_data: { name: `Patron — ${tier.toUpperCase()}` },
@@ -2620,9 +2760,12 @@ async function handler(req: Request): Promise<Response> {
         return errorResponse("Failed to create gift", 500);
       }
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
         customer_email: email,
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             unit_amount: amount,
             product_data: { name: `Shadow Arena gift: ${giftType}` } },
@@ -2757,11 +2900,15 @@ async function handler(req: Request): Promise<Response> {
         user_id: userId };
 
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(custId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: custId || undefined,
         customer_email: custId ? undefined : email,
         mode: "subscription",
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: club.currency || "eur",
             recurring: { interval: "month" },
             unit_amount: club.price_cents,
@@ -2840,11 +2987,15 @@ async function handler(req: Request): Promise<Response> {
 
       const ppvCustomer = customerId || (await getStripeCustomer(stripe, email));
       const ppvSession = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(ppvCustomer || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: ppvCustomer || undefined,
         customer_email: ppvCustomer ? undefined : email,
         mode: "payment",
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: post.currency || "eur",
             product_data: { name: `PPV: ${post.title}` },
             unit_amount: post.price_cents },
@@ -2997,6 +3148,9 @@ async function handler(req: Request): Promise<Response> {
 
       const isSubscription = mode === "subscription";
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [
@@ -3004,6 +3158,7 @@ async function handler(req: Request): Promise<Response> {
             ? { price: fixedPrice, quantity: 1 }
             : {
                 price_data: {
+                  tax_behavior: "inclusive" as const,
                   currency: "eur",
                   unit_amount: amount,
                   product_data: { name: productName },
@@ -3061,12 +3216,16 @@ async function handler(req: Request): Promise<Response> {
         ? [{ price: priceId, quantity: 1 }]
         : [{
             price_data: {
+              tax_behavior: "inclusive" as const,
               currency: "eur" as const,
               unit_amount: cfTotal ?? saTotal ?? caTotal ?? Math.max(minTotal, credits * unitAmount),
               product_data: { name: `${creditType} Credits - ${credits} Pack` } },
             quantity: 1 }];
 
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: lineItems,
@@ -3093,10 +3252,14 @@ async function handler(req: Request): Promise<Response> {
       const { successUrl, cancelUrl } = resolveUrls(origin, body.successUrl, body.cancelUrl, cloneProduct.metadata.type);
 
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             unit_amount: cloneProduct.amount,
             product_data: { name: cloneProduct.name },
@@ -3114,10 +3277,14 @@ async function handler(req: Request): Promise<Response> {
       const { successUrl, cancelUrl } = resolveUrls(origin, body.successUrl, body.cancelUrl, "crystal_energy");
 
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             unit_amount: 2900,
             recurring: { interval: "month" },
@@ -3143,10 +3310,14 @@ async function handler(req: Request): Promise<Response> {
       const interval = (body.interval as "day" | "week" | "month" | "year" | undefined) || "month";
 
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{
           price_data: {
+            tax_behavior: "inclusive" as const,
             currency: "eur",
             unit_amount: Number(body.amount),
             product_data: { name: String(body.productName) },
@@ -3165,6 +3336,9 @@ async function handler(req: Request): Promise<Response> {
       const { successUrl, cancelUrl } = resolveUrls(origin, body.successUrl, body.cancelUrl, paymentType);
 
       const session = await stripe.checkout.sessions.create({
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(customerId || undefined ? { customer_update: { address: "auto" as const, name: "auto" as const } } : {}),
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
         line_items: [{ price: rawPriceId, quantity: 1 }],
