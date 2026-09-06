@@ -61,7 +61,6 @@ const CATEGORIES: Category[] = [
     items: [
       { label: "AI Companion message", cost: "2 cr/msg" },
       { label: "Premium companion message", cost: "4 cr/msg" },
-      { label: "Voice reply", cost: "+2 cr" },
       { label: "Image gen in chat", cost: "+3 cr" },
     ],
   },
@@ -135,7 +134,6 @@ const CATEGORIES: Category[] = [
       { label: "Profile boost", cost: "10 cr/hr" },
       { label: "Chemistry report", cost: "5 cr" },
       { label: "Text DM", cost: "1 cr" },
-      { label: "Voice DM", cost: "3 cr" },
     ],
   },
   {
@@ -148,8 +146,6 @@ const CATEGORIES: Category[] = [
       { label: "Time Capsule (up to 5)", cost: "Free" },
       { label: "Holographic Avatar creation", cost: "15 cr" },
       { label: "Avatar battle entry", cost: "3 cr" },
-      { label: "Clone voice training", cost: "15 cr" },
-      { label: "Voice clone", cost: "20 cr" },
       { label: "Clone battle", cost: "3 cr" },
     ],
   },
@@ -177,7 +173,6 @@ const CATEGORIES: Category[] = [
     icon: Baby,
     color: "text-emerald-500",
     items: [
-      { label: "Kids Voice Chat (per msg)", cost: "1 cr" },
       { label: "Kids Story Creator", cost: "3 cr" },
       { label: "Kids Drawing", cost: "3 cr" },
       { label: "Kids Science", cost: "3 cr" },

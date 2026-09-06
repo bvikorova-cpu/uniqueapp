@@ -15,13 +15,6 @@ export default function PetReverseTranslator({ onBack }: { onBack: () => void })
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const speak = (text: string) => {
-    if (!("speechSynthesis" in window)) return;
-    const u = new SpeechSynthesisUtterance(text);
-    u.rate = 0.7; u.pitch = active?.species === "cat" ? 2 : 0.6;
-    speechSynthesis.speak(u);
-  };
-
   const handle = async () => {
     if (!message.trim()) return toast.error("Type a message");
     setLoading(true);
@@ -54,7 +47,6 @@ export default function PetReverseTranslator({ onBack }: { onBack: () => void })
       {result && (
         <Card className="p-6">
           <div className="prose prose-sm dark:prose-invert max-w-none"><ReactMarkdown>{result}</ReactMarkdown></div>
-          <Button variant="outline" className="mt-3" onClick={() => speak(message)}>🔊 Play synthesized sound</Button>
         </Card>
       )}
     </div>

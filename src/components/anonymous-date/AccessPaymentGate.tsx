@@ -14,7 +14,7 @@ export function AccessPaymentGate({ onPayAccess, loading }: AccessPaymentGatePro
   const steps = [
     { icon: Shield, title: "Create Anonymous Profile", desc: "Set up your hidden identity with interests and traits", gradient: "from-pink-500 to-rose-500" },
     { icon: Users, title: "Find Your Match", desc: "Algorithm pairs you based on compatibility (5 credits)", gradient: "from-primary to-accent" },
-    { icon: MessageCircle, title: "Chat Anonymously (7 Days)", desc: "Text (1 cr) or voice messages (3 cr) to connect", gradient: "from-amber-500 to-orange-500" },
+    { icon: MessageCircle, title: "Chat Anonymously (7 Days)", desc: "Text messages (1 cr) to connect", gradient: "from-amber-500 to-orange-500" },
     { icon: Eye, title: "Identity Reveal", desc: "Free after 7 days, or 15 credits for early reveal", gradient: "from-emerald-500 to-teal-500" },
   ];
 
@@ -137,7 +137,6 @@ export function AccessPaymentGate({ onPayAccess, loading }: AccessPaymentGatePro
               {[
                 { icon: "💡", label: "Hints", cost: "5 cr", desc: "Clues about match" },
                 { icon: "🎁", label: "Gifts", cost: "10 cr", desc: "Show affection" },
-                { icon: "🎤", label: "Voice", cost: "3 cr", desc: "Personal touch" },
                 { icon: "👀", label: "Early Reveal", cost: "15 cr", desc: "Can't wait?" },
               ].map((f) => (
                 <div key={f.label} className="text-center p-3 rounded-xl bg-muted/20 border border-border/30">

@@ -137,7 +137,6 @@ export default function SharedStory() {
         <StoryVideoPlayer
           scenes={story.scenes.map(s => s.text)}
           images={story.images}
-          audioFiles={story.audio_files || undefined}
           sceneDuration={story.scene_duration}
         />
 

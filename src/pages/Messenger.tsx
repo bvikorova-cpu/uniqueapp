@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Mic, Smile, Square, Play, Pause, BarChart3, Palette, Radio, Clock, ArrowLeft, Download, Brain, Gamepad2, Bell, BellOff, Loader2, Plus, Camera, Upload, File as FileIcon } from "lucide-react";
+import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Smile, BarChart3, Palette, Radio, Clock, ArrowLeft, Download, Brain, Gamepad2, Bell, BellOff, Loader2, Plus, Camera, Upload, File as FileIcon } from "lucide-react";
 import { useDmMutes } from "@/hooks/useDmMutes";
 import { EmojiPicker } from "@/components/messenger/EmojiPicker";
 import { GiftShopSheet } from "@/components/gifts/GiftShopSheet";
@@ -81,7 +81,6 @@ interface Message {
   read_at?: string | null;
   attachment_url?: string | null;
   attachment_type?: string | null;
-  voice_duration?: number | null;
   expires_at?: string | null;
   gift_id?: string | null;
 }
@@ -162,7 +161,6 @@ const Messenger = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const { giftsById } = useChatGifts();
 
-  const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   const [selfDestructDuration, setSelfDestructDuration] = useState<number | null>(null);
   const [uploadingAttachment, setUploadingAttachment] = useState(false);
   const [groupChats, setGroupChats] = useState<GroupChat[]>([]);
@@ -181,7 +179,6 @@ const Messenger = () => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
-  const audioRefs = useRef<Map<string, HTMLAudioElement>>(new Map());
   const attachmentInputsDisabled = uploadingAttachment;
   const attachmentUrls = useMemo(() => messages.map((message) => message.attachment_url || null), [messages]);
   const resolvedAttachmentUrls = useResolvedStorageUrls(attachmentUrls);
@@ -532,7 +529,7 @@ const Messenger = () => {
     // Fetch newest 100 messages (fast path) — order DESC + reverse for render.
     const msgsPromise = supabase
       .from("messages")
-      .select("id, content, sender_id, created_at, story_id, reply_to_id, is_read, read_at, attachment_url, attachment_type, voice_duration, expires_at, gift_id")
+      .select("id, content, sender_id, created_at, story_id, reply_to_id, is_read, read_at, attachment_url, attachment_type, expires_at, gift_id")
       .eq("conversation_id", convId)
       .order("created_at", { ascending: false })
       .limit(100);
@@ -977,35 +974,6 @@ const Messenger = () => {
   };
 
 
-  // Audio playback
-  const toggleAudioPlayback = (messageId: string, audioUrl: string) => {
-    let audio = audioRefs.current.get(messageId);
-    
-    if (!audio) {
-      audio = new Audio(audioUrl);
-      audio.onended = () => setPlayingAudio(null);
-      audioRefs.current.set(messageId, audio);
-    }
-
-    if (playingAudio === messageId) {
-      audio.pause();
-      setPlayingAudio(null);
-    } else {
-      // Stop any currently playing audio
-      if (playingAudio) {
-        const currentAudio = audioRefs.current.get(playingAudio);
-        currentAudio?.pause();
-      }
-      audio.play();
-      setPlayingAudio(messageId);
-    }
-  };
-
-  const formatDuration = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
 
   const filteredUsers = searchResults;
 
@@ -1180,7 +1148,6 @@ const Messenger = () => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {[
                   { icon: "💬", label: "Real-time Chat" },
-                  { icon: "🎙️", label: "Voice Messages" },
                   { icon: "📸", label: "Image Sharing" },
                   { icon: "😂", label: "Reactions & GIFs" },
                   { icon: "🔥", label: "Self-Destruct" },
@@ -1421,7 +1388,7 @@ const Messenger = () => {
                       let effectiveType = msg.attachment_type as string | null | undefined;
                       if (attachmentUrl) {
                         if (["mp3","wav","ogg","m4a","aac","flac"].includes(ext)) {
-                          if (effectiveType !== "voice") effectiveType = "audio";
+                          effectiveType = "audio";
                         } else if (["mp4","mov","webm","m4v"].includes(ext)) {
                           effectiveType = "video";
                         } else if (["jpg","jpeg","png","webp","heic","avif"].includes(ext)) {
@@ -1494,28 +1461,6 @@ const Messenger = () => {
                             {msg.story_id && (
                               <div className="text-xs opacity-70 mb-2 pb-2 border-b border-current/20">
                                 📷 Story reply
-                              </div>
-                            )}
-                            
-                            {/* Voice message */}
-                            {effectiveType === "voice" && attachmentUrl && (
-                              <div className="flex items-center gap-2 mb-2">
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-8 w-8"
-                                  onClick={() => toggleAudioPlayback(msg.id, attachmentUrl)}
-                                >
-                                  {playingAudio === msg.id ? (
-                                    <Pause className="h-4 w-4" />
-                                  ) : (
-                                    <Play className="h-4 w-4" />
-                                  )}
-                                </Button>
-                                <div className="flex-1 h-1 bg-background/30 rounded-full">
-                                  <div className="h-full w-0 bg-current rounded-full" />
-                                </div>
-                                <span className="text-xs">{formatDuration(msg.voice_duration || 0)}</span>
                               </div>
                             )}
                             

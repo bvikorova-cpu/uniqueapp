@@ -202,8 +202,6 @@ import { ResetPassword,
   KidsChannel,
   KidsShareView,
   ChooseAdventure,
-  KidsVoiceChat,
-  KidsVoiceChatPricing,
   CreateCharacter,
   CharacterGalleryPage,
   CharacterGallery,
@@ -990,8 +988,6 @@ const App = () => {
                         <Route path="/kids-channel" element={<KidsChannel />} />
                         <Route path="/kids-channel/share/:token" element={<KidsShareView />} />
                         <Route path="/choose-adventure" element={<ChooseAdventure />} />
-                        <Route path="/kids-voice-chat" element={<KidsGoldPassGate moduleName="Character Chat" pricingPath="/kids-pricing" redirectPath="/kids-voice-chat"><KidsVoiceChat /></KidsGoldPassGate>} />
-                        <Route path="/kids-voice-chat-pricing" element={<Navigate to="/ai-credits" replace />} />
                         <Route path="/create-character" element={<CreateCharacter />} />
                         <Route path="/educational-stories" element={<EducationalStories />} />
                         <Route path="/bedtime-stories" element={<KidsGoldPassGate moduleName="Bedtime Stories" redirectPath="/bedtime-stories"><KidsParentalGateGuard featureName="Bedtime Stories" storageKey="pg_bedtime"><BedtimeStories /></KidsParentalGateGuard></KidsGoldPassGate>} />
@@ -1166,7 +1162,6 @@ const App = () => {
                         
                         <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
                         <Route path="/kids-stories/adventure" element={<KidsGoldPassGate moduleName="Choose Adventure" redirectPath="/kids-stories/adventure"><ChooseAdventure /></KidsGoldPassGate>} />
-                        <Route path="/kids-stories/voice-chat" element={<KidsGoldPassGate moduleName="Character Chat" redirectPath="/kids-stories/voice-chat"><KidsVoiceChat /></KidsGoldPassGate>} />
                         <Route path="/kids-stories/create-character" element={<KidsGoldPassGate moduleName="Create Your Hero" redirectPath="/kids-stories/create-character"><CreateCharacter /></KidsGoldPassGate>} />
                         <Route path="/kids-stories/character-gallery" element={<KidsGoldPassGate moduleName="Character Gallery" redirectPath="/kids-stories/character-gallery"><CharacterGalleryPage /></KidsGoldPassGate>} />
                         <Route path="/kids-stories/battle" element={<KidsGoldPassGate moduleName="Character Battle" redirectPath="/kids-stories/battle"><CharacterBattle /></KidsGoldPassGate>} />

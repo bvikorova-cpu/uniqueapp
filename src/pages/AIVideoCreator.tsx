@@ -189,7 +189,7 @@ const AIVideoCreator = () => {
                 <BadgeCheck className="h-3 w-3 text-primary" /> No watermark
               </Badge>
               <Badge variant="outline" className="gap-1 bg-background/60 backdrop-blur-sm">
-                <Music className="h-3 w-3" /> Voice + music included
+                <Music className="h-3 w-3" /> Music included
               </Badge>
             </div>
           </div>
@@ -205,7 +205,7 @@ const AIVideoCreator = () => {
           <CardContent className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-4">
             {[
               { icon: Wand2, t: "1. Describe it", d: "Topic, scene and visual style." },
-              { icon: Mic, t: "2. Add a voice", d: "Type what should be spoken in the video." },
+              { icon: Mic, t: "2. Add text", d: "Type what should appear in the video." },
               { icon: Music, t: "3. Pick music", d: "Choose a soundtrack mood." },
               { icon: Clapperboard, t: "4. Get your clip", d: "Ready in a few minutes, watermark-free MP4." },
             ].map((s) => (
@@ -265,7 +265,7 @@ const AIVideoCreator = () => {
 
               <div className="space-y-1.5">
                 <Label className="flex items-center gap-1.5">
-                  <Mic className="h-4 w-4 text-primary" /> What should be said (voiceover)
+                  <Mic className="h-4 w-4 text-primary" /> What should be said (script text)
                 </Label>
                 <Textarea
                   value={narration} onChange={(e) => setNarration(e.target.value)}
@@ -273,7 +273,7 @@ const AIVideoCreator = () => {
                   rows={3} maxLength={1200}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Leave empty for a clip without speech. Longer clips split the text across the parts.
+                  Leave empty for a clip without on-screen text. Longer clips split the text across the parts.
                 </p>
               </div>
 

@@ -1011,7 +1011,7 @@ const Dating = () => {
         steps={[
           { title: 'Complete your profile', desc: 'Add photos, interests, and preferences to get better matches.' },
         { title: 'Swipe on suggestions', desc: 'Like or pass. Mutual likes become matches instantly.' },
-        { title: 'Start chatting', desc: 'DMs unlock on match. Use icebreakers and voice notes.' },
+        { title: 'Start chatting', desc: 'DMs unlock on match. Use icebreakers to break the ice.' },
         { title: 'Upgrade for boosts', desc: 'Premium unlocks Super Likes, Boost, and Passport across cities.' },
         { title: 'Meet responsibly', desc: 'Video-verify before meeting. Report anything off — moderation is 24/7.' }
         ]}
@@ -1019,7 +1019,7 @@ const Dating = () => {
       <Dating16Gate />
       <SEO
         title="Dating - Meet your match on Unique"
-        description="Find meaningful connections with smart matching, voice intros and verified profiles. Unique Dating — the safer way to date."
+        description="Find meaningful connections with smart matching and verified profiles. Unique Dating — the safer way to date."
         canonical="/dating"
       />
     <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-24">

@@ -623,7 +623,6 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
               {[
                 { label: "New Match", cost: "5 cr", emoji: "🔍" },
                 { label: "Text Message", cost: "1 cr", emoji: "💬" },
-                { label: "Voice Message", cost: "3 cr", emoji: "🎤" },
                 { label: "Profile Hint", cost: "5 cr", emoji: "💡" },
                 { label: "Virtual Gift", cost: "10 cr", emoji: "🎁" },
                 { label: "Early Reveal", cost: "15 cr", emoji: "👀" },

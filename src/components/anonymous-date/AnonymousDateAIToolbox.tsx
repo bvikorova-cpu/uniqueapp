@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Sparkles, MessageSquareHeart, Brain, Wand2, Mic, MapPin, ScrollText, Loader2, Coins } from "lucide-react";
+import { Sparkles, MessageSquareHeart, Brain, Wand2, MapPin, ScrollText, Loader2, Coins } from "lucide-react";
 import { useAnonymousDateAI, AI_COSTS, type AIFeature } from "@/hooks/useAnonymousDateAI";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useLiveAiCredits } from "@/hooks/useLiveAiCredits";
@@ -59,16 +59,6 @@ const FEATURES: Array<{
     fields: [
       { key: "your_messages", label: "Paste 3-5 of your recent messages", placeholder: "I usually write things like...", type: "textarea" },
       { key: "your_traits", label: "Your traits", placeholder: "Romantic, adventurous, witty..." },
-    ] },
-  {
-    id: "voice_preview",
-    title: "AI Voice Preview Script",
-    desc: "Anonymous 2-3 sentence voice script to share before the reveal",
-    icon: Mic,
-    gradient: "from-cyan-500 to-blue-500",
-    fields: [
-      { key: "anonymous_name", label: "Your anonymous name", placeholder: "MysteryRose" },
-      { key: "vibe", label: "Vibe", placeholder: "Mysterious, warm, slightly playful..." },
     ] },
   {
     id: "date_ideas",

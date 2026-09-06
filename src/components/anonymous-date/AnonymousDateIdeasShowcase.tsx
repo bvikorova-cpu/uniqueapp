@@ -1,14 +1,9 @@
 import { Card } from "@/components/ui/card";
-import { Lightbulb, Mic, Video, Calendar, Gift, Music, Brain, Lock, MapPin } from "lucide-react";
+import { Lightbulb, Video, Calendar, Gift, Music, Brain, Lock, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const IDEAS = [
-  { icon: Mic,
-    title: "Voice-Only Speed Dates",
-    desc: "5-minute timed voice rooms — match purely by voice & vibe before chatting",
-    status: "+5 credits",
-    color: "text-rose-500" },
   { icon: Video,
     title: "Blurred Video Reveal",
     desc: "Gradually unblur each other's video over the 7 days — slow burn intimacy",

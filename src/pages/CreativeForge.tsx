@@ -28,7 +28,6 @@ import { ForgeToolCard } from "@/components/creative-forge/ForgeToolCard";
 import { ForgeTestimonials } from "@/components/creative-forge/ForgeTestimonials";
 import { ForgeCowriterChat } from "@/components/creative-forge/ForgeCowriterChat";
 import { ForgeStyleTransfer } from "@/components/creative-forge/ForgeStyleTransfer";
-import { ForgeVoiceToScript } from "@/components/creative-forge/ForgeVoiceToScript";
 import { ForgeRooms } from "@/components/creative-forge/ForgeRooms";
 import { ForgeIdeasShowcase } from "@/components/creative-forge/ForgeIdeasShowcase";
 import { ForgeBrandVoice, type BrandVoice } from "@/components/creative-forge/ForgeBrandVoice";
@@ -37,7 +36,7 @@ import { useActiveBrandVoice } from "@/hooks/useActiveBrandVoice";
 import { ForgeStoryBible } from "@/components/creative-forge/ForgeStoryBible";
 import { ForgeAIStudio } from "@/components/creative-forge/ForgeAIStudio";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
-import { Wand2, Mic, Users, Palette, BookMarked, Sparkles as SparkleIcon, FileDown } from "lucide-react";
+import { Wand2, Users, Palette, BookMarked, Sparkles as SparkleIcon, FileDown } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { exportAs } from "@/lib/forgeExport";
 import { motion, AnimatePresence } from "framer-motion";
@@ -83,7 +82,6 @@ export default function CreativeForge() {
   const [previousContent, setPreviousContent] = useState<string | null>(null);
   const [cowriterOpen, setCowriterOpen] = useState(false);
   const [styleOpen, setStyleOpen] = useState(false);
-  const [voiceOpen, setVoiceOpen] = useState(false);
   const [roomsOpen, setRoomsOpen] = useState(false);
   const [brandVoiceOpen, setBrandVoiceOpen] = useState(false);
   const [storyBibleOpen, setStoryBibleOpen] = useState(false);
@@ -252,12 +250,6 @@ export default function CreativeForge() {
         initialText={generatedContent || ""}
         onApply={(text) => { setPreviousContent(generatedContent); setGeneratedContent(text); setActiveView("create"); }}
       />
-      <ForgeVoiceToScript
-        open={voiceOpen}
-        onClose={() => setVoiceOpen(false)}
-        defaultCategory={selectedCategory}
-        onApply={(text) => { setGeneratedContent(text); setActiveView("create"); }}
-      />
       <ForgeRooms open={roomsOpen} onClose={() => setRoomsOpen(false)} />
       <ForgeBrandVoice
         open={brandVoiceOpen}
@@ -308,7 +300,6 @@ export default function CreativeForge() {
                 <Button variant="outline" size="sm" onClick={() => setStoryBibleOpen(true)} className="gap-1"><BookMarked className="h-3.5 w-3.5" /> Story Bible</Button>
                 <Button variant="outline" size="sm" onClick={() => setCowriterOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Sparkles className="h-3.5 w-3.5" /> {"Co-Writer"}</Button>
                 <Button variant="outline" size="sm" onClick={() => setStyleOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Wand2 className="h-3.5 w-3.5" /> {"Style Transfer"}</Button>
-                <Button variant="outline" size="sm" onClick={() => setVoiceOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Mic className="h-3.5 w-3.5" /> {"Voice"}</Button>
                 <Button variant="outline" size="sm" onClick={() => setRoomsOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Users className="h-3.5 w-3.5" /> {"Rooms"}</Button>
                 <Button variant="outline" size="sm" onClick={() => setActiveView("history")} className="gap-1"><History className="h-3.5 w-3.5" /> {"History"}</Button>
                 <Button variant="outline" size="sm" onClick={() => setActiveView("credits")} className="gap-1"><CreditCard className="h-3.5 w-3.5" /> {"Credits"}</Button>
@@ -541,17 +532,6 @@ export default function CreativeForge() {
               <div>
                 <h4 className="font-bold text-amber-100" style={{ fontFamily: "Georgia, serif" }}>{"Style Transfer"}</h4>
                 <p className="text-xs text-amber-200/60">{"Rewrite as Shakespeare, Tarantino…"}</p>
-              </div>
-            </div>
-          </button>
-          <button onClick={() => setVoiceOpen(true)} className="group p-4 rounded-2xl border border-amber-700/30 bg-gradient-to-br from-[hsl(30,15%,9%)]/80 to-[hsl(0,20%,8%)]/80 backdrop-blur-xl hover:border-amber-500/50 hover:shadow-[0_0_30px_rgba(251,191,36,0.2)] transition-all text-left">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-gradient-to-br from-rose-700 to-amber-700 shadow-lg group-hover:scale-110 transition-transform">
-                <Mic className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <h4 className="font-bold text-amber-100" style={{ fontFamily: "Georgia, serif" }}>{"Voice-to-Script"}</h4>
-                <p className="text-xs text-amber-200/60">{"Speak your idea, get a polished draft"}</p>
               </div>
             </div>
           </button>

@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Info, Heart, MessageCircle, Share2, Repeat2, Bookmark, Image, Video, Smile, MapPin,
   Clock, Hash, AtSign, Users, Bell, Lock, Sparkles, TrendingUp, Calendar, Flag, Eye,
   ThumbsUp, Star, Zap, Camera, FileImage, MessageSquare, UserPlus, Search, Filter,
-  Radio, Mic, BarChart3, Crown, Gift, Shield, Globe, Palette, ShoppingBag, EyeOff } from "lucide-react";
+  Radio, BarChart3, Crown, Gift, Shield, Globe, Palette, ShoppingBag, EyeOff } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface FeatureSection {
@@ -21,7 +21,6 @@ export default function WallInfo() {
         { name: "Text Posts", description: "Share thoughts, updates, and stories with text-based posts.", icon: <MessageSquare className="h-4 w-4" /> },
         { name: "Photo & Image Upload", description: "Upload multiple photos. Supports JPEG, PNG, GIF, and WebP.", icon: <Image className="h-4 w-4" /> },
         { name: "Video Upload", description: "Share video content in MP4, MOV, and WebM formats.", icon: <Video className="h-4 w-4" /> },
-        { name: "Voice Posts", description: "Record and share voice-based posts with your followers.", icon: <Mic className="h-4 w-4" /> },
         { name: "Feelings & Activities", description: "Express mood with emoji-based feelings and activity indicators.", icon: <Smile className="h-4 w-4" /> },
         { name: "Location Tagging", description: "Tag locations to your posts to show where you are.", icon: <MapPin className="h-4 w-4" /> },
         { name: "Hashtags", description: "Use #hashtags to categorize posts and improve discoverability.", icon: <Hash className="h-4 w-4" /> },
@@ -77,7 +76,6 @@ export default function WallInfo() {
         { name: "Real-time Messaging", description: "Instant messaging with real-time updates and typing indicators.", icon: <MessageCircle className="h-4 w-4" /> },
         { name: "AI Smart Reply", description: "AI-generated reply suggestions based on the conversation (3 credits).", icon: <Zap className="h-4 w-4" /> },
         { name: "Conversation Summarizer", description: "AI summary of long conversations with key points (3 credits).", icon: <MessageSquare className="h-4 w-4" /> },
-        { name: "Voice Messages", description: "Record and send voice messages in conversations.", icon: <Mic className="h-4 w-4" /> },
         { name: "Media Sharing", description: "Share photos, videos, and files in conversations.", icon: <Image className="h-4 w-4" /> },
         { name: "Custom Emojis", description: "Use your own custom emojis in messages, posts and comments.", icon: <Smile className="h-4 w-4" /> },
         { name: "Message Reactions", description: "React to messages with emojis.", icon: <ThumbsUp className="h-4 w-4" /> },

@@ -40,7 +40,7 @@ const createEmptyDeckQuestion = (): DeckQuestionDraft => ({
 const FEATURES: Feature[] = [
   { id: "ai.generateQuiz", title: "AI Question Generator", desc: "Any topic, any difficulty — 10 fresh MCQs", icon: Sparkles, credits: 5, ai: true, action: "ai.generateQuiz" },
   { id: "ai.ocrScan", title: "Scan → Quiz (OCR)", desc: "Photograph notes; AI builds a deck", icon: ScanLine, credits: 5, ai: true, action: "ai.ocrScan" },
-  { id: "ai.voiceQuiz", title: "Voice Quiz Battle", desc: "Speak your answer, AI scores it", icon: Mic, credits: 3, ai: true, action: "ai.voiceQuiz" },
+  { id: "ai.voiceQuiz", title: "Quiz Battle", desc: "Type your answer, AI scores it", icon: Mic, credits: 3, ai: true, action: "ai.voiceQuiz" },
   { id: "ai.cheatScan", title: "AI Cheat Detection", desc: "Anomaly scan on duel patterns", icon: ShieldAlert, credits: 2, ai: true, action: "ai.cheatScan" },
   { id: "ai.shareCard", title: "Share Result Card", desc: "Instagram story copy for your win", icon: ImageIcon, credits: 2, ai: true, action: "ai.shareCard" },
   { id: "deck.publish", title: "Publish Custom Deck", desc: "Author + monetize your quiz", icon: Layers, credits: 4, ai: false, action: "deck.publish" },
@@ -55,11 +55,9 @@ export default function BrainDuelHub() {
   const [input, setInput] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [output, setOutput] = useState<any>(null);
-  const [listening, setListening] = useState(false);
   const [recentDuels, setRecentDuels] = useState<any[]>([]);
   const [loadingDuels, setLoadingDuels] = useState(false);
   const [deckQuestions, setDeckQuestions] = useState<DeckQuestionDraft[]>([createEmptyDeckQuestion()]);
-  const recognitionRef = useRef<any>(null);
 
   const updateDeckQuestion = (index: number, patch: Partial<DeckQuestionDraft>) => {
     setDeckQuestions((questions) => questions.map((question, i) => i === index ? { ...question, ...patch } : question));
@@ -77,26 +75,6 @@ export default function BrainDuelHub() {
   const removeDeckQuestion = (index: number) => {
     setDeckQuestions((questions) => questions.length > 1 ? questions.filter((_, i) => i !== index) : [createEmptyDeckQuestion()]);
   };
-
-  const toggleDictation = () => {
-    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SR) { toast.error("Speech recognition is not supported in this browser — please type your answer."); return; }
-    if (listening) { recognitionRef.current?.stop(); setListening(false); return; }
-    const rec = new SR();
-    rec.lang = navigator.language || "en-US";
-    rec.interimResults = false;
-    rec.continuous = false;
-    rec.onresult = (e: any) => {
-      const said = Array.from(e.results).map((r: any) => r[0].transcript).join(" ").trim();
-      if (said) setInput((s) => ({ ...s, transcript: `${s.transcript ? s.transcript + " " : ""}${said}` }));
-    };
-    rec.onerror = () => { setListening(false); toast.error("Could not hear you — please try again or type your answer."); };
-    rec.onend = () => setListening(false);
-    recognitionRef.current = rec;
-    setListening(true);
-    rec.start();
-  };
-
 
   useEffect(() => {
     if (!active) return;
@@ -264,10 +242,7 @@ export default function BrainDuelHub() {
               {active.id === "ai.voiceQuiz" && (
                 <>
                   <Input placeholder="Topic" value={input.topic ?? ""} onChange={(e) => setInput({ ...input, topic: e.target.value })} />
-                  <Textarea placeholder="Your spoken answer (transcript)" value={input.transcript ?? ""} onChange={(e) => setInput({ ...input, transcript: e.target.value })} />
-                  <Button type="button" variant={listening ? "destructive" : "outline"} className="w-full" onClick={toggleDictation}>
-                    <Mic className="h-4 w-4 mr-2" />{listening ? "Stop recording" : "Speak your answer"}
-                  </Button>
+                  <Textarea placeholder="Type your answer" value={input.transcript ?? ""} onChange={(e) => setInput({ ...input, transcript: e.target.value })} />
                 </>
               )}
 

@@ -8,7 +8,6 @@ const badges = [
   { icon: "💬", label: "Chatterbox", unlocked: true },
   { icon: "👀", label: "First Reveal", unlocked: false },
   { icon: "🎁", label: "Gift Giver", unlocked: false },
-  { icon: "🎤", label: "Voice Star", unlocked: true },
   { icon: "💕", label: "Love Found", unlocked: false },
 ];
 

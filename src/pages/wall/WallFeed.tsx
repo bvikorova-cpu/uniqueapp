@@ -30,7 +30,7 @@ export const WALL_HIW_STEPS = [
   { title: "Search bar", desc: "Search posts, people, hashtags and groups. Save frequent searches from the ⭐ icon so you can rerun them from Saved Searches." },
   { title: "Filters (Sort / Time / Category)", desc: "Sort by newest, oldest, most liked or most commented. Narrow by today/week/month or to text-only, image or video posts. Reset returns to defaults." },
   { title: "Profile Customization", desc: "Edit your banner, avatar, bio, pinned post, and theme colors that appear on your public profile." },
-  { title: "Spaces", desc: "Live audio rooms. Open Spaces to join a running room or start your own drop-in voice chat with followers." },
+  { title: "Spaces", desc: "Live audio rooms. Open Spaces to join a running room or start your own drop-in room with followers." },
   { title: "Group Chat", desc: "Create or open a multi-person chat with friends — separate from 1:1 Messages." },
   { title: "Close Friends", desc: "A private circle. Posts marked 'Close Friends only' are shown just to people on this list." },
   { title: "Followed Topics", desc: "Follow hashtags/topics so their posts appear in your For You feed even if you don't follow the author." },

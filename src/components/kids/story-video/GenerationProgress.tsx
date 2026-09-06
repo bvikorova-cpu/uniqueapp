@@ -10,7 +10,7 @@ interface GenerationProgressProps {
 const PIPELINE_STEPS = [
   { icon: Pencil, label: 'Writing Story', description: 'AI is crafting your scenes...', duration: 8000 },
   { icon: Palette, label: 'Creating Illustrations', description: 'Generating beautiful artwork...', duration: 25000 },
-  { icon: Mic, label: 'Recording Narration', description: 'Adding voice to your story...', duration: 15000 },
+  { icon: Mic, label: 'Recording Narration', description: 'Adding narration to your story...', duration: 15000 },
   { icon: Film, label: 'Composing Video', description: 'Putting it all together...', duration: 5000 },
 ];
 

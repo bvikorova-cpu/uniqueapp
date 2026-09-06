@@ -24,12 +24,12 @@ import { Send,
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const __HIW_AIMENTORCHAT_STEPS = [
-  { title: 'Type or speak', desc: 'Send a message or hold the mic button for voice input.' },
+  { title: 'Type a message', desc: 'Send a message to chat with your AI mentor.' },
   { title: 'Get an action plan', desc: 'The mentor replies with steps, exercises or reflections.' },
   { title: 'Save key moments', desc: 'Bookmark answers to revisit in your progress dashboard.' },
   { title: 'Continue anytime', desc: 'Chat history is saved; pick up where you left off.' }
 ];
-const __HIW_AIMENTORCHAT = { title: 'Mentor Chat', intro: 'Your live conversation with an AI mentor — text or voice.', steps: __HIW_AIMENTORCHAT_STEPS };
+const __HIW_AIMENTORCHAT = { title: 'Mentor Chat', intro: 'Your live conversation with an AI mentor.', steps: __HIW_AIMENTORCHAT_STEPS };
 
 
 const AIMentorChat = () => {

@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { CommentReactionPicker } from "./CommentReactionPicker";
 import { EnhancedCommentInput } from "./EnhancedCommentInput";
-import { VoiceCommentPlayer } from "@/components/wall/VoiceCommentPlayer";
 import { VerifiedBadge, getVerifiedRingClass } from "@/components/verified/VerifiedBadge";
 import { MapPin, MessageCircle, ChevronDown, ChevronUp, Pencil, Trash2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
@@ -170,15 +169,6 @@ export const CommentItem = ({
               src={comment.video_url} 
               controls 
               className="mt-1 max-w-[200px] rounded-lg"
-            />
-          )}
-          
-          {/* Voice Comment Player */}
-          {comment.voice_url && (
-            <VoiceCommentPlayer 
-              voiceUrl={comment.voice_url} 
-              duration={comment.voice_duration || 0}
-              compact
             />
           )}
           

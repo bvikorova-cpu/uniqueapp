@@ -21,7 +21,6 @@ import { TextDifficultyScanner } from "@/components/kids-reading/TextDifficultyS
 import { InteractiveResults } from "@/components/kids-reading/InteractiveResults";
 import { VocabularyFlashcardGame } from "@/components/kids-reading/VocabularyFlashcardGame";
 import { MultiQuestionQuiz } from "@/components/kids-reading/MultiQuestionQuiz";
-import { ReadAloudPlayer } from "@/components/kids-reading/ReadAloudPlayer";
 import { WordDefinitionPopover } from "@/components/kids-reading/WordDefinitionPopover";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -253,13 +252,6 @@ const KidsReadingCompanion = () => {
                       />
 
                       <TextDifficultyScanner text={bookText} />
-
-                      {bookText.trim().length > 20 && (
-                        <ReadAloudPlayer
-                          text={bookText}
-                          onWordClick={(w) => setDefineWord(w)}
-                        />
-                      )}
 
                       <div className="grid grid-cols-2 gap-2">
                         <Button

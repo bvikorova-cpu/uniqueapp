@@ -6,7 +6,6 @@ const features = [
   { name: "Anonymous Profile", basic: true, standard: true, premium: true },
   { name: "Interest Matching", basic: true, standard: true, premium: true },
   { name: "Text Messages", basic: true, standard: true, premium: true },
-  { name: "Voice Messages", basic: false, standard: true, premium: true },
   { name: "Profile Hints", basic: false, standard: true, premium: true },
   { name: "Virtual Gifts", basic: false, standard: false, premium: true },
   { name: "Early Reveal", basic: false, standard: false, premium: true },

@@ -140,15 +140,14 @@ export function useAnonymousChat(matchId: string | null, currentUserId: string |
     supabase.from("anonymous_dating_messages").update({ is_read: true }).in("id", unread).then();
   }, [messages, matchId, currentUserId]);
 
-  const sendMessage = useCallback(async (content: string, messageType: "text" | "voice" = "text", voiceUrl?: string) => {
+  const sendMessage = useCallback(async (content: string) => {
     if (!matchId || !currentUserId) return;
     const trimmed = content.trim();
-    if (!trimmed && !voiceUrl) return;
+    if (!trimmed) return;
     const { error } = await supabase.from("anonymous_dating_messages").insert({ match_id: matchId,
       sender_id: currentUserId,
-      content: trimmed || (messageType === "voice" ? "🎤 Voice message" : ""),
-      message_type: messageType,
-      voice_url: voiceUrl ?? null,
+      content: trimmed,
+      message_type: "text",
       is_read: false });
     if (error) { toast({ title: "Send failed", description: error.message, variant: "destructive" }); return; }
 
@@ -159,7 +158,7 @@ export function useAnonymousChat(matchId: string | null, currentUserId: string |
         _user_id: partnerId,
         _type: "anonymous_date_message",
         _title: "New anonymous message",
-        _message: messageType === "voice" ? "You received a voice message." : "Your anonymous match sent you a message.",
+        _message: "Your anonymous match sent you a message.",
         _related_id: matchId,
         _action_url: "/anonymous-date" });
       if (nErr) console.warn("notify failed", nErr.message);

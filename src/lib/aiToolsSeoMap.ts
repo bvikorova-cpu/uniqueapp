@@ -42,7 +42,7 @@ export const AI_TOOLS_SEO: Record<string, AIToolSeo> = { "/about-platform": {
     title: "AI Wine Pairing — perfect bottle for every dish",
     description: "Tell us what's for dinner. AI suggests the wine, region and price tier in seconds." },
   "/brand-builder": { key: "aiToolsSeo.brandBuilder",
-    title: "AI Brand Builder — logo, palette & voice in minutes",
+    title: "AI Brand Builder — logo, palette & tone in minutes",
     description: "Launch a brand identity with AI-generated logos, colors and tone guidelines. Export-ready assets." },
   "/home-designer": { key: "aiToolsSeo.homeDesigner",
     title: "AI Home Designer — redesign any room from a photo",
@@ -85,7 +85,7 @@ export const AI_TOOLS_SEO: Record<string, AIToolSeo> = { "/about-platform": {
     description: "Upload a sample, get an AI personality and trait read. Entertainment-grade, fun to share." },
   "/lie-detector": { key: "aiToolsSeo.lieDetector",
     title: "AI Lie Detector — entertainment-grade truth scanner",
-    description: "Voice and text analysis returns a fun truth score. For entertainment only — not forensic." },
+    description: "Text and body-language analysis returns a fun truth score. For entertainment only — not forensic." },
   "/numerology": { key: "aiToolsSeo.numerology",
     title: "AI Numerology — your numbers, decoded",
     description: "AI-generated numerology reports based on your name and birth date. Instant, shareable." } };

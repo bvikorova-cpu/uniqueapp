@@ -16,7 +16,6 @@ import { AudienceAnalyzerView } from "@/components/video-ads/views/AudienceAnaly
 import { PerformancePredictorView } from "@/components/video-ads/views/PerformancePredictorView";
 import { MultiPlatformView } from "@/components/video-ads/views/MultiPlatformView";
 import { CompetitorAnalysisView } from "@/components/video-ads/views/CompetitorAnalysisView";
-import { VoiceoverScriptView } from "@/components/video-ads/views/VoiceoverScriptView";
 import { MusicComposerView } from "@/components/video-ads/views/MusicComposerView";
 import { CampaignPlannerView } from "@/components/video-ads/views/CampaignPlannerView";
 import { RoiCalculatorView } from "@/components/video-ads/views/RoiCalculatorView";
@@ -27,7 +26,6 @@ import { AdAnalyticsDashboardView } from "@/components/video-ads/views/AdAnalyti
 import { MultiLanguageView } from "@/components/video-ads/views/MultiLanguageView";
 import { ABTesterView } from "@/components/video-ads/views/ABTesterView";
 import { UrlToVideoView } from "@/components/video-ads/views/UrlToVideoView";
-import { TtsVoiceoverView } from "@/components/video-ads/views/TtsVoiceoverView";
 import { CaptionsView } from "@/components/video-ads/views/CaptionsView";
 import { HookAnalyzerView } from "@/components/video-ads/views/HookAnalyzerView";
 import { BrandKitView } from "@/components/video-ads/views/BrandKitView";
@@ -36,7 +34,6 @@ import { AvatarTalkingHeadView } from "@/components/video-ads/views/AvatarTalkin
 import { TextToVideoScenesView } from "@/components/video-ads/views/TextToVideoScenesView";
 import { StockFootageView } from "@/components/video-ads/views/StockFootageView";
 import { VideoResizerView } from "@/components/video-ads/views/VideoResizerView";
-import { VoiceCloneView } from "@/components/video-ads/views/VoiceCloneView";
 import { SoundEffectsView } from "@/components/video-ads/views/SoundEffectsView";
 import { FinalVideoComposerView } from "@/components/video-ads/views/FinalVideoComposerView";
 import { AiVideoBuilderView } from "@/components/video-ads/views/AiVideoBuilderView";
@@ -206,7 +203,6 @@ const VideoAdGenerator = () => {
       case "performance": return <PerformancePredictorView onBack={() => setActiveView("dashboard")} />;
       case "multi-platform": return <MultiPlatformView onBack={() => setActiveView("dashboard")} />;
       case "competitor": return <CompetitorAnalysisView onBack={() => setActiveView("dashboard")} />;
-      case "voiceover": return <VoiceoverScriptView onBack={() => setActiveView("dashboard")} />;
       case "music": return <MusicComposerView onBack={() => setActiveView("dashboard")} />;
       case "campaign": return <CampaignPlannerView onBack={() => setActiveView("dashboard")} />;
       case "roi": return <RoiCalculatorView onBack={() => setActiveView("dashboard")} />;
@@ -217,7 +213,6 @@ const VideoAdGenerator = () => {
       case "multi-language": return <MultiLanguageView onBack={() => setActiveView("dashboard")} />;
       case "ab-tester": return <ABTesterView onBack={() => setActiveView("dashboard")} />;
       case "url-to-video": return <UrlToVideoView onBack={() => setActiveView("dashboard")} />;
-      case "tts": return <TtsVoiceoverView onBack={() => setActiveView("dashboard")} />;
       case "captions": return <CaptionsView onBack={() => setActiveView("dashboard")} />;
       case "hook-analyzer": return <HookAnalyzerView onBack={() => setActiveView("dashboard")} />;
       case "brand-kit": return <BrandKitView onBack={() => setActiveView("dashboard")} />;
@@ -226,7 +221,6 @@ const VideoAdGenerator = () => {
       case "text-to-video": return <TextToVideoScenesView onBack={() => setActiveView("dashboard")} />;
       case "stock-footage": return <StockFootageView onBack={() => setActiveView("dashboard")} />;
       case "video-resizer": return <VideoResizerView onBack={() => setActiveView("dashboard")} />;
-      case "voice-clone": return <VoiceCloneView onBack={() => setActiveView("dashboard")} />;
       case "sfx": return <SoundEffectsView onBack={() => setActiveView("dashboard")} />;
       case "final-composer": return <FinalVideoComposerView onBack={() => setActiveView("dashboard")} />;
       default:
