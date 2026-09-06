@@ -448,6 +448,14 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     ]
   },
   {
+    "path": "/admin/payments",
+    "label": "Admin — Payments",
+    "keywords": [
+      "admin",
+      "payments"
+    ]
+  },
+  {
     "path": "/admin/performance",
     "label": "Admin — Performance",
     "keywords": [
@@ -603,6 +611,14 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
       "admin",
       "subscription",
       "analytics"
+    ]
+  },
+  {
+    "path": "/admin/suggestions",
+    "label": "Admin — Suggestions",
+    "keywords": [
+      "admin",
+      "suggestions"
     ]
   },
   {
@@ -778,6 +794,15 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     "keywords": [
       "ai",
       "tattoo"
+    ]
+  },
+  {
+    "path": "/ai-video-creator",
+    "label": "Ai Video Creator",
+    "keywords": [
+      "ai",
+      "video",
+      "creator"
     ]
   },
   {
@@ -1620,6 +1645,14 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     "keywords": [
       "education",
       "league"
+    ]
+  },
+  {
+    "path": "/education/lessons",
+    "label": "Education — Lessons",
+    "keywords": [
+      "education",
+      "lessons"
     ]
   },
   {
@@ -2895,6 +2928,14 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     ]
   },
   {
+    "path": "/photo-styler",
+    "label": "Photo Styler",
+    "keywords": [
+      "photo",
+      "styler"
+    ]
+  },
+  {
     "path": "/photography",
     "label": "Photography",
     "keywords": [
@@ -3405,6 +3446,13 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     "label": "Subscriptions",
     "keywords": [
       "subscriptions"
+    ]
+  },
+  {
+    "path": "/suggestions",
+    "label": "Suggestions",
+    "keywords": [
+      "suggestions"
     ]
   },
   {
