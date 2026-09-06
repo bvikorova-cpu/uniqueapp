@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { shareLink } from "@/lib/shareLink";
 import {
-  Brush, Download, ImagePlus, Loader2, Palette, Share2, ShieldCheck, Sparkles, Wand2, Zap,
+  Brush, Download, Facebook, ImagePlus, Loader2, Palette, Share2, ShieldCheck, Sparkles, Wand2, Zap,
   ChevronDown,
 } from "lucide-react";
 import heroAsset from "@/assets/section-videos/photo-styler.mp4.asset.json";
@@ -587,6 +587,9 @@ const PhotoStyler = () => {
                             </Button>
                             <Button size="icon" variant="ghost" onClick={() => share(r)} aria-label="Share artwork">
                               <Share2 className="h-4 w-4" />
+                            </Button>
+                            <Button size="icon" variant="ghost" onClick={() => shareFacebook(r)} aria-label="Share on Facebook">
+                              <Facebook className="h-4 w-4 text-[#1877F2]" />
                             </Button>
                           </div>
                         </div>
