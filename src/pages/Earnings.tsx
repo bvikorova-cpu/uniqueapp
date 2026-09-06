@@ -118,18 +118,19 @@ const Earnings = () => {
 
   const loadTransactions = async (userId: string) => {
     try {
-      const [{ data, error }, { data: availableCents }] = await Promise.all([
+      const [{ data, error }, { data: availableCents }, { data: summary }] = await Promise.all([
         supabase
           .from('transactions')
           .select('*')
           .eq('seller_id', userId)
           .order('created_at', { ascending: false }),
         supabase.rpc("get_creator_available_cents", { _user_id: userId }),
+        supabase.rpc("get_creator_earnings_summary", { _user_id: userId }),
       ]);
       if (error) throw error;
       const list = (data as any[]) || [];
       setTransactions(list);
-      calculateStats(list, Number(availableCents ?? 0) / 100);
+      calculateStats(list, Number(availableCents ?? 0) / 100, (summary as any) || null);
     } catch (error) {
       console.error('Error loading transactions:', error);
       toast({ title: "Error", description: "Failed to load transactions", variant: "destructive" });
@@ -138,8 +139,14 @@ const Earnings = () => {
     }
   };
 
-  const calculateStats = (txs: Transaction[], availableBalance: number) => {
-    const totalEarnings = txs.reduce((s, t) => s + Number(t.seller_amount), 0);
+  const calculateStats = (txs: Transaction[], availableBalance: number, summary: Record<string, number> | null) => {
+    const salesEarnings = txs.reduce((s, t) => s + Number(t.seller_amount), 0);
+    // Total earnings across every revenue source (sales, subscriptions, tips, paid DMs, PPV, gifts)
+    const totalEarnings = summary
+      ? (Number(summary.sales_cents || 0) + Number(summary.subs_cents || 0) + Number(summary.tips_cents || 0) +
+         Number(summary.dms_cents || 0) + Number(summary.ppv_cents || 0) + Number(summary.gifts_cents || 0) +
+         Number(summary.unique_gifts_cents || 0)) / 100
+      : salesEarnings;
     const pendingPayouts = txs.filter(t => t.status === 'pending').reduce((s, t) => s + Number(t.seller_amount), 0);
     const completedPayouts = txs.filter(t => t.status === 'completed').reduce((s, t) => s + Number(t.seller_amount), 0);
     const now = new Date();
@@ -165,6 +172,7 @@ const Earnings = () => {
       totalSales: txs.length,
       tipNet: stats.tipNet });
   };
+
 
   const formatDate = (s: string) =>
     new Date(s).toLocaleDateString('sk-SK', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
