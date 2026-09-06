@@ -45,23 +45,27 @@ const PhotoStyler = () => {
 
   const cost = selected.length * PHOTO_STYLE_COST;
 
-  const [category, setCategory] = useState<string>(PHOTO_STYLE_CATEGORIES[0].name);
+  const [openCategories, setOpenCategories] = useState<string[]>([]);
   const [styleQuery, setStyleQuery] = useState("");
 
-  const grouped = useMemo(() => {
+  const categories = useMemo(() => {
     const q = styleQuery.trim().toLowerCase();
-    const groups = q
-      ? PHOTO_STYLE_GROUPS
-      : (PHOTO_STYLE_CATEGORIES.find((c) => c.name === category)?.groups ?? []);
-    return groups
-      .map((g) => ({
-        group: g,
-        items: PHOTO_STYLES.filter(
-          (s) => s.group === g && (!q || s.label.toLowerCase().includes(q) || g.toLowerCase().includes(q)),
-        ),
-      }))
-      .filter((g) => g.items.length > 0);
-  }, [category, styleQuery]);
+    return PHOTO_STYLE_CATEGORIES.map((c) => {
+      const groups = c.groups
+        .map((g) => ({
+          group: g,
+          items: PHOTO_STYLES.filter(
+            (s) => s.group === g && (!q || s.label.toLowerCase().includes(q) || g.toLowerCase().includes(q)),
+          ),
+        }))
+        .filter((g) => g.items.length > 0);
+      return { ...c, groups, count: groups.reduce((n, g) => n + g.items.length, 0) };
+    }).filter((c) => c.count > 0);
+  }, [styleQuery]);
+
+  const toggleCategory = (name: string) =>
+    setOpenCategories((prev) => (prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]));
+
 
 
   const toggleStyle = (id: string) => {
