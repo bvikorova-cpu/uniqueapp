@@ -98,7 +98,8 @@ export function SectionVideoPreview({ src,
             loop
             playsInline
             autoPlay
-            preload="auto"
+            preload="none"
+
             aria-label={label}
             onLoadedData={() => setIsReady(true)}
             onCanPlay={() => setIsReady(true)}
