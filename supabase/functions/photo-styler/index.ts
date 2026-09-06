@@ -870,7 +870,10 @@ serve(async (req) => {
         results.push({ style, error: "Unknown style" });
         continue;
       }
-      const prompt = `${changeOutfit ? OUTFIT_RULES : BASE_RULES}\n\nStyle: ${stylePrompt}.${
+      const kidsBoost = style.startsWith("kid")
+        ? " Ultra vivid, joyful children's-storybook look: highly saturated candy colours (hot pink, turquoise, sunny yellow, lime), sparkles, confetti, glitter and rainbow light, cute fluffy animal friends nearby (kittens, puppies, bunnies) with big shiny eyes, soft round shapes, bright cheerful daylight, playful and magical, absolutely nothing dark or dull."
+        : "";
+      const prompt = `${changeOutfit ? OUTFIT_RULES : BASE_RULES}\n\nStyle: ${stylePrompt}.${kidsBoost}${
         customPrompt ? ` Extra direction: ${customPrompt}.` : ""
       }\n\nReminder: ${
         changeOutfit
