@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Play } from "lucide-react";
 
 interface Props {
   src: string;
@@ -6,107 +7,87 @@ interface Props {
   label: string;
   aspectRatio?: string;
   className?: string;
+  /** Optional lightweight thumbnail shown before the video is loaded */
+  poster?: string;
 }
 
 /**
- * Simple, reliable video preview:
- * - Loads video when within 800px of viewport (IntersectionObserver)
- * - preload="auto" so browser fetches eagerly once mounted
- * - Plays muted/looped when visible, pauses when not (no src removal — keeps cache)
+ * Lightweight video preview:
+ * - Renders ONLY a static thumbnail (poster image or gradient shell) with a play overlay.
+ * - The <video> element is created and downloaded ONLY after the user clicks/taps.
+ * This keeps the homepage payload tiny (no MB-sized video on first load).
  */
-export function SectionVideoPreview({ src,
+export function SectionVideoPreview({
+  src,
   caption,
   label,
   aspectRatio = "16 / 9",
-  className = "" }: Props) {
-  const figureRef = useRef<HTMLElement>(null);
+  className = "",
+  poster,
+}: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [shouldLoad, setShouldLoad] = useState(false);
+  const [activated, setActivated] = useState(false);
   const [isReady, setIsReady] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-
-  // Mount video only after the page finished loading AND it's near viewport
-  useEffect(() => {
-    const el = figureRef.current;
-    if (!el) return;
-    if (shouldLoad) return;
-    let io: IntersectionObserver | null = null;
-    const start = () => {
-      if (!figureRef.current) return;
-      io = new IntersectionObserver(
-        (entries) => {
-          if (entries.some((e) => e.isIntersecting)) {
-            setShouldLoad(true);
-            io?.disconnect();
-          }
-        },
-        { rootMargin: "200px 0px", threshold: 0.01 }
-      );
-      io.observe(figureRef.current);
-    };
-    if (document.readyState === "complete") {
-      start();
-    } else {
-      window.addEventListener("load", start, { once: true });
-    }
-    return () => {
-      io?.disconnect();
-      window.removeEventListener("load", start);
-    };
-  }, [shouldLoad]);
-
-
-  // Track visibility for play/pause
-  useEffect(() => {
-    const el = figureRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      (entries) => setIsVisible(entries[0]?.isIntersecting ?? false),
-      { threshold: 0.1 }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
 
   useEffect(() => {
+    if (!activated) return;
     const v = videoRef.current;
     if (!v) return;
-    if (isVisible) {
-      v.play().catch(() => {});
-    } else {
-      v.pause();
-    }
-  }, [isVisible, isReady]);
+    v.play().catch(() => {});
+  }, [activated, isReady]);
 
   return (
     <figure
-      ref={figureRef}
       className={`my-8 mx-auto max-w-3xl rounded-2xl overflow-hidden border border-primary/20 shadow-lg shadow-primary/10 bg-card ${className}`}
     >
       <div
         className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-card to-accent/10"
         style={{ aspectRatio }}
       >
-        {!isReady && (
-          <div className="absolute inset-0 animate-pulse bg-muted/40" aria-hidden="true" />
-        )}
-        {shouldLoad && (
-          <video
-            ref={videoRef}
-            src={src}
-            muted
-            loop
-            playsInline
-            autoPlay
-            preload="none"
-
-            aria-label={label}
-            onLoadedData={() => setIsReady(true)}
-            onCanPlay={() => setIsReady(true)}
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
-              isReady ? "opacity-100" : "opacity-0"
-            }`}
-          />
+        {!activated ? (
+          <button
+            type="button"
+            onClick={() => setActivated(true)}
+            aria-label={`Play ${label}`}
+            className="absolute inset-0 h-full w-full group"
+          >
+            {poster && (
+              <img
+                src={poster}
+                alt={label}
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            )}
+            <span className="absolute inset-0 flex items-center justify-center">
+              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/90 text-primary-foreground shadow-lg transition-transform duration-200 group-hover:scale-110">
+                <Play className="h-7 w-7 translate-x-[2px]" fill="currentColor" />
+              </span>
+            </span>
+          </button>
+        ) : (
+          <>
+            {!isReady && (
+              <div className="absolute inset-0 animate-pulse bg-muted/40" aria-hidden="true" />
+            )}
+            <video
+              ref={videoRef}
+              src={src}
+              poster={poster}
+              muted
+              loop
+              playsInline
+              autoPlay
+              preload="auto"
+              aria-label={label}
+              onLoadedData={() => setIsReady(true)}
+              onCanPlay={() => setIsReady(true)}
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
+                isReady ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          </>
         )}
       </div>
       {caption && (
