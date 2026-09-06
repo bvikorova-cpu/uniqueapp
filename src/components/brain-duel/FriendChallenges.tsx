@@ -235,18 +235,40 @@ export const FriendChallenges = () => {
 
       if (error) throw error;
 
+      // Finished / abandoned duels disappear 30 minutes after they were started.
+      const cutoff = Date.now() - 30 * 60 * 1000;
+      const stale: string[] = [];
+      const fresh = (data || []).filter((c) => {
+        const started = new Date((c as { updated_at?: string; created_at: string }).updated_at || c.created_at).getTime();
+        const isPending = String(c.status) === 'pending';
+        if (!isPending && started < cutoff) {
+          stale.push(c.id);
+          return false;
+        }
+        return true;
+      });
+
+      if (stale.length > 0) {
+        await supabase
+          .from('brain_duel_friend_challenges')
+          .update({ status: 'expired' })
+          .in('id', stale);
+      }
+
+
       // Fetch profiles for challengers and challenged users
       const userIds = new Set<string>();
-      data?.forEach((challenge) => {
+      fresh.forEach((challenge) => {
         userIds.add(challenge.challenger_id);
         userIds.add(challenge.challenged_id);
       });
 
       const profiles = await fetchPublicProfilesByIds(Array.from(userIds));
 
-      return data?.map((challenge) => ({ ...challenge,
+      return fresh.map((challenge) => ({ ...challenge,
         challenger_profile: profiles.find((p) => p.id === challenge.challenger_id),
-        challenged_profile: profiles.find((p) => p.id === challenge.challenged_id) })) || [];
+        challenged_profile: profiles.find((p) => p.id === challenge.challenged_id) }));
+
     } });
 
   // Create challenge mutation
