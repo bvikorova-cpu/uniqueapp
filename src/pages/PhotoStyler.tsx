@@ -240,6 +240,19 @@ const PhotoStyler = () => {
     toast.error("Sharing is not available here. Use Download instead.");
   };
 
+  const shareFacebook = async (r: StyledResult) => {
+    const url = `${window.location.origin}/photo-styler`;
+    const quote = `My photo in ${styleLabel(r.style)} style — made with Unique Photo Styler · uniqueapp.fun`;
+    // Facebook cannot receive a local image file — save it first, then attach it in the post.
+    download(r);
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(quote)}`,
+      "_blank",
+      "width=600,height=500,noopener,noreferrer",
+    );
+    toast.success("Image saved — attach it to your Facebook post 📘");
+  };
+
 
 
   const styleLabel = (id: string) => PHOTO_STYLES.find((s) => s.id === id)?.label ?? id;
