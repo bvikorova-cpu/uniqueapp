@@ -125,7 +125,7 @@ const Earnings = () => {
           .eq('seller_id', userId)
           .order('created_at', { ascending: false }),
         supabase.rpc("get_creator_available_cents", { _user_id: userId }),
-        supabase.rpc("get_creator_earnings_summary", { _user_id: userId }),
+        (supabase.rpc as any)("get_creator_earnings_summary", { _user_id: userId }),
       ]);
       if (error) throw error;
       const list = (data as any[]) || [];
