@@ -852,7 +852,14 @@ const REALISM_RULES =
   "realistic fabric weave and stitching, physically correct lighting, shadows and reflections, natural " +
   "colour grading, subtle photographic grain. Absolutely no illustration outlines, no painterly brush " +
   "strokes, no stylised eyes, no smoothed plastic skin. Treat the chosen style only as wardrobe, scene, " +
-  "props and lighting direction — realise it as a real-world photo shoot.";
+  "props and lighting direction — realise it as a real-world photo shoot. Costumes must be real, " +
+  "tailored garments made of actual fabric, leather, metal or beadwork with visible seams, texture and " +
+  "wear — professional cosplay/editorial photography, never a CGI character or a digital painting. " +
+  "Backgrounds must be real locations or real built sets with true perspective and natural light.";
+
+// Styles whose whole point is a non-photographic medium — these keep their look.
+const ART_MEDIUM_RE =
+  /(painting|painterly|illustration|illustrated|cartoon|anime|manga|comic|sketch|drawing|drawn|watercolou?r|oil paint|pastel drawing|charcoal|ink|3d render|render|cgi|pixel|voxel|low.?poly|clay|claymation|vector|graffiti|mural|woodcut|lino|engraving|mosaic|stained.glass|origami|papercut|storybook|fresco|caricature|doodle|sticker|emoji|tattoo|poster art|art nouveau|art deco style|impressionis|cubis|surrealis|pop art|ukiyo|animation|pixar|disney.style|toon)/i;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -897,13 +904,18 @@ serve(async (req) => {
       const kidsBoost = style.startsWith("kid")
         ? " Ultra vivid, joyful children's-storybook look: highly saturated candy colours (hot pink, turquoise, sunny yellow, lime), sparkles, confetti, glitter and rainbow light, cute fluffy animal friends nearby (kittens, puppies, bunnies) with big shiny eyes, soft round shapes, bright cheerful daylight, playful and magical, absolutely nothing dark or dull."
         : "";
+      // Styles that are explicitly an art medium keep their look; everything
+      // else (costumes, professions, buildings, emotions, places, motivation…)
+      // is rendered as a real photograph instead of a CGI/illustration look.
+      const isArtMedium = ART_MEDIUM_RE.test(stylePrompt);
+      const autoReal = !isArtMedium && !style.startsWith("kid") ? REALISM_RULES : "";
       const prompt = `${changeOutfit ? OUTFIT_RULES : BASE_RULES}\n\nStyle: ${stylePrompt}.${kidsBoost}${
         customPrompt ? ` Extra direction: ${customPrompt}.` : ""
       }\n\nReminder: ${
         changeOutfit
           ? "the face identity, eye colour, hair colour and skin tone stay identical to the source photo; the outfit, accessories and background follow the chosen theme."
           : "the style affects only technique, texture and lighting treatment — the eye colour, hair colour, clothing (including sleeve length and neckline) and props stay identical to the source photo."
-      }${photoreal ? REALISM_RULES : ""}`;
+      }${photoreal ? REALISM_RULES : autoReal}`;
       try {
         const out = await tryVertexImage(prompt, aspect, 1, [image]);
         const b64 = out?.data?.[0]?.b64_json;
