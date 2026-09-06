@@ -20,6 +20,7 @@ import { InviteFriendsCallout } from "@/components/referral/InviteFriendsCallout
 import { ClubHomepageBanner } from "@/components/club/ClubHomepageBanner";
 import { SectionVideoPreview } from "@/components/SectionVideoPreview";
 import { sectionVideos } from "@/components/sectionVideos";
+import { sectionPosters } from "@/components/sectionPosters";
 import {
   Car, Baby, GraduationCap, Briefcase, Heart, Sparkles, Trophy, Users,
   Video, Mic, ShoppingBag, Brain, TrendingUp, Ghost, Building2, Crown,
@@ -356,6 +357,7 @@ const Index = () => {
           <RewardedAdCard sectionKey="quick_actions" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
           <SectionVideoPreview
             src={sectionVideos.hero}
+            poster={sectionPosters.hero}
             label="Unique platform preview"
             caption="✨ Unique — your creative universe"
           />
@@ -390,11 +392,13 @@ const Index = () => {
           <RewardedAdCard sectionKey="ecosystem" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
           <SectionVideoPreview
             src={sectionVideos.dating}
+            poster={sectionPosters.dating}
             label="Dating section preview"
             caption="💜 Dating — meet your match"
           />
           <SectionVideoPreview
             src={sectionVideos.bazaar}
+            poster={sectionPosters.bazaar}
             label="Bazaar marketplace preview"
             caption="🛍️ Bazaar — buy, sell, discover"
           />
@@ -439,6 +443,7 @@ const Index = () => {
           </motion.div>
           <SectionVideoPreview
             src={sectionVideos.beauty}
+            poster={sectionPosters.beauty}
             label="Beauty Studio preview"
             caption="💄 Beauty Studio — AI makeup & skincare"
           />
@@ -451,6 +456,7 @@ const Index = () => {
           <RewardedAdCard sectionKey="core_modules" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
           <SectionVideoPreview
             src={sectionVideos.aiTools}
+            poster={sectionPosters.aiTools}
             label="AI tools preview"
             caption="🧠 AI Tools — generate, create, automate"
           />
@@ -467,96 +473,115 @@ const Index = () => {
           <RewardedAdCard sectionKey="all_services" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
           <SectionVideoPreview
             src={sectionVideos.jobs}
+            poster={sectionPosters.jobs}
             label="Jobs section preview"
             caption="💼 Jobs — find work, hire talent"
           />
           <SectionVideoPreview
             src={sectionVideos.education}
+            poster={sectionPosters.education}
             label="Education preview"
             caption="🎓 Education — learn, grow, earn"
           />
           <SectionVideoPreview
             src={sectionVideos.kids}
+            poster={sectionPosters.kids}
             label="Kids Channel preview"
             caption="🎨 Kids Channel — safe & fun for ages 6–12"
           />
           <SectionVideoPreview
             src={sectionVideos.livestream}
+            poster={sectionPosters.livestream}
             label="Live Streaming preview"
             caption="📡 Live Streaming — go live, earn gifts"
           />
           <SectionVideoPreview
             src={sectionVideos.fashion}
+            poster={sectionPosters.fashion}
             label="Fashion Studio preview"
             caption="👗 Fashion Studio — AI designs & runway"
           />
           <SectionVideoPreview
             src={sectionVideos.fitness}
+            poster={sectionPosters.fitness}
             label="Fitness & Wellness preview"
             caption="💪 Fitness & Wellness — train smarter"
           />
           <SectionVideoPreview
             src={sectionVideos.property}
+            poster={sectionPosters.property}
             label="Property Marketplace preview"
             caption="🏠 Property Marketplace — buy, sell, rent"
           />
           <SectionVideoPreview
             src={sectionVideos.holographicAvatars}
+            poster={sectionPosters.holographicAvatars}
             label="Holographic Avatars preview"
             caption="👤 Holographic Avatars — 3D AI breeding & battles"
           />
           <SectionVideoPreview
             src={sectionVideos.timeCapsule}
+            poster={sectionPosters.timeCapsule}
             label="Time Capsule preview"
             caption="⏳ Time Capsule — send messages to the future"
           />
           <SectionVideoPreview
             src={sectionVideos.kitchenStars}
+            poster={sectionPosters.kitchenStars}
             label="KitchenStars preview"
             caption="👨‍🍳 KitchenStars — online cooking competitions"
           />
           <SectionVideoPreview
             src={sectionVideos.comedyClub}
+            poster={sectionPosters.comedyClub}
             label="Comedy Club preview"
             caption="🎤 Comedy Club — stand-up & laughs"
           />
           <SectionVideoPreview
             src={sectionVideos.marketplace}
+            poster={sectionPosters.marketplace}
             label="Marketplace preview"
             caption="🛍️ Marketplace — shop everything in one place"
           />
           <SectionVideoPreview
             src={sectionVideos.secretSanta}
+            poster={sectionPosters.secretSanta}
             label="Secret Santa preview"
             caption="🎁 Secret Santa — magical gift exchange"
           />
           <SectionVideoPreview
             src={sectionVideos.coupons}
+            poster={sectionPosters.coupons}
             label="Coupons preview"
             caption="🎟️ Coupons — exclusive deals & discounts"
           />
           <SectionVideoPreview
             src={sectionVideos.lieDetector}
+            poster={sectionPosters.lieDetector}
             label="Lie Detector preview"
             caption="🔍 Lie Detector — AI truth analysis"
           />
           <SectionVideoPreview
             src={sectionVideos.emotion}
+            poster={sectionPosters.emotion}
             label="Emotion preview"
             caption="💗 Emotion AI — read feelings & mood"
           />
           <SectionVideoPreview
             src={sectionVideos.photoRestoration}
+            poster={sectionPosters.photoRestoration}
             label="Photo Restoration preview"
             caption="🖼️ Photo Restoration — bring memories back to life"
           />
           <SectionVideoPreview
             src={sectionVideos.virtualPet}
+            poster={sectionPosters.virtualPet}
             label="Virtual Pet preview"
             caption="🐾 Virtual Pet — raise your magical companion"
           />
           <SectionVideoPreview
             src={sectionVideos.influKing}
+            poster={sectionPosters.influKing}
             label="Influ King preview"
             caption="👑 Influ King — rise to the top of influencers"
           />
