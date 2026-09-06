@@ -227,7 +227,7 @@ export const InfluencerEarningsPage = () => {
   const available = Math.max(0, pendingBalance - lockedInWithdrawals);
   const grossFromGifts = (gifts || []).reduce((s, g) => s + Number(g.amount || 0), 0);
   const platformFee = (gifts || []).reduce(
-    (s, g) => s + Number(g.platform_commission ?? Number(g.amount || 0) * 0.2), 0);
+    (s, g) => s + Number(g.platform_commission ?? Number(g.amount || 0) * 0.15), 0);
 
   return (
     <div className="space-y-6">
@@ -281,6 +281,11 @@ export const InfluencerEarningsPage = () => {
           <p className="text-xs text-muted-foreground">{dms.length} messages</p>
         </Card>
       </div>
+
+      <p className="text-xs text-muted-foreground">
+        Gifts are withdrawn here (min €50). Subscriptions, PPV and paid DMs are paid out from My Earnings.
+      </p>
+
 
       {influencers.length > 1 && (
         <Card className="p-4 border-amber-500/20">
