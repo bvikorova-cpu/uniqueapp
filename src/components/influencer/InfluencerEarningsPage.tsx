@@ -282,6 +282,11 @@ export const InfluencerEarningsPage = () => {
         </Card>
       </div>
 
+      <p className="text-xs text-muted-foreground">
+        Gifts are withdrawn here (min €50). Subscriptions, PPV and paid DMs are paid out from My Earnings.
+      </p>
+
+
       {influencers.length > 1 && (
         <Card className="p-4 border-amber-500/20">
           <label className="text-sm font-medium mb-2 block">Select profile</label>
