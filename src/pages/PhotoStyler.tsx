@@ -18,7 +18,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import heroAsset from "@/assets/section-videos/photo-styler.mp4.asset.json";
-import { PHOTO_STYLES, PHOTO_STYLE_COST, PHOTO_STYLE_GROUPS, PHOTO_STYLE_CATEGORIES } from "@/data/photoStyles";
+import { PHOTO_STYLES, PHOTO_STYLE_COST, PHOTO_STYLE_CATEGORIES } from "@/data/photoStyles";
 
 interface StyledResult {
   style: string;
