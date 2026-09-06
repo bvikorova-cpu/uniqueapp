@@ -44,6 +44,7 @@ export const PHOTO_STYLE_GROUPS = [
   "Exotic Sea & Beaches",
   "Wild Nature & Extremes",
   "World Metropolises",
+  "Famous Landmarks",
   "Mountain Adventure",
   "Aesthetic Getaways",
   "Christmas & Winter Holidays",
@@ -330,6 +331,63 @@ export const PHOTO_STYLES: PhotoStyle[] = [
   { id: "studioheadshot", label: "Studio portrait", emoji: "📸", group: "Portrait & Editorial" },
   { id: "blackwhiteportrait", label: "B&W fine art portrait", emoji: "⚫", group: "Portrait & Editorial" },
 
+  { id: "eiffeltower", label: "Eiffel Tower Paris", emoji: "🗼", group: "Famous Landmarks" },
+  { id: "colosseum", label: "Rome Colosseum", emoji: "🏟️", group: "Famous Landmarks" },
+  { id: "tajmahal", label: "Taj Mahal", emoji: "🕌", group: "Famous Landmarks" },
+  { id: "greatwall", label: "Great Wall of China", emoji: "🐉", group: "Famous Landmarks" },
+  { id: "machupicchu", label: "Machu Picchu", emoji: "⛰️", group: "Famous Landmarks" },
+  { id: "petrajordan", label: "Petra Jordan", emoji: "🏜️", group: "Famous Landmarks" },
+  { id: "statueliberty", label: "Statue of Liberty", emoji: "🗽", group: "Famous Landmarks" },
+  { id: "bigben", label: "London Big Ben", emoji: "🇬🇧", group: "Famous Landmarks" },
+  { id: "sagradafamilia", label: "Sagrada Familia", emoji: "⛪", group: "Famous Landmarks" },
+  { id: "christredeemer", label: "Christ the Redeemer", emoji: "🙌", group: "Famous Landmarks" },
+  { id: "angkorwat", label: "Angkor Wat", emoji: "🛕", group: "Famous Landmarks" },
+  { id: "acropolis", label: "Athens Acropolis", emoji: "🏛️", group: "Famous Landmarks" },
+  { id: "neuschwanstein", label: "Fairytale castle Bavaria", emoji: "🏰", group: "Famous Landmarks" },
+  { id: "moaieaster", label: "Easter Island moai", emoji: "🗿", group: "Famous Landmarks" },
+  { id: "sydneyopera", label: "Sydney Opera House", emoji: "🇦🇺", group: "Famous Landmarks" },
+  { id: "burjkhalifa", label: "Dubai Burj Khalifa", emoji: "🌇", group: "Famous Landmarks" },
+  { id: "hollywoodsign", label: "Hollywood sign", emoji: "🎬", group: "Famous Landmarks" },
+  { id: "goldengate", label: "Golden Gate Bridge", emoji: "🌉", group: "Famous Landmarks" },
+
+  { id: "londonstreets", label: "London streets", emoji: "☂️", group: "World Metropolises" },
+  { id: "dubaiskyline", label: "Dubai luxury skyline", emoji: "🏙️", group: "World Metropolises" },
+  { id: "singaporegardens", label: "Singapore Gardens", emoji: "🌴", group: "World Metropolises" },
+  { id: "hongkongnight", label: "Hong Kong neon", emoji: "🏮", group: "World Metropolises" },
+  { id: "istanbulbazaar", label: "Istanbul bazaar", emoji: "🧿", group: "World Metropolises" },
+  { id: "barcelonagothic", label: "Barcelona gothic quarter", emoji: "🎨", group: "World Metropolises" },
+  { id: "amsterdamcanal", label: "Amsterdam canal", emoji: "🚲", group: "World Metropolises" },
+  { id: "pragueoldtown", label: "Prague old town", emoji: "🕰️", group: "World Metropolises" },
+  { id: "viennaopera", label: "Vienna imperial", emoji: "🎼", group: "World Metropolises" },
+  { id: "romefountain", label: "Rome Trevi fountain", emoji: "⛲", group: "World Metropolises" },
+  { id: "moscowredsquare", label: "Red Square domes", emoji: "🧊", group: "World Metropolises" },
+  { id: "seoulgangnam", label: "Seoul Gangnam night", emoji: "🇰🇷", group: "World Metropolises" },
+  { id: "rionight", label: "Rio beach night", emoji: "🌴", group: "World Metropolises" },
+  { id: "mexicocitycolor", label: "Mexico City colours", emoji: "🌺", group: "World Metropolises" },
+  { id: "capetown", label: "Cape Town Table Mountain", emoji: "🇿🇦", group: "World Metropolises" },
+  { id: "marrakechsouk", label: "Marrakech souk", emoji: "🕌", group: "World Metropolises" },
+  { id: "lasvegasstrip", label: "Las Vegas strip", emoji: "🎰", group: "World Metropolises" },
+  { id: "miamibeach", label: "Miami art deco", emoji: "🌴", group: "World Metropolises" },
+
+  { id: "baliricefields", label: "Bali rice terraces", emoji: "🌾", group: "Aesthetic Getaways" },
+  { id: "provencelavender", label: "Provence lavender", emoji: "💜", group: "Aesthetic Getaways" },
+  { id: "kyototemple", label: "Kyoto temple path", emoji: "🎎", group: "Aesthetic Getaways" },
+  { id: "amalficoast", label: "Amalfi coast", emoji: "🍋", group: "Aesthetic Getaways" },
+  { id: "icelandwaterfall", label: "Iceland waterfall", emoji: "💧", group: "Aesthetic Getaways" },
+  { id: "swisslakes", label: "Swiss lake village", emoji: "🇨🇭", group: "Aesthetic Getaways" },
+  { id: "norwayfjord", label: "Norwegian fjord", emoji: "🛶", group: "Aesthetic Getaways" },
+  { id: "dubrovnikwalls", label: "Dubrovnik old walls", emoji: "🧡", group: "Aesthetic Getaways" },
+  { id: "hallstatt", label: "Alpine lake village", emoji: "🏞️", group: "Aesthetic Getaways" },
+  { id: "cappadocia", label: "Cappadocia balloons", emoji: "🎈", group: "Aesthetic Getaways" },
+
+  { id: "safarikenya", label: "African safari", emoji: "🦁", group: "Wild Nature & Extremes" },
+
+  { id: "barrierreef", label: "Coral reef snorkelling", emoji: "🐠", group: "Exotic Sea & Beaches" },
+  { id: "borabora", label: "Bora Bora overwater", emoji: "🏝️", group: "Exotic Sea & Beaches" },
+
+  { id: "dolomiteshike", label: "Dolomites hike", emoji: "🥾", group: "Mountain Adventure" },
+  { id: "patagonia", label: "Patagonia wild", emoji: "🌬️", group: "Mountain Adventure" },
+
   { id: "uniquephone", label: "Holding phone with Unique", emoji: "📱", group: "Unique Brand" },
   { id: "uniquetshirt", label: "Unique logo T-shirt", emoji: "👕", group: "Unique Brand" },
   { id: "uniqueflag", label: "Waving Unique flag", emoji: "🚩", group: "Unique Brand" },
@@ -345,5 +403,20 @@ export const PHOTO_STYLES: PhotoStyle[] = [
 ];
 
 
+
+/** Top-level categories used by the Photo Styler picker. */
+export const PHOTO_STYLE_CATEGORIES: { name: string; emoji: string; groups: string[] }[] = [
+  { name: "Art & Drawing", emoji: "🎨", groups: ["Drawn", "Painted", "Classic & Photo", "Modern Digital Art", "Abstract & Optical Illusion", "Exotic Techniques"] },
+  { name: "Cartoon & Avatars", emoji: "😃", groups: ["Cartoon & Anime", "Avatars & Emoji", "Toys & Figures"] },
+  { name: "Craft & Materials", emoji: "🧶", groups: ["Craft & Pixel", "Textures & Craft Materials", "Sculpture & Classic Materials"] },
+  { name: "Travel & Cities", emoji: "🌍", groups: ["Famous Landmarks", "World Metropolises", "Aesthetic Getaways", "Exotic Sea & Beaches", "Mountain Adventure", "Wild Nature & Extremes", "Desert Adventure", "Historic & Travel Scenes"] },
+  { name: "Fantasy & Sci-Fi", emoji: "🪄", groups: ["Fantasy", "Sci-Fi & Future", "Sci-Fi & Adventure Worlds", "Storybook Worlds", "Film & Game Worlds", "Nature & Elements"] },
+  { name: "Glam & Fashion", emoji: "💄", groups: ["Glamour & High Fashion", "Bold & Glam Looks", "Portrait & Editorial", "Gala & Fantasy Royalty", "Uniforms & Costumes"] },
+  { name: "Retro & Street", emoji: "🕶️", groups: ["Retro & Neon", "Street & Graphic", "Subculture & Street", "Film & Pop Culture"] },
+  { name: "Horror & Dark", emoji: "👻", groups: ["Horror & Alt Reality", "Cinematic & Thriller"] },
+  { name: "Holidays & Parties", emoji: "🎉", groups: ["Christmas & Winter Holidays", "New Year & Carnival", "Easter & Spring Holidays", "Halloween Party", "World Holidays"] },
+  { name: "Work & Royalty", emoji: "👔", groups: ["Professional & Business", "Career & Portrait Scenes", "Royal & Historical"] },
+  { name: "Unique Brand", emoji: "✨", groups: ["Unique Brand"] },
+];
 
 export const PHOTO_STYLE_COST = 3;

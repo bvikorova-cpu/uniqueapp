@@ -17,7 +17,7 @@ import {
   Brush, Download, ImagePlus, Loader2, Palette, Share2, ShieldCheck, Sparkles, Wand2, Zap,
 } from "lucide-react";
 import heroAsset from "@/assets/section-videos/photo-styler.mp4.asset.json";
-import { PHOTO_STYLES, PHOTO_STYLE_COST, PHOTO_STYLE_GROUPS } from "@/data/photoStyles";
+import { PHOTO_STYLES, PHOTO_STYLE_COST, PHOTO_STYLE_GROUPS, PHOTO_STYLE_CATEGORIES } from "@/data/photoStyles";
 
 interface StyledResult {
   style: string;
@@ -44,10 +44,25 @@ const PhotoStyler = () => {
   const [results, setResults] = useState<StyledResult[]>([]);
 
   const cost = selected.length * PHOTO_STYLE_COST;
-  const grouped = useMemo(
-    () => PHOTO_STYLE_GROUPS.map((g) => ({ group: g, items: PHOTO_STYLES.filter((s) => s.group === g) })),
-    [],
-  );
+
+  const [category, setCategory] = useState<string>(PHOTO_STYLE_CATEGORIES[0].name);
+  const [styleQuery, setStyleQuery] = useState("");
+
+  const grouped = useMemo(() => {
+    const q = styleQuery.trim().toLowerCase();
+    const groups = q
+      ? PHOTO_STYLE_GROUPS
+      : (PHOTO_STYLE_CATEGORIES.find((c) => c.name === category)?.groups ?? []);
+    return groups
+      .map((g) => ({
+        group: g,
+        items: PHOTO_STYLES.filter(
+          (s) => s.group === g && (!q || s.label.toLowerCase().includes(q) || g.toLowerCase().includes(q)),
+        ),
+      }))
+      .filter((g) => g.items.length > 0);
+  }, [category, styleQuery]);
+
 
   const toggleStyle = (id: string) => {
     setSelected((prev) => {
@@ -284,7 +299,44 @@ const PhotoStyler = () => {
                   <span>Styles ({selected.length}/{MAX_STYLES})</span>
                   <span className="text-xs font-normal text-muted-foreground">{cost} credits</span>
                 </Label>
+
+                <Input
+                  value={styleQuery}
+                  onChange={(e) => setStyleQuery(e.target.value)}
+                  placeholder="Search all 290+ styles (Paris, anime, beach…)"
+                  className="h-9 text-sm"
+                />
+
+                {!styleQuery.trim() && (
+                  <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1">
+                    {PHOTO_STYLE_CATEGORIES.map((c) => {
+                      const active = c.name === category;
+                      return (
+                        <button
+                          key={c.name}
+                          type="button"
+                          onClick={() => setCategory(c.name)}
+                          aria-pressed={active}
+                          className={`whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-bold transition-colors ${
+                            active
+                              ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                              : "border-border bg-background/60 text-muted-foreground hover:border-primary/40"
+                          }`}
+                        >
+                          <span className="mr-1">{c.emoji}</span>
+                          {c.name}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {grouped.length === 0 && (
+                  <p className="text-xs text-muted-foreground">No style matches “{styleQuery}”.</p>
+                )}
+
                 {grouped.map(({ group, items }) => (
+
                   <div key={group} className="space-y-1.5">
                     <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{group}</p>
                     <div className="flex flex-wrap gap-1.5">
