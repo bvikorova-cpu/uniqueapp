@@ -14,13 +14,22 @@ import SEO from "@/components/SEO";
 
 const PROMO_CATEGORIES = ["business", "event", "restaurant", "beauty", "fitness", "shop", "service", "real_estate", "job", "other"];
 
+const PROMO_TIERS = [
+  { id: "mini", name: "Mini", price: 5, desc: "Affordable placement in the main grid — great for trying it out." },
+  { id: "basic", name: "Basic", price: 15, desc: "Larger card in the main grid with priority over Mini." },
+  { id: "standard", name: "Standard", price: 20, desc: "Standard placement in the main grid." },
+  { id: "top", name: "TOP", price: 50, desc: "Pinned to the top of the board with premium styling.", best: true },
+] as const;
+
+type PromoTier = (typeof PROMO_TIERS)[number]["id"];
+
 export default function PromotionsCreate() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
-  const [tier, setTier] = useState<"standard" | "top">("standard");
+  const [tier, setTier] = useState<PromoTier>("standard");
   const [category, setCategory] = useState("business");
   const [city, setCity] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -206,34 +215,29 @@ export default function PromotionsCreate() {
               <CardTitle>Choose your plan</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {(["standard", "top"] as const).map((t) => {
-                const selected = tier === t;
-                const isTop = t === "top";
+              {PROMO_TIERS.map((t) => {
+                const selected = tier === t.id;
                 return (
                   <button
                     type="button"
-                    key={t}
-                    onClick={() => setTier(t)}
+                    key={t.id}
+                    onClick={() => setTier(t.id)}
                     className={`text-left rounded-xl border-2 p-5 transition ${
                       selected ? "border-primary bg-primary/5 shadow-md" : "border-border hover:border-primary/50"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        {isTop && <Crown className="h-5 w-5 text-primary" />}
-                        <span className="font-bold text-lg">{isTop ? "TOP" : "Standard"}</span>
+                        {t.id === "top" && <Crown className="h-5 w-5 text-primary" />}
+                        <span className="font-bold text-lg">{t.name}</span>
                       </div>
-                      {isTop && <Badge className="bg-gradient-to-r from-primary to-accent text-white">Best</Badge>}
+                      {"best" in t && t.best && <Badge className="bg-gradient-to-r from-primary to-accent text-white">Best</Badge>}
                     </div>
                     <div className="text-3xl font-black mb-1">
-                      €{isTop ? 50 : 20}
+                      €{t.price}
                       <span className="text-sm font-normal text-muted-foreground"> / month</span>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      {isTop
-                        ? "Pinned to the top of the board with premium styling."
-                        : "Standard placement in the main grid."}
-                    </p>
+                    <p className="text-xs text-muted-foreground">{t.desc}</p>
                   </button>
                 );
               })}
@@ -243,7 +247,7 @@ export default function PromotionsCreate() {
           <div className="mt-6 flex justify-end">
             <Button type="submit" size="lg" variant="premium" disabled={submitting}>
               {submitting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
-              {submitting ? "Publishing…" : `Publish for €${tier === "top" ? 50 : 20}/month`}
+              {submitting ? "Publishing…" : `Publish for €${PROMO_TIERS.find((t) => t.id === tier)?.price ?? 20}/month`}
             </Button>
           </div>
         </form>
