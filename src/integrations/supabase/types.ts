@@ -49108,6 +49108,7 @@ export type Database = {
           link_url: string | null
           media_type: string
           media_url: string
+          share_to_wall: boolean
           status: string
           stripe_session_id: string | null
           stripe_subscription_id: string | null
@@ -49115,6 +49116,7 @@ export type Database = {
           title: string
           updated_at: string
           user_id: string
+          wall_post_id: string | null
         }
         Insert: {
           active_until?: string | null
@@ -49126,6 +49128,7 @@ export type Database = {
           link_url?: string | null
           media_type?: string
           media_url: string
+          share_to_wall?: boolean
           status?: string
           stripe_session_id?: string | null
           stripe_subscription_id?: string | null
@@ -49133,6 +49136,7 @@ export type Database = {
           title: string
           updated_at?: string
           user_id: string
+          wall_post_id?: string | null
         }
         Update: {
           active_until?: string | null
@@ -49144,6 +49148,7 @@ export type Database = {
           link_url?: string | null
           media_type?: string
           media_url?: string
+          share_to_wall?: boolean
           status?: string
           stripe_session_id?: string | null
           stripe_subscription_id?: string | null
@@ -49151,8 +49156,24 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string
+          wall_post_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "promo_listings_wall_post_id_fkey"
+            columns: ["wall_post_id"]
+            isOneToOne: false
+            referencedRelation: "mv_wall_feed_hot"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "promo_listings_wall_post_id_fkey"
+            columns: ["wall_post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       properties: {
         Row: {
