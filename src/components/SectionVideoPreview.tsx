@@ -9,6 +9,8 @@ interface Props {
   className?: string;
   /** Optional lightweight thumbnail shown before the video is loaded */
   poster?: string;
+  /** Render only the static poster image — never load the video */
+  staticOnly?: boolean;
 }
 
 /**
