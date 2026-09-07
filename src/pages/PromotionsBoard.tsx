@@ -188,13 +188,13 @@ export default function PromotionsBoard() {
   });
 
   const topListings = filtered.filter((l) => l.tier === "top");
-  const standardListings = filtered.filter((l) => l.tier === "standard");
+  const standardListings = filtered.filter((l) => l.tier !== "top");
 
   return (
     <div className="min-h-screen bg-background">
       <SEO
         title="Promotions Board — Unique"
-        description="Public promotions board. Publish your flyer, poster or promo video for €20 per month. Boost to TOP for €50 per month."
+        description="Public promotions board. Publish your flyer, poster or promo video from just €5 per month. Boost to TOP for €50 per month."
       />
 
       {/* Hero */}
@@ -220,7 +220,7 @@ export default function PromotionsBoard() {
             Promotions <span className="bg-gradient-to-r from-purple-400 via-primary to-pink-400 bg-clip-text text-transparent">Board</span>
           </h1>
           <p className="text-lg md:text-xl text-white/90 max-w-2xl mb-6">
-            Promote your business, event or offer. Public visibility from just €20 per month.
+            Promote your business, event or offer. Public visibility from just €5 per month.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Button asChild size="lg" variant="premium">
@@ -240,7 +240,7 @@ export default function PromotionsBoard() {
             intro="A public board for anyone who wants to promote a business, product, event or offer."
             steps={[
               { title: "Upload", desc: "Add a photo or video (flyer, poster, promo clip) and a short description." },
-              { title: "Choose a plan", desc: "Standard placement €20/month, or TOP placement (pinned to the top) €50/month." },
+              { title: "Choose a plan", desc: "Mini €5, Basic €15 or Standard €20 per month — or TOP placement (pinned to the top) €50/month." },
               { title: "Pay with credits", desc: "Credits are deducted instantly and your listing goes live for 30 days." },
               { title: "Get seen", desc: "Your promo appears on this public board — visible to every visitor of Unique." },
               { title: "Manage", desc: "Edit, hide or re-publish anytime from My promotions." },
