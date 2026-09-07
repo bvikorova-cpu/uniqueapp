@@ -15,9 +15,9 @@ interface Props {
 
 /**
  * Lightweight video preview:
- * - Renders ONLY a static thumbnail (poster image or gradient shell) with a play overlay.
- * - The <video> element is created and downloaded ONLY after the user clicks/taps.
- * This keeps the homepage payload tiny (no MB-sized video on first load).
+ * - With `staticOnly`, renders ONLY the static thumbnail image (no video, no play button).
+ * - Otherwise renders a thumbnail with a play overlay; the <video> element is created
+ *   and downloaded ONLY after the user clicks/taps.
  */
 export function SectionVideoPreview({
   src,
@@ -33,45 +33,31 @@ export function SectionVideoPreview({
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    if (!activated) return;
+    if (!activated || staticOnly) return;
     const v = videoRef.current;
     if (!v) return;
     v.play().catch(() => {});
-  }, [activated, isReady]);
+  }, [activated, isReady, staticOnly]);
 
   return (
     <figure
       className={`my-8 mx-auto max-w-3xl rounded-2xl overflow-hidden border border-primary/20 shadow-lg shadow-primary/10 bg-card ${className}`}
     >
-      {staticOnly ? (
-        <>
-          <div
-            className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-card to-accent/10"
-            style={{ aspectRatio }}
-          >
-            {poster && (
-              <img
-                src={poster}
-                alt={label}
-                loading="lazy"
-                decoding="async"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            )}
-          </div>
-          {caption && (
-            <figcaption className="px-4 py-2 text-xs text-muted-foreground text-center bg-muted/30">
-              {caption}
-            </figcaption>
-          )}
-        </>
-      ) : (
-      <>
       <div
         className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-card to-accent/10"
         style={{ aspectRatio }}
       >
-        {!activated ? (
+        {staticOnly ? (
+          poster && (
+            <img
+              src={poster}
+              alt={label}
+              loading="lazy"
+              decoding="async"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          )
+        ) : !activated ? (
           <button
             type="button"
             onClick={() => setActivated(true)}
