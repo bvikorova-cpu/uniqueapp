@@ -94,13 +94,17 @@ export default function PromotionsCreate() {
     setSubmitting(true);
     try {
       const ext = file.name.split(".").pop() || "bin";
-      const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("promotions").upload(path, file, { cacheControl: "3600",
-        upsert: false });
+      // Upload into the public "media" bucket so the promo image/video can be
+      // rendered both on the Promotions board and inside the Wall feed.
+      const path = `${user.id}/promotions/${crypto.randomUUID()}.${ext}`;
+      const { data: upData, error: upErr } = await supabase.storage
+        .from("media")
+        .upload(path, file, { cacheControl: "3600", upsert: false, contentType: file.type || undefined });
       if (upErr) throw upErr;
+      if (!upData?.path) throw new Error("Upload failed, please try again");
 
       const mediaType = file.type.startsWith("video") ? "video" : "image";
-      const publicPath = `/storage/v1/object/public/promotions/${path}`;
+      const publicPath = supabase.storage.from("media").getPublicUrl(upData.path).data.publicUrl;
 
       const { data: inserted, error: insErr } = await supabase
         .from("promo_listings")
