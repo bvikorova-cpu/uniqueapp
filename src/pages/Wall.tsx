@@ -504,9 +504,33 @@ const Feed = () => {
       return (data ?? []).map((r: any) => (typeof r === "string" ? r : r?.user_id)).filter(Boolean);
     } });
 
+  // Paid promotions shared into the Wall feed — they are marked as sponsored
+  // and always pinned above organic posts.
+  const { data: promoPostMap } = useQuery({
+    queryKey: ["wall-promo-posts"],
+    staleTime: 60_000,
+    queryFn: async (): Promise<Record<string, string>> => {
+      const { data, error } = await (supabase as any)
+        .from("posts")
+        .select("id, promo_tier")
+        .eq("is_promo", true)
+        .order("created_at", { ascending: false })
+        .limit(50);
+      if (error) return {};
+      const map: Record<string, string> = {};
+      (data ?? []).forEach((r: any) => { map[r.id] = r.promo_tier || "standard"; });
+      return map;
+    } });
+
   // Filter and sort feed items
   const filteredFeedItems = useMemo(() => {
-    let filtered = [...feedItems];
+    const promoMap = promoPostMap || {};
+    let filtered = feedItems.map((item) => {
+      if (item.type !== "post") return item;
+      const tier = promoMap[(item.data as Post).id];
+      if (!tier) return item;
+      return { ...item, data: { ...(item.data as Post), is_promo: true, promo_tier: tier } as Post };
+    });
 
 
     const authorOf = (item: FeedItem) =>
