@@ -32,6 +32,7 @@ export default function PromotionsCreate() {
   const [description, setDescription] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
   const [tier, setTier] = useState<PromoTier>("standard");
+  const [shareToWall, setShareToWall] = useState(true);
   const [category, setCategory] = useState("business");
   const [city, setCity] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -110,6 +111,7 @@ export default function PromotionsCreate() {
           media_type: mediaType,
           link_url: normalizeLink(linkUrl),
           tier,
+          share_to_wall: tierAllowsWall(tier) && shareToWall,
           category,
           city: city.trim() || null,
           status: "pending" })
@@ -244,6 +246,25 @@ export default function PromotionsCreate() {
                 );
               })}
             </CardContent>
+            {tierAllowsWall(tier) && (
+              <CardContent className="pt-0">
+                <label className="flex items-start gap-3 rounded-xl border border-primary/40 bg-primary/5 p-4 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={shareToWall}
+                    onChange={(e) => setShareToWall(e.target.checked)}
+                    className="mt-1 h-4 w-4 accent-primary"
+                  />
+                  <span className="min-w-0">
+                    <span className="block font-semibold">Also publish into the Wall feed</span>
+                    <span className="block text-xs text-muted-foreground">
+                      Included in Standard and TOP. Your promotion is posted to the Wall as a regular post once the
+                      payment is confirmed, so friends and followers see it in their feed.
+                    </span>
+                  </span>
+                </label>
+              </CardContent>
+            )}
           </Card>
 
           <div className="mt-6 flex justify-end">
