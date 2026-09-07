@@ -634,9 +634,21 @@ const Feed = () => {
     // (ORDER BY tier_rank DESC, created_at DESC within each page). The client
     // just renders the order returned by the RPC — no re-sort needed.
 
+    // Paid promotions get the strongest reach: TOP first, then Standard,
+    // pinned above every organic post while keeping the rest of the order.
+    const promoRank = (item: FeedItem) => {
+      if (item.type !== "post") return 0;
+      const p: any = item.data;
+      if (!p.is_promo) return 0;
+      return p.promo_tier === "top" ? 2 : 1;
+    };
+    filtered = filtered
+      .map((item, i) => ({ item, i }))
+      .sort((a, b) => promoRank(b.item) - promoRank(a.item) || a.i - b.i)
+      .map(({ item }) => item);
 
     return filtered;
-  }, [feedItems, searchQuery, feedTab, friendIds, followingIds, verifiedOnly, mutedIds, mutedWords, closeFriendOfIds, user?.id]);
+  }, [feedItems, promoPostMap, searchQuery, feedTab, friendIds, followingIds, verifiedOnly, mutedIds, mutedWords, closeFriendOfIds, user?.id]);
 
   // Restrictive tabs (Friends / Following / Trending) filter the loaded pages
   // client-side, so a page can easily contain zero matching posts. Keep pulling
