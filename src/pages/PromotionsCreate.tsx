@@ -215,34 +215,29 @@ export default function PromotionsCreate() {
               <CardTitle>Choose your plan</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {(["standard", "top"] as const).map((t) => {
-                const selected = tier === t;
-                const isTop = t === "top";
+              {PROMO_TIERS.map((t) => {
+                const selected = tier === t.id;
                 return (
                   <button
                     type="button"
-                    key={t}
-                    onClick={() => setTier(t)}
+                    key={t.id}
+                    onClick={() => setTier(t.id)}
                     className={`text-left rounded-xl border-2 p-5 transition ${
                       selected ? "border-primary bg-primary/5 shadow-md" : "border-border hover:border-primary/50"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        {isTop && <Crown className="h-5 w-5 text-primary" />}
-                        <span className="font-bold text-lg">{isTop ? "TOP" : "Standard"}</span>
+                        {t.id === "top" && <Crown className="h-5 w-5 text-primary" />}
+                        <span className="font-bold text-lg">{t.name}</span>
                       </div>
-                      {isTop && <Badge className="bg-gradient-to-r from-primary to-accent text-white">Best</Badge>}
+                      {"best" in t && t.best && <Badge className="bg-gradient-to-r from-primary to-accent text-white">Best</Badge>}
                     </div>
                     <div className="text-3xl font-black mb-1">
-                      €{isTop ? 50 : 20}
+                      €{t.price}
                       <span className="text-sm font-normal text-muted-foreground"> / month</span>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      {isTop
-                        ? "Pinned to the top of the board with premium styling."
-                        : "Standard placement in the main grid."}
-                    </p>
+                    <p className="text-xs text-muted-foreground">{t.desc}</p>
                   </button>
                 );
               })}
@@ -252,7 +247,7 @@ export default function PromotionsCreate() {
           <div className="mt-6 flex justify-end">
             <Button type="submit" size="lg" variant="premium" disabled={submitting}>
               {submitting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
-              {submitting ? "Publishing…" : `Publish for €${tier === "top" ? 50 : 20}/month`}
+              {submitting ? "Publishing…" : `Publish for €${PROMO_TIERS.find((t) => t.id === tier)?.price ?? 20}/month`}
             </Button>
           </div>
         </form>

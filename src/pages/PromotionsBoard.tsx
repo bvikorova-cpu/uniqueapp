@@ -20,7 +20,7 @@ interface PromoListing {
   media_url: string;
   media_type: "image" | "video";
   link_url: string | null;
-  tier: "standard" | "top";
+  tier: "mini" | "basic" | "standard" | "top";
   active_until: string | null;
   category: string | null;
   city: string | null;
