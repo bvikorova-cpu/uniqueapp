@@ -14,13 +14,22 @@ import SEO from "@/components/SEO";
 
 const PROMO_CATEGORIES = ["business", "event", "restaurant", "beauty", "fitness", "shop", "service", "real_estate", "job", "other"];
 
+const PROMO_TIERS = [
+  { id: "mini", name: "Mini", price: 5, desc: "Affordable placement in the main grid — great for trying it out." },
+  { id: "basic", name: "Basic", price: 15, desc: "Larger card in the main grid with priority over Mini." },
+  { id: "standard", name: "Standard", price: 20, desc: "Standard placement in the main grid." },
+  { id: "top", name: "TOP", price: 50, desc: "Pinned to the top of the board with premium styling.", best: true },
+] as const;
+
+type PromoTier = (typeof PROMO_TIERS)[number]["id"];
+
 export default function PromotionsCreate() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
-  const [tier, setTier] = useState<"standard" | "top">("standard");
+  const [tier, setTier] = useState<PromoTier>("standard");
   const [category, setCategory] = useState("business");
   const [city, setCity] = useState("");
   const [file, setFile] = useState<File | null>(null);
