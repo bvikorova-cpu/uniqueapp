@@ -661,6 +661,10 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
           <span className="text-xs font-bold uppercase tracking-wide text-amber-600 dark:text-amber-400">
             {isTopPromo ? "Top sponsored promotion" : "Sponsored promotion"}
           </span>
+          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-600 dark:text-emerald-400 shrink-0">
+            <ShieldCheck className="h-3 w-3" />
+            Trusted Ad
+          </span>
           <Link
             to="/promotions"
             onClick={(e) => e.stopPropagation()}
