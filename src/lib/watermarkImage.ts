@@ -88,7 +88,7 @@ export async function addUniqueWatermark(src: string): Promise<string> {
     ctx.fillText(label, textX, textY);
 
     try {
-      const logo = await loadImage(LOGO_URL);
+      const logo = await loadLogo();
       const radius = logoSize * 0.24;
       ctx.save();
       ctx.beginPath();
@@ -99,10 +99,11 @@ export async function addUniqueWatermark(src: string): Promise<string> {
       ctx.arcTo(logoX, logoY, logoX + logoSize, logoY, radius);
       ctx.closePath();
       ctx.clip();
-      ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
+      if (logo) ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
+      else drawLogoFallback(ctx, logoX, logoY, logoSize);
       ctx.restore();
     } catch {
-      /* logo missing — keep the URL label only */
+      /* never block the export on the badge */
     }
     ctx.restore();
 
