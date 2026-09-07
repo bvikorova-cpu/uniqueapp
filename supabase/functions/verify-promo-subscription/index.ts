@@ -77,9 +77,34 @@ serve(async (req) => {
         if (postErr) throw postErr;
 
         if (updated.media_url) {
-          const base = (Deno.env.get("SUPABASE_URL") ?? "").replace(/\/$/, "");
+          // The "promotions" bucket is private, so copy the file into the public
+          // "media" bucket used by the Wall feed and reference its public URL.
           const rawUrl = String(updated.media_url);
-          const fileUrl = /^https?:\/\//i.test(rawUrl) ? rawUrl : `${base}${rawUrl}`;
+          const marker = "/storage/v1/object/public/promotions/";
+          const altMarker = "/storage/v1/object/promotions/";
+          let objectPath = "";
+          if (rawUrl.includes(marker)) objectPath = rawUrl.split(marker)[1];
+          else if (rawUrl.includes(altMarker)) objectPath = rawUrl.split(altMarker)[1];
+
+          let fileUrl = rawUrl;
+          if (objectPath) {
+            const { data: fileData, error: dlErr } = await supabase.storage
+              .from("promotions")
+              .download(objectPath);
+            if (dlErr) throw dlErr;
+            const ext = objectPath.split(".").pop() || "bin";
+            const targetPath = `${user.id}/promo-${listingId}.${ext}`;
+            const { error: upErr } = await supabase.storage
+              .from("media")
+              .upload(targetPath, fileData, {
+                contentType: fileData.type || undefined,
+                upsert: true,
+              });
+            if (upErr) throw upErr;
+            const { data: pub } = supabase.storage.from("media").getPublicUrl(targetPath);
+            fileUrl = pub.publicUrl;
+          }
+
           const { error: mediaErr } = await supabase.from("media").insert({
             post_id: post.id,
             file_url: fileUrl,
