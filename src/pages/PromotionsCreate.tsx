@@ -15,13 +15,15 @@ import SEO from "@/components/SEO";
 const PROMO_CATEGORIES = ["business", "event", "restaurant", "beauty", "fitness", "shop", "service", "real_estate", "job", "other"];
 
 const PROMO_TIERS = [
-  { id: "mini", name: "Mini", price: 5, desc: "Affordable placement in the main grid — great for trying it out." },
-  { id: "basic", name: "Basic", price: 15, desc: "Larger card in the main grid with priority over Mini." },
-  { id: "standard", name: "Standard", price: 20, desc: "Standard placement in the main grid." },
-  { id: "top", name: "TOP", price: 50, desc: "Pinned to the top of the board with premium styling.", best: true },
+  { id: "mini", name: "Mini", price: 5, desc: "Affordable placement in the main grid — great for trying it out.", wall: false },
+  { id: "basic", name: "Basic", price: 15, desc: "Larger card in the main grid with priority over Mini.", wall: false },
+  { id: "standard", name: "Standard", price: 20, desc: "Standard placement in the main grid. Can also be posted into the Wall feed.", wall: true },
+  { id: "top", name: "TOP", price: 50, desc: "Pinned to the top of the board with premium styling. Can also be posted into the Wall feed.", best: true, wall: true },
 ] as const;
 
 type PromoTier = (typeof PROMO_TIERS)[number]["id"];
+
+const tierAllowsWall = (t: PromoTier) => PROMO_TIERS.find((p) => p.id === t)?.wall === true;
 
 export default function PromotionsCreate() {
   const { user } = useAuth();
@@ -30,6 +32,7 @@ export default function PromotionsCreate() {
   const [description, setDescription] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
   const [tier, setTier] = useState<PromoTier>("standard");
+  const [shareToWall, setShareToWall] = useState(true);
   const [category, setCategory] = useState("business");
   const [city, setCity] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -108,6 +111,7 @@ export default function PromotionsCreate() {
           media_type: mediaType,
           link_url: normalizeLink(linkUrl),
           tier,
+          share_to_wall: tierAllowsWall(tier) && shareToWall,
           category,
           city: city.trim() || null,
           status: "pending" })
@@ -242,6 +246,25 @@ export default function PromotionsCreate() {
                 );
               })}
             </CardContent>
+            {tierAllowsWall(tier) && (
+              <CardContent className="pt-0">
+                <label className="flex items-start gap-3 rounded-xl border border-primary/40 bg-primary/5 p-4 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={shareToWall}
+                    onChange={(e) => setShareToWall(e.target.checked)}
+                    className="mt-1 h-4 w-4 accent-primary"
+                  />
+                  <span className="min-w-0">
+                    <span className="block font-semibold">Also publish into the Wall feed</span>
+                    <span className="block text-xs text-muted-foreground">
+                      Included in Standard and TOP. Your promotion is posted to the Wall as a regular post once the
+                      payment is confirmed, so friends and followers see it in their feed.
+                    </span>
+                  </span>
+                </label>
+              </CardContent>
+            )}
           </Card>
 
           <div className="mt-6 flex justify-end">

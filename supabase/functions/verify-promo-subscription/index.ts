@@ -60,6 +60,42 @@ serve(async (req) => {
 
     if (updErr) throw updErr;
 
+    // Higher tiers (Standard / TOP) may also be published into the Wall feed.
+    const WALL_TIERS = ["standard", "top"];
+    if (updated && updated.share_to_wall && WALL_TIERS.includes(tier) && !updated.wall_post_id) {
+      try {
+        const parts = [updated.title as string];
+        if (updated.description) parts.push(updated.description as string);
+        if (updated.link_url) parts.push(updated.link_url as string);
+        const content = parts.join("\n\n");
+
+        const { data: post, error: postErr } = await supabase
+          .from("posts")
+          .insert({ user_id: user.id, content, privacy: "public" })
+          .select("id")
+          .single();
+        if (postErr) throw postErr;
+
+        if (updated.media_url) {
+          const base = (Deno.env.get("SUPABASE_URL") ?? "").replace(/\/$/, "");
+          const rawUrl = String(updated.media_url);
+          const fileUrl = /^https?:\/\//i.test(rawUrl) ? rawUrl : `${base}${rawUrl}`;
+          const { error: mediaErr } = await supabase.from("media").insert({
+            post_id: post.id,
+            file_url: fileUrl,
+            file_type: updated.media_type === "video" ? "video" : "image",
+            file_name: `promotion-${listingId}`,
+          });
+          if (mediaErr) throw mediaErr;
+        }
+
+        await supabase.from("promo_listings").update({ wall_post_id: post.id }).eq("id", listingId);
+        updated.wall_post_id = post.id;
+      } catch (wallErr) {
+        console.error("[verify-promo-subscription] wall post failed", wallErr);
+      }
+    }
+
     return new Response(JSON.stringify({ ok: true, listing: updated }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200 });
