@@ -2,7 +2,7 @@
  * Adds a small Unique logo + uniqueapp.fun label into the bottom-right corner
  * of a generated image. Users can pay 1 credit to get the clean version.
  */
-const LOGO_URL = "/unique-icon-v5-192.png";
+const LOGO_URLS = ["/unique-icon-v5-192.png", "/unique-icon-v5-512.png", "/unique-icon-v4-192.png"];
 
 const loadImage = (src: string) =>
   new Promise<HTMLImageElement>((resolve, reject) => {
@@ -12,6 +12,36 @@ const loadImage = (src: string) =>
     img.onerror = () => reject(new Error("Could not load image"));
     img.src = src;
   });
+
+let logoCache: HTMLImageElement | null = null;
+
+/** Loads the brand logo once, trying every known icon file. */
+async function loadLogo(): Promise<HTMLImageElement | null> {
+  if (logoCache) return logoCache;
+  for (const url of LOGO_URLS) {
+    try {
+      logoCache = await loadImage(url);
+      return logoCache;
+    } catch {
+      /* try next */
+    }
+  }
+  return null;
+}
+
+/** Drawn fallback so the badge is never missing: gradient square with a white "U". */
+function drawLogoFallback(ctx: CanvasRenderingContext2D, x: number, y: number, size: number) {
+  const grad = ctx.createLinearGradient(x, y, x + size, y + size);
+  grad.addColorStop(0, "#a21cf0");
+  grad.addColorStop(1, "#f0369b");
+  ctx.fillStyle = grad;
+  ctx.fill();
+  ctx.fillStyle = "#ffffff";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.font = `700 ${Math.round(size * 0.66)}px Georgia, "Times New Roman", serif`;
+  ctx.fillText("U", x + size / 2, y + size * 0.54);
+}
 
 export async function addUniqueWatermark(src: string): Promise<string> {
   try {
@@ -58,7 +88,7 @@ export async function addUniqueWatermark(src: string): Promise<string> {
     ctx.fillText(label, textX, textY);
 
     try {
-      const logo = await loadImage(LOGO_URL);
+      const logo = await loadLogo();
       const radius = logoSize * 0.24;
       ctx.save();
       ctx.beginPath();
@@ -69,10 +99,11 @@ export async function addUniqueWatermark(src: string): Promise<string> {
       ctx.arcTo(logoX, logoY, logoX + logoSize, logoY, radius);
       ctx.closePath();
       ctx.clip();
-      ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
+      if (logo) ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
+      else drawLogoFallback(ctx, logoX, logoY, logoSize);
       ctx.restore();
     } catch {
-      /* logo missing — keep the URL label only */
+      /* never block the export on the badge */
     }
     ctx.restore();
 

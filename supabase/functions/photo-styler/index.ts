@@ -857,6 +857,15 @@ const REALISM_RULES =
   "wear — professional cosplay/editorial photography, never a CGI character or a digital painting. " +
   "Backgrounds must be real locations or real built sets with true perspective and natural light.";
 
+// Portrait / headshot styles must be an actual face portrait, not a full-body shot.
+const PORTRAIT_RE = /(portrait|headshot|head.?shot|beauty close.?up|close.?up|magazine cover|makeup|hairstyle|face)/i;
+
+const PORTRAIT_RULES =
+  "\n\nFRAMING — FACE PORTRAIT: tight head-and-shoulders composition (85mm portrait lens look). The face " +
+  "fills most of the frame, eyes on the upper third, sharp focus on the eyes with visible catchlights, " +
+  "skin texture and individual hair strands clearly rendered, softly blurred background. Do NOT produce a " +
+  "full-body, three-quarter or wide standing shot — crop at the chest or shoulders.";
+
 // Styles whose whole point is a non-photographic medium — these keep their look.
 const ART_MEDIUM_RE =
   /(painting|painterly|illustration|illustrated|cartoon|anime|manga|comic|sketch|drawing|drawn|watercolou?r|oil paint|pastel drawing|charcoal|ink|3d render|render|cgi|pixel|voxel|low.?poly|clay|claymation|vector|graffiti|mural|woodcut|lino|engraving|mosaic|stained.glass|origami|papercut|storybook|fresco|caricature|doodle|sticker|emoji|tattoo|poster art|art nouveau|art deco style|impressionis|cubis|surrealis|pop art|ukiyo|animation|pixar|disney.style|toon)/i;
@@ -917,7 +926,9 @@ serve(async (req) => {
         changeOutfit
           ? "the face identity, eye colour, hair colour and skin tone stay identical to the source photo; the outfit, accessories and background follow the chosen theme."
           : "the style affects only technique, texture and lighting treatment — the eye colour, hair colour, clothing (including sleeve length and neckline) and props stay identical to the source photo."
-      }${photoreal ? REALISM_RULES : autoReal}`;
+      }${photoreal ? REALISM_RULES : autoReal}${
+        PORTRAIT_RE.test(stylePrompt) || PORTRAIT_RE.test(style) ? PORTRAIT_RULES : ""
+      }`;
       try {
         const out = await tryVertexImage(prompt, aspect, 1, [image]);
         const b64 = out?.data?.[0]?.b64_json;
