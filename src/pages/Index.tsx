@@ -356,6 +356,7 @@ const Index = () => {
           </div>
           <RewardedAdCard sectionKey="quick_actions" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.hero}
             poster={sectionPosters.hero}
             label="Unique platform preview"
@@ -391,12 +392,14 @@ const Index = () => {
           </div>
           <RewardedAdCard sectionKey="ecosystem" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.dating}
             poster={sectionPosters.dating}
             label="Dating section preview"
             caption="💜 Dating — meet your match"
           />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.bazaar}
             poster={sectionPosters.bazaar}
             label="Bazaar marketplace preview"
@@ -442,6 +445,7 @@ const Index = () => {
             </div>
           </motion.div>
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.beauty}
             poster={sectionPosters.beauty}
             label="Beauty Studio preview"
@@ -455,6 +459,7 @@ const Index = () => {
           </div>
           <RewardedAdCard sectionKey="core_modules" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.aiTools}
             poster={sectionPosters.aiTools}
             label="AI tools preview"
@@ -472,114 +477,133 @@ const Index = () => {
           </div>
           <RewardedAdCard sectionKey="all_services" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.jobs}
             poster={sectionPosters.jobs}
             label="Jobs section preview"
             caption="💼 Jobs — find work, hire talent"
           />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.education}
             poster={sectionPosters.education}
             label="Education preview"
             caption="🎓 Education — learn, grow, earn"
           />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.kids}
             poster={sectionPosters.kids}
             label="Kids Channel preview"
             caption="🎨 Kids Channel — safe & fun for ages 6–12"
           />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.livestream}
             poster={sectionPosters.livestream}
             label="Live Streaming preview"
             caption="📡 Live Streaming — go live, earn gifts"
           />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.fashion}
             poster={sectionPosters.fashion}
             label="Fashion Studio preview"
             caption="👗 Fashion Studio — AI designs & runway"
           />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.fitness}
             poster={sectionPosters.fitness}
             label="Fitness & Wellness preview"
             caption="💪 Fitness & Wellness — train smarter"
           />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.property}
             poster={sectionPosters.property}
             label="Property Marketplace preview"
             caption="🏠 Property Marketplace — buy, sell, rent"
           />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.holographicAvatars}
             poster={sectionPosters.holographicAvatars}
             label="Holographic Avatars preview"
             caption="👤 Holographic Avatars — 3D AI breeding & battles"
           />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.timeCapsule}
             poster={sectionPosters.timeCapsule}
             label="Time Capsule preview"
             caption="⏳ Time Capsule — send messages to the future"
           />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.kitchenStars}
             poster={sectionPosters.kitchenStars}
             label="KitchenStars preview"
             caption="👨‍🍳 KitchenStars — online cooking competitions"
           />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.comedyClub}
             poster={sectionPosters.comedyClub}
             label="Comedy Club preview"
             caption="🎤 Comedy Club — stand-up & laughs"
           />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.marketplace}
             poster={sectionPosters.marketplace}
             label="Marketplace preview"
             caption="🛍️ Marketplace — shop everything in one place"
           />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.secretSanta}
             poster={sectionPosters.secretSanta}
             label="Secret Santa preview"
             caption="🎁 Secret Santa — magical gift exchange"
           />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.coupons}
             poster={sectionPosters.coupons}
             label="Coupons preview"
             caption="🎟️ Coupons — exclusive deals & discounts"
           />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.lieDetector}
             poster={sectionPosters.lieDetector}
             label="Lie Detector preview"
             caption="🔍 Lie Detector — AI truth analysis"
           />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.emotion}
             poster={sectionPosters.emotion}
             label="Emotion preview"
             caption="💗 Emotion AI — read feelings & mood"
           />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.photoRestoration}
             poster={sectionPosters.photoRestoration}
             label="Photo Restoration preview"
             caption="🖼️ Photo Restoration — bring memories back to life"
           />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.virtualPet}
             poster={sectionPosters.virtualPet}
             label="Virtual Pet preview"
             caption="🐾 Virtual Pet — raise your magical companion"
           />
           <SectionVideoPreview
+            staticOnly
             src={sectionVideos.influKing}
             poster={sectionPosters.influKing}
             label="Influ King preview"
