@@ -47885,6 +47885,7 @@ export type Database = {
           event_id: string | null
           feeling: string | null
           id: string
+          is_promo: boolean
           is_sensitive: boolean
           likes_count: number | null
           location: string | null
@@ -47892,6 +47893,8 @@ export type Database = {
           music_start_seconds: number | null
           music_url: string | null
           privacy: string | null
+          promo_listing_id: string | null
+          promo_tier: string | null
           reposts_count: number
           scheduled_at: string | null
           sensitive_reason: string | null
@@ -47915,6 +47918,7 @@ export type Database = {
           event_id?: string | null
           feeling?: string | null
           id?: string
+          is_promo?: boolean
           is_sensitive?: boolean
           likes_count?: number | null
           location?: string | null
@@ -47922,6 +47926,8 @@ export type Database = {
           music_start_seconds?: number | null
           music_url?: string | null
           privacy?: string | null
+          promo_listing_id?: string | null
+          promo_tier?: string | null
           reposts_count?: number
           scheduled_at?: string | null
           sensitive_reason?: string | null
@@ -47945,6 +47951,7 @@ export type Database = {
           event_id?: string | null
           feeling?: string | null
           id?: string
+          is_promo?: boolean
           is_sensitive?: boolean
           likes_count?: number | null
           location?: string | null
@@ -47952,6 +47959,8 @@ export type Database = {
           music_start_seconds?: number | null
           music_url?: string | null
           privacy?: string | null
+          promo_listing_id?: string | null
+          promo_tier?: string | null
           reposts_count?: number
           scheduled_at?: string | null
           sensitive_reason?: string | null
@@ -47972,6 +47981,13 @@ export type Database = {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posts_promo_listing_id_fkey"
+            columns: ["promo_listing_id"]
+            isOneToOne: false
+            referencedRelation: "promo_listings"
             referencedColumns: ["id"]
           },
         ]
@@ -71101,6 +71117,7 @@ export type Database = {
           event_id: string | null
           feeling: string | null
           id: string
+          is_promo: boolean
           is_sensitive: boolean
           likes_count: number | null
           location: string | null
@@ -71108,6 +71125,8 @@ export type Database = {
           music_start_seconds: number | null
           music_url: string | null
           privacy: string | null
+          promo_listing_id: string | null
+          promo_tier: string | null
           reposts_count: number
           scheduled_at: string | null
           sensitive_reason: string | null

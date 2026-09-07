@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { PostEventCard } from "@/components/wall/PostEventCard";
 import { useNavigate, Link } from "react-router-dom";
-import { Megaphone } from "lucide-react";
+import { Megaphone, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -660,6 +660,10 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
           <Megaphone className="h-4 w-4 text-amber-500 shrink-0" />
           <span className="text-xs font-bold uppercase tracking-wide text-amber-600 dark:text-amber-400">
             {isTopPromo ? "Top sponsored promotion" : "Sponsored promotion"}
+          </span>
+          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-600 dark:text-emerald-400 shrink-0">
+            <ShieldCheck className="h-3 w-3" />
+            Trusted Ad
           </span>
           <Link
             to="/promotions"
