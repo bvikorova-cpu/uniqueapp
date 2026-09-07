@@ -71,7 +71,14 @@ serve(async (req) => {
 
         const { data: post, error: postErr } = await supabase
           .from("posts")
-          .insert({ user_id: user.id, content, privacy: "public" })
+          .insert({
+            user_id: user.id,
+            content,
+            privacy: "public",
+            is_promo: true,
+            promo_tier: tier,
+            promo_listing_id: listingId,
+          } as never)
           .select("id")
           .single();
         if (postErr) throw postErr;

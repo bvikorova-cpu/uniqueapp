@@ -504,9 +504,33 @@ const Feed = () => {
       return (data ?? []).map((r: any) => (typeof r === "string" ? r : r?.user_id)).filter(Boolean);
     } });
 
+  // Paid promotions shared into the Wall feed — they are marked as sponsored
+  // and always pinned above organic posts.
+  const { data: promoPostMap } = useQuery({
+    queryKey: ["wall-promo-posts"],
+    staleTime: 60_000,
+    queryFn: async (): Promise<Record<string, string>> => {
+      const { data, error } = await (supabase as any)
+        .from("posts")
+        .select("id, promo_tier")
+        .eq("is_promo", true)
+        .order("created_at", { ascending: false })
+        .limit(50);
+      if (error) return {};
+      const map: Record<string, string> = {};
+      (data ?? []).forEach((r: any) => { map[r.id] = r.promo_tier || "standard"; });
+      return map;
+    } });
+
   // Filter and sort feed items
   const filteredFeedItems = useMemo(() => {
-    let filtered = [...feedItems];
+    const promoMap = promoPostMap || {};
+    let filtered = feedItems.map((item) => {
+      if (item.type !== "post") return item;
+      const tier = promoMap[(item.data as Post).id];
+      if (!tier) return item;
+      return { ...item, data: { ...(item.data as Post), is_promo: true, promo_tier: tier } as Post };
+    });
 
 
     const authorOf = (item: FeedItem) =>
@@ -610,9 +634,21 @@ const Feed = () => {
     // (ORDER BY tier_rank DESC, created_at DESC within each page). The client
     // just renders the order returned by the RPC — no re-sort needed.
 
+    // Paid promotions get the strongest reach: TOP first, then Standard,
+    // pinned above every organic post while keeping the rest of the order.
+    const promoRank = (item: FeedItem) => {
+      if (item.type !== "post") return 0;
+      const p: any = item.data;
+      if (!p.is_promo) return 0;
+      return p.promo_tier === "top" ? 2 : 1;
+    };
+    filtered = filtered
+      .map((item, i) => ({ item, i }))
+      .sort((a, b) => promoRank(b.item) - promoRank(a.item) || a.i - b.i)
+      .map(({ item }) => item);
 
     return filtered;
-  }, [feedItems, searchQuery, feedTab, friendIds, followingIds, verifiedOnly, mutedIds, mutedWords, closeFriendOfIds, user?.id]);
+  }, [feedItems, promoPostMap, searchQuery, feedTab, friendIds, followingIds, verifiedOnly, mutedIds, mutedWords, closeFriendOfIds, user?.id]);
 
   // Restrictive tabs (Friends / Following / Trending) filter the loaded pages
   // client-side, so a page can easily contain zero matching posts. Keep pulling

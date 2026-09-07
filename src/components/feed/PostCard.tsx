@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { PostEventCard } from "@/components/wall/PostEventCard";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { Megaphone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -644,13 +645,32 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
     | null
     | undefined;
   const verifiedRing = getVerifiedRingClass(verifiedTier);
+  const isPromo = !!post.is_promo;
+  const isTopPromo = isPromo && post.promo_tier === "top";
 
   return (
     <div
       data-verified-tier={verifiedTier || "none"}
-      className={`glass-post-card overflow-hidden group hover:scale-[1.01] transition-all duration-500 border-l-4 ${getAccentColor()} cursor-pointer ${verifiedRing}`}
+      data-promo={isPromo ? post.promo_tier || "standard" : undefined}
+      className={`glass-post-card overflow-hidden group hover:scale-[1.01] transition-all duration-500 border-l-4 ${isPromo ? "border-l-amber-400 ring-2 ring-amber-400/60 shadow-[0_0_28px_hsl(var(--primary)/0.25)]" : getAccentColor()} cursor-pointer ${verifiedRing}`}
       onClick={() => navigate(`/post/${post.id}`)}
     >
+      {isPromo && (
+        <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary/15 via-accent/15 to-primary/15 border-b border-amber-400/40">
+          <Megaphone className="h-4 w-4 text-amber-500 shrink-0" />
+          <span className="text-xs font-bold uppercase tracking-wide text-amber-600 dark:text-amber-400">
+            {isTopPromo ? "Top sponsored promotion" : "Sponsored promotion"}
+          </span>
+          <Link
+            to="/promotions"
+            onClick={(e) => e.stopPropagation()}
+            className="ml-auto text-[11px] font-medium text-primary hover:underline shrink-0"
+          >
+            Promote yours
+          </Link>
+        </div>
+      )}
+
 
       {/* Media First - Pinterest Style (with sensitive blur + carousel for multi-image) */}
       {post.media && post.media.length > 0 && (
