@@ -186,9 +186,19 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
       if (createdPostId && files.length > 0 && uploadedPaths.length < files.length) {
         try { await supabase.from("posts").delete().eq("id", createdPostId); } catch {}
       }
-      toast({ title: "Error",
-        description: error?.message ?? "Failed to create post",
-        variant: "destructive" });
+      const raw = String(error?.message ?? "");
+      if (raw.includes("PROMO_REQUIRED")) {
+        toast({
+          title: "This looks like an advertisement",
+          description:
+            "Ads are not allowed in the free Wall feed. Publish it as a paid promotion on the Promotions board (from €5) to reach everyone.",
+          variant: "destructive",
+        });
+      } else {
+        toast({ title: "Error",
+          description: raw || "Failed to create post",
+          variant: "destructive" });
+      }
     } finally {
       submittingRef.current = false;
       setUploading(false);
