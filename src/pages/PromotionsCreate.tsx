@@ -114,7 +114,7 @@ export default function PromotionsCreate() {
           share_to_wall: tierAllowsWall(tier) && shareToWall,
           category,
           city: city.trim() || null,
-          status: "pending" })
+          status: "pending" } as never)
         .select()
         .single();
       if (insErr) throw insErr;
