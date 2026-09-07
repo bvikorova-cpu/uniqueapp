@@ -26,6 +26,7 @@ export function SectionVideoPreview({
   aspectRatio = "16 / 9",
   className = "",
   poster,
+  staticOnly = false,
 }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [activated, setActivated] = useState(false);
@@ -42,6 +43,30 @@ export function SectionVideoPreview({
     <figure
       className={`my-8 mx-auto max-w-3xl rounded-2xl overflow-hidden border border-primary/20 shadow-lg shadow-primary/10 bg-card ${className}`}
     >
+      {staticOnly ? (
+        <>
+          <div
+            className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-card to-accent/10"
+            style={{ aspectRatio }}
+          >
+            {poster && (
+              <img
+                src={poster}
+                alt={label}
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            )}
+          </div>
+          {caption && (
+            <figcaption className="px-4 py-2 text-xs text-muted-foreground text-center bg-muted/30">
+              {caption}
+            </figcaption>
+          )}
+        </>
+      ) : (
+      <>
       <div
         className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-card to-accent/10"
         style={{ aspectRatio }}
