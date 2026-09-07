@@ -37,6 +37,13 @@ interface Row {
   created_at: string;
 }
 
+const EXTEND_TIERS = [
+  { id: "mini", name: "Mini", price: 5 },
+  { id: "basic", name: "Basic", price: 15 },
+  { id: "standard", name: "Standard", price: 20 },
+  { id: "top", name: "TOP", price: 50 },
+] as const;
+
 function Thumb({ url, type }: { url: string; type: string }) {
   const resolved = useResolvedStorageUrl(url);
   if (!resolved) return <div className="w-20 h-20 shrink-0 bg-muted rounded-lg animate-pulse" />;
@@ -67,7 +74,7 @@ export default function MyPromotions() {
   const [editing, setEditing] = useState<Row | null>(null);
   const [saving, setSaving] = useState(false);
   const [extending, setExtending] = useState<Row | null>(null);
-  const [extendTier, setExtendTier] = useState<"standard" | "top">("standard");
+  const [extendTier, setExtendTier] = useState<"mini" | "basic" | "standard" | "top">("standard");
   const [redirecting, setRedirecting] = useState(false);
 
   const load = async () => {
