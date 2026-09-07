@@ -33,7 +33,7 @@ export const QuickChallenge = () => {
             </div>
             <div>
               <h3 className="font-bold text-sm">Quick Challenge</h3>
-              <p className="text-[10px] text-muted-foreground">30 seconds • 5 questions • 2x XP</p>
+              <p className="text-[10px] text-muted-foreground">30 seconds • 20 questions • 2x XP</p>
             </div>
           </div>
 
