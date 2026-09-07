@@ -31,7 +31,7 @@ interface Row {
   city: string | null;
   media_url: string;
   media_type: "image" | "video";
-  tier: "standard" | "top";
+  tier: "mini" | "basic" | "standard" | "top";
   status: string;
   active_until: string | null;
   created_at: string;
@@ -296,21 +296,21 @@ export default function MyPromotions() {
             Choose a plan and continue to secure Stripe Checkout. Your listing stays live for another 30 days.
           </p>
           <div className="grid gap-3">
-            {(["standard", "top"] as const).map((t) => {
-              const selected = extendTier === t;
+            {EXTEND_TIERS.map((t) => {
+              const selected = extendTier === t.id;
               return (
                 <button
-                  key={t}
+                  key={t.id}
                   type="button"
-                  onClick={() => setExtendTier(t)}
+                  onClick={() => setExtendTier(t.id)}
                   className={`text-left rounded-xl border-2 p-4 transition ${selected ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-bold flex items-center gap-2">
-                      {t === "top" && <Crown className="h-4 w-4 text-primary" />}
-                      {t === "top" ? "TOP" : "Standard"}
+                      {t.id === "top" && <Crown className="h-4 w-4 text-primary" />}
+                      {t.name}
                     </span>
-                    <span className="font-bold">{t === "top" ? "€50" : "€20"}<span className="text-xs text-muted-foreground"> / 30 days</span></span>
+                    <span className="font-bold">€{t.price}<span className="text-xs text-muted-foreground"> / 30 days</span></span>
                   </div>
                 </button>
               );
