@@ -9,13 +9,15 @@ interface Props {
   className?: string;
   /** Optional lightweight thumbnail shown before the video is loaded */
   poster?: string;
+  /** Render only the static poster image — never load the video */
+  staticOnly?: boolean;
 }
 
 /**
  * Lightweight video preview:
- * - Renders ONLY a static thumbnail (poster image or gradient shell) with a play overlay.
- * - The <video> element is created and downloaded ONLY after the user clicks/taps.
- * This keeps the homepage payload tiny (no MB-sized video on first load).
+ * - With `staticOnly`, renders ONLY the static thumbnail image (no video, no play button).
+ * - Otherwise renders a thumbnail with a play overlay; the <video> element is created
+ *   and downloaded ONLY after the user clicks/taps.
  */
 export function SectionVideoPreview({
   src,
@@ -24,17 +26,18 @@ export function SectionVideoPreview({
   aspectRatio = "16 / 9",
   className = "",
   poster,
+  staticOnly = false,
 }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [activated, setActivated] = useState(false);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    if (!activated) return;
+    if (!activated || staticOnly) return;
     const v = videoRef.current;
     if (!v) return;
     v.play().catch(() => {});
-  }, [activated, isReady]);
+  }, [activated, isReady, staticOnly]);
 
   return (
     <figure
@@ -44,7 +47,17 @@ export function SectionVideoPreview({
         className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-card to-accent/10"
         style={{ aspectRatio }}
       >
-        {!activated ? (
+        {staticOnly ? (
+          poster && (
+            <img
+              src={poster}
+              alt={label}
+              loading="lazy"
+              decoding="async"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          )
+        ) : !activated ? (
           <button
             type="button"
             onClick={() => setActivated(true)}
