@@ -67,6 +67,9 @@ export interface Post {
   is_archived?: boolean;
   is_sensitive?: boolean;
   sensitive_reason?: string | null;
+  is_promo?: boolean;
+  promo_tier?: string | null;
+  promo_listing_id?: string | null;
   
   // Relations - optional for database queries
   profiles?: ProfileBasic;
