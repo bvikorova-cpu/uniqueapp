@@ -197,15 +197,21 @@ export default function PremiumVideos() {
                 </p>
               ) : (
                 <div className="grid gap-6 sm:grid-cols-2">
-                  {videos.map((v) => (
-                    <PremiumVideoCard
-                      key={v.id}
-                      video={v}
-                      unlocking={unlocking === v.id}
-                      onUnlock={unlock}
-                      onFirstPlay={addView}
-                      onBoosted={refetch}
-                    />
+                  {videos.map((v, index) => (
+                    <Fragment key={v.id}>
+                      <PremiumVideoCard
+                        video={v}
+                        unlocking={unlocking === v.id}
+                        onUnlock={unlock}
+                        onFirstPlay={addView}
+                        onBoosted={refetch}
+                      />
+                      {(index + 1) % 10 === 0 && (
+                        <div className="sm:col-span-2">
+                          <MonetagInFeedAd slotIndex={Math.floor((index + 1) / 10)} />
+                        </div>
+                      )}
+                    </Fragment>
                   ))}
                 </div>
               )}
