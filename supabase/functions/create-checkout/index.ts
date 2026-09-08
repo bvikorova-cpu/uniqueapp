@@ -1365,7 +1365,7 @@ async function handler(req: Request): Promise<Response> {
         cancelPath: "/phobia-trading?payment=canceled",
         type: "phobia_subscription" },
       premium_all_modules: {
-        priceId: "price_1TPJMBGaXSfGtYFtkhWbCu4V",
+        priceId: "price_1UDSWZGaXSfGtYFtiul5AWEG",
         successPath: "/premium?status=success&session_id={CHECKOUT_SESSION_ID}",
         cancelPath: "/premium?status=canceled",
         type: "premium_all_modules",
@@ -1765,7 +1765,7 @@ async function handler(req: Request): Promise<Response> {
     // ─── B18c Events: comedy_coins (fixed 100 coins for €5) ───
     if (body.product === "comedy_coins") {
       const coins = Number(body.coins || 100);
-      const priceId = "price_1SVehXGaXSfGtYFtgUbBfnFe";
+      const priceId = "price_1UDSWlGaXSfGtYFtGHwNCiv4";
       const session = await stripe.checkout.sessions.create({
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
@@ -2324,11 +2324,11 @@ async function handler(req: Request): Promise<Response> {
     // ─── B18e — Brand sponsorship subscription (legacy: create-brand-sponsorship) ───
     if (body.product === "brand_sponsorship") { if (!userId || !email) return errorResponse("Login required", 401);
       const TIER_PRICES: Record<string, string> = {
-        bronze: "price_1SSD7e0QTWhd4oRpbo9399Fq",
-        silver: "price_1SSD8C0QTWhd4oRpvFe7cP4z",
-        gold: "price_1SSD8O0QTWhd4oRpihR2CucC",
-        platinum: "price_1SSD8O0QTWhd4oRpD269KcUs",
-        enterprise: "price_1TfxBOGaXSfGtYFtgWu0U3QY" };
+        bronze: "price_1UDSWcGaXSfGtYFtVh6JQJuU",
+        silver: "price_1UDSWdGaXSfGtYFtnKa6fq8c",
+        gold: "price_1UDSWhGaXSfGtYFtNnJllP1n",
+        platinum: "price_1UDSWjGaXSfGtYFtfQh35ipc",
+        enterprise: "price_1UDSWkGaXSfGtYFtkVwcO6JZ" };
       const tier = String(body.tier || "");
       if (!tier || !TIER_PRICES[tier]) return errorResponse("Invalid tier", 400);
       const admin = createSupabaseAdminClient();
@@ -2979,7 +2979,7 @@ async function handler(req: Request): Promise<Response> {
       // Modules whose subscription must resolve to a specific Stripe Product
       // (so check-subscription can match it via TIER_PRODUCTS).
       const FIXED_SUBSCRIPTION_PRICE: Record<string, string> = {
-        crystal: "price_1TYP0KGaXSfGtYFtR5N4q75M", // prod_UXTyxI4d06YsU6, €10/mo
+        crystal: "price_1UDSWaGaXSfGtYFto7IDpYoW", // prod_UXTyxI4d06YsU6, €10/mo
       };
       const fixedPrice = FIXED_SUBSCRIPTION_PRICE[productKey];
 
