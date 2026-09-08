@@ -15,11 +15,11 @@ const log = (step: string, details?: unknown) => {
 };
 
 type Tier = "verified" | "plus" | "pro";
-const PRICE_BY_TIER: Record<"plus" | "pro", string> = { plus: "price_1TvEcEGaXSfGtYFtEHzujgoE",
-  pro: "price_1TvEcFGaXSfGtYFtc8kKfh5M" };
-const TIER_BY_PRICE: Record<string, Tier> = { "price_1TvEcCGaXSfGtYFtpISbqkdD": "verified",
-  "price_1TvEcEGaXSfGtYFtEHzujgoE": "plus",
-  "price_1TvEcFGaXSfGtYFtc8kKfh5M": "pro",
+const PRICE_BY_TIER: Record<"plus" | "pro", string> = { plus: "price_1UDKtkGaXSfGtYFtOaN5e0Ac",
+  pro: "price_1UDKtlGaXSfGtYFth2SgN0nD" };
+const TIER_BY_PRICE: Record<string, Tier> = { "price_1UDKtjGaXSfGtYFtLehIyTsv": "verified",
+  "price_1UDKtkGaXSfGtYFtOaN5e0Ac": "plus",
+  "price_1UDKtlGaXSfGtYFth2SgN0nD": "pro",
   // Legacy price IDs
   "price_1TvDqrGaXSfGtYFt2g1n3Nuv": "verified",
   "price_1TvDqsGaXSfGtYFtSyfF7vjE": "plus",

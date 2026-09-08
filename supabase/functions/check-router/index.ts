@@ -33,8 +33,8 @@ const json = (body: unknown, status = 200) =>
 const LOTTERY_PRODUCTS = { basic: "prod_TQinlyjGo50cTk",
   pro: "prod_TQinw9pUYC81T8" };
 const TIPSTER_PRODUCT_ID = "prod_TQkgfkhRhpZSXw";
-const MT_PRICE_TO_TIER: Record<string, "premium" | "top_premium"> = { price_1TOvuRGaXSfGtYFt6sfpt2Dy: "premium",
-  price_1TOvuTGaXSfGtYFtIheCgIzQ: "top_premium" };
+const MT_PRICE_TO_TIER: Record<string, "premium" | "top_premium"> = { price_1UDKtmGaXSfGtYFtDKFxZryU: "premium",
+  price_1UDKtrGaXSfGtYFt8WpI473h: "top_premium" };
 const MT_TIER_PRICE: Record<string, number> = { premium: 10, top_premium: 15 };
 
 function admin() {
