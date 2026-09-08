@@ -903,21 +903,13 @@ async function handler(req: Request): Promise<Response> {
       }
     }
 
-    // ─── KIDS SUBSCRIPTION — tier-based real price IDs ───
-    if (body.product === "kids_subscription" && body.tier) {
-      const KIDS_TIERS: Record<string, { priceId: string; name: string }> = {
-        monthly:   { priceId: "price_1SShj2GaXSfGtYFtcKlTJYGa", name: "Unique Kids Monthly" },
-        annual:    { priceId: "price_1SShj3GaXSfGtYFtGEneXVhs", name: "Unique Kids Annual" },
-        gold_pass: { priceId: "price_1UDKttGaXSfGtYFt1i2LIrl9", name: "Unique Kids Gold Pass" } };
-      const kt = KIDS_TIERS[String(body.tier)];
-      if (kt) {
-        body.priceId = kt.priceId;
-        body.productName = kt.name;
-        body.mode = "subscription";
-        body.metadata = { ...(body.metadata || {}), tier: String(body.tier), product: "kids_subscription" };
-        body.successUrl = body.successUrl || `${origin}/kids-pricing?success=true&tier=${body.tier}&session_id={CHECKOUT_SESSION_ID}`;
-        body.cancelUrl = body.cancelUrl || `${origin}/kids-pricing?canceled=true`;
-      }
+    // ─── KIDS — RETIRED: the Kids Channel is credit-only (unified ai_credits).
+    // Any legacy kids_subscription checkout request is rejected.
+    if (body.product === "kids_subscription") {
+      return new Response(
+        JSON.stringify({ error: "KIDS_CREDITS_ONLY", message: "The Kids Channel runs on AI credits. Buy credits at /ai-credits." }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
 
     // ─── B18f PHASE 1 — priceId passthrough for migrated checkouts ───
