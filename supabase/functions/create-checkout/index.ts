@@ -2907,7 +2907,6 @@ async function handler(req: Request): Promise<Response> {
         job_listing:             { amount: 4999, mode: "payment",      name: "Job Listing" },
         kids_reading:            { amount: 999,  mode: "subscription", name: "Kids Reading" },
         kids_story_subscription: { amount: 999,  mode: "subscription", name: "Kids Story Subscription" },
-        kids_subscription:       { amount: 999,  mode: "subscription", name: "Kids Subscription" },
         learning:                { amount: 1999, mode: "payment",      name: "Learning Course" },
         lie_detector:            { amount: 299,  mode: "payment",      name: "Lie Detector" },
         marketplace_item:        { amount: 999,  mode: "payment",      name: "Marketplace Item" },
