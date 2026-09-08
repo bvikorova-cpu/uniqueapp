@@ -67,7 +67,7 @@ const TIER_PRODUCTS: Record<string, string[]> = { // generic — any active sub
 
   // Unique verification tiers (also checked against active Stripe subscriptions)
   verified: ["prod_Uv3ypuicAkRhPQ", "prod_VDmStn5v3gKB0h", "prod_VDmSWLPPNzZZGB", "prod_VDmSwjaAxH1EST"],
-  plus:     ["prod_Uv3ypuicAkRhPQ", "prod_Uv3yfHQnRojLuQ"],
+  plus:     ["prod_Uv3ypuicAkRhPQ", "prod_Uv3yfHQnRojLuQ", "prod_VDmSWLPPNzZZGB", "prod_VDmSwjaAxH1EST"],
   pro:      ["prod_Uv3ypuicAkRhPQ", "prod_Uv3yfHQnRojLuQ", "prod_Uv3yBGmooRzvPf"] };
 
 // Stripe Price IDs that grant access to a tier (used when product IDs are not
