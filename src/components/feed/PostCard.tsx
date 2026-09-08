@@ -949,7 +949,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
           <PostGiftStrip
             postId={post.id}
             authorId={post.user_id}
-            authorName={(post as any).profiles?.full_name || undefined}
+            authorName={authorName}
             currentUserId={currentUserId}
           />
         </div>
@@ -987,7 +987,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
             <PostGiftAction
               postId={post.id}
               authorId={post.user_id}
-              authorName={(post as any).profiles?.full_name || undefined}
+              authorName={authorName}
               currentUserId={currentUserId}
             />
           </div>
