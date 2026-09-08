@@ -25,13 +25,13 @@ const TIER_PRODUCTS: Record<string, string[]> = { // generic — any active sub
   // prod_UzbqtwCxUzH2q5 = Pro Designer €9.99/month (current price price_1Tzccg...)
   decor:          ["prod_UNhZNhxto4L3rY", "prod_UzbqtwCxUzH2q5"],
   f1:             ["prod_UNhZ4YdjqCy4xv"],
-  // Kids Gold Pass (prod_UbEDgqmGITgxMA) + monthly/annual Kids subscriptions
+  // Kids Gold Pass (prod_VDmSKq3D8jBPJ4) + monthly/annual Kids subscriptions
   // (prod_TPWmSQy8vJrtpe, prod_TPWmNY3AZcnjUH) unlock ALL Kids modules
   // (homework, story, reading, drawing, science, ...) via a single purchase.
-  kids_story:     ["prod_UNhZq78Jlm6UT4", "prod_TPX3oaWoixWYxy", "prod_TPX3I7KEMWnDQb", "prod_UbEDgqmGITgxMA", "prod_TPWmSQy8vJrtpe", "prod_TPWmNY3AZcnjUH"],
-  kids:           ["prod_UNhZeoa304UJXT", "prod_TOhBTCURKFnRuI", "prod_TOhjk0jsMVNpN3", "prod_UbEDgqmGITgxMA", "prod_TPWmSQy8vJrtpe", "prod_TPWmNY3AZcnjUH"],
-  science:        ["prod_UNhZeuOF4WDESB", "prod_UbEDgqmGITgxMA", "prod_TPWmSQy8vJrtpe", "prod_TPWmNY3AZcnjUH"],
-  kids_reading:   ["prod_UNhZJhIsTqwJbq", "prod_TPoGmcPx8m3Zjr", "prod_UbEDgqmGITgxMA", "prod_TPWmSQy8vJrtpe", "prod_TPWmNY3AZcnjUH"],
+  kids_story:     ["prod_UNhZq78Jlm6UT4", "prod_TPX3oaWoixWYxy", "prod_TPX3I7KEMWnDQb", "prod_VDmSKq3D8jBPJ4", "prod_TPWmSQy8vJrtpe", "prod_TPWmNY3AZcnjUH"],
+  kids:           ["prod_UNhZeoa304UJXT", "prod_TOhBTCURKFnRuI", "prod_TOhjk0jsMVNpN3", "prod_VDmSKq3D8jBPJ4", "prod_TPWmSQy8vJrtpe", "prod_TPWmNY3AZcnjUH"],
+  science:        ["prod_UNhZeuOF4WDESB", "prod_VDmSKq3D8jBPJ4", "prod_TPWmSQy8vJrtpe", "prod_TPWmNY3AZcnjUH"],
+  kids_reading:   ["prod_UNhZJhIsTqwJbq", "prod_TPoGmcPx8m3Zjr", "prod_VDmSKq3D8jBPJ4", "prod_TPWmSQy8vJrtpe", "prod_TPWmNY3AZcnjUH"],
   anonymous_date: ["prod_UNhZFpv835vyrL"],
 
   // Already-mapped legacy tiers

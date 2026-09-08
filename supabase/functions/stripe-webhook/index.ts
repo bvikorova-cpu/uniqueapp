@@ -358,7 +358,7 @@ async function syncChallengeSubscription(
 // ─── Kids Gold Pass: product/price IDs that grant unlimited Kids access ──
 // Must stay in sync with TIER_PRODUCTS.kids / TIER_PRICE_IDS.kids in check-subscription.
 const KIDS_GOLD_PRODUCT_IDS = new Set<string>([
-  "prod_UbEDgqmGITgxMA", // Kids Gold Pass
+  "prod_VDmSKq3D8jBPJ4", // Kids Gold Pass
   "prod_TPWmSQy8vJrtpe", // Kids Monthly
   "prod_TPWmNY3AZcnjUH", // Kids Annual
   "prod_UNhZeoa304UJXT", // legacy kids
