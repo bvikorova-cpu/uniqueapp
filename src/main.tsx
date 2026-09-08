@@ -4,6 +4,7 @@ import { lazyWithRetry } from "./utils/lazyWithRetry";
 import { installNavigationScrollReset } from "./utils/installNavigationScrollReset";
 import { initSentry } from "./lib/sentry";
 import { installGlobalErrorReporter } from "./lib/errorReporter";
+import { CookieConsentBanner } from "./components/gdpr/CookieConsentBanner";
 import "./index.css";
 
 // Init Sentry as early as possible so it captures boot-time errors.
@@ -20,9 +21,6 @@ import("./utils/appUpdateWatcher")
 // delays execution of this whole file on slow mobile networks, leaving #root
 // empty/white before React can render the fallback.
 const App = lazyWithRetry(() => import("./App"));
-const CookieConsentBanner = reactLazy(() =>
-  import("./components/gdpr/CookieConsentBanner").then((module) => ({ default: module.CookieConsentBanner }))
-);
 const InstallPromptBanner = reactLazy(() =>
   import("./components/pwa/InstallPromptBanner").then((module) => ({ default: module.InstallPromptBanner }))
 );
