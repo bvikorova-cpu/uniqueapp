@@ -2968,9 +2968,8 @@ async function handler(req: Request): Promise<Response> {
 
       // Modules whose subscription must resolve to a specific Stripe Product
       // (so check-subscription can match it via TIER_PRODUCTS).
-      const FIXED_SUBSCRIPTION_PRICE: Record<string, string> = {
-        crystal: "price_1UDSWaGaXSfGtYFto7IDpYoW", // prod_UXTyxI4d06YsU6, €10/mo
-      };
+      // Crystal & Energy is credits-only — no fixed subscription prices remain.
+      const FIXED_SUBSCRIPTION_PRICE: Record<string, string> = {};
       const fixedPrice = FIXED_SUBSCRIPTION_PRICE[productKey];
 
       const isSubscription = mode === "subscription";
