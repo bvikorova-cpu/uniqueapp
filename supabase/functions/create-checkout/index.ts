@@ -1762,22 +1762,12 @@ async function handler(req: Request): Promise<Response> {
       return successResponse({ url: session.url, session_id: session.id });
     }
 
-    // ─── B18c Events: comedy_coins (fixed 100 coins for €5) ───
+    // ─── Comedy coins are credits-only (no Stripe purchase) ───
     if (body.product === "comedy_coins") {
-      const coins = Number(body.coins || 100);
-      const priceId = "price_1UDSWlGaXSfGtYFtGHwNCiv4";
-      const session = await stripe.checkout.sessions.create({
-        customer: customerId || undefined,
-        customer_email: customerId ? undefined : email,
-        line_items: [{ price: priceId, quantity: 1 }],
-        mode: "payment",
-        success_url: `${origin}/comedy-club?payment=success&session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${origin}/comedy-club?payment=canceled`,
-        metadata: { user_id: userId ?? "",
-          type: "comedy_coins",
-          product: "comedy_coins",
-          coins: String(coins) } });
-      return successResponse({ url: session.url, session_id: session.id });
+      return errorResponse(
+        "COMEDY_COINS_CREDITS_ONLY: Comedy coins are bought with AI credits. Top up at /ai-credits.",
+        400,
+      );
     }
 
     // ─── Comedy Club: comedy_ticket (real money EUR, 80% comedian / 20% platform) ───
