@@ -1762,10 +1762,16 @@ async function handler(req: Request): Promise<Response> {
       return successResponse({ url: session.url, session_id: session.id });
     }
 
-    // ─── Comedy coins are credits-only (no Stripe purchase) ───
+    // ─── Comedy coins & Crystal are credits-only (no Stripe purchase) ───
     if (body.product === "comedy_coins") {
       return errorResponse(
         "COMEDY_COINS_CREDITS_ONLY: Comedy coins are bought with AI credits. Top up at /ai-credits.",
+        400,
+      );
+    }
+    if (body.product === "crystal") {
+      return errorResponse(
+        "CRYSTAL_CREDITS_ONLY: Crystal & Energy tools run on AI credits. Top up at /ai-credits.",
         400,
       );
     }
