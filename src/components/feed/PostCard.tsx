@@ -96,6 +96,24 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
   const postMedia = post.media || [];
   const postProfiles = post.profiles || { id: post.user_id, full_name: "Member", avatar_url: null };
   const authorCosmetics = useRewardsCosmeticsFor(post.user_id);
+  const [resolvedAuthor, setResolvedAuthor] = useState<{ full_name: string | null; username: string | null; avatar_url: string | null } | null>(null);
+  useEffect(() => {
+    const p: any = post.profiles;
+    if (p?.full_name || p?.username) { setResolvedAuthor(null); return; }
+    if (!post.user_id) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase.rpc("get_profiles_basic", { _ids: [post.user_id] });
+      const row: any = Array.isArray(data) ? data[0] : null;
+      if (!cancelled && row) setResolvedAuthor(row);
+    })();
+    return () => { cancelled = true; };
+  }, [post.user_id, (post.profiles as any)?.full_name, (post.profiles as any)?.username]);
+  const authorName =
+    (post.profiles as any)?.full_name || (post.profiles as any)?.username ||
+    resolvedAuthor?.full_name || resolvedAuthor?.username || "Member";
+  const authorAvatar = post.profiles?.avatar_url || resolvedAuthor?.avatar_url || undefined;
+
   const [comments, setComments] = useState<any[]>([]);
   const [newComment, setNewComment] = useState("");
   const [loadingComments, setLoadingComments] = useState(false);
@@ -773,9 +791,9 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
             className={`h-10 w-10 cursor-pointer transition-all ${avatarRingClass(authorCosmetics) || verifiedRing || "ring-2 ring-primary/10 hover:ring-primary/30"}`}
             onClick={(e) => handleUserClick(e, post.user_id)}
           >
-            <AvatarImage src={post.profiles?.avatar_url || undefined} />
+            <AvatarImage src={authorAvatar} />
             <AvatarFallback className="text-xs">
-              {(post.profiles?.full_name || (post.profiles as any)?.username)?.charAt(0)?.toUpperCase() || "U"}
+              {authorName.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
@@ -784,10 +802,10 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
                 className={`font-semibold text-base truncate cursor-pointer hover:underline ${rewardsNameClass(authorCosmetics.name_color)}`}
                 onClick={(e) => handleUserClick(e, post.user_id)}
               >
-                <span className="notranslate" translate="no">{post.profiles?.full_name || (post.profiles as any)?.username || "Member"}</span>
+                <span className="notranslate" translate="no">{authorName}</span>
               </p>
               <VerifiedFounderBadge 
-                userName={post.profiles?.full_name || (post.profiles as any)?.username || ""} 
+                userName={authorName} 
                 size="sm"
               />
               {post.profiles?.verification_tier && (
@@ -1074,14 +1092,14 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
             <div className="border rounded-lg p-4 bg-muted/30">
               <div className="flex items-center gap-2 mb-2">
                 <Avatar className={`h-8 w-8 ${verifiedRing}`}>
-                  <AvatarImage src={post.profiles?.avatar_url || undefined} />
+                  <AvatarImage src={authorAvatar} />
                   <AvatarFallback className="text-xs">
-                    {(post.profiles?.full_name || (post.profiles as any)?.username)?.charAt(0)?.toUpperCase() || "U"}
+                    {authorName.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div>
                   <p className="text-sm font-semibold flex items-center gap-1 flex-wrap">
-                    <span>{post.profiles?.full_name || (post.profiles as any)?.username || "Member"}</span>
+                    <span>{authorName}</span>
                     {post.profiles?.verification_tier && (
                       <VerifiedBadge tier={post.profiles.verification_tier} size="sm" showLabel={false} />
                     )}
