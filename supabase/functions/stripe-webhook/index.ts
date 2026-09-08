@@ -16,8 +16,8 @@ const log = (step: string, details?: unknown) => {
 };
 
 // ─── Megatalent: price → tier mapping (mirrors check-megatalent-subscription) ──
-const MEGATALENT_PRICE_TO_TIER: Record<string, "premium" | "top_premium"> = { price_1TOvuRGaXSfGtYFt6sfpt2Dy: "premium",
-  price_1TOvuTGaXSfGtYFtIheCgIzQ: "top_premium" };
+const MEGATALENT_PRICE_TO_TIER: Record<string, "premium" | "top_premium"> = { price_1UDKtmGaXSfGtYFtDKFxZryU: "premium",
+  price_1UDKtrGaXSfGtYFt8WpI473h: "top_premium" };
 const MEGATALENT_TIER_PRICE: Record<string, number> = { premium: 10,
   top_premium: 15 };
 
@@ -358,7 +358,7 @@ async function syncChallengeSubscription(
 // ─── Kids Gold Pass: product/price IDs that grant unlimited Kids access ──
 // Must stay in sync with TIER_PRODUCTS.kids / TIER_PRICE_IDS.kids in check-subscription.
 const KIDS_GOLD_PRODUCT_IDS = new Set<string>([
-  "prod_UbEDgqmGITgxMA", // Kids Gold Pass
+  "prod_VDmSKq3D8jBPJ4", // Kids Gold Pass
   "prod_TPWmSQy8vJrtpe", // Kids Monthly
   "prod_TPWmNY3AZcnjUH", // Kids Annual
   "prod_UNhZeoa304UJXT", // legacy kids
@@ -368,7 +368,7 @@ const KIDS_GOLD_PRODUCT_IDS = new Set<string>([
 const KIDS_GOLD_PRICE_IDS = new Set<string>([
   "price_1SShj2GaXSfGtYFtcKlTJYGa",
   "price_1SShj3GaXSfGtYFtGEneXVhs",
-  "price_1TxjDqGaXSfGtYFtd03IWhdy",
+  "price_1UDKttGaXSfGtYFt1i2LIrl9",
 ]);
 
 /**

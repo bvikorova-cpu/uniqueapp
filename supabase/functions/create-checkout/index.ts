@@ -291,9 +291,9 @@ async function handler(req: Request): Promise<Response> {
     // ─── UNIQUE VERIFICATION / TIER CHECKOUT ROUTER ───
     // Body: { product: "verification", tier: "verified" | "plus" | "pro" }
     const VERIFICATION_PRICE_IDS: Record<string, string> = {
-      verified: "price_1TvEcCGaXSfGtYFtpISbqkdD", // Unique Verified — €15 one-time
-      plus:     "price_1TvEcEGaXSfGtYFtEHzujgoE", // Unique Plus — €40/mo (100 credits)
-      pro:      "price_1TvEcFGaXSfGtYFtc8kKfh5M", // Unique Pro — €150/mo (150 credits)
+      verified: "price_1UDKtjGaXSfGtYFtLehIyTsv", // Unique Verified — €15 one-time
+      plus:     "price_1UDKtkGaXSfGtYFtOaN5e0Ac", // Unique Plus — €40/mo (100 credits)
+      pro:      "price_1UDKtlGaXSfGtYFth2SgN0nD", // Unique Pro — €150/mo (150 credits)
 
     };
     if (body.product === "verification" && VERIFICATION_PRICE_IDS[body.tier]) {
@@ -908,7 +908,7 @@ async function handler(req: Request): Promise<Response> {
       const KIDS_TIERS: Record<string, { priceId: string; name: string }> = {
         monthly:   { priceId: "price_1SShj2GaXSfGtYFtcKlTJYGa", name: "Unique Kids Monthly" },
         annual:    { priceId: "price_1SShj3GaXSfGtYFtGEneXVhs", name: "Unique Kids Annual" },
-        gold_pass: { priceId: "price_1TxjDqGaXSfGtYFtd03IWhdy", name: "Unique Kids Gold Pass" } };
+        gold_pass: { priceId: "price_1UDKttGaXSfGtYFt1i2LIrl9", name: "Unique Kids Gold Pass" } };
       const kt = KIDS_TIERS[String(body.tier)];
       if (kt) {
         body.priceId = kt.priceId;
@@ -1548,8 +1548,8 @@ async function handler(req: Request): Promise<Response> {
 
     // ─── B18a — Megatalent (subscription, boost, tip, vip) ───
     if (body.product === "megatalent_subscription") { const PRICE_IDS: Record<string, string> = {
-        premium: "price_1TOvuRGaXSfGtYFt6sfpt2Dy",
-        top_premium: "price_1TOvuTGaXSfGtYFtIheCgIzQ" };
+        premium: "price_1UDKtmGaXSfGtYFtDKFxZryU",
+        top_premium: "price_1UDKtrGaXSfGtYFt8WpI473h" };
       const tier = String(body.tier || "");
       const priceId = PRICE_IDS[tier];
       if (!priceId) return errorResponse(`Invalid tier: ${tier}. Use 'premium' or 'top_premium'.`, 400);

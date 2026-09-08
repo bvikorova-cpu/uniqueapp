@@ -17,9 +17,9 @@ function json(body: unknown, status = 200) {
 
 // 10 credits / €5 · 20 / €10 · 30 / €15
 const PACKS: Record<string, { credits: number; priceId: string }> = {
-  "10": { credits: 10, priceId: "price_1U8NcnGaXSfGtYFtaI4tniK5" },
-  "20": { credits: 20, priceId: "price_1U8NctGaXSfGtYFtMWK8AJIP" },
-  "30": { credits: 30, priceId: "price_1U8Nd2GaXSfGtYFtoU3ruWht" },
+  "10": { credits: 10, priceId: "price_1UDKtuGaXSfGtYFtuxD8BkPy" },
+  "20": { credits: 20, priceId: "price_1UDKtvGaXSfGtYFttIyBVaW9" },
+  "30": { credits: 30, priceId: "price_1UDKu0GaXSfGtYFtMpxXTx9u" },
 };
 
 Deno.serve(async (req) => {

@@ -7,10 +7,10 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
     "authorization, x-client-info, apikey, content-type" };
 
 const PRICE_IDS: Record<string, string> = {
-  mini: "price_1UD480GaXSfGtYFt3oExjypE",     // 5€/mo
-  basic: "price_1UD480GaXSfGtYFtUa8ySBmn",    // 15€/mo
-  standard: "price_1TqKzpGaXSfGtYFtuzWHg5tu", // 20€/mo
-  top: "price_1TqKzqGaXSfGtYFtxYmZzXuQ",      // 50€/mo
+  mini: "price_1UDKtbGaXSfGtYFtMfvkC8Pn",     // 5€/mo
+  basic: "price_1UDKtcGaXSfGtYFtrDnK2veg",    // 15€/mo
+  standard: "price_1UDKtdGaXSfGtYFtbCtOelNZ", // 20€/mo
+  top: "price_1UDKteGaXSfGtYFtugxmg8Rl",      // 50€/mo
 };
 
 serve(async (req) => {

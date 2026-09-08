@@ -25,13 +25,13 @@ const TIER_PRODUCTS: Record<string, string[]> = { // generic — any active sub
   // prod_UzbqtwCxUzH2q5 = Pro Designer €9.99/month (current price price_1Tzccg...)
   decor:          ["prod_UNhZNhxto4L3rY", "prod_UzbqtwCxUzH2q5"],
   f1:             ["prod_UNhZ4YdjqCy4xv"],
-  // Kids Gold Pass (prod_UbEDgqmGITgxMA) + monthly/annual Kids subscriptions
+  // Kids Gold Pass (prod_VDmSKq3D8jBPJ4) + monthly/annual Kids subscriptions
   // (prod_TPWmSQy8vJrtpe, prod_TPWmNY3AZcnjUH) unlock ALL Kids modules
   // (homework, story, reading, drawing, science, ...) via a single purchase.
-  kids_story:     ["prod_UNhZq78Jlm6UT4", "prod_TPX3oaWoixWYxy", "prod_TPX3I7KEMWnDQb", "prod_UbEDgqmGITgxMA", "prod_TPWmSQy8vJrtpe", "prod_TPWmNY3AZcnjUH"],
-  kids:           ["prod_UNhZeoa304UJXT", "prod_TOhBTCURKFnRuI", "prod_TOhjk0jsMVNpN3", "prod_UbEDgqmGITgxMA", "prod_TPWmSQy8vJrtpe", "prod_TPWmNY3AZcnjUH"],
-  science:        ["prod_UNhZeuOF4WDESB", "prod_UbEDgqmGITgxMA", "prod_TPWmSQy8vJrtpe", "prod_TPWmNY3AZcnjUH"],
-  kids_reading:   ["prod_UNhZJhIsTqwJbq", "prod_TPoGmcPx8m3Zjr", "prod_UbEDgqmGITgxMA", "prod_TPWmSQy8vJrtpe", "prod_TPWmNY3AZcnjUH"],
+  kids_story:     ["prod_UNhZq78Jlm6UT4", "prod_TPX3oaWoixWYxy", "prod_TPX3I7KEMWnDQb", "prod_VDmSKq3D8jBPJ4", "prod_TPWmSQy8vJrtpe", "prod_TPWmNY3AZcnjUH"],
+  kids:           ["prod_UNhZeoa304UJXT", "prod_TOhBTCURKFnRuI", "prod_TOhjk0jsMVNpN3", "prod_VDmSKq3D8jBPJ4", "prod_TPWmSQy8vJrtpe", "prod_TPWmNY3AZcnjUH"],
+  science:        ["prod_UNhZeuOF4WDESB", "prod_VDmSKq3D8jBPJ4", "prod_TPWmSQy8vJrtpe", "prod_TPWmNY3AZcnjUH"],
+  kids_reading:   ["prod_UNhZJhIsTqwJbq", "prod_TPoGmcPx8m3Zjr", "prod_VDmSKq3D8jBPJ4", "prod_TPWmSQy8vJrtpe", "prod_TPWmNY3AZcnjUH"],
   anonymous_date: ["prod_UNhZFpv835vyrL"],
 
   // Already-mapped legacy tiers
@@ -66,9 +66,9 @@ const TIER_PRODUCTS: Record<string, string[]> = { // generic — any active sub
   crystal:       ["prod_UXTyxI4d06YsU6"],
 
   // Unique verification tiers (also checked against active Stripe subscriptions)
-  verified: ["prod_Uv3ypuicAkRhPQ"],
-  plus:     ["prod_Uv3ypuicAkRhPQ", "prod_Uv3yfHQnRojLuQ"],
-  pro:      ["prod_Uv3ypuicAkRhPQ", "prod_Uv3yfHQnRojLuQ", "prod_Uv3yBGmooRzvPf"] };
+  verified: ["prod_Uv3ypuicAkRhPQ", "prod_VDmStn5v3gKB0h", "prod_VDmSWLPPNzZZGB", "prod_VDmSwjaAxH1EST"],
+  plus:     ["prod_Uv3ypuicAkRhPQ", "prod_Uv3yfHQnRojLuQ", "prod_VDmSWLPPNzZZGB", "prod_VDmSwjaAxH1EST"],
+  pro:      ["prod_Uv3ypuicAkRhPQ", "prod_Uv3yfHQnRojLuQ", "prod_Uv3yBGmooRzvPf", "prod_VDmSwjaAxH1EST"] };
 
 // Stripe Price IDs that grant access to a tier (used when product IDs are not
 // known in code or when a product has multiple active prices). Kept separate
@@ -78,7 +78,7 @@ const TIER_PRICE_IDS: Record<string, string[]> = {
   kids: [
     "price_1SShj2GaXSfGtYFtcKlTJYGa", // Unique Kids Monthly
     "price_1SShj3GaXSfGtYFtGEneXVhs", // Unique Kids Annual
-    "price_1TxjDqGaXSfGtYFtd03IWhdy", // Unique Kids Gold Pass
+    "price_1UDKttGaXSfGtYFt1i2LIrl9", // Unique Kids Gold Pass
   ],
 };
 
