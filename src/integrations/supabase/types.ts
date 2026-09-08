@@ -69733,6 +69733,7 @@ export type Database = {
         }[]
       }
       bucket_30s: { Args: { ts: string }; Returns: number }
+      buy_brand_votes: { Args: { _votes: number }; Returns: number }
       buy_streak_freeze_credits: { Args: { _qty: number }; Returns: Json }
       buy_streak_freeze_xp: {
         Args: { _cost_xp: number; _qty: number }
