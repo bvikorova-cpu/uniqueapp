@@ -1762,22 +1762,18 @@ async function handler(req: Request): Promise<Response> {
       return successResponse({ url: session.url, session_id: session.id });
     }
 
-    // ─── B18c Events: comedy_coins (fixed 100 coins for €5) ───
+    // ─── Comedy coins & Crystal are credits-only (no Stripe purchase) ───
     if (body.product === "comedy_coins") {
-      const coins = Number(body.coins || 100);
-      const priceId = "price_1UDSWlGaXSfGtYFtGHwNCiv4";
-      const session = await stripe.checkout.sessions.create({
-        customer: customerId || undefined,
-        customer_email: customerId ? undefined : email,
-        line_items: [{ price: priceId, quantity: 1 }],
-        mode: "payment",
-        success_url: `${origin}/comedy-club?payment=success&session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${origin}/comedy-club?payment=canceled`,
-        metadata: { user_id: userId ?? "",
-          type: "comedy_coins",
-          product: "comedy_coins",
-          coins: String(coins) } });
-      return successResponse({ url: session.url, session_id: session.id });
+      return errorResponse(
+        "COMEDY_COINS_CREDITS_ONLY: Comedy coins are bought with AI credits. Top up at /ai-credits.",
+        400,
+      );
+    }
+    if (body.product === "crystal") {
+      return errorResponse(
+        "CRYSTAL_CREDITS_ONLY: Crystal & Energy tools run on AI credits. Top up at /ai-credits.",
+        400,
+      );
     }
 
     // ─── Comedy Club: comedy_ticket (real money EUR, 80% comedian / 20% platform) ───
@@ -2886,7 +2882,7 @@ async function handler(req: Request): Promise<Response> {
         confession:              { amount: 299,  mode: "payment",      name: "Confession Boost" },
         consultation:            { amount: 4999, mode: "payment",      name: "Consultation" },
         coupon:                  { amount: 199,  mode: "payment",      name: "Coupon Purchase" },
-        crystal:                 { amount: 1000, mode: "subscription", name: "Crystal & Energy Premium" },
+        
         creator_subscription:    { amount: 1999, mode: "subscription", name: "Creator Subscription" },
         credits:                 { amount: 999,  mode: "payment",      name: "Credits" },
         decor:                   { amount: 999,  mode: "subscription", name: "Pro Designer" },
@@ -2978,9 +2974,8 @@ async function handler(req: Request): Promise<Response> {
 
       // Modules whose subscription must resolve to a specific Stripe Product
       // (so check-subscription can match it via TIER_PRODUCTS).
-      const FIXED_SUBSCRIPTION_PRICE: Record<string, string> = {
-        crystal: "price_1UDSWaGaXSfGtYFto7IDpYoW", // prod_UXTyxI4d06YsU6, €10/mo
-      };
+      // Crystal & Energy is credits-only — no fixed subscription prices remain.
+      const FIXED_SUBSCRIPTION_PRICE: Record<string, string> = {};
       const fixedPrice = FIXED_SUBSCRIPTION_PRICE[productKey];
 
       const isSubscription = mode === "subscription";
