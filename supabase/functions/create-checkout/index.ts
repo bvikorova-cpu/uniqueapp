@@ -2876,7 +2876,7 @@ async function handler(req: Request): Promise<Response> {
         confession:              { amount: 299,  mode: "payment",      name: "Confession Boost" },
         consultation:            { amount: 4999, mode: "payment",      name: "Consultation" },
         coupon:                  { amount: 199,  mode: "payment",      name: "Coupon Purchase" },
-        crystal:                 { amount: 1000, mode: "subscription", name: "Crystal & Energy Premium" },
+        
         creator_subscription:    { amount: 1999, mode: "subscription", name: "Creator Subscription" },
         credits:                 { amount: 999,  mode: "payment",      name: "Credits" },
         decor:                   { amount: 999,  mode: "subscription", name: "Pro Designer" },
