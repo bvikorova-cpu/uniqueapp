@@ -27,20 +27,12 @@ export function SchoolsTab() {
       navigate('/teacher-dashboard');
       return;
     }
-    try {
-      setLoading(tierId);
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { toast.error("Please sign in to subscribe"); return; }
-      const { data, error } = await supabase.functions.invoke("create-school-subscription", { body: { tier: tierId } });
-      if (error) throw error;
-      if (data?.url) { window.open(data.url, '_blank'); toast.success("Opening checkout..."); }
-    } catch (error: any) {
-      console.error("Subscription error:", error);
-      toast.error(error.message || "Failed to create subscription");
-    } finally {
-      setLoading(null);
-    }
+    // Credits-only: school plans run on the unified AI credits wallet.
+    setLoading(tierId);
+    navigate('/ai-credits');
+    setLoading(null);
   };
+
 
   return (
     <>

@@ -7,9 +7,9 @@ const corsHeaders = { "Access-Control-Allow-Origin": "*",
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
 
 const PRICES = {
-  digital_signup: "price_1TvfL2GaXSfGtYFtX5udEkKU", // €20 one-off
-  physical_signup: "price_1TvfL3GaXSfGtYFtRnDSNzw1", // €30 one-off
-  monthly: "price_1TvfL7GaXSfGtYFtGOV73GKP", // €1.50 / month
+  digital_signup: "price_1UDRezGaXSfGtYFt0ZKCHSZX", // €20 one-off
+  physical_signup: "price_1UDRf4GaXSfGtYFtu38ABVNz", // €30 one-off
+  monthly: "price_1UDRf8GaXSfGtYFtRUwPTa07", // €1.50 / month
 };
 
 serve(async (req) => {
