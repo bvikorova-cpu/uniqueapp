@@ -45,10 +45,14 @@ serve(async (req) => {
     if (listErr) throw listErr;
     if (!listing || listing.user_id !== user.id) throw new Error("Listing not found");
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
+    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+    if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not configured");
+    const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
+    console.log("[promo] stripe key mode", stripeKey.startsWith("sk_live") ? "live" : "test");
 
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     const customerId = customers.data[0]?.id;
+    console.log("[promo] customer", customerId ?? "none");
 
     const origin = req.headers.get("origin") || "https://uniqueapp.fun";
 
@@ -62,6 +66,8 @@ serve(async (req) => {
       metadata: { listingId, tier, user_id: user.id, product: "promo_listing" },
       subscription_data: {
         metadata: { listingId, tier, user_id: user.id, product: "promo_listing" } } });
+    console.log("[promo] session created", session.id);
+
 
     await supabase
       .from("promo_listings")
