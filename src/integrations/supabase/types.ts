@@ -37456,6 +37456,33 @@ export type Database = {
         }
         Relationships: []
       }
+      link_previews: {
+        Row: {
+          description: string | null
+          fetched_at: string
+          image_url: string | null
+          site_name: string | null
+          title: string | null
+          url: string
+        }
+        Insert: {
+          description?: string | null
+          fetched_at?: string
+          image_url?: string | null
+          site_name?: string | null
+          title?: string | null
+          url: string
+        }
+        Update: {
+          description?: string | null
+          fetched_at?: string
+          image_url?: string | null
+          site_name?: string | null
+          title?: string | null
+          url?: string
+        }
+        Relationships: []
+      }
       linkedin_enhancements: {
         Row: {
           created_at: string
