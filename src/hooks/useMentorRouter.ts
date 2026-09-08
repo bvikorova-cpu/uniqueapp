@@ -23,13 +23,13 @@ export const useMentorPremium = (area?: MentorArea) =>
 
 export const useMentorCheckout = () =>
   useMutation({
-    mutationFn: async (vars: { plan: "monthly" | "yearly"; area: MentorArea }) => {
-      const { data, error } = await supabase.functions.invoke("mentor-router", { body: { action: "premium.checkout", plan: vars.plan, area: vars.area } });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      if (data?.url) window.open(data.url, "_blank");
-      return data;
+    // Credits-only: Personal Mentor premium runs on the unified AI credits
+    // wallet — users top up at /ai-credits instead of a Stripe subscription.
+    mutationFn: async (_vars: { plan: "monthly" | "yearly"; area: MentorArea }) => {
+      window.location.href = "/ai-credits";
+      return { url: null } as { url: string | null };
     },
+
     onError: (e: any) => toast.error(e?.message ?? "Checkout failed") });
 
 // Generic hook for any list action

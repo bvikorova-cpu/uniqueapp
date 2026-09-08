@@ -72,25 +72,15 @@ export const useTutoringCredits = () => {
       window.location.href = "/ai-credits";
     } });
 
-  // Activates credits after Stripe redirect. Server verifies the session and
-  // resolves the credit amount from the Stripe price id (client value ignored).
+  // Credits-only: nothing to activate after a Stripe redirect anymore.
   const activatePurchase = useMutation({
-    mutationFn: async (sessionId: string) => {
-      const { data, error } = await supabase.functions.invoke("tutoring-add-credits", {
-        body: { session_id: sessionId } });
-      if (error) throw error;
-      return data as { success: boolean; credits?: number; alreadyCredited?: boolean };
+    mutationFn: async (_sessionId: string) => {
+      return { success: true } as { success: boolean; credits?: number; alreadyCredited?: boolean };
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tutoring-credits"] });
-      if (!data?.alreadyCredited && data?.credits) {
-        toast.success(`${data.credits} credits added!`);
-      }
-    },
-    onError: (error) => {
-      console.error("Activate purchase error:", error);
-      toast.error("Could not activate purchase. Contact support.");
     } });
+
 
   // Refund previously-deducted credits (used when the AI call fails after deduction).
   const refundCredit = useMutation({

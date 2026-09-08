@@ -44,23 +44,13 @@ export const useHandwritingCredits = () => {
       }
     } });
 
-  const purchaseCredits = async (credits: number): Promise<string | null> => {
-    try {
-      const { data, error } = await supabase.functions.invoke("create-handwriting-credits-payment", {
-        body: { credits } });
-
-      if (error) throw error;
-
-      if (data?.url) {
-        return data.url;
-      }
-      return null;
-    } catch (error) {
-      console.error("Error:", error);
-      toast.error("Error creating payment session");
-      return null;
-    }
+  // Credits-only: handwriting tools run on the unified AI credits wallet,
+  // topped up at /ai-credits. No separate Stripe checkout.
+  const purchaseCredits = async (_credits?: number): Promise<string | null> => {
+    window.location.href = "/ai-credits";
+    return null;
   };
+
 
   return { credits,
     isLoading,

@@ -29,32 +29,15 @@ export function usePhobiaCredits() {
     }
   };
 
-  const purchaseCredits = async (credits: number) => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { toast({ title: "Please sign in", variant: "destructive" }); return; }
-
-      const { data, error } = await supabase.functions.invoke("purchase-phobia-credits", {
-        body: { credits } });
-      if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
-    } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
-    }
+  // Credits-only: Phobia Trading runs on the unified AI credits wallet.
+  const purchaseCredits = async (_credits?: number) => {
+    window.location.href = "/ai-credits";
   };
 
   const purchaseSubscription = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { toast({ title: "Please sign in", variant: "destructive" }); return; }
-
-      const { data, error } = await supabase.functions.invoke("create-phobia-subscription");
-      if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
-    } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
-    }
+    window.location.href = "/ai-credits";
   };
+
 
   useEffect(() => {
     checkStatus();
