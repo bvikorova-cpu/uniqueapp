@@ -66,20 +66,10 @@ export const useTutoringCredits = () => {
       window.dispatchEvent(new Event("ai-credits-updated"));
     } });
 
+  // Credits-only: tutoring uses the unified AI credits wallet, topped up at /ai-credits.
   const purchaseCredits = useMutation({
-    mutationFn: async (priceId: string) => {
-      const { data, error } = await supabase.functions.invoke("tutoring-purchase-credits", {
-        body: { priceId } });
-
-      if (error) throw error;
-      if (data?.url) {
-        // Same-tab redirect so the user returns with ?session_id=... and credits activate.
-        { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; } }
-      }
-    },
-    onError: (error) => {
-      console.error("Purchase error:", error);
-      toast.error("Failed to start purchase");
+    mutationFn: async () => {
+      window.location.href = "/ai-credits";
     } });
 
   // Activates credits after Stripe redirect. Server verifies the session and

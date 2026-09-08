@@ -16,8 +16,7 @@ interface Offer {
   claimed_at: string | null;
 }
 
-// Default subscription price for win-back claim — main monthly plan.
-const DEFAULT_PRICE_ID = "price_1SZr6QGaXSfGtYFtT7ccy644";
+// Credits-only: win-back offers are redeemed as bonus AI credits, not a subscription.
 
 const WinBackOffer = () => {
   const { token } = useParams<{ token: string }>();
