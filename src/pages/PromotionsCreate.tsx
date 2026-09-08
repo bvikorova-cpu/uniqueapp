@@ -126,9 +126,22 @@ export default function PromotionsCreate() {
       const { data: result, error: fnErr } = await supabase.functions.invoke("create-promo-subscription", {
         body: { listingId: inserted.id, tier },
       });
-      if (fnErr) throw fnErr;
+      if (fnErr) {
+        // Surface the real server message instead of the generic
+        // "Edge Function returned a non-2xx status code".
+        let serverMsg = "";
+        try {
+          const res = (fnErr as unknown as { context?: Response }).context;
+          if (res && typeof res.text === "function") {
+            const body = await res.clone().text();
+            serverMsg = JSON.parse(body)?.error ?? body;
+          }
+        } catch { /* keep the original message */ }
+        throw new Error(serverMsg || fnErr.message);
+      }
       if (result?.error) throw new Error(result.error);
       if (!result?.url) throw new Error("Could not open Stripe Checkout");
+
 
       const checkoutUrl = result.url as string;
       const parsedCheckoutUrl = new URL(checkoutUrl);
