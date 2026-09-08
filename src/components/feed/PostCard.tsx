@@ -94,7 +94,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
   
   // Provide default values for optional fields
   const postMedia = post.media || [];
-  const postProfiles = post.profiles || { id: post.user_id, full_name: "Unknown User", avatar_url: null };
+  const postProfiles = post.profiles || { id: post.user_id, full_name: "Member", avatar_url: null };
   const authorCosmetics = useRewardsCosmeticsFor(post.user_id);
   const [comments, setComments] = useState<any[]>([]);
   const [newComment, setNewComment] = useState("");

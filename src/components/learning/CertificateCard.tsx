@@ -20,7 +20,7 @@ interface CertificateCardProps {
 
 export const CertificateCard = ({ certificate }: CertificateCardProps) => {
   const [showCertificate, setShowCertificate] = useState(false);
-  const [userName, setUserName] = useState<string>("User");
+  const [userName, setUserName] = useState<string>("Member");
 
   // Get user name from profile
   useState(() => {
