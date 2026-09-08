@@ -51,7 +51,7 @@ const WinBackOffer = () => {
       toast.error((data as any)?.error || "Couldn't claim this offer");
       return;
     }
-    setJustClaimed(true);
+    setOffer((o) => (o ? { ...o, status: "claimed" } : o));
     window.dispatchEvent(new Event("ai-credits-updated"));
     toast.success("Offer claimed — bonus credits added to your wallet");
   };
