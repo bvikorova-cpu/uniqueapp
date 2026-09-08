@@ -137,7 +137,6 @@ export const CharacterBattle = lazy(() => import("@/pages/CharacterBattle"));
 export const EducationalStories = lazy(() => import("@/pages/EducationalStories"));
 export const BedtimeStories = lazy(() => import("@/pages/BedtimeStories"));
 export const StoryGames = lazy(() => import("@/pages/StoryGames"));
-export const KidsPricing = lazy(() => import("@/pages/KidsPricing"));
 export const StoryVideoDemo = lazy(() => import("@/pages/StoryVideoDemo"));
 export const StoryGallery = lazy(() => import("@/pages/StoryGallery"));
 export const SharedStory = lazy(() => import("@/pages/SharedStory"));
