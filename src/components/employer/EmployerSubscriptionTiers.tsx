@@ -1,227 +1,94 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Crown, Sparkles, Zap } from "lucide-react";
-import { useEmployerPaymentStatus } from "@/hooks/useEmployerPaymentStatus";
-import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { Check, Crown, Sparkles, Zap, Coins } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-const SUBSCRIPTION_TIERS = [
+// Employer features run on the unified AI credits wallet — no Stripe subscriptions.
+const CREDIT_PACKS = [
   { name: "Basic",
-    price: 49,
-    priceId: "price_1SRO3r0QTWhd4oRpbItPTDme",
-    productId: "prod_TOAOrEnRtpLdJq",
+    credits: 20,
     icon: Zap,
     features: [
-      "Unlimited job listings",
-      "Basic support",
-      "Job analytics",
+      "5 job listings",
       "Application management",
+      "Job analytics",
     ],
     popular: false },
   { name: "Premium",
-    price: 99,
-    priceId: "price_1SRO4DGaXSfGtYFtfXevezC9",
-    productId: "prod_TOAPUm5AolgpPh",
+    credits: 60,
     icon: Crown,
     features: [
-      "Everything in Basic",
-      "Priority support",
+      "20 job listings",
       "Featured job listings",
       "Advanced analytics",
-      "Custom branding",
+      "AI job description writer",
     ],
     popular: true },
   { name: "Enterprise",
-    price: 199,
-    priceId: "price_1SRO4V0QTWhd4oRp6RSdSAWk",
-    productId: "prod_TOAP0gwcYMZAV7",
+    credits: 150,
     icon: Sparkles,
     features: [
-      "Everything in Premium",
-      "Dedicated account manager",
-      "API access",
-      "Custom integrations",
-      "White-label solution",
-      "SLA guarantee",
+      "60 job listings",
+      "AI candidate ranking",
+      "Priority placement",
+      "Custom branding",
     ],
     popular: false },
 ];
 
 export function EmployerSubscriptionTiers() {
-  const { subscribed, productId, subscriptionEnd, loading, createCheckout, manageSubscription } = useEmployerPaymentStatus();
-  const { toast } = useToast();
-  const [processingTier, setProcessingTier] = useState<string | null>(null);
-
-  const handleSubscribe = async (priceId: string, tierName: string) => {
-    try {
-      setProcessingTier(tierName);
-      await createCheckout(priceId);
-    } catch (error) { console.error("Subscription error:", error);
-      toast({
-        title: "Error",
-        description: "Failed to start subscription process. Please try again.",
-        variant: "destructive" });
-    } finally {
-      setProcessingTier(null);
-    }
-  };
-
-  const handleManageSubscription = async () => {
-    try {
-      await manageSubscription();
-    } catch (error) { console.error("Portal error:", error);
-      toast({
-        title: "Error",
-        description: "Failed to open subscription management. Please try again.",
-        variant: "destructive" });
-    }
-  };
-
-  const getCurrentTier = () => {
-    return SUBSCRIPTION_TIERS.find(tier => tier.productId === productId);
-  };
-
-  const currentTier = getCurrentTier();
-
-  if (loading) {
-    return (
-    <>
-      <FloatingHowItWorks title={"Employer Subscription Tiers - How it works"} steps={[{ title: 'Open', desc: 'Access the Employer Subscription Tiers section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Employer Subscription Tiers.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <Card>
-        <CardContent className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </CardContent>
-      </Card>
-    </>
-  );
-  }
+  const navigate = useNavigate();
 
   return (
-    <div className="space-y-6">
-      {/* Current Subscription Status */}
-      {subscribed && currentTier && (
-        <Card className="border-primary">
+    <>
+      <FloatingHowItWorks title={"Employer credits - How it works"} steps={[{ title: 'Get credits', desc: 'Top up once at AI Credits — no subscription.' }, { title: 'Post jobs', desc: 'Each listing and AI tool costs credits.' }, { title: 'Manage', desc: 'Review applications and analytics in your dashboard.' }, { title: 'Top up anytime', desc: 'Credits never expire and work across the whole platform.' }]} />
+      <div className="space-y-6">
+        <Card className="border-primary/30">
           <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="flex items-center gap-2">
-                  <currentTier.icon className="h-5 w-5 text-primary" />
-                  Current Plan: {currentTier.name}
-                </CardTitle>
-                <CardDescription>
-                  {subscriptionEnd && (
-                    <>Renews on {new Date(subscriptionEnd).toLocaleDateString()}</>
-                  )}
-                </CardDescription>
-              </div>
-              <Button onClick={handleManageSubscription} variant="outline">
-                Manage Subscription
-              </Button>
-            </div>
+            <Badge variant="secondary" className="w-fit mb-2">Credits only</Badge>
+            <CardTitle className="flex items-center gap-2">
+              <Coins className="h-5 w-5 text-primary" /> Pay with credits, not subscriptions
+            </CardTitle>
+            <CardDescription>
+              Job listings and AI hiring tools are paid from your credit balance. One wallet for the whole platform.
+            </CardDescription>
           </CardHeader>
+          <CardContent>
+            <Button onClick={() => navigate("/ai-credits")}>
+              <Coins className="h-4 w-4 mr-2" /> Get credits
+            </Button>
+          </CardContent>
         </Card>
-      )}
 
-      {/* Subscription Tiers */}
-      <div className="grid md:grid-cols-3 gap-6">
-        {SUBSCRIPTION_TIERS.map((tier) => {
-          const Icon = tier.icon;
-          const isCurrentTier = currentTier?.productId === tier.productId;
-          
-          return (
-            <Card 
-              key={tier.name} 
-              className={`relative ${tier.popular ? 'border-primary shadow-lg' : ''} ${isCurrentTier ? 'border-primary border-2' : ''}`}
-            >
-              {tier.popular && (
-                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary">
-                  Most Popular
-                </Badge>
-              )}
-              {isCurrentTier && (
-                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-600">
-                  Your Plan
-                </Badge>
-              )}
-              
-              <CardHeader className="text-center pb-8 pt-6">
-                <div className="flex justify-center mb-4">
-                  <div className="p-3 rounded-full bg-primary/10">
-                    <Icon className="h-8 w-8 text-primary" />
-                  </div>
+        <div className="grid gap-6 md:grid-cols-3">
+          {CREDIT_PACKS.map((tier) => (
+            <Card key={tier.name} className={tier.popular ? "border-2 border-primary" : "border-border/30"}>
+              <CardHeader>
+                {tier.popular && <Badge className="w-fit mb-2">Most Popular</Badge>}
+                <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center mb-2">
+                  <tier.icon className="h-5 w-5 text-primary" />
                 </div>
-                <CardTitle className="text-2xl">{tier.name}</CardTitle>
-                <div className="mt-4">
-                  <span className="text-4xl font-bold">€{tier.price}</span>
-                  <span className="text-muted-foreground">/month</span>
-                </div>
+                <CardTitle>{tier.name}</CardTitle>
+                <CardDescription className="flex items-center gap-2 text-base font-semibold text-foreground">
+                  <Coins className="h-4 w-4 text-primary" /> {tier.credits} credits
+                </CardDescription>
               </CardHeader>
-              
-              <CardContent className="space-y-6">
-                <ul className="space-y-3">
-                  {tier.features.map((feature, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                      <span className="text-sm">{feature}</span>
+              <CardContent>
+                <ul className="space-y-2">
+                  {tier.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm">
+                      <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                      <span>{f}</span>
                     </li>
                   ))}
                 </ul>
-                
-                {!subscribed && (
-                  <Button
-                    onClick={() => handleSubscribe(tier.priceId, tier.name)}
-                    disabled={processingTier === tier.name}
-                    className="w-full"
-                    variant={tier.popular ? "default" : "outline"}
-                  >
-                    {processingTier === tier.name ? "Processing..." : "Subscribe"}
-                  </Button>
-                )}
-                
-                {subscribed && !isCurrentTier && (
-                  <Button
-                    onClick={handleManageSubscription}
-                    className="w-full"
-                    variant="outline"
-                  >
-                    {currentTier && SUBSCRIPTION_TIERS.findIndex(t => t.productId === currentTier.productId) < SUBSCRIPTION_TIERS.findIndex(t => t.name === tier.name)
-                      ? "Upgrade"
-                      : "Downgrade"}
-                  </Button>
-                )}
               </CardContent>
             </Card>
-          );
-        })}
+          ))}
+        </div>
       </div>
-
-      {/* Info Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Subscription Benefits</CardTitle>
-          <CardDescription>
-            All plans include unlimited job listings and can be cancelled anytime
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid md:grid-cols-3 gap-4 text-sm text-muted-foreground">
-            <div>
-              <p className="font-semibold text-foreground mb-1">No Hidden Fees</p>
-              <p>Pay only the monthly subscription price</p>
-            </div>
-            <div>
-              <p className="font-semibold text-foreground mb-1">Cancel Anytime</p>
-              <p>No long-term commitments required</p>
-            </div>
-            <div>
-              <p className="font-semibold text-foreground mb-1">Instant Access</p>
-              <p>Start posting jobs immediately after subscribing</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+    </>
   );
 }

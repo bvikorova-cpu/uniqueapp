@@ -36,18 +36,7 @@ const LOTTERY_TYPES = [
 
 const GENERATION_COST = 3;
 
-const SUBSCRIPTION_TIERS = {
-  basic: { price_id: "price_1STrLuGaXSfGtYFtgA9rNDxL", product_id: "prod_TQinlyjGo50cTk" },
-  pro: { price_id: "price_1STrLwGaXSfGtYFtdbmjAGKA", product_id: "prod_TQinw9pUYC81T8" } };
-
-const PRICING_TIERS = [
-  { name: "Basic", tier: "basic", price: "4.99", period: "month",
-    features: ["10 generations per month", "Basic statistics", "Hot & Cold numbers", "Save up to 5 combinations"],
-    icon: Star, color: "from-blue-500 to-cyan-500" },
-  { name: "Pro", tier: "pro", price: "9.99", period: "month",
-    features: ["30 generations per month", "Advanced analytics", "Pattern notifications", "Save unlimited combinations", "Historical pattern analysis", "Priority AI processing"],
-    icon: Zap, color: "from-primary to-accent", popular: true },
-];
+// Lottery AI is credits-only: every generation costs AI credits (no subscriptions).
 
 const HOW_IT_WORKS = [
   { step: 1, title: "Choose Lottery", description: "Select from EuroJackpot, Powerball & more", icon: Dices },
@@ -165,50 +154,14 @@ export default function LotteryAI() {
     return { title: "Error", description: raw || fallback };
   };
 
-  const handleSubscribe = async (tier: "basic" | "pro") => {
-    if (!user) {
-      toast({ title: "Sign-in Required", description: "Please sign in to subscribe.", variant: "destructive" });
-      savePendingAction({ key: "lottery-ai:open", returnTo: "/lottery-ai" }); navigate("/auth");
-      return;
-    }
-    if (!tier || !SUBSCRIPTION_TIERS[tier]) {
-      toast({ title: "Invalid Plan", description: "Please choose Basic or Pro.", variant: "destructive" });
-      return;
-    }
-    try {
-      const priceId = SUBSCRIPTION_TIERS[tier].price_id;
-      const { data, error } = await supabase.functions.invoke("create-lottery-subscription", { body: { priceId } });
-      if (error) throw error;
-      if (!data?.url) {
-        toast({ title: "Checkout Unavailable", description: "Stripe didn't return a checkout URL. Try again shortly.", variant: "destructive" });
-        return;
-      }
-      window.open(data.url, "_blank");
-      toast({ title: "Redirecting to Stripe…", description: "Complete your payment in the new tab." });
-    } catch (error: any) {
-      const e = describeError(error, "Failed to start Stripe checkout.");
-      toast({ title: e.title, description: e.description, variant: "destructive" });
-    }
-  };
-
+  // Credits-only: send users to the unified credits wallet instead of Stripe.
   const handleManageSubscription = async () => {
     if (!user) {
-      toast({ title: "Sign-in Required", description: "Please sign in to manage your subscription.", variant: "destructive" });
+      toast({ title: "Sign-in Required", description: "Please sign in to top up credits.", variant: "destructive" });
       savePendingAction({ key: "lottery-ai:open", returnTo: "/lottery-ai" }); navigate("/auth");
       return;
     }
-    try {
-      const { data, error } = await supabase.functions.invoke("customer-portal");
-      if (error) throw error;
-      if (!data?.url) {
-        toast({ title: "Portal Unavailable", description: "Stripe customer portal didn't return a URL.", variant: "destructive" });
-        return;
-      }
-      window.open(data.url, "_blank");
-    } catch (error: any) {
-      const e = describeError(error, "Failed to open customer portal.");
-      toast({ title: e.title, description: e.description, variant: "destructive" });
-    }
+    navigate("/ai-credits");
   };
 
   const generateNumbers = async () => {

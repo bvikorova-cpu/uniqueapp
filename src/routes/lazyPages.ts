@@ -318,7 +318,7 @@ export const ShadowArenaStoryDetail = lazy(() => import("@/pages/ShadowArenaStor
 // MasterChef
 
 // Time & Capsule
-export const TimeReversalSubscription = lazy(() => import("@/pages/TimeReversalSubscription"));
+
 export const TimeReversalSocial = lazy(() => import("@/pages/TimeReversalSocial"));
 export const TimeReversalDashboard = lazy(() => import("@/pages/TimeReversalDashboard"));
 export const TimeReversalTimeline = lazy(() => import("@/pages/TimeReversalTimeline"));

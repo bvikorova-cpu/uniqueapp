@@ -16,8 +16,7 @@ interface Offer {
   claimed_at: string | null;
 }
 
-// Default subscription price for win-back claim — main monthly plan.
-const DEFAULT_PRICE_ID = "price_1SZr6QGaXSfGtYFtT7ccy644";
+// Credits-only: win-back offers are redeemed as bonus AI credits, not a subscription.
 
 const WinBackOffer = () => {
   const { token } = useParams<{ token: string }>();
@@ -46,13 +45,15 @@ const WinBackOffer = () => {
     if (!token) return;
     setClaiming(true);
     const { data, error } = await supabase.functions.invoke("winback-claim", {
-      body: { token, priceId: DEFAULT_PRICE_ID } });
+      body: { token } });
     setClaiming(false);
-    if (error || !(data as any)?.url) {
-      toast.error((data as any)?.error || "Couldn't start checkout");
+    if (error || (data as any)?.error) {
+      toast.error((data as any)?.error || "Couldn't claim this offer");
       return;
     }
-    { const __u = (data as any).url; const __w = window.open(__u, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = __u; }
+    setOffer((o) => (o ? { ...o, status: "claimed" } : o));
+    window.dispatchEvent(new Event("ai-credits-updated"));
+    toast.success("Offer claimed — bonus credits added to your wallet");
   };
 
   if (loading) {
