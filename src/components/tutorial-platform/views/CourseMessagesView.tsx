@@ -155,7 +155,7 @@ export function CourseMessagesView({ onBack }: Props) {
     [requests, user],
   );
 
-  const nameOf = (p: Profile | null) => p?.full_name || p?.username || "User";
+  const nameOf = (p: Profile | null) => p?.full_name || p?.username || "Member";
 
   const grant = async (requestId: string) => {
     setGranting(requestId);

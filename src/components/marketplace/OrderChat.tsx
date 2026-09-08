@@ -187,7 +187,7 @@ export function OrderChat({ order, currentUserId, otherUser, onBack, onStatusCha
             <AvatarFallback>{otherUser.full_name?.[0] || "U"}</AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            <CardTitle className="text-base">{otherUser.full_name || "User"}</CardTitle>
+            <CardTitle className="text-base">{otherUser.full_name || "Member"}</CardTitle>
             <p className="text-xs text-muted-foreground">{order.offering?.title}</p>
           </div>
           <Badge className={getStatusColor(order.status)}>

@@ -26,7 +26,7 @@ export const RecommendedUsers = () => {
                 </AvatarFallback>
               </Avatar>
               <div>
-                <p className="font-medium text-sm">{rec.profile?.full_name || "User"}</p>
+                <p className="font-medium text-sm">{rec.profile?.full_name || "Member"}</p>
                 {rec.reason && (
                   <p className="text-xs text-muted-foreground">{rec.reason}</p>
                 )}

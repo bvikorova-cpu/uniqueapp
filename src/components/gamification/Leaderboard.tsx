@@ -68,7 +68,7 @@ export default function Leaderboard() {
 
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold truncate">
-                    {leader.profile?.full_name || "User"}
+                    {leader.profile?.full_name || "Member"}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     Level {leader.level}

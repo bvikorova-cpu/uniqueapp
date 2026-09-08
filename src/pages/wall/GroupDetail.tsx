@@ -757,7 +757,7 @@ export default function GroupDetail() {
                         <div className="flex items-center justify-between">
                           <div>
                             <span className="font-semibold">
-                              {post.profiles?.display_name || "User"}
+                              {post.profiles?.display_name || "Member"}
                             </span>
                             <span className="text-xs text-muted-foreground ml-2">
                               {format(new Date(post.created_at), "PPp")}
@@ -904,7 +904,7 @@ export default function GroupDetail() {
                         </Avatar>
                         <div>
                           <p className="font-semibold">
-                            {member.profiles?.display_name || "User"}
+                            {member.profiles?.display_name || "Member"}
                           </p>
                           <p className="text-xs text-muted-foreground">
                             Joined {format(new Date(member.joined_at), "PP")}

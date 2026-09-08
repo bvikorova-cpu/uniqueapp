@@ -150,7 +150,7 @@ export function PageReviews({ pageId }: Props) {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold">
-                    {r.profile?.full_name ?? "User"}
+                    {r.profile?.full_name ?? "Member"}
                   </span>
                   <span className="text-[10px] text-muted-foreground">
                     {format(new Date(r.created_at), "PP")}

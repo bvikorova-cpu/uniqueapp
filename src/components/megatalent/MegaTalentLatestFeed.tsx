@@ -347,13 +347,13 @@ export default function MegaTalentLatestFeed({ categoryGroups }: Props) {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <Avatar className="h-10 w-10 ring-2 ring-primary/10">
-                            <AvatarImage src={s.profiles?.avatar_url || undefined} alt={s.profiles?.full_name || "User"} />
+                            <AvatarImage src={s.profiles?.avatar_url || undefined} alt={s.profiles?.full_name || "Member"} />
                             <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-primary-foreground font-bold text-sm">
                               {s.profiles?.full_name?.[0] || "U"}
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <p className="font-semibold text-sm">{s.profiles?.full_name || "User"}</p>
+                            <p className="font-semibold text-sm">{s.profiles?.full_name || "Member"}</p>
                             <p className="text-xs text-muted-foreground">{new Date(s.created_at).toLocaleDateString()}</p>
                           </div>
                         </div>

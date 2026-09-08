@@ -784,7 +784,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
                 className={`font-semibold text-base truncate cursor-pointer hover:underline ${rewardsNameClass(authorCosmetics.name_color)}`}
                 onClick={(e) => handleUserClick(e, post.user_id)}
               >
-                <span className="notranslate" translate="no">{post.profiles?.full_name || (post.profiles as any)?.username || "User"}</span>
+                <span className="notranslate" translate="no">{post.profiles?.full_name || (post.profiles as any)?.username || "Member"}</span>
               </p>
               <VerifiedFounderBadge 
                 userName={post.profiles?.full_name || (post.profiles as any)?.username || ""} 
@@ -1081,7 +1081,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
                 </Avatar>
                 <div>
                   <p className="text-sm font-semibold flex items-center gap-1 flex-wrap">
-                    <span>{post.profiles?.full_name || (post.profiles as any)?.username || "User"}</span>
+                    <span>{post.profiles?.full_name || (post.profiles as any)?.username || "Member"}</span>
                     {post.profiles?.verification_tier && (
                       <VerifiedBadge tier={post.profiles.verification_tier} size="sm" showLabel={false} />
                     )}

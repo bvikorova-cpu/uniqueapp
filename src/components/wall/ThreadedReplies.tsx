@@ -133,7 +133,7 @@ export function ThreadedReplies({ postId, commentId, depth = 0, maxDepth = 3 }: 
               </Avatar>
               <div className="flex-1 min-w-0">
                 <div className="bg-accent/30 rounded-xl px-3 py-2">
-                  <p className="text-xs font-semibold">{reply.profiles?.full_name || "User"}</p>
+                  <p className="text-xs font-semibold">{reply.profiles?.full_name || "Member"}</p>
                   {reply.content.startsWith(">") ? (
                     <div>
                       <blockquote className="text-[10px] text-muted-foreground italic border-l-2 border-primary/30 pl-2 my-1">

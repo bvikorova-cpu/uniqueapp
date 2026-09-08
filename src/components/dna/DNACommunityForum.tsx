@@ -59,7 +59,7 @@ export const DNACommunityForum = () => {
           return { id: d.id,
             title: meta.title || "Untitled Post",
             content: meta.content || "",
-            author: profileMap.get(d.user_id) || "User",
+            author: profileMap.get(d.user_id) || "Member",
             category: meta.category || "General",
             likes: meta.likes || 0,
             replies: meta.replies || 0,

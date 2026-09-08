@@ -32,7 +32,7 @@ export function PresenceAvatars({ users, max = 5, size = "sm", className }: Pres
             <TooltipTrigger asChild>
               <span className="relative inline-block">
                 <Avatar className={cn(dim, "ring-2 ring-background")}>
-                  <AvatarImage src={u.avatar_url ?? undefined} alt={u.display_name ?? "User"} />
+                  <AvatarImage src={u.avatar_url ?? undefined} alt={u.display_name ?? "Member"} />
                   <AvatarFallback className="text-[10px]">
                     {(u.display_name ?? "U").slice(0, 2).toUpperCase()}
                   </AvatarFallback>

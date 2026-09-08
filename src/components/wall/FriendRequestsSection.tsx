@@ -31,7 +31,7 @@ export function FriendRequestsSection() {
   if (incomingList.length === 0 && outgoingList.length === 0) return null;
 
   const initial = (p: any) => p?.full_name?.[0] ?? p?.username?.[0] ?? "?";
-  const name = (p: any) => p?.full_name ?? p?.username ?? "User";
+  const name = (p: any) => p?.full_name ?? p?.username ?? "Member";
 
   return (
     <Card className="bg-card/80 backdrop-blur-md border-primary/20">

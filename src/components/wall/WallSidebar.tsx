@@ -163,7 +163,7 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
               <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />
             </div>
             <div className="flex-1 text-left">
-              <p className="font-semibold">{profile?.full_name || profile?.username || "User"}</p>
+              <p className="font-semibold">{profile?.full_name || profile?.username || "Member"}</p>
               <p className="text-xs text-muted-foreground">View profile</p>
             </div>
           </Button>

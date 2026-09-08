@@ -132,7 +132,7 @@ export const GroupChatDialog = ({ userId, allUsers, onGroupCreated }: GroupChatD
                       <AvatarImage src={user.avatar_url || undefined} />
                       <AvatarFallback>{user.full_name?.[0] || "U"}</AvatarFallback>
                     </Avatar>
-                    <span className="text-sm">{user.full_name || "User"}</span>
+                    <span className="text-sm">{user.full_name || "Member"}</span>
                   </div>
                 ))}
               </div>
@@ -148,7 +148,7 @@ export const GroupChatDialog = ({ userId, allUsers, onGroupCreated }: GroupChatD
                     key={id}
                     className="flex items-center gap-1 bg-primary/10 text-primary rounded-full px-2 py-1 text-xs"
                   >
-                    {user?.full_name || "User"}
+                    {user?.full_name || "Member"}
                     <button onClick={() => toggleUser(id)}>
                       <X className="h-3 w-3" />
                     </button>

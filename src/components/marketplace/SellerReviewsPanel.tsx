@@ -101,7 +101,7 @@ export const SellerReviewsPanel = ({ sellerId }: Props) => {
                   <AvatarFallback className="text-xs">{(p?.full_name || "U").slice(0, 1).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{p?.full_name || "User"}</p>
+                  <p className="text-sm font-medium truncate">{p?.full_name || "Member"}</p>
                 </div>
                 <span className="text-xs text-muted-foreground shrink-0">
                   {formatDistanceToNow(new Date(r.created_at), { addSuffix: true })}

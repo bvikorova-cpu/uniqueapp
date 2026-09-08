@@ -103,7 +103,7 @@ export function TagFriendsDialog({ open,
                         <AvatarImage src={friend.avatar_url || undefined} />
                         <AvatarFallback>{friend.full_name?.[0] ?? friend.username?.[0] ?? "?"}</AvatarFallback>
                       </Avatar>
-                      <span className="font-medium">{friend.full_name ?? friend.username ?? "User"}</span>
+                      <span className="font-medium">{friend.full_name ?? friend.username ?? "Member"}</span>
                     </div>
                     {isSelected && (
                       <div className="flex items-center gap-2">

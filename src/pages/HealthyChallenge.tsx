@@ -552,7 +552,7 @@ export default function HealthyChallenge() {
                         {r.profile?.avatar_url && <img src={r.profile.avatar_url} className="w-10 h-10 rounded-full" alt="" />}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <p className="font-semibold truncate">{r.profile?.full_name || "User"}</p>
+                            <p className="font-semibold truncate">{r.profile?.full_name || "Member"}</p>
                             {proSet.has(r.user_id) && <ChallengeProBadge compact tier={(proSet as any).tierOf?.(r.user_id) ?? "pro"} />}
                           </div>
                           <p className="text-xs text-muted-foreground">{r.days_completed} days · {r.total_votes} votes</p>

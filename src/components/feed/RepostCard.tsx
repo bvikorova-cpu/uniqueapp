@@ -89,7 +89,7 @@ const RepostCard = ({ repost, onDelete }: RepostCardProps) => {
                 className="font-semibold text-base truncate cursor-pointer hover:underline" 
                 onClick={(e) => handleUserClick(e, repost.user_id)}
               >
-                {repost.profiles?.full_name || (repost.profiles as any)?.username || "User"}
+                {repost.profiles?.full_name || (repost.profiles as any)?.username || "Member"}
               </p>
               <span className="text-muted-foreground text-sm">shared</span>
             </div>

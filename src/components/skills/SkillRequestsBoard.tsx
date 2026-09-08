@@ -85,7 +85,7 @@ export function SkillRequestsBoard({ category }: { category?: string | null }) {
     if (ids.length) {
       const { data: profs } = await supabase.from("public_profiles").select("id, full_name, username").in("id", ids);
       const map: Record<string, string> = {};
-      (profs || []).forEach((p: any) => { map[p.id] = p.full_name || p.username || "User"; });
+      (profs || []).forEach((p: any) => { map[p.id] = p.full_name || p.username || "Member"; });
       setNames(map);
     }
 
@@ -189,7 +189,7 @@ export function SkillRequestsBoard({ category }: { category?: string | null }) {
       const { data: profs } = await supabase.from("public_profiles").select("id, full_name, username").in("id", ids);
       setNames((prev) => {
         const next = { ...prev };
-        (profs || []).forEach((p: any) => { next[p.id] = p.full_name || p.username || "User"; });
+        (profs || []).forEach((p: any) => { next[p.id] = p.full_name || p.username || "Member"; });
         return next;
       });
     }
@@ -295,7 +295,7 @@ export function SkillRequestsBoard({ category }: { category?: string | null }) {
                       {!r.is_open && <Badge variant="outline">Closed</Badge>}
                     </div>
                   </div>
-                  <p className="text-xs text-muted-foreground">by {names[r.user_id] || "User"}</p>
+                  <p className="text-xs text-muted-foreground">by {names[r.user_id] || "Member"}</p>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <p className="text-sm text-muted-foreground line-clamp-3">{maskContactInfo(r.description)}</p>

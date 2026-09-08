@@ -89,7 +89,7 @@ export function BirthdaysWidget() {
               </Avatar>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-semibold truncate">
-                  {friend.full_name ?? "User"}
+                  {friend.full_name ?? "Member"}
                 </p>
                 <p className="text-[10px] text-muted-foreground flex items-center gap-1">
                   {today ? (

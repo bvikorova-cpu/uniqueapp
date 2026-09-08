@@ -560,7 +560,7 @@ const Megaforum = () => {
                                   <Badge variant="outline" className="text-[10px]">{post.category}</Badge>
                                 </div>
                                 <p className="text-xs text-muted-foreground break-words">
-                                  {isAnon ? "Anonymous" : (profile?.full_name || profile?.username || "User")} • {getTimeSince(post.created_at)}
+                                  {isAnon ? "Anonymous" : (profile?.full_name || profile?.username || "Member")} • {getTimeSince(post.created_at)}
                                 </p>
                                 {(post.tags || []).length > 0 && (
                                   <div className="flex gap-1 mt-1 flex-wrap">
@@ -667,7 +667,7 @@ const Megaforum = () => {
                                               <AvatarFallback className="text-[10px]">{(cp?.full_name || cp?.username)?.[0]?.toUpperCase() || "U"}</AvatarFallback>
                                             </Avatar>
                                             <div className="flex-1">
-                                              <p className="text-xs font-semibold">{cp?.full_name || cp?.username || "User"}</p>
+                                              <p className="text-xs font-semibold">{cp?.full_name || cp?.username || "Member"}</p>
                                               <p className="text-xs text-muted-foreground">{comment.content}</p>
                                               <div className="flex items-center gap-2 mt-1">
                                                 <p className="text-[10px] text-muted-foreground">{getTimeSince(comment.created_at)}</p>

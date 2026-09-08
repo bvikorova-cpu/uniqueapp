@@ -137,7 +137,7 @@ export const FollowersModal = ({ userId,
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold truncate">
-                          {user.full_name || "User"}
+                          {user.full_name || "Member"}
                         </p>
                       </div>
                     </div>
@@ -182,7 +182,7 @@ export const FollowersModal = ({ userId,
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold truncate">
-                          {user.full_name || "User"}
+                          {user.full_name || "Member"}
                         </p>
                       </div>
                     </div>

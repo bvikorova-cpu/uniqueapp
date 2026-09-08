@@ -42,7 +42,7 @@ export const SecretSantaSendGift = () => {
       if (error) throw error;
       return (data || []).map((u: any) => ({
         id: u.id,
-        username: u.full_name || u.username || "User",
+        username: u.full_name || u.username || "Member",
         avatar_url: u.avatar_url,
       }));
     },

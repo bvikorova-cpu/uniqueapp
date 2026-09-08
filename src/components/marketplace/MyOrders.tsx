@@ -175,7 +175,7 @@ export function MyOrders({ userId }: MyOrdersProps) {
             <div>
               <h4 className="font-medium">{order.offering?.title || "Service"}</h4>
               <p className="text-sm text-muted-foreground">
-                {role === "buyer" ? "From" : "To"}: {otherUser?.full_name || "User"}
+                {role === "buyer" ? "From" : "To"}: {otherUser?.full_name || "Member"}
               </p>
             </div>
             <Badge className={getStatusColor(order.status)}>

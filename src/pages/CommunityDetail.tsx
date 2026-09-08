@@ -365,7 +365,7 @@ export default function CommunityDetail() {
                         <AvatarImage src={m.profile?.avatar_url ?? undefined} />
                         <AvatarFallback>{m.profile?.full_name?.[0] ?? "U"}</AvatarFallback>
                       </Avatar>
-                      <span className="text-xs truncate w-full">{m.profile?.full_name ?? "User"}</span>
+                      <span className="text-xs truncate w-full">{m.profile?.full_name ?? "Member"}</span>
                     </Link>
                   ))}
                 </div>

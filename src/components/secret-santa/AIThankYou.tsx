@@ -57,7 +57,7 @@ export const AIThankYou = () => {
     (async () => {
       const { data } = await (supabase as any).rpc("get_public_profiles", { ids: [gift.sender_id] });
       const p = (data || [])[0];
-      if (p) setRecipient({ id: p.id, name: p.full_name || p.username || "User", avatar_url: p.avatar_url });
+      if (p) setRecipient({ id: p.id, name: p.full_name || p.username || "Member", avatar_url: p.avatar_url });
     })();
   }, [selectedGift]);
 
@@ -215,7 +215,7 @@ export const AIThankYou = () => {
                   <button
                     key={p.id}
                     onClick={() => {
-                      const name = p.full_name || p.username || "User";
+                      const name = p.full_name || p.username || "Member";
                       setRecipient({ id: p.id, name, avatar_url: p.avatar_url });
                       setSearchQuery(name);
                     }}
@@ -369,7 +369,7 @@ export const AIThankYou = () => {
           </h3>
           <div className="space-y-2 max-h-80 overflow-y-auto">
             {sentHistory.map((r: any) => {
-              const name = r.recipient?.full_name || r.recipient?.username || "User";
+              const name = r.recipient?.full_name || r.recipient?.username || "Member";
               const avatar = r.recipient?.avatar_url;
               return (
                 <div key={r.id} className="flex gap-3 p-3 rounded-xl bg-rose-50/60 border border-rose-100">

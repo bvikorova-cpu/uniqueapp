@@ -202,7 +202,7 @@ export const ReferralWithdrawalRequest = () => {
       // Notify admins
       await supabase.functions.invoke("notify-admin-referral-withdrawal", { body: {
           requestId: data.id,
-          referrerName: profile?.full_name || "User",
+          referrerName: profile?.full_name || "Member",
           amount: requestAmount } });
 
       return data;

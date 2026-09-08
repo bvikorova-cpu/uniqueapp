@@ -59,7 +59,7 @@ export function useSkillUnread({ notifyToasts = false }: Options = {}) {
         map.set(key, {
           offering_id: m.offering_id,
           other_id: other,
-          other_name: "User",
+          other_name: "Member",
           offering_title: "Offering",
           last_message: m.message,
           last_at: m.created_at,
@@ -91,11 +91,11 @@ export function useSkillUnread({ notifyToasts = false }: Options = {}) {
 
     const titles = new Map((offRes.data || []).map((o: any) => [o.id, o.title]));
     const names = new Map(
-      (profRes.data || []).map((p: any) => [p.id, p.full_name || p.username || "User"]),
+      (profRes.data || []).map((p: any) => [p.id, p.full_name || p.username || "Member"]),
     );
     list.forEach((c) => {
       c.offering_title = titles.get(c.offering_id) ?? "Offering";
-      c.other_name = names.get(c.other_id) ?? "User";
+      c.other_name = names.get(c.other_id) ?? "Member";
     });
 
     if (!mountedRef.current) return;

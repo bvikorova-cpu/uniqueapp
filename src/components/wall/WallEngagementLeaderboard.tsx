@@ -33,7 +33,7 @@ export default function WallEngagementLeaderboard() {
         all = ((data ?? []) as any[]).map((r, i) => ({
           rank: Number(r.rank) || i + 1,
           user_id: r.user_id,
-          name: r.display_name || "User",
+          name: r.display_name || "Member",
           avatar_url: r.avatar_url || null,
           score: Number(r.weekly_xp) || 0,
         }));
@@ -42,7 +42,7 @@ export default function WallEngagementLeaderboard() {
         all = ((data ?? []) as any[]).map((r, i) => ({
           rank: i + 1,
           user_id: r.user_id,
-          name: r.full_name || "User",
+          name: r.full_name || "Member",
           avatar_url: r.avatar_url || null,
           score: Number(r.total_xp) || 0,
         }));

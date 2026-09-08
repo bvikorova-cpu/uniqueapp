@@ -181,7 +181,7 @@ export const SearchBar = () => {
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm truncate">{user.full_name || "User"}</p>
+                        <p className="font-medium text-sm truncate">{user.full_name || "Member"}</p>
                         {user.bio && (
                           <p className="text-xs text-muted-foreground truncate">{user.bio}</p>
                         )}

@@ -358,7 +358,7 @@ export function WallPostActions({ postId,
                 </Avatar>
                 <div className="flex-1">
                   <div className="text-xs font-semibold">
-                    {c.profile?.full_name ?? "User"}
+                    {c.profile?.full_name ?? "Member"}
                     <span className="ml-2 text-muted-foreground font-normal">
                       {format(new Date(c.created_at), "PPp")}
                     </span>

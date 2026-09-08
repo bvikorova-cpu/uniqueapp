@@ -709,7 +709,7 @@ export default function PageDetail() {
                     </Avatar>
                     <div>
                       <p className="font-medium">
-                        {follower.profiles?.display_name || "User"}
+                        {follower.profiles?.display_name || "Member"}
                       </p>
                     </div>
                   </div>
