@@ -70,7 +70,7 @@ export default function FutureFaceLeaderboard() {
 
       const final: Row[] = top.map(([id, g], i) => ({ rank: i + 1,
         user_id: id,
-        username: pmap.get(id) || "User",
+        username: pmap.get(id) || "Member",
         score: g.score,
         transformations: g.count,
         badge: badgeFor(g.score) }));

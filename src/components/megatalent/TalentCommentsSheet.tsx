@@ -483,7 +483,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2">
                           <p className="text-sm font-semibold truncate">
-                            {c.profiles?.full_name || "User"}
+                            {c.profiles?.full_name || "Member"}
                           </p>
                           <span className="text-[10px] text-muted-foreground whitespace-nowrap">
                             { new Date(c.created_at).toLocaleDateString("sk-SK", {

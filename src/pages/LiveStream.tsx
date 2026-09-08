@@ -147,7 +147,7 @@ export default function LiveStream() {
         return {
           ...msg,
           profiles: p
-            ? { full_name: p.full_name || p.username || "User", avatar_url: p.avatar_url }
+            ? { full_name: p.full_name || p.username || "Member", avatar_url: p.avatar_url }
             : undefined,
         };
       }) as Message[];
@@ -720,7 +720,7 @@ export default function LiveStream() {
                           </Avatar>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium flex items-center gap-2">
-                              {msg.profiles?.full_name || "User"}
+                              {msg.profiles?.full_name || "Member"}
                               {msg.is_hidden && <Badge variant="outline" className="text-[10px] px-1 py-0">hidden</Badge>}
                             </p>
                             <p className="text-sm text-muted-foreground break-words">{msg.message}</p>

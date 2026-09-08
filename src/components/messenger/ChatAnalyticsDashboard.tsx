@@ -122,9 +122,9 @@ export const ChatAnalyticsDashboard = ({ onBack, userId }: ChatAnalyticsDashboar
             .from("profiles")
             .select("id, username, full_name")
             .in("id", ids);
-          const nameById = new Map((profs || []).map((p: any) => [p.id, p.full_name || p.username || "User"]));
+          const nameById = new Map((profs || []).map((p: any) => [p.id, p.full_name || p.username || "Member"]));
           topContacts = ids
-            .map((id) => ({ name: nameById.get(id) || "User", count: perUser.get(id) || 0 }))
+            .map((id) => ({ name: nameById.get(id) || "Member", count: perUser.get(id) || 0 }))
             .sort((a, b) => b.count - a.count)
             .slice(0, 5);
         }

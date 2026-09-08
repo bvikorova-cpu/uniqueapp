@@ -1092,7 +1092,7 @@ const Messenger = () => {
                         <AvatarFallback>{conv.otherUser?.full_name?.[0] || "U"}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold truncate">{conv.otherUser?.full_name || "User"}</p>
+                        <p className="text-sm font-bold truncate">{conv.otherUser?.full_name || "Member"}</p>
                         {conv.lastMessage && (
                           <p className="text-xs text-muted-foreground truncate">{conv.lastMessage.content}</p>
                         )}
@@ -1226,7 +1226,7 @@ const Messenger = () => {
                         <AvatarImage src={u.avatar_url || undefined} />
                         <AvatarFallback>{u.full_name?.[0] || "U"}</AvatarFallback>
                       </Avatar>
-                      <span className="font-medium">{u.full_name || "User"}</span>
+                      <span className="font-medium">{u.full_name || "Member"}</span>
                     </div>
                   ))}
                 </div>
@@ -1258,7 +1258,7 @@ const Messenger = () => {
                       </Avatar>
                       <div className="flex-1 overflow-hidden">
                         <p className="font-medium truncate">
-                          {conv.otherUser?.full_name || "User"}
+                          {conv.otherUser?.full_name || "Member"}
                         </p>
                         {conv.lastMessage && (
                           <div className="flex items-center gap-1">
@@ -1320,7 +1320,7 @@ const Messenger = () => {
 
                     <div className="min-w-0 flex-1">
                       <h3 className="text-base md:text-xl font-semibold truncate">
-                        {otherUser?.full_name || "User"}
+                        {otherUser?.full_name || "Member"}
                       </h3>
                       <div className="flex items-center gap-2 min-w-0">
                         {otherUser && <OnlineIndicator isOnline={isUserOnline(otherUser.id)} lastSeen={getLastSeen(otherUser.id)} showLabel />}
@@ -1352,7 +1352,7 @@ const Messenger = () => {
                         conversationId={selectedConversation}
                         userId={user.id}
                         otherUserId={otherUser.id}
-                        otherUserName={otherUser.full_name || "User"}
+                        otherUserName={otherUser.full_name || "Member"}
                       />
                     )}
                   </div>
@@ -1442,7 +1442,7 @@ const Messenger = () => {
                             <div className={`text-xs px-2 py-1 rounded bg-muted/50 border-l-2 border-primary ${
                               msg.sender_id === user.id ? "ml-auto" : ""
                             }`}>
-                              <span className="font-medium">{(msg.reply_to as any).sender_profile?.full_name || "User"}</span>
+                              <span className="font-medium">{(msg.reply_to as any).sender_profile?.full_name || "Member"}</span>
                               <p className="truncate opacity-70">{msg.reply_to.content}</p>
                             </div>
                           )}
@@ -1595,7 +1595,7 @@ const Messenger = () => {
                   <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-t-lg border-l-2 border-primary">
                     <Reply className="h-4 w-4 text-muted-foreground" />
                     <div className="flex-1 overflow-hidden">
-                      <p className="text-xs font-medium">{replyingTo.sender_profile.full_name || "User"}</p>
+                      <p className="text-xs font-medium">{replyingTo.sender_profile.full_name || "Member"}</p>
                       <p className="text-xs text-muted-foreground truncate">{replyingTo.content}</p>
                     </div>
                     <Button

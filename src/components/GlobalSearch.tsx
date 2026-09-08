@@ -408,7 +408,7 @@ export function GlobalSearch() {
                 ) : (
                   <div className="space-y-0.5">
                     {people.map((p) => {
-                      const name = p.full_name || p.username || "User";
+                      const name = p.full_name || p.username || "Member";
                       return (
                         <button
                           key={p.id}

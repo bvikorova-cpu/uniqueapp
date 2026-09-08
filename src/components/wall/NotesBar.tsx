@@ -159,7 +159,7 @@ export const NotesBar = () => {
                   </div>
                 </div>
                 <span className="text-[11px] font-medium text-foreground truncate max-w-full">
-                  {n.profile?.full_name?.split(" ")[0] ?? "User"}
+                  {n.profile?.full_name?.split(" ")[0] ?? "Member"}
                 </span>
                 <span className="text-[10px] text-muted-foreground truncate max-w-full">
                   {n.content}
@@ -228,7 +228,7 @@ export const NotesBar = () => {
                     <AvatarFallback>{viewing.profile?.full_name?.charAt(0) ?? "U"}</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p>{viewing.profile?.full_name ?? "User"}</p>
+                    <p>{viewing.profile?.full_name ?? "Member"}</p>
                     <p className="text-xs text-muted-foreground font-normal">
                       {formatDistanceToNow(new Date(viewing.created_at), { addSuffix: true })}
                     </p>

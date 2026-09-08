@@ -177,7 +177,7 @@ export default function MegatalentLeaderboard({ category, categories }: Props) {
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-semibold truncate">{r.title}</p>
                         <p className="text-[10px] text-muted-foreground truncate">
-                          {r.profiles?.full_name || "User"}
+                          {r.profiles?.full_name || "Member"}
                         </p>
                       </div>
                       <div className="text-right shrink-0">

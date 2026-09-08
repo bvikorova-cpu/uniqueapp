@@ -107,7 +107,7 @@ export const CommentItem = ({
         </Avatar>
         <div className="flex-1 min-w-0">
           <p className="text-xs font-semibold flex items-center gap-1 flex-wrap">
-            <span className={`truncate ${authorName}`}>{comment.profiles?.full_name || "User"}</span>
+            <span className={`truncate ${authorName}`}>{comment.profiles?.full_name || "Member"}</span>
             {comment.profiles?.verification_tier && (
               <VerifiedBadge tier={comment.profiles.verification_tier} size="sm" showLabel={false} />
             )}

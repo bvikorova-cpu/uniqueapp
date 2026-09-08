@@ -165,7 +165,7 @@ const MegatalentPost = () => {
                   <AvatarFallback>{(submission.profiles?.full_name || "U").charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 flex-1">
-                  <p className="font-semibold truncate">{submission.profiles?.full_name || "User"}</p>
+                  <p className="font-semibold truncate">{submission.profiles?.full_name || "Member"}</p>
                   <Badge variant="secondary" className="mt-0.5 text-[10px] capitalize">
                     {String(submission.category || "").replace(/_/g, " ")}
                   </Badge>

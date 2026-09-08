@@ -174,7 +174,7 @@ export function getIconLabel(iconName: string, context?: string): string { const
     menu: "Menu",
     home: "Home",
     settings: "Settings",
-    user: "User",
+    user: "Member",
     heart: "Like",
     share: "Share",
     comment: "Comment",

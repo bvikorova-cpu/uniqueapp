@@ -171,7 +171,7 @@ const Friends = () => {
       const { error } = await supabase.from("friendships").delete().eq("id", friendshipId);
       if (error) throw error;
       setFriends((prev) => prev.filter((f) => f.friendshipId !== friendshipId));
-      toast({ title: "Friend removed", description: `${name || "User"} is no longer in your friends.` });
+      toast({ title: "Friend removed", description: `${name || "Member"} is no longer in your friends.` });
     } catch (e: any) {
       toast({ title: "Failed to remove", description: e.message, variant: "destructive" });
     } finally {

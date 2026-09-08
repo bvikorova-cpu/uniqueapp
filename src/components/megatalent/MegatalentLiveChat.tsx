@@ -25,7 +25,7 @@ const MegatalentLiveChat = ({ category, userId }: { category?: string; userId: s
   useEffect(() => {
     if (!userId) { setMyName("Guest"); return; }
     (supabase as any).from("profiles_public").select("full_name").eq("id", userId).maybeSingle()
-      .then(({ data }) => setMyName(data?.full_name || "User"));
+      .then(({ data }) => setMyName(data?.full_name || "Member"));
   }, [userId]);
 
   // Initial fetch + realtime

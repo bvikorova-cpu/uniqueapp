@@ -190,7 +190,7 @@ export const StoriesBar = () => {
 
                 <div className="absolute bottom-2 left-2 right-2">
                   <span className="text-[11px] font-semibold text-white drop-shadow-md line-clamp-2 leading-tight">
-                    {story.profiles?.full_name || "User"}
+                    {story.profiles?.full_name || "Member"}
                   </span>
                 </div>
               </motion.button>
@@ -308,7 +308,7 @@ export const StoriesBar = () => {
                 <AvatarImage src={viewingStory.profiles?.avatar_url || undefined} />
                 <AvatarFallback>{viewingStory.profiles?.full_name?.[0]}</AvatarFallback>
               </Avatar>
-              <span className="text-white text-sm font-medium">{viewingStory.profiles?.full_name || "User"}</span>
+              <span className="text-white text-sm font-medium">{viewingStory.profiles?.full_name || "Member"}</span>
             </div>
 
             {viewingStory.media_url && (

@@ -100,7 +100,7 @@ export const ReactionsDialog = ({ open,
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-sm truncate">
-                  {profile?.full_name || "User"}
+                  {profile?.full_name || "Member"}
                 </p>
                 {meta && (
                   <p className="text-xs text-muted-foreground">{meta.label}</p>

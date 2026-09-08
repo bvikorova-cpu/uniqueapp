@@ -43,7 +43,7 @@ export default function VideoCard({ video }: VideoCardProps) {
               {video.title}
             </h3>
             <p className="text-sm text-muted-foreground">
-              {video.profiles?.full_name || "Unknown User"}
+              {video.profiles?.full_name || "Member"}
             </p>
           </div>
         </div>

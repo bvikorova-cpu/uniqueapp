@@ -55,7 +55,7 @@ export default function JobsSkillLeaderboard() {
 
       const final: Row[] = src.map((r: any, i: number) => ({ rank: i + 1,
         user_id: r.user_id,
-        name: pmap.get(r.user_id) || "User",
+        name: pmap.get(r.user_id) || "Member",
         score: Number(r.xp) || 0,
         badge: badgeFor(i + 1) }));
 

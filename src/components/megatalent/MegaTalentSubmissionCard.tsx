@@ -65,7 +65,7 @@ export default function MegaTalentSubmissionCard({ submission,
             <div className="flex items-center gap-3">
               <div className="relative">
                 <Avatar className={`h-10 w-10 ${frameClass || "ring-2 ring-primary/10"}`}>
-                  <AvatarImage src={submission.profiles?.avatar_url || undefined} alt={submission.profiles?.full_name || "User"} />
+                  <AvatarImage src={submission.profiles?.avatar_url || undefined} alt={submission.profiles?.full_name || "Member"} />
                   <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-primary-foreground font-bold text-sm">
                     {submission.profiles?.full_name?.[0] || "U"}
                   </AvatarFallback>
@@ -76,7 +76,7 @@ export default function MegaTalentSubmissionCard({ submission,
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
-                  <p className={`font-semibold text-sm ${rewardsNameClass(cosmetics.name_color)}`}>{submission.profiles?.full_name || "User"}</p>
+                  <p className={`font-semibold text-sm ${rewardsNameClass(cosmetics.name_color)}`}>{submission.profiles?.full_name || "Member"}</p>
 
                   {isTopPremium && <TopPremiumBadge variant="inline" />}
                 </div>

@@ -141,7 +141,7 @@ export const ReferralLeaderboard = ({ currentUserId }: Props) => {
                     {leader.avatar_url ? (
                       <img
                         src={leader.avatar_url}
-                        alt={leader.full_name || "User"}
+                        alt={leader.full_name || "Member"}
                         className="w-7 h-7 rounded-full object-cover shrink-0"
                       />
                     ) : (

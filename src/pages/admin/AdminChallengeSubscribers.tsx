@@ -168,7 +168,7 @@ export default function AdminChallengeSubscribers() {
                 {filtered.map((r) => (
                   <TableRow key={`${r.user_id}-${r.challenge}`}>
                     <TableCell>
-                      <div className="font-medium">{r.full_name || "User"}</div>
+                      <div className="font-medium">{r.full_name || "Member"}</div>
                       <div className="text-xs text-muted-foreground">{r.email || "—"}</div>
                     </TableCell>
                     <TableCell className="capitalize">{r.challenge}</TableCell>

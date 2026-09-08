@@ -107,7 +107,7 @@ export function FamilySection({ userId, currentUserId, isOwnProfile }: Props) {
                         <button
                           key={p.id}
                           onClick={() => {
-                            setPicked({ id: p.id, name: p.full_name ?? "User" });
+                            setPicked({ id: p.id, name: p.full_name ?? "Member" });
                             setQ("");
                           }}
                           className="w-full flex items-center gap-2 p-2 hover:bg-muted text-left"
@@ -167,7 +167,7 @@ export function FamilySection({ userId, currentUserId, isOwnProfile }: Props) {
                 <AvatarFallback>{r.profile?.full_name?.[0] ?? "?"}</AvatarFallback>
               </Avatar>
               <div className="flex-1 text-xs">
-                <div className="font-semibold">{r.profile?.full_name ?? "User"}</div>
+                <div className="font-semibold">{r.profile?.full_name ?? "Member"}</div>
                 <div className="text-muted-foreground">{RELATION_LABELS[r.kind]}</div>
               </div>
               <Button size="icon" className="h-7 w-7" onClick={() => setStatus.mutate({ id: r.id, status: "confirmed" })}>
@@ -215,7 +215,7 @@ function FamilyCard({ item,
         <AvatarFallback>{item.profile?.full_name?.[0] ?? "?"}</AvatarFallback>
       </Avatar>
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-semibold truncate">{item.profile?.full_name ?? "User"}</div>
+        <div className="text-sm font-semibold truncate">{item.profile?.full_name ?? "Member"}</div>
         <Badge variant="secondary" className="text-[10px] px-1 py-0 h-4">
           {RELATION_LABELS[item.kind as FamilyRelationKind]}
         </Badge>

@@ -122,7 +122,7 @@ export const AdminReferralWithdrawals = () => {
               <div className="flex items-start justify-between">
                 <div>
                   <h3 className="font-semibold text-lg">
-                    {request.profile?.full_name || "Unknown User"}
+                    {request.profile?.full_name || "Member"}
                   </h3>
                   <p className="text-2xl font-bold text-primary">
                     {formatCurrency(Number(request.amount))}

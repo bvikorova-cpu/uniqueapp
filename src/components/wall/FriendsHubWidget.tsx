@@ -62,7 +62,7 @@ export function FriendsHubWidget() {
                       onClick={() => navigate(`/profile/${friend.id}`)}
                       className="flex-1 text-xs font-medium truncate text-left hover:underline"
                     >
-                      {friend.full_name ?? friend.username ?? "User"}
+                      {friend.full_name ?? friend.username ?? "Member"}
                     </button>
                   </div>
                 ))}
@@ -96,7 +96,7 @@ export function FriendsHubWidget() {
                       onClick={() => navigate(`/profile/${r.user_id}`)}
                       className="flex-1 text-xs font-medium truncate text-left hover:underline"
                     >
-                      {r.profile?.full_name ?? "User"}
+                      {r.profile?.full_name ?? "Member"}
                     </button>
                     <Button
                       size="icon"
@@ -149,7 +149,7 @@ export function FriendsHubWidget() {
                         onClick={() => navigate(`/profile/${s.id}`)}
                         className="text-xs font-medium truncate block text-left hover:underline w-full"
                       >
-                        {s.full_name ?? "User"}
+                        {s.full_name ?? "Member"}
                       </button>
                       <Badge
                         variant="secondary"

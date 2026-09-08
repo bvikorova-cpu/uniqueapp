@@ -141,7 +141,7 @@ const MegatalentComments = ({ category, categories, userId }: Props) => {
                     <div className="flex items-center gap-2 mb-1">
                       {p?.avatar_url ? <img src={p.avatar_url} className="h-5 w-5 rounded-full" alt="" /> :
                         <div className="h-5 w-5 rounded-full bg-primary/30 grid place-items-center text-[10px]">{(p?.full_name || "?").slice(0, 1)}</div>}
-                      <span className="font-semibold truncate">{p?.full_name || "User"}</span>
+                      <span className="font-semibold truncate">{p?.full_name || "Member"}</span>
                       <span className="text-muted-foreground ml-auto text-[10px]">{new Date(c.created_at).toLocaleString()}</span>
                       {mine && <button onClick={() => remove(c.id)} className="text-muted-foreground hover:text-destructive"><Trash2 className="h-3 w-3" /></button>}
                       {!mine && userId && <ReportButton targetType="comment" targetId={c.id} reporterId={userId} size="icon" className="h-5 w-5" />}

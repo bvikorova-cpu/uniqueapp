@@ -243,7 +243,7 @@ export const LimitedEditionGifts = ({ onSelectGift }: LimitedEditionGiftsProps) 
       if (!searchQuery || searchQuery.length < 1) return [];
       const { searchProfiles } = await import("@/lib/searchProfiles");
       const rows = await searchProfiles(searchQuery, { limit: 10 });
-      return rows.map((u) => ({ id: u.id, username: u.full_name || u.username || "User", avatar_url: u.avatar_url }));
+      return rows.map((u) => ({ id: u.id, username: u.full_name || u.username || "Member", avatar_url: u.avatar_url }));
     },
     enabled: searchQuery.length >= 1 });
 

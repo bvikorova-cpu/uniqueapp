@@ -229,7 +229,7 @@ export const SecretSantaInbox = ({ onOpenChat }: SecretSantaInboxProps) => {
                                     </AvatarFallback>
                                   </Avatar>
                                   <span className="text-amber-600 font-medium text-sm truncate">
-                                    From: {senderProfile.full_name || senderProfile.username || "User"}
+                                    From: {senderProfile.full_name || senderProfile.username || "Member"}
                                   </span>
                                 </>
                               ) : (
@@ -245,7 +245,7 @@ export const SecretSantaInbox = ({ onOpenChat }: SecretSantaInboxProps) => {
                                 </AvatarFallback>
                               </Avatar>
                               <span className="text-amber-600 font-medium text-sm">
-                                To: {recipientProfile?.full_name || recipientProfile?.username || "User"}
+                                To: {recipientProfile?.full_name || recipientProfile?.username || "Member"}
                               </span>
                             </div>
                           )}
@@ -310,7 +310,7 @@ export const SecretSantaInbox = ({ onOpenChat }: SecretSantaInboxProps) => {
                                   variant="ghost"
                                   onClick={() => onOpenChat({
                                     id: senderProfile.id,
-                                    username: senderProfile.full_name || senderProfile.username || "User",
+                                    username: senderProfile.full_name || senderProfile.username || "Member",
                                     avatar_url: senderProfile.avatar_url,
                                   })}
                                   className="text-blue-500 hover:text-blue-600 hover:bg-blue-100"

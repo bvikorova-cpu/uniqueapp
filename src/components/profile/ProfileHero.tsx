@@ -175,7 +175,7 @@ export const ProfileHero = ({ profile,
                       {userId && (
                         <MessageButton
                           userId={userId}
-                          userName={profile.full_name || "User"}
+                          userName={profile.full_name || "Member"}
                           userAvatar={profile.avatar_url || undefined}
                         />
                       )}

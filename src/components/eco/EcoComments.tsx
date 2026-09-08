@@ -101,7 +101,7 @@ export function EcoComments({ submissionId }: { submissionId: string }) {
                 {c.profile?.avatar_url && <img src={c.profile.avatar_url} alt="" className="w-6 h-6 rounded-full" />}
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-xs">{c.profile?.full_name || c.profile?.username || "User"}</span>
+                    <span className="font-semibold text-xs">{c.profile?.full_name || c.profile?.username || "Member"}</span>
                     <span className="text-[10px] text-muted-foreground">{new Date(c.created_at).toLocaleString()}</span>
                   </div>
                   <p className={`whitespace-pre-wrap break-words ${c.is_deleted ? "italic text-muted-foreground" : ""}`}>{c.body}</p>

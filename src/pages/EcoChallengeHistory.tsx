@@ -124,7 +124,7 @@ export default function EcoChallengeHistory() {
               <div className="mb-4 p-3 rounded-lg bg-gradient-to-r from-yellow-100 to-emerald-100 dark:from-yellow-900/30 dark:to-emerald-900/30 flex items-center gap-3">
                 <Trophy className="w-6 h-6 text-yellow-600" />
                 <div className="flex-1">
-                  <p className="font-semibold">🏆 Champion: {winnerOfSelected.profile?.full_name || "User"}</p>
+                  <p className="font-semibold">🏆 Champion: {winnerOfSelected.profile?.full_name || "Member"}</p>
                   <p className="text-xs text-muted-foreground">
                     {winnerOfSelected.days_completed} days · {winnerOfSelected.total_votes} votes · €{((winnerOfSelected.cash_prize_cents || 0) / 100).toFixed(2)} won · €{((winnerOfSelected.charity_cents || 0) / 100).toFixed(2)} to {winnerOfSelected.charity_name || "charity"}
                   </p>
@@ -142,7 +142,7 @@ export default function EcoChallengeHistory() {
                     <span className="text-2xl w-8 text-center">{r.rank === 1 ? "🥇" : r.rank === 2 ? "🥈" : r.rank === 3 ? "🥉" : `#${r.rank}`}</span>
                     {r.profile?.avatar_url && <img src={r.profile.avatar_url} className="w-10 h-10 rounded-full" alt="" />}
                     <div className="flex-1">
-                      <p className="font-semibold">{r.profile?.full_name || "User"}</p>
+                      <p className="font-semibold">{r.profile?.full_name || "Member"}</p>
                       <p className="text-xs text-muted-foreground">{r.days_completed} days · {r.total_votes} votes</p>
                     </div>
                     {r.rank === 1 && !isCurrent && <Badge className="bg-yellow-500">50% of pool</Badge>}
@@ -169,7 +169,7 @@ export default function EcoChallengeHistory() {
                     <Trophy className="w-6 h-6 text-yellow-500" />
                     {w.profile?.avatar_url && <img src={w.profile.avatar_url} className="w-9 h-9 rounded-full" alt="" />}
                     <div className="flex-1">
-                      <p className="font-semibold">{monthLabel(w.month_key)} — {w.profile?.full_name || "User"}</p>
+                      <p className="font-semibold">{monthLabel(w.month_key)} — {w.profile?.full_name || "Member"}</p>
                       <p className="text-xs text-muted-foreground">{w.days_completed} days · {w.total_votes} votes · €{((w.cash_prize_cents || 0) / 100).toFixed(2)} won · €{((w.charity_cents || 0) / 100).toFixed(2)} to {w.charity_name || "charity"}</p>
                     </div>
                   </button>

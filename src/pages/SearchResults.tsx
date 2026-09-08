@@ -259,7 +259,7 @@ export default function SearchResults() {
                               <AvatarFallback>{user.full_name?.[0] || "U"}</AvatarFallback>
                             </Avatar>
                             <div className="flex-1 min-w-0">
-                              <p className="font-semibold">{user.full_name || "User"}</p>
+                              <p className="font-semibold">{user.full_name || "Member"}</p>
                               {user.bio && (
                                 <p className="text-sm text-muted-foreground line-clamp-2">{user.bio}</p>
                               )}

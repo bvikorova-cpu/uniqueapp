@@ -684,7 +684,7 @@ export default function EventDetail() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold">
-                          {post.profiles?.display_name || "User"}
+                          {post.profiles?.display_name || "Member"}
                         </span>
                         <span className="text-xs text-muted-foreground">
                           {format(new Date(post.created_at), "PPp")}
@@ -729,7 +729,7 @@ export default function EventDetail() {
                       </Avatar>
                       <div>
                         <p className="font-medium">
-                          {attendee.profiles?.display_name || "User"}
+                          {attendee.profiles?.display_name || "Member"}
                         </p>
                       </div>
                     </div>
@@ -752,7 +752,7 @@ export default function EventDetail() {
                       </Avatar>
                       <div>
                         <p className="font-medium">
-                          {attendee.profiles?.display_name || "User"}
+                          {attendee.profiles?.display_name || "Member"}
                         </p>
                       </div>
                     </div>

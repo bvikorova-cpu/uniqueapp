@@ -40,7 +40,7 @@ export const MutedUsersDialog = ({ trigger }: { trigger?: React.ReactNode }) => 
                     <AvatarFallback>{m.profiles?.full_name?.[0] || "U"}</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm font-medium">{m.profiles?.full_name || "User"}</p>
+                    <p className="text-sm font-medium">{m.profiles?.full_name || "Member"}</p>
                     {m.expires_at && (
                       <p className="text-xs text-muted-foreground">
                         Expires {formatDistanceToNow(new Date(m.expires_at), { addSuffix: true })}

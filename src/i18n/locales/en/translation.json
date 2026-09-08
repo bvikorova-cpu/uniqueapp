@@ -441,7 +441,7 @@
   "messenger": {
     "title": "Messages",
     "searchUsers": "Search users...",
-    "user": "User",
+    "user": "Member",
     "writeMessage": "Write a message...",
     "selectConversation": "Select a conversation or start a new one",
     "error": "Error",

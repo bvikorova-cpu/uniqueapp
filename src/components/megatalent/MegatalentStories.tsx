@@ -149,7 +149,7 @@ const MegatalentStories = () => {
                   )}
                 </div>
               </div>
-              <span className="text-[11px] truncate max-w-[64px]">{s.author?.full_name?.split(" ")[0] || "User"}</span>
+              <span className="text-[11px] truncate max-w-[64px]">{s.author?.full_name?.split(" ")[0] || "Member"}</span>
             </button>
           ))}
         </div>
@@ -168,7 +168,7 @@ const MegatalentStories = () => {
                 <div className="h-8 w-8 rounded-full bg-white/20 backdrop-blur flex items-center justify-center text-xs font-bold">
                   {open.author?.full_name?.[0] || "U"}
                 </div>
-                <div className="text-sm font-semibold drop-shadow">{open.author?.full_name || "User"}</div>
+                <div className="text-sm font-semibold drop-shadow">{open.author?.full_name || "Member"}</div>
                 {open.user_id === userId && (
                   <button onClick={() => removeOwn(open)} className="ml-auto text-xs bg-red-500/80 px-2 py-1 rounded">
                     Delete

@@ -75,7 +75,7 @@ export const CloseFriendsDialog = ({ trigger }: Props) => {
                         <AvatarImage src={p.avatar_url || undefined} />
                         <AvatarFallback>{p.full_name?.[0] || "U"}</AvatarFallback>
                       </Avatar>
-                      <span className="text-sm font-medium">{p.full_name || "User"}</span>
+                      <span className="text-sm font-medium">{p.full_name || "Member"}</span>
                     </div>
                     <Button
                       size="sm"
@@ -102,7 +102,7 @@ export const CloseFriendsDialog = ({ trigger }: Props) => {
                       <AvatarImage src={f.profiles?.avatar_url || undefined} />
                       <AvatarFallback>{f.profiles?.full_name?.[0] || "U"}</AvatarFallback>
                     </Avatar>
-                    <span className="text-sm font-medium">{f.profiles?.full_name || "User"}</span>
+                    <span className="text-sm font-medium">{f.profiles?.full_name || "Member"}</span>
                   </div>
                   <Button size="icon" variant="ghost" onClick={() => removeFriend(f.friend_id)}>
                     <X className="w-4 h-4" />
