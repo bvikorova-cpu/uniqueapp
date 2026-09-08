@@ -61,7 +61,7 @@ const TIER_PRODUCTS: Record<string, string[]> = { // generic — any active sub
   astrology:     ["prod_UO5XctMmRHmIpM"],
   coloring:      ["prod_UO5XctMmRHmIpM"],
   wellness:      ["prod_UO5XctMmRHmIpM"],
-  crystal:       ["prod_UXTyxI4d06YsU6"],
+  crystal:       ["prod_UXTyxI4d06YsU6", "prod_VDuLodfwI8gl67"],
 
   // Unique verification tiers (also checked against active Stripe subscriptions)
   verified: ["prod_Uv3ypuicAkRhPQ", "prod_VDmStn5v3gKB0h", "prod_VDmSWLPPNzZZGB", "prod_VDmSwjaAxH1EST"],
