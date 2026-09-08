@@ -12,16 +12,16 @@ export interface TutoringCredits {
 }
 
 export const TUTORING_CREDIT_PACKAGES = [
-  { id: "price_1ScY0zGaXSfGtYFtoe91oxmX",
+  { id: "tutoring_starter",
     credits: 10,
     price: 5,
     label: "Starter" },
-  { id: "price_1ScY10GaXSfGtYFt3F1cPJaE",
+  { id: "tutoring_popular",
     credits: 30,
     price: 12,
     label: "Popular",
     popular: true },
-  { id: "price_1ScY12GaXSfGtYFt3zw96KfT",
+  { id: "tutoring_best",
     credits: 100,
     price: 35,
     label: "Best Value",
