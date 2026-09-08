@@ -36,7 +36,13 @@ export const ComedyCurrencyDisplay = () => {
 
     setBusy(coins);
     try {
-      const { data, error } = await supabase.rpc("buy_comedy_coins", { _coins: coins });
+      const { data, error } = await (supabase.rpc as unknown as (
+        fn: string,
+        args: Record<string, unknown>,
+      ) => Promise<{ data: unknown; error: { message: string } | null }>)(
+        "buy_comedy_coins",
+        { _coins: coins },
+      );
       if (error) throw error;
 
       const result = data as { success?: boolean; error?: string } | null;
