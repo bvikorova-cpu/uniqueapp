@@ -131,6 +131,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "98", title: "First Aid", category: "Health", path: "/first-aid" },
   { id: "99", title: "Fit & Slim", category: "Health", path: "/fit-slim" },
   { id: "100", title: "Wellness", category: "Health", path: "/wellness" },
+  { id: "100b", title: "AI Health & Medical Assistant", category: "Health", path: "/ai-health" },
   { id: "101", title: "Nutrition Hub", category: "Health", path: "/nutrition-hub" },
   { id: "102", title: "Safety Prevention", category: "Health", path: "/safety-prevention" },
   

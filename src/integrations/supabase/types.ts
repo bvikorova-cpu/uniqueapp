@@ -28116,6 +28116,42 @@ export type Database = {
         }
         Relationships: []
       }
+      health_ai_scans: {
+        Row: {
+          created_at: string
+          credits_spent: number
+          id: string
+          input_meta: Json
+          kind: string
+          result: Json
+          severity: string | null
+          title: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          input_meta?: Json
+          kind: string
+          result?: Json
+          severity?: string | null
+          title?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          input_meta?: Json
+          kind?: string
+          result?: Json
+          severity?: string | null
+          title?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       health_check_log: {
         Row: {
           alerted: boolean

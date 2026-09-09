@@ -231,6 +231,7 @@ import { ResetPassword,
   OnlinePsychologist,
   Quiz,
   Wellness,
+  AIHealthAssistant,
   SafetyPrevention,
   Cooking,
   CookingAI,
@@ -848,7 +849,8 @@ const App = () => {
                        <Route path="/skills-marketplace/:id" element={<SkillOfferingDetail />} />
                        <Route path="/admin/skills-reviews" element={<ProtectedRoute><AdminSkillsReviewModeration /></ProtectedRoute>} />
                         
-                        <Route path="/wellness" element={<Wellness />} />
+                         <Route path="/wellness" element={<Wellness />} />
+                         <Route path="/ai-health" element={<AIHealthAssistant />} />
                         <Route path="/safety-prevention" element={<SafetyPrevention />} />
                         <Route path="/handwriting" element={<Handwriting />} />
                         <Route path="/past-life" element={<PastLife />} />
