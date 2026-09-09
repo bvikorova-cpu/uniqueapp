@@ -23,7 +23,7 @@ import { sectionVideos } from "@/components/sectionVideos";
 import { sectionPosters } from "@/components/sectionPosters";
 import {
   Car, Baby, GraduationCap, Briefcase, Heart, Sparkles, Trophy, Users,
-  Video, Mic, ShoppingBag, Brain, TrendingUp, Ghost, Building2, Crown,
+  Video, Mic, ShoppingBag, Brain, TrendingUp, Ghost, Building2, Crown, Dices,
   Clock, Timer, ChefHat, MessageCircle, Star, MessageSquare, Palette,
   Camera, Gem, Shirt, ArrowRight, Zap, Search, X,
   PenTool, Globe, ChevronRight, Layers, Coins,
