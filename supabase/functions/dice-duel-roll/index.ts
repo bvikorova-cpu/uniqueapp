@@ -82,10 +82,13 @@ serve(async (req) => {
     if (upErr || !updated) return fail("Turn already played", 409);
 
     if (won) {
-      const pot = (m.stake ?? 2) * 2;
-      await supabase.rpc("add_ai_credits", {
-        p_user_id: user.id, p_amount: pot,
-        p_reason: "dice_duel_win", p_source: "dice_duel",
+      // Winner takes 160 Battle Coins (80% of the 200-coin pot) + XP. Coins never convert back.
+      await supabase.rpc("battle_coins_apply", {
+        _user_id: user.id, _module: "dice_duel", _delta: 160,
+        _reason: "duel_win", _source: "dice_duel", _ref_id: matchId,
+      });
+      await supabase.rpc("award_xp", {
+        _user_id: user.id, _amount: 10, _source: "dice_duel", _ref_id: matchId,
       });
     }
 
