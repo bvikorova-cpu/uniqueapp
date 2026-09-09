@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useDailyChallenge, useSubmitDaily } from "@/hooks/useEducationGamification";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Flame, CheckCircle2 } from "lucide-react";
+import { Flame, CheckCircle2, Lock } from "lucide-react";
 import { Helmet } from "react-helmet-async";
+import { useAuth } from "@/contexts/AuthContext";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const __HIW_DAILYCHALLENGE_STEPS = [
@@ -17,11 +19,35 @@ const __HIW_DAILYCHALLENGE = { title: 'Daily Challenge', intro: 'A fresh mini-qu
 
 
 export default function DailyChallenge() {
+  const { user, loading: authLoading } = useAuth();
   const { data, isLoading, refetch } = useDailyChallenge();
   const submit = useSubmitDaily();
   const [idx, setIdx] = useState(0);
   const [correct, setCorrect] = useState(0);
   const [done, setDone] = useState(false);
+
+  if (authLoading) return <div className="container mx-auto pt-20 px-4">Loading...</div>;
+
+  if (!user) {
+    return (
+      <div className="container mx-auto px-4 pt-20 pb-12 max-w-xl">
+        <Helmet><title>Daily Challenge · Education</title></Helmet>
+        <FloatingHowItWorks title={__HIW_DAILYCHALLENGE.title} intro={__HIW_DAILYCHALLENGE.intro} steps={__HIW_DAILYCHALLENGE.steps} />
+        <Card className="backdrop-blur-xl bg-card/80">
+          <CardContent className="p-10 text-center">
+            <Lock className="w-14 h-14 mx-auto mb-4 text-primary" />
+            <h1 className="text-2xl font-black mb-2">Sign in to play the Daily Challenge</h1>
+            <p className="text-muted-foreground mb-6">
+              Your progress, XP and streak are saved to your account — that also keeps every day's questions fresh instead of repeating.
+            </p>
+            <Button asChild size="lg">
+              <Link to="/auth">Sign in / Create account</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (isLoading) return <div className="container mx-auto pt-20 px-4">Loading...</div>;
   if (!data?.challenge) return <div className="container mx-auto pt-20 px-4">No challenge today.</div>;
