@@ -44,6 +44,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   // Games & Entertainment
   { id: "11", title: "Games", category: "Entertainment", path: "/games" },
   { id: "12", title: "Brain Duel", category: "Games", path: "/brain-duel" },
+  { id: "12b", title: "Dice Trail Duel", category: "Games", path: "/dice-duel" },
   { id: "13", title: "Virtual Pet", category: "Entertainment", path: "/virtual-pet" },
   { id: "14", title: "Pet Translator", category: "Entertainment", path: "/pet-translator" },
   { id: "15", title: "Character Arena", category: "Games", path: "/character-arena" },

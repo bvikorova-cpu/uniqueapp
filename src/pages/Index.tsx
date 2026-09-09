@@ -23,7 +23,7 @@ import { sectionVideos } from "@/components/sectionVideos";
 import { sectionPosters } from "@/components/sectionPosters";
 import {
   Car, Baby, GraduationCap, Briefcase, Heart, Sparkles, Trophy, Users,
-  Video, Mic, ShoppingBag, Brain, TrendingUp, Ghost, Building2, Crown,
+  Video, Mic, ShoppingBag, Brain, TrendingUp, Ghost, Building2, Crown, Dices,
   Clock, Timer, ChefHat, MessageCircle, Star, MessageSquare, Palette,
   Camera, Gem, Shirt, ArrowRight, Zap, Search, X,
   PenTool, Globe, ChevronRight, Layers, Coins,
@@ -85,6 +85,7 @@ const services = [
   { title: "AI Clone", icon: Users, path: "/ai-clone", badge: "AI Twin", gradient: "from-violet-500 to-indigo-500", category: "creative" },
   { title: "Best Friend AI", icon: Heart, path: "/best-friend", badge: "Companion", gradient: "from-rose-500 to-pink-500", category: "social" },
   { title: "Brain Duel", icon: Brain, path: "/brain-duel", badge: "Challenge", gradient: "from-orange-500 to-red-500", category: "entertainment" },
+  { title: "Dice Trail Duel", icon: Dices, path: "/dice-duel", badge: "1v1 Race", gradient: "from-red-500 to-blue-600", category: "entertainment" },
   { title: "Cooking AI", icon: ChefHat, path: "/cooking-ai", badge: "Recipes", gradient: "from-orange-500 to-amber-500", category: "creative" },
   
   { title: "Food Scanner", icon: Camera, path: "/food-scanner", badge: "Nutrition", gradient: "from-lime-500 to-green-500", category: "wellness" },
