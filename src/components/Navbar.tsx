@@ -116,6 +116,7 @@ const Navbar = () => {
     { path: "/education", label: "Education", icon: GraduationCap },
     { path: "/ai-mentor", label: "AI Personal Mentor", icon: UserCircle },
     { path: "/brain-duel", label: "BrainDuel - Knowledge Battle", icon: Trophy },
+    { path: "/dice-duel", label: "Dice Trail Duel", icon: Dices },
   ];
 
   // Brand Arena is hidden from the public while it is being built — admins only

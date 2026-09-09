@@ -44,6 +44,7 @@ export const Megaforum = lazy(() => import("@/pages/Megaforum"));
 export const Games = lazy(() => import("@/pages/Games"));
 export const GamesHub = lazy(() => import("@/pages/GamesHub"));
 export const BrainDuel = lazy(() => import("@/pages/BrainDuel"));
+export const DiceDuel = lazy(() => import("@/pages/DiceDuel"));
 export const VirtualEscapeRoom = lazy(() => import("@/pages/VirtualEscapeRoom"));
 export const HorseRacing = lazy(() => import("@/pages/HorseRacing"));
 export const ComedyClub = lazy(() => import("@/pages/ComedyClub"));

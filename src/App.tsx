@@ -975,7 +975,8 @@ const App = () => {
                         <Route path="/brand-battle/hub" element={<ProtectedRoute requireAdmin={true}><BrandArenaHub /></ProtectedRoute>} />
                         <Route path="/sponsor-registration" element={<ProtectedRoute requireAdmin={true}><SponsorRegistration /></ProtectedRoute>} />
                         <Route path="/sponsor-dashboard" element={<ProtectedRoute requireAdmin={true}><SponsorDashboard /></ProtectedRoute>} />
-                        <Route path="/brain-duel" element={<ProtectedRoute><BrainDuel /></ProtectedRoute>} />
+<Route path="/brain-duel" element={<ProtectedRoute><BrainDuel /></ProtectedRoute>} />
+                        <Route path="/dice-duel" element={<ProtectedRoute><DiceDuel /></ProtectedRoute>} />
                         <Route path="/brain-duel/hub" element={<ProtectedRoute><BrainDuelHub /></ProtectedRoute>} />
                         <Route path="/fashion-studio" element={<FashionStudio />} />
                         <Route path="/nutrition-hub" element={<NutritionHub />} />
