@@ -27,7 +27,7 @@ import {
   Clock, Timer, ChefHat, MessageCircle, Star, MessageSquare, Palette,
   Camera, Gem, Shirt, ArrowRight, Zap, Search, X,
   PenTool, Globe, ChevronRight, Layers, Coins,
-  Pin, PinOff, BookOpen, Library,
+  Pin, PinOff, BookOpen, Library, Activity,
 } from "lucide-react";
 
 // ── Data ──────────────────────────────────────────────
