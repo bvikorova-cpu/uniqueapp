@@ -131,7 +131,7 @@ const DiceDuel = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [match?.id, refresh, loadHistory]);
+  }, [match?.id, refresh, loadHistory, loadLeaderboard]);
 
   useEffect(() => () => {
     if (animRef.current) clearInterval(animRef.current);
@@ -168,6 +168,7 @@ const DiceDuel = () => {
       if (data.cancelled) setMatch(null);
       refresh();
       loadHistory();
+      loadLeaderboard();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Action failed");
     }
