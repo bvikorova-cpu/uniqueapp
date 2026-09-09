@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Dices, Swords, Trophy, Loader2, Flag, Users, HelpCircle } from "lucide-react";
 import heroVideo from "@/assets/dice-duel-hero.mp4.asset.json";
+import howItWorksImg from "@/assets/dice-duel-howto.jpg";
 
 const COLS = 9;
 const ROWS = 14;
