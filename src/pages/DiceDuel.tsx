@@ -32,6 +32,17 @@ interface DiceMatch {
   finished_at: string | null;
 }
 
+interface LeaderRow {
+  user_id: string;
+  display_name: string;
+  avatar_url: string | null;
+  points: number;
+  wins: number;
+  losses: number;
+  matches: number;
+  rank: number;
+}
+
 const DICE_FACES: Record<number, string> = { 1: "⚀", 2: "⚁", 3: "⚂", 4: "⚃", 5: "⚄", 6: "⚅" };
 const DIR_LABELS: Record<number, string> = { 1: "↓ Down", 2: "↗ Up-right", 3: "↘ Down-right", 4: "← Left", 5: "↙ Down-left", 6: "↓ Down" };
 
@@ -43,6 +54,8 @@ const DiceDuel = () => {
   const [searching, setSearching] = useState(false);
   const [rolling, setRolling] = useState(false);
   const [animRoll, setAnimRoll] = useState<number | null>(null);
+  const [leaders, setLeaders] = useState<LeaderRow[]>([]);
+  const [lbLoading, setLbLoading] = useState(true);
   const animRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const isP1 = match?.player1_id === user?.id;
@@ -51,6 +64,16 @@ const DiceDuel = () => {
   const myTurn = match?.status === "active" && match.current_turn === user?.id;
   const iWon = match?.status === "finished" && match.winner_id === user?.id;
   const iLost = match?.status === "finished" && match.winner_id && match.winner_id !== user?.id;
+
+  const loadLeaderboard = useCallback(async () => {
+    setLbLoading(true);
+    try {
+      const { data } = await supabase.functions.invoke("dice-duel-leaderboard", { body: {} });
+      setLeaders((data?.leaderboard as LeaderRow[]) ?? []);
+    } finally {
+      setLbLoading(false);
+    }
+  }, []);
 
   const loadHistory = useCallback(async () => {
     if (!user) return;
