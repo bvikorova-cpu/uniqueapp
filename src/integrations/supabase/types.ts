@@ -20315,6 +20315,54 @@ export type Database = {
         }
         Relationships: []
       }
+      dice_duel_matches: {
+        Row: {
+          created_at: string
+          current_turn: string | null
+          finished_at: string | null
+          id: string
+          last_roll: number | null
+          p1_trail: Json
+          p2_trail: Json
+          player1_id: string
+          player2_id: string | null
+          stake: number
+          started_at: string | null
+          status: string
+          winner_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          current_turn?: string | null
+          finished_at?: string | null
+          id?: string
+          last_roll?: number | null
+          p1_trail?: Json
+          p2_trail?: Json
+          player1_id: string
+          player2_id?: string | null
+          stake?: number
+          started_at?: string | null
+          status?: string
+          winner_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          current_turn?: string | null
+          finished_at?: string | null
+          id?: string
+          last_roll?: number | null
+          p1_trail?: Json
+          p2_trail?: Json
+          player1_id?: string
+          player2_id?: string | null
+          stake?: number
+          started_at?: string | null
+          status?: string
+          winner_id?: string | null
+        }
+        Relationships: []
+      }
       digital_offspring: {
         Row: {
           avatar_url: string | null

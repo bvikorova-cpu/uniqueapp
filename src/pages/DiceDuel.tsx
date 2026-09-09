@@ -1,0 +1,353 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useAICredits } from "@/hooks/useAICredits";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
+import { Dices, Swords, Trophy, Loader2, Flag, Users, HelpCircle } from "lucide-react";
+
+const COLS = 9;
+const ROWS = 14;
+const STAKE = 2;
+
+type Trail = [number, number][];
+
+interface DiceMatch {
+  id: string;
+  player1_id: string;
+  player2_id: string | null;
+  status: "waiting" | "active" | "finished" | "abandoned";
+  current_turn: string | null;
+  p1_trail: Trail;
+  p2_trail: Trail;
+  last_roll: number | null;
+  stake: number;
+  winner_id: string | null;
+  created_at: string;
+  finished_at: string | null;
+}
+
+const DICE_FACES: Record<number, string> = { 1: "⚀", 2: "⚁", 3: "⚂", 4: "⚃", 5: "⚄", 6: "⚅" };
+const DIR_LABELS: Record<number, string> = { 1: "↓ Down", 2: "↗ Up-right", 3: "↘ Down-right", 4: "← Left", 5: "↙ Down-left", 6: "↓ Down" };
+
+const DiceDuel = () => {
+  const { user } = useAuth();
+  const { paidBalance, refresh } = useAICredits();
+  const [match, setMatch] = useState<DiceMatch | null>(null);
+  const [history, setHistory] = useState<DiceMatch[]>([]);
+  const [searching, setSearching] = useState(false);
+  const [rolling, setRolling] = useState(false);
+  const [animRoll, setAnimRoll] = useState<number | null>(null);
+  const animRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const isP1 = match?.player1_id === user?.id;
+  const myTrail = match ? (isP1 ? match.p1_trail : match.p2_trail) : [];
+  const oppTrail = match ? (isP1 ? match.p2_trail : match.p1_trail) : [];
+  const myTurn = match?.status === "active" && match.current_turn === user?.id;
+  const iWon = match?.status === "finished" && match.winner_id === user?.id;
+  const iLost = match?.status === "finished" && match.winner_id && match.winner_id !== user?.id;
+
+  const loadHistory = useCallback(async () => {
+    if (!user) return;
+    const { data } = await (supabase as any)
+      .from("dice_duel_matches")
+      .select("*")
+      .eq("status", "finished")
+      .or(`player1_id.eq.${user.id},player2_id.eq.${user.id}`)
+      .order("finished_at", { ascending: false })
+      .limit(20);
+    setHistory((data as DiceMatch[]) ?? []);
+  }, [user]);
+
+  // Resume any active/waiting match on load
+  useEffect(() => {
+    if (!user) return;
+    loadHistory();
+    (async () => {
+      const { data } = await (supabase as any)
+        .from("dice_duel_matches")
+        .select("*")
+        .in("status", ["waiting", "active"])
+        .or(`player1_id.eq.${user.id},player2_id.eq.${user.id}`)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (data) setMatch(data as DiceMatch);
+    })();
+  }, [user, loadHistory]);
+
+  // Realtime updates for the current match
+  useEffect(() => {
+    if (!match?.id) return;
+    const channel = supabase
+      .channel(`dice-duel-${match.id}`)
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "dice_duel_matches", filter: `id=eq.${match.id}` },
+        (payload) => {
+          const updated = payload.new as DiceMatch;
+          setMatch(updated);
+          if (updated.status === "finished") {
+            refresh();
+            loadHistory();
+          }
+        }
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [match?.id, refresh, loadHistory]);
+
+  useEffect(() => () => {
+    if (animRef.current) clearInterval(animRef.current);
+  }, []);
+
+  const findMatch = async () => {
+    if (!user) return;
+    if ((paidBalance ?? 0) < STAKE) {
+      toast.error(`You need ${STAKE} credits to play`, { action: { label: "Get credits", onClick: () => (window.location.href = "/ai-credits") } });
+      return;
+    }
+    setSearching(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("dice-duel-matchmaking", { body: { action: "find" } });
+      if (error) throw new Error(data?.error || error.message);
+      if (data?.error) throw new Error(data.error);
+      setMatch(data.match as DiceMatch);
+      refresh();
+      toast.success(data.joined ? "Opponent found — game on!" : "Waiting for an opponent…");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Matchmaking failed");
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  const cancelOrForfeit = async () => {
+    if (!match) return;
+    try {
+      const { data, error } = await supabase.functions.invoke("dice-duel-forfeit", { body: { match_id: match.id } });
+      if (error) throw new Error(data?.error || error.message);
+      if (data?.error) throw new Error(data.error);
+      toast.success(data.cancelled ? "Match cancelled, stake refunded" : "Match forfeited");
+      if (data.cancelled) setMatch(null);
+      refresh();
+      loadHistory();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Action failed");
+    }
+  };
+
+  const roll = async () => {
+    if (!match || !myTurn || rolling) return;
+    setRolling(true);
+    // Dice animation while the server rolls
+    animRef.current = setInterval(() => setAnimRoll(1 + Math.floor(Math.random() * 6)), 90);
+    try {
+      const { data, error } = await supabase.functions.invoke("dice-duel-roll", { body: { match_id: match.id } });
+      if (error) throw new Error(data?.error || error.message);
+      if (data?.error) throw new Error(data.error);
+      setMatch(data.match as DiceMatch);
+      setAnimRoll(data.roll);
+      if (data.won) toast.success("You reached the bottom — you win the pot!");
+      else if (!data.moved) toast.info(`Rolled ${data.roll} — out of bounds, turn skipped`);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Roll failed");
+    } finally {
+      setTimeout(() => {
+        if (animRef.current) clearInterval(animRef.current);
+        animRef.current = null;
+        setRolling(false);
+      }, 500);
+    }
+  };
+
+  const wins = useMemo(() => history.filter((h) => h.winner_id === user?.id).length, [history, user]);
+
+  const renderBoard = (m: DiceMatch) => {
+    const cell = 34;
+    const w = (COLS - 1) * cell + 40;
+    const h = (ROWS - 1) * cell + 40;
+    const pt = ([x, y]: [number, number]) => `${20 + x * cell},${20 + y * cell}`;
+    const line = (t: Trail) => t.map(pt).join(" ");
+    const last = (t: Trail) => t[t.length - 1];
+    return (
+      <svg viewBox={`0 0 ${w} ${h}`} className="w-full max-w-sm mx-auto select-none">
+        {/* finish row highlight */}
+        <rect x="0" y={20 + (ROWS - 1) * cell - cell / 2} width={w} height={cell} rx="8" className="fill-primary/10" />
+        {Array.from({ length: ROWS }).map((_, y) =>
+          Array.from({ length: COLS }).map((__, x) => (
+            <circle key={`${x}-${y}`} cx={20 + x * cell} cy={20 + y * cell} r="2.2" className="fill-muted-foreground/50" />
+          ))
+        )}
+        {m.p2_trail.length > 1 && (
+          <polyline points={line(m.p2_trail)} fill="none" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="stroke-blue-500" />
+        )}
+        {m.p1_trail.length > 1 && (
+          <polyline points={line(m.p1_trail)} fill="none" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="stroke-red-500" />
+        )}
+        {m.p2_trail.length > 0 && m.player2_id && (
+          <circle cx={20 + last(m.p2_trail)[0] * cell} cy={20 + last(m.p2_trail)[1] * cell} r="8" className="fill-blue-500 stroke-background" strokeWidth="3" />
+        )}
+        {m.p1_trail.length > 0 && (
+          <circle cx={20 + last(m.p1_trail)[0] * cell} cy={20 + last(m.p1_trail)[1] * cell} r="8" className="fill-red-500 stroke-background" strokeWidth="3" />
+        )}
+      </svg>
+    );
+  };
+
+  return (
+    <main className="container mx-auto px-4 pt-24 pb-16 max-w-3xl">
+      <title>Dice Trail Duel — 1v1 Dice Race | Unique</title>
+      <meta name="description" content="Realtime 1v1 dice trail race: roll the die, draw your line across the dot grid, first to the bottom wins the credit pot." />
+
+      <div className="flex items-center gap-3 mb-2">
+        <div className="p-2.5 rounded-xl bg-gradient-to-br from-red-500 to-blue-600 text-white">
+          <Dices className="h-6 w-6" />
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-bold">Dice Trail Duel</h1>
+      </div>
+      <p className="text-muted-foreground mb-6">
+        Roll the die, draw your trail across the dot grid. First player to reach the bottom row wins the pot of {STAKE * 2} credits.
+      </p>
+
+      {!match && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Swords className="h-5 w-5" /> Find an opponent</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">Entry stake</span>
+              <Badge variant="secondary">{STAKE} credits</Badge>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">Winner takes</span>
+              <Badge>{STAKE * 2} credits</Badge>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">Your balance</span>
+              <Badge variant="outline">{paidBalance ?? 0} credits</Badge>
+            </div>
+            <Button className="w-full" size="lg" onClick={findMatch} disabled={searching}>
+              {searching ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Users className="h-4 w-4 mr-2" />}
+              {searching ? "Searching…" : "Find match"}
+            </Button>
+            {(paidBalance ?? 0) < STAKE && (
+              <p className="text-sm text-center text-muted-foreground">
+                Not enough credits. <Link to="/ai-credits" className="text-primary underline">Get credits</Link>
+              </p>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {match?.status === "waiting" && (
+        <Card>
+          <CardContent className="py-10 text-center space-y-4">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+            <p className="font-medium">Waiting for an opponent to join…</p>
+            <p className="text-sm text-muted-foreground">Your {match.stake} credits are staked and will be refunded if you cancel.</p>
+            <Button variant="outline" onClick={cancelOrForfeit}>Cancel & refund</Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {match && (match.status === "active" || match.status === "finished") && (
+        <Card>
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm font-medium">
+                <span className={`inline-block h-3 w-3 rounded-full ${isP1 ? "bg-red-500" : "bg-blue-500"}`} /> You
+                <span className="text-muted-foreground">vs</span>
+                <span className={`inline-block h-3 w-3 rounded-full ${isP1 ? "bg-blue-500" : "bg-red-500"}`} /> Opponent
+              </div>
+              {match.status === "finished" && (
+                <Badge variant={iWon ? "default" : "secondary"}>
+                  {iWon ? <><Trophy className="h-3 w-3 mr-1" /> You won +{match.stake * 2}</> : iLost ? "You lost" : "Finished"}
+                </Badge>
+              )}
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {renderBoard(match)}
+
+            <div className="flex items-center justify-center gap-4">
+              <div className="text-5xl leading-none" aria-live="polite">
+                {animRoll ? DICE_FACES[animRoll] : match.last_roll ? DICE_FACES[match.last_roll] : "🎲"}
+              </div>
+              {(animRoll ?? match.last_roll) && (
+                <div className="text-sm text-muted-foreground">{DIR_LABELS[(animRoll ?? match.last_roll)!]}</div>
+              )}
+            </div>
+
+            {match.status === "active" && (
+              <>
+                <p className="text-center text-sm font-medium">
+                  {myTurn ? "Your turn — roll the die!" : "Opponent's turn…"}
+                </p>
+                <div className="flex gap-2">
+                  <Button className="flex-1" size="lg" onClick={roll} disabled={!myTurn || rolling}>
+                    {rolling ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Dices className="h-4 w-4 mr-2" />}
+                    Roll
+                  </Button>
+                  <Button variant="outline" size="lg" onClick={cancelOrForfeit}>
+                    <Flag className="h-4 w-4 mr-2" /> Forfeit
+                  </Button>
+                </div>
+              </>
+            )}
+
+            {match.status === "finished" && (
+              <Button className="w-full" size="lg" onClick={() => { setMatch(null); }}>
+                Play again
+              </Button>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {history.length > 0 && (
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle className="text-base flex items-center justify-between">
+              Recent matches
+              <Badge variant="secondary">{wins}/{history.length} won</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {history.slice(0, 8).map((h) => (
+              <div key={h.id} className="flex items-center justify-between text-sm border-b border-border last:border-0 pb-2 last:pb-0">
+                <span className="text-muted-foreground">{new Date(h.finished_at ?? h.created_at).toLocaleDateString()}</span>
+                <Badge variant={h.winner_id === user?.id ? "default" : "outline"}>
+                  {h.winner_id === user?.id ? `Won +${h.stake * 2}` : `Lost −${h.stake}`}
+                </Badge>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2"><HelpCircle className="h-4 w-4" /> How it works</CardTitle>
+        </CardHeader>
+        <CardContent className="text-sm text-muted-foreground space-y-2">
+          <p>Two players race across a dot grid. On your turn, roll the die — the server rolls fairly and your trail extends one step in the rolled direction:</p>
+          <ul className="grid grid-cols-2 gap-1">
+            {Object.entries(DIR_LABELS).map(([k, v]) => (
+              <li key={k} className="flex items-center gap-2"><span className="text-lg">{DICE_FACES[Number(k)]}</span> {v}</li>
+            ))}
+          </ul>
+          <p>If the direction would leave the grid, the turn is skipped. First player to reach the bottom row wins the pot of {STAKE * 2} credits (entry {STAKE} credits each). If your opponent forfeits, you win instantly.</p>
+        </CardContent>
+      </Card>
+    </main>
+  );
+};
+
+export default DiceDuel;
