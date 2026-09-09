@@ -123,6 +123,7 @@ const DiceDuel = () => {
           if (updated.status === "finished") {
             refresh();
             loadHistory();
+            loadLeaderboard();
           }
         }
       )
