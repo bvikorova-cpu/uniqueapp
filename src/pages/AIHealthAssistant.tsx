@@ -16,6 +16,7 @@ import { useAICredits } from "@/hooks/useAICredits";
 import { HealthDisclaimerBanner } from "@/components/ai-health/HealthDisclaimerBanner";
 import { HealthUploadZone, type PickedFile } from "@/components/ai-health/HealthUploadZone";
 import { HealthResultCard, type HealthAnalysis } from "@/components/ai-health/HealthResultCard";
+import heroVideo from "@/assets/ai-health-hero.mp4.asset.json";
 
 type Action = "symptom_chat" | "lab_document" | "medical_image";
 const COST: Record<Action, number> = { symptom_chat: 1, lab_document: 2, medical_image: 3 };
@@ -135,21 +136,35 @@ const AIHealthAssistant = () => {
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 
-      <main className="container mx-auto max-w-3xl px-4 pb-16 pt-24">
-        <header className="mb-4">
-          <div className="mb-2 flex items-center gap-2">
-            <HeartPulse className="h-7 w-7 text-primary" />
-            <h1 className="text-2xl font-black sm:text-3xl">AI Health & Medical Assistant</h1>
+      <div className="relative h-[46vh] min-h-[300px] w-full overflow-hidden pt-16 sm:pt-0">
+        <video
+          className="absolute inset-0 h-full w-full object-cover brightness-[1.1] saturate-[1.15]"
+          autoPlay muted loop playsInline preload="metadata"
+        >
+          <source src={heroVideo.url} type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-background/20" />
+        <div className="relative z-10 flex h-full flex-col justify-end px-4 pb-5 sm:px-8">
+          <div className="mb-2 inline-flex w-fit items-center gap-2 rounded-full border border-primary/30 bg-card/50 px-3 py-1.5 backdrop-blur-md">
+            <HeartPulse className="h-4 w-4 text-primary" />
+            <span className="text-xs font-semibold sm:text-sm">Educational Health AI</span>
           </div>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-2xl font-black drop-shadow-lg sm:text-4xl">AI Health &amp; Medical Assistant</h1>
+          <p className="mt-1 max-w-xl text-sm text-muted-foreground">
             Understand symptoms, blood work and medical images in plain language — then talk to a doctor with better questions.
           </p>
-          <p className="mt-2 flex items-center gap-2 text-sm">
+        </div>
+      </div>
+
+      <main className="container mx-auto max-w-3xl px-4 pb-16 pt-6">
+        <header className="mb-4">
+          <p className="flex items-center gap-2 text-sm">
             <Coins className="h-4 w-4 text-primary" />
             <span className="font-semibold">{paidBalance}</span> credits available
             <Button asChild variant="link" size="sm" className="h-auto p-0"><Link to="/ai-credits">Top up</Link></Button>
           </p>
         </header>
+
 
         <div className="mb-5"><HealthDisclaimerBanner /></div>
 
