@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useDailyChallenge, useSubmitDaily } from "@/hooks/useEducationGamification";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Flame, CheckCircle2 } from "lucide-react";
+import { Flame, CheckCircle2, Lock } from "lucide-react";
 import { Helmet } from "react-helmet-async";
+import { useAuth } from "@/contexts/AuthContext";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const __HIW_DAILYCHALLENGE_STEPS = [
