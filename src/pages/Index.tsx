@@ -27,7 +27,7 @@ import {
   Clock, Timer, ChefHat, MessageCircle, Star, MessageSquare, Palette,
   Camera, Gem, Shirt, ArrowRight, Zap, Search, X,
   PenTool, Globe, ChevronRight, Layers, Coins,
-  Pin, PinOff, BookOpen, Library,
+  Pin, PinOff, BookOpen, Library, Activity,
 } from "lucide-react";
 
 // ── Data ──────────────────────────────────────────────
@@ -94,6 +94,7 @@ const services = [
   { title: "Virtual Pet", icon: Heart, path: "/virtual-pet", badge: "Pet", gradient: "from-green-400 to-emerald-500", category: "entertainment" },
   { title: "Virtual Escape Room", icon: Ghost, path: "/virtual-escape-room", badge: "Puzzle", gradient: "from-purple-600 to-violet-500", category: "entertainment" },
   { title: "Wellness Hub", icon: Heart, path: "/wellness", badge: "Wellness", gradient: "from-teal-500 to-cyan-500", category: "wellness" },
+  { title: "AI Health & Medical Assistant", icon: Activity, path: "/ai-health", badge: "Health AI", gradient: "from-rose-500 to-red-500", category: "wellness" },
   { title: "Wine Pairing", icon: ChefHat, path: "/wine-pairing", badge: "Sommelier", gradient: "from-red-500 to-rose-500", category: "creative" },
   { title: "Pet Translator", icon: MessageCircle, path: "/pet-translator", badge: "Pets", gradient: "from-amber-400 to-orange-500", category: "creative" },
   { title: "Plant Care", icon: Sparkles, path: "/plant-care", badge: "Garden", gradient: "from-green-500 to-lime-500", category: "wellness" },
