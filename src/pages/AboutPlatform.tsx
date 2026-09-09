@@ -8,7 +8,7 @@ import { Sparkles, Play, Pause, Volume2, VolumeX, ArrowRight, Search,
   Gavel, Activity, Apple, Shield, Ghost, Bot, PenTool, Image as ImageIcon,
   Clock, Palette, Scale, Dna, Zap, Video, MessageSquare, Mail,
   MessageCircle, BookOpen, FlaskConical, Car, Home, AlertTriangle, Bookmark, BookmarkCheck,
-  ChevronDown, Coins, Wallet, CheckCircle2 } from "lucide-react";
+  ChevronDown, Coins, Wallet, CheckCircle2, Dices } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
