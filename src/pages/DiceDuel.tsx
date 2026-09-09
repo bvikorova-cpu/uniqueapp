@@ -361,6 +361,7 @@ const DiceDuel = () => {
           <p>If the direction would leave the grid, the turn is skipped. First player to reach the bottom row wins the pot of {STAKE * 2} credits (entry {STAKE} credits each). If your opponent forfeits, you win instantly.</p>
         </CardContent>
       </Card>
+      </div>
     </main>
   );
 };
