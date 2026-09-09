@@ -465,3 +465,6 @@ verify_jwt = true
 
 [functions.dice-duel-forfeit]
 verify_jwt = true
+
+[functions.dice-duel-leaderboard]
+verify_jwt = false

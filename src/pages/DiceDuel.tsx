@@ -32,6 +32,17 @@ interface DiceMatch {
   finished_at: string | null;
 }
 
+interface LeaderRow {
+  user_id: string;
+  display_name: string;
+  avatar_url: string | null;
+  points: number;
+  wins: number;
+  losses: number;
+  matches: number;
+  rank: number;
+}
+
 const DICE_FACES: Record<number, string> = { 1: "⚀", 2: "⚁", 3: "⚂", 4: "⚃", 5: "⚄", 6: "⚅" };
 const DIR_LABELS: Record<number, string> = { 1: "↓ Down", 2: "↗ Up-right", 3: "↘ Down-right", 4: "← Left", 5: "↙ Down-left", 6: "↓ Down" };
 
@@ -43,6 +54,8 @@ const DiceDuel = () => {
   const [searching, setSearching] = useState(false);
   const [rolling, setRolling] = useState(false);
   const [animRoll, setAnimRoll] = useState<number | null>(null);
+  const [leaders, setLeaders] = useState<LeaderRow[]>([]);
+  const [lbLoading, setLbLoading] = useState(true);
   const animRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const isP1 = match?.player1_id === user?.id;
@@ -51,6 +64,16 @@ const DiceDuel = () => {
   const myTurn = match?.status === "active" && match.current_turn === user?.id;
   const iWon = match?.status === "finished" && match.winner_id === user?.id;
   const iLost = match?.status === "finished" && match.winner_id && match.winner_id !== user?.id;
+
+  const loadLeaderboard = useCallback(async () => {
+    setLbLoading(true);
+    try {
+      const { data } = await supabase.functions.invoke("dice-duel-leaderboard", { body: {} });
+      setLeaders((data?.leaderboard as LeaderRow[]) ?? []);
+    } finally {
+      setLbLoading(false);
+    }
+  }, []);
 
   const loadHistory = useCallback(async () => {
     if (!user) return;
@@ -63,6 +86,11 @@ const DiceDuel = () => {
       .limit(20);
     setHistory((data as DiceMatch[]) ?? []);
   }, [user]);
+
+  // Global leaderboard (visible to everyone, also signed out)
+  useEffect(() => {
+    loadLeaderboard();
+  }, [loadLeaderboard]);
 
   // Resume any active/waiting match on load
   useEffect(() => {
@@ -95,6 +123,7 @@ const DiceDuel = () => {
           if (updated.status === "finished") {
             refresh();
             loadHistory();
+            loadLeaderboard();
           }
         }
       )
@@ -102,7 +131,7 @@ const DiceDuel = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [match?.id, refresh, loadHistory]);
+  }, [match?.id, refresh, loadHistory, loadLeaderboard]);
 
   useEffect(() => () => {
     if (animRef.current) clearInterval(animRef.current);
@@ -139,6 +168,7 @@ const DiceDuel = () => {
       if (data.cancelled) setMatch(null);
       refresh();
       loadHistory();
+      loadLeaderboard();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Action failed");
     }
@@ -326,6 +356,43 @@ const DiceDuel = () => {
           </CardContent>
         </Card>
       )}
+
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <Trophy className="h-4 w-4 text-amber-500" /> Online leaderboard
+            <span className="ml-auto text-xs font-normal text-muted-foreground">1 win = 1 point</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {lbLoading ? (
+            <div className="flex items-center justify-center py-6 text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" />
+            </div>
+          ) : leaders.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-4">No finished duels yet — win the first one and top the board.</p>
+          ) : (
+            leaders.map((l) => (
+              <div
+                key={l.user_id}
+                className={`flex items-center gap-3 text-sm border-b border-border last:border-0 pb-2 last:pb-0 ${l.user_id === user?.id ? "font-semibold" : ""}`}
+              >
+                <span className="w-6 text-center text-muted-foreground">{l.rank}</span>
+                {l.avatar_url ? (
+                  <img src={l.avatar_url} alt={l.display_name} loading="lazy" className="h-7 w-7 rounded-full object-cover" />
+                ) : (
+                  <span className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs">
+                    {l.display_name.slice(0, 1).toUpperCase()}
+                  </span>
+                )}
+                <span className="flex-1 truncate" translate="no">{l.display_name}</span>
+                <span className="text-xs text-muted-foreground">{l.wins}W / {l.losses}L</span>
+                <Badge variant={l.rank <= 3 ? "default" : "secondary"}>{l.points} pts</Badge>
+              </div>
+            ))
+          )}
+        </CardContent>
+      </Card>
 
       {history.length > 0 && (
         <Card className="mt-6">
