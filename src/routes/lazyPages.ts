@@ -168,6 +168,7 @@ export const GenericLearning = lazy(() => import("@/pages/GenericLearning"));
 export const FirstAid = lazy(() => import("@/pages/FirstAid"));
 export const FitSlim = lazy(() => import("@/pages/FitSlim"));
 export const Wellness = lazy(() => import("@/pages/Wellness"));
+export const AIHealthAssistant = lazy(() => import("@/pages/AIHealthAssistant"));
 export const NutritionHub = lazy(() => import("@/pages/NutritionHub"));
 export const NutritionSubscriptions = lazy(() => import("@/pages/NutritionSubscriptions"));
 export const Psychology = lazy(() => import("@/pages/Psychology"));

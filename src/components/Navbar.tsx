@@ -190,6 +190,7 @@ const Navbar = () => {
       category: "Health & Wellness",
       items: [
         { path: "/wellness", label: "Wellness & Relaxation", icon: Heart },
+        { path: "/ai-health", label: "AI Health & Medical Assistant", icon: Activity },
         { path: "/psychologist", label: "Psychologist", icon: Brain },
         { path: "/first-aid", label: "First Aid", icon: Activity },
         { path: "/fit-slim", label: "Fit & Slim", icon: Apple },
