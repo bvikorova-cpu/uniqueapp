@@ -353,6 +353,14 @@ const DiceDuel = () => {
           <CardTitle className="text-base flex items-center gap-2"><HelpCircle className="h-4 w-4" /> How it works</CardTitle>
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground space-y-2">
+          <img
+            src={howItWorksImg}
+            alt="Dice Trail Duel game board — red and blue marker trails racing down a 9x14 grid of dots toward the bottom row, with a die beside the paper"
+            loading="lazy"
+            width={1200}
+            height={800}
+            className="rounded-xl w-full mb-2"
+          />
           <p>Two players race across a dot grid. On your turn, roll the die — the server rolls fairly and your trail extends one step in the rolled direction:</p>
           <ul className="grid grid-cols-2 gap-1">
             {Object.entries(DIR_LABELS).map(([k, v]) => (
