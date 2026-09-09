@@ -2,7 +2,9 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 
-const STAKE = 2;
+/** Battle Coins economy: entry 100 coins (= 1 AI credit exchanged), winner takes 160 coins + XP. */
+const MODULE = "dice_duel";
+const STAKE = 100;
 const COLS = 9;
 const START_P1 = [3, 0];
 const START_P2 = [5, 0];
@@ -20,6 +22,14 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
+    const coins = async (userId: string, delta: number, reason: string, refId?: string) => {
+      const { error } = await supabase.rpc("battle_coins_apply", {
+        _user_id: userId, _module: MODULE, _delta: delta,
+        _reason: reason, _source: MODULE, _ref_id: refId ?? null,
+      });
+      return !error;
+    };
+
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) return fail("No authorization header", 401);
     const { data: { user }, error: authError } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
@@ -28,7 +38,7 @@ serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const action = body?.action === "cancel" ? "cancel" : "find";
 
-    // ---- Cancel a waiting match (refund stake) ----
+    // ---- Cancel a waiting match (refund entry coins) ----
     if (action === "cancel") {
       const matchId = typeof body?.match_id === "string" ? body.match_id : null;
       if (!matchId) return fail("match_id required");
@@ -36,10 +46,7 @@ serve(async (req) => {
       if (!m || m.player1_id !== user.id) return fail("Match not found");
       if (m.status !== "waiting") return fail("Match already started");
       await supabase.from("dice_duel_matches").update({ status: "abandoned", finished_at: new Date().toISOString() }).eq("id", matchId);
-      await supabase.rpc("add_ai_credits", {
-        p_user_id: user.id, p_amount: m.stake,
-        p_reason: "dice_duel_stake_refund", p_source: "dice_duel",
-      });
+      await coins(user.id, m.stake ?? STAKE, "duel_entry_refund", matchId);
       return new Response(JSON.stringify({ ok: true, cancelled: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
@@ -61,68 +68,39 @@ serve(async (req) => {
       .maybeSingle();
 
     if (waiting) {
-      // Deduct stake from both players
-      const deducted: string[] = [];
-      for (const id of [waiting.player1_id, user.id]) {
-        const { data: ok, error: spendErr } = await supabase.rpc("deduct_ai_credits", {
-          p_user_id: id, p_amount: waiting.stake,
-          p_reason: "dice_duel_stake", p_source: "dice_duel",
-        });
-        if (spendErr || ok === false) {
-          for (const rid of deducted) {
-            await supabase.rpc("add_ai_credits", {
-              p_user_id: rid, p_amount: waiting.stake,
-              p_reason: "dice_duel_stake_refund", p_source: "dice_duel",
-            });
-          }
-          if (id === waiting.player1_id) {
-            // challenger can no longer pay — kill that match and let user create own
-            await supabase.from("dice_duel_matches").update({ status: "abandoned", finished_at: new Date().toISOString() }).eq("id", waiting.id);
-            break;
-          }
-          return fail(`You need ${waiting.stake} credits to play`);
-        }
-        deducted.push(id);
-      }
+      // Creator already paid on creation — only the joining player pays now.
+      const paid = await coins(user.id, -(waiting.stake ?? STAKE), "duel_entry", waiting.id);
+      if (!paid) return fail(`You need ${waiting.stake ?? STAKE} Battle Coins to play`, 402);
 
-      if (deducted.length === 2) {
-        const { data: joined, error: joinErr } = await supabase
-          .from("dice_duel_matches")
-          .update({
-            player2_id: user.id,
-            status: "active",
-            current_turn: waiting.player1_id,
-            started_at: new Date().toISOString(),
-          })
-          .eq("id", waiting.id)
-          .eq("status", "waiting")
-          .select()
-          .maybeSingle();
-        if (joinErr || !joined) {
-          for (const rid of deducted) {
-            await supabase.rpc("add_ai_credits", {
-              p_user_id: rid, p_amount: waiting.stake,
-              p_reason: "dice_duel_stake_refund", p_source: "dice_duel",
-            });
-          }
-          return fail("Match is no longer available");
-        }
-        return new Response(JSON.stringify({ ok: true, match: joined, joined: true }), {
-          headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      const { data: joined, error: joinErr } = await supabase
+        .from("dice_duel_matches")
+        .update({
+          player2_id: user.id,
+          status: "active",
+          current_turn: waiting.player1_id,
+          started_at: new Date().toISOString(),
+        })
+        .eq("id", waiting.id)
+        .eq("status", "waiting")
+        .select()
+        .maybeSingle();
+      if (joinErr || !joined) {
+        await coins(user.id, waiting.stake ?? STAKE, "duel_entry_refund", waiting.id);
+        return fail("Match is no longer available");
       }
-      // fall through to create own waiting match
+      return new Response(JSON.stringify({ ok: true, match: joined, joined: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // ---- Create a new waiting match ----
-    const { data: balance } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
-    if ((balance?.credits_remaining ?? 0) < STAKE) {
-      return fail(`You need ${STAKE} credits to play`, 402);
+    const { data: wallet } = await supabase
+      .from("battle_coins").select("balance")
+      .eq("user_id", user.id).eq("module", MODULE).maybeSingle();
+    if ((wallet?.balance ?? 0) < STAKE) {
+      return fail(`You need ${STAKE} Battle Coins to play`, 402);
     }
-    const { data: ok, error: spendErr } = await supabase.rpc("deduct_ai_credits", {
-      p_user_id: user.id, p_amount: STAKE,
-      p_reason: "dice_duel_stake", p_source: "dice_duel",
-    });
-    if (spendErr || ok === false) return fail("Not enough credits", 402);
+    const paid = await coins(user.id, -STAKE, "duel_entry");
+    if (!paid) return fail(`You need ${STAKE} Battle Coins to play`, 402);
 
     const { data: match, error: insErr } = await supabase
       .from("dice_duel_matches")
@@ -136,10 +114,7 @@ serve(async (req) => {
       .select()
       .single();
     if (insErr || !match) {
-      await supabase.rpc("add_ai_credits", {
-        p_user_id: user.id, p_amount: STAKE,
-        p_reason: "dice_duel_stake_refund", p_source: "dice_duel",
-      });
+      await coins(user.id, STAKE, "duel_entry_refund");
       console.error("dice duel insert failed", insErr);
       return fail("Could not create match", 500);
     }
@@ -152,4 +127,4 @@ serve(async (req) => {
   }
 });
 
-export const _internals = { STAKE, COLS, START_P1, START_P2 };
+export const _internals = { STAKE, COLS, START_P1, START_P2, MODULE };

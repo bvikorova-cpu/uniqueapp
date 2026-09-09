@@ -33,9 +33,9 @@ serve(async (req) => {
       await supabase.from("dice_duel_matches")
         .update({ status: "abandoned", finished_at: new Date().toISOString() })
         .eq("id", matchId).eq("status", "waiting");
-      await supabase.rpc("add_ai_credits", {
-        p_user_id: user.id, p_amount: m.stake,
-        p_reason: "dice_duel_stake_refund", p_source: "dice_duel",
+      await supabase.rpc("battle_coins_apply", {
+        _user_id: user.id, _module: "dice_duel", _delta: m.stake ?? 100,
+        _reason: "duel_entry_refund", _source: "dice_duel", _ref_id: matchId,
       });
       return new Response(JSON.stringify({ ok: true, cancelled: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -58,11 +58,15 @@ serve(async (req) => {
       .maybeSingle();
     if (upErr || !updated) return fail("Could not finish match", 409);
 
-    const pot = (m.stake ?? 2) * 2;
+    // Skill-game reward: winner takes 160 Battle Coins (80% of the 200-coin pot) + XP.
+    const prize = 160;
     if (winner) {
-      await supabase.rpc("add_ai_credits", {
-        p_user_id: winner, p_amount: pot,
-        p_reason: "dice_duel_win_forfeit", p_source: "dice_duel",
+      await supabase.rpc("battle_coins_apply", {
+        _user_id: winner, _module: "dice_duel", _delta: prize,
+        _reason: "duel_win_forfeit", _source: "dice_duel", _ref_id: matchId,
+      });
+      await supabase.rpc("award_xp", {
+        _user_id: winner, _amount: 10, _source: "dice_duel", _ref_id: matchId,
       });
     }
 
