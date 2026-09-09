@@ -87,6 +87,11 @@ const DiceDuel = () => {
     setHistory((data as DiceMatch[]) ?? []);
   }, [user]);
 
+  // Global leaderboard (visible to everyone, also signed out)
+  useEffect(() => {
+    loadLeaderboard();
+  }, [loadLeaderboard]);
+
   // Resume any active/waiting match on load
   useEffect(() => {
     if (!user) return;
