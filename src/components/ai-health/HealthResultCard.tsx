@@ -67,7 +67,7 @@ export const HealthResultCard = ({ result }: { result: HealthAnalysis }) => {
         result.doctor_questions.forEach((q) => write(`• ${q}`));
       }
       write(
-        "Informačný nástroj: AI výstupy slúžia výhradne na edukačné a preventívne účely a nenahrádzajú odbornú lekársku diagnostiku.",
+        "Informational tool only: AI outputs are for educational and preventive purposes and do not replace professional medical diagnosis.",
         9,
       );
       doc.save(`health-analysis-${Date.now()}.pdf`);
