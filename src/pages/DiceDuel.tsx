@@ -2,7 +2,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useAICredits } from "@/hooks/useAICredits";
+import { useBattleCoins, BATTLE_ENTRY_COINS, BATTLE_PRIZE_COINS, COINS_PER_CREDIT } from "@/hooks/useBattleCoins";
+import BattleCoinsWallet from "@/components/battle-coins/BattleCoinsWallet";
+import BattleCosmeticsShop from "@/components/battle-coins/BattleCosmeticsShop";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +15,8 @@ import howItWorksImg from "@/assets/dice-duel-howto.jpg";
 
 const COLS = 9;
 const ROWS = 14;
-const STAKE = 2;
+const STAKE = BATTLE_ENTRY_COINS;
+const PRIZE = BATTLE_PRIZE_COINS;
 
 type Trail = [number, number][];
 
@@ -48,7 +51,7 @@ const DIR_LABELS: Record<number, string> = { 1: "↓ Down", 2: "↗ Up-right", 3
 
 const DiceDuel = () => {
   const { user } = useAuth();
-  const { paidBalance, refresh } = useAICredits();
+  const { coins, refresh } = useBattleCoins("dice_duel");
   const [match, setMatch] = useState<DiceMatch | null>(null);
   const [history, setHistory] = useState<DiceMatch[]>([]);
   const [searching, setSearching] = useState(false);
@@ -139,8 +142,8 @@ const DiceDuel = () => {
 
   const findMatch = async () => {
     if (!user) return;
-    if ((paidBalance ?? 0) < STAKE) {
-      toast.error(`You need ${STAKE} credits to play`, { action: { label: "Get credits", onClick: () => (window.location.href = "/ai-credits") } });
+    if ((coins ?? 0) < STAKE) {
+      toast.error(`You need ${STAKE} Battle Coins to play — exchange 1 AI credit for ${COINS_PER_CREDIT} coins below.`);
       return;
     }
     setSearching(true);
@@ -164,7 +167,7 @@ const DiceDuel = () => {
       const { data, error } = await supabase.functions.invoke("dice-duel-forfeit", { body: { match_id: match.id } });
       if (error) throw new Error(data?.error || error.message);
       if (data?.error) throw new Error(data.error);
-      toast.success(data.cancelled ? "Match cancelled, stake refunded" : "Match forfeited");
+      toast.success(data.cancelled ? "Match cancelled, entry coins refunded" : "Match forfeited");
       if (data.cancelled) setMatch(null);
       refresh();
       loadHistory();
@@ -253,7 +256,7 @@ const DiceDuel = () => {
             <h1 className="text-2xl sm:text-3xl font-bold">Dice Trail Duel</h1>
           </div>
           <p className="text-muted-foreground">
-            Roll the die, draw your trail across the dot grid. First player to reach the bottom row wins the pot of {STAKE * 2} credits.
+            Roll the die, draw your trail across the dot grid. First player to reach the bottom row wins {PRIZE} Battle Coins + XP.
           </p>
         </div>
       </div>
@@ -269,25 +272,28 @@ const DiceDuel = () => {
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">Entry stake</span>
-              <Badge variant="secondary">{STAKE} credits</Badge>
+              <Badge variant="secondary">{STAKE} coins</Badge>
             </div>
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">Winner takes</span>
-              <Badge>{STAKE * 2} credits</Badge>
+              <Badge>{PRIZE} coins + 10 XP</Badge>
             </div>
             <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Your balance</span>
-              <Badge variant="outline">{paidBalance ?? 0} credits</Badge>
+              <span className="text-muted-foreground">Your coins</span>
+              <Badge variant="outline">{coins ?? 0} coins</Badge>
             </div>
             <Button className="w-full" size="lg" onClick={findMatch} disabled={searching}>
               {searching ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Users className="h-4 w-4 mr-2" />}
               {searching ? "Searching…" : "Find match"}
             </Button>
-            {(paidBalance ?? 0) < STAKE && (
+            {(coins ?? 0) < STAKE && (
               <p className="text-sm text-center text-muted-foreground">
-                Not enough credits. <Link to="/ai-credits" className="text-primary underline">Get credits</Link>
+                Not enough Battle Coins — exchange AI credits below (1 credit = {COINS_PER_CREDIT} coins).
               </p>
             )}
+            <p className="text-xs text-center text-muted-foreground">
+              Battle Coins are a cosmetic-only game currency. They can never be converted back into AI credits or money.
+            </p>
           </CardContent>
         </Card>
       )}
@@ -297,7 +303,7 @@ const DiceDuel = () => {
           <CardContent className="py-10 text-center space-y-4">
             <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
             <p className="font-medium">Waiting for an opponent to join…</p>
-            <p className="text-sm text-muted-foreground">Your {match.stake} credits are staked and will be refunded if you cancel.</p>
+            <p className="text-sm text-muted-foreground">Your {match.stake} Battle Coins are staked and will be refunded if you cancel.</p>
             <Button variant="outline" onClick={cancelOrForfeit}>Cancel & refund</Button>
           </CardContent>
         </Card>
@@ -314,7 +320,7 @@ const DiceDuel = () => {
               </div>
               {match.status === "finished" && (
                 <Badge variant={iWon ? "default" : "secondary"}>
-                  {iWon ? <><Trophy className="h-3 w-3 mr-1" /> You won +{match.stake * 2}</> : iLost ? "You lost" : "Finished"}
+                  {iWon ? <><Trophy className="h-3 w-3 mr-1" /> You won +{PRIZE} coins</> : iLost ? "You lost" : "Finished"}
                 </Badge>
               )}
             </div>
@@ -407,13 +413,18 @@ const DiceDuel = () => {
               <div key={h.id} className="flex items-center justify-between text-sm border-b border-border last:border-0 pb-2 last:pb-0">
                 <span className="text-muted-foreground">{new Date(h.finished_at ?? h.created_at).toLocaleDateString()}</span>
                 <Badge variant={h.winner_id === user?.id ? "default" : "outline"}>
-                  {h.winner_id === user?.id ? `Won +${h.stake * 2}` : `Lost −${h.stake}`}
+                  {h.winner_id === user?.id ? `Won +${PRIZE} coins` : `Lost −${h.stake} coins`}
                 </Badge>
               </div>
             ))}
           </CardContent>
         </Card>
       )}
+
+      <div className="mt-6 space-y-6">
+        <BattleCoinsWallet module="dice_duel" />
+        <BattleCosmeticsShop coins={coins} module="dice_duel" />
+      </div>
 
       <Card className="mt-6">
         <CardHeader>
@@ -434,7 +445,7 @@ const DiceDuel = () => {
               <li key={k} className="flex items-center gap-2"><span className="text-lg">{DICE_FACES[Number(k)]}</span> {v}</li>
             ))}
           </ul>
-          <p>If the direction would leave the grid, the turn is skipped. First player to reach the bottom row wins the pot of {STAKE * 2} credits (entry {STAKE} credits each). If your opponent forfeits, you win instantly.</p>
+          <p>If the direction would leave the grid, the turn is skipped. First player to reach the bottom row wins {PRIZE} Battle Coins + 10 XP (entry {STAKE} coins each, 1 AI credit = {COINS_PER_CREDIT} coins). Coins are spendable only on cosmetics and never convert back to credits or cash. If your opponent forfeits, you win instantly.</p>
         </CardContent>
       </Card>
       </div>
