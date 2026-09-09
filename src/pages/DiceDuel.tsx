@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Dices, Swords, Trophy, Loader2, Flag, Users, HelpCircle } from "lucide-react";
+import heroVideo from "@/assets/dice-duel-hero.mp4.asset.json";
 
 const COLS = 9;
 const ROWS = 14;
@@ -201,19 +202,33 @@ const DiceDuel = () => {
   };
 
   return (
-    <main className="container mx-auto px-4 pt-24 pb-16 max-w-3xl">
+    <main className="pb-16">
       <title>Dice Trail Duel — 1v1 Dice Race | Unique</title>
       <meta name="description" content="Realtime 1v1 dice trail race: roll the die, draw your line across the dot grid, first to the bottom wins the credit pot." />
 
-      <div className="flex items-center gap-3 mb-2">
-        <div className="p-2.5 rounded-xl bg-gradient-to-br from-red-500 to-blue-600 text-white">
-          <Dices className="h-6 w-6" />
+      <div className="relative h-[46vh] min-h-[300px] w-full overflow-hidden pt-16 sm:pt-0">
+        <video
+          className="absolute inset-0 h-full w-full object-cover brightness-[1.1] saturate-[1.15]"
+          autoPlay muted loop playsInline preload="metadata"
+        >
+          <source src={heroVideo.url} type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-background/20" />
+        <div className="relative z-10 flex h-full flex-col justify-end px-4 pb-5 sm:px-8 max-w-3xl mx-auto">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-red-500 to-blue-600 text-white">
+              <Dices className="h-6 w-6" />
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold">Dice Trail Duel</h1>
+          </div>
+          <p className="text-muted-foreground">
+            Roll the die, draw your trail across the dot grid. First player to reach the bottom row wins the pot of {STAKE * 2} credits.
+          </p>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold">Dice Trail Duel</h1>
       </div>
-      <p className="text-muted-foreground mb-6">
-        Roll the die, draw your trail across the dot grid. First player to reach the bottom row wins the pot of {STAKE * 2} credits.
-      </p>
+
+      <div className="container mx-auto px-4 pt-6 max-w-3xl">
+
 
       {!match && (
         <Card>
@@ -346,6 +361,7 @@ const DiceDuel = () => {
           <p>If the direction would leave the grid, the turn is skipped. First player to reach the bottom row wins the pot of {STAKE * 2} credits (entry {STAKE} credits each). If your opponent forfeits, you win instantly.</p>
         </CardContent>
       </Card>
+      </div>
     </main>
   );
 };
