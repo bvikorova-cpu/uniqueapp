@@ -286,6 +286,7 @@ import { ResetPassword,
   CardCollectionsGallery,
 
   BrainDuel,
+  DiceDuel,
   VirtualEscapeRoom,
   HorseRacing,
   E2EAnonymousDateMatches,
