@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { 
-  Bot, Sparkles, MessageCircle, Heart, BarChart3, Brain, 
-  Swords, Trophy, Flame, Star, Award 
+  Bot, Sparkles, BarChart3, Brain, 
+  Swords, Trophy, Flame, Star 
+
 } from "lucide-react";
 import { CloneHero } from "@/components/ai-clone/CloneHero";
 import { CloneCreator } from "@/components/ai-clone/CloneCreator";
