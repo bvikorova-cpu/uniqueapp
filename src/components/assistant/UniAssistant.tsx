@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useOverlayOpen } from "@/hooks/useOverlayOpen";
 import { UNI_OPEN_EVENT, useAssistantsHidden, useOpenRequest, setAssistantsHidden } from "@/lib/assistantBus";
+import { AiMarkdown } from "@/components/common/AiMarkdown";
 
 
 type Turn = { role: "user" | "assistant"; content: string };
@@ -36,6 +37,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     return localStorage.getItem("uni-onboarding-seen") !== "1";
   });
   const captionTimerRef = useRef<number | null>(null);
+  const endRef = useRef<HTMLDivElement | null>(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -58,6 +60,9 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
   };
 
   useEffect(() => { turnsRef.current = turns; }, [turns]);
+  useEffect(() => {
+    if (open) endRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
+  }, [turns, open, thinking]);
 
   const send = async (text: string) => {
     if (!text.trim()) return;
@@ -259,10 +264,11 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
                 </div>
               )}
               {turns.map((t, i) => (
-                <div key={i} className={`text-sm p-2.5 rounded-lg ${t.role === "user" ? "bg-primary/10 ml-6" : "bg-muted mr-6"}`}>
-                  {t.content}
+                <div key={i} className={`text-sm p-2.5 rounded-lg ${t.role === "user" ? "bg-primary/10 ml-6" : "mr-6"}`}>
+                  {t.role === "user" ? t.content : <AiMarkdown content={t.content} className="text-sm leading-relaxed" />}
                 </div>
               ))}
+              <div ref={endRef} />
             </div>
 
             <form
@@ -300,22 +306,34 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
 
   const captionBar = (
     <AnimatePresence>
-      {caption && (thinking || open) && (
+      {caption && !open && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
-          className="fixed left-1/2 -translate-x-1/2 bottom-40 md:bottom-28 z-[9997] max-w-[92vw] md:max-w-lg pointer-events-none"
+          className="fixed left-1/2 -translate-x-1/2 bottom-40 md:bottom-28 z-[9997] w-[92vw] md:w-auto md:max-w-lg"
         >
-          <div className={`px-4 py-2.5 rounded-2xl shadow-2xl backdrop-blur-md border text-sm leading-snug text-center ${
+          <div className={`relative px-4 py-2.5 pr-9 rounded-2xl shadow-2xl backdrop-blur-md border text-sm leading-snug ${
             caption.role === "user"
               ? "bg-primary/90 text-primary-foreground border-primary/40"
               : "bg-background/95 text-foreground border-primary/30"
           }`}>
+            <button
+              onClick={() => {
+                if (captionTimerRef.current) window.clearTimeout(captionTimerRef.current);
+                setCaption(null);
+              }}
+              aria-label="Close message"
+              className="absolute top-1.5 right-1.5 p-1 rounded-md opacity-70 hover:opacity-100 hover:bg-foreground/10"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
             <div className="text-[10px] font-bold uppercase tracking-wider opacity-70 mb-0.5">
               {caption.role === "user" ? "You" : "Uni"}
             </div>
-            {caption.text}
+            <div className="max-h-[40vh] overflow-y-auto overscroll-contain pr-1">
+              {caption.role === "user" ? caption.text : <AiMarkdown content={caption.text} className="text-sm leading-relaxed" />}
+            </div>
           </div>
         </motion.div>
       )}
