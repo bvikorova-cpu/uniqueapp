@@ -208,15 +208,15 @@ export default function FlyerStudio() {
     <div className="min-h-screen bg-background pb-16">
       <SEO title={`${t("flyer.title")} — Unique`} description={t("flyer.subtitle")} />
 
-      <div className="relative h-[180px] sm:h-[200px] md:h-[300px] overflow-hidden">
+      <div className="relative h-[180px] sm:h-[200px] md:h-[300px] overflow-hidden mt-14 md:mt-16">
         <video src={heroVideo.url} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-        <div className="relative h-full flex flex-col items-center justify-end pb-5 md:pb-8 text-center px-4">
-          <h1 className="text-2xl md:text-4xl font-black">{t("flyer.title")}</h1>
+        <div className="relative h-full flex flex-col items-center justify-end pb-4 md:pb-8 text-center px-4">
+          <h1 className="text-xl sm:text-2xl md:text-4xl font-black leading-tight">{t("flyer.title")}</h1>
           <p className="text-muted-foreground max-w-xl text-sm md:text-base mt-1">
             {t("flyer.subtitle")}
           </p>
-          <div className="flex flex-wrap gap-2 justify-center mt-3">
+          <div className="flex flex-wrap gap-2 justify-center mt-2 md:mt-3">
             <Badge variant="secondary" className="gap-1"><Coins className="h-3 w-3" /> {t("flyer.credit_badge", { cost: COST })}</Badge>
             <Badge variant="secondary">{t("flyer.style_badge", { count: FLYER_STYLES.length })}</Badge>
             <Badge variant="secondary">{t("flyer.language_badge", { count: FLYER_LANGUAGES.length })}</Badge>
