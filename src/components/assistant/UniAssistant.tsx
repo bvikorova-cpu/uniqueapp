@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useOverlayOpen } from "@/hooks/useOverlayOpen";
 import { UNI_OPEN_EVENT, useAssistantsHidden, useOpenRequest, setAssistantsHidden } from "@/lib/assistantBus";
+import { AiMarkdown } from "@/components/common/AiMarkdown";
 
 
 type Turn = { role: "user" | "assistant"; content: string };
