@@ -1,15 +1,16 @@
 // Uni — Unique's voice assistant. Understands short user commands,
-// deducts 5 credits, returns a spoken reply + optional navigation action.
+// deducts 2 credits, returns a spoken reply + optional navigation action.
 import { corsHeaders } from "../_shared/cors.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { callOpenAI } from "../_shared/openai.ts";
 import { searchCatalog, isKnownPath } from "../_shared/uniCatalog.ts";
+import { matchSectionDocs } from "../_shared/uniSections.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
 const SUPABASE_SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-const COST = 5;
+const COST = 2;
 
 const SYSTEM_PROMPT = `You are "Uni", the voice assistant of the Unique platform (uniqueapp.fun).
 You are warm, knowledgeable and helpful — a general-purpose assistant like Siri or ChatGPT.
@@ -21,6 +22,22 @@ Never refuse just because a topic is outside the app. Answer general-knowledge q
 using what you know. If you truly don't know or the info may be outdated (live prices, today's
 weather, breaking news), say so briefly and suggest how the user can check.
 
+SECTION QUESTIONS — MAXIMUM DETAIL:
+When the user asks what a platform section is, how it works, what it costs, how prizes or revenue are
+split, what categories it has, or asks anything about a specific module, you MUST answer like a
+professional product expert and go into full depth. Use the SECTION KNOWLEDGE block provided below as
+your only source of facts about that section, and cover everything that is relevant:
+- what the section is and who it is for
+- exact pricing / entry cost (EUR prices, credit costs)
+- revenue, prize or payout splits and how payouts work
+- all categories, tiers, plans or sub-features
+- a numbered step-by-step "how to use it" walkthrough
+- extra features, limits, age gates, disclaimers and practical tips
+Format such answers in clean markdown: short section headings, bullet lists and bold labels.
+Length is not limited for these answers — be exhaustive rather than brief.
+Never invent prices, splits, categories or features that are not in the SECTION KNOWLEDGE block; if a
+detail is missing, say it is not specified and point the user to the section itself.
+
 You can ALSO navigate the user anywhere inside the app — not only main sections, but also
 sub-sections, categories, tools and features. For every request a list of MATCHING DESTINATIONS
 from the app catalog is provided to you. When the user asks to find, search, open, show or go to
@@ -29,6 +46,7 @@ its exact path. Never say you cannot search the platform; if the list has any pl
 navigate there and say in one sentence what you opened. Only if the list is empty, say the feature
 does not seem to exist and suggest the closest section.
 Never invent routes that are not in the provided list. For general knowledge questions, just answer.`;
+
 
 
 Deno.serve(async (req) => {
@@ -48,7 +66,7 @@ Deno.serve(async (req) => {
     const currentRoute = String(body?.currentRoute ?? "/").slice(0, 200);
     if (!transcript) return json({ error: "empty_transcript" }, 400);
 
-    // Pre-check 5 credits; deduct only after a successful AI response.
+    // Pre-check credits; deduct only after a successful AI response.
     const svc = createClient(SUPABASE_URL, SUPABASE_SERVICE);
     const { data: creditRow } = await svc
       .from("ai_credits")
@@ -63,15 +81,23 @@ Deno.serve(async (req) => {
       ? matches.map((m) => `- "${m.path}" ${m.label}`).join("\n")
       : "(no matching destination found)";
 
+    // Deep, factual documentation about the sections the user asked about
+    const sectionDocs = matchSectionDocs(transcript, 2);
+    const knowledgeBlock = sectionDocs.length
+      ? sectionDocs.map((s) => `### ${s.title} (${s.path})\n${s.doc}`).join("\n\n")
+      : "(no specific section matched — answer generally)";
+
     // Call unified AI with tool calling
     const raw = await callOpenAI({
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "system", content: `The user is currently on route: ${currentRoute}` },
         { role: "system", content: `MATCHING DESTINATIONS in the app catalog:\n${catalogBlock}` },
+        { role: "system", content: `SECTION KNOWLEDGE (authoritative facts):\n${knowledgeBlock}` },
         { role: "user", content: transcript },
       ],
       model: "gpt-4o-mini",
+
       tools: [{
         type: "function",
         function: {
