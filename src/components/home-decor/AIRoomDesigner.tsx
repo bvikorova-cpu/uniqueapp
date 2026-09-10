@@ -59,14 +59,16 @@ export function AIRoomDesigner({ onDesignComplete }: AIRoomDesignerProps) {
 
   useEffect(() => { loadCredits(); }, [loadCredits]);
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result as string);
-      reader.readAsDataURL(file);
-    }
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.files?.[0];
+    if (!raw) return;
+    // Bake EXIF rotation into the pixels so the AI sees the room upright.
+    const { file, width, height } = await uprightImageWithSize(raw);
+    setSelectedImage(file);
+    setSourceSize({ width, height });
+    const reader = new FileReader();
+    reader.onloadend = () => setImagePreview(reader.result as string);
+    reader.readAsDataURL(file);
   };
 
   const handleGenerateDesign = async () => {
