@@ -209,7 +209,7 @@ export default function FlyerStudio() {
       <SEO title={`${t("flyer.title")} — Unique`} description={t("flyer.subtitle")} />
 
       <div className="relative h-[180px] sm:h-[200px] md:h-[300px] overflow-hidden mt-14 md:mt-16">
-        <video src={heroVideo.url} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" />
+        <video src={heroVideo.url} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover object-bottom md:object-center" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
         <div className="relative h-full flex flex-col items-center justify-end pb-4 md:pb-8 text-center px-4">
           <h1 className="text-lg sm:text-2xl md:text-4xl font-black leading-tight">{t("flyer.title")}</h1>
