@@ -104,44 +104,13 @@ const PetTranslator = () => {
           totalTranslations={stats.total_translations}
           totalUsers={stats.total_users}
           streak={0}
-          isSubscribed={subscription.subscribed}
+          isSubscribed={false}
         />
 
-        {!subscription.subscribed ? (
-          <div className="space-y-8">
-            <Card className="p-8 sm:p-12 text-center bg-gradient-to-br from-purple-500/10 to-fuchsia-500/10 border-purple-500/20">
-              <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-fuchsia-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Crown className="w-10 h-10 text-white" />
-              </div>
-              <h2 className="text-3xl font-black mb-4">Unlock AI Pet Translation</h2>
-              <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
-                Subscribe to access 12 powerful AI tools, streaks and achievements
-              </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-2xl mx-auto mb-8">
-                {[
-                  { icon: PawPrint, label: "AI Translator" },
-                  { icon: Heart, label: "Emotion Detector" },
-                  { icon: Stethoscope, label: "Health Scanner" },
-                  { icon: GraduationCap, label: "Training Coach" },
-                  { icon: Sparkles, label: "Diet Planner" },
-                  { icon: Crown, label: "12+ AI Tools" },
-                ].map(f => (
-                  <div key={f.label} className="flex items-center gap-2 p-3 rounded-lg bg-card/50 border border-border/30">
-                    <f.icon className="h-4 w-4 text-purple-400 flex-shrink-0" />
-                    <span className="text-xs font-medium">{f.label}</span>
-                  </div>
-                ))}
-              </div>
-              <Link to="/pet-translator-pricing">
-                <Button size="lg" className="text-lg px-8 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700">
-                  View Plans & Pricing
-                </Button>
-              </Link>
-            </Card>
-          </div>
-        ) : specialView ? (
+        {specialView ? (
           specialView
         ) : (
+
           <Tabs defaultValue="tools" className="w-full">
             <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
               <PetDailyTip />
