@@ -24,6 +24,25 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type ActiveView = "hub" | "create" | "history" | "name-generator" | "competitor-analyzer" | "social-kit" | "style-guide";
 
+/** AI output can be a string, an object or nested — always render readable text. */
+const asText = (v: any): string => {
+  if (v === null || v === undefined) return "";
+  if (typeof v === "string") return v;
+  if (typeof v === "number" || typeof v === "boolean") return String(v);
+  if (Array.isArray(v)) return v.map(asText).filter(Boolean).join(" · ");
+  if (typeof v === "object") {
+    return Object.entries(v)
+      .map(([k, val]) => {
+        const label = k.replace(/[_-]/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2");
+        const text = asText(val);
+        return text ? `${label.charAt(0).toUpperCase() + label.slice(1)}: ${text}` : "";
+      })
+      .filter(Boolean)
+      .join("\n");
+  }
+  return "";
+};
+
 const BrandBuilder = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
