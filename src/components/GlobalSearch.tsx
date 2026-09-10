@@ -133,6 +133,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "99", title: "Fit & Slim", category: "Health", path: "/fit-slim" },
   { id: "100", title: "Wellness", category: "Health", path: "/wellness" },
   { id: "100b", title: "AI Health & Medical Assistant", category: "Health", path: "/ai-health" },
+  { id: "100c", title: "Promotional Flyer Studio", category: "AI Tools", path: "/flyer-studio" },
   { id: "101", title: "Nutrition Hub", category: "Health", path: "/nutrition-hub" },
   { id: "102", title: "Safety Prevention", category: "Health", path: "/safety-prevention" },
   

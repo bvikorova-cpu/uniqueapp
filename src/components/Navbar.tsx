@@ -146,6 +146,7 @@ const Navbar = () => {
         { path: "/content-studio", label: "Content Studio", icon: Sparkles },
         { path: "/ai-generation", label: "AI Generation", icon: Sparkles },
         { path: "/analyzer", label: "Universal Analyzer", icon: Sparkles },
+        { path: "/flyer-studio", label: "Promotional Flyer Studio", icon: Megaphone },
         { path: "/video-ad-generator", label: "Video Ad Generator", icon: Video },
         { path: "/ai-video-creator", label: "AI Video Creator", icon: Video },
         { path: "/photo-styler", label: "Photo Styler - Art Styles", icon: Palette },

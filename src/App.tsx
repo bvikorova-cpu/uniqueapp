@@ -232,6 +232,7 @@ import { ResetPassword,
   Quiz,
   Wellness,
   AIHealthAssistant,
+  FlyerStudio,
   SafetyPrevention,
   Cooking,
   CookingAI,
@@ -852,6 +853,7 @@ const App = () => {
                         
                          <Route path="/wellness" element={<Wellness />} />
                          <Route path="/ai-health" element={<AIHealthAssistant />} />
+                         <Route path="/flyer-studio" element={<FlyerStudio />} />
                         <Route path="/safety-prevention" element={<SafetyPrevention />} />
                         <Route path="/handwriting" element={<Handwriting />} />
                         <Route path="/past-life" element={<PastLife />} />
