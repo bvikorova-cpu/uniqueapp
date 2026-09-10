@@ -308,28 +308,40 @@ serve(async (req) => {
       result = { id: row.id, ...parsed, illustration_url: illustrationUrl };
 
     } else if (action === "meditation") {
-      const { topic, duration_minutes = 5, voice_id = "EXAVITQu4vr4xnSDxMaL" } = body;
+      const { topic, duration_minutes = 5, voice_id = "EXAVITQu4vr4xnSDxMaL", language = "en" } = body;
       if (!topic || topic.length < 3) throw new Error("Topic required (min 3 chars)");
 
+      const LANG_NAMES: Record<string, string> = { en: "English", sk: "Slovak", cs: "Czech", de: "German",
+        es: "Spanish", fr: "French", it: "Italian", hu: "Hungarian", pl: "Polish", pt: "Portuguese",
+        ru: "Russian", ja: "Japanese", ko: "Korean", zh: "Simplified Chinese" };
+      const langName = LANG_NAMES[language] || "English";
+
       const { data: row, error: insErr } = await supabase.from("wellness_personalized_meditations")
-        .insert({ user_id: user.id, topic, duration_minutes, voice_id, status: "processing", credits_used: COST }).select().single();
+        .insert({ user_id: user.id, topic, duration_minutes, voice_id, language, status: "processing", credits_used: COST }).select().single();
       if (insErr) throw insErr;
 
+      // Slow guided narration is spoken at roughly 105–115 words per minute.
+      const targetWords = Math.round(duration_minutes * 112);
       const aiData = await callAI(LOVABLE_API_KEY, {
         model: "gpt-4o-mini",
+        max_tokens: Math.min(6000, Math.round(targetWords * 3) + 400),
         messages: [
-          { role: "system", content: `You are a master meditation teacher. Write a ${duration_minutes}-minute guided meditation script. Use calm language. Include "..." for natural pauses. No SSML, no labels. Speak in second person.` },
-          { role: "user", content: `Topic: ${topic}` },
+          { role: "system", content: `You are a master meditation teacher. Write a guided meditation script that lasts exactly about ${duration_minutes} minutes when narrated slowly.
+LENGTH IS A HARD REQUIREMENT: write between ${Math.round(targetWords * 0.95)} and ${Math.round(targetWords * 1.15)} words. Never stop early — expand the body with more breath cycles, body-scan detail, imagery and gentle repetition until the word count is reached.
+Write the entire script in ${langName}, natural and idiomatic, as a native meditation teacher would speak it. Do not mix languages.
+Use calm second-person language. Use "..." for natural pauses. No SSML, no stage directions, no section labels, no markdown, no asterisks, no word counts.` },
+          { role: "user", content: `Topic: ${topic}\nDuration: ${duration_minutes} minutes\nLanguage: ${langName}` },
         ] });
-      const script = aiData.choices?.[0]?.message?.content || "";
+      const script = (aiData.choices?.[0]?.message?.content || "").replace(/[*#]/g, "").trim();
       if (!script) throw new Error("No script generated");
 
       const audioUrl = await ttsUpload(supabase, ELEVENLABS_API_KEY, voice_id, script, `${user.id}/meditation-${row.id}.mp3`,
-        { stability: 0.7, similarity_boost: 0.75, style: 0.3, use_speaker_boost: true, speed: 0.9 });
+        { stability: 0.7, similarity_boost: 0.75, style: 0.3, use_speaker_boost: true, speed: 0.9 },
+        { multilingual: true });
 
       await supabase.from("wellness_personalized_meditations").update({ meditation_script: script, audio_url: audioUrl, status: "completed" }).eq("id", row.id);
 
-      result = { id: row.id, meditation_script: script, audio_url: audioUrl };
+      result = { id: row.id, meditation_script: script, audio_url: audioUrl, language };
 
     } else if (action === "mood") {
       const { selfie_data_url } = body;
