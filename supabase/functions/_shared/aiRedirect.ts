@@ -160,6 +160,33 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
           if (Array.isArray(v)) refs.push(...v);
           else if (typeof v === "string" && v) refs.push(v);
         }
+        // Image-to-image callers put the source photo inside the chat-shape
+        // message content (`{type:"image_url"}`) or Vertex-shape parts
+        // (`inlineData`). Without collecting those, Vertex would ignore the
+        // uploaded photo and invent a brand-new image from the prompt alone.
+        const pushRefFromPart = (part: unknown) => {
+          if (!part || typeof part !== "object") return;
+          const p = part as Record<string, any>;
+          const chatUrl = p.image_url?.url ?? p.image_url ?? p.imageUrl?.url;
+          if (typeof chatUrl === "string" && chatUrl) { refs.push(chatUrl); return; }
+          const inline = p.inlineData ?? p.inline_data;
+          if (inline?.data) {
+            const mime = inline.mimeType ?? inline.mime_type ?? "image/png";
+            refs.push(String(inline.data).startsWith("data:") ? inline.data : `data:${mime};base64,${inline.data}`);
+          }
+        };
+        if (Array.isArray(b.messages)) {
+          for (const message of b.messages) {
+            const content = message && typeof message === "object" ? (message as Record<string, unknown>).content : null;
+            if (Array.isArray(content)) content.forEach(pushRefFromPart);
+          }
+        }
+        if (Array.isArray(b.contents)) {
+          for (const c of b.contents) {
+            const parts = c && typeof c === "object" ? (c as Record<string, unknown>).parts : null;
+            if (Array.isArray(parts)) parts.forEach(pushRefFromPart);
+          }
+        }
         const messagePrompt = Array.isArray(b.messages)
           ? b.messages
               .map((message) => {
