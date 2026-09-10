@@ -705,10 +705,23 @@ STRICT RULES:
 - Output an image only, no text.`)
         : `${stylePrefix} Subject: ${subject}`;
 
+      // Orientation of the uploaded photo — without this the model happily
+      // returns a landscape frame for a portrait room (image looks rotated).
+      const __aspectRaw = String(reqBody.sourceAspect || "").toLowerCase();
+      const __aspectSize = __aspectRaw === "portrait"
+        ? "832x1248"
+        : __aspectRaw === "landscape" ? "1248x832" : undefined;
+      const __orientationRule = __aspectRaw === "portrait"
+        ? "\n- The uploaded photo is VERTICAL (portrait). The output must be vertical portrait with the same upright orientation — never rotated, never sideways, never landscape."
+        : __aspectRaw === "landscape"
+          ? "\n- The uploaded photo is HORIZONTAL (landscape). The output must be landscape with the same upright orientation — never rotated or sideways."
+          : "\n- Keep the same orientation and aspect ratio as the uploaded photo — never rotate the scene.";
+      const finalImgPrompt = sourceImage ? imgPrompt + __orientationRule : imgPrompt;
+
       // Vertex AI first (with the uploaded room as reference), gateway as fallback.
       if (sourceImage) {
         try {
-          const vertex = await tryVertexImage(imgPrompt, undefined, 1, [sourceImage]);
+          const vertex = await tryVertexImage(finalImgPrompt, __aspectSize, 1, [sourceImage]);
           const vb64 = vertex?.data?.[0]?.b64_json;
           if (vb64) {
             const vUrl = `data:image/png;base64,${vb64}`;
@@ -728,7 +741,7 @@ STRICT RULES:
             messages: [{
               role: "user",
               content: [
-                { type: "text", text: imgPrompt },
+                { type: "text", text: finalImgPrompt },
                 { type: "image_url", image_url: { url: sourceImage } },
               ],
             }],
@@ -736,7 +749,7 @@ STRICT RULES:
           }
         : {
             model: "openai/gpt-image-2",
-            prompt: imgPrompt,
+            prompt: finalImgPrompt,
             size: "1024x1024",
             quality: "low",
             n: 1,
@@ -753,7 +766,7 @@ STRICT RULES:
           : { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
         body: JSON.stringify(useGateway ? gatewayBody : {
           model: "gpt-image-1",
-          prompt: imgPrompt,
+          prompt: finalImgPrompt,
           size: "1024x1024",
           quality: "low",
           n: 1,

@@ -57,6 +57,59 @@ export async function normalizeImageForUpload(file: File): Promise<File> {
   }
 }
 
+/**
+ * Bakes EXIF orientation into the actual pixels and returns the upright JPEG
+ * plus its real dimensions. Phone photos carry an EXIF rotation flag that
+ * browsers honor but AI models do not — without this the model sees the room
+ * lying on its side and returns a sideways image.
+ */
+export async function uprightImageWithSize(
+  file: File,
+): Promise<{ file: File; width: number; height: number }> {
+  const fallback = async () => {
+    try {
+      const url = URL.createObjectURL(file);
+      const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const el = new Image();
+        el.onload = () => resolve(el);
+        el.onerror = () => reject(new Error("decode failed"));
+        el.src = url;
+      });
+      URL.revokeObjectURL(url);
+      return { file, width: img.naturalWidth, height: img.naturalHeight };
+    } catch {
+      return { file, width: 0, height: 0 };
+    }
+  };
+
+  if (!file?.type?.startsWith("image/")) return fallback();
+
+  try {
+    const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+    let { width, height } = bitmap;
+    if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+      const ratio = Math.min(MAX_DIMENSION / width, MAX_DIMENSION / height);
+      width = Math.round(width * ratio);
+      height = Math.round(height * ratio);
+    }
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return fallback();
+    ctx.drawImage(bitmap, 0, 0, width, height);
+    bitmap.close?.();
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob((b) => resolve(b), "image/jpeg", JPEG_QUALITY),
+    );
+    if (!blob) return fallback();
+    const base = (file.name || "image").replace(/\.[^.]+$/, "");
+    return { file: new File([blob], `${base}.jpg`, { type: "image/jpeg" }), width, height };
+  } catch {
+    return fallback();
+  }
+}
+
 export async function fileToDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();

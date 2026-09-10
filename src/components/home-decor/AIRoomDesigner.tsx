@@ -10,6 +10,7 @@ import { Upload, Sparkles, Loader2, Download, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { safeInvoke } from "@/utils/safeInvoke";
+import { uprightImageWithSize } from "@/utils/imageUploadPrep";
 
 import { useNavigate } from "react-router-dom";
 
@@ -49,6 +50,7 @@ export function AIRoomDesigner({ onDesignComplete }: AIRoomDesignerProps) {
   const [stylePreference, setStylePreference] = useState("");
   const [customPrompt, setCustomPrompt] = useState("");
   const [resultImage, setResultImage] = useState<string>("");
+  const [sourceSize, setSourceSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
 
   const loadCredits = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -59,14 +61,16 @@ export function AIRoomDesigner({ onDesignComplete }: AIRoomDesignerProps) {
 
   useEffect(() => { loadCredits(); }, [loadCredits]);
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result as string);
-      reader.readAsDataURL(file);
-    }
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.files?.[0];
+    if (!raw) return;
+    // Bake EXIF rotation into the pixels so the AI sees the room upright.
+    const { file, width, height } = await uprightImageWithSize(raw);
+    setSelectedImage(file);
+    setSourceSize({ width, height });
+    const reader = new FileReader();
+    reader.onloadend = () => setImagePreview(reader.result as string);
+    reader.readAsDataURL(file);
   };
 
   const handleGenerateDesign = async () => {
@@ -102,12 +106,19 @@ export function AIRoomDesigner({ onDesignComplete }: AIRoomDesignerProps) {
       const promptText = `Restyle this exact ${roomType.replace(/-/g, " ")} in ${styleDef?.label || stylePreference} style (${styleDef?.prompt || stylePreference}). ${keepRule} ${customPrompt || ""}`.trim();
 
 
+      const sourceAspect = sourceSize.width && sourceSize.height
+        ? (sourceSize.height > sourceSize.width * 1.1
+          ? "portrait"
+          : sourceSize.width > sourceSize.height * 1.1 ? "landscape" : "square")
+        : undefined;
+
       const { data, error } = await safeInvoke("generate-gift-message", {
         body: {
           type: "generate_ai_room_design",
           originalImageUrl: publicUrl,
           roomType,
           stylePreference,
+          sourceAspect,
           customPrompt: promptText,
           prompt: promptText } });
 
