@@ -741,7 +741,7 @@ STRICT RULES:
             messages: [{
               role: "user",
               content: [
-                { type: "text", text: imgPrompt },
+                { type: "text", text: finalImgPrompt },
                 { type: "image_url", image_url: { url: sourceImage } },
               ],
             }],
@@ -749,7 +749,7 @@ STRICT RULES:
           }
         : {
             model: "openai/gpt-image-2",
-            prompt: imgPrompt,
+            prompt: finalImgPrompt,
             size: "1024x1024",
             quality: "low",
             n: 1,
@@ -766,7 +766,7 @@ STRICT RULES:
           : { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
         body: JSON.stringify(useGateway ? gatewayBody : {
           model: "gpt-image-1",
-          prompt: imgPrompt,
+          prompt: finalImgPrompt,
           size: "1024x1024",
           quality: "low",
           n: 1,
