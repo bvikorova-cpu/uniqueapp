@@ -74,8 +74,6 @@ serve(async (req) => {
     const { imageUrl, startAge, endAge, frames } = body ?? {};
     if (!imageUrl || typeof imageUrl !== "string") return json({ error: "imageUrl is required" }, 400);
 
-    const lovableKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!lovableKey) return json({ error: "AI is not configured" }, 500);
 
     const numFrames = Number.isFinite(frames) && frames > 0 ? Math.min(Number(frames), 6) : 4;
     const sAge = Number.isFinite(startAge) ? Number(startAge) : 20;
