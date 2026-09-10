@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { getUnifiedAiCreditBalance, isInsufficientCreditsError, spendUnifiedAiCredits } from "../_shared/creativeAI.ts";
+import { callOpenAI } from "../_shared/openai.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
@@ -74,15 +75,28 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    const authHeader = req.headers.get("Authorization")!;
+    const authHeader = req.headers.get("Authorization") ?? "";
+    if (!authHeader.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
     const token = authHeader.replace("Bearer ", "");
     const { data: { user }, error: userError } = await supabase.auth.getUser(token);
     
     if (userError || !user) {
-      throw new Error("Unauthorized");
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const { category, title, inputData, styleReference, isRevision, originalContent } = await req.json();
+
+    if (!category || !CREDIT_COSTS[category] || typeof title !== "string" || !title.trim() || !inputData || typeof inputData !== "object") {
+      return new Response(JSON.stringify({ error: "Invalid generation request" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
 
     const creditCost = isRevision ? CREDIT_COSTS.revision : (CREDIT_COSTS[category] || 10);
 
@@ -94,7 +108,9 @@ serve(async (req) => {
     }
 
     // Build prompt
-    let systemPrompt = CATEGORY_PROMPTS[category] || "You are a professional creative writer.";
+    let systemPrompt = `${CATEGORY_PROMPTS[category] || "You are a professional creative writer."}
+
+Return only the finished creative work. Do not add greetings, explanations, alternatives, or closing commentary. Follow the requested language when it is explicitly stated; otherwise write in the same language as the title and description. Use clean section labels and readable formatting without Markdown bold markers.`;
     let userPrompt = "";
 
     if (isRevision && originalContent) {
@@ -119,6 +135,7 @@ serve(async (req) => {
       system: systemPrompt,
       user: userPrompt,
       model: "gpt-4o-mini",
+      max_completion_tokens: 3000,
     });
 
     if (!generatedContent) {
