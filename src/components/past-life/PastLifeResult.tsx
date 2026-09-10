@@ -50,6 +50,9 @@ export const PastLifeResult = ({ reading }: PastLifeResultProps) => {
   const karmicTheme =
     reading.overallKarmicTheme ?? reading.karmic_lessons ?? "Your karmic theme is still unfolding.";
   const soulmateConnection = reading.soulmateConnection ?? reading.soulmate_analysis ?? null;
+  // Older readings stored no per-life lesson — fall back to the first part of the overall theme.
+  const lessonFallback =
+    String(karmicTheme).split(/\n\n/)[0]?.trim() || "Your karmic lesson is still unfolding.";
 
 
   return (
