@@ -82,7 +82,7 @@ Deno.serve(async (req) => {
       : "(no matching destination found)";
 
     // Deep, factual documentation about the sections the user asked about
-    const sectionDocs = matchSectionDocs(transcript, 2);
+    const sectionDocs = matchSectionDocs(transcript, 4);
     const knowledgeBlock = sectionDocs.length
       ? sectionDocs.map((s) => `### ${s.title} (${s.path})\n${s.doc}`).join("\n\n")
       : "(no specific section matched — answer generally)";

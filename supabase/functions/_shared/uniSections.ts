@@ -2,6 +2,8 @@
 // in-depth questions ("what is Megatalent?", "how much does it cost?").
 // Keep facts in sync with the real implementation.
 
+import { UNI_SECTIONS_EXTRA } from "./uniSectionsExtra.ts";
+
 export interface UniSectionDoc {
   id: string;
   title: string;
@@ -185,10 +187,13 @@ TIPS
   },
 ];
 
+/** Every section doc: core entries plus the extended per-section knowledge base. */
+export const ALL_UNI_SECTIONS: UniSectionDoc[] = [...UNI_SECTIONS, ...UNI_SECTIONS_EXTRA];
+
 /** Returns the section docs whose keywords appear in the user's text. */
-export function matchSectionDocs(text: string, max = 2): UniSectionDoc[] {
+export function matchSectionDocs(text: string, max = 4): UniSectionDoc[] {
   const q = text.toLowerCase();
-  const scored = UNI_SECTIONS.map((s) => {
+  const scored = ALL_UNI_SECTIONS.map((s) => {
     let score = 0;
     for (const k of s.keywords) if (q.includes(k)) score += k.length;
     if (q.includes(s.title.toLowerCase())) score += 10;
