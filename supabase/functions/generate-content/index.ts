@@ -92,13 +92,25 @@ serve(async (req) => {
       cover_letter: "You are a career consultant. Write compelling, personalized cover letters that highlight candidate strengths.",
       business_document: "You are a business writer. Create professional, clear business documents with proper structure." };
 
+    // The model used to mirror the language of the user's prompt (e.g. Polish)
+    // and open with chatty filler like "Absolutely! Let's start...".
+    // Output must always be clean, professional English deliverable text only.
+    const OUTPUT_RULES = [
+      "ALWAYS write the output in professional English, regardless of the language of the user's prompt or title.",
+      "Return ONLY the finished deliverable. No greetings, no commentary, no meta text, no 'here are some options', no explanations, no closing questions.",
+      "Do not offer multiple alternatives unless explicitly asked — produce one polished result.",
+      "Do not use raw markdown emphasis characters (** or *). Use plain lines, short paragraphs and simple dashes for lists.",
+      "Keep names, brands, numbers, prices, dates, URLs and contact details exactly as given.",
+    ].join("\n");
+
     let generatedText: string;
     try {
       generatedText = await askAI(
-        systemPrompts[contentType as keyof typeof systemPrompts] || "You are a helpful assistant.",
+        `${systemPrompts[contentType as keyof typeof systemPrompts] || "You are a helpful assistant."}\n\n${OUTPUT_RULES}`,
         prompt,
         { model: "gpt-4o-mini" },
       );
+
     } catch (e) {
       const status = e instanceof UnifiedAIError ? e.status : 500;
       console.error("Unified AI error:", status, e instanceof Error ? e.message : String(e));
