@@ -28,7 +28,17 @@ export const useHandwritingCredits = () => {
       const { data, error } = await supabase.functions.invoke("handwriting-router", {
         body: { action: "analyze", imageUrl, analysisType } });
 
-      if (error) throw error;
+      if (error) {
+        let detail = error.message;
+        try {
+          const ctx: any = (error as any).context;
+          const body = ctx?.json ? await ctx.json() : null;
+          if (body?.error) detail = body.error;
+        } catch { /* keep generic message */ }
+        throw new Error(detail);
+      }
+      if ((data as any)?.error) throw new Error((data as any).error);
+      if (!(data as any)?.analysis) throw new Error("No analysis was returned. Please try again.");
       return data;
     },
     onSuccess: () => {
