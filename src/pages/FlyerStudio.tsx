@@ -58,7 +58,9 @@ type FlyerRow = {
 };
 
 export default function FlyerStudio() {
-  const { t } = useTranslation();
+  // Flyer Studio's controls stay in English; this does not change the user's
+  // global language or the selected language of the generated flyer.
+  const { t } = useTranslation("translation", { lng: "en" });
   const { user } = useAuth();
   const navigate = useNavigate();
   const { paidBalance, refresh } = useAICredits();
@@ -213,7 +215,7 @@ export default function FlyerStudio() {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
         <div className="relative h-full flex flex-col items-center justify-end pb-4 md:pb-8 text-center px-4">
           <h1 className="text-lg sm:text-2xl md:text-4xl font-black leading-tight">{t("flyer.title")}</h1>
-          <p className="text-muted-foreground max-w-xl text-sm md:text-base mt-1">
+          <p className="text-foreground/90 font-medium max-w-xl text-sm md:text-base mt-1">
             {t("flyer.subtitle")}
           </p>
           <div className="flex flex-wrap gap-2 justify-center mt-2 md:mt-3">

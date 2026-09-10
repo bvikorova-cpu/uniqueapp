@@ -56,20 +56,79 @@ serve(async (req) => {
     }
 
     const line = (label: string, value: string) => (value ? `${label}: ${value}` : "");
+    const sourceCopy = {
+      headline,
+      subheadline: clean(brief.subheadline, 160),
+      businessName: clean(brief.businessName, 100),
+      offer: clean(brief.offer, 120),
+      date: clean(brief.date, 80),
+      time: clean(brief.time, 60),
+      venue: clean(brief.venue, 160),
+      phone: clean(brief.phone, 60),
+      website: clean(brief.website, 120),
+      social: clean(brief.social, 120),
+      bullets: clean(brief.bullets, 500),
+      cta: clean(brief.cta, 120),
+      finePrint: clean(brief.finePrint, 200),
+    };
+
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+    // Translate and proofread the copy before image generation. Asking the image
+    // model to translate while composing artwork produces materially weaker text.
+    const translationRes = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "gemini-2.5-flash",
+        temperature: 0.1,
+        response_format: { type: "json_object" },
+        messages: [
+          {
+            role: "system",
+            content: `You are a senior advertising copywriter and native ${languageLabel} translator. Translate and professionally proofread every non-empty JSON string into polished, idiomatic ${languageLabel}. Preserve the exact JSON keys. Preserve brand names, personal names, phone numbers, URLs, social handles, monetary values, percentages, dates, times, addresses and factual claims exactly. Translate legal/fine-print wording faithfully without changing its legal meaning. Improve grammar and natural phrasing, but never invent offers, facts or claims. Keep headlines concise and persuasive, calls to action natural, and bullet structure intact. Return valid JSON only.`,
+          },
+          {
+            role: "user",
+            content: JSON.stringify(sourceCopy),
+          },
+        ],
+      }),
+    });
+
+    if (!translationRes.ok) {
+      const detail = await translationRes.text();
+      console.error("flyer translation error", translationRes.status, detail.slice(0, 400));
+      return json({ error: "Professional flyer translation failed. Please try again." }, 502);
+    }
+
+    const translationData = await translationRes.json();
+    const translatedContent = translationData?.choices?.[0]?.message?.content;
+    let translatedCopy: Record<string, unknown>;
+    try {
+      translatedCopy = JSON.parse(translatedContent ?? "");
+    } catch {
+      console.error("flyer translation returned invalid JSON");
+      return json({ error: "Professional flyer translation failed. Please try again." }, 502);
+    }
+    const translated = (key: keyof typeof sourceCopy, max: number) =>
+      clean(translatedCopy[key], max) || sourceCopy[key];
+
     const textBlock = [
-      line("Main headline", headline),
-      line("Sub-headline", clean(brief.subheadline, 160)),
-      line("Business or organiser name", clean(brief.businessName, 100)),
-      line("Offer / price", clean(brief.offer, 120)),
-      line("Date", clean(brief.date, 80)),
-      line("Time", clean(brief.time, 60)),
-      line("Venue / address", clean(brief.venue, 160)),
-      line("Phone", clean(brief.phone, 60)),
-      line("Website", clean(brief.website, 120)),
-      line("Social handles", clean(brief.social, 120)),
-      line("Key selling points", clean(brief.bullets, 500)),
-      line("Call to action", clean(brief.cta, 120)),
-      line("Small print / legal", clean(brief.finePrint, 200)),
+      line("Main headline", translated("headline", 120)),
+      line("Sub-headline", translated("subheadline", 160)),
+      line("Business or organiser name", translated("businessName", 100)),
+      line("Offer / price", translated("offer", 120)),
+      line("Date", translated("date", 80)),
+      line("Time", translated("time", 60)),
+      line("Venue / address", translated("venue", 160)),
+      line("Phone", translated("phone", 60)),
+      line("Website", translated("website", 120)),
+      line("Social handles", translated("social", 120)),
+      line("Key selling points", translated("bullets", 500)),
+      line("Call to action", translated("cta", 120)),
+      line("Small print / legal", translated("finePrint", 200)),
     ].filter(Boolean).join("\n");
 
     const direction = [
@@ -86,18 +145,15 @@ serve(async (req) => {
       `Design a professional, print-ready promotional flyer, aspect ratio ${aspect}, full-bleed poster composition.`,
       `Visual style preset "${styleName || "Custom"}": ${stylePrompt || "modern advertising poster"}.`,
       direction ? `Creative direction:\n${direction}` : "",
-      `ALL text on the flyer must be written in ${languageLabel} and spelled perfectly, with correct diacritics and no invented, duplicated or garbled words.`,
-      `Translate every user-provided phrase into natural, idiomatic ${languageLabel} while keeping proper names, numbers, prices, phone numbers, URLs, dates and exact legal text unchanged. Do not leave any English words unless the user wrote them in English.`,
-      `Render exactly this text content, nothing else:\n${textBlock}`,
+      `ALL text on the flyer must be written in ${languageLabel}, using the professionally translated and proofread copy supplied below.`,
+      `Typeset the supplied copy verbatim. Do not translate it again, paraphrase it, abbreviate it, duplicate it, or add any words. Preserve every accent and diacritic exactly.`,
+      `Render exactly this approved text content, nothing else:\n${textBlock}`,
       "Typography must be sharp, correctly kerned and clearly readable, with a strong hierarchy: dominant headline, supporting sub-headline, prominent offer or price, and a compact contact block at the bottom.",
       refImages.length
         ? "Use the supplied reference photo(s) as the real subject of the flyer; keep the products, people and logos faithful, and build the layout around them."
         : "",
       "No watermarks, no placeholder lorem ipsum, no stray letters, no fake QR codes.",
     ].filter(Boolean).join("\n\n");
-
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
 
     const sizeMap: Record<string, string> = {
       "3:4": "1024x1536",
