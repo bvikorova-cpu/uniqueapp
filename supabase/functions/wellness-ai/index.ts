@@ -73,23 +73,50 @@ async function callImage(LOVABLE_API_KEY: string, prompt: string): Promise<strin
   } catch (e) { console.error("Image gen failed:", e); return null; }
 }
 
+// Split long scripts into TTS-sized chunks on sentence boundaries.
+function splitForTTS(text: string, maxLen = 4200): string[] {
+  const parts: string[] = [];
+  let buf = "";
+  for (const sentence of text.split(/(?<=[.!?…]|\.\.\.)\s+/)) {
+    if ((buf + " " + sentence).trim().length > maxLen) {
+      if (buf.trim()) parts.push(buf.trim());
+      buf = sentence;
+    } else {
+      buf = (buf ? buf + " " : "") + sentence;
+    }
+  }
+  if (buf.trim()) parts.push(buf.trim());
+  return parts.length ? parts : [text.slice(0, maxLen)];
+}
+
 async function ttsUpload(
   supabase: any,
   ELEVENLABS_API_KEY: string | undefined,
   voice_id: string,
   text: string,
   filePath: string,
-  voiceSettings: any
+  voiceSettings: any,
+  opts: { multilingual?: boolean } = {}
 ): Promise<string | null> {
   if (!ELEVENLABS_API_KEY) return null;
   try {
-    const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice_id}?output_format=mp3_44100_128`, {
-      method: "POST",
-      headers: { "xi-api-key": ELEVENLABS_API_KEY, "Content-Type": "application/json" },
-      body: JSON.stringify({ text: text.slice(0, 5000), model_id: "eleven_turbo_v2_5", voice_settings: voiceSettings }) });
-    if (!r.ok) { console.error("ElevenLabs error:", await r.text()); return null; }
-    const buf = await r.arrayBuffer();
-    const { error: upErr } = await supabase.storage.from("wellness-ai").upload(filePath, buf, { contentType: "audio/mpeg", upsert: true });
+    const modelId = opts.multilingual ? "eleven_multilingual_v2" : "eleven_turbo_v2_5";
+    const chunks = splitForTTS(text);
+    const buffers: Uint8Array[] = [];
+    for (const chunk of chunks) {
+      const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice_id}?output_format=mp3_44100_128`, {
+        method: "POST",
+        headers: { "xi-api-key": ELEVENLABS_API_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({ text: chunk, model_id: modelId, voice_settings: voiceSettings }) });
+      if (!r.ok) { console.error("ElevenLabs error:", await r.text()); if (!buffers.length) return null; break; }
+      buffers.push(new Uint8Array(await r.arrayBuffer()));
+    }
+    if (!buffers.length) return null;
+    const total = buffers.reduce((n, b) => n + b.length, 0);
+    const merged = new Uint8Array(total);
+    let off = 0;
+    for (const b of buffers) { merged.set(b, off); off += b.length; }
+    const { error: upErr } = await supabase.storage.from("wellness-ai").upload(filePath, merged, { contentType: "audio/mpeg", upsert: true });
     if (upErr) { console.error("Upload error:", upErr); return null; }
     const { data: pub } = supabase.storage.from("wellness-ai").getPublicUrl(filePath);
     return pub.publicUrl;
