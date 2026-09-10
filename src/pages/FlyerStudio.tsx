@@ -212,7 +212,7 @@ export default function FlyerStudio() {
         <video src={heroVideo.url} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
         <div className="relative h-full flex flex-col items-center justify-end pb-4 md:pb-8 text-center px-4">
-          <h1 className="text-xl sm:text-2xl md:text-4xl font-black leading-tight">{t("flyer.title")}</h1>
+          <h1 className="text-lg sm:text-2xl md:text-4xl font-black leading-tight">{t("flyer.title")}</h1>
           <p className="text-muted-foreground max-w-xl text-sm md:text-base mt-1">
             {t("flyer.subtitle")}
           </p>
