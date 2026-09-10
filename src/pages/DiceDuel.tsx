@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBattleCoins, BATTLE_ENTRY_COINS, BATTLE_PRIZE_COINS, COINS_PER_CREDIT } from "@/hooks/useBattleCoins";

@@ -12,12 +12,13 @@ export const BATTLE_PRIZE_COINS = 160; // 80% of a 2-player 100-coin pot
 export const BATTLE_COINS_UPDATED = "battle-coins-updated";
 
 /** Each module keeps its own isolated coin wallet — coins never move between sections. */
-export type BattleModule = "kitchenstars" | "reel_battles" | "megatalent";
+export type BattleModule = "kitchenstars" | "reel_battles" | "megatalent" | "dice_duel";
 
 export const BATTLE_MODULE_LABELS: Record<BattleModule, string> = {
   kitchenstars: "KitchenStars",
   reel_battles: "Clip Battles",
   megatalent: "Megatalent",
+  dice_duel: "Dice Trail Duel",
 };
 
 export function useBattleCoins(module: BattleModule = "kitchenstars") {
