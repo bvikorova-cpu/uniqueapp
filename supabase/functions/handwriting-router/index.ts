@@ -5,6 +5,7 @@ import "../_shared/aiRedirect.ts";
 // Billing actions: couples-checkout, couples-status, accept-couples-invite,
 //                  hr-checkout, hr-status, portal
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { refundAICredits } from "../_shared/credits.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 
 const PRICES = {
