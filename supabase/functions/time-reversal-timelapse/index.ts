@@ -1,6 +1,7 @@
 import "../_shared/aiRedirect.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
+import { tryVertexImage } from "../_shared/vertexDirect.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version" };
@@ -99,23 +100,8 @@ serve(async (req) => {
       return "very elderly (80+): deeply wrinkled thin skin, age spots, hollow cheeks, thin white hair, drooping eyelids, frail neck";
     };
 
-    const callModel = async (model: string, age: number) =>
-      await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-        method: "POST",
-        signal: AbortSignal.timeout(55_000),
-        headers: {
-          "Lovable-API-Key": lovableKey,
-          "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model,
-          modalities: ["image", "text"],
-          messages: [{
-            role: "user",
-            content: [
-              { type: "text", text: `Create a photorealistic portrait of the SAME PERSON as in the reference photo, but at EXACTLY ${age} years old. Age transformation is the PRIMARY goal: the face, skull proportions, skin, hair and body MUST be fully rebuilt to match ${age} years of age — ${ageBrief(age)}. Keep only the identity cues (ethnicity, eye colour, hair colour family, general likeness) and a similar background style. It is WRONG to reuse the adult face, adult makeup, adult hairstyle, adult clothing or adult body from the reference; redraw them age-appropriately. A viewer must instantly guess the age as about ${age} without a caption. Natural, anatomically correct human anatomy for ${age} years old. No text, no watermark, no collage.` },
-              { type: "image_url", image_url: { url: imageUrl } },
-            ] }] }) });
-
+    const framePrompt = (age: number) =>
+      `Create a photorealistic portrait of the SAME PERSON as in the reference photo, but at EXACTLY ${age} years old. Age transformation is the PRIMARY goal: the face, skull proportions, skin, hair and body MUST be fully rebuilt to match ${age} years of age — ${ageBrief(age)}. Keep only the identity cues (ethnicity, eye colour, hair colour family, general likeness) and a similar background style. It is WRONG to reuse the adult face, adult makeup, adult hairstyle, adult clothing or adult body from the reference; redraw them age-appropriately. A viewer must instantly guess the age as about ${age} without a caption. Natural, anatomically correct human anatomy for ${age} years old. No text, no watermark, no collage.`;
 
     // Frames are generated in PARALLEL — sequential generation of 4-6 frames
     // exceeded the 150s edge idle timeout (504 IDLE_TIMEOUT).
@@ -123,27 +109,16 @@ serve(async (req) => {
     let creditsExhausted = false;
 
     const genFrame = async (age: number) => {
-      for (const model of ["google/gemini-3.1-flash-image", "google/gemini-2.5-flash-image"]) {
+      for (let attempt = 0; attempt < 2; attempt++) {
         try {
-          const res = await callModel(model, age);
-
-          if (res.status === 429) { rateLimited = true; await res.text(); return null; }
-          if (res.status === 402) { creditsExhausted = true; await res.text(); return null; }
-
-          if (!res.ok) {
-            lastError = `${model} ${res.status}: ${(await res.text()).slice(0, 500)}`;
-            console.error("gateway error", lastError);
-            continue;
-          }
-
-          const data = await res.json();
-          const url = data?.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-          if (url) return { age, url };
-          lastError = `${model}: no image in response ${JSON.stringify(data).slice(0, 500)}`;
+          const out = await tryVertexImage(framePrompt(age), "1:1", 1, [imageUrl]);
+          const b64 = out?.data?.[0]?.b64_json;
+          if (b64) return { age, url: `data:image/png;base64,${b64}` };
+          lastError = `no image returned for age ${age}`;
           console.error(lastError);
         } catch (err) {
-          lastError = `${model}: ${String((err as any)?.message ?? err)}`;
-          console.error("frame generation failed", age, lastError);
+          lastError = `age ${age}: ${String((err as any)?.message ?? err)}`;
+          console.error("frame generation failed", lastError);
         }
       }
       return null;
