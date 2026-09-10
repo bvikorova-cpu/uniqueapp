@@ -3,7 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBattleCoins, BATTLE_ENTRY_COINS, BATTLE_PRIZE_COINS, COINS_PER_CREDIT } from "@/hooks/useBattleCoins";
 import BattleCoinsWallet from "@/components/battle-coins/BattleCoinsWallet";
-import BattleCosmeticsShop from "@/components/battle-coins/BattleCosmeticsShop";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -291,7 +290,7 @@ const DiceDuel = () => {
               </p>
             )}
             <p className="text-xs text-center text-muted-foreground">
-              Battle Coins are a cosmetic-only game currency. They can never be converted back into AI credits or money.
+              Battle Coins are a game-only currency. They can never be converted back into AI credits or money.
             </p>
           </CardContent>
         </Card>
@@ -422,7 +421,6 @@ const DiceDuel = () => {
 
       <div className="mt-6 space-y-6">
         <BattleCoinsWallet module="dice_duel" />
-        <BattleCosmeticsShop coins={coins} module="dice_duel" />
       </div>
 
       <Card className="mt-6">
@@ -444,7 +442,7 @@ const DiceDuel = () => {
               <li key={k} className="flex items-center gap-2"><span className="text-lg">{DICE_FACES[Number(k)]}</span> {v}</li>
             ))}
           </ul>
-          <p>If the direction would leave the grid, the turn is skipped. First player to reach the bottom row wins {PRIZE} Battle Coins + 10 XP (entry {STAKE} coins each, 1 AI credit = {COINS_PER_CREDIT} coins). Coins are spendable only on cosmetics and never convert back to credits or cash. If your opponent forfeits, you win instantly.</p>
+          <p>If the direction would leave the grid, the turn is skipped. First player to reach the bottom row wins {PRIZE} Battle Coins + 10 XP (entry {STAKE} coins each, 1 AI credit = {COINS_PER_CREDIT} coins). Coins never convert back to credits or cash. If your opponent forfeits, you win instantly.</p>
         </CardContent>
       </Card>
       </div>
