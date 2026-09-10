@@ -1,7 +1,6 @@
 import "../_shared/aiRedirect.ts";
 // Personal Mentor universal router — handles all mentor features
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import Stripe from "https://esm.sh/stripe@18.5.0";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -11,28 +10,9 @@ const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-const MENTOR_PRICES: Record<string, string> = { monthly: "price_1TXnOuGaXSfGtYFtNzPlq3GN",
-  yearly: "price_1TXnOvGaXSfGtYFtxGWrODSu" };
-
-const MENTOR_PRICE_TO_PLAN: Record<string, string> = { price_1TXnOuGaXSfGtYFtNzPlq3GN: "monthly",
-  price_1TXnOvGaXSfGtYFtxGWrODSu: "yearly" };
-
-function stripePeriodEndToIso(sub: Stripe.Subscription): string | null {
-  const topLevelEnd = (sub as any).current_period_end;
-  const itemEnd = (sub.items?.data ?? [])
-    .map((item: any) => item.current_period_end)
-    .find((value: unknown) => typeof value === "number" && Number.isFinite(value));
-  const unixSeconds = typeof topLevelEnd === "number" && Number.isFinite(topLevelEnd)
-    ? topLevelEnd
-    : itemEnd;
-
-  if (typeof unixSeconds !== "number" || !Number.isFinite(unixSeconds) || unixSeconds <= 0) {
-    return null;
-  }
-
-  const date = new Date(unixSeconds * 1000);
-  return Number.isNaN(date.getTime()) ? null : date.toISOString();
-}
+// Credits-only access: one coach area unlocked for 30 days.
+const MENTOR_UNLOCK_COST = 30;
+const MENTOR_UNLOCK_DAYS = 30;
 
 function json(b: unknown, s = 200) {
   return new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -90,35 +70,55 @@ Deno.serve(async (req) => {
     const userId = user.id;
 
     switch (action) {
-      case "premium.checkout": {
-        const plan = body.plan === "yearly" ? "yearly" : "monthly";
+      // Credits-only unlock: 30 AI credits = 30 days access to one coach area.
+      case "premium.checkout":
+      case "premium.unlock": {
         const area = ["career", "fitness", "mindset", "relationships"].includes(body.area) ? body.area : "career";
-        const priceId = MENTOR_PRICES[plan];
-        if (!user.email) return json({ error: "email required" }, 400);
-        const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-        if (!stripeKey) return json({ error: "Stripe is not configured" }, 500);
-        const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-        const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-        const customerId = customers.data[0]?.id;
+        const nowMs = Date.now();
 
-        // Block duplicate subscription for the same area
-        if (customerId) {
-          const existing = await stripe.subscriptions.list({ customer: customerId, status: "active", limit: 50 });
-          const dupe = existing.data.find((s) => (s.metadata?.mentor_area === area) && MENTOR_PRICE_TO_PLAN[s.items.data[0]?.price.id]);
-          if (dupe) return json({ error: `You already have an active ${area} coach subscription.` }, 409);
+        const { data: existing } = await admin
+          .from("mentor_premium_subs")
+          .select("current_period_end, status")
+          .eq("user_id", userId)
+          .eq("area", area)
+          .maybeSingle();
+        if (existing?.status === "active" && existing.current_period_end && new Date(existing.current_period_end).getTime() > nowMs) {
+          return json({ error: `Your ${area} coach is already active.` }, 409);
         }
 
-        const origin = req.headers.get("origin") || "https://uniqueapp.fun";
-        const session = await stripe.checkout.sessions.create({
-          customer: customerId,
-          customer_email: customerId ? undefined : user.email,
-          line_items: [{ price: priceId, quantity: 1 }],
-          mode: "subscription",
-          success_url: `${origin}/ai-mentor/${area}?checkout=success`,
-          cancel_url: `${origin}/ai-mentor/premium?status=cancel`,
-          metadata: { user_id: userId, plan, mentor_area: area },
-          subscription_data: { metadata: { user_id: userId, plan, mentor_area: area } } });
-        return json({ url: session.url });
+        const { data: wallet } = await admin
+          .from("ai_credits")
+          .select("credits_remaining")
+          .eq("user_id", userId)
+          .maybeSingle();
+        if (!wallet || wallet.credits_remaining < MENTOR_UNLOCK_COST) {
+          return json({ error: "Insufficient credits. Please purchase more." }, 402);
+        }
+
+        const { error: deductErr } = await admin.rpc("deduct_ai_credits", {
+          p_user_id: userId,
+          p_amount: MENTOR_UNLOCK_COST,
+          p_reason: `mentor_unlock:${area}`,
+          p_source: "mentor-router" });
+        if (deductErr) return json({ error: "Insufficient credits. Please purchase more." }, 402);
+
+        const periodEnd = new Date(nowMs + MENTOR_UNLOCK_DAYS * 24 * 3600 * 1000).toISOString();
+        const { error: upErr } = await admin.from("mentor_premium_subs").upsert({
+          user_id: userId,
+          email: user.email ?? null,
+          area,
+          status: "active",
+          plan: "credits",
+          current_period_end: periodEnd }, { onConflict: "user_id,area" });
+        if (upErr) {
+          await admin.rpc("add_ai_credits", {
+            p_user_id: userId,
+            p_amount: MENTOR_UNLOCK_COST,
+            p_reason: `mentor_unlock_refund:${area}`,
+            p_source: "mentor-router" });
+          return json({ error: upErr.message }, 500);
+        }
+        return json({ ok: true, url: null, area, plan: "credits", credits_spent: MENTOR_UNLOCK_COST, current_period_end: periodEnd });
       }
       case "premium.check": {
         // Returns map of per-area subscriptions, plus aggregate `subscribed` if any area is active
@@ -173,31 +173,9 @@ Deno.serve(async (req) => {
           if (requestedArea) return json({ subscribed: true, ...allAreas[requestedArea], areas: allAreas });
           return json({ subscribed: true, areas: allAreas });
         }
-        if (!user.email) return json({ subscribed: false, areas: {} });
-        const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-        if (!stripeKey) return json({ subscribed: false, areas: {}, error: "Stripe is not configured" }, 200);
-        const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-        const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-        if (!customers.data.length) return json({ subscribed: false, areas: {} });
-        const customerId = customers.data[0].id;
-        const subs = await stripe.subscriptions.list({ customer: customerId, status: "active", limit: 50 });
-        const areas: Record<string, { subscribed: boolean; plan: string; current_period_end: string | null; subscription_id: string }> = {};
-        for (const s of subs.data) {
-          const item = s.items.data.find((i) => MENTOR_PRICE_TO_PLAN[i.price.id]);
-          if (!item) continue;
-          const a = (s.metadata?.mentor_area as string) || "career";
-          const plan = MENTOR_PRICE_TO_PLAN[item.price.id];
-          const periodEnd = stripePeriodEndToIso(s);
-          areas[a] = { subscribed: true, plan, current_period_end: periodEnd, subscription_id: s.id };
-          await admin.from("mentor_premium_subs").upsert({ user_id: userId, email: user.email, area: a,
-            stripe_customer_id: customerId, stripe_subscription_id: s.id,
-            status: "active", plan, current_period_end: periodEnd }, { onConflict: "user_id,area" });
-        }
-        if (requestedArea) {
-          const a = areas[requestedArea];
-          return json({ subscribed: !!a, ...(a ?? {}), areas });
-        }
-        return json({ subscribed: Object.keys(areas).length > 0, areas });
+        // Credits-only model: no Stripe subscription lookup.
+        if (requestedArea) return json({ subscribed: false, areas: {} });
+        return json({ subscribed: false, areas: {} });
       }
 
       // ───── 1. MEMORY ─────

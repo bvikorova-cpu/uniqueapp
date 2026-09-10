@@ -21,16 +21,26 @@ export const useMentorPremium = (area?: MentorArea) =>
     },
     refetchInterval: 60_000 });
 
-export const useMentorCheckout = () =>
-  useMutation({
-    // Credits-only: Personal Mentor premium runs on the unified AI credits
-    // wallet — users top up at /ai-credits instead of a Stripe subscription.
-    mutationFn: async (_vars: { plan: "monthly" | "yearly"; area: MentorArea }) => {
-      window.location.href = "/ai-credits";
-      return { url: null } as { url: string | null };
-    },
+export const MENTOR_UNLOCK_COST = 30;
+export const MENTOR_UNLOCK_DAYS = 30;
 
-    onError: (e: any) => toast.error(e?.message ?? "Checkout failed") });
+// Credits-only: unlocking a coach spends AI credits from the unified wallet.
+export const useMentorUnlock = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (vars: { area: MentorArea }) =>
+      mentorCall<{ ok: boolean; area: string; current_period_end: string }>("premium.unlock", { area: vars.area }),
+    onSuccess: () => {
+      toast.success(`Coach unlocked for ${MENTOR_UNLOCK_DAYS} days`);
+      qc.invalidateQueries({ queryKey: ["mentor-premium"] });
+      qc.invalidateQueries({ queryKey: ["ai-credits"] });
+    },
+    onError: (e: any) => {
+      const msg = e?.message ?? "Unlock failed";
+      toast.error(msg);
+      if (/insufficient credits/i.test(msg)) window.location.href = "/ai-credits";
+    } });
+};
 
 // Generic hook for any list action
 export const useMentor = <T = any>(action: string, payload: Record<string, any> = {}, key?: any[]) =>
