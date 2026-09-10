@@ -106,12 +106,19 @@ export function AIRoomDesigner({ onDesignComplete }: AIRoomDesignerProps) {
       const promptText = `Restyle this exact ${roomType.replace(/-/g, " ")} in ${styleDef?.label || stylePreference} style (${styleDef?.prompt || stylePreference}). ${keepRule} ${customPrompt || ""}`.trim();
 
 
+      const sourceAspect = sourceSize.width && sourceSize.height
+        ? (sourceSize.height > sourceSize.width * 1.1
+          ? "portrait"
+          : sourceSize.width > sourceSize.height * 1.1 ? "landscape" : "square")
+        : undefined;
+
       const { data, error } = await safeInvoke("generate-gift-message", {
         body: {
           type: "generate_ai_room_design",
           originalImageUrl: publicUrl,
           roomType,
           stylePreference,
+          sourceAspect,
           customPrompt: promptText,
           prompt: promptText } });
 
