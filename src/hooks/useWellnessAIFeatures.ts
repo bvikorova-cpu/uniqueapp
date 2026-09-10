@@ -37,7 +37,7 @@ export function usePersonalizedMeditation() {
       return data || [];
     } });
   const generate = useMutation({
-    mutationFn: (vars: { topic: string; duration_minutes?: number; voice_id?: string }) =>
+    mutationFn: (vars: { topic: string; duration_minutes?: number; voice_id?: string; language?: string }) =>
       invokeAction("meditation", vars),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["wellness-pers-meditations"] }); toast.success("Meditation generated"); },
     onError: (e: Error) => toast.error(e.message) });
