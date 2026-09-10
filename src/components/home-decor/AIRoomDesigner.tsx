@@ -10,6 +10,7 @@ import { Upload, Sparkles, Loader2, Download, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { safeInvoke } from "@/utils/safeInvoke";
+import { uprightImageWithSize } from "@/utils/imageUploadPrep";
 
 import { useNavigate } from "react-router-dom";
 
