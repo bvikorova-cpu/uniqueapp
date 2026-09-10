@@ -190,6 +190,32 @@ function normalizeAssistantContent(content: unknown): string {
     .trim();
 }
 
+const FINAL_REPORT_SECTION: Record<Mode, string> = {
+  basic: "Quick Glow-Up Tips",
+  deep: "30-Day Glow-Up Plan",
+  compare: "Fun Facts",
+};
+
+/**
+ * A long response can still be syntactically repairable after Vertex stops at
+ * its output limit. Never charge for or persist a report that merely starts
+ * the final required section but contains no useful content below it.
+ */
+function hasCompleteReport(raw: string, mode: Mode): boolean {
+  const decoded = safeJson(raw);
+  const parsed = findReportPayload(decoded) ?? salvage(raw) ?? plainTextFallback(raw);
+  const report = typeof parsed?.report === "string" ? parsed.report.trim() : "";
+  if (report.length < 300) return false;
+
+  const finalHeading = FINAL_REPORT_SECTION[mode];
+  const headingPattern = new RegExp(`#{1,3}\\s*${finalHeading.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&")}\\s*`, "i");
+  const match = headingPattern.exec(report);
+  if (!match) return false;
+
+  const finalSectionBody = report.slice((match.index ?? 0) + match[0].length).trim();
+  return finalSectionBody.length >= 120;
+}
+
 
 async function runAI(mode: Mode, images: string[], note: string): Promise<string> {
   const content: unknown[] = [{
@@ -205,7 +231,7 @@ async function runAI(mode: Mode, images: string[], note: string): Promise<string
     for (let attempt = 0; attempt < 3; attempt++) {
       const data = await tryVertexChat({
           model,
-          max_tokens: mode === "deep" ? 6000 : 3500,
+          max_tokens: mode === "deep" ? 12000 : mode === "compare" ? 8000 : 6000,
           response_format: { type: "json_object" },
           messages: [
             { role: "system", content: systemPrompt(mode) },
@@ -214,9 +240,9 @@ async function runAI(mode: Mode, images: string[], note: string): Promise<string
       });
       if (data) {
         const out = normalizeAssistantContent(data?.choices?.[0]?.message?.content);
-        // Very short answers are usually provider refusals or interrupted output;
-        // continue to the next attempt/model instead of charging for no report.
-        if (out.length >= 200) return out;
+        // Length alone is not proof of completion: a report can be thousands
+        // of characters long and still end halfway through a required section.
+        if (hasCompleteReport(out, mode)) return out;
         lastErr = Object.assign(new Error("AI returned an incomplete analysis"), { status: 502 });
       } else {
         lastErr = Object.assign(new Error("Vertex AI analysis failed"), { status: 503 });
