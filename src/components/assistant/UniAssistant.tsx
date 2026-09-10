@@ -114,8 +114,8 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       }
 
       if (payload?.error === "INSUFFICIENT_CREDITS") {
-        toast({ title: "Not enough credits", description: "Uni costs 5 credits per command.", variant: "destructive" });
-        const msg = "You need 5 credits to use me. Top up in Wallet.";
+        toast({ title: "Not enough credits", description: "Uni costs 2 credits per command.", variant: "destructive" });
+        const msg = "You need 2 credits to use me. Top up in Wallet.";
         setTurns((t) => [...t, { role: "assistant", content: msg }]);
         showCaption("assistant", msg, 6000);
         return;
@@ -222,7 +222,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
                       Chat
                     </span>
                   </p>
-                  <p className="text-[10px] text-muted-foreground">Type to chat — Uni remembers the conversation · 5 credits per reply</p>
+                  <p className="text-[10px] text-muted-foreground">Type to chat — Uni remembers the conversation · 2 credits per reply</p>
                 </div>
               </div>
               <div className="flex items-center gap-1">
