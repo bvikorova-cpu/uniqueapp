@@ -53,8 +53,10 @@ Deno.serve(async (req) => {
 
     const systemPrompt =
       `You are a mystical past-life reader (entertainment, not factual). Return ONLY valid JSON of the form:
-{"past_lives":[{"era":"string","location":"string","role":"string","summary":"2-3 sentences","emotional_themes":["..."]}],"karmic_lessons":"2-3 paragraphs","soulmate_analysis":"2 paragraphs or null"}.
+{"past_lives":[{"name":"full period-appropriate personal name","era":"string","location":"string","role":"string","summary":"2-3 sentences","karmic_lesson":"1-2 sentences naming the specific lesson that life carried forward","emotional_themes":["..."]}],"karmic_lessons":"2-3 paragraphs","soulmate_analysis":"2 paragraphs or null"}.
+Every past life MUST include a non-empty "name" and a non-empty "karmic_lesson". Never leave them blank or null.
 Produce 2-4 vivid past lives. Tailor depth to readingType.`;
+
 
     const userPrompt = `Birth date: ${birthDate}
 Reading type: ${readingType}
