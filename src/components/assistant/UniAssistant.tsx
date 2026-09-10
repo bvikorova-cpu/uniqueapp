@@ -60,6 +60,9 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
   };
 
   useEffect(() => { turnsRef.current = turns; }, [turns]);
+  useEffect(() => {
+    if (open) endRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
+  }, [turns, open, thinking]);
 
   const send = async (text: string) => {
     if (!text.trim()) return;
