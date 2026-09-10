@@ -164,7 +164,9 @@ export const PastLifeResult = ({ reading }: PastLifeResultProps) => {
                       <Lightbulb className="h-4 w-4 text-primary" />
                       Karmic Lesson
                     </h4>
-                    <p className="text-sm text-muted-foreground">{life.karmicLesson}</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                      {life.karmicLesson || lessonFallback}
+                    </p>
                   </div>
                 </div>
               </div>
