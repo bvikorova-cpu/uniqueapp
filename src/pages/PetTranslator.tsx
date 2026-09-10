@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
-import { usePetSubscription } from '@/hooks/usePetSubscription';
-import { Link } from 'react-router-dom';
 import PetTranslatorHero from '@/components/pet-translator/PetTranslatorHero';
 import PetToolsGrid from '@/components/pet-translator/PetToolsGrid';
 import PetMoodStreaks from '@/components/pet-translator/PetMoodStreaks';
@@ -30,16 +27,12 @@ import PetWearableTeaser from '@/components/pet-translator/PetWearableTeaser';
 import PetActiveSwitcher from '@/components/pet-translator/PetActiveSwitcher';
 import PetCrossPromo from '@/components/pet-translator/PetCrossPromo';
 import { trackPetActivity } from '@/lib/petLover';
-import { Card } from '@/components/ui/card';
-import { Crown, Sparkles, PawPrint, Heart, Stethoscope, GraduationCap } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const PetTranslator = () => {
   const [activeView, setActiveView] = useState<string | null>(null);
   const [stats, setStats] = useState({ total_translations: 0, total_users: 0 });
-  const { subscription, loading: subLoading } = usePetSubscription();
 
   useEffect(() => {
     supabase.functions.invoke('pet-translator-stats').then(({ data }) => {
@@ -54,7 +47,7 @@ const PetTranslator = () => {
     }
   }, [activeView]);
 
-  if (subLoading) {
+  if (false) {
     return (
       <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[60vh]">
         <FloatingHowItWorks
