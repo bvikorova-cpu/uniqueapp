@@ -302,18 +302,28 @@ Deno.serve(async (req) => {
         business: "Focus on: Decision-making under pressure, risk tolerance, negotiation style, strategic thinking, business acumen." };
       const sys = `You are a professional graphologist with 20+ years of experience. Return ONLY valid JSON with this exact structure: { "personality_traits": { "openness": string, "conscientiousness": string, "extraversion": string, "agreeableness": string, "neuroticism": string }, "strengths": string[], "weaknesses": string[], "emotional_state": string, "communication_style": string, "work_approach": string, "relationship_patterns": string, "decision_making": string, "stress_indicators": string, "creativity_level": string, "leadership_qualities": string, "detailed_analysis": string, "recommendations": string[] }. ${focus[analysisType] ?? ""}`;
 
-      const content = await callAI({
-        model: "gpt-4o",
-        messages: [
-          { role: "system", content: sys },
-          { role: "user", content: [
-            { type: "text", text: "Please analyze this handwriting sample in detail." },
-            { type: "image_url", image_url: { url: imageUrl } },
-          ] },
-        ],
-        response_format: { type: "json_object" } });
+      let content: string;
+      try {
+        content = await callAI({
+          model: "gpt-4o",
+          messages: [
+            { role: "system", content: sys },
+            { role: "user", content: [
+              { type: "text", text: "Please analyze this handwriting sample in detail." },
+              { type: "image_url", image_url: { url: imageUrl } },
+            ] },
+          ],
+          response_format: { type: "json_object" } });
+      } catch (e) {
+        console.error("analyze AI failed", e);
+        await refundCredits(user.id, cost);
+        return json({ error: "The analysis could not be completed. Your credits were refunded." }, 502);
+      }
       let parsed: any;
-      try { parsed = JSON.parse(content); } catch { return json({ error: "Invalid AI response format" }, 502); }
+      try { parsed = JSON.parse(content); } catch {
+        await refundCredits(user.id, cost);
+        return json({ error: "Invalid AI response format. Your credits were refunded." }, 502);
+      }
 
       const { data: saved, error: insErr } = await supabase.from("handwriting_analyses").insert({ user_id: user.id, image_url: imageUrl, analysis_type: analysisType, credits_used: cost,
         personality_traits: parsed.personality_traits, strengths: parsed.strengths,
