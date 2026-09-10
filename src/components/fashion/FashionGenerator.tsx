@@ -82,15 +82,20 @@ export default function FashionGenerator() {
       const styleName = styles?.find((s: any) => s.id === styleId)?.name || "";
       const materialName = materials?.find((m: any) => m.id === materialId)?.name || "";
 
+      const garment = categoryName || title;
+
       const prompt = [
-        `High-end fashion design photograph of ${title}.`,
-        categoryName && `Garment category: ${categoryName}.`,
+        `Professional editorial fashion photograph of a single garment: ${garment}.`,
+        `The garment MUST be exactly a ${garment} — do not substitute, reinterpret or replace it with any other type of clothing.`,
+        `Design name / concept: ${title}.`,
         styleName && `Style: ${styleName}.`,
         materialName && `Material: ${materialName}.`,
         colors.length > 0 && `Color palette: ${colors.join(", ")}.`,
         description && `Details: ${description}.`,
-        `Quality level: ${qualityLevel}. Studio lighting, clean background, editorial fashion lookbook, photorealistic, highly detailed fabric texture.`
+        `Worn by one adult fashion model (age 25-35, full body, standing). Absolutely no children, no minors, no teenagers.`,
+        `Quality level: ${qualityLevel}. Studio lighting, clean neutral background, editorial fashion lookbook, photorealistic, highly detailed fabric texture. No text, no logos, no watermarks, no collage.`
       ].filter(Boolean).join(" ");
+
 
       const { data, error } = await supabase.functions.invoke('ai-image-tools', {
         body: { action: 'generate', prompt, aspectRatio: '1:1' }
