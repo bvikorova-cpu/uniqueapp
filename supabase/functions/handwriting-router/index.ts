@@ -69,6 +69,23 @@ async function chargeCredits(_supabase: any, userId: string, cost: number) {
   return { credits_remaining: null };
 }
 
+async function refundCredits(userId: string, cost: number) {
+  try {
+    const admin = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
+    await admin.rpc("grant_unified_ai_credits_for_user", {
+      p_user_id: userId,
+      p_amount: cost,
+      p_reason: "handwriting_refund",
+      p_source: "handwriting-router",
+    });
+  } catch (e) {
+    console.error("refundCredits failed", e);
+  }
+}
+
 function cosine(a: Record<string, number>, b: Record<string, number>) {
   const keys = new Set([...Object.keys(a ?? {}), ...Object.keys(b ?? {})]);
   let dot = 0, na = 0, nb = 0;
