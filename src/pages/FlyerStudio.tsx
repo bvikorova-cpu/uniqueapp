@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAICredits } from "@/hooks/useAICredits";
@@ -57,6 +58,7 @@ type FlyerRow = {
 };
 
 export default function FlyerStudio() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const { paidBalance, refresh } = useAICredits();
@@ -103,12 +105,12 @@ export default function FlyerStudio() {
   const handleFiles = async (files: FileList | null) => {
     if (!files?.length || !user) return;
     const list = Array.from(files).slice(0, 3 - refs.length);
-    if (!list.length) { toast.error("You can attach up to 3 reference images"); return; }
+    if (!list.length) { toast.error(t("flyer.upload_error_too_many")); return; }
     setUploading(true);
     try {
       const urls: string[] = [];
       for (const f of list) {
-        if (f.size > 8 * 1024 * 1024) { toast.error(`${f.name} is larger than 8 MB`); continue; }
+        if (f.size > 8 * 1024 * 1024) { toast.error(t("flyer.upload_error_size", { name: f.name })); continue; }
         const ext = f.name.split(".").pop() || "png";
         const path = `${user.id}/flyer-refs/${crypto.randomUUID()}.${ext}`;
         const { error } = await supabase.storage.from("media").upload(path, f, { contentType: f.type || undefined });
@@ -117,16 +119,23 @@ export default function FlyerStudio() {
       }
       setRefs((r) => [...r, ...urls]);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Upload failed");
+      toast.error(e instanceof Error ? e.message : t("flyer.upload_error_fail"));
     } finally {
       setUploading(false);
-      if (fileInput.current) fileInput.current.value = "";
     }
   };
 
   const generate = async () => {
-    if (!brief.headline.trim()) { toast.error("Please fill in the main headline"); return; }
-    if (paidBalance < COST) { navigate("/ai-credits"); toast.error(`You need ${COST} credits for one flyer`); return; }
+    if (!user) return;
+    if (!brief.headline.trim()) {
+      toast.error(t("flyer.required_headline"));
+      return;
+    }
+    if (paidBalance < COST) {
+      toast.error(t("flyer.insufficient_credits", { cost: COST, balance: paidBalance }));
+      return;
+    }
+
     setGenerating(true);
     setResult(null);
     try {
@@ -152,11 +161,11 @@ export default function FlyerStudio() {
       }
       if (data?.error) throw new Error(data.error);
       setResult(data.imageUrl);
-      toast.success(`Flyer ready — ${COST} credits used`);
+      toast.success(t("flyer.toast_ready", { cost: COST }));
       refresh();
       loadHistory();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Flyer generation failed");
+      toast.error(e instanceof Error ? e.message : t("flyer.toast_generate_failed"));
     } finally {
       setGenerating(false);
     }
@@ -164,7 +173,7 @@ export default function FlyerStudio() {
 
   const remove = async (id: string) => {
     const { error } = await supabase.from("flyer_designs").delete().eq("id", id);
-    if (error) { toast.error("Could not delete this flyer"); return; }
+    if (error) { toast.error(t("flyer.toast_delete_failed")); return; }
     setHistory((h) => h.filter((x) => x.id !== id));
   };
 
@@ -180,15 +189,15 @@ export default function FlyerStudio() {
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
-        <SEO title="Promotional Flyer Studio — Unique" description="Create print-ready promotional flyers with AI in any language." />
+        <SEO title={`${t("flyer.title")} — Unique`} description={t("flyer.subtitle")} />
         <Card className="max-w-md w-full">
           <CardContent className="p-8 text-center space-y-4">
             <Megaphone className="h-12 w-12 mx-auto text-primary" />
-            <h1 className="text-xl font-bold">Promotional Flyer Studio</h1>
+            <h1 className="text-xl font-bold">{t("flyer.title")}</h1>
             <p className="text-muted-foreground">
-              Sign in to design print-ready flyers from {FLYER_STYLES.length} preset styles. Each flyer costs {COST} credits.
+              {t("flyer.sign_in_desc", { count: FLYER_STYLES.length, cost: COST })}
             </p>
-            <Button onClick={() => navigate("/auth")}>Sign in</Button>
+            <Button onClick={() => navigate("/auth")}>{t("flyer.sign_in_button")}</Button>
           </CardContent>
         </Card>
       </div>
@@ -197,21 +206,21 @@ export default function FlyerStudio() {
 
   return (
     <div className="min-h-screen bg-background pb-16">
-      <SEO title="Promotional Flyer Studio — Unique" description="Answer a detailed brief, pick one of 149 preset styles and generate a print-ready promotional flyer in any language for 3 credits." />
+      <SEO title={`${t("flyer.title")} — Unique`} description={t("flyer.subtitle")} />
 
-      <div className="relative h-[220px] md:h-[320px] overflow-hidden">
+      <div className="relative h-[180px] sm:h-[200px] md:h-[300px] overflow-hidden">
         <video src={heroVideo.url} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-        <div className="relative h-full flex flex-col items-center justify-end pb-6 text-center px-4">
-          <h1 className="text-3xl md:text-4xl font-black">Promotional Flyer Studio</h1>
-          <p className="text-muted-foreground max-w-xl">
-            Tell us exactly what the flyer should say, pick a style and get a print-ready design in any language.
+        <div className="relative h-full flex flex-col items-center justify-end pb-5 md:pb-8 text-center px-4">
+          <h1 className="text-2xl md:text-4xl font-black">{t("flyer.title")}</h1>
+          <p className="text-muted-foreground max-w-xl text-sm md:text-base mt-1">
+            {t("flyer.subtitle")}
           </p>
           <div className="flex flex-wrap gap-2 justify-center mt-3">
-            <Badge variant="secondary" className="gap-1"><Coins className="h-3 w-3" /> {COST} credits per flyer</Badge>
-            <Badge variant="secondary">{FLYER_STYLES.length} preset styles</Badge>
-            <Badge variant="secondary">{FLYER_LANGUAGES.length} languages</Badge>
-            <Badge variant="outline">Balance: {paidBalance}</Badge>
+            <Badge variant="secondary" className="gap-1"><Coins className="h-3 w-3" /> {t("flyer.credit_badge", { cost: COST })}</Badge>
+            <Badge variant="secondary">{t("flyer.style_badge", { count: FLYER_STYLES.length })}</Badge>
+            <Badge variant="secondary">{t("flyer.language_badge", { count: FLYER_LANGUAGES.length })}</Badge>
+            <Badge variant="outline">{t("flyer.balance", { balance: paidBalance })}</Badge>
           </div>
         </div>
       </div>
@@ -219,104 +228,104 @@ export default function FlyerStudio() {
       <div className="max-w-5xl mx-auto px-4 space-y-6">
         {/* 1. Content brief */}
         <Card>
-          <CardHeader><CardTitle className="text-base">1. What should the flyer say?</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-base">{t("flyer.section_content")}</CardTitle></CardHeader>
           <CardContent className="grid md:grid-cols-2 gap-4">
             <div className="md:col-span-2">
-              <Label htmlFor="headline">Main headline *</Label>
-              <Input id="headline" value={brief.headline} onChange={set("headline")} placeholder="Start driving school with TL Motion" maxLength={120} />
+              <Label htmlFor="headline">{t("flyer.main_headline")}</Label>
+              <Input id="headline" value={brief.headline} onChange={set("headline")} placeholder={t("flyer.main_headline_placeholder")} maxLength={120} />
             </div>
             <div>
-              <Label htmlFor="subheadline">Sub-headline</Label>
-              <Input id="subheadline" value={brief.subheadline} onChange={set("subheadline")} placeholder="Courses starting every month" />
+              <Label htmlFor="subheadline">{t("flyer.sub_headline")}</Label>
+              <Input id="subheadline" value={brief.subheadline} onChange={set("subheadline")} placeholder={t("flyer.sub_headline_placeholder")} />
             </div>
             <div>
-              <Label htmlFor="businessName">Business / organiser name</Label>
-              <Input id="businessName" value={brief.businessName} onChange={set("businessName")} placeholder="TL Motion" />
+              <Label htmlFor="businessName">{t("flyer.business_name")}</Label>
+              <Input id="businessName" value={brief.businessName} onChange={set("businessName")} placeholder={t("flyer.business_name_placeholder")} />
             </div>
             <div>
-              <Label htmlFor="offer">Price or offer</Label>
-              <Input id="offer" value={brief.offer} onChange={set("offer")} placeholder="199 € / month" />
+              <Label htmlFor="offer">{t("flyer.offer")}</Label>
+              <Input id="offer" value={brief.offer} onChange={set("offer")} placeholder={t("flyer.offer_placeholder")} />
             </div>
             <div>
-              <Label htmlFor="cta">Call to action</Label>
-              <Input id="cta" value={brief.cta} onChange={set("cta")} placeholder="Sign up today" />
+              <Label htmlFor="cta">{t("flyer.cta")}</Label>
+              <Input id="cta" value={brief.cta} onChange={set("cta")} placeholder={t("flyer.cta_placeholder")} />
             </div>
             <div>
-              <Label htmlFor="date">Date</Label>
-              <Input id="date" value={brief.date} onChange={set("date")} placeholder="September 12" />
+              <Label htmlFor="date">{t("flyer.date")}</Label>
+              <Input id="date" value={brief.date} onChange={set("date")} placeholder={t("flyer.date_placeholder")} />
             </div>
             <div>
-              <Label htmlFor="time">Time</Label>
-              <Input id="time" value={brief.time} onChange={set("time")} placeholder="17:00" />
+              <Label htmlFor="time">{t("flyer.time")}</Label>
+              <Input id="time" value={brief.time} onChange={set("time")} placeholder={t("flyer.time_placeholder")} />
             </div>
             <div className="md:col-span-2">
-              <Label htmlFor="venue">Venue / address</Label>
-              <Input id="venue" value={brief.venue} onChange={set("venue")} placeholder="Culture House, main square" />
+              <Label htmlFor="venue">{t("flyer.venue")}</Label>
+              <Input id="venue" value={brief.venue} onChange={set("venue")} placeholder={t("flyer.venue_placeholder")} />
             </div>
             <div>
-              <Label htmlFor="phone">Phone</Label>
-              <Input id="phone" value={brief.phone} onChange={set("phone")} placeholder="0907 685 799" />
+              <Label htmlFor="phone">{t("flyer.phone")}</Label>
+              <Input id="phone" value={brief.phone} onChange={set("phone")} placeholder={t("flyer.phone_placeholder")} />
             </div>
             <div>
-              <Label htmlFor="website">Website</Label>
-              <Input id="website" value={brief.website} onChange={set("website")} placeholder="example.com" />
+              <Label htmlFor="website">{t("flyer.website")}</Label>
+              <Input id="website" value={brief.website} onChange={set("website")} placeholder={t("flyer.website_placeholder")} />
             </div>
             <div className="md:col-span-2">
-              <Label htmlFor="social">Social handles</Label>
-              <Input id="social" value={brief.social} onChange={set("social")} placeholder="@yourbrand" />
+              <Label htmlFor="social">{t("flyer.social")}</Label>
+              <Input id="social" value={brief.social} onChange={set("social")} placeholder={t("flyer.social_placeholder")} />
             </div>
             <div className="md:col-span-2">
-              <Label htmlFor="bullets">Key selling points (one per line)</Label>
-              <Textarea id="bullets" rows={4} value={brief.bullets} onChange={set("bullets")} placeholder={"Experienced instructors\nModern cars\nFlexible hours\nIndividual approach"} />
+              <Label htmlFor="bullets">{t("flyer.bullets")}</Label>
+              <Textarea id="bullets" rows={4} value={brief.bullets} onChange={set("bullets")} placeholder={t("flyer.bullets_placeholder")} />
             </div>
             <div className="md:col-span-2">
-              <Label htmlFor="finePrint">Small print</Label>
-              <Input id="finePrint" value={brief.finePrint} onChange={set("finePrint")} placeholder="Offer valid until the end of the month" />
+              <Label htmlFor="finePrint">{t("flyer.fine_print")}</Label>
+              <Input id="finePrint" value={brief.finePrint} onChange={set("finePrint")} placeholder={t("flyer.fine_print_placeholder")} />
             </div>
           </CardContent>
         </Card>
 
         {/* 2. Creative direction */}
         <Card>
-          <CardHeader><CardTitle className="text-base">2. How should it look and feel?</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-base">{t("flyer.section_look")}</CardTitle></CardHeader>
           <CardContent className="grid md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="subject">What are you promoting?</Label>
-              <Input id="subject" value={brief.subject} onChange={set("subject")} placeholder="Driving school courses" />
+              <Label htmlFor="subject">{t("flyer.subject")}</Label>
+              <Input id="subject" value={brief.subject} onChange={set("subject")} placeholder={t("flyer.subject_placeholder")} />
             </div>
             <div>
-              <Label htmlFor="audience">Target audience</Label>
-              <Input id="audience" value={brief.audience} onChange={set("audience")} placeholder="Young adults 17-25" />
+              <Label htmlFor="audience">{t("flyer.audience")}</Label>
+              <Input id="audience" value={brief.audience} onChange={set("audience")} placeholder={t("flyer.audience_placeholder")} />
             </div>
             <div>
-              <Label htmlFor="tone">Tone</Label>
-              <Input id="tone" value={brief.tone} onChange={set("tone")} placeholder="Energetic and trustworthy" />
+              <Label htmlFor="tone">{t("flyer.tone")}</Label>
+              <Input id="tone" value={brief.tone} onChange={set("tone")} placeholder={t("flyer.tone_placeholder")} />
             </div>
             <div>
-              <Label htmlFor="colors">Brand colours</Label>
-              <Input id="colors" value={brief.colors} onChange={set("colors")} placeholder="Red, black, white" />
+              <Label htmlFor="colors">{t("flyer.colors")}</Label>
+              <Input id="colors" value={brief.colors} onChange={set("colors")} placeholder={t("flyer.colors_placeholder")} />
             </div>
             <div className="md:col-span-2">
-              <Label htmlFor="imagery">Imagery that must appear</Label>
-              <Textarea id="imagery" rows={2} value={brief.imagery} onChange={set("imagery")} placeholder="Three cars in front of a castle, roof signs on the cars" />
+              <Label htmlFor="imagery">{t("flyer.imagery")}</Label>
+              <Textarea id="imagery" rows={2} value={brief.imagery} onChange={set("imagery")} placeholder={t("flyer.imagery_placeholder")} />
             </div>
             <div className="md:col-span-2">
-              <Label htmlFor="avoid">Things to avoid</Label>
-              <Input id="avoid" value={brief.avoid} onChange={set("avoid")} placeholder="No people's faces, no dark backgrounds" />
+              <Label htmlFor="avoid">{t("flyer.avoid")}</Label>
+              <Input id="avoid" value={brief.avoid} onChange={set("avoid")} placeholder={t("flyer.avoid_placeholder")} />
             </div>
             <div className="md:col-span-2">
-              <Label htmlFor="notes">Anything else</Label>
-              <Textarea id="notes" rows={3} value={brief.notes} onChange={set("notes")} placeholder="Leave clear space in the bottom right for a QR code" />
+              <Label htmlFor="notes">{t("flyer.notes")}</Label>
+              <Textarea id="notes" rows={3} value={brief.notes} onChange={set("notes")} placeholder={t("flyer.notes_placeholder")} />
             </div>
             <div>
-              <Label>Flyer language</Label>
+              <Label>{t("flyer.language_label")}</Label>
               <select value={language} onChange={(e) => setLanguage(e.target.value)}
                 className="mt-1 w-full h-10 border border-input rounded-md bg-background px-3 text-sm">
                 {FLYER_LANGUAGES.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
               </select>
             </div>
             <div>
-              <Label>Format</Label>
+              <Label>{t("flyer.format")}</Label>
               <select value={aspect} onChange={(e) => setAspect(e.target.value)}
                 className="mt-1 w-full h-10 border border-input rounded-md bg-background px-3 text-sm">
                 {FLYER_ASPECTS.map((a) => <option key={a.id} value={a.id}>{a.label}</option>)}
@@ -327,21 +336,21 @@ export default function FlyerStudio() {
 
         {/* 3. Reference images */}
         <Card>
-          <CardHeader><CardTitle className="text-base">3. Your images (optional, up to 3)</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-base">{t("flyer.section_images")}</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             <p className="text-sm text-muted-foreground">
-              Attach product photos, a portrait or your logo. The AI keeps them as the real subject of the flyer.
+              {t("flyer.images_hint")}
             </p>
             <label className="flex flex-col items-center justify-center border-2 border-dashed border-border rounded-lg p-6 cursor-pointer hover:bg-muted/50 transition">
               {uploading ? <Loader2 className="h-6 w-6 animate-spin" /> : <Upload className="h-6 w-6 text-muted-foreground mb-2" />}
-              <span className="text-sm text-muted-foreground">Click to upload images (max 8 MB each)</span>
+              <span className="text-sm text-muted-foreground">{t("flyer.upload_label")}</span>
               <input ref={fileInput} type="file" accept="image/*" multiple className="hidden" onChange={(e) => handleFiles(e.target.files)} />
             </label>
             {refs.length > 0 && (
               <div className="flex flex-wrap gap-3">
                 {refs.map((u) => (
                   <div key={u} className="relative">
-                    <img src={u} alt="Reference" className="h-24 w-24 object-cover rounded-lg border" />
+                    <img src={u} alt={t("flyer.reference_alt")} className="h-24 w-24 object-cover rounded-lg border" />
                     <button type="button" onClick={() => setRefs((r) => r.filter((x) => x !== u))}
                       className="absolute -top-2 -right-2 bg-background border rounded-full p-1">
                       <X className="h-3 w-3" />
@@ -356,17 +365,17 @@ export default function FlyerStudio() {
         {/* 4. Style picker */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">4. Pick a style ({FLYER_STYLES.length} presets)</CardTitle>
+            <CardTitle className="text-base">{t("flyer.section_style", { count: FLYER_STYLES.length })}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex flex-col sm:flex-row gap-2">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search styles…" className="pl-9" />
+                <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t("flyer.search_styles")} className="pl-9" />
               </div>
               <select value={category} onChange={(e) => setCategory(e.target.value)}
                 className="h-10 border border-input rounded-md bg-background px-3 text-sm">
-                <option value="all">All categories</option>
+                <option value="all">{t("flyer.all_categories")}</option>
                 {FLYER_STYLE_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
@@ -379,7 +388,7 @@ export default function FlyerStudio() {
                   <span className="block text-[11px] text-muted-foreground mt-1 line-clamp-2">{s.prompt}</span>
                 </button>
               ))}
-              {filteredStyles.length === 0 && <p className="text-sm text-muted-foreground">No style matches your search.</p>}
+              {filteredStyles.length === 0 && <p className="text-sm text-muted-foreground">{t("flyer.no_styles")}</p>}
             </div>
           </CardContent>
         </Card>
@@ -391,17 +400,17 @@ export default function FlyerStudio() {
           </div>
           <Button size="lg" variant="premium" onClick={generate} disabled={generating}>
             {generating ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Sparkles className="h-4 w-4 mr-2" />}
-            {generating ? "Designing your flyer…" : `Generate flyer (${COST} credits)`}
+            {generating ? t("flyer.generating") : t("flyer.generate", { cost: COST })}
           </Button>
         </div>
 
         {result && (
           <Card>
-            <CardHeader><CardTitle className="text-base">Your flyer</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="text-base">{t("flyer.result_title")}</CardTitle></CardHeader>
             <CardContent className="space-y-3">
-              <img src={result} alt={`Promotional flyer: ${brief.headline}`} className="w-full rounded-lg border" />
+              <img src={result} alt={t("flyer.result_alt", { headline: brief.headline })} className="w-full rounded-lg border" />
               <Button variant="outline" onClick={() => download(result, brief.headline)}>
-                <Download className="h-4 w-4 mr-2" /> Download PNG
+                <Download className="h-4 w-4 mr-2" /> {t("flyer.download_png")}
               </Button>
             </CardContent>
           </Card>
@@ -409,7 +418,7 @@ export default function FlyerStudio() {
 
         {history.length > 0 && (
           <Card>
-            <CardHeader><CardTitle className="text-base">My flyers</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="text-base">{t("flyer.history_title")}</CardTitle></CardHeader>
             <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {history.map((f) => (
                 <div key={f.id} className="space-y-2">
@@ -431,13 +440,13 @@ export default function FlyerStudio() {
         )}
 
         <Card>
-          <CardHeader><CardTitle className="text-base">How it works</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-base">{t("flyer.how_it_works")}</CardTitle></CardHeader>
           <CardContent className="text-sm text-muted-foreground space-y-2">
-            <p>1. Fill in the brief — every line you write is printed on the flyer exactly as you typed it.</p>
-            <p>2. Choose the flyer language ({FLYER_LANGUAGES.length} available) and the format (A4/A5 portrait, story, square or landscape).</p>
-            <p>3. Optionally attach your own photos or logo so the design uses your real product.</p>
-            <p>4. Pick one of {FLYER_STYLES.length} preset styles, then generate. Each flyer costs {COST} credits from your AI credit balance.</p>
-            <p>5. Download the PNG for print or social media. Every flyer is saved in “My flyers”.</p>
+            <p>{t("flyer.step1")}</p>
+            <p>{t("flyer.step2", { count: FLYER_LANGUAGES.length })}</p>
+            <p>{t("flyer.step3")}</p>
+            <p>{t("flyer.step4", { count: FLYER_STYLES.length, cost: COST })}</p>
+            <p>{t("flyer.step5")}</p>
           </CardContent>
         </Card>
       </div>
