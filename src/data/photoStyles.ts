@@ -74,6 +74,7 @@ export const PHOTO_STYLE_GROUPS = [
   "Americas Roadtrip",
   "Africa & Middle East",
   "Dance & Circus",
+  "AI Photoshoot Collections",
 ] as const;
 
 
@@ -643,6 +644,20 @@ export const PHOTO_STYLES: PhotoStyle[] = [
   { id: "iceskating", label: "Ice dance", emoji: "⛸️", group: "Dance & Circus" },
   { id: "poledance", label: "Pole artistry", emoji: "✨", group: "Dance & Circus" },
 
+  { id: "photoshoot80slifestyle", label: "80s lifestyle editorial", emoji: "📼", group: "AI Photoshoot Collections" },
+  { id: "photoshootbirthdaygold", label: "Gold birthday celebration", emoji: "🎂", group: "AI Photoshoot Collections" },
+  { id: "photoshootbirthdaycollage", label: "Birthday story collage", emoji: "🎈", group: "AI Photoshoot Collections" },
+  { id: "photoshootvalentine", label: "Valentine fashion editorial", emoji: "❤️", group: "AI Photoshoot Collections" },
+  { id: "photoshootfamilyholiday", label: "Luxury family holiday", emoji: "🎄", group: "AI Photoshoot Collections" },
+  { id: "photoshootbeachcouture", label: "Beach couture", emoji: "🏝️", group: "AI Photoshoot Collections" },
+  { id: "photoshootchefbrand", label: "Chef personal brand", emoji: "👩‍🍳", group: "AI Photoshoot Collections" },
+  { id: "photoshootwintersnow", label: "Snow fashion story", emoji: "❄️", group: "AI Photoshoot Collections" },
+  { id: "photoshootautumnmen", label: "Autumn lifestyle story", emoji: "🍂", group: "AI Photoshoot Collections" },
+  { id: "photoshootbusinessred", label: "Red power business", emoji: "👔", group: "AI Photoshoot Collections" },
+  { id: "photoshootmonodouble", label: "Monochrome double exposure", emoji: "⚫", group: "AI Photoshoot Collections" },
+  { id: "photoshootpinkballgown", label: "Pink palace ballgown", emoji: "👗", group: "AI Photoshoot Collections" },
+  { id: "photoshootcinemastudio", label: "Cinematic studio campaign", emoji: "🎬", group: "AI Photoshoot Collections" },
+
   { id: "motivgodfirst", label: "God first", emoji: "🙏", group: "Motivational Quotes" },
   { id: "motivdreambig", label: "Dream big", emoji: "🌟", group: "Motivational Quotes" },
   { id: "motivneverquit", label: "Never quit", emoji: "🔥", group: "Motivational Quotes" },
@@ -955,6 +970,7 @@ export const PHOTO_STYLE_CATEGORIES: { name: string; emoji: string; groups: stri
   { name: "Travel & Cities", emoji: "🌍", groups: ["Africa & Middle East", "Americas Roadtrip", "Asian Destinations", "Nordic & Winter Travel", "Ocean & Diving", "Famous Landmarks", "World Metropolises", "Aesthetic Getaways", "Exotic Sea & Beaches", "Mountain Adventure", "Wild Nature & Extremes", "Desert Adventure", "Historic & Travel Scenes"] },
   { name: "Fantasy & Sci-Fi", emoji: "🪄", groups: ["Space & Astronomy", "Fantasy", "Sci-Fi & Future", "Sci-Fi & Adventure Worlds", "Storybook Worlds", "Film & Game Worlds", "Nature & Elements"] },
   { name: "Glam & Fashion", emoji: "💄", groups: ["Dance & Circus", "Wedding & Romance", "Glamour & High Fashion", "Bold & Glam Looks", "Portrait & Editorial", "Gala & Fantasy Royalty", "Uniforms & Costumes"] },
+  { name: "AI Photoshoots", emoji: "📸", groups: ["AI Photoshoot Collections"] },
   { name: "Retro & Street", emoji: "🕶️", groups: ["Vintage Eras", "Retro & Neon", "Street & Graphic", "Subculture & Street", "Film & Pop Culture"] },
   { name: "Horror & Dark", emoji: "👻", groups: ["Apocalypse & Survival", "Horror & Alt Reality", "Cinematic & Thriller"] },
   { name: "Holidays & Parties", emoji: "🎉", groups: ["Christmas & Winter Holidays", "New Year & Carnival", "Easter & Spring Holidays", "Halloween Party", "World Holidays"] },
