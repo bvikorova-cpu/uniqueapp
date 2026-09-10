@@ -1,63 +1,37 @@
-import { useState, useEffect } from "react";
-import { toast } from "sonner";
-import { Card, CardContent } from "@/components/ui/card";
+import { useState } from "react";
+import { Card } from "@/components/ui/card";
 import { 
-  Bot, Sparkles, Users, MessageCircle, Heart, BarChart3, Brain, 
-  Swords, Trophy, Activity, Crown, Flame, Star, Award 
+  Bot, Sparkles, BarChart3, Brain, 
+  Swords, Trophy, Flame, Star 
+
 } from "lucide-react";
 import { CloneHero } from "@/components/ai-clone/CloneHero";
 import { CloneCreator } from "@/components/ai-clone/CloneCreator";
 import { MyClones } from "@/components/ai-clone/MyClones";
-import { CloneMarketplace } from "@/components/ai-clone/CloneMarketplace";
-import { CloneSubscriptions } from "@/components/ai-clone/CloneSubscriptions";
 import { CloneAnalytics } from "@/components/ai-clone/CloneAnalytics";
 import { ClonePersonalityQuiz } from "@/components/ai-clone/ClonePersonalityQuiz";
 import { CloneBattles } from "@/components/ai-clone/CloneBattles";
 import { CloneLeaderboard } from "@/components/ai-clone/CloneLeaderboard";
-import { CloneSocialFeed } from "@/components/ai-clone/CloneSocialFeed";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-type ViewType = "hub" | "create" | "my-clones" | "marketplace" | "subscriptions" | "analytics" | "quiz" | "battles" | "leaderboard" | "feed";
+type ViewType = "hub" | "create" | "my-clones" | "analytics" | "quiz" | "battles" | "leaderboard";
 
 const TOOLS = [
   { id: "create" as ViewType, icon: Sparkles, label: "Create Clone", desc: "Build your AI twin", color: "text-purple-400" },
   { id: "my-clones" as ViewType, icon: Bot, label: "My Clones", desc: "Manage your clones", color: "text-cyan-400" },
-  { id: "marketplace" as ViewType, icon: Users, label: "Marketplace", desc: "Explore public clones", color: "text-emerald-400" },
   { id: "quiz" as ViewType, icon: Brain, label: "Personality Quiz", desc: "Discover your profile", color: "text-amber-400" },
   { id: "battles" as ViewType, icon: Swords, label: "Clone Battles", desc: "Wit & charm duels", color: "text-red-400" },
   { id: "analytics" as ViewType, icon: BarChart3, label: "Analytics", desc: "Performance insights", color: "text-teal-400" },
   { id: "leaderboard" as ViewType, icon: Trophy, label: "Leaderboard", desc: "Top clones ranking", color: "text-yellow-400" },
-  { id: "feed" as ViewType, icon: Activity, label: "Social Feed", desc: "Network activity", color: "text-orange-400" },
-  { id: "subscriptions" as ViewType, icon: Crown, label: "Subscriptions", desc: "Upgrade your plan", color: "text-violet-400" },
 ];
+
 
 export default function AIClone() {
   const [activeView, setActiveView] = useState<ViewType>("hub");
-
-  // Handle Stripe payment redirect
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const payment = params.get("payment");
-    const sessionId = params.get("session_id");
-    if (payment === "success" && sessionId) {
-      supabase.functions.invoke("verify-payment", { body: { session_id: sessionId } })
-        .then(({ data }) => {
-          if (data?.verified) {
-            toast.success("Payment confirmed! Your purchase is now active.");
-          } else toast.error("Payment could not be verified.");
-        })
-        .catch(() => toast.error("Payment verification failed."));
-      window.history.replaceState({}, "", "/ai-clone");
-
-    } else if (payment === "canceled") {
-      toast.info("Payment canceled.");
-      window.history.replaceState({}, "", "/ai-clone");
-    }
-  }, []);
 
   const { data: profile } = useQuery({
     queryKey: ["clone-profile-stats"],
@@ -75,13 +49,10 @@ export default function AIClone() {
     switch (activeView) {
       case "create": return <CloneCreator />;
       case "my-clones": return <MyClones />;
-      case "marketplace": return <CloneMarketplace />;
-      case "subscriptions": return <CloneSubscriptions />;
       case "analytics": return <CloneAnalytics />;
       case "quiz": return <ClonePersonalityQuiz />;
       case "battles": return <CloneBattles />;
       case "leaderboard": return <CloneLeaderboard />;
-      case "feed": return <CloneSocialFeed />;
       default: return null;
     }
   };
@@ -105,7 +76,7 @@ export default function AIClone() {
         <HeroRewardedAd sectionKey="page_aiclone" />
 
         {/* Engagement Row */}
-        <div className="grid grid-cols-3 gap-3 mb-8">
+        <div className="grid grid-cols-2 gap-3 mb-8">
           <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl border-primary/20 text-center">
             <Flame className="h-5 w-5 text-purple-400 mx-auto mb-1" />
             <p className="text-lg sm:text-2xl font-black">0</p>
@@ -116,12 +87,8 @@ export default function AIClone() {
             <p className="text-lg sm:text-2xl font-black">0</p>
             <p className="text-[10px] sm:text-xs text-muted-foreground">Conversations</p>
           </Card>
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl border-primary/20 text-center">
-            <Award className="h-5 w-5 text-pink-400 mx-auto mb-1" />
-            <p className="text-lg sm:text-2xl font-black capitalize">Basic</p>
-            <p className="text-[10px] sm:text-xs text-muted-foreground">Tier</p>
-          </Card>
         </div>
+
 
         {/* Back button when in sub-view */}
         {activeView !== "hub" && (
