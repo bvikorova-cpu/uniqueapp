@@ -87,6 +87,7 @@ serve(async (req) => {
       `Visual style preset "${styleName || "Custom"}": ${stylePrompt || "modern advertising poster"}.`,
       direction ? `Creative direction:\n${direction}` : "",
       `ALL text on the flyer must be written in ${languageLabel} and spelled perfectly, with correct diacritics and no invented, duplicated or garbled words.`,
+      `Translate every user-provided phrase into natural, idiomatic ${languageLabel} while keeping proper names, numbers, prices, phone numbers, URLs, dates and exact legal text unchanged. Do not leave any English words unless the user wrote them in English.`,
       `Render exactly this text content, nothing else:\n${textBlock}`,
       "Typography must be sharp, correctly kerned and clearly readable, with a strong hierarchy: dominant headline, supporting sub-headline, prominent offer or price, and a compact contact block at the bottom.",
       refImages.length
