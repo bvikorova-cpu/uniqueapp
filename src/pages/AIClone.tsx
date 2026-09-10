@@ -1,39 +1,33 @@
-import { useState, useEffect } from "react";
-import { toast } from "sonner";
-import { Card, CardContent } from "@/components/ui/card";
+import { useState } from "react";
+import { Card } from "@/components/ui/card";
 import { 
-  Bot, Sparkles, Users, MessageCircle, Heart, BarChart3, Brain, 
-  Swords, Trophy, Activity, Crown, Flame, Star, Award 
+  Bot, Sparkles, MessageCircle, Heart, BarChart3, Brain, 
+  Swords, Trophy, Flame, Star, Award 
 } from "lucide-react";
 import { CloneHero } from "@/components/ai-clone/CloneHero";
 import { CloneCreator } from "@/components/ai-clone/CloneCreator";
 import { MyClones } from "@/components/ai-clone/MyClones";
-import { CloneMarketplace } from "@/components/ai-clone/CloneMarketplace";
-import { CloneSubscriptions } from "@/components/ai-clone/CloneSubscriptions";
 import { CloneAnalytics } from "@/components/ai-clone/CloneAnalytics";
 import { ClonePersonalityQuiz } from "@/components/ai-clone/ClonePersonalityQuiz";
 import { CloneBattles } from "@/components/ai-clone/CloneBattles";
 import { CloneLeaderboard } from "@/components/ai-clone/CloneLeaderboard";
-import { CloneSocialFeed } from "@/components/ai-clone/CloneSocialFeed";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-type ViewType = "hub" | "create" | "my-clones" | "marketplace" | "subscriptions" | "analytics" | "quiz" | "battles" | "leaderboard" | "feed";
+type ViewType = "hub" | "create" | "my-clones" | "analytics" | "quiz" | "battles" | "leaderboard";
 
 const TOOLS = [
   { id: "create" as ViewType, icon: Sparkles, label: "Create Clone", desc: "Build your AI twin", color: "text-purple-400" },
   { id: "my-clones" as ViewType, icon: Bot, label: "My Clones", desc: "Manage your clones", color: "text-cyan-400" },
-  { id: "marketplace" as ViewType, icon: Users, label: "Marketplace", desc: "Explore public clones", color: "text-emerald-400" },
   { id: "quiz" as ViewType, icon: Brain, label: "Personality Quiz", desc: "Discover your profile", color: "text-amber-400" },
   { id: "battles" as ViewType, icon: Swords, label: "Clone Battles", desc: "Wit & charm duels", color: "text-red-400" },
   { id: "analytics" as ViewType, icon: BarChart3, label: "Analytics", desc: "Performance insights", color: "text-teal-400" },
   { id: "leaderboard" as ViewType, icon: Trophy, label: "Leaderboard", desc: "Top clones ranking", color: "text-yellow-400" },
-  { id: "feed" as ViewType, icon: Activity, label: "Social Feed", desc: "Network activity", color: "text-orange-400" },
-  { id: "subscriptions" as ViewType, icon: Crown, label: "Subscriptions", desc: "Upgrade your plan", color: "text-violet-400" },
 ];
+
 
 export default function AIClone() {
   const [activeView, setActiveView] = useState<ViewType>("hub");
