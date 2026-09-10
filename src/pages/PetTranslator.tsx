@@ -74,6 +74,17 @@ const PetTranslator = () => {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12 px-4">
+      <FloatingHowItWorks
+        title="Pet Translator"
+        intro="Understand what your pet is trying to say. Every AI tool is paid with AI credits — no subscription."
+        steps={[
+          { title: "Record your pet", desc: "Bark, meow or gesture — video or audio." },
+          { title: "Pick species", desc: "Dog, cat, bird, exotic." },
+          { title: "Get the translation", desc: "AI interprets sound + body language (1–8 credits per tool)." },
+          { title: "Save moments", desc: "Share cute translations with friends." },
+          { title: "Track over time", desc: "Emotion journal for your pet." }
+        ]}
+      />
       <div className="max-w-7xl mx-auto">
         <PetTranslatorHero
           totalTranslations={stats.total_translations}
@@ -81,6 +92,8 @@ const PetTranslator = () => {
           streak={0}
           isSubscribed={false}
         />
+
+
 
         {specialView ? (
           specialView
