@@ -103,8 +103,8 @@ export const DailyMysticalRitual = () => {
                 <div className={`absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r ${card.gradient}`} />
                 <card.icon className="w-4 h-4 text-muted-foreground mb-1" />
                 <p className="text-xs text-muted-foreground">{card.title}</p>
-                <p className="text-sm font-bold text-foreground truncate">{card.value}</p>
-                <p className="text-[10px] text-muted-foreground truncate">{card.sub}</p>
+                <p className="text-sm font-bold text-foreground break-words leading-snug">{card.value}</p>
+                <p className="text-[10px] text-muted-foreground break-words leading-snug">{card.sub}</p>
               </motion.div>
             ))}
           </div>
