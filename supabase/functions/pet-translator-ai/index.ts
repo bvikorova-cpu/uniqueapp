@@ -1,6 +1,7 @@
 import "../_shared/aiRedirect.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { callOpenAI } from "../_shared/openai.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
@@ -226,59 +227,12 @@ Provide in Markdown: 1. **Team Assessment** 2. **Optimal Formation / Lead Order*
     const prompt = prompts[action];
     if (!prompt) throw new Error("Invalid action: " + action);
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-
     const messages = [
       { role: "system", content: "You are a professional pet care AI assistant. Provide detailed, accurate, and helpful responses in Markdown format. Be warm and caring in tone." },
       { role: "user", content: prompt },
     ];
-
-    const callProvider = async (url: string, key: string, model: string) =>
-      await fetch(url, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ model, messages }) });
-
-    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-    let aiResponse: Response | null = null;
-
-    // 1) Try OpenAI with short backoff on 429
-    if (LOVABLE_API_KEY) {
-      for (let attempt = 0; attempt < 2; attempt++) {
-        aiResponse = await callProvider("https://api.openai.com/v1/chat/completions", LOVABLE_API_KEY, "gpt-4o-mini");
-        if (aiResponse.ok || (aiResponse.status !== 429 && aiResponse.status !== 402 && aiResponse.status < 500)) break;
-        await sleep(800 * (attempt + 1));
-      }
-    }
-
-    // 2) Fallback to Lovable AI Gateway
-    if ((!aiResponse || !aiResponse.ok) && LOVABLE_API_KEY) {
-      for (let attempt = 0; attempt < 2; attempt++) {
-        const fallback = await callProvider("https://ai.gateway.lovable.dev/v1/chat/completions", LOVABLE_API_KEY, "google/gemini-2.5-flash");
-        if (fallback.ok) { aiResponse = fallback; break; }
-        aiResponse = fallback;
-        if (fallback.status !== 429 && fallback.status < 500) break;
-        await sleep(800 * (attempt + 1));
-      }
-    }
-
-    if (!aiResponse) throw new Error("AI not configured");
-
-    if (!aiResponse.ok) {
-      const status = aiResponse.status;
-      const detail = await aiResponse.text().catch(() => "");
-      console.error("pet-translator-ai upstream", status, detail.slice(0, 500));
-      if (status === 429) return new Response(JSON.stringify({ error: "AI is busy right now. Please try again in a few seconds." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (status === 402 || status === 403) return new Response(JSON.stringify({ error: "AI credits exhausted for this workspace. Please top up AI credits to continue." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      throw new Error(`AI service error (${status})`);
-    }
-
-
-
-    const aiData = await aiResponse.json();
-    const result = aiData.choices?.[0]?.message?.content || "No result generated.";
+    const result = await callOpenAI({ messages, model: "gpt-4o-mini", max_completion_tokens: 3000 });
+    if (!result) throw new Error("AI returned an empty response. Please try again.");
 
     await supabase.from("ai_credits").update({ credits_remaining: remaining - cost }).eq("user_id", user.id);
 

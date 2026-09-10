@@ -211,13 +211,7 @@ serve(async (req) => {
       }
     };
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    const preferOpenAI = (Deno.env.get("AI_PROVIDER") ?? "").toLowerCase() === "openai";
     const rawFetch = ((globalThis as any).__ORIGINAL_FETCH__ as typeof fetch | undefined) ?? fetch;
-    if (!LOVABLE_API_KEY) {
-      await refund();
-      return json({ error: "AI service is not configured" }, 500);
-    }
 
     const SUPPORTED_SIZES = ["1024x1024", "1024x1536", "1536x1024", "auto"];
     const normalizeSize = (s?: string) => {
@@ -233,29 +227,13 @@ serve(async (req) => {
       const finalPrompt = negativePrompt && typeof negativePrompt === "string" && negativePrompt.trim()
         ? `${p}\n\nDo NOT include: ${negativePrompt.trim()}.`
         : p;
-      const useLovable = Boolean(LOVABLE_API_KEY && (!preferOpenAI || !LOVABLE_API_KEY));
-      const res = await rawFetch(useLovable ? LOVABLE_IMAGE_URL : OPENAI_IMAGE_URL, {
+      const res = await fetch(OPENAI_IMAGE_URL, {
         method: "POST",
-        headers: useLovable
-          ? { Authorization: `Bearer ${LOVABLE_API_KEY ?? ""}`, "Content-Type": "application/json" }
-          : { Authorization: `Bearer ${LOVABLE_API_KEY ?? ""}`, "Content-Type": "application/json" },
-        body: JSON.stringify(useLovable
-          ? { model: "openai/gpt-image-1-mini", prompt: finalPrompt, size, quality: "low" }
-          : { model: "gpt-image-1", prompt: finalPrompt, n: 1, size, quality: "low" }) });
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "gpt-image-1", prompt: finalPrompt, n: 1, size, quality: "low" }) });
       if (!res.ok) {
         const text = await res.text();
-        console.error(`${useLovable ? "Lovable" : "OpenAI"} image API error:`, res.status, text);
-        if (useLovable && LOVABLE_API_KEY) {
-          const fallback = await rawFetch(OPENAI_IMAGE_URL, {
-            method: "POST",
-            headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-            body: JSON.stringify({ model: "gpt-image-1", prompt: finalPrompt, n: 1, size, quality: "low" }) });
-          if (fallback.ok) {
-            const data = await fallback.json();
-            const b64 = data?.data?.[0]?.b64_json;
-            if (b64) return `data:image/png;base64,${b64}`;
-          }
-        }
+        console.error("Vertex image API error:", res.status, text);
         throw new Error(`Image generation failed (${res.status})`);
       }
       const data = await res.json();
@@ -323,43 +301,7 @@ serve(async (req) => {
         console.warn("Vertex image edit error:", e instanceof Error ? e.message : String(e));
       }
 
-      if (!LOVABLE_API_KEY) throw new Error("Image editing is not configured");
-      const sourceDataUrl = await sourceAsDataUrl(sourceUrl);
-
-      const models = ["google/gemini-3.1-flash-image", "google/gemini-2.5-flash-image"];
-      let lastErr = "";
-      for (const model of models) {
-        const res = await rawFetch(LOVABLE_IMAGE_URL, {
-          method: "POST",
-          headers: { "Lovable-API-Key": LOVABLE_API_KEY, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model,
-            messages: [
-              {
-                role: "user",
-                content: [
-                  { type: "text", text: editInstruction },
-                  { type: "image_url", image_url: { url: sourceDataUrl } },
-                ],
-              },
-            ],
-            modalities: ["image", "text"],
-          }),
-        });
-        if (!res.ok) {
-          lastErr = `status ${res.status}`;
-          console.error("Lovable image edit error:", model, res.status, await res.text().catch(() => ""));
-          continue;
-        }
-        const responseData = await res.json().catch(() => null);
-        const editedImageUrl = extractImageUrl(responseData);
-        if (editedImageUrl) return editedImageUrl;
-        lastErr = responseData?.data === null
-          ? "model completed without generating an image"
-          : "response did not contain an image";
-        console.error("Image edit returned no image:", model, JSON.stringify(responseData).slice(0, 500));
-      }
-      throw new Error(`Image editing failed (${lastErr})`);
+      throw new Error("Image editing is temporarily unavailable. Please try again.");
     };
 
 
@@ -378,29 +320,20 @@ serve(async (req) => {
     };
 
     const chatJSON = async (messages: any[]) => {
-      const useLovable = Boolean(LOVABLE_API_KEY && (!preferOpenAI || !LOVABLE_API_KEY));
-      const call = async (lovable: boolean) => rawFetch(lovable ? LOVABLE_CHAT_URL : OPENAI_CHAT_URL, {
+      const call = async () => fetch(OPENAI_CHAT_URL, {
         method: "POST",
-        headers: lovable
-          ? { "Lovable-API-Key": LOVABLE_API_KEY ?? "", "Content-Type": "application/json" }
-          : { Authorization: `Bearer ${LOVABLE_API_KEY ?? ""}`, "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: lovable ? "google/gemini-3.6-flash" : "gpt-4o-mini",
+          model: "gpt-4o-mini",
           messages,
           max_tokens: 4096,
           response_format: { type: "json_object" },
         }) });
 
-
-      let res = await call(useLovable);
-      if (!res.ok && useLovable && LOVABLE_API_KEY) {
-        const text = await res.text().catch(() => "");
-        console.error("Lovable chat API error:", res.status, text);
-        res = await call(false);
-      }
+      const res = await call();
       if (!res.ok) {
         const text = await res.text();
-        console.error(`${useLovable ? "AI" : "OpenAI"} chat API error:`, res.status, text);
+        console.error("Vertex chat API error:", res.status, text);
         throw new Error(`AI request failed (${res.status})`);
       }
       const data = await res.json();

@@ -1,6 +1,7 @@
 import "../_shared/aiRedirect.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
+import { tryVertexChat, tryVertexImage } from "../_shared/vertexDirect.ts";
 
 const corsHeaders = { 'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version' };
@@ -33,41 +34,15 @@ serve(async (req) => {
     if (__auth.errorResponse) return __auth.errorResponse;
     const __deduct = __auth.deduct!;
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY && !LOVABLE_API_KEY) throw new Error('AI service is not configured');
-
-    const rawFetch = ((globalThis as any).__ORIGINAL_FETCH__ as typeof fetch | undefined) ?? fetch;
-    const OPENAI_CHAT_URL = 'https://api.openai.com/v1/chat/completions';
-    const OPENAI_IMAGE_URL = 'https://api.openai.com/v1/images/generations';
-    const LOVABLE_CHAT_URL = 'https://ai.gateway.lovable.dev/v1/chat/completions';
-    const LOVABLE_IMAGE_URL = 'https://ai.gateway.lovable.dev/v1/images/generations';
-
     const chatCompletion = async (systemPrompt: string, userPrompt: string, maxTokens = 1000, imageUrl?: string) => {
       const userContent: any = imageUrl
         ? [{ type: 'text', text: userPrompt }, { type: 'image_url', image_url: { url: imageUrl } }]
         : userPrompt;
       const messages = [{ role: 'system', content: systemPrompt }, { role: 'user', content: userContent }];
-      const call = (lovable: boolean) => rawFetch(lovable ? LOVABLE_CHAT_URL : OPENAI_CHAT_URL, {
-        method: 'POST',
-        headers: lovable
-          ? { 'Lovable-API-Key': LOVABLE_API_KEY ?? '', 'Content-Type': 'application/json' }
-          : { 'Authorization': `Bearer ${LOVABLE_API_KEY ?? ''}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(lovable
-          ? { model: 'google/gemini-3.6-flash', messages, max_tokens: maxTokens }
-          : { model: 'gpt-4o-mini', messages, max_completion_tokens: maxTokens }) });
-
-      let response = LOVABLE_API_KEY ? await call(true) : await call(false);
-      if (!response.ok && LOVABLE_API_KEY && LOVABLE_API_KEY) {
-        console.error('Lovable chat failed:', response.status, await response.text().catch(() => ''));
-        response = await call(false);
-      }
-      if (!response.ok) {
-        if (response.status === 429) throw new Error('Rate limit exceeded. Please try again shortly.');
-        throw new Error(`AI text error: ${response.status}`);
-      }
-      const data = await response.json();
-      return data.choices?.[0]?.message?.content;
+      const data = await tryVertexChat({ model: 'gemini-2.5-flash', messages, max_tokens: maxTokens });
+      const content = data?.choices?.[0]?.message?.content;
+      if (!content) throw new Error('AI text generation is temporarily unavailable. Please try again.');
+      return content;
     };
 
     const extractImage = (data: any): string | null => {
@@ -80,51 +55,14 @@ serve(async (req) => {
     };
 
     const generateImage = async (prompt: string) => {
-      const call = (lovable: boolean) => rawFetch(lovable ? LOVABLE_IMAGE_URL : OPENAI_IMAGE_URL, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${(lovable ? LOVABLE_API_KEY : LOVABLE_API_KEY) ?? ''}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(lovable
-          ? { model: 'openai/gpt-image-1-mini', prompt, size: '1024x1024', quality: 'low' }
-          : { model: 'gpt-image-1', prompt, n: 1, size: '1024x1024', quality: 'low' }) });
-
-      let response = LOVABLE_API_KEY ? await call(true) : await call(false);
-      if (!response.ok && LOVABLE_API_KEY && LOVABLE_API_KEY) {
-        console.error('Lovable image failed:', response.status, await response.text().catch(() => ''));
-        response = await call(false);
-      }
-      if (!response.ok) {
-        if (response.status === 429) throw new Error('Rate limit exceeded. Please try again shortly.');
-        throw new Error(`Image generation error: ${response.status}`);
-      }
-      const imageUrl = extractImage(await response.json());
+      const imageUrl = extractImage(await tryVertexImage(prompt, '1024x1024', 1));
       if (!imageUrl) throw new Error('No image generated');
       return imageUrl;
     };
 
     // Image-to-image edit (Gemini chat-image shape) — used by the aging simulator
     const editImage = async (prompt: string, sourceImage: string) => {
-      const call = () => rawFetch(LOVABLE_IMAGE_URL, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${LOVABLE_API_KEY ?? ''}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'google/gemini-3.1-flash-image',
-          messages: [{
-            role: 'user',
-            content: [
-              { type: 'text', text: prompt },
-              { type: 'image_url', image_url: { url: sourceImage } },
-            ],
-          }],
-          modalities: ['image', 'text'],
-        }) });
-
-      if (!LOVABLE_API_KEY) return null;
-      let response = await call();
-      if (!response.ok) {
-        console.error('Aged image edit failed:', response.status, await response.text().catch(() => ''));
-        return null;
-      }
-      return extractImage(await response.json());
+      return extractImage(await tryVertexImage(prompt, '1024x1024', 1, [sourceImage]));
     };
 
     let payload: Record<string, unknown> = {};
