@@ -193,31 +193,9 @@ Deno.serve(async (req) => {
           if (requestedArea) return json({ subscribed: true, ...allAreas[requestedArea], areas: allAreas });
           return json({ subscribed: true, areas: allAreas });
         }
-        if (!user.email) return json({ subscribed: false, areas: {} });
-        const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-        if (!stripeKey) return json({ subscribed: false, areas: {}, error: "Stripe is not configured" }, 200);
-        const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-        const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-        if (!customers.data.length) return json({ subscribed: false, areas: {} });
-        const customerId = customers.data[0].id;
-        const subs = await stripe.subscriptions.list({ customer: customerId, status: "active", limit: 50 });
-        const areas: Record<string, { subscribed: boolean; plan: string; current_period_end: string | null; subscription_id: string }> = {};
-        for (const s of subs.data) {
-          const item = s.items.data.find((i) => MENTOR_PRICE_TO_PLAN[i.price.id]);
-          if (!item) continue;
-          const a = (s.metadata?.mentor_area as string) || "career";
-          const plan = MENTOR_PRICE_TO_PLAN[item.price.id];
-          const periodEnd = stripePeriodEndToIso(s);
-          areas[a] = { subscribed: true, plan, current_period_end: periodEnd, subscription_id: s.id };
-          await admin.from("mentor_premium_subs").upsert({ user_id: userId, email: user.email, area: a,
-            stripe_customer_id: customerId, stripe_subscription_id: s.id,
-            status: "active", plan, current_period_end: periodEnd }, { onConflict: "user_id,area" });
-        }
-        if (requestedArea) {
-          const a = areas[requestedArea];
-          return json({ subscribed: !!a, ...(a ?? {}), areas });
-        }
-        return json({ subscribed: Object.keys(areas).length > 0, areas });
+        // Credits-only model: no Stripe subscription lookup.
+        if (requestedArea) return json({ subscribed: false, areas: {} });
+        return json({ subscribed: false, areas: {} });
       }
 
       // ───── 1. MEMORY ─────
