@@ -41,15 +41,33 @@ export function PersonalizedMeditationCard() {
         </DialogHeader>
         <Input placeholder="What do you need? (e.g. 'Release work anxiety')" value={topic} onChange={(e) => setTopic(e.target.value)}
           className="bg-black/40 border-teal-500/30 text-teal-50 placeholder:text-teal-300/40" />
-        <div className="flex gap-2">
+
+        <div className="grid grid-cols-4 gap-2">
           {[3, 5, 10, 15].map((m) => (
-            <Button key={m} size="sm" variant={duration === m ? "default" : "outline"} onClick={() => setDuration(m)}
-              className={duration === m ? "bg-teal-600 hover:bg-teal-500 text-white" : "border-teal-500/30 text-teal-100"}>
+            <Button key={m} size="sm" variant="outline" onClick={() => setDuration(m)}
+              className={duration === m
+                ? "bg-teal-600 hover:bg-teal-500 border-teal-400 text-white font-bold"
+                : "bg-teal-950/60 border-teal-400/50 text-teal-50 hover:bg-teal-900 hover:text-white font-semibold"}>
               {m} min
             </Button>
           ))}
         </div>
-        <Button onClick={() => generate.mutate({ topic, duration_minutes: duration }, { onSuccess: () => setTopic("") })}
+
+        <div>
+          <label className="text-xs font-semibold text-teal-100/90 mb-1 block">Spoken language</label>
+          <Select value={language} onValueChange={setLanguage}>
+            <SelectTrigger className="bg-black/40 border-teal-500/30 text-teal-50">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {MEDITATION_LANGUAGES.map((l) => (
+                <SelectItem key={l.code} value={l.code}>{l.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <Button onClick={() => generate.mutate({ topic, duration_minutes: duration, language }, { onSuccess: () => setTopic("") })}
           disabled={topic.length < 3 || generate.isPending}
           className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 text-white font-bold">
           <Sparkles className="w-4 h-4 mr-2" />
@@ -61,8 +79,11 @@ export function PersonalizedMeditationCard() {
             {meditations.slice(0, 5).map((m: any) => (
               <div key={m.id} className="p-3 rounded-xl bg-teal-500/10 border border-teal-500/20">
                 <p className="text-sm font-bold text-teal-100">{m.topic}</p>
-                <p className="text-xs text-teal-200/60 mb-2">{m.duration_minutes} min</p>
-                {m.audio_url && <audio controls src={m.audio_url} className="w-full h-8" />}
+                <p className="text-xs text-teal-200/80 mb-2">
+                  {m.duration_minutes} min
+                  {m.language ? ` • ${MEDITATION_LANGUAGES.find((l) => l.code === m.language)?.label ?? m.language}` : ""}
+                </p>
+                {m.audio_url && <AudioPlayerMini src={m.audio_url} fileName={`meditation-${m.id}.mp3`} />}
               </div>
             ))}
           </div>
