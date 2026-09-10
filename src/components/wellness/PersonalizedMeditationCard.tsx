@@ -3,14 +3,34 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Headphones, Sparkles, Play } from "lucide-react";
+import { Headphones, Sparkles } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { usePersonalizedMeditation } from "@/hooks/useWellnessAIFeatures";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { AudioPlayerMini } from "@/components/wellness/AudioPlayerMini";
+
+export const MEDITATION_LANGUAGES = [
+  { code: "en", label: "English" },
+  { code: "sk", label: "Slovenčina" },
+  { code: "cs", label: "Čeština" },
+  { code: "de", label: "Deutsch" },
+  { code: "es", label: "Español" },
+  { code: "fr", label: "Français" },
+  { code: "it", label: "Italiano" },
+  { code: "hu", label: "Magyar" },
+  { code: "pl", label: "Polski" },
+  { code: "pt", label: "Português" },
+  { code: "ru", label: "Русский" },
+  { code: "ja", label: "日本語" },
+  { code: "ko", label: "한국어" },
+  { code: "zh", label: "中文" },
+];
 
 export function PersonalizedMeditationCard() {
   const [open, setOpen] = useState(false);
   const [topic, setTopic] = useState("");
   const [duration, setDuration] = useState(5);
+  const [language, setLanguage] = useState("en");
   const { meditations, generate } = usePersonalizedMeditation();
 
   return (
