@@ -73,23 +73,50 @@ async function callImage(LOVABLE_API_KEY: string, prompt: string): Promise<strin
   } catch (e) { console.error("Image gen failed:", e); return null; }
 }
 
+// Split long scripts into TTS-sized chunks on sentence boundaries.
+function splitForTTS(text: string, maxLen = 4200): string[] {
+  const parts: string[] = [];
+  let buf = "";
+  for (const sentence of text.split(/(?<=[.!?…]|\.\.\.)\s+/)) {
+    if ((buf + " " + sentence).trim().length > maxLen) {
+      if (buf.trim()) parts.push(buf.trim());
+      buf = sentence;
+    } else {
+      buf = (buf ? buf + " " : "") + sentence;
+    }
+  }
+  if (buf.trim()) parts.push(buf.trim());
+  return parts.length ? parts : [text.slice(0, maxLen)];
+}
+
 async function ttsUpload(
   supabase: any,
   ELEVENLABS_API_KEY: string | undefined,
   voice_id: string,
   text: string,
   filePath: string,
-  voiceSettings: any
+  voiceSettings: any,
+  opts: { multilingual?: boolean } = {}
 ): Promise<string | null> {
   if (!ELEVENLABS_API_KEY) return null;
   try {
-    const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice_id}?output_format=mp3_44100_128`, {
-      method: "POST",
-      headers: { "xi-api-key": ELEVENLABS_API_KEY, "Content-Type": "application/json" },
-      body: JSON.stringify({ text: text.slice(0, 5000), model_id: "eleven_turbo_v2_5", voice_settings: voiceSettings }) });
-    if (!r.ok) { console.error("ElevenLabs error:", await r.text()); return null; }
-    const buf = await r.arrayBuffer();
-    const { error: upErr } = await supabase.storage.from("wellness-ai").upload(filePath, buf, { contentType: "audio/mpeg", upsert: true });
+    const modelId = opts.multilingual ? "eleven_multilingual_v2" : "eleven_turbo_v2_5";
+    const chunks = splitForTTS(text);
+    const buffers: Uint8Array[] = [];
+    for (const chunk of chunks) {
+      const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice_id}?output_format=mp3_44100_128`, {
+        method: "POST",
+        headers: { "xi-api-key": ELEVENLABS_API_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({ text: chunk, model_id: modelId, voice_settings: voiceSettings }) });
+      if (!r.ok) { console.error("ElevenLabs error:", await r.text()); if (!buffers.length) return null; break; }
+      buffers.push(new Uint8Array(await r.arrayBuffer()));
+    }
+    if (!buffers.length) return null;
+    const total = buffers.reduce((n, b) => n + b.length, 0);
+    const merged = new Uint8Array(total);
+    let off = 0;
+    for (const b of buffers) { merged.set(b, off); off += b.length; }
+    const { error: upErr } = await supabase.storage.from("wellness-ai").upload(filePath, merged, { contentType: "audio/mpeg", upsert: true });
     if (upErr) { console.error("Upload error:", upErr); return null; }
     const { data: pub } = supabase.storage.from("wellness-ai").getPublicUrl(filePath);
     return pub.publicUrl;
@@ -281,28 +308,40 @@ serve(async (req) => {
       result = { id: row.id, ...parsed, illustration_url: illustrationUrl };
 
     } else if (action === "meditation") {
-      const { topic, duration_minutes = 5, voice_id = "EXAVITQu4vr4xnSDxMaL" } = body;
+      const { topic, duration_minutes = 5, voice_id = "EXAVITQu4vr4xnSDxMaL", language = "en" } = body;
       if (!topic || topic.length < 3) throw new Error("Topic required (min 3 chars)");
 
+      const LANG_NAMES: Record<string, string> = { en: "English", sk: "Slovak", cs: "Czech", de: "German",
+        es: "Spanish", fr: "French", it: "Italian", hu: "Hungarian", pl: "Polish", pt: "Portuguese",
+        ru: "Russian", ja: "Japanese", ko: "Korean", zh: "Simplified Chinese" };
+      const langName = LANG_NAMES[language] || "English";
+
       const { data: row, error: insErr } = await supabase.from("wellness_personalized_meditations")
-        .insert({ user_id: user.id, topic, duration_minutes, voice_id, status: "processing", credits_used: COST }).select().single();
+        .insert({ user_id: user.id, topic, duration_minutes, voice_id, language, status: "processing", credits_used: COST }).select().single();
       if (insErr) throw insErr;
 
+      // Slow guided narration is spoken at roughly 105–115 words per minute.
+      const targetWords = Math.round(duration_minutes * 112);
       const aiData = await callAI(LOVABLE_API_KEY, {
         model: "gpt-4o-mini",
+        max_tokens: Math.min(6000, Math.round(targetWords * 3) + 400),
         messages: [
-          { role: "system", content: `You are a master meditation teacher. Write a ${duration_minutes}-minute guided meditation script. Use calm language. Include "..." for natural pauses. No SSML, no labels. Speak in second person.` },
-          { role: "user", content: `Topic: ${topic}` },
+          { role: "system", content: `You are a master meditation teacher. Write a guided meditation script that lasts exactly about ${duration_minutes} minutes when narrated slowly.
+LENGTH IS A HARD REQUIREMENT: write between ${Math.round(targetWords * 0.95)} and ${Math.round(targetWords * 1.15)} words. Never stop early — expand the body with more breath cycles, body-scan detail, imagery and gentle repetition until the word count is reached.
+Write the entire script in ${langName}, natural and idiomatic, as a native meditation teacher would speak it. Do not mix languages.
+Use calm second-person language. Use "..." for natural pauses. No SSML, no stage directions, no section labels, no markdown, no asterisks, no word counts.` },
+          { role: "user", content: `Topic: ${topic}\nDuration: ${duration_minutes} minutes\nLanguage: ${langName}` },
         ] });
-      const script = aiData.choices?.[0]?.message?.content || "";
+      const script = (aiData.choices?.[0]?.message?.content || "").replace(/[*#]/g, "").trim();
       if (!script) throw new Error("No script generated");
 
       const audioUrl = await ttsUpload(supabase, ELEVENLABS_API_KEY, voice_id, script, `${user.id}/meditation-${row.id}.mp3`,
-        { stability: 0.7, similarity_boost: 0.75, style: 0.3, use_speaker_boost: true, speed: 0.9 });
+        { stability: 0.7, similarity_boost: 0.75, style: 0.3, use_speaker_boost: true, speed: 0.9 },
+        { multilingual: true });
 
       await supabase.from("wellness_personalized_meditations").update({ meditation_script: script, audio_url: audioUrl, status: "completed" }).eq("id", row.id);
 
-      result = { id: row.id, meditation_script: script, audio_url: audioUrl };
+      result = { id: row.id, meditation_script: script, audio_url: audioUrl, language };
 
     } else if (action === "mood") {
       const { selfie_data_url } = body;
