@@ -37,6 +37,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     return localStorage.getItem("uni-onboarding-seen") !== "1";
   });
   const captionTimerRef = useRef<number | null>(null);
+  const endRef = useRef<HTMLDivElement | null>(null);
 
   const navigate = useNavigate();
   const location = useLocation();
