@@ -25071,6 +25071,51 @@ export type Database = {
         }
         Relationships: []
       }
+      flyer_designs: {
+        Row: {
+          aspect_ratio: string
+          brief: Json
+          created_at: string
+          credits_used: number
+          id: string
+          image_url: string
+          language: string
+          prompt: string
+          style_id: string
+          style_name: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          aspect_ratio?: string
+          brief?: Json
+          created_at?: string
+          credits_used?: number
+          id?: string
+          image_url: string
+          language?: string
+          prompt: string
+          style_id: string
+          style_name: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          aspect_ratio?: string
+          brief?: Json
+          created_at?: string
+          credits_used?: number
+          id?: string
+          image_url?: string
+          language?: string
+          prompt?: string
+          style_id?: string
+          style_name?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       followed_topics: {
         Row: {
           created_at: string

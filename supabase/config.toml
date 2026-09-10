@@ -468,3 +468,6 @@ verify_jwt = true
 
 [functions.dice-duel-leaderboard]
 verify_jwt = false
+
+[functions.flyer-generate]
+verify_jwt = false
