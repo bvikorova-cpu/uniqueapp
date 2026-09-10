@@ -150,7 +150,17 @@ export default function CreativeForge() {
     try {
       const { data, error } = await supabase.functions.invoke("generate-creative-content", {
         body: { category: selectedCategory, title, inputData: { genre, mood, description, characters, setting, targetAudience, length: contentLength }, styleReference: styleReference === "none" ? "" : styleReference } });
-      if (error) throw error;
+      if (error) {
+        const response = (error as any)?.context;
+        let message = error.message;
+        try {
+          const payload = response?.json ? await response.clone().json() : null;
+          message = payload?.error || payload?.message || message;
+        } catch { /* keep SDK message */ }
+        const normalized = new Error(message);
+        (normalized as any).status = response?.status;
+        throw normalized;
+      }
       setGeneratedContent(data.content);
       refreshCredits(); refetchProjects();
       toast({ title: "Content Generated!", description: `Used ${data.creditsUsed} credits. ${data.creditsRemaining} remaining.` });
