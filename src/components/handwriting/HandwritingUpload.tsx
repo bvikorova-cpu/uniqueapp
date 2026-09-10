@@ -18,12 +18,13 @@ interface HandwritingUploadProps {
 }
 
 export const HandwritingUpload = ({ onAnalysisComplete,
-  isAnalyzing,
+  isAnalyzing: isAnalyzingProp,
   preselectedType = "personal" }: HandwritingUploadProps) => {
   const [imageUrl, setImageUrl] = useState("");
   const [analysisType, setAnalysisType] = useState(preselectedType);
   const [uploadMethod, setUploadMethod] = useState<"url" | "file">("url");
-  const { analyzeHandwriting } = useHandwritingCredits();
+  const { analyzeHandwriting, isAnalyzing: isAnalyzingLocal } = useHandwritingCredits();
+  const isAnalyzing = isAnalyzingProp || isAnalyzingLocal;
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
