@@ -66614,6 +66614,7 @@ export type Database = {
           duration_minutes: number
           id: string
           is_favorite: boolean | null
+          language: string
           meditation_script: string | null
           play_count: number | null
           status: string
@@ -66628,6 +66629,7 @@ export type Database = {
           duration_minutes?: number
           id?: string
           is_favorite?: boolean | null
+          language?: string
           meditation_script?: string | null
           play_count?: number | null
           status?: string
@@ -66642,6 +66644,7 @@ export type Database = {
           duration_minutes?: number
           id?: string
           is_favorite?: boolean | null
+          language?: string
           meditation_script?: string | null
           play_count?: number | null
           status?: string

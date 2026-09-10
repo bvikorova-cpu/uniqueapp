@@ -1,0 +1,1 @@
+ALTER TABLE public.wellness_personalized_meditations ADD COLUMN IF NOT EXISTS language text NOT NULL DEFAULT 'en';
