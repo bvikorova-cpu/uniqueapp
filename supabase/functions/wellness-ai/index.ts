@@ -89,25 +89,89 @@ function splitForTTS(text: string, maxLen = 4200): string[] {
   return parts.length ? parts : [text.slice(0, maxLen)];
 }
 
+const LANG_NAMES: Record<string, string> = { en: "English", sk: "Slovak", cs: "Czech", de: "German",
+  es: "Spanish", fr: "French", it: "Italian", hu: "Hungarian", pl: "Polish", pt: "Portuguese",
+  ru: "Russian", ja: "Japanese", ko: "Korean", zh: "Simplified Chinese" };
+
+/** Build a 44-byte WAV header for 16-bit mono PCM. */
+function wavHeader(dataLen: number, sampleRate = 24000): Uint8Array {
+  const h = new Uint8Array(44);
+  const dv = new DataView(h.buffer);
+  const ascii = (off: number, s: string) => { for (let i = 0; i < s.length; i++) h[off + i] = s.charCodeAt(i); };
+  ascii(0, "RIFF"); dv.setUint32(4, 36 + dataLen, true); ascii(8, "WAVE");
+  ascii(12, "fmt "); dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true);
+  dv.setUint32(24, sampleRate, true); dv.setUint32(28, sampleRate * 2, true);
+  dv.setUint16(32, 2, true); dv.setUint16(34, 16, true);
+  ascii(36, "data"); dv.setUint32(40, dataLen, true);
+  return h;
+}
+
+/**
+ * Narration audio. Vertex Gemini-TTS is the primary engine: it speaks each
+ * language with a native accent, prosody and stress, so Slovak/Czech/etc.
+ * no longer sound like an English speaker reading foreign words.
+ * ElevenLabs stays as a fallback only when Vertex is unavailable.
+ */
 async function ttsUpload(
   supabase: any,
   ELEVENLABS_API_KEY: string | undefined,
   voice_id: string,
   text: string,
-  filePath: string,
+  basePath: string,
   voiceSettings: any,
-  opts: { multilingual?: boolean } = {}
+  opts: { multilingual?: boolean; language?: string; tone?: string } = {}
 ): Promise<string | null> {
+  const lang = opts.language || "en";
+  const langName = LANG_NAMES[lang] || "English";
+  const tone = opts.tone || "a warm, slow, soothing guided-meditation voice";
+
+  // --- 1) Vertex Gemini-TTS (native pronunciation) ---
+  try {
+    const { tryVertexSpeech } = await import("../_shared/vertexDirect.ts");
+    const chunks = splitForTTS(text, 1400);
+    const pcms: Uint8Array[] = [];
+    for (const chunk of chunks) {
+      const instructions = `Read the following text aloud as a NATIVE ${langName} speaker with a completely authentic ${langName} accent. ` +
+        `Every word, vowel, consonant, diacritic and stress must follow standard ${langName} pronunciation — never English or any other phonetics. ` +
+        `Speak slowly and calmly with ${tone}. Pause naturally at "...". Read only the text, add nothing.`;
+      const wav = await tryVertexSpeech(chunk, "Kore", instructions);
+      if (!wav) { pcms.length = 0; break; }
+      // Strip the 44-byte WAV header so chunks concatenate as raw PCM.
+      pcms.push(wav.length > 44 ? wav.subarray(44) : wav);
+    }
+    if (pcms.length) {
+      const dataLen = pcms.reduce((n, b) => n + b.length, 0);
+      const header = wavHeader(dataLen);
+      const merged = new Uint8Array(header.length + dataLen);
+      merged.set(header, 0);
+      let off = header.length;
+      for (const b of pcms) { merged.set(b, off); off += b.length; }
+      const filePath = `${basePath}.wav`;
+      const { error: upErr } = await supabase.storage.from("wellness-ai").upload(filePath, merged, { contentType: "audio/wav", upsert: true });
+      if (!upErr) {
+        const { data: pub } = supabase.storage.from("wellness-ai").getPublicUrl(filePath);
+        return pub.publicUrl;
+      }
+      console.error("Upload error (vertex):", upErr);
+    }
+  } catch (e) { console.warn("Vertex TTS failed, falling back:", e instanceof Error ? e.message : String(e)); }
+
+  // --- 2) ElevenLabs fallback ---
   if (!ELEVENLABS_API_KEY) return null;
   try {
-    const modelId = opts.multilingual ? "eleven_multilingual_v2" : "eleven_turbo_v2_5";
+    const modelId = "eleven_multilingual_v2";
     const chunks = splitForTTS(text);
     const buffers: Uint8Array[] = [];
     for (const chunk of chunks) {
       const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice_id}?output_format=mp3_44100_128`, {
         method: "POST",
         headers: { "xi-api-key": ELEVENLABS_API_KEY, "Content-Type": "application/json" },
-        body: JSON.stringify({ text: chunk, model_id: modelId, voice_settings: voiceSettings }) });
+        body: JSON.stringify({
+          text: chunk,
+          model_id: modelId,
+          language_code: lang,
+          voice_settings: { ...voiceSettings, style: 0, stability: Math.max(0.8, Number(voiceSettings?.stability) || 0.8) },
+        }) });
       if (!r.ok) { console.error("ElevenLabs error:", await r.text()); if (!buffers.length) return null; break; }
       buffers.push(new Uint8Array(await r.arrayBuffer()));
     }
@@ -116,12 +180,14 @@ async function ttsUpload(
     const merged = new Uint8Array(total);
     let off = 0;
     for (const b of buffers) { merged.set(b, off); off += b.length; }
+    const filePath = `${basePath}.mp3`;
     const { error: upErr } = await supabase.storage.from("wellness-ai").upload(filePath, merged, { contentType: "audio/mpeg", upsert: true });
     if (upErr) { console.error("Upload error:", upErr); return null; }
     const { data: pub } = supabase.storage.from("wellness-ai").getPublicUrl(filePath);
     return pub.publicUrl;
   } catch (e) { console.error("TTS failed:", e); return null; }
 }
+
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
