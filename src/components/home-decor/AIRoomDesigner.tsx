@@ -49,6 +49,7 @@ export function AIRoomDesigner({ onDesignComplete }: AIRoomDesignerProps) {
   const [stylePreference, setStylePreference] = useState("");
   const [customPrompt, setCustomPrompt] = useState("");
   const [resultImage, setResultImage] = useState<string>("");
+  const [sourceSize, setSourceSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
 
   const loadCredits = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
