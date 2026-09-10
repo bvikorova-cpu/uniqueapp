@@ -32,27 +32,6 @@ const TOOLS = [
 export default function AIClone() {
   const [activeView, setActiveView] = useState<ViewType>("hub");
 
-  // Handle Stripe payment redirect
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const payment = params.get("payment");
-    const sessionId = params.get("session_id");
-    if (payment === "success" && sessionId) {
-      supabase.functions.invoke("verify-payment", { body: { session_id: sessionId } })
-        .then(({ data }) => {
-          if (data?.verified) {
-            toast.success("Payment confirmed! Your purchase is now active.");
-          } else toast.error("Payment could not be verified.");
-        })
-        .catch(() => toast.error("Payment verification failed."));
-      window.history.replaceState({}, "", "/ai-clone");
-
-    } else if (payment === "canceled") {
-      toast.info("Payment canceled.");
-      window.history.replaceState({}, "", "/ai-clone");
-    }
-  }, []);
-
   const { data: profile } = useQuery({
     queryKey: ["clone-profile-stats"],
     queryFn: async () => {
@@ -69,13 +48,10 @@ export default function AIClone() {
     switch (activeView) {
       case "create": return <CloneCreator />;
       case "my-clones": return <MyClones />;
-      case "marketplace": return <CloneMarketplace />;
-      case "subscriptions": return <CloneSubscriptions />;
       case "analytics": return <CloneAnalytics />;
       case "quiz": return <ClonePersonalityQuiz />;
       case "battles": return <CloneBattles />;
       case "leaderboard": return <CloneLeaderboard />;
-      case "feed": return <CloneSocialFeed />;
       default: return null;
     }
   };
