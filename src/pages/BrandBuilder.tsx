@@ -24,6 +24,25 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type ActiveView = "hub" | "create" | "history" | "name-generator" | "competitor-analyzer" | "social-kit" | "style-guide";
 
+/** AI output can be a string, an object or nested — always render readable text. */
+const asText = (v: any): string => {
+  if (v === null || v === undefined) return "";
+  if (typeof v === "string") return v;
+  if (typeof v === "number" || typeof v === "boolean") return String(v);
+  if (Array.isArray(v)) return v.map(asText).filter(Boolean).join(" · ");
+  if (typeof v === "object") {
+    return Object.entries(v)
+      .map(([k, val]) => {
+        const label = k.replace(/[_-]/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2");
+        const text = asText(val);
+        return text ? `${label.charAt(0).toUpperCase() + label.slice(1)}: ${text}` : "";
+      })
+      .filter(Boolean)
+      .join("\n");
+  }
+  return "";
+};
+
 const BrandBuilder = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -175,6 +194,8 @@ visualIdentity (object with typography, imagery, tone).`;
       toast({ title: "✨ Brand Kit Generated!", description: `Brand identity for ${businessName} is ready` });
       setBusinessName(""); setBusinessType(""); setTargetAudience(""); setBrandValues("");
       await loadBrandKits();
+      setActiveView("history");
+      window.scrollTo({ top: 0, behavior: "smooth" });
       await refreshCredits();
     } catch (error: any) {
       const msg = error?.message || "Failed to generate brand kit";
@@ -247,7 +268,7 @@ visualIdentity (object with typography, imagery, tone).`;
           </Button>
         </motion.div>
 
-        <Tabs defaultValue={activeView} className="w-full">
+        <Tabs value={activeView === "history" ? "history" : "create"} onValueChange={(v) => setActiveView(v as ActiveView)} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="create"><Lightbulb className="h-4 w-4 mr-2" /> Create Brand Kit</TabsTrigger>
             <TabsTrigger value="history"><TrendingUp className="h-4 w-4 mr-2" /> My Brand Kits</TabsTrigger>
@@ -309,8 +330,8 @@ visualIdentity (object with typography, imagery, tone).`;
                       </div>
                     )}
                     <div className="text-center space-y-2">
-                      <p className="text-2xl font-bold text-primary">"{kit.slogan}"</p>
-                      <p className="text-muted-foreground italic">{kit.tagline}</p>
+                      <p className="text-2xl font-bold text-primary">"{asText(kit.slogan)}"</p>
+                      <p className="text-muted-foreground italic whitespace-pre-line">{asText(kit.tagline)}</p>
                     </div>
                     <div>
                       <h3 className="font-semibold mb-3 flex items-center gap-2"><Palette className="h-5 w-5" /> Brand Colors</h3>
@@ -329,7 +350,7 @@ visualIdentity (object with typography, imagery, tone).`;
                         {Object.entries(kit.social_media_strategy || {}).map(([p, s]) => (
                           <Card key={p}><CardContent className="pt-4">
                             <p className="font-medium capitalize mb-2">{p}</p>
-                            <p className="text-sm text-muted-foreground">{s as string}</p>
+                            <p className="text-sm text-muted-foreground whitespace-pre-line">{asText(s)}</p>
                           </CardContent></Card>
                         ))}
                       </div>
@@ -340,7 +361,7 @@ visualIdentity (object with typography, imagery, tone).`;
                         {["typography", "imagery", "tone"].map(key => (
                           <Card key={key}><CardContent className="pt-4">
                             <p className="font-medium mb-2 capitalize">{key}</p>
-                            <p className="text-sm text-muted-foreground">{kit.visual_identity?.[key] || "Not specified"}</p>
+                            <p className="text-sm text-muted-foreground whitespace-pre-line">{asText(kit.visual_identity?.[key]) || "Not specified"}</p>
                           </CardContent></Card>
                         ))}
                       </div>
