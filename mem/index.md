@@ -57,3 +57,4 @@
 - [Marketplace contact filter](mem://features/contact-filter) — Contacts scrubbed from listings/early chat; unlock costs 2 credits.
 - [Real names everywhere](mem://preferences/real-names-everywhere) — Never show "User"/"Anonymous"; profiles_public must stay security-definer.
 - [No fake data](mem://constraints/no-fake-data) — Every number, list and name must come from real DB data; no mock/random/placeholder values anywhere.
+- [Flyer Studio language](mem://preferences/flyer-studio-language) — English-only controls; selected output language receives professional native-level translation.
