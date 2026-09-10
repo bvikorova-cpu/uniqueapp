@@ -156,13 +156,32 @@ const GuessAge = () => {
     }
     setBusy(true);
     try {
-      const res = await call<{ correct: boolean; realAge: number; guessedAge: number; points: number; creditsRemaining?: number }>({
+      const res = await call<{
+        correct: boolean; realAge: number; guessedAge: number; points: number; creditsRemaining?: number;
+        totalPoints?: number; correctGuesses?: number; totalGuesses?: number;
+      }>({
         action: "guessage.guess",
         photoId: card.photoId,
         guessedAge: value,
       });
       setResult(res);
       setGuess("");
+      // Keep the on-photo counter and my stats in sync right away.
+      setDeck((prev) => prev.map((c, i) => (i === index ? { ...c, guessesCount: c.guessesCount + 1 } : c)));
+      if (typeof res.totalGuesses === "number") {
+        setState((prev) =>
+          prev
+            ? {
+                ...prev,
+                score: {
+                  points: res.totalPoints ?? prev.score.points,
+                  correctGuesses: res.correctGuesses ?? prev.score.correctGuesses,
+                  totalGuesses: res.totalGuesses ?? prev.score.totalGuesses,
+                },
+              }
+            : prev,
+        );
+      }
       toast({
         title: "1 credit used",
         description:
