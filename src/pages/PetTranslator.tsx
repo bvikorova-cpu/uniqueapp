@@ -47,24 +47,6 @@ const PetTranslator = () => {
     }
   }, [activeView]);
 
-  if (false) {
-    return (
-      <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[60vh]">
-        <FloatingHowItWorks
-          title="Pet Translator"
-          intro="Understand what your pet is trying to say."
-          steps={[
-            { title: "Record your pet", desc: "Bark, meow or gesture \u2014 video or audio." },
-          { title: "Pick species", desc: "Dog, cat, bird, exotic." },
-          { title: "Get the translation", desc: "AI interprets sound + body language." },
-          { title: "Save moments", desc: "Share cute translations with friends." },
-          { title: "Track over time", desc: "Emotion journal for your pet." }
-          ]}
-        />
-        <Loader2 className="w-8 h-8 animate-spin" />
-      </div>
-    );
-  }
 
   // Handle special views that take over the full content area
   const renderSpecialView = () => {
