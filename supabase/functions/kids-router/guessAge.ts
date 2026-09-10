@@ -5,7 +5,7 @@ import { spendAiCredits } from "../_shared/spendCredits.ts";
 const GUESS_COST = 1;
 const POINTS_CORRECT = 10;
 const POINTS_WRONG = 2;
-const TOLERANCE = 2; // a guess within +/- 2 years counts as correct
+const TOLERANCE = 0; // only the exact age counts as correct
 const BUCKET = "guess-age-photos";
 
 type Ctx = {
