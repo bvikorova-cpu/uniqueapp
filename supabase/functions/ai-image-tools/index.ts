@@ -38,8 +38,6 @@ const json = (body: unknown, status = 200) =>
 
 const OPENAI_IMAGE_URL = "https://api.openai.com/v1/images/generations";
 const OPENAI_CHAT_URL = "https://api.openai.com/v1/chat/completions";
-const LOVABLE_IMAGE_URL = "https://ai.gateway.lovable.dev/v1/images/generations";
-const LOVABLE_CHAT_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
 
 const svgDataUri = (svg: string) =>
   `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svg)))}`;
@@ -211,7 +209,6 @@ serve(async (req) => {
       }
     };
 
-    const rawFetch = ((globalThis as any).__ORIGINAL_FETCH__ as typeof fetch | undefined) ?? fetch;
 
     const SUPPORTED_SIZES = ["1024x1024", "1024x1536", "1536x1024", "auto"];
     const normalizeSize = (s?: string) => {
@@ -240,46 +237,6 @@ serve(async (req) => {
       const b64 = data?.data?.[0]?.b64_json;
       if (!b64) throw new Error("No image returned by AI");
       return `data:image/png;base64,${b64}`;
-    };
-
-    // Normalize every supported gateway image response to a directly renderable URL.
-    const extractImageUrl = (data: any): string | null => {
-      const direct = data?.data?.[0]?.b64_json;
-      if (typeof direct === "string" && direct) return `data:image/png;base64,${direct}`;
-      const directUrl = data?.data?.[0]?.url;
-      if (typeof directUrl === "string" && directUrl) return directUrl;
-      const msg = data?.choices?.[0]?.message;
-      const fromImages = msg?.images?.[0]?.image_url?.url || msg?.images?.[0]?.url;
-      if (typeof fromImages === "string" && fromImages) return fromImages;
-      const content = msg?.content;
-      if (Array.isArray(content)) {
-        for (const part of content) {
-          const url = part?.image_url?.url || part?.url;
-          if (typeof url === "string" && url) return url;
-          if (typeof part?.b64_json === "string" && part.b64_json) {
-            return `data:image/png;base64,${part.b64_json}`;
-          }
-        }
-      }
-      const inlinePart = data?.candidates?.[0]?.content?.parts?.find((part: any) => part?.inlineData?.data);
-      const inline = inlinePart?.inlineData?.data;
-      if (typeof inline === "string" && inline) {
-        return `data:${inlinePart?.inlineData?.mimeType || "image/png"};base64,${inline}`;
-      }
-      return null;
-    };
-
-    const sourceAsDataUrl = async (sourceUrl: string): Promise<string> => {
-      if (sourceUrl.startsWith("data:")) return sourceUrl;
-      const sourceResponse = await rawFetch(sourceUrl);
-      if (!sourceResponse.ok) throw new Error(`Source image could not be read (${sourceResponse.status})`);
-      const blob = await sourceResponse.blob();
-      const bytes = new Uint8Array(await blob.arrayBuffer());
-      let binary = "";
-      for (let offset = 0; offset < bytes.length; offset += 8192) {
-        binary += String.fromCharCode(...bytes.subarray(offset, offset + 8192));
-      }
-      return `data:${blob.type || "image/jpeg"};base64,${btoa(binary)}`;
     };
 
     // Real image-to-image edit: Vertex AI first (primary), Lovable Gateway as fallback
