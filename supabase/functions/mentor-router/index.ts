@@ -1,7 +1,6 @@
 import "../_shared/aiRedirect.ts";
 // Personal Mentor universal router — handles all mentor features
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import Stripe from "https://esm.sh/stripe@18.5.0";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -11,28 +10,9 @@ const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-const MENTOR_PRICES: Record<string, string> = { monthly: "price_1TXnOuGaXSfGtYFtNzPlq3GN",
-  yearly: "price_1TXnOvGaXSfGtYFtxGWrODSu" };
-
-const MENTOR_PRICE_TO_PLAN: Record<string, string> = { price_1TXnOuGaXSfGtYFtNzPlq3GN: "monthly",
-  price_1TXnOvGaXSfGtYFtxGWrODSu: "yearly" };
-
-function stripePeriodEndToIso(sub: Stripe.Subscription): string | null {
-  const topLevelEnd = (sub as any).current_period_end;
-  const itemEnd = (sub.items?.data ?? [])
-    .map((item: any) => item.current_period_end)
-    .find((value: unknown) => typeof value === "number" && Number.isFinite(value));
-  const unixSeconds = typeof topLevelEnd === "number" && Number.isFinite(topLevelEnd)
-    ? topLevelEnd
-    : itemEnd;
-
-  if (typeof unixSeconds !== "number" || !Number.isFinite(unixSeconds) || unixSeconds <= 0) {
-    return null;
-  }
-
-  const date = new Date(unixSeconds * 1000);
-  return Number.isNaN(date.getTime()) ? null : date.toISOString();
-}
+// Credits-only access: one coach area unlocked for 30 days.
+const MENTOR_UNLOCK_COST = 30;
+const MENTOR_UNLOCK_DAYS = 30;
 
 function json(b: unknown, s = 200) {
   return new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
