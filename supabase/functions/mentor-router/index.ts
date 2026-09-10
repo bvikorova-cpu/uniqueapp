@@ -90,35 +90,55 @@ Deno.serve(async (req) => {
     const userId = user.id;
 
     switch (action) {
-      case "premium.checkout": {
-        const plan = body.plan === "yearly" ? "yearly" : "monthly";
+      // Credits-only unlock: 30 AI credits = 30 days access to one coach area.
+      case "premium.checkout":
+      case "premium.unlock": {
         const area = ["career", "fitness", "mindset", "relationships"].includes(body.area) ? body.area : "career";
-        const priceId = MENTOR_PRICES[plan];
-        if (!user.email) return json({ error: "email required" }, 400);
-        const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-        if (!stripeKey) return json({ error: "Stripe is not configured" }, 500);
-        const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-        const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-        const customerId = customers.data[0]?.id;
+        const nowMs = Date.now();
 
-        // Block duplicate subscription for the same area
-        if (customerId) {
-          const existing = await stripe.subscriptions.list({ customer: customerId, status: "active", limit: 50 });
-          const dupe = existing.data.find((s) => (s.metadata?.mentor_area === area) && MENTOR_PRICE_TO_PLAN[s.items.data[0]?.price.id]);
-          if (dupe) return json({ error: `You already have an active ${area} coach subscription.` }, 409);
+        const { data: existing } = await admin
+          .from("mentor_premium_subs")
+          .select("current_period_end, status")
+          .eq("user_id", userId)
+          .eq("area", area)
+          .maybeSingle();
+        if (existing?.status === "active" && existing.current_period_end && new Date(existing.current_period_end).getTime() > nowMs) {
+          return json({ error: `Your ${area} coach is already active.` }, 409);
         }
 
-        const origin = req.headers.get("origin") || "https://uniqueapp.fun";
-        const session = await stripe.checkout.sessions.create({
-          customer: customerId,
-          customer_email: customerId ? undefined : user.email,
-          line_items: [{ price: priceId, quantity: 1 }],
-          mode: "subscription",
-          success_url: `${origin}/ai-mentor/${area}?checkout=success`,
-          cancel_url: `${origin}/ai-mentor/premium?status=cancel`,
-          metadata: { user_id: userId, plan, mentor_area: area },
-          subscription_data: { metadata: { user_id: userId, plan, mentor_area: area } } });
-        return json({ url: session.url });
+        const { data: wallet } = await admin
+          .from("ai_credits")
+          .select("credits_remaining")
+          .eq("user_id", userId)
+          .maybeSingle();
+        if (!wallet || wallet.credits_remaining < MENTOR_UNLOCK_COST) {
+          return json({ error: "Insufficient credits. Please purchase more." }, 402);
+        }
+
+        const { error: deductErr } = await admin.rpc("deduct_ai_credits", {
+          p_user_id: userId,
+          p_amount: MENTOR_UNLOCK_COST,
+          p_reason: `mentor_unlock:${area}`,
+          p_source: "mentor-router" });
+        if (deductErr) return json({ error: "Insufficient credits. Please purchase more." }, 402);
+
+        const periodEnd = new Date(nowMs + MENTOR_UNLOCK_DAYS * 24 * 3600 * 1000).toISOString();
+        const { error: upErr } = await admin.from("mentor_premium_subs").upsert({
+          user_id: userId,
+          email: user.email ?? null,
+          area,
+          status: "active",
+          plan: "credits",
+          current_period_end: periodEnd }, { onConflict: "user_id,area" });
+        if (upErr) {
+          await admin.rpc("add_ai_credits", {
+            p_user_id: userId,
+            p_amount: MENTOR_UNLOCK_COST,
+            p_reason: `mentor_unlock_refund:${area}`,
+            p_source: "mentor-router" });
+          return json({ error: upErr.message }, 500);
+        }
+        return json({ ok: true, url: null, area, plan: "credits", credits_spent: MENTOR_UNLOCK_COST, current_period_end: periodEnd });
       }
       case "premium.check": {
         // Returns map of per-area subscriptions, plus aggregate `subscribed` if any area is active
