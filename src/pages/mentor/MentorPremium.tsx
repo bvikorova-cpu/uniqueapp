@@ -2,17 +2,18 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useMentorPremium, useMentorCheckout, type MentorArea } from "@/hooks/useMentorRouter";
+import { useMentorPremium, useMentorUnlock, MENTOR_UNLOCK_COST, MENTOR_UNLOCK_DAYS, type MentorArea } from "@/hooks/useMentorRouter";
+import { useAICredits } from "@/hooks/useAICredits";
 import { Crown, Check, Sparkles, Briefcase, Dumbbell, Brain, Heart } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const __HIW_MENTORPREMIUM_STEPS = [
-  { title: 'Compare plans', desc: 'Monthly vs annual — annual saves the most.' },
-  { title: 'Pay securely', desc: 'Stripe checkout completes in seconds.' },
-  { title: 'Unlock everything', desc: 'Unlimited sessions, deeper analytics, priority voice.' },
-  { title: 'Cancel anytime', desc: 'Manage or cancel from your account settings.' }
+  { title: 'Pick a coach', desc: 'Each coach area unlocks on its own.' },
+  { title: 'Spend credits', desc: `${MENTOR_UNLOCK_COST} AI credits unlock one coach for ${MENTOR_UNLOCK_DAYS} days.` },
+  { title: 'Unlock everything', desc: 'All mentor tools for that area, unlimited sessions.' },
+  { title: 'No subscription', desc: 'Nothing renews automatically — unlock again when you want.' }
 ];
-const __HIW_MENTORPREMIUM = { title: 'Mentor Premium', intro: 'Subscribe to unlock unlimited AI coaching.', steps: __HIW_MENTORPREMIUM_STEPS };
+const __HIW_MENTORPREMIUM = { title: 'Mentor Premium', intro: 'Unlock AI coaching with your AI credits.', steps: __HIW_MENTORPREMIUM_STEPS };
 
 
 const AREAS: { id: MentorArea; title: string; icon: any; tagline: string; accent: string }[] = [
@@ -43,7 +44,8 @@ const FEATURE_COUNT = FEATURES.length;
 
 export default function MentorPremium() {
   const { data: sub } = useMentorPremium();
-  const checkout = useMentorCheckout();
+  const unlock = useMentorUnlock();
+  const { credits } = useAICredits();
   const areas = sub?.areas ?? {};
 
   return (
@@ -53,7 +55,10 @@ export default function MentorPremium() {
         <div className="text-center mb-8">
           <Crown className="w-12 h-12 mx-auto text-primary mb-3" />
           <h1 className="text-4xl font-black mb-2">Personal Mentor Premium</h1>
-          <p className="text-muted-foreground">Each coach is its own subscription — pick only the areas you need.</p>
+          <p className="text-muted-foreground">Each coach unlocks separately with AI credits — pick only the areas you need.</p>
+          <p className="text-sm text-foreground/90 font-medium mt-2">
+            {MENTOR_UNLOCK_COST} credits · {MENTOR_UNLOCK_DAYS} days access · your balance: {credits.credits_remaining} credits
+          </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-5 mb-10">
@@ -65,7 +70,7 @@ export default function MentorPremium() {
       <FloatingHowItWorks title={__HIW_MENTORPREMIUM.title} intro={__HIW_MENTORPREMIUM.intro} steps={__HIW_MENTORPREMIUM.steps} />
                 {active && (
                   <span className="absolute top-3 right-3 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full">
-                    ✓ Active · {status?.plan}
+                    ✓ Active
                   </span>
                 )}
                 <CardContent className="p-6">
@@ -81,7 +86,7 @@ export default function MentorPremium() {
 
                   {active ? (
                     <p className="text-sm text-muted-foreground mb-3">
-                      Renews {status?.current_period_end ? new Date(status.current_period_end).toLocaleDateString() : "—"}.
+                      Active until {status?.current_period_end ? new Date(status.current_period_end).toLocaleDateString() : "—"}.
                     </p>
                   ) : (
                     <p className="text-sm text-muted-foreground mb-3">
@@ -89,24 +94,15 @@ export default function MentorPremium() {
                     </p>
                   )}
 
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button
-                      variant="outline"
-                      disabled={checkout.isPending || active}
-                      onClick={() => checkout.mutate({ plan: "monthly", area: a.id })}
-                    >
-                      {active && status?.plan === "monthly" ? "Current" : (<><span className="font-bold">€14.99</span>&nbsp;/mo</>)}
-                    </Button>
-                    <Button
-                      disabled={checkout.isPending || active}
-                      onClick={() => checkout.mutate({ plan: "yearly", area: a.id })}
-                      className="relative"
-                    >
-                      {active && status?.plan === "yearly" ? "Current" : (<><Sparkles className="w-3 h-3 mr-1" /><span className="font-bold">€149.90</span>&nbsp;/yr</>)}
-                    </Button>
-                  </div>
+                  <Button
+                    className="w-full"
+                    disabled={unlock.isPending || active}
+                    onClick={() => unlock.mutate({ area: a.id })}
+                  >
+                    {active ? "Unlocked" : (<><Sparkles className="w-3 h-3 mr-1" />Unlock for {MENTOR_UNLOCK_COST} credits</>)}
+                  </Button>
                   {!active && (
-                    <p className="text-[10px] text-muted-foreground mt-2 text-center">Yearly saves ~17% (2 months free)</p>
+                    <p className="text-[10px] text-muted-foreground mt-2 text-center">{MENTOR_UNLOCK_DAYS} days access · no auto-renewal</p>
                   )}
                 </CardContent>
               </Card>
@@ -117,7 +113,7 @@ export default function MentorPremium() {
         <Card className="backdrop-blur-xl bg-card/80">
           <CardContent className="p-6">
             <h2 className="font-black mb-1">Each coach unlocks the full toolkit</h2>
-            <p className="text-xs text-muted-foreground mb-4">Subscribing to a coach activates these {FEATURE_COUNT} features for that area only.</p>
+            <p className="text-xs text-muted-foreground mb-4">Unlocking a coach activates these {FEATURE_COUNT} features for that area only.</p>
             <ul className="grid sm:grid-cols-2 gap-2">
               {FEATURES.map((f) => (
                 <li key={f} className="flex items-start gap-2 text-sm">
