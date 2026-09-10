@@ -259,10 +259,11 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
                 </div>
               )}
               {turns.map((t, i) => (
-                <div key={i} className={`text-sm p-2.5 rounded-lg ${t.role === "user" ? "bg-primary/10 ml-6" : "bg-muted mr-6"}`}>
-                  {t.content}
+                <div key={i} className={`text-sm p-2.5 rounded-lg ${t.role === "user" ? "bg-primary/10 ml-6" : "mr-6"}`}>
+                  {t.role === "user" ? t.content : <AiMarkdown content={t.content} className="text-sm leading-relaxed" />}
                 </div>
               ))}
+              <div ref={endRef} />
             </div>
 
             <form
