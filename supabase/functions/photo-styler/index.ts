@@ -2,6 +2,27 @@ import "../_shared/aiRedirect.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 import { tryVertexImage } from "../_shared/vertexDirect.ts";
+import { tryGatewayImage } from "../_shared/imageFallback.ts";
+
+/**
+ * Vertex image quota (429 RESOURCE_EXHAUSTED) hits in bursts, so retry briefly
+ * and then fall back to the Lovable AI Gateway with the same source photo.
+ */
+async function renderStyleImage(prompt: string, aspect: string, image: string): Promise<string | null> {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const out = await tryVertexImage(prompt, aspect, 1, [image]);
+      const b64 = out?.data?.[0]?.b64_json;
+      if (b64) return b64;
+    } catch (e) {
+      console.warn("[photo-styler] vertex attempt failed:", e instanceof Error ? e.message : e);
+    }
+    if (attempt === 0) await new Promise((r) => setTimeout(r, 1200));
+  }
+  const fallback = await tryGatewayImage(prompt, aspect, image);
+  if (fallback) console.log("[photo-styler] served via gateway fallback");
+  return fallback;
+}
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -129,10 +150,9 @@ serve(async (req) => {
         PORTRAIT_RE.test(stylePrompt) || PORTRAIT_RE.test(style) ? PORTRAIT_RULES : ""
       }`;
       try {
-        const out = await tryVertexImage(prompt, aspect, 1, [image]);
-        const b64 = out?.data?.[0]?.b64_json;
+        const b64 = await renderStyleImage(prompt, aspect, image);
         if (b64) results.push({ style, image: `data:image/png;base64,${b64}` });
-        else results.push({ style, error: "The image model returned nothing. Try again." });
+        else results.push({ style, error: "The image service is busy. Try again in a moment." });
       } catch (e) {
         console.error(`[photo-styler] style ${style} failed:`, e instanceof Error ? e.message : e);
         results.push({ style, error: e instanceof Error ? e.message : "Generation failed" });
@@ -141,7 +161,13 @@ serve(async (req) => {
 
     const ok = results.filter((r) => r.image).length;
     if (!ok) {
-      return json({ error: "Image model unavailable right now. No credits were used.", results }, 503);
+      return json(
+        {
+          error: "The AI image service is overloaded right now. Please try again in a minute — no credits were used.",
+          results,
+        },
+        503,
+      );
     }
 
     // Charge only for the styles that actually rendered.

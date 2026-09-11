@@ -47,19 +47,27 @@ export async function tryGeminiApiImage(prompt: string, size?: string): Promise<
   return null;
 }
 
-/** Lovable AI Gateway — last-resort image provider. */
-export async function tryGatewayImage(prompt: string, size?: string): Promise<string | null> {
+/**
+ * Lovable AI Gateway — last-resort image provider.
+ * `refImage` (data URL or https URL) lets the model edit an existing photo so
+ * face identity is preserved when Vertex is out of quota.
+ */
+export async function tryGatewayImage(prompt: string, size?: string, refImage?: string): Promise<string | null> {
   const key = Deno.env.get("LOVABLE_API_KEY");
   if (!key) return null;
   const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
   try {
+    const text = prompt + aspectHint(size);
+    const content = refImage
+      ? [{ type: "text", text }, { type: "image_url", image_url: { url: refImage } }]
+      : text;
     const res = await rawFetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
       signal: AbortSignal.timeout(60_000),
       body: JSON.stringify({
         model: "google/gemini-2.5-flash-image",
-        messages: [{ role: "user", content: prompt + aspectHint(size) }],
+        messages: [{ role: "user", content }],
         modalities: ["image", "text"],
       }),
     });

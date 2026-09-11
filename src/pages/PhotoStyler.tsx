@@ -561,6 +561,21 @@ const PhotoStyler = () => {
                 </div>
               </div>
 
+              {selected.length > 0 && (
+                <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-primary/30 bg-primary/5 p-2">
+                  <span className="text-[11px] font-bold text-muted-foreground">Selected:</span>
+                  {selected.map((id) => (
+                    <span
+                      key={id}
+                      translate="no"
+                      className="rounded-full bg-primary/15 px-2 py-0.5 text-[11px] font-semibold text-primary"
+                    >
+                      {styleLabel(id)}
+                    </span>
+                  ))}
+                </div>
+              )}
+
               <Button
                 onClick={handleGenerate}
                 disabled={busy || screening || !photo || !selected.length}
@@ -568,7 +583,7 @@ const PhotoStyler = () => {
                 size="lg"
               >
                 {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
-                {busy ? "Painting…" : `Style my photo · ${cost} credits`}
+                <span translate="no">{busy ? "Painting…" : `Style my photo · ${cost} credits`}</span>
               </Button>
               {totalBalance < cost && (
                 <p className="text-center text-xs text-muted-foreground">
