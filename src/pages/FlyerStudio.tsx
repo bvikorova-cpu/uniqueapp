@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { downloadImage } from "@/utils/downloadImage";
 import SEO from "@/components/SEO";
 import { FLYER_STYLES, FLYER_STYLE_CATEGORIES, FLYER_ASPECTS, FLYER_LANGUAGES } from "@/data/flyerStyles";
 import { Megaphone, Loader2, Upload, Download, Sparkles, Trash2, Coins, X, Search } from "lucide-react";
@@ -190,13 +191,10 @@ export default function FlyerStudio() {
     setHistory((h) => h.filter((x) => x.id !== id));
   };
 
-  const download = (url: string, name: string) => {
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${name.replace(/[^\w-]+/g, "-").slice(0, 40) || "flyer"}.png`;
-    a.target = "_blank";
-    a.rel = "noopener";
-    a.click();
+  const download = async (url: string, name: string) => {
+    const fileName = `${name.replace(/[^\w-]+/g, "-").slice(0, 40) || "flyer"}.png`;
+    const outcome = await downloadImage(url, fileName);
+    if (outcome === "opened") toast.error(t("flyer.toast_delete_failed"));
   };
 
   if (!user) {
