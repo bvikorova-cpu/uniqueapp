@@ -161,7 +161,13 @@ serve(async (req) => {
 
     const ok = results.filter((r) => r.image).length;
     if (!ok) {
-      return json({ error: "Image model unavailable right now. No credits were used.", results }, 503);
+      return json(
+        {
+          error: "The AI image service is overloaded right now. Please try again in a minute — no credits were used.",
+          results,
+        },
+        503,
+      );
     }
 
     // Charge only for the styles that actually rendered.
