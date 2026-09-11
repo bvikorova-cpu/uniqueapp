@@ -1864,4 +1864,67 @@ export const STYLE_PROMPTS: Record<string, string> = {
   ftedragonknight: "classic public-domain fairy tale illustration style, painterly storybook lighting, magical atmosphere, rich costumes, cinematic depth, preserve the person's facial identity and features: as a fairy tale knight facing a friendly dragon",
   ftewitchcottage: "classic public-domain fairy tale illustration style, painterly storybook lighting, magical atmosphere, rich costumes, cinematic depth, preserve the person's facial identity and features: in a herb-filled witch's cottage with bubbling cauldron",
   ftefairygodmother: "classic public-domain fairy tale illustration style, painterly storybook lighting, magical atmosphere, rich costumes, cinematic depth, preserve the person's facial identity and features: surrounded by swirling fairy sparkles and magic wand light",
+
+  // Safe Cartoon Alternatives — original, non-branded homages
+  safrescuepuphero: "a friendly original rescue-pup adventure scene, the person as a brave helper wearing a generic colorful utility vest and pup ears, standing beside a fictional rescue vehicle in a bright cartoon town, no branded characters or logos",
+  safrescuepupfire: "the person as an original fire-rescue pup helper, wearing a generic red firefighter pup vest and helmet, a bright cartoon fire station and friendly flames in the background, no branded characters",
+  safrescuepuppolice: "the person as an original patrol-pup helper, wearing a generic blue police-style pup vest and cap, a sunny cartoon town street with a friendly police car, no branded characters",
+  safrescuepupconstruction: "the person as an original builder-pup helper, wearing a generic yellow construction hard-hat and vest, a cartoon construction site with blocks and cranes, no branded characters",
+  safrescuepupaviator: "the person as an original aviator-pup pilot, wearing a generic flight cap and goggles, a colorful cartoon airplane cockpit and fluffy clouds, no branded characters",
+  safrescuepupsea: "the person as an original sea-rescue pup, wearing a generic orange life-vest, a bright cartoon coast guard boat and lighthouse, no branded characters",
+  safrescuepupmountain: "the person as an original mountain-rescue pup, wearing a generic warm parka and snow goggles, snowy cartoon peaks and a rescue sled, no branded characters",
+  safrescuepupvetcart: "the person as an original animal-rescue pup medic, wearing a generic white medic vest, a friendly cartoon vet cart and animals in a park, no branded characters",
+
+  safmysteryteenvan: "the person as an original mystery-solving teen in a colorful vintage camper van, scenic road and autumn trees, no branded characters or logos",
+  safmysteryteenspooky: "the person as an original mystery teen exploring a spooky old mansion, cobwebs, candlelight and hidden passages, no branded characters",
+  safmysteryteenghost: "the person as an original teen ghost-hunter with a flashlight and gadget belt, a haunted cartoon cemetery, no branded characters",
+  safmysteryteenforest: "the person as an original mystery teen in a foggy forest camp, tents and a campfire, no branded characters",
+  safmysteryteencarnival: "the person as an original mystery teen at a nighttime carnival, ferris wheel lights and a ghost train, no branded characters",
+  safmysteryteenlighthouse: "the person as an original mystery teen on a stormy lighthouse cliff, beam of light and crashing waves, no branded characters",
+
+  safbumblingmini: "the person in a gentle slapstick comedy scene with a tiny vintage car, chaotic parking and a red brick London street, no actor likeness or specific branded car",
+  safbumblingteddy: "the person having a picnic mishap with a teddy bear, sandwiches flying, a sunny park, no actor likeness or branded elements",
+  safbumblinglibrary: "the person in a silent library comedy scene, stacked books wobbling, reading glasses, no actor likeness",
+  safbumblingdinner: "the person at a fancy dinner party disaster, turkey flying, gravy spill, no actor likeness",
+  safbumblinglaundry: "the person in a laundromat slapstick scene, clothes overflowing, soap bubbles everywhere, no actor likeness",
+  safbumblinggarden: "the person in a gardening mishap scene, watering can spray, falling ladder, hedges shaped funny, no actor likeness",
+
+  safmagicschoolrobe: "the person as a young student in a generic magical school, wearing a simple robe and tie, holding a wand, a stone castle corridor, no branded characters",
+  safmagicschoolbroom: "the person as a young flying-class student on a simple wooden broom above a green field, no branded characters",
+  safmagicschoolpotion: "the person as a young potion student in a stone dungeon classroom, colorful bubbling cauldrons, no branded characters",
+  safmagicschoollibrary: "the person reading a glowing book in a vast magical library with floating candles, no branded characters",
+  safmagicschoolfeast: "the person at a magical school feast, long tables with floating plates and candlelight, no branded characters",
+
+  safspacerangersuit: "the person as a young space ranger cadet in a sleek white and silver suit, a futuristic space academy, no branded characters",
+  safspacerangership: "the person as a space ranger on the bridge of a friendly starship, stars and control panels, no branded characters",
+  safspacerangeralien: "the person as a space ranger meeting a cute original alien on a colorful planet, no branded characters",
+  safspacerangerrobot: "the person as a space ranger with a friendly robot sidekick, a lunar base, no branded characters",
+  safspacerangerlaser: "the person as a space ranger in a safe laser-tag arena, neon lights and targets, no branded characters",
+
+  safpiratecaptain: "the person as a young pirate captain on a ship deck, tricorn hat and spyglass, cartoon ocean, no branded characters",
+  safpirateship: "the person aboard a friendly cartoon pirate ship, sails and an original skull flag, no branded characters",
+  safpiratetreasure: "the person as a young pirate discovering a treasure chest on a tropical island, no branded characters",
+  safpiratecrew: "the person as part of a cheerful original pirate crew, diverse costumes, ship deck, no branded characters",
+  safpiratesea: "the person in a playful pirate sea adventure, cannon water splashes and a distant island, no branded characters",
+
+  safsuperkidcape: "the person as an original young superhero with a flowing cape, flying over a cartoon city, no branded characters",
+  safsuperkidmask: "the person as an original masked hero kid, domino mask and emblem, rooftop pose, no branded characters",
+  safsuperkidhq: "the person as a young hero in an original secret headquarters, monitors and gadgets, no branded characters",
+  safsuperkidteam: "the person as part of an original young hero team, dynamic poses and colorful suits, no branded characters",
+
+  safwoodlandbunny: "the person in a cozy bunny village, giant carrots and burrow houses, soft storybook style, no branded characters",
+  safwoodlandfox: "the person as a friend of a friendly fox in a sunlit forest village, no branded characters",
+  safwoodlandbear: "the person visiting a bear's cottage in the woods, honey pots and flowers, no branded characters",
+  safwoodlandtea: "the person at a woodland tea party with rabbits and hedgehogs, toadstool tables, no branded characters",
+
+  safmonsterbedroom: "the person with a friendly original monster peeking out from under a cozy bed, night light glow, no branded characters",
+  safmonsterclassroom: "the person in a friendly monster school classroom, chalkboard and monster classmates, no branded characters",
+  safmonstercafe: "the person as a server in a friendly monster cafe, silly monsters at tables, no branded characters",
+  safmonsterband: "the person in a friendly monster band, colorful monsters playing instruments, no branded characters",
+
+  saffairycastleprince: "the person as a young prince in a storybook castle, crown and velvet cloak, throne room, no branded characters",
+  saffairycastleprincess: "the person as a young princess in a storybook castle, tiara and gown, tower window, no branded characters",
+  saffairycastlekitchen: "the person as a castle kitchen helper, copper pots and a long table, warm firelight, no branded characters",
+  saffairycastlejester: "the person as a court jester in a castle, bells and colorful outfit, no branded characters",
+  saffairycastleknight: "the person as a young knight squire in a castle courtyard, wooden sword and shield, no branded characters",
 };
