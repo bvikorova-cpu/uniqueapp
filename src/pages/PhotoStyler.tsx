@@ -622,6 +622,9 @@ const PhotoStyler = () => {
                             <Button size="icon" variant="ghost" onClick={() => shareFacebook(r)} aria-label="Share on Facebook">
                               <Facebook className="h-4 w-4 text-[#1877F2]" />
                             </Button>
+                            <Button size="icon" variant="ghost" onClick={() => sendToFlyer(r)} aria-label="Create flyer from this photo">
+                              <FileImage className="h-4 w-4 text-primary" />
+                            </Button>
                           </div>
                         </div>
                         <div className="px-1 pb-1">
