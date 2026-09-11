@@ -71599,6 +71599,15 @@ export type Database = {
           xp_reward: number
         }[]
       }
+      get_user_friends: {
+        Args: { _user_id: string }
+        Returns: {
+          avatar_url: string
+          full_name: string
+          id: string
+        }[]
+      }
+      get_user_friends_count: { Args: { _user_id: string }; Returns: number }
       get_user_job_achievements: {
         Args: never
         Returns: {
