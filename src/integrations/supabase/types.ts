@@ -60722,6 +60722,39 @@ export type Database = {
           },
         ]
       }
+      style_previews: {
+        Row: {
+          created_at: string
+          credits_estimate: number | null
+          height: number | null
+          model: string | null
+          storage_path: string
+          style_id: string
+          updated_at: string
+          width: number | null
+        }
+        Insert: {
+          created_at?: string
+          credits_estimate?: number | null
+          height?: number | null
+          model?: string | null
+          storage_path: string
+          style_id: string
+          updated_at?: string
+          width?: number | null
+        }
+        Update: {
+          created_at?: string
+          credits_estimate?: number | null
+          height?: number | null
+          model?: string | null
+          storage_path?: string
+          style_id?: string
+          updated_at?: string
+          width?: number | null
+        }
+        Relationships: []
+      }
       styling_sessions: {
         Row: {
           ai_recommendations: Json | null
