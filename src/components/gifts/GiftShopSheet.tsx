@@ -186,11 +186,17 @@ export function GiftShopSheet({
             <Gift className="h-5 w-5 text-primary" />
             Unique Gifts
           </SheetTitle>
-          <SheetDescription className="flex items-center gap-2">
-            Send an animated gift{recipientName ? ` to ${recipientName}` : postId ? " to this post" : ""}. The recipient earns
-            50% of the value in euros (withdrawable from €20).
-
+          <SheetDescription className="flex flex-col gap-1 text-left">
+            <span>
+              Send an animated gift{recipientName ? ` to ${recipientName}` : postId ? " to this post" : ""}. The recipient earns
+              50% of the value in euros (withdrawable from €20).
+            </span>
+            <span className="text-xs text-muted-foreground">
+              Earnings apply only to gifts paid with purchased credits. Gifts sent with free or bonus credits are
+              delivered normally, but create no euro earnings.
+            </span>
           </SheetDescription>
+
         </SheetHeader>
 
         <div className="flex items-center justify-between py-2">

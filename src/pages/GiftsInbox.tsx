@@ -214,8 +214,11 @@ export default function GiftsInbox() {
 
       <p className="mb-5 text-sm text-muted-foreground">
         Every gift you receive earns you 50% of its value in euros (1 credit = €0.50, so €0.25 per
-        credit for you). Withdraw once you reach €{balance?.min_eur ?? 20}.
+        credit for you). Withdraw once you reach €{balance?.min_eur ?? 20}. Only gifts paid with
+        purchased credits create earnings — gifts sent with free or bonus credits arrive without any
+        euro value.
       </p>
+
 
 
       <div className="mb-5 grid grid-cols-2 gap-3">
