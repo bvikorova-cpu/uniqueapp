@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { BookOpen, Sparkles } from "lucide-react";
 import { useAiSleepStory } from "@/hooks/useWellnessAIFeatures";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { AudioPlayerMini } from "@/components/wellness/AudioPlayerMini";
 
 export function AiSleepStoryCard() {
   const [open, setOpen] = useState(false);
@@ -55,7 +56,11 @@ export function AiSleepStoryCard() {
             {stories.slice(0, 5).map((s: any) => (
               <div key={s.id} className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20">
                 <p className="text-sm font-bold text-blue-100">{s.title}</p>
-                {s.audio_url && <audio controls src={s.audio_url} className="w-full h-8 mt-2" />}
+                {s.audio_url && (
+                  <div className="mt-2">
+                    <AudioPlayerMini src={s.audio_url} fileName={`${s.title || "sleep-story"}.mp3`} />
+                  </div>
+                )}
               </div>
             ))}
           </div>

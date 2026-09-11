@@ -106,8 +106,10 @@ serve(async (req) => {
     let rateLimited = false;
     let creditsExhausted = false;
 
-    const genFrame = async (age: number) => {
-      for (let attempt = 0; attempt < 2; attempt++) {
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+    const genFrame = async (age: number, attempts = 2) => {
+      for (let attempt = 0; attempt < attempts; attempt++) {
         try {
           const out = await tryVertexImage(framePrompt(age), "1:1", 1, [imageUrl]);
           const b64 = out?.data?.[0]?.b64_json;
@@ -115,16 +117,37 @@ serve(async (req) => {
           lastError = `no image returned for age ${age}`;
           console.error(lastError);
         } catch (err) {
-          lastError = `age ${age}: ${String((err as any)?.message ?? err)}`;
+          const msg = String((err as any)?.message ?? err);
+          if (/429|rate.?limit|quota|resource.?exhausted/i.test(msg)) rateLimited = true;
+          if (/402|credit|billing/i.test(msg)) creditsExhausted = true;
+          lastError = `age ${age}: ${msg}`;
           console.error("frame generation failed", lastError);
         }
+        if (attempt < attempts - 1) await sleep(900 * (attempt + 1));
       }
       return null;
     };
 
     const ages = Array.from({ length: count }, (_, i) => Math.round(sAge + step * i));
-    const results = await Promise.all(ages.map((age) => genFrame(age)));
+
+    // First pass: parallel but staggered, so we don't hit the image model with
+    // 6 simultaneous requests (that is what made most frames fail).
+    const results = await Promise.all(
+      ages.map(async (age, i) => {
+        await sleep(i * 500);
+        return await genFrame(age);
+      }),
+    );
     for (const r of results) if (r) generated.push(r);
+
+    // Second pass: any missing age is retried sequentially, so the collage
+    // really contains every requested age instead of only the lucky ones.
+    const missing = ages.filter((age) => !generated.some((g) => g.age === age));
+    for (const age of missing) {
+      const r = await genFrame(age, 2);
+      if (r) generated.push(r);
+    }
+
     generated.sort((a, b) => a.age - b.age);
 
     if (!generated.length && rateLimited) return json({ error: "rate_limited", message: "AI is busy, please retry in a moment." }, 429);

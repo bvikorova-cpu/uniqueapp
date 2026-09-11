@@ -142,9 +142,20 @@ export function TimeLapseCreator({ onBack }: Props) {
 
       setStage("generate");
       const { data, error } = await supabase.functions.invoke("time-reversal-timelapse", {
-        body: { imageUrl: sourceUrl, startAge: startAge[0], endAge: endAge[0], frames: 8 } });
+        body: { imageUrl: sourceUrl, startAge: startAge[0], endAge: endAge[0], frames: 6 } });
 
-      if (error) throw error;
+      if (error) {
+        // supabase-js hides the real body behind "non-2xx status code".
+        let msg = error.message;
+        try {
+          const res = (error as any).context;
+          if (res && typeof res.clone === "function") {
+            const parsed = await res.clone().json();
+            if (parsed?.message || parsed?.error) msg = parsed.message || parsed.error;
+          }
+        } catch { /* keep original */ }
+        throw new Error(msg);
+      }
 
       const list = Array.isArray(data?.frames) ? data.frames : [];
       const normalized = list
