@@ -11,14 +11,15 @@ interface XpBreakdownProps {
   likes: number;
   comments: number;
   friends: number;
+  onFriendsClick?: () => void;
 }
 
-export const XpBreakdown = ({ xp, level, posts, likes, comments, friends }: XpBreakdownProps) => {
+export const XpBreakdown = ({ xp, level, posts, likes, comments, friends, onFriendsClick }: XpBreakdownProps) => {
   const rows = [
     { label: "Posts", value: posts, icon: Sparkles, color: "text-amber-300" },
     { label: "Likes given", value: likes, icon: Heart, color: "text-pink-400" },
     { label: "Comments", value: comments, icon: MessageCircle, color: "text-violet-300" },
-    { label: "Friends", value: friends, icon: Users, color: "text-emerald-300" },
+    { label: "Friends", value: friends, icon: Users, color: "text-emerald-300", onClick: onFriendsClick },
   ];
 
   return (
@@ -41,7 +42,11 @@ export const XpBreakdown = ({ xp, level, posts, likes, comments, friends }: XpBr
         {rows.map((r) => (
           <div
             key={r.label}
-            className="rounded-lg bg-muted/30 border border-border/40 px-2.5 py-2 text-center"
+            onClick={r.onClick}
+            role={r.onClick ? "button" : undefined}
+            tabIndex={r.onClick ? 0 : undefined}
+            onKeyDown={r.onClick ? (e) => { if (e.key === "Enter" || e.key === " ") r.onClick?.(); } : undefined}
+            className={`rounded-lg bg-muted/30 border border-border/40 px-2.5 py-2 text-center${r.onClick ? " cursor-pointer hover:bg-muted/60 hover:border-emerald-400/40 transition-colors" : ""}`}
           >
             <r.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${r.color}`} />
             <div className="text-base font-bold">{r.value.toLocaleString()}</div>
