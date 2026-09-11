@@ -52,14 +52,22 @@ export async function tryGeminiApiImage(prompt: string, size?: string): Promise<
  * `refImage` (data URL or https URL) lets the model edit an existing photo so
  * face identity is preserved when Vertex is out of quota.
  */
-export async function tryGatewayImage(prompt: string, size?: string, refImage?: string): Promise<string | null> {
+export async function tryGatewayImage(
+  prompt: string,
+  size?: string,
+  refImage?: string | string[],
+): Promise<string | null> {
   const key = Deno.env.get("LOVABLE_API_KEY");
   if (!key) return null;
   const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
   try {
     const text = prompt + aspectHint(size);
-    const content = refImage
-      ? [{ type: "text", text }, { type: "image_url", image_url: { url: refImage } }]
+    const refs = (Array.isArray(refImage) ? refImage : refImage ? [refImage] : []).filter(Boolean);
+    const content = refs.length
+      ? [
+          { type: "text", text },
+          ...refs.map((url) => ({ type: "image_url", image_url: { url } })),
+        ]
       : text;
     const res = await rawFetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

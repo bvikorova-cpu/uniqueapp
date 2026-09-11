@@ -39,6 +39,7 @@ const PhotoStyler = () => {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [photo, setPhoto] = useState<string | null>(null);
+  const [brandLogo, setBrandLogo] = useState<string | null>(null);
   const [selected, setSelected] = useState<string[]>([]);
   const [customPrompt, setCustomPrompt] = useState("");
   const [aspect, setAspect] = useState<"1:1" | "9:16" | "16:9">("1:1");
@@ -86,6 +87,30 @@ const PhotoStyler = () => {
       }
       return [...prev, id];
     });
+  };
+
+  const handleLogoFile = async (file?: File | null) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please pick an image file.");
+      return;
+    }
+    if (file.size > 4 * 1024 * 1024) {
+      toast.error("Max logo size is 4 MB.");
+      return;
+    }
+    try {
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result));
+        reader.onerror = () => reject(new Error("Could not read the file."));
+        reader.readAsDataURL(file);
+      });
+      setBrandLogo(dataUrl);
+      toast.success("Logo added — it will be used for Unique Brand styles.");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not load the logo.");
+    }
   };
 
   const handleFile = async (file?: File | null) => {
@@ -142,7 +167,16 @@ const PhotoStyler = () => {
     setResults([]);
     try {
       const { data, error } = await supabase.functions.invoke("photo-styler", {
-        body: { image: photo, styles: selected, customPrompt, aspect, changeOutfit, photoreal },
+        body: {
+          image: photo,
+          styles: selected,
+          customPrompt,
+          aspect,
+          changeOutfit,
+          photoreal,
+          // Applied server-side only to the Unique Brand styles.
+          brandLogo: brandLogo ?? undefined,
+        },
       });
       if (error) {
         // functions.invoke hides the body on non-2xx — read the real server message.
@@ -529,6 +563,29 @@ const PhotoStyler = () => {
                     </span>
                   </span>
                 </button>
+              </div>
+
+              <div className="space-y-2 rounded-xl border border-primary/30 bg-primary/5 p-3">
+                <Label>Your own logo (optional)</Label>
+                <p className="text-xs text-muted-foreground">
+                  Used only for the <strong>Unique Brand</strong> styles — your logo replaces the Unique logo on the
+                  T-shirt, screen, billboard, flag and other branded surfaces. All other styles ignore it.
+                </p>
+                <div className="flex items-center gap-3">
+                  {brandLogo && (
+                    <img
+                      src={brandLogo}
+                      alt="Your uploaded logo"
+                      className="h-12 w-12 shrink-0 rounded-lg border border-border bg-background object-contain p-1"
+                    />
+                  )}
+                  <Input type="file" accept="image/*" onChange={(e) => handleLogoFile(e.target.files?.[0])} />
+                  {brandLogo && (
+                    <Button type="button" variant="ghost" size="sm" onClick={() => setBrandLogo(null)}>
+                      Remove
+                    </Button>
+                  )}
+                </div>
               </div>
 
               <div className="space-y-1.5">
