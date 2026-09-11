@@ -52,6 +52,7 @@ export default function Community() {
                 <li>Educational content.</li>
                 <li>Fiction and satire (clearly labeled).</li>
                 <li>Tasteful self-promotion of your creator work.</li>
+                <li>Uploading your own logos or branding to Unique Brand styles, provided you own the rights or have permission.</li>
               </ul>
             </LegalSection>
 
@@ -64,7 +65,7 @@ export default function Community() {
                 <li>🚫 False health or medical claims.</li>
                 <li>🚫 Scams, fraud, MLM schemes.</li>
                 <li>🚫 Erotic, nude, sexual or pornographic content — images, videos and text alike. Uploads are AI-screened and blocked.</li>
-                <li>🚫 Copyright infringement.</li>
+                <li>🚫 Copyright infringement, including third-party logos, trademarks or branded assets used without authorization.</li>
                 <li>🚫 Spam, doxxing, impersonation.</li>
               </ul>
             </LegalSection>
