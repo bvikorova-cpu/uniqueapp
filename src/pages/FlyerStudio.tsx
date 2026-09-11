@@ -110,7 +110,7 @@ export default function FlyerStudio() {
     const refUrl = (location.state as { refUrl?: string } | null)?.refUrl;
     if (!refUrl) return;
     setRefs((r) => (r.includes(refUrl) ? r : [...r, refUrl].slice(0, 3)));
-    toast.success(t("flyer.upload_label") ? "Photo added as a reference image." : "Photo added.");
+    toast.success("Photo added as a reference image.");
     navigate(location.pathname, { replace: true, state: null });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.state]);
