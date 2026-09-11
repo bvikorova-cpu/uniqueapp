@@ -14,8 +14,8 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { shareLink } from "@/lib/shareLink";
 import {
-  Brush, Download, Facebook, FileImage, ImagePlus, Loader2, Palette, Share2, ShieldCheck, Sparkles, Wand2, Zap,
-  ChevronDown,
+  AlertTriangle, Brush, Download, Facebook, FileImage, ImagePlus, Loader2, Palette, Share2, ShieldCheck, Sparkles,
+  Wand2, Zap, ChevronDown,
 } from "lucide-react";
 import heroAsset from "@/assets/section-videos/photo-styler.mp4.asset.json";
 import { PHOTO_STYLES, PHOTO_STYLE_COST, PHOTO_STYLE_CATEGORIES } from "@/data/photoStyles";
@@ -570,6 +570,13 @@ const PhotoStyler = () => {
                 <p className="text-xs text-muted-foreground">
                   Used only for the <strong>Unique Brand</strong> styles — your logo replaces the Unique logo on the
                   T-shirt, screen, billboard, flag and other branded surfaces. All other styles ignore it.
+                </p>
+                <p className="flex items-start gap-1.5 text-xs text-amber-600 dark:text-amber-400">
+                  <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                  <span>
+                    Upload only logos you own or have permission to use. Unique is not responsible for trademark or
+                    copyright violations caused by user-uploaded branding.
+                  </span>
                 </p>
                 <div className="flex items-center gap-3">
                   {brandLogo && (
