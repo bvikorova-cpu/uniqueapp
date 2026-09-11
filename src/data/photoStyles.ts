@@ -1817,11 +1817,6 @@ export const PHOTO_STYLES: PhotoStyle[] = [
   { id: "flonightgarden", label: "Moonlit flower garden", emoji: "🌙", group: "Among the Flowers" },
   { id: "flogreenhouse", label: "Glass greenhouse", emoji: "🪴", group: "Among the Flowers" },
   { id: "flomarigold", label: "Marigold celebration", emoji: "🧡", group: "Among the Flowers" },
-  "Future Worlds & Tech",
-  "Prehistoric & Ancient Times",
-  "Facial Expressions",
-  "Metropolis Life",
-  "Among the Flowers",
 
   // Future Worlds & Tech
 
