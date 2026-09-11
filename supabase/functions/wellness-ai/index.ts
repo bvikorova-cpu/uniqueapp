@@ -489,8 +489,10 @@ Use calm second-person language. Use "..." for natural pauses. No SSML, no stage
       if (!story) throw new Error("No story generated");
       const title = story.split("\n")[0].replace(/^#\s*/, "").slice(0, 80) || `${theme} — A Sleep Story`;
 
-      const audioUrl = await ttsUpload(supabase, ELEVENLABS_API_KEY, voice_id, story, `${user.id}/sleep-${row.id}.mp3`,
-        { stability: 0.85, similarity_boost: 0.7, style: 0.2, use_speaker_boost: true, speed: 0.85 });
+      const audioUrl = await ttsUpload(supabase, ELEVENLABS_API_KEY, voice_id, story, `${user.id}/sleep-${row.id}`,
+        { stability: 0.85, similarity_boost: 0.7, use_speaker_boost: true, speed: 0.85 },
+        { language: "en", tone: "a very soft, drowsy bedtime-story voice" });
+
 
       await supabase.from("wellness_ai_sleep_stories").update({ title, story_text: story, audio_url: audioUrl, status: "completed" }).eq("id", row.id);
 
