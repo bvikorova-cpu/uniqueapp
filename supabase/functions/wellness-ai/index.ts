@@ -399,9 +399,10 @@ Use calm second-person language. Use "..." for natural pauses. No SSML, no stage
       const script = (aiData.choices?.[0]?.message?.content || "").replace(/[*#]/g, "").trim();
       if (!script) throw new Error("No script generated");
 
-      const audioUrl = await ttsUpload(supabase, ELEVENLABS_API_KEY, voice_id, script, `${user.id}/meditation-${row.id}.mp3`,
-        { stability: 0.7, similarity_boost: 0.75, style: 0.3, use_speaker_boost: true, speed: 0.9 },
-        { multilingual: true });
+      const audioUrl = await ttsUpload(supabase, ELEVENLABS_API_KEY, voice_id, script, `${user.id}/meditation-${row.id}`,
+        { stability: 0.8, similarity_boost: 0.75, use_speaker_boost: true, speed: 0.9 },
+        { multilingual: true, language, tone: "a warm, slow, soothing guided-meditation voice" });
+
 
       await supabase.from("wellness_personalized_meditations").update({ meditation_script: script, audio_url: audioUrl, status: "completed" }).eq("id", row.id);
 
