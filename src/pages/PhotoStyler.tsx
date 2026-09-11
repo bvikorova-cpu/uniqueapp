@@ -207,6 +207,27 @@ const PhotoStyler = () => {
     }
   };
 
+  /** Upload the styled image to storage and open Flyer Studio with it as a reference photo. */
+  const sendToFlyer = async (r: StyledResult) => {
+    const src = finalImage(r) ?? r.image;
+    if (!src) return;
+    if (!user) {
+      toast.error("Please sign in to create a flyer.");
+      return;
+    }
+    try {
+      const blob = await (await fetch(src)).blob();
+      const path = `${user.id}/flyer-refs/${crypto.randomUUID()}.png`;
+      const { error } = await supabase.storage.from("media").upload(path, blob, { contentType: "image/png" });
+      if (error) throw error;
+      const refUrl = supabase.storage.from("media").getPublicUrl(path).data.publicUrl;
+      toast.success("Photo added to Flyer Studio.");
+      navigate("/flyer-studio", { state: { refUrl } });
+    } catch {
+      toast.error("Could not send the photo to Flyer Studio.");
+    }
+  };
+
   const download = (r: StyledResult) => {
     const src = finalImage(r);
     if (!src) return;
