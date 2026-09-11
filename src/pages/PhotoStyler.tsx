@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { shareLink } from "@/lib/shareLink";
 import {
-  Brush, Download, Facebook, ImagePlus, Loader2, Palette, Share2, ShieldCheck, Sparkles, Wand2, Zap,
+  Brush, Download, Facebook, FileImage, ImagePlus, Loader2, Palette, Share2, ShieldCheck, Sparkles, Wand2, Zap,
   ChevronDown,
 } from "lucide-react";
 import heroAsset from "@/assets/section-videos/photo-styler.mp4.asset.json";
