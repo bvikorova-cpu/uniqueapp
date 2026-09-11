@@ -190,13 +190,10 @@ export default function FlyerStudio() {
     setHistory((h) => h.filter((x) => x.id !== id));
   };
 
-  const download = (url: string, name: string) => {
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${name.replace(/[^\w-]+/g, "-").slice(0, 40) || "flyer"}.png`;
-    a.target = "_blank";
-    a.rel = "noopener";
-    a.click();
+  const download = async (url: string, name: string) => {
+    const fileName = `${name.replace(/[^\w-]+/g, "-").slice(0, 40) || "flyer"}.png`;
+    const outcome = await downloadImage(url, fileName);
+    if (outcome === "opened") toast.error(t("flyer.toast_delete_failed"));
   };
 
   if (!user) {
