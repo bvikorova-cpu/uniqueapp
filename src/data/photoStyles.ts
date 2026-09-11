@@ -60,6 +60,7 @@ export const PHOTO_STYLE_GROUPS = [
   "Dolls & Toy Worlds",
   "Voxel & Pixel Worlds",
   "Classic Fairy Tales",
+  "Safe Cartoon Alternatives",
   "Anime & Manga Extra",
   "Sports & Action",
   "Music & Stage",
@@ -2069,6 +2070,69 @@ export const PHOTO_STYLES: PhotoStyle[] = [
   { id: "ftewitchcottage", label: "Witch's herb cottage", emoji: "🧙", group: "Classic Fairy Tales" },
   { id: "ftefairygodmother", label: "Fairy godmother sparkle", emoji: "✨", group: "Classic Fairy Tales" },
 
+  // Safe Cartoon Alternatives — original, non-branded homages
+  { id: "safrescuepuphero", label: "Rescue pup hero", emoji: "🐾", group: "Safe Cartoon Alternatives" },
+  { id: "safrescuepupfire", label: "Fire pup brigade", emoji: "🚒", group: "Safe Cartoon Alternatives" },
+  { id: "safrescuepuppolice", label: "Patrol pup officer", emoji: "🚓", group: "Safe Cartoon Alternatives" },
+  { id: "safrescuepupconstruction", label: "Builder pup crew", emoji: "🏗️", group: "Safe Cartoon Alternatives" },
+  { id: "safrescuepupaviator", label: "Aviator pup pilot", emoji: "✈️", group: "Safe Cartoon Alternatives" },
+  { id: "safrescuepupsea", label: "Sea rescue pup", emoji: "🛟", group: "Safe Cartoon Alternatives" },
+  { id: "safrescuepupmountain", label: "Mountain rescue pup", emoji: "🏔️", group: "Safe Cartoon Alternatives" },
+  { id: "safrescuepupvetcart", label: "Pup medic van", emoji: "🚑", group: "Safe Cartoon Alternatives" },
+
+  { id: "safmysteryteenvan", label: "Mystery teen road trip", emoji: "🚐", group: "Safe Cartoon Alternatives" },
+  { id: "safmysteryteenspooky", label: "Spooky mansion teens", emoji: "🏚️", group: "Safe Cartoon Alternatives" },
+  { id: "safmysteryteenghost", label: "Ghost-hunting teens", emoji: "👻", group: "Safe Cartoon Alternatives" },
+  { id: "safmysteryteenforest", label: "Forest mystery crew", emoji: "🌲", group: "Safe Cartoon Alternatives" },
+  { id: "safmysteryteencarnival", label: "Carnival mystery gang", emoji: "🎡", group: "Safe Cartoon Alternatives" },
+  { id: "safmysteryteenlighthouse", label: "Lighthouse mystery", emoji: "🌊", group: "Safe Cartoon Alternatives" },
+
+  { id: "safbumblingmini", label: "Comic mini car chaos", emoji: "🚗", group: "Safe Cartoon Alternatives" },
+  { id: "safbumblingteddy", label: "Teddy bear picnic chaos", emoji: "🧸", group: "Safe Cartoon Alternatives" },
+  { id: "safbumblinglibrary", label: "Library silence comedy", emoji: "📚", group: "Safe Cartoon Alternatives" },
+  { id: "safbumblingdinner", label: "Dinner party disaster", emoji: "🍽️", group: "Safe Cartoon Alternatives" },
+  { id: "safbumblinglaundry", label: "Laundry room slapstick", emoji: "🫧", group: "Safe Cartoon Alternatives" },
+  { id: "safbumblinggarden", label: "Gardening mishap", emoji: "🌻", group: "Safe Cartoon Alternatives" },
+
+  { id: "safmagicschoolrobe", label: "Magic school robes", emoji: "🪄", group: "Safe Cartoon Alternatives" },
+  { id: "safmagicschoolbroom", label: "Flying class student", emoji: "🧹", group: "Safe Cartoon Alternatives" },
+  { id: "safmagicschoolpotion", label: "Potion class kid", emoji: "⚗️", group: "Safe Cartoon Alternatives" },
+  { id: "safmagicschoollibrary", label: "Enchanted library kid", emoji: "📖", group: "Safe Cartoon Alternatives" },
+  { id: "safmagicschoolfeast", label: "Great hall feast kid", emoji: "🍗", group: "Safe Cartoon Alternatives" },
+
+  { id: "safspacerangersuit", label: "Space ranger cadet", emoji: "🚀", group: "Safe Cartoon Alternatives" },
+  { id: "safspacerangership", label: "Ranger spaceship bridge", emoji: "🛸", group: "Safe Cartoon Alternatives" },
+  { id: "safspacerangeralien", label: "Friendly alien planet", emoji: "👽", group: "Safe Cartoon Alternatives" },
+  { id: "safspacerangerrobot", label: "Robot ranger sidekick", emoji: "🤖", group: "Safe Cartoon Alternatives" },
+  { id: "safspacerangerlaser", label: "Laser tag ranger", emoji: "🔫", group: "Safe Cartoon Alternatives" },
+
+  { id: "safpiratecaptain", label: "Pirate captain deck", emoji: "⚓", group: "Safe Cartoon Alternatives" },
+  { id: "safpirateship", label: "Pirate ship adventure", emoji: "🏴‍☠️", group: "Safe Cartoon Alternatives" },
+  { id: "safpiratetreasure", label: "Treasure island kid", emoji: "💎", group: "Safe Cartoon Alternatives" },
+  { id: "safpiratecrew", label: "Pirate crew portrait", emoji: "🦜", group: "Safe Cartoon Alternatives" },
+  { id: "safpiratesea", label: "Pirate sea battle", emoji: "🌊", group: "Safe Cartoon Alternatives" },
+
+  { id: "safsuperkidcape", label: "Super kid cape", emoji: "🦸", group: "Safe Cartoon Alternatives" },
+  { id: "safsuperkidmask", label: "Masked hero kid", emoji: "🎭", group: "Safe Cartoon Alternatives" },
+  { id: "safsuperkidhq", label: "Hero headquarters kid", emoji: "🏢", group: "Safe Cartoon Alternatives" },
+  { id: "safsuperkidteam", label: "Hero team kid", emoji: "🦸‍♀️", group: "Safe Cartoon Alternatives" },
+
+  { id: "safwoodlandbunny", label: "Bunny village kid", emoji: "🐰", group: "Safe Cartoon Alternatives" },
+  { id: "safwoodlandfox", label: "Fox forest friend", emoji: "🦊", group: "Safe Cartoon Alternatives" },
+  { id: "safwoodlandbear", label: "Bear cottage kid", emoji: "🐻", group: "Safe Cartoon Alternatives" },
+  { id: "safwoodlandtea", label: "Woodland tea party", emoji: "🍵", group: "Safe Cartoon Alternatives" },
+
+  { id: "safmonsterbedroom", label: "Monster under bed friend", emoji: "🛏️", group: "Safe Cartoon Alternatives" },
+  { id: "safmonsterclassroom", label: "Monster school kid", emoji: "🎒", group: "Safe Cartoon Alternatives" },
+  { id: "safmonstercafe", label: "Monster cafe server", emoji: "☕", group: "Safe Cartoon Alternatives" },
+  { id: "safmonsterband", label: "Monster band member", emoji: "🎸", group: "Safe Cartoon Alternatives" },
+
+  { id: "saffairycastleprince", label: "Castle prince portrait", emoji: "🤴", group: "Safe Cartoon Alternatives" },
+  { id: "saffairycastleprincess", label: "Castle princess portrait", emoji: "👸", group: "Safe Cartoon Alternatives" },
+  { id: "saffairycastlekitchen", label: "Castle kitchen kid", emoji: "🍞", group: "Safe Cartoon Alternatives" },
+  { id: "saffairycastlejester", label: "Court jester kid", emoji: "🃏", group: "Safe Cartoon Alternatives" },
+  { id: "saffairycastleknight", label: "Young knight squire", emoji: "🛡️", group: "Safe Cartoon Alternatives" },
+
 ];
 
 
@@ -2076,7 +2140,7 @@ export const PHOTO_STYLES: PhotoStyle[] = [
 /** Top-level categories used by the Photo Styler picker. */
 export const PHOTO_STYLE_CATEGORIES: { name: string; emoji: string; groups: string[] }[] = [
   { name: "Art & Drawing", emoji: "🎨", groups: ["Drawn", "Painted", "Classic & Photo", "Modern Digital Art", "Abstract & Optical Illusion", "Exotic Techniques"] },
-  { name: "Cartoon & Avatars", emoji: "😃", groups: ["Anime & Manga Extra", "Cartoon & Anime", "Avatars & Emoji", "Toys & Figures"] },
+  { name: "Cartoon & Avatars", emoji: "😃", groups: ["Anime & Manga Extra", "Cartoon & Anime", "Avatars & Emoji", "Toys & Figures", "Safe Cartoon Alternatives"] },
   { name: "Craft & Materials", emoji: "🧶", groups: ["Craft & Pixel", "Textures & Craft Materials", "Sculpture & Classic Materials"] },
   { name: "Travel & Cities", emoji: "🌍", groups: ["Africa & Middle East", "Americas Roadtrip", "Asian Destinations", "Nordic & Winter Travel", "Ocean & Diving", "Famous Landmarks", "World Metropolises", "Aesthetic Getaways", "Exotic Sea & Beaches", "Mountain Adventure", "Wild Nature & Extremes", "Desert Adventure", "Historic & Travel Scenes"] },
   { name: "Fantasy & Sci-Fi", emoji: "🪄", groups: ["Space & Astronomy", "Fantasy", "Sci-Fi & Future", "Sci-Fi & Adventure Worlds", "Storybook Worlds", "Film & Game Worlds", "Nature & Elements"] },
