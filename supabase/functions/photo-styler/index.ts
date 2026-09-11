@@ -150,10 +150,9 @@ serve(async (req) => {
         PORTRAIT_RE.test(stylePrompt) || PORTRAIT_RE.test(style) ? PORTRAIT_RULES : ""
       }`;
       try {
-        const out = await tryVertexImage(prompt, aspect, 1, [image]);
-        const b64 = out?.data?.[0]?.b64_json;
+        const b64 = await renderStyleImage(prompt, aspect, image);
         if (b64) results.push({ style, image: `data:image/png;base64,${b64}` });
-        else results.push({ style, error: "The image model returned nothing. Try again." });
+        else results.push({ style, error: "The image service is busy. Try again in a moment." });
       } catch (e) {
         console.error(`[photo-styler] style ${style} failed:`, e instanceof Error ? e.message : e);
         results.push({ style, error: e instanceof Error ? e.message : "Generation failed" });
