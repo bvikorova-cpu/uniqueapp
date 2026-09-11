@@ -1859,7 +1859,6 @@ export const PHOTO_STYLE_CATEGORIES: { name: string; emoji: string; groups: stri
   { name: "Romance & Love", emoji: "💕", groups: ["Romantic Moments", "Romantic Winter & Dates", "Wedding & Love Stories"] },
   { name: "For Men", emoji: "🧔", groups: ["Men's Fashion & Grooming", "Men's Sport & Action", "Men's Adventure & Craft", "Men's Professions & Life"] },
   { name: "Exclusive Collection", emoji: "💠", groups: ["Exclusive Luxury Editorial", "Royal & Elite Galas", "Billionaire Travel", "VIP Nightlife", "Fine Art Muse", "Cinematic Icons", "Haute Nature Couture", "Future Luxe & Tech Glam", "Heritage & Culture Elegance", "Dream Weddings Deluxe", "Signature Portrait Masters", "Elite Sport & Equestrian"] },
-    { name: "Time, Cities & Expressions", emoji: "🌆", groups: ["Future Worlds & Tech", "Prehistoric & Ancient Times", "Facial Expressions", "Metropolis Life", "Among the Flowers"] },
   { name: "Time, Cities & Expressions", emoji: "🌆", groups: ["Future Worlds & Tech", "Prehistoric & Ancient Times", "Facial Expressions", "Metropolis Life", "Among the Flowers"] },
 { name: "Unique Brand", emoji: "✨", groups: ["Unique Brand"] },
 ];
