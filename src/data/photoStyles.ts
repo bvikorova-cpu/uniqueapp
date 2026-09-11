@@ -85,6 +85,7 @@ export const PHOTO_STYLE_GROUPS = [
   "Luxury Yacht & Private Jet",
   "Viral Trends",
   "Award Shows & Stage Fame",
+  "Cozy Autumn & Sunflowers",
 ] as const;
 
 
@@ -1204,6 +1205,27 @@ export const PHOTO_STYLES: PhotoStyle[] = [
   { id: "cwgingerbreadhouse", label: "Gingerbread house", emoji: "🏠", group: "Cozy Christmas & Winter Romance" },
   { id: "cwsparklernight", label: "Snowy sparkler night", emoji: "✨", group: "Cozy Christmas & Winter Romance" },
   { id: "cwsweaterpuppy", label: "Fireplace pet cuddle", emoji: "🐶", group: "Cozy Christmas & Winter Romance" },
+
+  { id: "autleafcarpet", label: "Autumn leaf carpet", emoji: "🍂", group: "Cozy Autumn & Sunflowers" },
+  { id: "autsunflowerfield", label: "Sunflower field", emoji: "🌻", group: "Cozy Autumn & Sunflowers" },
+  { id: "autsunflowerportrait", label: "Sunflower portrait", emoji: "🌻", group: "Cozy Autumn & Sunflowers" },
+  { id: "autleafshower", label: "Leaf shower joy", emoji: "🍁", group: "Cozy Autumn & Sunflowers" },
+  { id: "autforestpath", label: "Autumn forest path", emoji: "🌲", group: "Cozy Autumn & Sunflowers" },
+  { id: "autcozywindowrain", label: "Cozy rain window", emoji: "🌧️", group: "Cozy Autumn & Sunflowers" },
+  { id: "autpumpkinpatch", label: "Pumpkin patch", emoji: "🎃", group: "Cozy Autumn & Sunflowers" },
+  { id: "autromanticblanket", label: "Autumn picnic blanket", emoji: "🧺", group: "Cozy Autumn & Sunflowers" },
+  { id: "autleafcrown", label: "Leaf & sunflower crown", emoji: "👑", group: "Cozy Autumn & Sunflowers" },
+  { id: "autciderorchard", label: "Apple cider orchard", emoji: "🍎", group: "Cozy Autumn & Sunflowers" },
+  { id: "autmistymorning", label: "Misty autumn morning", emoji: "🌫️", group: "Cozy Autumn & Sunflowers" },
+  { id: "autcozycabinporch", label: "Cabin porch autumn", emoji: "🏡", group: "Cozy Autumn & Sunflowers" },
+  { id: "autgoldenleafportrait", label: "Golden leaf portrait", emoji: "🍂", group: "Cozy Autumn & Sunflowers" },
+  { id: "autsunflowerback", label: "Sunset sunflower walk", emoji: "🌅", group: "Cozy Autumn & Sunflowers" },
+  { id: "autfallenleavesbench", label: "Park bench leaves", emoji: "🪑", group: "Cozy Autumn & Sunflowers" },
+  { id: "autcozybakeryautumn", label: "Cozy autumn bakery", emoji: "🥐", group: "Cozy Autumn & Sunflowers" },
+  { id: "autromanticbridge", label: "Romantic autumn bridge", emoji: "🌉", group: "Cozy Autumn & Sunflowers" },
+  { id: "autwickerbicycle", label: "Sunflower bicycle", emoji: "🚲", group: "Cozy Autumn & Sunflowers" },
+  { id: "autknitscarfwind", label: "Windy scarf field", emoji: "🧣", group: "Cozy Autumn & Sunflowers" },
+  { id: "autleafcanopywalk", label: "Autumn canopy tunnel", emoji: "🍂", group: "Cozy Autumn & Sunflowers" },
 ];
 
 
@@ -1222,7 +1244,7 @@ export const PHOTO_STYLE_CATEGORIES: { name: string; emoji: string; groups: stri
   { name: "Holidays & Parties", emoji: "🎉", groups: ["Christmas & Winter Holidays", "New Year & Carnival", "Easter & Spring Holidays", "Halloween Party", "World Holidays"] },
   { name: "Work & Royalty", emoji: "👔", groups: ["Professions Pro", "Professions & Uniforms Extra", "Professional & Business", "Career & Portrait Scenes", "Royal & Historical"] },
   { name: "Sports & Music", emoji: "🏆", groups: ["Sports & Action", "Music & Stage", "Cars & Motorsport"] },
-  { name: "Everyday, Food & Nature", emoji: "🌿", groups: ["Food & Café Scenes", "Animals & Companions", "Seasons & Weather"] },
+  { name: "Everyday, Food & Nature", emoji: "🌿", groups: ["Food & Café Scenes", "Animals & Companions", "Seasons & Weather", "Cozy Autumn & Sunflowers"] },
   { name: "Motivation & Quotes", emoji: "💬", groups: ["Motivational Quotes"] },
   { name: "Kids Styles", emoji: "🧒", groups: ["Kids Fun"] },
   { name: "Buildings & Architecture", emoji: "🏛️", groups: ["Buildings & Architecture"] },
