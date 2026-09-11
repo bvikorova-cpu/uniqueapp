@@ -1,6 +1,7 @@
 import "../_shared/aiRedirect.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { tryVertexImage } from "../_shared/vertexDirect.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
@@ -9,17 +10,25 @@ const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
 // Action whitelist with credit cost & prompt template
+const visibleEdit = "The requested transformation MUST be clearly visible in the result. Do not return, trace, or copy the source image unchanged. Preserve the person's recognizable identity, camera angle, pose, clothing, lighting and background unless the requested effect specifically changes them. Produce one photorealistic image only, with no text, labels, collage, split screen, border or watermark.";
+
 const ACTIONS: Record<string, { cost: number; prompt: (p: any) => string }> = {
-  age_progression: { cost: 6, prompt: ({ years }) => `Apply realistic age progression of +${years || 20} years to the face in this photo. Add natural wrinkles, fine lines, slight skin sagging, age spots, gray hair where appropriate. Keep identity, pose, lighting and background unchanged. Photorealistic.` },
-  age_reversal: { cost: 6, prompt: () => `Make the person in this photo look 15 years younger. Smooth fine lines, even skin tone, restore youthful glow, slightly fuller cheeks, brighter eyes. Keep identity, pose, lighting unchanged. Photorealistic.` },
+  age_progression: { cost: 6, prompt: ({ years }) => `Age the person in the reference photo forward by EXACTLY ${years || 20} years from their visible current age. This is an age transformation, not a photo enhancement. Rebuild age-dependent facial anatomy: mature facial proportions, forehead and eye lines, nasolabial folds, realistic skin texture and laxity, age-appropriate cheeks and jawline, and age-appropriate hair density and greying. The larger the requested number of years, the stronger and more unmistakable the aging must be. ${visibleEdit}` },
+  age_reversal: { cost: 6, prompt: () => `Make the person in the reference photo look EXACTLY 15 years younger than their visible current age. Rebuild age-dependent facial anatomy, skin, cheeks, jawline and hair to the younger age rather than merely retouching the photo. ${visibleEdit}` },
   baby_predict: { cost: 8, prompt: () => `Generate a photorealistic image of a baby (around 2 years old) that combines facial features from BOTH faces shown. Mix eye color, nose shape, hair color, skin tone naturally. Cute studio portrait, soft lighting, neutral background.` },
   gender_swap: { cost: 6, prompt: () => `Swap the apparent gender of the person in this photo while preserving identity. Adjust hair, jawline, brows, makeup naturally. Same pose, same background, photorealistic.` },
-  hair_makeover: { cost: 5, prompt: ({ style }) => `Change the hairstyle of the person to: ${style || "modern shoulder-length bob with subtle highlights"}. Keep face, expression, lighting and background unchanged. Photorealistic.` },
-  beard_filter: { cost: 5, prompt: ({ style }) => `Add a realistic ${style || "well-groomed full beard"} to the face. Match natural hair color, density and skin tone. Keep all other features unchanged.` },
-  botox_simulator: { cost: 7, prompt: ({ area }) => `Simulate cosmetic botox/filler results on ${area || "forehead and around eyes"}. Smooth wrinkles realistically without overdoing it, slightly lifted brows. Keep identity intact. Photorealistic.` },
+  hair_makeover: { cost: 5, prompt: ({ style }) => `Replace the existing hairstyle with a clearly different ${style || "sleek shoulder-length bob with visible face-framing layers and subtle highlights"}. Fully redraw the hair shape, length, cut and styling while keeping the face unchanged. ${visibleEdit}` },
+  beard_filter: { cost: 5, prompt: ({ style }) => `Add a clearly visible, realistic ${style || "dense, well-groomed full beard and moustache"}. Cover the appropriate cheeks, jaw and chin with individual hairs matching the natural hair colour. Do not leave the face clean-shaven. ${visibleEdit}` },
+  botox_simulator: { cost: 7, prompt: ({ area }) => {
+    const target = String(area || "forehead and eye area").trim();
+    const isLips = /lip|mouth|perioral/i.test(target);
+    return isLips
+      ? `Simulate a professional, clearly visible but anatomically realistic dermal-filler result on the lips: increased lip volume, improved symmetry, a defined cupid's bow and smoother perioral area. Do not merely brighten or retouch the original lips. ${visibleEdit}`
+      : `Simulate a professional, clearly visible cosmetic treatment result on the ${target}: visibly smooth dynamic lines and wrinkles, soften creases and subtly lift the treated area while preserving natural anatomy. Do not merely brighten or retouch the source photo. ${visibleEdit}`;
+  } },
   uv_heatmap: { cost: 6, prompt: () => `Overlay a UV-damage heatmap on the face: red/orange in heavily sun-damaged areas (cheekbones, forehead, nose bridge), yellow in moderate, green in healthy zones. Semi-transparent overlay over original photo. Add small legend in bottom-right.` },
-  healthy_lifestyle: { cost: 6, prompt: ({ years }) => `Show this face after ${years || 10} years of optimal healthy lifestyle: glowing skin, fit appearance, bright eyes, minimal wrinkles. Photorealistic.` },
-  unhealthy_lifestyle: { cost: 6, prompt: ({ years }) => `Show this face after ${years || 10} years of poor lifestyle (smoking, sun damage, stress, poor sleep): premature wrinkles, dull skin, dark circles, sallow tone. Photorealistic.` },
+  healthy_lifestyle: { cost: 6, prompt: ({ years }) => `Age the person forward by EXACTLY ${years || 10} years from their visible current age while showing the outcome of an optimal healthy lifestyle. The person must visibly be ${years || 10} years older—not the same current-age face. Add realistic age-appropriate adult facial proportions and subtle chronological aging, while showing clear skin, healthy hair, bright rested eyes, good muscle tone and a vibrant complexion. ${visibleEdit}` },
+  unhealthy_lifestyle: { cost: 6, prompt: ({ years }) => `Age the person forward by EXACTLY ${years || 10} years from their visible current age while showing the strong cumulative effects of smoking, excessive sun exposure, chronic stress and poor sleep. The person must visibly be ${years || 10} years older—not the same current-age face. Add unmistakable premature wrinkles, deeper eye and mouth lines, uneven sun-damaged texture, dark circles, dull sallow complexion, reduced facial firmness and dry unhealthy hair. ${visibleEdit}` },
   genetic_twin: { cost: 7, prompt: ({ ethnicity }) => `Generate a photorealistic portrait of a "genetic twin" — a different person who shares strong facial bone structure, eye shape, nose and lip proportions with the person in this photo${ethnicity ? `, with ${ethnicity} appearance` : ""}. Different hair, different styling, neutral studio background. Same age range.` },
   photo_colorize: { cost: 12, prompt: () => `Colorize this old black-and-white or sepia photograph with realistic, period-accurate colors. Natural skin tones, believable clothing and scenery colors. Keep every detail, composition and grain structure identical. Photorealistic result.` },
   photo_repair: { cost: 12, prompt: () => `Restore this damaged old photograph: remove scratches, dust, stains, creases and tears, repair missing areas naturally. Keep the original composition, subjects and tonality unchanged. Photorealistic restoration.` },
@@ -34,9 +43,6 @@ serve(async (req) => {
 
   try {
     const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-    const lovableKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!lovableKey) return json({ error: "AI gateway not configured" }, 500);
-
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) return json({ error: "Unauthorized" }, 401);
     const { data: { user }, error: authError } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
@@ -60,7 +66,7 @@ serve(async (req) => {
     if (deductError) { console.error("deduct error:", deductError); return json({ error: `Credit deduction failed: ${deductError.message}` }, 500); }
     if (!deducted) return json({ error: `Insufficient credits. Need ${cfg.cost}.` }, 402);
 
-    // Fetch source image(s) and send to Lovable AI Gateway (image-to-image)
+    // Fetch source image(s) and send them directly to the configured Vertex image model.
     async function fetchAsBlob(url: string): Promise<Blob> {
       if (url.startsWith("data:")) {
         const m = url.match(/^data:([^;]+);base64,(.+)$/);
@@ -99,69 +105,34 @@ serve(async (req) => {
       } catch (_) {}
     };
 
-    const extractImage = (d: any): string | undefined => {
-      const m0 = d?.choices?.[0]?.message;
-      const chatImg =
-        m0?.images?.[0]?.image_url?.url ||
-        (Array.isArray(m0?.content)
-          ? m0.content.find((c: any) => c?.type === "image_url")?.image_url?.url
-          : undefined);
-      const b64x = d?.data?.[0]?.b64_json;
-      return b64x ? `data:image/png;base64,${b64x}` : (d?.data?.[0]?.url || chatImg);
-    };
-
-    let content: any[];
+    let referenceImages: string[];
     try {
-      content = [{ type: "text", text: cfg.prompt(params || {}).slice(0, 4000) }];
-      content.push({ type: "image_url", image_url: { url: await toDataUrl(sourceUrl) } });
-      if (sourceUrl2) content.push({ type: "image_url", image_url: { url: await toDataUrl(sourceUrl2) } });
+      referenceImages = [await toDataUrl(sourceUrl)];
+      if (sourceUrl2) referenceImages.push(await toDataUrl(sourceUrl2));
     } catch (e: any) {
       console.error("Source image read error:", e);
       await refund();
       return json({ error: "Could not read the source image. Credits refunded." }, 502);
     }
 
-    let aiData: any = null;
     let imageUrl: string | undefined;
-    const models = ["google/gemini-3.1-flash-image", "google/gemini-2.5-flash-image"];
+    const basePrompt = cfg.prompt(params || {}).slice(0, 7000);
+    const attempts = [
+      basePrompt,
+      `${basePrompt}\nIMPORTANT CORRECTION: Make the requested physical change unmistakable. The previous result was too similar to the reference. Reconstruct the affected facial or hair features instead of returning a lightly retouched copy.`,
+    ];
 
-    for (const model of models) {
-      let aiRes: Response;
+    for (const prompt of attempts) {
       try {
-        aiRes = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
-          method: "POST",
-          headers: {
-            "Lovable-API-Key": lovableKey,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            model,
-            messages: [{ role: "user", content }],
-            modalities: ["image", "text"],
-          }) });
+        const result = await tryVertexImage(prompt, "1:1", 1, referenceImages);
+        const b64 = result?.data?.[0]?.b64_json;
+        if (typeof b64 === "string" && b64.length > 1000) {
+          imageUrl = `data:image/png;base64,${b64}`;
+          break;
+        }
       } catch (e: any) {
-        console.error("Lovable image edit fetch error:", model, e);
-        continue;
+        console.error("Vertex image edit error:", e);
       }
-
-      if (!aiRes.ok) {
-        const errText = await aiRes.text();
-        console.error("Lovable image error:", model, aiRes.status, errText);
-        if (aiRes.status === 429) {
-          await refund();
-          return json({ error: "Rate limit exceeded. Try again shortly." }, 429);
-        }
-        if (aiRes.status === 402) {
-          await refund();
-          return json({ error: "AI credits exhausted. Please try again later." }, 402);
-        }
-        continue;
-      }
-
-      aiData = await aiRes.json();
-      imageUrl = extractImage(aiData);
-      if (imageUrl) break;
-      console.error("No image in AI response", model, JSON.stringify(aiData).slice(0, 800));
     }
 
     if (!imageUrl) {
