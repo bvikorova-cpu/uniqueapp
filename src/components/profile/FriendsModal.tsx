@@ -93,7 +93,7 @@ export const FriendsModal = ({ userId, currentUserId, isOpen, onClose }: Friends
                   </p>
                 </div>
                 <FollowButton
-                  targetUserId={user.id}
+                  userId={user.id}
                   currentUserId={currentUserId}
                   variant="outline"
                   size="sm"
