@@ -8,10 +8,16 @@ import { tryGatewayImage } from "../_shared/imageFallback.ts";
  * Vertex image quota (429 RESOURCE_EXHAUSTED) hits in bursts, so retry briefly
  * and then fall back to the Lovable AI Gateway with the same source photo.
  */
-async function renderStyleImage(prompt: string, aspect: string, image: string): Promise<string | null> {
+async function renderStyleImage(
+  prompt: string,
+  aspect: string,
+  image: string,
+  extraImage?: string,
+): Promise<string | null> {
+  const refs = extraImage ? [image, extraImage] : [image];
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
-      const out = await tryVertexImage(prompt, aspect, 1, [image]);
+      const out = await tryVertexImage(prompt, aspect, 1, refs);
       const b64 = out?.data?.[0]?.b64_json;
       if (b64) return b64;
     } catch (e) {
@@ -19,7 +25,7 @@ async function renderStyleImage(prompt: string, aspect: string, image: string): 
     }
     if (attempt === 0) await new Promise((r) => setTimeout(r, 1200));
   }
-  const fallback = await tryGatewayImage(prompt, aspect, image);
+  const fallback = await tryGatewayImage(prompt, aspect, refs);
   if (fallback) console.log("[photo-styler] served via gateway fallback");
   return fallback;
 }
@@ -90,6 +96,16 @@ const PORTRAIT_RULES =
 const ART_MEDIUM_RE =
   /(painting|painterly|illustration|illustrated|cartoon|anime|manga|comic|sketch|drawing|drawn|watercolou?r|oil paint|pastel drawing|charcoal|ink|3d render|render|cgi|pixel|voxel|low.?poly|clay|claymation|vector|graffiti|mural|woodcut|lino|engraving|mosaic|stained.glass|origami|papercut|storybook|fresco|caricature|doodle|sticker|emoji|tattoo|poster art|art nouveau|art deco style|impressionis|cubis|surrealis|pop art|ukiyo|animation|pixar|disney.style|toon)/i;
 
+// Used only for "Unique Brand" styles when the user supplied their own logo image.
+const BRAND_LOGO_RULES =
+  "\n\nBRAND LOGO — USE THE SECOND SUPPLIED IMAGE: the second image is the user's own brand logo. " +
+  "Wherever the scene calls for a logo (screen, T-shirt print, flag, billboard, poster, cup, cap, mural, " +
+  "banner), render THAT logo instead of the described Unique gradient logo — reproduce its exact shapes, " +
+  "colours and any text it contains, undistorted, sharp and perfectly legible, realistically integrated " +
+  "into the surface with correct perspective, lighting and reflections. Do NOT invent a different logo, do " +
+  "NOT add the purple-pink 'U' logo, and do NOT add any extra brand text or URL unless it is part of the " +
+  "supplied logo. The person in the FIRST image stays the subject of the photo.";
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -101,6 +117,9 @@ serve(async (req) => {
     const changeOutfit = body?.changeOutfit === true;
     const photoreal = body?.photoreal === true;
     const aspect = body?.aspect === "9:16" || body?.aspect === "16:9" ? body.aspect : "1:1";
+    // Optional user logo — only applied to the "Unique Brand" styles (ids start with "unique").
+    const rawLogo = String(body?.brandLogo ?? "");
+    const brandLogo = rawLogo.startsWith("data:image/") || /^https?:\/\//.test(rawLogo) ? rawLogo : "";
 
     if (!image.startsWith("data:image/") && !/^https?:\/\//.test(image)) {
       return json({ error: "A photo is required." }, 400);
@@ -140,6 +159,8 @@ serve(async (req) => {
       // is rendered as a real photograph instead of a CGI/illustration look.
       const isArtMedium = ART_MEDIUM_RE.test(stylePrompt);
       const autoReal = !isArtMedium && !style.startsWith("kid") ? REALISM_RULES : "";
+      // The custom logo is valid ONLY for Unique Brand styles.
+      const useBrandLogo = !!brandLogo && style.startsWith("unique");
       const prompt = `${changeOutfit ? OUTFIT_RULES : BASE_RULES}\n\nStyle: ${stylePrompt}.${kidsBoost}${
         customPrompt ? ` Extra direction: ${customPrompt}.` : ""
       }\n\nReminder: ${
@@ -148,9 +169,9 @@ serve(async (req) => {
           : "the style affects only technique, texture and lighting treatment — the eye colour, hair colour, clothing (including sleeve length and neckline) and props stay identical to the source photo."
       }${photoreal ? REALISM_RULES : autoReal}${
         PORTRAIT_RE.test(stylePrompt) || PORTRAIT_RE.test(style) ? PORTRAIT_RULES : ""
-      }`;
+      }${useBrandLogo ? BRAND_LOGO_RULES : ""}`;
       try {
-        const b64 = await renderStyleImage(prompt, aspect, image);
+        const b64 = await renderStyleImage(prompt, aspect, image, useBrandLogo ? brandLogo : undefined);
         if (b64) results.push({ style, image: `data:image/png;base64,${b64}` });
         else results.push({ style, error: "The image service is busy. Try again in a moment." });
       } catch (e) {
