@@ -1244,7 +1244,7 @@ export const PHOTO_STYLE_CATEGORIES: { name: string; emoji: string; groups: stri
   { name: "Holidays & Parties", emoji: "🎉", groups: ["Christmas & Winter Holidays", "New Year & Carnival", "Easter & Spring Holidays", "Halloween Party", "World Holidays"] },
   { name: "Work & Royalty", emoji: "👔", groups: ["Professions Pro", "Professions & Uniforms Extra", "Professional & Business", "Career & Portrait Scenes", "Royal & Historical"] },
   { name: "Sports & Music", emoji: "🏆", groups: ["Sports & Action", "Music & Stage", "Cars & Motorsport"] },
-  { name: "Everyday, Food & Nature", emoji: "🌿", groups: ["Food & Café Scenes", "Animals & Companions", "Seasons & Weather"] },
+  { name: "Everyday, Food & Nature", emoji: "🌿", groups: ["Food & Café Scenes", "Animals & Companions", "Seasons & Weather", "Cozy Autumn & Sunflowers"] },
   { name: "Motivation & Quotes", emoji: "💬", groups: ["Motivational Quotes"] },
   { name: "Kids Styles", emoji: "🧒", groups: ["Kids Fun"] },
   { name: "Buildings & Architecture", emoji: "🏛️", groups: ["Buildings & Architecture"] },
