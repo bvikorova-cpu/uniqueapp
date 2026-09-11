@@ -28,27 +28,9 @@ export const FriendsModal = ({ userId, currentUserId, isOpen, onClose }: Friends
   const { data: friends, isLoading } = useQuery({
     queryKey: ["friends-list", userId],
     queryFn: async () => {
-      const { data: rows, error } = await supabase
-        .from("friendships")
-        .select("user_id, friend_id")
-        .eq("status", "accepted")
-        .or(`user_id.eq.${userId},friend_id.eq.${userId}`);
+      const { data, error } = await (supabase as any).rpc("get_user_friends", { _user_id: userId });
       if (error) throw error;
-
-      const seen = new Set<string>();
-      for (const r of rows || []) {
-        const other = r.user_id === userId ? r.friend_id : r.user_id;
-        if (other && other !== userId) seen.add(other);
-      }
-      const ids = Array.from(seen);
-      if (ids.length === 0) return [];
-
-      const { data: profiles, error: pErr } = await supabase
-        .rpc("get_profiles_basic", { _ids: ids });
-      if (pErr) throw pErr;
-      return ((profiles as unknown as FriendProfile[]) || []).sort((a, b) =>
-        (a.full_name || "").localeCompare(b.full_name || ""),
-      );
+      return ((data as FriendProfile[]) || []).filter((p) => p?.id);
     },
     enabled: isOpen });
 
