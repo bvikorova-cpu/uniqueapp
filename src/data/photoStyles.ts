@@ -1231,7 +1231,7 @@ export const PHOTO_STYLE_CATEGORIES: { name: string; emoji: string; groups: stri
   { name: "Millionaire & Luxury", emoji: "💰", groups: ["Millionaire Lifestyle", "Luxury Yacht & Private Jet"] },
   { name: "Celebrity & Fame", emoji: "🌟", groups: ["Celebrity & Red Carpet", "Paparazzi & Fame", "Award Shows & Stage Fame", "Magazine Covers & Billboards"] },
   { name: "Viral & Trending", emoji: "🔥", groups: ["Viral Trends", "80s & 90s Nostalgia Extra"] },
-  { name: "Christmas & New Year", emoji: "🎄", groups: ["Christmas Tree Moments", "New Year Party"] },
+  { name: "Christmas & New Year", emoji: "🎄", groups: ["Christmas Tree Moments", "New Year Party", "Cozy Christmas & Winter Romance", "Cozy Halloween Nights"] },
   { name: "Unique Brand", emoji: "✨", groups: ["Unique Brand"] },
 ];
 
