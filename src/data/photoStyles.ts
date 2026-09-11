@@ -657,6 +657,11 @@ export const PHOTO_STYLES: PhotoStyle[] = [
   { id: "photoshootmonodouble", label: "Monochrome double exposure", emoji: "⚫", group: "AI Photoshoot Collections" },
   { id: "photoshootpinkballgown", label: "Pink palace ballgown", emoji: "👗", group: "AI Photoshoot Collections" },
   { id: "photoshootcinemastudio", label: "Cinematic studio campaign", emoji: "🎬", group: "AI Photoshoot Collections" },
+  { id: "photoshootflowerframe", label: "Pink flower close-up portrait", emoji: "🌸", group: "AI Photoshoot Collections" },
+  { id: "photoshoot80sretroparty", label: "80s retro party snapshot", emoji: "🕶️", group: "AI Photoshoot Collections" },
+  { id: "photoshoot80sglamscenes", label: "80s glam portrait series", emoji: "💇‍♀️", group: "AI Photoshoot Collections" },
+  { id: "photoshootbirthdayflowers", label: "Birthday flowers studio", emoji: "💐", group: "AI Photoshoot Collections" },
+  { id: "photoshootbridalglam", label: "Modern bridal glam", emoji: "👰", group: "AI Photoshoot Collections" },
 
   { id: "motivgodfirst", label: "God first", emoji: "🙏", group: "Motivational Quotes" },
   { id: "motivdreambig", label: "Dream big", emoji: "🌟", group: "Motivational Quotes" },
