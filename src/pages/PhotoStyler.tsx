@@ -617,17 +617,17 @@ const PhotoStyler = () => {
               )}
               <div className="grid gap-4 sm:grid-cols-2">
                 {results.map((r) => (
-                  <div key={r.style} className="space-y-2 rounded-2xl border border-border bg-background/60 p-2">
+                  <div key={r.style} className="min-w-0 space-y-2 overflow-hidden rounded-2xl border border-border bg-background/60 p-2">
                     {r.image ? (
                       <>
                         <img
                           src={finalImage(r) ?? r.image}
                           alt={`${styleLabel(r.style)} version of the uploaded photo`}
-                          className="w-full rounded-xl object-cover"
+                          className="block h-auto w-full rounded-xl object-cover"
                         />
-                        <div className="flex items-center justify-between gap-2 px-1">
-                          <span className="text-xs font-bold text-foreground">{styleLabel(r.style)}</span>
-                          <div className="flex gap-1">
+                        <div className="flex min-w-0 items-center justify-between gap-2 px-1">
+                          <span className="min-w-0 flex-1 truncate text-xs font-bold text-foreground">{styleLabel(r.style)}</span>
+                          <div className="flex shrink-0 gap-1">
                             <Button size="icon" variant="ghost" onClick={() => download(r)} aria-label="Download artwork">
                               <Download className="h-4 w-4" />
                             </Button>
