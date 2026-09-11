@@ -343,23 +343,17 @@ const Profile = () => {
           tracedQuery("talent_submissions.count", () => supabase.from("talent_submissions").select("*", { count: "exact", head: true }).eq("user_id", userId)),
           tracedQuery("completed_courses.count", () => supabase.from("completed_courses").select("*", { count: "exact", head: true }).eq("user_id", userId)),
           tracedQuery("user_points", () => supabase.from("user_points").select("total_points, level").eq("user_id", userId).maybeSingle()),
-          tracedQuery("friendships", () => supabase.from("friendships").select("user_id, friend_id").eq("status", "accepted").or(`user_id.eq.${userId},friend_id.eq.${userId}`)),
+          tracedQuery("friendships", () => (supabase as any).rpc("get_user_friends_count", { _user_id: userId })),
           tracedQuery("posts.count", () => supabase.from("posts").select("id", { count: "exact", head: true }).eq("user_id", userId)),
         ]);
 
         if (cancelled) return;
-        const friendsData = friendsRes.data;
-        // Deduplicate: a friendship can exist as two reciprocal rows.
-        const uniqueFriendIds = new Set(
-          (friendsData ?? []).map((r: { user_id: string; friend_id: string }) =>
-            r.user_id === userId ? r.friend_id : r.user_id,
-          ),
-        );
-        uniqueFriendIds.delete(userId);
+        // RLS hides other users' friendship rows, so the count comes from an RPC.
+        const friendsCount = Number((friendsRes as { data?: unknown })?.data ?? 0) || 0;
         setStats({ postsCount: postsCountRes.count ?? 0,
           likesGiven: likesRes.count || 0,
           commentsGiven: commentsRes.count || 0,
-          friendsCount: uniqueFriendIds.size,
+          friendsCount,
 
           submissionsCount: submissionsRes.count || 0,
           completedCoursesCount: coursesRes.count || 0,
