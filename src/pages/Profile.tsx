@@ -32,6 +32,7 @@ const RewardsCosmetics = lazy(() => import("@/components/rewards/RewardsCosmetic
 const StreakMultiplierCard = lazy(() => import("@/components/gamification/StreakMultiplierCard").then((m) => ({ default: m.StreakMultiplierCard })));
 const ProfileMilestones = lazy(() => import("@/components/profile/ProfileMilestones").then((m) => ({ default: m.ProfileMilestones })));
 const FollowersModal = lazy(() => import("@/components/profile/FollowersModal").then((m) => ({ default: m.FollowersModal })));
+const FriendsModal = lazy(() => import("@/components/profile/FriendsModal").then((m) => ({ default: m.FriendsModal })));
 const DailyXPVideoReward = lazy(() => import("@/components/gamification/DailyXPVideoReward").then((m) => ({ default: m.DailyXPVideoReward })));
 const AchievementsWall = lazy(() => import("@/components/profile/AchievementsWall").then((m) => ({ default: m.AchievementsWall })));
 
@@ -154,6 +155,7 @@ const Profile = () => {
   
   const [followersModalOpen, setFollowersModalOpen] = useState(false);
   const [followersModalTab, setFollowersModalTab] = useState<"followers" | "following">("followers");
+  const [friendsModalOpen, setFriendsModalOpen] = useState(false);
   
   const [detailsReady, setDetailsReady] = useState(false);
   const [extendedReady, setExtendedReady] = useState(false);
@@ -686,6 +688,7 @@ const Profile = () => {
           likes={stats.likesGiven}
           comments={stats.commentsGiven}
           friends={stats.friendsCount}
+          onFriendsClick={() => setFriendsModalOpen(true)}
         />
 
         {/* Cosmetics catalog — own profile, placed high so it is easy to find */}
