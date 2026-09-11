@@ -35,6 +35,7 @@ const WATERMARK_REMOVAL_COST = 1;
 const PhotoStyler = () => {
   const { user } = useAuth();
   const { totalBalance, refresh } = useAICredits();
+  const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [photo, setPhoto] = useState<string | null>(null);
