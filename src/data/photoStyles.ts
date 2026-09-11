@@ -85,6 +85,7 @@ export const PHOTO_STYLE_GROUPS = [
   "Luxury Yacht & Private Jet",
   "Viral Trends",
   "Award Shows & Stage Fame",
+  "Cozy Autumn & Sunflowers",
 ] as const;
 
 
