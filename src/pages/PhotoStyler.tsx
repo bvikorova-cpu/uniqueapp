@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { shareLink } from "@/lib/shareLink";
 import {
-  Brush, Download, Facebook, ImagePlus, Loader2, Palette, Share2, ShieldCheck, Sparkles, Wand2, Zap,
+  Brush, Download, Facebook, FileImage, ImagePlus, Loader2, Palette, Share2, ShieldCheck, Sparkles, Wand2, Zap,
   ChevronDown,
 } from "lucide-react";
 import heroAsset from "@/assets/section-videos/photo-styler.mp4.asset.json";
@@ -35,6 +35,7 @@ const WATERMARK_REMOVAL_COST = 1;
 const PhotoStyler = () => {
   const { user } = useAuth();
   const { totalBalance, refresh } = useAICredits();
+  const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [photo, setPhoto] = useState<string | null>(null);
@@ -203,6 +204,27 @@ const PhotoStyler = () => {
       toast.error(e instanceof Error ? e.message : "Could not remove the logo.");
     } finally {
       setUnlocking(null);
+    }
+  };
+
+  /** Upload the styled image to storage and open Flyer Studio with it as a reference photo. */
+  const sendToFlyer = async (r: StyledResult) => {
+    const src = finalImage(r) ?? r.image;
+    if (!src) return;
+    if (!user) {
+      toast.error("Please sign in to create a flyer.");
+      return;
+    }
+    try {
+      const blob = await (await fetch(src)).blob();
+      const path = `${user.id}/flyer-refs/${crypto.randomUUID()}.png`;
+      const { error } = await supabase.storage.from("media").upload(path, blob, { contentType: "image/png" });
+      if (error) throw error;
+      const refUrl = supabase.storage.from("media").getPublicUrl(path).data.publicUrl;
+      toast.success("Photo added to Flyer Studio.");
+      navigate("/flyer-studio", { state: { refUrl } });
+    } catch {
+      toast.error("Could not send the photo to Flyer Studio.");
     }
   };
 
@@ -599,6 +621,9 @@ const PhotoStyler = () => {
                             </Button>
                             <Button size="icon" variant="ghost" onClick={() => shareFacebook(r)} aria-label="Share on Facebook">
                               <Facebook className="h-4 w-4 text-[#1877F2]" />
+                            </Button>
+                            <Button size="icon" variant="ghost" onClick={() => sendToFlyer(r)} aria-label="Create flyer from this photo">
+                              <FileImage className="h-4 w-4 text-primary" />
                             </Button>
                           </div>
                         </div>
