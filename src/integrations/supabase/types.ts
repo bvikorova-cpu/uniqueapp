@@ -26417,6 +26417,7 @@ export type Database = {
           gift_id: string
           id: string
           message_id: string | null
+          paid_funded: boolean
           post_id: string | null
           recipient_id: string
           recipient_share_credits: number
@@ -26430,6 +26431,7 @@ export type Database = {
           gift_id: string
           id?: string
           message_id?: string | null
+          paid_funded?: boolean
           post_id?: string | null
           recipient_id: string
           recipient_share_credits?: number
@@ -26443,6 +26445,7 @@ export type Database = {
           gift_id?: string
           id?: string
           message_id?: string | null
+          paid_funded?: boolean
           post_id?: string | null
           recipient_id?: string
           recipient_share_credits?: number
@@ -71677,6 +71680,10 @@ export type Database = {
       gift_ai_credits_by_identifier: {
         Args: { p_amount: number; p_message?: string; p_recipient: string }
         Returns: Json
+      }
+      gift_paid_credit_allowance: {
+        Args: { p_user_id: string }
+        Returns: number
       }
       gift_recipient_share_eur: { Args: { p_credits: number }; Returns: number }
       gift_xp: {
