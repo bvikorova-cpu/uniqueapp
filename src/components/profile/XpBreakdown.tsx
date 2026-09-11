@@ -11,14 +11,15 @@ interface XpBreakdownProps {
   likes: number;
   comments: number;
   friends: number;
+  onFriendsClick?: () => void;
 }
 
-export const XpBreakdown = ({ xp, level, posts, likes, comments, friends }: XpBreakdownProps) => {
+export const XpBreakdown = ({ xp, level, posts, likes, comments, friends, onFriendsClick }: XpBreakdownProps) => {
   const rows = [
     { label: "Posts", value: posts, icon: Sparkles, color: "text-amber-300" },
     { label: "Likes given", value: likes, icon: Heart, color: "text-pink-400" },
     { label: "Comments", value: comments, icon: MessageCircle, color: "text-violet-300" },
-    { label: "Friends", value: friends, icon: Users, color: "text-emerald-300" },
+    { label: "Friends", value: friends, icon: Users, color: "text-emerald-300", onClick: onFriendsClick },
   ];
 
   return (
