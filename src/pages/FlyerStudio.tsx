@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -103,6 +103,17 @@ export default function FlyerStudio() {
   }, [user]);
 
   useEffect(() => { loadHistory(); }, [loadHistory]);
+
+  // Pick up a reference photo handed over from Photo Styler ("Create flyer" button).
+  const location = useLocation();
+  useEffect(() => {
+    const refUrl = (location.state as { refUrl?: string } | null)?.refUrl;
+    if (!refUrl) return;
+    setRefs((r) => (r.includes(refUrl) ? r : [...r, refUrl].slice(0, 3)));
+    toast.success(t("flyer.upload_label") ? "Photo added as a reference image." : "Photo added.");
+    navigate(location.pathname, { replace: true, state: null });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.state]);
 
   const handleFiles = async (files: FileList | null) => {
     if (!files?.length || !user) return;
