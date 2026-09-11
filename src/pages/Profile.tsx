@@ -349,7 +349,7 @@ const Profile = () => {
 
         if (cancelled) return;
         // RLS hides other users' friendship rows, so the count comes from an RPC.
-        const friendsCount = Number(friendsRes.data ?? 0) || 0;
+        const friendsCount = Number((friendsRes as { data?: unknown })?.data ?? 0) || 0;
         setStats({ postsCount: postsCountRes.count ?? 0,
           likesGiven: likesRes.count || 0,
           commentsGiven: commentsRes.count || 0,
