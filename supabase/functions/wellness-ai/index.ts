@@ -537,8 +537,10 @@ Use calm second-person language. Use "..." for natural pauses. No SSML, no stage
           { role: "user", content: `Intention: ${intention}\nEnvironment: ${environment || "anywhere"}` },
         ] });
       const script = aiData.choices?.[0]?.message?.content || "";
-      const audioUrl = await ttsUpload(supabase, ELEVENLABS_API_KEY, voice_id, script, `${user.id}/walk-${row.id}.mp3`,
-        { stability: 0.75, similarity_boost: 0.7, style: 0.25, use_speaker_boost: true, speed: 0.9 });
+      const audioUrl = await ttsUpload(supabase, ELEVENLABS_API_KEY, voice_id, script, `${user.id}/walk-${row.id}`,
+        { stability: 0.8, similarity_boost: 0.7, use_speaker_boost: true, speed: 0.9 },
+        { language: "en", tone: "a calm, steady walking-meditation voice" });
+
       await supabase.from("wellness_walking_meditations").update({ script, audio_url: audioUrl, status: "completed" }).eq("id", row.id);
       result = { id: row.id, script, audio_url: audioUrl };
     }
