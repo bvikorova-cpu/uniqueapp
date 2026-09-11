@@ -56,6 +56,10 @@ export const PHOTO_STYLE_GROUPS = [
   "Uniforms & Costumes",
   "Portrait & Editorial",
   "Unique Brand",
+  "Comics & Pop Art",
+  "Dolls & Toy Worlds",
+  "Voxel & Pixel Worlds",
+  "Classic Fairy Tales",
   "Anime & Manga Extra",
   "Sports & Action",
   "Music & Stage",
@@ -1989,6 +1993,82 @@ export const PHOTO_STYLES: PhotoStyle[] = [
   // Metropolis Life
 
   // Among the Flowers
+
+
+  // Comics & Pop Art
+  { id: "cmxsuperhero", label: "Comic superhero panel", emoji: "🦸", group: "Comics & Pop Art" },
+  { id: "cmxvintagepop", label: "Vintage pop-art dots", emoji: "🎯", group: "Comics & Pop Art" },
+  { id: "cmxmangaink", label: "Manga ink panel", emoji: "🖤", group: "Comics & Pop Art" },
+  { id: "cmxnoircomic", label: "Noir comic strip", emoji: "🕵️", group: "Comics & Pop Art" },
+  { id: "cmxactionsplash", label: "Action splash page", emoji: "💥", group: "Comics & Pop Art" },
+  { id: "cmxromancecomic", label: "Retro romance comic", emoji: "💗", group: "Comics & Pop Art" },
+  { id: "cmxsundaystrip", label: "Sunday newspaper strip", emoji: "📰", group: "Comics & Pop Art" },
+  { id: "cmxgraphicnovel", label: "Graphic novel cover", emoji: "📚", group: "Comics & Pop Art" },
+  { id: "cmxspeechbubble", label: "Speech bubble portrait", emoji: "💬", group: "Comics & Pop Art" },
+  { id: "cmxscificomic", label: "Retro sci-fi comic", emoji: "🚀", group: "Comics & Pop Art" },
+  { id: "cmxwesterncomic", label: "Western comic panel", emoji: "🤠", group: "Comics & Pop Art" },
+  { id: "cmxhorrorcomic", label: "Horror comic cover", emoji: "🧟", group: "Comics & Pop Art" },
+  { id: "cmxcelshade", label: "Cel-shaded hero art", emoji: "🎨", group: "Comics & Pop Art" },
+  { id: "cmxhalftone", label: "Halftone print poster", emoji: "🟡", group: "Comics & Pop Art" },
+  { id: "cmxcomicvillain", label: "Comic antihero panel", emoji: "😈", group: "Comics & Pop Art" },
+
+  // Dolls & Toy Worlds
+  { id: "dolpinkfashion", label: "Pink fashion doll", emoji: "🎀", group: "Dolls & Toy Worlds" },
+  { id: "dolplasticglam", label: "Plastic glam doll", emoji: "💅", group: "Dolls & Toy Worlds" },
+  { id: "doldollhouse", label: "Dollhouse living room", emoji: "🏠", group: "Dolls & Toy Worlds" },
+  { id: "dolboxpackaging", label: "Collector doll in box", emoji: "📦", group: "Dolls & Toy Worlds" },
+  { id: "dolballjointed", label: "Ball-jointed doll", emoji: "🪆", group: "Dolls & Toy Worlds" },
+  { id: "dolporcelain", label: "Porcelain doll portrait", emoji: "🫖", group: "Dolls & Toy Worlds" },
+  { id: "dolragdoll", label: "Handmade rag doll", emoji: "🧵", group: "Dolls & Toy Worlds" },
+  { id: "doltoyrunway", label: "Toy fashion runway", emoji: "👠", group: "Dolls & Toy Worlds" },
+  { id: "dolminiaturekitchen", label: "Miniature toy kitchen", emoji: "🍳", group: "Dolls & Toy Worlds" },
+  { id: "dolactionfigure", label: "Action figure hero", emoji: "🦿", group: "Dolls & Toy Worlds" },
+  { id: "dolwindupdoll", label: "Wind-up tin doll", emoji: "🔧", group: "Dolls & Toy Worlds" },
+  { id: "dolpastelplayset", label: "Pastel playset scene", emoji: "🌈", group: "Dolls & Toy Worlds" },
+  { id: "dolvinylfigure", label: "Vinyl collectible figure", emoji: "🧸", group: "Dolls & Toy Worlds" },
+  { id: "dolmarionette", label: "Wooden marionette", emoji: "🎭", group: "Dolls & Toy Worlds" },
+
+  // Voxel & Pixel Worlds
+  { id: "voxblockyworld", label: "Blocky voxel world", emoji: "🟩", group: "Voxel & Pixel Worlds" },
+  { id: "voxsandbox", label: "Pixel sandbox adventure", emoji: "⛏️", group: "Voxel & Pixel Worlds" },
+  { id: "voxcubevillage", label: "Cube village builder", emoji: "🏘️", group: "Voxel & Pixel Worlds" },
+  { id: "voxvoxelcastle", label: "Voxel castle keep", emoji: "🏯", group: "Voxel & Pixel Worlds" },
+  { id: "voxminecart", label: "Underground cube mine", emoji: "🛒", group: "Voxel & Pixel Worlds" },
+  { id: "voxpixelrpg", label: "16-bit pixel RPG hero", emoji: "🎮", group: "Voxel & Pixel Worlds" },
+  { id: "voxisoworld", label: "Isometric voxel diorama", emoji: "🧊", group: "Voxel & Pixel Worlds" },
+  { id: "voxblockfarm", label: "Blocky farm sunrise", emoji: "🌾", group: "Voxel & Pixel Worlds" },
+  { id: "voxlowpoly", label: "Low-poly adventure", emoji: "🔺", group: "Voxel & Pixel Worlds" },
+  { id: "voxneonvoxel", label: "Neon voxel city", emoji: "🌃", group: "Voxel & Pixel Worlds" },
+  { id: "voxskyislands", label: "Floating cube islands", emoji: "☁️", group: "Voxel & Pixel Worlds" },
+  { id: "voxpixelarcade", label: "Pixel arcade sprite", emoji: "👾", group: "Voxel & Pixel Worlds" },
+
+  // Classic Fairy Tales
+  { id: "fteglassslipper", label: "Glass slipper ball", emoji: "👑", group: "Classic Fairy Tales" },
+  { id: "ftesleepingrose", label: "Sleeping rose castle", emoji: "🌹", group: "Classic Fairy Tales" },
+  { id: "ftesnowmirror", label: "Snow maiden and mirror", emoji: "🪞", group: "Classic Fairy Tales" },
+  { id: "ftereddhood", label: "Red hooded forest walk", emoji: "🧺", group: "Classic Fairy Tales" },
+  { id: "ftegingerhouse", label: "Gingerbread cottage", emoji: "🍬", group: "Classic Fairy Tales" },
+  { id: "ftefrogprince", label: "Frog prince pond", emoji: "🐸", group: "Classic Fairy Tales" },
+  { id: "fteswanlake", label: "Swan lake evening", emoji: "🦢", group: "Classic Fairy Tales" },
+  { id: "ftelittlemermaidfolk", label: "Sea maiden on rocks", emoji: "🌊", group: "Classic Fairy Tales" },
+  { id: "ftetwelvedancing", label: "Twelve dancing sisters", emoji: "💃", group: "Classic Fairy Tales" },
+  { id: "ftebeanstalk", label: "Giant beanstalk climb", emoji: "🌱", group: "Classic Fairy Tales" },
+  { id: "ftetinsoldier", label: "Steadfast tin soldier", emoji: "🥁", group: "Classic Fairy Tales" },
+  { id: "ftethumbelina", label: "Tiny flower girl", emoji: "🌷", group: "Classic Fairy Tales" },
+  { id: "ftenightingale", label: "Emperor's nightingale", emoji: "🐦", group: "Classic Fairy Tales" },
+  { id: "fterumpelstilt", label: "Spinning gold room", emoji: "🧶", group: "Classic Fairy Tales" },
+  { id: "ftebeautybeast", label: "Enchanted rose library", emoji: "📖", group: "Classic Fairy Tales" },
+  { id: "ftepuss", label: "Boots and cunning cat", emoji: "🐱", group: "Classic Fairy Tales" },
+  { id: "ftesnowqueen", label: "Ice palace queen", emoji: "❄️", group: "Classic Fairy Tales" },
+  { id: "fteugly", label: "Ugly duckling lake", emoji: "🦆", group: "Classic Fairy Tales" },
+  { id: "fteshoemaker", label: "Shoemaker's elves night", emoji: "👞", group: "Classic Fairy Tales" },
+  { id: "ftewishingwell", label: "Wishing well twilight", emoji: "🪙", group: "Classic Fairy Tales" },
+  { id: "ftemagicforest", label: "Enchanted forest path", emoji: "🌲", group: "Classic Fairy Tales" },
+  { id: "fteroyalcastle", label: "Royal castle throne", emoji: "🏰", group: "Classic Fairy Tales" },
+  { id: "ftedragonknight", label: "Fairy tale dragon knight", emoji: "🐉", group: "Classic Fairy Tales" },
+  { id: "ftewitchcottage", label: "Witch's herb cottage", emoji: "🧙", group: "Classic Fairy Tales" },
+  { id: "ftefairygodmother", label: "Fairy godmother sparkle", emoji: "✨", group: "Classic Fairy Tales" },
+
 ];
 
 
@@ -2022,6 +2102,7 @@ export const PHOTO_STYLE_CATEGORIES: { name: string; emoji: string; groups: stri
   { name: "Exclusive Collection", emoji: "💠", groups: ["Exclusive Luxury Editorial", "Royal & Elite Galas", "Billionaire Travel", "VIP Nightlife", "Fine Art Muse", "Cinematic Icons", "Haute Nature Couture", "Future Luxe & Tech Glam", "Heritage & Culture Elegance", "Dream Weddings Deluxe", "Signature Portrait Masters", "Elite Sport & Equestrian"] },
   { name: "Time, Cities & Expressions", emoji: "🌆", groups: ["Future Worlds & Tech", "Prehistoric & Ancient Times", "Facial Expressions", "Metropolis Life", "Among the Flowers"] },
 { name: "Unique Brand", emoji: "✨", groups: ["Unique Brand"] },
+  { name: "Comics, Dolls & Fairy Tales", emoji: "📖", groups: ["Comics & Pop Art","Dolls & Toy Worlds","Voxel & Pixel Worlds","Classic Fairy Tales"] },
 ];
 
 export const PHOTO_STYLE_COST = 3;
