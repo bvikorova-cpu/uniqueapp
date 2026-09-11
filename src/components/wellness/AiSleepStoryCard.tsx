@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { BookOpen, Sparkles } from "lucide-react";
 import { useAiSleepStory } from "@/hooks/useWellnessAIFeatures";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { AudioPlayerMini } from "@/components/wellness/AudioPlayerMini";
 
 export function AiSleepStoryCard() {
   const [open, setOpen] = useState(false);
