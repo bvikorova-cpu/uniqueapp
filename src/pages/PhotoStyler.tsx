@@ -20,6 +20,7 @@ import {
 import heroAsset from "@/assets/section-videos/photo-styler.mp4.asset.json";
 import { PHOTO_STYLES, PHOTO_STYLE_COST, PHOTO_STYLE_CATEGORIES } from "@/data/photoStyles";
 import { addUniqueWatermark } from "@/lib/watermarkImage";
+import { uprightImageWithSize, fileToDataUrl } from "@/utils/imageUploadPrep";
 
 interface StyledResult {
   style: string;
@@ -130,12 +131,10 @@ const PhotoStyler = () => {
         toast.error(NSFW_BLOCK_MESSAGE);
         return;
       }
-      const dataUrl = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(String(reader.result));
-        reader.onerror = () => reject(new Error("Could not read the file."));
-        reader.readAsDataURL(file);
-      });
+      // Phone photos carry an EXIF rotation flag the AI model ignores — bake it in
+      // so the generated image is never sideways.
+      const { file: upright } = await uprightImageWithSize(file);
+      const dataUrl = await fileToDataUrl(upright);
       setPhoto(dataUrl);
       setResults([]);
     } catch (e) {
