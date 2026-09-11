@@ -830,6 +830,12 @@ const Profile = () => {
           onClose={() => setFollowersModalOpen(false)}
           defaultTab={followersModalTab}
         />
+        <FriendsModal
+          userId={userId!}
+          currentUserId={currentUserId || undefined}
+          isOpen={friendsModalOpen}
+          onClose={() => setFriendsModalOpen(false)}
+        />
         </Suspense>
         ) : (
           <LazyProfileSectionFallback />
