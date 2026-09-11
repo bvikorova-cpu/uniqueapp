@@ -843,6 +843,12 @@ export const PHOTO_STYLES: PhotoStyle[] = [
   { id: "photoshoot80ssunsetcar", label: "80s sunset car (viral)", emoji: "🚗", group: "AI Photoshoot Collections" },
   { id: "photoshoot80sneonarcade", label: "Back to the 80s neon room", emoji: "🌆", group: "AI Photoshoot Collections" },
   { id: "photoshoot80svhsposter", label: "80s poster wall portrait", emoji: "📼", group: "AI Photoshoot Collections" },
+  { id: "photoshoot80slivingroom", label: "80s cozy living room", emoji: "🛋️", group: "AI Photoshoot Collections" },
+  { id: "photoshoot80stvnight", label: "80s TV night cuddle", emoji: "📺", group: "AI Photoshoot Collections" },
+  { id: "photoshoot80svhscollection", label: "80s VHS collector room", emoji: "📼", group: "AI Photoshoot Collections" },
+  { id: "photoshoot80slavalamp", label: "80s lava lamp corner", emoji: "🫧", group: "AI Photoshoot Collections" },
+  { id: "photoshoot80swoodpanel", label: "80s wood-panel den", emoji: "🪵", group: "AI Photoshoot Collections" },
+  { id: "photoshoot80sdatestamp", label: "80s flash snapshot", emoji: "📸", group: "AI Photoshoot Collections" },
   { id: "photoshootbirthdayflowers", label: "Birthday flowers studio", emoji: "💐", group: "AI Photoshoot Collections" },
   { id: "photoshootbridalglam", label: "Modern bridal glam", emoji: "👰", group: "AI Photoshoot Collections" },
 
