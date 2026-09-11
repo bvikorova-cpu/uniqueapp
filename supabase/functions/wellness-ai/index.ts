@@ -377,10 +377,8 @@ serve(async (req) => {
       const { topic, duration_minutes = 5, voice_id = "EXAVITQu4vr4xnSDxMaL", language = "en" } = body;
       if (!topic || topic.length < 3) throw new Error("Topic required (min 3 chars)");
 
-      const LANG_NAMES: Record<string, string> = { en: "English", sk: "Slovak", cs: "Czech", de: "German",
-        es: "Spanish", fr: "French", it: "Italian", hu: "Hungarian", pl: "Polish", pt: "Portuguese",
-        ru: "Russian", ja: "Japanese", ko: "Korean", zh: "Simplified Chinese" };
       const langName = LANG_NAMES[language] || "English";
+
 
       const { data: row, error: insErr } = await supabase.from("wellness_personalized_meditations")
         .insert({ user_id: user.id, topic, duration_minutes, voice_id, language, status: "processing", credits_used: COST }).select().single();
@@ -401,9 +399,10 @@ Use calm second-person language. Use "..." for natural pauses. No SSML, no stage
       const script = (aiData.choices?.[0]?.message?.content || "").replace(/[*#]/g, "").trim();
       if (!script) throw new Error("No script generated");
 
-      const audioUrl = await ttsUpload(supabase, ELEVENLABS_API_KEY, voice_id, script, `${user.id}/meditation-${row.id}.mp3`,
-        { stability: 0.7, similarity_boost: 0.75, style: 0.3, use_speaker_boost: true, speed: 0.9 },
-        { multilingual: true });
+      const audioUrl = await ttsUpload(supabase, ELEVENLABS_API_KEY, voice_id, script, `${user.id}/meditation-${row.id}`,
+        { stability: 0.8, similarity_boost: 0.75, use_speaker_boost: true, speed: 0.9 },
+        { multilingual: true, language, tone: "a warm, slow, soothing guided-meditation voice" });
+
 
       await supabase.from("wellness_personalized_meditations").update({ meditation_script: script, audio_url: audioUrl, status: "completed" }).eq("id", row.id);
 
@@ -490,8 +489,10 @@ Use calm second-person language. Use "..." for natural pauses. No SSML, no stage
       if (!story) throw new Error("No story generated");
       const title = story.split("\n")[0].replace(/^#\s*/, "").slice(0, 80) || `${theme} — A Sleep Story`;
 
-      const audioUrl = await ttsUpload(supabase, ELEVENLABS_API_KEY, voice_id, story, `${user.id}/sleep-${row.id}.mp3`,
-        { stability: 0.85, similarity_boost: 0.7, style: 0.2, use_speaker_boost: true, speed: 0.85 });
+      const audioUrl = await ttsUpload(supabase, ELEVENLABS_API_KEY, voice_id, story, `${user.id}/sleep-${row.id}`,
+        { stability: 0.85, similarity_boost: 0.7, use_speaker_boost: true, speed: 0.85 },
+        { language: "en", tone: "a very soft, drowsy bedtime-story voice" });
+
 
       await supabase.from("wellness_ai_sleep_stories").update({ title, story_text: story, audio_url: audioUrl, status: "completed" }).eq("id", row.id);
 
@@ -536,8 +537,10 @@ Use calm second-person language. Use "..." for natural pauses. No SSML, no stage
           { role: "user", content: `Intention: ${intention}\nEnvironment: ${environment || "anywhere"}` },
         ] });
       const script = aiData.choices?.[0]?.message?.content || "";
-      const audioUrl = await ttsUpload(supabase, ELEVENLABS_API_KEY, voice_id, script, `${user.id}/walk-${row.id}.mp3`,
-        { stability: 0.75, similarity_boost: 0.7, style: 0.25, use_speaker_boost: true, speed: 0.9 });
+      const audioUrl = await ttsUpload(supabase, ELEVENLABS_API_KEY, voice_id, script, `${user.id}/walk-${row.id}`,
+        { stability: 0.8, similarity_boost: 0.7, use_speaker_boost: true, speed: 0.9 },
+        { language: "en", tone: "a calm, steady walking-meditation voice" });
+
       await supabase.from("wellness_walking_meditations").update({ script, audio_url: audioUrl, status: "completed" }).eq("id", row.id);
       result = { id: row.id, script, audio_url: audioUrl };
     }
