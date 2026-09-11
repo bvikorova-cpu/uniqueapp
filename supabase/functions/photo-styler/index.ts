@@ -2,6 +2,27 @@ import "../_shared/aiRedirect.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 import { tryVertexImage } from "../_shared/vertexDirect.ts";
+import { tryGatewayImage } from "../_shared/imageFallback.ts";
+
+/**
+ * Vertex image quota (429 RESOURCE_EXHAUSTED) hits in bursts, so retry briefly
+ * and then fall back to the Lovable AI Gateway with the same source photo.
+ */
+async function renderStyleImage(prompt: string, aspect: string, image: string): Promise<string | null> {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const out = await tryVertexImage(prompt, aspect, 1, [image]);
+      const b64 = out?.data?.[0]?.b64_json;
+      if (b64) return b64;
+    } catch (e) {
+      console.warn("[photo-styler] vertex attempt failed:", e instanceof Error ? e.message : e);
+    }
+    if (attempt === 0) await new Promise((r) => setTimeout(r, 1200));
+  }
+  const fallback = await tryGatewayImage(prompt, aspect, image);
+  if (fallback) console.log("[photo-styler] served via gateway fallback");
+  return fallback;
+}
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
