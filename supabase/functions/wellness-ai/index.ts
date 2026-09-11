@@ -377,10 +377,8 @@ serve(async (req) => {
       const { topic, duration_minutes = 5, voice_id = "EXAVITQu4vr4xnSDxMaL", language = "en" } = body;
       if (!topic || topic.length < 3) throw new Error("Topic required (min 3 chars)");
 
-      const LANG_NAMES: Record<string, string> = { en: "English", sk: "Slovak", cs: "Czech", de: "German",
-        es: "Spanish", fr: "French", it: "Italian", hu: "Hungarian", pl: "Polish", pt: "Portuguese",
-        ru: "Russian", ja: "Japanese", ko: "Korean", zh: "Simplified Chinese" };
       const langName = LANG_NAMES[language] || "English";
+
 
       const { data: row, error: insErr } = await supabase.from("wellness_personalized_meditations")
         .insert({ user_id: user.id, topic, duration_minutes, voice_id, language, status: "processing", credits_used: COST }).select().single();
