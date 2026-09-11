@@ -1760,7 +1760,7 @@ export const PHOTO_STYLES: PhotoStyle[] = [
   { id: "facsurprise", label: "Surprised wow", emoji: "😮", group: "Facial Expressions" },
   { id: "facconfident", label: "Confident smirk", emoji: "😏", group: "Facial Expressions" },
   { id: "facticalm", label: "Zen calm", emoji: "🧘", group: "Facial Expressions" },
-  { id: "facky", label: "Shy smile", emoji: "☺️", group: "Facial Expressions" },
+  
   { id: "facfierce", label: "Fierce look", emoji: "🔥", group: "Facial Expressions" },
   { id: "facmelancholy", label: "Melancholic rain", emoji: "🌧️", group: "Facial Expressions" },
   { id: "fachopeful", label: "Hopeful eyes", emoji: "🌅", group: "Facial Expressions" },
