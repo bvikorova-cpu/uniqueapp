@@ -288,33 +288,38 @@ const Index = () => {
               )}
             </div>
 
-            {searchResults.length > 0 && (
-              <div
-                className="fixed inset-x-4 top-[140px] bottom-[88px] bg-card border border-border/50 rounded-xl shadow-2xl z-[100] overflow-y-auto overscroll-contain pointer-events-auto sm:absolute sm:inset-x-0 sm:top-full sm:bottom-auto sm:mt-2 sm:w-full sm:max-h-[min(320px,55vh)]"
-                style={{ touchAction: "pan-y", WebkitOverflowScrolling: "touch" }}
-              >
-                {searchResults.map((mod) => {
-                  const Icon = mod.icon;
-                  return (
-                    <button
-                      key={mod.path}
-                      onClick={() => { setSearch(""); handleNavigate(mod.path); }}
-                      className="w-full flex items-center gap-3 px-4 py-3 hover:bg-primary/5 transition-colors text-left"
-                    >
-                      <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${mod.gradient} flex items-center justify-center shrink-0`}>
-                        <Icon className="w-4 h-4 text-white" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium truncate">{mod.title}</p>
-                        {mod.description && <p className="text-xs text-muted-foreground truncate">{mod.description}</p>}
-                      </div>
-                      <Badge variant="secondary" className="text-[9px] shrink-0">{mod.badge}</Badge>
-                      <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                    </button>
-                  );
-                })}
-              </div>
-            )}
+            <AnimatePresence>
+              {searchResults.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="fixed inset-x-4 top-[140px] bottom-[88px] bg-card border border-border/50 rounded-xl shadow-2xl z-[100] overflow-y-auto overscroll-contain pointer-events-auto sm:absolute sm:inset-x-0 sm:top-full sm:bottom-auto sm:mt-2 sm:w-full sm:max-h-[min(320px,55vh)]"
+                  style={{ touchAction: "pan-y", WebkitOverflowScrolling: "touch" }}
+                >
+                  {searchResults.map((mod) => {
+                    const Icon = mod.icon;
+                    return (
+                      <button
+                        key={mod.path}
+                        onClick={() => { setSearch(""); handleNavigate(mod.path); }}
+                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-primary/5 transition-colors text-left"
+                      >
+                        <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${mod.gradient} flex items-center justify-center shrink-0`}>
+                          <Icon className="w-4 h-4 text-white" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium truncate">{mod.title}</p>
+                          {mod.description && <p className="text-xs text-muted-foreground truncate">{mod.description}</p>}
+                        </div>
+                        <Badge variant="secondary" className="text-[9px] shrink-0">{mod.badge}</Badge>
+                        <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                      </button>
+                    );
+                  })}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4 w-full px-4">
