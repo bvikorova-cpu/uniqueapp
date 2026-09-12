@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRecentServices } from "@/hooks/useRecentServices";
+import { ALL_SEARCHABLE, matchesPage } from "@/components/GlobalSearch";
 import RewardedAdCard from "@/components/ads/RewardedAdCard";
 import { AD_PLACEMENTS } from "@/components/ads/AdPlacements";
 // Lazy: keeps 8 bundled hero images out of the Index shell chunk so the
@@ -173,12 +174,29 @@ const Index = () => {
   const searchResults = useMemo(() => {
     if (!search.trim()) return [];
     const q = search.toLowerCase();
-    return uniqueModules.filter(m =>
+    const main = uniqueModules.filter(m =>
       m.title.toLowerCase().includes(q) ||
       m.badge?.toLowerCase().includes(q) ||
       m.category?.toLowerCase().includes(q) ||
       m.description?.toLowerCase().includes(q)
-    ).slice(0, 8);
+    );
+    // Also search sub-features (mandala, song lyrics, tarot...) via shared list
+    const mainPaths = new Set(main.map(m => m.path));
+    const seenTitles = new Set(main.map(m => m.title.toLowerCase()));
+    const extra = ALL_SEARCHABLE
+      .filter(s => matchesPage(s, search))
+      .filter(s => !mainPaths.has(s.path) && !seenTitles.has(s.title.toLowerCase()))
+      .slice(0, 5)
+      .map(s => ({
+        title: s.title,
+        icon: Sparkles,
+        path: s.path,
+        badge: s.category,
+        gradient: "from-purple-500 to-pink-500",
+        category: s.category.toLowerCase(),
+        description: s.description,
+      }));
+    return [...main.slice(0, 8), ...extra].slice(0, 10);
   }, [search]);
 
   const recentModules = useMemo(() =>
