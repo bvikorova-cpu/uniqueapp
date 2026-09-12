@@ -110,14 +110,32 @@ const DiceDuel = () => {
     })();
   }, [user, loadHistory]);
 
+  // Fetch the authoritative match row (used by realtime, polling and focus resync)
+  const syncMatch = useCallback(async (matchId: string) => {
+    const { data } = await (supabase as any)
+      .from("dice_duel_matches")
+      .select("*")
+      .eq("id", matchId)
+      .maybeSingle();
+    if (!data) return;
+    const fresh = data as DiceMatch;
+    setMatch((prev) => (prev && prev.id !== fresh.id ? prev : fresh));
+    if (fresh.status === "finished") {
+      refresh();
+      loadHistory();
+      loadLeaderboard();
+    }
+  }, [refresh, loadHistory, loadLeaderboard]);
+
   // Realtime updates for the current match
   useEffect(() => {
     if (!match?.id) return;
+    const matchId = match.id;
     const channel = supabase
-      .channel(`dice-duel-${match.id}`)
+      .channel(`dice-duel-${matchId}`)
       .on(
         "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "dice_duel_matches", filter: `id=eq.${match.id}` },
+        { event: "UPDATE", schema: "public", table: "dice_duel_matches", filter: `id=eq.${matchId}` },
         (payload) => {
           const updated = payload.new as DiceMatch;
           setMatch(updated);
@@ -128,11 +146,33 @@ const DiceDuel = () => {
           }
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        // Whenever the socket (re)connects, pull the row so no turn change is lost
+        if (status === "SUBSCRIBED") syncMatch(matchId);
+      });
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [match?.id, refresh, loadHistory, loadLeaderboard]);
+  }, [match?.id, refresh, loadHistory, loadLeaderboard, syncMatch]);
+
+  // Safety net: poll while a match is running, so a dropped realtime event
+  // can never leave both players stuck on "Opponent's turn".
+  useEffect(() => {
+    if (!match?.id) return;
+    if (match.status !== "active" && match.status !== "waiting") return;
+    const matchId = match.id;
+    const iv = setInterval(() => syncMatch(matchId), 4000);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") syncMatch(matchId);
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", onVisible);
+    return () => {
+      clearInterval(iv);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", onVisible);
+    };
+  }, [match?.id, match?.status, syncMatch]);
 
   useEffect(() => () => {
     if (animRef.current) clearInterval(animRef.current);
