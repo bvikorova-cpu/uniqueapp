@@ -293,13 +293,9 @@ export function GlobalSearch() {
 
   // Fast local page search (synchronous)
   const performSearch = useCallback((searchQuery: string, category: string | null) => {
-    let filtered = SEARCHABLE_PAGES;
+    let filtered = ALL_SEARCHABLE;
     if (searchQuery.trim()) {
-      filtered = filtered.filter(page =>
-        fuzzyMatch(page.title, searchQuery) ||
-        fuzzyMatch(page.category, searchQuery) ||
-        (page.description && fuzzyMatch(page.description, searchQuery))
-      );
+      filtered = filtered.filter(page => matchesPage(page, searchQuery));
     }
     if (category) {
       filtered = filtered.filter(page => page.category === category);
