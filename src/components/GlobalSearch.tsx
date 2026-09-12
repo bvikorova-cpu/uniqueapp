@@ -360,7 +360,7 @@ export function GlobalSearch() {
     setQuery("");
   };
 
-  const categories = Array.from(new Set(SEARCHABLE_PAGES.map(p => p.category)));
+  const categories = Array.from(new Set(ALL_SEARCHABLE.map(p => p.category)));
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
