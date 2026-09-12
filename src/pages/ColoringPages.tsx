@@ -11,7 +11,7 @@ import { useColoringCredits } from "@/hooks/useColoringCredits";
 import { useAICredits } from "@/hooks/useAICredits";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Image as ImageIcon, Download, Crown, Sparkles, Upload, Palette, Wand2, LayoutGrid, Trophy, Brush, CheckCircle2, Paintbrush, Users, Printer, Zap } from "lucide-react";
+import { Loader2, Image as ImageIcon, Download, Sparkles, Upload, Palette, Wand2, LayoutGrid, Trophy, Brush, Paintbrush } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ColoringHero } from "@/components/coloring/ColoringHero";
 import { TemplateGallery } from "@/components/coloring/TemplateGallery";
@@ -21,10 +21,6 @@ import { BeforeAfterSlider } from "@/components/coloring/BeforeAfterSlider";
 import { ColoringStats } from "@/components/coloring/ColoringStats";
 import { ColoringFavorites } from "@/components/coloring/ColoringFavorites";
 import { AIStyleTransfer } from "@/components/coloring/AIStyleTransfer";
-import { CommunityGallery } from "@/components/coloring/CommunityGallery";
-import { DailyChallenge } from "@/components/coloring/DailyChallenge";
-import { AIColorSuggestions } from "@/components/coloring/AIColorSuggestions";
-import { PrintExport } from "@/components/coloring/PrintExport";
 import { CreditBanner } from "@/components/kids/CreditBanner";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
@@ -34,10 +30,10 @@ import { KidsModuleCreditNote } from "@/components/kids/KidsModuleCreditNote";
 const __HIW_COLORINGPAGES_STEPS = [
   { title: 'Generate with AI', desc: 'Describe an idea; AI creates a printable coloring page.' },
   { title: 'Or pick a template', desc: 'Browse the gallery by theme, age and difficulty.' },
-  { title: 'Color in-app or print', desc: 'Use the digital canvas or download a print-ready PDF.' },
-  { title: 'Share & compete', desc: 'Post to the community gallery, join challenges, earn badges.' },
+  { title: 'Color in-app', desc: 'Use the digital canvas to finish your coloring page.' },
+  { title: 'Save your work', desc: 'Download generated pages or keep them in My Pages.' },
 ];
-const __HIW_COLORINGPAGES = { title: 'Coloring Pages', intro: 'Generate, print and color AI-crafted coloring pages.', steps: __HIW_COLORINGPAGES_STEPS };
+const __HIW_COLORINGPAGES = { title: 'Coloring Pages', intro: 'Generate and color AI-crafted coloring pages.', steps: __HIW_COLORINGPAGES_STEPS };
 
 export default function ColoringPages() {
   const navigate = useNavigate();
@@ -58,7 +54,9 @@ export default function ColoringPages() {
     } catch { return new Set(); }
   });
   const [searchParams] = useSearchParams();
-  const initialTab = searchParams.get("tab") || "generate";
+  const availableTabs = new Set(["generate", "ai-prompt", "style-transfer", "templates", "my-pages", "stats", "color-online"]);
+  const requestedTab = searchParams.get("tab");
+  const initialTab = requestedTab && availableTabs.has(requestedTab) ? requestedTab : "generate";
   const [activeTab, setActiveTab] = useState(initialTab);
 
   const { data: myPages, refetch: refetchPages } = useQuery({
@@ -204,18 +202,6 @@ export default function ColoringPages() {
               </TabsTrigger>
               <TabsTrigger value="my-pages" className="px-2.5 py-1.5 text-[11px] sm:text-xs whitespace-nowrap gap-1">
                 <ImageIcon className="w-3.5 h-3.5" /> My Pages
-              </TabsTrigger>
-              <TabsTrigger value="community" className="px-2.5 py-1.5 text-[11px] sm:text-xs whitespace-nowrap gap-1">
-                <Users className="w-3.5 h-3.5" /> Community
-              </TabsTrigger>
-              <TabsTrigger value="daily" className="px-2.5 py-1.5 text-[11px] sm:text-xs whitespace-nowrap gap-1">
-                <Trophy className="w-3.5 h-3.5" /> Challenge
-              </TabsTrigger>
-              <TabsTrigger value="colors" className="px-2.5 py-1.5 text-[11px] sm:text-xs whitespace-nowrap gap-1">
-                <Zap className="w-3.5 h-3.5" /> AI Colors
-              </TabsTrigger>
-              <TabsTrigger value="print" className="px-2.5 py-1.5 text-[11px] sm:text-xs whitespace-nowrap gap-1">
-                <Printer className="w-3.5 h-3.5" /> Print
               </TabsTrigger>
               <TabsTrigger value="stats" className="px-2.5 py-1.5 text-[11px] sm:text-xs whitespace-nowrap gap-1">
                 <Trophy className="w-3.5 h-3.5" /> Stats
@@ -390,26 +376,6 @@ export default function ColoringPages() {
           {/* Style Transfer Tab */}
           <TabsContent value="style-transfer">
             <AIStyleTransfer onColorOnline={(url) => { setColoringCanvasImage(url); setActiveTab("color-online"); }} />
-          </TabsContent>
-
-          {/* Community Gallery Tab */}
-          <TabsContent value="community">
-            <CommunityGallery />
-          </TabsContent>
-
-          {/* Daily Challenge Tab */}
-          <TabsContent value="daily">
-            <DailyChallenge />
-          </TabsContent>
-
-          {/* AI Color Suggestions Tab */}
-          <TabsContent value="colors">
-            <AIColorSuggestions />
-          </TabsContent>
-
-          {/* Print Export Tab */}
-          <TabsContent value="print">
-            <PrintExport />
           </TabsContent>
 
         </Tabs>
