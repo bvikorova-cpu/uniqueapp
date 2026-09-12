@@ -295,7 +295,7 @@ const Index = () => {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute top-full mt-2 w-full bg-card border border-border/50 rounded-xl shadow-2xl z-[100] max-h-[min(320px,55vh)] overflow-hidden pointer-events-auto"
+                  className="absolute top-full mt-2 w-full bg-card border border-border/50 rounded-xl shadow-2xl z-[100] max-h-[min(320px,55vh)] pointer-events-auto"
                 >
                   <ScrollArea className="h-[min(320px,55vh)]" type="always">
                     {searchResults.map((mod) => {
