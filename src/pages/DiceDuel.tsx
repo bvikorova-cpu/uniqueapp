@@ -230,6 +230,7 @@ const DiceDuel = () => {
       else if (!data.moved) toast.info(`Rolled ${data.roll} — out of bounds, turn skipped`);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Roll failed");
+      syncMatch(match.id);
     } finally {
       setTimeout(() => {
         if (animRef.current) clearInterval(animRef.current);
