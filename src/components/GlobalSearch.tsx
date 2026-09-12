@@ -17,15 +17,37 @@ interface SearchResult {
   category: string;
   path: string;
   icon?: string;
+  keywords?: string[];
 }
 
-// Fuzzy search function
+// Normalize: lowercase + strip diacritics so "mandala" matches "mandála" etc.
+const norm = (s: string) =>
+  s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+
+// Token-based match: every query token must appear as a substring in the
+// combined text, or the whole query is a substring. Falls back to a loose
+// character-subsequence match for typos.
 const fuzzyMatch = (text: string, query: string): boolean => {
-  const pattern = query.toLowerCase().split("").reduce((acc, char) => {
-    return acc + ".*" + char;
-  }, "");
-  const regex = new RegExp(pattern);
-  return regex.test(text.toLowerCase());
+  const t = norm(text);
+  const q = norm(query).trim();
+  if (!q) return true;
+  if (t.includes(q)) return true;
+  const tokens = q.split(/\s+/);
+  if (tokens.length > 1 && tokens.every((tok) => t.includes(tok))) return true;
+  let i = 0;
+  for (const ch of t) {
+    if (ch === q[i]) i++;
+    if (i >= q.length) return true;
+  }
+  return i >= q.length;
+};
+
+const matchesPage = (page: SearchResult, query: string): boolean => {
+  if (fuzzyMatch(page.title, query)) return true;
+  if (fuzzyMatch(page.category, query)) return true;
+  if (page.description && fuzzyMatch(page.description, query)) return true;
+  if (page.keywords?.some((k) => fuzzyMatch(k, query))) return true;
+  return false;
 };
 
 // All searchable pages in the app
