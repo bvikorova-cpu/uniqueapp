@@ -294,7 +294,8 @@ const Index = () => {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute top-full mt-2 w-full bg-card border border-border/50 rounded-xl shadow-2xl z-50 max-h-[min(420px,70vh)] overflow-y-auto overscroll-contain"
+                  className="absolute top-full mt-2 w-full bg-card border border-border/50 rounded-xl shadow-2xl z-[100] max-h-[min(320px,55vh)] overflow-y-auto overscroll-contain pointer-events-auto"
+                  style={{ touchAction: "pan-y", WebkitOverflowScrolling: "touch" }}
                 >
                   {searchResults.map((mod) => {
                     const Icon = mod.icon;
