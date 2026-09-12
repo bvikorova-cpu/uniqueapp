@@ -233,7 +233,7 @@ const Index = () => {
       />
     <div className="min-h-screen bg-background">
       {/* ── Hero Section ─────────────────────────────── */}
-      <div className="relative overflow-hidden min-h-[500px] sm:min-h-[640px] lg:min-h-[720px] xl:min-h-[820px]">
+      <div className="relative min-h-[500px] sm:min-h-[640px] lg:min-h-[720px] xl:min-h-[820px]">
         {/* Crisp hero slideshow – replaces video for sharp quality on PC and mobile */}
         <Suspense fallback={null}>
           <HeroSlideshow />
