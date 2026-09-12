@@ -222,9 +222,9 @@ const SUB_FEATURES: SearchResult[] = [
   { id: "sf-novel", title: "Novel Chapter", category: "AI", path: "/creative-forge", keywords: ["novel", "kniha", "kapitola", "writing"] },
   { id: "sf-poem", title: "Poem Generator", category: "AI", path: "/creative-forge", keywords: ["poem", "básen", "poetry", "básnička"] },
   // Puzzles & coloring
-  { id: "sf-mandala", title: "Colour Mandala", description: "Symmetrical ornament with razor-thin detail", category: "Entertainment", path: "/adult-puzzles", keywords: ["mandala", "mandaly", "colouring", "coloring", "maľovanka"] },
+  { id: "sf-mandala", title: "Colour Mandala Puzzle", description: "400-piece mandala jigsaw — part of Adult Puzzles", category: "Entertainment", path: "/adult-puzzles", keywords: ["mandala", "mandaly", "mandala puzzle"] },
   { id: "sf-puzzles", title: "Adult Puzzles", category: "Entertainment", path: "/adult-puzzles", keywords: ["puzzle", "puzzles", "skladačka"] },
-  { id: "sf-coloring", title: "Coloring Pages", category: "Kids", path: "/coloring-pages", keywords: ["coloring", "colouring", "maľovanky", "vyfarbovanie", "mandala"] },
+  { id: "sf-coloring", title: "Coloring Pages (Kids)", description: "AI coloring pages for kids", category: "Kids", path: "/coloring-pages", keywords: ["coloring", "colouring", "maľovanky", "vyfarbovanie"] },
   // Photo Styler
   { id: "sf-photostyles", title: "Photo Styler Styles", description: "1000+ AI photo styles & photoshoots", category: "AI", path: "/photo-styler", keywords: ["photoshoot", "80s", "retro", "christmas photo", "magazine cover", "fotenie"] },
   // Wellness
