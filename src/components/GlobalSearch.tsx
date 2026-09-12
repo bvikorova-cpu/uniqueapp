@@ -42,7 +42,7 @@ const fuzzyMatch = (text: string, query: string): boolean => {
   return i >= q.length;
 };
 
-const matchesPage = (page: SearchResult, query: string): boolean => {
+export const matchesPage = (page: SearchResult, query: string): boolean => {
   if (fuzzyMatch(page.title, query)) return true;
   if (fuzzyMatch(page.category, query)) return true;
   if (page.description && fuzzyMatch(page.description, query)) return true;
@@ -246,7 +246,7 @@ const SUB_FEATURES: SearchResult[] = [
   { id: "sf-savedsearches", title: "Saved Searches", category: "Commerce", path: "/bazaar/saved-searches", keywords: ["saved search", "uložené hľadanie", "alerts"] },
 ];
 
-const ALL_SEARCHABLE: SearchResult[] = [...SEARCHABLE_PAGES, ...SUB_FEATURES];
+export const ALL_SEARCHABLE: SearchResult[] = [...SEARCHABLE_PAGES, ...SUB_FEATURES];
 
 const CATEGORY_COLORS: Record<string, string> = { "Main": "bg-primary/10 text-primary",
   "Social": "bg-pink-500/10 text-pink-500",
