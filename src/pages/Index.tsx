@@ -233,7 +233,7 @@ const Index = () => {
       />
     <div className="min-h-screen bg-background">
       {/* ── Hero Section ─────────────────────────────── */}
-      <div className="relative overflow-hidden min-h-[500px] sm:min-h-[640px] lg:min-h-[720px] xl:min-h-[820px]">
+      <div className="relative min-h-[500px] sm:min-h-[640px] lg:min-h-[720px] xl:min-h-[820px]">
         {/* Crisp hero slideshow – replaces video for sharp quality on PC and mobile */}
         <Suspense fallback={null}>
           <HeroSlideshow />
@@ -294,7 +294,8 @@ const Index = () => {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute top-full mt-2 w-full bg-card border border-border/50 rounded-xl shadow-2xl z-50 overflow-hidden"
+                  className="fixed inset-x-4 top-[140px] bottom-[88px] bg-card border border-border/50 rounded-xl shadow-2xl z-[100] overflow-y-auto overscroll-contain pointer-events-auto sm:absolute sm:inset-x-0 sm:top-full sm:bottom-auto sm:mt-2 sm:w-full sm:max-h-[min(320px,55vh)]"
+                  style={{ touchAction: "pan-y", WebkitOverflowScrolling: "touch" }}
                 >
                   {searchResults.map((mod) => {
                     const Icon = mod.icon;
