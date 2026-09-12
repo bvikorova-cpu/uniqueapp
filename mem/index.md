@@ -2,6 +2,8 @@
 
 ## Core
 - STRICT: Only real data everywhere. No mock, random, demo or placeholder numbers/names — show 0 or empty state instead.
+- NEVER import an ad-network service worker into public/sw.js (Monetag/5gvci push = "Install VPN" spam).
+
 - AI text output: NEVER raw markdown (###, **, ---). Always render via `AiMarkdown` component.
 - Language: 12-language support (SK, EN, HU, etc.) with auto-detection.
 - Currency: EUR (€) exclusively.

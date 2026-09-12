@@ -1,22 +1,19 @@
 // Unique – Web Push service worker (no caching; push + notification only)
-// Monetag verification + ad service worker (merged)
-self.options = {
-  "domain": "5gvci.com",
-  "zoneId": 11037516
-};
-self.lary = "";
-try {
-  importScripts('https://5gvci.com/act/files/service-worker.min.js?r=sw');
-} catch (e) {
-  // Monetag SW unreachable — keep our push working anyway
-}
+// NOTE: no third-party ad service worker may be imported here. The Monetag
+// push SW (5gvci.com) was sending unsolicited ad notifications ("Install VPN")
+// to installed users — never re-add importScripts of any ad network.
 
 self.addEventListener("install", (e) => self.skipWaiting());
 self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
 
 self.addEventListener("push", (event) => {
-  let data = {};
-  try { data = event.data ? event.data.json() : {}; } catch { data = { title: "Unique", body: event.data?.text?.() || "" }; }
+  let data = null;
+  try { data = event.data ? event.data.json() : null; } catch { data = null; }
+
+  // Only show notifications that come from our own backend (send-push always
+  // sends JSON with a title). Anything else (ad-network pushes) is dropped.
+  if (!data || typeof data !== "object" || (!data.title && !data.kind)) return;
+
 
   const isCall = data.kind === "call";
   const title = data.title || (isCall ? "Incoming call" : "Unique");
