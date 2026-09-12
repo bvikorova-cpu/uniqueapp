@@ -214,6 +214,40 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "149", title: "Terms", category: "Account", path: "/terms" },
 ];
 
+// Sub-features & tools inside modules — searchable by their own names.
+const SUB_FEATURES: SearchResult[] = [
+  // Creative Forge tools
+  { id: "sf-lyrics", title: "Song Lyrics", description: "Professional lyrics with verses, chorus & bridge", category: "AI", path: "/creative-forge", keywords: ["song", "lyrics", "text piesne", "pieseň", "hudba text"] },
+  { id: "sf-screenplay", title: "Screenplay Writer", category: "AI", path: "/creative-forge", keywords: ["screenplay", "script", "scenár", "film script"] },
+  { id: "sf-novel", title: "Novel Chapter", category: "AI", path: "/creative-forge", keywords: ["novel", "kniha", "kapitola", "writing"] },
+  { id: "sf-poem", title: "Poem Generator", category: "AI", path: "/creative-forge", keywords: ["poem", "básen", "poetry", "básnička"] },
+  // Puzzles & coloring
+  { id: "sf-mandala", title: "Colour Mandala", description: "Symmetrical ornament with razor-thin detail", category: "Entertainment", path: "/adult-puzzles", keywords: ["mandala", "mandaly", "colouring", "coloring", "maľovanka"] },
+  { id: "sf-puzzles", title: "Adult Puzzles", category: "Entertainment", path: "/adult-puzzles", keywords: ["puzzle", "puzzles", "skladačka"] },
+  { id: "sf-coloring", title: "Coloring Pages", category: "Kids", path: "/coloring-pages", keywords: ["coloring", "colouring", "maľovanky", "vyfarbovanie", "mandala"] },
+  // Photo Styler
+  { id: "sf-photostyles", title: "Photo Styler Styles", description: "1000+ AI photo styles & photoshoots", category: "AI", path: "/photo-styler", keywords: ["photoshoot", "80s", "retro", "christmas photo", "magazine cover", "fotenie"] },
+  // Wellness
+  { id: "sf-meditation", title: "Digital Mandala & Meditation", category: "Health", path: "/wellness", keywords: ["meditation", "meditácia", "mandala", "relax", "breathing"] },
+  // Food sub-tools
+  { id: "sf-recipes", title: "AI Recipes", category: "Food", path: "/recipe-generator", keywords: ["recipe", "recept", "recepty", "cooking"] },
+  // Music
+  { id: "sf-music", title: "Music Studio", category: "Entertainment", path: "/music-studio", keywords: ["music", "song", "hudba", "skladba", "beat"] },
+  // Dating sub
+  { id: "sf-speeddate", title: "Speed Dating", category: "Social", path: "/dating", keywords: ["speed dating", "rýchlorandka"] },
+  // Kids sub
+  { id: "sf-homework", title: "Homework Helper", category: "Kids", path: "/kids-homework", keywords: ["homework", "domáca úloha", "úlohy", "school"] },
+  // Mystical sub
+  { id: "sf-horoscope", title: "Horoscope", category: "Mystical", path: "/astrology", keywords: ["horoscope", "horoskop", "zodiac", "znamenie"] },
+  { id: "sf-tarot", title: "Tarot Reading", category: "Mystical", path: "/astrology", keywords: ["tarot", "tarot cards", "veštenie"] },
+  // Career sub
+  { id: "sf-cv", title: "CV & Resume Builder", category: "Career", path: "/jobs", keywords: ["cv", "resume", "životopis"] },
+  // Commerce sub
+  { id: "sf-savedsearches", title: "Saved Searches", category: "Commerce", path: "/bazaar/saved-searches", keywords: ["saved search", "uložené hľadanie", "alerts"] },
+];
+
+const ALL_SEARCHABLE: SearchResult[] = [...SEARCHABLE_PAGES, ...SUB_FEATURES];
+
 const CATEGORY_COLORS: Record<string, string> = { "Main": "bg-primary/10 text-primary",
   "Social": "bg-pink-500/10 text-pink-500",
   "Communication": "bg-blue-500/10 text-blue-500",
