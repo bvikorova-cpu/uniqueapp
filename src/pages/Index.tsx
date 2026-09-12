@@ -290,7 +290,7 @@ const Index = () => {
 
             {searchResults.length > 0 && (
               <div
-                className="absolute top-full mt-2 w-full bg-card border border-border/50 rounded-xl shadow-2xl z-[100] max-h-[min(320px,55vh)] overflow-y-auto overscroll-contain pointer-events-auto"
+                className="fixed inset-x-4 top-[140px] bottom-[88px] bg-card border border-border/50 rounded-xl shadow-2xl z-[100] overflow-y-auto overscroll-contain pointer-events-auto sm:absolute sm:inset-x-0 sm:top-full sm:bottom-auto sm:mt-2 sm:w-full sm:max-h-[min(320px,55vh)]"
                 style={{ touchAction: "pan-y", WebkitOverflowScrolling: "touch" }}
               >
                 {searchResults.map((mod) => {
