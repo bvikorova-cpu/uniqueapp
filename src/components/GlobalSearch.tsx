@@ -17,15 +17,37 @@ interface SearchResult {
   category: string;
   path: string;
   icon?: string;
+  keywords?: string[];
 }
 
-// Fuzzy search function
+// Normalize: lowercase + strip diacritics so "mandala" matches "mandála" etc.
+const norm = (s: string) =>
+  s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+
+// Token-based match: every query token must appear as a substring in the
+// combined text, or the whole query is a substring. Falls back to a loose
+// character-subsequence match for typos.
 const fuzzyMatch = (text: string, query: string): boolean => {
-  const pattern = query.toLowerCase().split("").reduce((acc, char) => {
-    return acc + ".*" + char;
-  }, "");
-  const regex = new RegExp(pattern);
-  return regex.test(text.toLowerCase());
+  const t = norm(text);
+  const q = norm(query).trim();
+  if (!q) return true;
+  if (t.includes(q)) return true;
+  const tokens = q.split(/\s+/);
+  if (tokens.length > 1 && tokens.every((tok) => t.includes(tok))) return true;
+  let i = 0;
+  for (const ch of t) {
+    if (ch === q[i]) i++;
+    if (i >= q.length) return true;
+  }
+  return i >= q.length;
+};
+
+const matchesPage = (page: SearchResult, query: string): boolean => {
+  if (fuzzyMatch(page.title, query)) return true;
+  if (fuzzyMatch(page.category, query)) return true;
+  if (page.description && fuzzyMatch(page.description, query)) return true;
+  if (page.keywords?.some((k) => fuzzyMatch(k, query))) return true;
+  return false;
 };
 
 // All searchable pages in the app
@@ -192,6 +214,40 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "149", title: "Terms", category: "Account", path: "/terms" },
 ];
 
+// Sub-features & tools inside modules — searchable by their own names.
+const SUB_FEATURES: SearchResult[] = [
+  // Creative Forge tools
+  { id: "sf-lyrics", title: "Song Lyrics", description: "Professional lyrics with verses, chorus & bridge", category: "AI", path: "/creative-forge", keywords: ["song", "lyrics", "text piesne", "pieseň", "hudba text"] },
+  { id: "sf-screenplay", title: "Screenplay Writer", category: "AI", path: "/creative-forge", keywords: ["screenplay", "script", "scenár", "film script"] },
+  { id: "sf-novel", title: "Novel Chapter", category: "AI", path: "/creative-forge", keywords: ["novel", "kniha", "kapitola", "writing"] },
+  { id: "sf-poem", title: "Poem Generator", category: "AI", path: "/creative-forge", keywords: ["poem", "básen", "poetry", "básnička"] },
+  // Puzzles & coloring
+  { id: "sf-mandala", title: "Colour Mandala", description: "Symmetrical ornament with razor-thin detail", category: "Entertainment", path: "/adult-puzzles", keywords: ["mandala", "mandaly", "colouring", "coloring", "maľovanka"] },
+  { id: "sf-puzzles", title: "Adult Puzzles", category: "Entertainment", path: "/adult-puzzles", keywords: ["puzzle", "puzzles", "skladačka"] },
+  { id: "sf-coloring", title: "Coloring Pages", category: "Kids", path: "/coloring-pages", keywords: ["coloring", "colouring", "maľovanky", "vyfarbovanie", "mandala"] },
+  // Photo Styler
+  { id: "sf-photostyles", title: "Photo Styler Styles", description: "1000+ AI photo styles & photoshoots", category: "AI", path: "/photo-styler", keywords: ["photoshoot", "80s", "retro", "christmas photo", "magazine cover", "fotenie"] },
+  // Wellness
+  { id: "sf-meditation", title: "Digital Mandala & Meditation", category: "Health", path: "/wellness", keywords: ["meditation", "meditácia", "mandala", "relax", "breathing"] },
+  // Food sub-tools
+  { id: "sf-recipes", title: "AI Recipes", category: "Food", path: "/recipe-generator", keywords: ["recipe", "recept", "recepty", "cooking"] },
+  // Music
+  { id: "sf-music", title: "Music Studio", category: "Entertainment", path: "/music-studio", keywords: ["music", "song", "hudba", "skladba", "beat"] },
+  // Dating sub
+  { id: "sf-speeddate", title: "Speed Dating", category: "Social", path: "/dating", keywords: ["speed dating", "rýchlorandka"] },
+  // Kids sub
+  { id: "sf-homework", title: "Homework Helper", category: "Kids", path: "/kids-homework", keywords: ["homework", "domáca úloha", "úlohy", "school"] },
+  // Mystical sub
+  { id: "sf-horoscope", title: "Horoscope", category: "Mystical", path: "/astrology", keywords: ["horoscope", "horoskop", "zodiac", "znamenie"] },
+  { id: "sf-tarot", title: "Tarot Reading", category: "Mystical", path: "/astrology", keywords: ["tarot", "tarot cards", "veštenie"] },
+  // Career sub
+  { id: "sf-cv", title: "CV & Resume Builder", category: "Career", path: "/jobs", keywords: ["cv", "resume", "životopis"] },
+  // Commerce sub
+  { id: "sf-savedsearches", title: "Saved Searches", category: "Commerce", path: "/bazaar/saved-searches", keywords: ["saved search", "uložené hľadanie", "alerts"] },
+];
+
+const ALL_SEARCHABLE: SearchResult[] = [...SEARCHABLE_PAGES, ...SUB_FEATURES];
+
 const CATEGORY_COLORS: Record<string, string> = { "Main": "bg-primary/10 text-primary",
   "Social": "bg-pink-500/10 text-pink-500",
   "Communication": "bg-blue-500/10 text-blue-500",
@@ -237,13 +293,9 @@ export function GlobalSearch() {
 
   // Fast local page search (synchronous)
   const performSearch = useCallback((searchQuery: string, category: string | null) => {
-    let filtered = SEARCHABLE_PAGES;
+    let filtered = ALL_SEARCHABLE;
     if (searchQuery.trim()) {
-      filtered = filtered.filter(page =>
-        fuzzyMatch(page.title, searchQuery) ||
-        fuzzyMatch(page.category, searchQuery) ||
-        (page.description && fuzzyMatch(page.description, searchQuery))
-      );
+      filtered = filtered.filter(page => matchesPage(page, searchQuery));
     }
     if (category) {
       filtered = filtered.filter(page => page.category === category);
@@ -308,7 +360,7 @@ export function GlobalSearch() {
     setQuery("");
   };
 
-  const categories = Array.from(new Set(SEARCHABLE_PAGES.map(p => p.category)));
+  const categories = Array.from(new Set(ALL_SEARCHABLE.map(p => p.category)));
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
