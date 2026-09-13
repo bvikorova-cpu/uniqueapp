@@ -83,6 +83,8 @@ const SupportLounge = () => {
   const [nickname, setNickname] = useState<string | null>(null);
   const [nickInput, setNickInput] = useState("");
   const [entering, setEntering] = useState(false);
+  const [tab, setTab] = useState("rooms");
+  const [dmTarget, setDmTarget] = useState<{ userId: string; nickname: string } | null>(null);
 
   const callLounge = useCallback(async (payload: Record<string, unknown>) => {
     const { data: { session } } = await supabase.auth.getSession();
