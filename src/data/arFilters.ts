@@ -10,6 +10,12 @@ import neonVisorImg from "@/assets/ar/neon-visor.png";
 import galaxyHaloImg from "@/assets/ar/galaxy-halo.png";
 import butterflyCrownImg from "@/assets/ar/butterfly-crown.png";
 import flameCrownImg from "@/assets/ar/flame-crown.png";
+import masqueradeMaskImg from "@/assets/ar/masquerade-mask.png";
+import devilHornsImg from "@/assets/ar/devil-horns.png";
+import angelHaloImg from "@/assets/ar/angel-halo.png";
+import piratePatchImg from "@/assets/ar/pirate-patch.png";
+import catKitImg from "@/assets/ar/cat-kit.png";
+import robotVisorImg from "@/assets/ar/robot-visor.png";
 
 /** Where an overlay is anchored on the detected face. */
 export type ArAnchor = "eyes" | "forehead" | "above-head" | "nose" | "mouth";
