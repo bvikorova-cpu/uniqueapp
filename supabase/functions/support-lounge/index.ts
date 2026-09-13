@@ -113,6 +113,63 @@ Deno.serve(async (req) => {
       return json({ ok: true, nickname: raw });
     }
 
+    if (action === "dm") {
+      const pass = await getPass();
+      if (!pass) return json({ error: "no_pass" }, 403);
+
+      const toUserId = typeof body.to_user_id === "string" ? body.to_user_id.trim() : "";
+      const content = typeof body.content === "string" ? body.content.trim().slice(0, 500) : "";
+      if (!/^[0-9a-f-]{36}$/i.test(toUserId)) return json({ error: "invalid_recipient" }, 400);
+      if (toUserId === user.id) return json({ error: "cannot_message_yourself" }, 400);
+      if (content.length < 1) return json({ error: "empty_message" }, 400);
+
+      const { data: nick } = await admin
+        .from("support_lounge_nicknames")
+        .select("nickname")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!nick?.nickname) return json({ error: "no_nickname" }, 400);
+
+      const { data: spend, error: spendError } = await admin.rpc("spend_ai_credits_for_user", {
+        p_user_id: user.id,
+        p_amount: DM_CREDITS,
+        p_reason: "Broken Hearts private message",
+        p_source: "support_lounge_dm",
+      });
+      if (spendError) {
+        console.error("support-lounge DM credit deduction failed:", spendError.message);
+        return json({ error: "credit_charge_failed" }, 500);
+      }
+      if (!spend?.ok) {
+        return json({ error: "insufficient_credits", required: DM_CREDITS, remaining: spend?.balance ?? 0 }, 402);
+      }
+
+      const { data: inserted, error: dmError } = await admin
+        .from("support_lounge_dms")
+        .insert({
+          from_user_id: user.id,
+          to_user_id: toUserId,
+          from_nickname: nick.nickname,
+          content,
+          credits_charged: DM_CREDITS,
+        })
+        .select("*")
+        .single();
+
+      if (dmError) {
+        const { error: refundError } = await admin.rpc("add_ai_credits", {
+          p_user_id: user.id,
+          p_amount: DM_CREDITS,
+          p_reason: "Broken Hearts private message refund",
+          p_source: "support_lounge_dm_refund",
+        });
+        if (refundError) console.error("support-lounge DM refund failed:", refundError.message);
+        return json({ error: "send_failed" }, 500);
+      }
+
+      return json({ ok: true, message: inserted, credits_used: DM_CREDITS, remaining: spend.balance });
+    }
+
     if (action === "ai") {
       const pass = await getPass();
       if (!pass) return json({ error: "no_pass" }, 403);
