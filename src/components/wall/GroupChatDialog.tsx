@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { StickerButton } from "@/components/common/StickerButton";
+import { stickerUrlFromContent } from "@/lib/stickerContent";
 import { Users, Plus, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog,
@@ -103,12 +105,18 @@ export const GroupChatDialog = () => {
                     {messages.map((m: any) => (
                       <div key={m.id} className="text-sm bg-muted rounded-lg px-3 py-2">
                         <p className="text-xs text-muted-foreground">{m.sender_id.slice(0, 8)}</p>
-                        <p>{m.content}</p>
+                        {(() => {
+                          const stickerSrc = stickerUrlFromContent(m.content);
+                          return stickerSrc
+                            ? <img src={stickerSrc} alt="Sticker" className="w-24 h-24 object-contain" />
+                            : <p>{m.content}</p>;
+                        })()}
                       </div>
                     ))}
                   </div>
                 </ScrollArea>
                 <div className="flex gap-2">
+                  <StickerButton onSelect={(st) => send({ content: st.url })} />
                   <Input
                     value={draft}
                     onChange={(e) => setDraft(e.target.value)}

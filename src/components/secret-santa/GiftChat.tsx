@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import { StickerButton } from "@/components/common/StickerButton";
+import { stickerUrlFromContent } from "@/lib/stickerContent";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -440,7 +442,12 @@ export const GiftChat = ({ initialUser = null }: GiftChatProps) => {
                                 : "bg-gray-100 text-gray-800 rounded-bl-md"
                             }`}
                           >
-                            <p className="text-sm">{msg.content}</p>
+                            {(() => {
+                              const stickerSrc = stickerUrlFromContent(msg.content);
+                              return stickerSrc
+                                ? <img src={stickerSrc} alt="Sticker" className="w-24 h-24 object-contain" />
+                                : <p className="text-sm">{msg.content}</p>;
+                            })()}
                             <p className={`text-[10px] mt-1 ${isMe ? "text-white/70" : "text-gray-400"}`}>
                               {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </p>
