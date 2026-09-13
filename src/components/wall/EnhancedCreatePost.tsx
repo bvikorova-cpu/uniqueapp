@@ -137,7 +137,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
 
   const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
 
-    if (!content.trim() && files.length === 0 && !eventDraft) {
+    if (!content.trim() && files.length === 0 && stickers.length === 0 && !eventDraft) {
       toast({
         title: "Empty post",
         description: "Add text or media",
