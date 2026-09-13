@@ -161,7 +161,10 @@ export function getNotificationRoute(n: NotifLike): string {
     premium_video_unlock: "/unlock-videos?tab=mine",
 
     coffee_match: "/coffee",
-    coffee_message: "/coffee" };
+    coffee_message: "/coffee",
+
+    // Broken Hearts / Support Lounge
+    support_lounge_dm: "/support-lounge?tab=private" };
 
 
 
