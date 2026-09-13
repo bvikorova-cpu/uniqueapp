@@ -70,8 +70,8 @@ const SupportLounge = () => {
       if (!user) { setChecking(false); return; }
       const today = new Date().toISOString().slice(0, 10);
       const [{ data: pass }, { data: nick }] = await Promise.all([
-        supabase.from("support_lounge_passes").select("id").eq("user_id", user.id).eq("pass_date", today).maybeSingle(),
-        supabase.from("support_lounge_nicknames").select("nickname").eq("user_id", user.id).maybeSingle(),
+        (supabase as any).from("support_lounge_passes").select("id").eq("user_id", user.id).eq("pass_date", today).maybeSingle(),
+        (supabase as any).from("support_lounge_nicknames").select("nickname").eq("user_id", user.id).maybeSingle(),
       ]);
       setHasPass(!!pass);
       setNickname(nick?.nickname ?? null);
@@ -218,7 +218,7 @@ function RoomsChat({ nickname, userId }: { nickname: string; userId: string }) {
   useEffect(() => {
     setMessages([]);
     let cancelled = false;
-    supabase
+    (supabase as any)
       .from("support_lounge_messages")
       .select("*")
       .eq("room", room)
@@ -251,7 +251,7 @@ function RoomsChat({ nickname, userId }: { nickname: string; userId: string }) {
     const content = text.trim();
     if (!content || sending) return;
     setSending(true);
-    const { error } = await supabase.from("support_lounge_messages").insert({
+    const { error } = await (supabase as any).from("support_lounge_messages").insert({
       room, user_id: userId, nickname, content: content.slice(0, 500),
     });
     if (error) toast.error("Message could not be sent.");
