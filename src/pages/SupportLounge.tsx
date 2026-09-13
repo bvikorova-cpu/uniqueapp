@@ -40,6 +40,7 @@ interface AiMessage {
 
 const ENTRY_CREDITS = 1;
 const AI_MESSAGE_CREDITS = 3;
+const DM_CREDITS = 1;
 const SECTION_NAME = "Broken Hearts — You Are Not Alone";
 
 function HeartbreakHero() {
