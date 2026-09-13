@@ -247,4 +247,49 @@ export const AR_FILTERS: ArFilter[] = [
     emoji: "⛄",
     overlays: [{ src: snowmanKitImg, anchor: "nose", widthFactor: 1.1, offsetY: 0 }],
   },
+  {
+    id: "lace",
+    label: "Lace mask",
+    emoji: "🖤",
+    overlays: [{ src: laceMaskImg, anchor: "eyes", widthFactor: 2.3, offsetY: 0 }],
+  },
+  {
+    id: "redlips",
+    label: "Red lips",
+    emoji: "💋",
+    overlays: [{ src: redLipsImg, anchor: "mouth", widthFactor: 1.3, offsetY: -0.05 }],
+  },
+  {
+    id: "diamonds",
+    label: "Diamonds",
+    emoji: "💎",
+    overlays: [{ src: diamondEarringsImg, anchor: "eyes", widthFactor: 2.6, offsetY: 0.15 }],
+  },
+  {
+    id: "champagne",
+    label: "Champagne",
+    emoji: "🥂",
+    overlays: [{ src: champagneImg, anchor: "above-head", widthFactor: 2.6, offsetY: -0.25 }],
+  },
+  {
+    id: "luxury",
+    label: "Luxury shades",
+    emoji: "🕶️",
+    overlays: [{ src: luxuryShadesImg, anchor: "eyes", widthFactor: 2.15, offsetY: 0 }],
+  },
+  {
+    id: "gentleman",
+    label: "Gentleman",
+    emoji: "🎩",
+    overlays: [{ src: bowTieImg, anchor: "mouth", widthFactor: 1.6, offsetY: -0.55 }],
+  },
+  {
+    id: "romantic",
+    label: "Romantic",
+    emoji: "🌹",
+    overlays: [
+      { src: redRoseImg, anchor: "above-head", widthFactor: 1.8, offsetY: -0.2 },
+      { src: redLipsImg, anchor: "mouth", widthFactor: 1.1, offsetY: -0.05 },
+    ],
+  },
 ];
