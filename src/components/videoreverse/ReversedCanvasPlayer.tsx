@@ -161,7 +161,7 @@ export default function ReversedCanvasPlayer({
         onValueChange={([v]) => {
           setPlaying(false);
           posRef.current = v;
-          setPosition(v);
+          syncPosition(v, true);
           drawAt(v);
         }}
       />
