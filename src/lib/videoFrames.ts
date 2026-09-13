@@ -19,8 +19,18 @@ export interface ExtractResult {
   duration: number;
 }
 
-export const MAX_VIDEO_BYTES = 20 * 1024 * 1024;
-export const MAX_VIDEO_SECONDS = 10;
+export const MAX_VIDEO_BYTES = 60 * 1024 * 1024;
+export const MAX_VIDEO_SECONDS = 30;
+
+/**
+ * Longer clips need smaller frames and a lower sampling rate, otherwise the
+ * decoded bitmaps exhaust browser memory and playback starts stuttering.
+ */
+export function frameProfileForDuration(duration: number): { fps: number; maxSize: number } {
+  if (duration <= 10) return { fps: 30, maxSize: 720 };
+  if (duration <= 20) return { fps: 20, maxSize: 480 };
+  return { fps: 12, maxSize: 360 };
+}
 
 /** Load a video element and wait for its metadata. */
 export function loadVideoElement(src: string): Promise<HTMLVideoElement> {
