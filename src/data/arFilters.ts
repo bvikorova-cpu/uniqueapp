@@ -10,6 +10,12 @@ import neonVisorImg from "@/assets/ar/neon-visor.png";
 import galaxyHaloImg from "@/assets/ar/galaxy-halo.png";
 import butterflyCrownImg from "@/assets/ar/butterfly-crown.png";
 import flameCrownImg from "@/assets/ar/flame-crown.png";
+import masqueradeMaskImg from "@/assets/ar/masquerade-mask.png";
+import devilHornsImg from "@/assets/ar/devil-horns.png";
+import angelHaloImg from "@/assets/ar/angel-halo.png";
+import piratePatchImg from "@/assets/ar/pirate-patch.png";
+import catKitImg from "@/assets/ar/cat-kit.png";
+import robotVisorImg from "@/assets/ar/robot-visor.png";
 
 /** Where an overlay is anchored on the detected face. */
 export type ArAnchor = "eyes" | "forehead" | "above-head" | "nose" | "mouth";
@@ -148,5 +154,41 @@ export const AR_FILTERS: ArFilter[] = [
       { src: butterflyCrownImg, anchor: "above-head", widthFactor: 3.1, offsetY: -0.2 },
       { src: heartGlassesImg, anchor: "eyes", widthFactor: 2.1, offsetY: 0 },
     ],
+  },
+  {
+    id: "masquerade",
+    label: "Midnight mask",
+    emoji: "🎭",
+    overlays: [{ src: masqueradeMaskImg, anchor: "eyes", widthFactor: 2.25, offsetY: 0 }],
+  },
+  {
+    id: "devil",
+    label: "Little devil",
+    emoji: "😈",
+    overlays: [{ src: devilHornsImg, anchor: "above-head", widthFactor: 2.2, offsetY: -0.35 }],
+  },
+  {
+    id: "angel",
+    label: "Pure angel",
+    emoji: "😇",
+    overlays: [{ src: angelHaloImg, anchor: "above-head", widthFactor: 2.0, offsetY: -0.55 }],
+  },
+  {
+    id: "pirate",
+    label: "Pirate",
+    emoji: "🏴‍☠️",
+    overlays: [{ src: piratePatchImg, anchor: "eyes", widthFactor: 1.6, offsetY: 0 }],
+  },
+  {
+    id: "cat",
+    label: "Cute cat",
+    emoji: "🐱",
+    overlays: [{ src: catKitImg, anchor: "above-head", widthFactor: 2.5, offsetY: -0.25 }],
+  },
+  {
+    id: "robot",
+    label: "Cyborg",
+    emoji: "🤖",
+    overlays: [{ src: robotVisorImg, anchor: "eyes", widthFactor: 2.0, offsetY: 0 }],
   },
 ];
