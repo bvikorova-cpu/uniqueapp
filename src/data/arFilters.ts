@@ -198,4 +198,46 @@ export const AR_FILTERS: ArFilter[] = [
     emoji: "🤖",
     overlays: [{ src: robotVisorImg, anchor: "eyes", widthFactor: 2.0, offsetY: 0 }],
   },
+  {
+    id: "unicorn",
+    label: "Unicorn",
+    emoji: "🦄",
+    overlays: [{ src: unicornKitImg, anchor: "above-head", widthFactor: 2.5, offsetY: -0.3 }],
+  },
+  {
+    id: "clown",
+    label: "Rainbow clown",
+    emoji: "🤡",
+    overlays: [{ src: clownKitImg, anchor: "above-head", widthFactor: 2.8, offsetY: -0.2 }],
+  },
+  {
+    id: "ninja",
+    label: "Ninja",
+    emoji: "🥷",
+    overlays: [{ src: ninjaMaskImg, anchor: "eyes", widthFactor: 2.1, offsetY: 0 }],
+  },
+  {
+    id: "wizard",
+    label: "Wizard",
+    emoji: "🧙",
+    overlays: [{ src: wizardKitImg, anchor: "above-head", widthFactor: 2.7, offsetY: -0.4 }],
+  },
+  {
+    id: "alien",
+    label: "Alien",
+    emoji: "👽",
+    overlays: [{ src: alienKitImg, anchor: "above-head", widthFactor: 2.4, offsetY: -0.35 }],
+  },
+  {
+    id: "retro3d",
+    label: "Retro 3D",
+    emoji: "🕶️",
+    overlays: [{ src: glasses3dImg, anchor: "eyes", widthFactor: 2.2, offsetY: 0 }],
+  },
+  {
+    id: "snowman",
+    label: "Snowman",
+    emoji: "⛄",
+    overlays: [{ src: snowmanKitImg, anchor: "nose", widthFactor: 1.1, offsetY: 0 }],
+  },
 ];
