@@ -164,7 +164,9 @@ export function getNotificationRoute(n: NotifLike): string {
     coffee_message: "/coffee",
 
     // Broken Hearts / Support Lounge
-    support_lounge_dm: "/support-lounge?tab=private" };
+    support_lounge_dm: "/support-lounge?tab=private",
+    support_lounge_contact_request: "/support-lounge?tab=known",
+    support_lounge_contact_accepted: "/support-lounge?tab=known" };
 
 
 
