@@ -202,6 +202,37 @@ const DiceDuel = () => {
     }
   };
 
+  const startBot = useCallback(async (matchId?: string) => {
+    if (!user) return;
+    if (!matchId && (coins ?? 0) < STAKE) {
+      toast.error(`You need ${STAKE} Battle Coins to play`);
+      return;
+    }
+    setSearching(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("dice-duel-matchmaking", {
+        body: matchId ? { action: "bot", match_id: matchId } : { action: "bot" },
+      });
+      if (error) throw new Error(data?.error || error.message);
+      if (data?.error) throw new Error(data.error);
+      setMatch(data.match as DiceMatch);
+      refresh();
+      toast.success("Practice duel vs Bot started — prize is XP only");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not start bot match");
+    } finally {
+      setSearching(false);
+    }
+  }, [user, coins, refresh]);
+
+  // Nobody online? After 15 s of waiting, the duel is finished against the bot.
+  useEffect(() => {
+    if (match?.status !== "waiting") return;
+    const matchId = match.id;
+    const t = setTimeout(() => startBot(matchId), 15000);
+    return () => clearTimeout(t);
+  }, [match?.status, match?.id, startBot]);
+
   const cancelOrForfeit = async () => {
     if (!match) return;
     try {
