@@ -30,6 +30,8 @@ import { SafetyTipsBanner } from "@/components/dating/SafetyTipsBanner";
 import { MessageActions } from "@/components/dating/MessageActions";
 import { EmojiPicker } from "@/components/dating/EmojiPicker";
 import { StickerButton } from "@/components/common/StickerButton";
+import { ARCameraButton } from "@/components/ar/ARCameraButton";
+import { uploadArCapture } from "@/lib/arUpload";
 import { stickerUrlFromContent } from "@/lib/stickerContent";
 import { CompatibilityQuiz, computeCompatibility } from "@/components/dating/CompatibilityQuiz";
 import { OpeningMoveEditor } from "@/components/dating/OpeningMoveEditor";
@@ -1325,6 +1327,8 @@ const Dating = () => {
                     <EmojiPicker onSelect={(e) => setNewMessage(newMessage + e)} />
 
                     <StickerButton onSelect={(st) => handleSendMessage(st.url)} />
+
+                    <ARCameraButton onCapture={async (f) => { try { handleSendMessage(await uploadArCapture(f)); } catch { /* upload failed */ } }} />
                     
                     <AIStarterButton
                       matchId={selectedMatch.id}

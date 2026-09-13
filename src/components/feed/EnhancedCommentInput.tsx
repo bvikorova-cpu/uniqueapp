@@ -25,6 +25,7 @@ import { PostTemplatesDialog } from "@/components/wall/PostTemplatesDialog";
 import { MyCustomEmojis } from "@/components/common/MyCustomEmojis";
 import { TagFriendsDialog } from "@/components/wall/TagFriendsDialog";
 import { StickerButton } from "@/components/common/StickerButton";
+import { ARCameraButton } from "@/components/ar/ARCameraButton";
 
 
 interface EnhancedCommentInputProps {
@@ -334,6 +335,8 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
             </Tooltip>
 
             <StickerButton onSelect={(st) => setStickerUrl(st.url)} className="h-7 w-7 p-0 text-pink-500" />
+
+            <ARCameraButton onCapture={(f) => setFile(f)} className="h-7 w-7 p-0 text-purple-500" />
 
             <Tooltip>
               <Popover>

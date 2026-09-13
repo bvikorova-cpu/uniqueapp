@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { StickerButton } from "@/components/common/StickerButton";
+import { ARCameraButton } from "@/components/ar/ARCameraButton";
+import { uploadArCapture } from "@/lib/arUpload";
 import { stickerUrlFromContent } from "@/lib/stickerContent";
 import { MessageCircle, Send, MoreHorizontal, ExternalLink, BellOff, Bell, User, Trash2, Flag, Phone, Video, Image, Smile, ThumbsUp, X, Loader2 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -311,6 +313,11 @@ export const DirectMessagesDialog = ({ userId,
               <Image className="h-5 w-5" />
             )}
           </Button>
+          <ARCameraButton
+            onCapture={async (f) => { try { sendMessage({ receiverId: userId, content: await uploadArCapture(f) }); } catch { /* upload failed */ } }}
+            className="h-8 w-8 text-purple-500 flex-shrink-0"
+          />
+
           <StickerButton
             onSelect={(st) => sendMessage({ receiverId: userId, content: st.url })}
             className="h-8 w-8 text-pink-500 flex-shrink-0"
