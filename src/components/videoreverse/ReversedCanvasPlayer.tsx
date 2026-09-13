@@ -10,19 +10,28 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SoundLoop, TIKTOK_SOUNDS } from "@/lib/tiktokSounds";
+import { drawWatermark } from "@/lib/exportReversedVideo";
 
 interface ReversedCanvasPlayerProps {
   frames: ImageBitmap[];
   width: number;
   height: number;
   fps: number;
+  /** Preview always shows the watermark; set false only for clean exports. */
+  showWatermark?: boolean;
 }
 
 /**
  * Renders extracted frames in reverse order (last -> first) with a
  * requestAnimationFrame loop and custom playback controls.
  */
-export default function ReversedCanvasPlayer({ frames, width, height, fps }: ReversedCanvasPlayerProps) {
+export default function ReversedCanvasPlayer({
+  frames,
+  width,
+  height,
+  fps,
+  showWatermark = true,
+}: ReversedCanvasPlayerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef = useRef<number | null>(null);
   const lastTsRef = useRef<number>(0);
@@ -45,8 +54,9 @@ export default function ReversedCanvasPlayer({ frames, width, height, fps }: Rev
       const clamped = Math.min(total - 1, Math.max(0, Math.round(pos)));
       const bitmap = frames[total - 1 - clamped];
       if (bitmap) ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      if (showWatermark) drawWatermark(ctx, canvas.width, canvas.height);
     },
-    [frames, total],
+    [frames, total, showWatermark],
   );
 
   useEffect(() => {
