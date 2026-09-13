@@ -11,7 +11,7 @@ import {
   Heart, HeartCrack, Users, MessageCircleHeart, Send, Loader2,
   ShieldCheck, Sparkles, DoorOpen, HandHeart, Sunrise, LifeBuoy, Coins,
 } from "lucide-react";
-import heroVideo from "@/assets/broken-hearts-healing-room-10s-exact.mp4.asset.json";
+import heroVideo from "@/assets/broken-hearts-hero-rozbit-srdce-10s-exact.mp4.asset.json";
 
 const ROOMS = [
   { id: "cheated-on", label: "Cheated On", emoji: "💔", desc: "Betrayal, broken trust, healing after infidelity" },
