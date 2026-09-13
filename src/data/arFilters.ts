@@ -30,6 +30,13 @@ import champagneImg from "@/assets/ar/champagne.png";
 import luxuryShadesImg from "@/assets/ar/luxury-shades.png";
 import bowTieImg from "@/assets/ar/bow-tie.png";
 import redRoseImg from "@/assets/ar/red-rose.png";
+import martiniImg from "@/assets/ar/martini.png";
+import pearlsImg from "@/assets/ar/pearls.png";
+import goldChainImg from "@/assets/ar/gold-chain.png";
+import fedoraImg from "@/assets/ar/fedora.png";
+import monocleImg from "@/assets/ar/monocle.png";
+import eyelashesImg from "@/assets/ar/eyelashes.png";
+import blushImg from "@/assets/ar/blush.png";
 
 /** Where an overlay is anchored on the detected face. */
 export type ArAnchor = "eyes" | "forehead" | "above-head" | "nose" | "mouth";
@@ -290,6 +297,45 @@ export const AR_FILTERS: ArFilter[] = [
     overlays: [
       { src: redRoseImg, anchor: "above-head", widthFactor: 1.8, offsetY: -0.2 },
       { src: redLipsImg, anchor: "mouth", widthFactor: 1.1, offsetY: -0.05 },
+    ],
+  },
+  {
+    id: "martini",
+    label: "Cocktail night",
+    emoji: "🍸",
+    overlays: [{ src: martiniImg, anchor: "above-head", widthFactor: 2.2, offsetY: -0.2 }],
+  },
+  {
+    id: "pearls",
+    label: "Pearls",
+    emoji: "🤍",
+    overlays: [{ src: pearlsImg, anchor: "mouth", widthFactor: 2.4, offsetY: 0.35 }],
+  },
+  {
+    id: "goldchain",
+    label: "Gold chain",
+    emoji: "⛓️",
+    overlays: [{ src: goldChainImg, anchor: "mouth", widthFactor: 2.5, offsetY: 0.4 }],
+  },
+  {
+    id: "fedora",
+    label: "Mystery",
+    emoji: "🕵️",
+    overlays: [{ src: fedoraImg, anchor: "above-head", widthFactor: 3.0, offsetY: -0.45 }],
+  },
+  {
+    id: "monocle",
+    label: "Monocle",
+    emoji: "🧐",
+    overlays: [{ src: monocleImg, anchor: "eyes", widthFactor: 2.0, offsetY: 0 }],
+  },
+  {
+    id: "glam",
+    label: "Glam lashes",
+    emoji: "✨",
+    overlays: [
+      { src: eyelashesImg, anchor: "eyes", widthFactor: 2.3, offsetY: -0.1 },
+      { src: blushImg, anchor: "eyes", widthFactor: 2.8, offsetY: 0.35 },
     ],
   },
 ];
