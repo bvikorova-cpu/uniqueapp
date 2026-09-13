@@ -25,7 +25,13 @@ interface ReversedCanvasPlayerProps {
  * Renders extracted frames in reverse order (last -> first) with a
  * requestAnimationFrame loop and custom playback controls.
  */
-export default function ReversedCanvasPlayer({ frames, width, height, fps }: ReversedCanvasPlayerProps) {
+export default function ReversedCanvasPlayer({
+  frames,
+  width,
+  height,
+  fps,
+  showWatermark = true,
+}: ReversedCanvasPlayerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef = useRef<number | null>(null);
   const lastTsRef = useRef<number>(0);
