@@ -246,6 +246,7 @@ const SUB_FEATURES: SearchResult[] = [
   { id: "sf-savedsearches", title: "Saved Searches", category: "Commerce", path: "/bazaar/saved-searches", keywords: ["saved search", "uložené hľadanie", "alerts"] },
   // Wellness support
   { id: "sf-supportlounge", title: "Broken Hearts — You Are Not Alone", description: "Anonymous support after betrayal, heartbreak or abandonment", category: "Social", path: "/support-lounge", keywords: ["support", "support lounge", "heartbreak", "broken heart", "podpora", "rozchod", "breakup", "cheated", "podvedená", "podvedený", "lonely", "osamelosť", "sklamanie", "opustená", "opustený", "anonymous chat"] },
+  { id: "sf-videoreverse", title: "Reverse Video", description: "Play short clips backwards frame by frame, right in your browser", category: "AI", path: "/video-reverse", keywords: ["reverse video", "backwards", "rewind", "obratene", "spätne", "video pozadu", "rewind video", "play backwards"] },
 ];
 
 export const ALL_SEARCHABLE: SearchResult[] = [...SEARCHABLE_PAGES, ...SUB_FEATURES];

@@ -141,6 +141,7 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
     { name: "AI Clone", path: "/ai-clone", icon: Bot, color: "text-purple-500" },
     { name: "Broken Hearts — You Are Not Alone", path: "/support-lounge", icon: Heart, color: "text-rose-500" },
     { name: "Emotion Economy", path: "/emotion-economy", icon: Heart, color: "text-pink-500" },
+    { name: "Reverse Video", path: "/video-reverse", icon: RotateCcw, color: "text-violet-500" },
   ];
 
   return (

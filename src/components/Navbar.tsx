@@ -150,6 +150,7 @@ const Navbar = () => {
         { path: "/video-ad-generator", label: "Video Ad Generator", icon: Video },
         { path: "/ai-video-creator", label: "AI Video Creator", icon: Video },
         { path: "/photo-styler", label: "Photo Styler - Art Styles", icon: Palette },
+        { path: "/video-reverse", label: "Reverse Video", icon: Film },
         { path: "/ai-tattoo", label: "AI Tattoo Designer", icon: ImageIcon },
         { path: "/ai-clone", label: "AI Personality Clone", icon: Bot },
         { path: "/pet-translator", label: "AI Pet Translator", icon: PawPrint },
