@@ -335,9 +335,12 @@ const AIVideoCreator = () => {
                       }`}
                     >
                       <span className="flex items-center justify-center gap-1 text-base font-black text-foreground">
-                        <Clock className="h-4 w-4 text-primary" /> {d.seconds}s
+                        <Clock className="h-4 w-4 text-primary" />{" "}
+                        <span translate="no" className="notranslate">{d.seconds}s</span>
                       </span>
-                      <span className="mt-0.5 block text-xs font-semibold text-primary">{d.cost} credits</span>
+                      <span className="mt-0.5 block text-xs font-semibold text-primary">
+                        <span translate="no" className="notranslate">{d.cost}</span> credits
+                      </span>
                     </button>
                   ))}
                 </div>
