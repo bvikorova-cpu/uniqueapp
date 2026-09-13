@@ -305,23 +305,27 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
                   </TooltipTrigger>
                 </PopoverTrigger>
                 <TooltipContent>Feeling</TooltipContent>
-                <PopoverContent className="w-64 max-h-48 overflow-y-auto">
+                <PopoverContent
+                  align="start"
+                  className="w-[min(20rem,calc(100vw-2rem))] max-h-60 overflow-y-auto p-2"
+                >
                   <MyCustomEmojis
                     onSelect={(emoji) => setContent((prev) => (prev ? `${prev} ${emoji}` : emoji))}
                   />
                   <div className="grid grid-cols-4 gap-1">
-
                     {feelings.map((f) => (
                       <Button
                         key={f.label}
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="flex-col h-auto py-1"
+                        className="flex h-auto min-w-0 w-full flex-col items-center justify-start gap-0.5 px-1 py-1.5"
                         onClick={() => setFeeling(f.emoji + " " + f.label)}
                       >
-                        <span className="text-lg">{f.emoji}</span>
-                        <span className="text-[10px]">{f.label}</span>
+                        <span className="text-lg leading-none">{f.emoji}</span>
+                        <span className="w-full truncate text-center text-[9px] leading-tight">
+                          {f.label}
+                        </span>
                       </Button>
                     ))}
                   </div>
