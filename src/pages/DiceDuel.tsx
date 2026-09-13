@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Dices, Swords, Trophy, Loader2, Flag, Users, HelpCircle } from "lucide-react";
+import { Dices, Swords, Trophy, Loader2, Flag, Users, HelpCircle, Bot } from "lucide-react";
 import heroVideo from "@/assets/dice-duel-hero.mp4.asset.json";
 import howItWorksImg from "@/assets/dice-duel-howto.jpg";
 
