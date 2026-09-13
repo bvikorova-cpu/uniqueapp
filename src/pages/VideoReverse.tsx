@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Loader2, Rewind, Wand2, Trash2 } from "lucide-react";
+import { Loader2, Rewind, Wand2, Trash2, Upload, Download, MousePointerClick } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import VideoDropzone from "@/components/videoreverse/VideoDropzone";
 import ReversedCanvasPlayer from "@/components/videoreverse/ReversedCanvasPlayer";
 import DownloadActions from "@/components/videoreverse/DownloadActions";
+import heroVideo from "@/assets/video-reverse-hero.mp4.asset.json";
 import {
   MAX_VIDEO_BYTES,
   MAX_VIDEO_SECONDS,
@@ -135,10 +136,23 @@ export default function VideoReverse() {
 
       <main className="mx-auto w-full max-w-2xl px-4 pb-16 pt-6">
         <header className="mb-6 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent">
-            <Rewind className="h-6 w-6 text-primary-foreground" />
+          <div className="relative mx-auto mb-4 overflow-hidden rounded-3xl shadow-2xl">
+            <video
+              src={heroVideo.url}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="block h-[220px] w-full object-cover sm:h-[280px]"
+            />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+            <div className="absolute bottom-3 left-0 right-0 px-4">
+              <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent">
+                <Rewind className="h-5 w-5 text-primary-foreground" />
+              </div>
+              <h1 className="text-3xl font-black tracking-tight text-white drop-shadow-lg">Reverse Video</h1>
+            </div>
           </div>
-          <h1 className="text-3xl font-black tracking-tight">Reverse Video</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Drop a short clip, tap reverse, and watch it play backwards frame by frame.
           </p>
