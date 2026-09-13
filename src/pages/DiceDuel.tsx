@@ -361,6 +361,12 @@ const DiceDuel = () => {
               {searching ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Users className="h-4 w-4 mr-2" />}
               {searching ? "Searching…" : "Find match"}
             </Button>
+            <Button className="w-full" variant="outline" size="lg" onClick={() => startBot()} disabled={searching}>
+              <Bot className="h-4 w-4 mr-2" /> Play vs Bot (practice)
+            </Button>
+            <p className="text-xs text-center text-muted-foreground">
+              No opponent online? The duel starts against the bot after 15 seconds. Bot duels cost the same {STAKE}-coin entry but pay XP only — no coin prize.
+            </p>
             {(coins ?? 0) < STAKE && (
               <p className="text-sm text-center text-muted-foreground">
                 Not enough Battle Coins — exchange AI credits below (1 credit = {COINS_PER_CREDIT} coins).
