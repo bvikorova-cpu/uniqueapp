@@ -344,8 +344,17 @@ function RoomsChat({ nickname, userId }: { nickname: string; userId: string }) {
             const own = m.user_id === userId;
             return (
               <div key={m.id} className={`flex flex-col ${own ? "items-end" : "items-start"}`}>
-                <span className="text-[11px] text-muted-foreground mb-0.5">
+                <span className="text-[11px] text-muted-foreground mb-0.5 flex items-center gap-1.5">
                   {own ? "You" : m.nickname} · {new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                  {!own && (
+                    <button
+                      onClick={() => onPrivateMessage(m)}
+                      className="inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[10px] text-primary hover:bg-muted transition-colors"
+                      title={`Private message · ${DM_CREDITS} credit`}
+                    >
+                      <MailPlus className="h-3 w-3" /> Private · {DM_CREDITS}
+                    </button>
+                  )}
                 </span>
                 <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${
                   own ? "bg-primary text-primary-foreground" : "bg-muted"
