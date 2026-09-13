@@ -260,8 +260,10 @@ const DiceDuel = () => {
       if (data?.error) throw new Error(data.error);
       setMatch(data.match as DiceMatch);
       setAnimRoll(data.roll);
-      if (data.won) toast.success("You reached the bottom — you win the pot!");
+      if (data.won) toast.success(data.bot ? "You beat the bot — +5 XP" : "You reached the bottom — you win the pot!");
+      else if (data.bot_won) toast.info("The bot reached the bottom first — no coins awarded");
       else if (!data.moved) toast.info(`Rolled ${data.roll} — out of bounds, turn skipped`);
+      else if (data.bot && data.bot_roll) toast.message(`Bot rolled ${data.bot_roll}`);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Roll failed");
       syncMatch(match.id);
