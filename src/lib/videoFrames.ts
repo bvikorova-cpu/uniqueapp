@@ -69,9 +69,31 @@ function waitForDecodedFrame(video: HTMLVideoElement): Promise<number> {
   });
 }
 
+function waitForCurrentData(video: HTMLVideoElement): Promise<void> {
+  if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) return Promise.resolve();
+
+  return new Promise((resolve, reject) => {
+    const onReady = () => {
+      cleanup();
+      resolve();
+    };
+    const onError = () => {
+      cleanup();
+      reject(new Error("The first video frame could not be decoded."));
+    };
+    const cleanup = () => {
+      video.removeEventListener("loadeddata", onReady);
+      video.removeEventListener("error", onError);
+    };
+    video.addEventListener("loadeddata", onReady, { once: true });
+    video.addEventListener("error", onError, { once: true });
+  });
+}
+
 async function seekTo(video: HTMLVideoElement, time: number): Promise<number> {
   const target = Math.max(0, time);
-  if (Math.abs(video.currentTime - target) < 0.0005 && video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+  if (Math.abs(video.currentTime - target) < 0.0005) {
+    await waitForCurrentData(video);
     return waitForDecodedFrame(video);
   }
 
