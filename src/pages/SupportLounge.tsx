@@ -212,18 +212,36 @@ const SupportLounge = () => {
         </p>
       </div>
 
-      <Tabs defaultValue="rooms" className="flex flex-col flex-1 min-h-0">
-        <TabsList className="grid grid-cols-2 w-full max-w-md mb-2 shrink-0">
-          <TabsTrigger value="rooms" className="flex items-center gap-1.5 text-xs sm:text-sm">
-            <Users className="h-4 w-4" /> Support Rooms
+      <Tabs value={tab} onValueChange={setTab} className="flex flex-col flex-1 min-h-0">
+        <TabsList className="grid grid-cols-3 w-full max-w-lg mb-2 shrink-0">
+          <TabsTrigger value="rooms" className="flex items-center gap-1.5 text-[11px] sm:text-sm">
+            <Users className="h-4 w-4" /> Rooms
           </TabsTrigger>
-          <TabsTrigger value="ai" className="flex items-center gap-1.5 text-xs sm:text-sm">
-            <Sparkles className="h-4 w-4" /> AI Companion
+          <TabsTrigger value="private" className="flex items-center gap-1.5 text-[11px] sm:text-sm">
+            <Lock className="h-4 w-4" /> Private
+          </TabsTrigger>
+          <TabsTrigger value="ai" className="flex items-center gap-1.5 text-[11px] sm:text-sm">
+            <Sparkles className="h-4 w-4" /> AI
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="rooms" className="flex-1 min-h-0 mt-0 data-[state=inactive]:hidden">
-          <RoomsChat nickname={nickname!} userId={user.id} />
+          <RoomsChat
+            nickname={nickname!}
+            userId={user.id}
+            onPrivateMessage={(m) => {
+              setDmTarget({ userId: m.user_id, nickname: m.nickname });
+              setTab("private");
+            }}
+          />
+        </TabsContent>
+        <TabsContent value="private" className="flex-1 min-h-0 mt-0 data-[state=inactive]:hidden">
+          <PrivateChats
+            userId={user.id}
+            callLounge={callLounge}
+            target={dmTarget}
+            setTarget={setDmTarget}
+          />
         </TabsContent>
         <TabsContent value="ai" className="flex-1 min-h-0 mt-0 data-[state=inactive]:hidden">
           <AiCompanion callLounge={callLounge} />
