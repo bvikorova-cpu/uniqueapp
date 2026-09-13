@@ -59,6 +59,7 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
   const [feeling, setFeeling] = useState<string | null>(null);
   const [location, setLocation] = useState("");
   const [taggedFriends, setTaggedFriends] = useState<string[]>([]);
+  const [stickerUrl, setStickerUrl] = useState<string | null>(null);
   const [showTemplates, setShowTemplates] = useState(false);
   const [showTagFriends, setShowTagFriends] = useState(false);
   const { toast } = useToast();
