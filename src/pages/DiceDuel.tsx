@@ -384,8 +384,15 @@ const DiceDuel = () => {
           <CardContent className="py-10 text-center space-y-4">
             <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
             <p className="font-medium">Waiting for an opponent to join…</p>
-            <p className="text-sm text-muted-foreground">Your {match.stake} Battle Coins are staked and will be refunded if you cancel.</p>
-            <Button variant="outline" onClick={cancelOrForfeit}>Cancel & refund</Button>
+            <p className="text-sm text-muted-foreground">
+              If nobody joins within 15 seconds, the duel starts against the bot (XP only, no coin prize).
+            </p>
+            <div className="flex flex-col gap-2 items-center">
+              <Button onClick={() => startBot(match.id)} disabled={searching}>
+                <Bot className="h-4 w-4 mr-2" /> Play vs Bot now
+              </Button>
+              <Button variant="outline" onClick={cancelOrForfeit}>Cancel &amp; refund</Button>
+            </div>
           </CardContent>
         </Card>
       )}
