@@ -43,7 +43,7 @@ const SECTION_NAME = "Broken Hearts — You Are Not Alone";
 
 function HeartbreakHero() {
   return (
-    <section className="relative min-h-[420px] sm:min-h-[520px] overflow-hidden rounded-b-2xl mb-8 border-b bg-muted">
+    <section className="relative min-h-[180px] sm:min-h-[260px] lg:min-h-[420px] overflow-hidden rounded-b-2xl mb-4 sm:mb-8 border-b bg-muted">
       <video
         autoPlay
         loop
@@ -56,15 +56,15 @@ function HeartbreakHero() {
         <source src={heroVideo.url} type="video/mp4" />
       </video>
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/25 to-background/10" />
-      <div className="relative flex min-h-[420px] sm:min-h-[520px] items-end px-5 pb-10 sm:px-10 sm:pb-12">
+      <div className="relative flex min-h-[180px] sm:min-h-[260px] lg:min-h-[420px] items-end px-4 pb-4 sm:px-8 sm:pb-8 lg:px-10 lg:pb-12">
         <div className="max-w-2xl">
-          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-background/85 px-3 py-1.5 text-xs font-semibold text-foreground backdrop-blur-md shadow-sm">
-            <HeartCrack className="h-4 w-4 text-primary" /> Anonymous support for difficult relationship moments
+          <div className="mb-2 sm:mb-3 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-background/85 px-2.5 py-1 sm:px-3 sm:py-1.5 text-[10px] sm:text-xs font-semibold text-foreground backdrop-blur-md shadow-sm">
+            <HeartCrack className="h-3 w-3 sm:h-4 sm:w-4 text-primary" /> Anonymous support for difficult relationship moments
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black leading-tight text-foreground drop-shadow-[0_2px_12px_rgba(255,255,255,0.55)]">
+          <h1 className="text-xl sm:text-3xl lg:text-5xl font-black leading-tight text-foreground drop-shadow-[0_2px_12px_rgba(255,255,255,0.55)]">
             {SECTION_NAME}
           </h1>
-          <p className="mt-3 max-w-xl text-sm sm:text-base font-semibold text-foreground/95 drop-shadow-[0_1px_10px_rgba(255,255,255,0.55)]">
+          <p className="mt-2 sm:mt-3 max-w-xl text-xs sm:text-sm lg:text-base font-semibold text-foreground/95 drop-shadow-[0_1px_10px_rgba(255,255,255,0.55)]">
             A private place for betrayal, breakups, loneliness and finding your way forward.
           </p>
         </div>
@@ -144,7 +144,7 @@ const SupportLounge = () => {
 
   if (!user) {
     return (
-      <div className="container mx-auto px-4 pt-16 pb-10 max-w-5xl">
+      <div className="container mx-auto px-4 pt-4 sm:pt-8 lg:pt-16 pb-6 max-w-5xl">
         <HeartbreakHero />
         <div className="mx-auto max-w-lg text-center">
           <p className="text-muted-foreground mb-6">Sign in to join the anonymous support chat.</p>
@@ -164,12 +164,12 @@ const SupportLounge = () => {
 
   if (!hasPass) {
     return (
-      <div className="container mx-auto px-4 pt-16 pb-10 max-w-5xl">
+      <div className="container mx-auto px-4 pt-4 sm:pt-8 lg:pt-16 pb-6 max-w-5xl">
         <HeartbreakHero />
 
-        <div className="mx-auto max-w-2xl rounded-2xl border bg-card p-6 mb-6">
-          <h2 className="font-bold mb-3 flex items-center gap-2"><ShieldCheck className="h-5 w-5 text-primary" /> How it works</h2>
-          <ul className="text-sm text-muted-foreground space-y-2 mb-5">
+        <div className="mx-auto max-w-2xl rounded-2xl border bg-card p-4 sm:p-6 mb-4">
+          <h2 className="font-bold mb-2 sm:mb-3 flex items-center gap-2 text-sm sm:text-base"><ShieldCheck className="h-5 w-5 text-primary" /> How it works</h2>
+          <ul className="text-xs sm:text-sm text-muted-foreground space-y-1 sm:space-y-1.5 mb-4">
             <li>• You chat under a <strong>nickname</strong> — your real profile stays hidden.</li>
             <li>• Choose a themed room and talk with people going through the same thing.</li>
             <li>• Or talk privately with the <strong>AI Companion</strong> — nothing is saved.</li>
@@ -177,7 +177,7 @@ const SupportLounge = () => {
             <li>• Each AI Companion reply costs <strong>{AI_MESSAGE_CREDITS} credits</strong>.</li>
             <li>• Be kind. No hate, no harassment, no sharing private data.</li>
           </ul>
-          <div className="rounded-xl bg-amber-500/10 border border-amber-500/30 p-3 text-xs text-amber-700 dark:text-amber-400 mb-5 flex gap-2">
+          <div className="rounded-xl bg-amber-500/10 border border-amber-500/30 p-2.5 text-xs text-amber-700 dark:text-amber-400 mb-4 flex gap-2">
             <LifeBuoy className="h-4 w-4 shrink-0 mt-0.5" />
             <span>This is peer support, not professional help. If you are in crisis or thinking about self-harm, please contact local emergency services or a crisis hotline immediately.</span>
           </div>
@@ -202,36 +202,35 @@ const SupportLounge = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 pt-16 pb-8 max-w-5xl">
-      <HeartbreakHero />
-      <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-black flex items-center gap-2">
-          <MessageCircleHeart className="h-7 w-7 text-primary" /> {SECTION_NAME}
+    <div className="container mx-auto px-4 h-[100dvh] flex flex-col pt-3 pb-3 max-w-5xl">
+      <div className="mb-2 shrink-0">
+        <h1 className="text-lg sm:text-2xl font-black flex items-center gap-2">
+          <MessageCircleHeart className="h-5 w-5 sm:h-7 sm:w-7 text-primary" /> {SECTION_NAME}
         </h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-xs text-muted-foreground">
           You are here as <strong>{nickname}</strong> · entry valid today ✓
         </p>
       </div>
 
-      <Tabs defaultValue="rooms">
-        <TabsList className="grid grid-cols-2 w-full max-w-md mb-4">
-          <TabsTrigger value="rooms" className="flex items-center gap-1.5">
+      <Tabs defaultValue="rooms" className="flex flex-col flex-1 min-h-0">
+        <TabsList className="grid grid-cols-2 w-full max-w-md mb-2 shrink-0">
+          <TabsTrigger value="rooms" className="flex items-center gap-1.5 text-xs sm:text-sm">
             <Users className="h-4 w-4" /> Support Rooms
           </TabsTrigger>
-          <TabsTrigger value="ai" className="flex items-center gap-1.5">
+          <TabsTrigger value="ai" className="flex items-center gap-1.5 text-xs sm:text-sm">
             <Sparkles className="h-4 w-4" /> AI Companion
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="rooms">
+        <TabsContent value="rooms" className="flex-1 min-h-0 mt-0 data-[state=inactive]:hidden">
           <RoomsChat nickname={nickname!} userId={user.id} />
         </TabsContent>
-        <TabsContent value="ai">
+        <TabsContent value="ai" className="flex-1 min-h-0 mt-0 data-[state=inactive]:hidden">
           <AiCompanion callLounge={callLounge} />
         </TabsContent>
       </Tabs>
 
-      <div className="mt-6 rounded-xl bg-muted/60 border p-3 text-xs text-muted-foreground flex gap-2">
+      <div className="mt-2 shrink-0 rounded-xl bg-muted/60 border p-2 text-[11px] sm:text-xs text-muted-foreground flex gap-2">
         <LifeBuoy className="h-4 w-4 shrink-0 mt-0.5" />
         <span>{SECTION_NAME} offers peer support, not professional therapy. If you are in crisis, please contact local emergency services or a crisis hotline.</span>
       </div>
@@ -293,13 +292,13 @@ function RoomsChat({ nickname, userId }: { nickname: string; userId: string }) {
   const active = ROOMS.find((r) => r.id === room)!;
 
   return (
-    <div className="grid sm:grid-cols-[220px_1fr] gap-4">
-      <div className="flex sm:flex-col gap-2 overflow-x-auto pb-1">
+    <div className="grid sm:grid-cols-[220px_1fr] gap-2 h-full min-h-0">
+      <div className="flex sm:flex-col gap-2 overflow-x-auto pb-1 shrink-0">
         {ROOMS.map((r) => (
           <button
             key={r.id}
             onClick={() => setRoom(r.id)}
-            className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 text-left text-sm transition-colors shrink-0 sm:shrink ${
+            className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-left text-sm transition-colors shrink-0 sm:shrink ${
               room === r.id ? "bg-primary text-primary-foreground border-primary" : "bg-card hover:bg-muted"
             }`}
           >
@@ -309,12 +308,12 @@ function RoomsChat({ nickname, userId }: { nickname: string; userId: string }) {
         ))}
       </div>
 
-      <div className="rounded-2xl border bg-card flex flex-col h-[60vh]">
-        <div className="px-4 py-3 border-b">
+      <div className="rounded-2xl border bg-card flex flex-col h-full min-h-0">
+        <div className="px-4 py-2 border-b shrink-0">
           <p className="font-bold text-sm">{active.emoji} {active.label}</p>
           <p className="text-xs text-muted-foreground">{active.desc}</p>
         </div>
-        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 min-h-0">
           {messages.length === 0 && (
             <p className="text-sm text-muted-foreground text-center py-10">
               No messages yet. Be the first to say hi — someone out there needs it. 💛
@@ -337,7 +336,7 @@ function RoomsChat({ nickname, userId }: { nickname: string; userId: string }) {
           })}
           <div ref={bottomRef} />
         </div>
-        <div className="p-3 border-t flex gap-2">
+        <div className="p-3 border-t flex gap-2 shrink-0">
           <Input
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -386,19 +385,19 @@ function AiCompanion({ callLounge }: { callLounge: (p: Record<string, unknown>) 
   };
 
   return (
-    <div className="rounded-2xl border bg-card flex flex-col h-[60vh] max-w-2xl">
-      <div className="px-4 py-3 border-b flex items-center justify-between">
+    <div className="rounded-2xl border bg-card flex flex-col h-full w-full max-w-2xl mx-auto">
+      <div className="px-4 py-2 border-b flex items-center justify-between shrink-0">
         <div>
           <p className="font-bold text-sm flex items-center gap-1.5"><HandHeart className="h-4 w-4 text-primary" /> AI Companion</p>
           <p className="text-xs text-muted-foreground">Private · nothing is saved · {AI_MESSAGE_CREDITS} credits per reply</p>
         </div>
         {messages.length > 0 && (
           <Button variant="ghost" size="sm" onClick={() => setMessages([])}>
-            <Sunrise className="h-4 w-4 mr-1" /> New conversation
+            <Sunrise className="h-4 w-4 mr-1" /> New
           </Button>
         )}
       </div>
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 min-h-0">
         {messages.length === 0 && (
           <div className="text-center py-8">
             <Heart className="h-8 w-8 mx-auto mb-3 text-primary" />
@@ -432,7 +431,7 @@ function AiCompanion({ callLounge }: { callLounge: (p: Record<string, unknown>) 
         )}
         <div ref={bottomRef} />
       </div>
-      <div className="p-3 border-t flex gap-2 items-end">
+      <div className="p-3 border-t flex gap-2 items-end shrink-0">
         <Textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
