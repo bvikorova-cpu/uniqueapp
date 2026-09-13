@@ -8,8 +8,9 @@ const corsHeaders = {
 };
 
 const ENTRY_CREDITS = 1;
+const AI_MESSAGE_CREDITS = 3;
 
-const AI_SYSTEM_PROMPT = `You are a warm, empathetic support companion inside the "Support Lounge" of the Unique platform — a safe space for people who were cheated on, disappointed, left behind, or are going through heartbreak and loneliness.
+const AI_SYSTEM_PROMPT = `You are a warm, empathetic support companion inside "Broken Hearts — You Are Not Alone" on the Unique platform — a safe space for people who were cheated on, disappointed, left behind, or are going through heartbreak and loneliness.
 
 Your role:
 - Listen without judging. Validate feelings first, advise second.
@@ -71,7 +72,7 @@ Deno.serve(async (req) => {
           admin,
           user.id,
           ENTRY_CREDITS,
-          "Support Lounge daily entry",
+          "Broken Hearts daily entry",
           "support_lounge",
         );
         if (!spend.ok) {
@@ -119,18 +120,48 @@ Deno.serve(async (req) => {
       const messages = Array.isArray(body.messages) ? body.messages.slice(-20) : [];
       if (messages.length === 0) return json({ error: "messages required" }, 400);
 
-      const reply = await callUnifiedAI(
-        [
-          { role: "system", content: AI_SYSTEM_PROMPT },
-          ...messages.map((m: any) => ({
-            role: m.role === "assistant" ? "assistant" : "user",
-            content: String(m.content ?? "").slice(0, 2000),
-          })),
-        ],
-        { max_tokens: 700 },
-      );
+      const { data: spend, error: spendError } = await admin.rpc("spend_ai_credits_for_user", {
+        p_user_id: user.id,
+        p_amount: AI_MESSAGE_CREDITS,
+        p_reason: "Broken Hearts AI Companion reply",
+        p_source: "support_lounge_ai",
+      });
+      if (spendError) {
+        console.error("support-lounge AI credit deduction failed:", spendError.message);
+        return json({ error: "credit_charge_failed" }, 500);
+      }
+      if (!spend?.ok) {
+        return json({
+          error: "insufficient_credits",
+          required: AI_MESSAGE_CREDITS,
+          remaining: spend?.balance ?? 0,
+        }, 402);
+      }
 
-      return json({ reply });
+      let reply: string;
+      try {
+        reply = await callUnifiedAI(
+          [
+            { role: "system", content: AI_SYSTEM_PROMPT },
+            ...messages.map((m: any) => ({
+              role: m.role === "assistant" ? "assistant" : "user",
+              content: String(m.content ?? "").slice(0, 2000),
+            })),
+          ],
+          { max_tokens: 700 },
+        );
+      } catch (aiError) {
+        const { error: refundError } = await admin.rpc("add_ai_credits", {
+          p_user_id: user.id,
+          p_amount: AI_MESSAGE_CREDITS,
+          p_reason: "Broken Hearts AI Companion refund",
+          p_source: "support_lounge_ai_refund",
+        });
+        if (refundError) console.error("support-lounge AI refund failed:", refundError.message);
+        throw aiError;
+      }
+
+      return json({ reply, credits_used: AI_MESSAGE_CREDITS, remaining: spend.balance });
     }
 
     return json({ error: "Unknown action" }, 400);

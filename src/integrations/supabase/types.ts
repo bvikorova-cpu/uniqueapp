@@ -72688,6 +72688,15 @@ export type Database = {
         Args: { _amount: number; _reason: string; _source?: string }
         Returns: Json
       }
+      spend_ai_credits_for_user: {
+        Args: {
+          p_amount: number
+          p_reason: string
+          p_source?: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
       spend_brain_duel_credits: {
         Args: { p_amount: number; p_user_id: string }
         Returns: undefined
