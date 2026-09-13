@@ -16,6 +16,13 @@ import angelHaloImg from "@/assets/ar/angel-halo.png";
 import piratePatchImg from "@/assets/ar/pirate-patch.png";
 import catKitImg from "@/assets/ar/cat-kit.png";
 import robotVisorImg from "@/assets/ar/robot-visor.png";
+import unicornKitImg from "@/assets/ar/unicorn-kit.png";
+import clownKitImg from "@/assets/ar/clown-kit.png";
+import ninjaMaskImg from "@/assets/ar/ninja-mask.png";
+import wizardKitImg from "@/assets/ar/wizard-kit.png";
+import alienKitImg from "@/assets/ar/alien-kit.png";
+import glasses3dImg from "@/assets/ar/3d-glasses.png";
+import snowmanKitImg from "@/assets/ar/snowman-kit.png";
 
 /** Where an overlay is anchored on the detected face. */
 export type ArAnchor = "eyes" | "forehead" | "above-head" | "nose" | "mouth";
