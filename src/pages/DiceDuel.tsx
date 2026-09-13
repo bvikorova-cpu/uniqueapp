@@ -66,7 +66,8 @@ const DiceDuel = () => {
   const oppTrail = match ? (isP1 ? match.p2_trail : match.p1_trail) : [];
   const myTurn = match?.status === "active" && match.current_turn === user?.id;
   const iWon = match?.status === "finished" && match.winner_id === user?.id;
-  const iLost = match?.status === "finished" && match.winner_id && match.winner_id !== user?.id;
+  const iLost = match?.status === "finished" && (match.winner_is_bot || (!!match.winner_id && match.winner_id !== user?.id));
+  const isBot = !!match?.is_bot;
 
   const loadLeaderboard = useCallback(async () => {
     setLbLoading(true);
