@@ -179,6 +179,7 @@ const SupportLounge = () => {
             <li>• Or talk privately with the <strong>AI Companion</strong> — nothing is saved.</li>
             <li>• Entry costs <strong>{ENTRY_CREDITS} credit per day</strong> and unlimited peer chat is included.</li>
             <li>• Each AI Companion reply costs <strong>{AI_MESSAGE_CREDITS} credits</strong>.</li>
+            <li>• You can write someone a <strong>private message</strong> for <strong>{DM_CREDITS} credit</strong> per message.</li>
             <li>• Be kind. No hate, no harassment, no sharing private data.</li>
           </ul>
           <div className="rounded-xl bg-amber-500/10 border border-amber-500/30 p-2.5 text-xs text-amber-700 dark:text-amber-400 mb-4 flex gap-2">
