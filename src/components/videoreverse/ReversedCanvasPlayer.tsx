@@ -45,8 +45,9 @@ export default function ReversedCanvasPlayer({ frames, width, height, fps }: Rev
       const clamped = Math.min(total - 1, Math.max(0, Math.round(pos)));
       const bitmap = frames[total - 1 - clamped];
       if (bitmap) ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      if (showWatermark) drawWatermark(ctx, canvas.width, canvas.height);
     },
-    [frames, total],
+    [frames, total, showWatermark],
   );
 
   useEffect(() => {
