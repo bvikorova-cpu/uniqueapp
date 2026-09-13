@@ -43,6 +43,17 @@ serve(async (req) => {
 
     if (m.status !== "active") return fail("Match already finished");
 
+    // Bot match: just close it, no Battle Coins are paid out.
+    if (m.is_bot) {
+      const { data: botClosed } = await supabase
+        .from("dice_duel_matches")
+        .update({ status: "finished", winner_id: null, winner_is_bot: true, finished_at: new Date().toISOString(), current_turn: null })
+        .eq("id", matchId).eq("status", "active")
+        .select().maybeSingle();
+      return new Response(JSON.stringify({ ok: true, match: botClosed, bot: true, winner_id: null }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     const winner = user.id === m.player1_id ? m.player2_id : m.player1_id;
     const { data: updated, error: upErr } = await supabase
       .from("dice_duel_matches")
