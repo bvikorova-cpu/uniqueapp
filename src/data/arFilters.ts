@@ -23,6 +23,13 @@ import wizardKitImg from "@/assets/ar/wizard-kit.png";
 import alienKitImg from "@/assets/ar/alien-kit.png";
 import glasses3dImg from "@/assets/ar/3d-glasses.png";
 import snowmanKitImg from "@/assets/ar/snowman-kit.png";
+import laceMaskImg from "@/assets/ar/lace-mask.png";
+import redLipsImg from "@/assets/ar/red-lips.png";
+import diamondEarringsImg from "@/assets/ar/diamond-earrings.png";
+import champagneImg from "@/assets/ar/champagne.png";
+import luxuryShadesImg from "@/assets/ar/luxury-shades.png";
+import bowTieImg from "@/assets/ar/bow-tie.png";
+import redRoseImg from "@/assets/ar/red-rose.png";
 
 /** Where an overlay is anchored on the detected face. */
 export type ArAnchor = "eyes" | "forehead" | "above-head" | "nose" | "mouth";
