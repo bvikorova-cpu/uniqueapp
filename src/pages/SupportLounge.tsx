@@ -11,7 +11,7 @@ import {
   Heart, HeartCrack, Users, MessageCircleHeart, Send, Loader2,
   ShieldCheck, Sparkles, DoorOpen, HandHeart, Sunrise, LifeBuoy, Coins,
 } from "lucide-react";
-import heroVideo from "@/assets/broken-hearts-healing-room-10s-exact.mp4.asset.json";
+import heroVideo from "@/assets/broken-hearts-hero-rozbit-srdce-10s-exact.mp4.asset.json";
 
 const ROOMS = [
   { id: "cheated-on", label: "Cheated On", emoji: "💔", desc: "Betrayal, broken trust, healing after infidelity" },
@@ -51,7 +51,7 @@ function HeartbreakHero() {
         muted
         playsInline
         preload="metadata"
-        aria-label="A quiet moment of healing after heartbreak"
+        aria-label="A symbolic broken heart releasing light and turning into flowers"
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/30 to-background" />
