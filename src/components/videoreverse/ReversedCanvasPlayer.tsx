@@ -33,10 +33,14 @@ export default function ReversedCanvasPlayer({
   showWatermark = true,
 }: ReversedCanvasPlayerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   const rafRef = useRef<number | null>(null);
   const lastTsRef = useRef<number>(0);
   /** Position in reversed order: 0 = last original frame. */
   const posRef = useRef(0);
+  /** Last position pushed to React state (throttled — a setState every
+   *  frame re-renders the whole component and makes playback stutter). */
+  const lastSyncedPosRef = useRef(-1);
   const [position, setPosition] = useState(0);
   const [playing, setPlaying] = useState(true);
   const [soundId, setSoundId] = useState("none");
@@ -45,18 +49,36 @@ export default function ReversedCanvasPlayer({
   const total = frames.length;
   const frameDuration = 1000 / fps;
 
+  const getCtx = useCallback(() => {
+    if (ctxRef.current) return ctxRef.current;
+    const canvas = canvasRef.current;
+    if (!canvas) return null;
+    ctxRef.current = canvas.getContext("2d", { alpha: false });
+    return ctxRef.current;
+  }, []);
+
   const drawAt = useCallback(
     (pos: number) => {
       const canvas = canvasRef.current;
-      if (!canvas) return;
-      const ctx = canvas.getContext("2d", { alpha: false });
-      if (!ctx) return;
+      const ctx = getCtx();
+      if (!canvas || !ctx) return;
       const clamped = Math.min(total - 1, Math.max(0, Math.round(pos)));
       const bitmap = frames[total - 1 - clamped];
       if (bitmap) ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
       if (showWatermark) drawWatermark(ctx, canvas.width, canvas.height);
     },
-    [frames, total, showWatermark],
+    [frames, total, showWatermark, getCtx],
+  );
+
+  /** Update React state at most ~5x per second (slider + time label only). */
+  const syncPosition = useCallback(
+    (pos: number, force = false) => {
+      if (force || Math.abs(pos - lastSyncedPosRef.current) >= Math.max(1, Math.round(fps / 5))) {
+        lastSyncedPosRef.current = pos;
+        setPosition(pos);
+      }
+    },
+    [fps],
   );
 
   useEffect(() => {
