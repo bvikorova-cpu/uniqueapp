@@ -16,6 +16,13 @@ import angelHaloImg from "@/assets/ar/angel-halo.png";
 import piratePatchImg from "@/assets/ar/pirate-patch.png";
 import catKitImg from "@/assets/ar/cat-kit.png";
 import robotVisorImg from "@/assets/ar/robot-visor.png";
+import unicornKitImg from "@/assets/ar/unicorn-kit.png";
+import clownKitImg from "@/assets/ar/clown-kit.png";
+import ninjaMaskImg from "@/assets/ar/ninja-mask.png";
+import wizardKitImg from "@/assets/ar/wizard-kit.png";
+import alienKitImg from "@/assets/ar/alien-kit.png";
+import glasses3dImg from "@/assets/ar/3d-glasses.png";
+import snowmanKitImg from "@/assets/ar/snowman-kit.png";
 
 /** Where an overlay is anchored on the detected face. */
 export type ArAnchor = "eyes" | "forehead" | "above-head" | "nose" | "mouth";
@@ -190,5 +197,47 @@ export const AR_FILTERS: ArFilter[] = [
     label: "Cyborg",
     emoji: "🤖",
     overlays: [{ src: robotVisorImg, anchor: "eyes", widthFactor: 2.0, offsetY: 0 }],
+  },
+  {
+    id: "unicorn",
+    label: "Unicorn",
+    emoji: "🦄",
+    overlays: [{ src: unicornKitImg, anchor: "above-head", widthFactor: 2.5, offsetY: -0.3 }],
+  },
+  {
+    id: "clown",
+    label: "Rainbow clown",
+    emoji: "🤡",
+    overlays: [{ src: clownKitImg, anchor: "above-head", widthFactor: 2.8, offsetY: -0.2 }],
+  },
+  {
+    id: "ninja",
+    label: "Ninja",
+    emoji: "🥷",
+    overlays: [{ src: ninjaMaskImg, anchor: "eyes", widthFactor: 2.1, offsetY: 0 }],
+  },
+  {
+    id: "wizard",
+    label: "Wizard",
+    emoji: "🧙",
+    overlays: [{ src: wizardKitImg, anchor: "above-head", widthFactor: 2.7, offsetY: -0.4 }],
+  },
+  {
+    id: "alien",
+    label: "Alien",
+    emoji: "👽",
+    overlays: [{ src: alienKitImg, anchor: "above-head", widthFactor: 2.4, offsetY: -0.35 }],
+  },
+  {
+    id: "retro3d",
+    label: "Retro 3D",
+    emoji: "🕶️",
+    overlays: [{ src: glasses3dImg, anchor: "eyes", widthFactor: 2.2, offsetY: 0 }],
+  },
+  {
+    id: "snowman",
+    label: "Snowman",
+    emoji: "⛄",
+    overlays: [{ src: snowmanKitImg, anchor: "nose", widthFactor: 1.1, offsetY: 0 }],
   },
 ];
