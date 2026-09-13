@@ -97,9 +97,12 @@ export default function VideoReverse() {
     setProgress(0);
     try {
       const video = await loadVideoElement(objectUrl);
+      const profile = frameProfileForDuration(
+        Number.isFinite(video.duration) ? video.duration : MAX_VIDEO_SECONDS,
+      );
       const result = await extractFrames(video, {
-        fps: FPS,
-        maxSize: 720,
+        fps: profile.fps,
+        maxSize: profile.maxSize,
         onProgress: (r) => setProgress(Math.round(r * 100)),
         shouldAbort: () => abortRef.current,
       });
