@@ -36,7 +36,49 @@ serve(async (req) => {
     if (authError || !user) return fail("Not authenticated", 401);
 
     const body = await req.json().catch(() => ({}));
-    const action = body?.action === "cancel" ? "cancel" : "find";
+    const action = body?.action === "cancel" ? "cancel" : body?.action === "bot" ? "bot" : "find";
+
+    // ---- Play against the practice bot (stake applies, prize is XP only) ----
+    if (action === "bot") {
+      const matchId = typeof body?.match_id === "string" ? body.match_id : null;
+
+      // Convert an already-paid waiting match into a bot match (no extra stake).
+      if (matchId) {
+        const { data: m } = await supabase.from("dice_duel_matches").select("*").eq("id", matchId).maybeSingle();
+        if (!m || m.player1_id !== user.id) return fail("Match not found");
+        if (m.status !== "waiting") return fail("Match already started");
+        const { data: converted } = await supabase
+          .from("dice_duel_matches")
+          .update({ status: "active", is_bot: true, current_turn: user.id, started_at: new Date().toISOString() })
+          .eq("id", matchId).eq("status", "waiting")
+          .select().maybeSingle();
+        if (!converted) return fail("Match is no longer available");
+        return new Response(JSON.stringify({ ok: true, match: converted, bot: true }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+      const paidBot = await coins(user.id, -STAKE, "duel_entry_bot");
+      if (!paidBot) return fail(`You need ${STAKE} Battle Coins to play`, 402);
+      const { data: botMatch, error: botErr } = await supabase
+        .from("dice_duel_matches")
+        .insert({
+          player1_id: user.id,
+          status: "active",
+          is_bot: true,
+          stake: STAKE,
+          current_turn: user.id,
+          started_at: new Date().toISOString(),
+          p1_trail: [START_P1],
+          p2_trail: [START_P2],
+        })
+        .select().single();
+      if (botErr || !botMatch) {
+        await coins(user.id, STAKE, "duel_entry_refund");
+        return fail("Could not start bot match", 500);
+      }
+      return new Response(JSON.stringify({ ok: true, match: botMatch, bot: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
 
     // ---- Cancel a waiting match (refund entry coins) ----
     if (action === "cancel") {
