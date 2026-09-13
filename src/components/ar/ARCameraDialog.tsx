@@ -85,7 +85,21 @@ export const ARCameraDialog = ({ open, onOpenChange, onCapture, allowVideo = tru
         if (!video) return;
         video.srcObject = stream;
         video.muted = true;
-        await video.play();
+        video.setAttribute("playsinline", "true");
+        video.setAttribute("webkit-playsinline", "true");
+        try {
+          await video.play();
+        } catch {
+          /* some mobile browsers resolve play only after metadata */
+        }
+        if (!video.videoWidth) {
+          await new Promise<void>((resolve) => {
+            const done = () => resolve();
+            video.addEventListener("loadedmetadata", done, { once: true });
+            window.setTimeout(done, 3000);
+          });
+          await video.play().catch(() => undefined);
+        }
 
         let landmarker: Awaited<ReturnType<typeof getFaceLandmarker>> | null = null;
         try {
