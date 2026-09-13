@@ -10,12 +10,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SoundLoop, TIKTOK_SOUNDS } from "@/lib/tiktokSounds";
+import { drawWatermark } from "@/lib/exportReversedVideo";
 
 interface ReversedCanvasPlayerProps {
   frames: ImageBitmap[];
   width: number;
   height: number;
   fps: number;
+  /** Preview always shows the watermark; set false only for clean exports. */
+  showWatermark?: boolean;
 }
 
 /**
