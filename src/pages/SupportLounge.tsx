@@ -43,7 +43,7 @@ const SECTION_NAME = "Broken Hearts — You Are Not Alone";
 
 function HeartbreakHero() {
   return (
-    <section className="relative min-h-[340px] sm:min-h-[420px] overflow-hidden rounded-b-2xl mb-8">
+    <section className="relative min-h-[360px] sm:min-h-[460px] overflow-hidden rounded-b-2xl mb-8">
       <video
         src={heroVideo.url}
         autoPlay
@@ -52,19 +52,18 @@ function HeartbreakHero() {
         playsInline
         preload="metadata"
         aria-label="A symbolic broken heart releasing light and turning into flowers"
-        className="absolute inset-0 h-full w-full object-cover brightness-110 contrast-105"
+        className="absolute inset-0 h-full w-full object-cover brightness-125 contrast-110 saturate-110"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-background/10 via-background/15 to-background/85" />
-      <div className="absolute inset-0 bg-gradient-to-r from-background/50 via-background/15 to-transparent" />
-      <div className="relative flex min-h-[340px] sm:min-h-[420px] items-end px-5 pb-8 sm:px-10 sm:pb-10">
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+      <div className="relative flex min-h-[360px] sm:min-h-[460px] items-end px-5 pb-8 sm:px-10 sm:pb-10">
         <div className="max-w-2xl">
-          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-background/70 px-3 py-1.5 text-xs font-semibold text-foreground backdrop-blur-md shadow-sm">
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-background/80 px-3 py-1.5 text-xs font-semibold text-foreground backdrop-blur-md shadow-sm">
             <HeartCrack className="h-4 w-4 text-primary" /> Anonymous support for difficult relationship moments
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black leading-tight text-foreground drop-shadow-[0_2px_8px_rgba(255,255,255,0.35)]">
+          <h1 className="text-3xl sm:text-5xl font-black leading-tight text-foreground drop-shadow-[0_2px_10px_rgba(255,255,255,0.45)]">
             {SECTION_NAME}
           </h1>
-          <p className="mt-3 max-w-xl text-sm sm:text-base font-semibold text-foreground/95 drop-shadow-[0_1px_6px_rgba(255,255,255,0.35)]">
+          <p className="mt-3 max-w-xl text-sm sm:text-base font-semibold text-foreground/95 drop-shadow-[0_1px_8px_rgba(255,255,255,0.45)]">
             A private place for betrayal, breakups, loneliness and finding your way forward.
           </p>
         </div>
