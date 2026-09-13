@@ -9,8 +9,9 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import {
   Heart, HeartCrack, Users, MessageCircleHeart, Send, Loader2,
-  ShieldCheck, Sparkles, DoorOpen, HandHeart, Sunrise, LifeBuoy,
+  ShieldCheck, Sparkles, DoorOpen, HandHeart, Sunrise, LifeBuoy, Coins,
 } from "lucide-react";
+import heroVideo from "@/assets/broken-hearts-hero-10s-exact.mp4.asset.json";
 
 const ROOMS = [
   { id: "cheated-on", label: "Cheated On", emoji: "💔", desc: "Betrayal, broken trust, healing after infidelity" },
@@ -37,6 +38,40 @@ interface AiMessage {
 }
 
 const ENTRY_CREDITS = 1;
+const AI_MESSAGE_CREDITS = 3;
+const SECTION_NAME = "Broken Hearts — You Are Not Alone";
+
+function HeartbreakHero() {
+  return (
+    <section className="relative min-h-[300px] sm:min-h-[380px] overflow-hidden rounded-b-2xl mb-8">
+      <video
+        src={heroVideo.url}
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="metadata"
+        aria-label="A quiet moment of healing after heartbreak"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/30 to-background" />
+      <div className="absolute inset-0 bg-gradient-to-r from-background/75 via-background/25 to-transparent" />
+      <div className="relative flex min-h-[300px] sm:min-h-[380px] items-end px-5 pb-8 sm:px-10 sm:pb-10">
+        <div className="max-w-2xl">
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-background/55 px-3 py-1.5 text-xs font-semibold text-foreground backdrop-blur-md">
+            <HeartCrack className="h-4 w-4 text-primary" /> Anonymous support for difficult relationship moments
+          </div>
+          <h1 className="text-3xl sm:text-5xl font-black leading-tight text-foreground drop-shadow-lg">
+            {SECTION_NAME}
+          </h1>
+          <p className="mt-3 max-w-xl text-sm sm:text-base font-medium text-foreground/90 drop-shadow-md">
+            A private place for betrayal, breakups, loneliness and finding your way forward.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 const SupportLounge = () => {
   const { user } = useAuth();
@@ -109,11 +144,12 @@ const SupportLounge = () => {
 
   if (!user) {
     return (
-      <div className="container mx-auto px-4 py-16 max-w-lg text-center">
-        <HeartCrack className="h-12 w-12 mx-auto mb-4 text-primary" />
-        <h1 className="text-2xl font-bold mb-2">Support Lounge</h1>
-        <p className="text-muted-foreground mb-6">Sign in to join the anonymous support chat.</p>
-        <Button onClick={() => navigate("/auth")}>Sign in</Button>
+      <div className="container mx-auto px-4 pt-16 pb-10 max-w-5xl">
+        <HeartbreakHero />
+        <div className="mx-auto max-w-lg text-center">
+          <p className="text-muted-foreground mb-6">Sign in to join the anonymous support chat.</p>
+          <Button onClick={() => navigate("/auth")}>Sign in</Button>
+        </div>
       </div>
     );
   }
@@ -128,24 +164,17 @@ const SupportLounge = () => {
 
   if (!hasPass) {
     return (
-      <div className="container mx-auto px-4 py-10 max-w-2xl">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 mb-4">
-            <MessageCircleHeart className="h-8 w-8 text-primary" />
-          </div>
-          <h1 className="text-3xl font-black mb-2">Support Lounge 💛</h1>
-          <p className="text-muted-foreground">
-            A safe, anonymous place for anyone who was cheated on, disappointed, left behind — or just needs to talk.
-          </p>
-        </div>
+      <div className="container mx-auto px-4 pt-16 pb-10 max-w-5xl">
+        <HeartbreakHero />
 
-        <div className="rounded-2xl border bg-card p-6 mb-6">
+        <div className="mx-auto max-w-2xl rounded-2xl border bg-card p-6 mb-6">
           <h2 className="font-bold mb-3 flex items-center gap-2"><ShieldCheck className="h-5 w-5 text-primary" /> How it works</h2>
           <ul className="text-sm text-muted-foreground space-y-2 mb-5">
             <li>• You chat under a <strong>nickname</strong> — your real profile stays hidden.</li>
             <li>• Choose a themed room and talk with people going through the same thing.</li>
-            <li>• Or talk privately with the <strong>AI companion</strong> — nothing is saved.</li>
-            <li>• Entry costs <strong>{ENTRY_CREDITS} credit per day</strong> — then chat as much as you want.</li>
+            <li>• Or talk privately with the <strong>AI Companion</strong> — nothing is saved.</li>
+            <li>• Entry costs <strong>{ENTRY_CREDITS} credit per day</strong> and unlimited peer chat is included.</li>
+            <li>• Each AI Companion reply costs <strong>{AI_MESSAGE_CREDITS} credits</strong>.</li>
             <li>• Be kind. No hate, no harassment, no sharing private data.</li>
           </ul>
           <div className="rounded-xl bg-amber-500/10 border border-amber-500/30 p-3 text-xs text-amber-700 dark:text-amber-400 mb-5 flex gap-2">
@@ -172,10 +201,11 @@ const SupportLounge = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="container mx-auto px-4 pt-16 pb-8 max-w-5xl">
+      <HeartbreakHero />
       <div className="mb-6">
         <h1 className="text-2xl sm:text-3xl font-black flex items-center gap-2">
-          <MessageCircleHeart className="h-7 w-7 text-primary" /> Support Lounge
+          <MessageCircleHeart className="h-7 w-7 text-primary" /> {SECTION_NAME}
         </h1>
         <p className="text-sm text-muted-foreground">
           You are here as <strong>{nickname}</strong> · entry valid today ✓
@@ -202,7 +232,7 @@ const SupportLounge = () => {
 
       <div className="mt-6 rounded-xl bg-muted/60 border p-3 text-xs text-muted-foreground flex gap-2">
         <LifeBuoy className="h-4 w-4 shrink-0 mt-0.5" />
-        <span>Support Lounge is peer support, not professional therapy. If you are in crisis, please contact local emergency services or a crisis hotline.</span>
+        <span>{SECTION_NAME} offers peer support, not professional therapy. If you are in crisis, please contact local emergency services or a crisis hotline.</span>
       </div>
     </div>
   );
@@ -345,6 +375,9 @@ function AiCompanion({ callLounge }: { callLounge: (p: Record<string, unknown>) 
       setMessages([...next, { role: "assistant", content: res.reply }]);
     } catch (e: any) {
       if (e?.body?.error === "no_pass") toast.error("Your daily pass expired. Please re-enter tomorrow.");
+      else if (e?.status === 402 || e?.body?.error === "insufficient_credits") {
+        toast.error(`You need ${AI_MESSAGE_CREDITS} credits for an AI reply. Top up to continue.`);
+      }
       else toast.error("The companion could not respond. Please try again.");
     } finally {
       setThinking(false);
@@ -356,7 +389,7 @@ function AiCompanion({ callLounge }: { callLounge: (p: Record<string, unknown>) 
       <div className="px-4 py-3 border-b flex items-center justify-between">
         <div>
           <p className="font-bold text-sm flex items-center gap-1.5"><HandHeart className="h-4 w-4 text-primary" /> AI Companion</p>
-          <p className="text-xs text-muted-foreground">Private · nothing is saved · clears when you leave</p>
+          <p className="text-xs text-muted-foreground">Private · nothing is saved · {AI_MESSAGE_CREDITS} credits per reply</p>
         </div>
         {messages.length > 0 && (
           <Button variant="ghost" size="sm" onClick={() => setMessages([])}>
@@ -409,8 +442,8 @@ function AiCompanion({ callLounge }: { callLounge: (p: Record<string, unknown>) 
             if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
           }}
         />
-        <Button size="icon" onClick={send} disabled={thinking || !text.trim()} aria-label="Send">
-          <Send className="h-4 w-4" />
+        <Button size="icon" onClick={send} disabled={thinking || !text.trim()} aria-label={`Send for ${AI_MESSAGE_CREDITS} credits`} title={`${AI_MESSAGE_CREDITS} credits per AI reply`}>
+          {thinking ? <Loader2 className="h-4 w-4 animate-spin" /> : <Coins className="h-4 w-4" />}
         </Button>
       </div>
     </div>
