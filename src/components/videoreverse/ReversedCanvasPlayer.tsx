@@ -136,7 +136,7 @@ export default function ReversedCanvasPlayer({
 
   const restart = () => {
     posRef.current = 0;
-    setPosition(0);
+    syncPosition(0, true);
     drawAt(0);
     setPlaying(true);
   };
