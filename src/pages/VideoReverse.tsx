@@ -26,7 +26,7 @@ interface ReversedClip {
   fps: number;
 }
 
-const FPS = 30;
+
 
 export default function VideoReverse() {
   const [stage, setStage] = useState<Stage>("idle");
