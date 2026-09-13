@@ -476,6 +476,7 @@ export const GiftChat = ({ initialUser = null }: GiftChatProps) => {
               {/* Message input */}
               <div className="p-4 border-t border-amber-100 bg-white/50">
                 <div className="flex gap-2">
+                  <StickerButton onSelect={(st) => sendMessageMutation.mutate(st.url)} />
                   <Input
                     placeholder="Type a message..."
                     value={newMessage}
