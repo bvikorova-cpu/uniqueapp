@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Dices, Swords, Trophy, Loader2, Flag, Users, HelpCircle } from "lucide-react";
+import { Dices, Swords, Trophy, Loader2, Flag, Users, HelpCircle, Bot } from "lucide-react";
 import heroVideo from "@/assets/dice-duel-hero.mp4.asset.json";
 import howItWorksImg from "@/assets/dice-duel-howto.jpg";
 
@@ -29,6 +29,8 @@ interface DiceMatch {
   last_roll: number | null;
   stake: number;
   winner_id: string | null;
+  is_bot?: boolean;
+  winner_is_bot?: boolean;
   created_at: string;
   finished_at: string | null;
 }
@@ -64,7 +66,8 @@ const DiceDuel = () => {
   const oppTrail = match ? (isP1 ? match.p2_trail : match.p1_trail) : [];
   const myTurn = match?.status === "active" && match.current_turn === user?.id;
   const iWon = match?.status === "finished" && match.winner_id === user?.id;
-  const iLost = match?.status === "finished" && match.winner_id && match.winner_id !== user?.id;
+  const iLost = match?.status === "finished" && (match.winner_is_bot || (!!match.winner_id && match.winner_id !== user?.id));
+  const isBot = !!match?.is_bot;
 
   const loadLeaderboard = useCallback(async () => {
     setLbLoading(true);
@@ -199,6 +202,37 @@ const DiceDuel = () => {
     }
   };
 
+  const startBot = useCallback(async (matchId?: string) => {
+    if (!user) return;
+    if (!matchId && (coins ?? 0) < STAKE) {
+      toast.error(`You need ${STAKE} Battle Coins to play`);
+      return;
+    }
+    setSearching(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("dice-duel-matchmaking", {
+        body: matchId ? { action: "bot", match_id: matchId } : { action: "bot" },
+      });
+      if (error) throw new Error(data?.error || error.message);
+      if (data?.error) throw new Error(data.error);
+      setMatch(data.match as DiceMatch);
+      refresh();
+      toast.success("Practice duel vs Bot started — prize is XP only");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not start bot match");
+    } finally {
+      setSearching(false);
+    }
+  }, [user, coins, refresh]);
+
+  // Nobody online? After 15 s of waiting, the duel is finished against the bot.
+  useEffect(() => {
+    if (match?.status !== "waiting") return;
+    const matchId = match.id;
+    const t = setTimeout(() => startBot(matchId), 15000);
+    return () => clearTimeout(t);
+  }, [match?.status, match?.id, startBot]);
+
   const cancelOrForfeit = async () => {
     if (!match) return;
     try {
@@ -226,8 +260,10 @@ const DiceDuel = () => {
       if (data?.error) throw new Error(data.error);
       setMatch(data.match as DiceMatch);
       setAnimRoll(data.roll);
-      if (data.won) toast.success("You reached the bottom — you win the pot!");
+      if (data.won) toast.success(data.bot ? "You beat the bot — +5 XP" : "You reached the bottom — you win the pot!");
+      else if (data.bot_won) toast.info("The bot reached the bottom first — no coins awarded");
       else if (!data.moved) toast.info(`Rolled ${data.roll} — out of bounds, turn skipped`);
+      else if (data.bot && data.bot_roll) toast.message(`Bot rolled ${data.bot_roll}`);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Roll failed");
       syncMatch(match.id);
@@ -264,7 +300,7 @@ const DiceDuel = () => {
         {m.p1_trail.length > 1 && (
           <polyline points={line(m.p1_trail)} fill="none" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="stroke-red-500" />
         )}
-        {m.p2_trail.length > 0 && m.player2_id && (
+        {m.p2_trail.length > 0 && (m.player2_id || m.is_bot) && (
           <circle cx={20 + last(m.p2_trail)[0] * cell} cy={20 + last(m.p2_trail)[1] * cell} r="8" className="fill-blue-500 stroke-background" strokeWidth="3" />
         )}
         {m.p1_trail.length > 0 && (
@@ -325,6 +361,12 @@ const DiceDuel = () => {
               {searching ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Users className="h-4 w-4 mr-2" />}
               {searching ? "Searching…" : "Find match"}
             </Button>
+            <Button className="w-full" variant="outline" size="lg" onClick={() => startBot()} disabled={searching}>
+              <Bot className="h-4 w-4 mr-2" /> Play vs Bot (practice)
+            </Button>
+            <p className="text-xs text-center text-muted-foreground">
+              No opponent online? The duel starts against the bot after 15 seconds. Bot duels cost the same {STAKE}-coin entry but pay XP only — no coin prize.
+            </p>
             {(coins ?? 0) < STAKE && (
               <p className="text-sm text-center text-muted-foreground">
                 Not enough Battle Coins — exchange AI credits below (1 credit = {COINS_PER_CREDIT} coins).
@@ -342,8 +384,15 @@ const DiceDuel = () => {
           <CardContent className="py-10 text-center space-y-4">
             <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
             <p className="font-medium">Waiting for an opponent to join…</p>
-            <p className="text-sm text-muted-foreground">Your {match.stake} Battle Coins are staked and will be refunded if you cancel.</p>
-            <Button variant="outline" onClick={cancelOrForfeit}>Cancel & refund</Button>
+            <p className="text-sm text-muted-foreground">
+              If nobody joins within 15 seconds, the duel starts against the bot (XP only, no coin prize).
+            </p>
+            <div className="flex flex-col gap-2 items-center">
+              <Button onClick={() => startBot(match.id)} disabled={searching}>
+                <Bot className="h-4 w-4 mr-2" /> Play vs Bot now
+              </Button>
+              <Button variant="outline" onClick={cancelOrForfeit}>Cancel &amp; refund</Button>
+            </div>
           </CardContent>
         </Card>
       )}
@@ -355,11 +404,13 @@ const DiceDuel = () => {
               <div className="flex items-center gap-2 text-sm font-medium">
                 <span className={`inline-block h-3 w-3 rounded-full ${isP1 ? "bg-red-500" : "bg-blue-500"}`} /> You
                 <span className="text-muted-foreground">vs</span>
-                <span className={`inline-block h-3 w-3 rounded-full ${isP1 ? "bg-blue-500" : "bg-red-500"}`} /> Opponent
+                <span className={`inline-block h-3 w-3 rounded-full ${isP1 ? "bg-blue-500" : "bg-red-500"}`} /> {isBot ? "Bot" : "Opponent"}
               </div>
               {match.status === "finished" && (
                 <Badge variant={iWon ? "default" : "secondary"}>
-                  {iWon ? <><Trophy className="h-3 w-3 mr-1" /> You won +{PRIZE} coins</> : iLost ? "You lost" : "Finished"}
+                  {iWon
+                    ? <><Trophy className="h-3 w-3 mr-1" /> {isBot ? "You beat the bot +5 XP" : `You won +${PRIZE} coins`}</>
+                    : iLost ? "You lost" : "Finished"}
                 </Badge>
               )}
             </div>

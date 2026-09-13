@@ -42,6 +42,70 @@ serve(async (req) => {
     if (user.id !== m.player1_id && user.id !== m.player2_id) return fail("Not your match", 403);
     if (m.current_turn !== user.id) return fail("Not your turn");
 
+    const step = (t: [number, number][], fallback: [number, number], face: number) => {
+      const [cx, cy] = t[t.length - 1] ?? fallback;
+      const [dx, dy] = DIRS[face];
+      const nx = cx + dx;
+      const ny = cy + dy;
+      const ok = nx >= 0 && nx < COLS && ny >= 0 && ny < ROWS;
+      return { trail: ok ? [...t, [nx, ny]] as [number, number][] : t, moved: ok, won: ok && ny === ROWS - 1 };
+    };
+
+    // ---- Practice bot match: player rolls, then the bot immediately rolls ----
+    if (m.is_bot) {
+      const myRoll = 1 + Math.floor(Math.random() * 6);
+      const mine = step(Array.isArray(m.p1_trail) ? m.p1_trail : [], [3, 0], myRoll);
+
+      let botRoll: number | null = null;
+      let bot = { trail: Array.isArray(m.p2_trail) ? m.p2_trail as [number, number][] : [], moved: false, won: false };
+      if (!mine.won) {
+        botRoll = 1 + Math.floor(Math.random() * 6);
+        bot = step(bot.trail, [5, 0], botRoll);
+      }
+
+      const finished = mine.won || bot.won;
+      const botUpdate: Record<string, unknown> = {
+        last_roll: myRoll,
+        p1_trail: mine.trail,
+        p2_trail: bot.trail,
+        current_turn: finished ? null : user.id,
+      };
+      if (finished) {
+        botUpdate.status = "finished";
+        botUpdate.finished_at = new Date().toISOString();
+        botUpdate.winner_id = mine.won ? user.id : null;
+        botUpdate.winner_is_bot = !mine.won;
+      }
+
+      const { data: botUpdated, error: botErr } = await supabase
+        .from("dice_duel_matches")
+        .update(botUpdate)
+        .eq("id", matchId)
+        .eq("current_turn", user.id)
+        .select()
+        .maybeSingle();
+      if (botErr || !botUpdated) return fail("Turn already played", 409);
+
+      // Bot duels never pay Battle Coins (anti-farming) — XP only.
+      if (mine.won) {
+        await supabase.rpc("award_xp", {
+          _user_id: user.id, _amount: 5, _source: "dice_duel_bot", _ref_id: matchId,
+        });
+      }
+
+      return new Response(JSON.stringify({
+        ok: true,
+        roll: myRoll,
+        moved: mine.moved,
+        won: mine.won,
+        bot: true,
+        bot_roll: botRoll,
+        bot_moved: bot.moved,
+        bot_won: bot.won,
+        match: botUpdated,
+      }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     // Fair server-side roll
     const roll = 1 + Math.floor(Math.random() * 6);
     const isP1 = user.id === m.player1_id;

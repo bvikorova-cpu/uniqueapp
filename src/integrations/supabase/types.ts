@@ -20321,6 +20321,7 @@ export type Database = {
           current_turn: string | null
           finished_at: string | null
           id: string
+          is_bot: boolean
           last_roll: number | null
           p1_trail: Json
           p2_trail: Json
@@ -20330,12 +20331,14 @@ export type Database = {
           started_at: string | null
           status: string
           winner_id: string | null
+          winner_is_bot: boolean
         }
         Insert: {
           created_at?: string
           current_turn?: string | null
           finished_at?: string | null
           id?: string
+          is_bot?: boolean
           last_roll?: number | null
           p1_trail?: Json
           p2_trail?: Json
@@ -20345,12 +20348,14 @@ export type Database = {
           started_at?: string | null
           status?: string
           winner_id?: string | null
+          winner_is_bot?: boolean
         }
         Update: {
           created_at?: string
           current_turn?: string | null
           finished_at?: string | null
           id?: string
+          is_bot?: boolean
           last_roll?: number | null
           p1_trail?: Json
           p2_trail?: Json
@@ -20360,6 +20365,7 @@ export type Database = {
           started_at?: string | null
           status?: string
           winner_id?: string | null
+          winner_is_bot?: boolean
         }
         Relationships: []
       }
