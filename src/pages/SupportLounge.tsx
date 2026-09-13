@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Heart, HeartCrack, Users, MessageCircleHeart, Send, Loader2,
   ShieldCheck, Sparkles, DoorOpen, HandHeart, Sunrise, LifeBuoy, Coins,
@@ -84,7 +84,11 @@ const SupportLounge = () => {
   const [nickname, setNickname] = useState<string | null>(null);
   const [nickInput, setNickInput] = useState("");
   const [entering, setEntering] = useState(false);
-  const [tab, setTab] = useState("rooms");
+  const [searchParams] = useSearchParams();
+  const initialTab = ["rooms", "private", "ai"].includes(searchParams.get("tab") || "")
+    ? (searchParams.get("tab") as string)
+    : "rooms";
+  const [tab, setTab] = useState(initialTab);
   const [dmTarget, setDmTarget] = useState<{ userId: string; nickname: string } | null>(null);
 
   const callLounge = useCallback(async (payload: Record<string, unknown>) => {
@@ -526,6 +530,11 @@ function PrivateChats({ userId, callLounge, target, setTarget }: {
         const m = payload.new as DmMessage;
         if (m.from_user_id !== userId && m.to_user_id !== userId) return;
         setDms((prev) => (prev.some((p) => p.id === m.id) ? prev : [...prev, m]));
+        if (m.to_user_id === userId && m.from_user_id !== userId) {
+          toast(`💌 ${m.from_nickname} sent you a private message`, {
+            description: "Open the Private tab to reply.",
+          });
+        }
       })
       .subscribe();
 

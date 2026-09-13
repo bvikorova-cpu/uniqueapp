@@ -168,6 +168,20 @@ Deno.serve(async (req) => {
         return json({ error: "send_failed" }, 500);
       }
 
+      // Notify the recipient so no private message is missed (best-effort).
+      try {
+        await admin.from("notifications").insert({
+          user_id: toUserId,
+          actor_id: user.id,
+          type: "support_lounge_dm",
+          title: "New private message",
+          message: `${nick.nickname} sent you a private message in Broken Hearts`,
+          action_url: "/support-lounge?tab=private",
+        });
+      } catch (notifyErr) {
+        console.error("support-lounge DM notification failed:", notifyErr);
+      }
+
       return json({ ok: true, message: inserted, credits_used: DM_CREDITS, remaining: spend.balance });
     }
 
