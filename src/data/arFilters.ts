@@ -155,4 +155,40 @@ export const AR_FILTERS: ArFilter[] = [
       { src: heartGlassesImg, anchor: "eyes", widthFactor: 2.1, offsetY: 0 },
     ],
   },
+  {
+    id: "masquerade",
+    label: "Midnight mask",
+    emoji: "🎭",
+    overlays: [{ src: masqueradeMaskImg, anchor: "eyes", widthFactor: 2.25, offsetY: 0 }],
+  },
+  {
+    id: "devil",
+    label: "Little devil",
+    emoji: "😈",
+    overlays: [{ src: devilHornsImg, anchor: "above-head", widthFactor: 2.2, offsetY: -0.35 }],
+  },
+  {
+    id: "angel",
+    label: "Pure angel",
+    emoji: "😇",
+    overlays: [{ src: angelHaloImg, anchor: "above-head", widthFactor: 2.0, offsetY: -0.55 }],
+  },
+  {
+    id: "pirate",
+    label: "Pirate",
+    emoji: "🏴‍☠️",
+    overlays: [{ src: piratePatchImg, anchor: "eyes", widthFactor: 1.6, offsetY: 0 }],
+  },
+  {
+    id: "cat",
+    label: "Cute cat",
+    emoji: "🐱",
+    overlays: [{ src: catKitImg, anchor: "above-head", widthFactor: 2.5, offsetY: -0.25 }],
+  },
+  {
+    id: "robot",
+    label: "Cyborg",
+    emoji: "🤖",
+    overlays: [{ src: robotVisorImg, anchor: "eyes", widthFactor: 2.0, offsetY: 0 }],
+  },
 ];
