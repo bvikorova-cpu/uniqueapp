@@ -23,13 +23,15 @@ export const MAX_VIDEO_BYTES = 60 * 1024 * 1024;
 export const MAX_VIDEO_SECONDS = 30;
 
 /**
- * Longer clips need smaller frames and a lower sampling rate, otherwise the
- * decoded bitmaps exhaust browser memory and playback starts stuttering.
+ * Full quality is the goal: keep the source resolution (up to 1080p) and a
+ * high sampling rate for every clip length. For very long clips we trim the
+ * sampling rate a little so browser memory stays safe, but never the
+ * resolution below 1080p.
  */
 export function frameProfileForDuration(duration: number): { fps: number; maxSize: number } {
-  if (duration <= 10) return { fps: 30, maxSize: 720 };
-  if (duration <= 20) return { fps: 20, maxSize: 480 };
-  return { fps: 12, maxSize: 360 };
+  if (duration <= 10) return { fps: 30, maxSize: 1920 };
+  if (duration <= 20) return { fps: 24, maxSize: 1920 };
+  return { fps: 18, maxSize: 1920 };
 }
 
 /** Load a video element and wait for its metadata. */
