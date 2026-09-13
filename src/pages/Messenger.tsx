@@ -1706,6 +1706,24 @@ const Messenger = () => {
                       </PopoverContent>
                     </Popover>
 
+                    <Popover open={showStickerPicker} onOpenChange={setShowStickerPicker}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-10 w-10 min-h-10 min-w-10 shrink-0 touch-manipulation rounded-full"
+                          aria-label="Stickers"
+                        >
+                          <Sticker className="h-4 w-4" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-72 p-2">
+                        <StickerPicker onSelect={sendSticker} />
+                      </PopoverContent>
+                    </Popover>
+
+
                     <div className="shrink-0">
                       <GiftShopSheet
                         conversationId={selectedConversation}
