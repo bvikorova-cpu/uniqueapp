@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import {
   Heart, HeartCrack, Users, MessageCircleHeart, Send, Loader2,
   ShieldCheck, Sparkles, DoorOpen, HandHeart, Sunrise, LifeBuoy, Coins,
+  Lock, ArrowLeft, MailPlus,
 } from "lucide-react";
 import heroVideo from "@/assets/broken-hearts-hero-rozbit-srdce-10s-exact.mp4.asset.json";
 
