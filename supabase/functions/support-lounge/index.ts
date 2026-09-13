@@ -9,6 +9,7 @@ const corsHeaders = {
 
 const ENTRY_CREDITS = 1;
 const AI_MESSAGE_CREDITS = 3;
+const DM_CREDITS = 1;
 
 const AI_SYSTEM_PROMPT = `You are a warm, empathetic support companion inside "Broken Hearts — You Are Not Alone" on the Unique platform — a safe space for people who were cheated on, disappointed, left behind, or are going through heartbreak and loneliness.
 
