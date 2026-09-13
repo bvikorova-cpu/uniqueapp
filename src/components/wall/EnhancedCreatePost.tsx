@@ -58,6 +58,7 @@ import { AIContentAssistant } from "./AIContentAssistant";
 import { useHashtags } from "@/hooks/useHashtags";
 import { usePolls } from "@/hooks/usePolls";
 import { MyCustomEmojis } from "@/components/common/MyCustomEmojis";
+import { StickerButton } from "@/components/common/StickerButton";
 
 interface EnhancedCreatePostProps {
   onPostCreated: () => void;
@@ -90,6 +91,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const myFrame = avatarRingClass(myCosmetics);
   const [content, setContent] = useState("");
   const [files, setFiles] = useState<File[]>([]);
+  const [stickers, setStickers] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const [feeling, setFeeling] = useState<string | null>(null);
   const [location, setLocation] = useState("");
@@ -135,7 +137,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
 
   const handleSubmit = async (e: React.FormEvent) => { e.preventDefault();
 
-    if (!content.trim() && files.length === 0 && !eventDraft) {
+    if (!content.trim() && files.length === 0 && stickers.length === 0 && !eventDraft) {
       toast({
         title: "Empty post",
         description: "Add text or media",
@@ -215,6 +217,13 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
         }
       }
 
+      for (const stickerUrl of stickers) {
+        await supabase.from("media").insert({ post_id: post.id,
+          file_url: stickerUrl,
+          file_type: "image",
+          file_name: "sticker.png" });
+      }
+
       if (files.length > 0) {
         // Platform rule: no erotic/nude/sexual media (images and videos alike).
         const { screenMediaFile, NSFW_BLOCK_MESSAGE } = await import("@/lib/mediaModeration");
@@ -257,6 +266,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
       toast({ title: "Success!", description: "Post created successfully" });
       setContent("");
       setFiles([]);
+      setStickers([]);
       setFeeling(null);
       setLocation("");
       setPrivacy("public");
@@ -328,6 +338,25 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                 </button>
               </div>
             )}
+          </div>
+        )}
+
+        {stickers.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {stickers.map((url, index) => (
+              <div key={`${url}-${index}`} className="relative">
+                <img src={url} alt="Sticker" className="w-20 h-20 object-contain" />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  className="absolute -top-1 -right-1 h-5 w-5"
+                  onClick={() => setStickers((prev) => prev.filter((_, i) => i !== index))}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </div>
+            ))}
           </div>
         )}
 
@@ -418,6 +447,11 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                 </TooltipTrigger>
                 <TooltipContent>Video</TooltipContent>
               </Tooltip>
+
+              <StickerButton
+                onSelect={(st) => setStickers((prev) => [...prev, st.url])}
+                className="flex-shrink-0 h-8 w-8 text-pink-500 hover:bg-pink-500/10 rounded-lg"
+              />
 
               <Tooltip>
                 <Sheet open={showEmoji} onOpenChange={setShowEmoji}>

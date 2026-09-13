@@ -29,6 +29,8 @@ import { DemoProfilesWall } from "@/components/dating/DemoProfilesWall";
 import { SafetyTipsBanner } from "@/components/dating/SafetyTipsBanner";
 import { MessageActions } from "@/components/dating/MessageActions";
 import { EmojiPicker } from "@/components/dating/EmojiPicker";
+import { StickerButton } from "@/components/common/StickerButton";
+import { stickerUrlFromContent } from "@/lib/stickerContent";
 import { CompatibilityQuiz, computeCompatibility } from "@/components/dating/CompatibilityQuiz";
 import { OpeningMoveEditor } from "@/components/dating/OpeningMoveEditor";
 import { MatchExpiryBadge } from "@/components/dating/MatchExpiryBadge";
@@ -618,10 +620,11 @@ const Dating = () => {
     setTimeout(() => { setCurrentIndex(currentIndex + 1); setSwipeDirection(null); setActivePhotoIndex(0); }, 300);
   };
 
-  const handleSendMessage = async () => {
-    if (!selectedMatch || !newMessage.trim()) return;
+  const handleSendMessage = async (overrideContent?: string) => {
+    const raw = overrideContent ?? newMessage;
+    if (!selectedMatch || !raw.trim()) return;
     const otherId = selectedMatch.user1_id === user.id ? selectedMatch.user2_id : selectedMatch.user1_id;
-    const content = newMessage.trim().slice(0, 2000);
+    const content = raw.trim().slice(0, 2000);
 
     // AI moderation pre-check
     try {
@@ -649,7 +652,7 @@ const Dating = () => {
           body: { action: "mark_experiment", experiment_id: pendingStarterExperiment, used: true, led_to_message: true } }).catch(() => {});
         setPendingStarterExperiment(null);
       }
-      setNewMessage(""); await loadMessages(selectedMatch.id);
+      if (!overrideContent) setNewMessage(""); await loadMessages(selectedMatch.id);
     }
   };
 
@@ -1294,7 +1297,13 @@ const Dating = () => {
                           <MessageActions messageId={msg.id} currentContent={msg.content} createdAt={msg.created_at} onChanged={() => selectedMatch && loadMessages(selectedMatch.id)} />
                         )}
                         <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${mine ? "bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-br-md" : "bg-muted rounded-bl-md"} ${deleted ? "opacity-60 italic" : ""}`}>
-                          <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{deleted ? "🚫 Message unsent" : msg.content}</p>
+                          {(() => {
+                            const stickerSrc = deleted ? null : stickerUrlFromContent(msg.content);
+                            if (stickerSrc) {
+                              return <img src={stickerSrc} alt="Sticker" className="w-28 h-28 object-contain" />;
+                            }
+                            return <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{deleted ? "🚫 Message unsent" : msg.content}</p>;
+                          })()}
 
                           <div className="flex items-center gap-1 mt-1 justify-end">
                             {msg.edited_at && !deleted && <span className={`text-[10px] ${mine ? "text-primary-foreground/50" : "text-muted-foreground/70"}`}>edited</span>}
@@ -1314,6 +1323,8 @@ const Dating = () => {
                   <div className="flex gap-2">
 
                     <EmojiPicker onSelect={(e) => setNewMessage(newMessage + e)} />
+
+                    <StickerButton onSelect={(st) => handleSendMessage(st.url)} />
                     
                     <AIStarterButton
                       matchId={selectedMatch.id}
@@ -1322,7 +1333,7 @@ const Dating = () => {
                       onPick={(text, expId) => { setNewMessage(text); setPendingStarterExperiment(expId); }}
                     />
                     <Input value={newMessage} onChange={(e) => setNewMessage(e.target.value)} maxLength={2000} placeholder="Type a message..." onKeyPress={(e) => e.key === "Enter" && handleSendMessage()} className="flex-1 border-0 bg-muted/50 focus-visible:ring-1 focus-visible:ring-primary" />
-                    <Button onClick={handleSendMessage} size="icon" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 h-10 w-10"><Send className="h-4 w-4" /></Button>
+                    <Button onClick={() => handleSendMessage()} size="icon" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 h-10 w-10"><Send className="h-4 w-4" /></Button>
                   </div>
                 </div>
               </Card>

@@ -24,6 +24,7 @@ import { Popover,
 import { PostTemplatesDialog } from "@/components/wall/PostTemplatesDialog";
 import { MyCustomEmojis } from "@/components/common/MyCustomEmojis";
 import { TagFriendsDialog } from "@/components/wall/TagFriendsDialog";
+import { StickerButton } from "@/components/common/StickerButton";
 
 
 interface EnhancedCommentInputProps {
@@ -59,6 +60,7 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
   const [feeling, setFeeling] = useState<string | null>(null);
   const [location, setLocation] = useState("");
   const [taggedFriends, setTaggedFriends] = useState<string[]>([]);
+  const [stickerUrl, setStickerUrl] = useState<string | null>(null);
   const [showTemplates, setShowTemplates] = useState(false);
   const [showTagFriends, setShowTagFriends] = useState(false);
   const { toast } = useToast();
@@ -78,7 +80,7 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
     }
   };
 
-  const handleSubmit = async () => { if (!content.trim() && !file) {
+  const handleSubmit = async () => { if (!content.trim() && !file && !stickerUrl) {
       toast({
         title: "Empty comment",
         description: "Add text or media",
@@ -92,8 +94,8 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      let imageUrl = null;
-      let videoUrl = null;
+      let imageUrl: string | null = stickerUrl;
+      let videoUrl: string | null = null;
 
       // Upload file if present
       if (file) {
@@ -147,6 +149,7 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
       setFeeling(null);
       setLocation("");
       setTaggedFriends([]);
+      setStickerUrl(null);
       onCommentAdded();
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -217,6 +220,22 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
               </button>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Sticker preview */}
+      {stickerUrl && (
+        <div className="relative w-24 h-24">
+          <img src={stickerUrl} alt="Sticker" className="w-full h-full object-contain" />
+          <Button
+            type="button"
+            variant="destructive"
+            size="icon"
+            className="absolute -top-1 -right-1 h-5 w-5"
+            onClick={() => setStickerUrl(null)}
+          >
+            <X className="h-3 w-3" />
+          </Button>
         </div>
       )}
 
@@ -309,6 +328,8 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
                 </PopoverContent>
               </Popover>
             </Tooltip>
+
+            <StickerButton onSelect={(st) => setStickerUrl(st.url)} className="h-7 w-7 p-0 text-pink-500" />
 
             <Tooltip>
               <Popover>

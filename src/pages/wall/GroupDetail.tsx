@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
+import { StickerButton } from "@/components/common/StickerButton";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -686,6 +687,8 @@ export default function GroupDetail() {
                         >
                           <Smile className="h-4 w-4" />
                         </Button>
+
+                        <StickerButton onSelect={(s) => setPostImage(s.url)} />
 
                         <Button
                           variant="ghost"
