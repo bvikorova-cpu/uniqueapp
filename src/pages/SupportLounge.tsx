@@ -10,7 +10,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Heart, HeartCrack, Users, MessageCircleHeart, Send, Loader2,
   ShieldCheck, Sparkles, DoorOpen, HandHeart, Sunrise, LifeBuoy, Coins,
-  Lock, ArrowLeft, MailPlus,
+  Lock, ArrowLeft, MailPlus, UserPlus, Check, X,
 } from "lucide-react";
 import heroVideo from "@/assets/broken-hearts-hero-rozbit-srdce-10s-exact.mp4.asset.json";
 
@@ -27,10 +27,11 @@ type RoomId = (typeof ROOMS)[number]["id"];
 interface LoungeMessage {
   id: string;
   room: string;
-  user_id: string;
+  memberId: string;
   nickname: string;
   content: string;
   created_at: string;
+  mine: boolean;
 }
 
 interface AiMessage {
@@ -85,11 +86,11 @@ const SupportLounge = () => {
   const [nickInput, setNickInput] = useState("");
   const [entering, setEntering] = useState(false);
   const [searchParams] = useSearchParams();
-  const initialTab = ["rooms", "private", "ai"].includes(searchParams.get("tab") || "")
+  const initialTab = ["rooms", "private", "known", "ai"].includes(searchParams.get("tab") || "")
     ? (searchParams.get("tab") as string)
     : "rooms";
   const [tab, setTab] = useState(initialTab);
-  const [dmTarget, setDmTarget] = useState<{ userId: string; nickname: string } | null>(null);
+  const [dmTarget, setDmTarget] = useState<{ memberId: string; nickname: string } | null>(null);
 
   const callLounge = useCallback(async (payload: Record<string, unknown>) => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -111,16 +112,17 @@ const SupportLounge = () => {
   useEffect(() => {
     (async () => {
       if (!user) { setChecking(false); return; }
-      const today = new Date().toISOString().slice(0, 10);
-      const [{ data: pass }, { data: nick }] = await Promise.all([
-        (supabase as any).from("support_lounge_passes").select("id").eq("user_id", user.id).eq("pass_date", today).maybeSingle(),
-        (supabase as any).from("support_lounge_nicknames").select("nickname").eq("user_id", user.id).maybeSingle(),
-      ]);
-      setHasPass(!!pass);
-      setNickname(nick?.nickname ?? null);
-      setChecking(false);
+      try {
+        const status = await callLounge({ action: "status" });
+        setHasPass(Boolean(status.hasPass));
+        setNickname(status.nickname ?? null);
+      } catch {
+        setHasPass(false);
+      } finally {
+        setChecking(false);
+      }
     })();
-  }, [user]);
+  }, [user, callLounge]);
 
   const handleEnter = async () => {
     const nick = nickInput.trim();
@@ -222,12 +224,15 @@ const SupportLounge = () => {
       </div>
 
       <Tabs value={tab} onValueChange={setTab} className="flex flex-col flex-1 min-h-0">
-        <TabsList className="grid grid-cols-3 w-full max-w-lg mb-2 shrink-0">
+        <TabsList className="grid grid-cols-4 w-full max-w-2xl mb-2 shrink-0">
           <TabsTrigger value="rooms" className="flex items-center gap-1.5 text-[11px] sm:text-sm">
             <Users className="h-4 w-4" /> Rooms
           </TabsTrigger>
           <TabsTrigger value="private" className="flex items-center gap-1.5 text-[11px] sm:text-sm">
             <Lock className="h-4 w-4" /> Private
+          </TabsTrigger>
+          <TabsTrigger value="known" className="flex items-center gap-1.5 text-[11px] sm:text-sm">
+            <UserPlus className="h-4 w-4" /> <span className="hidden min-[390px]:inline">Known</span>
           </TabsTrigger>
           <TabsTrigger value="ai" className="flex items-center gap-1.5 text-[11px] sm:text-sm">
             <Sparkles className="h-4 w-4" /> AI
@@ -236,21 +241,23 @@ const SupportLounge = () => {
 
         <TabsContent value="rooms" className="flex-1 min-h-0 mt-0 data-[state=inactive]:hidden">
           <RoomsChat
-            nickname={nickname!}
-            userId={user.id}
+            nickname={nickname ?? "Anonymous"}
+            callLounge={callLounge}
             onPrivateMessage={(m) => {
-              setDmTarget({ userId: m.user_id, nickname: m.nickname });
+              setDmTarget({ memberId: m.memberId, nickname: m.nickname });
               setTab("private");
             }}
           />
         </TabsContent>
         <TabsContent value="private" className="flex-1 min-h-0 mt-0 data-[state=inactive]:hidden">
           <PrivateChats
-            userId={user.id}
             callLounge={callLounge}
             target={dmTarget}
             setTarget={setDmTarget}
           />
+        </TabsContent>
+        <TabsContent value="known" className="flex-1 min-h-0 mt-0 data-[state=inactive]:hidden">
+          <KnownPeople callLounge={callLounge} onMessage={(person) => { setDmTarget(person); setTab("private"); }} />
         </TabsContent>
         <TabsContent value="ai" className="flex-1 min-h-0 mt-0 data-[state=inactive]:hidden">
           <AiCompanion callLounge={callLounge} />
@@ -265,9 +272,9 @@ const SupportLounge = () => {
   );
 };
 
-function RoomsChat({ nickname, userId, onPrivateMessage }: {
+function RoomsChat({ nickname, callLounge, onPrivateMessage }: {
   nickname: string;
-  userId: string;
+  callLounge: (p: Record<string, unknown>) => Promise<any>;
   onPrivateMessage: (m: LoungeMessage) => void;
 }) {
   const [room, setRoom] = useState<RoomId>("broken-heart");
@@ -279,30 +286,22 @@ function RoomsChat({ nickname, userId, onPrivateMessage }: {
   useEffect(() => {
     setMessages([]);
     let cancelled = false;
-    (supabase as any)
-      .from("support_lounge_messages")
-      .select("*")
-      .eq("room", room)
-      .order("created_at", { ascending: false })
-      .limit(50)
-      .then(({ data }) => {
-        if (!cancelled && data) setMessages([...data].reverse() as LoungeMessage[]);
-      });
-
-    const channel = supabase
-      .channel(`lounge-${room}`)
-      .on("postgres_changes",
-        { event: "INSERT", schema: "public", table: "support_lounge_messages", filter: `room=eq.${room}` },
-        (payload) => {
-          setMessages((prev) => [...prev, payload.new as LoungeMessage]);
-        })
-      .subscribe();
+    const load = async () => {
+      try {
+        const data = await callLounge({ action: "room_history", room });
+        if (!cancelled) setMessages(data.messages ?? []);
+      } catch {
+        if (!cancelled) toast.error("Messages could not be loaded.");
+      }
+    };
+    load();
+    const timer = window.setInterval(load, 4000);
 
     return () => {
       cancelled = true;
-      supabase.removeChannel(channel);
+      window.clearInterval(timer);
     };
-  }, [room]);
+  }, [room, callLounge]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -312,30 +311,41 @@ function RoomsChat({ nickname, userId, onPrivateMessage }: {
     const content = text.trim();
     if (!content || sending) return;
     setSending(true);
-    const { error } = await (supabase as any).from("support_lounge_messages").insert({
-      room, user_id: userId, nickname, content: content.slice(0, 500),
-    });
-    if (error) toast.error("Message could not be sent.");
-    setText("");
-    setSending(false);
+    try {
+      const result = await callLounge({ action: "send_room", room, content: content.slice(0, 500) });
+      if (result.message) setMessages((prev) => [...prev.filter((m) => m.id !== result.message.id), result.message]);
+      setText("");
+    } catch {
+      toast.error("Message could not be sent.");
+    } finally {
+      setSending(false);
+    }
   };
 
-  const active = ROOMS.find((r) => r.id === room)!;
+  const active = ROOMS.find((r) => r.id === room) ?? ROOMS[0];
+
+  const addKnown = async (message: LoungeMessage) => {
+    try {
+      await callLounge({ action: "contact_request", memberId: message.memberId });
+      toast.success(`Request sent to ${message.nickname}`);
+    } catch (error: any) {
+      toast.error(error?.body?.error === "request_exists" ? "A request or connection already exists." : "Request could not be sent.");
+    }
+  };
 
   return (
     <div className="grid sm:grid-cols-[220px_1fr] gap-2 h-full min-h-0">
-      <div className="flex sm:flex-col gap-2 overflow-x-auto pb-1 shrink-0">
+      <div className="grid grid-cols-2 sm:flex sm:flex-col gap-1.5 sm:gap-2 pb-1 shrink-0">
         {ROOMS.map((r) => (
-          <button
+          <Button
             key={r.id}
+            variant={room === r.id ? "default" : "outline"}
             onClick={() => setRoom(r.id)}
-            className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-left text-sm transition-colors shrink-0 sm:shrink ${
-              room === r.id ? "bg-primary text-primary-foreground border-primary" : "bg-card hover:bg-muted"
-            }`}
+            className={`h-8 sm:h-auto min-w-0 justify-start gap-1.5 px-2 sm:px-3 sm:py-2 text-left text-[11px] sm:text-sm ${r.id === "new-beginnings" ? "col-span-2" : ""}`}
           >
-            <span className="text-lg">{r.emoji}</span>
-            <span className="font-medium">{r.label}</span>
-          </button>
+            <span className="text-sm sm:text-lg">{r.emoji}</span>
+            <span className="font-medium truncate">{r.label}</span>
+          </Button>
         ))}
       </div>
 
@@ -351,19 +361,20 @@ function RoomsChat({ nickname, userId, onPrivateMessage }: {
             </p>
           )}
           {messages.map((m) => {
-            const own = m.user_id === userId;
+            const own = m.mine;
             return (
               <div key={m.id} className={`flex flex-col ${own ? "items-end" : "items-start"}`}>
                 <span className="text-[11px] text-muted-foreground mb-0.5 flex items-center gap-1.5">
                   {own ? "You" : m.nickname} · {new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                   {!own && (
-                    <button
-                      onClick={() => onPrivateMessage(m)}
-                      className="inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[10px] text-primary hover:bg-muted transition-colors"
-                      title={`Private message · ${DM_CREDITS} credit`}
-                    >
-                      <MailPlus className="h-3 w-3" /> Private · {DM_CREDITS}
-                    </button>
+                    <>
+                      <Button variant="ghost" size="sm" onClick={() => onPrivateMessage(m)} className="h-6 gap-1 px-1.5 text-[10px]" title={`Private message · ${DM_CREDITS} credit`}>
+                        <MailPlus className="h-3 w-3" /> Private · {DM_CREDITS}
+                      </Button>
+                      <Button variant="ghost" size="icon" onClick={() => addKnown(m)} className="h-6 w-6" title="Add to Known People" aria-label={`Add ${m.nickname} to Known People`}>
+                        <UserPlus className="h-3 w-3" />
+                      </Button>
+                    </>
                   )}
                 </span>
                 <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${
@@ -492,18 +503,17 @@ function AiCompanion({ callLounge }: { callLounge: (p: Record<string, unknown>) 
 
 interface DmMessage {
   id: string;
-  from_user_id: string;
-  to_user_id: string;
-  from_nickname: string;
+  otherMemberId: string;
+  fromNickname: string;
   content: string;
   created_at: string;
+  mine: boolean;
 }
 
-function PrivateChats({ userId, callLounge, target, setTarget }: {
-  userId: string;
+function PrivateChats({ callLounge, target, setTarget }: {
   callLounge: (p: Record<string, unknown>) => Promise<any>;
-  target: { userId: string; nickname: string } | null;
-  setTarget: (t: { userId: string; nickname: string } | null) => void;
+  target: { memberId: string; nickname: string } | null;
+  setTarget: (t: { memberId: string; nickname: string } | null) => void;
 }) {
   const navigate = useNavigate();
   const [dms, setDms] = useState<DmMessage[]>([]);
@@ -514,52 +524,45 @@ function PrivateChats({ userId, callLounge, target, setTarget }: {
 
   useEffect(() => {
     let cancelled = false;
-    (supabase as any)
-      .from("support_lounge_dms")
-      .select("*")
-      .order("created_at", { ascending: true })
-      .limit(300)
-      .then(({ data }: any) => {
-        if (!cancelled && data) setDms(data as DmMessage[]);
-        if (!cancelled) setLoading(false);
-      });
-
-    const channel = supabase
-      .channel("lounge-dms")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "support_lounge_dms" }, (payload) => {
-        const m = payload.new as DmMessage;
-        if (m.from_user_id !== userId && m.to_user_id !== userId) return;
-        setDms((prev) => (prev.some((p) => p.id === m.id) ? prev : [...prev, m]));
-        if (m.to_user_id === userId && m.from_user_id !== userId) {
-          toast(`💌 ${m.from_nickname} sent you a private message`, {
-            description: "Open the Private tab to reply.",
-          });
+    let knownIds = new Set<string>();
+    const load = async () => {
+      try {
+        const data = await callLounge({ action: "list_dms" });
+        const next = (data.messages ?? []) as DmMessage[];
+        if (!cancelled && knownIds.size > 0) {
+          const incoming = next.find((m) => !m.mine && !knownIds.has(m.id));
+          if (incoming) toast(`💌 ${incoming.fromNickname} sent you a private message`, { description: "Open the Private tab to reply." });
         }
-      })
-      .subscribe();
+        knownIds = new Set(next.map((m) => m.id));
+        if (!cancelled) setDms(next);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    load();
+    const timer = window.setInterval(load, 4000);
 
     return () => {
       cancelled = true;
-      supabase.removeChannel(channel);
+      window.clearInterval(timer);
     };
-  }, [userId]);
+  }, [callLounge]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [dms, target]);
 
   const threads = (() => {
-    const map = new Map<string, { userId: string; nickname: string; last: DmMessage }>();
+    const map = new Map<string, { memberId: string; nickname: string; last: DmMessage }>();
     for (const m of dms) {
-      const otherId = m.from_user_id === userId ? m.to_user_id : m.from_user_id;
-      const nick = m.from_user_id === userId ? (map.get(otherId)?.nickname ?? "Anonymous") : m.from_nickname;
-      map.set(otherId, { userId: otherId, nickname: nick, last: m });
+      const nick = m.mine ? (map.get(m.otherMemberId)?.nickname ?? "Anonymous") : m.fromNickname;
+      map.set(m.otherMemberId, { memberId: m.otherMemberId, nickname: nick, last: m });
     }
     return [...map.values()].sort((a, b) => b.last.created_at.localeCompare(a.last.created_at));
   })();
 
   const thread = target
-    ? dms.filter((m) => m.from_user_id === target.userId || m.to_user_id === target.userId)
+    ? dms.filter((m) => m.otherMemberId === target.memberId)
     : [];
 
   const send = async () => {
@@ -567,7 +570,7 @@ function PrivateChats({ userId, callLounge, target, setTarget }: {
     if (!content || sending || !target) return;
     setSending(true);
     try {
-      const res = await callLounge({ action: "dm", to_user_id: target.userId, content });
+      const res = await callLounge({ action: "dm", memberId: target.memberId, content });
       if (res?.message) {
         setDms((prev) => (prev.some((p) => p.id === res.message.id) ? prev : [...prev, res.message]));
       }
@@ -603,13 +606,13 @@ function PrivateChats({ userId, callLounge, target, setTarget }: {
           )}
           {threads.map((t) => (
             <button
-              key={t.userId}
-              onClick={() => setTarget({ userId: t.userId, nickname: t.nickname })}
+              key={t.memberId}
+              onClick={() => setTarget({ memberId: t.memberId, nickname: t.nickname })}
               className="w-full rounded-xl border bg-background hover:bg-muted transition-colors px-3 py-2 text-left"
             >
               <p className="text-sm font-semibold">{t.nickname}</p>
               <p className="text-xs text-muted-foreground truncate">
-                {t.last.from_user_id === userId ? "You: " : ""}{t.last.content}
+                {t.last.mine ? "You: " : ""}{t.last.content}
               </p>
             </button>
           ))}
@@ -636,11 +639,11 @@ function PrivateChats({ userId, callLounge, target, setTarget }: {
           </p>
         )}
         {thread.map((m) => {
-          const own = m.from_user_id === userId;
+          const own = m.mine;
           return (
             <div key={m.id} className={`flex flex-col ${own ? "items-end" : "items-start"}`}>
               <span className="text-[11px] text-muted-foreground mb-0.5">
-                {own ? "You" : m.from_nickname} · {new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                {own ? "You" : m.fromNickname} · {new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
               </span>
               <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap ${own ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
                 {m.content}
