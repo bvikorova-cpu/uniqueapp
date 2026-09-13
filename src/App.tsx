@@ -124,6 +124,7 @@ const ProfileRedirect = lazy(() => import("./pages/ProfileRedirect"));
 const PropertyFavorites = lazy(() => import("./pages/PropertyFavorites"));
 const Roadmap = lazy(() => import("./pages/Roadmap"));
 const AdPreview = lazy(() => import("./pages/AdPreview"));
+const VideoReverse = lazy(() => import("./pages/VideoReverse"));
 const MobileBottomNav = lazy(() => import("@/components/mobile/MobileBottomNav"));
 
 
@@ -654,6 +655,7 @@ const App = () => {
                        <Route path="/unlock-videos" element={<ProtectedRoute><PremiumVideos /></ProtectedRoute>} />
                        <Route path="/shorts" element={<ProtectedRoute><Shorts /></ProtectedRoute>} />
                        <Route path="/pitch" element={<Pitch />} />
+                       <Route path="/video-reverse" element={<VideoReverse />} />
                        <Route path="/wall/saved" element={<ProtectedRoute><WallSaved /></ProtectedRoute>} />
                         <Route path="/wall/trending" element={<ProtectedRoute><Wall /></ProtectedRoute>} />
                        <Route path="/wall/info" element={<ProtectedRoute><Wall /></ProtectedRoute>} />
