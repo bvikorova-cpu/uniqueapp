@@ -199,6 +199,12 @@ export default function VideoReverse() {
                     height={clip.height}
                     fps={clip.fps}
                   />
+                  <DownloadActions
+                    frames={clip.frames}
+                    width={clip.width}
+                    height={clip.height}
+                    fps={clip.fps}
+                  />
                   <Button variant="outline" className="w-full rounded-full" onClick={reset}>
                     <Trash2 className="mr-2 h-4 w-4" /> Start over
                   </Button>
