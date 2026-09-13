@@ -83,9 +83,9 @@ export default function ReversedCanvasPlayer({
 
   useEffect(() => {
     posRef.current = 0;
-    setPosition(0);
+    syncPosition(0, true);
     drawAt(0);
-  }, [drawAt]);
+  }, [drawAt, syncPosition]);
 
   useEffect(() => {
     if (!playing) {
@@ -103,13 +103,13 @@ export default function ReversedCanvasPlayer({
         const next = posRef.current + advance;
         if (next >= total - 1) {
           posRef.current = total - 1;
-          setPosition(total - 1);
+          syncPosition(total - 1, true);
           drawAt(total - 1);
           setPlaying(false);
           return;
         }
         posRef.current = next;
-        setPosition(next);
+        syncPosition(next);
         drawAt(next);
       }
       rafRef.current = requestAnimationFrame(loop);
@@ -119,7 +119,7 @@ export default function ReversedCanvasPlayer({
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
     };
-  }, [playing, frameDuration, total, drawAt]);
+  }, [playing, frameDuration, total, drawAt, syncPosition]);
 
   // Sound loop follows playback state and selection.
   useEffect(() => {
