@@ -8,12 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Smile, BarChart3, Palette, Radio, Clock, ArrowLeft, Download, Brain, Gamepad2, Bell, BellOff, Loader2, Plus, Camera, Upload, File as FileIcon } from "lucide-react";
+import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Smile, BarChart3, Palette, Radio, Clock, ArrowLeft, Download, Brain, Gamepad2, Bell, BellOff, Loader2, Plus, Camera, Upload, File as FileIcon, Sticker } from "lucide-react";
 import { useDmMutes } from "@/hooks/useDmMutes";
 import { EmojiPicker } from "@/components/messenger/EmojiPicker";
 import { GiftShopSheet } from "@/components/gifts/GiftShopSheet";
 import { GiftBubble } from "@/components/gifts/GiftBubble";
 import { useChatGifts } from "@/hooks/useChatGifts";
+import { StickerPicker } from "@/components/messenger/StickerPicker";
+import type { UniqueSticker } from "@/data/stickers";
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
@@ -159,6 +161,7 @@ const Messenger = () => {
 
   
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showStickerPicker, setShowStickerPicker] = useState(false);
   const { giftsById } = useChatGifts();
 
   const [selfDestructDuration, setSelfDestructDuration] = useState<number | null>(null);
@@ -921,6 +924,25 @@ const Messenger = () => {
     // Input was already cleared optimistically above.
   };
 
+  // Send a Unique sticker as a chat message (image attachment, no upload needed)
+  const sendSticker = async (sticker: UniqueSticker) => {
+    if (!selectedConversation || !user) return;
+    setShowStickerPicker(false);
+    const { error } = await supabase.from("messages").insert({
+      conversation_id: selectedConversation,
+      sender_id: user.id,
+      content: `Sticker: ${sticker.name}`,
+      attachment_url: sticker.url,
+      attachment_type: "sticker",
+      reply_to_id: replyingTo?.id || null });
+    if (error) {
+      toast({ title: "Sticker not sent", description: "Couldn't send the sticker. Try again.", variant: "destructive" });
+      return;
+    }
+    setReplyingTo(null);
+  };
+
+
 
 
 
@@ -1447,6 +1469,14 @@ const Messenger = () => {
                             </div>
                           )}
                           
+                          {msg.attachment_type === "sticker" && (attachmentUrl || msg.attachment_url) ? (
+                            <img
+                              src={attachmentUrl || msg.attachment_url || ""}
+                              alt={msg.content.replace(/^Sticker:\s*/, "") || "Sticker"}
+                              loading="lazy"
+                              className="w-36 h-36 object-contain drop-shadow-md"
+                            />
+                          ) : (
                           <div
                             className={`relative rounded-lg p-3 border ${
                               msg.sender_id === user.id ? "" : "text-foreground"
@@ -1547,7 +1577,8 @@ const Messenger = () => {
                               </div>
                             )}
                           </div>
-                          
+                          )}
+
                           {/* Action buttons */}
                           <div className={`flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity ${
                             msg.sender_id === user.id ? "justify-end" : ""
@@ -1674,6 +1705,24 @@ const Messenger = () => {
                         <EmojiPicker userId={user.id} onSelect={(emoji) => setNewMessage((prev) => prev + emoji)} />
                       </PopoverContent>
                     </Popover>
+
+                    <Popover open={showStickerPicker} onOpenChange={setShowStickerPicker}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-10 w-10 min-h-10 min-w-10 shrink-0 touch-manipulation rounded-full"
+                          aria-label="Stickers"
+                        >
+                          <Sticker className="h-4 w-4" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-72 p-2">
+                        <StickerPicker onSelect={sendSticker} />
+                      </PopoverContent>
+                    </Popover>
+
 
                     <div className="shrink-0">
                       <GiftShopSheet
