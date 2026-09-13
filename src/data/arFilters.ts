@@ -6,6 +6,10 @@ import dogEarsImg from "@/assets/ar/dog-ears.png";
 import dogNoseImg from "@/assets/ar/dog-nose.png";
 import heartGlassesImg from "@/assets/ar/heart-glasses.png";
 import flowerCrownImg from "@/assets/ar/flower-crown.png";
+import neonVisorImg from "@/assets/ar/neon-visor.png";
+import galaxyHaloImg from "@/assets/ar/galaxy-halo.png";
+import butterflyCrownImg from "@/assets/ar/butterfly-crown.png";
+import flameCrownImg from "@/assets/ar/flame-crown.png";
 
 /** Where an overlay is anchored on the detected face. */
 export type ArAnchor = "eyes" | "forehead" | "above-head" | "nose" | "mouth";
