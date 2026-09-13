@@ -30,6 +30,13 @@ import champagneImg from "@/assets/ar/champagne.png";
 import luxuryShadesImg from "@/assets/ar/luxury-shades.png";
 import bowTieImg from "@/assets/ar/bow-tie.png";
 import redRoseImg from "@/assets/ar/red-rose.png";
+import martiniImg from "@/assets/ar/martini.png";
+import pearlsImg from "@/assets/ar/pearls.png";
+import goldChainImg from "@/assets/ar/gold-chain.png";
+import fedoraImg from "@/assets/ar/fedora.png";
+import monocleImg from "@/assets/ar/monocle.png";
+import eyelashesImg from "@/assets/ar/eyelashes.png";
+import blushImg from "@/assets/ar/blush.png";
 
 /** Where an overlay is anchored on the detected face. */
 export type ArAnchor = "eyes" | "forehead" | "above-head" | "nose" | "mouth";
