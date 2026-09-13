@@ -13,6 +13,7 @@ import {
   MAX_VIDEO_SECONDS,
   disposeFrames,
   extractFrames,
+  frameProfileForDuration,
   loadVideoElement,
 } from "@/lib/videoFrames";
 
