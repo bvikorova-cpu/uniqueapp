@@ -2,6 +2,7 @@ import { createRoot } from "react-dom/client";
 import { Component, lazy as reactLazy, ReactNode, Suspense } from "react";
 import { lazyWithRetry } from "./utils/lazyWithRetry";
 import { installNavigationScrollReset } from "./utils/installNavigationScrollReset";
+import { installTranslateSafety } from "./utils/translateSafety";
 import { initSentry } from "./lib/sentry";
 import { installGlobalErrorReporter } from "./lib/errorReporter";
 import { CookieConsentBanner } from "./components/gdpr/CookieConsentBanner";
