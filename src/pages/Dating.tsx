@@ -620,10 +620,11 @@ const Dating = () => {
     setTimeout(() => { setCurrentIndex(currentIndex + 1); setSwipeDirection(null); setActivePhotoIndex(0); }, 300);
   };
 
-  const handleSendMessage = async () => {
-    if (!selectedMatch || !newMessage.trim()) return;
+  const handleSendMessage = async (overrideContent?: string) => {
+    const raw = overrideContent ?? newMessage;
+    if (!selectedMatch || !raw.trim()) return;
     const otherId = selectedMatch.user1_id === user.id ? selectedMatch.user2_id : selectedMatch.user1_id;
-    const content = newMessage.trim().slice(0, 2000);
+    const content = raw.trim().slice(0, 2000);
 
     // AI moderation pre-check
     try {
@@ -1323,7 +1324,7 @@ const Dating = () => {
 
                     <EmojiPicker onSelect={(e) => setNewMessage(newMessage + e)} />
 
-                    <StickerButton onSelect={(st) => sendMessage(st.url)} />
+                    <StickerButton onSelect={(st) => handleSendMessage(st.url)} />
                     
                     <AIStarterButton
                       matchId={selectedMatch.id}
