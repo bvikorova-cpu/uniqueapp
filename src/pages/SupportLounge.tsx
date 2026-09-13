@@ -43,18 +43,18 @@ const SECTION_NAME = "Broken Hearts — You Are Not Alone";
 
 function HeartbreakHero() {
   return (
-    <section className="relative min-h-[420px] sm:min-h-[520px] overflow-hidden rounded-b-2xl mb-8 border-b">
+    <section className="relative min-h-[420px] sm:min-h-[520px] overflow-hidden rounded-b-2xl mb-8 border-b bg-muted">
       <video
-        src={heroVideo.url}
         autoPlay
         loop
         muted
         playsInline
         preload="auto"
-        poster=""
         aria-label="A symbolic broken heart releasing light and turning into flowers"
         className="absolute inset-0 h-full w-full object-cover brightness-125 contrast-110 saturate-110 scale-105"
-      />
+      >
+        <source src={heroVideo.url} type="video/mp4" />
+      </video>
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/25 to-background/10" />
       <div className="relative flex min-h-[420px] sm:min-h-[520px] items-end px-5 pb-10 sm:px-10 sm:pb-12">
         <div className="max-w-2xl">
