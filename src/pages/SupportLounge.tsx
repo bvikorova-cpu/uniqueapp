@@ -485,4 +485,175 @@ function AiCompanion({ callLounge }: { callLounge: (p: Record<string, unknown>) 
   );
 }
 
+interface DmMessage {
+  id: string;
+  from_user_id: string;
+  to_user_id: string;
+  from_nickname: string;
+  content: string;
+  created_at: string;
+}
+
+function PrivateChats({ userId, callLounge, target, setTarget }: {
+  userId: string;
+  callLounge: (p: Record<string, unknown>) => Promise<any>;
+  target: { userId: string; nickname: string } | null;
+  setTarget: (t: { userId: string; nickname: string } | null) => void;
+}) {
+  const navigate = useNavigate();
+  const [dms, setDms] = useState<DmMessage[]>([]);
+  const [text, setText] = useState("");
+  const [sending, setSending] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (supabase as any)
+      .from("support_lounge_dms")
+      .select("*")
+      .order("created_at", { ascending: true })
+      .limit(300)
+      .then(({ data }: any) => {
+        if (!cancelled && data) setDms(data as DmMessage[]);
+        if (!cancelled) setLoading(false);
+      });
+
+    const channel = supabase
+      .channel("lounge-dms")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "support_lounge_dms" }, (payload) => {
+        const m = payload.new as DmMessage;
+        if (m.from_user_id !== userId && m.to_user_id !== userId) return;
+        setDms((prev) => (prev.some((p) => p.id === m.id) ? prev : [...prev, m]));
+      })
+      .subscribe();
+
+    return () => {
+      cancelled = true;
+      supabase.removeChannel(channel);
+    };
+  }, [userId]);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [dms, target]);
+
+  const threads = (() => {
+    const map = new Map<string, { userId: string; nickname: string; last: DmMessage }>();
+    for (const m of dms) {
+      const otherId = m.from_user_id === userId ? m.to_user_id : m.from_user_id;
+      const nick = m.from_user_id === userId ? (map.get(otherId)?.nickname ?? "Anonymous") : m.from_nickname;
+      map.set(otherId, { userId: otherId, nickname: nick, last: m });
+    }
+    return [...map.values()].sort((a, b) => b.last.created_at.localeCompare(a.last.created_at));
+  })();
+
+  const thread = target
+    ? dms.filter((m) => m.from_user_id === target.userId || m.to_user_id === target.userId)
+    : [];
+
+  const send = async () => {
+    const content = text.trim();
+    if (!content || sending || !target) return;
+    setSending(true);
+    try {
+      const res = await callLounge({ action: "dm", to_user_id: target.userId, content });
+      if (res?.message) {
+        setDms((prev) => (prev.some((p) => p.id === res.message.id) ? prev : [...prev, res.message]));
+      }
+      setText("");
+      toast.success(`Private message sent · ${DM_CREDITS} credit used`);
+    } catch (e: any) {
+      if (e?.status === 402 || e?.body?.error === "insufficient_credits") {
+        toast.error(`You need ${DM_CREDITS} credit to send a private message.`);
+        navigate("/ai-credits-store");
+      } else if (e?.body?.error === "no_pass") {
+        toast.error("Your daily pass expired. Please re-enter tomorrow.");
+      } else {
+        toast.error("Message could not be sent.");
+      }
+    } finally {
+      setSending(false);
+    }
+  };
+
+  if (!target) {
+    return (
+      <div className="rounded-2xl border bg-card flex flex-col h-full w-full max-w-2xl mx-auto min-h-0">
+        <div className="px-4 py-2 border-b shrink-0">
+          <p className="font-bold text-sm flex items-center gap-1.5"><Lock className="h-4 w-4 text-primary" /> Private messages</p>
+          <p className="text-xs text-muted-foreground">Sending one private message costs {DM_CREDITS} credit · nicknames only</p>
+        </div>
+        <div className="flex-1 overflow-y-auto px-3 py-3 space-y-2 min-h-0">
+          {loading && <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-primary" /></div>}
+          {!loading && threads.length === 0 && (
+            <p className="text-sm text-muted-foreground text-center py-10">
+              No private conversations yet. Tap <strong>Private</strong> next to someone's message in a room to write them. 💛
+            </p>
+          )}
+          {threads.map((t) => (
+            <button
+              key={t.userId}
+              onClick={() => setTarget({ userId: t.userId, nickname: t.nickname })}
+              className="w-full rounded-xl border bg-background hover:bg-muted transition-colors px-3 py-2 text-left"
+            >
+              <p className="text-sm font-semibold">{t.nickname}</p>
+              <p className="text-xs text-muted-foreground truncate">
+                {t.last.from_user_id === userId ? "You: " : ""}{t.last.content}
+              </p>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-2xl border bg-card flex flex-col h-full w-full max-w-2xl mx-auto min-h-0">
+      <div className="px-3 py-2 border-b shrink-0 flex items-center gap-2">
+        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setTarget(null)} aria-label="Back">
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <div className="min-w-0">
+          <p className="font-bold text-sm truncate">{target.nickname}</p>
+          <p className="text-xs text-muted-foreground">Private · {DM_CREDITS} credit per message you send</p>
+        </div>
+      </div>
+      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 min-h-0">
+        {thread.length === 0 && (
+          <p className="text-sm text-muted-foreground text-center py-10">
+            Say something kind. Your first message costs {DM_CREDITS} credit.
+          </p>
+        )}
+        {thread.map((m) => {
+          const own = m.from_user_id === userId;
+          return (
+            <div key={m.id} className={`flex flex-col ${own ? "items-end" : "items-start"}`}>
+              <span className="text-[11px] text-muted-foreground mb-0.5">
+                {own ? "You" : m.from_nickname} · {new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+              </span>
+              <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap ${own ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                {m.content}
+              </div>
+            </div>
+          );
+        })}
+        <div ref={bottomRef} />
+      </div>
+      <div className="p-3 border-t flex gap-2 shrink-0">
+        <Input
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Write a private message…"
+          maxLength={500}
+          onKeyDown={(e) => e.key === "Enter" && send()}
+        />
+        <Button size="icon" onClick={send} disabled={sending || !text.trim()} aria-label={`Send for ${DM_CREDITS} credit`} title={`${DM_CREDITS} credit per private message`}>
+          {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 export default SupportLounge;
