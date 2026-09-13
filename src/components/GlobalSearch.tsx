@@ -244,6 +244,8 @@ const SUB_FEATURES: SearchResult[] = [
   { id: "sf-cv", title: "CV & Resume Builder", category: "Career", path: "/jobs", keywords: ["cv", "resume", "životopis"] },
   // Commerce sub
   { id: "sf-savedsearches", title: "Saved Searches", category: "Commerce", path: "/bazaar/saved-searches", keywords: ["saved search", "uložené hľadanie", "alerts"] },
+  // Wellness support
+  { id: "sf-supportlounge", title: "Support Lounge", description: "Anonymous chat for heartbreak, loneliness & new beginnings", category: "Social", path: "/support-lounge", keywords: ["support", "heartbreak", "podpora", "rozchod", "breakup", "cheated", "podvedená", "podvedený", "lonely", "osamelosť", "sklamanie", "opustená", "opustený", "anonymous chat"] },
 ];
 
 export const ALL_SEARCHABLE: SearchResult[] = [...SEARCHABLE_PAGES, ...SUB_FEATURES];
