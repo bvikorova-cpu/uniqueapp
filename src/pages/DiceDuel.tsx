@@ -300,7 +300,7 @@ const DiceDuel = () => {
         {m.p1_trail.length > 1 && (
           <polyline points={line(m.p1_trail)} fill="none" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="stroke-red-500" />
         )}
-        {m.p2_trail.length > 0 && m.player2_id && (
+        {m.p2_trail.length > 0 && (m.player2_id || m.is_bot) && (
           <circle cx={20 + last(m.p2_trail)[0] * cell} cy={20 + last(m.p2_trail)[1] * cell} r="8" className="fill-blue-500 stroke-background" strokeWidth="3" />
         )}
         {m.p1_trail.length > 0 && (
