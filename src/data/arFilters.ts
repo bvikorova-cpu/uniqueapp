@@ -97,4 +97,56 @@ export const AR_FILTERS: ArFilter[] = [
       { src: capImg, anchor: "above-head", widthFactor: 2.6, offsetY: -0.35 },
     ],
   },
+  // ---- Exclusive Unique effects (original designs, not found on other platforms) ----
+  {
+    id: "cybervisor",
+    label: "Cyber visor",
+    emoji: "🕶️",
+    overlays: [{ src: neonVisorImg, anchor: "eyes", widthFactor: 2.4, offsetY: 0 }],
+  },
+  {
+    id: "galaxyhalo",
+    label: "Galaxy halo",
+    emoji: "🌌",
+    overlays: [{ src: galaxyHaloImg, anchor: "above-head", widthFactor: 3.4, offsetY: -0.55 }],
+  },
+  {
+    id: "butterflies",
+    label: "Butterfly crown",
+    emoji: "🦋",
+    overlays: [{ src: butterflyCrownImg, anchor: "above-head", widthFactor: 3.1, offsetY: -0.2 }],
+  },
+  {
+    id: "flamecrown",
+    label: "Flame crown",
+    emoji: "🔥",
+    overlays: [{ src: flameCrownImg, anchor: "above-head", widthFactor: 2.5, offsetY: -0.35 }],
+  },
+  {
+    id: "cyberqueen",
+    label: "Cyber queen",
+    emoji: "👑",
+    overlays: [
+      { src: galaxyHaloImg, anchor: "above-head", widthFactor: 3.4, offsetY: -0.55 },
+      { src: neonVisorImg, anchor: "eyes", widthFactor: 2.4, offsetY: 0 },
+    ],
+  },
+  {
+    id: "firelegend",
+    label: "Fire legend",
+    emoji: "🌋",
+    overlays: [
+      { src: flameCrownImg, anchor: "above-head", widthFactor: 2.5, offsetY: -0.35 },
+      { src: sunglassesImg, anchor: "eyes", widthFactor: 2.05, offsetY: 0 },
+    ],
+  },
+  {
+    id: "butterflylove",
+    label: "Butterfly love",
+    emoji: "💞",
+    overlays: [
+      { src: butterflyCrownImg, anchor: "above-head", widthFactor: 3.1, offsetY: -0.2 },
+      { src: heartGlassesImg, anchor: "eyes", widthFactor: 2.1, offsetY: 0 },
+    ],
+  },
 ];
