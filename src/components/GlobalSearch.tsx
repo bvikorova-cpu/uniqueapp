@@ -245,7 +245,7 @@ const SUB_FEATURES: SearchResult[] = [
   // Commerce sub
   { id: "sf-savedsearches", title: "Saved Searches", category: "Commerce", path: "/bazaar/saved-searches", keywords: ["saved search", "uložené hľadanie", "alerts"] },
   // Wellness support
-  { id: "sf-supportlounge", title: "Support Lounge", description: "Anonymous chat for heartbreak, loneliness & new beginnings", category: "Social", path: "/support-lounge", keywords: ["support", "heartbreak", "podpora", "rozchod", "breakup", "cheated", "podvedená", "podvedený", "lonely", "osamelosť", "sklamanie", "opustená", "opustený", "anonymous chat"] },
+  { id: "sf-supportlounge", title: "Broken Hearts — You Are Not Alone", description: "Anonymous support after betrayal, heartbreak or abandonment", category: "Social", path: "/support-lounge", keywords: ["support", "support lounge", "heartbreak", "broken heart", "podpora", "rozchod", "breakup", "cheated", "podvedená", "podvedený", "lonely", "osamelosť", "sklamanie", "opustená", "opustený", "anonymous chat"] },
 ];
 
 export const ALL_SEARCHABLE: SearchResult[] = [...SEARCHABLE_PAGES, ...SUB_FEATURES];

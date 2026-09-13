@@ -185,6 +185,7 @@ const Navbar = () => {
         { path: "/messenger", label: "Messenger", icon: Mail },
         { path: "/megaforum", label: "Megaforum", icon: Users },
         { path: "/companions", label: "Character Companions", icon: MessageCircle },
+        { path: "/support-lounge", label: "Broken Hearts — You Are Not Alone", icon: Heart },
         { path: "/emotion-economy", label: "Emotion Economy", icon: Heart },
         { path: "/referral", label: "Invite friend", icon: User },
       ] },

@@ -139,7 +139,7 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
     { name: "Cooking", path: "/cooking", icon: ChefHat, color: "text-orange-500" },
     { name: "Coffee", path: "/coffee", icon: Star, color: "text-amber-600" },
     { name: "AI Clone", path: "/ai-clone", icon: Bot, color: "text-purple-500" },
-    
+    { name: "Broken Hearts — You Are Not Alone", path: "/support-lounge", icon: Heart, color: "text-rose-500" },
     { name: "Emotion Economy", path: "/emotion-economy", icon: Heart, color: "text-pink-500" },
   ];
 
