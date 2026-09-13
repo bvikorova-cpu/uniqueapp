@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import VideoDropzone from "@/components/videoreverse/VideoDropzone";
 import ReversedCanvasPlayer from "@/components/videoreverse/ReversedCanvasPlayer";
+import DownloadActions from "@/components/videoreverse/DownloadActions";
 import {
   MAX_VIDEO_BYTES,
   MAX_VIDEO_SECONDS,
