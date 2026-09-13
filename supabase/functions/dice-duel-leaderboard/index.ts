@@ -21,6 +21,7 @@ serve(async (req) => {
       .from("dice_duel_matches")
       .select("player1_id, player2_id, winner_id, finished_at")
       .eq("status", "finished")
+      .eq("is_bot", false)
       .not("winner_id", "is", null)
       .order("finished_at", { ascending: false })
       .limit(5000);
