@@ -404,11 +404,13 @@ const DiceDuel = () => {
               <div className="flex items-center gap-2 text-sm font-medium">
                 <span className={`inline-block h-3 w-3 rounded-full ${isP1 ? "bg-red-500" : "bg-blue-500"}`} /> You
                 <span className="text-muted-foreground">vs</span>
-                <span className={`inline-block h-3 w-3 rounded-full ${isP1 ? "bg-blue-500" : "bg-red-500"}`} /> Opponent
+                <span className={`inline-block h-3 w-3 rounded-full ${isP1 ? "bg-blue-500" : "bg-red-500"}`} /> {isBot ? "Bot" : "Opponent"}
               </div>
               {match.status === "finished" && (
                 <Badge variant={iWon ? "default" : "secondary"}>
-                  {iWon ? <><Trophy className="h-3 w-3 mr-1" /> You won +{PRIZE} coins</> : iLost ? "You lost" : "Finished"}
+                  {iWon
+                    ? <><Trophy className="h-3 w-3 mr-1" /> {isBot ? "You beat the bot +5 XP" : `You won +${PRIZE} coins`}</>
+                    : iLost ? "You lost" : "Finished"}
                 </Badge>
               )}
             </div>
