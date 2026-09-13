@@ -259,7 +259,11 @@ const SupportLounge = () => {
   );
 };
 
-function RoomsChat({ nickname, userId }: { nickname: string; userId: string }) {
+function RoomsChat({ nickname, userId, onPrivateMessage }: {
+  nickname: string;
+  userId: string;
+  onPrivateMessage: (m: LoungeMessage) => void;
+}) {
   const [room, setRoom] = useState<RoomId>("broken-heart");
   const [messages, setMessages] = useState<LoungeMessage[]>([]);
   const [text, setText] = useState("");
