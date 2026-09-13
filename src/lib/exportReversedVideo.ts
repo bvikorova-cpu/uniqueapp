@@ -45,6 +45,19 @@ export interface ExportOptions {
   onProgress?: (ratio: number) => void;
 }
 
+function waitUntil(deadline: number): Promise<void> {
+  return new Promise((resolve) => {
+    const check = (now: number) => {
+      if (now >= deadline) {
+        resolve();
+        return;
+      }
+      requestAnimationFrame(check);
+    };
+    requestAnimationFrame(check);
+  });
+}
+
 export async function exportReversedVideo({
   frames,
   width,
@@ -78,17 +91,17 @@ export async function exportReversedVideo({
 
   const total = frames.length;
   const frameDuration = 1000 / fps;
+  const startedAt = performance.now();
   for (let i = 0; i < total; i++) {
+    if (i > 0) await waitUntil(startedAt + i * frameDuration);
     const bitmap = frames[total - 1 - i];
     if (bitmap) ctx.drawImage(bitmap, 0, 0, width, height);
     if (watermark) drawWatermark(ctx, width, height);
     onProgress?.((i + 1) / total);
-    // Give the recorder real time to capture this frame.
-    await new Promise((r) => setTimeout(r, frameDuration));
   }
 
-  // Small tail so the last frame lands in the file.
-  await new Promise((r) => setTimeout(r, 150));
+  // Hold the last frame for exactly one frame interval so it is recorded.
+  await waitUntil(startedAt + total * frameDuration);
   recorder.stop();
   stream.getTracks().forEach((t) => t.stop());
   return finished;

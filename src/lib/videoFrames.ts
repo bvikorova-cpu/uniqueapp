@@ -49,8 +49,33 @@ export function loadVideoElement(src: string): Promise<HTMLVideoElement> {
   });
 }
 
-function seekTo(video: HTMLVideoElement, time: number): Promise<void> {
-  return new Promise((resolve, reject) => {
+function waitForDecodedFrame(video: HTMLVideoElement): Promise<number> {
+  if (typeof video.requestVideoFrameCallback !== "function") {
+    return new Promise((resolve) => {
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve(video.currentTime)));
+    });
+  }
+
+  return new Promise((resolve) => {
+    let settled = false;
+    const finish = (mediaTime: number) => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(fallback);
+      resolve(mediaTime);
+    };
+    const fallback = window.setTimeout(() => finish(video.currentTime), 250);
+    video.requestVideoFrameCallback((_now, metadata) => finish(metadata.mediaTime));
+  });
+}
+
+async function seekTo(video: HTMLVideoElement, time: number): Promise<number> {
+  const target = Math.max(0, time);
+  if (Math.abs(video.currentTime - target) < 0.0005 && video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+    return waitForDecodedFrame(video);
+  }
+
+  await new Promise<void>((resolve, reject) => {
     const onSeeked = () => {
       cleanup();
       resolve();
@@ -66,12 +91,16 @@ function seekTo(video: HTMLVideoElement, time: number): Promise<void> {
     video.addEventListener("seeked", onSeeked);
     video.addEventListener("error", onError);
     try {
-      video.currentTime = Math.max(0, time);
+      video.currentTime = target;
     } catch (e) {
       cleanup();
       reject(e instanceof Error ? e : new Error("Seeking failed."));
     }
   });
+
+  // Some mobile browsers emit `seeked` before the decoded frame is ready for
+  // canvas. Waiting for the presented frame prevents stale/duplicate captures.
+  return waitForDecodedFrame(video);
 }
 
 /** Extract frames from a video by seeking at a fixed interval and drawing to a canvas. */
@@ -100,17 +129,26 @@ export async function extractFrames(
   const step = 1 / fps;
   const total = Math.max(1, Math.floor(duration / step));
   const frames: ImageBitmap[] = [];
+  let lastMediaTime = -1;
 
   for (let i = 0; i < total; i++) {
     if (shouldAbort?.()) break;
-    await seekTo(video, Math.min(duration - 0.001, i * step));
+    const mediaTime = await seekTo(video, Math.min(duration - 0.001, i * step));
+    // A 24/25 fps source sampled at 30 fps otherwise contains repeated frames,
+    // which looks like shaking when played backwards.
+    if (lastMediaTime >= 0 && Math.abs(mediaTime - lastMediaTime) < 0.0005) {
+      onProgress?.((i + 1) / total);
+      continue;
+    }
     ctx.drawImage(video, 0, 0, width, height);
     frames.push(await createImageBitmap(canvas));
+    lastMediaTime = mediaTime;
     onProgress?.((i + 1) / total);
   }
 
   if (!frames.length) throw new Error("No frames could be extracted from this video.");
-  return { frames, width, height, fps, duration };
+  const playbackFps = Math.max(1, frames.length / duration);
+  return { frames, width, height, fps: playbackFps, duration };
 }
 
 export function disposeFrames(frames: ImageBitmap[]) {

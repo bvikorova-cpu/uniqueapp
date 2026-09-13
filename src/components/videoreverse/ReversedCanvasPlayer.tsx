@@ -35,7 +35,8 @@ export default function ReversedCanvasPlayer({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   const rafRef = useRef<number | null>(null);
-  const lastTsRef = useRef<number>(0);
+  const playbackStartRef = useRef<number | null>(null);
+  const playbackStartPosRef = useRef(0);
   /** Position in reversed order: 0 = last original frame. */
   const posRef = useRef(0);
   /** Last position pushed to React state (throttled — a setState every
@@ -93,14 +94,13 @@ export default function ReversedCanvasPlayer({
       rafRef.current = null;
       return;
     }
-    lastTsRef.current = 0;
+    playbackStartRef.current = null;
+    playbackStartPosRef.current = posRef.current;
     const loop = (ts: number) => {
-      if (!lastTsRef.current) lastTsRef.current = ts;
-      const elapsed = ts - lastTsRef.current;
-      if (elapsed >= frameDuration) {
-        const advance = Math.floor(elapsed / frameDuration);
-        lastTsRef.current += advance * frameDuration;
-        const next = posRef.current + advance;
+      if (playbackStartRef.current === null) playbackStartRef.current = ts;
+      const elapsed = ts - playbackStartRef.current;
+      const next = playbackStartPosRef.current + Math.floor(elapsed / frameDuration);
+      if (next !== posRef.current) {
         if (next >= total - 1) {
           posRef.current = total - 1;
           syncPosition(total - 1, true);
