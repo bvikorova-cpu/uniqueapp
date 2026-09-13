@@ -368,7 +368,9 @@ const AIVideoCreator = () => {
               >
                 {submitting
                   ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Starting…</>
-                  : <><Clapperboard className="mr-2 h-5 w-5" /> Generate {duration}s video · {cost} credits</>}
+                  : <><Clapperboard className="mr-2 h-5 w-5" /> Generate{" "}
+                      <span translate="no" className="notranslate">{duration}s</span> video ·{" "}
+                      <span translate="no" className="notranslate">{cost}</span> credits</>}
               </Button>
               {totalBalance < cost && (
                 <Button variant="outline" className="w-full" asChild>
