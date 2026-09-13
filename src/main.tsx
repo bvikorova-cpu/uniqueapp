@@ -29,6 +29,7 @@ const InstallPromptBanner = reactLazy(() =>
 // the app feels instant. These are fire-and-forget; failures are harmless.
 if (typeof window !== "undefined") {
   installNavigationScrollReset();
+  installTranslateSafety();
 
   const warmup = () => {
     import("react-router-dom").catch(() => {});
