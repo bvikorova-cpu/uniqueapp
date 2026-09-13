@@ -29,6 +29,8 @@ interface DiceMatch {
   last_roll: number | null;
   stake: number;
   winner_id: string | null;
+  is_bot?: boolean;
+  winner_is_bot?: boolean;
   created_at: string;
   finished_at: string | null;
 }
