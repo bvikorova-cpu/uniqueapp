@@ -51,7 +51,7 @@ function HeartbreakHero() {
         muted
         playsInline
         preload="metadata"
-        aria-label="A quiet moment of healing after heartbreak"
+        aria-label="A symbolic broken heart releasing light and turning into flowers"
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/30 to-background" />
