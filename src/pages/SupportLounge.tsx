@@ -351,7 +351,8 @@ function RoomsChat({ nickname, callLounge, onPrivateMessage }: {
   }, [room, callLounge]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const messageList = bottomRef.current?.parentElement;
+    messageList?.scrollTo({ top: messageList.scrollHeight, behavior: "smooth" });
   }, [messages]);
 
   const send = async () => {
@@ -458,7 +459,8 @@ function AiCompanion({ callLounge }: { callLounge: (p: Record<string, unknown>) 
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const messageList = bottomRef.current?.parentElement;
+    messageList?.scrollTo({ top: messageList.scrollHeight, behavior: "smooth" });
   }, [messages, thinking]);
 
   const send = async () => {
@@ -700,7 +702,8 @@ function PrivateChats({ callLounge, target, setTarget }: {
   }, [callLounge]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const messageList = bottomRef.current?.parentElement;
+    messageList?.scrollTo({ top: messageList.scrollHeight, behavior: "smooth" });
   }, [dms, target]);
 
   const threads = (() => {
