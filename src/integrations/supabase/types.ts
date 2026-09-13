@@ -61025,6 +61025,87 @@ export type Database = {
         }
         Relationships: []
       }
+      support_lounge_attendance: {
+        Row: {
+          first_visited_at: string
+          last_visited_at: string
+          lounge_id: string
+          room: string
+        }
+        Insert: {
+          first_visited_at?: string
+          last_visited_at?: string
+          lounge_id: string
+          room: string
+        }
+        Update: {
+          first_visited_at?: string
+          last_visited_at?: string
+          lounge_id?: string
+          room?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_lounge_attendance_lounge_id_fkey"
+            columns: ["lounge_id"]
+            isOneToOne: false
+            referencedRelation: "support_lounge_identities"
+            referencedColumns: ["lounge_id"]
+          },
+        ]
+      }
+      support_lounge_contacts: {
+        Row: {
+          created_at: string
+          id: string
+          member_a: string
+          member_b: string
+          requested_by: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          member_a: string
+          member_b: string
+          requested_by: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          member_a?: string
+          member_b?: string
+          requested_by?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_lounge_contacts_member_a_fkey"
+            columns: ["member_a"]
+            isOneToOne: false
+            referencedRelation: "support_lounge_identities"
+            referencedColumns: ["lounge_id"]
+          },
+          {
+            foreignKeyName: "support_lounge_contacts_member_b_fkey"
+            columns: ["member_b"]
+            isOneToOne: false
+            referencedRelation: "support_lounge_identities"
+            referencedColumns: ["lounge_id"]
+          },
+          {
+            foreignKeyName: "support_lounge_contacts_requested_by_fkey"
+            columns: ["requested_by"]
+            isOneToOne: false
+            referencedRelation: "support_lounge_identities"
+            referencedColumns: ["lounge_id"]
+          },
+        ]
+      }
       support_lounge_dms: {
         Row: {
           content: string
@@ -61055,6 +61136,75 @@ export type Database = {
         }
         Relationships: []
       }
+      support_lounge_dms_v2: {
+        Row: {
+          content: string
+          created_at: string
+          credits_charged: number
+          from_lounge_id: string
+          from_nickname: string
+          id: string
+          to_lounge_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          credits_charged?: number
+          from_lounge_id: string
+          from_nickname: string
+          id?: string
+          to_lounge_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          credits_charged?: number
+          from_lounge_id?: string
+          from_nickname?: string
+          id?: string
+          to_lounge_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_lounge_dms_v2_from_lounge_id_fkey"
+            columns: ["from_lounge_id"]
+            isOneToOne: false
+            referencedRelation: "support_lounge_identities"
+            referencedColumns: ["lounge_id"]
+          },
+          {
+            foreignKeyName: "support_lounge_dms_v2_to_lounge_id_fkey"
+            columns: ["to_lounge_id"]
+            isOneToOne: false
+            referencedRelation: "support_lounge_identities"
+            referencedColumns: ["lounge_id"]
+          },
+        ]
+      }
+      support_lounge_identities: {
+        Row: {
+          created_at: string
+          lounge_id: string
+          nickname: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          lounge_id?: string
+          nickname: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          lounge_id?: string
+          nickname?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       support_lounge_messages: {
         Row: {
           content: string
@@ -61081,6 +61231,41 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      support_lounge_messages_v2: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          nickname: string
+          room: string
+          sender_lounge_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          nickname: string
+          room: string
+          sender_lounge_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          nickname?: string
+          room?: string
+          sender_lounge_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_lounge_messages_v2_sender_lounge_id_fkey"
+            columns: ["sender_lounge_id"]
+            isOneToOne: false
+            referencedRelation: "support_lounge_identities"
+            referencedColumns: ["lounge_id"]
+          },
+        ]
       }
       support_lounge_nicknames: {
         Row: {
