@@ -4,6 +4,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { StickerButton } from "@/components/common/StickerButton";
+import { ARCameraButton } from "@/components/ar/ARCameraButton";
+import { uploadArCapture } from "@/lib/arUpload";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -641,6 +643,7 @@ export default function EventDetail() {
                       </Button>
 
                       <StickerButton onSelect={(s) => setPostImage(s.url)} />
+                        <ARCameraButton allowVideo={false} onCapture={async (f) => { try { setPostImage(await uploadArCapture(f)); } catch { /* upload failed */ } }} />
 
                       <Button
                         variant="ghost"

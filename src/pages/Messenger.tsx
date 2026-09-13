@@ -15,6 +15,7 @@ import { GiftShopSheet } from "@/components/gifts/GiftShopSheet";
 import { GiftBubble } from "@/components/gifts/GiftBubble";
 import { useChatGifts } from "@/hooks/useChatGifts";
 import { StickerPicker } from "@/components/messenger/StickerPicker";
+import { ARCameraButton } from "@/components/ar/ARCameraButton";
 import type { UniqueSticker } from "@/data/stickers";
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -1750,6 +1751,11 @@ const Messenger = () => {
                         <StickerPicker onSelect={sendSticker} />
                       </PopoverContent>
                     </Popover>
+
+                    <ARCameraButton
+                      onCapture={sendArCapture}
+                      className="h-10 w-10 min-h-10 min-w-10 shrink-0 touch-manipulation rounded-full text-purple-500"
+                    />
 
 
                     <div className="shrink-0">

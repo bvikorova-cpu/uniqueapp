@@ -59,6 +59,7 @@ import { useHashtags } from "@/hooks/useHashtags";
 import { usePolls } from "@/hooks/usePolls";
 import { MyCustomEmojis } from "@/components/common/MyCustomEmojis";
 import { StickerButton } from "@/components/common/StickerButton";
+import { ARCameraButton } from "@/components/ar/ARCameraButton";
 
 interface EnhancedCreatePostProps {
   onPostCreated: () => void;
@@ -447,6 +448,11 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                 </TooltipTrigger>
                 <TooltipContent>Video</TooltipContent>
               </Tooltip>
+
+              <ARCameraButton
+                onCapture={(f) => setFiles((prev) => [...prev, f])}
+                className="flex-shrink-0 h-8 w-8 text-purple-500 hover:bg-purple-500/10 rounded-lg"
+              />
 
               <StickerButton
                 onSelect={(st) => setStickers((prev) => [...prev, st.url])}

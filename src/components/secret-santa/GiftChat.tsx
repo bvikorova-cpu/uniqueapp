@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { StickerButton } from "@/components/common/StickerButton";
+import { ARCameraButton } from "@/components/ar/ARCameraButton";
+import { uploadArCapture } from "@/lib/arUpload";
 import { stickerUrlFromContent } from "@/lib/stickerContent";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -477,6 +479,8 @@ export const GiftChat = ({ initialUser = null }: GiftChatProps) => {
               <div className="p-4 border-t border-amber-100 bg-white/50">
                 <div className="flex gap-2">
                   <StickerButton onSelect={(st) => sendMessageMutation.mutate(st.url)} />
+
+                  <ARCameraButton onCapture={async (f) => { try { sendMessageMutation.mutate(await uploadArCapture(f)); } catch { /* upload failed */ } }} />
                   <Input
                     placeholder="Type a message..."
                     value={newMessage}
