@@ -11,4 +11,4 @@
   - Monthly cash pool built from challenge subscriptions (PRO €3 / TOP €5); winner XP prize removed.
   - Admin payout screens show winner + charity amounts and IBAN.
 
-- [ ] Create and deliver a screenshot example of the €50 promotional flyer from Promotions for Facebook.
+- [x] Create and deliver a screenshot example of the €50 promotional flyer from Promotions for Facebook.
