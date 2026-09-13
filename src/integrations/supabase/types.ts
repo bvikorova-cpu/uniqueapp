@@ -61025,6 +61025,75 @@ export type Database = {
         }
         Relationships: []
       }
+      support_lounge_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          nickname: string
+          room: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          nickname: string
+          room: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          nickname?: string
+          room?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      support_lounge_nicknames: {
+        Row: {
+          created_at: string
+          nickname: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          nickname: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          nickname?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      support_lounge_passes: {
+        Row: {
+          created_at: string
+          credits_charged: number
+          id: string
+          pass_date: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_charged?: number
+          id?: string
+          pass_date?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_charged?: number
+          id?: string
+          pass_date?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       support_ticket_messages: {
         Row: {
           attachments: Json | null
