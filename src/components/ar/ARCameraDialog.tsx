@@ -228,7 +228,14 @@ export const ARCameraDialog = ({ open, onOpenChange, onCapture, allowVideo = tru
         </DialogHeader>
 
         <div className="relative overflow-hidden rounded-xl bg-muted aspect-square">
-          <video ref={videoRef} playsInline muted className="hidden" />
+          {/* iOS Safari refuses to decode a display:none video, so keep it in layout but invisible. */}
+          <video
+            ref={videoRef}
+            playsInline
+            autoPlay
+            muted
+            className="pointer-events-none absolute left-0 top-0 h-px w-px opacity-0"
+          />
           <canvas ref={canvasRef} className="h-full w-full object-cover" />
           {loading && (
             <div className="absolute inset-0 grid place-items-center bg-background/70">
