@@ -228,6 +228,35 @@ export default function VideoReverse() {
             </CardContent>
           </Card>
         )}
+        <section className="mt-8 rounded-3xl border border-border bg-card/60 p-5">
+          <h2 className="mb-4 text-center text-lg font-bold">How it works</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="rounded-2xl bg-background/60 p-4 text-center">
+              <Upload className="mx-auto mb-2 h-6 w-6 text-primary" />
+              <p className="text-sm font-semibold">1. Upload a clip</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Drop an MP4 or WebM up to {Math.round(MAX_VIDEO_BYTES / (1024 * 1024))} MB and {MAX_VIDEO_SECONDS} seconds.
+              </p>
+            </div>
+            <div className="rounded-2xl bg-background/60 p-4 text-center">
+              <MousePointerClick className="mx-auto mb-2 h-6 w-6 text-primary" />
+              <p className="text-sm font-semibold">2. Tap Reverse</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                We extract every frame in your browser — nothing is uploaded to any server.
+              </p>
+            </div>
+            <div className="rounded-2xl bg-background/60 p-4 text-center">
+              <Download className="mx-auto mb-2 h-6 w-6 text-primary" />
+              <p className="text-sm font-semibold">3. Play & download</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Scrub the reversed timeline, add a sound, then save with a free watermark or clean for 2 credits.
+              </p>
+            </div>
+          </div>
+          <p className="mt-4 text-center text-xs text-muted-foreground">
+            Audio is muted in the reverse preview — browsers cannot play sound backwards.
+          </p>
+        </section>
       </main>
     </>
   );
