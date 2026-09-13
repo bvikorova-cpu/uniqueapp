@@ -2,6 +2,7 @@ import { createRoot } from "react-dom/client";
 import { Component, lazy as reactLazy, ReactNode, Suspense } from "react";
 import { lazyWithRetry } from "./utils/lazyWithRetry";
 import { installNavigationScrollReset } from "./utils/installNavigationScrollReset";
+import { installTranslateSafety } from "./utils/translateSafety";
 import { initSentry } from "./lib/sentry";
 import { installGlobalErrorReporter } from "./lib/errorReporter";
 import { CookieConsentBanner } from "./components/gdpr/CookieConsentBanner";
@@ -29,6 +30,7 @@ const InstallPromptBanner = reactLazy(() =>
 // the app feels instant. These are fire-and-forget; failures are harmless.
 if (typeof window !== "undefined") {
   installNavigationScrollReset();
+  installTranslateSafety();
 
   const warmup = () => {
     import("react-router-dom").catch(() => {});

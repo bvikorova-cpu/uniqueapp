@@ -1166,3 +1166,24 @@ html.translated-rtl {
   padding-left: 0.25rem;
   padding-right: 0.25rem;
 }
+
+/* Google Translate rewrites text nodes; dynamic values (numbers, prices,
+   selected options) must stay untouched so React can keep updating them. */
+.notranslate,
+[translate="no"] {
+  unicode-bidi: isolate;
+}
+
+/* Translated pages must never scroll sideways on mobile. */
+.translated-ltr,
+.translated-rtl,
+.translated-ltr body,
+.translated-rtl body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.translated-ltr font,
+.translated-rtl font {
+  overflow-wrap: anywhere;
+}
