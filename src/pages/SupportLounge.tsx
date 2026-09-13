@@ -10,7 +10,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Heart, HeartCrack, Users, MessageCircleHeart, Send, Loader2,
   ShieldCheck, Sparkles, DoorOpen, HandHeart, Sunrise, LifeBuoy, Coins,
-  Lock, ArrowLeft, MailPlus, UserPlus, Check, X,
+  Lock, ArrowLeft, MailPlus, UserPlus, Check, X, ExternalLink,
 } from "lucide-react";
 import heroVideo from "@/assets/broken-hearts-hero-rozbit-srdce-10s-exact.mp4.asset.json";
 
@@ -43,6 +43,47 @@ const ENTRY_CREDITS = 1;
 const AI_MESSAGE_CREDITS = 3;
 const DM_CREDITS = 1;
 const SECTION_NAME = "Broken Hearts — You Are Not Alone";
+
+const HELP_RESOURCES = [
+  {
+    name: "Find A Helpline",
+    url: "https://findahelpline.com",
+    description: "Choose your country to find free local phone, text and crisis chat support.",
+  },
+  {
+    name: "Befrienders Worldwide",
+    url: "https://befrienders.org",
+    description: "A global network supporting people experiencing loneliness, distress or an emotional crisis.",
+  },
+  {
+    name: "NO MORE Global Directory",
+    url: "https://nomoredirectory.org",
+    description: "International support for domestic, emotional or financial abuse following betrayal or separation.",
+  },
+] as const;
+
+function HelpResources({ compact = false }: { compact?: boolean }) {
+  return (
+    <div className={compact ? "mt-1 flex flex-wrap gap-x-3 gap-y-1" : "mt-3 space-y-2"}>
+      {HELP_RESOURCES.map((resource) => (
+        <a
+          key={resource.url}
+          href={resource.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={compact
+            ? "inline-flex items-center gap-1 font-semibold text-primary underline underline-offset-2"
+            : "block rounded-lg border border-border bg-background/70 p-2.5 transition-colors hover:bg-muted"
+          }
+        >
+          <span className="font-semibold text-foreground">{resource.name}</span>
+          <ExternalLink className="inline h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+          {!compact && <span className="mt-0.5 block text-muted-foreground">{resource.description}</span>}
+        </a>
+      ))}
+    </div>
+  );
+}
 
 function HeartbreakHero() {
   return (
@@ -190,7 +231,10 @@ const SupportLounge = () => {
           </ul>
           <div className="rounded-xl bg-amber-500/10 border border-amber-500/30 p-2.5 text-xs text-amber-700 dark:text-amber-400 mb-4 flex gap-2">
             <LifeBuoy className="h-4 w-4 shrink-0 mt-0.5" />
-            <span>This is peer support, not professional help. If you are in crisis or thinking about self-harm, please contact local emergency services or a crisis hotline immediately.</span>
+            <div>
+              <span>This is peer support, not professional help. If you are in crisis or thinking about self-harm, please contact local emergency services or a crisis hotline immediately.</span>
+              <HelpResources />
+            </div>
           </div>
           <label className="text-sm font-medium block mb-2">Your anonymous nickname</label>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
@@ -266,7 +310,10 @@ const SupportLounge = () => {
 
       <div className="mt-2 shrink-0 rounded-xl bg-muted/60 border p-2 text-[11px] sm:text-xs text-muted-foreground flex gap-2">
         <LifeBuoy className="h-4 w-4 shrink-0 mt-0.5" />
-        <span>{SECTION_NAME} offers peer support, not professional therapy. If you are in crisis, please contact local emergency services or a crisis hotline.</span>
+        <div>
+          <span>{SECTION_NAME} offers peer support, not professional therapy. If you are in crisis, please contact local emergency services or a crisis hotline.</span>
+          <HelpResources compact />
+        </div>
       </div>
     </div>
   );
