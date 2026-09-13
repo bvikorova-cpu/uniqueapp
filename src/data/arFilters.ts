@@ -6,6 +6,10 @@ import dogEarsImg from "@/assets/ar/dog-ears.png";
 import dogNoseImg from "@/assets/ar/dog-nose.png";
 import heartGlassesImg from "@/assets/ar/heart-glasses.png";
 import flowerCrownImg from "@/assets/ar/flower-crown.png";
+import neonVisorImg from "@/assets/ar/neon-visor.png";
+import galaxyHaloImg from "@/assets/ar/galaxy-halo.png";
+import butterflyCrownImg from "@/assets/ar/butterfly-crown.png";
+import flameCrownImg from "@/assets/ar/flame-crown.png";
 
 /** Where an overlay is anchored on the detected face. */
 export type ArAnchor = "eyes" | "forehead" | "above-head" | "nose" | "mouth";
@@ -91,6 +95,58 @@ export const AR_FILTERS: ArFilter[] = [
       { src: sunglassesImg, anchor: "eyes", widthFactor: 2.05, offsetY: 0 },
       { src: mustacheImg, anchor: "mouth", widthFactor: 1.1, offsetY: -0.12 },
       { src: capImg, anchor: "above-head", widthFactor: 2.6, offsetY: -0.35 },
+    ],
+  },
+  // ---- Exclusive Unique effects (original designs, not found on other platforms) ----
+  {
+    id: "cybervisor",
+    label: "Cyber visor",
+    emoji: "🕶️",
+    overlays: [{ src: neonVisorImg, anchor: "eyes", widthFactor: 2.4, offsetY: 0 }],
+  },
+  {
+    id: "galaxyhalo",
+    label: "Galaxy halo",
+    emoji: "🌌",
+    overlays: [{ src: galaxyHaloImg, anchor: "above-head", widthFactor: 3.4, offsetY: -0.55 }],
+  },
+  {
+    id: "butterflies",
+    label: "Butterfly crown",
+    emoji: "🦋",
+    overlays: [{ src: butterflyCrownImg, anchor: "above-head", widthFactor: 3.1, offsetY: -0.2 }],
+  },
+  {
+    id: "flamecrown",
+    label: "Flame crown",
+    emoji: "🔥",
+    overlays: [{ src: flameCrownImg, anchor: "above-head", widthFactor: 2.5, offsetY: -0.35 }],
+  },
+  {
+    id: "cyberqueen",
+    label: "Cyber queen",
+    emoji: "👑",
+    overlays: [
+      { src: galaxyHaloImg, anchor: "above-head", widthFactor: 3.4, offsetY: -0.55 },
+      { src: neonVisorImg, anchor: "eyes", widthFactor: 2.4, offsetY: 0 },
+    ],
+  },
+  {
+    id: "firelegend",
+    label: "Fire legend",
+    emoji: "🌋",
+    overlays: [
+      { src: flameCrownImg, anchor: "above-head", widthFactor: 2.5, offsetY: -0.35 },
+      { src: sunglassesImg, anchor: "eyes", widthFactor: 2.05, offsetY: 0 },
+    ],
+  },
+  {
+    id: "butterflylove",
+    label: "Butterfly love",
+    emoji: "💞",
+    overlays: [
+      { src: butterflyCrownImg, anchor: "above-head", widthFactor: 3.1, offsetY: -0.2 },
+      { src: heartGlassesImg, anchor: "eyes", widthFactor: 2.1, offsetY: 0 },
     ],
   },
 ];
