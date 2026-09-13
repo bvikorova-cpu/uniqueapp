@@ -61025,6 +61025,36 @@ export type Database = {
         }
         Relationships: []
       }
+      support_lounge_dms: {
+        Row: {
+          content: string
+          created_at: string
+          credits_charged: number
+          from_nickname: string
+          from_user_id: string
+          id: string
+          to_user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          credits_charged?: number
+          from_nickname: string
+          from_user_id: string
+          id?: string
+          to_user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          credits_charged?: number
+          from_nickname?: string
+          from_user_id?: string
+          id?: string
+          to_user_id?: string
+        }
+        Relationships: []
+      }
       support_lounge_messages: {
         Row: {
           content: string
