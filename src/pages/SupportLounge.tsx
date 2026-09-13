@@ -223,7 +223,7 @@ const SupportLounge = () => {
         </TabsList>
 
         <TabsContent value="rooms">
-          <RoomsChat nickname={nickname ?? "Anonymous"} userId={user.id} />
+          <RoomsChat nickname={nickname!} userId={user.id} />
         </TabsContent>
         <TabsContent value="ai">
           <AiCompanion callLounge={callLounge} />

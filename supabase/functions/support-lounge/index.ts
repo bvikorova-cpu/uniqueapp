@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
           admin,
           user.id,
           ENTRY_CREDITS,
-          "Support Lounge daily entry",
+          "Broken Hearts daily entry",
           "support_lounge",
         );
         if (!spend.ok) {
