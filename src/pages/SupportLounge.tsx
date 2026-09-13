@@ -11,7 +11,7 @@ import {
   Heart, HeartCrack, Users, MessageCircleHeart, Send, Loader2,
   ShieldCheck, Sparkles, DoorOpen, HandHeart, Sunrise, LifeBuoy, Coins,
 } from "lucide-react";
-import heroVideo from "@/assets/broken-hearts-hero-10s-exact.mp4.asset.json";
+import heroVideo from "@/assets/broken-hearts-healing-room-10s-exact.mp4.asset.json";
 
 const ROOMS = [
   { id: "cheated-on", label: "Cheated On", emoji: "💔", desc: "Betrayal, broken trust, healing after infidelity" },
@@ -182,15 +182,16 @@ const SupportLounge = () => {
             <span>This is peer support, not professional help. If you are in crisis or thinking about self-harm, please contact local emergency services or a crisis hotline immediately.</span>
           </div>
           <label className="text-sm font-medium block mb-2">Your anonymous nickname</label>
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
             <Input
               value={nickInput}
               onChange={(e) => setNickInput(e.target.value)}
               placeholder="e.g. BraveFox, QuietStorm…"
               maxLength={24}
               onKeyDown={(e) => e.key === "Enter" && handleEnter()}
+              className="h-12 w-full min-w-0 text-base sm:flex-1"
             />
-            <Button onClick={handleEnter} disabled={entering} className="shrink-0">
+            <Button onClick={handleEnter} disabled={entering} className="h-12 w-full shrink-0 sm:w-auto">
               {entering ? <Loader2 className="h-4 w-4 animate-spin" /> : <DoorOpen className="h-4 w-4 mr-1" />}
               Enter · {ENTRY_CREDITS} credit/day
             </Button>
