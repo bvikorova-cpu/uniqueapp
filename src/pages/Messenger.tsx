@@ -995,6 +995,34 @@ const Messenger = () => {
     if (cameraInputRef.current) cameraInputRef.current.value = '';
   };
 
+  /** Sends a capture from the AR camera as a normal attachment. */
+  const sendArCapture = async (file: File, kind: "photo" | "video") => {
+    if (!selectedConversation || !user) return;
+    const attachmentType = kind === "video" ? "video" : "image";
+    const fileName = `${user.id}/${Date.now()}_${safeAttachmentName(file.name)}`;
+    setUploadingAttachment(true);
+    const { error: uploadError } = await supabase.storage
+      .from("messenger-attachments")
+      .upload(fileName, file, { contentType: file.type || "application/octet-stream", upsert: false });
+    if (uploadError) {
+      setUploadingAttachment(false);
+      toast({ title: "Error", description: "Failed to upload AR capture", variant: "destructive" });
+      return;
+    }
+    const { error } = await supabase.from("messages").insert({
+      conversation_id: selectedConversation,
+      sender_id: user.id,
+      content: attachmentType === "video" ? "🎬 AR video" : "📷 AR photo",
+      attachment_url: `messenger-attachments/${fileName}`,
+      attachment_type: attachmentType,
+      reply_to_id: replyingTo?.id || null });
+    if (error) {
+      toast({ title: "Error", description: "Failed to send AR capture", variant: "destructive" });
+    }
+    setUploadingAttachment(false);
+    setReplyingTo(null);
+  };
+
 
 
   const filteredUsers = searchResults;
