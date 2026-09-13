@@ -510,6 +510,110 @@ interface DmMessage {
   mine: boolean;
 }
 
+interface LoungeContact {
+  id: string;
+  otherMemberId: string;
+  nickname: string;
+  status: "pending" | "accepted";
+  direction: "incoming" | "outgoing";
+  sharedRooms: RoomId[];
+}
+
+function KnownPeople({ callLounge, onMessage }: {
+  callLounge: (p: Record<string, unknown>) => Promise<any>;
+  onMessage: (person: { memberId: string; nickname: string }) => void;
+}) {
+  const [contacts, setContacts] = useState<LoungeContact[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [workingId, setWorkingId] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    try {
+      const result = await callLounge({ action: "contacts_list" });
+      setContacts(result.contacts ?? []);
+    } catch {
+      toast.error("Known People could not be loaded.");
+    } finally {
+      setLoading(false);
+    }
+  }, [callLounge]);
+
+  useEffect(() => {
+    load();
+    const timer = window.setInterval(load, 5000);
+    return () => window.clearInterval(timer);
+  }, [load]);
+
+  const respond = async (contactId: string, decision: "accept" | "decline") => {
+    setWorkingId(contactId);
+    try {
+      await callLounge({ action: "contact_respond", contactId, decision });
+      toast.success(decision === "accept" ? "Added to Known People" : "Request declined");
+      await load();
+    } catch {
+      toast.error("Request could not be updated.");
+    } finally {
+      setWorkingId(null);
+    }
+  };
+
+  const incoming = contacts.filter((c) => c.status === "pending" && c.direction === "incoming");
+  const outgoing = contacts.filter((c) => c.status === "pending" && c.direction === "outgoing");
+  const accepted = contacts.filter((c) => c.status === "accepted");
+  const roomLabel = (id: RoomId) => ROOMS.find((r) => r.id === id)?.label ?? id;
+
+  return (
+    <div className="rounded-2xl border bg-card flex flex-col h-full w-full max-w-2xl mx-auto min-h-0">
+      <div className="px-4 py-2 border-b shrink-0">
+        <p className="font-bold text-sm flex items-center gap-1.5"><UserPlus className="h-4 w-4 text-primary" /> Known People</p>
+        <p className="text-xs text-muted-foreground">Lounge nicknames only · profiles and real identities stay hidden</p>
+      </div>
+      <div className="flex-1 overflow-y-auto p-3 space-y-4 min-h-0">
+        {loading && <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-primary" /></div>}
+        {!loading && contacts.length === 0 && <p className="text-sm text-muted-foreground text-center py-10">Add someone from a room to keep in touch anonymously.</p>}
+
+        {incoming.length > 0 && <section>
+          <h3 className="text-xs font-bold text-muted-foreground mb-2">Requests received</h3>
+          <div className="space-y-2">{incoming.map((contact) => (
+            <div key={contact.id} className="rounded-xl border p-3 flex items-center justify-between gap-2">
+              <span className="text-sm font-semibold truncate">{contact.nickname}</span>
+              <div className="flex gap-1">
+                <Button size="icon" className="h-8 w-8" disabled={workingId === contact.id} onClick={() => respond(contact.id, "accept")} aria-label={`Accept ${contact.nickname}`}><Check className="h-4 w-4" /></Button>
+                <Button size="icon" variant="outline" className="h-8 w-8" disabled={workingId === contact.id} onClick={() => respond(contact.id, "decline")} aria-label={`Decline ${contact.nickname}`}><X className="h-4 w-4" /></Button>
+              </div>
+            </div>
+          ))}</div>
+        </section>}
+
+        {accepted.length > 0 && <section>
+          <h3 className="text-xs font-bold text-muted-foreground mb-2">Your known people</h3>
+          <div className="space-y-2">{accepted.map((contact) => (
+            <div key={contact.id} className="rounded-xl border p-3">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-sm font-semibold truncate">{contact.nickname}</span>
+                <Button size="sm" variant="outline" onClick={() => onMessage({ memberId: contact.otherMemberId, nickname: contact.nickname })}><MailPlus className="h-3.5 w-3.5 mr-1" /> Message</Button>
+              </div>
+              <p className="mt-1.5 text-xs text-muted-foreground">
+                {contact.sharedRooms.length ? `Rooms you both visited: ${contact.sharedRooms.map(roomLabel).join(", ")}` : "No shared rooms yet"}
+              </p>
+            </div>
+          ))}</div>
+        </section>}
+
+        {outgoing.length > 0 && <section>
+          <h3 className="text-xs font-bold text-muted-foreground mb-2">Requests sent</h3>
+          <div className="space-y-2">{outgoing.map((contact) => (
+            <div key={contact.id} className="rounded-xl border p-3 flex items-center justify-between gap-2">
+              <span className="text-sm font-semibold truncate">{contact.nickname}</span>
+              <span className="text-xs text-muted-foreground">Waiting</span>
+            </div>
+          ))}</div>
+        </section>}
+      </div>
+    </div>
+  );
+}
+
 function PrivateChats({ callLounge, target, setTarget }: {
   callLounge: (p: Record<string, unknown>) => Promise<any>;
   target: { memberId: string; nickname: string } | null;
