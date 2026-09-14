@@ -39,7 +39,36 @@ serve(async (req) => {
     }
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-    const account = await stripe.accounts.retrieve(profile.stripe_connect_account_id);
+
+    let account;
+    try {
+      account = await stripe.accounts.retrieve(profile.stripe_connect_account_id);
+    } catch (err) {
+      const m = err instanceof Error ? err.message : String(err);
+      const modeMismatch = /testmode|live mode|test mode|similar object exists in/i.test(m);
+      const missing = /No such account/i.test(m);
+      if (modeMismatch || missing) {
+        // Stored account belongs to the other Stripe mode (or no longer exists) — reset so the user can re-onboard.
+        await supabaseClient
+          .from("profiles")
+          .update({
+            stripe_connect_account_id: null,
+            stripe_connect_charges_enabled: false,
+            stripe_connect_payouts_enabled: false,
+            stripe_connect_onboarding_complete: false,
+          })
+          .eq("id", u.user.id);
+        return new Response(JSON.stringify({
+          has_account: false,
+          charges_enabled: false,
+          payouts_enabled: false,
+          onboarding_complete: false,
+          reset_reason: modeMismatch ? "stripe_mode_mismatch" : "account_missing",
+        }), { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 });
+      }
+      throw err;
+    }
+
     const onboardingComplete = !!account.details_submitted;
 
     // Sync to profile

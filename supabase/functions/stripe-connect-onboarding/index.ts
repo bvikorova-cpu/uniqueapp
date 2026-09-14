@@ -38,11 +38,30 @@ serve(async (req) => {
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const origin = req.headers.get("origin") || "https://uniqueapp.fun";
 
-    const link = await stripe.accountLinks.create({
-      account: profile.stripe_connect_account_id,
-      refresh_url: `${origin}/profile?connect=refresh`,
-      return_url: `${origin}/profile?connect=success`,
-      type: "account_onboarding" });
+    let link;
+    try {
+      link = await stripe.accountLinks.create({
+        account: profile.stripe_connect_account_id,
+        refresh_url: `${origin}/profile?connect=refresh`,
+        return_url: `${origin}/profile?connect=success`,
+        type: "account_onboarding" });
+    } catch (err) {
+      const m = err instanceof Error ? err.message : String(err);
+      if (/testmode|live mode|test mode|similar object exists in|No such account/i.test(m)) {
+        await supabaseClient
+          .from("profiles")
+          .update({
+            stripe_connect_account_id: null,
+            stripe_connect_charges_enabled: false,
+            stripe_connect_payouts_enabled: false,
+            stripe_connect_onboarding_complete: false,
+          })
+          .eq("id", u.user.id);
+        return new Response(JSON.stringify({ error: "stripe_mode_mismatch", message: "Payout account was reset. Please start the setup again." }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 409 });
+      }
+      throw err;
+    }
 
     return new Response(JSON.stringify({ url: link.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
