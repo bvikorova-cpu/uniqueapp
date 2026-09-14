@@ -48,6 +48,62 @@ export const CATEGORY_TEASERS = {
     outro: "This could be your moment.",
     accent: "#d7a83b",
   },
+  vip: {
+    label: "VIP Membership Group",
+    hook: "STEP INSIDE THE CIRCLE.",
+    lines: ["Exclusive space for members only", "Early access to new features", "Premium perks every month"],
+    outro: "Membership has its privileges.",
+    accent: "#e8bf5a",
+  },
+  eco: {
+    label: "Eco Challenge",
+    hook: "SMALL ACTS. REAL IMPACT.",
+    lines: ["Take on green challenges", "Share your proof and inspire others", "Part of every pool goes to charity"],
+    outro: "Do good, get rewarded.",
+    accent: "#4ade80",
+  },
+  health: {
+    label: "Health Challenge",
+    hook: "STRONGER EVERY DAY.",
+    lines: ["Join challenges that keep you moving", "Track progress with the community", "Win while supporting a good cause"],
+    outro: "Your best shape starts now.",
+    accent: "#37c9e8",
+  },
+  clipbattles: {
+    label: "Clip Battles",
+    hook: "TWO CLIPS. ONE WINNER.",
+    lines: ["Upload your best short clip", "Go head to head with creators", "The community picks the champion"],
+    outro: "Let your clip do the talking.",
+    accent: "#ff4d8d",
+  },
+  education: {
+    label: "Education Hub",
+    hook: "LEARN. LEVEL UP.",
+    lines: ["Courses across dozens of topics", "Tests and certificates included", "Teach and earn from your own course"],
+    outro: "Knowledge that pays off.",
+    accent: "#6ea8ff",
+  },
+  mentor: {
+    label: "Personal Mentor",
+    hook: "GUIDANCE THAT FITS YOU.",
+    lines: ["Get a plan built around your goals", "Ask anything, anytime", "Stay accountable week by week"],
+    outro: "Your mentor is ready.",
+    accent: "#f0a35e",
+  },
+  brainduel: {
+    label: "Brain Duel",
+    hook: "THINK FAST. WIN BIG.",
+    lines: ["Live quiz duels in real time", "Dozens of knowledge categories", "Climb the leaderboard with every win"],
+    outro: "Prove who is sharper.",
+    accent: "#4fa8ff",
+  },
+  diceduel: {
+    label: "Dice Trail Duel",
+    hook: "ROLL. RACE. RULE.",
+    lines: ["Real-time duel for two players", "Every roll changes the race", "Traps and boosts on the trail"],
+    outro: "Your turn to roll.",
+    accent: "#a78bfa",
+  },
 } as const;
 
 export type CategoryTeaserId = keyof typeof CATEGORY_TEASERS;
