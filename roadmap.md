@@ -17,3 +17,4 @@
 - [x] Correct “Unique” and “uniqueapp.fun” pronunciation in Slovak and Hungarian teaser videos.
 
 - [x] Create seven 10-second English category videos: Wall, Messenger, Games, Jobs, Rewards, Promotions, Megatalent
+- [x] Create eight 10-second English videos: VIP Membership Group, Eco Challenge, Health Challenge, Clip Battles, Education Hub, Personal Mentor, Brain Duel, Dice Trail Duel
