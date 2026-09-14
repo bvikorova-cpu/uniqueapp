@@ -78,9 +78,27 @@ function buildPrompt(row: any, step: number, photoCount = 0): string {
   return bits.join(" ");
 }
 
-async function startStep(row: any, step: number, videoBase64?: string) {
+type Photo = { base64: string; mime: string };
+
+/** Parse incoming data URLs / raw base64 into Veo image inputs (max 2). */
+function parsePhotos(input: unknown): Photo[] {
+  if (!Array.isArray(input)) return [];
+  const out: Photo[] = [];
+  for (const raw of input.slice(0, 2)) {
+    if (typeof raw !== "string" || !raw.length) continue;
+    const m = raw.match(/^data:(image\/(?:jpeg|jpg|png|webp));base64,(.+)$/i);
+    const mime = m ? m[1].replace("image/jpg", "image/jpeg") : "image/jpeg";
+    const base64 = m ? m[2] : raw;
+    if (base64.length > 8_000_000) continue; // ~6MB image, keeps the request small
+    out.push({ base64, mime });
+  }
+  return out;
+}
+
+async function startStep(row: any, step: number, videoBase64?: string, photos: Photo[] = []) {
+  const usePhotos = step === 0 && !videoBase64 ? photos : [];
   return await startVertexVideo({
-    prompt: buildPrompt(row, step),
+    prompt: buildPrompt(row, step, usePhotos.length),
     durationSeconds: step === 0 ? BASE_SECONDS : EXTEND_SECONDS,
     aspectRatio: row.aspect_ratio || "9:16",
     models: VEO_LITE_MODELS,
@@ -88,6 +106,13 @@ async function startStep(row: any, step: number, videoBase64?: string) {
     generateAudio: true,
     negativePrompt: "text, captions, subtitles, watermark, logo, nudity, violence",
     ...(videoBase64 ? { videoBase64, videoMime: "video/mp4" } : {}),
+    ...(usePhotos.length
+      ? {
+        imageBase64: usePhotos[0].base64,
+        imageMime: usePhotos[0].mime,
+        ...(usePhotos[1] ? { lastFrameBase64: usePhotos[1].base64, lastFrameMime: usePhotos[1].mime } : {}),
+      }
+      : {}),
   });
 }
 
