@@ -42,7 +42,7 @@ const Feature: React.FC<{ id: CategoryTeaserId }> = ({ id }) => {
   return (
     <AbsoluteFill style={{ background: "#09050c", overflow: "hidden" }}>
       <Img src={staticFile(`category-teasers/${id}.jpg`)} style={{ width: "100%", height: "100%", objectFit: "cover", transform: `scale(${zoom}) translateY(${pan}px)` }} />
-      <AbsoluteFill style={{ background: "linear-gradient(180deg,rgba(8,3,12,.78),rgba(8,3,12,.05) 38%,rgba(8,3,12,.68) 68%,rgba(8,3,12,.98))".replace(".98))", ".98)") }} />
+      <AbsoluteFill style={{ background: "linear-gradient(180deg,rgba(8,3,12,.78),rgba(8,3,12,.05) 38%,rgba(8,3,12,.68) 68%,rgba(8,3,12,.98))" }} />
       <div style={{ position: "absolute", top: 54, left: 54, right: 54, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <Brand compact />
         <div style={{ fontFamily: body, fontWeight: 800, fontSize: 29, color: "#fff", border: `2px solid ${item.accent}`, borderRadius: 28, padding: "10px 20px", background: "rgba(8,3,12,.55)" }}>uniqueapp.fun</div>
