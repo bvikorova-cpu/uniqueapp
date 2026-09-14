@@ -22,5 +22,14 @@ export const TeaserRoot: React.FC = () => (
       height={1920}
       defaultProps={{ lang: "sk" as const }}
     />
+    <Composition
+      id="unique-teaser-hu"
+      component={UniqueTeaser}
+      durationInFrames={teaserDuration("hu")}
+      fps={30}
+      width={1080}
+      height={1920}
+      defaultProps={{ lang: "hu" as const }}
+    />
   </>
 );

@@ -1,4 +1,4 @@
-export type TeaserLang = "en" | "sk";
+export type TeaserLang = "en" | "sk" | "hu";
 
 export type TeaserCardText = { title: string; items: string[] };
 
@@ -34,5 +34,17 @@ export const TEASER_COPY: Record<TeaserLang, TeaserCopy> = {
     outro: { cta: "Pripoj sa dnes a začni zarábať" },
     voice: "teaser-voice/sk.mp3",
     extraFrames: 45,
+  },
+  hu: {
+    intro: { tagline: "Üdv — egy app, sok lehetőség a keresetre" },
+    cards: [
+      { title: "Közösségi fal", items: ["Posztok, sztorik és reelsek", "AI viralitás-előrejelző"] },
+      { title: "AI stúdió", items: ["Fotó, videó és tartalom", "Okos asszisztensek"] },
+      { title: "Tanulj, játssz, ismerkedj", items: ["Kurzusok, gyerekhub, játékok", "Társkeresés és barátok"] },
+      { title: "Szerezz valódi eurót", items: ["Ajándékok • 50% kifizetés", "Piactér, szolgáltatások, kurzusok"] },
+    ],
+    outro: { cta: "Csatlakozz ma és kezdj keresni" },
+    voice: "teaser-voice/hu.mp3",
+    extraFrames: 74,
   },
 };
