@@ -139,7 +139,7 @@ const IntroScene: React.FC<{ tagline: string }> = ({ tagline }) => {
             opacity: interpolate(frame, [16, 34], [0, 1], { extrapolateRight: "clamp" }),
           }}
         >
-          Welcome — one app, endless ways to earn
+          {tagline}
         </div>
       </AbsoluteFill>
     </AbsoluteFill>
