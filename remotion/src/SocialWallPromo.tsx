@@ -46,7 +46,9 @@ const rawScenes: SceneDef[] = [
   { seconds: 5.04, image: "img_9_1789373321076.jpg", kicker: "CONTROL & PEACE OF MIND", title: "SAFE COMMUNITY", copy: "Built-in tools put you in control", accent: "#20c47a" },
   { seconds: 5.04, image: "creator-earnings.jpg", photo: true, kicker: "JOIN TODAY", title: "CREATE. GROW.\nSTART EARNING.", copy: "uniqueapp.fun", accent: "#f1bd2d" },
   { seconds: 3.6, logo: true, kicker: "JOIN TODAY", title: "uniqueapp.fun", copy: "Your feed. Your rules. Your income.", accent: "#e83ad3" },
-].map((scene, index) => ({ ...scene, index, frames: Math.ceil(scene.seconds * FPS) + PAD }));
+];
+
+const scenes = rawScenes.map((scene, index) => ({ ...scene, index, frames: Math.ceil(scene.seconds * FPS) + PAD }));
 
 export const SOCIAL_WALL_PROMO_DURATION = scenes.reduce((sum, scene) => sum + scene.frames, 0);
 
