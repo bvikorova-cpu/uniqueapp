@@ -534,6 +534,12 @@ export async function startVertexVideo(opts: {
   generateAudio?: boolean;
   videoBase64?: string;
   videoMime?: string;
+  /** First frame for image-to-video (raw base64, no data: prefix). */
+  imageBase64?: string;
+  imageMime?: string;
+  /** Optional final frame — Veo interpolates between the two photos. */
+  lastFrameBase64?: string;
+  lastFrameMime?: string;
 }): Promise<{ operationName: string; model: string; location: string } | null> {
   const sa = getServiceAccount();
   const projectId = sa ? (Deno.env.get("GCP_PROJECT_ID") || sa.project_id) : null;
@@ -542,12 +548,24 @@ export async function startVertexVideo(opts: {
   const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
 
   const isExtension = !!opts.videoBase64;
+  const hasImage = !isExtension && !!opts.imageBase64;
   const instance: Record<string, unknown> = { prompt: opts.prompt };
   if (isExtension) {
     instance.video = {
       bytesBase64Encoded: opts.videoBase64,
       mimeType: opts.videoMime ?? "video/mp4",
     };
+  } else if (hasImage) {
+    instance.image = {
+      bytesBase64Encoded: opts.imageBase64,
+      mimeType: opts.imageMime ?? "image/jpeg",
+    };
+    if (opts.lastFrameBase64) {
+      instance.lastFrame = {
+        bytesBase64Encoded: opts.lastFrameBase64,
+        mimeType: opts.lastFrameMime ?? "image/jpeg",
+      };
+    }
   }
 
   for (const model of (opts.models?.length ? opts.models : VEO_MODELS)) {
@@ -563,8 +581,8 @@ export async function startVertexVideo(opts: {
             instances: [instance],
             parameters: {
               durationSeconds: isExtension ? 7 : Math.min(Math.max(opts.durationSeconds ?? 8, 4), 8),
-              // Veo derives the orientation from the source clip on an extension.
-              ...(isExtension ? {} : { aspectRatio: opts.aspectRatio ?? "9:16" }),
+              // Veo derives the orientation from the source clip / photo.
+              ...(isExtension || hasImage ? {} : { aspectRatio: opts.aspectRatio ?? "9:16" }),
               sampleCount: 1,
               generateAudio: opts.generateAudio ?? true,
               personGeneration: "allow_adult",
@@ -601,15 +619,28 @@ async function startGeminiVideo(opts: {
   negativePrompt?: string;
   videoBase64?: string;
   videoMime?: string;
+  imageBase64?: string;
+  imageMime?: string;
+  lastFrameBase64?: string;
+  lastFrameMime?: string;
 }): Promise<{ operationName: string; model: string; location: string } | null> {
   const key = Deno.env.get("GEMINI_API_KEY");
   if (!key) return null;
   const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
 
   const isExtension = !!opts.videoBase64;
+  const hasImage = !isExtension && !!opts.imageBase64;
   const instance: Record<string, unknown> = { prompt: opts.prompt };
   if (isExtension) {
     instance.video = { bytesBase64Encoded: opts.videoBase64, mimeType: opts.videoMime ?? "video/mp4" };
+  } else if (hasImage) {
+    instance.image = { bytesBase64Encoded: opts.imageBase64, mimeType: opts.imageMime ?? "image/jpeg" };
+    if (opts.lastFrameBase64) {
+      instance.lastFrame = {
+        bytesBase64Encoded: opts.lastFrameBase64,
+        mimeType: opts.lastFrameMime ?? "image/jpeg",
+      };
+    }
   }
 
   const models = (opts.models?.length ? opts.models : VEO_LITE_MODELS);
@@ -617,6 +648,15 @@ async function startGeminiVideo(opts: {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:predictLongRunning`;
     const paramSets = isExtension
       ? [{ durationSeconds: 7, ...(opts.resolution ? { resolution: opts.resolution } : {}) }, { durationSeconds: 7 }]
+      : hasImage
+      ? [
+        {
+          durationSeconds: Math.min(Math.max(opts.durationSeconds ?? 8, 4), 8),
+          ...(opts.resolution ? { resolution: opts.resolution } : {}),
+          ...(opts.negativePrompt ? { negativePrompt: opts.negativePrompt } : {}),
+        },
+        { durationSeconds: 8 },
+      ]
       : [
         {
           durationSeconds: Math.min(Math.max(opts.durationSeconds ?? 8, 4), 8),

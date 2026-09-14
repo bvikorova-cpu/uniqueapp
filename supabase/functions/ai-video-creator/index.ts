@@ -38,9 +38,19 @@ function baseStory(row: any): string {
   return bits.join(" ");
 }
 
-function buildPrompt(row: any, step: number): string {
+function buildPrompt(row: any, step: number, photoCount = 0): string {
   const bits: string[] = [];
-  if (step === 0) {
+  if (step === 0 && photoCount > 0) {
+    // Image-to-video: the photo fixes subject, place and style — describe motion only.
+    bits.push(`Animate the supplied photo into one continuous shot: ${row.topic}.`);
+    if (photoCount > 1) {
+      bits.push("Move naturally from the first photo to the last photo in a single smooth shot.");
+    }
+    bits.push(baseStory(row));
+    bits.push(
+      "Keep the people, faces, clothing, product and background of the photo unchanged — only camera movement and natural motion are added. No cuts, no scene changes.",
+    );
+  } else if (step === 0) {
     bits.push(`One continuous story: ${row.topic}.`);
     bits.push(baseStory(row));
     bits.push(
@@ -68,9 +78,27 @@ function buildPrompt(row: any, step: number): string {
   return bits.join(" ");
 }
 
-async function startStep(row: any, step: number, videoBase64?: string) {
+type Photo = { base64: string; mime: string };
+
+/** Parse incoming data URLs / raw base64 into Veo image inputs (max 2). */
+function parsePhotos(input: unknown): Photo[] {
+  if (!Array.isArray(input)) return [];
+  const out: Photo[] = [];
+  for (const raw of input.slice(0, 2)) {
+    if (typeof raw !== "string" || !raw.length) continue;
+    const m = raw.match(/^data:(image\/(?:jpeg|jpg|png|webp));base64,(.+)$/i);
+    const mime = m ? m[1].replace("image/jpg", "image/jpeg") : "image/jpeg";
+    const base64 = m ? m[2] : raw;
+    if (base64.length > 8_000_000) continue; // ~6MB image, keeps the request small
+    out.push({ base64, mime });
+  }
+  return out;
+}
+
+async function startStep(row: any, step: number, videoBase64?: string, photos: Photo[] = []) {
+  const usePhotos = step === 0 && !videoBase64 ? photos : [];
   return await startVertexVideo({
-    prompt: buildPrompt(row, step),
+    prompt: buildPrompt(row, step, usePhotos.length),
     durationSeconds: step === 0 ? BASE_SECONDS : EXTEND_SECONDS,
     aspectRatio: row.aspect_ratio || "9:16",
     models: VEO_LITE_MODELS,
@@ -78,6 +106,13 @@ async function startStep(row: any, step: number, videoBase64?: string) {
     generateAudio: true,
     negativePrompt: "text, captions, subtitles, watermark, logo, nudity, violence",
     ...(videoBase64 ? { videoBase64, videoMime: "video/mp4" } : {}),
+    ...(usePhotos.length
+      ? {
+        imageBase64: usePhotos[0].base64,
+        imageMime: usePhotos[0].mime,
+        ...(usePhotos[1] ? { lastFrameBase64: usePhotos[1].base64, lastFrameMime: usePhotos[1].mime } : {}),
+      }
+      : {}),
   });
 }
 
@@ -124,8 +159,12 @@ serve(async (req) => {
       const plan = PLANS[duration];
       const cost = plan.cost;
 
-      const topic = String(body?.topic ?? "").trim();
-      if (topic.length < 3) return json({ error: "Please describe what the video is about." }, 400);
+      const photos = parsePhotos(body?.photos);
+      let topic = String(body?.topic ?? "").trim();
+      if (topic.length < 3) {
+        if (!photos.length) return json({ error: "Please describe what the video is about." }, 400);
+        topic = "Bring this photo to life with gentle, natural cinematic motion";
+      }
 
       const payload = {
         topic,
@@ -176,7 +215,7 @@ serve(async (req) => {
         return json({ error: "Could not start the video job." }, 500);
       }
 
-      const op = await startStep(row, 0);
+      const op = await startStep(row, 0, undefined, photos);
       if (!op) {
         await supabase.rpc("add_ai_credits", {
           p_user_id: user.id, p_amount: cost,

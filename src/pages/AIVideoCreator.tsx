@@ -15,8 +15,9 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
   Clapperboard, Film, Loader2, Mic, Music, Sparkles, Wand2, Zap, ShieldCheck,
-  Smartphone, Monitor, Clock, Trash2, BadgeCheck,
+  Smartphone, Monitor, Clock, Trash2, BadgeCheck, ImagePlus, X,
 } from "lucide-react";
+import { uprightImageWithSize, fileToDataUrl } from "@/utils/imageUploadPrep";
 import heroAsset from "@/assets/section-videos/ai-video-creator.mp4.asset.json";
 
 /**
@@ -82,6 +83,9 @@ const AIVideoCreator = () => {
   const [aspectRatio, setAspectRatio] = useState<"9:16" | "16:9">("9:16");
   const [submitting, setSubmitting] = useState(false);
   const [creations, setCreations] = useState<Creation[]>([]);
+  const [photos, setPhotos] = useState<string[]>([]);
+  const [preparingPhotos, setPreparingPhotos] = useState(false);
+  const fileRef = useRef<HTMLInputElement | null>(null);
   const pollRef = useRef<number | null>(null);
 
   const [duration, setDuration] = useState(DURATIONS[0].seconds);
@@ -123,15 +127,41 @@ const AIVideoCreator = () => {
     };
   }, [creations, load, refresh]);
 
+  const handlePhotoPick = async (files: FileList | null) => {
+    if (!files?.length) return;
+    setPreparingPhotos(true);
+    try {
+      const room = 2 - photos.length;
+      if (room <= 0) { toast.error("You can use up to 2 photos."); return; }
+      const picked = Array.from(files).slice(0, room);
+      const prepared: string[] = [];
+      for (const f of picked) {
+        if (!f.type.startsWith("image/")) continue;
+        const { file } = await uprightImageWithSize(f);
+        prepared.push(await fileToDataUrl(file));
+      }
+      if (!prepared.length) { toast.error("Please choose a photo (JPG, PNG or WebP)."); return; }
+      setPhotos((prev) => [...prev, ...prepared].slice(0, 2));
+    } catch {
+      toast.error("Could not read that photo.");
+    } finally {
+      setPreparingPhotos(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  };
+
   const handleGenerate = async () => {
     if (!user) { toast.error("Please log in first."); return; }
-    if (topic.trim().length < 3) { toast.error("Describe what the video should be about."); return; }
+    if (!photos.length && topic.trim().length < 3) {
+      toast.error("Describe what the video should be about, or add a photo.");
+      return;
+    }
     if (totalBalance < cost) { toast.error(`You need ${cost} credits for a ${duration}s clip.`); return; }
 
     setSubmitting(true);
     try {
       const { data, error } = await supabase.functions.invoke("ai-video-creator", {
-        body: { action: "create", topic, scene, style, narration, music, aspectRatio, duration },
+        body: { action: "create", topic, scene, style, narration, music, aspectRatio, duration, photos },
       });
       if (error) throw new Error(error.message);
       if ((data as any)?.error) throw new Error((data as any).error);
@@ -204,7 +234,7 @@ const AIVideoCreator = () => {
           </CardHeader>
           <CardContent className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-4">
             {[
-              { icon: Wand2, t: "1. Describe it", d: "Topic, scene and visual style." },
+              { icon: Wand2, t: "1. Describe or add photos", d: "Topic, scene, style — or up to 2 of your own photos." },
               { icon: Mic, t: "2. Add text", d: "Type what should appear in the video." },
               { icon: Music, t: "3. Pick music", d: "Choose a soundtrack mood." },
               { icon: Clapperboard, t: "4. Get your clip", d: "Ready in a few minutes, watermark-free MP4." },
@@ -234,6 +264,48 @@ const AIVideoCreator = () => {
                   placeholder="A woman feeding pigeons in the park, then coming home to a warm cup of tea"
                   rows={3} maxLength={600}
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="flex items-center gap-1.5">
+                  <ImagePlus className="h-4 w-4 text-primary" /> Your photos (optional)
+                </Label>
+                <div className="flex flex-wrap items-center gap-2">
+                  {photos.map((src, i) => (
+                    <div key={i} className="relative h-24 w-20 overflow-hidden rounded-xl border border-border">
+                      <img src={src} alt={i === 0 ? "First frame photo" : "Last frame photo"} className="h-full w-full object-cover" />
+                      <span className="absolute bottom-0 left-0 right-0 bg-background/80 py-0.5 text-center text-[10px] font-bold text-foreground">
+                        {i === 0 ? "Start" : "End"}
+                      </span>
+                      <button
+                        type="button" aria-label="Remove photo"
+                        onClick={() => setPhotos((prev) => prev.filter((_, j) => j !== i))}
+                        className="absolute right-1 top-1 rounded-full bg-background/90 p-1 text-foreground shadow"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
+                  {photos.length < 2 && (
+                    <button
+                      type="button" onClick={() => fileRef.current?.click()} disabled={preparingPhotos}
+                      className="flex h-24 w-20 flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-primary/40 bg-background/60 text-[11px] font-semibold text-primary transition-colors hover:bg-primary/5"
+                    >
+                      {preparingPhotos
+                        ? <Loader2 className="h-5 w-5 animate-spin" />
+                        : <><ImagePlus className="h-5 w-5" /> Add photo</>}
+                    </button>
+                  )}
+                </div>
+                <input
+                  ref={fileRef} type="file" accept="image/*" multiple className="hidden"
+                  onChange={(e) => handlePhotoPick(e.target.files)}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Add 1 photo and AI animates it into a video. Add 2 photos and the video moves smoothly
+                  from the first one to the second. People, products and background stay as on the photo —
+                  the format follows your photo.
+                </p>
               </div>
 
               <div className="space-y-1.5">
@@ -363,7 +435,7 @@ const AIVideoCreator = () => {
 
               <Button
                 onClick={handleGenerate}
-                disabled={submitting || !topic.trim()}
+                disabled={submitting || preparingPhotos || (!topic.trim() && !photos.length)}
                 className="h-12 w-full text-base font-bold"
               >
                 {submitting
