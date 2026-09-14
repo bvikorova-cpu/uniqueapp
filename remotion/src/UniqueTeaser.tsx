@@ -233,7 +233,7 @@ const CardScene: React.FC<{ card: Card }> = ({ card }) => {
   );
 };
 
-const OutroScene: React.FC = () => {
+const OutroScene: React.FC<{ cta: string }> = ({ cta }) => {
   const frame = useCurrentFrame();
   const pop = spring({ frame, fps: FPS, config: { damping: 14, stiffness: 130 } });
   return (
