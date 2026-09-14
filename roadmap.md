@@ -12,3 +12,4 @@
   - Admin payout screens show winner + charity amounts and IBAN.
 
 - [x] Create and deliver a screenshot example of the €50 promotional flyer from Promotions for Facebook.
+- [x] Match €50 TOP cards in Promotions with the yellow sponsored header used in the Wall feed.
