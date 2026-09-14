@@ -224,7 +224,8 @@ export default function PromotionsBoard() {
   });
 
   const topListings = filtered.filter((l) => l.tier === "top");
-  const standardListings = filtered.filter((l) => l.tier !== "top");
+  const standardListings = filtered.filter((l) => l.tier === "standard");
+  const otherListings = filtered.filter((l) => l.tier !== "top" && l.tier !== "standard");
 
   return (
     <div className="min-h-screen bg-background">
