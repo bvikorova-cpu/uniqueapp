@@ -127,15 +127,41 @@ const AIVideoCreator = () => {
     };
   }, [creations, load, refresh]);
 
+  const handlePhotoPick = async (files: FileList | null) => {
+    if (!files?.length) return;
+    setPreparingPhotos(true);
+    try {
+      const room = 2 - photos.length;
+      if (room <= 0) { toast.error("You can use up to 2 photos."); return; }
+      const picked = Array.from(files).slice(0, room);
+      const prepared: string[] = [];
+      for (const f of picked) {
+        if (!f.type.startsWith("image/")) continue;
+        const { file } = await uprightImageWithSize(f);
+        prepared.push(await fileToDataUrl(file));
+      }
+      if (!prepared.length) { toast.error("Please choose a photo (JPG, PNG or WebP)."); return; }
+      setPhotos((prev) => [...prev, ...prepared].slice(0, 2));
+    } catch {
+      toast.error("Could not read that photo.");
+    } finally {
+      setPreparingPhotos(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  };
+
   const handleGenerate = async () => {
     if (!user) { toast.error("Please log in first."); return; }
-    if (topic.trim().length < 3) { toast.error("Describe what the video should be about."); return; }
+    if (!photos.length && topic.trim().length < 3) {
+      toast.error("Describe what the video should be about, or add a photo.");
+      return;
+    }
     if (totalBalance < cost) { toast.error(`You need ${cost} credits for a ${duration}s clip.`); return; }
 
     setSubmitting(true);
     try {
       const { data, error } = await supabase.functions.invoke("ai-video-creator", {
-        body: { action: "create", topic, scene, style, narration, music, aspectRatio, duration },
+        body: { action: "create", topic, scene, style, narration, music, aspectRatio, duration, photos },
       });
       if (error) throw new Error(error.message);
       if ((data as any)?.error) throw new Error((data as any).error);
