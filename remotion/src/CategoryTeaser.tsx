@@ -93,12 +93,18 @@ const Outro: React.FC<{ id: CategoryTeaserId }> = ({ id }) => {
   );
 };
 
-export const CategoryTeaser: React.FC<{ id: CategoryTeaserId }> = ({ id }) => (
-  <AbsoluteFill style={{ background: "#09050c" }}>
-    <Audio src={staticFile("wallguide/music.mp3")} volume={0.13} loop />
-    <Audio src={staticFile(`category-teasers/voice/${id}.mp3`)} volume={1} />
-    <Sequence from={0} durationInFrames={56}><Intro accent={CATEGORY_TEASERS[id].accent} /></Sequence>
-    <Sequence from={50} durationInFrames={196}><Feature id={id} /></Sequence>
-    <Sequence from={238} durationInFrames={62}><Outro id={id} /></Sequence>
-  </AbsoluteFill>
-);
+export const CategoryTeaser: React.FC<{ id: CategoryTeaserId }> = ({ id }) => {
+  const total = getCategoryTeaserDuration(id);
+  const outroLen = 62;
+  const featureFrom = 50;
+  const featureLen = total - outroLen - featureFrom + 12;
+  return (
+    <AbsoluteFill style={{ background: "#09050c" }}>
+      <Audio src={staticFile("wallguide/music.mp3")} volume={0.13} loop />
+      <Audio src={staticFile(`category-teasers/voice/${id}.mp3`)} volume={1} />
+      <Sequence from={0} durationInFrames={56}><Intro accent={CATEGORY_TEASERS[id].accent} /></Sequence>
+      <Sequence from={featureFrom} durationInFrames={featureLen}><Feature id={id} len={featureLen} /></Sequence>
+      <Sequence from={total - outroLen} durationInFrames={outroLen}><Outro id={id} /></Sequence>
+    </AbsoluteFill>
+  );
+};
