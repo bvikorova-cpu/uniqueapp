@@ -1,6 +1,6 @@
 import React from "react";
 import { Composition } from "remotion";
-import { CategoryTeaser, CATEGORY_TEASER_DURATION } from "./CategoryTeaser";
+import { CategoryTeaser, getCategoryTeaserDuration } from "./CategoryTeaser";
 import { CATEGORY_TEASERS, CategoryTeaserId } from "./categoryTeaserData";
 
 export const CategoryTeaserRoot: React.FC = () => (
