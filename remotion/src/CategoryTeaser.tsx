@@ -41,6 +41,17 @@ export const CATEGORY_TEASER_DURATIONS: Record<string, number> = {
   reversevideo: 450,
   aitattoo: 450,
   aiclone: 450,
+  pettranslator: 450,
+  handwriting: 450,
+  futureface: 450,
+  photorestoration: 450,
+  stocklibrary: 450,
+  brandbuilder: 450,
+  homedesigner: 450,
+  beautystudio: 450,
+  fashionstudio: 450,
+  guessage: 450,
+  faceinsight: 450,
 };
 
 export const getCategoryTeaserDuration = (id: string) =>

@@ -47,6 +47,17 @@ for (const id of ids) {
     reversevideo: "Reverse-Video",
     aitattoo: "AI-Tattoo-Designer",
     aiclone: "AI-Personality-Clone",
+    pettranslator: "AI-Pet-Translator",
+    handwriting: "Handwriting-Analyzer",
+    futureface: "Future-Face",
+    photorestoration: "Photo-Restoration",
+    stocklibrary: "Stock-Content-Library",
+    brandbuilder: "Brand-Builder",
+    homedesigner: "Home-Designer",
+    beautystudio: "Beauty-Studio",
+    fashionstudio: "Fashion-Studio",
+    guessage: "Guess-My-Age",
+    faceinsight: "Face-Insight-Studio",
   };
   const name = NAMES[id] ?? `${id[0].toUpperCase()}${id.slice(1)}`;
   const secs = Math.round(composition.durationInFrames / composition.fps);
