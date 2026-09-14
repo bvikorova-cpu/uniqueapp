@@ -17,7 +17,18 @@ const body = loadBody("normal", { weights: ["500", "700", "800"] }).fontFamily;
 const FPS = 30;
 const PAD = 10;
 
-const scenes = [
+type SceneDef = {
+  seconds: number;
+  image?: string;
+  photo?: boolean;
+  logo?: boolean;
+  kicker: string;
+  title: string;
+  copy: string;
+  accent: string;
+};
+
+const rawScenes: SceneDef[] = [
   { seconds: 5.976, image: "img_1_1789373257749.jpg", kicker: "WELCOME TO", title: "SOCIAL WALL", copy: "Where creation meets AI & real cash", accent: "#e83ad3" },
   { seconds: 7.032, image: "creator-filming.jpg", photo: true, kicker: "CREATE • GROW • EARN", title: "YOUR CONTENT.\nYOUR MOMENT.", copy: "The ultimate social hub for creators", accent: "#ff8a2a" },
   { seconds: 2.256, image: "img_7_1789373309924.jpg", kicker: "BUILT IN", title: "SMART AI TOOLS", copy: "Create with an unfair advantage", accent: "#8b5cf6" },
@@ -34,7 +45,10 @@ const scenes = [
   { seconds: 6.192, image: "img_12_1789373349602.jpg", kicker: "NEON • OCEAN • PURPLE & PINK", title: "CUSTOM THEMES", copy: "Personalize every detail", accent: "#8b5cf6" },
   { seconds: 5.04, image: "img_9_1789373321076.jpg", kicker: "CONTROL & PEACE OF MIND", title: "SAFE COMMUNITY", copy: "Built-in tools put you in control", accent: "#20c47a" },
   { seconds: 5.04, image: "creator-earnings.jpg", photo: true, kicker: "JOIN TODAY", title: "CREATE. GROW.\nSTART EARNING.", copy: "uniqueapp.fun", accent: "#f1bd2d" },
-].map((scene, index) => ({ ...scene, index, frames: Math.ceil(scene.seconds * FPS) + PAD }));
+  { seconds: 3.6, logo: true, kicker: "JOIN TODAY", title: "uniqueapp.fun", copy: "Your feed. Your rules. Your income.", accent: "#e83ad3" },
+];
+
+const scenes = rawScenes.map((scene, index) => ({ ...scene, index, frames: Math.ceil(scene.seconds * FPS) + PAD }));
 
 export const SOCIAL_WALL_PROMO_DURATION = scenes.reduce((sum, scene) => sum + scene.frames, 0);
 
@@ -50,12 +64,14 @@ const Background: React.FC<{ accent: string }> = ({ accent }) => {
 };
 
 const Brand: React.FC = () => (
-  <div style={{ position: "absolute", top: 58, left: 58, right: 58, display: "flex", alignItems: "center", justifyContent: "space-between", zIndex: 10 }}>
-    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-      <Img src={staticFile("home/logo.png")} style={{ width: 64, height: 64, borderRadius: 17, boxShadow: "0 12px 35px #e83ad388" }} />
-      <span style={{ fontFamily: display, fontSize: 52, color: "white" }}>Unique</span>
+  <div style={{ position: "absolute", top: 48, left: 52, right: 52, display: "flex", alignItems: "center", justifyContent: "space-between", zIndex: 10 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+      <Img src={staticFile("home/logo.png")} style={{ width: 96, height: 96, borderRadius: 26, boxShadow: "0 14px 45px #e83ad3aa" }} />
+      <span style={{ fontFamily: display, fontSize: 78, color: "white", textShadow: "0 6px 30px rgba(0,0,0,.55)" }}>Unique</span>
     </div>
-    <span style={{ fontFamily: body, fontWeight: 800, fontSize: 24, color: "rgba(255,255,255,.8)" }}>uniqueapp.fun</span>
+    <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 28px", borderRadius: 48, background: "rgba(255,255,255,.12)", border: "2px solid rgba(255,255,255,.28)" }}>
+      <span style={{ fontFamily: body, fontWeight: 800, fontSize: 34, color: "white" }}>uniqueapp.fun</span>
+    </div>
   </div>
 );
 
@@ -71,21 +87,35 @@ const Scene: React.FC<{ scene: (typeof scenes)[number] }> = ({ scene }) => {
     <AbsoluteFill style={{ opacity: exit }}>
       <Background accent={scene.accent} />
       <Brand />
-      <div style={{ position: "absolute", top: 170, left: 70, right: 70, textAlign: "center", zIndex: 4 }}>
-        <div style={{ opacity: interpolate(frame, [2, 17], [0, 1], { extrapolateRight: "clamp" }), fontFamily: body, fontWeight: 800, fontSize: 25, color: scene.accent, letterSpacing: 3.5 }}>{scene.kicker}</div>
-        <div style={{ marginTop: 15, transform: `translateY(${interpolate(enter, [0, 1], [42, 0])}px)`, fontFamily: body, fontWeight: 800, fontSize: title.length > 1 ? 86 : 98, lineHeight: 0.94, color: "white", textShadow: `0 10px 50px ${scene.accent}99` }}>
-          {title.map((line) => <div key={line}>{line}</div>)}
+      {scene.logo ? (
+        <div style={{ position: "absolute", top: 600, left: 0, right: 0, display: "flex", flexDirection: "column", alignItems: "center", zIndex: 4 }}>
+          <Img src={staticFile("home/logo.png")} style={{ width: 400, height: 400, borderRadius: 100, boxShadow: `0 40px 130px ${scene.accent}dd`, transform: `scale(${interpolate(enter, [0, 1], [0.5, 1])})` }} />
+          <div style={{ marginTop: 50, transform: `translateY(${interpolate(enter, [0, 1], [40, 0])}px)`, fontFamily: display, fontSize: 160, color: "white", textShadow: `0 12px 70px ${scene.accent}bb` }}>{scene.title}</div>
+          <div style={{ marginTop: 20, fontFamily: body, fontWeight: 700, fontSize: 40, color: "rgba(255,255,255,.85)" }}>{scene.copy}</div>
         </div>
-        <div style={{ marginTop: 19, fontFamily: body, fontWeight: 600, fontSize: 32, color: "rgba(255,255,255,.82)" }}>{scene.copy}</div>
-      </div>
-      <div style={{ position: "absolute", left: scene.photo ? 70 : 110, right: scene.photo ? 70 : 110, top: scene.photo ? 520 : 560, height: scene.photo ? 1250 : 1170, borderRadius: scene.photo ? 44 : 70, overflow: "hidden", border: `5px solid ${scene.accent}`, background: "white", boxShadow: `0 45px 110px #000b, 0 0 80px ${scene.accent}77`, transform: `translateY(${phoneY}px) rotate(${phoneRotate}deg)` }}>
-        <Img src={staticFile(`social-wall-promo/${scene.image}`)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center center", transform: `scale(${zoom})` }} />
-        {!scene.photo && <div style={{ position: "absolute", left: "50%", top: 15, width: 180, height: 24, transform: "translateX(-50%)", borderRadius: 20, background: "#101010" }} />}
-      </div>
+      ) : (
+        <>
+          <div style={{ position: "absolute", top: 190, left: 70, right: 70, textAlign: "center", zIndex: 4 }}>
+            <div style={{ opacity: interpolate(frame, [2, 17], [0, 1], { extrapolateRight: "clamp" }), fontFamily: body, fontWeight: 800, fontSize: 25, color: scene.accent, letterSpacing: 3.5 }}>{scene.kicker}</div>
+            <div style={{ marginTop: 15, transform: `translateY(${interpolate(enter, [0, 1], [42, 0])}px)`, fontFamily: body, fontWeight: 800, fontSize: title.length > 1 ? 86 : 98, lineHeight: 0.94, color: "white", textShadow: `0 10px 50px ${scene.accent}99` }}>
+              {title.map((line) => <div key={line}>{line}</div>)}
+            </div>
+            <div style={{ marginTop: 19, fontFamily: body, fontWeight: 600, fontSize: 32, color: "rgba(255,255,255,.82)" }}>{scene.copy}</div>
+          </div>
+          <div style={{ position: "absolute", left: scene.photo ? 70 : 110, right: scene.photo ? 70 : 110, top: scene.photo ? 530 : 570, height: scene.photo ? 1230 : 1150, borderRadius: scene.photo ? 44 : 70, overflow: "hidden", border: `5px solid ${scene.accent}`, background: "white", boxShadow: `0 45px 110px #000b, 0 0 80px ${scene.accent}77`, transform: `translateY(${phoneY}px) rotate(${phoneRotate}deg)` }}>
+            <Img src={staticFile(`social-wall-promo/${scene.image}`)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center center", transform: `scale(${zoom})` }} />
+            {!scene.photo && <div style={{ position: "absolute", left: "50%", top: 15, width: 180, height: 24, transform: "translateX(-50%)", borderRadius: 20, background: "#101010" }} />}
+          </div>
+          <div style={{ position: "absolute", bottom: 112, left: "50%", transform: "translateX(-50%)", display: "flex", alignItems: "center", gap: 14, padding: "14px 36px", borderRadius: 60, background: `linear-gradient(90deg,${scene.accent},#f4c43c)`, boxShadow: `0 16px 55px ${scene.accent}99`, zIndex: 6 }}>
+            <Img src={staticFile("home/logo.png")} style={{ width: 46, height: 46, borderRadius: 13 }} />
+            <span style={{ fontFamily: body, fontWeight: 800, fontSize: 36, color: "white", letterSpacing: 1 }}>uniqueapp.fun</span>
+          </div>
+        </>
+      )}
       <div style={{ position: "absolute", bottom: 60, left: 80, right: 80, height: 8, borderRadius: 8, background: "rgba(255,255,255,.15)", overflow: "hidden" }}>
         <div style={{ width: `${interpolate(frame, [0, scene.frames], [0, 100], { extrapolateRight: "clamp" })}%`, height: "100%", background: `linear-gradient(90deg,${scene.accent},#f4c43c)` }} />
       </div>
-      <Audio src={staticFile(`social-wall-promo/${String(scene.index).padStart(2, "0")}.mp3`)} volume={1} />
+      {!scene.logo && <Audio src={staticFile(`social-wall-promo/${String(scene.index).padStart(2, "0")}.mp3`)} volume={1} />}
     </AbsoluteFill>
   );
 };
