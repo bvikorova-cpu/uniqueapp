@@ -515,6 +515,17 @@ export const VEO_LITE_MODELS = [
   "veo-3.0-fast-generate-001",
 ].filter((m, i, a) => a.indexOf(m) === i);
 
+/**
+ * Image-to-video (and first+last frame) is NOT served by the "lite" tier — it
+ * needs veo-3.1-fast or veo-3.1, otherwise the photo is dropped/rejected.
+ */
+export const VEO_IMAGE_MODELS = [
+  "veo-3.1-fast-generate-001",
+  "veo-3.1-generate-001",
+  "veo-3.0-fast-generate-001",
+  "veo-2.0-generate-001",
+].filter((m, i, a) => a.indexOf(m) === i);
+
 function veoLocations(): string[] {
   const primary = Deno.env.get("GCP_VIDEO_LOCATION") || "us-central1";
   return [primary, "us-east4", "europe-west4"].filter((l, i, a) => a.indexOf(l) === i);
@@ -566,6 +577,12 @@ export async function startVertexVideo(opts: {
         mimeType: opts.lastFrameMime ?? "image/jpeg",
       };
     }
+  }
+
+  if (hasImage) {
+    console.log(
+      `[vertexDirect] image-to-video: image=${opts.imageBase64!.length}b64 lastFrame=${opts.lastFrameBase64 ? "yes" : "no"}`,
+    );
   }
 
   for (const model of (opts.models?.length ? opts.models : VEO_MODELS)) {
