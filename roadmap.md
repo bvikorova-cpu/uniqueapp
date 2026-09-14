@@ -18,3 +18,4 @@
 
 - [x] Create seven 10-second English category videos: Wall, Messenger, Games, Jobs, Rewards, Promotions, Megatalent
 - [x] Create eight 10-second English videos: VIP Membership Group, Eco Challenge, Health Challenge, Clip Battles, Education Hub, Personal Mentor, Brain Duel, Dice Trail Duel
+- [x] Create eleven 15-second English kids videos with original child-friendly artwork and slower voiceover.
