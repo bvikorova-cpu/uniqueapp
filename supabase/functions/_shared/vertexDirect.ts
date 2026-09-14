@@ -619,15 +619,28 @@ async function startGeminiVideo(opts: {
   negativePrompt?: string;
   videoBase64?: string;
   videoMime?: string;
+  imageBase64?: string;
+  imageMime?: string;
+  lastFrameBase64?: string;
+  lastFrameMime?: string;
 }): Promise<{ operationName: string; model: string; location: string } | null> {
   const key = Deno.env.get("GEMINI_API_KEY");
   if (!key) return null;
   const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
 
   const isExtension = !!opts.videoBase64;
+  const hasImage = !isExtension && !!opts.imageBase64;
   const instance: Record<string, unknown> = { prompt: opts.prompt };
   if (isExtension) {
     instance.video = { bytesBase64Encoded: opts.videoBase64, mimeType: opts.videoMime ?? "video/mp4" };
+  } else if (hasImage) {
+    instance.image = { bytesBase64Encoded: opts.imageBase64, mimeType: opts.imageMime ?? "image/jpeg" };
+    if (opts.lastFrameBase64) {
+      instance.lastFrame = {
+        bytesBase64Encoded: opts.lastFrameBase64,
+        mimeType: opts.lastFrameMime ?? "image/jpeg",
+      };
+    }
   }
 
   const models = (opts.models?.length ? opts.models : VEO_LITE_MODELS);
@@ -635,6 +648,15 @@ async function startGeminiVideo(opts: {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:predictLongRunning`;
     const paramSets = isExtension
       ? [{ durationSeconds: 7, ...(opts.resolution ? { resolution: opts.resolution } : {}) }, { durationSeconds: 7 }]
+      : hasImage
+      ? [
+        {
+          durationSeconds: Math.min(Math.max(opts.durationSeconds ?? 8, 4), 8),
+          ...(opts.resolution ? { resolution: opts.resolution } : {}),
+          ...(opts.negativePrompt ? { negativePrompt: opts.negativePrompt } : {}),
+        },
+        { durationSeconds: 8 },
+      ]
       : [
         {
           durationSeconds: Math.min(Math.max(opts.durationSeconds ?? 8, 4), 8),
