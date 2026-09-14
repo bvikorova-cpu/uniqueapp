@@ -25,33 +25,33 @@ const CARDS: Card[] = [
     title: "Social Wall",
     items: ["Posts, stories & reels", "AI viral predictor"],
     accent: "#e83ad3",
-    frames: 60,
+    frames: 54,
   },
   {
     image: "03.jpg",
     title: "AI Studio",
     items: ["Photo, video & content tools", "Smart assistants"],
     accent: "#8b5cf6",
-    frames: 60,
+    frames: 54,
   },
   {
     image: "11.jpg",
     title: "Learn, Play & Meet",
     items: ["Courses, kids hub, games", "Dating & friends"],
     accent: "#12bfc4",
-    frames: 60,
+    frames: 54,
   },
   {
     image: "04.jpg",
     title: "Earn Real Euros",
     items: ["Gifts • 50% payout", "Marketplace, skills, courses"],
     accent: "#f0b90b",
-    frames: 66,
+    frames: 58,
   },
 ];
 
-const INTRO_FRAMES = 54;
-const OUTRO_FRAMES = 42;
+const INTRO_FRAMES = 50;
+const OUTRO_FRAMES = 50;
 
 export const UNIQUE_TEASER_DURATION =
   INTRO_FRAMES + CARDS.reduce((s, c) => s + c.frames, 0) + OUTRO_FRAMES;
