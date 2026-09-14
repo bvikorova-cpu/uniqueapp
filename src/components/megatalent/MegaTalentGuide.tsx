@@ -61,6 +61,8 @@ export const MegaTalentGuide = () => {
                     <li>Vote on other participants' entries</li>
                     <li>Comment and interact with the community</li>
                     <li>Compete for quarterly prizes</li>
+                    <li><strong>Referral program (€5/month per friend)</strong> – every month they stay subscribed</li>
+                    <li>From the remaining €5: <strong>50% goes to the prize pool, 20% to charity, 30% to the platform</strong></li>
                   </ul>
                 </div>
                 <div className="bg-amber-500/10 p-3 rounded-xl border border-amber-500/20">
@@ -73,6 +75,7 @@ export const MegaTalentGuide = () => {
                     <li>Priority placement in category feeds</li>
                     <li>Exclusive TOP Premium badge</li>
                     <li><strong>Referral program (€5/month per friend)</strong> – same as Premium</li>
+                    <li>From the remaining €10: <strong>50% goes to the prize pool, 20% to charity, 30% to the platform</strong></li>
                   </ul>
 
                 </div>
