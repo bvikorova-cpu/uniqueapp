@@ -9,6 +9,21 @@ const body = loadBody("normal", { weights: ["500", "700", "800"] }).fontFamily;
 const FPS = 30;
 export const CATEGORY_TEASER_DURATION = 300;
 
+// Longer, slower-narration versions (frames @30fps) for the newer teasers.
+export const CATEGORY_TEASER_DURATIONS: Record<string, number> = {
+  vip: 426,
+  eco: 375,
+  health: 395,
+  clipbattles: 382,
+  education: 420,
+  mentor: 384,
+  brainduel: 393,
+  diceduel: 375,
+};
+
+export const getCategoryTeaserDuration = (id: string) =>
+  CATEGORY_TEASER_DURATIONS[id] ?? CATEGORY_TEASER_DURATION;
+
 const Brand: React.FC<{ compact?: boolean }> = ({ compact = false }) => (
   <div style={{ display: "flex", alignItems: "center", gap: compact ? 14 : 22 }}>
     <Img src={staticFile("home/logo.png")} style={{ width: compact ? 70 : 132, height: compact ? 70 : 132, borderRadius: compact ? 18 : 34 }} />
