@@ -27,7 +27,8 @@ for (const id of ids) {
     diceduel: "Dice-Trail-Duel",
   };
   const name = NAMES[id] ?? `${id[0].toUpperCase()}${id.slice(1)}`;
-  const out = `/mnt/documents/Unique-${name}-10s-EN.mp4`;
+  const secs = Math.round(composition.durationInFrames / composition.fps);
+  const out = `/mnt/documents/Unique-${name}-${secs}s-EN.mp4`;
   await renderMedia({ composition, serveUrl: bundled, codec: "h264", crf: 20, outputLocation: out, puppeteerInstance: browser, muted: false, concurrency: 4 });
   console.log("Done:", out);
 }

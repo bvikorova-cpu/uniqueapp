@@ -9,6 +9,21 @@ const body = loadBody("normal", { weights: ["500", "700", "800"] }).fontFamily;
 const FPS = 30;
 export const CATEGORY_TEASER_DURATION = 300;
 
+// Longer, slower-narration versions (frames @30fps) for the newer teasers.
+export const CATEGORY_TEASER_DURATIONS: Record<string, number> = {
+  vip: 426,
+  eco: 375,
+  health: 395,
+  clipbattles: 382,
+  education: 420,
+  mentor: 384,
+  brainduel: 393,
+  diceduel: 375,
+};
+
+export const getCategoryTeaserDuration = (id: string) =>
+  CATEGORY_TEASER_DURATIONS[id] ?? CATEGORY_TEASER_DURATION;
+
 const Brand: React.FC<{ compact?: boolean }> = ({ compact = false }) => (
   <div style={{ display: "flex", alignItems: "center", gap: compact ? 14 : 22 }}>
     <Img src={staticFile("home/logo.png")} style={{ width: compact ? 70 : 132, height: compact ? 70 : 132, borderRadius: compact ? 18 : 34 }} />
@@ -33,12 +48,12 @@ const Intro: React.FC<{ accent: string }> = ({ accent }) => {
   );
 };
 
-const Feature: React.FC<{ id: CategoryTeaserId }> = ({ id }) => {
+const Feature: React.FC<{ id: CategoryTeaserId; len?: number }> = ({ id, len = 196 }) => {
   const frame = useCurrentFrame();
   const item = CATEGORY_TEASERS[id];
   const title = spring({ frame, fps: FPS, config: { damping: 18, stiffness: 130 } });
-  const zoom = interpolate(frame, [0, 190], [1.03, 1.15], { extrapolateRight: "clamp" });
-  const pan = interpolate(frame, [0, 190], [0, -34], { extrapolateRight: "clamp" });
+  const zoom = interpolate(frame, [0, len - 6], [1.03, 1.15], { extrapolateRight: "clamp" });
+  const pan = interpolate(frame, [0, len - 6], [0, -34], { extrapolateRight: "clamp" });
   return (
     <AbsoluteFill style={{ background: "#09050c", overflow: "hidden" }}>
       <Img src={staticFile(`category-teasers/${id}.jpg`)} style={{ width: "100%", height: "100%", objectFit: "cover", transform: `scale(${zoom}) translateY(${pan}px)` }} />
@@ -78,12 +93,18 @@ const Outro: React.FC<{ id: CategoryTeaserId }> = ({ id }) => {
   );
 };
 
-export const CategoryTeaser: React.FC<{ id: CategoryTeaserId }> = ({ id }) => (
-  <AbsoluteFill style={{ background: "#09050c" }}>
-    <Audio src={staticFile("wallguide/music.mp3")} volume={0.13} loop />
-    <Audio src={staticFile(`category-teasers/voice/${id}.mp3`)} volume={1} />
-    <Sequence from={0} durationInFrames={56}><Intro accent={CATEGORY_TEASERS[id].accent} /></Sequence>
-    <Sequence from={50} durationInFrames={196}><Feature id={id} /></Sequence>
-    <Sequence from={238} durationInFrames={62}><Outro id={id} /></Sequence>
-  </AbsoluteFill>
-);
+export const CategoryTeaser: React.FC<{ id: CategoryTeaserId }> = ({ id }) => {
+  const total = getCategoryTeaserDuration(id);
+  const outroLen = 62;
+  const featureFrom = 50;
+  const featureLen = total - outroLen - featureFrom + 12;
+  return (
+    <AbsoluteFill style={{ background: "#09050c" }}>
+      <Audio src={staticFile("wallguide/music.mp3")} volume={0.13} loop />
+      <Audio src={staticFile(`category-teasers/voice/${id}.mp3`)} volume={1} />
+      <Sequence from={0} durationInFrames={56}><Intro accent={CATEGORY_TEASERS[id].accent} /></Sequence>
+      <Sequence from={featureFrom} durationInFrames={featureLen}><Feature id={id} len={featureLen} /></Sequence>
+      <Sequence from={total - outroLen} durationInFrames={outroLen}><Outro id={id} /></Sequence>
+    </AbsoluteFill>
+  );
+};
