@@ -581,8 +581,8 @@ export async function startVertexVideo(opts: {
             instances: [instance],
             parameters: {
               durationSeconds: isExtension ? 7 : Math.min(Math.max(opts.durationSeconds ?? 8, 4), 8),
-              // Veo derives the orientation from the source clip on an extension.
-              ...(isExtension ? {} : { aspectRatio: opts.aspectRatio ?? "9:16" }),
+              // Veo derives the orientation from the source clip / photo.
+              ...(isExtension || hasImage ? {} : { aspectRatio: opts.aspectRatio ?? "9:16" }),
               sampleCount: 1,
               generateAudio: opts.generateAudio ?? true,
               personGeneration: "allow_adult",
