@@ -290,7 +290,7 @@ export const UniqueTeaser: React.FC<{ lang?: TeaserLang }> = ({ lang = "en" }) =
         );
       })}
       <Sequence from={from} durationInFrames={OUTRO_FRAMES}>
-        <OutroScene />
+        <OutroScene cta={copy.outro.cta} />
       </Sequence>
     </AbsoluteFill>
   );
