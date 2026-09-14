@@ -15,3 +15,5 @@
 - [x] Match €50 TOP cards in Promotions with the yellow sponsored header used in the Wall feed.
 - [x] Update the Social Wall promo video with 16 unique visuals, three new screenshots and three creator photos.
 - [x] Correct “Unique” and “uniqueapp.fun” pronunciation in Slovak and Hungarian teaser videos.
+
+- [ ] Create seven 10-second English category videos: Wall, Messenger, Games, Jobs, Rewards, Promotions, Megatalent
