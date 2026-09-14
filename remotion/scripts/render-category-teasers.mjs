@@ -4,7 +4,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ids = ["wall", "messenger", "games", "jobs", "rewards", "promotions", "megatalent"];
+const ids = process.argv.slice(2).length
+  ? process.argv.slice(2)
+  : ["wall", "messenger", "games", "jobs", "rewards", "promotions", "megatalent"];
 const bundled = await bundle({ entryPoint: path.resolve(__dirname, "../src/category-teaser-index.ts") });
 const browser = await openBrowser("chrome", {
   browserExecutable: process.env.PUPPETEER_EXECUTABLE_PATH ?? "/bin/chromium",
