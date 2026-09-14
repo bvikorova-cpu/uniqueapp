@@ -38,9 +38,19 @@ function baseStory(row: any): string {
   return bits.join(" ");
 }
 
-function buildPrompt(row: any, step: number): string {
+function buildPrompt(row: any, step: number, photoCount = 0): string {
   const bits: string[] = [];
-  if (step === 0) {
+  if (step === 0 && photoCount > 0) {
+    // Image-to-video: the photo fixes subject, place and style — describe motion only.
+    bits.push(`Animate the supplied photo into one continuous shot: ${row.topic}.`);
+    if (photoCount > 1) {
+      bits.push("Move naturally from the first photo to the last photo in a single smooth shot.");
+    }
+    bits.push(baseStory(row));
+    bits.push(
+      "Keep the people, faces, clothing, product and background of the photo unchanged — only camera movement and natural motion are added. No cuts, no scene changes.",
+    );
+  } else if (step === 0) {
     bits.push(`One continuous story: ${row.topic}.`);
     bits.push(baseStory(row));
     bits.push(
