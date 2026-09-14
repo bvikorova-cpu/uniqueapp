@@ -19,6 +19,17 @@ export const CATEGORY_TEASER_DURATIONS: Record<string, number> = {
   mentor: 384,
   brainduel: 393,
   diceduel: 375,
+  kidschannel: 450,
+  coloringpages: 450,
+  kidspuzzles: 450,
+  homeworkhelper: 450,
+  storycreator: 450,
+  sciencelab: 450,
+  drawingbuddy: 450,
+  readingcompanion: 450,
+  fairytalebook: 450,
+  kidscollectibles: 450,
+  careercounselor: 450,
 };
 
 export const getCategoryTeaserDuration = (id: string) =>

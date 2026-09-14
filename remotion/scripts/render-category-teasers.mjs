@@ -25,6 +25,17 @@ for (const id of ids) {
     mentor: "Personal-Mentor",
     brainduel: "Brain-Duel",
     diceduel: "Dice-Trail-Duel",
+    kidschannel: "Kids-Channel",
+    coloringpages: "Coloring-Pages",
+    kidspuzzles: "Kids-Puzzles",
+    homeworkhelper: "Homework-Helper",
+    storycreator: "Story-Creator",
+    sciencelab: "Science-Lab",
+    drawingbuddy: "Drawing-Buddy",
+    readingcompanion: "Reading-Companion",
+    fairytalebook: "Fairytale-Book-Generator",
+    kidscollectibles: "Kids-Collectibles",
+    careercounselor: "Career-Counselor",
   };
   const name = NAMES[id] ?? `${id[0].toUpperCase()}${id.slice(1)}`;
   const secs = Math.round(composition.durationInFrames / composition.fps);
