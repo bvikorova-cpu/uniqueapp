@@ -234,7 +234,7 @@ const AIVideoCreator = () => {
           </CardHeader>
           <CardContent className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-4">
             {[
-              { icon: Wand2, t: "1. Describe it", d: "Topic, scene and visual style." },
+              { icon: Wand2, t: "1. Describe or add photos", d: "Topic, scene, style — or up to 2 of your own photos." },
               { icon: Mic, t: "2. Add text", d: "Type what should appear in the video." },
               { icon: Music, t: "3. Pick music", d: "Choose a soundtrack mood." },
               { icon: Clapperboard, t: "4. Get your clip", d: "Ready in a few minutes, watermark-free MP4." },
