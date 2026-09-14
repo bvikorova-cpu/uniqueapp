@@ -36,6 +36,17 @@ for (const id of ids) {
     fairytalebook: "Fairytale-Book-Generator",
     kidscollectibles: "Kids-Collectibles",
     careercounselor: "Career-Counselor",
+    creativeforge: "Creative-Forge",
+    contentstudio: "Content-Studio",
+    aigeneration: "AI-Generation",
+    universalanalyzer: "Universal-Analyzer",
+    flyerstudio: "Promotion-Flyer-Studio",
+    videoadgen: "Video-Ad-Generator",
+    aivideocreator: "AI-Video-Creator",
+    photostyler: "Photo-Styler",
+    reversevideo: "Reverse-Video",
+    aitattoo: "AI-Tattoo-Designer",
+    aiclone: "AI-Personality-Clone",
   };
   const name = NAMES[id] ?? `${id[0].toUpperCase()}${id.slice(1)}`;
   const secs = Math.round(composition.durationInFrames / composition.fps);
