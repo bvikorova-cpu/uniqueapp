@@ -215,7 +215,7 @@ serve(async (req) => {
         return json({ error: "Could not start the video job." }, 500);
       }
 
-      const op = await startStep(row, 0);
+      const op = await startStep(row, 0, undefined, photos);
       if (!op) {
         await supabase.rpc("add_ai_credits", {
           p_user_id: user.id, p_amount: cost,
