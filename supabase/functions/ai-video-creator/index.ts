@@ -159,8 +159,12 @@ serve(async (req) => {
       const plan = PLANS[duration];
       const cost = plan.cost;
 
-      const topic = String(body?.topic ?? "").trim();
-      if (topic.length < 3) return json({ error: "Please describe what the video is about." }, 400);
+      const photos = parsePhotos(body?.photos);
+      let topic = String(body?.topic ?? "").trim();
+      if (topic.length < 3) {
+        if (!photos.length) return json({ error: "Please describe what the video is about." }, 400);
+        topic = "Bring this photo to life with gentle, natural cinematic motion";
+      }
 
       const payload = {
         topic,
