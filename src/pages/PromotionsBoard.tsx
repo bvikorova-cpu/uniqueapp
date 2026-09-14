@@ -356,10 +356,24 @@ export default function PromotionsBoard() {
             )}
 
             {standardListings.length > 0 && (
+              <section className="mb-10">
+                <div className="flex items-center gap-2 mb-4">
+                  <Megaphone className="h-5 w-5 text-primary" />
+                  <h2 className="text-2xl font-bold">Standard promotions</h2>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {standardListings.map((l) => (
+                    <PromoCard key={l.id} listing={l} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {otherListings.length > 0 && (
               <section>
                 <h2 className="text-2xl font-bold mb-4">All promotions</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {standardListings.map((l) => (
+                  {otherListings.map((l) => (
                     <PromoCard key={l.id} listing={l} />
                   ))}
                 </div>
