@@ -15,46 +15,34 @@ import { loadFont as loadBody } from "@remotion/google-fonts/Manrope";
 const display = loadDisplay("normal", { weights: ["700"] }).fontFamily;
 const body = loadBody("normal", { weights: ["500", "700", "800"] }).fontFamily;
 
+import { TEASER_COPY, TeaserLang } from "./teaserText";
+
 const FPS = 30;
 
 type Card = { image: string; title: string; items: string[]; accent: string; frames: number };
 
-const CARDS: Card[] = [
-  {
-    image: "01.jpg",
-    title: "Social Wall",
-    items: ["Posts, stories & reels", "AI viral predictor"],
-    accent: "#e83ad3",
-    frames: 54,
-  },
-  {
-    image: "03.jpg",
-    title: "AI Studio",
-    items: ["Photo, video & content tools", "Smart assistants"],
-    accent: "#8b5cf6",
-    frames: 54,
-  },
-  {
-    image: "11.jpg",
-    title: "Learn, Play & Meet",
-    items: ["Courses, kids hub, games", "Dating & friends"],
-    accent: "#12bfc4",
-    frames: 54,
-  },
-  {
-    image: "04.jpg",
-    title: "Earn Real Euros",
-    items: ["Gifts • 50% payout", "Marketplace, skills, courses"],
-    accent: "#f0b90b",
-    frames: 58,
-  },
+const CARD_STYLE = [
+  { image: "01.jpg", accent: "#e83ad3", frames: 54 },
+  { image: "03.jpg", accent: "#8b5cf6", frames: 54 },
+  { image: "11.jpg", accent: "#12bfc4", frames: 54 },
+  { image: "04.jpg", accent: "#f0b90b", frames: 58 },
 ];
 
 const INTRO_FRAMES = 50;
 const OUTRO_FRAMES = 50;
 
-export const UNIQUE_TEASER_DURATION =
-  INTRO_FRAMES + CARDS.reduce((s, c) => s + c.frames, 0) + OUTRO_FRAMES;
+const getCards = (lang: TeaserLang): Card[] =>
+  CARD_STYLE.map((style, i) => ({
+    ...style,
+    frames: style.frames + Math.round(TEASER_COPY[lang].extraFrames / CARD_STYLE.length),
+    title: TEASER_COPY[lang].cards[i].title,
+    items: TEASER_COPY[lang].cards[i].items,
+  }));
+
+export const teaserDuration = (lang: TeaserLang) =>
+  INTRO_FRAMES + getCards(lang).reduce((s, c) => s + c.frames, 0) + OUTRO_FRAMES;
+
+export const UNIQUE_TEASER_DURATION = teaserDuration("en");
 
 const Glow: React.FC<{ accent: string }> = ({ accent }) => {
   const frame = useCurrentFrame();
@@ -97,7 +85,7 @@ const BrandBadge: React.FC<{ accent: string }> = ({ accent }) => (
   </div>
 );
 
-const IntroScene: React.FC = () => {
+const IntroScene: React.FC<{ tagline: string }> = ({ tagline }) => {
   const frame = useCurrentFrame();
   const pop = spring({ frame, fps: FPS, config: { damping: 13, stiffness: 130 } });
   const fade = interpolate(frame, [INTRO_FRAMES - 12, INTRO_FRAMES], [1, 0], {
@@ -151,7 +139,7 @@ const IntroScene: React.FC = () => {
             opacity: interpolate(frame, [16, 34], [0, 1], { extrapolateRight: "clamp" }),
           }}
         >
-          Welcome — one app, endless ways to earn
+          {tagline}
         </div>
       </AbsoluteFill>
     </AbsoluteFill>
@@ -245,7 +233,7 @@ const CardScene: React.FC<{ card: Card }> = ({ card }) => {
   );
 };
 
-const OutroScene: React.FC = () => {
+const OutroScene: React.FC<{ cta: string }> = ({ cta }) => {
   const frame = useCurrentFrame();
   const pop = spring({ frame, fps: FPS, config: { damping: 14, stiffness: 130 } });
   return (
@@ -275,23 +263,24 @@ const OutroScene: React.FC = () => {
           <span style={{ fontFamily: body, fontWeight: 800, fontSize: 56, color: "white" }}>uniqueapp.fun</span>
         </div>
         <div style={{ marginTop: 26, fontFamily: body, fontWeight: 700, fontSize: 40, color: "rgba(255,255,255,.9)" }}>
-          Join today and start earning
+          {cta}
         </div>
       </AbsoluteFill>
     </AbsoluteFill>
   );
 };
 
-export const UniqueTeaser: React.FC = () => {
+export const UniqueTeaser: React.FC<{ lang?: TeaserLang }> = ({ lang = "en" }) => {
+  const copy = TEASER_COPY[lang];
   let from = INTRO_FRAMES;
   return (
     <AbsoluteFill style={{ backgroundColor: "#07030d" }}>
       <Audio src={staticFile("wallguide/music.mp3")} volume={0.12} loop />
-      <Audio src={staticFile("teaser-voice/en.mp3")} volume={1} />
+      <Audio src={staticFile(copy.voice)} volume={1} />
       <Sequence from={0} durationInFrames={INTRO_FRAMES}>
-        <IntroScene />
+        <IntroScene tagline={copy.intro.tagline} />
       </Sequence>
-      {CARDS.map((card) => {
+      {getCards(lang).map((card) => {
         const start = from;
         from += card.frames;
         return (
@@ -301,7 +290,7 @@ export const UniqueTeaser: React.FC = () => {
         );
       })}
       <Sequence from={from} durationInFrames={OUTRO_FRAMES}>
-        <OutroScene />
+        <OutroScene cta={copy.outro.cta} />
       </Sequence>
     </AbsoluteFill>
   );

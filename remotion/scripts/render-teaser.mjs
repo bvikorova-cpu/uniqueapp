@@ -11,7 +11,7 @@ const browser = await openBrowser("chrome", {
   chromiumOptions: { args: ["--no-sandbox", "--disable-dev-shm-usage"] },
   chromeMode: "chrome-for-testing",
 });
-const composition = await selectComposition({ serveUrl: bundled, id: "unique-teaser", puppeteerInstance: browser });
+const composition = await selectComposition({ serveUrl: bundled, id: process.argv[3] || "unique-teaser", puppeteerInstance: browser });
 await renderMedia({
   composition,
   serveUrl: bundled,
