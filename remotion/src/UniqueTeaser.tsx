@@ -85,7 +85,7 @@ const BrandBadge: React.FC<{ accent: string }> = ({ accent }) => (
   </div>
 );
 
-const IntroScene: React.FC = () => {
+const IntroScene: React.FC<{ tagline: string }> = ({ tagline }) => {
   const frame = useCurrentFrame();
   const pop = spring({ frame, fps: FPS, config: { damping: 13, stiffness: 130 } });
   const fade = interpolate(frame, [INTRO_FRAMES - 12, INTRO_FRAMES], [1, 0], {
