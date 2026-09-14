@@ -62,12 +62,14 @@ const Background: React.FC<{ accent: string }> = ({ accent }) => {
 };
 
 const Brand: React.FC = () => (
-  <div style={{ position: "absolute", top: 58, left: 58, right: 58, display: "flex", alignItems: "center", justifyContent: "space-between", zIndex: 10 }}>
-    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-      <Img src={staticFile("home/logo.png")} style={{ width: 64, height: 64, borderRadius: 17, boxShadow: "0 12px 35px #e83ad388" }} />
-      <span style={{ fontFamily: display, fontSize: 52, color: "white" }}>Unique</span>
+  <div style={{ position: "absolute", top: 48, left: 52, right: 52, display: "flex", alignItems: "center", justifyContent: "space-between", zIndex: 10 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+      <Img src={staticFile("home/logo.png")} style={{ width: 96, height: 96, borderRadius: 26, boxShadow: "0 14px 45px #e83ad3aa" }} />
+      <span style={{ fontFamily: display, fontSize: 78, color: "white", textShadow: "0 6px 30px rgba(0,0,0,.55)" }}>Unique</span>
     </div>
-    <span style={{ fontFamily: body, fontWeight: 800, fontSize: 24, color: "rgba(255,255,255,.8)" }}>uniqueapp.fun</span>
+    <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 28px", borderRadius: 48, background: "rgba(255,255,255,.12)", border: "2px solid rgba(255,255,255,.28)" }}>
+      <span style={{ fontFamily: body, fontWeight: 800, fontSize: 34, color: "white" }}>uniqueapp.fun</span>
+    </div>
   </div>
 );
 
