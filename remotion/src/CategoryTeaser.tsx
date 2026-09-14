@@ -30,6 +30,17 @@ export const CATEGORY_TEASER_DURATIONS: Record<string, number> = {
   fairytalebook: 450,
   kidscollectibles: 450,
   careercounselor: 450,
+  creativeforge: 450,
+  contentstudio: 450,
+  aigeneration: 450,
+  universalanalyzer: 450,
+  flyerstudio: 450,
+  videoadgen: 450,
+  aivideocreator: 450,
+  photostyler: 450,
+  reversevideo: 450,
+  aitattoo: 450,
+  aiclone: 450,
 };
 
 export const getCategoryTeaserDuration = (id: string) =>
