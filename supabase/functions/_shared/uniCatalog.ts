@@ -763,6 +763,14 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     ]
   },
   {
+    "path": "/ai-health",
+    "label": "Ai Health",
+    "keywords": [
+      "ai",
+      "health"
+    ]
+  },
+  {
     "path": "/ai-mentor",
     "label": "Ai Mentor",
     "keywords": [
@@ -1500,6 +1508,14 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     ]
   },
   {
+    "path": "/dice-duel",
+    "label": "Dice Duel",
+    "keywords": [
+      "dice",
+      "duel"
+    ]
+  },
+  {
     "path": "/digital-marketing",
     "label": "Digital Marketing",
     "keywords": [
@@ -1776,6 +1792,14 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     "keywords": [
       "fit",
       "slim"
+    ]
+  },
+  {
+    "path": "/flyer-studio",
+    "label": "Flyer Studio",
+    "keywords": [
+      "flyer",
+      "studio"
     ]
   },
   {
@@ -3456,6 +3480,14 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     ]
   },
   {
+    "path": "/support-lounge",
+    "label": "Support Lounge",
+    "keywords": [
+      "support",
+      "lounge"
+    ]
+  },
+  {
     "path": "/teacher-dashboard",
     "label": "Teacher Dashboard",
     "keywords": [
@@ -3701,6 +3733,14 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
       "video",
       "ad",
       "generator"
+    ]
+  },
+  {
+    "path": "/video-reverse",
+    "label": "Video Reverse",
+    "keywords": [
+      "video",
+      "reverse"
     ]
   },
   {
