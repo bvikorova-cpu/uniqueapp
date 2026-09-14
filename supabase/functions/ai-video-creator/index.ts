@@ -1,7 +1,12 @@
 import "../_shared/aiRedirect.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
-import { startVertexVideo, pollVertexVideo, VEO_LITE_MODELS } from "../_shared/vertexDirect.ts";
+import {
+  startVertexVideo,
+  pollVertexVideo,
+  VEO_LITE_MODELS,
+  VEO_IMAGE_MODELS,
+} from "../_shared/vertexDirect.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -86,9 +91,11 @@ function parsePhotos(input: unknown): Photo[] {
   const out: Photo[] = [];
   for (const raw of input.slice(0, 2)) {
     if (typeof raw !== "string" || !raw.length) continue;
-    const m = raw.match(/^data:(image\/(?:jpeg|jpg|png|webp));base64,(.+)$/i);
-    const mime = m ? m[1].replace("image/jpg", "image/jpeg") : "image/jpeg";
-    const base64 = m ? m[2] : raw;
+    const cleaned = raw.replace(/\s+/g, "");
+    const m = cleaned.match(/^data:(image\/(?:jpeg|jpg|png|webp));base64,(.+)$/i);
+    const mime = m ? m[1].toLowerCase().replace("image/jpg", "image/jpeg") : "image/jpeg";
+    const base64 = m ? m[2] : cleaned;
+    if (base64.startsWith("data:")) continue; // unsupported image type — never send garbage
     if (base64.length > 8_000_000) continue; // ~6MB image, keeps the request small
     out.push({ base64, mime });
   }
@@ -97,11 +104,13 @@ function parsePhotos(input: unknown): Photo[] {
 
 async function startStep(row: any, step: number, videoBase64?: string, photos: Photo[] = []) {
   const usePhotos = step === 0 && !videoBase64 ? photos : [];
+  console.log(`[ai-video-creator] step ${step} photos=${usePhotos.length}`);
   return await startVertexVideo({
     prompt: buildPrompt(row, step, usePhotos.length),
     durationSeconds: step === 0 ? BASE_SECONDS : EXTEND_SECONDS,
     aspectRatio: row.aspect_ratio || "9:16",
-    models: VEO_LITE_MODELS,
+    // Lite tier does not serve image-to-video / last-frame inputs.
+    models: usePhotos.length ? VEO_IMAGE_MODELS : VEO_LITE_MODELS,
     resolution: "720p",
     generateAudio: true,
     negativePrompt: "text, captions, subtitles, watermark, logo, nudity, violence",
