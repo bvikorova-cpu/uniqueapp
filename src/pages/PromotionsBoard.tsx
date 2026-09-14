@@ -61,6 +61,8 @@ function PromoMedia({ url, type, alt, full = false }: { url: string; type: strin
 
 function PromoCard({ listing }: { listing: PromoListing }) {
   const isTop = listing.tier === "top";
+  const isStandard = listing.tier === "standard";
+  const highlighted = isTop || isStandard;
   const [open, setOpen] = useState(false);
 
   return (
@@ -68,7 +70,11 @@ function PromoCard({ listing }: { listing: PromoListing }) {
       <Card
         data-promo={listing.tier}
         className={`overflow-hidden group hover:shadow-xl transition-all duration-300 h-full ${
-          isTop ? "border-amber-400 ring-2 ring-amber-400/60 shadow-lg shadow-primary/20" : ""
+          isTop
+            ? "border-amber-400 ring-2 ring-amber-400/60 shadow-lg shadow-primary/20"
+            : isStandard
+            ? "border-primary ring-2 ring-primary/50 shadow-lg shadow-primary/15"
+            : ""
         }`}
       >
         {isTop && (
@@ -76,6 +82,18 @@ function PromoCard({ listing }: { listing: PromoListing }) {
             <Megaphone className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
             <span className="min-w-0 text-xs font-bold uppercase text-amber-700 dark:text-amber-300">
               Top sponsored promotion
+            </span>
+            <span className="ml-auto inline-flex shrink-0 items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold uppercase text-emerald-600 dark:text-emerald-400">
+              <ShieldCheck className="h-3 w-3" />
+              Trusted Ad
+            </span>
+          </div>
+        )}
+        {isStandard && (
+          <div className="flex min-h-10 items-center gap-2 border-b border-primary/40 bg-gradient-to-r from-primary/15 via-accent/15 to-primary/15 px-3 py-2">
+            <Megaphone className="h-4 w-4 shrink-0 text-primary" />
+            <span className="min-w-0 text-xs font-bold uppercase text-primary">
+              Standard promotion
             </span>
             <span className="ml-auto inline-flex shrink-0 items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold uppercase text-emerald-600 dark:text-emerald-400">
               <ShieldCheck className="h-3 w-3" />
@@ -93,6 +111,11 @@ function PromoCard({ listing }: { listing: PromoListing }) {
           {isTop && (
             <Badge className="absolute top-2 left-2 bg-gradient-to-r from-primary to-accent text-white shadow-md">
               <Crown className="h-3 w-3 mr-1" /> TOP
+            </Badge>
+          )}
+          {isStandard && (
+            <Badge className="absolute top-2 left-2 bg-gradient-to-r from-primary to-accent text-white shadow-md">
+              STANDARD
             </Badge>
           )}
           <span className="absolute bottom-2 right-2 inline-flex items-center justify-center h-8 w-8 rounded-full bg-background/80 backdrop-blur opacity-0 group-hover:opacity-100 transition-opacity">
