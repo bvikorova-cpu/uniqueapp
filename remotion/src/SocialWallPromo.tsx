@@ -19,21 +19,21 @@ const PAD = 10;
 
 const scenes = [
   { seconds: 5.976, image: "img_1_1789373257749.jpg", kicker: "WELCOME TO", title: "SOCIAL WALL", copy: "Where creation meets AI & real cash", accent: "#e83ad3" },
-  { seconds: 7.032, image: "img_10_1789373338368.jpg", kicker: "CREATE • GROW • EARN", title: "YOUR CONTENT.\nYOUR MOMENT.", copy: "The ultimate social hub for creators", accent: "#ff8a2a" },
+  { seconds: 7.032, image: "creator-filming.jpg", photo: true, kicker: "CREATE • GROW • EARN", title: "YOUR CONTENT.\nYOUR MOMENT.", copy: "The ultimate social hub for creators", accent: "#ff8a2a" },
   { seconds: 2.256, image: "img_7_1789373309924.jpg", kicker: "BUILT IN", title: "SMART AI TOOLS", copy: "Create with an unfair advantage", accent: "#8b5cf6" },
-  { seconds: 4.92, image: "img_7_1789373309924.jpg", kicker: "PREDICT BEFORE YOU POST", title: "AI VIRAL\nPREDICTOR", copy: "Score your viral potential", accent: "#f0b90b" },
-  { seconds: 4.92, image: "img_7_1789373309924.jpg", kicker: "PERFECT TIMING", title: "CONTENT\nCALENDAR", copy: "Reach people when it matters", accent: "#12bfc4" },
-  { seconds: 5.112, image: "img_7_1789373309924.jpg", kicker: "MORE IMPACT", title: "ENHANCE &\nGO VIRAL", copy: "Smarter posts. Better hashtags.", accent: "#ec3f8f" },
+  { seconds: 4.92, image: "img_13_1789373354707.jpg", kicker: "PREDICT BEFORE YOU POST", title: "AI VIRAL\nPREDICTOR", copy: "Score your viral potential", accent: "#f0b90b" },
+  { seconds: 4.92, image: "img_10_1789373338368.jpg", kicker: "PERFECT TIMING", title: "CONTENT\nCALENDAR", copy: "Reach people when it matters", accent: "#12bfc4" },
+  { seconds: 5.112, image: "creator-growth.jpg", photo: true, kicker: "MORE IMPACT", title: "ENHANCE &\nGO VIRAL", copy: "Smarter posts. Better hashtags.", accent: "#ec3f8f" },
   { seconds: 3.0, image: "img_4_1789373292195.jpg", kicker: "REAL VALUE", title: "UNIQUE GIFTS", copy: "Turn appreciation into income", accent: "#e83ad3" },
   { seconds: 6.192, image: "img_3_1789373279224.jpg", kicker: "EXPRESS EVERYTHING", title: "360+ GIFTS", copy: "Animated gifts and collectibles", accent: "#f09b20" },
   { seconds: 6.96, image: "img_2_1789373268159.jpg", kicker: "EARN REAL EUROS", title: "50% CASH\nPAYOUTS", copy: "Easy cashout starting at €20", accent: "#f2c037" },
   { seconds: 2.544, image: "img_5_1789373298955.jpg", kicker: "PLAY. CREATE. GROW.", title: "LEVEL UP", copy: "Growth that feels rewarding", accent: "#ff8a1f" },
   { seconds: 8.376, image: "img_6_1789373304417.jpg", kicker: "EVERY ACTION COUNTS", title: "XP • STREAKS\n150+ BADGES", copy: "Unlock creator milestones", accent: "#a95cf4" },
-  { seconds: 5.304, image: "img_1_1789373257749.jpg", kicker: "ANYTIME", title: "WATCH & EARN", copy: "Collect extra XP from short videos", accent: "#ec3fb4" },
-  { seconds: 2.4, image: "img_10_1789373338368.jpg", kicker: "MAKE IT YOURS", title: "YOUR SPACE.\nYOUR STYLE.", copy: "A wall as unique as you", accent: "#ff8a2a" },
-  { seconds: 6.192, image: "img_8_1789373315537.jpg", kicker: "NEON • OCEAN • PURPLE & PINK", title: "CUSTOM THEMES", copy: "Personalize every detail", accent: "#8b5cf6" },
+  { seconds: 5.304, image: "img_11_1789373344355.jpg", kicker: "ANYTIME", title: "WATCH & EARN", copy: "Collect extra XP from short videos", accent: "#ec3fb4" },
+  { seconds: 2.4, image: "img_8_1789373315537.jpg", kicker: "MAKE IT YOURS", title: "YOUR SPACE.\nYOUR STYLE.", copy: "A wall as unique as you", accent: "#ff8a2a" },
+  { seconds: 6.192, image: "img_12_1789373349602.jpg", kicker: "NEON • OCEAN • PURPLE & PINK", title: "CUSTOM THEMES", copy: "Personalize every detail", accent: "#8b5cf6" },
   { seconds: 5.04, image: "img_9_1789373321076.jpg", kicker: "CONTROL & PEACE OF MIND", title: "SAFE COMMUNITY", copy: "Built-in tools put you in control", accent: "#20c47a" },
-  { seconds: 5.04, image: "img_8_1789373315537.jpg", kicker: "JOIN TODAY", title: "CREATE. GROW.\nSTART EARNING.", copy: "uniqueapp.fun", accent: "#f1bd2d" },
+  { seconds: 5.04, image: "creator-earnings.jpg", photo: true, kicker: "JOIN TODAY", title: "CREATE. GROW.\nSTART EARNING.", copy: "uniqueapp.fun", accent: "#f1bd2d" },
 ].map((scene, index) => ({ ...scene, index, frames: Math.ceil(scene.seconds * FPS) + PAD }));
 
 export const SOCIAL_WALL_PROMO_DURATION = scenes.reduce((sum, scene) => sum + scene.frames, 0);
@@ -78,9 +78,9 @@ const Scene: React.FC<{ scene: (typeof scenes)[number] }> = ({ scene }) => {
         </div>
         <div style={{ marginTop: 19, fontFamily: body, fontWeight: 600, fontSize: 32, color: "rgba(255,255,255,.82)" }}>{scene.copy}</div>
       </div>
-      <div style={{ position: "absolute", left: 110, right: 110, top: 560, height: 1170, borderRadius: 70, overflow: "hidden", border: `5px solid ${scene.accent}`, background: "white", boxShadow: `0 45px 110px #000b, 0 0 80px ${scene.accent}77`, transform: `translateY(${phoneY}px) rotate(${phoneRotate}deg)` }}>
+      <div style={{ position: "absolute", left: scene.photo ? 70 : 110, right: scene.photo ? 70 : 110, top: scene.photo ? 520 : 560, height: scene.photo ? 1250 : 1170, borderRadius: scene.photo ? 44 : 70, overflow: "hidden", border: `5px solid ${scene.accent}`, background: "white", boxShadow: `0 45px 110px #000b, 0 0 80px ${scene.accent}77`, transform: `translateY(${phoneY}px) rotate(${phoneRotate}deg)` }}>
         <Img src={staticFile(`social-wall-promo/${scene.image}`)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center center", transform: `scale(${zoom})` }} />
-        <div style={{ position: "absolute", left: "50%", top: 15, width: 180, height: 24, transform: "translateX(-50%)", borderRadius: 20, background: "#101010" }} />
+        {!scene.photo && <div style={{ position: "absolute", left: "50%", top: 15, width: 180, height: 24, transform: "translateX(-50%)", borderRadius: 20, background: "#101010" }} />}
       </div>
       <div style={{ position: "absolute", bottom: 60, left: 80, right: 80, height: 8, borderRadius: 8, background: "rgba(255,255,255,.15)", overflow: "hidden" }}>
         <div style={{ width: `${interpolate(frame, [0, scene.frames], [0, 100], { extrapolateRight: "clamp" })}%`, height: "100%", background: `linear-gradient(90deg,${scene.accent},#f4c43c)` }} />

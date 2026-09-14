@@ -13,3 +13,4 @@
 
 - [x] Create and deliver a screenshot example of the €50 promotional flyer from Promotions for Facebook.
 - [x] Match €50 TOP cards in Promotions with the yellow sponsored header used in the Wall feed.
+- [x] Update the Social Wall promo video with 16 unique visuals, three new screenshots and three creator photos.
