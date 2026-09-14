@@ -5,13 +5,14 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const outFile = process.argv[2] || "/mnt/documents/Unique-Wall-Cinematic.mp4";
+const compId = process.argv[3] || "wall-cinematic";
 const bundled = await bundle({ entryPoint: path.resolve(__dirname, "../src/wall-cine-index.ts") });
 const browser = await openBrowser("chrome", {
   browserExecutable: process.env.PUPPETEER_EXECUTABLE_PATH ?? "/bin/chromium",
   chromiumOptions: { args: ["--no-sandbox", "--disable-dev-shm-usage"] },
   chromeMode: "chrome-for-testing",
 });
-const composition = await selectComposition({ serveUrl: bundled, id: "wall-cinematic", puppeteerInstance: browser });
+const composition = await selectComposition({ serveUrl: bundled, id: compId, puppeteerInstance: browser });
 await renderMedia({
   composition,
   serveUrl: bundled,
