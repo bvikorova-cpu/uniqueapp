@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Crown, Plus, ExternalLink, Megaphone, Filter, Search, MapPin, Maximize2 } from "lucide-react";
+import { Crown, Plus, ExternalLink, Megaphone, Filter, Search, MapPin, Maximize2, ShieldCheck } from "lucide-react";
 import { useResolvedStorageUrl } from "@/lib/storageSigned";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import SEO from "@/components/SEO";
@@ -66,10 +66,23 @@ function PromoCard({ listing }: { listing: PromoListing }) {
   return (
     <>
       <Card
+        data-promo={listing.tier}
         className={`overflow-hidden group hover:shadow-xl transition-all duration-300 h-full ${
-          isTop ? "ring-2 ring-primary shadow-lg shadow-primary/20" : ""
+          isTop ? "border-amber-400 ring-2 ring-amber-400/60 shadow-lg shadow-primary/20" : ""
         }`}
       >
+        {isTop && (
+          <div className="flex min-h-10 items-center gap-2 border-b border-amber-400/60 bg-amber-400/20 px-3 py-2">
+            <Megaphone className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+            <span className="min-w-0 text-xs font-bold uppercase text-amber-700 dark:text-amber-300">
+              Top sponsored promotion
+            </span>
+            <span className="ml-auto inline-flex shrink-0 items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold uppercase text-emerald-600 dark:text-emerald-400">
+              <ShieldCheck className="h-3 w-3" />
+              Trusted Ad
+            </span>
+          </div>
+        )}
         <button
           type="button"
           onClick={() => setOpen(true)}
