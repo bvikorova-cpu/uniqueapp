@@ -534,6 +534,12 @@ export async function startVertexVideo(opts: {
   generateAudio?: boolean;
   videoBase64?: string;
   videoMime?: string;
+  /** First frame for image-to-video (raw base64, no data: prefix). */
+  imageBase64?: string;
+  imageMime?: string;
+  /** Optional final frame — Veo interpolates between the two photos. */
+  lastFrameBase64?: string;
+  lastFrameMime?: string;
 }): Promise<{ operationName: string; model: string; location: string } | null> {
   const sa = getServiceAccount();
   const projectId = sa ? (Deno.env.get("GCP_PROJECT_ID") || sa.project_id) : null;
@@ -542,12 +548,24 @@ export async function startVertexVideo(opts: {
   const rawFetch: typeof fetch = (globalThis as any).__ORIGINAL_FETCH__ ?? fetch;
 
   const isExtension = !!opts.videoBase64;
+  const hasImage = !isExtension && !!opts.imageBase64;
   const instance: Record<string, unknown> = { prompt: opts.prompt };
   if (isExtension) {
     instance.video = {
       bytesBase64Encoded: opts.videoBase64,
       mimeType: opts.videoMime ?? "video/mp4",
     };
+  } else if (hasImage) {
+    instance.image = {
+      bytesBase64Encoded: opts.imageBase64,
+      mimeType: opts.imageMime ?? "image/jpeg",
+    };
+    if (opts.lastFrameBase64) {
+      instance.lastFrame = {
+        bytesBase64Encoded: opts.lastFrameBase64,
+        mimeType: opts.lastFrameMime ?? "image/jpeg",
+      };
+    }
   }
 
   for (const model of (opts.models?.length ? opts.models : VEO_MODELS)) {
