@@ -435,7 +435,7 @@ const AIVideoCreator = () => {
 
               <Button
                 onClick={handleGenerate}
-                disabled={submitting || !topic.trim()}
+                disabled={submitting || preparingPhotos || (!topic.trim() && !photos.length)}
                 className="h-12 w-full text-base font-bold"
               >
                 {submitting
