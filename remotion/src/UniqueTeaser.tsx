@@ -263,23 +263,24 @@ const OutroScene: React.FC<{ cta: string }> = ({ cta }) => {
           <span style={{ fontFamily: body, fontWeight: 800, fontSize: 56, color: "white" }}>uniqueapp.fun</span>
         </div>
         <div style={{ marginTop: 26, fontFamily: body, fontWeight: 700, fontSize: 40, color: "rgba(255,255,255,.9)" }}>
-          Join today and start earning
+          {cta}
         </div>
       </AbsoluteFill>
     </AbsoluteFill>
   );
 };
 
-export const UniqueTeaser: React.FC = () => {
+export const UniqueTeaser: React.FC<{ lang?: TeaserLang }> = ({ lang = "en" }) => {
+  const copy = TEASER_COPY[lang];
   let from = INTRO_FRAMES;
   return (
     <AbsoluteFill style={{ backgroundColor: "#07030d" }}>
       <Audio src={staticFile("wallguide/music.mp3")} volume={0.12} loop />
-      <Audio src={staticFile("teaser-voice/en.mp3")} volume={1} />
+      <Audio src={staticFile(copy.voice)} volume={1} />
       <Sequence from={0} durationInFrames={INTRO_FRAMES}>
-        <IntroScene />
+        <IntroScene tagline={copy.intro.tagline} />
       </Sequence>
-      {CARDS.map((card) => {
+      {getCards(lang).map((card) => {
         const start = from;
         from += card.frames;
         return (
