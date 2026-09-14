@@ -25,28 +25,29 @@ type Scene = {
   kicker?: string;
   title?: string;
   copy?: string;
+  details?: string[];
   facts?: string[];
   accent: string;
 };
 
 const rawScenes: Scene[] = [
   { kind: "intro", seconds: 3.2, accent: "#e83ad3", title: "uniqueapp.fun", copy: "The social wall for creators" },
-  { kind: "story", seconds: 5.976, voice: 0, image: "01.jpg", kicker: "WELCOME TO", title: "SOCIAL WALL", copy: "Where creation meets AI & real cash", facts: ["Post", "Connect", "Earn"], accent: "#e83ad3" },
-  { kind: "story", seconds: 7.032, voice: 1, image: "02.jpg", kicker: "CREATE • GROW • EARN", title: "YOUR CONTENT.\nYOUR MOMENT.", copy: "The ultimate social hub for creators", facts: ["Photos & video", "Stories", "24h notes"], accent: "#ff8a2a" },
-  { kind: "story", seconds: 2.256, voice: 2, image: "03.jpg", kicker: "BUILT IN", title: "SMART AI TOOLS", copy: "5 AI tools inside your wall", accent: "#8b5cf6" },
-  { kind: "story", seconds: 4.92, voice: 3, image: "04.jpg", kicker: "BEFORE YOU POST", title: "AI VIRAL\nPREDICTOR", copy: "Score your viral potential", facts: ["Viral score", "Instant tips"], accent: "#f0b90b" },
-  { kind: "story", seconds: 4.92, voice: 4, image: "05.jpg", kicker: "PERFECT TIMING", title: "AI CONTENT\nCALENDAR", copy: "Optimal posting schedule for peak reach", facts: ["Best hours", "Weekly plan"], accent: "#12bfc4" },
-  { kind: "story", seconds: 5.112, voice: 5, image: "06.jpg", kicker: "MORE IMPACT", title: "ENHANCE &\nGO VIRAL", copy: "AI post enhancer + hashtag generator", facts: ["Audience insights", "Smart hashtags"], accent: "#ec3f8f" },
-  { kind: "story", seconds: 3.0, voice: 6, image: "07.jpg", kicker: "REAL VALUE", title: "UNIQUE GIFTS", copy: "Turn appreciation into income", accent: "#e83ad3" },
-  { kind: "story", seconds: 6.192, voice: 7, image: "08.jpg", kicker: "EXPRESS EVERYTHING", title: "360+ GIFTS", copy: "Animated gifts & collectibles", facts: ["Hearts", "Diamonds", "Adventures"], accent: "#f09b20" },
-  { kind: "story", seconds: 6.96, voice: 8, image: "09.jpg", kicker: "EARN REAL EUROS", title: "50% CASH\nPAYOUTS", copy: "Cashout from €20", facts: ["50% of gift value", "Paid in EUR"], accent: "#f2c037" },
-  { kind: "story", seconds: 2.544, voice: 9, image: "10.jpg", kicker: "PLAY. CREATE. GROW.", title: "LEVEL UP", copy: "Growth that feels rewarding", accent: "#ff8a1f" },
-  { kind: "story", seconds: 8.376, voice: 10, image: "11.jpg", kicker: "EVERY ACTION COUNTS", title: "XP • STREAKS\n150+ BADGES", copy: "Unlock creator milestones", facts: ["XP for posts", "Daily streaks", "150+ badges"], accent: "#a95cf4" },
-  { kind: "story", seconds: 5.304, voice: 11, image: "12.jpg", kicker: "ANYTIME", title: "WATCH & EARN", copy: "Extra XP from short videos", facts: ["15s videos", "Unlimited"], accent: "#ec3fb4" },
-  { kind: "story", seconds: 2.4, voice: 12, image: "13.jpg", kicker: "MAKE IT YOURS", title: "YOUR SPACE.\nYOUR STYLE.", copy: "A wall as unique as you", accent: "#ff8a2a" },
-  { kind: "story", seconds: 6.192, voice: 13, image: "14.jpg", kicker: "PERSONALIZE", title: "CUSTOM THEMES", copy: "Neon • Ocean • Purple & Pink", facts: ["Themes", "Colors", "Your vibe"], accent: "#8b5cf6" },
-  { kind: "story", seconds: 5.04, voice: 14, image: "15.jpg", kicker: "PEACE OF MIND", title: "SAFE COMMUNITY", copy: "Built-in tools put you in control", facts: ["Muted words", "Muted users", "Full control"], accent: "#20c47a" },
-  { kind: "story", seconds: 5.04, voice: 15, image: "16.jpg", kicker: "JOIN TODAY", title: "CREATE. GROW.\nSTART EARNING.", copy: "uniqueapp.fun", accent: "#f1bd2d" },
+  { kind: "story", seconds: 6.5, voice: 0, image: "01.jpg", kicker: "WELCOME TO", title: "SOCIAL WALL", copy: "Where creation meets AI & real cash", details: ["Share photos, videos, stories and everyday moments in one vibrant creator community.", "Connect with your audience, build momentum and turn genuine engagement into real value."], facts: ["Post", "Connect", "Earn"], accent: "#e83ad3" },
+  { kind: "story", seconds: 7.5, voice: 1, image: "02.jpg", kicker: "CREATE • GROW • EARN", title: "YOUR CONTENT.\nYOUR MOMENT.", copy: "The ultimate social hub for creators", details: ["Publish your ideas, reach new people and keep your community close with stories and 24-hour notes.", "Every post is another opportunity to grow your audience and creator presence."], facts: ["Photos & video", "Stories", "24h notes"], accent: "#ff8a2a" },
+  { kind: "story", seconds: 6.0, voice: 2, image: "03.jpg", kicker: "BUILT IN", title: "SMART AI TOOLS", copy: "5 AI tools inside your wall", details: ["Plan, improve and evaluate content without leaving Social Wall.", "Practical AI guidance helps you make stronger creative decisions before you publish."], accent: "#8b5cf6" },
+  { kind: "story", seconds: 6.5, voice: 3, image: "04.jpg", kicker: "BEFORE YOU POST", title: "AI VIRAL\nPREDICTOR", copy: "Score your viral potential", details: ["Analyze your draft before it goes live and see how strongly it may connect with viewers.", "Receive an instant score and focused recommendations to improve its potential."], facts: ["Viral score", "Instant tips"], accent: "#f0b90b" },
+  { kind: "story", seconds: 6.5, voice: 4, image: "05.jpg", kicker: "PERFECT TIMING", title: "AI CONTENT\nCALENDAR", copy: "Optimal posting schedule for peak reach", details: ["Turn your ideas into a clear weekly publishing plan built around the best posting times.", "Stay consistent and reach your audience when engagement is most likely."], facts: ["Best hours", "Weekly plan"], accent: "#12bfc4" },
+  { kind: "story", seconds: 6.5, voice: 5, image: "06.jpg", kicker: "MORE IMPACT", title: "ENHANCE &\nGO VIRAL", copy: "AI post enhancer + hashtag generator", details: ["Refine captions, sharpen your message and discover hashtags that match your content.", "Audience insights help every post feel more relevant, clear and engaging."], facts: ["Audience insights", "Smart hashtags"], accent: "#ec3f8f" },
+  { kind: "story", seconds: 6.0, voice: 6, image: "07.jpg", kicker: "REAL VALUE", title: "UNIQUE GIFTS", copy: "Turn appreciation into income", details: ["Your audience can support the content they enjoy with expressive digital gifts.", "Each gift creates a memorable interaction while helping your creativity generate value."], accent: "#e83ad3" },
+  { kind: "story", seconds: 6.8, voice: 7, image: "08.jpg", kicker: "EXPRESS EVERYTHING", title: "360+ GIFTS", copy: "Animated gifts & collectibles", details: ["Choose from more than 360 animated gifts for celebrations, romance, travel and everyday reactions.", "Collectible designs make every message of support feel personal and fun."], facts: ["Hearts", "Diamonds", "Adventures"], accent: "#f09b20" },
+  { kind: "story", seconds: 7.5, voice: 8, image: "09.jpg", kicker: "EARN REAL EUROS", title: "50% CASH\nPAYOUTS", copy: "Cashout from €20", details: ["Creators receive 50% of the value of eligible gifts directly in euros.", "Once your available earnings reach €20, you can request a convenient cashout."], facts: ["50% of gift value", "Paid in EUR"], accent: "#f2c037" },
+  { kind: "story", seconds: 6.0, voice: 9, image: "10.jpg", kicker: "PLAY. CREATE. GROW.", title: "LEVEL UP", copy: "Growth that feels rewarding", details: ["Regular creative activity moves your profile forward and makes progress visible.", "Small daily actions build momentum, unlock milestones and keep creation exciting."], accent: "#ff8a1f" },
+  { kind: "story", seconds: 8.8, voice: 10, image: "11.jpg", kicker: "EVERY ACTION COUNTS", title: "XP • STREAKS\n150+ BADGES", copy: "Unlock creator milestones", details: ["Earn XP for posts, comments and consistent daily activity across Social Wall.", "Maintain your streak and discover more than 150 badges celebrating your creator journey."], facts: ["XP for posts", "Daily streaks", "150+ badges"], accent: "#a95cf4" },
+  { kind: "story", seconds: 6.5, voice: 11, image: "12.jpg", kicker: "ANYTIME", title: "WATCH & EARN", copy: "Extra XP from short videos", details: ["Watch quick 15-second videos whenever you want to collect extra XP.", "Unlimited viewing gives you another simple way to progress between posts."], facts: ["15s videos", "Unlimited"], accent: "#ec3fb4" },
+  { kind: "story", seconds: 6.0, voice: 12, image: "13.jpg", kicker: "MAKE IT YOURS", title: "YOUR SPACE.\nYOUR STYLE.", copy: "A wall as unique as you", details: ["Shape an online space that reflects your personality, content and creative identity.", "Your Social Wall can feel recognizably yours from the first glance."], accent: "#ff8a2a" },
+  { kind: "story", seconds: 6.8, voice: 13, image: "14.jpg", kicker: "PERSONALIZE", title: "CUSTOM THEMES", copy: "Neon • Ocean • Purple & Pink", details: ["Switch between distinctive themes and color combinations to match your mood or brand.", "Personalization gives your everyday Social Wall experience a fresh visual identity."], facts: ["Themes", "Colors", "Your vibe"], accent: "#8b5cf6" },
+  { kind: "story", seconds: 6.5, voice: 14, image: "15.jpg", kicker: "PEACE OF MIND", title: "SAFE COMMUNITY", copy: "Built-in tools put you in control", details: ["Mute unwanted words or users and decide what belongs in your personal experience.", "Practical safety controls help you focus on positive connections and creativity."], facts: ["Muted words", "Muted users", "Full control"], accent: "#20c47a" },
+  { kind: "story", seconds: 6.5, voice: 15, image: "16.jpg", kicker: "JOIN TODAY", title: "CREATE. GROW.\nSTART EARNING.", copy: "uniqueapp.fun", details: ["Bring your content, community and creator ambitions together in one place.", "Join Unique today, build your momentum and turn engagement into opportunity."], accent: "#f1bd2d" },
   { kind: "outro", seconds: 4.4, accent: "#e83ad3", title: "uniqueapp.fun", copy: "Your feed. Your rules. Your income." },
 ];
 
@@ -116,27 +117,50 @@ const StoryScene: React.FC<{ scene: (typeof scenes)[number] }> = ({ scene }) => 
       <AbsoluteFill style={{ background: "linear-gradient(180deg,rgba(6,2,12,.86) 0%,rgba(6,2,12,.25) 34%,rgba(6,2,12,.55) 62%,rgba(6,2,12,.95) 100%)" }} />
       <Grain accent={scene.accent} />
       <BrandBar accent={scene.accent} />
-      <div style={{ position: "absolute", left: 70, right: 70, bottom: 250, zIndex: 8 }}>
+      <div style={{ position: "absolute", left: 70, right: 70, bottom: 238, zIndex: 8 }}>
         <div style={{ opacity: interpolate(frame, [2, 18], [0, 1], { extrapolateRight: "clamp" }), display: "inline-block", padding: "10px 24px", borderRadius: 40, background: `${scene.accent}33`, border: `2px solid ${scene.accent}`, fontFamily: body, fontWeight: 800, fontSize: 27, letterSpacing: 3, color: "white" }}>
           {scene.kicker}
         </div>
-        <div style={{ marginTop: 22, transform: `translateY(${interpolate(enter, [0, 1], [56, 0])}px)`, fontFamily: body, fontWeight: 800, fontSize: title.length > 1 ? 100 : 112, lineHeight: 0.94, color: "white", textShadow: `0 14px 60px rgba(0,0,0,.8), 0 0 70px ${scene.accent}66` }}>
+        <div style={{ marginTop: 18, transform: `translateY(${interpolate(enter, [0, 1], [56, 0])}px)`, fontFamily: body, fontWeight: 800, fontSize: title.length > 1 ? 88 : 100, lineHeight: 0.94, color: "white", textShadow: `0 14px 60px rgba(0,0,0,.8), 0 0 70px ${scene.accent}66` }}>
           {title.map((line) => <div key={line}>{line}</div>)}
         </div>
-        <div style={{ marginTop: 22, fontFamily: body, fontWeight: 600, fontSize: 38, color: "rgba(255,255,255,.9)" }}>{scene.copy}</div>
+        <div style={{ marginTop: 18, fontFamily: body, fontWeight: 700, fontSize: 36, color: "white" }}>{scene.copy}</div>
+        {scene.details && (
+          <div style={{ marginTop: 20, display: "grid", gap: 10, maxWidth: 920 }}>
+            {scene.details.map((detail, i) => (
+              <div
+                key={detail}
+                style={{
+                  display: "flex",
+                  gap: 14,
+                  alignItems: "flex-start",
+                  fontFamily: body,
+                  fontWeight: 600,
+                  fontSize: 28,
+                  lineHeight: 1.28,
+                  color: "rgba(255,255,255,.92)",
+                  opacity: interpolate(frame, [12 + i * 8, 28 + i * 8], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
+                }}
+              >
+                <span style={{ color: scene.accent, fontWeight: 800 }}>•</span>
+                <span>{detail}</span>
+              </div>
+            ))}
+          </div>
+        )}
         {scene.facts && (
-          <div style={{ marginTop: 30, display: "flex", flexWrap: "wrap", gap: 16 }}>
+          <div style={{ marginTop: 20, display: "flex", flexWrap: "wrap", gap: 12 }}>
             {scene.facts.map((fact, i) => (
               <div
                 key={fact}
                 style={{
-                  padding: "14px 28px",
+                  padding: "10px 22px",
                   borderRadius: 44,
                   background: "rgba(255,255,255,.14)",
                   border: "2px solid rgba(255,255,255,.32)",
                   fontFamily: body,
                   fontWeight: 700,
-                  fontSize: 30,
+                  fontSize: 26,
                   color: "white",
                   opacity: interpolate(frame, [16 + i * 7, 32 + i * 7], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
                   transform: `translateY(${interpolate(frame, [16 + i * 7, 32 + i * 7], [26, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })}px)`,
