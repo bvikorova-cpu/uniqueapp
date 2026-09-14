@@ -14,6 +14,7 @@ import { AIToolsFilm, AITOOLS_DURATION } from "./AIToolsFilm";
 import { MysticalFilm, MYSTICAL_DURATION } from "./MysticalFilm";
 import { SocialFilm, SOCIAL_DURATION } from "./SocialFilm";
 import { HealthFilm, HEALTH_DURATION } from "./HealthFilm";
+import { SocialWallPromo, SOCIAL_WALL_PROMO_DURATION } from "./SocialWallPromo";
 
 import { EntertainmentFilm, ENTERTAINMENT_DURATION } from "./EntertainmentFilm";
 import { InfluKingFilm, INFLUKING_DURATION } from "./InfluKingFilm";
@@ -163,6 +164,14 @@ export const RemotionRoot = () => (
       id="social-film"
       component={SocialFilm}
       durationInFrames={SOCIAL_DURATION}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
+    <Composition
+      id="social-wall-promo"
+      component={SocialWallPromo}
+      durationInFrames={SOCIAL_WALL_PROMO_DURATION}
       fps={30}
       width={1080}
       height={1920}
