@@ -107,7 +107,7 @@ async function syncMegatalentSubscription(
         title: tier === "top_premium" ? "Top Premium activated 🚀" : "Premium activated ⭐",
         message: tier === "top_premium"
           ? "Your Megatalent Top Premium features are unlocked: +100% ranking boost (real votes × 2) and €5/month referral rewards."
-          : "Your Megatalent Premium features are unlocked.",
+          : "Your Megatalent Premium features are unlocked — including the €5/month referral program for every invited friend.",
         is_read: false });
     } catch (e) {
       log("megatalent unlock notification failed", { err: (e as Error).message });
