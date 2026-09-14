@@ -83,6 +83,9 @@ const AIVideoCreator = () => {
   const [aspectRatio, setAspectRatio] = useState<"9:16" | "16:9">("9:16");
   const [submitting, setSubmitting] = useState(false);
   const [creations, setCreations] = useState<Creation[]>([]);
+  const [photos, setPhotos] = useState<string[]>([]);
+  const [preparingPhotos, setPreparingPhotos] = useState(false);
+  const fileRef = useRef<HTMLInputElement | null>(null);
   const pollRef = useRef<number | null>(null);
 
   const [duration, setDuration] = useState(DURATIONS[0].seconds);
