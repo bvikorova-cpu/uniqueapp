@@ -1,0 +1,89 @@
+import React from "react";
+import { AbsoluteFill, Audio, Img, Sequence, interpolate, spring, staticFile, useCurrentFrame } from "remotion";
+import { loadFont as loadDisplay } from "@remotion/google-fonts/BebasNeue";
+import { loadFont as loadBody } from "@remotion/google-fonts/Manrope";
+import { CATEGORY_TEASERS, CategoryTeaserId } from "./categoryTeaserData";
+
+const display = loadDisplay().fontFamily;
+const body = loadBody("normal", { weights: ["500", "700", "800"] }).fontFamily;
+const FPS = 30;
+export const CATEGORY_TEASER_DURATION = 300;
+
+const Brand: React.FC<{ compact?: boolean }> = ({ compact = false }) => (
+  <div style={{ display: "flex", alignItems: "center", gap: compact ? 14 : 22 }}>
+    <Img src={staticFile("home/logo.png")} style={{ width: compact ? 70 : 132, height: compact ? 70 : 132, borderRadius: compact ? 18 : 34 }} />
+    <div style={{ fontFamily: body, fontWeight: 800, fontSize: compact ? 40 : 76, color: "#fff" }}>Unique</div>
+  </div>
+);
+
+const Intro: React.FC<{ accent: string }> = ({ accent }) => {
+  const frame = useCurrentFrame();
+  const pop = spring({ frame, fps: FPS, config: { damping: 14, stiffness: 150 } });
+  const exit = interpolate(frame, [45, 56], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  return (
+    <AbsoluteFill style={{ opacity: exit, background: "linear-gradient(145deg,#09040f,#27102e 54%,#0b0610)", justifyContent: "center", alignItems: "center" }}>
+      <div style={{ position: "absolute", inset: 0, background: `radial-gradient(circle at 50% 40%,${accent}70,transparent 56%)` }} />
+      <div style={{ transform: `scale(${interpolate(pop, [0, 1], [0.55, 1])})`, display: "flex", flexDirection: "column", alignItems: "center", zIndex: 2 }}>
+        <Brand />
+        <div style={{ marginTop: 30, fontFamily: body, fontWeight: 800, fontSize: 50, color: "#fff", padding: "14px 34px", borderRadius: 40, background: accent }}>
+          uniqueapp.fun
+        </div>
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+const Feature: React.FC<{ id: CategoryTeaserId }> = ({ id }) => {
+  const frame = useCurrentFrame();
+  const item = CATEGORY_TEASERS[id];
+  const title = spring({ frame, fps: FPS, config: { damping: 18, stiffness: 130 } });
+  const zoom = interpolate(frame, [0, 190], [1.03, 1.15], { extrapolateRight: "clamp" });
+  const pan = interpolate(frame, [0, 190], [0, -34], { extrapolateRight: "clamp" });
+  return (
+    <AbsoluteFill style={{ background: "#09050c", overflow: "hidden" }}>
+      <Img src={staticFile(`category-teasers/${id}.jpg`)} style={{ width: "100%", height: "100%", objectFit: "cover", transform: `scale(${zoom}) translateY(${pan}px)` }} />
+      <AbsoluteFill style={{ background: "linear-gradient(180deg,rgba(8,3,12,.78),rgba(8,3,12,.05) 38%,rgba(8,3,12,.68) 68%,rgba(8,3,12,.98))" }} />
+      <div style={{ position: "absolute", top: 54, left: 54, right: 54, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <Brand compact />
+        <div style={{ fontFamily: body, fontWeight: 800, fontSize: 29, color: "#fff", border: `2px solid ${item.accent}`, borderRadius: 28, padding: "10px 20px", background: "rgba(8,3,12,.55)" }}>uniqueapp.fun</div>
+      </div>
+      <div style={{ position: "absolute", left: 62, right: 62, bottom: 150 }}>
+        <div style={{ display: "inline-block", fontFamily: body, fontWeight: 800, fontSize: 31, color: "#111", background: item.accent, padding: "10px 22px", borderRadius: 10, opacity: interpolate(frame, [3, 14], [0, 1], { extrapolateRight: "clamp" }) }}>{item.label}</div>
+        <div style={{ marginTop: 18, fontFamily: display, fontSize: 122, lineHeight: .92, color: "#fff", transform: `translateY(${interpolate(title, [0, 1], [60, 0])}px)`, textShadow: "0 10px 42px rgba(0,0,0,.72)" }}>{item.hook}</div>
+        <div style={{ marginTop: 28, display: "grid", gap: 12 }}>
+          {item.lines.map((line, i) => {
+            const enter = spring({ frame: frame - 18 - i * 12, fps: FPS, config: { damping: 20, stiffness: 160 } });
+            return <div key={line} style={{ display: "flex", alignItems: "center", gap: 15, opacity: enter, transform: `translateX(${interpolate(enter, [0, 1], [-45, 0])}px)`, fontFamily: body, fontWeight: 700, fontSize: 36, lineHeight: 1.12, color: "#fff", textShadow: "0 4px 18px rgba(0,0,0,.9)" }}><span style={{ color: item.accent }}>●</span>{line}</div>;
+          })}
+        </div>
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+const Outro: React.FC<{ id: CategoryTeaserId }> = ({ id }) => {
+  const frame = useCurrentFrame();
+  const item = CATEGORY_TEASERS[id];
+  const pop = spring({ frame, fps: FPS, config: { damping: 15, stiffness: 140 } });
+  return (
+    <AbsoluteFill style={{ background: "linear-gradient(145deg,#0a050e,#321136 58%,#0a050e)", justifyContent: "center", alignItems: "center", textAlign: "center", padding: 70 }}>
+      <div style={{ position: "absolute", inset: 0, background: `radial-gradient(circle at 50% 42%,${item.accent}66,transparent 58%)` }} />
+      <div style={{ zIndex: 2, opacity: pop, transform: `scale(${interpolate(pop, [0, 1], [.72, 1])})`, display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <Img src={staticFile("home/logo.png")} style={{ width: 250, height: 250, borderRadius: 64, boxShadow: `0 30px 90px ${item.accent}88` }} />
+        <div style={{ marginTop: 24, fontFamily: body, fontWeight: 800, fontSize: 70, color: "#fff" }}>Unique</div>
+        <div style={{ marginTop: 10, fontFamily: body, fontWeight: 700, fontSize: 38, color: "#fff" }}>{item.outro}</div>
+        <div style={{ marginTop: 26, fontFamily: body, fontWeight: 800, fontSize: 48, color: "#111", background: item.accent, padding: "15px 34px", borderRadius: 40 }}>uniqueapp.fun</div>
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+export const CategoryTeaser: React.FC<{ id: CategoryTeaserId }> = ({ id }) => (
+  <AbsoluteFill style={{ background: "#09050c" }}>
+    <Audio src={staticFile("wallguide/music.mp3")} volume={0.13} loop />
+    <Audio src={staticFile(`category-teasers/voice/${id}.mp3`)} volume={1} />
+    <Sequence from={0} durationInFrames={56}><Intro accent={CATEGORY_TEASERS[id].accent} /></Sequence>
+    <Sequence from={50} durationInFrames={196}><Feature id={id} /></Sequence>
+    <Sequence from={238} durationInFrames={62}><Outro id={id} /></Sequence>
+  </AbsoluteFill>
+);
