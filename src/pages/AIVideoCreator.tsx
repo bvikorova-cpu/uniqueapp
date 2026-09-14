@@ -15,8 +15,9 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
   Clapperboard, Film, Loader2, Mic, Music, Sparkles, Wand2, Zap, ShieldCheck,
-  Smartphone, Monitor, Clock, Trash2, BadgeCheck,
+  Smartphone, Monitor, Clock, Trash2, BadgeCheck, ImagePlus, X,
 } from "lucide-react";
+import { uprightImageWithSize, fileToDataUrl } from "@/utils/imageUploadPrep";
 import heroAsset from "@/assets/section-videos/ai-video-creator.mp4.asset.json";
 
 /**
