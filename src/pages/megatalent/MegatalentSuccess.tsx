@@ -128,6 +128,7 @@ export default function MegatalentSuccess() {
                 <li>✅ Voting and comments in all 35+ categories</li>
                 <li>✅ Access to all AI Talent tools</li>
                 <li>✅ Entitlement to cash prizes for winners</li>
+                <li>✅ Referral program — earn <strong>€5 every month</strong> for each invited friend</li>
                 {isTop && (
                   <>
                     <li>⭐ <strong>2× weight of your votes</strong></li>
