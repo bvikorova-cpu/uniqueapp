@@ -48,12 +48,12 @@ const Intro: React.FC<{ accent: string }> = ({ accent }) => {
   );
 };
 
-const Feature: React.FC<{ id: CategoryTeaserId }> = ({ id }) => {
+const Feature: React.FC<{ id: CategoryTeaserId; len?: number }> = ({ id, len = 196 }) => {
   const frame = useCurrentFrame();
   const item = CATEGORY_TEASERS[id];
   const title = spring({ frame, fps: FPS, config: { damping: 18, stiffness: 130 } });
-  const zoom = interpolate(frame, [0, 190], [1.03, 1.15], { extrapolateRight: "clamp" });
-  const pan = interpolate(frame, [0, 190], [0, -34], { extrapolateRight: "clamp" });
+  const zoom = interpolate(frame, [0, len - 6], [1.03, 1.15], { extrapolateRight: "clamp" });
+  const pan = interpolate(frame, [0, len - 6], [0, -34], { extrapolateRight: "clamp" });
   return (
     <AbsoluteFill style={{ background: "#09050c", overflow: "hidden" }}>
       <Img src={staticFile(`category-teasers/${id}.jpg`)} style={{ width: "100%", height: "100%", objectFit: "cover", transform: `scale(${zoom}) translateY(${pan}px)` }} />
