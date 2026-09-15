@@ -163,6 +163,15 @@ export function GiftShopSheet({
   };
 
   return (
+    <>
+    {flow && (
+      <CreditFlowOverlay
+        gift={flow.gift}
+        recipientName={recipientName}
+        balanceAfter={flow.balanceAfter}
+        onDone={() => setFlow(null)}
+      />
+    )}
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         {trigger ?? (
