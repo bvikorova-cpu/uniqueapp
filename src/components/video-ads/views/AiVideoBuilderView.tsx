@@ -237,12 +237,23 @@ export const AiVideoBuilderView = ({ onBack }: { onBack: () => void }) => {
             ctx.fillRect(0, 0, w, h);
 
             if (img) {
-              const zoom = 1.06 + p * 0.12;
-              const scale = Math.max(w / img.width, h / img.height) * zoom;
-              const dw = img.width * scale;
-              const dh = img.height * scale;
-              const dx = (w - dw) / 2 + Math.sin(p * Math.PI) * (w * 0.02);
-              const dy = (h - dh) / 2;
+              // Blurred cover backdrop so no empty bars, with gentle drift
+              const coverZoom = 1.1 + p * 0.08;
+              const cScale = Math.max(w / img.width, h / img.height) * coverZoom;
+              const cw = img.width * cScale;
+              const ch = img.height * cScale;
+              ctx.save();
+              ctx.filter = "blur(28px) brightness(0.6)";
+              ctx.drawImage(img, (w - cw) / 2, (h - ch) / 2, cw, ch);
+              ctx.restore();
+
+              // Full scene always visible (contain fit), never cropped
+              const fitZoom = 1 + p * 0.03;
+              const fScale = Math.min(w / img.width, (h * 0.72) / img.height) * fitZoom;
+              const dw = img.width * fScale;
+              const dh = img.height * fScale;
+              const dx = (w - dw) / 2 + Math.sin(p * Math.PI) * (w * 0.01);
+              const dy = h * 0.36 - dh / 2;
               ctx.drawImage(img, dx, dy, dw, dh);
             }
 
