@@ -10,9 +10,11 @@ import {
   BUILTIN_THEMES,
   BUILTIN_WALLPAPERS,
   chatBackgroundStyle,
+  wallpaperPreviewStyle,
   useChatTheme,
   type CustomChatTheme,
 } from "@/hooks/useChatTheme";
+import { CHAT_WALLPAPER_CATEGORIES, type ChatWallpaperCategory } from "@/data/chatWallpapers";
 
 interface AIChatThemesProps {
   onBack: () => void;
