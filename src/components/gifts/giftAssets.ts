@@ -374,6 +374,26 @@ import megaRoyalCarriage from "@/assets/gifts/mega-royal-carriage.png";
 import megaSpaceStation from "@/assets/gifts/mega-space-station.png";
 import megaEmeraldPeacock from "@/assets/gifts/mega-emerald-peacock.png";
 import megaPartyBus from "@/assets/gifts/mega-party-bus.png";
+import megaGalaxyHeart from "@/assets/gifts/mega-galaxy-heart.png";
+import megaIceWolf from "@/assets/gifts/mega-ice-wolf.png";
+import megaRoyalOwl from "@/assets/gifts/mega-royal-owl.png";
+import megaTreasureChest from "@/assets/gifts/mega-treasure-chest.png";
+import megaPirateShip from "@/assets/gifts/mega-pirate-ship.png";
+import megaCyberPanther from "@/assets/gifts/mega-cyber-panther.png";
+import megaEnchantedForest from "@/assets/gifts/mega-enchanted-forest.png";
+import megaLaserShow from "@/assets/gifts/mega-laser-show.png";
+import megaDiamondRing from "@/assets/gifts/mega-diamond-ring.png";
+import megaPegasus from "@/assets/gifts/mega-pegasus.png";
+import megaKitsune from "@/assets/gifts/mega-kitsune.png";
+import megaStormElephant from "@/assets/gifts/mega-storm-elephant.png";
+import megaAurora from "@/assets/gifts/mega-aurora.png";
+import megaMoonCastle from "@/assets/gifts/mega-moon-castle.png";
+import megaCandyKingdom from "@/assets/gifts/mega-candy-kingdom.png";
+import megaRaceCar from "@/assets/gifts/mega-race-car.png";
+import megaHotAirBalloon from "@/assets/gifts/mega-hot-air-balloon.png";
+import megaMagicLamp from "@/assets/gifts/mega-magic-lamp.png";
+import megaCrystalGolem from "@/assets/gifts/mega-crystal-golem.png";
+import megaStarShower from "@/assets/gifts/mega-star-shower.png";
 
 export const GIFT_IMAGES: Record<string, string> = {
   "alien-friend": alienFriend,
@@ -753,6 +773,26 @@ export const GIFT_IMAGES: Record<string, string> = {
   "mega-space-station": megaSpaceStation,
   "mega-emerald-peacock": megaEmeraldPeacock,
   "mega-party-bus": megaPartyBus,
+  "mega-galaxy-heart": megaGalaxyHeart,
+  "mega-ice-wolf": megaIceWolf,
+  "mega-royal-owl": megaRoyalOwl,
+  "mega-treasure-chest": megaTreasureChest,
+  "mega-pirate-ship": megaPirateShip,
+  "mega-cyber-panther": megaCyberPanther,
+  "mega-enchanted-forest": megaEnchantedForest,
+  "mega-laser-show": megaLaserShow,
+  "mega-diamond-ring": megaDiamondRing,
+  "mega-pegasus": megaPegasus,
+  "mega-kitsune": megaKitsune,
+  "mega-storm-elephant": megaStormElephant,
+  "mega-aurora": megaAurora,
+  "mega-moon-castle": megaMoonCastle,
+  "mega-candy-kingdom": megaCandyKingdom,
+  "mega-race-car": megaRaceCar,
+  "mega-hot-air-balloon": megaHotAirBalloon,
+  "mega-magic-lamp": megaMagicLamp,
+  "mega-crystal-golem": megaCrystalGolem,
+  "mega-star-shower": megaStarShower,
 };
 
 export const GIFT_CATEGORIES = [
