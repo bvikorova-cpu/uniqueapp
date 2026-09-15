@@ -181,10 +181,61 @@ export const useChatTheme = (userId?: string) => {
 };
 
 /**
+ * Conversation-wide theme: the background/theme of whoever in the chat
+ * changed it most recently is shown to every participant.
+ */
+export const useSharedChatTheme = (
+  userId?: string,
+  peerIds?: (string | null | undefined)[],
+) => {
+  const own = useChatTheme(userId);
+  const [shared, setShared] = useState<ChatThemeState | null>(null);
+  const [version, setVersion] = useState(0);
+  const peersKey = (peerIds ?? []).filter(Boolean).sort().join(",");
+
+  useEffect(() => {
+    const onUpdate = () => setVersion((v) => v + 1);
+    window.addEventListener("chat-theme-updated", onUpdate);
+    return () => window.removeEventListener("chat-theme-updated", onUpdate);
+  }, []);
+
+  useEffect(() => {
+    if (!userId || !peersKey) {
+      setShared(null);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await (supabase as any).rpc("get_shared_chat_theme", {
+        _peer_ids: peersKey.split(","),
+      });
+      if (cancelled || error) return;
+      const row = Array.isArray(data) ? data[0] : data;
+      if (!row) {
+        setShared(null);
+        return;
+      }
+      setShared({
+        themeId: row.theme_id || DEFAULTS.themeId,
+        wallpaperId: row.wallpaper_id || DEFAULTS.wallpaperId,
+        ownedThemes: [],
+        customThemes: (row.custom_themes as unknown as CustomChatTheme[]) || [],
+      });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, peersKey, version]);
+
+  return { ...own, state: shared ?? own.state, ownState: own.state };
+};
+
+/**
  * Platform-wide chat background: resolves the signed-in user's saved
  * wallpaper and returns a ready style object for any chat container.
+ * Pass the other participants' ids to share the most recent choice.
  */
-export const useChatBackground = () => {
+export const useChatBackground = (peerIds?: (string | null | undefined)[]) => {
   const [userId, setUserId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
