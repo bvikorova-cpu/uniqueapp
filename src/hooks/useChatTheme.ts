@@ -111,8 +111,10 @@ export const outgoingBubbleStyle = (state: ChatThemeState) => {
 export const incomingBubbleStyle = (state: ChatThemeState) => {
   const t = resolveTheme(state);
   return {
-    backgroundColor: `${t.colors[0]}26`,
-    borderColor: `${t.colors[1]}40`,
+    backgroundColor: t.colors[0],
+    color: isLight(t.colors[0]) ? "#111827" : "#ffffff",
+    borderColor: `${t.colors[1]}99`,
+    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.28)",
   } as React.CSSProperties;
 };
 

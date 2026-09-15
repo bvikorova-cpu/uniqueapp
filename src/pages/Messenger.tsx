@@ -1487,7 +1487,7 @@ const Messenger = () => {
                         cur.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" });
                       const separator = !sameDay ? (
                         <div key={`sep-${msg.id}`} className="flex items-center justify-center my-2">
-                          <span className="px-3 py-1 rounded-full bg-muted/50 text-[11px] text-muted-foreground uppercase tracking-wide">
+                          <span className="px-3 py-1 rounded-full border border-border bg-background/95 text-[11px] font-medium text-foreground uppercase tracking-wide shadow-sm">
                             {label}
                           </span>
                         </div>

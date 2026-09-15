@@ -152,9 +152,9 @@ export const AIChatThemes = ({ onBack, userId }: AIChatThemesProps) => {
       <Card className="border-border/40 overflow-hidden">
         <CardContent className="p-0">
           <div className="p-4 space-y-2 border" style={chatBackgroundStyle(state)}>
-            <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Live preview</p>
+            <p className="w-fit rounded bg-background/95 px-2 py-1 text-[10px] font-medium uppercase tracking-wide text-foreground shadow-sm">Live preview</p>
             <div className="flex justify-start">
-              <div className="rounded-2xl rounded-bl-sm px-3 py-2 text-xs bg-card/90 border border-border/50">Hey! How do you like this theme?</div>
+              <div className="rounded-2xl rounded-bl-sm border border-border bg-card px-3 py-2 text-xs text-card-foreground shadow-md">Hey! How do you like this theme?</div>
             </div>
             <div className="flex justify-end">
               <div

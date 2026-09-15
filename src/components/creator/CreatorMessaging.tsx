@@ -156,7 +156,7 @@ export function CreatorMessaging({ creatorId, creatorName, canMessage }: Creator
                       <div className={`rounded-lg p-3 ${isCurrentUser ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
                         <p className="text-sm">{message.content}</p>
                       </div>
-                      <span className="text-xs text-muted-foreground mt-1">
+                      <span className="mt-1 rounded bg-background/95 px-1.5 py-0.5 text-xs font-medium text-foreground shadow-sm">
                         {new Date(message.created_at).toLocaleTimeString()}
                       </span>
                     </div>
