@@ -1,3 +1,4 @@
+import { useChatBackground } from "@/hooks/useChatTheme";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,6 +57,7 @@ interface BazaarOrderChatProps {
 }
 
 export default function BazaarOrderChat({ order, currentUserId, onStatusChange }: BazaarOrderChatProps) {
+  const { style: chatBg } = useChatBackground();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -206,7 +208,7 @@ export default function BazaarOrderChat({ order, currentUserId, onStatusChange }
       </CardHeader>
 
       <CardContent className="flex-1 flex flex-col p-0">
-        <ScrollArea className="flex-1 p-4" ref={scrollRef}>
+        <ScrollArea className="flex-1 p-4" ref={scrollRef} style={chatBg}>
           <div className="space-y-3">
             {messages.length === 0 ? (
               <p className="text-center text-muted-foreground py-8">

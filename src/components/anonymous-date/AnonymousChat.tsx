@@ -1,3 +1,4 @@
+import { useChatBackground } from "@/hooks/useChatTheme";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
@@ -55,6 +56,7 @@ interface Props {
 }
 
 export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credits }: Props) => {
+  const { style: chatBg } = useChatBackground();
   const { toast } = useToast();
   const partnerId = match.user1_id === currentUserId ? match.user2_id : match.user1_id;
   const isUser1 = match.user1_id === currentUserId;
@@ -369,7 +371,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
         ) : null}
 
 
-        <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 space-y-2 bg-background/50 backdrop-blur-sm">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 space-y-2 backdrop-blur-sm" style={chatBg}>
           {loading && (
             <div className="space-y-3 py-2">
               {[0, 1, 2, 3].map(i => (

@@ -10,9 +10,11 @@ import {
   BUILTIN_THEMES,
   BUILTIN_WALLPAPERS,
   chatBackgroundStyle,
+  wallpaperPreviewStyle,
   useChatTheme,
   type CustomChatTheme,
 } from "@/hooks/useChatTheme";
+import { CHAT_WALLPAPER_CATEGORIES, type ChatWallpaperCategory } from "@/data/chatWallpapers";
 
 interface AIChatThemesProps {
   onBack: () => void;
@@ -25,6 +27,14 @@ export const AIChatThemes = ({ onBack, userId }: AIChatThemesProps) => {
   const [busy, setBusy] = useState<string | null>(null);
   const [description, setDescription] = useState("");
   const [generating, setGenerating] = useState(false);
+  const [wpQuery, setWpQuery] = useState("");
+  const [wpCategory, setWpCategory] = useState<ChatWallpaperCategory | "all">("all");
+
+  const visibleWallpapers = BUILTIN_WALLPAPERS.filter(
+    (wp) =>
+      (wpCategory === "all" || wp.category === wpCategory) &&
+      wp.name.toLowerCase().includes(wpQuery.trim().toLowerCase()),
+  );
 
   const owns = (id: string, price: number) => price === 0 || state.ownedThemes.includes(id);
 
@@ -268,30 +278,45 @@ export const AIChatThemes = ({ onBack, userId }: AIChatThemesProps) => {
 
       {/* Wallpapers */}
       <Card className="border-border/40 bg-card/80 backdrop-blur-sm">
-        <CardHeader>
+        <CardHeader className="space-y-3">
           <CardTitle className="flex items-center gap-2 font-black">
             <Sparkles className="h-5 w-5 text-primary" /> Chat Wallpapers
+            <span className="text-xs font-normal text-muted-foreground">
+              {BUILTIN_WALLPAPERS.length} templates · applies to every chat
+            </span>
           </CardTitle>
+          <Input
+            value={wpQuery}
+            onChange={(e) => setWpQuery(e.target.value)}
+            placeholder="Search wallpapers…"
+          />
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {[{ id: "all" as const, label: "All" }, ...CHAT_WALLPAPER_CATEGORIES].map((c) => (
+              <Button
+                key={c.id}
+                size="sm"
+                variant={wpCategory === c.id ? "default" : "outline"}
+                className="shrink-0 rounded-full text-xs"
+                onClick={() => setWpCategory(c.id)}
+              >
+                {c.label}
+              </Button>
+            ))}
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-3">
-            {BUILTIN_WALLPAPERS.map((wp, i) => {
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {visibleWallpapers.map((wp) => {
               const owned = owns(wp.id, wp.price);
               return (
-                <motion.div
+                <div
                   key={wp.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
                   onClick={() => !loading && busy !== wp.id && applyWallpaper(wp.id, wp.price, wp.name)}
                   className={`relative rounded-xl overflow-hidden cursor-pointer border-2 transition-all ${
                     state.wallpaperId === wp.id ? "border-primary shadow-lg shadow-primary/20" : "border-transparent hover:border-primary/30"
                   }`}
                 >
-                  <div
-                    className="h-32 w-full"
-                    style={{ background: `linear-gradient(135deg, ${wp.colors[0]}55, ${wp.colors[1]}33, ${wp.colors[2]}55)` }}
-                  />
+                  <div className="h-28 w-full" style={wallpaperPreviewStyle(wp)} />
                   {busy === wp.id && (
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                       <Loader2 className="h-5 w-5 text-white animate-spin" />
@@ -309,10 +334,13 @@ export const AIChatThemes = ({ onBack, userId }: AIChatThemesProps) => {
                       )}
                     </div>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
           </div>
+          {visibleWallpapers.length === 0 && (
+            <p className="text-sm text-muted-foreground py-6 text-center">No wallpaper matches your search.</p>
+          )}
         </CardContent>
       </Card>
     </div>
