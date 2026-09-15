@@ -32,7 +32,7 @@ import { EncryptionBadge } from "@/components/messaging/EncryptionBadge";
 import { GroupChatDialog } from "@/components/messenger/GroupChatDialog";
 import { MessengerAIFeatures } from "@/components/messenger/MessengerAIFeatures";
 import { MessengerHero } from "@/components/messenger/MessengerHero";
-import { useChatTheme, chatBackgroundStyle, outgoingBubbleStyle, incomingBubbleStyle } from "@/hooks/useChatTheme";
+import { useChatTheme, useSharedChatTheme, chatBackgroundStyle, outgoingBubbleStyle, incomingBubbleStyle } from "@/hooks/useChatTheme";
 import PushOptInButton from "@/components/notifications/PushOptInButton";
 import { ChatAnalyticsDashboard } from "@/components/messenger/ChatAnalyticsDashboard";
 import { AIChatThemes } from "@/components/messenger/AIChatThemes";
@@ -147,7 +147,8 @@ const Messenger = () => {
   const { toast } = useToast();
   const [activeView, setActiveView] = useState<MessengerView>("hub");
   const [user, setUser] = useState<any>(null);
-  const { state: chatTheme } = useChatTheme(user?.id);
+  const [chatPeerId, setChatPeerId] = useState<string | null>(null);
+  const { state: chatTheme } = useSharedChatTheme(user?.id, chatPeerId ? [chatPeerId] : []);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
   const [messages, setMessages] = useState<MessageWithProfile[]>([]);
@@ -1049,6 +1050,10 @@ const Messenger = () => {
 
   const selectedConvData = conversations.find((c) => c.id === selectedConversation);
   const otherUser = selectedConvData?.otherUser;
+
+  useEffect(() => {
+    setChatPeerId(otherUser?.id ?? null);
+  }, [otherUser?.id]);
 
   const getReactionCount = (reactions: MessageReaction[] | undefined, reaction: string) => {
     return reactions?.filter(r => r.reaction === reaction).length || 0;

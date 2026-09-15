@@ -56,9 +56,9 @@ interface Props {
 }
 
 export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credits }: Props) => {
-  const { style: chatBg } = useChatBackground();
   const { toast } = useToast();
   const partnerId = match.user1_id === currentUserId ? match.user2_id : match.user1_id;
+  const { style: chatBg } = useChatBackground([partnerId]);
   const isUser1 = match.user1_id === currentUserId;
 
   const { messages, reactions, partnerTyping, partnerOnline, loading, sendMessage, broadcastTyping, toggleReaction } =

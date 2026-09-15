@@ -71875,6 +71875,16 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_shared_chat_theme: {
+        Args: { _peer_ids: string[] }
+        Returns: {
+          custom_themes: Json
+          owner_id: string
+          theme_id: string
+          updated_at: string
+          wallpaper_id: string
+        }[]
+      }
       get_streak_week: {
         Args: never
         Returns: {

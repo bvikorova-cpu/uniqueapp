@@ -27,7 +27,7 @@ interface CreatorMessagingProps {
 }
 
 export function CreatorMessaging({ creatorId, creatorName, canMessage }: CreatorMessagingProps) {
-  const { style: chatBg } = useChatBackground();
+  const { style: chatBg } = useChatBackground([creatorId]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
