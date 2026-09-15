@@ -89,6 +89,20 @@ export const CATEGORY_TEASER_DURATIONS: Record<string, number> = {
   coupons: 450,
   auctions: 450,
   antiques: 450,
+  liveconcerts: 450,
+  kitchenstars: 450,
+  comedyclub: 450,
+  influking: 450,
+  escaperoom: 450,
+  mysterybox: 450,
+  socialgifts: 450,
+  vacationer: 450,
+  cooking: 450,
+  coffeecommunity: 450,
+  virtualpet: 450,
+  adultpuzzles: 450,
+  spinsolve: 450,
+  unlockvideos: 450,
 };
 
 export const getCategoryTeaserDuration = (id: string) =>
