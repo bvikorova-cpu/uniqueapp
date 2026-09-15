@@ -66,7 +66,38 @@ export const AiVideoBuilderView = ({ onBack }: { onBack: () => void }) => {
   const [status, setStatus] = useState("");
   const [progress, setProgress] = useState(0);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [photos, setPhotos] = useState<string[]>([]);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const fileRef = useRef<HTMLInputElement | null>(null);
+
+  const addPhotos = async (files: FileList | null) => {
+    if (!files?.length) return;
+    const room = 5 - photos.length;
+    if (room <= 0) {
+      toast.error("Maximum 5 photos");
+      return;
+    }
+    const picked = Array.from(files).slice(0, room);
+    const read = await Promise.all(
+      picked.map(
+        (f) =>
+          new Promise<string | null>((resolve) => {
+            if (!f.type.startsWith("image/")) return resolve(null);
+            if (f.size > 8 * 1024 * 1024) {
+              toast.error(`${f.name} is larger than 8 MB`);
+              return resolve(null);
+            }
+            const reader = new FileReader();
+            reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : null);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(f);
+          }),
+      ),
+    );
+    const valid = read.filter((x): x is string => !!x);
+    if (valid.length) setPhotos((p) => [...p, ...valid].slice(0, 5));
+    if (fileRef.current) fileRef.current.value = "";
+  };
 
   const buildScenes = async () => {
     if (!form.product || !form.audience || !form.message) {
