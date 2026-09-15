@@ -154,11 +154,9 @@ export function GiftShopSheet({
       return;
     }
 
-    setBalance((b) => (b === null ? b : b - gift.price_credits));
-    toast({
-      title: `${gift.name} sent!`,
-      description: `${recipientName || "They"} received your gift.`,
-    });
+    const nextBalance = balance === null ? null : balance - gift.price_credits;
+    setBalance(nextBalance);
+    setFlow({ gift, balanceAfter: nextBalance });
     setOpen(false);
     onSent?.();
   };
