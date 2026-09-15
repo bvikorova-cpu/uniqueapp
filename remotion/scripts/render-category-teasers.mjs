@@ -66,6 +66,14 @@ for (const id of ids) {
     timecapsule: "Time-Capsule-Network",
     timereversal: "Time-Reversal-Social",
     holographicavatars: "Holographic-Avatars",
+    anondate: "Anonymous-Date",
+    dating: "Dating",
+    bestfriend: "Best-Friend",
+    megaforum: "Mega-Forum",
+    charactercompanions: "Character-Companions",
+    brokenhearts: "Broken-Hearts",
+    emotioneconomy: "Emotion-Economy",
+    invitefriends: "Invite-Friends",
   };
   const name = NAMES[id] ?? `${id[0].toUpperCase()}${id.slice(1)}`;
   const secs = Math.round(composition.durationInFrames / composition.fps);
