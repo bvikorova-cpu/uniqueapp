@@ -1118,10 +1118,36 @@ body:has([data-state="open"][role="dialog"]) [data-floating-hiw] {
 .mega-gift-rays { animation: mega-gift-rays 14s linear infinite; }
 .mega-gift-sparkle { animation: mega-gift-sparkle 1.6s ease-in-out infinite; }
 
+/* Credit flow — coins fly from the wallet badge into the gift */
+@keyframes credit-coin-fly {
+  0% { transform: translate(0, 0) scale(0.7); opacity: 0; }
+  12% { opacity: 1; }
+  70% { transform: translate(var(--coin-dx), var(--coin-dy)) scale(1.05); opacity: 1; }
+  100% { transform: translate(var(--coin-dx), var(--coin-dy)) scale(0.4); opacity: 0; }
+}
+@keyframes credit-gift-pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes credit-receipt-in {
+  0% { transform: translateY(8px) scale(0.9); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+@keyframes credit-ring-out {
+  0% { transform: scale(0.4); opacity: 0.7; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+.credit-coin-fly { animation: credit-coin-fly 1.15s cubic-bezier(0.4, 0, 0.3, 1) both; }
+.credit-gift-pop { animation: credit-gift-pop 0.7s cubic-bezier(0.22, 1.4, 0.36, 1) both; }
+.credit-receipt-in { animation: credit-receipt-in 0.45s ease-out both; }
+.credit-ring-out { animation: credit-ring-out 1.1s ease-out infinite; }
+
 @media (prefers-reduced-motion: reduce) {
   .gift-anim-float, .gift-anim-pulse, .gift-anim-spin,
   .gift-anim-bounce, .gift-anim-swing, .gift-anim-glow, .gift-anim-burst,
-  .gift-anim-mega, .mega-gift-enter, .mega-gift-rays, .mega-gift-sparkle {
+  .gift-anim-mega, .mega-gift-enter, .mega-gift-rays, .mega-gift-sparkle,
+  .credit-coin-fly, .credit-gift-pop, .credit-receipt-in, .credit-ring-out {
     animation: none;
   }
 }

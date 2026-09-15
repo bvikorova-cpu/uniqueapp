@@ -20,6 +20,7 @@ import {
   giftCategoryIcon,
 } from "./giftAssets";
 import { GiftVisual } from "./GiftVisual";
+import { CreditFlowOverlay } from "./CreditFlowOverlay";
 import { Input } from "@/components/ui/input";
 
 export interface CatalogGift {
@@ -61,6 +62,7 @@ export function GiftShopSheet({
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [balance, setBalance] = useState<number | null>(null);
   const [search, setSearch] = useState("");
+  const [flow, setFlow] = useState<{ gift: CatalogGift; balanceAfter: number | null } | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -154,16 +156,23 @@ export function GiftShopSheet({
       return;
     }
 
-    setBalance((b) => (b === null ? b : b - gift.price_credits));
-    toast({
-      title: `${gift.name} sent!`,
-      description: `${recipientName || "They"} received your gift.`,
-    });
+    const nextBalance = balance === null ? null : balance - gift.price_credits;
+    setBalance(nextBalance);
+    setFlow({ gift, balanceAfter: nextBalance });
     setOpen(false);
     onSent?.();
   };
 
   return (
+    <>
+    {flow && (
+      <CreditFlowOverlay
+        gift={flow.gift}
+        recipientName={recipientName}
+        balanceAfter={flow.balanceAfter}
+        onDone={() => setFlow(null)}
+      />
+    )}
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         {trigger ?? (
@@ -288,5 +297,6 @@ export function GiftShopSheet({
         )}
       </SheetContent>
     </Sheet>
+    </>
   );
 }

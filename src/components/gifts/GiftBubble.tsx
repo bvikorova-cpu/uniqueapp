@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import { GiftVisual } from "./GiftVisual";
 
 export interface GiftBubbleData {
@@ -13,9 +14,11 @@ export interface GiftBubbleData {
 interface GiftBubbleProps {
   gift: GiftBubbleData;
   compact?: boolean;
+  /** "out" = I sent it, "in" = I received it. Shows the delivery receipt. */
+  direction?: "in" | "out";
 }
 
-export function GiftBubble({ gift, compact = false }: GiftBubbleProps) {
+export function GiftBubble({ gift, compact = false, direction }: GiftBubbleProps) {
   const size = compact ? 56 : 112;
 
   return (
@@ -39,6 +42,12 @@ export function GiftBubble({ gift, compact = false }: GiftBubbleProps) {
       </div>
       <span className="text-xs font-semibold">{gift.name}</span>
       <span className="text-[10px] opacity-70">{gift.price_credits} credits</span>
+      {direction && (
+        <span className="credit-receipt-in mt-0.5 flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold text-primary">
+          <Check className="h-3 w-3" />
+          {direction === "out" ? "Delivered" : "Received"}
+        </span>
+      )}
     </div>
   );
 }

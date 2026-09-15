@@ -71101,6 +71101,39 @@ export type Database = {
         }[]
       }
       get_fundraising_stats: { Args: never; Returns: Json }
+      get_gift_collection: {
+        Args: { p_user_id?: string }
+        Returns: {
+          animation: string
+          category: string
+          copies: number
+          credits_value: number
+          emoji: string
+          first_received: string
+          gift_id: string
+          image_url: string
+          last_received: string
+          name: string
+          price_credits: number
+          rarity: string
+          slug: string
+        }[]
+      }
+      get_gift_collection_stats: { Args: { p_user_id?: string }; Returns: Json }
+      get_gift_collectors_leaderboard: {
+        Args: { p_limit?: number }
+        Returns: {
+          avatar_url: string
+          full_name: string
+          rank_position: number
+          top_gift_slug: string
+          total_credits: number
+          total_gifts: number
+          unique_gifts: number
+          user_id: string
+          username: string
+        }[]
+      }
       get_gift_withdrawable: { Args: never; Returns: Json }
       get_guess_age_leaderboard: {
         Args: { _limit?: number }
