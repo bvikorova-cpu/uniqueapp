@@ -136,6 +136,12 @@ export const AiVideoBuilderView = ({ onBack }: { onBack: () => void }) => {
 
       const total = planned.length;
       for (let i = 0; i < total; i++) {
+        if (photos[i]) {
+          setStatus(`Using your photo ${i + 1}…`);
+          setProgress(10 + Math.round((i / total) * 60));
+          planned[i].imageUrl = photos[i];
+          continue;
+        }
         setStatus(`Generating visual ${i + 1}/${total}…`);
         setProgress(10 + Math.round((i / total) * 60));
         const { data: img, error: imgErr } = await supabase.functions.invoke("ai-image-tools", {
