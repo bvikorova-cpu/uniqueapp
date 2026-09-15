@@ -425,6 +425,20 @@ const Messenger = () => {
     prevConvRef.current = selectedConversation;
   }, [messages, selectedConversation]);
 
+  // Mega gifts: full-screen takeover when a new mega gift message arrives
+  useEffect(() => {
+    if (!messages.length || !Object.keys(giftsById).length) return;
+    const last = [...messages].reverse().find((m) => m.gift_id && giftsById[m.gift_id]?.animation === "mega");
+    if (!last || !last.gift_id || last.id === lastMegaGiftMsgRef.current) return;
+    // only for fresh messages (not old history when opening a chat)
+    if (Date.now() - new Date(last.created_at).getTime() > 60_000) return;
+    lastMegaGiftMsgRef.current = last.id;
+    setMegaGiftAlert({
+      gift: giftsById[last.gift_id],
+      senderName: last.sender_profile?.full_name || "Someone",
+    });
+  }, [messages, giftsById]);
+
   const getProfile = async (userId: string): Promise<Profile | null> => {
     const fromState = profilesCache.get(userId);
     if (fromState) return fromState;
