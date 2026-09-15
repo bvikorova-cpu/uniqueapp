@@ -1,8 +1,21 @@
 /**
- * Renders extracted frames in reverse order into a WebM file using
- * MediaRecorder on an offscreen canvas. Optionally burns in the
- * "Created with Unique" watermark in the bottom-right corner.
+ * Renders extracted frames in reverse order into a video file.
+ *
+ * Primary path uses WebCodecs through mediabunny: every frame gets an exact
+ * timestamp, so the exported clip plays at the intended speed no matter how
+ * fast the device can encode. MediaRecorder (the fallback) captures in real
+ * time, which produced uneven, slow-motion output on phones.
  */
+
+import {
+  BufferTarget,
+  CanvasSource,
+  Mp4OutputFormat,
+  Output,
+  QUALITY_HIGH,
+  WebMOutputFormat,
+  canEncodeVideo,
+} from "mediabunny";
 
 export const WATERMARK_TEXT = "Created with Unique";
 
@@ -58,7 +71,59 @@ function waitUntil(deadline: number): Promise<void> {
   });
 }
 
-export async function exportReversedVideo({
+function makeCanvas(width: number, height: number) {
+  const canvas = document.createElement("canvas");
+  // Encoders need even dimensions.
+  canvas.width = width % 2 === 0 ? width : width - 1;
+  canvas.height = height % 2 === 0 ? height : height - 1;
+  const ctx = canvas.getContext("2d", { alpha: false });
+  if (!ctx) throw new Error("Could not prepare the export canvas.");
+  return { canvas, ctx };
+}
+
+/** Exact-timestamp encoding (no real-time capture) — smooth, correct speed. */
+async function encodeWithWebCodecs({
+  frames,
+  width,
+  height,
+  fps,
+  watermark,
+  onProgress,
+}: ExportOptions): Promise<Blob | null> {
+  if (typeof VideoEncoder === "undefined") return null;
+
+  const useMp4 = await canEncodeVideo("avc").catch(() => false);
+  const codec = useMp4 ? ("avc" as const) : ("vp9" as const);
+  if (!useMp4 && !(await canEncodeVideo("vp9").catch(() => false))) return null;
+
+  const { canvas, ctx } = makeCanvas(width, height);
+  const output = new Output({
+    format: useMp4 ? new Mp4OutputFormat() : new WebMOutputFormat(),
+    target: new BufferTarget(),
+  });
+  const source = new CanvasSource(canvas, { codec, bitrate: QUALITY_HIGH });
+  output.addVideoTrack(source, { frameRate: Math.round(fps) });
+  await output.start();
+
+  const total = frames.length;
+  const frameDuration = 1 / fps;
+  for (let i = 0; i < total; i++) {
+    const bitmap = frames[total - 1 - i];
+    if (bitmap) ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    if (watermark) drawWatermark(ctx, canvas.width, canvas.height);
+    await source.add(i * frameDuration, frameDuration);
+    onProgress?.((i + 1) / total);
+  }
+
+  source.close();
+  await output.finalize();
+  const buffer = output.target.buffer;
+  if (!buffer) return null;
+  return new Blob([buffer], { type: useMp4 ? "video/mp4" : "video/webm" });
+}
+
+/** Legacy real-time capture, used only when WebCodecs is unavailable. */
+async function encodeWithMediaRecorder({
   frames,
   width,
   height,
@@ -69,13 +134,9 @@ export async function exportReversedVideo({
   const mimeType = pickMimeType();
   if (!mimeType) throw new Error("Your browser cannot export video recordings.");
 
-  const canvas = document.createElement("canvas");
-  canvas.width = width;
-  canvas.height = height;
-  const ctx = canvas.getContext("2d", { alpha: false });
-  if (!ctx) throw new Error("Could not prepare the export canvas.");
-
-  const stream = canvas.captureStream(fps);
+  const { canvas, ctx } = makeCanvas(width, height);
+  const stream = canvas.captureStream(0);
+  const track = stream.getVideoTracks()[0] as CanvasCaptureMediaStreamTrack;
   const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 5_000_000 });
   const chunks: BlobPart[] = [];
   recorder.ondataavailable = (e) => {
@@ -95,14 +156,24 @@ export async function exportReversedVideo({
   for (let i = 0; i < total; i++) {
     if (i > 0) await waitUntil(startedAt + i * frameDuration);
     const bitmap = frames[total - 1 - i];
-    if (bitmap) ctx.drawImage(bitmap, 0, 0, width, height);
-    if (watermark) drawWatermark(ctx, width, height);
+    if (bitmap) ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    if (watermark) drawWatermark(ctx, canvas.width, canvas.height);
+    track.requestFrame?.();
     onProgress?.((i + 1) / total);
   }
 
-  // Hold the last frame for exactly one frame interval so it is recorded.
   await waitUntil(startedAt + total * frameDuration);
   recorder.stop();
   stream.getTracks().forEach((t) => t.stop());
   return finished;
+}
+
+export async function exportReversedVideo(options: ExportOptions): Promise<Blob> {
+  try {
+    const blob = await encodeWithWebCodecs(options);
+    if (blob && blob.size > 0) return blob;
+  } catch {
+    // Fall through to the MediaRecorder path below.
+  }
+  return encodeWithMediaRecorder(options);
 }
