@@ -685,6 +685,13 @@ export const CATEGORY_TEASERS = {
     outro: "Give the wheel a spin.",
     accent: "#ffb03a",
   },
+  shadowarena: {
+    label: "Shadow Arena",
+    hook: "ENTER THE DARKNESS.",
+    lines: ["Share chilling short horror clips and stories", "Vote in battles and crown the scariest creator", "Creators earn from subscribers, tips and boosts"],
+    outro: "Dare to enter. 18+ only.",
+    accent: "#a26bff",
+  },
   unlockvideos: {
     label: "Unlock Videos",
     hook: "WATCH HALF FOR FREE.",
