@@ -1434,7 +1434,11 @@ const Messenger = () => {
                   </div>
                 )}
 
-                <ScrollArea className="flex-1 py-4" style={chatBackgroundStyle(chatTheme)}>
+                <div
+                  className="relative mx-2 mb-2 flex-1 min-h-0 overflow-hidden rounded-2xl border bg-cover bg-center bg-no-repeat"
+                  style={chatBackgroundStyle(chatTheme)}
+                >
+                <ScrollArea className="h-full w-full py-4">
                   {loadingMessages && messages.length === 0 ? (
                     <div className="flex items-center justify-center py-12 text-sm text-muted-foreground gap-2">
                       <Loader2 className="h-4 w-4 animate-spin" />
