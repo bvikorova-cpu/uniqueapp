@@ -13,6 +13,8 @@ import { useDmMutes } from "@/hooks/useDmMutes";
 import { EmojiPicker } from "@/components/messenger/EmojiPicker";
 import { GiftShopSheet } from "@/components/gifts/GiftShopSheet";
 import { GiftBubble } from "@/components/gifts/GiftBubble";
+import { MegaGiftOverlay } from "@/components/gifts/MegaGiftOverlay";
+import type { GiftBubbleData } from "@/components/gifts/GiftBubble";
 import { useChatGifts } from "@/hooks/useChatGifts";
 import { StickerPicker } from "@/components/messenger/StickerPicker";
 import { ARCameraButton } from "@/components/ar/ARCameraButton";
@@ -164,6 +166,8 @@ const Messenger = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showStickerPicker, setShowStickerPicker] = useState(false);
   const { giftsById } = useChatGifts();
+  const [megaGiftAlert, setMegaGiftAlert] = useState<{ gift: GiftBubbleData; senderName: string } | null>(null);
+  const lastMegaGiftMsgRef = useRef<string | null>(null);
 
   const [selfDestructDuration, setSelfDestructDuration] = useState<number | null>(null);
   const [uploadingAttachment, setUploadingAttachment] = useState(false);
