@@ -20,6 +20,7 @@ import {
   giftCategoryIcon,
 } from "./giftAssets";
 import { GiftVisual } from "./GiftVisual";
+import { CreditFlowOverlay } from "./CreditFlowOverlay";
 import { Input } from "@/components/ui/input";
 
 export interface CatalogGift {
@@ -296,5 +297,6 @@ export function GiftShopSheet({
         )}
       </SheetContent>
     </Sheet>
+    </>
   );
 }
