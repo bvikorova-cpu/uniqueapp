@@ -394,6 +394,46 @@ import megaHotAirBalloon from "@/assets/gifts/mega-hot-air-balloon.png";
 import megaMagicLamp from "@/assets/gifts/mega-magic-lamp.png";
 import megaCrystalGolem from "@/assets/gifts/mega-crystal-golem.png";
 import megaStarShower from "@/assets/gifts/mega-star-shower.png";
+import megaLavaTitan from "@/assets/gifts/mega-lava-titan.png";
+import megaThunderEagle from "@/assets/gifts/mega-thunder-eagle.png";
+import megaCrystalSwan from "@/assets/gifts/mega-crystal-swan.png";
+import megaNeonCity from "@/assets/gifts/mega-neon-city.png";
+import megaGoldenPiano from "@/assets/gifts/mega-golden-piano.png";
+import megaRoseGarden from "@/assets/gifts/mega-rose-garden.png";
+import megaSnowGlobe from "@/assets/gifts/mega-snow-globe.png";
+import megaCoralThrone from "@/assets/gifts/mega-coral-throne.png";
+import megaLighthouse from "@/assets/gifts/mega-lighthouse.png";
+import megaSubmarine from "@/assets/gifts/mega-submarine.png";
+import megaFlyingCarpet from "@/assets/gifts/mega-flying-carpet.png";
+import megaClockTower from "@/assets/gifts/mega-clock-tower.png";
+import megaFlameGuitar from "@/assets/gifts/mega-flame-guitar.png";
+import megaChampagneTower from "@/assets/gifts/mega-champagne-tower.png";
+import megaYacht from "@/assets/gifts/mega-yacht.png";
+import megaHelicopter from "@/assets/gifts/mega-helicopter.png";
+import megaCrystalButterfly from "@/assets/gifts/mega-crystal-butterfly.png";
+import megaGoldenFountain from "@/assets/gifts/mega-golden-fountain.png";
+import megaGoldenScarab from "@/assets/gifts/mega-golden-scarab.png";
+import megaKoiPond from "@/assets/gifts/mega-koi-pond.png";
+import megaCherryTree from "@/assets/gifts/mega-cherry-tree.png";
+import megaVolcanoIsland from "@/assets/gifts/mega-volcano-island.png";
+import megaFerrisWheel from "@/assets/gifts/mega-ferris-wheel.png";
+import megaCarousel from "@/assets/gifts/mega-carousel.png";
+import megaIcePalace from "@/assets/gifts/mega-ice-palace.png";
+import megaThunderHorse from "@/assets/gifts/mega-thunder-horse.png";
+import megaEclipse from "@/assets/gifts/mega-eclipse.png";
+import megaGalaxyJellyfish from "@/assets/gifts/mega-galaxy-jellyfish.png";
+import megaGoldenMic from "@/assets/gifts/mega-golden-mic.png";
+import megaGoldenStag from "@/assets/gifts/mega-golden-stag.png";
+import megaGrandTrophy from "@/assets/gifts/mega-grand-trophy.png";
+import megaRainbowIsland from "@/assets/gifts/mega-rainbow-island.png";
+import megaLoveRobot from "@/assets/gifts/mega-love-robot.png";
+import megaGrandCake from "@/assets/gifts/mega-grand-cake.png";
+import megaJewelThrone from "@/assets/gifts/mega-jewel-throne.png";
+import megaHoverBike from "@/assets/gifts/mega-hover-bike.png";
+import megaStarHourglass from "@/assets/gifts/mega-star-hourglass.png";
+import megaWhiteTiger from "@/assets/gifts/mega-white-tiger.png";
+import megaMagicBook from "@/assets/gifts/mega-magic-book.png";
+import megaSunflowerBouquet from "@/assets/gifts/mega-sunflower-bouquet.png";
 
 export const GIFT_IMAGES: Record<string, string> = {
   "alien-friend": alienFriend,
@@ -793,6 +833,46 @@ export const GIFT_IMAGES: Record<string, string> = {
   "mega-magic-lamp": megaMagicLamp,
   "mega-crystal-golem": megaCrystalGolem,
   "mega-star-shower": megaStarShower,
+  "mega-lava-titan": megaLavaTitan,
+  "mega-thunder-eagle": megaThunderEagle,
+  "mega-crystal-swan": megaCrystalSwan,
+  "mega-neon-city": megaNeonCity,
+  "mega-golden-piano": megaGoldenPiano,
+  "mega-rose-garden": megaRoseGarden,
+  "mega-snow-globe": megaSnowGlobe,
+  "mega-coral-throne": megaCoralThrone,
+  "mega-lighthouse": megaLighthouse,
+  "mega-submarine": megaSubmarine,
+  "mega-flying-carpet": megaFlyingCarpet,
+  "mega-clock-tower": megaClockTower,
+  "mega-flame-guitar": megaFlameGuitar,
+  "mega-champagne-tower": megaChampagneTower,
+  "mega-yacht": megaYacht,
+  "mega-helicopter": megaHelicopter,
+  "mega-crystal-butterfly": megaCrystalButterfly,
+  "mega-golden-fountain": megaGoldenFountain,
+  "mega-golden-scarab": megaGoldenScarab,
+  "mega-koi-pond": megaKoiPond,
+  "mega-cherry-tree": megaCherryTree,
+  "mega-volcano-island": megaVolcanoIsland,
+  "mega-ferris-wheel": megaFerrisWheel,
+  "mega-carousel": megaCarousel,
+  "mega-ice-palace": megaIcePalace,
+  "mega-thunder-horse": megaThunderHorse,
+  "mega-eclipse": megaEclipse,
+  "mega-galaxy-jellyfish": megaGalaxyJellyfish,
+  "mega-golden-mic": megaGoldenMic,
+  "mega-golden-stag": megaGoldenStag,
+  "mega-grand-trophy": megaGrandTrophy,
+  "mega-rainbow-island": megaRainbowIsland,
+  "mega-love-robot": megaLoveRobot,
+  "mega-grand-cake": megaGrandCake,
+  "mega-jewel-throne": megaJewelThrone,
+  "mega-hover-bike": megaHoverBike,
+  "mega-star-hourglass": megaStarHourglass,
+  "mega-white-tiger": megaWhiteTiger,
+  "mega-magic-book": megaMagicBook,
+  "mega-sunflower-bouquet": megaSunflowerBouquet,
 };
 
 export const GIFT_CATEGORIES = [
