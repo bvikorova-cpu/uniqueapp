@@ -335,6 +335,62 @@ export const CATEGORY_TEASERS = {
     outro: "Discover a fresh perspective on you.",
     accent: "#48d2cf",
   },
+  pastlife: {
+    label: "Past Life Explorer",
+    hook: "EXPLORE STORIES BEYOND TIME.",
+    lines: ["Enter your birth details and personal clues", "Discover AI-created past-life narratives", "Reflect on patterns, talents and connections"],
+    outro: "Open a new chapter of reflection.",
+    accent: "#c99cff",
+  },
+  lottery: {
+    label: "Lottery Numbers",
+    hook: "EXPLORE THE PATTERNS.",
+    lines: ["Generate number sets for entertainment", "Explore trends, dreams and numerology", "Compare frequencies in a visual heatmap"],
+    outro: "Play responsibly. No outcome is guaranteed.",
+    accent: "#f3c84b",
+  },
+  astrology: {
+    label: "Astrology",
+    hook: "LOOK TO THE COSMOS.",
+    lines: ["Explore daily zodiac perspectives", "Discover your personalized birth chart", "Try tarot, runes and compatibility readings"],
+    outro: "Find a fresh perspective in the stars.",
+    accent: "#839cff",
+  },
+  dreamanalyzer: {
+    label: "Dream Analyzer",
+    hook: "WHAT DID YOUR DREAM REVEAL?",
+    lines: ["Describe the moments you remember", "Explore symbols, emotions and possible themes", "Turn your dream into imaginative visual art"],
+    outro: "See your dreams from a new angle.",
+    accent: "#72c8e8",
+  },
+  crystalenergy: {
+    label: "Crystal & Energy Network",
+    hook: "FIND YOUR INNER BALANCE.",
+    lines: ["Explore personalized crystal guidance", "Receive a fresh daily oracle reading", "Reflect on your aura and energy patterns"],
+    outro: "Begin your mindful energy journey.",
+    accent: "#58d1b4",
+  },
+  timecapsule: {
+    label: "Time Capsule Network",
+    hook: "A MESSAGE FOR THE FUTURE.",
+    lines: ["Save meaningful words, photos and videos", "Choose a future date for the reveal", "Preserve moments for people who matter"],
+    outro: "Create a memory worth reopening.",
+    accent: "#ff9b69",
+  },
+  timereversal: {
+    label: "Time Reversal Social",
+    hook: "REIMAGINE YOUR TIMELINE.",
+    lines: ["Explore playful alternate-life stories", "Create age journeys and reverse biographies", "Share perspectives across the community"],
+    outro: "See your story in a different direction.",
+    accent: "#ed75be",
+  },
+  holographicavatars: {
+    label: "Holographic Avatars",
+    hook: "CREATE YOUR DIGITAL DOUBLE.",
+    lines: ["Shape an avatar with unique traits", "Customize its style and personality", "Explore battles, breeding and the marketplace"],
+    outro: "Step into a new digital identity.",
+    accent: "#54d9df",
+  },
 } as const;
 
 export type CategoryTeaserId = keyof typeof CATEGORY_TEASERS;
