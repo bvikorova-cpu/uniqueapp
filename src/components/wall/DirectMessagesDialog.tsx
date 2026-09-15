@@ -1,3 +1,4 @@
+import { useChatBackground } from "@/hooks/useChatTheme";
 import { useEffect, useRef, useState } from "react";
 import { StickerButton } from "@/components/common/StickerButton";
 import { ARCameraButton } from "@/components/ar/ARCameraButton";
@@ -35,6 +36,7 @@ interface DirectMessagesDialogProps {
 }
 
 export const DirectMessagesDialog = ({ userId,
+  const { style: chatBg } = useChatBackground();
   userName,
   userAvatar }: DirectMessagesDialogProps) => {
   const [open, setOpen] = useState(false);
@@ -231,7 +233,7 @@ export const DirectMessagesDialog = ({ userId,
         </DialogHeader>
         
         {/* Messages area */}
-        <ScrollArea className="h-80 px-4">
+        <ScrollArea className="h-80 px-4" style={chatBg}>
           <div className="space-y-3 py-4">
             {messages.length === 0 ? (
               <div className="text-center py-8">

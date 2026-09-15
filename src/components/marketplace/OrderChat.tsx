@@ -1,3 +1,4 @@
+import { useChatBackground } from "@/hooks/useChatTheme";
 import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,7 @@ interface OrderChatProps {
 }
 
 export function OrderChat({ order, currentUserId, otherUser, onBack, onStatusChange }: OrderChatProps) {
+  const { style: chatBg } = useChatBackground();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -201,7 +203,7 @@ export function OrderChat({ order, currentUserId, otherUser, onBack, onStatusCha
         <p><strong>Amount:</strong> €{order.total_amount} | <strong>Deadline:</strong> {format(new Date(order.delivery_deadline), "PPP")}</p>
       </div>
 
-      <ScrollArea className="flex-1 p-4" ref={scrollRef}>
+      <ScrollArea className="flex-1 p-4" ref={scrollRef} style={chatBg}>
         <div className="space-y-3">
           {messages.map((msg) => {
             const isOwn = msg.sender_id === currentUserId;

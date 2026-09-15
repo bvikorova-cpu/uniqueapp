@@ -1,3 +1,4 @@
+import { useChatBackground } from "@/hooks/useChatTheme";
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export const ConcertChat = ({ onBack, embedded = false, roomId }: Props) => {
+  const { style: chatBg } = useChatBackground();
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
@@ -139,7 +141,8 @@ export const ConcertChat = ({ onBack, embedded = false, roomId }: Props) => {
   const messageList = (
     <div
       ref={scrollRef}
-      className={`overflow-y-auto space-y-3 p-3 bg-muted/30 rounded-lg ${embedded ? "flex-1 min-h-0" : "h-[400px] mb-4"}`}
+      className={`overflow-y-auto space-y-3 p-3 rounded-lg ${embedded ? "flex-1 min-h-0" : "h-[400px] mb-4"}`}
+      style={chatBg}
     >
       {messages.length === 0 ? (
         <div className="text-center text-muted-foreground py-16">

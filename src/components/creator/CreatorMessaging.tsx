@@ -1,3 +1,4 @@
+import { useChatBackground } from "@/hooks/useChatTheme";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ interface CreatorMessagingProps {
 }
 
 export function CreatorMessaging({ creatorId, creatorName, canMessage }: CreatorMessagingProps) {
+  const { style: chatBg } = useChatBackground();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
@@ -131,7 +133,7 @@ export function CreatorMessaging({ creatorId, creatorName, canMessage }: Creator
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[400px] mb-4 p-4 border rounded-lg">
+        <ScrollArea className="h-[400px] mb-4 p-4 border rounded-lg" style={chatBg}>
           {loading ? (
             <p className="text-center text-muted-foreground">Loading messages...</p>
           ) : messages.length === 0 ? (
