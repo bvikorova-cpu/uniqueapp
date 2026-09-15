@@ -434,6 +434,24 @@ import megaStarHourglass from "@/assets/gifts/mega-star-hourglass.png";
 import megaWhiteTiger from "@/assets/gifts/mega-white-tiger.png";
 import megaMagicBook from "@/assets/gifts/mega-magic-book.png";
 import megaSunflowerBouquet from "@/assets/gifts/mega-sunflower-bouquet.png";
+import beautyCrystalRose from "@/assets/gifts/beauty-crystal-rose.png";
+import beautyGoldenButterfly from "@/assets/gifts/beauty-golden-butterfly.png";
+import beautyPearlShell from "@/assets/gifts/beauty-pearl-shell.png";
+import beautyStarLantern from "@/assets/gifts/beauty-star-lantern.png";
+import beautyBlossomBonsai from "@/assets/gifts/beauty-blossom-bonsai.png";
+import beautyGlassHeart from "@/assets/gifts/beauty-glass-heart.png";
+import beautyMiniCrown from "@/assets/gifts/beauty-mini-crown.png";
+import beautyDreamcatcher from "@/assets/gifts/beauty-dreamcatcher.png";
+import beautyAuroraOrb from "@/assets/gifts/beauty-aurora-orb.png";
+import beautyCrystalShoes from "@/assets/gifts/beauty-crystal-shoes.png";
+import beautyGoldenKey from "@/assets/gifts/beauty-golden-key.png";
+import beautyMoonPendant from "@/assets/gifts/beauty-moon-pendant.png";
+import beautyFireflyJar from "@/assets/gifts/beauty-firefly-jar.png";
+import beautySwanPair from "@/assets/gifts/beauty-swan-pair.png";
+import beautyDiamondSnowflake from "@/assets/gifts/beauty-diamond-snowflake.png";
+import beautyRoseBox from "@/assets/gifts/beauty-rose-box.png";
+import beautyGalaxyMarble from "@/assets/gifts/beauty-galaxy-marble.png";
+import beautySilverDolphin from "@/assets/gifts/beauty-silver-dolphin.png";
 
 export const GIFT_IMAGES: Record<string, string> = {
   "alien-friend": alienFriend,
@@ -873,6 +891,25 @@ export const GIFT_IMAGES: Record<string, string> = {
   "mega-white-tiger": megaWhiteTiger,
   "mega-magic-book": megaMagicBook,
   "mega-sunflower-bouquet": megaSunflowerBouquet,
+  // Beauty gifts — affordable premium-looking gifts
+  "beauty-crystal-rose": beautyCrystalRose,
+  "beauty-golden-butterfly": beautyGoldenButterfly,
+  "beauty-pearl-shell": beautyPearlShell,
+  "beauty-star-lantern": beautyStarLantern,
+  "beauty-blossom-bonsai": beautyBlossomBonsai,
+  "beauty-glass-heart": beautyGlassHeart,
+  "beauty-mini-crown": beautyMiniCrown,
+  "beauty-dreamcatcher": beautyDreamcatcher,
+  "beauty-aurora-orb": beautyAuroraOrb,
+  "beauty-crystal-shoes": beautyCrystalShoes,
+  "beauty-golden-key": beautyGoldenKey,
+  "beauty-moon-pendant": beautyMoonPendant,
+  "beauty-firefly-jar": beautyFireflyJar,
+  "beauty-swan-pair": beautySwanPair,
+  "beauty-diamond-snowflake": beautyDiamondSnowflake,
+  "beauty-rose-box": beautyRoseBox,
+  "beauty-galaxy-marble": beautyGalaxyMarble,
+  "beauty-silver-dolphin": beautySilverDolphin,
 };
 
 export const GIFT_CATEGORIES = [
