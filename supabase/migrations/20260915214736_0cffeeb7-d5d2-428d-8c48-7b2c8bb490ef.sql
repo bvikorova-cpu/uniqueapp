@@ -1,0 +1,2 @@
+ALTER TABLE public.personality_clones DROP CONSTRAINT IF EXISTS personality_clones_subscription_tier_check;
+ALTER TABLE public.personality_clones ADD CONSTRAINT personality_clones_subscription_tier_check CHECK (subscription_tier = ANY (ARRAY['basic','advanced','celebrity','credits']));
