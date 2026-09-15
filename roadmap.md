@@ -1,2 +1,2 @@
 ## Active task
-- [x] Replace 48 emoji chat wallpapers with adult luxury photographic backgrounds
+- [ ] Limit Messenger chat viewport and keep wallpaper sharp while messages scroll
