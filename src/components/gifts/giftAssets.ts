@@ -728,6 +728,15 @@ export const GIFT_IMAGES: Record<string, string> = {
   "spa-candles": nlSpaCandles,
   "yacht-deck-party": nlYachtDeckParty,
   "skyline-drone": nlSkylineDrone,
+  // Mega gifts — large premium animated gifts
+  "mega-golden-lion": megaGoldenLion,
+  "mega-phoenix": megaPhoenix,
+  "mega-dragon-flame": megaDragonFlame,
+  "mega-sky-castle": megaSkyCastle,
+  "mega-rocket": megaRocket,
+  "mega-diamond-crown": megaDiamondCrown,
+  "mega-unicorn-dream": megaUnicornDream,
+  "mega-private-jet": megaPrivateJet,
 };
 
 export const GIFT_CATEGORIES = [
@@ -747,6 +756,7 @@ export const GIFT_CATEGORIES = [
   { id: "fantasy", label: "Fantasy" },
   { id: "journey", label: "Journey" },
   { id: "nightlife", label: "Nightlife" },
+  { id: "mega", label: "Mega" },
 ] as const;
 
 export const GIFT_ANIMATION_CLASS: Record<string, string> = {
@@ -757,7 +767,11 @@ export const GIFT_ANIMATION_CLASS: Record<string, string> = {
   swing: "gift-anim-swing",
   glow: "gift-anim-glow",
   burst: "gift-anim-burst",
+  mega: "gift-anim-mega",
 };
+
+/** Gifts with animation "mega" play a full-screen takeover in chat. */
+export const MEGA_GIFT_MIN_CREDITS = 10000;
 
 export const GIFT_RARITY_RING: Record<string, string> = {
   common: "ring-border",
@@ -790,6 +804,7 @@ const GIFT_CATEGORY_ICON_SLUG: Record<string, string> = {
   fantasy: "unicorn-rainbow",
   journey: "hot-air-balloons",
   nightlife: "champagne-fountain",
+  mega: "mega-diamond-crown",
 };
 
 export const giftCategoryIcon = (categoryId: string) =>
