@@ -1,0 +1,22 @@
+INSERT INTO public.gift_catalog (slug, name, category, price_credits, rarity, animation, is_active, sort_order) VALUES
+  ('mega-galaxy-heart', 'Galaxy Heart', 'mega', 29999, 'legendary', 'mega', true, 117),
+  ('mega-ice-wolf', 'Ice Wolf', 'mega', 24999, 'legendary', 'mega', true, 118),
+  ('mega-royal-owl', 'Royal Owl', 'mega', 16999, 'legendary', 'mega', true, 119),
+  ('mega-treasure-chest', 'Treasure Chest', 'mega', 21999, 'legendary', 'mega', true, 120),
+  ('mega-pirate-ship', 'Pirate Ship', 'mega', 33999, 'legendary', 'mega', true, 121),
+  ('mega-cyber-panther', 'Cyber Panther', 'mega', 23999, 'legendary', 'mega', true, 122),
+  ('mega-enchanted-forest', 'Enchanted Forest', 'mega', 27999, 'legendary', 'mega', true, 123),
+  ('mega-laser-show', 'Laser Show', 'mega', 14999, 'legendary', 'mega', true, 124),
+  ('mega-diamond-ring', 'Diamond Ring', 'mega', 49999, 'legendary', 'mega', true, 125),
+  ('mega-pegasus', 'Golden Pegasus', 'mega', 28999, 'legendary', 'mega', true, 126),
+  ('mega-kitsune', 'Spirit Kitsune', 'mega', 26499, 'legendary', 'mega', true, 127),
+  ('mega-storm-elephant', 'Storm Elephant', 'mega', 13499, 'legendary', 'mega', true, 128),
+  ('mega-aurora', 'Aurora Dome', 'mega', 17499, 'legendary', 'mega', true, 129),
+  ('mega-moon-castle', 'Moon Castle', 'mega', 36499, 'legendary', 'mega', true, 130),
+  ('mega-candy-kingdom', 'Candy Kingdom', 'mega', 19999, 'legendary', 'mega', true, 131),
+  ('mega-race-car', 'Golden Racer', 'mega', 25999, 'legendary', 'mega', true, 132),
+  ('mega-hot-air-balloon', 'Dream Balloon', 'mega', 11499, 'legendary', 'mega', true, 133),
+  ('mega-magic-lamp', 'Magic Lamp', 'mega', 42499, 'legendary', 'mega', true, 134),
+  ('mega-crystal-golem', 'Crystal Golem', 'mega', 20999, 'legendary', 'mega', true, 135),
+  ('mega-star-shower', 'Star Shower', 'mega', 9999, 'legendary', 'mega', true, 136)
+ON CONFLICT (slug) DO NOTHING;
