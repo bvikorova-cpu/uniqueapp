@@ -74,6 +74,7 @@ export const chatBackgroundStyle = (state: ChatThemeState) => {
     backgroundImage: wallpaper.background,
     backgroundColor: wallpaper.base,
     backgroundSize: wallpaper.size,
+    backgroundPosition: wallpaper.position,
     borderColor: `${wallpaper.accent}55`,
   } as React.CSSProperties;
 };
@@ -84,6 +85,7 @@ export const wallpaperPreviewStyle = (wp: ChatWallpaper) =>
     backgroundImage: wp.background,
     backgroundColor: wp.base,
     backgroundSize: wp.size,
+    backgroundPosition: wp.position,
   }) as React.CSSProperties;
 
 const isLight = (hex: string) => {

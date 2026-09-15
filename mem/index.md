@@ -61,4 +61,4 @@
 - [No fake data](mem://constraints/no-fake-data) — Every number, list and name must come from real DB data; no mock/random/placeholder values anywhere.
 - [Flyer Studio language](mem://preferences/flyer-studio-language) — English-only controls; selected output language receives professional native-level translation.
 - [Uni section knowledge](mem://features/uni-section-knowledge) — Uni's authoritative per-section docs in uniSections.ts + uniSectionsExtra.ts; keep in sync with code.
-- [Chat wallpapers](mem://features/chat-wallpapers) — 64 CSS chat backgrounds (4 kids), one choice applies to every chat surface.
+- [Chat wallpapers](mem://features/chat-wallpapers) — 112 backgrounds including 48 adult photographs and 4 kids options; one choice applies to every human chat.

@@ -1,2 +1,2 @@
 ## Active task
-- [x] Create and verify EN/SK/HU earning-opportunities promo videos
+- [x] Replace 48 emoji chat wallpapers with adult luxury photographic backgrounds

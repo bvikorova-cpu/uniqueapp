@@ -1,5 +1,7 @@
+import { PHOTO_CHAT_WALLPAPERS } from "@/data/chatWallpaperImages";
+
 /**
- * Chat wallpaper catalog — pure CSS templates (no image downloads).
+ * Chat wallpaper catalog — CSS templates and optimized photographic wallpapers.
  * Used by every chat surface on the platform via `useChatTheme`.
  * Legacy ids (abstract, stars, bubbles, matrix) are kept for backwards
  * compatibility with already saved `messenger_chat_themes.wallpaper_id`.
@@ -31,6 +33,8 @@ export interface ChatWallpaper {
   base?: string;
   /** Optional background-size for patterned templates. */
   size?: string;
+  /** Optional background-position for photographic templates. */
+  position?: string;
   /** Accent used for the bubble border tint. */
   accent: string;
 }
@@ -86,7 +90,7 @@ const iconBg = (glyphs: string[], a: string, b: string, c: string, opacity = 0.4
 
 const iconSize = (tile = 96) => `${tile}px ${tile}px, auto`;
 
-export const CHAT_WALLPAPERS: ChatWallpaper[] = [
+const BASE_CHAT_WALLPAPERS: ChatWallpaper[] = [
   /* ---------- Gradients (10) ---------- */
   { id: "abstract", name: "Abstract Waves", category: "gradient", price: 0, accent: "#3b82f6", background: g("#22d3ee55", "#3b82f640", "#a855f755") },
   { id: "sunrise", name: "Sunrise", category: "gradient", price: 0, accent: "#f97316", background: g("#fed7aa66", "#fb923c44", "#f9731655") },
@@ -225,6 +229,21 @@ export const CHAT_WALLPAPERS: ChatWallpaper[] = [
   { id: "fashionmakeup", name: "Makeup Studio", category: "fashion", price: 3, accent: "#ec4899", background: iconBg(["💄", "🖌️", "💅", "🪞"], "#fdf2f866", "#fce7f344", "#ec489944"), size: iconSize() },
   { id: "fashionnight", name: "Catwalk Night", category: "fashion", price: 4, accent: "#f472b6", base: "#0f0a14", background: `${motif(["👠", "💫", "👗", "📸"], 0.5)}, ${glow("#f472b655", "#a855f744", "#0f0a14")}`, size: iconSize() },
 ];
+
+/** Replaces the adult icon motifs with editorial photography while preserving IDs and prices. */
+export const CHAT_WALLPAPERS: ChatWallpaper[] = BASE_CHAT_WALLPAPERS.map((wallpaper) => {
+  const photo = PHOTO_CHAT_WALLPAPERS[wallpaper.id];
+  if (!photo) return wallpaper;
+
+  const darkOverlay = wallpaper.category === "mens" || wallpaper.id.endsWith("night");
+  return {
+    ...wallpaper,
+    background: `${darkOverlay ? "linear-gradient(rgb(0 0 0 / 0.26), rgb(0 0 0 / 0.38))" : "linear-gradient(rgb(255 255 255 / 0.14), rgb(0 0 0 / 0.16))"}, url("${photo}")`,
+    base: darkOverlay ? "#111111" : "#f5f5f4",
+    size: "cover",
+    position: "center",
+  };
+});
 
 export const CHAT_WALLPAPER_MAP: Record<string, ChatWallpaper> = Object.fromEntries(
   CHAT_WALLPAPERS.map((w) => [w.id, w]),
