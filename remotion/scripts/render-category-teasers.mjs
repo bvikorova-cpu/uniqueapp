@@ -95,6 +95,20 @@ for (const id of ids) {
     coupons: "Coupon-Marketplace",
     auctions: "Online-Auctions",
     antiques: "Antique-Appraisal",
+    liveconcerts: "Live-Concerts",
+    kitchenstars: "KitchenStars-Competition",
+    comedyclub: "Comedy-Club-Stand-Up",
+    influking: "Influ-King",
+    escaperoom: "Virtual-Escape-Room",
+    mysterybox: "Mystery-Box",
+    socialgifts: "Social-Gifts-Hub",
+    vacationer: "Vacationer",
+    cooking: "Cooking",
+    coffeecommunity: "Coffee-Community",
+    virtualpet: "Virtual-Pet",
+    adultpuzzles: "Adult-Puzzles",
+    spinsolve: "Spin-and-Solve",
+    unlockvideos: "Unlock-Videos",
   };
   const name = NAMES[id] ?? `${id[0].toUpperCase()}${id.slice(1)}`;
   const secs = Math.round(composition.durationInFrames / composition.fps);
