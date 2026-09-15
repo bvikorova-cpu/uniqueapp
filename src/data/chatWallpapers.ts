@@ -44,6 +44,12 @@ export const CHAT_WALLPAPER_CATEGORIES: { id: ChatWallpaperCategory; label: stri
   { id: "pattern", label: "Patterns" },
   { id: "romantic", label: "Romantic" },
   { id: "kids", label: "Kids" },
+  { id: "hearts", label: "Hearts" },
+  { id: "animals", label: "Cats & Pets" },
+  { id: "mens", label: "For men" },
+  { id: "womens", label: "For women" },
+  { id: "travel", label: "Travel" },
+  { id: "fashion", label: "Fashion" },
 ];
 
 const g = (a: string, b: string, c: string, deg = 135) =>
