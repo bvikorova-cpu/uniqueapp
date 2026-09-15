@@ -391,6 +391,62 @@ export const CATEGORY_TEASERS = {
     outro: "Step into a new digital identity.",
     accent: "#54d9df",
   },
+  anondate: {
+    label: "Anonymous Date",
+    hook: "MEET SOMEONE, MYSTERY FIRST.",
+    lines: ["Chat safely with a protected anonymous profile", "Get matched by interests, goals and filters", "Reveal identities only when you both agree"],
+    outro: "Start a conversation without pressure.",
+    accent: "#ff7ba9",
+  },
+  dating: {
+    label: "Dating",
+    hook: "REAL PEOPLE. REAL CONNECTIONS.",
+    lines: ["Build an authentic profile that shows your style", "Discover matches with smart suggestions", "Chat, connect and take things at your pace"],
+    outro: "Find someone worth meeting.",
+    accent: "#ff5d6c",
+  },
+  bestfriend: {
+    label: "Best Friend",
+    hook: "A FRIEND WHO'S ALWAYS THERE.",
+    lines: ["Talk with a supportive AI companion anytime", "Share your day, your plans and your feelings", "Grow a friendship that remembers your story"],
+    outro: "Meet your always-on companion.",
+    accent: "#b07cff",
+  },
+  megaforum: {
+    label: "Mega Forum",
+    hook: "EVERY TOPIC. ONE COMMUNITY.",
+    lines: ["Join themed discussions across every interest", "Ask questions and get real answers fast", "Start threads and grow your reputation"],
+    outro: "Add your voice to the conversation.",
+    accent: "#6fa9ff",
+  },
+  charactercompanions: {
+    label: "Character Companions",
+    hook: "STEP INTO THE STORY.",
+    lines: ["Chat with unique characters and personas", "Explore roleplay, adventures and scenarios", "Create your own custom companion"],
+    outro: "Begin your next adventure.",
+    accent: "#ffb54d",
+  },
+  brokenhearts: {
+    label: "Broken Hearts",
+    hook: "HEAL, GROW, MOVE FORWARD.",
+    lines: ["Process feelings in a safe private space", "Get gentle guidance and daily check-ins", "Rebuild confidence at your own rhythm"],
+    outro: "Take the first step to feeling better.",
+    accent: "#ff8f6b",
+  },
+  emotioneconomy: {
+    label: "Emotion Economy",
+    hook: "YOUR EMOTIONS HAVE VALUE.",
+    lines: ["Express moods and reactions across the platform", "Track your emotional journey over time", "Turn authentic engagement into rewards"],
+    outro: "Discover the power of feeling.",
+    accent: "#63e0a1",
+  },
+  invitefriends: {
+    label: "Invite Friends",
+    hook: "BRING A FRIEND, GET REWARDED.",
+    lines: ["Share your personal invite link anywhere", "Earn credits when friends join and stay active", "Get bonus rewards on Premium referrals"],
+    outro: "Grow together. Earn together.",
+    accent: "#ffd94d",
+  },
 } as const;
 
 export type CategoryTeaserId = keyof typeof CATEGORY_TEASERS;

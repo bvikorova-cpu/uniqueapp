@@ -60,6 +60,14 @@ export const CATEGORY_TEASER_DURATIONS: Record<string, number> = {
   timecapsule: 450,
   timereversal: 450,
   holographicavatars: 450,
+  anondate: 450,
+  dating: 450,
+  bestfriend: 450,
+  megaforum: 450,
+  charactercompanions: 450,
+  brokenhearts: 450,
+  emotioneconomy: 450,
+  invitefriends: 450,
 };
 
 export const getCategoryTeaserDuration = (id: string) =>
