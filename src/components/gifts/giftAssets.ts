@@ -366,6 +366,14 @@ import megaRocket from "@/assets/gifts/mega-rocket.png";
 import megaDiamondCrown from "@/assets/gifts/mega-diamond-crown.png";
 import megaUnicornDream from "@/assets/gifts/mega-unicorn-dream.png";
 import megaPrivateJet from "@/assets/gifts/mega-private-jet.png";
+import megaCrystalPalace from "@/assets/gifts/mega-crystal-palace.png";
+import megaGoldenTiger from "@/assets/gifts/mega-golden-tiger.png";
+import megaSkyWhale from "@/assets/gifts/mega-sky-whale.png";
+import megaFireworks from "@/assets/gifts/mega-fireworks.png";
+import megaRoyalCarriage from "@/assets/gifts/mega-royal-carriage.png";
+import megaSpaceStation from "@/assets/gifts/mega-space-station.png";
+import megaEmeraldPeacock from "@/assets/gifts/mega-emerald-peacock.png";
+import megaPartyBus from "@/assets/gifts/mega-party-bus.png";
 
 export const GIFT_IMAGES: Record<string, string> = {
   "alien-friend": alienFriend,
@@ -737,6 +745,14 @@ export const GIFT_IMAGES: Record<string, string> = {
   "mega-diamond-crown": megaDiamondCrown,
   "mega-unicorn-dream": megaUnicornDream,
   "mega-private-jet": megaPrivateJet,
+  "mega-crystal-palace": megaCrystalPalace,
+  "mega-golden-tiger": megaGoldenTiger,
+  "mega-sky-whale": megaSkyWhale,
+  "mega-fireworks": megaFireworks,
+  "mega-royal-carriage": megaRoyalCarriage,
+  "mega-space-station": megaSpaceStation,
+  "mega-emerald-peacock": megaEmeraldPeacock,
+  "mega-party-bus": megaPartyBus,
 };
 
 export const GIFT_CATEGORIES = [
