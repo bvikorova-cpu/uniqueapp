@@ -1848,6 +1848,14 @@ const Messenger = () => {
           </Card>
         </div>
       </div>
+
+      {megaGiftAlert && (
+        <MegaGiftOverlay
+          gift={megaGiftAlert.gift}
+          senderName={megaGiftAlert.senderName}
+          onClose={() => setMegaGiftAlert(null)}
+        />
+      )}
     </div>
   );
 };
