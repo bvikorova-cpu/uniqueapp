@@ -37,6 +37,12 @@ import fedoraImg from "@/assets/ar/fedora.png";
 import monocleImg from "@/assets/ar/monocle.png";
 import eyelashesImg from "@/assets/ar/eyelashes.png";
 import blushImg from "@/assets/ar/blush.png";
+import bigEyesImg from "@/assets/ar/big-cartoon-eyes.png";
+import piggyCapImg from "@/assets/ar/pink-piggy-cap.png";
+import sleepyZzImg from "@/assets/ar/sleepy-zz.png";
+import bunnySnoutImg from "@/assets/ar/bunny-snout.png";
+import wingedLinerImg from "@/assets/ar/winged-liner.png";
+import tealLinerImg from "@/assets/ar/teal-liner.png";
 
 /** Where an overlay is anchored on the detected face. */
 export type ArAnchor = "eyes" | "forehead" | "above-head" | "nose" | "mouth";
@@ -335,6 +341,64 @@ export const AR_FILTERS: ArFilter[] = [
     emoji: "✨",
     overlays: [
       { src: eyelashesImg, anchor: "eyes", widthFactor: 2.3, offsetY: -0.1 },
+      { src: blushImg, anchor: "eyes", widthFactor: 2.8, offsetY: 0.35 },
+    ],
+  },
+  // ---- Cute cartoon & glam makeup pack ----
+  {
+    id: "bigeyes",
+    label: "Big anime eyes",
+    emoji: "👀",
+    overlays: [{ src: bigEyesImg, anchor: "eyes", widthFactor: 2.6, offsetY: -0.05 }],
+  },
+  {
+    id: "piggycap",
+    label: "Piggy cap",
+    emoji: "🐷",
+    overlays: [{ src: piggyCapImg, anchor: "above-head", widthFactor: 2.9, offsetY: -0.28 }],
+  },
+  {
+    id: "sleepy",
+    label: "Sleepy zZ",
+    emoji: "😴",
+    overlays: [{ src: sleepyZzImg, anchor: "forehead", widthFactor: 1.1, offsetY: -0.55 }],
+  },
+  {
+    id: "piggysnout",
+    label: "Piggy snout",
+    emoji: "🐽",
+    overlays: [{ src: bunnySnoutImg, anchor: "nose", widthFactor: 0.9, offsetY: 0.05 }],
+  },
+  {
+    id: "cutiedream",
+    label: "Cutie dream",
+    emoji: "💗",
+    overlays: [
+      { src: piggyCapImg, anchor: "above-head", widthFactor: 2.9, offsetY: -0.28 },
+      { src: bigEyesImg, anchor: "eyes", widthFactor: 2.6, offsetY: -0.05 },
+      { src: bunnySnoutImg, anchor: "nose", widthFactor: 0.9, offsetY: 0.1 },
+      { src: sleepyZzImg, anchor: "forehead", widthFactor: 0.9, offsetY: -0.4 },
+    ],
+  },
+  {
+    id: "cateyeglam",
+    label: "Cat-eye glam",
+    emoji: "💄",
+    overlays: [{ src: wingedLinerImg, anchor: "eyes", widthFactor: 2.5, offsetY: -0.05 }],
+  },
+  {
+    id: "tealliner",
+    label: "Teal liner",
+    emoji: "🩵",
+    overlays: [{ src: tealLinerImg, anchor: "eyes", widthFactor: 2.5, offsetY: -0.05 }],
+  },
+  {
+    id: "glamdiva",
+    label: "Glam diva",
+    emoji: "🌟",
+    overlays: [
+      { src: wingedLinerImg, anchor: "eyes", widthFactor: 2.5, offsetY: -0.05 },
+      { src: redLipsImg, anchor: "mouth", widthFactor: 1.2, offsetY: -0.05 },
       { src: blushImg, anchor: "eyes", widthFactor: 2.8, offsetY: 0.35 },
     ],
   },
