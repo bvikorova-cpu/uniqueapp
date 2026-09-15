@@ -27,6 +27,14 @@ export const AIChatThemes = ({ onBack, userId }: AIChatThemesProps) => {
   const [busy, setBusy] = useState<string | null>(null);
   const [description, setDescription] = useState("");
   const [generating, setGenerating] = useState(false);
+  const [wpQuery, setWpQuery] = useState("");
+  const [wpCategory, setWpCategory] = useState<ChatWallpaperCategory | "all">("all");
+
+  const visibleWallpapers = BUILTIN_WALLPAPERS.filter(
+    (wp) =>
+      (wpCategory === "all" || wp.category === wpCategory) &&
+      wp.name.toLowerCase().includes(wpQuery.trim().toLowerCase()),
+  );
 
   const owns = (id: string, price: number) => price === 0 || state.ownedThemes.includes(id);
 
