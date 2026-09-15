@@ -57,7 +57,9 @@ interface BazaarOrderChatProps {
 }
 
 export default function BazaarOrderChat({ order, currentUserId, onStatusChange }: BazaarOrderChatProps) {
-  const { style: chatBg } = useChatBackground();
+  const { style: chatBg } = useChatBackground([
+    currentUserId === order.seller_id ? order.buyer_id : order.seller_id,
+  ]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(false);
