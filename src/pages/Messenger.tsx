@@ -1577,7 +1577,10 @@ const Messenger = () => {
                             
                             {/* Unique Gift */}
                             {msg.gift_id && giftsById[msg.gift_id] && (
-                              <GiftBubble gift={giftsById[msg.gift_id]} />
+                              <GiftBubble
+                                gift={giftsById[msg.gift_id]}
+                                direction={msg.sender_id === user?.id ? "out" : "in"}
+                              />
                             )}
 
                             {/* Text content (hide for attachment-only messages) */}
