@@ -110,6 +110,7 @@ for (const id of ids) {
     spinsolve: "Spin-and-Solve",
     unlockvideos: "Unlock-Videos",
     shadowarena: "Shadow-Arena",
+    clubcard: "VIP-Club-Card",
   };
   const name = NAMES[id] ?? `${id[0].toUpperCase()}${id.slice(1)}`;
   const secs = Math.round(composition.durationInFrames / composition.fps);
