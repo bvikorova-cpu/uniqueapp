@@ -30,8 +30,8 @@ export const MAX_VIDEO_SECONDS = 30;
  */
 export function frameProfileForDuration(duration: number): { fps: number; maxSize: number } {
   if (duration <= 10) return { fps: 30, maxSize: 1920 };
-  if (duration <= 20) return { fps: 24, maxSize: 1920 };
-  return { fps: 18, maxSize: 1920 };
+  if (duration <= 20) return { fps: 25, maxSize: 1440 };
+  return { fps: 20, maxSize: 1280 };
 }
 
 /** Load a video element and wait for its metadata. */
