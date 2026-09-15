@@ -61,6 +61,7 @@ export function GiftShopSheet({
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [balance, setBalance] = useState<number | null>(null);
   const [search, setSearch] = useState("");
+  const [flow, setFlow] = useState<{ gift: CatalogGift; balanceAfter: number | null } | null>(null);
 
   useEffect(() => {
     if (!open) return;
