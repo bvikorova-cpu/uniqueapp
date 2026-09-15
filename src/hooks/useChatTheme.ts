@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  CHAT_WALLPAPERS,
+  CHAT_WALLPAPER_MAP,
+  DEFAULT_CHAT_WALLPAPER,
+  type ChatWallpaper,
+} from "@/data/chatWallpapers";
 
 export interface CustomChatTheme {
   id: string;
@@ -20,12 +26,8 @@ export const BUILTIN_THEMES = [
   { id: "ice", name: "Arctic Ice", colors: ["#e0f2fe", "#7dd3fc", "#0284c7"], price: 5 },
 ];
 
-export const BUILTIN_WALLPAPERS = [
-  { id: "abstract", name: "Abstract Waves", colors: ["#22d3ee", "#3b82f6", "#a855f7"], price: 0 },
-  { id: "stars", name: "Starfield", colors: ["#312e81", "#4c1d95", "#1e3a8a"], price: 2 },
-  { id: "bubbles", name: "Chat Bubbles", colors: ["#ec4899", "#f43f5e", "#f97316"], price: 2 },
-  { id: "matrix", name: "Digital Rain", colors: ["#064e3b", "#065f46", "#0f766e"], price: 3 },
-];
+/** Full wallpaper catalog (60+ CSS templates incl. kids). */
+export const BUILTIN_WALLPAPERS = CHAT_WALLPAPERS;
 
 export interface ChatThemeState {
   themeId: string;
@@ -46,20 +48,43 @@ export const resolveTheme = (state: ChatThemeState) =>
   BUILTIN_THEMES.find((t) => t.id === state.themeId) ||
   BUILTIN_THEMES[0];
 
+/** Resolve the active wallpaper from the catalog (undefined for AI custom ones). */
+export const resolveWallpaper = (state: ChatThemeState): ChatWallpaper | undefined =>
+  CHAT_WALLPAPER_MAP[state.wallpaperId];
+
 export const resolveWallpaperColors = (state: ChatThemeState): string[] => {
   const custom = state.customThemes.find((t) => t.id === state.wallpaperId);
   if (custom?.wallpaper?.length) return custom.wallpaper;
-  return (BUILTIN_WALLPAPERS.find((w) => w.id === state.wallpaperId) || BUILTIN_WALLPAPERS[0]).colors;
+  const wp = resolveWallpaper(state) || DEFAULT_CHAT_WALLPAPER;
+  return [wp.accent, wp.accent, wp.accent];
 };
 
 export const chatBackgroundStyle = (state: ChatThemeState) => {
-  const wp = resolveWallpaperColors(state);
   const theme = resolveTheme(state);
+  const custom = state.customThemes.find((t) => t.id === state.wallpaperId);
+  if (custom?.wallpaper?.length) {
+    const wp = custom.wallpaper;
+    return {
+      backgroundImage: `linear-gradient(135deg, ${wp[0]}66 0%, ${wp[1]}55 50%, ${wp[2]}66 100%)`,
+      borderColor: `${theme.colors[2]}55`,
+    } as React.CSSProperties;
+  }
+  const wallpaper = resolveWallpaper(state) || DEFAULT_CHAT_WALLPAPER;
   return {
-    backgroundImage: `linear-gradient(135deg, ${wp[0]}66 0%, ${wp[1]}55 50%, ${wp[2]}66 100%)`,
-    borderColor: `${theme.colors[2]}55`,
+    backgroundImage: wallpaper.background,
+    backgroundColor: wallpaper.base,
+    backgroundSize: wallpaper.size,
+    borderColor: `${wallpaper.accent}55`,
   } as React.CSSProperties;
 };
+
+/** Preview style for a single catalog wallpaper (used in the picker grid). */
+export const wallpaperPreviewStyle = (wp: ChatWallpaper) =>
+  ({
+    backgroundImage: wp.background,
+    backgroundColor: wp.base,
+    backgroundSize: wp.size,
+  }) as React.CSSProperties;
 
 const isLight = (hex: string) => {
   const h = hex.replace("#", "");
