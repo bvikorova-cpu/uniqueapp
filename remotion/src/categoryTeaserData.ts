@@ -699,6 +699,13 @@ export const CATEGORY_TEASERS = {
     outro: "Half free, always.",
     accent: "#ff6f61",
   },
+  clubcard: {
+    label: "VIP Club Card",
+    hook: "ONE CARD. EVERY PERK.",
+    lines: ["Choose a digital card or a physical NFC card", "Wear the gold ring badge and get priority access", "Save your card as PNG or PDF anytime"],
+    outro: "Join the Unique VIP Club.",
+    accent: "#e8bf5a",
+  },
 } as const;
 
 export type CategoryTeaserId = keyof typeof CATEGORY_TEASERS;
