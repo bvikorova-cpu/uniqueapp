@@ -358,6 +358,14 @@ import nlHotSpringNight from "@/assets/gifts/hot-spring-night.png";
 import nlSpaCandles from "@/assets/gifts/spa-candles.png";
 import nlYachtDeckParty from "@/assets/gifts/yacht-deck-party.png";
 import nlSkylineDrone from "@/assets/gifts/skyline-drone.png";
+import megaGoldenLion from "@/assets/gifts/mega-golden-lion.png";
+import megaPhoenix from "@/assets/gifts/mega-phoenix.png";
+import megaDragonFlame from "@/assets/gifts/mega-dragon-flame.png";
+import megaSkyCastle from "@/assets/gifts/mega-sky-castle.png";
+import megaRocket from "@/assets/gifts/mega-rocket.png";
+import megaDiamondCrown from "@/assets/gifts/mega-diamond-crown.png";
+import megaUnicornDream from "@/assets/gifts/mega-unicorn-dream.png";
+import megaPrivateJet from "@/assets/gifts/mega-private-jet.png";
 
 export const GIFT_IMAGES: Record<string, string> = {
   "alien-friend": alienFriend,
