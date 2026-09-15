@@ -77,6 +77,18 @@ export const CATEGORY_TEASER_DURATIONS: Record<string, number> = {
   phobia: 450,
   safety: 450,
   liedetector: 450,
+  characterarena: 450,
+  collectiblecards: 450,
+  horseracing: 450,
+  tutorialcourses: 450,
+  iqplatform: 450,
+  uni: 450,
+  propertymarketplace: 450,
+  skillsmarketplace: 450,
+  bazaar: 450,
+  coupons: 450,
+  auctions: 450,
+  antiques: 450,
 };
 
 export const getCategoryTeaserDuration = (id: string) =>
