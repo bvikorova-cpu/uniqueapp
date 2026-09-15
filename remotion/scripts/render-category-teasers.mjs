@@ -83,6 +83,18 @@ for (const id of ids) {
     phobia: "Phobia-Network",
     safety: "Safety-Bullying-Prevention",
     liedetector: "Lie-Detector-Chat",
+    characterarena: "Character-Arena",
+    collectiblecards: "Collectible-Cards",
+    horseracing: "Horse-Racing-Arena",
+    tutorialcourses: "Tutorial-Course-Platform",
+    iqplatform: "IQ-Platform",
+    uni: "Uni",
+    propertymarketplace: "Property-Marketplace",
+    skillsmarketplace: "Skills-Marketplace",
+    bazaar: "Bazaar",
+    coupons: "Coupon-Marketplace",
+    auctions: "Online-Auctions",
+    antiques: "Antique-Appraisal",
   };
   const name = NAMES[id] ?? `${id[0].toUpperCase()}${id.slice(1)}`;
   const secs = Math.round(composition.durationInFrames / composition.fps);
