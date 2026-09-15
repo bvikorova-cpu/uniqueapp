@@ -175,3 +175,24 @@ export const useChatTheme = (userId?: string) => {
 
   return { state, setState, save, loading };
 };
+
+/**
+ * Platform-wide chat background: resolves the signed-in user's saved
+ * wallpaper and returns a ready style object for any chat container.
+ */
+export const useChatBackground = () => {
+  const [userId, setUserId] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    let cancelled = false;
+    supabase.auth.getUser().then(({ data }) => {
+      if (!cancelled) setUserId(data.user?.id);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const { state, loading } = useChatTheme(userId);
+  return { style: chatBackgroundStyle(state), state, loading };
+};
