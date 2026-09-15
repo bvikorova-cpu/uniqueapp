@@ -12,7 +12,13 @@ export type ChatWallpaperCategory =
   | "dark"
   | "pattern"
   | "romantic"
-  | "kids";
+  | "kids"
+  | "hearts"
+  | "animals"
+  | "mens"
+  | "womens"
+  | "travel"
+  | "fashion";
 
 export interface ChatWallpaper {
   id: string;
