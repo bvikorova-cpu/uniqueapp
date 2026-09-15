@@ -248,6 +248,6 @@ export const useChatBackground = (peerIds?: (string | null | undefined)[]) => {
     };
   }, []);
 
-  const { state, loading } = useChatTheme(userId);
+  const { state, loading } = useSharedChatTheme(userId, peerIds);
   return { style: chatBackgroundStyle(state), state, loading };
 };
