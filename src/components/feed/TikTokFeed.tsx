@@ -305,7 +305,7 @@ function VideoCard({ short, active, muted, onToggleMute }: {
         playsInline
         muted={muted}
         preload="metadata"
-        className="h-full w-full object-cover"
+        className="h-full w-full object-contain pt-[calc(3.75rem+env(safe-area-inset-top))] pb-[calc(5.5rem+env(safe-area-inset-bottom))]"
         onClick={togglePlay}
         onTimeUpdate={(e) => {
           const v = e.currentTarget;
@@ -342,7 +342,7 @@ function VideoCard({ short, active, muted, onToggleMute }: {
       </AlertDialog>
 
 
-      <div className="absolute right-2 bottom-32 flex flex-col items-center gap-6 text-white z-20">
+      <div className="absolute right-2 bottom-[calc(6rem+env(safe-area-inset-bottom))] flex flex-col items-center gap-4 text-white z-20">
         <Link to={`/profile/${short.user_id}`} className="relative" onClick={(e) => e.stopPropagation()}>
           <Avatar className="w-12 h-12 ring-2 ring-white">
             <AvatarImage src={short.profile.avatar_url || undefined} />
@@ -389,7 +389,7 @@ function VideoCard({ short, active, muted, onToggleMute }: {
         </div>
       </div>
 
-      <div className="absolute left-0 right-20 bottom-6 px-3 text-white z-10 space-y-2">
+      <div className="absolute left-0 right-20 bottom-[calc(5.75rem+env(safe-area-inset-bottom))] px-3 text-white z-10 space-y-2">
         <Link to={`/profile/${short.user_id}`} onClick={(e) => e.stopPropagation()}>
           <span className="font-bold text-base drop-shadow-lg">@{name}</span>
         </Link>
@@ -604,7 +604,7 @@ export default function TikTokFeed({ topOverlay, fabOverlay, filter = "all" }: {
       </div>
 
       {fabOverlay && displayItems.length > 0 && (
-        <div className="absolute bottom-24 right-4 z-30">{fabOverlay}</div>
+        <div className="absolute bottom-[calc(5.75rem+env(safe-area-inset-bottom))] right-4 z-30">{fabOverlay}</div>
       )}
 
     </div>

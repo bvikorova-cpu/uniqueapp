@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Upload, Video, Loader2 } from "lucide-react";
+import { Plus, Video, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
-export default function VideoUploadDialog({ onUploadSuccess }: { onUploadSuccess: () => void }) {
+export default function VideoUploadDialog({ onUploadSuccess, compactTrigger = false }: { onUploadSuccess: () => void; compactTrigger?: boolean }) {
   const [open, setOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [title, setTitle] = useState("");
@@ -99,9 +99,14 @@ export default function VideoUploadDialog({ onUploadSuccess }: { onUploadSuccess
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="gap-2">
-          <Upload className="h-4 w-4" />
-          Upload Video
+        <Button
+          size={compactTrigger ? "icon" : "default"}
+          className={compactTrigger ? "h-14 w-14 rounded-full shadow-2xl" : "gap-2"}
+          aria-label="Upload video"
+          title="Upload video"
+        >
+          <Plus className={compactTrigger ? "h-8 w-8" : "h-4 w-4"} strokeWidth={2.5} />
+          {!compactTrigger && "Upload Video"}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">

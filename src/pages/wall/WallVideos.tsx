@@ -39,8 +39,8 @@ export default function WallVideos() {
           </div>
         }
         fabOverlay={
-          <div className="[&_button]:bg-pink-500 [&_button]:hover:bg-pink-600 [&_button]:text-white [&_button]:rounded-full [&_button]:shadow-2xl">
-            <VideoUploadDialog onUploadSuccess={() => qc.invalidateQueries({ queryKey: ["tiktok-feed"] })} />
+          <div className="[&_button]:bg-primary [&_button]:hover:bg-primary/90 [&_button]:text-primary-foreground">
+            <VideoUploadDialog compactTrigger onUploadSuccess={() => qc.invalidateQueries({ queryKey: ["tiktok-feed"] })} />
           </div>
         }
       />
