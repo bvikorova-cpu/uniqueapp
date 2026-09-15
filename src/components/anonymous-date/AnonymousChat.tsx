@@ -405,7 +405,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
                   className={`max-w-[78%] px-3 py-2 rounded-2xl text-sm break-words ${
                     mine
                       ? "bg-anon-date-gradient text-white rounded-br-sm shadow-lg"
-                      : "bg-card/80 backdrop-blur-md border border-border/40 rounded-bl-sm"
+                      : "bg-card text-card-foreground border border-border rounded-bl-sm shadow-md"
                   }`}
                 >
                   {m.message_type === "gift" ? (
@@ -422,7 +422,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
 
                 </div>
                 <div className={`flex items-center gap-1 mt-0.5 px-1 ${mine ? "flex-row-reverse" : ""}`}>
-                  <span className="text-[9px] text-muted-foreground">
+                  <span className="rounded bg-background/95 px-1.5 py-0.5 text-[9px] font-medium text-foreground shadow-sm">
                     {m.created_at ? new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
                   </span>
                   {mine && (

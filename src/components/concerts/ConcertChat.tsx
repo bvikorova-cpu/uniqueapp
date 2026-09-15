@@ -150,7 +150,7 @@ export const ConcertChat = ({ onBack, embedded = false, roomId }: Props) => {
           <p>No messages yet. Start the conversation!</p>
         </div>
       ) : messages.map((msg, i) => (
-        <div key={i} className="text-sm">
+        <div key={i} className="rounded-lg border border-border bg-background/95 px-3 py-2 text-sm text-foreground shadow-sm">
           <span className="font-bold text-primary">{msg.username}: </span>
           <span className="text-foreground break-words">{msg.content}</span>
         </div>
