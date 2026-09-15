@@ -58,6 +58,34 @@ const g = (a: string, b: string, c: string, deg = 135) =>
 const glow = (a: string, b: string, base: string) =>
   `radial-gradient(circle at 20% 15%, ${a} 0%, transparent 55%), radial-gradient(circle at 80% 85%, ${b} 0%, transparent 55%), linear-gradient(160deg, ${base} 0%, transparent 100%)`;
 
+/**
+ * Icon-tile ("image style") wallpaper: repeating SVG motif over a gradient.
+ * The motif is inlined as an SVG data URL, so there is nothing to download.
+ */
+const motif = (glyphs: string[], opacity = 0.45, tile = 96) => {
+  const spots = [
+    [22, 30],
+    [64, 22],
+    [40, 66],
+    [80, 76],
+  ];
+  const inner = glyphs
+    .slice(0, 4)
+    .map((gl, i) => {
+      const [x, y] = spots[i % spots.length];
+      return `<text x='${x}' y='${y}' font-size='24' text-anchor='middle' opacity='${opacity}'>${gl}</text>`;
+    })
+    .join("");
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${tile}' height='${tile}' viewBox='0 0 96 96'>${inner}</svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+};
+
+/** Motif tiles layered over a soft gradient. */
+const iconBg = (glyphs: string[], a: string, b: string, c: string, opacity = 0.45, tile = 96) =>
+  `${motif(glyphs, opacity, tile)}, ${g(a, b, c)}`;
+
+const iconSize = (tile = 96) => `${tile}px ${tile}px, auto`;
+
 export const CHAT_WALLPAPERS: ChatWallpaper[] = [
   /* ---------- Gradients (10) ---------- */
   { id: "abstract", name: "Abstract Waves", category: "gradient", price: 0, accent: "#3b82f6", background: g("#22d3ee55", "#3b82f640", "#a855f755") },
