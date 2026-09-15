@@ -52,6 +52,14 @@ export const CATEGORY_TEASER_DURATIONS: Record<string, number> = {
   fashionstudio: 450,
   guessage: 450,
   faceinsight: 450,
+  pastlife: 450,
+  lottery: 450,
+  astrology: 450,
+  dreamanalyzer: 450,
+  crystalenergy: 450,
+  timecapsule: 450,
+  timereversal: 450,
+  holographicavatars: 450,
 };
 
 export const getCategoryTeaserDuration = (id: string) =>

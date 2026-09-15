@@ -58,6 +58,14 @@ for (const id of ids) {
     fashionstudio: "Fashion-Studio",
     guessage: "Guess-My-Age",
     faceinsight: "Face-Insight-Studio",
+    pastlife: "Past-Life-Explorer",
+    lottery: "Lottery-Numbers",
+    astrology: "Astrology",
+    dreamanalyzer: "Dream-Analyzer",
+    crystalenergy: "Crystal-Energy-Network",
+    timecapsule: "Time-Capsule-Network",
+    timereversal: "Time-Reversal-Social",
+    holographicavatars: "Holographic-Avatars",
   };
   const name = NAMES[id] ?? `${id[0].toUpperCase()}${id.slice(1)}`;
   const secs = Math.round(composition.durationInFrames / composition.fps);

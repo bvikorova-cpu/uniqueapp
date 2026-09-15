@@ -21,3 +21,4 @@
 - [x] Create eleven 15-second English kids videos with original child-friendly artwork and slower voiceover.
 - [x] Create eleven ~15-second English AI tool videos: Creative Forge, Content Studio, AI Generation, Universal Analyzer, Promotion Flyer Studio, Video Ad Generator, AI Video Creator, Photo Styler, Reverse Video, AI Tattoo Designer, AI Personality Clone
 - [x] Create eleven 15-second English videos: AI Pet Translator, Handwriting Analyzer, Future Face, Photo Restoration, Stock Content Library, Brand Builder, Home Designer, Beauty Studio, Fashion Studio, Guess My Age, Face Insight Studio.
+- [x] Create eight 15-second English videos: Past Life Explorer, Lottery Numbers, Astrology, Dream Analyzer, Crystal & Energy Network, Time Capsule Network, Time Reversal Social, Holographic Avatars.
