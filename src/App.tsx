@@ -40,6 +40,7 @@ const PaidMessageSuccess = lazy(() => import("@/pages/PaidMessageSuccess"));
 const GiftSuccess = lazy(() => import("@/pages/GiftSuccess"));
 const GiftHistory = lazy(() => import("@/pages/GiftHistory"));
 const GiftsInbox = lazy(() => import("@/pages/GiftsInbox"));
+const GiftCollection = lazy(() => import("@/pages/GiftCollection"));
 
 const Club = lazy(() => import("@/pages/Club"));
 const ClubCheckout = lazy(() => import("@/pages/ClubCheckout"));
@@ -721,6 +722,7 @@ const App = () => {
                         <Route path="/gift/canceled" element={<GiftSuccess />} />
                         <Route path="/gift/history" element={<ProtectedRoute><GiftHistory /></ProtectedRoute>} />
                         <Route path="/gifts/inbox" element={<ProtectedRoute><GiftsInbox /></ProtectedRoute>} />
+                        <Route path="/gifts/collection" element={<ProtectedRoute><GiftCollection /></ProtectedRoute>} />
 
                         <Route path="/auction" element={<Auction />} />
                         <Route path="/auction/create" element={<ProtectedRoute><AuctionCreate /></ProtectedRoute>} />
