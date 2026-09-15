@@ -1897,6 +1897,14 @@ export const UNI_CATALOG: UniCatalogEntry[] = [
     ]
   },
   {
+    "path": "/gifts/collection",
+    "label": "Gifts — Collection",
+    "keywords": [
+      "gifts",
+      "collection"
+    ]
+  },
+  {
     "path": "/gifts/inbox",
     "label": "Gifts — Inbox",
     "keywords": [
