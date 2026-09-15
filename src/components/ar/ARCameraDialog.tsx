@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { AR_FILTERS, type ArFilter } from "@/data/arFilters";
+import { ArFilterPreview } from "@/components/ar/ArFilterPreview";
 import { anchorsFromLandmarks, getFaceLandmarker } from "@/lib/arFaceTracker";
 
 export type ArCaptureKind = "photo" | "video";
@@ -274,11 +275,20 @@ export const ARCameraDialog = ({ open, onOpenChange, onCapture, allowVideo = tru
               key={f.id}
               type="button"
               onClick={() => setFilterId(f.id)}
-              className={`flex min-w-[64px] flex-col items-center gap-1 rounded-lg border p-2 text-[10px] ${
+              className={`flex min-w-[72px] flex-col items-center gap-1 rounded-lg border p-1.5 text-[10px] ${
                 filterId === f.id ? "border-primary bg-primary/10" : "border-border"
               }`}
             >
-              <span className="text-xl">{f.emoji}</span>
+              {f.overlays.length ? (
+                <ArFilterPreview
+                  filter={f}
+                  className="h-14 w-14 rounded-full object-cover ring-1 ring-border"
+                />
+              ) : (
+                <span className="grid h-14 w-14 place-items-center rounded-full bg-muted text-xl ring-1 ring-border">
+                  {f.emoji}
+                </span>
+              )}
               <span className="leading-tight text-center">{f.label}</span>
             </button>
           ))}
