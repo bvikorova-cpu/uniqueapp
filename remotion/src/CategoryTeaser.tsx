@@ -103,6 +103,7 @@ export const CATEGORY_TEASER_DURATIONS: Record<string, number> = {
   adultpuzzles: 450,
   spinsolve: 450,
   unlockvideos: 450,
+  shadowarena: 450,
 };
 
 export const getCategoryTeaserDuration = (id: string) =>
