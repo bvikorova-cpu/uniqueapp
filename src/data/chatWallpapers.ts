@@ -164,6 +164,66 @@ export const CHAT_WALLPAPERS: ChatWallpaper[] = [
   { id: "kidsrainbow", name: "Rainbow Fun", category: "kids", price: 0, accent: "#22c55e", background: `repeating-linear-gradient(45deg, #f8717133 0 14px, #fbbf2433 14px 28px, #34d39933 28px 42px, #60a5fa33 42px 56px, #a78bfa33 56px 70px), linear-gradient(135deg, #ffffff55, #ffffff22)` },
   { id: "kidsspace", name: "Space Kids", category: "kids", price: 0, accent: "#818cf8", base: "#0d1030", background: `radial-gradient(2px 2px at 25% 30%, #ffffffcc, transparent), radial-gradient(1.6px 1.6px at 70% 20%, #ffffff99, transparent), radial-gradient(circle at 82% 78%, #fbbf2455 0 6%, transparent 7%), ${g("#312e8166", "#1e3a8a44", "#4c1d9566")}` },
   { id: "kidsocean", name: "Ocean Friends", category: "kids", price: 0, accent: "#22d3ee", background: `repeating-radial-gradient(circle at 10% 100%, #22d3ee26 0 14px, transparent 14px 28px), radial-gradient(circle at 70% 30%, #fde04744 0 6%, transparent 7%), ${g("#ecfeff66", "#a5f3fc44", "#0891b244")}` },
+
+  /* ---------- Hearts (8) ---------- */
+  { id: "heartsblush", name: "Blush Hearts", category: "hearts", price: 0, accent: "#fb7185", background: iconBg(["❤️", "💗", "💕", "💖"], "#fff1f266", "#ffe4e644", "#fecdd355"), size: iconSize() },
+  { id: "heartsred", name: "Red Romance", category: "hearts", price: 0, accent: "#e11d48", background: iconBg(["❤️", "💋", "❤️", "💘"], "#fff1f266", "#fda4af44", "#e11d4844"), size: iconSize() },
+  { id: "heartspurple", name: "Purple Hearts", category: "hearts", price: 2, accent: "#a855f7", background: iconBg(["💜", "💟", "💜", "✨"], "#faf5ff66", "#e9d5ff44", "#a855f744"), size: iconSize() },
+  { id: "heartsgold", name: "Golden Hearts", category: "hearts", price: 2, accent: "#f59e0b", background: iconBg(["💛", "✨", "💛", "🌟"], "#fffbeb66", "#fde68a44", "#f59e0b44"), size: iconSize() },
+  { id: "heartsnight", name: "Neon Hearts", category: "hearts", price: 3, accent: "#f472b6", base: "#12041a", background: `${motif(["💖", "💫", "💗", "✨"], 0.55)}, ${glow("#f472b655", "#a855f755", "#12041a")}`, size: iconSize() },
+  { id: "heartsmini", name: "Tiny Hearts", category: "hearts", price: 2, accent: "#f9a8d4", background: iconBg(["💕", "💕", "💕", "💕"], "#fdf2f866", "#fce7f344", "#f9a8d444", 0.35, 64), size: iconSize(64) },
+  { id: "heartslove", name: "Love Notes", category: "hearts", price: 3, accent: "#db2777", background: iconBg(["💌", "❤️", "💐", "💞"], "#fff1f266", "#fbcfe844", "#db277744"), size: iconSize() },
+  { id: "heartsteddy", name: "Teddy Love", category: "hearts", price: 3, accent: "#f97316", background: iconBg(["🧸", "❤️", "🎀", "💖"], "#fff7ed66", "#fed7aa44", "#f9731644"), size: iconSize() },
+
+  /* ---------- Cats & Pets (8) ---------- */
+  { id: "catsmeow", name: "Meow Meow", category: "animals", price: 0, accent: "#f59e0b", background: iconBg(["🐱", "🐾", "😻", "🐈"], "#fffbeb66", "#fef3c744", "#fdba7444"), size: iconSize() },
+  { id: "catspaws", name: "Paw Prints", category: "animals", price: 0, accent: "#a16207", background: iconBg(["🐾", "🐾", "🐾", "🐾"], "#fefce866", "#fde68a44", "#d9770644", 0.35, 64), size: iconSize(64) },
+  { id: "dogsbuddy", name: "Puppy Buddy", category: "animals", price: 0, accent: "#0ea5e9", background: iconBg(["🐶", "🦴", "🐾", "🐕"], "#f0f9ff66", "#e0f2fe44", "#38bdf844"), size: iconSize() },
+  { id: "petsmix", name: "Pet Party", category: "animals", price: 2, accent: "#22c55e", background: iconBg(["🐰", "🐹", "🐢", "🐦"], "#f0fdf466", "#dcfce744", "#22c55e44"), size: iconSize() },
+  { id: "catsnight", name: "Night Cats", category: "animals", price: 3, accent: "#a78bfa", base: "#0e0a1f", background: `${motif(["🐈‍⬛", "🌙", "🐾", "✨"], 0.55)}, ${glow("#a78bfa55", "#22d3ee44", "#0e0a1f")}`, size: iconSize() },
+  { id: "catskitty", name: "Kitty Pastel", category: "animals", price: 2, accent: "#f0abfc", background: iconBg(["😺", "🎀", "🐾", "💗"], "#fdf4ff66", "#f5d0fe44", "#e879f944"), size: iconSize() },
+  { id: "petsfarm", name: "Farm Friends", category: "animals", price: 2, accent: "#84cc16", background: iconBg(["🐮", "🐷", "🐔", "🐴"], "#f7fee766", "#d9f99d44", "#65a30d44"), size: iconSize() },
+  { id: "petswild", name: "Wild Ones", category: "animals", price: 3, accent: "#ea580c", background: iconBg(["🦊", "🐼", "🦁", "🐨"], "#fff7ed66", "#fed7aa44", "#ea580c44"), size: iconSize() },
+
+  /* ---------- For men (8) ---------- */
+  { id: "menscar", name: "Fast Lane", category: "mens", price: 0, accent: "#1d4ed8", base: "#0a1020", background: `${motif(["🚗", "🏁", "🏎️", "⚙️"], 0.4)}, ${glow("#1d4ed855", "#0ea5e944", "#0a1020")}`, size: iconSize() },
+  { id: "mensgym", name: "Iron Gym", category: "mens", price: 0, accent: "#ef4444", base: "#111113", background: `${motif(["🏋️", "💪", "🥊", "🔥"], 0.4)}, ${glow("#ef444455", "#f9731633", "#111113")}`, size: iconSize() },
+  { id: "mensfootball", name: "Match Day", category: "mens", price: 0, accent: "#16a34a", background: iconBg(["⚽", "🥇", "🏟️", "🧤"], "#f0fdf466", "#bbf7d044", "#16a34a44"), size: iconSize() },
+  { id: "menstech", name: "Tech Desk", category: "mens", price: 2, accent: "#22d3ee", base: "#050b14", background: `${motif(["💻", "🎧", "🎮", "⌨️"], 0.4)}, ${glow("#22d3ee55", "#6366f144", "#050b14")}`, size: iconSize() },
+  { id: "mensfish", name: "Fishing Trip", category: "mens", price: 2, accent: "#0284c7", background: iconBg(["🎣", "🐟", "⛵", "🌊"], "#f0f9ff66", "#bae6fd44", "#0284c744"), size: iconSize() },
+  { id: "menswhiskey", name: "Whiskey Club", category: "mens", price: 3, accent: "#b45309", base: "#160d07", background: `${motif(["🥃", "🚬", "♠️", "🎲"], 0.4)}, ${glow("#b4530955", "#78350f44", "#160d07")}`, size: iconSize() },
+  { id: "mensmoto", name: "Ride Free", category: "mens", price: 3, accent: "#64748b", base: "#0b1120", background: `${motif(["🏍️", "🛠️", "🔧", "🛞"], 0.4)}, ${glow("#64748b55", "#0ea5e933", "#0b1120")}`, size: iconSize() },
+  { id: "mensmoney", name: "Business Mode", category: "mens", price: 4, accent: "#eab308", base: "#0d0d10", background: `${motif(["💼", "📈", "💰", "⌚"], 0.4)}, ${glow("#eab30855", "#22c55e33", "#0d0d10")}`, size: iconSize() },
+
+  /* ---------- For women (8) ---------- */
+  { id: "womensflowers", name: "Flower Field", category: "womens", price: 0, accent: "#ec4899", background: iconBg(["🌸", "🌷", "🌺", "🌼"], "#fdf2f866", "#fce7f344", "#f9a8d444"), size: iconSize() },
+  { id: "womensbeauty", name: "Beauty Bar", category: "womens", price: 0, accent: "#db2777", background: iconBg(["💄", "💅", "🪞", "💋"], "#fff1f266", "#fbcfe844", "#db277744"), size: iconSize() },
+  { id: "womenscoffee", name: "Coffee & Chill", category: "womens", price: 0, accent: "#b45309", background: iconBg(["☕", "🥐", "📖", "🕯️"], "#fffbeb66", "#fde68a44", "#b4530944"), size: iconSize() },
+  { id: "womensspa", name: "Spa Day", category: "womens", price: 2, accent: "#14b8a6", background: iconBg(["🧖", "🌿", "🕯️", "🛁"], "#f0fdfa66", "#ccfbf144", "#14b8a644"), size: iconSize() },
+  { id: "womensyoga", name: "Yoga Flow", category: "womens", price: 2, accent: "#a855f7", background: iconBg(["🧘", "🌙", "🪷", "✨"], "#faf5ff66", "#ede9fe44", "#a855f744"), size: iconSize() },
+  { id: "womenssweet", name: "Sweet Tooth", category: "womens", price: 2, accent: "#f472b6", background: iconBg(["🧁", "🍓", "🍰", "🍭"], "#fff1f766", "#fce7f344", "#f472b644"), size: iconSize() },
+  { id: "womensglam", name: "Glam Night", category: "womens", price: 3, accent: "#e879f9", base: "#140a1c", background: `${motif(["💎", "🥂", "👠", "✨"], 0.5)}, ${glow("#e879f955", "#f472b644", "#140a1c")}`, size: iconSize() },
+  { id: "womensgarden", name: "Secret Garden", category: "womens", price: 3, accent: "#22c55e", background: iconBg(["🌿", "🦋", "🌷", "🐝"], "#f0fdf466", "#dcfce744", "#22c55e44"), size: iconSize() },
+
+  /* ---------- Travel (8) ---------- */
+  { id: "travelworld", name: "Wanderlust", category: "travel", price: 0, accent: "#0ea5e9", background: iconBg(["✈️", "🌍", "🧭", "🗺️"], "#f0f9ff66", "#e0f2fe44", "#0ea5e944"), size: iconSize() },
+  { id: "travelbeach", name: "Beach Escape", category: "travel", price: 0, accent: "#06b6d4", background: iconBg(["🏖️", "🌴", "🐚", "🍹"], "#ecfeff66", "#cffafe44", "#06b6d444"), size: iconSize() },
+  { id: "travelcity", name: "City Break", category: "travel", price: 0, accent: "#64748b", background: iconBg(["🏙️", "🚕", "☕", "📸"], "#f8fafc66", "#e2e8f044", "#47556944"), size: iconSize() },
+  { id: "travelmountain", name: "Mountain Trail", category: "travel", price: 2, accent: "#16a34a", background: iconBg(["⛰️", "🥾", "🎒", "🌲"], "#f0fdf466", "#dcfce744", "#16653444"), size: iconSize() },
+  { id: "travelroad", name: "Road Trip", category: "travel", price: 2, accent: "#f59e0b", background: iconBg(["🚐", "🛣️", "⛽", "🎶"], "#fffbeb66", "#fef3c744", "#f59e0b44"), size: iconSize() },
+  { id: "travelnight", name: "Night Flight", category: "travel", price: 3, accent: "#818cf8", base: "#0b1026", background: `${motif(["✈️", "🌙", "⭐", "🌃"], 0.5)}, ${glow("#818cf855", "#22d3ee44", "#0b1026")}`, size: iconSize() },
+  { id: "travelcamp", name: "Campfire", category: "travel", price: 3, accent: "#ea580c", base: "#140b06", background: `${motif(["🏕️", "🔥", "🌌", "🎸"], 0.5)}, ${glow("#ea580c55", "#eab30833", "#140b06")}`, size: iconSize() },
+  { id: "travelsail", name: "Sail Away", category: "travel", price: 4, accent: "#0284c7", background: iconBg(["⛵", "🐬", "🌊", "🧳"], "#eff6ff66", "#bfdbfe44", "#0284c744"), size: iconSize() },
+
+  /* ---------- Fashion (8) ---------- */
+  { id: "fashionrunway", name: "Runway", category: "fashion", price: 0, accent: "#a855f7", background: iconBg(["👗", "👠", "👜", "🕶️"], "#faf5ff66", "#f3e8ff44", "#a855f744"), size: iconSize() },
+  { id: "fashionstreet", name: "Streetwear", category: "fashion", price: 0, accent: "#0f172a", background: iconBg(["🧢", "👟", "🧥", "🎧"], "#f8fafc66", "#e2e8f044", "#33415544"), size: iconSize() },
+  { id: "fashionluxury", name: "Luxury", category: "fashion", price: 2, accent: "#eab308", base: "#100d05", background: `${motif(["💎", "👜", "⌚", "✨"], 0.5)}, ${glow("#eab30855", "#a1620733", "#100d05")}`, size: iconSize() },
+  { id: "fashionjewel", name: "Jewel Box", category: "fashion", price: 2, accent: "#f0abfc", background: iconBg(["💍", "💎", "📿", "✨"], "#fdf4ff66", "#f5d0fe44", "#c026d344"), size: iconSize() },
+  { id: "fashionsummer", name: "Summer Look", category: "fashion", price: 2, accent: "#f97316", background: iconBg(["👙", "🕶️", "👡", "🧴"], "#fff7ed66", "#ffedd544", "#f9731644"), size: iconSize() },
+  { id: "fashionvintage", name: "Vintage Chic", category: "fashion", price: 3, accent: "#b45309", background: iconBg(["👒", "🧵", "🪡", "🎩"], "#fefce866", "#fef3c744", "#b4530944"), size: iconSize() },
+  { id: "fashionmakeup", name: "Makeup Studio", category: "fashion", price: 3, accent: "#ec4899", background: iconBg(["💄", "🖌️", "💅", "🪞"], "#fdf2f866", "#fce7f344", "#ec489944"), size: iconSize() },
+  { id: "fashionnight", name: "Catwalk Night", category: "fashion", price: 4, accent: "#f472b6", base: "#0f0a14", background: `${motif(["👠", "💫", "👗", "📸"], 0.5)}, ${glow("#f472b655", "#a855f744", "#0f0a14")}`, size: iconSize() },
 ];
 
 export const CHAT_WALLPAPER_MAP: Record<string, ChatWallpaper> = Object.fromEntries(
