@@ -202,11 +202,18 @@ export default function GiftsInbox() {
 
   return (
     <div className="container mx-auto max-w-3xl px-3 py-6">
-      <Button asChild variant="ghost" size="sm" className="mb-4 gap-1">
-        <Link to="/profile">
-          <ArrowLeft className="h-4 w-4" /> Back
-        </Link>
-      </Button>
+      <div className="mb-4 flex items-center justify-between gap-2">
+        <Button asChild variant="ghost" size="sm" className="gap-1">
+          <Link to="/profile">
+            <ArrowLeft className="h-4 w-4" /> Back
+          </Link>
+        </Button>
+        <Button asChild size="sm" variant="secondary" className="gap-1">
+          <Link to="/gifts/collection">
+            <Gift className="h-4 w-4" /> Collection &amp; leaderboard
+          </Link>
+        </Button>
+      </div>
 
       <h1 className="mb-1 flex items-center gap-2 text-2xl font-bold">
         <Gift className="h-6 w-6 text-primary" /> My gifts
