@@ -13,6 +13,8 @@ import { useDmMutes } from "@/hooks/useDmMutes";
 import { EmojiPicker } from "@/components/messenger/EmojiPicker";
 import { GiftShopSheet } from "@/components/gifts/GiftShopSheet";
 import { GiftBubble } from "@/components/gifts/GiftBubble";
+import { MegaGiftOverlay } from "@/components/gifts/MegaGiftOverlay";
+import type { GiftBubbleData } from "@/components/gifts/GiftBubble";
 import { useChatGifts } from "@/hooks/useChatGifts";
 import { StickerPicker } from "@/components/messenger/StickerPicker";
 import { ARCameraButton } from "@/components/ar/ARCameraButton";
@@ -164,6 +166,8 @@ const Messenger = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showStickerPicker, setShowStickerPicker] = useState(false);
   const { giftsById } = useChatGifts();
+  const [megaGiftAlert, setMegaGiftAlert] = useState<{ gift: GiftBubbleData; senderName: string } | null>(null);
+  const lastMegaGiftMsgRef = useRef<string | null>(null);
 
   const [selfDestructDuration, setSelfDestructDuration] = useState<number | null>(null);
   const [uploadingAttachment, setUploadingAttachment] = useState(false);
@@ -420,6 +424,20 @@ const Messenger = () => {
     prevMessagesLenRef.current = messages.length;
     prevConvRef.current = selectedConversation;
   }, [messages, selectedConversation]);
+
+  // Mega gifts: full-screen takeover when a new mega gift message arrives
+  useEffect(() => {
+    if (!messages.length || !Object.keys(giftsById).length) return;
+    const last = [...messages].reverse().find((m) => m.gift_id && giftsById[m.gift_id]?.animation === "mega");
+    if (!last || !last.gift_id || last.id === lastMegaGiftMsgRef.current) return;
+    // only for fresh messages (not old history when opening a chat)
+    if (Date.now() - new Date(last.created_at).getTime() > 60_000) return;
+    lastMegaGiftMsgRef.current = last.id;
+    setMegaGiftAlert({
+      gift: giftsById[last.gift_id],
+      senderName: last.sender_profile?.full_name || "Someone",
+    });
+  }, [messages, giftsById]);
 
   const getProfile = async (userId: string): Promise<Profile | null> => {
     const fromState = profilesCache.get(userId);
@@ -1830,6 +1848,14 @@ const Messenger = () => {
           </Card>
         </div>
       </div>
+
+      {megaGiftAlert && (
+        <MegaGiftOverlay
+          gift={megaGiftAlert.gift}
+          senderName={megaGiftAlert.senderName}
+          onClose={() => setMegaGiftAlert(null)}
+        />
+      )}
     </div>
   );
 };

@@ -1094,9 +1094,34 @@ body:has([data-state="open"][role="dialog"]) [data-floating-hiw] {
 .gift-anim-glow { animation: gift-glow 2.4s ease-in-out infinite; }
 .gift-anim-burst { animation: gift-burst 1.6s ease-out infinite; }
 
+/* Mega gifts — big premium gifts with a full-screen takeover */
+@keyframes gift-mega {
+  0%, 100% { transform: scale(1) translateY(0); filter: drop-shadow(0 0 24px hsl(45 100% 60% / 0.55)); }
+  50% { transform: scale(1.1) translateY(-10px); filter: drop-shadow(0 0 48px hsl(330 100% 65% / 0.75)); }
+}
+@keyframes mega-gift-enter {
+  0% { transform: scale(0.2) rotate(-10deg); opacity: 0; }
+  55% { transform: scale(1.18) rotate(4deg); opacity: 1; }
+  75% { transform: scale(0.96) rotate(-2deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+@keyframes mega-gift-rays {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes mega-gift-sparkle {
+  0%, 100% { opacity: 0; transform: translateY(6px) scale(0.6); }
+  50% { opacity: 1; transform: translateY(-10px) scale(1); }
+}
+.gift-anim-mega { animation: gift-mega 2.2s ease-in-out infinite; }
+.mega-gift-enter { animation: mega-gift-enter 0.9s cubic-bezier(0.22, 1.4, 0.36, 1) both; }
+.mega-gift-rays { animation: mega-gift-rays 14s linear infinite; }
+.mega-gift-sparkle { animation: mega-gift-sparkle 1.6s ease-in-out infinite; }
+
 @media (prefers-reduced-motion: reduce) {
   .gift-anim-float, .gift-anim-pulse, .gift-anim-spin,
-  .gift-anim-bounce, .gift-anim-swing, .gift-anim-glow, .gift-anim-burst {
+  .gift-anim-bounce, .gift-anim-swing, .gift-anim-glow, .gift-anim-burst,
+  .gift-anim-mega, .mega-gift-enter, .mega-gift-rays, .mega-gift-sparkle {
     animation: none;
   }
 }
