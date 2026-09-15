@@ -43,7 +43,7 @@ export function GiftBubble({ gift, compact = false, direction }: GiftBubbleProps
       <span className="text-xs font-semibold">{gift.name}</span>
       <span className="text-[10px] opacity-70">{gift.price_credits} credits</span>
       {direction && (
-        <span className="credit-receipt-in mt-0.5 flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold text-primary">
+        <span className="credit-receipt-in mt-0.5 flex items-center gap-1 rounded-full border border-border bg-background/95 px-2 py-0.5 text-[10px] font-semibold text-foreground shadow-sm">
           <Check className="h-3 w-3" />
           {direction === "out" ? "Delivered" : "Received"}
         </span>
