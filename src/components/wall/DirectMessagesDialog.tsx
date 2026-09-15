@@ -38,7 +38,7 @@ interface DirectMessagesDialogProps {
 export const DirectMessagesDialog = ({ userId,
   userName,
   userAvatar }: DirectMessagesDialogProps) => {
-  const { style: chatBg } = useChatBackground();
+  const { style: chatBg } = useChatBackground([userId]);
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const { isMuted: isDmMuted, toggle: toggleDmMute } = useDmMutes();

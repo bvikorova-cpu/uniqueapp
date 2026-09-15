@@ -38,7 +38,7 @@ interface OrderChatProps {
 }
 
 export function OrderChat({ order, currentUserId, otherUser, onBack, onStatusChange }: OrderChatProps) {
-  const { style: chatBg } = useChatBackground();
+  const { style: chatBg } = useChatBackground([otherUser?.id]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
