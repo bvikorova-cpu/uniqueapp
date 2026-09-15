@@ -31,6 +31,9 @@ export const ARCameraDialog = ({ open, onOpenChange, onCapture, allowVideo = tru
   const filterRef = useRef<ArFilter>(AR_FILTERS[0]);
   const lastVideoTimeRef = useRef(-1);
   const anchorsRef = useRef<ReturnType<typeof anchorsFromLandmarks>[]>([]);
+  const exposureCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const exposureRef = useRef(1);
+  const renderedFramesRef = useRef(0);
 
   const [filterId, setFilterId] = useState("sunglasses");
   const [loading, setLoading] = useState(true);
@@ -60,6 +63,8 @@ export const ARCameraDialog = ({ open, onOpenChange, onCapture, allowVideo = tru
     streamRef.current = null;
     lastVideoTimeRef.current = -1;
     anchorsRef.current = [];
+    exposureRef.current = 1;
+    renderedFramesRef.current = 0;
   }, []);
 
   useEffect(() => {
@@ -123,7 +128,31 @@ export const ARCameraDialog = ({ open, onOpenChange, onCapture, allowVideo = tru
           const ctx = canvas.getContext("2d");
           if (!ctx) return;
 
+          // Some Android front cameras overexpose the canvas stream even when the
+          // native camera preview looks normal. Sample a tiny frame periodically
+          // and gently compensate before drawing, so preview and captures match.
+          renderedFramesRef.current += 1;
+          if (renderedFramesRef.current === 1 || renderedFramesRef.current % 15 === 0) {
+            const sampleCanvas = exposureCanvasRef.current ?? document.createElement("canvas");
+            exposureCanvasRef.current = sampleCanvas;
+            sampleCanvas.width = 24;
+            sampleCanvas.height = 24;
+            const sampleCtx = sampleCanvas.getContext("2d", { willReadFrequently: true });
+            if (sampleCtx) {
+              sampleCtx.drawImage(v, 0, 0, sampleCanvas.width, sampleCanvas.height);
+              const pixels = sampleCtx.getImageData(0, 0, sampleCanvas.width, sampleCanvas.height).data;
+              let luminance = 0;
+              for (let i = 0; i < pixels.length; i += 4) {
+                luminance += pixels[i] * 0.2126 + pixels[i + 1] * 0.7152 + pixels[i + 2] * 0.0722;
+              }
+              const average = luminance / (pixels.length / 4);
+              const correction = Math.min(1.05, Math.max(0.56, 140 / Math.max(average, 1)));
+              exposureRef.current = exposureRef.current * 0.7 + correction * 0.3;
+            }
+          }
+
           ctx.save();
+          ctx.filter = `brightness(${exposureRef.current}) contrast(1.08) saturate(1.08)`;
           if (facingUser) {
             ctx.translate(canvas.width, 0);
             ctx.scale(-1, 1);
