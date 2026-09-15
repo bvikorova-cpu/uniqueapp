@@ -74,6 +74,15 @@ for (const id of ids) {
     brokenhearts: "Broken-Hearts",
     emotioneconomy: "Emotion-Economy",
     invitefriends: "Invite-Friends",
+    wellness: "Wellness-Relaxation",
+    aihealth: "AI-Health",
+    psychologist: "Psychologist",
+    firstaid: "First-Aid",
+    fitslim: "Fit-Slim",
+    nutrition: "Nutrition-Hub",
+    phobia: "Phobia-Network",
+    safety: "Safety-Bullying-Prevention",
+    liedetector: "Lie-Detector-Chat",
   };
   const name = NAMES[id] ?? `${id[0].toUpperCase()}${id.slice(1)}`;
   const secs = Math.round(composition.durationInFrames / composition.fps);

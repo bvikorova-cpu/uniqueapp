@@ -68,6 +68,15 @@ export const CATEGORY_TEASER_DURATIONS: Record<string, number> = {
   brokenhearts: 450,
   emotioneconomy: 450,
   invitefriends: 450,
+  wellness: 450,
+  aihealth: 450,
+  psychologist: 450,
+  firstaid: 450,
+  fitslim: 450,
+  nutrition: 450,
+  phobia: 450,
+  safety: 450,
+  liedetector: 450,
 };
 
 export const getCategoryTeaserDuration = (id: string) =>
