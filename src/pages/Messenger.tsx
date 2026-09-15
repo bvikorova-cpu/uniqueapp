@@ -1674,6 +1674,7 @@ const Messenger = () => {
                     <div ref={messagesEndRef} />
                   </div>
                 </ScrollArea>
+                </div>
 
                 {/* Reply preview */}
                 {replyingTo && (
