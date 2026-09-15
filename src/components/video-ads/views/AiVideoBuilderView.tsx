@@ -127,14 +127,30 @@ export const AiVideoBuilderView = ({ onBack }: { onBack: () => void }) => {
       const raw: any[] = Array.isArray(result?.scenes) ? result.scenes : [];
       if (!raw.length) throw new Error("No scenes returned");
 
-      const planned: Scene[] = raw.slice(0, Number(form.sceneCount)).map((s) => ({
+      const wanted = Math.max(Number(form.sceneCount), photos.length);
+      const planned: Scene[] = raw.slice(0, wanted).map((s) => ({
         description: String(s.description ?? ""),
         caption: String(s.voiceover ?? s.description ?? ""),
         visuals: String(s.visuals ?? s.description ?? ""),
         durationMs: 3500,
       }));
 
+      // The AI sometimes returns fewer scenes than requested — pad up to the chosen count
+      const fallbackCaptions = [form.message, form.product, `${form.product} — ${form.audience}`, form.message];
+      let fi = 0;
+      while (planned.length < wanted) {
+        const base = planned[planned.length - 1];
+        const caption = fallbackCaptions[fi++ % fallbackCaptions.length];
+        planned.push({
+          description: caption,
+          caption,
+          visuals: base?.visuals ? `${base.visuals}, alternative angle` : `${form.product}, ${form.tone} commercial shot`,
+          durationMs: 3500,
+        });
+      }
+
       const total = planned.length;
+
       for (let i = 0; i < total; i++) {
         if (photos[i]) {
           setStatus(`Using your photo ${i + 1}…`);
