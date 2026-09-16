@@ -22,6 +22,7 @@ interface ProfileHeroProps {
     id: string;
     full_name: string | null;
     avatar_url: string | null;
+    cover_url?: string | null;
     email: string | null;
     occupation: string | null;
     company: string | null;
@@ -67,9 +68,22 @@ export const ProfileHero = ({ profile,
         </Suspense>
       )}
       <div className={`relative w-full overflow-hidden rounded-3xl mb-6 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.6)] ${borderClass || "border border-amber-500/20"} ${themeClass || "bg-gradient-to-br from-violet-950 via-background to-amber-950"}`}>
+      {/* Cover photo (falls back to gradient when the member has none) */}
+      {profile.cover_url && (
+        <img
+          src={profile.cover_url}
+          alt={`${profile.full_name || "Member"} cover photo`}
+          loading="lazy"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      )}
       {/* Lightweight static background; avoids loading a profile video before content appears. */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/30 to-black/70" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(251,191,36,0.15),transparent_50%)]" />
+      <div className={`absolute inset-0 ${profile.cover_url ? "bg-gradient-to-b from-black/30 via-black/45 to-black/80" : "bg-gradient-to-b from-black/15 via-black/30 to-black/70"}`} />
+      {!profile.cover_url && (
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(251,191,36,0.15),transparent_50%)]" />
+      )}
+
+
 
       {/* Content */}
       <div className="relative z-10 px-5 sm:px-8 pt-8 pb-6">
