@@ -27,11 +27,15 @@ const ILLUSTRATE_COST = 2;
 export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, continuingStory }: StorybookDisplayProps) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [isReading, setIsReading] = useState(false);
+  const [isPreparing, setIsPreparing] = useState(false);
   const [readingPage, setReadingPage] = useState<number | null>(null);
   const [pageIllustrations, setPageIllustrations] = useState<Record<number, string>>({});
   const [illustratingPage, setIllustratingPage] = useState<number | null>(null);
   const [illustratingAll, setIllustratingAll] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioCacheRef = useRef<Record<number, string>>({});
+  const pendingFetchRef = useRef<Record<number, Promise<string | null>>>({});
+  const continuousRef = useRef(false);
   const { refresh: refreshCredits, balance: storyCredits } = useKidsStoryCredits();
   const { hasGoldPass } = useKidsGoldPass();
 
@@ -48,12 +52,17 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
   const totalPages = pages.length;
 
   const stopPlayback = () => {
-    audioRef.current?.pause();
+    continuousRef.current = false;
+    if (audioRef.current) {
+      audioRef.current.onended = null;
+      audioRef.current.pause();
+    }
     audioRef.current = null;
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
     setIsReading(false);
+    setIsPreparing(false);
     setReadingPage(null);
   };
 
@@ -68,14 +77,16 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
       utter.pitch = 1.1;
       utter.lang = navigator.language || "en-US";
       utter.onend = () => {
-        setIsReading(false);
-        setReadingPage(null);
+        if (continuousRef.current && pageIndex + 1 < totalPages) {
+          setCurrentPage(pageIndex + 1);
+          void playPage(pageIndex + 1);
+          return;
+        }
+        stopPlayback();
       };
-      utter.onerror = () => {
-        setIsReading(false);
-        setReadingPage(null);
-      };
+      utter.onerror = () => stopPlayback();
       setIsReading(true);
+      setIsPreparing(false);
       setReadingPage(pageIndex);
       window.speechSynthesis.speak(utter);
       return true;
@@ -85,60 +96,121 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
     }
   };
 
-  const handleReadAloud = async (pageIndex: number) => {
-    if (isReading) {
+  // Fetch (and cache) the narration for a page. Runs in the background so the
+  // next page is already downloaded before the current one finishes.
+  const fetchPageAudio = (pageIndex: number): Promise<string | null> => {
+    const cached = audioCacheRef.current[pageIndex];
+    if (cached) return Promise.resolve(cached);
+    const pending = pendingFetchRef.current[pageIndex];
+    if (pending) return pending;
+
+    const text = pages[pageIndex];
+    if (!text) return Promise.resolve(null);
+
+    const promise = (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("kids-story-tts", {
+          body: { text } });
+        if (error) throw error;
+        const audioBase64: string | undefined =
+          typeof data === "string" ? data : (data?.audioContent || data?.audio);
+        if (!audioBase64) throw new Error("No audio returned");
+        const mimeType = (data && data.mimeType) || "audio/mpeg";
+        const src = `data:${mimeType};base64,${audioBase64}`;
+        audioCacheRef.current[pageIndex] = src;
+        return src;
+      } catch (err) {
+        console.error("TTS prefetch error:", err);
+        return null;
+      } finally {
+        delete pendingFetchRef.current[pageIndex];
+      }
+    })();
+
+    pendingFetchRef.current[pageIndex] = promise;
+    return promise;
+  };
+
+  const playPage = async (pageIndex: number) => {
+    const text = pages[pageIndex];
+    if (!text) {
       stopPlayback();
       return;
     }
 
-    const text = pages[pageIndex];
-    if (!text) {
-      toast.error("Nothing to read on this page");
+    setReadingPage(pageIndex);
+    const cached = audioCacheRef.current[pageIndex];
+
+    // If nothing is cached yet, start the browser voice instantly instead of
+    // waiting for the server round-trip.
+    if (!cached) {
+      void fetchPageAudio(pageIndex + 1 < totalPages ? pageIndex + 1 : pageIndex);
+      const ok = speakWithBrowser(text, pageIndex);
+      if (!ok) {
+        setIsPreparing(true);
+        const src = await fetchPageAudio(pageIndex);
+        if (!src) {
+          toast.error("Read aloud is not available right now");
+          stopPlayback();
+          return;
+        }
+        await startAudio(src, pageIndex);
+      }
       return;
     }
 
-    setIsReading(true);
-    setReadingPage(pageIndex);
+    await startAudio(cached, pageIndex);
+  };
 
+  const startAudio = async (src: string, pageIndex: number) => {
     try {
-      const { data, error } = await supabase.functions.invoke("kids-story-tts", {
-        body: { text } });
-
-      if (error) throw error;
-
-      const audioBase64: string | undefined =
-        typeof data === "string" ? data : (data?.audioContent || data?.audio);
-
-      if (!audioBase64) throw new Error("No audio returned");
-
-      const mimeType = (data && data.mimeType) || "audio/mpeg";
-      const audio = new Audio(`data:${mimeType};base64,${audioBase64}`);
+      if (audioRef.current) {
+        audioRef.current.onended = null;
+        audioRef.current.pause();
+      }
+      const audio = new Audio(src);
       audioRef.current = audio;
-
       audio.onended = () => {
-        setIsReading(false);
-        setReadingPage(null);
+        if (continuousRef.current && pageIndex + 1 < totalPages) {
+          setCurrentPage(pageIndex + 1);
+          void playPage(pageIndex + 1);
+          return;
+        }
+        stopPlayback();
       };
-      audio.onerror = () => {
-        setIsReading(false);
-        setReadingPage(null);
-      };
-
+      audio.onerror = () => stopPlayback();
+      setIsReading(true);
+      setIsPreparing(false);
+      // Prefetch the following page so there is no gap between pages.
+      if (pageIndex + 1 < totalPages) void fetchPageAudio(pageIndex + 1);
       await audio.play();
     } catch (err) {
-      console.error("Read aloud error:", err);
-      // Fallback: try the browser's built-in voice so the feature still works.
-      const ok = speakWithBrowser(text, pageIndex);
-      if (!ok) {
-        toast.error("Read aloud is not available right now");
-        setIsReading(false);
-        setReadingPage(null);
-      }
+      console.error("Audio play error:", err);
+      const ok = speakWithBrowser(pages[pageIndex], pageIndex);
+      if (!ok) stopPlayback();
     }
   };
 
+  const handleReadAloud = async (pageIndex: number) => {
+    if (isReading || isPreparing) {
+      stopPlayback();
+      return;
+    }
+    continuousRef.current = true;
+    await playPage(pageIndex);
+  };
+
+  // Warm up the narration for the visible page so the first click is instant.
+  useEffect(() => {
+    if (isReading || isPreparing) return;
+    const t = setTimeout(() => void fetchPageAudio(currentPage), 400);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, story.story]);
+
   useEffect(() => {
     return () => {
+      continuousRef.current = false;
       audioRef.current?.pause();
       if (typeof window !== "undefined" && "speechSynthesis" in window) {
         window.speechSynthesis.cancel();
