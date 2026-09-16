@@ -62,6 +62,33 @@ Deno.serve(async (req) => {
     const requestedTopic: string | undefined = typeof body?.topic === "string" && body.topic.trim() ? body.topic.trim().slice(0, 160) : undefined;
     const requestedOpponent: string | undefined = typeof body?.opponentCloneId === "string" ? body.opponentCloneId : undefined;
 
+    // Consume purchased power-ups (server-side, so effects cannot be faked from the client).
+    const requestedPowerups: string[] = Array.isArray(body?.powerups)
+      ? [...new Set(body.powerups.filter((k: unknown) => typeof k === "string"))].slice(0, MAX_POWERUPS_PER_BATTLE)
+      : [];
+    const activePowerups: { key: string; name: string; scoreBonus: number; extraRounds: number; promptHint: string }[] = [];
+    for (const key of requestedPowerups) {
+      const meta = findPowerup(key);
+      if (!meta) continue;
+      const { data: owned } = await admin
+        .from("clone_battle_powerups")
+        .select("id, quantity, total_used")
+        .eq("user_id", user.id)
+        .eq("powerup_key", key)
+        .maybeSingle();
+      if (!owned || owned.quantity < 1) continue;
+      const { error: useError } = await admin
+        .from("clone_battle_powerups")
+        .update({ quantity: owned.quantity - 1, total_used: owned.total_used + 1 })
+        .eq("id", owned.id)
+        .gt("quantity", 0);
+      if (useError) continue;
+      activePowerups.push(meta);
+    }
+    const bonus = activePowerups.reduce((s, p) => s + p.scoreBonus, 0);
+    const roundCount = 3 + activePowerups.reduce((s, p) => s + p.extraRounds, 0);
+
+
     const { data: mine } = await admin
       .from("personality_clones")
       .select("id, clone_name, personality_data")
