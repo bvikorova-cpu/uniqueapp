@@ -26,6 +26,7 @@ const STAGE_STEPS: { key: Stage; label: string; pct: number }[] = [
 export function TimeLapseCreator({ onBack }: Props) {
   const { toast } = useToast();
   const { spend, refund } = useTimeReversalCredits();
+  const [zoomOpen, setZoomOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [startAge, setStartAge] = useState([80]);
