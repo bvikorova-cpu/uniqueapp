@@ -402,8 +402,8 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
             onClick={() => handleReadAloud(currentPage)}
             className="gap-2"
           >
-            {isReading ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-            {isReading ? "Stop Reading" : "Read Aloud"}
+            {isPreparing ? <Loader2 className="w-4 h-4 animate-spin" /> : isReading ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+            {isPreparing ? "Starting…" : isReading ? "Stop Reading" : "Read Aloud"}
           </Button>
 
           <Button
