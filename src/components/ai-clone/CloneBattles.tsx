@@ -120,7 +120,7 @@ export function CloneBattles() {
       window.dispatchEvent(new Event("ai-credits-updated"));
 
       const { data, error } = await supabase.functions.invoke("clone-battle", {
-        body: { topic: topic === TOPICS[0] ? undefined : topic },
+        body: { topic: topic === TOPICS[0] ? undefined : topic, powerups: selectedPowerups },
       });
       if (error) {
         let msg = error.message || "Please try again";
