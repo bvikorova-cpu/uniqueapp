@@ -75,6 +75,7 @@ interface Profile {
   id: string;
   full_name: string | null;
   avatar_url: string | null;
+  cover_url?: string | null;
   email?: string | null;
   bio: string | null;
   location: string | null;
@@ -265,7 +266,7 @@ const Profile = () => {
         const profileRes = await tracedQuery("public_profiles", () =>
           supabase
             .from("public_profiles")
-            .select("id, full_name, avatar_url, bio, location, website, interests, occupation, company, headline, username, social_links, open_to_work, open_to_work_details, profile_music_url, profile_music_title, verification_tier")
+            .select("id, full_name, avatar_url, cover_url, bio, location, website, interests, occupation, company, headline, username, social_links, open_to_work, open_to_work_details, profile_music_url, profile_music_title, verification_tier")
             .eq("id", userId)
             .maybeSingle(),
         );
