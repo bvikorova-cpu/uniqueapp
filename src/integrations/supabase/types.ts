@@ -10268,6 +10268,63 @@ export type Database = {
           },
         ]
       }
+      clone_battle_powerup_uses: {
+        Row: {
+          battle_id: string | null
+          created_at: string
+          id: string
+          powerup_key: string
+          user_id: string
+        }
+        Insert: {
+          battle_id?: string | null
+          created_at?: string
+          id?: string
+          powerup_key: string
+          user_id: string
+        }
+        Update: {
+          battle_id?: string | null
+          created_at?: string
+          id?: string
+          powerup_key?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      clone_battle_powerups: {
+        Row: {
+          created_at: string
+          id: string
+          powerup_key: string
+          quantity: number
+          total_purchased: number
+          total_used: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          powerup_key: string
+          quantity?: number
+          total_purchased?: number
+          total_used?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          powerup_key?: string
+          quantity?: number
+          total_purchased?: number
+          total_used?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       clone_battles: {
         Row: {
           analysis: string | null
