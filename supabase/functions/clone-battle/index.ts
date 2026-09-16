@@ -1,7 +1,8 @@
 import "../_shared/aiRedirect.ts";
 // Real AI personality battle: your clone vs a random clone from another user on the platform.
 // Generates a round-by-round transcript, judge scores and a winner via Lovable AI Gateway.
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { createClient } from "npm:@supabase/supabase-js@2";
+import { findPowerup, MAX_POWERUPS_PER_BATTLE } from "../_shared/clonePowerups.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -60,6 +61,33 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const requestedTopic: string | undefined = typeof body?.topic === "string" && body.topic.trim() ? body.topic.trim().slice(0, 160) : undefined;
     const requestedOpponent: string | undefined = typeof body?.opponentCloneId === "string" ? body.opponentCloneId : undefined;
+
+    // Consume purchased power-ups (server-side, so effects cannot be faked from the client).
+    const requestedPowerups: string[] = Array.isArray(body?.powerups)
+      ? [...new Set(body.powerups.filter((k: unknown) => typeof k === "string"))].slice(0, MAX_POWERUPS_PER_BATTLE)
+      : [];
+    const activePowerups: { key: string; name: string; scoreBonus: number; extraRounds: number; promptHint: string }[] = [];
+    for (const key of requestedPowerups) {
+      const meta = findPowerup(key);
+      if (!meta) continue;
+      const { data: owned } = await admin
+        .from("clone_battle_powerups")
+        .select("id, quantity, total_used")
+        .eq("user_id", user.id)
+        .eq("powerup_key", key)
+        .maybeSingle();
+      if (!owned || owned.quantity < 1) continue;
+      const { error: useError } = await admin
+        .from("clone_battle_powerups")
+        .update({ quantity: owned.quantity - 1, total_used: owned.total_used + 1 })
+        .eq("id", owned.id)
+        .gt("quantity", 0);
+      if (useError) continue;
+      activePowerups.push(meta);
+    }
+    const bonus = activePowerups.reduce((s, p) => s + p.scoreBonus, 0);
+    const roundCount = 3 + activePowerups.reduce((s, p) => s + p.extraRounds, 0);
+
 
     const { data: mine } = await admin
       .from("personality_clones")
@@ -138,7 +166,7 @@ Deno.serve(async (req) => {
               {
                 role: "system",
                 content:
-                  "You stage a witty 3-round personality duel between two AI clones and judge it. " +
+                  `You stage a witty ${roundCount}-round personality duel between two AI clones and judge it. ` +
                   "Reply with STRICT JSON only, no markdown fences, shape: " +
                   '{"rounds":[{"round":1,"a":"<clone A line>","b":"<clone B line>"}],"userScore":0-100,"opponentScore":0-100,"verdict":"2 sentence judge summary"}. ' +
                   "Each line must start with the clone name followed by a colon, be 1-2 sentences, stay in character, be playful and clean. Scores must differ.",
@@ -149,7 +177,10 @@ Deno.serve(async (req) => {
                   `Topic: ${topic}\n` +
                   `Clone A: ${myClone.clone_name} - ${describe(myClone)}\n` +
                   `Clone B: ${opponent.clone_name} (owned by ${opponentOwner}) - ${describe(opponent)}\n` +
-                  "Write 3 rounds and judge them.",
+                  (activePowerups.length
+                    ? `Clone A activated boosts: ${activePowerups.map((p) => `${p.name} (${p.promptHint})`).join("; ")}\n`
+                    : "") +
+                  `Write ${roundCount} rounds and judge them.`,
               },
             ],
           }),
@@ -159,7 +190,7 @@ Deno.serve(async (req) => {
           const raw = String(data?.choices?.[0]?.message?.content ?? "").replace(/```json|```/g, "").trim();
           const parsed = JSON.parse(raw.slice(raw.indexOf("{"), raw.lastIndexOf("}") + 1));
           if (Array.isArray(parsed?.rounds) && parsed.rounds.length) {
-            rounds = parsed.rounds.slice(0, 5);
+            rounds = parsed.rounds.slice(0, Math.max(5, roundCount));
             userScore = Number(parsed.userScore) || 0;
             opponentScore = Number(parsed.opponentScore) || 0;
             verdict = String(parsed.verdict ?? "");
@@ -177,6 +208,7 @@ Deno.serve(async (req) => {
       opponentScore = fb.opponentScore;
       verdict = "A tight duel decided on delivery rather than substance.";
     }
+    if (bonus > 0) userScore = Math.min(100, userScore + bonus);
     if (userScore === opponentScore) opponentScore = Math.max(0, opponentScore - 3);
 
     const winnerSide = userScore >= opponentScore ? "user" : "opponent";
@@ -185,7 +217,7 @@ Deno.serve(async (req) => {
       rounds.map((r: any) => `Round ${r.round}\n${r.a}\n${r.b}`).join("\n\n") +
       (verdict ? `\n\nJudge: ${verdict}` : "");
 
-    const { error: insertError } = await admin.from("clone_battles").insert({
+    const { data: inserted, error: insertError } = await admin.from("clone_battles").insert({
       user_id: user.id,
       user_clone_id: myClone.id,
       opponent_clone_id: opponent.id ?? null,
@@ -198,8 +230,14 @@ Deno.serve(async (req) => {
       opponent_score: opponentScore,
       transcript: rounds,
       analysis,
-    });
+    }).select("id").maybeSingle();
     if (insertError) console.error("clone_battles insert failed:", insertError.message);
+
+    if (activePowerups.length) {
+      await admin.from("clone_battle_powerup_uses").insert(
+        activePowerups.map((p) => ({ user_id: user.id, battle_id: inserted?.id ?? null, powerup_key: p.key })),
+      );
+    }
 
     return j({
       winner: winnerName,
@@ -211,6 +249,8 @@ Deno.serve(async (req) => {
       userScore,
       opponentScore,
       isWildRival,
+      powerupsUsed: activePowerups.map((p) => ({ key: p.key, name: p.name, scoreBonus: p.scoreBonus })),
+      scoreBonus: bonus,
       myClone: { id: myClone.id, name: myClone.clone_name },
       opponent: {
         id: opponent.id ?? null,

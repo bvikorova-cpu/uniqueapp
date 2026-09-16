@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { ClonePowerupShop, CLONE_POWERUPS, MAX_POWERUPS_PER_BATTLE, useClonePowerups } from "./ClonePowerupShop";
 
 interface Round { round: number; a: string; b: string }
 
@@ -59,6 +60,19 @@ export function CloneBattles() {
   const [visibleRounds, setVisibleRounds] = useState(0);
   const [history, setHistory] = useState<HistoryRow[]>([]);
   const [record, setRecord] = useState({ wins: 0, losses: 0, streak: 0 });
+  const { inventory, reload: reloadPowerups } = useClonePowerups();
+  const [selectedPowerups, setSelectedPowerups] = useState<string[]>([]);
+
+  const togglePowerup = (key: string) => {
+    setSelectedPowerups((prev) => {
+      if (prev.includes(key)) return prev.filter((k) => k !== key);
+      if (prev.length >= MAX_POWERUPS_PER_BATTLE) {
+        toast({ title: `Max ${MAX_POWERUPS_PER_BATTLE} boosts per battle` });
+        return prev;
+      }
+      return [...prev, key];
+    });
+  };
 
   const loadHistory = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -106,7 +120,7 @@ export function CloneBattles() {
       window.dispatchEvent(new Event("ai-credits-updated"));
 
       const { data, error } = await supabase.functions.invoke("clone-battle", {
-        body: { topic: topic === TOPICS[0] ? undefined : topic },
+        body: { topic: topic === TOPICS[0] ? undefined : topic, powerups: selectedPowerups },
       });
       if (error) {
         let msg = error.message || "Please try again";
@@ -121,6 +135,14 @@ export function CloneBattles() {
       }
       if (data?.error) throw new Error(data.error);
       setResult(data as BattleResult);
+      if (selectedPowerups.length) {
+        const used: any[] = data?.powerupsUsed ?? [];
+        if (used.length) {
+          toast({ title: "Boosts activated", description: `${used.map((u) => u.name).join(", ")} · +${data?.scoreBonus ?? 0} score` });
+        }
+        setSelectedPowerups([]);
+        reloadPowerups();
+      }
       loadHistory();
     } catch (err: any) {
       toast({ title: "Battle failed", description: err.message || "Please try again", variant: "destructive" });
@@ -140,6 +162,7 @@ export function CloneBattles() {
           { title: "Pick a topic", desc: "Choose a debate topic or let the arena pick a random one." },
           { title: "Get matched", desc: "The arena picks a random active clone from another real user." },
           { title: "Watch the duel", desc: "Three AI rounds play out live, in each clone's own personality." },
+          { title: "Buy boosts", desc: "Buy special abilities with credits and activate up to 2 of them per battle for extra score." },
           { title: "Judge scores", desc: "Scores decide the winner and your win record and streak update." },
           { title: "Follow up", desc: "Message the rival clone's owner directly from the result card." },
         ]}
@@ -203,6 +226,32 @@ export function CloneBattles() {
               </motion.div>
             </div>
 
+            <div>
+              <p className="mb-2 text-xs font-semibold text-muted-foreground">
+                Activate boosts (max {MAX_POWERUPS_PER_BATTLE})
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {CLONE_POWERUPS.map((p) => {
+                  const owned = inventory[p.key] ?? 0;
+                  const active = selectedPowerups.includes(p.key);
+                  return (
+                    <button
+                      key={p.key}
+                      type="button"
+                      disabled={owned < 1 || isMatching}
+                      onClick={() => togglePowerup(p.key)}
+                      className={`rounded-full border px-3 py-1.5 text-xs transition-colors disabled:opacity-40 ${
+                        active ? "border-primary bg-primary/10 text-primary" : "border-border/60 text-muted-foreground hover:border-primary/40"
+                      }`}
+                    >
+                      {p.name} · {owned}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+
             <div className="text-center">
               <Button onClick={startBattle} disabled={isMatching} size="lg">
                 {isMatching ? (
@@ -214,6 +263,10 @@ export function CloneBattles() {
             </div>
           </CardContent>
         </Card>
+
+        <ClonePowerupShop />
+
+
 
         <AnimatePresence>
           {result && (
