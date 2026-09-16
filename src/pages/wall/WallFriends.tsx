@@ -80,7 +80,7 @@ export default function WallFriends() {
       try {
         const { data, error } = await (supabase as any).rpc("search_users", { q, lim: 20 });
         if (error) throw error;
-        if (!cancelled) setGlobalResults(((data as unknown) as Profile[]) || []);
+        if (!cancelled) setGlobalResults((((data as unknown) as Profile[]) || []).filter((p) => p.id !== user?.id));
       } catch (e: any) {
         if (!cancelled) {
           toast({ title: "Search error", description: e.message, variant: "destructive" });
