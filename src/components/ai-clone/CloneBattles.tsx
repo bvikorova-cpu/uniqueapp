@@ -91,6 +91,18 @@ export function CloneBattles() {
     setStage(0);
     const ticker = setInterval(() => setStage((s) => Math.min(s + 1, STAGES.length - 1)), 900);
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Sign in required");
+      const { data: deductData, error: deductError } = await supabase.rpc("deduct_ai_credits_atomic", {
+        _user_id: user.id,
+        _amount: BATTLE_COST,
+      });
+      if (deductError) throw deductError;
+      if (deductData && (deductData as any).ok === false) {
+        throw new Error(`A battle costs ${BATTLE_COST} credit. Top up your balance.`);
+      }
+      window.dispatchEvent(new Event("ai-credits-updated"));
+
       const { data, error } = await supabase.functions.invoke("clone-battle", {
         body: { topic: topic === TOPICS[0] ? undefined : topic },
       });
