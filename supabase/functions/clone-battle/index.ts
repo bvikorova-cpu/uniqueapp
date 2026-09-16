@@ -208,6 +208,7 @@ Deno.serve(async (req) => {
       opponentScore = fb.opponentScore;
       verdict = "A tight duel decided on delivery rather than substance.";
     }
+    if (bonus > 0) userScore = Math.min(100, userScore + bonus);
     if (userScore === opponentScore) opponentScore = Math.max(0, opponentScore - 3);
 
     const winnerSide = userScore >= opponentScore ? "user" : "opponent";
