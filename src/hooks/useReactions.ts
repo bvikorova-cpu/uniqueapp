@@ -6,15 +6,8 @@ export const useReactions = (postId: string) => {
 
   const { data: reactions, isLoading } = useQuery({
     queryKey: ["reactions", postId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("post_reactions")
-        .select("*")
-        .eq("post_id", postId);
-
-      if (error) throw error;
-      return data;
-    } });
+    queryFn: async () => (await postReactionsLoader.load(postId)) as any[],
+    staleTime: 30_000 });
 
   const userReaction = async () => {
     const { data } = await supabase.auth.getUser();

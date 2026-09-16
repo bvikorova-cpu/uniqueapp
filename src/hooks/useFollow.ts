@@ -7,18 +7,12 @@ export const useIsFollowing = (userId: string | undefined, targetUserId: string 
     queryKey: ["is-following", userId, targetUserId],
     queryFn: async () => {
       if (!userId || !targetUserId) return false;
-
-      const { data, error } = await supabase
-        .from("user_follows")
-        .select("id")
-        .eq("follower_id", userId)
-        .eq("following_id", targetUserId)
-        .maybeSingle();
-
-      if (error) throw error;
-      return !!data;
+      // Batched: one request covers every author rendered in the feed.
+      const rows = await getFollowLoader(userId).load(targetUserId);
+      return rows.length > 0;
     },
-    enabled: !!userId && !!targetUserId });
+    enabled: !!userId && !!targetUserId,
+    staleTime: 60_000 });
 };
 
 export const useFollowCounts = (userId: string | undefined) => {

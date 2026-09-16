@@ -12,16 +12,10 @@ export const usePostReactions = (postId?: string) => {
     queryKey: ["post-reactions", postId],
     queryFn: async () => {
       if (!postId) return [];
-
-      const { data, error } = await supabase
-        .from("post_reactions")
-        .select("*")
-        .eq("post_id", postId);
-
-      if (error) throw error;
-      return data;
+      return (await postReactionsLoader.load(postId)) as any[];
     },
-    enabled: !!postId });
+    enabled: !!postId,
+    staleTime: 30_000 });
 
   const addReaction = useMutation({
     mutationFn: async ({ postId, reactionType }: {
