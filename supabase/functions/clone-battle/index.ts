@@ -217,7 +217,7 @@ Deno.serve(async (req) => {
       rounds.map((r: any) => `Round ${r.round}\n${r.a}\n${r.b}`).join("\n\n") +
       (verdict ? `\n\nJudge: ${verdict}` : "");
 
-    const { error: insertError } = await admin.from("clone_battles").insert({
+    const { data: inserted, error: insertError } = await admin.from("clone_battles").insert({
       user_id: user.id,
       user_clone_id: myClone.id,
       opponent_clone_id: opponent.id ?? null,
@@ -230,8 +230,14 @@ Deno.serve(async (req) => {
       opponent_score: opponentScore,
       transcript: rounds,
       analysis,
-    });
+    }).select("id").maybeSingle();
     if (insertError) console.error("clone_battles insert failed:", insertError.message);
+
+    if (activePowerups.length) {
+      await admin.from("clone_battle_powerup_uses").insert(
+        activePowerups.map((p) => ({ user_id: user.id, battle_id: inserted?.id ?? null, powerup_key: p.key })),
+      );
+    }
 
     return j({
       winner: winnerName,
@@ -243,6 +249,8 @@ Deno.serve(async (req) => {
       userScore,
       opponentScore,
       isWildRival,
+      powerupsUsed: activePowerups.map((p) => ({ key: p.key, name: p.name, scoreBonus: p.scoreBonus })),
+      scoreBonus: bonus,
       myClone: { id: myClone.id, name: myClone.clone_name },
       opponent: {
         id: opponent.id ?? null,
