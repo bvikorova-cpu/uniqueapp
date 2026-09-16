@@ -107,30 +107,24 @@ export function useFriendships(userId: string | undefined) {
     } });
 
 
-  // ---- People you may know (mutual-friend RPC)
+  // ---- People you may know (single server-side call)
   const suggestions = useQuery({
     queryKey: [...KEY, "suggestions", userId],
     enabled: !!userId,
     queryFn: async (): Promise<FriendSuggestion[]> => {
-      const { data, error } = await supabase.rpc("suggest_friends", { _user_id: userId!,
-        _limit: 8 });
+      const { data, error } = await supabase.rpc("people_you_may_know" as any, { _limit: 8 });
       if (error) throw error;
-      const ids = (data ?? []).map((r: any) => r.suggested_id);
-      if (ids.length === 0) return [];
-      const { data: profs } = await publicProfiles()
-        .select("id, full_name, avatar_url, username")
-        .in("id", ids);
-      const map = new Map((profs ?? []).map((p: any) => [p.id, p]));
-      return (data ?? [])
-        .map((r: any) => {
-          const p = map.get(r.suggested_id);
-          return p
-            ? { ...(p as FriendProfile), mutual_count: Number(r.mutual_count) }
-            : null;
-        })
-        .filter(Boolean) as FriendSuggestion[];
+      return ((data ?? []) as any[]).map((p) => ({
+        id: p.id,
+        full_name: p.full_name,
+        username: p.username,
+        avatar_url: p.avatar_url,
+        mutual_count: Number(p.mutual_count) || 0,
+      })) as FriendSuggestion[];
     },
-    staleTime: 60_000 });
+    staleTime: 5 * 60_000,
+    gcTime: 30 * 60_000 });
+
 
   // ---- Mutations
   const sendRequest = useMutation({
