@@ -102,13 +102,13 @@ export default function FutureFaceMultiAgeTimeline() {
           {sourceUrl && (
             <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
               <div className="text-center">
-                 <img src={sourcePreviewUrl || sourceUrl} alt="Today" className="w-full aspect-square object-cover rounded-lg border border-border/40" />
+                 <img src={sourcePreviewUrl || sourceUrl} alt="Today" onClick={() => setZoom({ url: (sourcePreviewUrl || sourceUrl)!, label: "Today" })} className="w-full aspect-square object-cover rounded-lg border border-border/40 cursor-zoom-in" />
                 <p className="text-[10px] font-bold mt-1">Today</p>
               </div>
               {STEPS.map(y => (
                 <div key={y} className="text-center">
                   {results[y] ? (
-                    <img src={results[y]} alt={`+${y}y`} className="w-full aspect-square object-cover rounded-lg border border-cyan-500/30" />
+                    <img src={results[y]} alt={`+${y}y`} onClick={() => setZoom({ url: results[y], label: `+${y} years` })} className="w-full aspect-square object-cover rounded-lg border border-cyan-500/30 cursor-zoom-in" />
                   ) : (
                     <div className="w-full aspect-square rounded-lg border border-dashed border-border grid place-items-center bg-card/50">
                       {loading === y ? <Loader2 className="h-5 w-5 animate-spin text-cyan-500" /> : <span className="text-[9px] text-muted-foreground">+{y}y</span>}
