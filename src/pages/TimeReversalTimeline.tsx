@@ -288,7 +288,7 @@ export default function TimeReversalTimeline() {
         <DialogContent className="h-[92dvh] w-[96vw] max-w-6xl border-0 bg-background/95 p-2 sm:p-4">
           <DialogTitle className="sr-only">Age progression collage</DialogTitle>
           <DialogDescription className="sr-only">Enlarged collage by {author?.full_name || "Unique user"}</DialogDescription>
-          {expandedPost?.image_url && <img src={expandedPost.image_url} alt={`${author?.full_name || "Unique user"}'s enlarged age progression collage`} className="h-full w-full object-contain" />}
+          {expandedPost?.image_url && <ZoomableImage src={expandedPost.image_url} alt={`${author?.full_name || "Unique user"}'s enlarged age progression collage`} />}
         </DialogContent>
       </Dialog>
     </div>
