@@ -72519,6 +72519,16 @@ export type Database = {
           reason: string
         }[]
       }
+      people_you_may_know: {
+        Args: { _limit?: number }
+        Returns: {
+          avatar_url: string
+          full_name: string
+          id: string
+          mutual_count: number
+          username: string
+        }[]
+      }
       pick_clip_of_day: {
         Args: { _category: string; _for_date?: string }
         Returns: {
