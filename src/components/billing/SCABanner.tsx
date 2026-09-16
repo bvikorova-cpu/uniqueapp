@@ -33,14 +33,31 @@ export const SCABanner = () => {
       setDismissed(true);
       return;
     }
-    // Throttle: skip the edge fn if we checked recently and got "no pending"
+    // Throttle: skip the database check if we checked recently and got "no pending".
+    // Read the user's RLS-protected row directly so login never depends on an
+    // Edge Function cold start or metadata load.
     const lastCheck = Number(localStorage.getItem(CACHE_KEY) || 0);
     if (lastCheck && Date.now() - lastCheck < CACHE_TTL_MS) return;
     (async () => {
-      const { data, error } = await supabase.functions.invoke("check-sca");
+      const { data, error } = await supabase
+        .from("sca_pending_actions")
+        .select("stripe_invoice_id, amount_cents, currency, hosted_invoice_url, next_action_url")
+        .eq("user_id", user.id)
+        .eq("status", "requires_action")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
       if (error) return;
       localStorage.setItem(CACHE_KEY, String(Date.now()));
-      if ((data as any)?.has_pending) setPending((data as any).pending);
+      if (data) {
+        setPending({
+          invoice_id: data.stripe_invoice_id,
+          amount_cents: data.amount_cents,
+          currency: data.currency,
+          hosted_invoice_url: data.hosted_invoice_url,
+          next_action_url: data.next_action_url,
+        });
+      }
     })();
   }, [user]);
 
@@ -59,7 +76,7 @@ export const SCABanner = () => {
       url = (data as any).url;
     }
     setOpening(false);
-    window.open(url!, "_blank", "noopener,noreferrer");
+    if (url) window.open(url, "_blank", "noopener,noreferrer");
   };
 
   const dismiss = () => {
