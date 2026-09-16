@@ -6,6 +6,7 @@ import { ArrowLeft, Loader2, Maximize2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { ZoomableImage } from "@/components/time-reversal/ZoomableImage";
 
 interface Props { onBack: () => void; }
 
