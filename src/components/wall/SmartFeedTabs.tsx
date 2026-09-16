@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Sparkles, Users, TrendingUp, Clock, UserCheck } from "lucide-react";
+import { Sparkles, Users, TrendingUp, Clock, UserCheck, Megaphone } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -7,7 +7,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export type FeedTab = "for-you" | "following" | "friends" | "trending" | "latest";
+export type FeedTab = "for-you" | "following" | "friends" | "trending" | "latest" | "promos";
 
 interface SmartFeedTabsProps {
   activeTab: FeedTab;
@@ -20,13 +20,14 @@ const tabs = [
   { id: "friends" as FeedTab, label: "Friends", description: "Posts shared by your friends only", icon: UserCheck, gradient: "from-pink-500 to-purple-500" },
   { id: "trending" as FeedTab, label: "Trending", description: "Most popular posts from the last 7 days", icon: TrendingUp, gradient: "from-orange-500 to-rose-500" },
   { id: "latest" as FeedTab, label: "Latest", description: "Newest posts in chronological order", icon: Clock, gradient: "from-emerald-500 to-teal-500" },
+  { id: "promos" as FeedTab, label: "Promos", description: "Only paid promotions — TOP first, then Standard", icon: Megaphone, gradient: "from-amber-500 to-orange-500" },
 ];
 
 export const SmartFeedTabs = ({ activeTab, onTabChange }: SmartFeedTabsProps) => {
   return (
     <TooltipProvider delayDuration={200}>
       <div className="relative">
-        <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 sm:gap-2">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
             const Icon = tab.icon;
