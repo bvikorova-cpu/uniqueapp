@@ -60,6 +60,19 @@ export function CloneBattles() {
   const [visibleRounds, setVisibleRounds] = useState(0);
   const [history, setHistory] = useState<HistoryRow[]>([]);
   const [record, setRecord] = useState({ wins: 0, losses: 0, streak: 0 });
+  const { inventory, reload: reloadPowerups } = useClonePowerups();
+  const [selectedPowerups, setSelectedPowerups] = useState<string[]>([]);
+
+  const togglePowerup = (key: string) => {
+    setSelectedPowerups((prev) => {
+      if (prev.includes(key)) return prev.filter((k) => k !== key);
+      if (prev.length >= MAX_POWERUPS_PER_BATTLE) {
+        toast({ title: `Max ${MAX_POWERUPS_PER_BATTLE} boosts per battle` });
+        return prev;
+      }
+      return [...prev, key];
+    });
+  };
 
   const loadHistory = async () => {
     const { data: { user } } = await supabase.auth.getUser();
