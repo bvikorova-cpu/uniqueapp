@@ -53,6 +53,7 @@ import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 import { WALL_HIW_STEPS } from "@/pages/wall/WallFeed";
 import WallComposer from "@/components/wall/WallComposer";
 import type { FeedItem as WallFeedItem, Post, Repost } from "@/components/wall/WallPost";
+import { useFriendIds } from "@/hooks/useFriendIds";
 type FeedItem = WallFeedItem;
 
 const Feed = () => {
@@ -450,20 +451,10 @@ const Feed = () => {
   }, [hasMore, fetchPosts]);
 
   // Friends list for the "Friends" feed tab
-  const { data: friendIds = [] } = useQuery({
-    queryKey: ["friend-ids", user?.id],
-    enabled: !!user?.id && (feedEnhancementsReady || feedTab === "friends"),
-    queryFn: async (): Promise<string[]> => {
-      const { data, error } = await supabase
-        .from("friendships")
-        .select("user_id,friend_id")
-        .or(`user_id.eq.${user!.id},friend_id.eq.${user!.id}`)
-        .eq("status", "accepted");
-      if (error) return [];
-      return (data ?? [])
-        .map((r) => (r.user_id === user!.id ? r.friend_id : r.user_id))
-        .filter(Boolean) as string[];
-    } });
+  const { data: friendIds = [] } = useFriendIds(
+    user?.id,
+    feedEnhancementsReady || feedTab === "friends",
+  );
 
   // Followed user IDs for the "Following" feed tab
   const { data: followingIds = [] } = useQuery({

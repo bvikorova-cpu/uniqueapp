@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { postReactionsLoader } from "@/lib/batchQuery";
 import { useToast } from "@/hooks/use-toast";
 
 export type ReactionType = 'like' | 'love' | 'laugh' | 'wow' | 'sad' | 'angry' | 'care';
@@ -12,16 +13,10 @@ export const usePostReactions = (postId?: string) => {
     queryKey: ["post-reactions", postId],
     queryFn: async () => {
       if (!postId) return [];
-
-      const { data, error } = await supabase
-        .from("post_reactions")
-        .select("*")
-        .eq("post_id", postId);
-
-      if (error) throw error;
-      return data;
+      return (await postReactionsLoader.load(postId)) as any[];
     },
-    enabled: !!postId });
+    enabled: !!postId,
+    staleTime: 30_000 });
 
   const addReaction = useMutation({
     mutationFn: async ({ postId, reactionType }: {
@@ -40,7 +35,9 @@ export const usePostReactions = (postId?: string) => {
       if (error) throw error;
     },
     onSuccess: () => {
+      postReactionsLoader.invalidate();
       queryClient.invalidateQueries({ queryKey: ["post-reactions"] });
+      queryClient.invalidateQueries({ queryKey: ["reactions"] });
     } });
 
   const removeReaction = useMutation({
@@ -57,7 +54,9 @@ export const usePostReactions = (postId?: string) => {
       if (error) throw error;
     },
     onSuccess: () => {
+      postReactionsLoader.invalidate();
       queryClient.invalidateQueries({ queryKey: ["post-reactions"] });
+      queryClient.invalidateQueries({ queryKey: ["reactions"] });
     } });
 
   const getReactionCounts = () => { const counts: Record<ReactionType, number> = {

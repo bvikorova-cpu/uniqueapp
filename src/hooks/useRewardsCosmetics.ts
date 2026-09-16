@@ -17,6 +17,42 @@ export type RewardsCosmeticsMap = Record<string, RewardsCosmeticSlugs>;
 const cache = new Map<string, RewardsCosmeticSlugs>();
 
 /**
+ * Many components ask for the same set of user ids on the same page load
+ * (feed cards, avatars, leaderboards). Share one in-flight request per key
+ * instead of firing the same RPC pair several times.
+ */
+const inflight = new Map<string, Promise<RewardsCosmeticsMap>>();
+const fetchedAt = new Map<string, number>();
+const TTL_MS = 60_000;
+
+async function fetchCosmetics(key: string, ids: string[]): Promise<RewardsCosmeticsMap> {
+  const existing = inflight.get(key);
+  if (existing) return existing;
+
+  const promise = (async () => {
+    const next: RewardsCosmeticsMap = {};
+    ids.forEach((id) => { next[id] = {}; });
+    const [{ data, error }, { data: tiers }] = await Promise.all([
+      supabase.rpc("get_equipped_rewards_cosmetics" as never, { _user_ids: ids } as never),
+      supabase.from("profiles_public").select("id, verification_tier" as never).in("id", ids),
+    ]);
+    if (error) throw error;
+    ((data as { user_id: string; category: string; slug: string }[]) || []).forEach((row) => {
+      next[row.user_id] = { ...next[row.user_id], [row.category]: row.slug };
+    });
+    ((tiers as unknown as { id: string; verification_tier: string | null }[]) || []).forEach((row) => {
+      next[row.id] = { ...next[row.id], verification_tier: row.verification_tier };
+    });
+    ids.forEach((id) => cache.set(id, next[id] ?? {}));
+    fetchedAt.set(key, Date.now());
+    return next;
+  })().finally(() => { inflight.delete(key); });
+
+  inflight.set(key, promise);
+  return promise;
+}
+
+/**
  * Public lookup of the Rewards cosmetics (avatar frame, name color, profile
  * theme, animated border) other users have equipped, so purchased items are
  * actually visible on profiles, the feed and leaderboards.
@@ -40,31 +76,25 @@ export function useRewardsCosmetics(userIds: (string | null | undefined)[]): Rew
     }
     let alive = true;
 
-    const load = async () => {
-      const { data, error } = await supabase.rpc("get_equipped_rewards_cosmetics" as never, {
-        _user_ids: ids,
-      } as never);
-      if (!alive || error) return;
-      const next: RewardsCosmeticsMap = {};
-      ids.forEach((id) => { next[id] = {}; });
-      ((data as { user_id: string; category: string; slug: string }[]) || []).forEach((row) => {
-        next[row.user_id] = { ...next[row.user_id], [row.category]: row.slug };
-      });
-      // Tier-aware ring: VIP / Verified users keep their gold (or tier) frame everywhere.
-      const { data: tiers } = await supabase
-        .from("profiles_public")
-        .select("id, verification_tier" as never)
-        .in("id", ids);
-      if (!alive) return;
-      ((tiers as unknown as { id: string; verification_tier: string | null }[]) || []).forEach((row) => {
-        next[row.id] = { ...next[row.id], verification_tier: row.verification_tier };
-      });
-      ids.forEach((id) => cache.set(id, next[id] ?? {}));
-      setMap(next);
+    const load = async (force = false) => {
+      const last = fetchedAt.get(key) || 0;
+      const fresh = !force && Date.now() - last < TTL_MS;
+      if (fresh) {
+        const seed: RewardsCosmeticsMap = {};
+        ids.forEach((id) => { seed[id] = cache.get(id) ?? {}; });
+        setMap(seed);
+        return;
+      }
+      try {
+        const next = await fetchCosmetics(key, ids);
+        if (alive) setMap(next);
+      } catch {
+        // keep previous state on failure
+      }
     };
 
     load();
-    const handler = () => load();
+    const handler = () => { fetchedAt.delete(key); load(true); };
     window.addEventListener(REWARDS_COSMETICS_UPDATED, handler);
     return () => {
       alive = false;

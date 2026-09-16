@@ -31,8 +31,14 @@ export const DunningBanner = () => {
     const until = Number(localStorage.getItem(DISMISS_KEY) || 0);
     if (until && until > Date.now()) { setDismissed(true); return; }
 
+    // The billing check is slow (edge function + Stripe); once every 6h is enough.
+    const CHECK_KEY = `dunning_checked_at_${user.id}`;
+    const lastChecked = Number(localStorage.getItem(CHECK_KEY) || 0);
+    if (lastChecked && Date.now() - lastChecked < 6 * 3600 * 1000) return;
+
     (async () => {
       const { data, error } = await supabase.functions.invoke("check-dunning");
+      localStorage.setItem(CHECK_KEY, String(Date.now()));
       if (error) return;
       if ((data as any)?.has_dunning) setDunning((data as any).dunning);
     })();

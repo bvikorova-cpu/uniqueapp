@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Plus } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { useFriendIds } from "@/hooks/useFriendIds";
 
 interface StoryUser {
   user_id: string;
@@ -26,22 +27,15 @@ export default function StoriesBar() {
       return user;
     } });
 
+  const { data: friendIds = [] } = useFriendIds(currentUser?.id);
+
   // Get users with active stories
   const { data: storyUsers = [] } = useQuery({
-    queryKey: ["story-users"],
+    queryKey: ["story-users", currentUser?.id, friendIds.length],
     queryFn: async () => {
       if (!currentUser) return [];
 
-      // Get friends
-      const { data: friendships } = await supabase
-        .from("friendships")
-        .select("user_id, friend_id")
-        .or(`user_id.eq.${currentUser.id},friend_id.eq.${currentUser.id}`)
-        .eq("status", "accepted");
-
-      const friendIds = friendships?.map((f) =>
-        f.user_id === currentUser.id ? f.friend_id : f.user_id
-      );
+      // Friend ids come from the shared cached query (see useFriendIds).
 
       // Get stories
       const { data: stories } = await supabase

@@ -1,20 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { postReactionsLoader } from "@/lib/batchQuery";
 
 export const useReactions = (postId: string) => {
   const queryClient = useQueryClient();
 
   const { data: reactions, isLoading } = useQuery({
     queryKey: ["reactions", postId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("post_reactions")
-        .select("*")
-        .eq("post_id", postId);
-
-      if (error) throw error;
-      return data;
-    } });
+    queryFn: async () => (await postReactionsLoader.load(postId)) as any[],
+    staleTime: 30_000 });
 
   const userReaction = async () => {
     const { data } = await supabase.auth.getUser();
@@ -63,7 +57,9 @@ export const useReactions = (postId: string) => {
       }
     },
     onSuccess: () => {
+      postReactionsLoader.invalidate(postId);
       queryClient.invalidateQueries({ queryKey: ["reactions", postId] });
+      queryClient.invalidateQueries({ queryKey: ["post-reactions", postId] });
     } });
 
   return { reactions: reactions || [],

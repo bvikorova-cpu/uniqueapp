@@ -63,6 +63,7 @@ import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
 import type { Post } from "@/types/database";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { getSavedPostLoader } from "@/lib/batchQuery";
 
 interface PostCardProps {
   post: Post;
@@ -159,15 +160,9 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
       if (user) {
         setCurrentUserId(user.id);
         
-        // Check if post is saved
-        const { data } = await supabase
-          .from("saved_posts")
-          .select("id")
-          .eq("user_id", user.id)
-          .eq("post_id", post.id)
-          .maybeSingle();
-        
-        setSaved(!!data);
+        // Check if post is saved (batched across every card in the feed)
+        const rows = await getSavedPostLoader(user.id).load(post.id);
+        setSaved(rows.length > 0);
       }
     };
     init();
@@ -478,6 +473,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
       const { error } = wasSaved
         ? await supabase.from("saved_posts").delete().eq("post_id", post.id).eq("user_id", user.id)
         : await supabase.from("saved_posts").insert({ post_id: post.id, user_id: user.id });
+      getSavedPostLoader(user.id).invalidate(post.id);
       if (error) throw error;
       queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
       queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
