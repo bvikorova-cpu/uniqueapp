@@ -129,3 +129,18 @@ export function getFollowLoader(followerId: string): Loader<Row> {
   }
   return loader;
 }
+
+/** "Did I save post X?" for many posts at once (one loader per signed-in user). */
+const savedPostLoaders = new Map<string, Loader<Row>>();
+export function getSavedPostLoader(userId: string): Loader<Row> {
+  let loader = savedPostLoaders.get(userId);
+  if (!loader) {
+    loader = createBatchLoader({
+      table: "saved_posts",
+      column: "post_id",
+      select: "post_id",
+      eq: { user_id: userId } });
+    savedPostLoaders.set(userId, loader);
+  }
+  return loader;
+}
