@@ -157,7 +157,6 @@ const Navbar = () => {
         { path: "/handwriting", label: "Handwriting Analyzer", icon: PenTool },
         { path: "/future-face", label: "Future Face - Age Prediction", icon: Clock },
         { path: "/photo-restoration", label: "Photo Restoration", icon: Image },
-        { path: "/stock-content-library", label: "Stock Content Library", icon: ImageIcon },
         { path: "/brand-builder", label: "Brand Builder", icon: Sparkles },
         { path: "/home-designer", label: "Home Designer", icon: Home },
         { path: "/beauty-studio", label: "Beauty Studio", icon: Sparkles },
@@ -239,6 +238,7 @@ const Navbar = () => {
         
         { path: "/bazaar", label: "Bazaar", icon: Store },
         { path: "/coupon-marketplace", label: "Coupon Marketplace", icon: Ticket },
+        { path: "/stock-content-library", label: "Stock Content Library", icon: ImageIcon },
         { path: "/auction", label: "Online Auctions", icon: Gavel },
         { path: "/antique-appraisal", label: "Antique Appraisal", icon: Gem },
       ] },
