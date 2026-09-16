@@ -600,6 +600,13 @@ const Feed = () => {
       );
     }
 
+    // Paid promotions live exclusively in the "Promos" tab — never mixed into
+    // the organic feed (For you / Following / Friends / Trending / Latest).
+    if (feedTab !== "promos") {
+      filtered = filtered.filter((item) => !(item.type === "post" && (item.data as any).is_promo));
+    }
+
+
     // Search filter only
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
@@ -627,18 +634,20 @@ const Feed = () => {
     // (ORDER BY tier_rank DESC, created_at DESC within each page). The client
     // just renders the order returned by the RPC — no re-sort needed.
 
-    // Paid promotions get the strongest reach: TOP first, then Standard,
-    // pinned above every organic post while keeping the rest of the order.
-    const promoRank = (item: FeedItem) => {
-      if (item.type !== "post") return 0;
-      const p: any = item.data;
-      if (!p.is_promo) return 0;
-      return p.promo_tier === "top" ? 2 : 1;
-    };
-    filtered = filtered
-      .map((item, i) => ({ item, i }))
-      .sort((a, b) => promoRank(b.item) - promoRank(a.item) || a.i - b.i)
-      .map(({ item }) => item);
+    // Inside the Promos tab only: TOP promotions first, then Standard.
+    if (feedTab === "promos") {
+      const promoRank = (item: FeedItem) => {
+        if (item.type !== "post") return 0;
+        const p: any = item.data;
+        if (!p.is_promo) return 0;
+        return p.promo_tier === "top" ? 2 : 1;
+      };
+      filtered = filtered
+        .map((item, i) => ({ item, i }))
+        .sort((a, b) => promoRank(b.item) - promoRank(a.item) || a.i - b.i)
+        .map(({ item }) => item);
+    }
+
 
     return filtered;
   }, [feedItems, promoPostMap, searchQuery, feedTab, friendIds, followingIds, verifiedOnly, mutedIds, mutedWords, closeFriendOfIds, user?.id]);
