@@ -135,6 +135,14 @@ export function CloneBattles() {
       }
       if (data?.error) throw new Error(data.error);
       setResult(data as BattleResult);
+      if (selectedPowerups.length) {
+        const used: any[] = data?.powerupsUsed ?? [];
+        if (used.length) {
+          toast({ title: "Boosts activated", description: `${used.map((u) => u.name).join(", ")} · +${data?.scoreBonus ?? 0} score` });
+        }
+        setSelectedPowerups([]);
+        reloadPowerups();
+      }
       loadHistory();
     } catch (err: any) {
       toast({ title: "Battle failed", description: err.message || "Please try again", variant: "destructive" });
