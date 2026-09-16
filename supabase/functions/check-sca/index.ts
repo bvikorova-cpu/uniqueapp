@@ -1,7 +1,7 @@
 // Thin compatibility shim: forwards to check-router with action="sca".
 // Kept as a real edge function so the proxy wrapper isn't required (avoids
 // race conditions when the SCABanner mounts before the lazy patcher loads).
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
