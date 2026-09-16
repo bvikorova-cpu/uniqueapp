@@ -8,6 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useTimeReversalCredits, TIME_REVERSAL_COSTS } from "@/hooks/useTimeReversalCredits";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { ZoomableImage } from "@/components/time-reversal/ZoomableImage";
 
 interface Props { onBack: () => void; }
 
@@ -24,6 +26,7 @@ const STAGE_STEPS: { key: Stage; label: string; pct: number }[] = [
 export function TimeLapseCreator({ onBack }: Props) {
   const { toast } = useToast();
   const { spend, refund } = useTimeReversalCredits();
+  const [zoomOpen, setZoomOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [startAge, setStartAge] = useState([80]);
@@ -274,7 +277,15 @@ export function TimeLapseCreator({ onBack }: Props) {
           <CardContent>
             {collagePreview ? (
               <div className="space-y-3">
-                <img src={collagePreview} alt="Reverse-aging progression collage" className="w-full rounded-xl border border-purple-500/30" loading="lazy" />
+                <button type="button" onClick={() => setZoomOpen(true)} className="block w-full" aria-label="Enlarge collage">
+                  <img src={collagePreview} alt="Reverse-aging progression collage" className="w-full rounded-xl border border-purple-500/30 cursor-zoom-in" loading="lazy" />
+                </button>
+                <Dialog open={zoomOpen} onOpenChange={setZoomOpen}>
+                  <DialogContent className="h-[92dvh] w-[96vw] max-w-6xl border-0 bg-background/95 p-2 sm:p-4">
+                    <DialogTitle className="sr-only">Collage</DialogTitle>
+                    <ZoomableImage src={collagePreview} alt="Reverse-aging progression collage" />
+                  </DialogContent>
+                </Dialog>
                 <p className="text-xs text-muted-foreground text-center">
                   Published to the Social Reverse Feed — other users can like it there.
                 </p>

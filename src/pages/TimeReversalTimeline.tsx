@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { ZoomableImage } from "@/components/time-reversal/ZoomableImage";
 import { Clock, Heart, Users, Sparkles, TrendingDown, Calendar, Maximize2, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -288,7 +289,7 @@ export default function TimeReversalTimeline() {
         <DialogContent className="h-[92dvh] w-[96vw] max-w-6xl border-0 bg-background/95 p-2 sm:p-4">
           <DialogTitle className="sr-only">Age progression collage</DialogTitle>
           <DialogDescription className="sr-only">Enlarged collage by {author?.full_name || "Unique user"}</DialogDescription>
-          {expandedPost?.image_url && <img src={expandedPost.image_url} alt={`${author?.full_name || "Unique user"}'s enlarged age progression collage`} className="h-full w-full object-contain" />}
+          {expandedPost?.image_url && <ZoomableImage src={expandedPost.image_url} alt={`${author?.full_name || "Unique user"}'s enlarged age progression collage`} />}
         </DialogContent>
       </Dialog>
     </div>
