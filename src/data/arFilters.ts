@@ -46,7 +46,7 @@ import tealLinerImg from "@/assets/ar/teal-liner.png";
 import foxEarsImg from "@/assets/ar/fox-ears.png";
 import foxSnoutImg from "@/assets/ar/fox-snout.png";
 import bunnyEarsImg from "@/assets/ar/bunny-ears.png";
-import bunnyFaceImg from "@/assets/ar/bunny-snout.png";
+import bunnyFaceImg from "@/assets/ar/bunny-face.png";
 import bearEarsImg from "@/assets/ar/bear-ears.png";
 import bearSnoutImg from "@/assets/ar/bear-snout.png";
 
