@@ -26,15 +26,18 @@ interface PostGiftProps {
 function usePostGifts(postId: string) {
   const [gifts, setGifts] = useState<PostGiftRow[]>([]);
 
-  const load = useCallback(async () => {
-    const { data } = await supabase
-      .from("gift_transactions")
-      .select("gift_id, created_at, gift_catalog(slug, name, animation, image_url)")
-      .eq("post_id", postId)
-      .order("created_at", { ascending: false })
-      .limit(12);
-    setGifts((data as unknown as PostGiftRow[]) || []);
-  }, [postId]);
+  const load = useCallback(
+    async (force = false) => {
+      if (force) postGiftsLoader.invalidate(postId);
+      const rows = (await postGiftsLoader.load(postId)) as unknown as PostGiftRow[];
+      setGifts(
+        [...rows]
+          .sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
+          .slice(0, 12),
+      );
+    },
+    [postId],
+  );
 
   useEffect(() => {
     load();
