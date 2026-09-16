@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { ClonePowerupShop, CLONE_POWERUPS, MAX_POWERUPS_PER_BATTLE, useClonePowerups } from "./ClonePowerupShop";
 
 interface Round { round: number; a: string; b: string }
 
