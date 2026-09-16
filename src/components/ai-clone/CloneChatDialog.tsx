@@ -8,6 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { safeInvoke } from "@/utils/safeInvoke";
 import { Bot, Send, Loader2, User } from "lucide-react";
 
+const CHAT_COST = 1;
+
 interface Message {
   role: 'user' | 'assistant';
   content: string;
