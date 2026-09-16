@@ -165,13 +165,11 @@ export default function WallFriends() {
       });
 
       // Exclude anyone already linked (pending in either direction / accepted).
-      const { data: existing } = await supabase
-        .from("friendships")
-        .select("user_id, friend_id")
-        .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`);
-      const linkedIds = new Set<string>(
-        (existing || []).map((r: any) => (r.user_id === user.id ? r.friend_id : r.user_id))
-      );
+      const linkedIds = new Set<string>([
+        ...friends.map((f) => f.id),
+        ...outgoingIds,
+        ...incomingIds,
+      ]);
       linkedIds.add(user.id);
 
       candidateIds = candidateIds.filter((id) => !linkedIds.has(id));

@@ -35,14 +35,7 @@ export function BirthdaysWidget() {
     queryKey: ["friends-birthdays", userId],
     enabled: !!userId,
     queryFn: async (): Promise<Friend[]> => {
-      const { data: edges } = await supabase
-        .from("friendships")
-        .select("user_id, friend_id")
-        .or(`user_id.eq.${userId},friend_id.eq.${userId}`)
-        .eq("status", "accepted");
-      const ids = (edges ?? [])
-        .map((r: any) => (r.user_id === userId ? r.friend_id : r.user_id))
-        .filter(Boolean);
+      const ids = friendIds;
       if (ids.length === 0) return [];
       const { data: profs } = await supabase
         .from("profiles")

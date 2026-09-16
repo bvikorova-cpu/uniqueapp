@@ -32,16 +32,7 @@ export default function StoriesBar() {
     queryFn: async () => {
       if (!currentUser) return [];
 
-      // Get friends
-      const { data: friendships } = await supabase
-        .from("friendships")
-        .select("user_id, friend_id")
-        .or(`user_id.eq.${currentUser.id},friend_id.eq.${currentUser.id}`)
-        .eq("status", "accepted");
-
-      const friendIds = friendships?.map((f) =>
-        f.user_id === currentUser.id ? f.friend_id : f.user_id
-      );
+      // Friend ids come from the shared cached query (see useFriendIds).
 
       // Get stories
       const { data: stories } = await supabase

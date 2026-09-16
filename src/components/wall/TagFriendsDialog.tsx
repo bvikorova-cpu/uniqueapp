@@ -38,15 +38,7 @@ export function TagFriendsDialog({ open,
     queryFn: async () => {
       if (!user) return [];
 
-      const { data: friendships } = await supabase
-        .from("friendships")
-        .select("user_id, friend_id")
-        .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`)
-        .eq("status", "accepted");
-
-      const friendIds = friendships?.map((f) =>
-        f.user_id === user.id ? f.friend_id : f.user_id
-      ) || [];
+      const friendIds = allFriendIds;
 
       if (friendIds.length === 0) return [];
 
