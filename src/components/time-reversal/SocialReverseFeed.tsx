@@ -104,11 +104,7 @@ export function SocialReverseFeed({ onBack }: Props) {
           <DialogTitle className="sr-only">Age progression collage</DialogTitle>
           <DialogDescription className="sr-only">Enlarged age progression collage</DialogDescription>
           {expandedImage && (
-            <img
-              src={expandedImage}
-              alt="Enlarged AI age progression collage"
-              className="h-full w-full object-contain"
-            />
+            <ZoomableImage src={expandedImage} />
           )}
         </DialogContent>
       </Dialog>
