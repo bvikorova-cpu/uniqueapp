@@ -263,6 +263,10 @@ export function CloneBattles() {
           </CardContent>
         </Card>
 
+        <ClonePowerupShop />
+
+
+
         <AnimatePresence>
           {result && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
