@@ -82,6 +82,7 @@ export async function getAccessToken(sa: ServiceAccount): Promise<string | null>
         grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
         assertion,
       }),
+      signal: AbortSignal.timeout(15_000),
     });
     if (!res.ok) {
       console.warn("[vertexDirect] token error", res.status, (await res.text()).slice(0, 300));
@@ -140,6 +141,7 @@ export async function tryVertexChat(body: Record<string, unknown>): Promise<any 
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(45_000),
       });
       if (!res.ok) {
         const text = await res.text().catch(() => "");
