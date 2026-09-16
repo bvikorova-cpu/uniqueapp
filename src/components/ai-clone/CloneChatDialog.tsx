@@ -56,9 +56,18 @@ export function CloneChatDialog({ open, onOpenChange, clone }: CloneChatDialogPr
     setIsLoading(true);
 
     try {
-      const { data, error } = await safeInvoke<any>("clone-chat", {
-        body: { cloneId: clone.id, message: userMessage, history: messages } });
+      const { data, error } = await Promise.race([
+        safeInvoke<any>("clone-chat", {
+          body: { cloneId: clone.id, message: userMessage, history: messages } }),
+        new Promise<{ data: null; error: string }>((resolve) =>
+          setTimeout(
+            () => resolve({ data: null, error: "The reply took too long. Please try again." }),
+            60_000,
+          ),
+        ),
+      ]);
       if (error) throw new Error(error);
+      if (!data?.reply) throw new Error("No reply received. Please try again.");
       setMessages(prev => [...prev, { role: "assistant", content: data.reply }]);
       if (typeof data.remaining === "number" && data.remaining <= 3) {
         toast({ title: `${data.remaining} AI responses left today` });
