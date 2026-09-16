@@ -600,6 +600,13 @@ const Feed = () => {
       );
     }
 
+    // Paid promotions live exclusively in the "Promos" tab — never mixed into
+    // the organic feed (For you / Following / Friends / Trending / Latest).
+    if (feedTab !== "promos") {
+      filtered = filtered.filter((item) => !(item.type === "post" && (item.data as any).is_promo));
+    }
+
+
     // Search filter only
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
