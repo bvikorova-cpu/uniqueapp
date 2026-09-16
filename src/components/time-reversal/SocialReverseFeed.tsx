@@ -6,6 +6,7 @@ import { ArrowLeft, Loader2, Maximize2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { ZoomableImage } from "@/components/time-reversal/ZoomableImage";
 
 interface Props { onBack: () => void; }
 
@@ -104,11 +105,7 @@ export function SocialReverseFeed({ onBack }: Props) {
           <DialogTitle className="sr-only">Age progression collage</DialogTitle>
           <DialogDescription className="sr-only">Enlarged age progression collage</DialogDescription>
           {expandedImage && (
-            <img
-              src={expandedImage}
-              alt="Enlarged AI age progression collage"
-              className="h-full w-full object-contain"
-            />
+            <ZoomableImage src={expandedImage} />
           )}
         </DialogContent>
       </Dialog>
