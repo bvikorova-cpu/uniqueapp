@@ -22,7 +22,7 @@ export const useMyFriends = (userId: string | null | undefined) => {
       if (error) throw error;
       const seen = new Set<string>();
       return ((data as MyFriend[]) ?? []).filter((p) => {
-        if (!p?.id || seen.has(p.id)) return false;
+        if (!p?.id || p.id === userId || seen.has(p.id)) return false;
         seen.add(p.id);
         return true;
       });

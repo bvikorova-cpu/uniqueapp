@@ -91,7 +91,7 @@ export default function WallFriends() {
       }
     })();
     return () => { cancelled = true; };
-  }, [debouncedSearch, toast]);
+  }, [debouncedSearch, toast, user?.id]);
 
 
 
