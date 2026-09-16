@@ -72,11 +72,14 @@ Deno.serve(async (req) => {
     }
 
 
-    const styleHint = STYLE_HINTS[style] || STYLE_HINTS.storybook;
-    const prompt = `Children's book illustration for the story "${storyTitle || "A Magical Tale"}".
+    const styleKey = style.replace(/[\s_]+/g, "-");
+    const styleHint = STYLE_HINTS[styleKey] || STYLE_HINTS[styleKey.replace(/-/g, "")] || STYLE_HINTS.storybook;
+    const prompt = `ART STYLE (most important requirement, must dominate the whole image): ${styleHint}.
+Render the entire image strictly in that art style — do not mix in any other illustration style.
+Subject: a children's story illustration for "${storyTitle || "A Magical Tale"}".
 Scene to depict: ${pageText}
 ${characters ? `Main characters: ${characters}.` : ""}
-Visual style: ${styleHint}. Age-appropriate for kids 4-10, friendly and safe, no text or letters in the image, no scary or violent imagery, vibrant composition, full-bleed illustration.`;
+Age-appropriate for kids 4-10, friendly and safe, no text or letters in the image, no scary or violent imagery, full-bleed composition.`;
 
     const aiResp = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
