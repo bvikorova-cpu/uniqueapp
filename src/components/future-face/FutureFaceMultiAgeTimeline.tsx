@@ -121,6 +121,24 @@ export default function FutureFaceMultiAgeTimeline() {
           )}
         </CardContent>
       </Card>
+
+      <Dialog open={!!zoom} onOpenChange={(o) => !o && setZoom(null)}>
+        <DialogContent className="max-w-3xl p-2 sm:p-4">
+          {zoom && (
+            <div className="space-y-3">
+              <img src={zoom.url} alt={zoom.label} className="w-full max-h-[75vh] object-contain rounded-lg" />
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-sm font-bold">{zoom.label}</p>
+                <Button asChild size="sm" variant="outline">
+                  <a href={zoom.url} target="_blank" rel="noopener noreferrer" download>
+                    <Download className="h-4 w-4 mr-1.5" /> Open / download
+                  </a>
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
     </>
   );
