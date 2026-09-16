@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Gift } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { postGiftsLoader } from "@/lib/batchQuery";
 import { Button } from "@/components/ui/button";
 import { GiftShopSheet } from "./GiftShopSheet";
 import { GiftVisual } from "./GiftVisual";
@@ -99,7 +99,7 @@ export function PostGiftAction({ postId, authorId, authorName, currentUserId }: 
     <GiftShopSheet
       postId={postId}
       recipientName={authorName}
-      onSent={reload}
+      onSent={() => reload(true)}
       trigger={
         <Button
           variant="ghost"
