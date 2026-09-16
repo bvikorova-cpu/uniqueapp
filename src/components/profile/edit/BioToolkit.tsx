@@ -158,38 +158,6 @@ export const BioToolkit = ({ bio,
           </div>
         )}
       </div>
-
-      {/* Translations */}
-      <div>
-        <div className="flex items-center gap-2 text-sm mb-2">
-          <Globe2 className="h-3.5 w-3.5" />
-          Multi-language profile
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          {SUPPORTED_LANGS.map((l) => {
-            const has = !!translations[l];
-            const busy = translatingLang === l;
-            return (
-              <Button
-                key={l}
-                size="sm"
-                variant={has ? "secondary" : "outline"}
-                className="h-7 px-2 text-[10px] uppercase"
-                onClick={() => runTranslate(l)}
-                disabled={busy}
-              >
-                {busy ? <Loader2 className="h-3 w-3 animate-spin" /> : l}
-                {has && <span className="ml-1">✓</span>}
-              </Button>
-            );
-          })}
-        </div>
-        {Object.keys(translations).length > 0 && (
-          <p className="text-[10px] text-muted-foreground mt-2">
-            Visitors will see the bio in their language automatically.
-          </p>
-        )}
-      </div>
     </Card>
     </>
   );
