@@ -47,6 +47,8 @@ const TOPICS = [
 
 const STAGES = ["Scanning the arena", "Matching a rival clone", "Round 1", "Round 2", "Round 3", "Judges scoring"];
 
+const BATTLE_COST = 1;
+
 export function CloneBattles() {
   const { toast } = useToast();
   const navigate = useNavigate();
