@@ -43,9 +43,15 @@ import sleepyZzImg from "@/assets/ar/sleepy-zz.png";
 import bunnySnoutImg from "@/assets/ar/bunny-snout.png";
 import wingedLinerImg from "@/assets/ar/winged-liner.png";
 import tealLinerImg from "@/assets/ar/teal-liner.png";
+import foxEarsImg from "@/assets/ar/fox-ears.png";
+import foxSnoutImg from "@/assets/ar/fox-snout.png";
+import bunnyEarsImg from "@/assets/ar/bunny-ears.png";
+import bunnyFaceImg from "@/assets/ar/bunny-face.png";
+import bearEarsImg from "@/assets/ar/bear-ears.png";
+import bearSnoutImg from "@/assets/ar/bear-snout.png";
 
 /** Where an overlay is anchored on the detected face. */
-export type ArAnchor = "eyes" | "forehead" | "above-head" | "nose" | "mouth";
+export type ArAnchor = "eyes" | "forehead" | "above-head" | "nose" | "mouth" | "neck";
 
 export interface ArOverlay {
   src: string;
@@ -88,26 +94,26 @@ export const AR_FILTERS: ArFilter[] = [
     id: "cap",
     label: "Cap",
     emoji: "🧢",
-    overlays: [{ src: capImg, anchor: "above-head", widthFactor: 2.6, offsetY: -0.35 }],
+    overlays: [{ src: capImg, anchor: "above-head", widthFactor: 2.6, offsetY: 0.45 }],
   },
   {
     id: "crown",
     label: "Crown",
     emoji: "👑",
-    overlays: [{ src: crownImg, anchor: "above-head", widthFactor: 2.3, offsetY: -0.45 }],
+    overlays: [{ src: crownImg, anchor: "above-head", widthFactor: 2.3, offsetY: 0.65 }],
   },
   {
     id: "flowers",
     label: "Flower crown",
     emoji: "🌸",
-    overlays: [{ src: flowerCrownImg, anchor: "above-head", widthFactor: 2.4, offsetY: -0.3 }],
+    overlays: [{ src: flowerCrownImg, anchor: "above-head", widthFactor: 2.4, offsetY: 0.25 }],
   },
   {
     id: "puppy",
     label: "Puppy",
     emoji: "🐶",
     overlays: [
-      { src: dogEarsImg, anchor: "above-head", widthFactor: 2.6, offsetY: -0.3 },
+      { src: dogEarsImg, anchor: "above-head", widthFactor: 2.6, offsetY: 0.35 },
       { src: dogNoseImg, anchor: "nose", widthFactor: 0.75, offsetY: 0 },
     ],
   },
@@ -116,7 +122,7 @@ export const AR_FILTERS: ArFilter[] = [
     label: "Party look",
     emoji: "🎉",
     overlays: [
-      { src: crownImg, anchor: "above-head", widthFactor: 2.2, offsetY: -0.45 },
+      { src: crownImg, anchor: "above-head", widthFactor: 2.2, offsetY: 0.65 },
       { src: heartGlassesImg, anchor: "eyes", widthFactor: 2.1, offsetY: 0 },
     ],
   },
@@ -127,7 +133,7 @@ export const AR_FILTERS: ArFilter[] = [
     overlays: [
       { src: sunglassesImg, anchor: "eyes", widthFactor: 2.05, offsetY: 0 },
       { src: mustacheImg, anchor: "mouth", widthFactor: 1.1, offsetY: -0.12 },
-      { src: capImg, anchor: "above-head", widthFactor: 2.6, offsetY: -0.35 },
+      { src: capImg, anchor: "above-head", widthFactor: 2.6, offsetY: 0.45 },
     ],
   },
   // ---- Exclusive Unique effects (original designs, not found on other platforms) ----
@@ -141,26 +147,26 @@ export const AR_FILTERS: ArFilter[] = [
     id: "galaxyhalo",
     label: "Galaxy halo",
     emoji: "🌌",
-    overlays: [{ src: galaxyHaloImg, anchor: "above-head", widthFactor: 3.4, offsetY: -0.55 }],
+    overlays: [{ src: galaxyHaloImg, anchor: "above-head", widthFactor: 3.4, offsetY: 0.05 }],
   },
   {
     id: "butterflies",
     label: "Butterfly crown",
     emoji: "🦋",
-    overlays: [{ src: butterflyCrownImg, anchor: "above-head", widthFactor: 3.1, offsetY: -0.2 }],
+    overlays: [{ src: butterflyCrownImg, anchor: "above-head", widthFactor: 3.1, offsetY: 0.15 }],
   },
   {
     id: "flamecrown",
     label: "Flame crown",
     emoji: "🔥",
-    overlays: [{ src: flameCrownImg, anchor: "above-head", widthFactor: 2.5, offsetY: -0.35 }],
+    overlays: [{ src: flameCrownImg, anchor: "above-head", widthFactor: 2.5, offsetY: 0.2 }],
   },
   {
     id: "cyberqueen",
     label: "Cyber queen",
     emoji: "👑",
     overlays: [
-      { src: galaxyHaloImg, anchor: "above-head", widthFactor: 3.4, offsetY: -0.55 },
+      { src: galaxyHaloImg, anchor: "above-head", widthFactor: 3.4, offsetY: 0.05 },
       { src: neonVisorImg, anchor: "eyes", widthFactor: 2.4, offsetY: 0 },
     ],
   },
@@ -169,7 +175,7 @@ export const AR_FILTERS: ArFilter[] = [
     label: "Fire legend",
     emoji: "🌋",
     overlays: [
-      { src: flameCrownImg, anchor: "above-head", widthFactor: 2.5, offsetY: -0.35 },
+      { src: flameCrownImg, anchor: "above-head", widthFactor: 2.5, offsetY: 0.2 },
       { src: sunglassesImg, anchor: "eyes", widthFactor: 2.05, offsetY: 0 },
     ],
   },
@@ -178,7 +184,7 @@ export const AR_FILTERS: ArFilter[] = [
     label: "Butterfly love",
     emoji: "💞",
     overlays: [
-      { src: butterflyCrownImg, anchor: "above-head", widthFactor: 3.1, offsetY: -0.2 },
+      { src: butterflyCrownImg, anchor: "above-head", widthFactor: 3.1, offsetY: 0.15 },
       { src: heartGlassesImg, anchor: "eyes", widthFactor: 2.1, offsetY: 0 },
     ],
   },
@@ -192,13 +198,13 @@ export const AR_FILTERS: ArFilter[] = [
     id: "devil",
     label: "Little devil",
     emoji: "😈",
-    overlays: [{ src: devilHornsImg, anchor: "above-head", widthFactor: 2.2, offsetY: -0.35 }],
+    overlays: [{ src: devilHornsImg, anchor: "above-head", widthFactor: 2.2, offsetY: 0.3 }],
   },
   {
     id: "angel",
     label: "Pure angel",
     emoji: "😇",
-    overlays: [{ src: angelHaloImg, anchor: "above-head", widthFactor: 2.0, offsetY: -0.55 }],
+    overlays: [{ src: angelHaloImg, anchor: "above-head", widthFactor: 2.0, offsetY: 0.1 }],
   },
   {
     id: "pirate",
@@ -210,7 +216,7 @@ export const AR_FILTERS: ArFilter[] = [
     id: "cat",
     label: "Cute cat",
     emoji: "🐱",
-    overlays: [{ src: catKitImg, anchor: "above-head", widthFactor: 2.5, offsetY: -0.25 }],
+    overlays: [{ src: catKitImg, anchor: "eyes", widthFactor: 2.8, offsetY: 0.05 }],
   },
   {
     id: "robot",
@@ -222,31 +228,31 @@ export const AR_FILTERS: ArFilter[] = [
     id: "unicorn",
     label: "Unicorn",
     emoji: "🦄",
-    overlays: [{ src: unicornKitImg, anchor: "above-head", widthFactor: 2.5, offsetY: -0.3 }],
+    overlays: [{ src: unicornKitImg, anchor: "eyes", widthFactor: 2.8, offsetY: -0.05 }],
   },
   {
     id: "clown",
     label: "Rainbow clown",
     emoji: "🤡",
-    overlays: [{ src: clownKitImg, anchor: "above-head", widthFactor: 2.8, offsetY: -0.2 }],
+    overlays: [{ src: clownKitImg, anchor: "eyes", widthFactor: 3.0, offsetY: 0.05 }],
   },
   {
     id: "ninja",
     label: "Ninja",
     emoji: "🥷",
-    overlays: [{ src: ninjaMaskImg, anchor: "eyes", widthFactor: 2.1, offsetY: 0 }],
+    overlays: [{ src: ninjaMaskImg, anchor: "eyes", widthFactor: 3.6, offsetY: 0.35 }],
   },
   {
     id: "wizard",
     label: "Wizard",
     emoji: "🧙",
-    overlays: [{ src: wizardKitImg, anchor: "above-head", widthFactor: 2.7, offsetY: -0.4 }],
+    overlays: [{ src: wizardKitImg, anchor: "eyes", widthFactor: 3.0, offsetY: -0.2 }],
   },
   {
     id: "alien",
     label: "Alien",
     emoji: "👽",
-    overlays: [{ src: alienKitImg, anchor: "above-head", widthFactor: 2.4, offsetY: -0.35 }],
+    overlays: [{ src: alienKitImg, anchor: "eyes", widthFactor: 2.8, offsetY: 0.1 }],
   },
   {
     id: "retro3d",
@@ -294,7 +300,7 @@ export const AR_FILTERS: ArFilter[] = [
     id: "gentleman",
     label: "Gentleman",
     emoji: "🎩",
-    overlays: [{ src: bowTieImg, anchor: "mouth", widthFactor: 1.6, offsetY: -0.55 }],
+    overlays: [{ src: bowTieImg, anchor: "neck", widthFactor: 1.55, offsetY: 0.1 }],
   },
   {
     id: "romantic",
@@ -327,7 +333,7 @@ export const AR_FILTERS: ArFilter[] = [
     id: "fedora",
     label: "Mystery",
     emoji: "🕵️",
-    overlays: [{ src: fedoraImg, anchor: "above-head", widthFactor: 3.0, offsetY: -0.45 }],
+    overlays: [{ src: fedoraImg, anchor: "above-head", widthFactor: 3.0, offsetY: 0.35 }],
   },
   {
     id: "monocle",
@@ -355,7 +361,7 @@ export const AR_FILTERS: ArFilter[] = [
     id: "piggycap",
     label: "Piggy cap",
     emoji: "🐷",
-    overlays: [{ src: piggyCapImg, anchor: "above-head", widthFactor: 2.9, offsetY: -0.28 }],
+    overlays: [{ src: piggyCapImg, anchor: "above-head", widthFactor: 2.9, offsetY: 0.25 }],
   },
   {
     id: "sleepy",
@@ -374,10 +380,37 @@ export const AR_FILTERS: ArFilter[] = [
     label: "Cutie dream",
     emoji: "💗",
     overlays: [
-      { src: piggyCapImg, anchor: "above-head", widthFactor: 2.9, offsetY: -0.28 },
+      { src: piggyCapImg, anchor: "above-head", widthFactor: 2.9, offsetY: 0.25 },
       { src: bigEyesImg, anchor: "eyes", widthFactor: 2.6, offsetY: -0.05 },
       { src: bunnySnoutImg, anchor: "nose", widthFactor: 0.9, offsetY: 0.1 },
       { src: sleepyZzImg, anchor: "forehead", widthFactor: 0.9, offsetY: -0.4 },
+    ],
+  },
+  {
+    id: "fox",
+    label: "Fox",
+    emoji: "🦊",
+    overlays: [
+      { src: foxEarsImg, anchor: "above-head", widthFactor: 2.65, offsetY: 0.25 },
+      { src: foxSnoutImg, anchor: "nose", widthFactor: 1.15, offsetY: 0.15 },
+    ],
+  },
+  {
+    id: "bunny",
+    label: "Bunny",
+    emoji: "🐰",
+    overlays: [
+      { src: bunnyEarsImg, anchor: "above-head", widthFactor: 2.35, offsetY: 0.05 },
+      { src: bunnyFaceImg, anchor: "nose", widthFactor: 1.2, offsetY: 0.15 },
+    ],
+  },
+  {
+    id: "bear",
+    label: "Bear",
+    emoji: "🐻",
+    overlays: [
+      { src: bearEarsImg, anchor: "above-head", widthFactor: 2.5, offsetY: 0.35 },
+      { src: bearSnoutImg, anchor: "nose", widthFactor: 1.15, offsetY: 0.2 },
     ],
   },
   {

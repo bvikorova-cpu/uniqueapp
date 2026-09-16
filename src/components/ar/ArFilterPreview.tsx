@@ -9,6 +9,7 @@ const FACE = {
   eyeRightX: 0.6,
   noseY: 0.5,
   mouthY: 0.575,
+  neckY: 0.72,
   foreheadY: 0.3,
   centerX: 0.5,
 };
@@ -59,6 +60,8 @@ export const ArFilterPreview = ({ filter, className }: { filter: ArFilter; class
               ? FACE.noseY
               : overlay.anchor === "mouth"
                 ? FACE.mouthY
+                : overlay.anchor === "neck"
+                  ? FACE.neckY
                 : FACE.foreheadY;
         let cy = baseY * SIZE + eyeDistance * overlay.offsetY;
         if (overlay.anchor === "above-head") cy -= height / 2;
