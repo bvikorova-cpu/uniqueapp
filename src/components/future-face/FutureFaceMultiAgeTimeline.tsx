@@ -3,7 +3,8 @@ import { getReadableUrl } from "@/lib/storageSigned";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Upload, CalendarDays } from "lucide-react";
+import { Loader2, Upload, CalendarDays, Download } from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +18,7 @@ export default function FutureFaceMultiAgeTimeline() {
   const [sourcePreviewUrl, setSourcePreviewUrl] = useState<string | null>(null);
   const [results, setResults] = useState<Record<number, string>>({});
   const [loading, setLoading] = useState<number | null>(null);
+  const [zoom, setZoom] = useState<{ url: string; label: string } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const localPreviewRef = useRef<string | null>(null);
   const { toast } = useToast();
@@ -100,13 +102,13 @@ export default function FutureFaceMultiAgeTimeline() {
           {sourceUrl && (
             <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
               <div className="text-center">
-                 <img src={sourcePreviewUrl || sourceUrl} alt="Today" className="w-full aspect-square object-cover rounded-lg border border-border/40" />
+                 <img src={sourcePreviewUrl || sourceUrl} alt="Today" onClick={() => setZoom({ url: (sourcePreviewUrl || sourceUrl)!, label: "Today" })} className="w-full aspect-square object-cover rounded-lg border border-border/40 cursor-zoom-in" />
                 <p className="text-[10px] font-bold mt-1">Today</p>
               </div>
               {STEPS.map(y => (
                 <div key={y} className="text-center">
                   {results[y] ? (
-                    <img src={results[y]} alt={`+${y}y`} className="w-full aspect-square object-cover rounded-lg border border-cyan-500/30" />
+                    <img src={results[y]} alt={`+${y}y`} onClick={() => setZoom({ url: results[y], label: `+${y} years` })} className="w-full aspect-square object-cover rounded-lg border border-cyan-500/30 cursor-zoom-in" />
                   ) : (
                     <div className="w-full aspect-square rounded-lg border border-dashed border-border grid place-items-center bg-card/50">
                       {loading === y ? <Loader2 className="h-5 w-5 animate-spin text-cyan-500" /> : <span className="text-[9px] text-muted-foreground">+{y}y</span>}
@@ -119,6 +121,24 @@ export default function FutureFaceMultiAgeTimeline() {
           )}
         </CardContent>
       </Card>
+
+      <Dialog open={!!zoom} onOpenChange={(o) => !o && setZoom(null)}>
+        <DialogContent className="max-w-3xl p-2 sm:p-4">
+          {zoom && (
+            <div className="space-y-3">
+              <img src={zoom.url} alt={zoom.label} className="w-full max-h-[75vh] object-contain rounded-lg" />
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-sm font-bold">{zoom.label}</p>
+                <Button asChild size="sm" variant="outline">
+                  <a href={zoom.url} target="_blank" rel="noopener noreferrer" download>
+                    <Download className="h-4 w-4 mr-1.5" /> Open / download
+                  </a>
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
     </>
   );
