@@ -8,6 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { safeInvoke } from "@/utils/safeInvoke";
 import { Bot, Send, Loader2, User } from "lucide-react";
 
+const CHAT_COST = 1;
+
 interface Message {
   role: 'user' | 'assistant';
   content: string;
@@ -56,6 +58,18 @@ export function CloneChatDialog({ open, onOpenChange, clone }: CloneChatDialogPr
     setIsLoading(true);
 
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Sign in required");
+      const { data: deductData, error: deductError } = await supabase.rpc("deduct_ai_credits_atomic", {
+        _user_id: user.id,
+        _amount: CHAT_COST,
+      });
+      if (deductError) throw deductError;
+      if (deductData && (deductData as any).ok === false) {
+        throw new Error(`Each chat message costs ${CHAT_COST} credit. Top up your balance.`);
+      }
+      window.dispatchEvent(new Event("ai-credits-updated"));
+
       const { data, error } = await Promise.race([
         safeInvoke<any>("clone-chat", {
           body: { cloneId: clone.id, message: userMessage, history: messages } }),

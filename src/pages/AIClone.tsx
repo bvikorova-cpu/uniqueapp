@@ -75,19 +75,8 @@ export default function AIClone() {
 
         <HeroRewardedAd sectionKey="page_aiclone" />
 
-        {/* Engagement Row */}
-        <div className="grid grid-cols-2 gap-3 mb-8">
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl border-primary/20 text-center">
-            <Flame className="h-5 w-5 text-purple-400 mx-auto mb-1" />
-            <p className="text-lg sm:text-2xl font-black">0</p>
-            <p className="text-[10px] sm:text-xs text-muted-foreground">Active Clones</p>
-          </Card>
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl border-primary/20 text-center">
-            <Star className="h-5 w-5 text-cyan-400 mx-auto mb-1" />
-            <p className="text-lg sm:text-2xl font-black">0</p>
-            <p className="text-[10px] sm:text-xs text-muted-foreground">Conversations</p>
-          </Card>
-        </div>
+
+
 
 
         {/* Back button when in sub-view */}

@@ -47,6 +47,8 @@ const TOPICS = [
 
 const STAGES = ["Scanning the arena", "Matching a rival clone", "Round 1", "Round 2", "Round 3", "Judges scoring"];
 
+const BATTLE_COST = 1;
+
 export function CloneBattles() {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -91,6 +93,18 @@ export function CloneBattles() {
     setStage(0);
     const ticker = setInterval(() => setStage((s) => Math.min(s + 1, STAGES.length - 1)), 900);
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Sign in required");
+      const { data: deductData, error: deductError } = await supabase.rpc("deduct_ai_credits_atomic", {
+        _user_id: user.id,
+        _amount: BATTLE_COST,
+      });
+      if (deductError) throw deductError;
+      if (deductData && (deductData as any).ok === false) {
+        throw new Error(`A battle costs ${BATTLE_COST} credit. Top up your balance.`);
+      }
+      window.dispatchEvent(new Event("ai-credits-updated"));
+
       const { data, error } = await supabase.functions.invoke("clone-battle", {
         body: { topic: topic === TOPICS[0] ? undefined : topic },
       });
@@ -194,7 +208,7 @@ export function CloneBattles() {
                 {isMatching ? (
                   <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {STAGES[stage]}...</>
                 ) : (
-                  <><Swords className="mr-2 h-4 w-4" /> Find rival & battle</>
+                  <><Swords className="mr-2 h-4 w-4" /> Find rival &amp; battle · {BATTLE_COST} credit</>
                 )}
               </Button>
             </div>
