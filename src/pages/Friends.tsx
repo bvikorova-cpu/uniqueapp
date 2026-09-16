@@ -142,7 +142,7 @@ const Friends = () => {
       const rows = await searchProfiles(q, { limit: 12 });
       if (cancelled) return;
       const friendIds = new Set(friends.map((f) => f.id));
-      setPeople(rows.filter((r) => !friendIds.has(r.id)));
+      setPeople(rows.filter((r) => r.id !== currentUserId && !friendIds.has(r.id)));
       setPeopleLoading(false);
     }, 250);
     return () => { cancelled = true; clearTimeout(t); setPeopleLoading(false); };
