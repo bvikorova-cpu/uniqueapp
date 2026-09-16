@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { getFollowLoader } from "@/lib/batchQuery";
 import { useToast } from "@/hooks/use-toast";
 
 export const useIsFollowing = (userId: string | undefined, targetUserId: string | undefined) => {
