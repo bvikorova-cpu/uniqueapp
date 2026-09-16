@@ -592,6 +592,8 @@ const Feed = () => {
       filtered = filtered
         .filter((item) => new Date(createdAtOf(item)).getTime() >= dayAgo)
         .sort((a, b) => scoreOf(b) - scoreOf(a));
+    } else if (feedTab === "promos") {
+      filtered = filtered.filter((item) => item.type === "post" && (item.data as any).is_promo);
     } else if (feedTab === "latest") {
       filtered = filtered.sort(
         (a, b) => new Date(createdAtOf(b)).getTime() - new Date(createdAtOf(a)).getTime()
@@ -650,7 +652,7 @@ const Feed = () => {
   }, [feedTab]);
 
   useEffect(() => {
-    const restrictive = feedTab === "friends" || feedTab === "following" || feedTab === "trending";
+    const restrictive = feedTab === "friends" || feedTab === "following" || feedTab === "trending" || feedTab === "promos";
     if (!restrictive || !hasMore || loading || loadingMore || fetchInFlight.current) return;
     if (filteredFeedItems.length >= 5 || autoPagesRef.current >= 8) return;
     autoPagesRef.current += 1;
