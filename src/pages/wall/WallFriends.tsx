@@ -165,10 +165,18 @@ export default function WallFriends() {
       });
 
       // Exclude anyone already linked (pending in either direction / accepted).
+      // Accepted friends come from the shared cached friend list; only the
+      // small pending set still needs its own lookup.
+      const { data: pendingEdges } = await supabase
+        .from("friendships")
+        .select("user_id, friend_id")
+        .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`)
+        .eq("status", "pending");
       const linkedIds = new Set<string>([
         ...friends.map((f) => f.id),
-        ...(outgoingLinkIds || []),
-        ...(incomingLinkIds || []),
+        ...((pendingEdges || []) as any[]).map((r) =>
+          r.user_id === user.id ? r.friend_id : r.user_id,
+        ),
       ]);
       linkedIds.add(user.id);
 
