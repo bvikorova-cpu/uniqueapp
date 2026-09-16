@@ -19,6 +19,9 @@ const MILESTONES: Milestone[] = [
   { days: 7, label: "Week Warrior", reward: "+100 XP per day", icon: Zap, color: "from-orange-400 to-amber-500" },
   { days: 30, label: "Monthly Master", reward: "+250 XP per day + badge", icon: Trophy, color: "from-purple-500 to-pink-500" },
   { days: 100, label: "Centurion", reward: "+500 XP per day + exclusive badge", icon: Crown, color: "from-yellow-400 via-orange-500 to-red-500" },
+  { days: 200, label: "Dual Centurion", reward: "Exclusive 'Dual Centurion' badge", icon: Crown, color: "from-rose-400 via-fuchsia-500 to-purple-600" },
+  { days: 500, label: "Legend", reward: "Exclusive 'Legend' badge + profile flair", icon: Flame, color: "from-red-500 via-rose-600 to-fuchsia-700" },
+  { days: 1000, label: "Immortal", reward: "Exclusive 'Immortal' badge + golden profile flair", icon: Trophy, color: "from-amber-300 via-yellow-500 to-orange-700" },
 ];
 
 
@@ -106,7 +109,7 @@ export function StreakMultiplierCard() {
         </div>
 
         {/* milestones */}
-        <div className="grid grid-cols-3 gap-2 pt-1">
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 pt-1">
           {MILESTONES.map((m) => {
             const reached = current >= m.days;
             const Icon = m.icon;
