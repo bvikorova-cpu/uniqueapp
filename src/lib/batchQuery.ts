@@ -114,3 +114,18 @@ export const postGiftsLoader = createBatchLoader({
   table: "gift_transactions",
   column: "post_id",
   select: "post_id, gift_id, created_at, gift_catalog(slug, name, animation, image_url)" });
+
+/** "Am I following X?" for many users at once (one loader per signed-in user). */
+const followLoaders = new Map<string, Loader>();
+export function getFollowLoader(followerId: string): Loader {
+  let loader = followLoaders.get(followerId);
+  if (!loader) {
+    loader = createBatchLoader({
+      table: "user_follows",
+      column: "following_id",
+      select: "following_id",
+      eq: { follower_id: followerId } });
+    followLoaders.set(followerId, loader);
+  }
+  return loader;
+}
