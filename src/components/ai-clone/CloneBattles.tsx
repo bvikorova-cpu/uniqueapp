@@ -208,7 +208,7 @@ export function CloneBattles() {
                 {isMatching ? (
                   <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {STAGES[stage]}...</>
                 ) : (
-                  <><Swords className="mr-2 h-4 w-4" /> Find rival & battle</>
+                  <><Swords className="mr-2 h-4 w-4" /> Find rival &amp; battle · {BATTLE_COST} credit</>
                 )}
               </Button>
             </div>
