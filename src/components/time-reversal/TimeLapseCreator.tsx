@@ -8,6 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useTimeReversalCredits, TIME_REVERSAL_COSTS } from "@/hooks/useTimeReversalCredits";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { ZoomableImage } from "@/components/time-reversal/ZoomableImage";
 
 interface Props { onBack: () => void; }
 
