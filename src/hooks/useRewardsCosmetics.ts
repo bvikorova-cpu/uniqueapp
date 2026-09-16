@@ -76,31 +76,25 @@ export function useRewardsCosmetics(userIds: (string | null | undefined)[]): Rew
     }
     let alive = true;
 
-    const load = async () => {
-      const { data, error } = await supabase.rpc("get_equipped_rewards_cosmetics" as never, {
-        _user_ids: ids,
-      } as never);
-      if (!alive || error) return;
-      const next: RewardsCosmeticsMap = {};
-      ids.forEach((id) => { next[id] = {}; });
-      ((data as { user_id: string; category: string; slug: string }[]) || []).forEach((row) => {
-        next[row.user_id] = { ...next[row.user_id], [row.category]: row.slug };
-      });
-      // Tier-aware ring: VIP / Verified users keep their gold (or tier) frame everywhere.
-      const { data: tiers } = await supabase
-        .from("profiles_public")
-        .select("id, verification_tier" as never)
-        .in("id", ids);
-      if (!alive) return;
-      ((tiers as unknown as { id: string; verification_tier: string | null }[]) || []).forEach((row) => {
-        next[row.id] = { ...next[row.id], verification_tier: row.verification_tier };
-      });
-      ids.forEach((id) => cache.set(id, next[id] ?? {}));
-      setMap(next);
+    const load = async (force = false) => {
+      const last = fetchedAt.get(key) || 0;
+      const fresh = !force && Date.now() - last < TTL_MS;
+      if (fresh) {
+        const seed: RewardsCosmeticsMap = {};
+        ids.forEach((id) => { seed[id] = cache.get(id) ?? {}; });
+        setMap(seed);
+        return;
+      }
+      try {
+        const next = await fetchCosmetics(key, ids);
+        if (alive) setMap(next);
+      } catch {
+        // keep previous state on failure
+      }
     };
 
     load();
-    const handler = () => load();
+    const handler = () => { fetchedAt.delete(key); load(true); };
     window.addEventListener(REWARDS_COSMETICS_UPDATED, handler);
     return () => {
       alive = false;
