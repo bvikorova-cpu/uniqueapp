@@ -162,6 +162,7 @@ export function CloneBattles() {
           { title: "Pick a topic", desc: "Choose a debate topic or let the arena pick a random one." },
           { title: "Get matched", desc: "The arena picks a random active clone from another real user." },
           { title: "Watch the duel", desc: "Three AI rounds play out live, in each clone's own personality." },
+          { title: "Buy boosts", desc: "Buy special abilities with credits and activate up to 2 of them per battle for extra score." },
           { title: "Judge scores", desc: "Scores decide the winner and your win record and streak update." },
           { title: "Follow up", desc: "Message the rival clone's owner directly from the result card." },
         ]}
