@@ -20,7 +20,7 @@ import { WallRightbar } from "@/components/wall/WallRightbar";
 import { MobileWallMenu } from "@/components/wall/MobileWallMenu";
 import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
 import { SearchBar } from "@/components/wall/SearchBar";
-import { SmartSuggestionsCard } from "@/components/wall/SmartSuggestionsCard";
+
 import { WallTopNav } from "@/components/wall/WallTopNav";
 import { WallBackground } from "@/components/wall/WallBackground";
 import { StoriesBar } from "@/components/wall/StoriesBar";
@@ -893,12 +893,6 @@ const Feed = () => {
 
 
                   </div>
-
-                  {feedEnhancementsReady && (
-                    <div className="space-y-3 sm:space-y-4">
-                      <SmartSuggestionsCard />
-                    </div>
-                  )}
 
                 </>
               )}
