@@ -11,7 +11,7 @@ import { UserPlus, Sparkles, Loader2, Heart, Shield, Users, MessageCircle, Eye, 
 import { motion } from "framer-motion";
 import { anonymousDatingProfileSchema } from "@/lib/anonymousDatingSchema";
 
-import heroVideo from "@/assets/anonymous-date-hero.mp4.asset.json";
+import heroImage from "@/assets/anonymous-date-hero.jpg";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const INTERESTS = [
@@ -177,17 +177,19 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
         ]}
       />
 
-      {/* Cinematic Hero with video */}
+      {/* Cinematic Hero with static image background */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden rounded-3xl border border-primary/30 shadow-[0_0_60px_hsl(var(--primary)/0.25)]"
       >
-        {/* Video background */}
-        <video
-          src={heroVideo.url}
-          autoPlay loop muted playsInline
-          className="absolute inset-0 w-full h-full object-cover brightness-110 saturate-125"
+        {/* Image background */}
+        <img
+          src={heroImage}
+          alt="Two glowing silhouettes facing each other in a romantic purple nebula"
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 w-full h-full object-cover object-center brightness-110 saturate-125 select-none pointer-events-none"
         />
         {/* Romantic overlays */}
         <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/55 to-background/85" />

@@ -1,9 +1,8 @@
 import { motion } from "framer-motion";
-import { Heart, Users, MessageCircle, Eye, Play, Pause, Volume2, VolumeX, Sparkles } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Heart, Users, MessageCircle, Eye, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useLiveStats } from "@/hooks/useLiveStats";
-import heroVideo from "@/assets/anonymous-date-hero.mp4.asset.json";
+import heroImage from "@/assets/anonymous-date-hero.jpg";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: string }) => {
@@ -25,10 +24,6 @@ const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: str
 };
 
 export const AnonymousDateHero = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(true);
-
   const { stats, loading } = useLiveStats([
     { key: "users", table: "anonymous_dating_profiles" },
     { key: "matches", table: "anonymous_dating_matches" },
@@ -47,25 +42,6 @@ export const AnonymousDateHero = () => {
     { icon: Eye, label: "Magic Period", value: 0, suffix: "", staticLabel: "7 Days" },
   ];
 
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(() => setIsPlaying(false));
-    }
-  }, []);
-
-  const togglePlay = () => {
-    if (!videoRef.current) return;
-    if (isPlaying) videoRef.current.pause();
-    else videoRef.current.play();
-    setIsPlaying(!isPlaying);
-  };
-
-  const toggleMute = () => {
-    if (!videoRef.current) return;
-    videoRef.current.muted = !isMuted;
-    setIsMuted(!isMuted);
-  };
-
   return (
     <div className="relative h-[78vh] min-h-[540px] w-full overflow-hidden rounded-3xl border border-border/40 mb-8">
       <FloatingHowItWorks
@@ -79,16 +55,13 @@ export const AnonymousDateHero = () => {
         ]}
       />
 
-      <video
-        ref={videoRef}
-        className="absolute inset-0 h-full w-full object-cover brightness-110 saturate-125"
-        autoPlay
-        muted
-        loop
-        playsInline
-      >
-        <source src={heroVideo.url} type="video/mp4" />
-      </video>
+      <img
+        src={heroImage}
+        alt="Two glowing silhouettes facing each other in a romantic purple nebula"
+        loading="eager"
+        decoding="async"
+        className="absolute inset-0 h-full w-full object-cover object-center brightness-110 saturate-125 select-none pointer-events-none"
+      />
 
       {/* Romantic overlays */}
       <div className="absolute inset-0 bg-gradient-to-b from-background/15 via-background/35 to-background/80" />
@@ -177,26 +150,6 @@ export const AnonymousDateHero = () => {
             </motion.div>
           ))}
         </motion.div>
-      </div>
-
-      {/* Video controls */}
-      <div className="absolute bottom-4 right-4 flex gap-2 z-20">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="bg-card/50 backdrop-blur-md hover:bg-card/70 border border-border/50"
-          onClick={togglePlay}
-        >
-          {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="bg-card/50 backdrop-blur-md hover:bg-card/70 border border-border/50"
-          onClick={toggleMute}
-        >
-          {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-        </Button>
       </div>
     </div>
   );
