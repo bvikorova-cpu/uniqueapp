@@ -57,7 +57,9 @@ export const useReactions = (postId: string) => {
       }
     },
     onSuccess: () => {
+      postReactionsLoader.invalidate(postId);
       queryClient.invalidateQueries({ queryKey: ["reactions", postId] });
+      queryClient.invalidateQueries({ queryKey: ["post-reactions", postId] });
     } });
 
   return { reactions: reactions || [],

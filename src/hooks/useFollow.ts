@@ -46,6 +46,7 @@ export const useFollowMutation = () => {
       if (error) throw error;
     },
     onSuccess: (_, variables) => {
+      getFollowLoader(variables.followerId).invalidate();
       queryClient.invalidateQueries({ queryKey: ["is-following"] });
       queryClient.invalidateQueries({ queryKey: ["follow-counts", variables.followingId] });
       queryClient.invalidateQueries({ queryKey: ["follow-counts", variables.followerId] });
@@ -74,6 +75,7 @@ export const useUnfollowMutation = () => {
       if (error) throw error;
     },
     onSuccess: (_, variables) => {
+      getFollowLoader(variables.followerId).invalidate();
       queryClient.invalidateQueries({ queryKey: ["is-following"] });
       queryClient.invalidateQueries({ queryKey: ["follow-counts", variables.followingId] });
       queryClient.invalidateQueries({ queryKey: ["follow-counts", variables.followerId] });

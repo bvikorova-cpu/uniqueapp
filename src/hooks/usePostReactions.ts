@@ -35,7 +35,9 @@ export const usePostReactions = (postId?: string) => {
       if (error) throw error;
     },
     onSuccess: () => {
+      postReactionsLoader.invalidate();
       queryClient.invalidateQueries({ queryKey: ["post-reactions"] });
+      queryClient.invalidateQueries({ queryKey: ["reactions"] });
     } });
 
   const removeReaction = useMutation({
@@ -52,7 +54,9 @@ export const usePostReactions = (postId?: string) => {
       if (error) throw error;
     },
     onSuccess: () => {
+      postReactionsLoader.invalidate();
       queryClient.invalidateQueries({ queryKey: ["post-reactions"] });
+      queryClient.invalidateQueries({ queryKey: ["reactions"] });
     } });
 
   const getReactionCounts = () => { const counts: Record<ReactionType, number> = {
