@@ -188,6 +188,8 @@ export const ARCameraDialog = ({ open, onOpenChange, onCapture, allowVideo = tru
                     ? anchors.nose
                     : overlay.anchor === "mouth"
                       ? anchors.mouth
+                      : overlay.anchor === "neck"
+                        ? { x: anchors.mouth.x, y: anchors.mouth.y + anchors.eyeDistance * 1.15 }
                       : anchors.forehead;
 
               const width = anchors.eyeDistance * overlay.widthFactor;
