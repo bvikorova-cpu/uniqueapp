@@ -147,50 +147,58 @@ export default function WallFriends() {
     refetchOnWindowFocus: false });
 
   const { data: suggestions = [] } = useQuery({
-    queryKey: ["friend-suggestions", user?.id],
+    queryKey: ["friend-suggestions", user?.id, friends.length],
     queryFn: async () => {
+      if (!user) return [];
 
-      if (!user || friends.length === 0) return [];
-      const friendIds = friends.map(f => f.id);
-
-      // Replace unbounded OR-chain with two .in() queries (handles 200+ friends without
-      // blowing the PostgREST query string).
-      const [{ data: side1 }, { data: side2 }] = await Promise.all([
-        supabase.from("friendships").select("user_id, friend_id").in("user_id", friendIds).eq("status", "accepted"),
-        supabase.from("friendships").select("user_id, friend_id").in("friend_id", friendIds).eq("status", "accepted"),
-      ]);
-      const friendsOfFriends = [...(side1 || []), ...(side2 || [])];
-
-      const suggestionIds = new Set<string>();
+      // Friends-of-friends must be computed server-side: friendships RLS only exposes
+      // the current user's own rows, so a client-side join always comes back empty.
       const mutualCountMap: Record<string, number> = {};
-      const friendIdSet = new Set(friendIds);
-      friendsOfFriends.forEach((fof: any) => {
-        const potentialFriendId = friendIdSet.has(fof.user_id) ? fof.friend_id : fof.user_id;
-        if (potentialFriendId === user.id || friendIdSet.has(potentialFriendId)) return;
-        suggestionIds.add(potentialFriendId);
-        mutualCountMap[potentialFriendId] = (mutualCountMap[potentialFriendId] || 0) + 1;
+      let candidateIds: string[] = [];
+      const { data: fof } = await supabase.rpc("suggest_friends" as any, {
+        _user_id: user.id,
+        _limit: 20,
       });
-      if (suggestionIds.size === 0) return [];
-      const { data: existingRequests } = await supabase
+      ((fof || []) as any[]).forEach((r) => {
+        candidateIds.push(r.suggested_id);
+        mutualCountMap[r.suggested_id] = Number(r.mutual_count) || 0;
+      });
+
+      // Exclude anyone already linked (pending in either direction / accepted).
+      const { data: existing } = await supabase
         .from("friendships")
         .select("user_id, friend_id")
-        .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`)
-        .eq("status", "pending");
-      const pendingIds = new Set(existingRequests?.map(r =>
-        r.user_id === user.id ? r.friend_id : r.user_id
-      ) || []);
-      const filteredIds = Array.from(suggestionIds).filter(id => !pendingIds.has(id));
-      if (filteredIds.length === 0) return [];
+        .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`);
+      const linkedIds = new Set<string>(
+        (existing || []).map((r: any) => (r.user_id === user.id ? r.friend_id : r.user_id))
+      );
+      linkedIds.add(user.id);
+
+      candidateIds = candidateIds.filter((id) => !linkedIds.has(id));
+
+      // Fallback for new accounts with no friends-of-friends yet: newest real members.
+      if (candidateIds.length === 0) {
+        const { data: recent } = await publicProfiles()
+          .select("id, full_name, avatar_url, created_at")
+          .order("created_at", { ascending: false })
+          .limit(60);
+        candidateIds = ((recent || []) as any[])
+          .map((p) => p.id)
+          .filter((id: string) => !linkedIds.has(id))
+          .slice(0, 20);
+      }
+
+      if (candidateIds.length === 0) return [];
+
       const { data: profiles } = await publicProfiles()
         .select("id, full_name, avatar_url")
-        .in("id", filteredIds)
-        .limit(20);
-      return (profiles || []).map((p: any) => ({
-        ...p,
-        mutual_count: mutualCountMap[p.id] || 0
-      })).sort((a: any, b: any) => b.mutual_count - a.mutual_count) as FriendSuggestion[];
+        .in("id", candidateIds);
+
+      return ((profiles || []) as any[])
+        .map((p) => ({ ...p, mutual_count: mutualCountMap[p.id] || 0 }))
+        .sort((a, b) => b.mutual_count - a.mutual_count) as FriendSuggestion[];
     },
-    enabled: !!user && friends.length > 0,
+    enabled: !!user,
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false });
 
