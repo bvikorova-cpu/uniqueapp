@@ -225,6 +225,32 @@ export function CloneBattles() {
               </motion.div>
             </div>
 
+            <div>
+              <p className="mb-2 text-xs font-semibold text-muted-foreground">
+                Activate boosts (max {MAX_POWERUPS_PER_BATTLE})
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {CLONE_POWERUPS.map((p) => {
+                  const owned = inventory[p.key] ?? 0;
+                  const active = selectedPowerups.includes(p.key);
+                  return (
+                    <button
+                      key={p.key}
+                      type="button"
+                      disabled={owned < 1 || isMatching}
+                      onClick={() => togglePowerup(p.key)}
+                      className={`rounded-full border px-3 py-1.5 text-xs transition-colors disabled:opacity-40 ${
+                        active ? "border-primary bg-primary/10 text-primary" : "border-border/60 text-muted-foreground hover:border-primary/40"
+                      }`}
+                    >
+                      {p.name} · {owned}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+
             <div className="text-center">
               <Button onClick={startBattle} disabled={isMatching} size="lg">
                 {isMatching ? (
