@@ -105,7 +105,7 @@ if (!(globalThis as any).__AI_REDIRECT_INSTALLED__) {
         const payload = { ...body! };
         delete payload.stream;
         delete (payload as Record<string, unknown>).stream_options;
-        const data = await withRetry("chat", () => tryVertexChat(payload));
+        const data = await withRetry("chat", () => tryVertexChat(payload), 2);
         if (!data) return blocked("vertex chat completion failed");
         if (!wantsStream) return json(data);
 
