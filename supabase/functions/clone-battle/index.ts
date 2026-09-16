@@ -1,7 +1,8 @@
 import "../_shared/aiRedirect.ts";
 // Real AI personality battle: your clone vs a random clone from another user on the platform.
 // Generates a round-by-round transcript, judge scores and a winner via Lovable AI Gateway.
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { createClient } from "npm:@supabase/supabase-js@2";
+import { findPowerup, MAX_POWERUPS_PER_BATTLE } from "../_shared/clonePowerups.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
