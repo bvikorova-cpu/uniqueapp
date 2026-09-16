@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Cake, PartyPopper } from "lucide-react";
 import { format, isSameDay, addYears, differenceInCalendarDays } from "date-fns";
+import { useFriendIds } from "@/hooks/useFriendIds";
 
 interface Friend {
   id: string;
@@ -31,8 +32,10 @@ export function BirthdaysWidget() {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id));
   }, []);
 
+  const { data: friendIds = [] } = useFriendIds(userId);
+
   const { data: friends = [] } = useQuery({
-    queryKey: ["friends-birthdays", userId],
+    queryKey: ["friends-birthdays", userId, friendIds.length],
     enabled: !!userId,
     queryFn: async (): Promise<Friend[]> => {
       const ids = friendIds;

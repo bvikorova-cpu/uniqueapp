@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Search, X, Loader2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useFriendIds } from "@/hooks/useFriendIds";
 
 const publicProfiles = () => (supabase as any).from("public_profiles");
 
@@ -33,8 +34,10 @@ export function TagFriendsDialog({ open,
       return user;
     } });
 
+  const { data: allFriendIds = [] } = useFriendIds(user?.id, open);
+
   const { data: friends = [], isFetching: isSearching } = useQuery({
-    queryKey: ["friends-for-tagging", user?.id, searchQuery],
+    queryKey: ["friends-for-tagging", user?.id, searchQuery, allFriendIds.length],
     queryFn: async () => {
       if (!user) return [];
 

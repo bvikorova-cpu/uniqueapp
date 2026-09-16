@@ -8,6 +8,7 @@ import { MessageCircle, Send, ArrowRight, Sparkles, Zap } from "lucide-react";
 import { fetchProfilesCachedBatch } from "@/lib/profileCache";
 
 import { motion } from "framer-motion";
+import { useFriendIds } from "@/hooks/useFriendIds";
 
 export default function WallMessages() {
   const navigate = useNavigate();
@@ -15,8 +16,10 @@ export default function WallMessages() {
     queryKey: ["current-user"],
     queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; } });
 
+  const { data: allFriendIds = [] } = useFriendIds(user?.id);
+
   const { data: friends = [] } = useQuery({
-    queryKey: ["friends-for-messages", user?.id],
+    queryKey: ["friends-for-messages", user?.id, allFriendIds.length],
     queryFn: async () => {
       if (!user) return [];
       const friendIds = allFriendIds.slice(0, 10);

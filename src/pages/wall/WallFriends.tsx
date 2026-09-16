@@ -167,8 +167,8 @@ export default function WallFriends() {
       // Exclude anyone already linked (pending in either direction / accepted).
       const linkedIds = new Set<string>([
         ...friends.map((f) => f.id),
-        ...outgoingIds,
-        ...incomingIds,
+        ...(outgoingLinkIds || []),
+        ...(incomingLinkIds || []),
       ]);
       linkedIds.add(user.id);
 
