@@ -166,7 +166,7 @@ Deno.serve(async (req) => {
               {
                 role: "system",
                 content:
-                  "You stage a witty 3-round personality duel between two AI clones and judge it. " +
+                  `You stage a witty ${roundCount}-round personality duel between two AI clones and judge it. ` +
                   "Reply with STRICT JSON only, no markdown fences, shape: " +
                   '{"rounds":[{"round":1,"a":"<clone A line>","b":"<clone B line>"}],"userScore":0-100,"opponentScore":0-100,"verdict":"2 sentence judge summary"}. ' +
                   "Each line must start with the clone name followed by a colon, be 1-2 sentences, stay in character, be playful and clean. Scores must differ.",
@@ -177,7 +177,10 @@ Deno.serve(async (req) => {
                   `Topic: ${topic}\n` +
                   `Clone A: ${myClone.clone_name} - ${describe(myClone)}\n` +
                   `Clone B: ${opponent.clone_name} (owned by ${opponentOwner}) - ${describe(opponent)}\n` +
-                  "Write 3 rounds and judge them.",
+                  (activePowerups.length
+                    ? `Clone A activated boosts: ${activePowerups.map((p) => `${p.name} (${p.promptHint})`).join("; ")}\n`
+                    : "") +
+                  `Write ${roundCount} rounds and judge them.`,
               },
             ],
           }),
