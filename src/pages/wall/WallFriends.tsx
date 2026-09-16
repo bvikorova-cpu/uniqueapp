@@ -147,66 +147,24 @@ export default function WallFriends() {
     refetchOnWindowFocus: false });
 
   const { data: suggestions = [] } = useQuery({
-    queryKey: ["friend-suggestions", user?.id, friends.length],
+    queryKey: ["friend-suggestions", user?.id],
     queryFn: async () => {
       if (!user) return [];
-
-      // Friends-of-friends must be computed server-side: friendships RLS only exposes
-      // the current user's own rows, so a client-side join always comes back empty.
-      const mutualCountMap: Record<string, number> = {};
-      let candidateIds: string[] = [];
-      const { data: fof } = await supabase.rpc("suggest_friends" as any, {
-        _user_id: user.id,
-        _limit: 20,
-      });
-      ((fof || []) as any[]).forEach((r) => {
-        candidateIds.push(r.suggested_id);
-        mutualCountMap[r.suggested_id] = Number(r.mutual_count) || 0;
-      });
-
-      // Exclude anyone already linked (pending in either direction / accepted).
-      // Accepted friends come from the shared cached friend list; only the
-      // small pending set still needs its own lookup.
-      const { data: pendingEdges } = await supabase
-        .from("friendships")
-        .select("user_id, friend_id")
-        .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`)
-        .eq("status", "pending");
-      const linkedIds = new Set<string>([
-        ...friends.map((f) => f.id),
-        ...((pendingEdges || []) as any[]).map((r) =>
-          r.user_id === user.id ? r.friend_id : r.user_id,
-        ),
-      ]);
-      linkedIds.add(user.id);
-
-      candidateIds = candidateIds.filter((id) => !linkedIds.has(id));
-
-      // Fallback for new accounts with no friends-of-friends yet: newest real members.
-      if (candidateIds.length === 0) {
-        const { data: recent } = await publicProfiles()
-          .select("id, full_name, avatar_url, created_at")
-          .order("created_at", { ascending: false })
-          .limit(60);
-        candidateIds = ((recent || []) as any[])
-          .map((p) => p.id)
-          .filter((id: string) => !linkedIds.has(id))
-          .slice(0, 20);
-      }
-
-      if (candidateIds.length === 0) return [];
-
-      const { data: profiles } = await publicProfiles()
-        .select("id, full_name, avatar_url")
-        .in("id", candidateIds);
-
-      return ((profiles || []) as any[])
-        .map((p) => ({ ...p, mutual_count: mutualCountMap[p.id] || 0 }))
-        .sort((a, b) => b.mutual_count - a.mutual_count) as FriendSuggestion[];
+      // Single server-side call: mutual friends + fallback members, already
+      // excluding self and anyone already linked/pending.
+      const { data } = await supabase.rpc("people_you_may_know" as any, { _limit: 12 });
+      return ((data || []) as any[]).map((p) => ({
+        id: p.id,
+        full_name: p.full_name,
+        avatar_url: p.avatar_url,
+        mutual_count: Number(p.mutual_count) || 0,
+      })) as FriendSuggestion[];
     },
     enabled: !!user,
     staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
     refetchOnWindowFocus: false });
+
 
 
   const { data: outgoing = [] } = useQuery({
