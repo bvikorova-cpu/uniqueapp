@@ -18,6 +18,7 @@ export default function FutureFaceMultiAgeTimeline() {
   const [sourcePreviewUrl, setSourcePreviewUrl] = useState<string | null>(null);
   const [results, setResults] = useState<Record<number, string>>({});
   const [loading, setLoading] = useState<number | null>(null);
+  const [zoom, setZoom] = useState<{ url: string; label: string } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const localPreviewRef = useRef<string | null>(null);
   const { toast } = useToast();
