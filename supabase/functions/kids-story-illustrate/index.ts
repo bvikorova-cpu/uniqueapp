@@ -14,10 +14,13 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
 
-const STYLE_HINTS: Record<string, string> = { watercolor: "soft watercolor children's book illustration, gentle pastel colors",
-  cartoon: "bright cheerful cartoon style, bold outlines, vivid colors",
-  pixar: "3D animated movie render, warm cinematic lighting, expressive characters",
-  anime: "cute anime / studio ghibli style, soft cel-shading",
+const STYLE_HINTS: Record<string, string> = { watercolor: "soft watercolor children's book illustration, gentle pastel colors, visible paper texture and paint washes",
+  cartoon: "bright cheerful 2D cartoon style, thick bold outlines, flat vivid colors",
+  "pixel-art": "retro 8-bit / 16-bit PIXEL ART, visible large square pixels, low resolution pixel grid, limited retro game color palette, hard aliased edges, NES/SNES videogame sprite aesthetic, absolutely no smooth lines, no painting, no hand-drawn ink",
+  pixelart: "retro 8-bit / 16-bit PIXEL ART, visible large square pixels, low resolution pixel grid, limited retro game color palette, hard aliased edges, NES/SNES videogame sprite aesthetic, absolutely no smooth lines, no painting, no hand-drawn ink",
+  "3d-render": "polished 3D animated movie render, subsurface-scattering skin, warm cinematic lighting, expressive stylized characters",
+  pixar: "polished 3D animated movie render, warm cinematic lighting, expressive characters",
+  anime: "cute anime style, soft cel-shading, expressive large eyes, clean line art",
   storybook: "classic storybook illustration, hand-drawn ink and color wash",
   pencil: "delicate pencil sketch with light color tint" };
 
@@ -69,11 +72,14 @@ Deno.serve(async (req) => {
     }
 
 
-    const styleHint = STYLE_HINTS[style] || STYLE_HINTS.storybook;
-    const prompt = `Children's book illustration for the story "${storyTitle || "A Magical Tale"}".
+    const styleKey = style.replace(/[\s_]+/g, "-");
+    const styleHint = STYLE_HINTS[styleKey] || STYLE_HINTS[styleKey.replace(/-/g, "")] || STYLE_HINTS.storybook;
+    const prompt = `ART STYLE (most important requirement, must dominate the whole image): ${styleHint}.
+Render the entire image strictly in that art style — do not mix in any other illustration style.
+Subject: a children's story illustration for "${storyTitle || "A Magical Tale"}".
 Scene to depict: ${pageText}
 ${characters ? `Main characters: ${characters}.` : ""}
-Visual style: ${styleHint}. Age-appropriate for kids 4-10, friendly and safe, no text or letters in the image, no scary or violent imagery, vibrant composition, full-bleed illustration.`;
+Age-appropriate for kids 4-10, friendly and safe, no text or letters in the image, no scary or violent imagery, full-bleed composition.`;
 
     const aiResp = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
