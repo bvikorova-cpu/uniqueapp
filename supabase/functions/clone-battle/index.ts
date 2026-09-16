@@ -190,7 +190,7 @@ Deno.serve(async (req) => {
           const raw = String(data?.choices?.[0]?.message?.content ?? "").replace(/```json|```/g, "").trim();
           const parsed = JSON.parse(raw.slice(raw.indexOf("{"), raw.lastIndexOf("}") + 1));
           if (Array.isArray(parsed?.rounds) && parsed.rounds.length) {
-            rounds = parsed.rounds.slice(0, 5);
+            rounds = parsed.rounds.slice(0, Math.max(5, roundCount));
             userScore = Number(parsed.userScore) || 0;
             opponentScore = Number(parsed.opponentScore) || 0;
             verdict = String(parsed.verdict ?? "");
