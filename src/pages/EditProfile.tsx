@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Sparkles, Save, User as UserIcon, BookText, Wrench, Link2, Shield, X, Eye, EyeOff } from "lucide-react";
 import { canonicalUrl } from "@/lib/canonicalUrl";
 import { fileToDataUrl, normalizeImageForUpload } from "@/utils/imageUploadPrep";
+import { safeInvoke } from "@/utils/safeInvoke";
 
 import { EditProfileHero } from "@/components/profile/edit/EditProfileHero";
 import { ProfileCompleteness, computeCompleteness, CompletenessCheck } from "@/components/profile/edit/ProfileCompleteness";
@@ -307,10 +308,10 @@ const EditProfile = () => {
     }
     setGeneratingAvatar(true);
     try {
-      const { data, error } = await supabase.functions.invoke("generate-avatar", {
+      const { data, error } = await safeInvoke<{ imageUrl: string }>("generate-avatar", {
         body: { description: avatarDescription, style } });
-      if (error) throw error;
-      if (data.imageUrl) {
+      if (error) throw new Error(error);
+      if (data?.imageUrl) {
         const blob = await (await fetch(data.imageUrl)).blob();
         const fileName = `${user!.id}/${Date.now()}.png`;
         const { error: upErr } = await supabase.storage.from("avatars").upload(fileName, blob, { upsert: true });
