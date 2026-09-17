@@ -29,6 +29,7 @@ interface Notification {
   actor_id?: string;
   title?: string | null;
   message?: string | null;
+  metadata?: { reaction_type?: string } | null;
   actor?: {
     id: string;
     full_name: string | null;
@@ -196,14 +197,28 @@ const NotificationBell = ({ className }: { className?: string }) => {
     }
   };
 
-  const getNotificationIcon = (type: string): string => {
-    switch (type) {
+  const getNotificationIcon = (notification: Notification): string => {
+    if (notification.type === "reaction") {
+      const reactionIcons: Record<string, string> = {
+        like: "👍",
+        love: "❤️",
+        laugh: "😂",
+        haha: "😂",
+        wow: "😮",
+        sad: "😢",
+        angry: "😠",
+        care: "🤗",
+        fire: "🔥",
+        clap: "👏",
+      };
+      return reactionIcons[notification.metadata?.reaction_type || ""] || "😊";
+    }
+
+    switch (notification.type) {
       case "like":
         return "❤️";
       case "comment":
         return "💬";
-      case "reaction":
-        return "😊";
       case "repost":
         return "🔄";
       case "follow":
@@ -375,7 +390,7 @@ const NotificationBell = ({ className }: { className?: string }) => {
                     </Avatar>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start gap-2">
-                        <span className="text-lg">{getNotificationIcon(notification.type)}</span>
+                        <span className="text-lg">{getNotificationIcon(notification)}</span>
                         <div className="flex-1">
                           {notification.actor ? (
                             <p className="text-sm">
