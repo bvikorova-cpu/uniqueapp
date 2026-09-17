@@ -186,7 +186,7 @@ export default function MyVideosPanel({ onChanged }: { onChanged?: () => void })
                       {new Date(v.created_at).toLocaleDateString()}
                     </p>
                   </div>
-                  <div className="flex shrink-0 items-center gap-2">
+                  <div className="flex shrink-0 flex-wrap items-center gap-2">
                     <BoostVideoDialog videoId={v.id} onBoosted={onChanged} />
                     <VideoFrameDialog
                       videoId={v.id}
@@ -208,6 +208,7 @@ export default function MyVideosPanel({ onChanged }: { onChanged?: () => void })
                       ) : (
                         <Share2 className="h-4 w-4" />
                       )}
+                      <span className="sm:hidden">Wall</span>
                     </Button>
                     <Button size="sm" variant="outline" onClick={() => openEdit(v)}>
                       <Pencil className="h-4 w-4" />
