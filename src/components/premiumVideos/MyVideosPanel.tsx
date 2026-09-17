@@ -5,6 +5,7 @@ import {
   Loader2,
   Lock,
   Pencil,
+  Share2,
   Trash2,
   TrendingUp,
   Video as VideoIcon,
