@@ -550,15 +550,24 @@ export default function TikTokFeed({ topOverlay, fabOverlay, filter = "all" }: {
     queryKey: ["tiktok-feed", filter],
     queryFn: async (): Promise<ShortItem[]> => {
       const nowIso = new Date().toISOString();
-      const [vidsRes, postsRes, storiesRes] = await Promise.all([
+      const { data: authData } = await supabase.auth.getUser();
+      const uid = authData?.user?.id ?? null;
+      const [vidsRes, postsRes, storiesRes, premiumRes, unlocksRes] = await Promise.all([
         supabase.from("videos").select("id,video_url,title,description,user_id,likes_count,views_count,created_at")
           .order("created_at", { ascending: false }).limit(50),
         (supabase as any).rpc("get_public_video_posts", { _limit: 50 }),
         (supabase as any).from("stories").select("id,media_url,media_type,caption,user_id,created_at,expires_at")
           .eq("media_type", "video").gt("expires_at", nowIso)
           .order("created_at", { ascending: false }).limit(50),
+        (supabase as any).from("premium_videos")
+          .select("id,user_id,title,description,video_url,thumbnail_url,unlock_cost,unlocks_count,views_count,created_at")
+          .eq("is_published", true).order("created_at", { ascending: false }).limit(50),
+        uid
+          ? (supabase as any).from("premium_video_unlocks").select("video_id").eq("user_id", uid)
+          : Promise.resolve({ data: [] }),
       ]);
       const vids = vidsRes.data; const posts = postsRes.data; const storyRows = storiesRes.data;
+      const unlockedSet = new Set<string>(((unlocksRes as any).data || []).map((u: any) => u.video_id));
 
       const all: (ShortItem & { _ts: number })[] = [];
       (vids || []).forEach((v: any) => v.video_url && all.push({
@@ -566,12 +575,21 @@ export default function TikTokFeed({ topOverlay, fabOverlay, filter = "all" }: {
         user_id: v.user_id, likes_count: v.likes_count, views_count: v.views_count,
         profile: { full_name: null, avatar_url: null },
         _ts: new Date(v.created_at).getTime() }));
+      ((premiumRes as any).data || []).forEach((p: any) => p.video_url && all.push({
+        id: p.id, kind: "premium", video_url: p.video_url, title: p.title, description: p.description,
+        user_id: p.user_id, views_count: p.views_count,
+        unlock_cost: p.unlock_cost ?? 1,
+        unlocked: p.user_id === uid || unlockedSet.has(p.id),
+        thumbnail_url: p.thumbnail_url,
+        profile: { full_name: null, avatar_url: null },
+        _ts: new Date(p.created_at).getTime() }));
       (posts || []).forEach((p: any) => {
         if (p.file_url) all.push({
           id: p.id, kind: "post", video_url: p.file_url, title: null, description: p.content,
           user_id: p.user_id, profile: { full_name: null, avatar_url: null },
           _ts: new Date(p.created_at).getTime() });
       });
+
       (storyRows || []).forEach((s: any) => s.media_url && all.push({
         id: s.id, kind: "story", video_url: s.media_url, title: null, description: s.caption,
         user_id: s.user_id, profile: { full_name: null, avatar_url: null },
