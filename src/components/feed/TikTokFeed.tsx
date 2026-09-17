@@ -608,7 +608,7 @@ export default function TikTokFeed({ topOverlay, fabOverlay, filter = "all" }: {
 
       let filtered = all;
       if (filter === "videos") {
-        filtered = all.filter((s) => s.kind === "video" || s.kind === "post");
+        filtered = all.filter((s) => s.kind === "video" || s.kind === "post" || s.kind === "premium");
       } else if (filter === "stories") {
         filtered = all.filter((s) => s.kind === "story");
       }
