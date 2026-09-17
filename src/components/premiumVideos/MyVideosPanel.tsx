@@ -167,6 +167,19 @@ export default function MyVideosPanel({ onChanged }: { onChanged?: () => void })
                         onChanged?.();
                       }}
                     />
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={sharingId === v.id}
+                      onClick={() => shareToWall(v)}
+                      title="Share to Wall feed"
+                    >
+                      {sharingId === v.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Share2 className="h-4 w-4" />
+                      )}
+                    </Button>
                     <Button size="sm" variant="outline" onClick={() => openEdit(v)}>
                       <Pencil className="h-4 w-4" />
                     </Button>
