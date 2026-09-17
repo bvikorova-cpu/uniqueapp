@@ -60,13 +60,25 @@ export default function PremiumVideoPostEmbed({ videoId }: { videoId: string }) 
     };
   }, [videoId, user?.id]);
 
-  const handleTimeUpdate = () => {
-    const el = ref.current;
+  const effectiveDuration = (el: HTMLVideoElement): number => {
+    if (Number.isFinite(el.duration) && el.duration > 0) return el.duration;
+    try {
+      if (el.seekable.length) {
+        const end = el.seekable.end(el.seekable.length - 1);
+        if (Number.isFinite(end) && end > 0) return end;
+      }
+    } catch { /* ignore */ }
+    return 0;
+  };
+
+  const enforceGate = (el: HTMLVideoElement | null, strictlyAfter = false) => {
     if (!el || unlocked) return;
-    const half = (el.duration || 0) / 2;
-    if (half > 0 && el.currentTime >= half) {
+    const dur = effectiveDuration(el);
+    if (!dur) return;
+    const half = dur / 2;
+    if (strictlyAfter ? el.currentTime > half : el.currentTime >= half) {
       el.pause();
-      el.currentTime = half;
+      try { el.currentTime = half; } catch { /* ignore */ }
       setLocked(true);
     }
   };
