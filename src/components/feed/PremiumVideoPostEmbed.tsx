@@ -138,7 +138,17 @@ export default function PremiumVideoPostEmbed({ videoId }: { videoId: string }) 
           playsInline
           preload="metadata"
           className="h-full w-full object-contain"
-          onTimeUpdate={handleTimeUpdate}
+          loop={false}
+          onTimeUpdate={(e) => enforceGate(e.currentTarget)}
+          onSeeking={(e) => enforceGate(e.currentTarget, true)}
+          onSeeked={(e) => enforceGate(e.currentTarget, true)}
+          onPlay={(e) => enforceGate(e.currentTarget)}
+          onEnded={(e) => {
+            if (!unlocked) {
+              e.currentTarget.pause();
+              setLocked(true);
+            }
+          }}
         />
 
         {locked && !unlocked && (
