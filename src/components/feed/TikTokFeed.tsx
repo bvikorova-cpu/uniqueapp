@@ -353,15 +353,30 @@ function VideoCard({ short, active, muted, onToggleMute }: {
         onClick={togglePlay}
         onTimeUpdate={(e) => {
           const v = e.currentTarget;
-          if (v.duration) setProgress((v.currentTime / v.duration) * 100);
-          if (isPremium && !unlocked && v.duration) {
-            const half = v.duration / 2;
-            if (v.currentTime >= half) {
-              v.pause();
-              v.currentTime = half;
-              setPaused(true);
-              setGateHit(true);
-            }
+          const dur = effectiveDuration(v);
+          if (dur) setProgress((v.currentTime / dur) * 100);
+          if (isPremium && !unlocked && dur && v.currentTime >= dur / 2) {
+            v.pause();
+            try { v.currentTime = dur / 2; } catch { /* ignore */ }
+            setPaused(true);
+            setGateHit(true);
+          }
+        }}
+        onSeeking={(e) => {
+          const v = e.currentTarget;
+          const dur = effectiveDuration(v);
+          if (isPremium && !unlocked && dur && v.currentTime > dur / 2) {
+            try { v.currentTime = dur / 2; } catch { /* ignore */ }
+            v.pause();
+            setPaused(true);
+            setGateHit(true);
+          }
+        }}
+        onEnded={(e) => {
+          if (isPremium && !unlocked) {
+            e.currentTarget.pause();
+            setPaused(true);
+            setGateHit(true);
           }
         }}
       />
