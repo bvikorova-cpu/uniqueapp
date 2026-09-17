@@ -31,6 +31,22 @@ const isMessageType = (t?: string | null) => {
   return MESSAGE_TYPES.includes(type) || type.includes("message") || type.includes("_dm");
 };
 
+const reactionEmoji = (reactionType?: string): string => {
+  const icons: Record<string, string> = {
+    like: "👍",
+    love: "❤️",
+    laugh: "😂",
+    haha: "😂",
+    wow: "😮",
+    sad: "😢",
+    angry: "😠",
+    care: "🤗",
+    fire: "🔥",
+    clap: "👏",
+  };
+  return icons[reactionType || ""] || "😊";
+};
+
 interface Notification {
   id: string;
   type: "like" | "comment" | "follow" | "mention" | "message";
@@ -64,6 +80,7 @@ export const useRealTimeNotifications = () => {
           // Show toast notification
           const icons: Record<string, React.ReactNode> = {
             like: <Heart className="h-4 w-4 text-red-500" />,
+            reaction: <span>{reactionEmoji(newNotification.metadata?.reaction_type)}</span>,
             comment: <MessageCircle className="h-4 w-4 text-blue-500" />,
             follow: <UserPlus className="h-4 w-4 text-green-500" />,
             mention: <AtSign className="h-4 w-4 text-purple-500" />,
