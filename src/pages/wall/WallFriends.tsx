@@ -303,18 +303,18 @@ export default function WallFriends() {
             </div>
           </div>
         </div>
-        <div className="relative flex items-center justify-between sm:justify-start sm:gap-6 mt-6">
+        <div className="relative grid grid-cols-2 gap-x-4 gap-y-3 sm:flex sm:items-center sm:gap-6 mt-6">
           {[
             { icon: <Users2 className="w-4 h-4" />, label: "Friends", value: friends.length },
             { icon: <UserPlus className="w-4 h-4" />, label: "Incoming", value: requests.length },
             { icon: <Clock className="w-4 h-4" />, label: "Sent", value: outgoing.length },
             { icon: <Sparkles className="w-4 h-4" />, label: "Tips", value: visibleSuggestions.length },
           ].map((stat, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + i * 0.1 }} className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-primary/10 text-primary">{stat.icon}</div>
-              <div>
-                <p className="text-lg font-black">{stat.value}</p>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{stat.label}</p>
+            <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + i * 0.1 }} className="flex items-center gap-2 min-w-0">
+              <div className="p-1.5 rounded-lg bg-primary/10 text-primary shrink-0">{stat.icon}</div>
+              <div className="min-w-0">
+                <p className="text-lg font-black leading-tight">{stat.value}</p>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider truncate">{stat.label}</p>
               </div>
             </motion.div>
           ))}
