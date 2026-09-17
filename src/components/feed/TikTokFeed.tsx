@@ -138,6 +138,18 @@ function CommentsSheet({ open, onOpenChange, short, onCountChange }: {
   );
 }
 
+// Some streamed sources report Infinity/NaN duration — fall back to the seekable range.
+function effectiveDuration(v: HTMLVideoElement): number {
+  if (Number.isFinite(v.duration) && v.duration > 0) return v.duration;
+  try {
+    if (v.seekable.length) {
+      const end = v.seekable.end(v.seekable.length - 1);
+      if (Number.isFinite(end) && end > 0) return end;
+    }
+  } catch { /* ignore */ }
+  return 0;
+}
+
 function VideoCard({ short, active, muted, onToggleMute }: {
   short: ShortItem; active: boolean; muted: boolean; onToggleMute: () => void;
 }) {
@@ -353,15 +365,30 @@ function VideoCard({ short, active, muted, onToggleMute }: {
         onClick={togglePlay}
         onTimeUpdate={(e) => {
           const v = e.currentTarget;
-          if (v.duration) setProgress((v.currentTime / v.duration) * 100);
-          if (isPremium && !unlocked && v.duration) {
-            const half = v.duration / 2;
-            if (v.currentTime >= half) {
-              v.pause();
-              v.currentTime = half;
-              setPaused(true);
-              setGateHit(true);
-            }
+          const dur = effectiveDuration(v);
+          if (dur) setProgress((v.currentTime / dur) * 100);
+          if (isPremium && !unlocked && dur && v.currentTime >= dur / 2) {
+            v.pause();
+            try { v.currentTime = dur / 2; } catch { /* ignore */ }
+            setPaused(true);
+            setGateHit(true);
+          }
+        }}
+        onSeeking={(e) => {
+          const v = e.currentTarget;
+          const dur = effectiveDuration(v);
+          if (isPremium && !unlocked && dur && v.currentTime > dur / 2) {
+            try { v.currentTime = dur / 2; } catch { /* ignore */ }
+            v.pause();
+            setPaused(true);
+            setGateHit(true);
+          }
+        }}
+        onEnded={(e) => {
+          if (isPremium && !unlocked) {
+            e.currentTarget.pause();
+            setPaused(true);
+            setGateHit(true);
           }
         }}
       />
@@ -597,22 +624,29 @@ export default function TikTokFeed({ topOverlay, fabOverlay, filter = "all" }: {
         user_id: s.user_id, profile: { full_name: null, avatar_url: null },
         _ts: new Date(s.created_at).getTime() }));
 
-      const ids = Array.from(new Set(all.map((s) => s.user_id).filter(Boolean)));
+      // A premium video re-shared as a plain video/post/story must never play unlocked:
+      // drop the free duplicate, keep only the gated premium entry.
+      const premiumUrls = new Set(
+        all.filter((s) => s.kind === "premium").map((s) => s.video_url)
+      );
+      const unique = all.filter((s) => s.kind === "premium" || !premiumUrls.has(s.video_url));
+
+      const ids = Array.from(new Set(unique.map((s) => s.user_id).filter(Boolean)));
       if (ids.length) {
         const { data: profs } = await (supabase as any)
           .from("public_profiles").select("id,full_name,avatar_url").in("id", ids);
         const map = new Map<string, any>((profs || []).map((p: any) => [p.id, p]));
-        all.forEach((s) => {
+        unique.forEach((s) => {
           const p = map.get(s.user_id);
           if (p) s.profile = { full_name: p.full_name, avatar_url: p.avatar_url };
         });
       }
 
-      let filtered = all;
+      let filtered = unique;
       if (filter === "videos") {
-        filtered = all.filter((s) => s.kind === "video" || s.kind === "post" || s.kind === "premium");
+        filtered = unique.filter((s) => s.kind === "video" || s.kind === "post" || s.kind === "premium");
       } else if (filter === "stories") {
-        filtered = all.filter((s) => s.kind === "story");
+        filtered = unique.filter((s) => s.kind === "story");
       }
 
       // Stories first (most ephemeral), then newest content
