@@ -195,7 +195,14 @@ const Auth = () => {
     const password = (formData.get("password") as string) || "";
     const fullName = ((formData.get("fullName") as string) || "").trim();
     const phone = ((formData.get("phone") as string) || "").trim();
+    const city = ((formData.get("city") as string) || "").trim();
     const companyName = ((formData.get("companyName") as string) || "").trim();
+
+    if (city.length < 2) {
+      toast({ variant: "destructive", title: "City required", description: "Please enter the city you live in." });
+      return;
+    }
+
 
     const strengthError = passwordStrengthError(password);
     if (strengthError) {
