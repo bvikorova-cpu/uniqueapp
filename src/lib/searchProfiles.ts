@@ -4,6 +4,7 @@ export interface PublicProfileResult {
   id: string;
   full_name: string | null;
   avatar_url: string | null;
+  cover_url: string | null;
   username: string | null;
 }
 
@@ -35,6 +36,7 @@ export async function searchProfiles(
     full_name: r.full_name ?? null,
     username: r.username ?? null,
     avatar_url: r.avatar_url ?? null,
+    cover_url: r.cover_url ?? null,
   })) as PublicProfileResult[];
 
   if (opts.restrictToIds && opts.restrictToIds.length > 0) {

@@ -17,6 +17,7 @@ export interface FriendProfile {
   id: string;
   full_name: string | null;
   avatar_url: string | null;
+  cover_url: string | null;
   username?: string | null;
 }
 
@@ -50,7 +51,7 @@ export function useFriendships(userId: string | undefined) {
         .filter(Boolean);
       if (ids.length === 0) return [];
       const { data: profs } = await publicProfiles()
-        .select("id, full_name, avatar_url, username")
+        .select("id, full_name, avatar_url, cover_url, username")
         .in("id", ids);
       return (profs ?? []) as FriendProfile[];
     } });
@@ -69,7 +70,7 @@ export function useFriendships(userId: string | undefined) {
       const ids = (data ?? []).map((r) => r.user_id);
       if (ids.length === 0) return [] as (Friendship & { profile: FriendProfile })[];
       const { data: profs } = await publicProfiles()
-        .select("id, full_name, avatar_url, username")
+        .select("id, full_name, avatar_url, cover_url, username")
         .in("id", ids);
       const map = new Map((profs ?? []).map((p: any) => [p.id, p]));
       return (data ?? []).map((r) => ({ id: r.id,
@@ -94,7 +95,7 @@ export function useFriendships(userId: string | undefined) {
       const ids = (data ?? []).map((r) => r.friend_id);
       if (ids.length === 0) return [] as (Friendship & { profile?: FriendProfile })[];
       const { data: profs } = await publicProfiles()
-        .select("id, full_name, avatar_url, username")
+        .select("id, full_name, avatar_url, cover_url, username")
         .in("id", ids);
       const map = new Map((profs ?? []).map((p: any) => [p.id, p]));
       return (data ?? []).map((r) => ({
@@ -119,6 +120,7 @@ export function useFriendships(userId: string | undefined) {
         full_name: p.full_name,
         username: p.username,
         avatar_url: p.avatar_url,
+        cover_url: p.cover_url,
         mutual_count: Number(p.mutual_count) || 0,
       })) as FriendSuggestion[];
     },

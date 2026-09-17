@@ -288,6 +288,7 @@ const Profile = () => {
               id: basicProfile.id,
               full_name: basicProfile.full_name,
               avatar_url: basicProfile.avatar_url,
+              cover_url: basicProfile.cover_url,
               bio: null,
               location: null,
               website: null,
