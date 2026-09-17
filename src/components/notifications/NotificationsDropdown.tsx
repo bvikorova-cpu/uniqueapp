@@ -21,6 +21,7 @@ interface Notification {
   actor_id: string | null;
   is_read: boolean;
   created_at: string;
+  metadata: { reaction_type?: string } | null;
   actor: {
     id: string;
     full_name: string | null;
@@ -122,6 +123,7 @@ export const NotificationsDropdown = () => {
         actor_id: notification.actor_id,
         is_read: notification.is_read,
         created_at: notification.created_at,
+        metadata: notification.metadata,
         actor: profilesMap.get(notification.actor_id) || { id: notification.actor_id, full_name: null, username: null, avatar_url: null } } as Notification));
 
       setNotifications(notificationsWithProfiles);
@@ -188,14 +190,28 @@ export const NotificationsDropdown = () => {
       description: newValue ? "You will hear sounds for new notifications" : "Notification sounds are disabled" });
   };
 
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
+  const getNotificationIcon = (notification: Notification) => {
+    if (notification.type === 'reaction') {
+      const reactionIcons: Record<string, string> = {
+        like: '👍',
+        love: '❤️',
+        laugh: '😂',
+        haha: '😂',
+        wow: '😮',
+        sad: '😢',
+        angry: '😠',
+        care: '🤗',
+        fire: '🔥',
+        clap: '👏',
+      };
+      return <span className="text-base">{reactionIcons[notification.metadata?.reaction_type || ''] || '😊'}</span>;
+    }
+
+    switch (notification.type) {
       case 'like':
         return <Heart className="h-4 w-4 text-red-500" />;
       case 'comment':
         return <MessageCircle className="h-4 w-4 text-blue-500" />;
-      case 'reaction':
-        return <Smile className="h-4 w-4 text-yellow-500" />;
       case 'repost':
         return <Repeat2 className="h-4 w-4 text-green-500" />;
       case 'follow':
@@ -289,7 +305,7 @@ export const NotificationsDropdown = () => {
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start gap-2">
-                      {getNotificationIcon(notification.type)}
+                      {getNotificationIcon(notification)}
                       <div className="flex-1">
                         <p className="text-sm">
                           {getNotificationText(notification)}
