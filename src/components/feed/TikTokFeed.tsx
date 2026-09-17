@@ -155,7 +155,44 @@ function VideoCard({ short, active, muted, onToggleMute }: {
   const qc = useQueryClient();
   const isOwner = !!user && user.id === short.user_id;
 
+  const isPremium = short.kind === "premium";
+  const unlockCost = short.unlock_cost ?? 1;
+  const [unlocked, setUnlocked] = useState(!!short.unlocked);
+  const [gateHit, setGateHit] = useState(false);
+  const [unlocking, setUnlocking] = useState(false);
+
+  useEffect(() => { setUnlocked(!!short.unlocked); setGateHit(false); }, [short.id, short.unlocked]);
+
   const { likes: likesTable, comments: commentsTable, fk } = tables(short.kind);
+
+  const handleUnlock = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user) { toast.error("Sign in to unlock"); return; }
+    setUnlocking(true);
+    try {
+      const { data, error } = await (supabase as any).rpc("unlock_premium_video", { _video_id: short.id });
+      if (error) throw error;
+      if (!data?.ok) {
+        if (data?.error === "insufficient") {
+          toast.error("Not enough video credits", { description: "Buy video credits in Unlock Videos to continue." });
+        } else {
+          toast.error("Unlock failed", { description: String(data?.error ?? "Unknown error") });
+        }
+        return;
+      }
+      setUnlocked(true);
+      setGateHit(false);
+      if (!data?.already) {
+        toast.success("Video unlocked — enjoy the rest!");
+        window.dispatchEvent(new Event("video-credits-updated"));
+      }
+      ref.current?.play().catch(() => {});
+    } catch (err: any) {
+      toast.error("Unlock failed", { description: err?.message });
+    } finally {
+      setUnlocking(false);
+    }
+  };
 
   const handleDelete = async () => {
     setDeleting(true);
@@ -163,7 +200,9 @@ function VideoCard({ short, active, muted, onToggleMute }: {
       const tbl =
         short.kind === "video" ? "videos" :
         short.kind === "post" ? "posts" :
+        short.kind === "premium" ? "premium_videos" :
         "stories";
+
       const { error } = await (supabase as any).from(tbl).delete().eq("id", short.id);
       if (error) throw error;
       toast.success("Deleted");
