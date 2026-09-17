@@ -49106,6 +49106,7 @@ export type Database = {
           bio_translations: Json
           bio_variants: Json
           birth_date: string | null
+          city: string | null
           coins: number | null
           company: string | null
           company_name: string | null
@@ -49180,6 +49181,7 @@ export type Database = {
           bio_translations?: Json
           bio_variants?: Json
           birth_date?: string | null
+          city?: string | null
           coins?: number | null
           company?: string | null
           company_name?: string | null
@@ -49254,6 +49256,7 @@ export type Database = {
           bio_translations?: Json
           bio_variants?: Json
           birth_date?: string | null
+          city?: string | null
           coins?: number | null
           company?: string | null
           company_name?: string | null
@@ -72946,6 +72949,7 @@ export type Database = {
         Args: { lim?: number; q: string }
         Returns: {
           avatar_url: string
+          city: string
           cover_url: string
           full_name: string
           headline: string

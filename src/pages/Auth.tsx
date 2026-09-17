@@ -195,7 +195,14 @@ const Auth = () => {
     const password = (formData.get("password") as string) || "";
     const fullName = ((formData.get("fullName") as string) || "").trim();
     const phone = ((formData.get("phone") as string) || "").trim();
+    const city = ((formData.get("city") as string) || "").trim();
     const companyName = ((formData.get("companyName") as string) || "").trim();
+
+    if (city.length < 2) {
+      toast({ variant: "destructive", title: "City required", description: "Please enter the city you live in." });
+      return;
+    }
+
 
     const strengthError = passwordStrengthError(password);
     if (strengthError) {
@@ -221,6 +228,8 @@ const Auth = () => {
         emailRedirectTo: authRedirect("/"),
         data: { full_name: fullName,
           phone: phone,
+          city: city,
+
           company_name: companyName || null,
           preferred_language: selectedLanguage,
           birth_date: isoBirthDate,
@@ -564,6 +573,19 @@ const Auth = () => {
                       <p className="text-xs text-destructive">{phoneError(signupPhone)}</p>
                     )}
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-city">{"City"} *</Label>
+                    <Input
+                      id="signup-city"
+                      name="city"
+                      type="text"
+                      placeholder="Your city"
+                      autoComplete="address-level2"
+                      minLength={2}
+                      required
+                    />
+                  </div>
+
                   <div className="space-y-2">
                     <Label htmlFor="signup-company">{"Company Name"} ({"optional"})</Label>
                     <Input
