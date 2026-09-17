@@ -16,6 +16,7 @@ interface Post {
   location?: string | null;
   event_id?: string | null;
   audience?: string | null;
+  premium_video_id?: string | null;
   media: Array<{ id: string; file_url: string; file_type: string }>;
   profiles: { id: string; full_name: string | null; avatar_url: string | null };
 }

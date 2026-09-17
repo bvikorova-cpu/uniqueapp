@@ -5,6 +5,7 @@ import {
   Loader2,
   Lock,
   Pencil,
+  Share2,
   Trash2,
   TrendingUp,
   Video as VideoIcon,
@@ -38,6 +39,8 @@ import BoostVideoDialog from "@/components/premiumVideos/BoostVideoDialog";
 import VideoFrameDialog from "@/components/premiumVideos/VideoFrameDialog";
 import CreatorCashoutCard from "@/components/premiumVideos/CreatorCashoutCard";
 import { useMyPremiumVideos, type MyVideoStats } from "@/hooks/useMyPremiumVideos";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export default function MyVideosPanel({ onChanged }: { onChanged?: () => void }) {
   const { videos, loading, busyId, totals, update, remove, refetch } = useMyPremiumVideos();
@@ -46,6 +49,32 @@ export default function MyVideosPanel({ onChanged }: { onChanged?: () => void })
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [published, setPublished] = useState(true);
+  const [sharingId, setSharingId] = useState<string | null>(null);
+
+  // Post the paid video into the Wall feed — viewers can unlock it right there.
+  const shareToWall = async (v: MyVideoStats) => {
+    setSharingId(v.id);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth.user?.id;
+      if (!uid) throw new Error("You must be signed in");
+      const { error } = await (supabase as any).from("posts").insert({
+        user_id: uid,
+        content: v.title,
+        privacy: "public",
+        premium_video_id: v.id,
+      });
+      if (error) throw error;
+      toast.success("Shared to your Wall feed", {
+        description: "Viewers watch half for free, then unlock it with a video credit.",
+      });
+    } catch (e: any) {
+      toast.error(e?.message || "Could not share this video");
+    } finally {
+      setSharingId(null);
+    }
+  };
+
 
   const openEdit = (v: MyVideoStats) => {
     setEditing(v);
@@ -167,6 +196,19 @@ export default function MyVideosPanel({ onChanged }: { onChanged?: () => void })
                         onChanged?.();
                       }}
                     />
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={sharingId === v.id}
+                      onClick={() => shareToWall(v)}
+                      title="Share to Wall feed"
+                    >
+                      {sharingId === v.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Share2 className="h-4 w-4" />
+                      )}
+                    </Button>
                     <Button size="sm" variant="outline" onClick={() => openEdit(v)}>
                       <Pencil className="h-4 w-4" />
                     </Button>

@@ -64,6 +64,7 @@ import { enUS } from "date-fns/locale";
 import type { Post } from "@/types/database";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 import { getSavedPostLoader } from "@/lib/batchQuery";
+import PremiumVideoPostEmbed from "@/components/feed/PremiumVideoPostEmbed";
 
 interface PostCardProps {
   post: Post;
@@ -689,6 +690,13 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
         </div>
       )}
 
+
+      {/* Shared paid ("unlock") video — free until 50%, then costs a video credit */}
+      {post.premium_video_id && (
+        <div className="px-3 pb-2 sm:px-4">
+          <PremiumVideoPostEmbed videoId={post.premium_video_id} />
+        </div>
+      )}
 
       {/* Media First - Pinterest Style (with sensitive blur + carousel for multi-image) */}
       {post.media && post.media.length > 0 && (

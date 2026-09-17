@@ -70,6 +70,7 @@ export interface Post {
   is_promo?: boolean;
   promo_tier?: string | null;
   promo_listing_id?: string | null;
+  premium_video_id?: string | null;
   
   // Relations - optional for database queries
   profiles?: ProfileBasic;
