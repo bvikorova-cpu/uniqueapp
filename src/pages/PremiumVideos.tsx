@@ -236,22 +236,31 @@ export default function PremiumVideos() {
             <div className="iri-card rounded-3xl p-5 sm:p-7">
               <p className="iri-mono mb-2 text-[10px] text-muted-foreground">// How it works</p>
               <h2 className="mb-4 text-2xl font-black tracking-tight">
-                Watch half. <span className="iri-text italic">Unlock the rest.</span>
+                Watch half free. <span className="iri-text italic">Unlock the rest for 1 credit.</span>
               </h2>
+
+              <h3 className="mb-2 text-sm font-bold uppercase tracking-wide text-muted-foreground">For viewers</h3>
               <div className="space-y-1.5 text-sm text-foreground/75">
-                <p>1. Any member can upload a video — publishing costs 1 video credit and goes live instantly.</p>
-                <p>2. Everyone watches the first 50% for free; playback then pauses.</p>
-                <p>3. Unlocking the rest costs 1 video credit (own wallet: 10/€5, 20/€10, 30/€15), charged once per video.</p>
-                <p>4. The creator receives 50% of every unlock in credits; the platform keeps 50%.</p>
-                <p>5. Your own videos are always unlocked for you.</p>
+                <p>1. Every video plays free up to the halfway point — just press play, nothing is charged.</p>
+                <p>2. At 50% playback pauses. To watch the rest, spend 1 video credit — charged once per video, then it stays unlocked on your account forever. Re-watching is always free.</p>
                 <p>
-                  6. Promote your video with credits: Quick Boost 5 (6h top of feed), Daily Top 12 (24h in “Hot”),
-                  Mega Boost 25 (“Featured” badge + priority for 3 days).
+                  3. Video credits are <strong>not free and not earned by watching</strong> — you buy them with real
+                  money (10/€5, 20/€10, 30/€15) and spend them only here on unlocking videos, boosting and frames.
                 </p>
+                <p>4. This wallet is separate from your AI credits used elsewhere on Unique.</p>
               </div>
+
+              <h3 className="mb-2 mt-5 text-sm font-bold uppercase tracking-wide text-muted-foreground">For creators</h3>
+              <div className="space-y-1.5 text-sm text-foreground/75">
+                <p>5. Anyone can upload — publishing a video costs 1 video credit, and your own videos are always unlocked for you.</p>
+                <p>6. Every time someone unlocks your video, you receive 0.5 video credits (50% share) into your creator balance. Creator earnings arrive as video credits — you can spend them on boosts, frames or unlocking other videos, not as cash.</p>
+                <p>7. The platform keeps the other 50% of each unlock.</p>
+                <p>8. Promote your videos with credits: Quick Boost 5 (6h top of feed), Daily Top 12 (24h in “Hot”), Mega Boost 25 (“Featured” badge + priority for 3 days).</p>
+              </div>
+
               <div className="pt-4">
                 <Button variant="outline" size="sm" onClick={() => goTab("credits")}>
-                  <Coins className="mr-2 h-4 w-4" /> Top up credits
+                  <Coins className="mr-2 h-4 w-4" /> Buy video credits
                 </Button>
               </div>
             </div>
