@@ -24,7 +24,9 @@ interface Profile {
   avatar_url: string | null;
   cover_url?: string | null;
   username?: string | null;
+  city?: string | null;
 }
+
 
 interface FriendRequest {
   id: string;
@@ -387,7 +389,7 @@ export default function WallFriends() {
           <Input
             value={globalSearch}
             onChange={(e) => setGlobalSearch(e.target.value)}
-            placeholder="Search by name or username..."
+            placeholder="Search by name, username or city..."
             className="pl-10 bg-muted/30 border-border/50"
           />
           {searchingGlobal && (
@@ -412,6 +414,12 @@ export default function WallFriends() {
                       <AvatarFallback className="bg-gradient-to-br from-primary/30 to-accent/30 text-sm font-bold">{p.full_name?.[0] || "?"}</AvatarFallback>
                     </Avatar>
                     <h3 className="font-bold text-xs truncate mt-1.5">{p.full_name || "Unknown"}</h3>
+                    {p.city && (
+                      <p className="text-[10px] text-muted-foreground truncate flex items-center gap-1">
+                        <MapPin className="h-2.5 w-2.5 shrink-0" /> {p.city}
+                      </p>
+                    )}
+
                     {!isSelf && !isFriend && !pendingOutgoing && !pendingIncoming && (
                       <Button size="sm" className="w-full mt-2 text-[10px] h-7 gap-1 bg-gradient-to-r from-primary to-accent text-white"
                         onClick={() => sendRequestMutation.mutate(p.id)} disabled={sendRequestMutation.isPending}>
