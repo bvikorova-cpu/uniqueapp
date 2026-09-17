@@ -228,6 +228,8 @@ const Auth = () => {
         emailRedirectTo: authRedirect("/"),
         data: { full_name: fullName,
           phone: phone,
+          city: city,
+
           company_name: companyName || null,
           preferred_language: selectedLanguage,
           birth_date: isoBirthDate,
@@ -571,6 +573,19 @@ const Auth = () => {
                       <p className="text-xs text-destructive">{phoneError(signupPhone)}</p>
                     )}
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-city">{"City"} *</Label>
+                    <Input
+                      id="signup-city"
+                      name="city"
+                      type="text"
+                      placeholder="Your city"
+                      autoComplete="address-level2"
+                      minLength={2}
+                      required
+                    />
+                  </div>
+
                   <div className="space-y-2">
                     <Label htmlFor="signup-company">{"Company Name"} ({"optional"})</Label>
                     <Input
