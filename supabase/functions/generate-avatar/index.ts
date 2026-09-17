@@ -21,7 +21,7 @@ serve(async (req) => {
   }
 
   try {
-    const __auth = await requireAiCredits(req, corsHeaders, { credits: 5, usageType: "avatar_image" });
+    const __auth = await requireAiCredits(req, corsHeaders, { credits: 1, usageType: "avatar_image" });
     if (__auth.errorResponse) return __auth.errorResponse;
     const __deduct = __auth.deduct!;
     const rateLimitResponse = await withRateLimit(req, RATE_LIMITS.ai_generation, corsHeaders);
