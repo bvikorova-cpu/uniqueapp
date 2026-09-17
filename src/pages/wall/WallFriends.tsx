@@ -22,6 +22,7 @@ interface Profile {
   id: string;
   full_name: string | null;
   avatar_url: string | null;
+  cover_url?: string | null;
   username?: string | null;
 }
 
@@ -38,6 +39,7 @@ interface FriendSuggestion {
   id: string;
   full_name: string | null;
   avatar_url: string | null;
+  cover_url: string | null;
   username?: string | null;
   mutual_count: number;
 }
@@ -114,7 +116,7 @@ export default function WallFriends() {
 
       // Batch: profiles + ALL accepted friendships for ALL requesters in one query each.
       const [{ data: profiles }, { data: requesterFriendships }] = await Promise.all([
-        publicProfiles().select("id, full_name, avatar_url").in("id", requesterIds),
+        publicProfiles().select("id, full_name, avatar_url, cover_url").in("id", requesterIds),
         supabase
           .from("friendships")
           .select("user_id, friend_id")
@@ -157,6 +159,7 @@ export default function WallFriends() {
         id: p.id,
         full_name: p.full_name,
         avatar_url: p.avatar_url,
+        cover_url: p.cover_url,
         mutual_count: Number(p.mutual_count) || 0,
       })) as FriendSuggestion[];
     },
@@ -179,7 +182,7 @@ export default function WallFriends() {
       if (!friendships || friendships.length === 0) return [];
       const friendIds = friendships.map(f => f.friend_id);
       const { data: profiles } = await publicProfiles()
-        .select("id, full_name, avatar_url")
+        .select("id, full_name, avatar_url, cover_url")
         .in("id", friendIds);
       return friendships.map(f => ({ ...f,
         profile: profiles?.find(p => p.id === f.friend_id) || null }));
@@ -353,7 +356,8 @@ export default function WallFriends() {
               >
                 <Card className="overflow-hidden border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/50 hover:shadow-xl transition-all duration-300 cursor-pointer"
                   onClick={() => navigate(`/profile/${friend.id}`)}>
-                  <div className={`h-14 bg-gradient-to-br ${gradients[i % gradients.length]} relative`}>
+                   <div className={`h-14 bg-gradient-to-br ${gradients[i % gradients.length]} relative overflow-hidden`}>
+                     {friend.cover_url && <img src={friend.cover_url} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                   </div>
                   <div className="px-2.5 pb-3 -mt-5 relative">
@@ -399,7 +403,9 @@ export default function WallFriends() {
               const pendingIncoming = requests.some((r: any) => r.user_id === p.id);
               return (
                 <Card key={p.id} className="overflow-hidden border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/50 transition-all">
-                  <div className={`h-12 bg-gradient-to-br ${gradients[i % gradients.length]}`} />
+                   <div className={`h-12 bg-gradient-to-br ${gradients[i % gradients.length]} relative overflow-hidden`}>
+                     {p.cover_url && <img src={p.cover_url} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />}
+                   </div>
                   <div className="px-2.5 pb-3 -mt-5 relative">
                     <Avatar className="h-10 w-10 border-[2px] border-card shadow-md cursor-pointer" onClick={() => navigate(`/profile/${p.id}`)}>
                       <AvatarImage src={p.avatar_url || undefined} className="object-cover" />
@@ -474,7 +480,8 @@ export default function WallFriends() {
                   transition={{ delay: i * 0.05 }}
                 >
                   <Card className="flex-shrink-0 w-[180px] overflow-hidden border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/50 hover:shadow-xl transition-all duration-300">
-                    <div className={`h-16 bg-gradient-to-br ${gradients[i % gradients.length]} relative`}>
+                     <div className={`h-16 bg-gradient-to-br ${gradients[i % gradients.length]} relative overflow-hidden`}>
+                       {request.profile?.cover_url && <img src={request.profile.cover_url} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                     </div>
                     <div className="px-3 pb-3 -mt-6 relative">
@@ -545,7 +552,8 @@ export default function WallFriends() {
                   transition={{ delay: i * 0.05 }}
                 >
                   <Card className="flex-shrink-0 w-[180px] overflow-hidden border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/50 hover:shadow-xl transition-all duration-300">
-                    <div className={`h-16 bg-gradient-to-br ${gradients[i % gradients.length]} relative`}>
+                     <div className={`h-16 bg-gradient-to-br ${gradients[i % gradients.length]} relative overflow-hidden`}>
+                       {req.profile?.cover_url && <img src={req.profile.cover_url} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                     </div>
                     <div className="px-3 pb-3 -mt-6 relative">
@@ -598,7 +606,8 @@ export default function WallFriends() {
                 transition={{ delay: i * 0.04 }}
               >
                 <Card className="overflow-hidden border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/50 hover:shadow-xl transition-all duration-300 group">
-                  <div className={`h-14 bg-gradient-to-br ${gradients[i % gradients.length]} relative`}>
+                   <div className={`h-14 bg-gradient-to-br ${gradients[i % gradients.length]} relative overflow-hidden`}>
+                     {suggestion.cover_url && <img src={suggestion.cover_url} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />}
                     <button onClick={() => removeSuggestion(suggestion.id)}
                       className="absolute top-1.5 right-1.5 p-1 bg-black/30 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
                       <X className="h-3 w-3 text-white" />

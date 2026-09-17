@@ -7,6 +7,7 @@ export type CachedProfile = {
   id: string;
   full_name: string | null;
   avatar_url: string | null;
+  cover_url?: string | null;
   username?: string | null;
 };
 
@@ -25,8 +26,10 @@ export const primeProfileCache = (profiles: CachedProfile[]) => {
 export const fetchProfileCached = async (
   userId: string
 ): Promise<CachedProfile | null> => {
-  if (cache.has(userId)) return cache.get(userId)!;
-  if (inflight.has(userId)) return inflight.get(userId)!;
+  const cached = cache.get(userId);
+  if (cached) return cached;
+  const pending = inflight.get(userId);
+  if (pending) return pending;
 
   const p = (async () => {
     const { data, error } = await supabase
