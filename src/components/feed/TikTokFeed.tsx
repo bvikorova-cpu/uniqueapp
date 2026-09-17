@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useMemo, useRef, useState, useCallback, ReactNode } from "react";
-import { Heart, MessageCircle, Share2, Volume2, VolumeX, Loader2, Music2, Play, Send, Trash2 } from "lucide-react";
+import { Heart, MessageCircle, Share2, Volume2, VolumeX, Loader2, Music2, Play, Send, Trash2, Lock as LockIcon, Unlock as UnlockIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -19,7 +19,7 @@ import { TikTokAdSlot } from "./TikTokAdSlot";
 
 export interface ShortItem {
   id: string;          // raw id (uuid)
-  kind: "video" | "post" | "story";
+  kind: "video" | "post" | "story" | "premium";
   video_url: string;
   title?: string | null;
   description?: string | null;
@@ -27,6 +27,9 @@ export interface ShortItem {
   likes_count?: number;
   comments_count?: number;
   views_count?: number;
+  unlock_cost?: number;
+  unlocked?: boolean;
+  thumbnail_url?: string | null;
   profile: { full_name: string | null; avatar_url: string | null };
 }
 
@@ -36,12 +39,13 @@ function formatNum(n: number) {
   return String(n);
 }
 
-function tables(kind: "video" | "post" | "story") {
+function tables(kind: ShortItem["kind"]) {
   if (kind === "video") return { likes: "video_likes", comments: "video_comments", fk: "video_id" as const };
   if (kind === "post") return { likes: "post_likes", comments: "post_comments", fk: "post_id" as const };
-  // Stories are ephemeral — no likes/comments tables.
+  // Stories are ephemeral and premium videos live in their own table — no likes/comments tables.
   return { likes: "", comments: "", fk: "" as const };
 }
+
 
 function CommentsSheet({ open, onOpenChange, short, onCountChange }: {
   open: boolean; onOpenChange: (v: boolean) => void; short: ShortItem; onCountChange: (n: number) => void;
@@ -151,7 +155,44 @@ function VideoCard({ short, active, muted, onToggleMute }: {
   const qc = useQueryClient();
   const isOwner = !!user && user.id === short.user_id;
 
+  const isPremium = short.kind === "premium";
+  const unlockCost = short.unlock_cost ?? 1;
+  const [unlocked, setUnlocked] = useState(!!short.unlocked);
+  const [gateHit, setGateHit] = useState(false);
+  const [unlocking, setUnlocking] = useState(false);
+
+  useEffect(() => { setUnlocked(!!short.unlocked); setGateHit(false); }, [short.id, short.unlocked]);
+
   const { likes: likesTable, comments: commentsTable, fk } = tables(short.kind);
+
+  const handleUnlock = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user) { toast.error("Sign in to unlock"); return; }
+    setUnlocking(true);
+    try {
+      const { data, error } = await (supabase as any).rpc("unlock_premium_video", { _video_id: short.id });
+      if (error) throw error;
+      if (!data?.ok) {
+        if (data?.error === "insufficient") {
+          toast.error("Not enough video credits", { description: "Buy video credits in Unlock Videos to continue." });
+        } else {
+          toast.error("Unlock failed", { description: String(data?.error ?? "Unknown error") });
+        }
+        return;
+      }
+      setUnlocked(true);
+      setGateHit(false);
+      if (!data?.already) {
+        toast.success("Video unlocked — enjoy the rest!");
+        window.dispatchEvent(new Event("video-credits-updated"));
+      }
+      ref.current?.play().catch(() => {});
+    } catch (err: any) {
+      toast.error("Unlock failed", { description: err?.message });
+    } finally {
+      setUnlocking(false);
+    }
+  };
 
   const handleDelete = async () => {
     setDeleting(true);
@@ -159,7 +200,9 @@ function VideoCard({ short, active, muted, onToggleMute }: {
       const tbl =
         short.kind === "video" ? "videos" :
         short.kind === "post" ? "posts" :
+        short.kind === "premium" ? "premium_videos" :
         "stories";
+
       const { error } = await (supabase as any).from(tbl).delete().eq("id", short.id);
       if (error) throw error;
       toast.success("Deleted");
@@ -301,7 +344,8 @@ function VideoCard({ short, active, muted, onToggleMute }: {
       <video
         ref={ref}
         src={short.video_url}
-        loop
+        poster={short.thumbnail_url || undefined}
+        loop={!isPremium || unlocked}
         playsInline
         muted={muted}
         preload="metadata"
@@ -310,14 +354,50 @@ function VideoCard({ short, active, muted, onToggleMute }: {
         onTimeUpdate={(e) => {
           const v = e.currentTarget;
           if (v.duration) setProgress((v.currentTime / v.duration) * 100);
+          if (isPremium && !unlocked && v.duration) {
+            const half = v.duration / 2;
+            if (v.currentTime >= half) {
+              v.pause();
+              v.currentTime = half;
+              setPaused(true);
+              setGateHit(true);
+            }
+          }
         }}
       />
 
-      {paused && (
+      {paused && !(isPremium && gateHit && !unlocked) && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <Play className="w-20 h-20 text-white/80 fill-white/80 drop-shadow-2xl" />
         </div>
       )}
+
+      {isPremium && !unlocked && !gateHit && (
+        <div className="absolute left-3 top-[calc(4.5rem+env(safe-area-inset-top))] z-20 flex items-center gap-1 rounded-full bg-primary/90 px-3 py-1 text-xs font-semibold text-primary-foreground">
+          <LockIcon className="w-3 h-3" /> Locks at 50%
+        </div>
+      )}
+
+      {isPremium && gateHit && !unlocked && (
+        <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-3 bg-black/80 px-8 text-center text-white backdrop-blur-sm">
+          <div className="rounded-full bg-white/15 p-3">
+            <LockIcon className="w-6 h-6" />
+          </div>
+          <p className="text-lg font-bold">You reached the halfway point</p>
+          <p className="text-sm opacity-80">
+            Unlock the rest for {unlockCost} video credit{unlockCost > 1 ? "s" : ""}. Half goes to the creator.
+          </p>
+          <Button onClick={handleUnlock} disabled={unlocking} className="mt-1">
+            {unlocking ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <UnlockIcon className="mr-2 h-4 w-4" />}
+            Unlock for {unlockCost} credit{unlockCost > 1 ? "s" : ""}
+          </Button>
+          <Link to="/premium-videos" className="text-xs underline opacity-80" onClick={(e) => e.stopPropagation()}>
+            Buy video credits
+          </Link>
+        </div>
+      )}
+
+
 
 
       <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
@@ -470,15 +550,24 @@ export default function TikTokFeed({ topOverlay, fabOverlay, filter = "all" }: {
     queryKey: ["tiktok-feed", filter],
     queryFn: async (): Promise<ShortItem[]> => {
       const nowIso = new Date().toISOString();
-      const [vidsRes, postsRes, storiesRes] = await Promise.all([
+      const { data: authData } = await supabase.auth.getUser();
+      const uid = authData?.user?.id ?? null;
+      const [vidsRes, postsRes, storiesRes, premiumRes, unlocksRes] = await Promise.all([
         supabase.from("videos").select("id,video_url,title,description,user_id,likes_count,views_count,created_at")
           .order("created_at", { ascending: false }).limit(50),
         (supabase as any).rpc("get_public_video_posts", { _limit: 50 }),
         (supabase as any).from("stories").select("id,media_url,media_type,caption,user_id,created_at,expires_at")
           .eq("media_type", "video").gt("expires_at", nowIso)
           .order("created_at", { ascending: false }).limit(50),
+        (supabase as any).from("premium_videos")
+          .select("id,user_id,title,description,video_url,thumbnail_url,unlock_cost,unlocks_count,views_count,created_at")
+          .eq("is_published", true).order("created_at", { ascending: false }).limit(50),
+        uid
+          ? (supabase as any).from("premium_video_unlocks").select("video_id").eq("user_id", uid)
+          : Promise.resolve({ data: [] }),
       ]);
       const vids = vidsRes.data; const posts = postsRes.data; const storyRows = storiesRes.data;
+      const unlockedSet = new Set<string>(((unlocksRes as any).data || []).map((u: any) => u.video_id));
 
       const all: (ShortItem & { _ts: number })[] = [];
       (vids || []).forEach((v: any) => v.video_url && all.push({
@@ -486,12 +575,21 @@ export default function TikTokFeed({ topOverlay, fabOverlay, filter = "all" }: {
         user_id: v.user_id, likes_count: v.likes_count, views_count: v.views_count,
         profile: { full_name: null, avatar_url: null },
         _ts: new Date(v.created_at).getTime() }));
+      ((premiumRes as any).data || []).forEach((p: any) => p.video_url && all.push({
+        id: p.id, kind: "premium", video_url: p.video_url, title: p.title, description: p.description,
+        user_id: p.user_id, views_count: p.views_count,
+        unlock_cost: p.unlock_cost ?? 1,
+        unlocked: p.user_id === uid || unlockedSet.has(p.id),
+        thumbnail_url: p.thumbnail_url,
+        profile: { full_name: null, avatar_url: null },
+        _ts: new Date(p.created_at).getTime() }));
       (posts || []).forEach((p: any) => {
         if (p.file_url) all.push({
           id: p.id, kind: "post", video_url: p.file_url, title: null, description: p.content,
           user_id: p.user_id, profile: { full_name: null, avatar_url: null },
           _ts: new Date(p.created_at).getTime() });
       });
+
       (storyRows || []).forEach((s: any) => s.media_url && all.push({
         id: s.id, kind: "story", video_url: s.media_url, title: null, description: s.caption,
         user_id: s.user_id, profile: { full_name: null, avatar_url: null },
@@ -510,7 +608,7 @@ export default function TikTokFeed({ topOverlay, fabOverlay, filter = "all" }: {
 
       let filtered = all;
       if (filter === "videos") {
-        filtered = all.filter((s) => s.kind === "video" || s.kind === "post");
+        filtered = all.filter((s) => s.kind === "video" || s.kind === "post" || s.kind === "premium");
       } else if (filter === "stories") {
         filtered = all.filter((s) => s.kind === "story");
       }
