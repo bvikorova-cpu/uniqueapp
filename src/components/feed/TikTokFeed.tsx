@@ -138,6 +138,18 @@ function CommentsSheet({ open, onOpenChange, short, onCountChange }: {
   );
 }
 
+// Some streamed sources report Infinity/NaN duration — fall back to the seekable range.
+function effectiveDuration(v: HTMLVideoElement): number {
+  if (Number.isFinite(v.duration) && v.duration > 0) return v.duration;
+  try {
+    if (v.seekable.length) {
+      const end = v.seekable.end(v.seekable.length - 1);
+      if (Number.isFinite(end) && end > 0) return end;
+    }
+  } catch { /* ignore */ }
+  return 0;
+}
+
 function VideoCard({ short, active, muted, onToggleMute }: {
   short: ShortItem; active: boolean; muted: boolean; onToggleMute: () => void;
 }) {
