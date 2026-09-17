@@ -548,6 +548,8 @@ export default function TikTokFeed({ topOverlay, fabOverlay, filter = "all" }: {
 
   const { data: shorts = [], isLoading } = useQuery({
     queryKey: ["tiktok-feed", filter],
+    staleTime: 0,
+    refetchOnMount: "always",
     queryFn: async (): Promise<ShortItem[]> => {
       const nowIso = new Date().toISOString();
       const { data: authData } = await supabase.auth.getUser();
