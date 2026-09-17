@@ -39,6 +39,8 @@ import BoostVideoDialog from "@/components/premiumVideos/BoostVideoDialog";
 import VideoFrameDialog from "@/components/premiumVideos/VideoFrameDialog";
 import CreatorCashoutCard from "@/components/premiumVideos/CreatorCashoutCard";
 import { useMyPremiumVideos, type MyVideoStats } from "@/hooks/useMyPremiumVideos";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export default function MyVideosPanel({ onChanged }: { onChanged?: () => void }) {
   const { videos, loading, busyId, totals, update, remove, refetch } = useMyPremiumVideos();
