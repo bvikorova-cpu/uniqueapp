@@ -19,7 +19,7 @@ import { TikTokAdSlot } from "./TikTokAdSlot";
 
 export interface ShortItem {
   id: string;          // raw id (uuid)
-  kind: "video" | "post" | "story";
+  kind: "video" | "post" | "story" | "premium";
   video_url: string;
   title?: string | null;
   description?: string | null;
@@ -27,6 +27,9 @@ export interface ShortItem {
   likes_count?: number;
   comments_count?: number;
   views_count?: number;
+  unlock_cost?: number;
+  unlocked?: boolean;
+  thumbnail_url?: string | null;
   profile: { full_name: string | null; avatar_url: string | null };
 }
 
@@ -36,12 +39,13 @@ function formatNum(n: number) {
   return String(n);
 }
 
-function tables(kind: "video" | "post" | "story") {
+function tables(kind: ShortItem["kind"]) {
   if (kind === "video") return { likes: "video_likes", comments: "video_comments", fk: "video_id" as const };
   if (kind === "post") return { likes: "post_likes", comments: "post_comments", fk: "post_id" as const };
-  // Stories are ephemeral — no likes/comments tables.
+  // Stories are ephemeral and premium videos live in their own table — no likes/comments tables.
   return { likes: "", comments: "", fk: "" as const };
 }
+
 
 function CommentsSheet({ open, onOpenChange, short, onCountChange }: {
   open: boolean; onOpenChange: (v: boolean) => void; short: ShortItem; onCountChange: (n: number) => void;
