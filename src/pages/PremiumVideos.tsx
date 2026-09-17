@@ -253,9 +253,10 @@ export default function PremiumVideos() {
               <h3 className="mb-2 mt-5 text-sm font-bold uppercase tracking-wide text-muted-foreground">For creators</h3>
               <div className="space-y-1.5 text-sm text-foreground/75">
                 <p>5. Anyone can upload — publishing a video costs 1 video credit, and your own videos are always unlocked for you.</p>
-                <p>6. Every time someone unlocks your video, you receive 0.5 video credits (50% share) into your creator balance. Creator earnings arrive as video credits — you can spend them on boosts, frames or unlocking other videos, not as cash.</p>
-                <p>7. The platform keeps the other 50% of each unlock.</p>
-                <p>8. Promote your videos with credits: Quick Boost 5 (6h top of feed), Daily Top 12 (24h in “Hot”), Mega Boost 25 (“Featured” badge + priority for 3 days).</p>
+                <p>6. Every time someone unlocks your video, you receive 0.5 video credits (50% share) into your creator balance. You can spend earned credits on boosts, frames or unlocking other videos.</p>
+                <p>7. Creator earnings are <strong>real money</strong>: every credit you earn converts at <strong>€0.50</strong> and can be cashed out from the “My videos” panel to your Earnings balance (minimum €20), then paid out to your bank. Only credits <strong>earned from unlocks</strong> are withdrawable — credits you bought are not.</p>
+                <p>8. The platform keeps the other 50% of each unlock.</p>
+                <p>9. Promote your videos with credits: Quick Boost 5 (6h top of feed), Daily Top 12 (24h in “Hot”), Mega Boost 25 (“Featured” badge + priority for 3 days).</p>
               </div>
 
               <div className="pt-4">
