@@ -71574,6 +71574,7 @@ export type Database = {
         Args: never
         Returns: {
           avatar_url: string
+          cover_url: string
           full_name: string
           id: string
           username: string
@@ -71754,6 +71755,7 @@ export type Database = {
         Args: { _ids: string[] }
         Returns: {
           avatar_url: string
+          cover_url: string
           full_name: string
           id: string
           username: string
@@ -71828,6 +71830,7 @@ export type Database = {
         Args: { ids: string[] }
         Returns: {
           avatar_url: string
+          cover_url: string
           full_name: string
           id: string
           username: string
@@ -72523,6 +72526,7 @@ export type Database = {
         Args: { _limit?: number }
         Returns: {
           avatar_url: string
+          cover_url: string
           full_name: string
           id: string
           mutual_count: number
@@ -72921,6 +72925,7 @@ export type Database = {
         Args: { _query: string }
         Returns: {
           avatar_url: string
+          cover_url: string
           full_name: string
           id: string
           username: string
@@ -72930,6 +72935,7 @@ export type Database = {
         Args: { lim?: number; q: string }
         Returns: {
           avatar_url: string
+          cover_url: string
           full_name: string
           headline: string
           id: string
