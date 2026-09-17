@@ -47,6 +47,32 @@ export default function MyVideosPanel({ onChanged }: { onChanged?: () => void })
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [published, setPublished] = useState(true);
+  const [sharingId, setSharingId] = useState<string | null>(null);
+
+  // Post the paid video into the Wall feed — viewers can unlock it right there.
+  const shareToWall = async (v: MyVideoStats) => {
+    setSharingId(v.id);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth.user?.id;
+      if (!uid) throw new Error("You must be signed in");
+      const { error } = await (supabase as any).from("posts").insert({
+        user_id: uid,
+        content: v.title,
+        privacy: "public",
+        premium_video_id: v.id,
+      });
+      if (error) throw error;
+      toast.success("Shared to your Wall feed", {
+        description: "Viewers watch half for free, then unlock it with a video credit.",
+      });
+    } catch (e: any) {
+      toast.error(e?.message || "Could not share this video");
+    } finally {
+      setSharingId(null);
+    }
+  };
+
 
   const openEdit = (v: MyVideoStats) => {
     setEditing(v);
