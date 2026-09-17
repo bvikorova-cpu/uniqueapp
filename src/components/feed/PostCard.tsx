@@ -64,6 +64,7 @@ import { enUS } from "date-fns/locale";
 import type { Post } from "@/types/database";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 import { getSavedPostLoader } from "@/lib/batchQuery";
+import PremiumVideoPostEmbed from "@/components/feed/PremiumVideoPostEmbed";
 
 interface PostCardProps {
   post: Post;
