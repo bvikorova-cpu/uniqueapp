@@ -597,22 +597,29 @@ export default function TikTokFeed({ topOverlay, fabOverlay, filter = "all" }: {
         user_id: s.user_id, profile: { full_name: null, avatar_url: null },
         _ts: new Date(s.created_at).getTime() }));
 
-      const ids = Array.from(new Set(all.map((s) => s.user_id).filter(Boolean)));
+      // A premium video re-shared as a plain video/post/story must never play unlocked:
+      // drop the free duplicate, keep only the gated premium entry.
+      const premiumUrls = new Set(
+        all.filter((s) => s.kind === "premium").map((s) => s.video_url)
+      );
+      const unique = all.filter((s) => s.kind === "premium" || !premiumUrls.has(s.video_url));
+
+      const ids = Array.from(new Set(unique.map((s) => s.user_id).filter(Boolean)));
       if (ids.length) {
         const { data: profs } = await (supabase as any)
           .from("public_profiles").select("id,full_name,avatar_url").in("id", ids);
         const map = new Map<string, any>((profs || []).map((p: any) => [p.id, p]));
-        all.forEach((s) => {
+        unique.forEach((s) => {
           const p = map.get(s.user_id);
           if (p) s.profile = { full_name: p.full_name, avatar_url: p.avatar_url };
         });
       }
 
-      let filtered = all;
+      let filtered = unique;
       if (filter === "videos") {
-        filtered = all.filter((s) => s.kind === "video" || s.kind === "post" || s.kind === "premium");
+        filtered = unique.filter((s) => s.kind === "video" || s.kind === "post" || s.kind === "premium");
       } else if (filter === "stories") {
-        filtered = all.filter((s) => s.kind === "story");
+        filtered = unique.filter((s) => s.kind === "story");
       }
 
       // Stories first (most ephemeral), then newest content
