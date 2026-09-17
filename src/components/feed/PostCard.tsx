@@ -690,6 +690,13 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
       )}
 
 
+      {/* Shared paid ("unlock") video — free until 50%, then costs a video credit */}
+      {post.premium_video_id && (
+        <div className="px-3 pb-2 sm:px-4">
+          <PremiumVideoPostEmbed videoId={post.premium_video_id} />
+        </div>
+      )}
+
       {/* Media First - Pinterest Style (with sensitive blur + carousel for multi-image) */}
       {post.media && post.media.length > 0 && (
         <SensitiveOverlay isSensitive={post.is_sensitive} reason={post.sensitive_reason}>
