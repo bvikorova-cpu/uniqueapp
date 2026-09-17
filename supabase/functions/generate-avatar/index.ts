@@ -54,14 +54,21 @@ serve(async (req) => {
     if (!response.ok) {
       if (response.status === 429) {
         return new Response(
-          JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
+          JSON.stringify({ error: "Too many requests right now. Please try again in a few seconds." }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
       const errorText = await response.text();
-      console.error("OpenAI API error:", response.status, errorText);
-      throw new Error("Failed to generate avatar");
+      console.error("Image API error:", response.status, errorText);
+      if (response.status === 503) {
+        return new Response(
+          JSON.stringify({ error: "The image service is busy. Please try again in a moment — no credits were used." }),
+          { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      throw new Error("Avatar generation failed. Please try again — no credits were used.");
     }
+
 
     const data = await response.json();
     const imageUrl = (data.data?.[0]?.b64_json ? `data:image/png;base64,${data.data[0].b64_json}` : null);
