@@ -146,7 +146,7 @@ export default function PremiumVideoPostEmbed({ videoId }: { videoId: string }) 
               )}
               Unlock for {cost} credit{cost > 1 ? "s" : ""}
             </Button>
-            <Link to="/premium-videos" className="text-xs underline text-muted-foreground">
+            <Link to="/unlock-videos" className="text-xs underline text-muted-foreground">
               Buy video credits
             </Link>
           </div>
