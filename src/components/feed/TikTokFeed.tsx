@@ -344,7 +344,8 @@ function VideoCard({ short, active, muted, onToggleMute }: {
       <video
         ref={ref}
         src={short.video_url}
-        loop
+        poster={short.thumbnail_url || undefined}
+        loop={!isPremium || unlocked}
         playsInline
         muted={muted}
         preload="metadata"
@@ -353,14 +354,50 @@ function VideoCard({ short, active, muted, onToggleMute }: {
         onTimeUpdate={(e) => {
           const v = e.currentTarget;
           if (v.duration) setProgress((v.currentTime / v.duration) * 100);
+          if (isPremium && !unlocked && v.duration) {
+            const half = v.duration / 2;
+            if (v.currentTime >= half) {
+              v.pause();
+              v.currentTime = half;
+              setPaused(true);
+              setGateHit(true);
+            }
+          }
         }}
       />
 
-      {paused && (
+      {paused && !(isPremium && gateHit && !unlocked) && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <Play className="w-20 h-20 text-white/80 fill-white/80 drop-shadow-2xl" />
         </div>
       )}
+
+      {isPremium && !unlocked && !gateHit && (
+        <div className="absolute left-3 top-[calc(4.5rem+env(safe-area-inset-top))] z-20 flex items-center gap-1 rounded-full bg-primary/90 px-3 py-1 text-xs font-semibold text-primary-foreground">
+          <Lock className="w-3 h-3" /> Locks at 50%
+        </div>
+      )}
+
+      {isPremium && gateHit && !unlocked && (
+        <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-3 bg-black/80 px-8 text-center text-white backdrop-blur-sm">
+          <div className="rounded-full bg-white/15 p-3">
+            <Lock className="w-6 h-6" />
+          </div>
+          <p className="text-lg font-bold">You reached the halfway point</p>
+          <p className="text-sm opacity-80">
+            Unlock the rest for {unlockCost} video credit{unlockCost > 1 ? "s" : ""}. Half goes to the creator.
+          </p>
+          <Button onClick={handleUnlock} disabled={unlocking} className="mt-1">
+            {unlocking ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Unlock className="mr-2 h-4 w-4" />}
+            Unlock for {unlockCost} credit{unlockCost > 1 ? "s" : ""}
+          </Button>
+          <Link to="/premium-videos" className="text-xs underline opacity-80" onClick={(e) => e.stopPropagation()}>
+            Buy video credits
+          </Link>
+        </div>
+      )}
+
+
 
 
       <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
