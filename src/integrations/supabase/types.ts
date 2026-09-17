@@ -48114,6 +48114,7 @@ export type Database = {
           music_end_seconds: number | null
           music_start_seconds: number | null
           music_url: string | null
+          premium_video_id: string | null
           privacy: string | null
           promo_listing_id: string | null
           promo_tier: string | null
@@ -48147,6 +48148,7 @@ export type Database = {
           music_end_seconds?: number | null
           music_start_seconds?: number | null
           music_url?: string | null
+          premium_video_id?: string | null
           privacy?: string | null
           promo_listing_id?: string | null
           promo_tier?: string | null
@@ -48180,6 +48182,7 @@ export type Database = {
           music_end_seconds?: number | null
           music_start_seconds?: number | null
           music_url?: string | null
+          premium_video_id?: string | null
           privacy?: string | null
           promo_listing_id?: string | null
           promo_tier?: string | null
@@ -48203,6 +48206,13 @@ export type Database = {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posts_premium_video_id_fkey"
+            columns: ["premium_video_id"]
+            isOneToOne: false
+            referencedRelation: "premium_videos"
             referencedColumns: ["id"]
           },
           {
@@ -71702,6 +71712,7 @@ export type Database = {
           music_end_seconds: number | null
           music_start_seconds: number | null
           music_url: string | null
+          premium_video_id: string | null
           privacy: string | null
           promo_listing_id: string | null
           promo_tier: string | null
