@@ -849,6 +849,14 @@ const Navbar = () => {
               );
             })}
 
+            {/* Security & Scam Protection — additive link, isolated new section */}
+            <Link to="/security-center" onClick={() => setIsMenuOpen(false)}>
+              <Button variant="ghost" className="w-full justify-start text-sm py-2" size="sm">
+                <Shield className="h-4 w-4 text-destructive" />
+                Security &amp; Scam Protection
+              </Button>
+            </Link>
+
             {/* Learning Section */}
             <div className="pt-2 pb-1">
               <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground">
