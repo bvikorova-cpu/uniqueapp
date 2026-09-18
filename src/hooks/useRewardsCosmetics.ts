@@ -25,31 +25,63 @@ const inflight = new Map<string, Promise<RewardsCosmeticsMap>>();
 const fetchedAt = new Map<string, number>();
 const TTL_MS = 60_000;
 
-async function fetchCosmetics(key: string, ids: string[]): Promise<RewardsCosmeticsMap> {
-  const existing = inflight.get(key);
-  if (existing) return existing;
+/**
+ * Cross-component batching: every card/avatar asking for cosmetics in the same
+ * tick is coalesced into ONE pair of requests instead of one pair per card
+ * (the feed used to fire 2 requests per post).
+ */
+let pendingIds = new Set<string>();
+let pendingPromise: Promise<void> | null = null;
 
-  const promise = (async () => {
-    const next: RewardsCosmeticsMap = {};
-    ids.forEach((id) => { next[id] = {}; });
-    const [{ data, error }, { data: tiers }] = await Promise.all([
-      supabase.rpc("get_equipped_rewards_cosmetics" as never, { _user_ids: ids } as never),
-      supabase.from("profiles_public").select("id, verification_tier" as never).in("id", ids),
-    ]);
-    if (error) throw error;
-    ((data as { user_id: string; category: string; slug: string }[]) || []).forEach((row) => {
-      next[row.user_id] = { ...next[row.user_id], [row.category]: row.slug };
-    });
-    ((tiers as unknown as { id: string; verification_tier: string | null }[]) || []).forEach((row) => {
-      next[row.id] = { ...next[row.id], verification_tier: row.verification_tier };
-    });
-    ids.forEach((id) => cache.set(id, next[id] ?? {}));
-    fetchedAt.set(key, Date.now());
-    return next;
-  })().finally(() => { inflight.delete(key); });
+function scheduleCosmetics(ids: string[]): Promise<void> {
+  ids.forEach((id) => pendingIds.add(id));
+  if (pendingPromise) return pendingPromise;
 
-  inflight.set(key, promise);
-  return promise;
+  pendingPromise = new Promise<void>((resolve) => {
+    setTimeout(async () => {
+      const batch = Array.from(pendingIds);
+      pendingIds = new Set();
+      pendingPromise = null;
+      if (batch.length === 0) { resolve(); return; }
+      try {
+        const next: RewardsCosmeticsMap = {};
+        batch.forEach((id) => { next[id] = {}; });
+        const [{ data }, { data: tiers }] = await Promise.all([
+          supabase.rpc("get_equipped_rewards_cosmetics" as never, { _user_ids: batch } as never),
+          supabase.from("profiles_public").select("id, verification_tier" as never).in("id", batch),
+        ]);
+        ((data as { user_id: string; category: string; slug: string }[]) || []).forEach((row) => {
+          next[row.user_id] = { ...next[row.user_id], [row.category]: row.slug };
+        });
+        ((tiers as unknown as { id: string; verification_tier: string | null }[]) || []).forEach((row) => {
+          next[row.id] = { ...next[row.id], verification_tier: row.verification_tier };
+        });
+        batch.forEach((id) => {
+          cache.set(id, next[id] ?? {});
+          fetchedAt.set(id, Date.now());
+        });
+      } catch {
+        // keep previous cache on failure
+      }
+      resolve();
+    }, 30);
+  });
+
+  return pendingPromise;
+}
+
+async function fetchCosmetics(key: string, ids: string[], force = false): Promise<RewardsCosmeticsMap> {
+  const stale = force
+    ? ids
+    : ids.filter((id) => {
+        const at = fetchedAt.get(id) || 0;
+        return Date.now() - at >= TTL_MS;
+      });
+  if (stale.length > 0) await scheduleCosmetics(stale);
+  const next: RewardsCosmeticsMap = {};
+  ids.forEach((id) => { next[id] = cache.get(id) ?? {}; });
+  fetchedAt.set(key, Date.now());
+  return next;
 }
 
 /**
@@ -86,7 +118,7 @@ export function useRewardsCosmetics(userIds: (string | null | undefined)[]): Rew
         return;
       }
       try {
-        const next = await fetchCosmetics(key, ids);
+        const next = await fetchCosmetics(key, ids, force);
         if (alive) setMap(next);
       } catch {
         // keep previous state on failure

@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { startWallTrace,
   markWallInteractive,
   tracedRpc } from "@/utils/wallPerf";
+import { prefetchWallFeed, takeWallFeedPrefetch } from "@/utils/wallFeedPrefetch";
 import { User } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
 
@@ -55,6 +56,11 @@ import WallComposer from "@/components/wall/WallComposer";
 import type { FeedItem as WallFeedItem, Post, Repost } from "@/components/wall/WallPost";
 import { useFriendIds } from "@/hooks/useFriendIds";
 type FeedItem = WallFeedItem;
+
+// Start the first feed page as soon as this chunk is evaluated, before React
+// mounts the (heavy) Wall tree — the fetch overlaps with rendering.
+prefetchWallFeed(10);
+
 
 const Feed = () => {
   const navigate = useNavigate();
@@ -149,7 +155,11 @@ const Feed = () => {
         tracedRpc("get_wall_feed", () =>
           supabase.rpc("get_wall_feed", { _cursor: cursor, _limit: POSTS_PER_PAGE }),
         );
-      let { data: feedData, error: feedErr } = await fetchFeed();
+      // First page may already be in flight from app boot (see wallFeedPrefetch).
+      const prefetched = !loadMore && !cursor ? takeWallFeedPrefetch(POSTS_PER_PAGE) : null;
+      let { data: feedData, error: feedErr } = prefetched
+        ? await prefetched
+        : await fetchFeed();
       if (feedErr) {
         await new Promise(r => setTimeout(r, 400));
         ({ data: feedData, error: feedErr } = await fetchFeed());

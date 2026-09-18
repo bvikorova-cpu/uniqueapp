@@ -64,6 +64,7 @@ import { enUS } from "date-fns/locale";
 import type { Post } from "@/types/database";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 import { getSavedPostLoader } from "@/lib/batchQuery";
+import { subscribePostCounts } from "@/lib/postCountsRealtime";
 import PremiumVideoPostEmbed from "@/components/feed/PremiumVideoPostEmbed";
 
 interface PostCardProps {
@@ -155,22 +156,26 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
     return () => { newFilePreviews.forEach((u) => u && URL.revokeObjectURL(u)); };
   }, [newFilePreviews]);
 
-  // Get current user and check if post is saved
+  // Get current user (from the local session — no network round-trip per card)
+  // and check if post is saved.
   useEffect(() => {
+    let cancelled = false;
     const init = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setCurrentUserId(user.id);
-        
-        // Check if post is saved (batched across every card in the feed)
-        const rows = await getSavedPostLoader(user.id).load(post.id);
-        setSaved(rows.length > 0);
-      }
+      const { data: { session } } = await supabase.auth.getSession();
+      const uid = session?.user?.id;
+      if (!uid || cancelled) return;
+      setCurrentUserId(uid);
+      // Check if post is saved (batched across every card in the feed)
+      const rows = await getSavedPostLoader(uid).load(post.id);
+      if (!cancelled) setSaved(rows.length > 0);
     };
     init();
+    return () => { cancelled = true; };
   }, [post.id]);
 
-  // Realtime sync for likes / comments / reposts counts on this post
+  // Realtime sync for likes / comments / reposts counts on this post.
+  // Counts come from the feed payload on first paint (no per-card fetch);
+  // we only re-query when this post actually changes.
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | null = null;
     const refreshCounts = () => {
@@ -192,22 +197,14 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
           setRepostsCount(p.reposts_count ?? 0);
         }
         setCommentsCount(cCount ?? 0);
-      }, 400);
+      }, 600);
     };
 
-    // Initial accurate count (denormalized posts.comments_count can drift).
-    refreshCounts();
-
-    const channel = supabase
-      .channel(`post-counts-${post.id}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "post_likes", filter: `post_id=eq.${post.id}` }, refreshCounts)
-      .on("postgres_changes", { event: "*", schema: "public", table: "post_comments", filter: `post_id=eq.${post.id}` }, refreshCounts)
-      .on("postgres_changes", { event: "*", schema: "public", table: "reposts", filter: `original_post_id=eq.${post.id}` }, refreshCounts)
-      .subscribe();
+    const unsubscribe = subscribePostCounts(post.id, refreshCounts);
 
     return () => {
       if (timer) clearTimeout(timer);
-      supabase.removeChannel(channel);
+      unsubscribe();
     };
   }, [post.id]);
 

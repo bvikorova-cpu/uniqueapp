@@ -32,6 +32,15 @@ if (typeof window !== "undefined") {
   installNavigationScrollReset();
   installTranslateSafety();
 
+  // Wall feed: start the first page request at boot instead of waiting for the
+  // heavy Wall route chunk to mount (it used to fire seconds after page load).
+  if (window.location.pathname.startsWith("/wall")) {
+    import("./utils/wallFeedPrefetch")
+      .then((m) => m.prefetchWallFeed(10))
+      .catch(() => {});
+  }
+
+
   const warmup = () => {
     import("react-router-dom").catch(() => {});
     import("@tanstack/react-query").catch(() => {});
