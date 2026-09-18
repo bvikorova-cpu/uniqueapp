@@ -452,7 +452,9 @@ const Feed = () => {
         if (!fetchInFlight.current && hasMore) {
           const scrollHeight = document.documentElement.scrollHeight;
           const clientHeight = document.documentElement.clientHeight;
-          if (scrollHeight - scrollTop - clientHeight < 300) {
+          // Start the next page ~2.5 screens early so it lands before the user
+          // reaches the end of the loaded posts.
+          if (scrollHeight - scrollTop - clientHeight < clientHeight * 2.5) {
             fetchPosts(true);
           }
         }
