@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useMemo, useRef, useState, useCallback, ReactNode } from "react";
-import { Heart, MessageCircle, Share2, Volume2, VolumeX, Loader2, Music2, Play, Send, Trash2, Lock as LockIcon, Unlock as UnlockIcon } from "lucide-react";
+import { Heart, MessageCircle, Share2, Volume2, VolumeX, Loader2, Music2, Play, Send, Trash2, Lock as LockIcon, Unlock as UnlockIcon, Repeat2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -203,6 +203,54 @@ function VideoCard({ short, active, muted, onToggleMute }: {
       toast.error("Unlock failed", { description: err?.message });
     } finally {
       setUnlocking(false);
+    }
+  };
+
+  const [reposting, setReposting] = useState(false);
+
+  /**
+   * Repost into the Wall feed.
+   * Premium (unlock) videos are reposted as a reference only (premium_video_id),
+   * so every other viewer still hits the 50% paywall and must unlock with credits.
+   * Plain videos are reposted with their media attached.
+   */
+  const handleRepost = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user) { toast.error("Sign in to repost"); return; }
+    setReposting(true);
+    try {
+      if (isPremium) {
+        const { error } = await (supabase as any).from("posts").insert({
+          user_id: user.id,
+          content: short.title || short.description || "",
+          privacy: "public",
+          premium_video_id: short.id,
+        });
+        if (error) throw error;
+        toast.success("Reposted to your Wall feed", {
+          description: "Viewers watch half for free, then unlock it with a video credit.",
+        });
+      } else {
+        const { data: post, error } = await (supabase as any).from("posts").insert({
+          user_id: user.id,
+          content: short.title || short.description || "",
+          privacy: "public",
+        }).select("id").single();
+        if (error) throw error;
+        const { error: mErr } = await (supabase as any).from("media").insert({
+          post_id: post.id,
+          file_url: short.video_url,
+          file_type: "video/mp4",
+          file_name: "video.mp4",
+        });
+        if (mErr) throw mErr;
+        toast.success("Reposted to your Wall feed");
+      }
+      qc.invalidateQueries({ queryKey: ["wall-feed"] });
+    } catch (err: any) {
+      toast.error(err?.message || "Could not repost");
+    } finally {
+      setReposting(false);
     }
   };
 
@@ -469,6 +517,18 @@ function VideoCard({ short, active, muted, onToggleMute }: {
         >
           <MessageCircle className="w-10 h-10 drop-shadow-lg" strokeWidth={1.5} />
           <span className="text-xs font-semibold drop-shadow">{formatNum(comments)}</span>
+        </button>
+
+        <button
+          onClick={handleRepost}
+          disabled={reposting}
+          className="flex flex-col items-center gap-1 active:scale-90 transition-transform disabled:opacity-60"
+          aria-label="Repost video"
+        >
+          {reposting
+            ? <Loader2 className="w-10 h-10 animate-spin drop-shadow-lg" strokeWidth={1.5} />
+            : <Repeat2 className="w-10 h-10 drop-shadow-lg" strokeWidth={1.5} />}
+          <span className="text-xs font-semibold drop-shadow">Repost</span>
         </button>
 
         <button onClick={openShare} className="flex flex-col items-center gap-1 active:scale-90 transition-transform">
