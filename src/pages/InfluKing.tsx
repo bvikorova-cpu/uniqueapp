@@ -148,7 +148,7 @@ const InfluKing = () => {
     },
     enabled: !!user });
 
-  // Paid entry (2 credits, platform only) to creators flagged as Adult
+  // Paid entry (6 credits, platform only, one-time per creator) to creators flagged as Adult
   const { data: adultAccessIds = [] } = useQuery({
     queryKey: ["influkingAdultAccess", user?.id],
     queryFn: async () => {
@@ -175,7 +175,7 @@ const InfluKing = () => {
       toast({ title: "Sign in required", description: "Please log in to open adult creators.", variant: "destructive" });
       return;
     }
-    if (!window.confirm("This creator publishes adult content. Entry costs 2 credits. Continue?")) return;
+    if (!window.confirm("This creator publishes adult content. One-time entry costs 6 credits. Continue?")) return;
 
     setUnlockingAdult(true);
     try {
@@ -183,7 +183,7 @@ const InfluKing = () => {
       if (error) throw error;
       if (!data?.ok) {
         if (data?.error === "insufficient") {
-          toast({ title: "Not enough credits", description: "Entry costs 2 credits. Top up to continue.", variant: "destructive" });
+          toast({ title: "Not enough credits", description: "Entry costs 6 credits. Top up to continue.", variant: "destructive" });
           navigate("/ai-credits");
         } else {
           toast({ title: "Access failed", description: String(data?.error || "Unknown error"), variant: "destructive" });
