@@ -1124,7 +1124,7 @@ const InfluKing = () => {
                 <div className="grid gap-3 sm:grid-cols-2">
                   {followedInfluencers.map((influencer) => (
                     <div key={influencer.id}
-                      onClick={() => setSelectedInfluencer(influencer)}
+                      onClick={() => openInfluencer(influencer)}
                       className="flex flex-wrap items-center gap-3 rounded-2xl border border-primary/10 bg-background/40 p-3 transition-all hover:bg-accent/50 cursor-pointer">
                       <Avatar className="h-12 w-12 shrink-0">
                         <AvatarImage src={influencer.profile_photo_url || undefined} />
