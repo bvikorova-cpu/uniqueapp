@@ -8,6 +8,7 @@ import { Loader2 } from "lucide-react";
 import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
 import { SearchBar } from "@/components/wall/SearchBar";
 import MonetagInFeedAd from "@/components/ads/MonetagInFeedAd";
+import WallVideosReelsRow from "@/components/feed/WallVideosReelsRow";
 import { NotesBar } from "@/components/wall/NotesBar";
 import { MutedKeywordsDialog, useMutedKeywords } from "@/components/wall/MutedKeywordsDialog";
 import { MutedUsersDialog } from "@/components/wall/MutedUsersDialog";
@@ -227,6 +228,11 @@ export default function WallFeed({
                       <PostCard post={item.data} onDelete={fetchPosts} />
                     ) : (
                       <RepostCard repost={item.data} onDelete={fetchPosts} />
+                    )}
+                    {(index + 1) % 5 === 0 && (
+                      <div className="mt-5">
+                        <WallVideosReelsRow offset={Math.floor((index + 1) / 5) - 1} />
+                      </div>
                     )}
                     {(index + 1) % 10 === 0 && (
                       <div className="mt-5">
