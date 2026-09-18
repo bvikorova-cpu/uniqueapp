@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { startWallTrace,
   markWallInteractive,
   tracedRpc } from "@/utils/wallPerf";
+import { prefetchWallFeed, takeWallFeedPrefetch } from "@/utils/wallFeedPrefetch";
 import { User } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
 
