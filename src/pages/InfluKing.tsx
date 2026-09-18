@@ -274,6 +274,8 @@ const InfluKing = () => {
         user_id: user.id, display_name: newProfile.display_name, bio: newProfile.bio,
         category: newProfile.category, profile_photo_url: newProfile.profile_photo_url || null,
         cover_photo_url: newProfile.cover_photo_url || null,
+        is_adult: newProfile.is_adult,
+
         social_links: { instagram: newProfile.instagram || null, tiktok: newProfile.tiktok || null, youtube: newProfile.youtube || null, twitter: newProfile.twitter || null } }]);
       if (error) throw error;
     },
