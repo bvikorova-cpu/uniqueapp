@@ -13,7 +13,7 @@
 - Branding: "Unique" wordmark in Lobster Two Bold font.
 - Security: RLS lockdown, sanitized anonymous feeds, server-side currency control.
 - Credit modules (9 total): Voice Chat (1cr), Drawing (2cr), Reading (2cr), Homework (2cr), Story (3cr), Career (5cr), Coloring (5cr) + Academy banner + GoldPass (neutralized to false).
-- Content: Erotic/nude/sexual content BANNED platform-wide; every upload surface must call screenMediaFile() before upload.
+- Content: Erotic/nude/sexual content BANNED platform-wide EXCEPT Influ King creators flagged Adult (see influking-adult-creators); every upload surface must call screenMediaFile() before upload.
 - IP: No third-party brands/characters (Disney, Pixar, Marvel, DC, Barbie, Harry Potter…) in assets, labels or copy — no licenses.
 - Credits: ONE wallet = `ai_credits` + `ai_credits_ledger`. Never create/read a per-module `*_credits` table. Test credit gates from a second clean account.
 
@@ -60,5 +60,6 @@
 - [Real names everywhere](mem://preferences/real-names-everywhere) — Never show "User"/"Anonymous"; profiles_public must stay security-definer.
 - [No fake data](mem://constraints/no-fake-data) — Every number, list and name must come from real DB data; no mock/random/placeholder values anywhere.
 - [Flyer Studio language](mem://preferences/flyer-studio-language) — English-only controls; selected output language receives professional native-level translation.
+- [Influ King adult creators](mem://features/influking-adult-creators) — is_adult flag, Adult badge in Discover, 2-credit entry fee to platform.
 - [Uni section knowledge](mem://features/uni-section-knowledge) — Uni's authoritative per-section docs in uniSections.ts + uniSectionsExtra.ts; keep in sync with code.
 - [Chat wallpapers](mem://features/chat-wallpapers) — 112 backgrounds including 48 adult photographs and 4 kids options; one choice applies to every human chat.
