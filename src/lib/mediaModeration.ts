@@ -102,9 +102,35 @@ async function callModeration(imageUrls: string[]): Promise<MediaModVerdict> {
   };
 }
 
+let adultCreatorCache: boolean | null = null;
+
+/** Users with an Influ King profile flagged is_adult may publish adult content. */
+export async function isAdultCreator(): Promise<boolean> {
+  if (adultCreatorCache !== null) return adultCreatorCache;
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      adultCreatorCache = false;
+    } else {
+      const { data } = await supabase
+        .from("influencer_profiles")
+        .select("is_adult")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      adultCreatorCache = !!data?.is_adult;
+    }
+  } catch {
+    adultCreatorCache = false;
+  }
+  return adultCreatorCache;
+}
+
 /** Screen a local image or video file for nudity / sexual content. */
 export async function screenMediaFile(file: File): Promise<MediaModVerdict> {
   try {
+    if (await isAdultCreator()) {
+      return { allowed: true, reason: "adult_creator" };
+    }
     if (file.type.startsWith("video/")) {
       const frames = await extractVideoFrames(file, 3);
       return await callModeration(frames);
