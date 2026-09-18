@@ -35,7 +35,7 @@ import FanPaidMessages from "@/components/influencer/FanPaidMessages";
 import LiveNowStrip from "@/components/influencer/LiveNowStrip";
 
 
-import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio, MessageCircle, ShieldAlert, Trash2 } from "lucide-react";
+import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio, MessageCircle, Trash2 } from "lucide-react";
 
 type InfluKingView = "hub" | "content-planner" | "collab" | "brand-deals" | "analytics" | "hashtags" | "thumbnails" | "audience" | "ppv";
 
@@ -52,6 +52,8 @@ interface InfluencerProfile {
   total_likes: number;
   total_views: number;
   is_verified: boolean;
+  is_adult?: boolean;
+
   created_at: string;
 }
 
@@ -118,7 +120,7 @@ const InfluKing = () => {
   const [showPaidMessageDialog, setShowPaidMessageDialog] = useState(false);
 
   const [newProfile, setNewProfile] = useState({ display_name: "", bio: "", category: CATEGORIES[0],
-    profile_photo_url: "", cover_photo_url: "",
+    profile_photo_url: "", cover_photo_url: "", is_adult: false,
     instagram: "", tiktok: "", youtube: "", twitter: "" });
 
   const [uploadingProfilePhoto, setUploadingProfilePhoto] = useState(false);
@@ -145,6 +147,59 @@ const InfluKing = () => {
       return data as InfluencerProfile | null;
     },
     enabled: !!user });
+
+  // Paid entry (2 credits, platform only) to creators flagged as Adult
+  const { data: adultAccessIds = [] } = useQuery({
+    queryKey: ["influkingAdultAccess", user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data } = await supabase
+        .from("influencer_adult_access")
+        .select("influencer_id")
+        .eq("user_id", user.id);
+      return (data || []).map((r: any) => r.influencer_id as string);
+    },
+    enabled: !!user });
+
+  const [unlockingAdult, setUnlockingAdult] = useState(false);
+
+  const openInfluencer = async (influencer: InfluencerProfile) => {
+    const needsPayment =
+      !!influencer.is_adult &&
+      influencer.user_id !== user?.id &&
+      !adultAccessIds.includes(influencer.id);
+
+    if (!needsPayment) { setSelectedInfluencer(influencer); return; }
+
+    if (!user) {
+      toast({ title: "Sign in required", description: "Please log in to open adult creators.", variant: "destructive" });
+      return;
+    }
+    if (!window.confirm("This creator publishes adult content. Entry costs 2 credits. Continue?")) return;
+
+    setUnlockingAdult(true);
+    try {
+      const { data, error } = await (supabase as any).rpc("unlock_adult_creator", { _influencer_id: influencer.id });
+      if (error) throw error;
+      if (!data?.ok) {
+        if (data?.error === "insufficient") {
+          toast({ title: "Not enough credits", description: "Entry costs 2 credits. Top up to continue.", variant: "destructive" });
+          navigate("/ai-credits");
+        } else {
+          toast({ title: "Access failed", description: String(data?.error || "Unknown error"), variant: "destructive" });
+        }
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: ["influkingAdultAccess"] });
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      setSelectedInfluencer(influencer);
+    } catch (e: any) {
+      toast({ title: "Access failed", description: e.message, variant: "destructive" });
+    } finally {
+      setUnlockingAdult(false);
+    }
+  };
+
 
   const { data: topInfluencers = [], isLoading } = useQuery({
     queryKey: ["topInfluencers"],
@@ -272,6 +327,8 @@ const InfluKing = () => {
         user_id: user.id, display_name: newProfile.display_name, bio: newProfile.bio,
         category: newProfile.category, profile_photo_url: newProfile.profile_photo_url || null,
         cover_photo_url: newProfile.cover_photo_url || null,
+        is_adult: newProfile.is_adult,
+
         social_links: { instagram: newProfile.instagram || null, tiktok: newProfile.tiktok || null, youtube: newProfile.youtube || null, twitter: newProfile.twitter || null } }]);
       if (error) throw error;
     },
@@ -520,20 +577,6 @@ const InfluKing = () => {
           totalViews={totalViews}
         />
 
-        {/* Content policy warning */}
-        <div className="mx-auto mb-6 max-w-4xl rounded-2xl border-2 border-destructive/40 bg-destructive/10 p-4 shadow-[0_10px_30px_-18px_hsl(var(--destructive)/0.6)]">
-          <div className="flex items-start gap-3">
-            <ShieldAlert className="mt-0.5 h-6 w-6 shrink-0 text-destructive" />
-            <div className="space-y-1">
-              <p className="text-sm font-extrabold uppercase tracking-wide text-destructive">
-                {t("influking.policy_title", "Strictly no nudity, sexual or adult content")}
-              </p>
-              <p className="text-sm font-medium text-foreground/80">
-                {t("influking.policy_body", "Nudity, sexually explicit or suggestive material and any adult content are strictly forbidden in posts, PPV, live streams and messages. Violations lead to immediate content removal, loss of earnings and a permanent ban.")}
-              </p>
-            </div>
-          </div>
-        </div>
 
         <LiveNowStrip />
 
@@ -692,6 +735,22 @@ const InfluKing = () => {
                     <div><Label>YouTube</Label><Input value={newProfile.youtube} onChange={(e) => setNewProfile({ ...newProfile, youtube: e.target.value })} placeholder="@channel" /></div>
                     <div><Label>Twitter/X</Label><Input value={newProfile.twitter} onChange={(e) => setNewProfile({ ...newProfile, twitter: e.target.value })} placeholder="@username" /></div>
                   </div>
+                  <label className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/5 p-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="mt-1 h-4 w-4 accent-[hsl(var(--destructive))]"
+                      checked={newProfile.is_adult}
+                      onChange={(e) => setNewProfile({ ...newProfile, is_adult: e.target.checked })}
+                    />
+                    <span className="text-sm">
+                      <span className="block font-bold text-destructive">I promote adult content</span>
+                      <span className="block text-muted-foreground">
+                        Tick this box if you promote adult content. Your nickname will be published in Discover with the word
+                        {" "}<strong>Adult</strong>, and visitors pay a 2 credit entry fee to open your profile.
+                      </span>
+                    </span>
+                  </label>
+
                   <Button className="w-full" onClick={() => createProfileMutation.mutate()} disabled={createProfileMutation.isPending}>
                     {createProfileMutation.isPending ? "Creating..." : "Create Profile"}
                   </Button>
@@ -796,6 +855,10 @@ const InfluKing = () => {
                     <div className="flex items-center justify-center sm:justify-start gap-2 mb-2">
                       <h2 className="text-lg sm:text-2xl font-bold break-words">{selectedInfluencer.display_name}</h2>
                       {selectedInfluencer.is_verified && <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 shrink-0 text-blue-500 fill-blue-500" />}
+                      {selectedInfluencer.is_adult && (
+                        <Badge variant="destructive" className="shrink-0 font-black uppercase">Adult</Badge>
+                      )}
+
                       {liveStreamByInfluencer.has(selectedInfluencer.id) && (
                         <Badge variant="destructive" className="gap-1 animate-pulse">
                           <Radio className="h-3 w-3" /> LIVE
@@ -990,7 +1053,8 @@ const InfluKing = () => {
                     .map((influencer, index) => (
                     <motion.div key={influencer.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.8 + index * 0.03 }}
-                      onClick={() => setSelectedInfluencer(influencer)}
+                      onClick={() => openInfluencer(influencer)}
+
                       className={`flex flex-wrap items-center gap-3 p-3 sm:p-4 rounded-lg cursor-pointer transition-all hover:bg-accent/50 ${
                         index < 3 ? "bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/10" : ""
                       }`}>
@@ -1008,6 +1072,10 @@ const InfluKing = () => {
                         <div className="flex items-center gap-1.5">
                           <h3 className="font-bold truncate">{influencer.display_name}</h3>
                           {influencer.is_verified && <CheckCircle className="h-4 w-4 text-blue-500 fill-blue-500 shrink-0" />}
+                          {influencer.is_adult && (
+                            <Badge variant="destructive" className="h-5 shrink-0 px-1.5 text-[9px] font-black uppercase">Adult</Badge>
+                          )}
+
                           {liveStreamByInfluencer.has(influencer.id) && (
                             <Badge variant="destructive" className="h-5 shrink-0 gap-1 px-1.5 text-[9px] animate-pulse">
                               <Radio className="h-2.5 w-2.5" /> LIVE
@@ -1064,7 +1132,7 @@ const InfluKing = () => {
                 <div className="grid gap-3 sm:grid-cols-2">
                   {followedInfluencers.map((influencer) => (
                     <div key={influencer.id}
-                      onClick={() => setSelectedInfluencer(influencer)}
+                      onClick={() => openInfluencer(influencer)}
                       className="flex flex-wrap items-center gap-3 rounded-2xl border border-primary/10 bg-background/40 p-3 transition-all hover:bg-accent/50 cursor-pointer">
                       <Avatar className="h-12 w-12 shrink-0">
                         <AvatarImage src={influencer.profile_photo_url || undefined} />

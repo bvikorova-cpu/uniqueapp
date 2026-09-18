@@ -30441,6 +30441,38 @@ export type Database = {
         }
         Relationships: []
       }
+      influencer_adult_access: {
+        Row: {
+          created_at: string
+          credits_spent: number
+          id: string
+          influencer_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          influencer_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          influencer_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influencer_adult_access_influencer_id_fkey"
+            columns: ["influencer_id"]
+            isOneToOne: false
+            referencedRelation: "influencer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       influencer_balances: {
         Row: {
           available_balance: number | null
@@ -30936,6 +30968,7 @@ export type Database = {
           followers_count: number | null
           id: string
           is_active: boolean | null
+          is_adult: boolean
           is_verified: boolean | null
           lifetime_earnings: number | null
           pending_balance: number | null
@@ -30956,6 +30989,7 @@ export type Database = {
           followers_count?: number | null
           id?: string
           is_active?: boolean | null
+          is_adult?: boolean
           is_verified?: boolean | null
           lifetime_earnings?: number | null
           pending_balance?: number | null
@@ -30976,6 +31010,7 @@ export type Database = {
           followers_count?: number | null
           id?: string
           is_active?: boolean | null
+          is_adult?: boolean
           is_verified?: boolean | null
           lifetime_earnings?: number | null
           pending_balance?: number | null
@@ -73133,6 +73168,7 @@ export type Database = {
       track_challenge_action: { Args: { _action: string }; Returns: Json }
       track_job_view: { Args: { p_job_id: string }; Returns: undefined }
       trim_user_feed_cache: { Args: never; Returns: undefined }
+      unlock_adult_creator: { Args: { _influencer_id: string }; Returns: Json }
       unlock_auction_contact: { Args: { _auction_id: string }; Returns: Json }
       unlock_battle_pass_premium_credits: { Args: never; Returns: Json }
       unlock_bazaar_contact: { Args: { _item_id: string }; Returns: Json }
