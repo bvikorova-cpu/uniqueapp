@@ -18,6 +18,11 @@ export const MONETAG_ZONES = { // Rewarded Interstitial — proper rewarded prot
   REWARDED_INTERSTITIAL: REWARDED_FROM_ENV || "11037515",
   // Vignette Banner — fullscreen banner; no rewarded protocol (kept for legacy callers).
   REWARDED_VIGNETTE: "11037515",
+  // Passive in-feed slot — impression counts on view, no click required.
+  PASSIVE_BANNER: (
+    (import.meta as unknown as { env?: Record<string, string | undefined> }).env
+      ?.VITE_MONETAG_BANNER_ZONE_ID ?? ""
+  ).trim() || "11037515",
   SAFE_VIDEO: "safe-video-reward" } as const;
 
 export const MONETAG_ZONE_IDS = Array.from(
