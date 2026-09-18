@@ -32,7 +32,7 @@ import {
 import { ReactionPicker } from "@/components/wall/ReactionPicker";
 import { ReportDialog } from "@/components/wall/ReportDialog";
 import { useUserMutes } from "@/hooks/useUserMutes";
-import { PinButton } from "@/components/wall/PinButton";
+import { usePinnedPosts } from "@/hooks/usePinnedPosts";
 import { FollowButton } from "@/components/wall/FollowButton";
 import { VerifiedFounderBadge, isVerifiedFounder } from "@/components/wall/VerifiedFounderBadge";
 import { VerifiedBadge, getVerifiedRingClass } from "@/components/verified/VerifiedBadge";
@@ -85,6 +85,8 @@ const ALLOWED_EXT = new Set(["jpg","jpeg","png","webp","gif","mp4","webm","mov"]
 const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps) => {
   const navigate = useNavigate();
   const { muteUser, unmuteUser, mutedIds } = useUserMutes();
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const { isPinned, togglePin } = usePinnedPosts(currentUserId ?? undefined);
   const isAuthorMuted = mutedIds.includes(post.user_id);
   const [deleting, setDeleting] = useState(false);
   const [contentExpanded, setContentExpanded] = useState(false);
@@ -125,7 +127,6 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [editContent, setEditContent] = useState(post.content);
   const [saving, setSaving] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [newFiles, setNewFiles] = useState<File[]>([]);
   const [existingMedia, setExistingMedia] = useState(post.media || []);
   const [mediaToDelete, setMediaToDelete] = useState<string[]>([]);
@@ -865,6 +866,25 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
                     Edit
                   </DropdownMenuItem>
                   <DropdownMenuItem
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      togglePin(post.id);
+                    }}
+                    className="gap-2"
+                  >
+                    {isPinned(post.id) ? (
+                      <>
+                        <Pin className="h-4 w-4 text-primary" />
+                        Pinned — unpin
+                      </>
+                    ) : (
+                      <>
+                        <Pin className="h-4 w-4" />
+                        Pin to profile
+                      </>
+                    )}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
                     onClick={handleDelete}
                     disabled={deleting}
                     className="gap-2 text-destructive focus:text-destructive"
@@ -1016,17 +1036,12 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
 
 
         {/* Additional Actions */}
-        <div className="flex items-center gap-2 pt-2 border-t mt-2" onClick={(e) => e.stopPropagation()}>
-          {currentUserId !== post.user_id && (
-            <>
-              <FollowButton userId={post.user_id} variant="ghost" size="sm" />
-              <ReportDialog postId={post.id} variant="ghost" />
-            </>
-          )}
-          {currentUserId === post.user_id && (
-            <PinButton postId={post.id} userId={post.user_id} />
-          )}
-        </div>
+        {currentUserId !== post.user_id && (
+          <div className="flex items-center gap-2 pt-2 border-t mt-2" onClick={(e) => e.stopPropagation()}>
+            <FollowButton userId={post.user_id} variant="ghost" size="sm" />
+            <ReportDialog postId={post.id} variant="ghost" />
+          </div>
+        )}
 
       </div>
 

@@ -49,8 +49,9 @@ export const usePinnedPosts = (userId?: string) => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["pinned-posts"] });
-      toast({ title: data.action === "pinned" ? "Post pinned!" : "Post unpinned" });
-    } });
+      toast({ title: data.action === "pinned" ? "Post pinned to your profile!" : "Post unpinned" });
+    },
+    onError: (e: any) => toast({ title: "Could not pin post", description: e.message, variant: "destructive" }) });
 
   return { pinnedPosts: pinnedPosts || [],
     isLoading,
