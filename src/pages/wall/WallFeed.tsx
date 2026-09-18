@@ -8,6 +8,7 @@ import { Loader2 } from "lucide-react";
 import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
 import { SearchBar } from "@/components/wall/SearchBar";
 import MonetagInFeedAd from "@/components/ads/MonetagInFeedAd";
+import WallVideosReelsRow from "@/components/feed/WallVideosReelsRow";
 import { NotesBar } from "@/components/wall/NotesBar";
 import { MutedKeywordsDialog, useMutedKeywords } from "@/components/wall/MutedKeywordsDialog";
 import { MutedUsersDialog } from "@/components/wall/MutedUsersDialog";
