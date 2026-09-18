@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { SpotTheScamQuiz } from "@/components/security/SpotTheScamQuiz";
+import { AiScamDetector } from "@/components/security/AiScamDetector";
 
 /**
  * ScamProtectionCenter — fully isolated page (route /security-center).
