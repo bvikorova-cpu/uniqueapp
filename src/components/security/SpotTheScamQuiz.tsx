@@ -206,7 +206,7 @@ export const SpotTheScamQuiz = () => {
             <div className="rounded-2xl border border-border/60 p-4 sm:p-5">
               <div className="flex items-center gap-3">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/15">
-                  <MessageCircle className="h-4.5 w-4.5 h-5 w-5 text-primary" />
+                  <MessageCircle className="h-5 w-5 text-primary" />
                 </span>
                 <div className="min-w-0">
                   <p className="text-sm font-bold truncate">{scenario.sender}</p>

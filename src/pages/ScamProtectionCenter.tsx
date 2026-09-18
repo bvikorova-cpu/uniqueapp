@@ -26,6 +26,7 @@ import {
   Home,
 } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { SpotTheScamQuiz } from "@/components/security/SpotTheScamQuiz";
 
 /**
  * ScamProtectionCenter — fully isolated page (route /security-center).
@@ -280,6 +281,15 @@ export const ScamProtectionCenter = () => {
             );
           })}
         </div>
+      </section>
+
+      {/* Spot the Scam quiz */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-10">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-2">Spot the Scam — test yourself</h2>
+        <p className="text-muted-foreground mb-6">
+          Real-looking messages, your call. Answer and learn the red flags instantly.
+        </p>
+        <SpotTheScamQuiz />
       </section>
 
       {/* Bottom CTA */}
