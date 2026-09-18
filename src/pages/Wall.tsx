@@ -9,6 +9,7 @@ import { startWallTrace,
   markWallInteractive,
   tracedRpc } from "@/utils/wallPerf";
 import { prefetchWallFeed, takeWallFeedPrefetch } from "@/utils/wallFeedPrefetch";
+import { fetchAllRows } from "@/lib/fetchAllRows";
 import { User } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
 
