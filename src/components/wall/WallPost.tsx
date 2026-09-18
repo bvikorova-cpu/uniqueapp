@@ -2,6 +2,7 @@ import { memo } from "react";
 import PostCard from "@/components/feed/PostCard";
 import RepostCard from "@/components/feed/RepostCard";
 import MonetagInFeedAd from "@/components/ads/MonetagInFeedAd";
+import PassiveFeedAd from "@/components/ads/PassiveFeedAd";
 
 interface Post {
   id: string;
