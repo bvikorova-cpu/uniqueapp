@@ -1049,7 +1049,8 @@ const InfluKing = () => {
                     .map((influencer, index) => (
                     <motion.div key={influencer.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.8 + index * 0.03 }}
-                      onClick={() => setSelectedInfluencer(influencer)}
+                      onClick={() => openInfluencer(influencer)}
+
                       className={`flex flex-wrap items-center gap-3 p-3 sm:p-4 rounded-lg cursor-pointer transition-all hover:bg-accent/50 ${
                         index < 3 ? "bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/10" : ""
                       }`}>
