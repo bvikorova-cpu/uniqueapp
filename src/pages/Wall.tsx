@@ -60,7 +60,7 @@ type FeedItem = WallFeedItem;
 
 // Start the first feed page as soon as this chunk is evaluated, before React
 // mounts the (heavy) Wall tree — the fetch overlaps with rendering.
-prefetchWallFeed(10);
+prefetchWallFeed(20);
 
 
 const Feed = () => {
@@ -99,7 +99,10 @@ const Feed = () => {
   const [pullToRefresh, setPullToRefresh] = useState({ pulling: false,
     pullDistance: 0,
     canRefresh: false });
-  const POSTS_PER_PAGE = 10;
+  // Bigger pages + an early trigger (see the scroll handler below) so the next
+  // batch is already loading long before the user hits the bottom — no more
+  // "scroll, wait, load, scroll, wait" stutter.
+  const POSTS_PER_PAGE = 20;
   const PULL_THRESHOLD = 80;
   const { toast } = useToast();
   
@@ -449,7 +452,9 @@ const Feed = () => {
         if (!fetchInFlight.current && hasMore) {
           const scrollHeight = document.documentElement.scrollHeight;
           const clientHeight = document.documentElement.clientHeight;
-          if (scrollHeight - scrollTop - clientHeight < 300) {
+          // Start the next page ~2.5 screens early so it lands before the user
+          // reaches the end of the loaded posts.
+          if (scrollHeight - scrollTop - clientHeight < clientHeight * 2.5) {
             fetchPosts(true);
           }
         }

@@ -36,7 +36,7 @@ if (typeof window !== "undefined") {
   // heavy Wall route chunk to mount (it used to fire seconds after page load).
   if (window.location.pathname.startsWith("/wall")) {
     import("./utils/wallFeedPrefetch")
-      .then((m) => m.prefetchWallFeed(10))
+      .then((m) => m.prefetchWallFeed(20))
       .catch(() => {});
   }
 

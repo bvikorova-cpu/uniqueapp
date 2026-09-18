@@ -77,7 +77,7 @@ const WallFeed = ({ items,
         if (hasMore && !loadingMore) onLoadMore();
       }}
       overscan={160}
-      increaseViewportBy={{ top: 120, bottom: 480 }}
+      increaseViewportBy={{ top: 120, bottom: 1200 }}
       itemContent={(index, item) => (
         <>
           <WallPost item={item} index={index} onDelete={onDelete} />
