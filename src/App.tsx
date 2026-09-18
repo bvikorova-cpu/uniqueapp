@@ -98,6 +98,7 @@ import { GlobalPaymentCleanup } from "@/components/payment/GlobalPaymentCleanup"
 import { GameAdGateHost } from "@/components/games/GameAdGateHost";
 
 
+const ScamProtectionCenter = lazy(() => import("@/pages/ScamProtectionCenter"));
 const Navbar = lazy(() => import("./components/Navbar"));
 const Footer = lazy(() => import("./components/Footer"));
 const ProtectedRoute = lazy(() => import("@/components/ProtectedRoute").then((module) => ({ default: module.ProtectedRoute })));
@@ -746,6 +747,7 @@ const App = () => {
                         <Route path="/admin/brand-moderation" element={<ProtectedRoute requireAdmin={true}><AdminBrandModeration /></ProtectedRoute>} />
                        <Route path="/contact" element={<Contact />} />
                        <Route path="/status" element={<StatusPage />} />
+                       <Route path="/security-center" element={<ScamProtectionCenter />} />
                         <Route path="/auth" element={<Auth />} />
                         <Route path="/reset-password" element={<ResetPassword />} />
                         <Route path="/auth/callback" element={<AuthCallback />} />
