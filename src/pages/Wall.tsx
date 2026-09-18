@@ -149,7 +149,11 @@ const Feed = () => {
         tracedRpc("get_wall_feed", () =>
           supabase.rpc("get_wall_feed", { _cursor: cursor, _limit: POSTS_PER_PAGE }),
         );
-      let { data: feedData, error: feedErr } = await fetchFeed();
+      // First page may already be in flight from app boot (see wallFeedPrefetch).
+      const prefetched = !loadMore && !cursor ? takeWallFeedPrefetch(POSTS_PER_PAGE) : null;
+      let { data: feedData, error: feedErr } = prefetched
+        ? await prefetched
+        : await fetchFeed();
       if (feedErr) {
         await new Promise(r => setTimeout(r, 400));
         ({ data: feedData, error: feedErr } = await fetchFeed());
