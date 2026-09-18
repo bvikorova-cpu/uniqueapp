@@ -148,6 +148,59 @@ const InfluKing = () => {
     },
     enabled: !!user });
 
+  // Paid entry (2 credits, platform only) to creators flagged as Adult
+  const { data: adultAccessIds = [] } = useQuery({
+    queryKey: ["influkingAdultAccess", user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data } = await supabase
+        .from("influencer_adult_access")
+        .select("influencer_id")
+        .eq("user_id", user.id);
+      return (data || []).map((r: any) => r.influencer_id as string);
+    },
+    enabled: !!user });
+
+  const [unlockingAdult, setUnlockingAdult] = useState(false);
+
+  const openInfluencer = async (influencer: InfluencerProfile) => {
+    const needsPayment =
+      !!influencer.is_adult &&
+      influencer.user_id !== user?.id &&
+      !adultAccessIds.includes(influencer.id);
+
+    if (!needsPayment) { setSelectedInfluencer(influencer); return; }
+
+    if (!user) {
+      toast({ title: "Sign in required", description: "Please log in to open adult creators.", variant: "destructive" });
+      return;
+    }
+    if (!window.confirm("This creator publishes adult content. Entry costs 2 credits. Continue?")) return;
+
+    setUnlockingAdult(true);
+    try {
+      const { data, error } = await (supabase as any).rpc("unlock_adult_creator", { _influencer_id: influencer.id });
+      if (error) throw error;
+      if (!data?.ok) {
+        if (data?.error === "insufficient") {
+          toast({ title: "Not enough credits", description: "Entry costs 2 credits. Top up to continue.", variant: "destructive" });
+          navigate("/ai-credits");
+        } else {
+          toast({ title: "Access failed", description: String(data?.error || "Unknown error"), variant: "destructive" });
+        }
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: ["influkingAdultAccess"] });
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      setSelectedInfluencer(influencer);
+    } catch (e: any) {
+      toast({ title: "Access failed", description: e.message, variant: "destructive" });
+    } finally {
+      setUnlockingAdult(false);
+    }
+  };
+
+
   const { data: topInfluencers = [], isLoading } = useQuery({
     queryKey: ["topInfluencers"],
     queryFn: async () => {
