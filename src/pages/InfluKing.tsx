@@ -678,6 +678,22 @@ const InfluKing = () => {
                     <div><Label>YouTube</Label><Input value={newProfile.youtube} onChange={(e) => setNewProfile({ ...newProfile, youtube: e.target.value })} placeholder="@channel" /></div>
                     <div><Label>Twitter/X</Label><Input value={newProfile.twitter} onChange={(e) => setNewProfile({ ...newProfile, twitter: e.target.value })} placeholder="@username" /></div>
                   </div>
+                  <label className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/5 p-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="mt-1 h-4 w-4 accent-[hsl(var(--destructive))]"
+                      checked={newProfile.is_adult}
+                      onChange={(e) => setNewProfile({ ...newProfile, is_adult: e.target.checked })}
+                    />
+                    <span className="text-sm">
+                      <span className="block font-bold text-destructive">I promote adult content</span>
+                      <span className="block text-muted-foreground">
+                        Tick this box if you promote adult content. Your nickname will be published in Discover with the word
+                        {" "}<strong>Adult</strong>, and visitors pay a 2 credit entry fee to open your profile.
+                      </span>
+                    </span>
+                  </label>
+
                   <Button className="w-full" onClick={() => createProfileMutation.mutate()} disabled={createProfileMutation.isPending}>
                     {createProfileMutation.isPending ? "Creating..." : "Create Profile"}
                   </Button>
