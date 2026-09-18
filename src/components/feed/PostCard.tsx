@@ -32,7 +32,7 @@ import {
 import { ReactionPicker } from "@/components/wall/ReactionPicker";
 import { ReportDialog } from "@/components/wall/ReportDialog";
 import { useUserMutes } from "@/hooks/useUserMutes";
-import { PinButton } from "@/components/wall/PinButton";
+import { usePinnedPosts } from "@/hooks/usePinnedPosts";
 import { FollowButton } from "@/components/wall/FollowButton";
 import { VerifiedFounderBadge, isVerifiedFounder } from "@/components/wall/VerifiedFounderBadge";
 import { VerifiedBadge, getVerifiedRingClass } from "@/components/verified/VerifiedBadge";
