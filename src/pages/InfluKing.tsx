@@ -121,8 +121,6 @@ const InfluKing = () => {
     profile_photo_url: "", cover_photo_url: "", is_adult: false,
     instagram: "", tiktok: "", youtube: "", twitter: "" });
 
-    instagram: "", tiktok: "", youtube: "", twitter: "" });
-
   const [uploadingProfilePhoto, setUploadingProfilePhoto] = useState(false);
   const [uploadingCoverPhoto, setUploadingCoverPhoto] = useState(false);
 
