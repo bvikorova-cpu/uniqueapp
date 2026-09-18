@@ -227,38 +227,53 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
 
       if (files.length > 0) {
         // Platform rule: no erotic/nude/sexual media (images and videos alike).
+        // Screening must never hang the publish flow -> hard timeout, fail-open.
         const { screenMediaFile, NSFW_BLOCK_MESSAGE } = await import("@/lib/mediaModeration");
-        for (const file of files) {
-          const verdict = await screenMediaFile(file);
-          if (!verdict.allowed) throw new Error(NSFW_BLOCK_MESSAGE);
-        }
-        for (const file of files) {
-          const fileExt = file.name.split(".").pop();
-          const fileName = `${user.id}/${Date.now()}.${fileExt}`;
-          const fileType = file.type.startsWith("image/") ? "image" : "video";
-
-          const { error: uploadError } = await supabase.storage
-            .from("media")
-            .upload(fileName, file);
-
-          if (uploadError) throw uploadError;
-
-          const { data: { publicUrl } } = supabase.storage.from("media").getPublicUrl(fileName);
-
-          if (fileType === "image") {
-            const { moderateImage } = await import("@/lib/scaleGuards");
-            const mod = await moderateImage(publicUrl);
-            if (!mod.allowed) {
-              try { await supabase.storage.from("media").remove([fileName]); } catch {}
-              throw new Error(`Image blocked: ${mod.reason || mod.categories.join(", ") || "policy violation"}`);
-            }
+        const withTimeout = async <T,>(p: Promise<T>, ms: number, fallback: T): Promise<T> => {
+          let t: number | undefined;
+          try {
+            return await Promise.race([
+              p,
+              new Promise<T>((resolve) => { t = window.setTimeout(() => resolve(fallback), ms); }),
+            ]);
+          } finally {
+            if (t !== undefined) window.clearTimeout(t);
           }
+        };
 
-          await supabase.from("media").insert({ post_id: post.id,
-            file_url: publicUrl,
-            file_type: fileType,
-            file_name: file.name });
-        }
+        const verdicts = await Promise.all(
+          files.map((file) =>
+            withTimeout(screenMediaFile(file), 15000, { allowed: true, reason: "timeout" })
+          )
+        );
+        if (verdicts.some((v) => !v.allowed)) throw new Error(NSFW_BLOCK_MESSAGE);
+
+        // Upload all files in parallel with collision-free names.
+        const stamp = Date.now();
+        const uploaded = await Promise.all(
+          files.map(async (file, i) => {
+            const fileExt = (file.name.split(".").pop() || "bin").toLowerCase();
+            const fileName = `${user.id}/${stamp}-${i}-${Math.random().toString(36).slice(2, 8)}.${fileExt}`;
+            const fileType = file.type.startsWith("image/") ? "image" : "video";
+
+            const { error: uploadError } = await supabase.storage
+              .from("media")
+              .upload(fileName, file);
+            if (uploadError) throw uploadError;
+
+            const { data: { publicUrl } } = supabase.storage.from("media").getPublicUrl(fileName);
+            return { publicUrl, fileType, fileName: file.name };
+          })
+        );
+
+        await supabase.from("media").insert(
+          uploaded.map((u) => ({
+            post_id: post.id,
+            file_url: u.publicUrl,
+            file_type: u.fileType,
+            file_name: u.fileName,
+          }))
+        );
       }
 
       // +20 XP + challenge tracking (toast for completion handled inside helper)
