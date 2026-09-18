@@ -206,6 +206,54 @@ function VideoCard({ short, active, muted, onToggleMute }: {
     }
   };
 
+  const [reposting, setReposting] = useState(false);
+
+  /**
+   * Repost into the Wall feed.
+   * Premium (unlock) videos are reposted as a reference only (premium_video_id),
+   * so every other viewer still hits the 50% paywall and must unlock with credits.
+   * Plain videos are reposted with their media attached.
+   */
+  const handleRepost = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user) { toast.error("Sign in to repost"); return; }
+    setReposting(true);
+    try {
+      if (isPremium) {
+        const { error } = await (supabase as any).from("posts").insert({
+          user_id: user.id,
+          content: short.title || short.description || "",
+          privacy: "public",
+          premium_video_id: short.id,
+        });
+        if (error) throw error;
+        toast.success("Reposted to your Wall feed", {
+          description: "Viewers watch half for free, then unlock it with a video credit.",
+        });
+      } else {
+        const { data: post, error } = await (supabase as any).from("posts").insert({
+          user_id: user.id,
+          content: short.title || short.description || "",
+          privacy: "public",
+        }).select("id").single();
+        if (error) throw error;
+        const { error: mErr } = await (supabase as any).from("media").insert({
+          post_id: post.id,
+          file_url: short.video_url,
+          file_type: "video/mp4",
+          file_name: "video.mp4",
+        });
+        if (mErr) throw mErr;
+        toast.success("Reposted to your Wall feed");
+      }
+      qc.invalidateQueries({ queryKey: ["wall-feed"] });
+    } catch (err: any) {
+      toast.error(err?.message || "Could not repost");
+    } finally {
+      setReposting(false);
+    }
+  };
+
   const handleDelete = async () => {
     setDeleting(true);
     try {
