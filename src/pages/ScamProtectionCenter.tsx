@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { SpotTheScamQuiz } from "@/components/security/SpotTheScamQuiz";
+import { AiScamDetector } from "@/components/security/AiScamDetector";
 
 /**
  * ScamProtectionCenter — fully isolated page (route /security-center).
@@ -290,6 +291,15 @@ export const ScamProtectionCenter = () => {
           Real-looking messages, your call. Answer and learn the red flags instantly.
         </p>
         <SpotTheScamQuiz />
+      </section>
+
+      {/* Simulated AI Scam Detector */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-10">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-2">Simulated AI Scam Detector</h2>
+        <p className="text-muted-foreground mb-6">
+          Paste any suspicious message, email or job offer and see which scam patterns it matches.
+        </p>
+        <AiScamDetector />
       </section>
 
       {/* Bottom CTA */}
