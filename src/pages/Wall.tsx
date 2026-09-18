@@ -471,12 +471,15 @@ const Feed = () => {
     queryKey: ["following-ids", user?.id],
     enabled: !!user?.id && (feedEnhancementsReady || feedTab === "following"),
     queryFn: async (): Promise<string[]> => {
-      const { data, error } = await supabase
-        .from("user_follows")
-        .select("following_id")
-        .eq("follower_id", user!.id);
-      if (error) return [];
-      return (data ?? []).map((r: any) => r.following_id).filter(Boolean);
+      try {
+        // Unlimited following: page past the 1000-row API cap.
+        const data = await fetchAllRows<any>(() =>
+          supabase.from("user_follows").select("following_id").eq("follower_id", user!.id) as any,
+        );
+        return (data ?? []).map((r: any) => r.following_id).filter(Boolean);
+      } catch {
+        return [];
+      }
     } });
 
   // Muted users (hook keeps the list in sync with the Muted users dialog)

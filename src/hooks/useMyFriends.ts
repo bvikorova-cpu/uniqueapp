@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { fetchAllRows } from "@/lib/fetchAllRows";
 
 export interface MyFriend {
   id: string;
@@ -19,10 +20,10 @@ export const useMyFriends = (userId: string | null | undefined) => {
     queryKey: ["my-friends", userId],
     queryFn: async (): Promise<MyFriend[]> => {
       if (!userId) return [];
-      const { data, error } = await (supabase as any).rpc("get_my_friends");
-      if (error) throw error;
+      // Unlimited friends: page past the 1000-row API cap.
+      const data = await fetchAllRows<MyFriend>(() => (supabase as any).rpc("get_my_friends"));
       const seen = new Set<string>();
-      return ((data as MyFriend[]) ?? []).filter((p) => {
+      return (data ?? []).filter((p) => {
         if (!p?.id || p.id === userId || seen.has(p.id)) return false;
         seen.add(p.id);
         return true;

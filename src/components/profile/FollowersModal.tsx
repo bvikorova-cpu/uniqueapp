@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Users, UserPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { FollowButton } from "./FollowButton";
+import { fetchAllRows, fetchRowsByIds } from "@/lib/fetchAllRows";
 
 interface FollowersModalProps {
   userId: string;
@@ -38,25 +39,19 @@ export const FollowersModal = ({ userId,
   const { data: followers, isLoading: followersLoading } = useQuery({
     queryKey: ["followers-list", userId],
     queryFn: async () => {
-      const { data: followsData, error: followsError } = await supabase
-        .from("follows")
-        .select("follower_id")
-        .eq("following_id", userId);
+      // Unlimited followers: page past the 1000-row API cap.
+      const followsData = await fetchAllRows<{ follower_id: string }>(() =>
+        supabase.from("follows").select("follower_id").eq("following_id", userId) as any,
+      );
 
-      if (followsError) throw followsError;
-
-      const followerIds = followsData?.map((f) => f.follower_id) || [];
+      const followerIds = followsData.map((f) => f.follower_id).filter(Boolean);
 
       if (followerIds.length === 0) return [];
 
-      const { data: profilesData, error: profilesError } = await supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url")
-        .in("id", followerIds);
-
-      if (profilesError) throw profilesError;
-
-      return profilesData as UserProfile[];
+      return (await fetchRowsByIds<UserProfile>(
+        (chunk) => supabase.from("profiles").select("id, full_name, avatar_url").in("id", chunk) as any,
+        followerIds,
+      )) as UserProfile[];
     },
     enabled: isOpen });
 
@@ -64,25 +59,19 @@ export const FollowersModal = ({ userId,
   const { data: following, isLoading: followingLoading } = useQuery({
     queryKey: ["following-list", userId],
     queryFn: async () => {
-      const { data: followsData, error: followsError } = await supabase
-        .from("follows")
-        .select("following_id")
-        .eq("follower_id", userId);
+      // Unlimited following: page past the 1000-row API cap.
+      const followsData = await fetchAllRows<{ following_id: string }>(() =>
+        supabase.from("follows").select("following_id").eq("follower_id", userId) as any,
+      );
 
-      if (followsError) throw followsError;
-
-      const followingIds = followsData?.map((f) => f.following_id) || [];
+      const followingIds = followsData.map((f) => f.following_id).filter(Boolean);
 
       if (followingIds.length === 0) return [];
 
-      const { data: profilesData, error: profilesError } = await supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url")
-        .in("id", followingIds);
-
-      if (profilesError) throw profilesError;
-
-      return profilesData as UserProfile[];
+      return (await fetchRowsByIds<UserProfile>(
+        (chunk) => supabase.from("profiles").select("id, full_name, avatar_url").in("id", chunk) as any,
+        followingIds,
+      )) as UserProfile[];
     },
     enabled: isOpen });
 
