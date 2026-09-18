@@ -148,7 +148,7 @@ const InfluKing = () => {
     },
     enabled: !!user });
 
-  // Paid entry (6 credits, platform only, one-time per creator) to creators flagged as Adult
+  // Paid entry (6 credits one-time per creator; 3 credits = €1.50 to the creator, half to platform) to creators flagged as Adult
   const { data: adultAccessIds = [] } = useQuery({
     queryKey: ["influkingAdultAccess", user?.id],
     queryFn: async () => {
@@ -746,7 +746,7 @@ const InfluKing = () => {
                       <span className="block font-bold text-destructive">I promote adult content</span>
                       <span className="block text-muted-foreground">
                         Tick this box if you promote adult content. Your nickname will be published in Discover with the word
-                        {" "}<strong>Adult</strong>, and visitors pay a one-time 6 credit entry fee to open your profile.
+                        {" "}<strong>Adult</strong>. Visitors pay a one-time 6 credit entry fee to open your profile — you earn 3 credits (€1.50) from each entry.
                       </span>
                     </span>
                   </label>
