@@ -515,7 +515,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
 
   // Auto-fetch comments on mount when defaultShowComments=true (used by PostDetail).
   useEffect(() => {
-    if (defaultShowComments && comments.length === 0) {
+    if (defaultShowComments && !post.premium_video_id && comments.length === 0) {
       fetchComments();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1030,7 +1030,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
 
       </div>
 
-      {showComments && (
+      {showComments && !post.premium_video_id && (
         <div className="p-4 pt-0 space-y-3 animate-accordion-down" onClick={(e) => e.stopPropagation()}>
           <EnhancedCommentInput 
             postId={post.id} 
