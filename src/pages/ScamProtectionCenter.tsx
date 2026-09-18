@@ -125,6 +125,37 @@ const SPC_PANIC_STEPS = [
 export const ScamProtectionCenter = () => {
   const [panicOpen, setPanicOpen] = useState(false);
 
+  const spcScopedStyles = `
+.spc-root .spc-hero-glow {
+  background:
+    radial-gradient(60% 80% at 15% 0%, hsl(var(--primary) / 0.12), transparent 60%),
+    radial-gradient(50% 70% at 90% 10%, hsl(var(--accent) / 0.10), transparent 60%);
+  pointer-events: none;
+}
+.spc-root .spc-title {
+  background: linear-gradient(120deg, hsl(var(--foreground)) 20%, hsl(var(--primary)) 70%, hsl(var(--accent)) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.spc-root .spc-panic-btn {
+  background: linear-gradient(135deg, hsl(var(--destructive)) 0%, hsl(var(--destructive) / 0.85) 100%);
+}
+.spc-root .spc-panic-shadow { box-shadow: 0 10px 30px -10px hsl(var(--destructive) / 0.55); }
+.spc-root .spc-panic-hover:hover { transform: translateY(-1px); box-shadow: 0 14px 36px -10px hsl(var(--destructive) / 0.65); }
+.spc-root .spc-rules { background: hsl(var(--card) / 0.7); backdrop-filter: blur(12px); }
+.spc-root .spc-card { transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+.spc-root .spc-card[open] { border-color: hsl(var(--primary) / 0.4); box-shadow: 0 12px 40px -18px hsl(var(--primary) / 0.35); }
+.spc-root .spc-card-icon { background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%); box-shadow: 0 8px 20px -8px hsl(var(--primary) / 0.5); }
+.spc-root .spc-chevron::after { content: "▾"; }
+.spc-root .spc-card[open] .spc-chevron::after { content: "▴"; }
+.spc-root .spc-step-icon { background: linear-gradient(135deg, hsl(var(--destructive) / 0.15), hsl(var(--destructive) / 0.08)); color: hsl(var(--destructive)); }
+@media (prefers-reduced-motion: reduce) {
+  .spc-root .spc-panic-hover:hover { transform: none; }
+}
+`;
+
+
   return (
     <div className="spc-root min-h-screen">
       <FloatingHowItWorks
