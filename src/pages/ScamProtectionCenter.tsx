@@ -158,6 +158,7 @@ export const ScamProtectionCenter = () => {
 
   return (
     <div className="spc-root min-h-screen">
+      <style>{spcScopedStyles}</style>
       <FloatingHowItWorks
         title="Security & Scam Protection Center - How it works"
         steps={[
