@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRecentServices } from "@/hooks/useRecentServices";
+import { useShortcuts } from "@/hooks/useShortcuts";
+import { useAuth } from "@/contexts/AuthContext";
+import { addShortcuts } from "@/lib/userShortcuts";
 import { ALL_SEARCHABLE, matchesPage } from "@/components/GlobalSearch";
 import RewardedAdCard from "@/components/ads/RewardedAdCard";
 import { AD_PLACEMENTS } from "@/components/ads/AdPlacements";
@@ -168,8 +171,36 @@ function AnimatedCounter({ target, suffix }: { target: number; suffix: string })
 
 const Index = () => {
   const navigate = useNavigate();
-  const { recent, favorites, trackVisit, toggleFavorite, isFavorite } = useRecentServices();
+  const { user } = useAuth();
+  const { recent, trackVisit } = useRecentServices();
+  const { shortcuts, toggle: toggleShortcut } = useShortcuts();
   const [search, setSearch] = useState("");
+
+  // Move existing Home pins into the same list used by the main menu.
+  useEffect(() => {
+    const legacyKey = "unique_favorite_services";
+    try {
+      const stored = JSON.parse(localStorage.getItem(legacyKey) || "[]");
+      if (!Array.isArray(stored) || stored.length === 0) return;
+      const migrated = stored.flatMap((path) => {
+        if (typeof path !== "string") return [];
+        const module = uniqueModules.find((item) => item.path === path);
+        return module ? [{ path: module.path, label: module.title }] : [];
+      });
+      if (migrated.length > 0) addShortcuts(user?.id, migrated);
+      localStorage.removeItem(legacyKey);
+    } catch {
+      localStorage.removeItem(legacyKey);
+    }
+  }, [user?.id]);
+
+  const favoritePaths = useMemo(() => shortcuts.map((shortcut) => shortcut.path), [shortcuts]);
+  const isFavorite = (path: string) => favoritePaths.includes(path);
+  const toggleFavorite = (path: string) => {
+    const module = uniqueModules.find((item) => item.path === path);
+    if (!module) return;
+    toggleShortcut({ path: module.path, label: module.title });
+  };
 
   const searchResults = useMemo(() => {
     if (!search.trim()) return [];
@@ -205,8 +236,8 @@ const Index = () => {
   );
 
   const favoriteModules = useMemo(() =>
-    favorites.map(path => uniqueModules.find(m => m.path === path)).filter(Boolean),
-    [favorites]
+    favoritePaths.map(path => uniqueModules.find(m => m.path === path)).filter(Boolean),
+    [favoritePaths]
   );
 
 
@@ -787,12 +818,16 @@ function ModuleCard({ mod, size = "sm", showFav = false, onNavigate, isFavorite,
                 {mod.title}
               </CardTitle>
               {showFav && (
-                <button
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={isFavorite(mod.path) ? `Unpin ${mod.title}` : `Pin ${mod.title}`}
                   onClick={(e) => { e.stopPropagation(); toggleFavorite(mod.path); }}
-                  className="shrink-0 p-1 hover:bg-primary/10 rounded transition-colors"
+                  className="h-7 w-7 shrink-0"
                 >
                   {isFavorite(mod.path) ? <Pin className="w-3 h-3 text-primary" /> : <PinOff className="w-3 h-3 text-muted-foreground" />}
-                </button>
+                </Button>
               )}
             </div>
             <Badge variant="secondary" className="text-[9px] sm:text-[10px] mt-1 font-medium">
