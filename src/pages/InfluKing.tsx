@@ -746,7 +746,7 @@ const InfluKing = () => {
                       <span className="block font-bold text-destructive">I promote adult content</span>
                       <span className="block text-muted-foreground">
                         Tick this box if you promote adult content. Your nickname will be published in Discover with the word
-                        {" "}<strong>Adult</strong>, and visitors pay a 2 credit entry fee to open your profile.
+                        {" "}<strong>Adult</strong>, and visitors pay a one-time 6 credit entry fee to open your profile.
                       </span>
                     </span>
                   </label>
