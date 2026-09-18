@@ -515,7 +515,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
 
   // Auto-fetch comments on mount when defaultShowComments=true (used by PostDetail).
   useEffect(() => {
-    if (defaultShowComments && comments.length === 0) {
+    if (defaultShowComments && !post.premium_video_id && comments.length === 0) {
       fetchComments();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -964,15 +964,22 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
             <ReactionPicker postId={post.id} />
           </div>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={toggleComments}
-            className="gap-1 w-full min-w-0 px-1 sm:px-3 hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-colors"
-          >
-            <MessageCircle className="h-4 w-4 shrink-0" />
-            <span className="text-xs font-medium">{commentsCount}</span>
-          </Button>
+          {post.premium_video_id ? (
+            <div className="flex items-center justify-center gap-1 px-1 sm:px-3 text-muted-foreground">
+              <MessageCircle className="h-4 w-4 shrink-0" />
+              <span className="text-xs font-medium">Off</span>
+            </div>
+          ) : (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleComments}
+              className="gap-1 w-full min-w-0 px-1 sm:px-3 hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-colors"
+            >
+              <MessageCircle className="h-4 w-4 shrink-0" />
+              <span className="text-xs font-medium">{commentsCount}</span>
+            </Button>
+          )}
 
           <Button
             variant="ghost"
@@ -1023,7 +1030,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
 
       </div>
 
-      {showComments && (
+      {showComments && !post.premium_video_id && (
         <div className="p-4 pt-0 space-y-3 animate-accordion-down" onClick={(e) => e.stopPropagation()}>
           <EnhancedCommentInput 
             postId={post.id} 
