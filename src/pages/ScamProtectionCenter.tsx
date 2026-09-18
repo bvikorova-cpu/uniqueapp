@@ -293,6 +293,15 @@ export const ScamProtectionCenter = () => {
         <SpotTheScamQuiz />
       </section>
 
+      {/* Simulated AI Scam Detector */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-10">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-2">Simulated AI Scam Detector</h2>
+        <p className="text-muted-foreground mb-6">
+          Paste any suspicious message, email or job offer and see which scam patterns it matches.
+        </p>
+        <AiScamDetector />
+      </section>
+
       {/* Bottom CTA */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-14">
         <Card className="border-border/60 bg-card/70 backdrop-blur-xl">
