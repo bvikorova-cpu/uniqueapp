@@ -52,6 +52,8 @@ interface InfluencerProfile {
   total_likes: number;
   total_views: number;
   is_verified: boolean;
+  is_adult?: boolean;
+
   created_at: string;
 }
 
