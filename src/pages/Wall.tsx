@@ -99,7 +99,10 @@ const Feed = () => {
   const [pullToRefresh, setPullToRefresh] = useState({ pulling: false,
     pullDistance: 0,
     canRefresh: false });
-  const POSTS_PER_PAGE = 10;
+  // Bigger pages + an early trigger (see the scroll handler below) so the next
+  // batch is already loading long before the user hits the bottom — no more
+  // "scroll, wait, load, scroll, wait" stutter.
+  const POSTS_PER_PAGE = 20;
   const PULL_THRESHOLD = 80;
   const { toast } = useToast();
   
