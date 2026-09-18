@@ -118,7 +118,9 @@ const InfluKing = () => {
   const [showPaidMessageDialog, setShowPaidMessageDialog] = useState(false);
 
   const [newProfile, setNewProfile] = useState({ display_name: "", bio: "", category: CATEGORIES[0],
-    profile_photo_url: "", cover_photo_url: "",
+    profile_photo_url: "", cover_photo_url: "", is_adult: false,
+    instagram: "", tiktok: "", youtube: "", twitter: "" });
+
     instagram: "", tiktok: "", youtube: "", twitter: "" });
 
   const [uploadingProfilePhoto, setUploadingProfilePhoto] = useState(false);
