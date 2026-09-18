@@ -53,8 +53,9 @@ const WallPost = ({ item, index, onDelete }: WallPostProps) => {
         <RepostCard repost={item.data} onDelete={onDelete} />
       )}
       {(index + 1) % 10 === 0 && (
-        <div className="mt-3 sm:mt-4">
+        <div className="mt-3 sm:mt-4 space-y-3">
           <MonetagInFeedAd slotIndex={Math.floor((index + 1) / 10)} />
+          <PassiveFeedAd slotIndex={Math.floor((index + 1) / 10)} />
         </div>
       )}
     </div>
