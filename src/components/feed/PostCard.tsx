@@ -85,6 +85,8 @@ const ALLOWED_EXT = new Set(["jpg","jpeg","png","webp","gif","mp4","webm","mov"]
 const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps) => {
   const navigate = useNavigate();
   const { muteUser, unmuteUser, mutedIds } = useUserMutes();
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const { isPinned, togglePin } = usePinnedPosts(currentUserId ?? undefined);
   const isAuthorMuted = mutedIds.includes(post.user_id);
   const [deleting, setDeleting] = useState(false);
   const [contentExpanded, setContentExpanded] = useState(false);
@@ -865,6 +867,25 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
                     Edit
                   </DropdownMenuItem>
                   <DropdownMenuItem
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      togglePin(post.id);
+                    }}
+                    className="gap-2"
+                  >
+                    {isPinned(post.id) ? (
+                      <>
+                        <Pin className="h-4 w-4 text-primary" />
+                        Pinned — unpin
+                      </>
+                    ) : (
+                      <>
+                        <Pin className="h-4 w-4" />
+                        Pin to profile
+                      </>
+                    )}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
                     onClick={handleDelete}
                     disabled={deleting}
                     className="gap-2 text-destructive focus:text-destructive"
@@ -1022,9 +1043,6 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
               <FollowButton userId={post.user_id} variant="ghost" size="sm" />
               <ReportDialog postId={post.id} variant="ghost" />
             </>
-          )}
-          {currentUserId === post.user_id && (
-            <PinButton postId={post.id} userId={post.user_id} />
           )}
         </div>
 
