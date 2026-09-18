@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { fetchAllRows, fetchRowsByIds } from "@/lib/fetchAllRows";
 
 export const useFollows = () => {
   const { toast } = useToast();
@@ -12,18 +13,20 @@ export const useFollows = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
 
-      const { data, error } = await supabase
-        .from("follows")
-        .select("*")
-        .eq("follower_id", user.id);
-
-      if (error) throw error;
-      const ids = (data || []).map((f: any) => f.following_id);
+      // Unlimited following list: page past the 1000-row API cap.
+      const data = await fetchAllRows<any>(() =>
+        supabase.from("follows").select("*").eq("follower_id", user.id) as any,
+      );
+      const ids = (data || []).map((f: any) => f.following_id).filter(Boolean);
       if (ids.length === 0) return data || [];
-      const { data: profs } = await (supabase as any)
-        .from("profiles_public")
-        .select("id, full_name, avatar_url, username, headline, is_verified")
-        .in("id", ids);
+      const profs = await fetchRowsByIds<any>(
+        (chunk) =>
+          (supabase as any)
+            .from("profiles_public")
+            .select("id, full_name, avatar_url, username, headline, is_verified")
+            .in("id", chunk),
+        ids,
+      );
       const map = new Map((profs || []).map((p: any) => [p.id, p]));
       return (data || []).map((f: any) => ({ ...f, profiles: map.get(f.following_id) || null }));
     } });
@@ -34,18 +37,20 @@ export const useFollows = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
 
-      const { data, error } = await supabase
-        .from("follows")
-        .select("*")
-        .eq("following_id", user.id);
-
-      if (error) throw error;
-      const ids = (data || []).map((f: any) => f.follower_id);
+      // Unlimited followers list: page past the 1000-row API cap.
+      const data = await fetchAllRows<any>(() =>
+        supabase.from("follows").select("*").eq("following_id", user.id) as any,
+      );
+      const ids = (data || []).map((f: any) => f.follower_id).filter(Boolean);
       if (ids.length === 0) return data || [];
-      const { data: profs } = await (supabase as any)
-        .from("profiles_public")
-        .select("id, full_name, avatar_url, username, headline, is_verified")
-        .in("id", ids);
+      const profs = await fetchRowsByIds<any>(
+        (chunk) =>
+          (supabase as any)
+            .from("profiles_public")
+            .select("id, full_name, avatar_url, username, headline, is_verified")
+            .in("id", chunk),
+        ids,
+      );
       const map = new Map((profs || []).map((p: any) => [p.id, p]));
       return (data || []).map((f: any) => ({ ...f, profiles: map.get(f.follower_id) || null }));
     } });

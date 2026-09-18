@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { fetchAllRows } from "@/lib/fetchAllRows";
 
 /**
  * Single shared source for "ids of my accepted friends".
@@ -20,14 +21,20 @@ export function useFriendIds(userId: string | null | undefined, enabled = true) 
     placeholderData: (prev) => prev,
     queryFn: async (): Promise<string[]> => {
       if (!userId) return [];
-      const { data, error } = await supabase
-        .from("friendships")
-        .select("user_id,friend_id")
-        .or(`user_id.eq.${userId},friend_id.eq.${userId}`)
-        .eq("status", "accepted");
-      if (error) return [];
-      return (data ?? [])
-        .map((r) => (r.user_id === userId ? r.friend_id : r.user_id))
-        .filter(Boolean) as string[];
+      try {
+        // Unlimited friends: page past the 1000-row API cap.
+        const rows = await fetchAllRows<{ user_id: string; friend_id: string }>(() =>
+          supabase
+            .from("friendships")
+            .select("user_id,friend_id")
+            .or(`user_id.eq.${userId},friend_id.eq.${userId}`)
+            .eq("status", "accepted") as any,
+        );
+        return rows
+          .map((r) => (r.user_id === userId ? r.friend_id : r.user_id))
+          .filter(Boolean) as string[];
+      } catch {
+        return [];
+      }
     } });
 }
