@@ -1068,6 +1068,10 @@ const InfluKing = () => {
                         <div className="flex items-center gap-1.5">
                           <h3 className="font-bold truncate">{influencer.display_name}</h3>
                           {influencer.is_verified && <CheckCircle className="h-4 w-4 text-blue-500 fill-blue-500 shrink-0" />}
+                          {influencer.is_adult && (
+                            <Badge variant="destructive" className="h-5 shrink-0 px-1.5 text-[9px] font-black uppercase">Adult</Badge>
+                          )}
+
                           {liveStreamByInfluencer.has(influencer.id) && (
                             <Badge variant="destructive" className="h-5 shrink-0 gap-1 px-1.5 text-[9px] animate-pulse">
                               <Radio className="h-2.5 w-2.5" /> LIVE
