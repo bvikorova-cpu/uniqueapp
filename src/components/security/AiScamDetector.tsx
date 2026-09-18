@@ -161,7 +161,7 @@ export const AiScamDetector = () => {
 
       const found = ASD_PATTERNS.filter((p) => p.regex.test(text));
       // Base score from matched weights, softened; grows with text scanned
-      const raw = found.reduce((sum, f) => sum + f.pattern.weight, 0);
+      const raw = found.reduce((sum, f) => sum + f.weight, 0);
       const diminishing = 1 - (raw / 100) * 0.35; // diminishing returns
       const score = found.length === 0 ? Math.min(12, 3 + Math.round(text.length / 300)) : Math.max(30, Math.min(96, Math.round(raw * diminishing)));
       const level: AsdResult["level"] = score >= 65 ? "High" : score >= 35 ? "Medium" : "Low";
