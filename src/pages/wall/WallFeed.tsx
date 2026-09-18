@@ -229,9 +229,10 @@ export default function WallFeed({
                     ) : (
                       <RepostCard repost={item.data} onDelete={fetchPosts} />
                     )}
-                    {(index + 1) % 5 === 0 && (
+                    {((index + 1) % 5 === 0 ||
+                      index === visibleFeedItems.length - 1) && (
                       <div className="mt-5">
-                        <WallVideosReelsRow offset={Math.floor((index + 1) / 5) - 1} />
+                        <WallVideosReelsRow offset={Math.floor(index / 5)} />
                       </div>
                     )}
                     {(index + 1) % 10 === 0 && (
