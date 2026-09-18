@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import WallPost, { type FeedItem } from "./WallPost";
+import WallVideosReelsRow from "@/components/feed/WallVideosReelsRow";
 import { markWallFirstPaint } from "@/utils/wallPerf";
 
 interface WallFeedProps {
@@ -78,7 +79,14 @@ const WallFeed = ({ items,
       overscan={160}
       increaseViewportBy={{ top: 120, bottom: 480 }}
       itemContent={(index, item) => (
-        <WallPost item={item} index={index} onDelete={onDelete} />
+        <>
+          <WallPost item={item} index={index} onDelete={onDelete} />
+          {((index + 1) % 5 === 0 || index === items.length - 1) && (
+            <div className="mb-5">
+              <WallVideosReelsRow offset={Math.floor(index / 5)} />
+            </div>
+          )}
+        </>
       )}
       components={{
         Footer: () => (
