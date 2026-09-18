@@ -60,7 +60,7 @@ type FeedItem = WallFeedItem;
 
 // Start the first feed page as soon as this chunk is evaluated, before React
 // mounts the (heavy) Wall tree — the fetch overlaps with rendering.
-prefetchWallFeed(10);
+prefetchWallFeed(20);
 
 
 const Feed = () => {
