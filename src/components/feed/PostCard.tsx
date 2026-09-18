@@ -1036,14 +1036,12 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
 
 
         {/* Additional Actions */}
-        <div className="flex items-center gap-2 pt-2 border-t mt-2" onClick={(e) => e.stopPropagation()}>
-          {currentUserId !== post.user_id && (
-            <>
-              <FollowButton userId={post.user_id} variant="ghost" size="sm" />
-              <ReportDialog postId={post.id} variant="ghost" />
-            </>
-          )}
-        </div>
+        {currentUserId !== post.user_id && (
+          <div className="flex items-center gap-2 pt-2 border-t mt-2" onClick={(e) => e.stopPropagation()}>
+            <FollowButton userId={post.user_id} variant="ghost" size="sm" />
+            <ReportDialog postId={post.id} variant="ghost" />
+          </div>
+        )}
 
       </div>
 
