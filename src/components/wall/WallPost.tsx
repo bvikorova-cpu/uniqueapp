@@ -2,6 +2,7 @@ import { memo } from "react";
 import PostCard from "@/components/feed/PostCard";
 import RepostCard from "@/components/feed/RepostCard";
 import MonetagInFeedAd from "@/components/ads/MonetagInFeedAd";
+import PassiveFeedAd from "@/components/ads/PassiveFeedAd";
 
 interface Post {
   id: string;
@@ -53,8 +54,9 @@ const WallPost = ({ item, index, onDelete }: WallPostProps) => {
         <RepostCard repost={item.data} onDelete={onDelete} />
       )}
       {(index + 1) % 10 === 0 && (
-        <div className="mt-3 sm:mt-4">
+        <div className="mt-3 sm:mt-4 space-y-3">
           <MonetagInFeedAd slotIndex={Math.floor((index + 1) / 10)} />
+          <PassiveFeedAd slotIndex={Math.floor((index + 1) / 10)} />
         </div>
       )}
     </div>
