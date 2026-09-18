@@ -127,7 +127,6 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [editContent, setEditContent] = useState(post.content);
   const [saving, setSaving] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [newFiles, setNewFiles] = useState<File[]>([]);
   const [existingMedia, setExistingMedia] = useState(post.media || []);
   const [mediaToDelete, setMediaToDelete] = useState<string[]>([]);
