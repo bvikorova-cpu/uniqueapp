@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Smile, BarChart3, Palette, Radio, Clock, ArrowLeft, Download, Brain, Gamepad2, Bell, BellOff, Loader2, Plus, Camera, Upload, File as FileIcon, Sticker } from "lucide-react";
+import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Smile, BarChart3, Palette, Radio, Clock, ArrowLeft, Download, Brain, Gamepad2, Bell, BellOff, Loader2, Plus, Camera, Upload, File as FileIcon, Sticker, Lock, BadgeDollarSign } from "lucide-react";
 import { useDmMutes } from "@/hooks/useDmMutes";
 import { EmojiPicker } from "@/components/messenger/EmojiPicker";
 import { GiftShopSheet } from "@/components/gifts/GiftShopSheet";
@@ -86,6 +86,7 @@ interface Message {
   read_at?: string | null;
   attachment_url?: string | null;
   attachment_type?: string | null;
+  ppv_price_cents?: number | null;
   expires_at?: string | null;
   gift_id?: string | null;
 }
@@ -172,6 +173,13 @@ const Messenger = () => {
 
   const [selfDestructDuration, setSelfDestructDuration] = useState<number | null>(null);
   const [uploadingAttachment, setUploadingAttachment] = useState(false);
+  // PPV DM — paid photo/video messages (fans pay to unlock, 85/15 split)
+  const [ppvUnlockedIds, setPpvUnlockedIds] = useState<Set<string>>(new Set());
+  const [unlockingPpvId, setUnlockingPpvId] = useState<string | null>(null);
+  const [ppvMode, setPpvMode] = useState(false);
+  const [ppvPrice, setPpvPrice] = useState("2.99");
+  const [sendingPpv, setSendingPpv] = useState(false);
+  const ppvFileInputRef = useRef<HTMLInputElement>(null);
   const [groupChats, setGroupChats] = useState<GroupChat[]>([]);
   const [activeTab, setActiveTab] = useState<"direct" | "groups">("direct");
   const [selectedMessageText, setSelectedMessageText] = useState<string>("");
@@ -552,7 +560,7 @@ const Messenger = () => {
     // Fetch newest 100 messages (fast path) — order DESC + reverse for render.
     const msgsPromise = supabase
       .from("messages")
-      .select("id, content, sender_id, created_at, story_id, reply_to_id, is_read, read_at, attachment_url, attachment_type, expires_at, gift_id")
+      .select("id, content, sender_id, created_at, story_id, reply_to_id, is_read, read_at, attachment_url, attachment_type, expires_at, gift_id, ppv_price_cents")
       .eq("conversation_id", convId)
       .order("created_at", { ascending: false })
       .limit(100);
@@ -623,6 +631,102 @@ const Messenger = () => {
     } catch {}
   };
 
+  // ── PPV DM: which paid messages has the current viewer already unlocked? ──
+  useEffect(() => {
+    if (!user) return;
+    const lockedIds = messages
+      .filter((m) => m.ppv_price_cents && m.sender_id !== user.id)
+      .map((m) => m.id);
+    if (lockedIds.length === 0) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("message_ppv_unlocks")
+        .select("message_id, status")
+        .eq("buyer_id", user.id)
+        .eq("status", "paid")
+        .in("message_id", lockedIds);
+      if (!cancelled && data) {
+        setPpvUnlockedIds(new Set((data as any[]).map((r) => r.message_id)));
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [messages, user?.id]);
+
+  // Returning from Stripe checkout for a PPV unlock
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("ppv") === "success") {
+      toast({ title: "Message unlocked!", description: "The photo/video is now visible in this chat." });
+      params.delete("ppv");
+      const qs = params.toString();
+      window.history.replaceState({}, "", `${window.location.pathname}${qs ? `?${qs}` : ""}`);
+      if (selectedConversation) fetchMessages();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleUnlockPpv = async (messageId: string) => {
+    try {
+      setUnlockingPpvId(messageId);
+      const { data, error } = await supabase.functions.invoke("ppv-message-checkout", {
+        body: { messageId } });
+      if (error) throw new Error(error.message || "Checkout failed");
+      if ((data as any)?.error) throw new Error((data as any).error);
+      if ((data as any)?.alreadyUnlocked) {
+        setPpvUnlockedIds((prev) => new Set(prev).add(messageId));
+        fetchMessages();
+        return;
+      }
+      if (data?.url) window.location.href = (data as any).url;
+    } catch (e: any) {
+      toast({ title: "Unlock failed", description: e.message, variant: "destructive" });
+    } finally {
+      setUnlockingPpvId(null);
+    }
+  };
+
+  const handlePpvUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || !selectedConversation || !user) return;
+    const priceCents = Math.round(parseFloat(ppvPrice) * 100);
+    if (!priceCents || priceCents < 50) {
+      toast({ title: "Invalid price", description: "Minimum price is €0.50.", variant: "destructive" });
+      return;
+    }
+    if (file.size > MAX_MESSENGER_ATTACHMENT_BYTES) {
+      toast({ title: "File too large", description: "Maximum size is 20 MB.", variant: "destructive" });
+      return;
+    }
+    const kind = getAttachmentKind(file);
+    if (kind !== "image" && kind !== "video") {
+      toast({ title: "Paid messages can only be photos or videos", variant: "destructive" });
+      return;
+    }
+    setSendingPpv(true);
+    try {
+      const fileName = `${user.id}/${Date.now()}-${safeAttachmentName(file.name)}`;
+      const { error: uploadError } = await supabase.storage
+        .from("messenger-attachments")
+        .upload(fileName, file, { contentType: file.type || "application/octet-stream", upsert: false });
+      if (uploadError) throw new Error("Failed to upload media");
+      const { error: insertError } = await supabase.from("messages").insert({
+        conversation_id: selectedConversation,
+        sender_id: user.id,
+        content: "🔒 Paid message — tap to unlock",
+        attachment_url: `messenger-attachments/${fileName}`,
+        attachment_type: kind,
+        ppv_price_cents: priceCents });
+      if (insertError) throw new Error("Failed to send paid message");
+      setPpvMode(false);
+      fetchMessages();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    } finally {
+      setSendingPpv(false);
+    }
+  };
 
   const markMessagesAsRead = async () => {
     if (!selectedConversation || !user) return;
@@ -1477,6 +1581,7 @@ const Messenger = () => {
                           effectiveType = "gif";
                         }
                       }
+                      const isPpvLocked = !!msg.ppv_price_cents && msg.sender_id !== user.id && !ppvUnlockedIds.has(msg.id);
                       // Date separator when day changes vs previous message
                       const cur = new Date(msg.created_at);
                       const prev = idx > 0 ? new Date(messages[idx - 1].created_at) : null;
@@ -1553,7 +1658,7 @@ const Messenger = () => {
                             )}
                             
                             {/* Image */}
-                            {effectiveType === "image" && attachmentUrl && (
+                            {effectiveType === "image" && attachmentUrl && !isPpvLocked && (
                               <img
                                 src={attachmentUrl}
                                 alt="Shared image"
@@ -1562,15 +1667,15 @@ const Messenger = () => {
                               />
                             )}
 
-                            {effectiveType === "video" && attachmentUrl && (
+                            {effectiveType === "video" && attachmentUrl && !isPpvLocked && (
                               <video src={attachmentUrl} controls playsInline className="rounded-lg max-w-full max-h-64 mb-2" />
                             )}
 
-                            {effectiveType === "audio" && attachmentUrl && (
+                            {effectiveType === "audio" && attachmentUrl && !isPpvLocked && (
                               <audio src={attachmentUrl} controls className="w-56 max-w-full mb-2" />
                             )}
 
-                            {effectiveType === "file" && attachmentUrl && (
+                            {effectiveType === "file" && attachmentUrl && !isPpvLocked && (
                               <a href={attachmentUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 underline mb-2">
                                 <FileIcon className="h-4 w-4" />
                                 <span className="truncate">{msg.content.replace(/^📎\s*/, "") || "Download file"}</span>
@@ -1578,12 +1683,26 @@ const Messenger = () => {
                             )}
                             
                             {/* GIF */}
-                            {effectiveType === "gif" && attachmentUrl && (
+                            {effectiveType === "gif" && attachmentUrl && !isPpvLocked && (
                               <img
                                 src={attachmentUrl}
                                 alt="GIF"
                                 className="rounded-lg max-w-full max-h-48 object-cover mb-2"
                               />
+                            )}
+
+                            {/* PPV lock card — hides media until the viewer pays */}
+                            {isPpvLocked && (
+                              <div className="rounded-lg border border-dashed border-primary/50 bg-background/60 p-4 mb-2 text-center">
+                                <Lock className="h-6 w-6 mx-auto mb-1 text-primary" />
+                                <p className="text-sm font-semibold mb-0.5">Paid message</p>
+                                <p className="text-xs text-muted-foreground mb-2">Photo/video is locked until you pay.</p>
+                                <Button size="sm" onClick={() => handleUnlockPpv(msg.id)} disabled={unlockingPpvId === msg.id}>
+                                  {unlockingPpvId === msg.id
+                                    ? <Loader2 className="h-4 w-4 animate-spin" />
+                                    : `Unlock for €${((msg.ppv_price_cents ?? 0) / 100).toFixed(2)}`}
+                                </Button>
+                              </div>
                             )}
                             
                             {/* Unique Gift */}
@@ -1601,6 +1720,9 @@ const Messenger = () => {
 
                             
                             <div className="flex items-center justify-between mt-1 gap-2">
+                              {msg.ppv_price_cents && msg.sender_id === user.id && (
+                                <span className="text-xs font-bold text-primary">PPV · €{(msg.ppv_price_cents / 100).toFixed(2)}</span>
+                              )}
                               <span className="text-xs opacity-70">
                                 { new Date(msg.created_at).toLocaleTimeString("en-US", {
                                   hour: "2-digit",
@@ -1722,6 +1844,13 @@ const Messenger = () => {
                     className="hidden"
                     onChange={handleAttachmentUpload}
                   />
+                  <input
+                    type="file"
+                    ref={ppvFileInputRef}
+                    accept="image/*,video/*"
+                    className="hidden"
+                    onChange={handlePpvUpload}
+                  />
 
                   {/* Tool row — fixed tap targets, horizontal scroll only on very narrow screens */}
                   <div className="flex items-center gap-1.5 overflow-x-auto overscroll-x-contain pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -1790,6 +1919,19 @@ const Messenger = () => {
                       className="h-10 w-10 min-h-10 min-w-10 shrink-0 touch-manipulation rounded-full text-purple-500"
                     />
 
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className={`h-10 w-10 min-h-10 min-w-10 shrink-0 touch-manipulation rounded-full ${ppvMode ? "text-primary bg-primary/10" : ""}`}
+                      disabled={attachmentInputsDisabled || sendingPpv}
+                      aria-label="Send paid photo or video"
+                      title="Send paid photo / video (fans pay to unlock)"
+                      onClick={() => setPpvMode((s) => !s)}
+                    >
+                      <BadgeDollarSign className="h-4 w-4" />
+                    </Button>
+
 
                     <div className="shrink-0">
                       <GiftShopSheet
@@ -1827,6 +1969,26 @@ const Messenger = () => {
                       </div>
                     )}
                   </div>
+
+                  {/* PPV composer panel */}
+                  {ppvMode && (
+                    <div className="rounded-xl border border-primary/40 bg-primary/5 p-3 mb-2 flex flex-wrap items-center gap-2">
+                      <Lock className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-semibold">Paid message</span>
+                      <Input
+                        type="number"
+                        min="0.5"
+                        step="0.5"
+                        value={ppvPrice}
+                        onChange={(e) => setPpvPrice(e.target.value)}
+                        className="w-28 h-8"
+                        aria-label="Price in EUR" />
+                      <span className="text-xs text-muted-foreground">EUR · fan pays to unlock · you keep 85%</span>
+                      <Button size="sm" className="ml-auto" onClick={() => ppvFileInputRef.current?.click()} disabled={sendingPpv || attachmentInputsDisabled}>
+                        {sendingPpv ? <Loader2 className="h-4 w-4 animate-spin" /> : "Select photo / video"}
+                      </Button>
+                    </div>
+                  )}
 
                   {/* Input row */}
                   <div className="flex items-center gap-2">
