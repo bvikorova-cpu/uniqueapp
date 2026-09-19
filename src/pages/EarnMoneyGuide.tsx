@@ -435,6 +435,17 @@ const EarnMoneyGuide = () => {
                       <p className="mt-4 text-base leading-7 text-muted-foreground">{guide.hook}</p>
                       <p className="mt-4 border-l-2 border-accent pl-4 text-sm leading-6 text-foreground"><strong>Best for:</strong> {guide.audience}</p>
 
+                       <div className="mt-6 grid gap-3">
+                         <div className="rounded-lg border border-primary/25 bg-primary/5 p-4">
+                           <h3 className="flex items-center gap-2 text-sm font-bold text-foreground"><Store className="h-4 w-4 text-primary" /> Exactly where you earn</h3>
+                           <p className="mt-2 text-sm leading-6 text-muted-foreground">{guide.whereToEarn}</p>
+                         </div>
+                         <div className="rounded-lg border border-accent/25 bg-accent/5 p-4">
+                           <h3 className="flex items-center gap-2 text-sm font-bold text-foreground"><BadgeEuro className="h-4 w-4 text-accent" /> Amount, share and payout</h3>
+                           <p className="mt-2 text-sm leading-6 text-muted-foreground">{guide.payout}</p>
+                         </div>
+                       </div>
+
                       <div className="mt-7 grid gap-7 sm:grid-cols-2">
                         <div>
                           <h3 className="flex items-center gap-2 font-bold text-foreground"><BadgeEuro className="h-5 w-5 text-primary" /> How money can come in</h3>
