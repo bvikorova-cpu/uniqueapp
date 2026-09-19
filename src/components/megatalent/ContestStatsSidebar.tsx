@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Users, TrendingUp, Flame, Award, Star } from "lucide-react";
 import { useMegatalentContestStats } from "@/hooks/useMegatalentContestStats";
+import { getMegatalentSignupSeason, megatalentSeasonLabelFromStart } from "@/utils/megatalentSeason";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ContestStatsSidebarProps {
