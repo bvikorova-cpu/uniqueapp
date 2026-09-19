@@ -39,7 +39,7 @@ const SPC_CATEGORIES = [
   {
     icon: Store,
     title: "Marketplace Scams",
-    tagline: "Fake courier links and payment manipulation",
+    tagline: "Fake courier links and changed payment details",
     redFlags: [
       "A buyer or seller changes the agreed amount, account or payment method at the last moment",
       "A \u201Ccourier company\u201D link asks for a small \u201Cdelivery fee\u201D before you receive the item",
@@ -47,7 +47,9 @@ const SPC_CATEGORIES = [
       "A screenshot of a transfer is presented as proof, but the money is not visible in your bank account",
     ],
     protect: [
-      "Agree the final price, delivery and seller's payment details clearly in Unique messages",
+      "Bazaar, Skills Marketplace, Auctions, Property Marketplace and some Tutorials may use a price agreed directly with the seller or provider",
+      "Follow the payment method shown in that specific service — some services use direct payment, while others use Unique checkout",
+      "Agree the final price, delivery and payment details clearly in Unique messages",
       "Pay only to the account provided by the seller and verify any change directly with them",
       "Never enter card or banking details through courier or payment links sent in chat",
       "Check the seller's profile rating, reviews and account age first",
@@ -235,7 +237,7 @@ export const ScamProtectionCenter = () => {
           <h2 className="text-sm font-bold uppercase tracking-widest text-primary mb-3">Golden rules</h2>
           <ul className="grid sm:grid-cols-3 gap-2.5 text-sm">
             {[
-              "Payments may happen outside Unique — verify the agreed amount, recipient and account before sending.",
+              "Direct payments are allowed where the service supports them — verify the agreed amount, recipient and account.",
               "No real job, bank or support asks for your password, card or codes.",
               "Urgency and guaranteed profit are the two biggest scam signals.",
             ].map((rule) => (

@@ -48,7 +48,7 @@ const ASD_PATTERNS: AsdPattern[] = [
   {
     id: "asd-offplatform",
     label: "High-risk or manipulated payment request",
-    detail: "Requests hard-to-recover payment such as gift cards, crypto or money transfer, or pressures you to send a deposit. Normal bank transfers to a seller's agreed account are not automatically suspicious.",
+    detail: "Requests hard-to-recover payment such as gift cards, crypto or money transfer, or pressures you to send a deposit. Direct bank payment is normal in supported services when it matches the agreed recipient and amount.",
     weight: 24,
     icon: Banknote,
     regex: /\b(gift ?cards?|itunes card|steam card|western union|money ?gram|paypal (friends|f&f)|crypto|bitcoin|btc|usdt|ethereum|wallet address|refundable deposit|security deposit)\b/i,
@@ -396,7 +396,7 @@ export const AiScamDetector = () => {
                     "This message shows multiple classic scam signals. Do not pay, click or reply — report it to Unique support."
                   }
                   {result.level === "Medium" &&
-                    "Some warning signs detected. Verify the agreed amount, recipient and account before paying, and never share passwords or codes."
+                    "Some warning signs detected. Follow the payment flow shown by that service, verify the agreed recipient and amount, and never share passwords or codes."
                   }
                   {result.level === "Low" &&
                     "No obvious scam patterns found — but scammers evolve. Stay alert, and when in doubt, ask support."
@@ -418,7 +418,7 @@ export const AiScamDetector = () => {
                   <ShieldCheck className="h-5 w-5 mt-0.5 shrink-0" style={{ color: "hsl(142 76% 36%)" }} />
                   <p className="text-sm text-muted-foreground">
                     No red flags matched in this text. That's a good sign, but it's not a guarantee — always double-check
-                    who you're talking to and verify the amount and recipient before sending any payment.
+                    who you're talking to, follow the payment method shown by that service, and verify the recipient and amount.
                   </p>
                 </div>
               ) : (
