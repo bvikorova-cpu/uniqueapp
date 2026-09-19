@@ -17,6 +17,9 @@ import {
   Loader2,
   RotateCcw,
   Info,
+  Package,
+  CreditCard,
+  Smartphone,
 } from "lucide-react";
 
 /**
@@ -34,6 +37,8 @@ interface AsdPattern {
   weight: number;
   icon: typeof AlertTriangle;
   regex: RegExp;
+  /** Global scam category — when matched, the verdict is forced to High Risk. */
+  category?: string;
 }
 
 const ASD_PATTERNS: AsdPattern[] = [
