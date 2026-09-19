@@ -142,17 +142,13 @@ const Navbar = () => {
     {
       category: "Earn Money",
       items: [
-        { path: "/creators", label: "Creators — Subscriptions & Tips (85%)", icon: Star },
+        { path: "/influ-king", label: "Influ King — Place for Influencers", icon: Star },
         { path: "/marketplace", label: "Skills Marketplace — Sell Services", icon: Briefcase },
-        { path: "/megatalent", label: "Megatalent — €10k Quarterly Prize", icon: Crown },
+        { path: "/megatalent", label: "Megatalent — Quarterly Prize Pool", icon: Crown },
         { path: "/unlock-videos", label: "Unlock Videos — Earn per View", icon: Video },
-        { path: "/livestream", label: "Livestreams — Tickets & Tips", icon: TrendingUp },
-        { path: "/jobs", label: "Work & Jobs", icon: Briefcase },
-        { path: "/education", label: "Education — Sell Courses (Instructor)", icon: GraduationCap },
+        { path: "/tutorial-platform", label: "Tutorial & Course Platform — Sell Courses", icon: GraduationCap },
         { path: "/referral", label: "Referrals — €5 per Invite", icon: UserPlus },
         { path: "/gifts/inbox", label: "Gifts — Receive Paid Gifts", icon: Gift },
-        { path: "/rewards", label: "Rewards — XP, Streaks & Lucky Wheel", icon: Trophy },
-        { path: "/earnings", label: "Earnings & Payouts", icon: Euro },
       ],
     },
     {
