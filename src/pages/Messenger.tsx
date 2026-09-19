@@ -1722,6 +1722,13 @@ const Messenger = () => {
                     className="hidden"
                     onChange={handleAttachmentUpload}
                   />
+                  <input
+                    type="file"
+                    ref={ppvFileInputRef}
+                    accept="image/*,video/*"
+                    className="hidden"
+                    onChange={handlePpvUpload}
+                  />
 
                   {/* Tool row — fixed tap targets, horizontal scroll only on very narrow screens */}
                   <div className="flex items-center gap-1.5 overflow-x-auto overscroll-x-contain pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -1790,6 +1797,19 @@ const Messenger = () => {
                       className="h-10 w-10 min-h-10 min-w-10 shrink-0 touch-manipulation rounded-full text-purple-500"
                     />
 
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className={`h-10 w-10 min-h-10 min-w-10 shrink-0 touch-manipulation rounded-full ${ppvMode ? "text-primary bg-primary/10" : ""}`}
+                      disabled={attachmentInputsDisabled || sendingPpv}
+                      aria-label="Send paid photo or video"
+                      title="Send paid photo / video (fans pay to unlock)"
+                      onClick={() => setPpvMode((s) => !s)}
+                    >
+                      <BadgeDollarSign className="h-4 w-4" />
+                    </Button>
+
 
                     <div className="shrink-0">
                       <GiftShopSheet
@@ -1827,6 +1847,26 @@ const Messenger = () => {
                       </div>
                     )}
                   </div>
+
+                  {/* PPV composer panel */}
+                  {ppvMode && (
+                    <div className="rounded-xl border border-primary/40 bg-primary/5 p-3 mb-2 flex flex-wrap items-center gap-2">
+                      <Lock className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-semibold">Paid message</span>
+                      <Input
+                        type="number"
+                        min="0.5"
+                        step="0.5"
+                        value={ppvPrice}
+                        onChange={(e) => setPpvPrice(e.target.value)}
+                        className="w-28 h-8"
+                        aria-label="Price in EUR" />
+                      <span className="text-xs text-muted-foreground">EUR · fan pays to unlock · you keep 85%</span>
+                      <Button size="sm" className="ml-auto" onClick={() => ppvFileInputRef.current?.click()} disabled={sendingPpv || attachmentInputsDisabled}>
+                        {sendingPpv ? <Loader2 className="h-4 w-4 animate-spin" /> : "Select photo / video"}
+                      </Button>
+                    </div>
+                  )}
 
                   {/* Input row */}
                   <div className="flex items-center gap-2">
