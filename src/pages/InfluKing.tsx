@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Crown, Users, Heart, TrendingUp, Camera, Plus, CheckCircle, Star, Upload, ExternalLink, Gift, Brain, Handshake, Briefcase, Pencil, Wallet, Search } from "lucide-react";
+import { Crown, Users, Heart, TrendingUp, Camera, Plus, CheckCircle, Star, Upload, ExternalLink, Gift, Brain, Handshake, Briefcase, Pencil, Wallet, Search, AlertTriangle } from "lucide-react";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { GoLiveButton } from "@/components/influencer/GoLiveButton";
 import { SendInfluencerGiftDialog } from "@/components/influencer/SendInfluencerGiftDialog";
@@ -33,6 +33,7 @@ import { PaidMessageDialog } from "@/components/creator/PaidMessageDialog";
 import { useDebounce } from "@/hooks/use-debounce";
 import FanPaidMessages from "@/components/influencer/FanPaidMessages";
 import LiveNowStrip from "@/components/influencer/LiveNowStrip";
+import { NSFW_BLOCK_MESSAGE, screenMediaFile } from "@/lib/mediaModeration";
 
 
 import { BarChart3, Hash, Trophy, Image, Share2, PieChart, Lock, Radio, MessageCircle, Trash2 } from "lucide-react";
@@ -52,8 +53,6 @@ interface InfluencerProfile {
   total_likes: number;
   total_views: number;
   is_verified: boolean;
-  is_adult?: boolean;
-
   created_at: string;
 }
 
@@ -120,7 +119,7 @@ const InfluKing = () => {
   const [showPaidMessageDialog, setShowPaidMessageDialog] = useState(false);
 
   const [newProfile, setNewProfile] = useState({ display_name: "", bio: "", category: CATEGORIES[0],
-    profile_photo_url: "", cover_photo_url: "", is_adult: false,
+    profile_photo_url: "", cover_photo_url: "",
     instagram: "", tiktok: "", youtube: "", twitter: "" });
 
   const [uploadingProfilePhoto, setUploadingProfilePhoto] = useState(false);
@@ -148,57 +147,7 @@ const InfluKing = () => {
     },
     enabled: !!user });
 
-  // Paid entry (6 credits one-time per creator; 3 credits = €1.50 to the creator, half to platform) to creators flagged as Adult
-  const { data: adultAccessIds = [] } = useQuery({
-    queryKey: ["influkingAdultAccess", user?.id],
-    queryFn: async () => {
-      if (!user) return [];
-      const { data } = await supabase
-        .from("influencer_adult_access")
-        .select("influencer_id")
-        .eq("user_id", user.id);
-      return (data || []).map((r: any) => r.influencer_id as string);
-    },
-    enabled: !!user });
-
-  const [unlockingAdult, setUnlockingAdult] = useState(false);
-
-  const openInfluencer = async (influencer: InfluencerProfile) => {
-    const needsPayment =
-      !!influencer.is_adult &&
-      influencer.user_id !== user?.id &&
-      !adultAccessIds.includes(influencer.id);
-
-    if (!needsPayment) { setSelectedInfluencer(influencer); return; }
-
-    if (!user) {
-      toast({ title: "Sign in required", description: "Please log in to open adult creators.", variant: "destructive" });
-      return;
-    }
-    if (!window.confirm("This creator publishes adult content. One-time entry costs 6 credits. Continue?")) return;
-
-    setUnlockingAdult(true);
-    try {
-      const { data, error } = await (supabase as any).rpc("unlock_adult_creator", { _influencer_id: influencer.id });
-      if (error) throw error;
-      if (!data?.ok) {
-        if (data?.error === "insufficient") {
-          toast({ title: "Not enough credits", description: "Entry costs 6 credits. Top up to continue.", variant: "destructive" });
-          navigate("/ai-credits");
-        } else {
-          toast({ title: "Access failed", description: String(data?.error || "Unknown error"), variant: "destructive" });
-        }
-        return;
-      }
-      queryClient.invalidateQueries({ queryKey: ["influkingAdultAccess"] });
-      window.dispatchEvent(new Event("ai-credits-updated"));
-      setSelectedInfluencer(influencer);
-    } catch (e: any) {
-      toast({ title: "Access failed", description: e.message, variant: "destructive" });
-    } finally {
-      setUnlockingAdult(false);
-    }
-  };
+  const openInfluencer = (influencer: InfluencerProfile) => setSelectedInfluencer(influencer);
 
 
   const { data: topInfluencers = [], isLoading } = useQuery({
@@ -327,8 +276,6 @@ const InfluKing = () => {
         user_id: user.id, display_name: newProfile.display_name, bio: newProfile.bio,
         category: newProfile.category, profile_photo_url: newProfile.profile_photo_url || null,
         cover_photo_url: newProfile.cover_photo_url || null,
-        is_adult: newProfile.is_adult,
-
         social_links: { instagram: newProfile.instagram || null, tiktok: newProfile.tiktok || null, youtube: newProfile.youtube || null, twitter: newProfile.twitter || null } }]);
       if (error) throw error;
     },
@@ -344,6 +291,11 @@ const InfluKing = () => {
     if (!user) return null;
     setUploadingMedia(true);
     try {
+      const moderation = await screenMediaFile(file);
+      if (!moderation.allowed) {
+        toast({ title: "Upload blocked", description: NSFW_BLOCK_MESSAGE, variant: "destructive" });
+        return null;
+      }
       const fileExt = file.name.split('.').pop();
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;
       const { error } = await supabase.storage.from('media').upload(fileName, file);
@@ -361,6 +313,11 @@ const InfluKing = () => {
     if (!file || !file.type.startsWith('image/')) return;
     setUploadingProfilePhoto(true);
     try {
+      const moderation = await screenMediaFile(file);
+      if (!moderation.allowed) {
+        toast({ title: "Upload blocked", description: NSFW_BLOCK_MESSAGE, variant: "destructive" });
+        return;
+      }
       const fileName = `${user!.id}/profile-${Date.now()}.${file.name.split('.').pop()}`;
       const { error } = await supabase.storage.from('media').upload(fileName, file);
       if (error) throw error;
@@ -375,6 +332,11 @@ const InfluKing = () => {
     if (!file || !file.type.startsWith('image/')) return;
     setUploadingCoverPhoto(true);
     try {
+      const moderation = await screenMediaFile(file);
+      if (!moderation.allowed) {
+        toast({ title: "Upload blocked", description: NSFW_BLOCK_MESSAGE, variant: "destructive" });
+        return;
+      }
       const fileName = `${user!.id}/cover-${Date.now()}.${file.name.split('.').pop()}`;
       const { error } = await supabase.storage.from('media').upload(fileName, file);
       if (error) throw error;
@@ -603,6 +565,13 @@ const InfluKing = () => {
         <p className="mx-auto mb-4 max-w-2xl text-center text-sm text-muted-foreground">
           {t("influking.studio_hint", "Everything you need in one place: publish content, sell premium posts, go live and manage your money.")}
         </p>
+        <div className="mx-auto flex max-w-4xl items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm">
+          <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
+          <div>
+            <p className="font-bold text-destructive">No nudity or sexual content</p>
+            <p className="text-muted-foreground">Erotic, nude, sexual and pornographic content is strictly prohibited. Uploads are screened and violations may be removed.</p>
+          </div>
+        </div>
         {/* Action Buttons */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
           className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-3 rounded-3xl border border-primary/15 bg-card/70 p-5 shadow-[0_10px_40px_-20px_hsl(var(--primary)/0.5)] backdrop-blur-xl">
@@ -735,21 +704,13 @@ const InfluKing = () => {
                     <div><Label>YouTube</Label><Input value={newProfile.youtube} onChange={(e) => setNewProfile({ ...newProfile, youtube: e.target.value })} placeholder="@channel" /></div>
                     <div><Label>Twitter/X</Label><Input value={newProfile.twitter} onChange={(e) => setNewProfile({ ...newProfile, twitter: e.target.value })} placeholder="@username" /></div>
                   </div>
-                  <label className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/5 p-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      className="mt-1 h-4 w-4 accent-[hsl(var(--destructive))]"
-                      checked={newProfile.is_adult}
-                      onChange={(e) => setNewProfile({ ...newProfile, is_adult: e.target.checked })}
-                    />
-                    <span className="text-sm">
-                      <span className="block font-bold text-destructive">I promote adult content</span>
-                      <span className="block text-muted-foreground">
-                        Tick this box if you promote adult content. Your nickname will be published in Discover with the word
-                        {" "}<strong>Adult</strong>. Visitors pay a one-time 6 credit entry fee to open your profile — you earn 3 credits (€1.50) from each entry.
-                      </span>
+                  <div className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm">
+                    <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
+                    <span>
+                      <span className="block font-bold text-destructive">No nudity or sexual content</span>
+                      <span className="block text-muted-foreground">Erotic, nude, sexual and pornographic content is strictly prohibited in profiles, posts, PPV and live streams.</span>
                     </span>
-                  </label>
+                  </div>
 
                   <Button className="w-full" onClick={() => createProfileMutation.mutate()} disabled={createProfileMutation.isPending}>
                     {createProfileMutation.isPending ? "Creating..." : "Create Profile"}
@@ -855,10 +816,6 @@ const InfluKing = () => {
                     <div className="flex items-center justify-center sm:justify-start gap-2 mb-2">
                       <h2 className="text-lg sm:text-2xl font-bold break-words">{selectedInfluencer.display_name}</h2>
                       {selectedInfluencer.is_verified && <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 shrink-0 text-blue-500 fill-blue-500" />}
-                      {selectedInfluencer.is_adult && (
-                        <Badge variant="destructive" className="shrink-0 font-black uppercase">Adult</Badge>
-                      )}
-
                       {liveStreamByInfluencer.has(selectedInfluencer.id) && (
                         <Badge variant="destructive" className="gap-1 animate-pulse">
                           <Radio className="h-3 w-3" /> LIVE
@@ -1072,10 +1029,6 @@ const InfluKing = () => {
                         <div className="flex items-center gap-1.5">
                           <h3 className="font-bold truncate">{influencer.display_name}</h3>
                           {influencer.is_verified && <CheckCircle className="h-4 w-4 text-blue-500 fill-blue-500 shrink-0" />}
-                          {influencer.is_adult && (
-                            <Badge variant="destructive" className="h-5 shrink-0 px-1.5 text-[9px] font-black uppercase">Adult</Badge>
-                          )}
-
                           {liveStreamByInfluencer.has(influencer.id) && (
                             <Badge variant="destructive" className="h-5 shrink-0 gap-1 px-1.5 text-[9px] animate-pulse">
                               <Radio className="h-2.5 w-2.5" /> LIVE
