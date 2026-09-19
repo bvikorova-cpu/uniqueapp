@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useSpendCredits } from "@/hooks/useSpendCredits";
 import {
   ScanSearch,
   AlertTriangle,
@@ -138,11 +139,17 @@ export const AiScamDetector = () => {
   const [result, setResult] = useState<AsdResult | null>(null);
   const [progress, setProgress] = useState(0);
   const timerRef = useRef<number | null>(null);
+  const { spend, costs } = useSpendCredits();
 
   const canAnalyze = text.trim().length >= 15;
 
-  const analyze = () => {
+  const analyze = async () => {
     if (!canAnalyze || phase === "analyzing") return;
+    const paid = await spend("scam_ai_analysis", {
+      description: "AI scam text analysis",
+    });
+    if (!paid) return;
+
     setPhase("analyzing");
     setResult(null);
     setProgress(0);
@@ -307,7 +314,7 @@ export const AiScamDetector = () => {
             ) : (
               <>
                 <ScanSearch className="h-4 w-4" />
-                Analyze with AI
+                Analyze with AI · {costs.scam_ai_analysis} credits
               </>
             )}
           </Button>

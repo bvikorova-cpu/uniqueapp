@@ -28,6 +28,7 @@ import {
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { SpotTheScamQuiz } from "@/components/security/SpotTheScamQuiz";
 import { AiScamDetector } from "@/components/security/AiScamDetector";
+import securityHeroVideo from "@/assets/security-center-hero.mp4.asset.json";
 
 /**
  * ScamProtectionCenter — fully isolated page (route /security-center).
@@ -134,6 +135,8 @@ export const ScamProtectionCenter = () => {
     radial-gradient(50% 70% at 90% 10%, hsl(var(--accent) / 0.10), transparent 60%);
   pointer-events: none;
 }
+.spc-root .spc-hero-video { object-fit: cover; object-position: center; }
+.spc-root .spc-hero-shade { background: linear-gradient(90deg, hsl(var(--background) / 0.96) 0%, hsl(var(--background) / 0.82) 48%, hsl(var(--background) / 0.35) 100%); }
 .spc-root .spc-title {
   background: linear-gradient(120deg, hsl(var(--foreground)) 20%, hsl(var(--primary)) 70%, hsl(var(--accent)) 100%);
   -webkit-background-clip: text;
@@ -173,6 +176,17 @@ export const ScamProtectionCenter = () => {
 
       {/* Hero */}
       <section className="spc-hero relative overflow-hidden border-b border-border/60">
+        <video
+          className="spc-hero-video absolute inset-0 h-full w-full"
+          src={securityHeroVideo.url}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+        />
+        <div className="spc-hero-shade absolute inset-0" aria-hidden="true" />
         <div className="absolute inset-0 spc-hero-glow" aria-hidden="true" />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-10 pb-8 sm:pt-14 sm:pb-10">
           <nav className="mb-4">

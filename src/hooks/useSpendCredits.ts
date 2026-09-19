@@ -4,14 +4,15 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
-export type CreditAction = "megatalent_vote" | "megatalent_comment" | "megatalent_upload" | "wellness_ai_tool" | "concert_chat_message" | "comedy_chat_message";
+export type CreditAction = "megatalent_vote" | "megatalent_comment" | "megatalent_upload" | "wellness_ai_tool" | "concert_chat_message" | "comedy_chat_message" | "scam_ai_analysis";
 
 export const CREDIT_COSTS: Record<CreditAction, number> = { megatalent_vote: 1,
   megatalent_comment: 1,
   megatalent_upload: 3,
   wellness_ai_tool: 3,
   concert_chat_message: 1,
-  comedy_chat_message: 1 };
+  comedy_chat_message: 1,
+  scam_ai_analysis: 3 };
 
 
 /**
