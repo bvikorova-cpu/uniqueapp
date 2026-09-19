@@ -146,7 +146,7 @@ const Navbar = () => {
         { path: "/marketplace", label: "Skills Marketplace — Sell Services", icon: Briefcase },
         { path: "/megatalent", label: "Megatalent — €10k Quarterly Prize", icon: Crown },
         { path: "/unlock-videos", label: "Unlock Videos — Earn per View", icon: Video },
-        { path: "/livestream", label: "Livestreams — Tickets & Tips", icon: Radio },
+        { path: "/livestream", label: "Livestreams — Tickets & Tips", icon: TrendingUp },
         { path: "/jobs", label: "Work & Jobs", icon: Briefcase },
         { path: "/education", label: "Education — Sell Courses (Instructor)", icon: GraduationCap },
         { path: "/referral", label: "Referrals — €5 per Invite", icon: UserPlus },
