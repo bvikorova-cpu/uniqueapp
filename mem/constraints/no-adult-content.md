@@ -13,4 +13,5 @@ Erotic, nude, pornographic and sexually suggestive content is FORBIDDEN platform
 - Videos are screened by sampling 3 frames (start/middle/end) client-side and sending them to `moderate-image` (`image_urls` batch; accepts data URLs).
 - `moderate-image` prompt blocks nudity, partial nudity, lingerie-as-subject, see-through, sexual acts/posing, fetish, sex toys; zero tolerance CSAM. Ordinary beachwear/sport/medical/breastfeeding allowed.
 - `moderate-text` blocks erotic/sexual/porn/escort text and nudes solicitation; mild profanity + non-sexual flirting allowed.
+- Influ King has no Adult creator mode, Adult badge, paid Adult entry, or moderation exemption.
 - Remove any legal copy that permits "adult content in age-gated zones".
