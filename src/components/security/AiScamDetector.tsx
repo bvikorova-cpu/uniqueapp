@@ -137,6 +137,8 @@ type AsdPhase = "idle" | "analyzing" | "result";
 interface AsdResult {
   score: number;
   level: "Low" | "Medium" | "High";
+  /** Matched global scam category (forces the High Risk verdict). */
+  category?: string;
   flags: AsdFlag[];
   textLength: number;
   scanTime: number;
