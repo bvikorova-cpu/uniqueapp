@@ -42,7 +42,7 @@ const STS_SCENARIOS: StsScenario[] = [
       "Hi! I bought your item on the marketplace. Click this link to accept the payment via Packeta: packeta-delivery-fee.info/pay — you just need to confirm a small €2 delivery fee first, then the money is released.",
     correct: "scam",
     explanation:
-      "Classic courier scam. Bazaar, Skills Marketplace and other direct-deal services may use the seller's or provider's stated account, but never enter card or banking details through a courier link sent in chat.",
+      "Classic courier scam. Bazaar, Skills Marketplace, Auctions, Property Marketplace and some Tutorials may use the seller's or provider's stated account, but never enter card or banking details through a courier link sent in chat.",
   },
   {
     id: "sts-marketplace-legit",

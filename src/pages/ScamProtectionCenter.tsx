@@ -47,7 +47,7 @@ const SPC_CATEGORIES = [
       "A screenshot of a transfer is presented as proof, but the money is not visible in your bank account",
     ],
     protect: [
-      "Bazaar, Skills Marketplace and some other services may use a price agreed directly with the seller or provider",
+      "Bazaar, Skills Marketplace, Auctions, Property Marketplace and some Tutorials may use a price agreed directly with the seller or provider",
       "Follow the payment method shown in that specific service — some services use direct payment, while others use Unique checkout",
       "Agree the final price, delivery and payment details clearly in Unique messages",
       "Pay only to the account provided by the seller and verify any change directly with them",
