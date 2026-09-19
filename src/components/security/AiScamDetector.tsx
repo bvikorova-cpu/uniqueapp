@@ -430,7 +430,7 @@ export const AiScamDetector = () => {
                     return <LevelIcon className="h-6 w-6" style={{ color: levelStyle.color }} />;
                   })()}
                   <span className="text-2xl font-black" style={{ color: levelStyle.color }}>
-                    {result.level} Risk
+                    {result.level} Risk{result.category ? `: ${result.category}` : ""}
                   </span>
                 </div>
                 <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">
