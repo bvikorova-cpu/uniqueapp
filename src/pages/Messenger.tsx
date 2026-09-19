@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Smile, BarChart3, Palette, Radio, Clock, ArrowLeft, Download, Brain, Gamepad2, Bell, BellOff, Loader2, Plus, Camera, Upload, File as FileIcon, Sticker } from "lucide-react";
+import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Smile, BarChart3, Palette, Radio, Clock, ArrowLeft, Download, Brain, Gamepad2, Bell, BellOff, Loader2, Plus, Camera, Upload, File as FileIcon, Sticker, Lock, BadgeDollarSign } from "lucide-react";
 import { useDmMutes } from "@/hooks/useDmMutes";
 import { EmojiPicker } from "@/components/messenger/EmojiPicker";
 import { GiftShopSheet } from "@/components/gifts/GiftShopSheet";
@@ -86,6 +86,7 @@ interface Message {
   read_at?: string | null;
   attachment_url?: string | null;
   attachment_type?: string | null;
+  ppv_price_cents?: number | null;
   expires_at?: string | null;
   gift_id?: string | null;
 }
@@ -172,6 +173,13 @@ const Messenger = () => {
 
   const [selfDestructDuration, setSelfDestructDuration] = useState<number | null>(null);
   const [uploadingAttachment, setUploadingAttachment] = useState(false);
+  // PPV DM — paid photo/video messages (fans pay to unlock, 85/15 split)
+  const [ppvUnlockedIds, setPpvUnlockedIds] = useState<Set<string>>(new Set());
+  const [unlockingPpvId, setUnlockingPpvId] = useState<string | null>(null);
+  const [ppvMode, setPpvMode] = useState(false);
+  const [ppvPrice, setPpvPrice] = useState("2.99");
+  const [sendingPpv, setSendingPpv] = useState(false);
+  const ppvFileInputRef = useRef<HTMLInputElement>(null);
   const [groupChats, setGroupChats] = useState<GroupChat[]>([]);
   const [activeTab, setActiveTab] = useState<"direct" | "groups">("direct");
   const [selectedMessageText, setSelectedMessageText] = useState<string>("");
@@ -552,7 +560,7 @@ const Messenger = () => {
     // Fetch newest 100 messages (fast path) — order DESC + reverse for render.
     const msgsPromise = supabase
       .from("messages")
-      .select("id, content, sender_id, created_at, story_id, reply_to_id, is_read, read_at, attachment_url, attachment_type, expires_at, gift_id")
+      .select("id, content, sender_id, created_at, story_id, reply_to_id, is_read, read_at, attachment_url, attachment_type, expires_at, gift_id, ppv_price_cents")
       .eq("conversation_id", convId)
       .order("created_at", { ascending: false })
       .limit(100);
