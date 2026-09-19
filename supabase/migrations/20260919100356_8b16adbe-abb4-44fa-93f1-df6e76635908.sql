@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.mt_add_platform_share(numeric) FROM anon, authenticated, public;
