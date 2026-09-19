@@ -638,6 +638,51 @@ serve(async (req) => {
               }
             }
 
+            if (meta.type === "ppv_message_unlock") {
+              const { data: unlock, error } = await supabase
+                .from("message_ppv_unlocks")
+                .update({ status: "paid", stripe_session_id: session.id })
+                .eq("stripe_session_id", session.id)
+                .eq("status", "pending")
+                .select("id, seller_id, amount_cents")
+                .maybeSingle();
+              if (error) log("ppv message webhook update failed", { err: error.message });
+              if (unlock) {
+                await supabase.from("notifications").insert({
+                  user_id: unlock.seller_id,
+                  type: "ppv_message_unlocked",
+                  title: "New paid message unlock",
+                  message: `A fan unlocked your paid message for €${(Number(unlock.amount_cents) / 100).toFixed(2)}.`,
+                  related_id: unlock.id,
+                  is_read: false });
+              }
+            }
+
+            if (meta.type === "wishlist_purchase") {
+              const { data: purchase, error } = await supabase
+                .from("wishlist_purchases")
+                .update({ status: "paid", stripe_session_id: session.id })
+                .eq("stripe_session_id", session.id)
+                .eq("status", "pending")
+                .select("id, item_id, buyer_id, creator_user_id, amount_cents")
+                .maybeSingle();
+              if (error) log("wishlist webhook update failed", { err: error.message });
+              if (purchase) {
+                await supabase
+                  .from("creator_wishlist_items")
+                  .update({ is_funded: true, funded_by: purchase.buyer_id })
+                  .eq("id", purchase.item_id)
+                  .eq("is_funded", false);
+                await supabase.from("notifications").insert({
+                  user_id: purchase.creator_user_id,
+                  type: "wishlist_funded",
+                  title: "Wishlist item funded",
+                  message: `A fan funded your wishlist item for €${(Number(purchase.amount_cents) / 100).toFixed(2)}.`,
+                  related_id: purchase.item_id,
+                  is_read: false });
+              }
+            }
+
             if (meta.type === "super_chat") {
               const { data: sc, error } = await supabase
                 .from("live_super_chats")
