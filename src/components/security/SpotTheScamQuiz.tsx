@@ -5,9 +5,9 @@ import {
   CheckCircle2,
   XCircle,
   Store,
-  Briefcase,
-  TrendingUp,
-  MessageSquareWarning,
+  Smartphone,
+  Mail,
+  Users,
   Award,
   RotateCcw,
   MessageCircle,
@@ -33,64 +33,52 @@ interface StsScenario {
 
 const STS_SCENARIOS: StsScenario[] = [
   {
-    id: "sts-marketplace-courier",
-    category: "Marketplace",
+    id: "sts-sms-customs-fee",
+    category: "SMS Scam",
+    categoryIcon: Smartphone,
+    sender: "SMS · Unknown number",
+    senderBadge: "Unsolicited text · spoofed brand name",
+    message:
+      "DHL: Your package has a pending customs fee of $2.99. To clear delivery, please update your details immediately at: dhl-dispatch-tracking.com",
+    correct: "scam",
+    explanation:
+      "SCAM. Red flag: urgent demands for money and a suspicious non-official URL domain. Real couriers never collect customs fees through random links in text messages — check the tracking in the official DHL app or website instead.",
+  },
+  {
+    id: "sts-whatsapp-verification-code",
+    category: "Social Media Scam",
+    categoryIcon: Users,
+    sender: "WhatsApp · Unknown number (friend's profile photo)",
+    senderBadge: "Hijacked photo · number not in your contacts",
+    message:
+      "Hey! I'm locked out of my account. I sent a verification code to your phone by mistake, can you please copy and paste it back to me here?",
+    correct: "scam",
+    explanation:
+      "SCAM. Red flag: verification code harvesting / account takeover attempt. The code is for YOUR account — anyone who asks you to forward it can steal your profile. Always verify with your friend through another channel first.",
+  },
+  {
+    id: "sts-email-suspension",
+    category: "Email Scam",
+    categoryIcon: Mail,
+    sender: "Email · \"security@amazon-support-alert.net\"",
+    senderBadge: "Unofficial domain · fear tactics",
+    message:
+      "Subject: Urgent: Unauthorized login attempt detected. Your account will be permanently suspended in 24 hours. Verify now: [Link]",
+    correct: "scam",
+    explanation:
+      "SCAM. Red flag: high urgency and fear tactics plus an unofficial email domain. Real companies don't threaten suspension within 24 hours — open the official app or type the website address yourself instead of clicking the link.",
+  },
+  {
+    id: "sts-marketplace-card-details",
+    category: "Marketplace Scam",
     categoryIcon: Store,
-    sender: "Buyer · @martin_k",
-    senderBadge: "New account · 0 reviews",
+    sender: "Marketplace message · eager buyer",
+    senderBadge: "Pushes off-platform payment · private 'courier'",
     message:
-      "Hi! I bought your item on the marketplace. Click this link to accept the payment via Packeta: packeta-delivery-fee.info/pay — you just need to confirm a small €2 delivery fee first, then the money is released.",
+      "I love the item! I will pay via PayPal right now, but I will send a private courier to pick it up. Please click this link to confirm your bank card details to receive the funds.",
     correct: "scam",
     explanation:
-      "Classic courier scam. Bazaar, Skills Marketplace, Auctions, Property Marketplace and some Tutorials may use the seller's or provider's stated account, but never enter card or banking details through a courier link sent in chat.",
-  },
-  {
-    id: "sts-marketplace-legit",
-    category: "Marketplace",
-    categoryIcon: Store,
-    sender: "Buyer · @jana_v",
-    senderBadge: "Member since 2023 · 27 reviews ⭐ 4.9",
-    message:
-      "Hello, is the bike still available? Could you tell me the frame size? If everything is fine, please send me the final agreed price and the bank account where you want me to transfer it.",
-    correct: "safe",
-    explanation:
-      "This looks reasonable for a service that supports direct deals: the buyer asks normal questions and requests the seller's payment details without sending a payment link. Verify the account holder and agreed amount before paying.",
-  },
-  {
-    id: "sts-job-training",
-    category: "Job & Task",
-    categoryIcon: Briefcase,
-    sender: "HR Manager · @recruit_pro",
-    senderBadge: "Corporate-looking profile · personal chat account",
-    message:
-      "Congratulations! You were selected for the remote data-entry position (€35/hour) without an interview. To activate your work account, please pay a one-time €49 software & training fee. Send it and we ship your laptop today.",
-    correct: "scam",
-    explanation:
-      "A real employer NEVER asks you to pay. 'Pay first, work later' is always a scam — job, training, equipment or 'account activation' fees included.",
-  },
-  {
-    id: "sts-support-phish",
-    category: "Fake Support",
-    categoryIcon: MessageSquareWarning,
-    sender: "Unique Support ✔️ · @unique_support_team",
-    senderBadge: "Unverified account · copycat username",
-    message:
-      "⚠️ SECURITY ALERT: Your account will be permanently deleted in 24 hours due to suspicious activity. Reply with your password and the 6-digit verification code from your authenticator app so we can confirm your identity and stop the deletion.",
-    correct: "scam",
-    explanation:
-      "Real Unique support NEVER asks for your password or verification codes, and never threatens deletion within 24 hours. Support is reachable only via the Contact page on uniqueapp.fun.",
-  },
-  {
-    id: "sts-crypto-bot",
-    category: "Investment",
-    categoryIcon: TrendingUp,
-    sender: "Mentor · @crypto_ai_profits",
-    senderBadge: "New account · profit screenshots in gallery",
-    message:
-      "My AI trading bot made me €4,200 last week — guaranteed 15% daily profit! Join my VIP signal group for free, just send your first deposit in crypto to this wallet address and I'll set everything up for you.",
-    correct: "scam",
-    explanation:
-      "Guaranteed profit does not exist, and crypto transfers to strangers are irreversible. Fake screenshots + 'VIP group' + wallet address = scam.",
+      "SCAM. Red flag: real marketplaces or couriers never require your full card details, CVV, or expiration date to send you money. Keep payments on the platform and never enter card data through links sent in chat.",
   },
 ];
 
@@ -292,7 +280,7 @@ export const SpotTheScamQuiz = () => {
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Certificate of completion</p>
             <p className="mt-1.5 text-sm leading-relaxed">
               This member completed the Unique <strong>Spot the Scam</strong> training and knows how to recognize
-              marketplace, job, investment and fake-support scams.
+              SMS, email, social media and marketplace scams.
             </p>
           </div>
 
