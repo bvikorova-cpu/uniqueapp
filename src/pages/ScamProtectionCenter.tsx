@@ -39,16 +39,17 @@ const SPC_CATEGORIES = [
   {
     icon: Store,
     title: "Marketplace Scams",
-    tagline: "Fake courier links, off-platform payments",
+    tagline: "Fake courier links and payment manipulation",
     redFlags: [
-      "A buyer or seller pushes you to pay outside Unique (bank transfer, gift cards, crypto)",
+      "A buyer or seller changes the agreed amount, account or payment method at the last moment",
       "A \u201Ccourier company\u201D link asks for a small \u201Cdelivery fee\u201D before you receive the item",
       "Price is far below market value and the seller pressures you to decide fast",
-      "Screenshots of \u201Cpayment done\u201D instead of a real in-app confirmation",
+      "A screenshot of a transfer is presented as proof, but the money is not visible in your bank account",
     ],
     protect: [
-      "Always pay and message inside Unique so escrow and dispute protection apply",
-      "Never open courier or payment links sent in chat",
+      "Agree the final price, delivery and seller's payment details clearly in Unique messages",
+      "Pay only to the account provided by the seller and verify any change directly with them",
+      "Never enter card or banking details through courier or payment links sent in chat",
       "Check the seller's profile rating, reviews and account age first",
     ],
   },
@@ -169,7 +170,7 @@ export const ScamProtectionCenter = () => {
         steps={[
           { title: "Learn", desc: "Read the four scam categories and their red flags." },
           { title: "Recognize", desc: "Compare any suspicious message against the listed warning signs." },
-          { title: "Act", desc: "If something feels wrong, stop paying and messaging the stranger." },
+          { title: "Act", desc: "If payment details unexpectedly change or something feels wrong, pause and verify the seller." },
           { title: "Report", desc: "Use the Panic button for emergency steps, then report to Unique support." },
         ]}
       />
@@ -234,7 +235,7 @@ export const ScamProtectionCenter = () => {
           <h2 className="text-sm font-bold uppercase tracking-widest text-primary mb-3">Golden rules</h2>
           <ul className="grid sm:grid-cols-3 gap-2.5 text-sm">
             {[
-              "Never pay anyone outside Unique.",
+              "Payments may happen outside Unique — verify the agreed amount, recipient and account before sending.",
               "No real job, bank or support asks for your password, card or codes.",
               "Urgency and guaranteed profit are the two biggest scam signals.",
             ].map((rule) => (

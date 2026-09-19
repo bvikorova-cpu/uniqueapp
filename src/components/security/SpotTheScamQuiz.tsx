@@ -42,7 +42,7 @@ const STS_SCENARIOS: StsScenario[] = [
       "Hi! I bought your item on the marketplace. Click this link to accept the payment via Packeta: packeta-delivery-fee.info/pay — you just need to confirm a small €2 delivery fee first, then the money is released.",
     correct: "scam",
     explanation:
-      "Classic courier scam. Real couriers never ask the SELLER to pay a fee, and payments happen inside Unique — never via a link from chat.",
+      "Classic courier scam. Marketplace payments may go directly to the seller's stated account, but a seller should never enter card or banking details through a courier link sent by a buyer.",
   },
   {
     id: "sts-marketplace-legit",
@@ -51,10 +51,10 @@ const STS_SCENARIOS: StsScenario[] = [
     sender: "Buyer · @jana_v",
     senderBadge: "Member since 2023 · 27 reviews ⭐ 4.9",
     message:
-      "Hello, is the bike still available? Could you tell me the frame size? If everything is fine, I'd like to pay through the in-app checkout so we both have buyer/seller protection.",
+      "Hello, is the bike still available? Could you tell me the frame size? If everything is fine, please send me the final agreed price and the bank account where you want me to transfer it.",
     correct: "safe",
     explanation:
-      "This looks safe: normal questions about the item and the buyer wants to pay inside Unique, where escrow and dispute protection apply.",
+      "This looks reasonable: the buyer asks normal questions and requests the seller's payment details without sending an external payment link. Verify the account holder and agreed amount before paying.",
   },
   {
     id: "sts-job-training",
