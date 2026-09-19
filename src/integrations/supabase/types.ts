@@ -17865,6 +17865,53 @@ export type Database = {
         }
         Relationships: []
       }
+      creator_wishlist_items: {
+        Row: {
+          created_at: string
+          creator_id: string
+          description: string | null
+          funded_by: string | null
+          id: string
+          image_url: string | null
+          is_funded: boolean
+          link_url: string | null
+          price_eur: number
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          creator_id: string
+          description?: string | null
+          funded_by?: string | null
+          id?: string
+          image_url?: string | null
+          is_funded?: boolean
+          link_url?: string | null
+          price_eur: number
+          title: string
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string
+          description?: string | null
+          funded_by?: string | null
+          id?: string
+          image_url?: string | null
+          is_funded?: boolean
+          link_url?: string | null
+          price_eur?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_wishlist_items_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       credit_audit_log: {
         Row: {
           context: Json
@@ -41941,6 +41988,50 @@ export type Database = {
           },
         ]
       }
+      message_ppv_unlocks: {
+        Row: {
+          amount_cents: number
+          buyer_id: string
+          created_at: string
+          creator_payout_cents: number
+          id: string
+          message_id: string
+          seller_id: string
+          status: string
+          stripe_session_id: string | null
+        }
+        Insert: {
+          amount_cents: number
+          buyer_id: string
+          created_at?: string
+          creator_payout_cents: number
+          id?: string
+          message_id: string
+          seller_id: string
+          status?: string
+          stripe_session_id?: string | null
+        }
+        Update: {
+          amount_cents?: number
+          buyer_id?: string
+          created_at?: string
+          creator_payout_cents?: number
+          id?: string
+          message_id?: string
+          seller_id?: string
+          status?: string
+          stripe_session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_ppv_unlocks_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       message_reactions: {
         Row: {
           created_at: string
@@ -41985,6 +42076,7 @@ export type Database = {
           id: string
           is_read: boolean | null
           message_type: string | null
+          ppv_price_cents: number | null
           read_at: string | null
           reply_to_id: string | null
           sender_id: string
@@ -42003,6 +42095,7 @@ export type Database = {
           id?: string
           is_read?: boolean | null
           message_type?: string | null
+          ppv_price_cents?: number | null
           read_at?: string | null
           reply_to_id?: string | null
           sender_id: string
@@ -42021,6 +42114,7 @@ export type Database = {
           id?: string
           is_read?: boolean | null
           message_type?: string | null
+          ppv_price_cents?: number | null
           read_at?: string | null
           reply_to_id?: string | null
           sender_id?: string
@@ -67602,6 +67696,50 @@ export type Database = {
         }
         Relationships: []
       }
+      wishlist_purchases: {
+        Row: {
+          amount_cents: number
+          buyer_id: string
+          created_at: string
+          creator_payout_cents: number
+          creator_user_id: string
+          id: string
+          item_id: string
+          status: string
+          stripe_session_id: string | null
+        }
+        Insert: {
+          amount_cents: number
+          buyer_id: string
+          created_at?: string
+          creator_payout_cents: number
+          creator_user_id: string
+          id?: string
+          item_id: string
+          status?: string
+          stripe_session_id?: string | null
+        }
+        Update: {
+          amount_cents?: number
+          buyer_id?: string
+          created_at?: string
+          creator_payout_cents?: number
+          creator_user_id?: string
+          id?: string
+          item_id?: string
+          status?: string
+          stripe_session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wishlist_purchases_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "creator_wishlist_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       withdrawal_requests: {
         Row: {
           admin_notes: string | null
@@ -71068,6 +71206,10 @@ export type Database = {
       }
       get_creator_earnings_summary: {
         Args: { _user_id: string }
+        Returns: Json
+      }
+      get_creator_top_fans: {
+        Args: { _creator_user_id: string; _limit?: number }
         Returns: Json
       }
       get_current_user_id: { Args: never; Returns: string }
