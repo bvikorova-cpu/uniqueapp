@@ -280,7 +280,7 @@ export const SpotTheScamQuiz = () => {
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Certificate of completion</p>
             <p className="mt-1.5 text-sm leading-relaxed">
               This member completed the Unique <strong>Spot the Scam</strong> training and knows how to recognize
-              marketplace, job, investment and fake-support scams.
+              SMS, email, social media and marketplace scams.
             </p>
           </div>
 
