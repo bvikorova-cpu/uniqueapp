@@ -99,6 +99,7 @@ import { GameAdGateHost } from "@/components/games/GameAdGateHost";
 
 
 const ScamProtectionCenter = lazy(() => import("@/pages/ScamProtectionCenter"));
+const EarnMoneyGuide = lazy(() => import("@/pages/EarnMoneyGuide"));
 const Navbar = lazy(() => import("./components/Navbar"));
 const Footer = lazy(() => import("./components/Footer"));
 const ProtectedRoute = lazy(() => import("@/components/ProtectedRoute").then((module) => ({ default: module.ProtectedRoute })));
@@ -617,6 +618,7 @@ const App = () => {
                         {/* All routes render inside this Suspense boundary */}
                         <Routes>
                         <Route path="/" element={<Index />} />
+                         <Route path="/earn-money" element={<EarnMoneyGuide />} />
                         <Route path="/eco-challenge" element={<EcoChallenge />} />
                         <Route path="/eco" element={<EcoChallenge />} />
                         <Route path="/eco-challenge/history" element={<EcoChallengeHistory />} />
