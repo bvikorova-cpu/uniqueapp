@@ -244,6 +244,7 @@ export const SpotTheScamQuiz = () => {
   };
 
   const restart = () => {
+    setRound(stsPickRound());
     setIndex(0);
     setScore(0);
     setPicked(null);
