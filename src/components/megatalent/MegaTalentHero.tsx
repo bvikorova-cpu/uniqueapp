@@ -4,14 +4,16 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Heart, Clock, Flame, Crown, Sparkles } from "lucide-react";
 import heroVideo from "@/assets/megatalent-hero.mp4.asset.json";
 import { useMegatalentContestStats } from "@/hooks/useMegatalentContestStats";
+import { getMegatalentSignupSeason } from "@/utils/megatalentSeason";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-function getContestTimeLeft() {
+function getContestTimeLeft(periodEnd?: string | null) {
   const now = new Date();
-  // Quarterly cycle — ends on the last day of the current calendar quarter (UTC).
-  const quarter = Math.floor(now.getUTCMonth() / 3);
-  const quarterEndMonth = quarter * 3 + 3; // 3, 6, 9, 12
-  const end = new Date(Date.UTC(now.getUTCFullYear(), quarterEndMonth, 0, 23, 59, 59));
+  // Target season end: DB contest period when available (last-month signups
+  // roll into the next quarter), otherwise the calendar signup season.
+  const end = periodEnd
+    ? new Date(`${periodEnd}T23:59:59Z`)
+    : getMegatalentSignupSeason(now).end;
   const diff = Math.max(0, end.getTime() - now.getTime());
   const days = Math.floor(diff / 86400000);
   const hours = Math.floor((diff % 86400000) / 3600000);
