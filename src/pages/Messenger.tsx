@@ -631,6 +631,102 @@ const Messenger = () => {
     } catch {}
   };
 
+  // ── PPV DM: which paid messages has the current viewer already unlocked? ──
+  useEffect(() => {
+    if (!user) return;
+    const lockedIds = messages
+      .filter((m) => m.ppv_price_cents && m.sender_id !== user.id)
+      .map((m) => m.id);
+    if (lockedIds.length === 0) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("message_ppv_unlocks")
+        .select("message_id, status")
+        .eq("buyer_id", user.id)
+        .eq("status", "paid")
+        .in("message_id", lockedIds);
+      if (!cancelled && data) {
+        setPpvUnlockedIds(new Set((data as any[]).map((r) => r.message_id)));
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [messages, user?.id]);
+
+  // Returning from Stripe checkout for a PPV unlock
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("ppv") === "success") {
+      toast({ title: "Message unlocked!", description: "The photo/video is now visible in this chat." });
+      params.delete("ppv");
+      const qs = params.toString();
+      window.history.replaceState({}, "", `${window.location.pathname}${qs ? `?${qs}` : ""}`);
+      if (selectedConversation) fetchMessages();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleUnlockPpv = async (messageId: string) => {
+    try {
+      setUnlockingPpvId(messageId);
+      const { data, error } = await supabase.functions.invoke("ppv-message-checkout", {
+        body: { messageId } });
+      if (error) throw new Error(error.message || "Checkout failed");
+      if ((data as any)?.error) throw new Error((data as any).error);
+      if ((data as any)?.alreadyUnlocked) {
+        setPpvUnlockedIds((prev) => new Set(prev).add(messageId));
+        fetchMessages();
+        return;
+      }
+      if (data?.url) window.location.href = (data as any).url;
+    } catch (e: any) {
+      toast({ title: "Unlock failed", description: e.message, variant: "destructive" });
+    } finally {
+      setUnlockingPpvId(null);
+    }
+  };
+
+  const handlePpvUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || !selectedConversation || !user) return;
+    const priceCents = Math.round(parseFloat(ppvPrice) * 100);
+    if (!priceCents || priceCents < 50) {
+      toast({ title: "Invalid price", description: "Minimum price is €0.50.", variant: "destructive" });
+      return;
+    }
+    if (file.size > MAX_MESSENGER_ATTACHMENT_BYTES) {
+      toast({ title: "File too large", description: "Maximum size is 20 MB.", variant: "destructive" });
+      return;
+    }
+    const kind = getAttachmentKind(file);
+    if (kind !== "image" && kind !== "video") {
+      toast({ title: "Paid messages can only be photos or videos", variant: "destructive" });
+      return;
+    }
+    setSendingPpv(true);
+    try {
+      const fileName = `${user.id}/${Date.now()}-${safeAttachmentName(file.name)}`;
+      const { error: uploadError } = await supabase.storage
+        .from("messenger-attachments")
+        .upload(fileName, file, { contentType: file.type || "application/octet-stream", upsert: false });
+      if (uploadError) throw new Error("Failed to upload media");
+      const { error: insertError } = await supabase.from("messages").insert({
+        conversation_id: selectedConversation,
+        sender_id: user.id,
+        content: "🔒 Paid message — tap to unlock",
+        attachment_url: `messenger-attachments/${fileName}`,
+        attachment_type: kind,
+        ppv_price_cents: priceCents });
+      if (insertError) throw new Error("Failed to send paid message");
+      setPpvMode(false);
+      fetchMessages();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    } finally {
+      setSendingPpv(false);
+    }
+  };
 
   const markMessagesAsRead = async () => {
     if (!selectedConversation || !user) return;
@@ -1485,6 +1581,7 @@ const Messenger = () => {
                           effectiveType = "gif";
                         }
                       }
+                      const isPpvLocked = !!msg.ppv_price_cents && msg.sender_id !== user.id && !ppvUnlockedIds.has(msg.id);
                       // Date separator when day changes vs previous message
                       const cur = new Date(msg.created_at);
                       const prev = idx > 0 ? new Date(messages[idx - 1].created_at) : null;
