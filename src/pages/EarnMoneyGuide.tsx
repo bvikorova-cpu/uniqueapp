@@ -41,6 +41,8 @@ type EarnGuide = {
   image: string;
   icon: typeof Star;
   income: string[];
+  whereToEarn: string;
+  payout: string;
   steps: string[];
   momentum: string[];
   note: string;
@@ -60,6 +62,8 @@ const earnGuides: EarnGuide[] = [
     image: sectionPosters.influKing,
     icon: Star,
     income: ["Fan subscriptions with creator-set membership levels", "Tips and paid gifts from supporters", "Paid photo or video messages", "Premium posts and brand opportunities"],
+    whereToEarn: "Register as a creator in Influ King. Your creator profile contains the monetization tools: subscriptions, premium content, gifts, brand opportunities and the Earnings area.",
+    payout: "Eligible creator income is recorded in Influ King earnings. Open Track & Withdraw Earnings to see the available balance and request a payout. The section currently displays a €50 minimum withdrawal; the applicable creator/platform split is shown before each paid transaction.",
     steps: ["Create a credible creator profile with a clear niche.", "Publish consistently and give followers a reason to return.", "Activate the earning formats that fit your audience.", "Track performance and available payouts in your creator tools."],
     momentum: ["Lead with one recognizable topic or style.", "Explain clearly what supporters receive.", "Reward loyal fans with reliable, valuable content."],
     note: "Creator monetization is subject to payment completion, platform rules and the payout status shown in your account.",
@@ -75,6 +79,8 @@ const earnGuides: EarnGuide[] = [
     image: sectionPosters.marketplace,
     icon: BriefcaseBusiness,
     income: ["Fixed-price service offers", "Custom work agreed with buyers", "Repeat orders from satisfied customers", "A public provider profile that builds trust"],
+    whereToEarn: "Open Skills Marketplace and publish an offering. Customers discover it there and unlock contact so you can agree the job, deadline and payment directly.",
+    payout: "Publishing an offering costs 2 credits. The first buyer message/contact unlock costs the buyer 2 credits. Unique charges no commission on your service price; the customer pays you directly using the method you agree together.",
     steps: ["Choose one service with a specific result.", "Add an honest description, price, delivery time and examples.", "Respond to buyer questions and confirm the scope.", "Complete the order and build your reputation through genuine reviews."],
     momentum: ["Make the outcome obvious in the title.", "Start with a focused offer instead of promising everything.", "Deliver on time and keep all order details clear."],
     note: "Only offer services you can genuinely deliver. Order and payout status are based on completed platform transactions.",
@@ -90,6 +96,8 @@ const earnGuides: EarnGuide[] = [
     image: sectionPosters.hero,
     icon: Crown,
     income: ["A chance to win the current quarterly prize pool", "Support through eligible fan activity", "Visibility that can grow your wider creator audience", "Competition and battle opportunities shown in the section"],
+    whereToEarn: "Open Megatalent, activate an eligible €10 or €15 monthly submission plan and publish your original performance into the active or next eligible competition period. Voting and ranking happen inside Megatalent.",
+    payout: "The quarterly prize pool is variable, not a guaranteed fixed amount. Only eligible winners receive the prize shown for that period. Prize and payment instructions appear in Megatalent after results are finalized.",
     steps: ["Check the active competition period and categories.", "Submit eligible original content under the current rules.", "Share your entry and build genuine audience support.", "Follow rankings, results and payout instructions inside Megatalent."],
     momentum: ["Make the opening seconds impossible to ignore.", "Enter early enough to build real momentum.", "Invite genuine supporters—never manipulate engagement."],
     note: "The prize pool is variable. Entry does not guarantee a prize, ranking or payout.",
@@ -105,6 +113,8 @@ const earnGuides: EarnGuide[] = [
     image: sectionPosters.livestream,
     icon: Video,
     income: ["Creator earnings for completed premium unlocks", "Discovery through Unlock Videos and supported Wall surfaces", "A growing premium video library", "Earned value tracked separately from purchased unlock credits"],
+    whereToEarn: "Open Unlock Videos, go to the creator/My Videos area and upload a premium video. Viewers see the first half free in Unlock Videos and supported Wall surfaces, then choose whether to spend one unlock credit for the rest.",
+    payout: "Each completed unlock gives the creator 0.5 earned video credit, equal to €0.25; the platform keeps the other 50%. At €20—80 completed unlocks—you can transfer creator earnings from My Videos to Earnings and request a bank payout. Purchased credits cannot be withdrawn.",
     steps: ["Upload an original video that follows platform rules.", "Use the free first half to create genuine curiosity.", "Publish and share it to the supported Unique feeds.", "View unlock activity and earnings in your account."],
     momentum: ["Promise a specific payoff and deliver it after the preview.", "Use a title that says what viewers will gain.", "Build a series so one unlock can lead to the next."],
     note: "A viewer must choose to unlock the video. Purchased credits and creator-earned value have different purposes.",
@@ -120,6 +130,8 @@ const earnGuides: EarnGuide[] = [
     image: sectionPosters.education,
     icon: GraduationCap,
     income: ["Sales of published courses", "A reusable learning product", "A route from free expertise to paid depth", "Authority that can support your other Unique offers"],
+    whereToEarn: "Open Tutorial & Course Platform, enter the instructor/creator area, build lessons and publish the finished course with its real EUR price. Learners buy the course inside that section.",
+    payout: "Revenue appears only after a real completed course purchase. Track course sales and the withdrawable instructor balance in the platform’s instructor earnings tools; the current fee and payout terms shown during course setup apply.",
     steps: ["Choose one learner and one concrete transformation.", "Break the outcome into clear, practical lessons.", "Set up the course, price and learning materials.", "Publish, improve from real feedback and keep content accurate."],
     momentum: ["Solve a narrow problem extremely well.", "Show the result learners can work toward.", "Use practical examples instead of filler."],
     note: "Course sales depend on real purchases. Keep claims accurate and only teach material you are qualified to present.",
@@ -135,6 +147,8 @@ const earnGuides: EarnGuide[] = [
     image: sectionPosters.hero,
     icon: UserPlus,
     income: ["Eligible referral rewards shown in the referral section", "Milestones and leaderboard progress", "A personal invitation link", "Withdrawal tools for completed referral earnings"],
+    whereToEarn: "Open Referrals, copy your personal link or code and share it. A friend must register through that attribution and activate an eligible Premium subscription for the cash referral to qualify.",
+    payout: "The current referral page states €5 for each qualifying friend after subscription activation. Verified earnings appear on the Referral page; the minimum withdrawal shown there is €10. Registration alone does not create the €5 cash reward.",
     steps: ["Open your referral page and copy your personal link.", "Send it privately to people who would benefit from Unique.", "Let them register and complete the qualifying action.", "Track verified referrals and available rewards on the page."],
     momentum: ["Explain which Unique section fits each person.", "Share directly instead of posting spam.", "Use the current reward details shown in your account."],
     note: "Rewards apply only to eligible, verified referrals under the current program terms; self-referrals and abuse do not qualify.",
@@ -150,7 +164,9 @@ const earnGuides: EarnGuide[] = [
     image: sectionPosters.secretSanta,
     icon: Gift,
     income: ["Eligible paid gifts received from other users", "Support connected to creator and live experiences", "A visible history of received gifts", "Payout value based on completed eligible transactions"],
-    steps: ["Create content or live experiences people value.", "Build genuine interaction with your audience.", "Receive gifts through supported Unique features.", "Review gift history and eligible earnings in your account."],
+    whereToEarn: "People can send you a gift in two exact places: from the Gift button under your Wall post, or from the gift-box button inside a Messenger conversation. The gift is credited automatically to the author of the post or the recipient of the message.",
+    payout: "You receive 50% of the gift’s purchased-credit value in euros. Because 1 credit equals €0.50, your share is €0.25 per gifted credit. Only gifts paid with purchased credits create cash earnings; free or bonus-credit gifts do not. Open My gifts → Received to see earnings and request withdrawal from €20.",
+    steps: ["Publish an original Wall post people value, or build genuine conversations in Messenger.", "A supporter taps Gift below your post or the gift-box icon in your chat, chooses a gift and confirms its credit price.", "Unique records the gift automatically in your My gifts inbox; you do not need to activate a separate creator switch.", "Open Profile → My gifts → Received, check the euro balance and use Withdraw after the available amount reaches €20."],
     momentum: ["Give first: entertain, teach or help.", "Thank supporters without pressuring anyone.", "Stay consistent so your community knows when to return."],
     note: "Gifts are voluntary. Never promise special treatment that violates platform rules in exchange for a gift.",
   },
@@ -167,6 +183,8 @@ const earnGuides: EarnGuide[] = [
     image: sectionPosters.fitness,
     icon: Leaf,
     income: ["A chance to become the monthly challenge champion", "The winner share displayed in the live prize-pool breakdown", "Public progress through eligible submissions", "A charity share selected through the challenge winner flow"],
+    whereToEarn: "Choose Eco Challenge or Healthy Challenge, activate PRO (€3/month) or TOP (€5/month), then add genuine photo or video proof inside that challenge. At least one eligible submission per calendar month is required; only one submission per day is allowed.",
+    payout: "There is one champion per month. The live subscription pool is split 50% cash to the champion, 20% to the champion’s selected charity and 30% to the platform. The pool changes with paid participation, so entry does not guarantee income.",
     steps: ["Choose Eco Challenge or Healthy Challenge.", "Review the current rules, period and eligible subscription tier.", "Complete and document genuine daily actions.", "Build consistent progress and follow the final monthly result."],
     momentum: ["Consistency beats one impressive day.", "Make every submission easy to understand and verify.", "Choose the challenge that fits your real routine."],
     note: "Prize pools are variable. Participation or subscription does not guarantee winning; the displayed live breakdown controls the current amounts.",
@@ -182,6 +200,8 @@ const earnGuides: EarnGuide[] = [
     image: sectionPosters.property,
     icon: Building2,
     income: ["Reach for genuine sale or rental opportunities", "Direct interest from people browsing property", "A structured listing that presents the offer professionally", "Visibility alongside other marketplace opportunities"],
+    whereToEarn: "Open Property Marketplace and publish a real property for sale or rent. Interested people contact you from the listing; you negotiate and complete the property transaction directly.",
+    payout: "A property listing costs 20 credits (€10). Unique takes 0% commission from the property sale or rent. There is no Unique payout balance here—the buyer or tenant pays you through the legally appropriate method you arrange.",
     steps: ["Prepare accurate property details and current photos.", "Create the listing with the real price and conditions.", "Respond to enquiries and arrange the next step safely.", "Complete agreements and legal checks outside assumptions made by the listing."],
     momentum: ["Lead with the strongest factual advantage.", "Show the actual space clearly.", "Disclose important conditions early."],
     note: "Unique provides discovery and listing tools; a listing itself does not guarantee a sale, rental or income.",
@@ -197,6 +217,8 @@ const earnGuides: EarnGuide[] = [
     image: sectionPosters.bazaar,
     icon: Store,
     income: ["Direct sales of eligible physical items", "Offers from interested buyers", "Repeat selling through your own listings", "A route to monetize items you no longer use"],
+    whereToEarn: "Open Bazaar, create a listing for your real item and respond when a buyer unlocks the first message. Agree price, payment and safe collection or delivery directly with the buyer.",
+    payout: "Publishing costs 2 credits and the buyer’s first message costs 2 credits. Unique takes no sale commission and does not hold Bazaar proceeds; the buyer pays you directly under your agreement.",
     steps: ["Photograph the actual item from several angles.", "Describe its condition and faults honestly.", "Set a realistic price and publish the listing.", "Use platform messaging and agree a safe handover."],
     momentum: ["Bright, honest photos sell confidence.", "Answer the questions a careful buyer would ask.", "Never move to suspicious payment links."],
     note: "Only list real eligible items. Stay inside the platform flow and follow scam-protection guidance for every transaction.",
@@ -212,6 +234,8 @@ const earnGuides: EarnGuide[] = [
     image: sectionPosters.coupons,
     icon: Ticket,
     income: ["Sales of eligible transferable coupons", "Discovery through brand and seasonal browsing", "A place to manage your coupon listings", "Value recovered from offers you cannot use"],
+    whereToEarn: "Open Coupon Marketplace and list a genuine transferable coupon, voucher or gift card without revealing its redeemable code publicly. Buyers contact you through the listing.",
+    payout: "Publishing costs 2 credits and the buyer’s first message costs 2 credits. Unique takes no commission; payment is settled directly between buyer and seller. Only transfer a code after the agreed payment is confirmed.",
     steps: ["Confirm the coupon can legally be transferred.", "Add the real value, price, restrictions and expiry.", "Publish without exposing the redeemable code publicly.", "Complete the sale using the platform’s supported flow."],
     momentum: ["Make the buyer’s saving instantly clear.", "State every restriction before purchase.", "Remove expired or invalid offers promptly."],
     note: "Validity and transferability depend on the coupon issuer. Never list fabricated, used or non-transferable codes.",
@@ -227,6 +251,8 @@ const earnGuides: EarnGuide[] = [
     image: sectionPosters.photoRestoration,
     icon: PackageOpen,
     income: ["Eligible sales or licensing opportunities available in the library", "Repeat discovery of uploaded original assets", "A portfolio organized for buyer search", "Another revenue path for work already created"],
+    whereToEarn: "Open Stock Content Library, use the contributor/upload area and list original photos, videos or other supported media you own. Buyers find the assets through the library and complete the available license purchase there.",
+    payout: "Completed stock sales feed the creator’s stock earnings and withdrawal tools. Check the price, license and platform fee displayed for the asset before publishing; only completed eligible sales become withdrawable.",
     steps: ["Select technically strong content you fully own.", "Add precise titles, descriptions and searchable details.", "Choose the available listing or licensing options.", "Keep releases, permissions and original files organized."],
     momentum: ["Create content with a clear practical use.", "Upload coherent collections, not random leftovers.", "Describe what is actually visible without keyword spam."],
     note: "Upload only content you own and have permission to license. Availability of paid options is shown inside the section.",
@@ -242,6 +268,8 @@ const earnGuides: EarnGuide[] = [
     image: sectionPosters.marketplace,
     icon: Gavel,
     income: ["Seller proceeds from completed winning transactions", "Competitive bids on eligible items", "A seller balance based on completed sales", "Withdrawal tools available within the auction flow"],
+    whereToEarn: "Open Online Auctions and publish an eligible item with real photos, condition, starting price and closing time. Bidders place bids, then the winning buyer contacts the seller to complete the deal.",
+    payout: "Publishing an auction costs 2 credits; bidding is free and the first seller contact costs 2 credits. The current auction flow states no sale commission and direct settlement with the seller—there is no automatic payout merely because an auction receives a bid.",
     steps: ["Choose an item that benefits from competitive bidding.", "Add accurate condition details, photos and auction terms.", "Set the auction and respond to genuine questions.", "Complete delivery and follow the transaction status to payout."],
     momentum: ["Document authenticity and condition.", "Use clear photos of details and defects.", "Set terms you can fulfil after the winning bid."],
     note: "Bids and listings do not guarantee completion. Seller proceeds depend on a completed eligible transaction.",
@@ -257,6 +285,8 @@ const earnGuides: EarnGuide[] = [
     image: sectionPosters.marketplace,
     icon: Sparkles,
     income: ["Better-informed preparation for a possible sale", "Organized item details for future listings", "Research support for single items or batches", "A clearer understanding of factors that may affect value"],
+    whereToEarn: "Antique Appraisal is a research tool, not a paid job. Use it to assess a real object, then create a separate Bazaar or Auction listing if you decide to sell it.",
+    payout: "The appraisal itself produces no earnings and may cost AI credits. Money can come only from a later completed sale arranged through the relevant marketplace; an AI estimate is not a guaranteed selling price or certified valuation.",
     steps: ["Upload clear images of the real object and its marks.", "Add everything known about origin, material and condition.", "Review the analysis as guidance—not a guaranteed sale price.", "Use professional verification where high value or authenticity matters."],
     momentum: ["Photograph signatures, damage and construction details.", "Keep provenance documents together.", "Do not present an AI estimate as a certified valuation."],
     note: "Appraisal tools support research and may cost AI credits. They do not themselves pay income or guarantee market value.",
@@ -272,6 +302,8 @@ const earnGuides: EarnGuide[] = [
     image: sectionPosters.livestream,
     icon: Music,
     income: ["80% of completed ticket revenue", "80% of eligible paid gifts received during concerts", "Custom ticket types and pricing", "A live earnings view for hosts"],
+    whereToEarn: "Open Live Concerts → Artist Studio, create your performer profile, schedule a concert and configure ticket types. Fans buy access on the concert page and can send paid gifts from the Gifts area while watching.",
+    payout: "The artist receives 80% of every completed ticket and eligible concert gift; Unique keeps 20%. Gross sales and the artist share appear in the host earnings view, where eligible funds follow the musician payout process.",
     steps: ["Create your artist profile in Artist Studio.", "Schedule the concert and configure ticket choices.", "Promote the date and prepare a stable live setup.", "Perform for ticket holders and track completed earnings."],
     momentum: ["Announce a specific experience, not just a stream.", "Rehearse audio, lighting and connection first.", "Give VIP or premium tickets a meaningful benefit."],
     note: "The artist share is calculated from completed eligible ticket and gift transactions; 20% is the platform share.",
@@ -287,6 +319,8 @@ const earnGuides: EarnGuide[] = [
     image: sectionPosters.comedyClub,
     icon: Mic2,
     income: ["Ticket revenue from scheduled live shows", "Eligible tips from the audience", "A comedian profile for future performances", "Ratings and repeat audience growth"],
+    whereToEarn: "Open Comedy Club → Comedian Studio, create a comedian profile and schedule a ticketed show. Viewers buy tickets from the show page and can send paid gifts during the performance.",
+    payout: "The comedian keeps 80% of every completed paid ticket and eligible gift; the platform fee is 20%. Earnings are tracked in Comedian Studio and can be requested for withdrawal once the available balance reaches €50.",
     steps: ["Create your comedian profile and stage identity.", "Schedule a show and set up its ticket options.", "Promote the performance and test the live setup.", "Go live, engage the audience and follow earnings in your tools."],
     momentum: ["Sell the premise of the show in one sentence.", "Use original material and a memorable title.", "End with a reason for viewers to follow the next show."],
     note: "Income depends on completed ticket purchases and eligible audience tips. Scheduling a show does not guarantee sales.",
@@ -400,6 +434,17 @@ const EarnMoneyGuide = () => {
                       <h2 className="mt-2 text-3xl font-black text-foreground sm:text-4xl">{guide.title}</h2>
                       <p className="mt-4 text-base leading-7 text-muted-foreground">{guide.hook}</p>
                       <p className="mt-4 border-l-2 border-accent pl-4 text-sm leading-6 text-foreground"><strong>Best for:</strong> {guide.audience}</p>
+
+                       <div className="mt-6 grid gap-3">
+                         <div className="rounded-lg border border-primary/25 bg-primary/5 p-4">
+                           <h3 className="flex items-center gap-2 text-sm font-bold text-foreground"><Store className="h-4 w-4 text-primary" /> Exactly where you earn</h3>
+                           <p className="mt-2 text-sm leading-6 text-muted-foreground">{guide.whereToEarn}</p>
+                         </div>
+                         <div className="rounded-lg border border-accent/25 bg-accent/5 p-4">
+                           <h3 className="flex items-center gap-2 text-sm font-bold text-foreground"><BadgeEuro className="h-4 w-4 text-accent" /> Amount, share and payout</h3>
+                           <p className="mt-2 text-sm leading-6 text-muted-foreground">{guide.payout}</p>
+                         </div>
+                       </div>
 
                       <div className="mt-7 grid gap-7 sm:grid-cols-2">
                         <div>
