@@ -1658,7 +1658,7 @@ const Messenger = () => {
                             )}
                             
                             {/* Image */}
-                            {effectiveType === "image" && attachmentUrl && (
+                            {effectiveType === "image" && attachmentUrl && !isPpvLocked && (
                               <img
                                 src={attachmentUrl}
                                 alt="Shared image"
@@ -1667,15 +1667,15 @@ const Messenger = () => {
                               />
                             )}
 
-                            {effectiveType === "video" && attachmentUrl && (
+                            {effectiveType === "video" && attachmentUrl && !isPpvLocked && (
                               <video src={attachmentUrl} controls playsInline className="rounded-lg max-w-full max-h-64 mb-2" />
                             )}
 
-                            {effectiveType === "audio" && attachmentUrl && (
+                            {effectiveType === "audio" && attachmentUrl && !isPpvLocked && (
                               <audio src={attachmentUrl} controls className="w-56 max-w-full mb-2" />
                             )}
 
-                            {effectiveType === "file" && attachmentUrl && (
+                            {effectiveType === "file" && attachmentUrl && !isPpvLocked && (
                               <a href={attachmentUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 underline mb-2">
                                 <FileIcon className="h-4 w-4" />
                                 <span className="truncate">{msg.content.replace(/^📎\s*/, "") || "Download file"}</span>
@@ -1683,12 +1683,26 @@ const Messenger = () => {
                             )}
                             
                             {/* GIF */}
-                            {effectiveType === "gif" && attachmentUrl && (
+                            {effectiveType === "gif" && attachmentUrl && !isPpvLocked && (
                               <img
                                 src={attachmentUrl}
                                 alt="GIF"
                                 className="rounded-lg max-w-full max-h-48 object-cover mb-2"
                               />
+                            )}
+
+                            {/* PPV lock card — hides media until the viewer pays */}
+                            {isPpvLocked && (
+                              <div className="rounded-lg border border-dashed border-primary/50 bg-background/60 p-4 mb-2 text-center">
+                                <Lock className="h-6 w-6 mx-auto mb-1 text-primary" />
+                                <p className="text-sm font-semibold mb-0.5">Paid message</p>
+                                <p className="text-xs text-muted-foreground mb-2">Photo/video is locked until you pay.</p>
+                                <Button size="sm" onClick={() => handleUnlockPpv(msg.id)} disabled={unlockingPpvId === msg.id}>
+                                  {unlockingPpvId === msg.id
+                                    ? <Loader2 className="h-4 w-4 animate-spin" />
+                                    : `Unlock for €${((msg.ppv_price_cents ?? 0) / 100).toFixed(2)}`}
+                                </Button>
+                              </div>
                             )}
                             
                             {/* Unique Gift */}
@@ -1706,6 +1720,9 @@ const Messenger = () => {
 
                             
                             <div className="flex items-center justify-between mt-1 gap-2">
+                              {msg.ppv_price_cents && msg.sender_id === user.id && (
+                                <span className="text-xs font-bold text-primary">PPV · €{(msg.ppv_price_cents / 100).toFixed(2)}</span>
+                              )}
                               <span className="text-xs opacity-70">
                                 { new Date(msg.created_at).toLocaleTimeString("en-US", {
                                   hour: "2-digit",
