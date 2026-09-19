@@ -27,13 +27,14 @@ interface MegaTalentHeroProps {
 }
 
 export default function MegaTalentHero({ totalVotes, isSubscribed, subscriptionTier }: MegaTalentHeroProps) {
-  const [timeLeft, setTimeLeft] = useState(getContestTimeLeft());
   const { data: stats } = useMegatalentContestStats();
+  const [timeLeft, setTimeLeft] = useState(() => getContestTimeLeft(stats?.periodEnd));
 
   useEffect(() => {
-    const timer = setInterval(() => setTimeLeft(getContestTimeLeft()), 60000);
+    setTimeLeft(getContestTimeLeft(stats?.periodEnd));
+    const timer = setInterval(() => setTimeLeft(getContestTimeLeft(stats?.periodEnd)), 60000);
     return () => clearInterval(timer);
-  }, []);
+  }, [stats?.periodEnd]);
 
   // Stable defaults prevent hero "flash of empty" (TBA / em-dash) before query resolves
   const prizePoolLabel = stats ? stats.prizePoolFormatted : "…";

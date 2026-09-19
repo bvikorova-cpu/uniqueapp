@@ -40,22 +40,22 @@ export default function ContestStatsSidebar({ subscriptionTier, totalVotes }: Co
 
           {(() => {
             const now = new Date();
-            const q = Math.floor(now.getUTCMonth() / 3);
-            const startMonth = q * 3;
-            const endMonth = q * 3 + 3;
-            const start = new Date(Date.UTC(now.getUTCFullYear(), startMonth, 1));
-            const end = new Date(Date.UTC(now.getUTCFullYear(), endMonth, 0, 23, 59, 59));
-            const totalMs = end.getTime() - start.getTime();
+            // DB contest period wins (last-month signups roll into the next
+            // quarter); calendar signup season is the fallback.
+            const season = getMegatalentSignupSeason(now);
+            const start = stats?.periodStart ? new Date(`${stats.periodStart}T00:00:00Z`) : season.start;
+            const end = stats?.periodEnd ? new Date(`${stats.periodEnd}T23:59:59Z`) : season.end;
+            const totalMs = Math.max(1, end.getTime() - start.getTime());
             const elapsedMs = Math.min(totalMs, Math.max(0, now.getTime() - start.getTime()));
             const remainingMs = Math.max(0, end.getTime() - now.getTime());
             const days = Math.floor(remainingMs / 86_400_000);
             const hours = Math.floor((remainingMs % 86_400_000) / 3_600_000);
-            const label = `Q${q + 1} ${now.getUTCFullYear()}`;
+            const label = (stats?.periodStart && megatalentSeasonLabelFromStart(stats.periodStart)) || season.label;
             const endLabel = end.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "UTC" });
             return (
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Current Quarter:</span>
+                  <span className="text-muted-foreground">Current Season:</span>
                   <span className="font-semibold text-xs">{label}</span>
                 </div>
                 <div className="flex justify-between text-sm">
