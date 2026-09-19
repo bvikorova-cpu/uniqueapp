@@ -17,6 +17,9 @@ import {
   Loader2,
   RotateCcw,
   Info,
+  Package,
+  CreditCard,
+  Smartphone,
 } from "lucide-react";
 
 /**
@@ -34,6 +37,8 @@ interface AsdPattern {
   weight: number;
   icon: typeof AlertTriangle;
   regex: RegExp;
+  /** Global scam category — when matched, the verdict is forced to High Risk. */
+  category?: string;
 }
 
 const ASD_PATTERNS: AsdPattern[] = [
@@ -93,6 +98,34 @@ const ASD_PATTERNS: AsdPattern[] = [
     icon: UserX,
     regex: /\b(support team|customer (support|service)|official (account|support)|administrator|admin team|bank (security|officer)|security (team|alert|department)|account (suspended|blocked|locked|delet)|verify your (account|identity)|identity verification)\b/i,
   },
+  // === Global scam keyword groups (match => forced High Risk verdict) ===
+  {
+    id: "asd-global-delivery",
+    label: "Delivery / SMS Phishing",
+    detail: "Delivery, package or customs wording with a tracking link — a global smishing pattern mimicking DHL, FedEx, USPS and fake customs or toll fees.",
+    weight: 40,
+    icon: Package,
+    category: "Delivery / SMS Phishing",
+    regex: /\b(packages?|delivery|dhl|fedex|usps|customs|tracking)\b/i,
+  },
+  {
+    id: "asd-global-card-harvest",
+    label: "Card Harvesting / Marketplace Fraud",
+    detail: "Asking for card details, CVV/CVC or expiration, or pushing PayPal, escrow or a private courier — global marketplace fraud to steal payment data.",
+    weight: 40,
+    icon: CreditCard,
+    category: "Card Harvesting / Marketplace Fraud",
+    regex: /\b(cards?|cvc|cvv|expiration|paypal|escrow|courier)\b/i,
+  },
+  {
+    id: "asd-global-takeover",
+    label: "Account Takeover / Social Engineering",
+    detail: "Requests for codes, verification or OTP — often over WhatsApp, Telegram or Instagram — are the classic account takeover trick. Never forward a code.",
+    weight: 40,
+    icon: Smartphone,
+    category: "Account Takeover / Social Engineering",
+    regex: /\b(codes?|verification|otp|whatsapp|telegram|instagram)\b/i,
+  },
 ];
 
 interface AsdFlag {
@@ -104,6 +137,8 @@ type AsdPhase = "idle" | "analyzing" | "result";
 interface AsdResult {
   score: number;
   level: "Low" | "Medium" | "High";
+  /** Matched global scam category (forces the High Risk verdict). */
+  category?: string;
   flags: AsdFlag[];
   textLength: number;
   scanTime: number;
@@ -167,15 +202,22 @@ export const AiScamDetector = () => {
       setProgress(100);
 
       const found = ASD_PATTERNS.filter((p) => p.regex.test(text));
+      // Global scam keyword groups force the High Risk verdict with their category
+      const categoryHit = found.find((f) => f.category)?.category;
       // Base score from matched weights, softened; grows with text scanned
       const raw = found.reduce((sum, f) => sum + f.weight, 0);
       const diminishing = 1 - (raw / 100) * 0.35; // diminishing returns
-      const score = found.length === 0 ? Math.min(12, 3 + Math.round(text.length / 300)) : Math.max(30, Math.min(96, Math.round(raw * diminishing)));
-      const level: AsdResult["level"] = score >= 65 ? "High" : score >= 35 ? "Medium" : "Low";
+      const score = categoryHit
+        ? Math.max(70, Math.min(96, Math.round(raw * diminishing)))
+        : found.length === 0
+          ? Math.min(12, 3 + Math.round(text.length / 300))
+          : Math.max(30, Math.min(96, Math.round(raw * diminishing)));
+      const level: AsdResult["level"] = categoryHit ? "High" : score >= 65 ? "High" : score >= 35 ? "Medium" : "Low";
 
       setResult({
         score,
         level,
+        category: categoryHit,
         flags: found.map((pattern) => ({ pattern })),
         textLength: text.length,
         scanTime: 1.8 + Math.random() * 0.5,
@@ -388,7 +430,7 @@ export const AiScamDetector = () => {
                     return <LevelIcon className="h-6 w-6" style={{ color: levelStyle.color }} />;
                   })()}
                   <span className="text-2xl font-black" style={{ color: levelStyle.color }}>
-                    {result.level} Risk
+                    {result.level} Risk{result.category ? `: ${result.category}` : ""}
                   </span>
                 </div>
                 <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">
