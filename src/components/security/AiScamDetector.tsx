@@ -98,6 +98,34 @@ const ASD_PATTERNS: AsdPattern[] = [
     icon: UserX,
     regex: /\b(support team|customer (support|service)|official (account|support)|administrator|admin team|bank (security|officer)|security (team|alert|department)|account (suspended|blocked|locked|delet)|verify your (account|identity)|identity verification)\b/i,
   },
+  // === Global scam keyword groups (match => forced High Risk verdict) ===
+  {
+    id: "asd-global-delivery",
+    label: "Delivery / SMS Phishing",
+    detail: "Delivery, package or customs wording with a tracking link — a global smishing pattern mimicking DHL, FedEx, USPS and fake customs or toll fees.",
+    weight: 40,
+    icon: Package,
+    category: "Delivery / SMS Phishing",
+    regex: /\b(packages?|delivery|dhl|fedex|usps|customs|tracking)\b/i,
+  },
+  {
+    id: "asd-global-card-harvest",
+    label: "Card Harvesting / Marketplace Fraud",
+    detail: "Asking for card details, CVV/CVC or expiration, or pushing PayPal, escrow or a private courier — global marketplace fraud to steal payment data.",
+    weight: 40,
+    icon: CreditCard,
+    category: "Card Harvesting / Marketplace Fraud",
+    regex: /\b(cards?|cvc|cvv|expiration|paypal|escrow|courier)\b/i,
+  },
+  {
+    id: "asd-global-takeover",
+    label: "Account Takeover / Social Engineering",
+    detail: "Requests for codes, verification or OTP — often over WhatsApp, Telegram or Instagram — are the classic account takeover trick. Never forward a code.",
+    weight: 40,
+    icon: Smartphone,
+    category: "Account Takeover / Social Engineering",
+    regex: /\b(codes?|verification|otp|whatsapp|telegram|instagram)\b/i,
+  },
 ];
 
 interface AsdFlag {
