@@ -31,7 +31,7 @@ interface StsScenario {
   explanation: string;
 }
 
-const STS_SCENARIOS: StsScenario[] = [
+const STS_SCENARIO_POOL: StsScenario[] = [
   {
     id: "sts-sms-customs-fee",
     category: "SMS Scam",
@@ -80,19 +80,135 @@ const STS_SCENARIOS: StsScenario[] = [
     explanation:
       "SCAM. Red flag: real marketplaces or couriers never require your full card details, CVV, or expiration date to send you money. Keep payments on the platform and never enter card data through links sent in chat.",
   },
+  {
+    id: "sts-sms-toll",
+    category: "SMS Scam",
+    categoryIcon: Smartphone,
+    sender: "SMS · \"RoadToll Services\"",
+    senderBadge: "Threat of fines · link to pay",
+    message:
+      "FINAL NOTICE: You have an unpaid toll of $11.40. Pay now to avoid a $150 late penalty: pay-roadtoll-secure.info",
+    correct: "scam",
+    explanation:
+      "SCAM. Red flag: threatening fines plus a lookalike domain ending in .info. Toll operators bill through your official account, not urgent texts with payment links. Type the official site yourself if you're unsure.",
+  },
+  {
+    id: "sts-email-netflix",
+    category: "Email Scam",
+    categoryIcon: Mail,
+    sender: "Email · \"billing@netflix-update.co\"",
+    senderBadge: "Lookalike domain · payment failure story",
+    message:
+      "Subject: Your payment method was declined. Update your card within 12 hours or your membership ends: [Link]",
+    correct: "scam",
+    explanation:
+      "SCAM. Red flag: a short deadline and a domain that isn't the official one. Streaming services let you fix billing inside the app — never through links in emails. Log in directly to check your account status.",
+  },
+  {
+    id: "sts-telegram-crypto",
+    category: "Social Media Scam",
+    categoryIcon: Users,
+    sender: "Telegram · \"Official Giveaway Bot\"",
+    senderBadge: "Too-good-to-be-true · send first",
+    message:
+      "🎉 Celebrating our 10M users! Send 0.05 ETH to the address below and receive 0.5 ETH back within 10 minutes. Limited to the first 50 participants!",
+    correct: "scam",
+    explanation:
+      "SCAM. Red flag: classic 'send money to get more money' — the coins are gone the moment you send them. No legitimate company doubles deposits, especially not through DMs or bots.",
+  },
+  {
+    id: "sts-marketplace-cheap-gift",
+    category: "Marketplace Scam",
+    categoryIcon: Store,
+    sender: "Marketplace message · 'seller'",
+    senderBadge: "Price too low · refuses to meet",
+    message:
+      "iPhone listed at $120 (worth $800). I'm abroad, but I'll ship it today — just pay the shipping fee of $25 via a gift card and send me the code.",
+    correct: "scam",
+    explanation:
+      "SCAM. Red flag: a price far below market value plus a demand for gift card codes. Gift cards are untraceable — that's why scammers love them. Never pay for anything with a gift card code.",
+  },
+  {
+    id: "sts-sms-delivery-real",
+    category: "SMS Scam",
+    categoryIcon: Smartphone,
+    sender: "SMS · Your courier app",
+    senderBadge: "Standard tracking notification",
+    message:
+      "Your package from order #48213 is out for delivery today, 2:00 PM – 6:00 PM. Track it in the app you ordered from. No reply needed.",
+    correct: "safe",
+    explanation:
+      "SAFE. Red flags are missing: no payment request, no urgent link, no request for personal data, and it refers you to the app you already use. Scammers push you to act fast — legitimate messages just inform you.",
+  },
+  {
+    id: "sts-email-security-real",
+    category: "Email Scam",
+    categoryIcon: Mail,
+    sender: "Email · no-reply@officialplatform.com",
+    senderBadge: "Known domain · informational only",
+    message:
+      "Subject: New sign-in to your account from a new device. If this was you, no action is needed. If not, review your devices in Settings after logging in directly at the official site.",
+    correct: "safe",
+    explanation:
+      "SAFE. It doesn't ask you to click a link, enter data, or rush. It even tells you to navigate to the site yourself. Scam emails always contain a link or a deadline — real security alerts ask you to check inside the app.",
+  },
+  {
+    id: "sts-marketplace-real",
+    category: "Marketplace Scam",
+    categoryIcon: Store,
+    sender: "Marketplace message · local buyer",
+    senderBadge: "Normal questions · public meeting",
+    message:
+      "Hi, is the bike still available? Could I see it tomorrow afternoon and pay cash when we meet at the agreed public spot? Thanks!",
+    correct: "safe",
+    explanation:
+      "SAFE. Normal marketplace behavior: asks about availability, wants to see the item, pays in person in cash at a public place. Be suspicious when someone insists on unusual payment methods, gift cards, or private 'couriers'.",
+  },
+  {
+    id: "sts-social-real",
+    category: "Social Media Scam",
+    categoryIcon: Users,
+    sender: "Instagram DM · your real friend",
+    senderBadge: "Account you already chat with · no requests",
+    message:
+      "Happy birthday!! 🎂 Hope you have an amazing day — see you at the party on Saturday!",
+    correct: "safe",
+    explanation:
+      "SAFE. A personal message from a friend with no link, no urgent request, and nothing to click. Impersonation scams copy a friend's photo but come from a NEW unknown number — always check whether the account is the one you already know.",
+  },
 ];
+
+const STS_QUESTIONS_PER_ROUND = 4;
+
+const stsShuffle = <T,>(items: T[]): T[] => {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+};
+
+const stsPickRound = (): StsScenario[] => {
+  // Fresh mix every round: mostly scams, sometimes one "safe" decoy, order shuffled.
+  const scams = stsShuffle(STS_SCENARIO_POOL.filter((s) => s.correct === "scam"));
+  const safes = stsShuffle(STS_SCENARIO_POOL.filter((s) => s.correct === "safe"));
+  const safeCount = Math.random() < 0.5 ? 1 : 0;
+  return stsShuffle([...scams.slice(0, STS_QUESTIONS_PER_ROUND - safeCount), ...safes.slice(0, safeCount)]);
+};
 
 type StsPhase = "playing" | "revealed" | "finished";
 
 export const SpotTheScamQuiz = () => {
+  const [round, setRound] = useState<StsScenario[]>(() => stsPickRound());
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [phase, setPhase] = useState<StsPhase>("playing");
   const [picked, setPicked] = useState<StsAnswer | null>(null);
   const [streak, setStreak] = useState(0);
 
-  const scenario = STS_SCENARIOS[index];
-  const total = STS_SCENARIOS.length;
+  const scenario = round[index];
+  const total = round.length;
   const isLast = index === total - 1;
   const wasCorrect = picked !== null && picked === scenario.correct;
 
@@ -128,6 +244,7 @@ export const SpotTheScamQuiz = () => {
   };
 
   const restart = () => {
+    setRound(stsPickRound());
     setIndex(0);
     setScore(0);
     setPicked(null);
