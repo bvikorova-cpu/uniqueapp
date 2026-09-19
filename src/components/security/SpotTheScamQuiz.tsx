@@ -200,14 +200,15 @@ const stsPickRound = (): StsScenario[] => {
 type StsPhase = "playing" | "revealed" | "finished";
 
 export const SpotTheScamQuiz = () => {
+  const [round, setRound] = useState<StsScenario[]>(() => stsPickRound());
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [phase, setPhase] = useState<StsPhase>("playing");
   const [picked, setPicked] = useState<StsAnswer | null>(null);
   const [streak, setStreak] = useState(0);
 
-  const scenario = STS_SCENARIOS[index];
-  const total = STS_SCENARIOS.length;
+  const scenario = round[index];
+  const total = round.length;
   const isLast = index === total - 1;
   const wasCorrect = picked !== null && picked === scenario.correct;
 
