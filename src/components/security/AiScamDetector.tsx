@@ -202,15 +202,22 @@ export const AiScamDetector = () => {
       setProgress(100);
 
       const found = ASD_PATTERNS.filter((p) => p.regex.test(text));
+      // Global scam keyword groups force the High Risk verdict with their category
+      const categoryHit = found.find((f) => f.category)?.category;
       // Base score from matched weights, softened; grows with text scanned
       const raw = found.reduce((sum, f) => sum + f.weight, 0);
       const diminishing = 1 - (raw / 100) * 0.35; // diminishing returns
-      const score = found.length === 0 ? Math.min(12, 3 + Math.round(text.length / 300)) : Math.max(30, Math.min(96, Math.round(raw * diminishing)));
-      const level: AsdResult["level"] = score >= 65 ? "High" : score >= 35 ? "Medium" : "Low";
+      const score = categoryHit
+        ? Math.max(70, Math.min(96, Math.round(raw * diminishing)))
+        : found.length === 0
+          ? Math.min(12, 3 + Math.round(text.length / 300))
+          : Math.max(30, Math.min(96, Math.round(raw * diminishing)));
+      const level: AsdResult["level"] = categoryHit ? "High" : score >= 65 ? "High" : score >= 35 ? "Medium" : "Low";
 
       setResult({
         score,
         level,
+        category: categoryHit,
         flags: found.map((pattern) => ({ pattern })),
         textLength: text.length,
         scanTime: 1.8 + Math.random() * 0.5,
