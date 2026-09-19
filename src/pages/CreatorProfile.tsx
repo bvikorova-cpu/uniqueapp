@@ -13,6 +13,8 @@ import { CreatorContentPackForm } from "@/components/creator/CreatorContentPackF
 import { CreatorContentPacks } from "@/components/creator/CreatorContentPacks";
 import { SendCreatorGiftDialog } from "@/components/creator/SendCreatorGiftDialog";
 import { GiftWall } from "@/components/creator/GiftWall";
+import { TopFansLeaderboard } from "@/components/creator/TopFansLeaderboard";
+import { CreatorWishlist } from "@/components/creator/CreatorWishlist";
 import { CreatorProfileEditForm } from "@/components/creator/CreatorProfileEditForm";
 import { PaidMessageDialog } from "@/components/creator/PaidMessageDialog";
 import { CreatorLiveStreams } from "@/components/creator/CreatorLiveStreams";
@@ -556,6 +558,13 @@ export default function CreatorProfile() {
 
           {/* Gift Wall - Public, realtime */}
           <GiftWall creatorId={creator.user_id} creatorName={creator.display_name} />
+
+          {/* Top Fans leaderboard — tips, gifts & Super Chats with streak badges */}
+          <TopFansLeaderboard creatorUserId={creator.user_id} />
+
+          {/* Wishlist — creator-curated items fans can fund (85/15 split) */}
+          <CreatorWishlist creatorUserId={creator.user_id} />
+
 
           {/* Exclusive Content */}
           <ExclusivePostsList
