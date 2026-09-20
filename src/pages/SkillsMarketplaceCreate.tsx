@@ -206,7 +206,17 @@ function SkillsMarketplaceCreateForm() {
 
         </CardContent>
       </Card>
+
+      <SkillLaunchPromoDialog
+        open={promoOpen}
+        onOpenChange={(v) => { if (!submitting && !adPlaying) setPromoOpen(v); }}
+        balance={balance}
+        busy={submitting || adPlaying}
+        onPublishWithPromo={() => publish(true)}
+        onPublishWithoutPromo={() => publish(false)}
+      />
     </div>
+
     </>
     );
 }
