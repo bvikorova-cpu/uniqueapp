@@ -141,7 +141,7 @@ function SkillsMarketplaceCreateForm() {
       <FloatingHowItWorks title="How Skills Marketplace Create works" steps={[
           { title: 'Pick a category', desc: 'Choose the category your offering belongs to.' },
           { title: 'Describe the service', desc: 'Title, description, hourly price in EUR and optional location.' },
-          { title: `Pay ${OFFERING_CREDIT_COST} credits`, desc: 'Opening an offering costs 2 credits — no commission on the job.' },
+          { title: 'Watch one short ad', desc: 'Publishing is free — you only watch one short sponsored ad.' },
           { title: 'Get orders', desc: 'Buyers contact you, order and review your work.' },
         ]} />
       <div className="container mx-auto px-4 py-8 max-w-2xl">
@@ -153,7 +153,7 @@ function SkillsMarketplaceCreateForm() {
           <CardTitle>Post a new offering</CardTitle>
           <div className="flex items-center justify-between gap-2 flex-wrap pt-2">
             <p className="text-sm text-muted-foreground">
-              Flat fee {OFFERING_CREDIT_COST} credits · 0% commission
+              Free — watch one short ad · 0% commission
             </p>
             <div className="flex items-center gap-2">
               <Badge variant="outline">{balance === null ? "—" : `${balance} credits`}</Badge>
@@ -162,7 +162,7 @@ function SkillsMarketplaceCreateForm() {
           </div>
         </CardHeader>
         <CardContent>
-          <form onSubmit={submit} className="space-y-4">
+          <form onSubmit={openPromoStep} className="space-y-4">
             <div>
               <Label>Title</Label>
               <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="e.g. I'll assemble your IKEA furniture" maxLength={120} />
@@ -194,14 +194,16 @@ function SkillsMarketplaceCreateForm() {
               <Label>Cover image (optional)</Label>
               <Input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] ?? null)} />
             </div>
-            <Button type="submit" disabled={submitting} className="w-full gap-2">
-              <Coins className="h-4 w-4" />
-              {submitting ? "Publishing…" : `Publish offering · ${OFFERING_CREDIT_COST} credits`}
+            <Button type="submit" disabled={submitting || adPlaying} className="w-full gap-2">
+              <Megaphone className="h-4 w-4" />
+              {submitting || adPlaying ? "Publishing…" : "Continue to publish · free"}
             </Button>
             <p className="text-xs text-muted-foreground text-center">
-              {OFFERING_CREDIT_COST} credits are deducted once when publishing. No commission on your job.
+              Publishing is free — you watch one short sponsored ad instead of paying credits. No
+              commission on your job.
             </p>
           </form>
+
         </CardContent>
       </Card>
     </div>
