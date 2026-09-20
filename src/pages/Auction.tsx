@@ -15,6 +15,7 @@ import {
   Smartphone, Shirt, Home, Dumbbell, Palette, Car, Gem, Boxes, Lock, Loader2, Gavel, Clock,
   Settings2, ShoppingBag,
 } from "lucide-react";
+import { useMarketplaceAdGate } from "@/hooks/useMarketplaceAdGate";
 import { SEO } from "@/components/SEO";
 import { PromotionBadge } from "@/components/skills/PromotionBadge";
 import { AuctionPromoteDialog } from "@/components/auction/AuctionPromoteDialog";
@@ -84,6 +85,7 @@ export default function Auction() {
   const [detail, setDetail] = useState<Item | null>(null);
   const [unlocked, setUnlocked] = useState<Set<string>>(new Set());
   const [unlocking, setUnlocking] = useState(false);
+  const { watchAdToContinue, adPlaying } = useMarketplaceAdGate();
   const [chatItem, setChatItem] = useState<Item | null>(null);
   const [buyIntent, setBuyIntent] = useState("");
   const [bidAmount, setBidAmount] = useState("");

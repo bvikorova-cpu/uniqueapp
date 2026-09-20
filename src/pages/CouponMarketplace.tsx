@@ -15,6 +15,7 @@ import {
   Trash2, Store, Gift, Sparkles, Zap, Star, Package, Ticket, Tag, Clock,
   Settings2,
 } from "lucide-react";
+import { useMarketplaceAdGate } from "@/hooks/useMarketplaceAdGate";
 import { SEO } from "@/components/SEO";
 import { useToast } from "@/hooks/use-toast";
 import { useCouponUnread } from "@/hooks/useSimpleUnread";
@@ -84,6 +85,7 @@ export default function CouponMarketplace() {
   const [detail, setDetail] = useState<Coupon | null>(null);
   const [unlocked, setUnlocked] = useState<Set<string>>(new Set());
   const [unlocking, setUnlocking] = useState(false);
+  const { watchAdToContinue, adPlaying } = useMarketplaceAdGate();
   const [chatCoupon, setChatCoupon] = useState<Coupon | null>(null);
   const [promoteId, setPromoteId] = useState<string | null>(null);
   const [reload, setReload] = useState(0);

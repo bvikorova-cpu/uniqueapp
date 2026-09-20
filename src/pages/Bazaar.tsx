@@ -15,6 +15,7 @@ import {
   Smartphone, Shirt, Home, Dumbbell, BookOpen, Car, Gamepad2, Boxes, Lock, Loader2, Trash2,
   Settings2,
 } from "lucide-react";
+import { useMarketplaceAdGate } from "@/hooks/useMarketplaceAdGate";
 import { SEO } from "@/components/SEO";
 import { PromotionBadge } from "@/components/skills/PromotionBadge";
 import { BazaarPromoteDialog } from "@/components/bazaar/BazaarPromoteDialog";
@@ -71,6 +72,7 @@ export default function Bazaar() {
   const [detail, setDetail] = useState<Item | null>(null);
   const [unlocked, setUnlocked] = useState<Set<string>>(new Set());
   const [unlocking, setUnlocking] = useState(false);
+  const { watchAdToContinue, adPlaying } = useMarketplaceAdGate();
   const [chatItem, setChatItem] = useState<Item | null>(null);
   const [reload, setReload] = useState(0);
 
