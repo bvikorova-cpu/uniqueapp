@@ -203,21 +203,21 @@ export default function Auction() {
   const unlockContact = async (item: Item) => {
     if (!user) { navigate("/auth"); return; }
     if (item.user_id === user.id || unlocked.has(item.id)) { setChatItem(item); return; }
+    const adOk = await watchAdToContinue("message the seller");
+    if (!adOk) return;
     setUnlocking(true);
     try {
       const { error } = await (supabase as any).rpc("unlock_auction_contact", { _auction_id: item.id });
       if (error) throw error;
       setUnlocked((prev) => new Set(prev).add(item.id));
       window.dispatchEvent(new Event("ai-credits-updated"));
-      toast({ title: "Contact unlocked", description: "2 credits used — you can now message the seller." });
+      toast({ title: "Contact unlocked", description: "Thanks for watching the ad — you can now message the seller." });
       setChatItem(item);
     } catch (e: any) {
       const msg = String(e?.message || "");
       toast({
         title: "Could not unlock",
-        description: msg.includes("INSUFFICIENT_CREDITS")
-          ? "Not enough credits — the first message costs 2 credits."
-          : msg || "Try again",
+        description: msg || "Try again",
         variant: "destructive",
       });
     } finally {

@@ -179,21 +179,21 @@ export default function CouponMarketplace() {
   const unlockContact = async (coupon: Coupon) => {
     if (!user) { navigate("/auth"); return; }
     if (coupon.user_id === user.id || unlocked.has(coupon.id)) { setChatCoupon(coupon); return; }
+    const adOk = await watchAdToContinue("message the seller");
+    if (!adOk) return;
     setUnlocking(true);
     try {
       const { error } = await (supabase as any).rpc("unlock_coupon_contact", { _coupon_id: coupon.id });
       if (error) throw error;
       setUnlocked((prev) => new Set(prev).add(coupon.id));
       window.dispatchEvent(new Event("ai-credits-updated"));
-      toast({ title: "Contact unlocked", description: "2 credits used — you can now message the seller." });
+      toast({ title: "Contact unlocked", description: "Thanks for watching the ad — you can now message the seller." });
       setChatCoupon(coupon);
     } catch (e: any) {
       const msg = String(e?.message || "");
       toast({
         title: "Could not unlock",
-        description: msg.includes("INSUFFICIENT_CREDITS")
-          ? "Not enough credits — the first message costs 2 credits."
-          : msg || "Try again",
+        description: msg || "Try again",
         variant: "destructive",
       });
     } finally {
