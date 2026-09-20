@@ -48,6 +48,7 @@ export default function CouponCreate() {
   const [preview, setPreview] = useState("");
   const [confirmed, setConfirmed] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { watchAdToContinue, adPlaying } = useMarketplaceAdGate();
 
   const pickImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
