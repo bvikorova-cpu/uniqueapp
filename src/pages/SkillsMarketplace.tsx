@@ -285,7 +285,7 @@ function SkillsMarketplaceContent() {
           { title: 'Free access', desc: 'Browsing the Skills section is free — no entry fee.' },
           { title: 'Pick a category', desc: 'Open a category folder and browse offerings inside it.' },
           { title: 'Publish an offering', desc: 'Opening your own offering costs 2 credits — no commission.' },
-          { title: 'Deal directly', desc: 'Unlock the contact for 2 credits, agree the price and pay the provider directly — no commission.' },
+          { title: 'Deal directly', desc: 'Watch one short ad to unlock the contact, agree the price and pay the provider directly — no commission.' },
         ]} />
       <section className="relative overflow-hidden border-b border-border/40">
         <video
