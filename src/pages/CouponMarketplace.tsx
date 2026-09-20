@@ -15,6 +15,7 @@ import {
   Trash2, Store, Gift, Sparkles, Zap, Star, Package, Ticket, Tag, Clock,
   Settings2,
 } from "lucide-react";
+import { useMarketplaceAdGate } from "@/hooks/useMarketplaceAdGate";
 import { SEO } from "@/components/SEO";
 import { useToast } from "@/hooks/use-toast";
 import { useCouponUnread } from "@/hooks/useSimpleUnread";
@@ -84,6 +85,7 @@ export default function CouponMarketplace() {
   const [detail, setDetail] = useState<Coupon | null>(null);
   const [unlocked, setUnlocked] = useState<Set<string>>(new Set());
   const [unlocking, setUnlocking] = useState(false);
+  const { watchAdToContinue, adPlaying } = useMarketplaceAdGate();
   const [chatCoupon, setChatCoupon] = useState<Coupon | null>(null);
   const [promoteId, setPromoteId] = useState<string | null>(null);
   const [reload, setReload] = useState(0);
@@ -179,21 +181,21 @@ export default function CouponMarketplace() {
   const unlockContact = async (coupon: Coupon) => {
     if (!user) { navigate("/auth"); return; }
     if (coupon.user_id === user.id || unlocked.has(coupon.id)) { setChatCoupon(coupon); return; }
+    const adOk = await watchAdToContinue("message the seller");
+    if (!adOk) return;
     setUnlocking(true);
     try {
       const { error } = await (supabase as any).rpc("unlock_coupon_contact", { _coupon_id: coupon.id });
       if (error) throw error;
       setUnlocked((prev) => new Set(prev).add(coupon.id));
       window.dispatchEvent(new Event("ai-credits-updated"));
-      toast({ title: "Contact unlocked", description: "2 credits used — you can now message the seller." });
+      toast({ title: "Contact unlocked", description: "Thanks for watching the ad — you can now message the seller." });
       setChatCoupon(coupon);
     } catch (e: any) {
       const msg = String(e?.message || "");
       toast({
         title: "Could not unlock",
-        description: msg.includes("INSUFFICIENT_CREDITS")
-          ? "Not enough credits — the first message costs 2 credits."
-          : msg || "Try again",
+        description: msg || "Try again",
         variant: "destructive",
       });
     } finally {
@@ -304,7 +306,7 @@ export default function CouponMarketplace() {
     <>
       <SEO
         title="Coupon Marketplace — buy and sell coupons"
-        description="Browse coupons, gift cards and vouchers for free. Publishing a listing costs 2 credits, the first message to a seller costs 2 credits. No commission."
+        description="Browse coupons, gift cards and vouchers for free. Publishing a listing and the first message to a seller are free — you just watch one short ad. No commission."
         canonical="/coupon-marketplace"
       />
 
@@ -316,7 +318,7 @@ export default function CouponMarketplace() {
             <div>
               <h2 className="text-2xl font-bold tracking-tight">Browse coupons</h2>
               <p className="text-sm text-muted-foreground">
-                Free to browse · posting 2 credits · first message 2 credits · no commission
+                Free to browse · posting free with one short ad · first message after one short ad · no commission
               </p>
             </div>
             <div className="flex flex-col gap-2 sm:flex-row">
@@ -336,7 +338,7 @@ export default function CouponMarketplace() {
               <Button className="w-full gap-2 sm:w-auto" onClick={() => (user ? navigate("/coupon-marketplace/create") : navigate("/auth"))}>
                 <Plus className="h-4 w-4" />
                 <span className="sm:hidden">Post · 2 cr</span>
-                <span className="hidden sm:inline">Post a coupon · 2 credits</span>
+                <span className="hidden sm:inline">Post a coupon · free</span>
               </Button>
             </div>
           </div>
@@ -499,13 +501,13 @@ export default function CouponMarketplace() {
                 ) : (
                   <Button className="flex-1 gap-2" disabled={unlocking} onClick={() => unlockContact(detail)}>
                     {unlocking ? <Loader2 className="h-4 w-4 animate-spin" /> : detailUnlocked ? <MessageCircle className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
-                    {detailUnlocked ? "Message seller" : "Message seller · 2 credits"}
+                    {detailUnlocked ? "Message seller" : adPlaying ? "Loading ad…" : "Watch ad & message seller"}
                   </Button>
                 )}
               </div>
               {!detailUnlocked && user?.id !== detail.user_id && (
                 <p className="text-xs text-muted-foreground">
-                  Contact details are hidden until you unlock the chat for 2 credits. After that you deal directly — no commission.
+                  Contact details are hidden until you watch one short sponsored ad. After that you deal directly — no commission.
                 </p>
               )}
             </>

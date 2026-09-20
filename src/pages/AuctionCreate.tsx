@@ -10,7 +10,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { BazaarPhotoUploader, type PendingPhoto } from "@/components/bazaar/BazaarPhotoUploader";
 import { SEO } from "@/components/SEO";
-import { ArrowLeft, Coins, Gavel, Loader2 } from "lucide-react";
+import { ArrowLeft, Gavel, Loader2, PlayCircle } from "lucide-react";
+import { useMarketplaceAdGate } from "@/hooks/useMarketplaceAdGate";
 
 export const AUCTION_CATEGORIES = [
   { value: "electronics", label: "Electronics" },
@@ -47,11 +48,14 @@ export default function AuctionCreate() {
   const [duration, setDuration] = useState("24");
   const [photos, setPhotos] = useState<PendingPhoto[]>([]);
   const [saving, setSaving] = useState(false);
+  const { watchAdToContinue, adPlaying } = useMarketplaceAdGate();
 
   const submit = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login required", variant: "destructive" }); return; }
     if (!title || !startingPrice) { toast({ title: "Title and starting price are required", variant: "destructive" }); return; }
+    const adOk = await watchAdToContinue("publish your auction");
+    if (!adOk) return;
     setSaving(true);
     try {
       const urls: string[] = [];
@@ -78,15 +82,13 @@ export default function AuctionCreate() {
       });
       if (error) throw error;
       window.dispatchEvent(new Event("ai-credits-updated"));
-      toast({ title: "Auction published", description: "2 credits used. Bidding is now open." });
+      toast({ title: "Auction published", description: "Thanks for watching the ad. Bidding is now open." });
       nav(`/auction?category=${category}`);
     } catch (e: any) {
       const msg = String(e?.message || "");
       toast({
         title: "Could not publish",
-        description: msg.includes("INSUFFICIENT_CREDITS")
-          ? "Not enough credits — publishing an auction costs 2 credits."
-          : msg || "Try again",
+        description: msg || "Try again",
         variant: "destructive",
       });
     } finally {
@@ -96,7 +98,7 @@ export default function AuctionCreate() {
 
   return (
     <>
-      <SEO title="Start an auction — 2 credits" description="Publish an auction for 2 credits and let buyers bid. No commission — you settle the deal directly." canonical="/auction/create" />
+      <SEO title="Start an auction — free" description="Publish an auction for free by watching one short ad and let buyers bid. No commission — you settle the deal directly." canonical="/auction/create" />
       <main className="container max-w-2xl py-8">
         <Button variant="ghost" size="sm" className="mb-4 gap-2" onClick={() => nav("/auction")}>
           <ArrowLeft className="h-4 w-4" /> Back to Auctions
@@ -110,7 +112,7 @@ export default function AuctionCreate() {
             Start an auction
           </h1>
           <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
-            <Coins className="h-4 w-4 text-primary" /> Publishing costs 2 credits · bidding is free · no commission
+            <PlayCircle className="h-4 w-4 text-primary" /> Free to publish — watch one short ad · bidding is free · no commission
           </p>
         </div>
 
@@ -146,12 +148,12 @@ export default function AuctionCreate() {
             <BazaarPhotoUploader photos={photos} onChange={setPhotos} />
 
             <p className="text-xs text-muted-foreground">
-              E-mails, phone numbers, links and messaging apps are removed automatically — bidders unlock your chat for 2 credits.
+              E-mails, phone numbers, links and messaging apps are removed automatically — bidders unlock your chat by watching one short ad.
             </p>
 
-            <Button onClick={submit} disabled={saving} className="w-full gap-2">
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Coins className="h-4 w-4" />}
-              {saving ? "Publishing…" : "Publish auction · 2 credits"}
+            <Button onClick={submit} disabled={saving || adPlaying} className="w-full gap-2">
+              {saving || adPlaying ? <Loader2 className="h-4 w-4 animate-spin" /> : <PlayCircle className="h-4 w-4" />}
+              {adPlaying ? "Loading ad…" : saving ? "Publishing…" : "Watch ad & publish auction · free"}
             </Button>
           </CardContent>
         </Card>

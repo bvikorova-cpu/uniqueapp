@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useMarketplaceAdGate } from "@/hooks/useMarketplaceAdGate";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ export default function SkillOfferingDetail() {
   const [sending, setSending] = useState(false);
   const [unlocked, setUnlocked] = useState(false);
   const [unlocking, setUnlocking] = useState(false);
+  const { watchAdToContinue, adPlaying } = useMarketplaceAdGate();
 
 
   useEffect(() => {
@@ -80,6 +82,8 @@ export default function SkillOfferingDetail() {
 
   const unlockContact = async () => {
     if (!user || !offering) { navigate("/auth"); return; }
+    const adOk = await watchAdToContinue("message this provider");
+    if (!adOk) return;
     setUnlocking(true);
     const { data, error } = await supabase.rpc("unlock_skill_contact", { _offering_id: offering.id });
     setUnlocking(false);
@@ -88,12 +92,10 @@ export default function SkillOfferingDetail() {
       const rateLimited = msg.includes("RATE_LIMIT");
       const insufficient = /INSUFFICIENT_CREDITS/i.test(msg);
       toast({
-        title: rateLimited ? "Daily limit reached" : insufficient ? "Not enough credits" : "Could not unlock chat",
+        title: rateLimited ? "Daily limit reached" : "Could not unlock chat",
         description: rateLimited
           ? "You can unlock up to 20 new providers per day. Try again tomorrow."
-          : insufficient
-            ? "You need 2 credits to unlock the contact with this provider."
-            : msg,
+          : msg,
         variant: "destructive",
       });
       return;
@@ -103,7 +105,7 @@ export default function SkillOfferingDetail() {
     const charged = (data as any)?.charged ?? 0;
     toast({
       title: "Chat unlocked",
-      description: charged ? "2 credits were used. All further messages in this chat are free." : "Chat is already unlocked — messages are free.",
+      description: "Thanks for watching the ad. All messages in this chat are free.",
     });
   };
 
@@ -131,7 +133,7 @@ export default function SkillOfferingDetail() {
       } else if (msg.includes("DUPLICATE_MESSAGE")) {
         toast({ title: "Duplicate message", description: "You already sent this exact message a moment ago.", variant: "destructive" });
       } else if (/row-level security/i.test(msg)) {
-        toast({ title: "Chat locked", description: "Unlock the contact with 2 credits first.", variant: "destructive" });
+        toast({ title: "Chat locked", description: "Watch one short sponsored ad to unlock this chat first.", variant: "destructive" });
         setUnlocked(false);
       } else {
         toast({ title: "Could not send", description: msg, variant: "destructive" });
@@ -270,11 +272,11 @@ export default function SkillOfferingDetail() {
                   {!unlocked ? (
                     <div className="rounded-lg border border-dashed p-4 space-y-3 text-center">
                       <p className="text-sm text-muted-foreground">
-                        Unlock the chat with this provider for <span className="font-semibold text-foreground">2 credits</span> (one-time).
+                        Unlock the chat with this provider by watching <span className="font-semibold text-foreground">one short ad</span> (one-time).
                         All further messages in this conversation are free.
                       </p>
-                      <Button onClick={unlockContact} disabled={unlocking} className="gap-2">
-                        <Send className="h-4 w-4" /> {unlocking ? "Unlocking…" : "Unlock contact for 2 credits"}
+                      <Button onClick={unlockContact} disabled={unlocking || adPlaying} className="gap-2">
+                        <Send className="h-4 w-4" /> {adPlaying ? "Loading ad…" : unlocking ? "Unlocking…" : "Watch ad & unlock contact"}
                       </Button>
                       <p className="text-xs text-muted-foreground">
                         Max 20 new contacts per day.{" "}

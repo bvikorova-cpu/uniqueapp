@@ -15,6 +15,7 @@ import {
   Smartphone, Shirt, Home, Dumbbell, Palette, Car, Gem, Boxes, Lock, Loader2, Gavel, Clock,
   Settings2, ShoppingBag,
 } from "lucide-react";
+import { useMarketplaceAdGate } from "@/hooks/useMarketplaceAdGate";
 import { SEO } from "@/components/SEO";
 import { PromotionBadge } from "@/components/skills/PromotionBadge";
 import { AuctionPromoteDialog } from "@/components/auction/AuctionPromoteDialog";
@@ -84,6 +85,7 @@ export default function Auction() {
   const [detail, setDetail] = useState<Item | null>(null);
   const [unlocked, setUnlocked] = useState<Set<string>>(new Set());
   const [unlocking, setUnlocking] = useState(false);
+  const { watchAdToContinue, adPlaying } = useMarketplaceAdGate();
   const [chatItem, setChatItem] = useState<Item | null>(null);
   const [buyIntent, setBuyIntent] = useState("");
   const [bidAmount, setBidAmount] = useState("");
@@ -203,21 +205,21 @@ export default function Auction() {
   const unlockContact = async (item: Item) => {
     if (!user) { navigate("/auth"); return; }
     if (item.user_id === user.id || unlocked.has(item.id)) { setChatItem(item); return; }
+    const adOk = await watchAdToContinue("message the seller");
+    if (!adOk) return;
     setUnlocking(true);
     try {
       const { error } = await (supabase as any).rpc("unlock_auction_contact", { _auction_id: item.id });
       if (error) throw error;
       setUnlocked((prev) => new Set(prev).add(item.id));
       window.dispatchEvent(new Event("ai-credits-updated"));
-      toast({ title: "Contact unlocked", description: "2 credits used — you can now message the seller." });
+      toast({ title: "Contact unlocked", description: "Thanks for watching the ad — you can now message the seller." });
       setChatItem(item);
     } catch (e: any) {
       const msg = String(e?.message || "");
       toast({
         title: "Could not unlock",
-        description: msg.includes("INSUFFICIENT_CREDITS")
-          ? "Not enough credits — the first message costs 2 credits."
-          : msg || "Try again",
+        description: msg || "Try again",
         variant: "destructive",
       });
     } finally {
@@ -327,16 +329,16 @@ export default function Auction() {
   return (
     <>
       <SEO
-        title="Auctions — bid free, publish for 2 credits"
-        description="Browse live auctions for free and bid without fees. Publishing an auction costs 2 credits and the first message to a seller costs 2 credits. No commission."
+        title="Auctions — bid free, publish free"
+        description="Browse live auctions for free and bid without fees. Publishing an auction and the first message to a seller are free — you just watch one short ad. No commission."
         canonical="/auction"
       />
       <FloatingHowItWorks
         title="How Auctions work"
         steps={[
           { title: "Browse free", desc: "Pick a category or search live auctions — browsing and bidding are free." },
-          { title: "Publish for 2 credits", desc: "Set a starting price, duration and photos. No commission on the sale." },
-          { title: "Bid or message", desc: "Place bids instantly; the first message to a seller unlocks for 2 credits." },
+          { title: "Publish for free", desc: "Watch one short ad, set a starting price, duration and photos. No commission on the sale." },
+          { title: "Bid or message", desc: "Place bids instantly; the first message to a seller unlocks after one short ad." },
           { title: "Close the deal directly", desc: "The winner and the seller agree payment and delivery off-platform." },
         ]}
       />
@@ -354,12 +356,12 @@ export default function Auction() {
             Bid live. Win it your price.
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base text-white/90 drop-shadow md:text-lg">
-            Browsing and bidding are free. Publishing an auction costs 2 credits and the first message to a seller costs
-            2 credits — then you settle directly, with zero commission.
+            Browsing and bidding are free. Publishing an auction and the first message to a seller only require watching
+            one short ad — then you settle directly, with zero commission.
           </p>
           <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button size="lg" className="gap-2 shadow-[0_10px_30px_-10px_hsl(var(--primary)/0.6)]" onClick={() => (user ? navigate("/auction/create") : navigate("/auth"))}>
-              <Plus className="h-4 w-4" /> Start an auction · 2 credits
+              <Plus className="h-4 w-4" /> Start an auction · free
             </Button>
             <Button size="lg" variant="outline" className="gap-2 border-white/40 bg-black/30 text-white backdrop-blur hover:bg-white/10 hover:text-white" onClick={() => (user ? navigate("/auction/messages") : navigate("/auth"))}>
               <MessageCircle className="h-4 w-4" /> Messages
@@ -397,7 +399,7 @@ export default function Auction() {
               <Button className="w-full gap-2 sm:w-auto" onClick={() => (user ? navigate("/auction/create") : navigate("/auth"))}>
                 <Plus className="h-4 w-4" />
                 <span className="sm:hidden">Auction · 2 cr</span>
-                <span className="hidden sm:inline">Start an auction · 2 credits</span>
+                <span className="hidden sm:inline">Start an auction · free</span>
               </Button>
             </div>
           </header>
@@ -581,7 +583,7 @@ export default function Auction() {
                     </Button>
                     <Button className="flex-1 gap-2" variant="outline" disabled={unlocking} onClick={() => { setBuyIntent(""); unlockContact(detail); }}>
                       {unlocking ? <Loader2 className="h-4 w-4 animate-spin" /> : detailUnlocked ? <MessageCircle className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
-                      {detailUnlocked ? "Message seller" : "Message seller · 2 credits"}
+                      {detailUnlocked ? "Message seller" : adPlaying ? "Loading ad…" : "Watch ad & message seller"}
                     </Button>
                   </>
                 )}
@@ -589,7 +591,7 @@ export default function Auction() {
               {user?.id !== detail.user_id && (
                 <p className="text-xs text-muted-foreground">
                   Bidding is free. Buying happens directly with the seller in chat — no platform payment, no commission.
-                  {!detailUnlocked ? " Contact details stay hidden until you unlock the chat for 2 credits." : ""}
+                  {!detailUnlocked ? " Contact details stay hidden until you watch one short sponsored ad." : ""}
                 </p>
               )}
             </>

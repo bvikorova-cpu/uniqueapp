@@ -10,7 +10,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SEO } from "@/components/SEO";
-import { ArrowLeft, Coins, Loader2, Sparkles, Upload, X } from "lucide-react";
+import { ArrowLeft, Loader2, PlayCircle, Sparkles, Upload, X } from "lucide-react";
+import { useMarketplaceAdGate } from "@/hooks/useMarketplaceAdGate";
 
 const CATEGORIES = [
   { value: "food", label: "Food & Dining" },
@@ -47,6 +48,7 @@ export default function CouponCreate() {
   const [preview, setPreview] = useState("");
   const [confirmed, setConfirmed] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { watchAdToContinue, adPlaying } = useMarketplaceAdGate();
 
   const pickImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
@@ -67,6 +69,8 @@ export default function CouponCreate() {
     }
     if (!confirmed) { toast({ title: "Please confirm the coupon value is accurate", variant: "destructive" }); return; }
 
+    const adOk = await watchAdToContinue("publish your coupon");
+    if (!adOk) return;
     setSaving(true);
     try {
       let imageUrl: string | null = null;
@@ -93,15 +97,13 @@ export default function CouponCreate() {
       });
       if (error) throw error;
       window.dispatchEvent(new Event("ai-credits-updated"));
-      toast({ title: "Coupon published", description: "2 credits used. Contact details are auto-hidden." });
+      toast({ title: "Coupon published", description: "Thanks for watching the ad. Contact details are auto-hidden." });
       nav(`/coupon-marketplace?category=${category}`);
     } catch (e: any) {
       const msg = String(e?.message || "");
       toast({
         title: "Could not publish",
-        description: msg.includes("INSUFFICIENT_CREDITS")
-          ? "Not enough credits — publishing costs 2 credits."
-          : msg || "Try again",
+        description: msg || "Try again",
         variant: "destructive",
       });
     } finally {
@@ -113,7 +115,7 @@ export default function CouponCreate() {
     <>
       <SEO
         title="Post a coupon listing"
-        description="Publish a coupon, gift card or voucher for 2 credits. No commission — you deal directly with the buyer."
+        description="Publish a coupon, gift card or voucher for free — just watch one short ad. No commission — you deal directly with the buyer."
         canonical="/coupon-marketplace/create"
       />
       <main className="container max-w-2xl py-8">
@@ -129,7 +131,7 @@ export default function CouponCreate() {
             Post a coupon
           </h1>
           <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
-            <Coins className="h-4 w-4 text-primary" /> Publishing costs 2 credits · no commission on your deal
+            <PlayCircle className="h-4 w-4 text-primary" /> Free to publish — watch one short ad · no commission on your deal
           </p>
         </div>
 
@@ -187,12 +189,12 @@ export default function CouponCreate() {
 
             <p className="text-xs text-muted-foreground">
               Contact details (e-mails, phone numbers, links, messenger names) are removed automatically. Buyers unlock the
-              chat with you for 2 credits and you settle the payment directly between yourselves.
+              chat with you by watching one short ad and you settle the payment directly between yourselves.
             </p>
 
-            <Button className="w-full gap-2" onClick={submit} disabled={saving}>
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Coins className="h-4 w-4" />}
-              Publish · 2 credits
+            <Button className="w-full gap-2" onClick={submit} disabled={saving || adPlaying}>
+              {saving || adPlaying ? <Loader2 className="h-4 w-4 animate-spin" /> : <PlayCircle className="h-4 w-4" />}
+              {adPlaying ? "Loading ad…" : saving ? "Publishing…" : "Watch ad & publish · free"}
             </Button>
           </CardContent>
         </Card>
