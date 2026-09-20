@@ -284,7 +284,7 @@ function SkillsMarketplaceContent() {
       <FloatingHowItWorks title="How Skills Marketplace works" steps={[
           { title: 'Free access', desc: 'Browsing the Skills section is free — no entry fee.' },
           { title: 'Pick a category', desc: 'Open a category folder and browse offerings inside it.' },
-          { title: 'Publish an offering', desc: 'Opening your own offering costs 2 credits — no commission.' },
+          { title: 'Publish an offering', desc: 'Publishing your own offering is free — you just watch one short sponsored ad. No commission.' },
           { title: 'Deal directly', desc: 'Watch one short ad to unlock the contact, agree the price and pay the provider directly — no commission.' },
         ]} />
       <section className="relative overflow-hidden border-b border-border/40">
@@ -312,14 +312,14 @@ function SkillsMarketplaceContent() {
             Find someone to get the job done
           </h1>
           <p className="mt-5 max-w-2xl mx-auto text-base md:text-lg text-muted-foreground">
-            Browse services by category for free — or offer your own skills. Publishing an offering costs 2 credits.
+            Browse services by category for free — or offer your own skills. Publishing an offering is free, you just watch one short sponsored ad.
           </p>
         </div>
       </section>
 
       <div className="bg-muted/30">
         <div className="container mx-auto px-4 py-8 max-w-6xl">
-          <SEO title="Skills Marketplace — Hire microservices" description="Browse services by category for free. Publishing an offering costs 2 credits." canonical="/marketplace" />
+          <SEO title="Skills Marketplace — Hire microservices" description="Browse services by category for free. Publishing an offering is free — watch one short sponsored ad." canonical="/marketplace" />
 
           <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -348,7 +348,7 @@ function SkillsMarketplaceContent() {
               >
                 <Plus className="h-4 w-4" />
                 <span className="sm:hidden">Post offering · 2 cr</span>
-                <span className="hidden sm:inline">Post an offering · 2 credits</span>
+                <span className="hidden sm:inline">Post an offering · free</span>
               </Button>
             </div>
           </header>
