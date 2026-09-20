@@ -10,7 +10,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { BazaarPhotoUploader, type PendingPhoto } from "@/components/bazaar/BazaarPhotoUploader";
 import { SEO } from "@/components/SEO";
-import { ArrowLeft, Coins, Loader2, Sparkles } from "lucide-react";
+import { ArrowLeft, Loader2, PlayCircle, Sparkles } from "lucide-react";
+import { useMarketplaceAdGate } from "@/hooks/useMarketplaceAdGate";
 
 const CATEGORIES = [
   { value: "electronics", label: "Electronics" },
@@ -36,11 +37,14 @@ export default function BazaarCreate() {
   const [condition, setCondition] = useState("Good");
   const [photos, setPhotos] = useState<PendingPhoto[]>([]);
   const [saving, setSaving] = useState(false);
+  const { watchAdToContinue, adPlaying } = useMarketplaceAdGate();
 
   const submit = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login required", variant: "destructive" }); return; }
     if (!title || !price) { toast({ title: "Title and price are required", variant: "destructive" }); return; }
+    const adOk = await watchAdToContinue("publish your listing");
+    if (!adOk) return;
     setSaving(true);
     try {
       const urls: string[] = [];
@@ -66,15 +70,13 @@ export default function BazaarCreate() {
       });
       if (error) throw error;
       window.dispatchEvent(new Event("ai-credits-updated"));
-      toast({ title: "Listing published", description: "2 credits used. Contact details are auto-hidden." });
+      toast({ title: "Listing published", description: "Thanks for watching the ad. Contact details are auto-hidden." });
       nav(`/bazaar?category=${category}${data ? "" : ""}`);
     } catch (e: any) {
       const msg = String(e?.message || "");
       toast({
         title: "Could not publish",
-        description: msg.includes("INSUFFICIENT_CREDITS")
-          ? "Not enough credits — publishing costs 2 credits."
-          : msg || "Try again",
+        description: msg || "Try again",
         variant: "destructive",
       });
     } finally {
@@ -84,7 +86,7 @@ export default function BazaarCreate() {
 
   return (
     <>
-      <SEO title="Post a Bazaar listing" description="Publish a Bazaar listing for 2 credits. No commission — deal directly with buyers." canonical="/bazaar/create" />
+      <SEO title="Post a Bazaar listing" description="Publish a Bazaar listing for free — just watch one short ad. No commission — deal directly with buyers." canonical="/bazaar/create" />
       <main className="container max-w-2xl py-8">
         <Button variant="ghost" size="sm" className="mb-4 gap-2" onClick={() => nav("/bazaar")}>
           <ArrowLeft className="h-4 w-4" /> Back to Bazaar
@@ -98,7 +100,7 @@ export default function BazaarCreate() {
             Post a listing
           </h1>
           <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
-            <Coins className="h-4 w-4 text-primary" /> Publishing costs 2 credits · no commission on your sale
+            <PlayCircle className="h-4 w-4 text-primary" /> Free to publish — watch one short ad · no commission on your sale
           </p>
         </div>
 
@@ -127,12 +129,12 @@ export default function BazaarCreate() {
             <BazaarPhotoUploader photos={photos} onChange={setPhotos} />
 
             <p className="text-xs text-muted-foreground">
-              E-mails, phone numbers, links and messaging apps are removed automatically — buyers unlock your chat for 2 credits.
+              E-mails, phone numbers, links and messaging apps are removed automatically — buyers unlock your chat by watching one short ad.
             </p>
 
-            <Button onClick={submit} disabled={saving} className="w-full gap-2">
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Coins className="h-4 w-4" />}
-              {saving ? "Publishing…" : "Publish · 2 credits"}
+            <Button onClick={submit} disabled={saving || adPlaying} className="w-full gap-2">
+              {saving || adPlaying ? <Loader2 className="h-4 w-4 animate-spin" /> : <PlayCircle className="h-4 w-4" />}
+              {adPlaying ? "Loading ad…" : saving ? "Publishing…" : "Watch ad & publish · free"}
             </Button>
           </CardContent>
         </Card>
