@@ -11,12 +11,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Coins } from "lucide-react";
+import { ArrowLeft, Coins, Megaphone } from "lucide-react";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { useMarketplaceAdGate } from "@/hooks/useMarketplaceAdGate";
+import {
+  SkillLaunchPromoDialog,
+  SKILL_LAUNCH_PROMO_CREDITS,
+  SKILL_LAUNCH_PROMO_DAYS,
+} from "@/components/skills/SkillLaunchPromoDialog";
 const CATEGORIES = ["construction", "repairs", "cleaning", "gardening", "technology", "teaching", "creative", "other"] as const;
-
-const OFFERING_CREDIT_COST = 2;
 
 const Schema = z.object({ title: z.string().trim().min(5, "At least 5 characters").max(120),
   description: z.string().trim().min(20, "At least 20 characters").max(2000),
@@ -28,10 +32,13 @@ function SkillsMarketplaceCreateForm() {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { watchAdToContinue, adPlaying } = useMarketplaceAdGate();
   const [form, setForm] = useState({ title: "", description: "", category: "other" as typeof CATEGORIES[number], price_per_hour: "", location: "" });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [promoOpen, setPromoOpen] = useState(false);
   const [balance, setBalance] = useState<number | null>(null);
+
 
   useEffect(() => {
     if (!user) return;
