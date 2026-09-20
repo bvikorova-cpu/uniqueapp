@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Coins, Megaphone } from "lucide-react";
+import { ArrowLeft, Megaphone } from "lucide-react";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { useMarketplaceAdGate } from "@/hooks/useMarketplaceAdGate";
