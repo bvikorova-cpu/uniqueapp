@@ -306,7 +306,7 @@ export default function CouponMarketplace() {
     <>
       <SEO
         title="Coupon Marketplace — buy and sell coupons"
-        description="Browse coupons, gift cards and vouchers for free. Publishing a listing costs 2 credits, the first message to a seller costs 2 credits. No commission."
+        description="Browse coupons, gift cards and vouchers for free. Publishing a listing and the first message to a seller are free — you just watch one short ad. No commission."
         canonical="/coupon-marketplace"
       />
 
@@ -318,7 +318,7 @@ export default function CouponMarketplace() {
             <div>
               <h2 className="text-2xl font-bold tracking-tight">Browse coupons</h2>
               <p className="text-sm text-muted-foreground">
-                Free to browse · posting 2 credits · first message 2 credits · no commission
+                Free to browse · posting free with one short ad · first message after one short ad · no commission
               </p>
             </div>
             <div className="flex flex-col gap-2 sm:flex-row">
@@ -338,7 +338,7 @@ export default function CouponMarketplace() {
               <Button className="w-full gap-2 sm:w-auto" onClick={() => (user ? navigate("/coupon-marketplace/create") : navigate("/auth"))}>
                 <Plus className="h-4 w-4" />
                 <span className="sm:hidden">Post · 2 cr</span>
-                <span className="hidden sm:inline">Post a coupon · 2 credits</span>
+                <span className="hidden sm:inline">Post a coupon · free</span>
               </Button>
             </div>
           </div>
@@ -501,13 +501,13 @@ export default function CouponMarketplace() {
                 ) : (
                   <Button className="flex-1 gap-2" disabled={unlocking} onClick={() => unlockContact(detail)}>
                     {unlocking ? <Loader2 className="h-4 w-4 animate-spin" /> : detailUnlocked ? <MessageCircle className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
-                    {detailUnlocked ? "Message seller" : "Message seller · 2 credits"}
+                    {detailUnlocked ? "Message seller" : adPlaying ? "Loading ad…" : "Watch ad & message seller"}
                   </Button>
                 )}
               </div>
               {!detailUnlocked && user?.id !== detail.user_id && (
                 <p className="text-xs text-muted-foreground">
-                  Contact details are hidden until you unlock the chat for 2 credits. After that you deal directly — no commission.
+                  Contact details are hidden until you watch one short sponsored ad. After that you deal directly — no commission.
                 </p>
               )}
             </>

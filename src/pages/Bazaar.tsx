@@ -322,7 +322,7 @@ export default function Bazaar() {
     <>
       <SEO
         title="Bazaar — Buy and sell locally"
-        description="Browse the Bazaar for free. Publishing a listing costs 2 credits, the first message to a seller costs 2 credits. No commission."
+        description="Browse the Bazaar for free. Publishing a listing and the first message to a seller are free — you just watch one short ad. No commission."
         canonical="/bazaar"
       />
 
@@ -348,7 +348,7 @@ export default function Bazaar() {
             Sell anything. Find everything.
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base text-white/90 drop-shadow md:text-lg">
-            Browsing is free. Publishing a listing costs 2 credits and the first message to a seller costs 2 credits —
+            Browsing is free. Publishing a listing and the first message to a seller are free — you only watch one short ad —
             then you deal directly, with zero commission.
           </p>
           <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -357,7 +357,7 @@ export default function Bazaar() {
               onClick={() => (user ? navigate("/bazaar/create") : navigate("/auth"))}
               className="gap-2 shadow-[0_10px_30px_-10px_hsl(var(--primary)/0.6)]"
             >
-              <Plus className="h-4 w-4" /> Post a listing · 2 credits
+              <Plus className="h-4 w-4" /> Post a listing · free
             </Button>
             <Button size="lg" variant="outline" className="gap-2 border-white/40 bg-black/30 text-white backdrop-blur hover:bg-white/10 hover:text-white" onClick={() => (user ? navigate("/bazaar/messages") : navigate("/auth"))}>
               <MessageCircle className="h-4 w-4" /> Messages
@@ -403,7 +403,7 @@ export default function Bazaar() {
               >
                 <Plus className="h-4 w-4" />
                 <span className="sm:hidden">Post · 2 cr</span>
-                <span className="hidden sm:inline">Post a listing · 2 credits</span>
+                <span className="hidden sm:inline">Post a listing · free</span>
               </Button>
             </div>
           </header>
@@ -562,13 +562,13 @@ export default function Bazaar() {
                     ) : (
                       <Lock className="h-4 w-4" />
                     )}
-                    {detailUnlocked ? "Message seller" : "Message seller · 2 credits"}
+                    {detailUnlocked ? "Message seller" : adPlaying ? "Loading ad…" : "Watch ad & message seller"}
                   </Button>
                 )}
               </div>
               {!detailUnlocked && user?.id !== detail.user_id && (
                 <p className="text-xs text-muted-foreground">
-                  Contact details are hidden until you unlock the chat for 2 credits. After that you deal directly — no commission.
+                  Contact details are hidden until you watch one short sponsored ad. After that you deal directly — no commission.
                 </p>
               )}
             </>
