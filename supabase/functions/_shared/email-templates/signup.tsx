@@ -9,7 +9,7 @@ interface Props { siteName: string; siteUrl: string; recipient: string; confirma
 export const SignupEmail = ({ siteName, siteUrl, recipient, confirmationUrl }: Props) => (
   <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Welcome to Unique — confirm your email and claim your welcome credits 🎉</Preview>
+    <Preview>Welcome to Unique — confirm your email to get started 🎉</Preview>
     <Body style={styles.main}>
       <Container style={styles.container}>
         <EmailHeader siteUrl={siteUrl} />
@@ -19,7 +19,7 @@ export const SignupEmail = ({ siteName, siteUrl, recipient, confirmationUrl }: P
             Hi there, thanks for joining <strong>Unique</strong> — the all-in-one social, dating, and creator platform.
           </Text>
           <Text style={styles.text}>
-            Confirm your email <Link href={`mailto:${recipient}`} style={styles.link}>{recipient}</Link> to activate your account and unlock your welcome credits.
+            Confirm your email <Link href={`mailto:${recipient}`} style={styles.link}>{recipient}</Link> to activate your account.
           </Text>
           <Section style={styles.buttonWrap}>
             <Button style={styles.button} href={confirmationUrl}>Confirm Email →</Button>

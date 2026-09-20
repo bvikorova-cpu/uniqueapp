@@ -644,7 +644,7 @@ export default function AboutPlatform() {
                   {
                     icon: Wallet,
                     title: "Fair Pay-Per-Use Pricing",
-                    desc: "Buy credits once and spend them only on what you use — one wallet for the whole platform. New accounts get 5 free credits at registration; everything else is bought. No €20/month subscription for features you never touch."
+                    desc: "Buy credits once and spend them only on what you use — one wallet for the whole platform. No €20/month subscription for features you never touch."
                   },
                 ].map((item) => (
                   <div key={item.title} className="rounded-xl border border-border/50 bg-card/40 backdrop-blur-sm p-4 hover:border-primary/40 transition-colors">

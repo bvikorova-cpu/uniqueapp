@@ -80,7 +80,7 @@ export function WelcomeOnboarding() {
                 </p>
                 <div className="flex justify-center gap-3 pt-2">
                   <Badge variant="secondary" className="gap-1"><Trophy className="h-3 w-3" /> Cash prizes</Badge>
-                  <Badge variant="secondary" className="gap-1"><Gift className="h-3 w-3" /> Free credits</Badge>
+                  <Badge variant="secondary" className="gap-1"><Gift className="h-3 w-3" /> Gifts</Badge>
                 </div>
                 <Button onClick={() => setStep(1)} size="lg" className="w-full gap-2 mt-4">
                   Get started <ArrowRight className="h-4 w-4" />
@@ -109,11 +109,11 @@ export function WelcomeOnboarding() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="text-5xl font-black bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent"
+                    className="text-2xl font-black bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent"
                   >
-                    +5 credits
+                    You're all set!
                   </motion.div>
-                  <p className="text-muted-foreground mt-2">Welcome gift unlocked. Start exploring now.</p>
+                  <p className="text-muted-foreground mt-2">Start exploring now.</p>
                 </div>
 
                 <Button onClick={finish} size="lg" className="w-full">
