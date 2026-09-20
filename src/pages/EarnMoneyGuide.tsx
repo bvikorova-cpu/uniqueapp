@@ -93,7 +93,7 @@ const earnGuides: EarnGuide[] = [
     icon: BriefcaseBusiness,
     income: ["Fixed-price service offers", "Custom work agreed with buyers", "Repeat orders from satisfied customers", "A public provider profile that builds trust"],
     whereToEarn: "Open Skills Marketplace and publish an offering. Customers discover it there and unlock contact so you can agree the job, deadline and payment directly.",
-    payout: "Publishing an offering costs 2 credits. The buyer unlocks your contact for free by watching one short sponsored ad. Unique charges no commission on your service price; the customer pays you directly using the method you agree together.",
+    payout: "Publishing an offering is free — you only watch one short sponsored ad. Optional launch boost: 30 days of TOP placement for a one-time 10 credits (€5) instead of the regular 45 credits (€22.50). The buyer unlocks your contact for free by watching one short sponsored ad. Unique charges no commission on your service price; the customer pays you directly using the method you agree together.",
     steps: ["Choose one service with a specific result.", "Add an honest description, price, delivery time and examples.", "Respond to buyer questions and confirm the scope.", "Complete the order and build your reputation through genuine reviews."],
     momentum: ["Make the outcome obvious in the title.", "Start with a focused offer instead of promising everything.", "Deliver on time and keep all order details clear."],
     note: "Only offer services you can genuinely deliver. Order and payout status are based on completed platform transactions.",

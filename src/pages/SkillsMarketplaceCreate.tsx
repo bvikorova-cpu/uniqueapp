@@ -11,12 +11,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Coins } from "lucide-react";
+import { ArrowLeft, Megaphone } from "lucide-react";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { useMarketplaceAdGate } from "@/hooks/useMarketplaceAdGate";
+import {
+  SkillLaunchPromoDialog,
+  SKILL_LAUNCH_PROMO_CREDITS,
+  SKILL_LAUNCH_PROMO_DAYS,
+} from "@/components/skills/SkillLaunchPromoDialog";
 const CATEGORIES = ["construction", "repairs", "cleaning", "gardening", "technology", "teaching", "creative", "other"] as const;
-
-const OFFERING_CREDIT_COST = 2;
 
 const Schema = z.object({ title: z.string().trim().min(5, "At least 5 characters").max(120),
   description: z.string().trim().min(20, "At least 20 characters").max(2000),
@@ -28,10 +32,13 @@ function SkillsMarketplaceCreateForm() {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { watchAdToContinue, adPlaying } = useMarketplaceAdGate();
   const [form, setForm] = useState({ title: "", description: "", category: "other" as typeof CATEGORIES[number], price_per_hour: "", location: "" });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [promoOpen, setPromoOpen] = useState(false);
   const [balance, setBalance] = useState<number | null>(null);
+
 
   useEffect(() => {
     if (!user) return;
@@ -48,15 +55,25 @@ function SkillsMarketplaceCreateForm() {
     return null;
   }
 
-  const submit = async (e: React.FormEvent) => {
+  const openPromoStep = (e: React.FormEvent) => {
     e.preventDefault();
     const parsed = Schema.safeParse(form);
     if (!parsed.success) {
       toast({ title: "Check the form", description: parsed.error.issues[0].message, variant: "destructive" });
       return;
     }
+    setPromoOpen(true);
+  };
+
+  const publish = async (withPromo: boolean) => {
+    const parsed = Schema.safeParse(form);
+    if (!parsed.success) return;
+
     setSubmitting(true);
     try {
+      const adSeen = await watchAdToContinue("publish your offering");
+      if (!adSeen) return;
+
       let image_url: string | null = null;
       if (imageFile) {
         const path = `${user.id}/${Date.now()}-${imageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, "_")}`;
@@ -73,10 +90,43 @@ function SkillsMarketplaceCreateForm() {
         _price_per_hour: parsed.data.price_per_hour,
         _location: parsed.data.location || null,
         _image_url: image_url,
-      });
+        // With the launch boost the offering is created as a draft first and is
+        // published by skill_launch_promo once the 10 credits are charged.
+        _is_active: !withPromo,
+      } as any);
       if (error) throw error;
-      setBalance((current) => current === null ? current : current - OFFERING_CREDIT_COST);
-      toast({ title: "Offering published", description: `${OFFERING_CREDIT_COST} credits used · 0% commission.` });
+
+      if (!withPromo) {
+        setPromoOpen(false);
+        toast({ title: "Offering published", description: "Free publishing · 0% commission." });
+        navigate(`/skills-marketplace/${data}`);
+        return;
+      }
+
+      const { data: promoData, error: promoError } = await (supabase as any).rpc("skill_launch_promo", {
+        _offering_id: data,
+      });
+      if (promoError) {
+        if (String(promoError.message || "").includes("INSUFFICIENT_CREDITS")) {
+          setPromoOpen(false);
+          toast({
+            title: "Draft saved — not published yet",
+            description: `You need ${SKILL_LAUNCH_PROMO_CREDITS} credits for the launch boost. Your offering is saved as an unpublished draft. Top up and activate the boost to publish it.`,
+          });
+          navigate("/ai-credits");
+          return;
+        }
+        throw promoError;
+      }
+
+      const row = Array.isArray(promoData) ? promoData[0] : promoData;
+      if (row?.credits_remaining != null) setBalance(row.credits_remaining);
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      setPromoOpen(false);
+      toast({
+        title: "Published with launch boost",
+        description: `TOP placement for ${SKILL_LAUNCH_PROMO_DAYS} days · ${SKILL_LAUNCH_PROMO_CREDITS} credits used.`,
+      });
       navigate(`/skills-marketplace/${data}`);
     } catch (err: any) {
       toast({ title: "Could not publish", description: err?.message ?? "Try again", variant: "destructive" });
@@ -85,12 +135,13 @@ function SkillsMarketplaceCreateForm() {
     }
   };
 
+
   return (
     <>
       <FloatingHowItWorks title="How Skills Marketplace Create works" steps={[
           { title: 'Pick a category', desc: 'Choose the category your offering belongs to.' },
           { title: 'Describe the service', desc: 'Title, description, hourly price in EUR and optional location.' },
-          { title: `Pay ${OFFERING_CREDIT_COST} credits`, desc: 'Opening an offering costs 2 credits — no commission on the job.' },
+          { title: 'Watch one short ad', desc: 'Publishing is free — you only watch one short sponsored ad.' },
           { title: 'Get orders', desc: 'Buyers contact you, order and review your work.' },
         ]} />
       <div className="container mx-auto px-4 py-8 max-w-2xl">
@@ -102,7 +153,7 @@ function SkillsMarketplaceCreateForm() {
           <CardTitle>Post a new offering</CardTitle>
           <div className="flex items-center justify-between gap-2 flex-wrap pt-2">
             <p className="text-sm text-muted-foreground">
-              Flat fee {OFFERING_CREDIT_COST} credits · 0% commission
+              Free — watch one short ad · 0% commission
             </p>
             <div className="flex items-center gap-2">
               <Badge variant="outline">{balance === null ? "—" : `${balance} credits`}</Badge>
@@ -111,7 +162,7 @@ function SkillsMarketplaceCreateForm() {
           </div>
         </CardHeader>
         <CardContent>
-          <form onSubmit={submit} className="space-y-4">
+          <form onSubmit={openPromoStep} className="space-y-4">
             <div>
               <Label>Title</Label>
               <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="e.g. I'll assemble your IKEA furniture" maxLength={120} />
@@ -143,17 +194,29 @@ function SkillsMarketplaceCreateForm() {
               <Label>Cover image (optional)</Label>
               <Input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] ?? null)} />
             </div>
-            <Button type="submit" disabled={submitting} className="w-full gap-2">
-              <Coins className="h-4 w-4" />
-              {submitting ? "Publishing…" : `Publish offering · ${OFFERING_CREDIT_COST} credits`}
+            <Button type="submit" disabled={submitting || adPlaying} className="w-full gap-2">
+              <Megaphone className="h-4 w-4" />
+              {submitting || adPlaying ? "Publishing…" : "Continue to publish · free"}
             </Button>
             <p className="text-xs text-muted-foreground text-center">
-              {OFFERING_CREDIT_COST} credits are deducted once when publishing. No commission on your job.
+              Publishing is free — you watch one short sponsored ad instead of paying credits. No
+              commission on your job.
             </p>
           </form>
+
         </CardContent>
       </Card>
+
+      <SkillLaunchPromoDialog
+        open={promoOpen}
+        onOpenChange={(v) => { if (!submitting && !adPlaying) setPromoOpen(v); }}
+        balance={balance}
+        busy={submitting || adPlaying}
+        onPublishWithPromo={() => publish(true)}
+        onPublishWithoutPromo={() => publish(false)}
+      />
     </div>
+
     </>
     );
 }

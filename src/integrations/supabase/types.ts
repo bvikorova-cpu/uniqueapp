@@ -72897,17 +72897,30 @@ export type Database = {
         }
         Returns: Json
       }
-      publish_skill_offering: {
-        Args: {
-          _category: Database["public"]["Enums"]["skill_category"]
-          _description: string
-          _image_url?: string
-          _location?: string
-          _price_per_hour: number
-          _title: string
-        }
-        Returns: string
-      }
+      publish_skill_offering:
+        | {
+            Args: {
+              _category: Database["public"]["Enums"]["skill_category"]
+              _description: string
+              _image_url?: string
+              _location?: string
+              _price_per_hour: number
+              _title: string
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              _category: Database["public"]["Enums"]["skill_category"]
+              _description: string
+              _image_url?: string
+              _is_active?: boolean
+              _location?: string
+              _price_per_hour: number
+              _title: string
+            }
+            Returns: string
+          }
       publish_skill_request: {
         Args: {
           _budget_eur?: number
@@ -73203,6 +73216,13 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      skill_launch_promo: {
+        Args: { _offering_id: string }
+        Returns: {
+          credits_remaining: number
+          promoted_until: string
+        }[]
       }
       skill_top_listing: {
         Args: { _days: number; _offering_id: string; _tier?: string }
