@@ -55,15 +55,25 @@ function SkillsMarketplaceCreateForm() {
     return null;
   }
 
-  const submit = async (e: React.FormEvent) => {
+  const openPromoStep = (e: React.FormEvent) => {
     e.preventDefault();
     const parsed = Schema.safeParse(form);
     if (!parsed.success) {
       toast({ title: "Check the form", description: parsed.error.issues[0].message, variant: "destructive" });
       return;
     }
+    setPromoOpen(true);
+  };
+
+  const publish = async (withPromo: boolean) => {
+    const parsed = Schema.safeParse(form);
+    if (!parsed.success) return;
+
     setSubmitting(true);
     try {
+      const adSeen = await watchAdToContinue("publish your offering");
+      if (!adSeen) return;
+
       let image_url: string | null = null;
       if (imageFile) {
         const path = `${user.id}/${Date.now()}-${imageFile.name.replace(/[^a-zA-Z0-9.\-_]/g, "_")}`;
@@ -80,10 +90,43 @@ function SkillsMarketplaceCreateForm() {
         _price_per_hour: parsed.data.price_per_hour,
         _location: parsed.data.location || null,
         _image_url: image_url,
-      });
+        // With the launch boost the offering is created as a draft first and is
+        // published by skill_launch_promo once the 10 credits are charged.
+        _is_active: !withPromo,
+      } as any);
       if (error) throw error;
-      setBalance((current) => current === null ? current : current - OFFERING_CREDIT_COST);
-      toast({ title: "Offering published", description: `${OFFERING_CREDIT_COST} credits used · 0% commission.` });
+
+      if (!withPromo) {
+        setPromoOpen(false);
+        toast({ title: "Offering published", description: "Free publishing · 0% commission." });
+        navigate(`/skills-marketplace/${data}`);
+        return;
+      }
+
+      const { data: promoData, error: promoError } = await (supabase as any).rpc("skill_launch_promo", {
+        _offering_id: data,
+      });
+      if (promoError) {
+        if (String(promoError.message || "").includes("INSUFFICIENT_CREDITS")) {
+          setPromoOpen(false);
+          toast({
+            title: "Draft saved — not published yet",
+            description: `You need ${SKILL_LAUNCH_PROMO_CREDITS} credits for the launch boost. Your offering is saved as an unpublished draft. Top up and activate the boost to publish it.`,
+          });
+          navigate("/ai-credits");
+          return;
+        }
+        throw promoError;
+      }
+
+      const row = Array.isArray(promoData) ? promoData[0] : promoData;
+      if (row?.credits_remaining != null) setBalance(row.credits_remaining);
+      window.dispatchEvent(new Event("ai-credits-updated"));
+      setPromoOpen(false);
+      toast({
+        title: "Published with launch boost",
+        description: `TOP placement for ${SKILL_LAUNCH_PROMO_DAYS} days · ${SKILL_LAUNCH_PROMO_CREDITS} credits used.`,
+      });
       navigate(`/skills-marketplace/${data}`);
     } catch (err: any) {
       toast({ title: "Could not publish", description: err?.message ?? "Try again", variant: "destructive" });
@@ -91,6 +134,7 @@ function SkillsMarketplaceCreateForm() {
       setSubmitting(false);
     }
   };
+
 
   return (
     <>
