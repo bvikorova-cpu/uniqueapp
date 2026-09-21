@@ -247,13 +247,23 @@ export default function CouponCreate() {
               chat with you by watching one short ad and you settle the payment directly between yourselves.
             </p>
 
-            <Button className="w-full gap-2" onClick={submit} disabled={saving || adPlaying}>
+            <Button className="w-full gap-2" onClick={openPromoStep} disabled={saving || adPlaying}>
               {saving || adPlaying ? <Loader2 className="h-4 w-4 animate-spin" /> : <PlayCircle className="h-4 w-4" />}
               {adPlaying ? "Loading ad…" : saving ? "Publishing…" : "Watch ad & publish · free"}
             </Button>
           </CardContent>
         </Card>
       </main>
+
+      <MarketplaceLaunchPromoDialog
+        open={promoOpen}
+        onOpenChange={setPromoOpen}
+        itemLabel="coupon"
+        balance={balance}
+        busy={saving || adPlaying}
+        onPublishWithPromo={() => submit(true)}
+        onPublishWithoutPromo={() => submit(false)}
+      />
     </>
   );
 }
