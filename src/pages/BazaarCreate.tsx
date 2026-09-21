@@ -186,12 +186,22 @@ export default function BazaarCreate() {
               E-mails, phone numbers, links and messaging apps are removed automatically — buyers unlock your chat by watching one short ad.
             </p>
 
-            <Button onClick={submit} disabled={saving || adPlaying} className="w-full gap-2">
+            <Button onClick={openPromoStep} disabled={saving || adPlaying} className="w-full gap-2">
               {saving || adPlaying ? <Loader2 className="h-4 w-4 animate-spin" /> : <PlayCircle className="h-4 w-4" />}
               {adPlaying ? "Loading ad…" : saving ? "Publishing…" : "Watch ad & publish · free"}
             </Button>
           </CardContent>
         </Card>
+
+        <MarketplaceLaunchPromoDialog
+          open={promoOpen}
+          onOpenChange={setPromoOpen}
+          itemLabel="listing"
+          balance={balance}
+          busy={saving || adPlaying}
+          onPublishWithPromo={() => submit(true)}
+          onPublishWithoutPromo={() => submit(false)}
+        />
       </main>
     </>
   );
