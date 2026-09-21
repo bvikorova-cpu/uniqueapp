@@ -1230,6 +1230,7 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
       itemLabel="course"
       balance={coursePromoBalance}
       busy={saving}
+      publishNote="Publishing this course costs 15 credits. Before it goes live you can also activate a one-time launch boost so learners see it first."
       onPublishWithPromo={() => saveCourse(true, true)}
       onPublishWithoutPromo={() => saveCourse(true, false)}
     />
