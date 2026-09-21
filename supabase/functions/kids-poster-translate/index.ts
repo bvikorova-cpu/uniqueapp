@@ -76,7 +76,7 @@ serve(async (req) => {
       if (match) presetPath = `${posterId}/${match.name}`;
     }
 
-    if (title.length < 2 || language.length < 2 || (!presetPath && !validSourceImage)) {
+    if (title.length < 2 || language.length < 2 || (!presetPath && !validReadyImage && !validSourceImage)) {
       return new Response(JSON.stringify({ error: "Missing or invalid poster image or language." }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
