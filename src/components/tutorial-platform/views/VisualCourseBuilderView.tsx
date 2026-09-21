@@ -107,6 +107,8 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
   const [newTitle, setNewTitle] = useState("");
   const [newType, setNewType] = useState("video");
   const [saving, setSaving] = useState(false);
+  const [coursePromoOpen, setCoursePromoOpen] = useState(false);
+  const [coursePromoBalance, setCoursePromoBalance] = useState<number | null>(null);
   const [loading, setLoading] = useState(isEdit);
   const [expandedId, setExpandedId] = useState<number | null>(isEdit ? null : (initialModules[0]?.id ?? null));
   const [dragId, setDragId] = useState<number | null>(null);
