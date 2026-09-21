@@ -101,26 +101,43 @@ serve(async (req) => {
       );
     }
 
-    const prompt = [
-      `Translate every visible word on this children's educational poster from English into ${language}.`,
-      `Return the complete finished poster in ${language}, with correct spelling and diacritics.`,
-      "Keep the same educational topic, objects, characters, colors, visual hierarchy, portrait format and cheerful illustrated style.",
-      "Do not leave any English text. Do not add a watermark or commentary outside the poster.",
-      `Context: ${title}; children aged ${ages}. ${description}`,
-    ].join("\n");
+    let imagePayload: string | null = null;
 
-    const generated = await tryVertexImage(prompt, "1024x1536", 1, sourceImage, { temperature: 0.2 })
-      .catch((error) => {
-        console.warn("direct Gemini poster translation failed:", error instanceof Error ? error.message : String(error));
-        return null;
-      });
-    const b64 = generated?.data?.[0]?.b64_json;
-    if (typeof b64 !== "string" || !b64) {
-      return new Response(JSON.stringify({ error: "Gemini could not create the translated poster. Please try again." }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
-      });
+    if (presetPath) {
+      const { data: signed, error: signError } = await supabase.storage
+        .from("kids-poster-translations")
+        .createSignedUrl(presetPath, 3600);
+      if (signError || !signed?.signedUrl) {
+        return new Response(JSON.stringify({ error: "Translated poster could not be loaded. Please try again." }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 500,
+        });
+      }
+      imagePayload = signed.signedUrl;
+    } else {
+      const prompt = [
+        `Translate every visible word on this children's educational poster from English into ${language}.`,
+        `Return the complete finished poster in ${language}, with correct spelling and diacritics.`,
+        "Keep the same educational topic, objects, characters, colors, visual hierarchy, portrait format and cheerful illustrated style.",
+        "Do not leave any English text. Do not add a watermark or commentary outside the poster.",
+        `Context: ${title}; children aged ${ages}. ${description}`,
+      ].join("\n");
+
+      const generated = await tryVertexImage(prompt, "1024x1536", 1, sourceImage, { temperature: 0.2 })
+        .catch((error) => {
+          console.warn("direct Gemini poster translation failed:", error instanceof Error ? error.message : String(error));
+          return null;
+        });
+      const b64 = generated?.data?.[0]?.b64_json;
+      if (typeof b64 !== "string" || !b64) {
+        return new Response(JSON.stringify({ error: "Gemini could not create the translated poster. Please try again." }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 500,
+        });
+      }
+      imagePayload = `data:image/png;base64,${b64}`;
     }
+
 
     const { error: deductError } = await supabase.rpc("deduct_ai_credits", {
       p_user_id: user.id,
