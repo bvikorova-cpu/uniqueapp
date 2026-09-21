@@ -70055,6 +70055,20 @@ export type Database = {
           user_points_total: number
         }[]
       }
+      admin_launch_boosts_overview: {
+        Args: never
+        Returns: {
+          credits_spent: number
+          entity_id: string
+          featured_at: string
+          featured_until: string
+          is_active_boost: boolean
+          kind: string
+          owner_id: string
+          owner_name: string
+          title: string
+        }[]
+      }
       admin_list_referral_rewards: {
         Args: { p_limit?: number; p_offset?: number }
         Returns: {
