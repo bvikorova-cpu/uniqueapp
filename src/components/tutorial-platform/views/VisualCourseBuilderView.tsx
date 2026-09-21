@@ -519,7 +519,7 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
     }
   };
 
-  const openCoursePromoStep = () => {
+  const openCoursePromoStep = async () => {
     if (!title.trim() || !description.trim()) {
       toast({ title: "Fill in the name and description", variant: "destructive" });
       return;
