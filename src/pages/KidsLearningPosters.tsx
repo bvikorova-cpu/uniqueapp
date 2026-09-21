@@ -1388,6 +1388,12 @@ export default function KidsLearningPosters() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [bookBusy, setBookBusy] = useState(false);
   const [bookProgress, setBookProgress] = useState<{ done: number; total: number } | null>(null);
+  const [transPoster, setTransPoster] = useState<KlpPoster | null>(null);
+  const [transLang, setTransLang] = useState<string>(KLP_LANGUAGES[0].name);
+  const [transBusy, setTransBusy] = useState(false);
+  const [transResult, setTransResult] = useState<string | null>(null);
+  const [bookLangOpen, setBookLangOpen] = useState(false);
+  const [bookLang, setBookLang] = useState<string>(KLP_LANGUAGES[0].name);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
