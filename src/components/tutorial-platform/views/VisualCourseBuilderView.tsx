@@ -1223,6 +1223,16 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
         </div>
       </div>
     </div>
+
+    <MarketplaceLaunchPromoDialog
+      open={coursePromoOpen}
+      onOpenChange={setCoursePromoOpen}
+      itemLabel="course"
+      balance={coursePromoBalance}
+      busy={saving}
+      onPublishWithPromo={() => saveCourse(true, true)}
+      onPublishWithoutPromo={() => saveCourse(true, false)}
+    />
     </>
   );
 }
