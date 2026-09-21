@@ -135,6 +135,10 @@ import posterCareerDreams from "@/assets/kids-posters/career-dreams.jpg";
 
 export const KLP_AI_POSTER_CREDITS = 3;
 export const KLP_BOOK_CREDITS = 10;
+/** Credits for redrawing one poster in another language. */
+export const KLP_POSTER_TRANSLATE_CREDITS = 2;
+/** Credits for the whole encyclopedia translated into another language. */
+export const KLP_BOOK_TRANSLATE_CREDITS = 25;
 
 type KlpCategory = "school" | "science" | "life" | "safety" | "money" | "teen";
 
