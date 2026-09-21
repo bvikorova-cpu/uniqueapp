@@ -123,6 +123,35 @@ export default function CouponCreate() {
       });
       if (error) throw error;
       window.dispatchEvent(new Event("ai-credits-updated"));
+      setPromoOpen(false);
+
+      if (withPromo && newId) {
+        const { data: promoData, error: promoError } = await (supabase as any).rpc("marketplace_launch_promo", {
+          _kind: "coupon",
+          _entity_id: newId,
+        });
+        if (promoError) {
+          if (String(promoError.message || "").includes("INSUFFICIENT_CREDITS")) {
+            toast({
+              title: "Published without the boost",
+              description: `You need ${MKT_LAUNCH_PROMO_CREDITS} credits for the launch boost. Top up and promote your coupon any time.`,
+            });
+            nav("/ai-credits");
+            return;
+          }
+          throw promoError;
+        }
+        const row = Array.isArray(promoData) ? promoData[0] : promoData;
+        if (row?.credits_remaining != null) setBalance(row.credits_remaining);
+        window.dispatchEvent(new Event("ai-credits-updated"));
+        toast({
+          title: "Published with launch boost",
+          description: `TOP placement for ${MKT_LAUNCH_PROMO_DAYS} days · ${MKT_LAUNCH_PROMO_CREDITS} credits used.`,
+        });
+        nav(`/coupon-marketplace?category=${category}`);
+        return;
+      }
+
       toast({ title: "Coupon published", description: "Thanks for watching the ad. Contact details are auto-hidden." });
       nav(`/coupon-marketplace?category=${category}`);
     } catch (e: any) {
