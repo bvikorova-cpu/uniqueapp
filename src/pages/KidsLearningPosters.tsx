@@ -62,6 +62,16 @@ import posterOrderOfOperations from "@/assets/kids-posters/order-of-operations.j
 import posterNegativeNumbers from "@/assets/kids-posters/negative-numbers.jpg";
 import posterCursiveAlphabet from "@/assets/kids-posters/cursive-alphabet.jpg";
 import posterSightWords from "@/assets/kids-posters/sight-words.jpg";
+import klpReadyShapesSk from "@/assets/kids-poster-translations/shapes-colors-sk.jpg.asset.json";
+import klpReadyShapesHu from "@/assets/kids-poster-translations/shapes-colors-hu.jpg.asset.json";
+import klpReadyShapesDe from "@/assets/kids-poster-translations/shapes-colors-de.jpg.asset.json";
+import klpReadyShapesEs from "@/assets/kids-poster-translations/shapes-colors-es.jpg.asset.json";
+import klpReadyShapesFr from "@/assets/kids-poster-translations/shapes-colors-fr.jpg.asset.json";
+import klpReadyAbcSk from "@/assets/kids-poster-translations/abc-phonics-sk.jpg.asset.json";
+import klpReadyAbcHu from "@/assets/kids-poster-translations/abc-phonics-hu.jpg.asset.json";
+import klpReadyAbcDe from "@/assets/kids-poster-translations/abc-phonics-de.jpg.asset.json";
+import klpReadyAbcEs from "@/assets/kids-poster-translations/abc-phonics-es.jpg.asset.json";
+import klpReadyAbcFr from "@/assets/kids-poster-translations/abc-phonics-fr.jpg.asset.json";
 import posterVowelsConsonants from "@/assets/kids-posters/vowels-consonants.jpg";
 import posterPunctuationMarks from "@/assets/kids-posters/punctuation-marks.jpg";
 import posterNouns from "@/assets/kids-posters/nouns.jpg";
