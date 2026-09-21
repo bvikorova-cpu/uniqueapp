@@ -107,7 +107,7 @@ export default function CouponCreate() {
         imageUrl = supabase.storage.from("coupon_images").getPublicUrl(name).data.publicUrl;
       }
 
-      const { error } = await (supabase as any).rpc("publish_coupon_listing", {
+      const { data: newId, error } = await (supabase as any).rpc("publish_coupon_listing", {
         _title: title,
         _description: description || null,
         _store_name: storeName,
