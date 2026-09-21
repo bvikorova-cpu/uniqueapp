@@ -1204,6 +1204,92 @@ async function klpImageToDataUrl(url: string): Promise<string> {
   });
 }
 
+/**
+ * Renders the translation layer: the original poster stays pixel-identical and a
+ * clean panel underneath lists every word of the poster with its exact
+ * translation. Text is drawn with real fonts, so nothing is ever garbled.
+ */
+async function klpRenderTranslationLayer(
+  imageUrl: string,
+  language: string,
+  title: string,
+  description: string,
+  items: { en: string; tr: string }[],
+): Promise<string> {
+  const img = await klpLoadImage(imageUrl);
+  const width = 1200;
+  const scale = width / img.naturalWidth;
+  const posterHeight = Math.round(img.naturalHeight * scale);
+
+  const pad = 48;
+  const rowH = 52;
+  const cols = items.length > 14 ? 2 : 1;
+  const rows = Math.ceil(items.length / cols);
+  const headerH = 150;
+  const panelH = headerH + rows * rowH + pad;
+  const height = posterHeight + panelH;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Could not render the translation.");
+
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, width, height);
+  ctx.drawImage(img, 0, 0, width, posterHeight);
+
+  // Panel background
+  const grad = ctx.createLinearGradient(0, posterHeight, width, height);
+  grad.addColorStop(0, "#f6f1ff");
+  grad.addColorStop(1, "#fff1f8");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, posterHeight, width, panelH);
+
+  let y = posterHeight + 56;
+  ctx.fillStyle = "#4c1d95";
+  ctx.font = "bold 34px system-ui, 'Segoe UI', Arial, sans-serif";
+  ctx.fillText(`${title} — ${language}`, pad, y);
+
+  y += 34;
+  ctx.fillStyle = "#6b21a8";
+  ctx.font = "20px system-ui, 'Segoe UI', Arial, sans-serif";
+  const desc = description.length > 120 ? `${description.slice(0, 117)}…` : description;
+  ctx.fillText(desc, pad, y);
+
+  y += 30;
+  ctx.strokeStyle = "#d8b4fe";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(pad, y);
+  ctx.lineTo(width - pad, y);
+  ctx.stroke();
+
+  const colW = (width - pad * 2) / cols;
+  items.forEach((item, index) => {
+    const col = Math.floor(index / rows);
+    const row = index % rows;
+    const x = pad + col * colW;
+    const lineY = posterHeight + headerH + row * rowH + 24;
+    ctx.fillStyle = "#7c3aed";
+    ctx.font = "bold 22px system-ui, 'Segoe UI', Arial, sans-serif";
+    const tr = item.tr.length > 34 ? `${item.tr.slice(0, 31)}…` : item.tr;
+    ctx.fillText(tr, x, lineY);
+    ctx.fillStyle = "#6b7280";
+    ctx.font = "17px system-ui, 'Segoe UI', Arial, sans-serif";
+    const en = item.en.length > 40 ? `${item.en.slice(0, 37)}…` : item.en;
+    ctx.fillText(en, x, lineY + 22);
+  });
+
+  ctx.fillStyle = "#9333ea";
+  ctx.font = "16px system-ui, 'Segoe UI', Arial, sans-serif";
+  ctx.fillText("Unique · Kids Channel", pad, height - 16);
+
+  return canvas.toDataURL("image/png");
+}
+
+
+
 /** Age chapters of the printable encyclopedia, youngest first. */
 const KLP_BOOK_CHAPTERS: { minAge: number; label: string; blurb: string }[] = [
   { minAge: 3, label: "Ages 3-5 · First discoveries", blurb: "Shapes, colours, letters, numbers and gentle everyday habits." },
@@ -1485,11 +1571,13 @@ export default function KidsLearningPosters() {
       });
       const payload = (data ?? {}) as {
         error?: string;
-        imageUrl?: string;
+        title?: string;
+        description?: string;
+        items?: Array<{ en: string; tr: string }>;
         creditsRemaining?: number;
         success?: boolean;
       };
-      if (error || payload.error || !payload.imageUrl) {
+      if (error || payload.error || !payload.items?.length) {
         const message = payload.error ?? error?.message ?? "Could not translate this poster.";
         if (/insufficient/i.test(message)) {
           toast({
@@ -1504,11 +1592,19 @@ export default function KidsLearningPosters() {
         return;
       }
       if (typeof payload.creditsRemaining === "number") setBalance(payload.creditsRemaining);
-      setTransResult(payload.imageUrl);
+      const composed = await klpRenderTranslationLayer(
+        transPoster.image,
+        transLang,
+        payload.title ?? transPoster.title,
+        payload.description ?? transPoster.description,
+        payload.items,
+      );
+      setTransResult(composed);
       toast({
         title: `Poster ready in ${transLang}`,
         description: `${KLP_POSTER_TRANSLATE_CREDITS} credits used.`,
       });
+
     } catch (e) {
       toast({
         title: "Translation failed",
@@ -1771,7 +1867,7 @@ export default function KidsLearningPosters() {
                 {KLP_AI_POSTER_CREDITS} credits (only charged when the poster is created).
               </li>
               <li>
-                Need another language? Press “Translate” on any poster to have it redrawn with every word in
+                Need another language? Press “Translate” on any poster to get it with an exact translation panel in
                 your language for {KLP_POSTER_TRANSLATE_CREDITS} credits, or get the whole translated
                 encyclopedia PDF for {KLP_BOOK_TRANSLATE_CREDITS} credits.
               </li>
@@ -2023,7 +2119,7 @@ export default function KidsLearningPosters() {
               <Languages className="h-5 w-5 text-primary" /> Translate this poster
             </DialogTitle>
             <DialogDescription>
-              {transPoster?.title} — redrawn with every word in your language for{" "}
+              {transPoster?.title} — the artwork stays exactly the same and every word is listed with its exact translation, for{" "}
               {KLP_POSTER_TRANSLATE_CREDITS} credits. Your balance:{" "}
               {balance === null ? "—" : `${balance} credits`}.
             </DialogDescription>

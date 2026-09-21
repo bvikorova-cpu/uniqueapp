@@ -3,7 +3,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
-import { tryVertexImage, tryVertexChat } from "../_shared/vertexDirect.ts";
+import { tryVertexChat } from "../_shared/vertexDirect.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -86,10 +86,11 @@ serve(async (req) => {
       );
     }
 
-    // Step 1 — read every visible English string off the poster and translate it,
-    // so the image edit gets an explicit word-for-word mapping instead of having
-    // to translate on its own (which left most lettering in English).
-    let mapping = "";
+    // Read every visible English string off the poster and translate it exactly.
+    // The artwork itself is never touched — the client renders these pairs as a
+    // translation layer under the original poster, so the style is 100% preserved
+    // and no word is ever garbled by an image model.
+    let items: Array<{ en: string; tr: string }> = [];
     try {
       const ocr = await tryVertexChat({
         model: "google/gemini-2.5-flash",
@@ -100,8 +101,9 @@ serve(async (req) => {
             {
               type: "text",
               text: [
-                "List every visible text string on this children's educational poster, in reading order.",
-                `For each one give its ${language} translation (correct spelling, grammar, diacritics; keep the same capitalisation style and keep it short so it fits the same space).`,
+                "List every visible text string on this children's educational poster, in reading order, without duplicates.",
+                `For each one give its ${language} translation with correct spelling, grammar and diacritics.`,
+                `Poster topic: ${title} (children aged ${ages}). ${description}`,
                 'Answer ONLY with JSON: {"items":[{"en":"...","tr":"..."}]}',
               ].join(" "),
             },
@@ -111,71 +113,54 @@ serve(async (req) => {
       });
       const raw = String(ocr?.choices?.[0]?.message?.content ?? "");
       const json = raw.slice(raw.indexOf("{"), raw.lastIndexOf("}") + 1);
-      const items = JSON.parse(json)?.items;
-      if (Array.isArray(items)) {
-        mapping = items
+      const parsed = JSON.parse(json)?.items;
+      if (Array.isArray(parsed)) {
+        const seen = new Set<string>();
+        items = parsed
           .filter((i: any) => typeof i?.en === "string" && typeof i?.tr === "string")
-          .slice(0, 60)
-          .map((i: any) => `"${String(i.en).slice(0, 60)}" -> "${String(i.tr).slice(0, 80)}"`)
-          .join("; ");
+          .map((i: any) => ({ en: String(i.en).trim().slice(0, 120), tr: String(i.tr).trim().slice(0, 160) }))
+          .filter((i) => {
+            const key = i.en.toLowerCase();
+            if (!i.en || !i.tr || seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          })
+          .slice(0, 80);
       }
     } catch (e) {
-      console.warn("poster OCR/translate step failed:", e instanceof Error ? e.message : String(e));
+      console.warn("poster translation step failed:", e instanceof Error ? e.message : String(e));
     }
 
-    const buildPrompt = (strict: boolean) => [
-      `TASK: rewrite the lettering of this poster into ${language}. This is a localisation job: the artwork stays, the words change.`,
-      mapping
-        ? `Replace the text exactly like this: ${mapping}.`
-        : `Translate every visible English word into ${language} with correct spelling, grammar and diacritics.`,
-      "The finished image must contain ZERO English words — title, headings, labels, captions and tiny decorative text all included.",
-      `Poster topic: ${title} (children aged ${ages}). ${description}`,
-      "KEEP IDENTICAL: composition, dimensions, crop, background, illustrations, characters, poses, shapes, frames, borders, colours, shadows, decorations, spacing and art style. Do not redraw, restyle, simplify, add, remove, move or resize any graphic element.",
-      "Every translated word sits in the exact place of the English it replaces, in the same font style, weight, colour, alignment and size hierarchy; shrink the text slightly only when a longer word would not fit.",
-      strict
-        ? "A previous attempt left English text in the image. This time you MUST paint over every English string and letter it in the target language instead."
-        : "",
-      "Output only the edited poster image.",
-    ].filter(Boolean).join(" ");
-
-    const stillEnglish = async (b64: string) => {
-      try {
-        const check = await tryVertexChat({
-          model: "google/gemini-2.5-flash",
-          messages: [{
-            role: "user",
-            content: [
-              { type: "image_url", image_url: { url: `data:image/png;base64,${b64}` } },
-              {
-                type: "text",
-                text:
-                  `Is any visible text on this poster still written in English rather than ${language}? Answer with one word: YES or NO.`,
-              },
-            ],
-          }],
-          temperature: 0,
-        });
-        return /yes/i.test(String(check?.choices?.[0]?.message?.content ?? ""));
-      } catch {
-        return false;
+    // Translate the poster's own title and description too.
+    let headTitle = title;
+    let headDescription = description;
+    try {
+      const head = await tryVertexChat({
+        model: "google/gemini-2.5-flash",
+        messages: [{
+          role: "user",
+          content:
+            `Translate into ${language}. Answer ONLY with JSON {"title":"...","description":"..."}. title: ${title}. description: ${description}`,
+        }],
+        temperature: 0.2,
+      });
+      const raw = String(head?.choices?.[0]?.message?.content ?? "");
+      const parsed = JSON.parse(raw.slice(raw.indexOf("{"), raw.lastIndexOf("}") + 1));
+      if (typeof parsed?.title === "string" && parsed.title.trim()) headTitle = parsed.title.trim().slice(0, 160);
+      if (typeof parsed?.description === "string" && parsed.description.trim()) {
+        headDescription = parsed.description.trim().slice(0, 400);
       }
-    };
-
-    let aiData = await tryVertexImage(buildPrompt(false), undefined, 1, [sourceImage]);
-    const candidate = aiData?.data?.[0]?.b64_json;
-    if (candidate && await stillEnglish(candidate)) {
-      const retry = await tryVertexImage(buildPrompt(true), undefined, 1, [sourceImage]);
-      if (retry?.data?.[0]?.b64_json) aiData = retry;
+    } catch (e) {
+      console.warn("poster head translation failed:", e instanceof Error ? e.message : String(e));
     }
 
-
-    const base64Image = aiData?.data?.[0]?.b64_json;
-    if (!base64Image) {
-      return new Response(JSON.stringify({ error: "Image editing is temporarily unavailable. Please try again." }), {
+    if (!items.length) {
+      return new Response(JSON.stringify({ error: "Translation is temporarily unavailable. Please try again." }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,
       });
     }
+
 
     const { error: deductError } = await supabase.rpc("deduct_ai_credits", {
       p_user_id: user.id,
@@ -201,12 +186,16 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-        imageUrl: `data:image/png;base64,${base64Image}`,
+        language,
+        title: headTitle,
+        description: headDescription,
+        items,
         creditsRemaining: balance - COST,
         cost: COST,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 },
     );
+
   } catch (error) {
     console.error("kids-poster-translate error:", error);
     return new Response(
