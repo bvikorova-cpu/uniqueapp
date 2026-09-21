@@ -55,6 +55,20 @@ export default function CouponCreate() {
   const [confirmed, setConfirmed] = useState(false);
   const [saving, setSaving] = useState(false);
   const { watchAdToContinue, adPlaying } = useMarketplaceAdGate();
+  const [promoOpen, setPromoOpen] = useState(false);
+  const [balance, setBalance] = useState<number | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      supabase
+        .from("ai_credits")
+        .select("credits_remaining")
+        .eq("user_id", user.id)
+        .maybeSingle()
+        .then(({ data }) => setBalance(data?.credits_remaining ?? 0));
+    });
+  }, []);
 
   const pickImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
@@ -64,7 +78,7 @@ export default function CouponCreate() {
     setPreview(URL.createObjectURL(f));
   };
 
-  const submit = async () => {
+  const openPromoStep = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login required", variant: "destructive" }); return; }
     if (!title || !storeName || !originalValue || !sellingPrice) {
@@ -74,6 +88,12 @@ export default function CouponCreate() {
       toast({ title: "Price must be lower than the coupon value", variant: "destructive" }); return;
     }
     if (!confirmed) { toast({ title: "Please confirm the coupon value is accurate", variant: "destructive" }); return; }
+    setPromoOpen(true);
+  };
+
+  const submit = async (withPromo: boolean) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { toast({ title: "Login required", variant: "destructive" }); return; }
 
     const adOk = await watchAdToContinue("publish your coupon");
     if (!adOk) return;
