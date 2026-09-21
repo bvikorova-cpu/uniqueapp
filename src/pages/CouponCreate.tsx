@@ -12,6 +12,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { SEO } from "@/components/SEO";
 import { ArrowLeft, Loader2, PlayCircle, Sparkles, Upload, X } from "lucide-react";
 import { useMarketplaceAdGate } from "@/hooks/useMarketplaceAdGate";
+import {
+  MarketplaceLaunchPromoDialog,
+  MKT_LAUNCH_PROMO_CREDITS,
+  MKT_LAUNCH_PROMO_DAYS,
+} from "@/components/marketplace/MarketplaceLaunchPromoDialog";
+import { useEffect } from "react";
 
 const CATEGORIES = [
   { value: "food", label: "Food & Dining" },
@@ -49,6 +55,20 @@ export default function CouponCreate() {
   const [confirmed, setConfirmed] = useState(false);
   const [saving, setSaving] = useState(false);
   const { watchAdToContinue, adPlaying } = useMarketplaceAdGate();
+  const [promoOpen, setPromoOpen] = useState(false);
+  const [balance, setBalance] = useState<number | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      supabase
+        .from("ai_credits")
+        .select("credits_remaining")
+        .eq("user_id", user.id)
+        .maybeSingle()
+        .then(({ data }) => setBalance(data?.credits_remaining ?? 0));
+    });
+  }, []);
 
   const pickImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
@@ -58,7 +78,7 @@ export default function CouponCreate() {
     setPreview(URL.createObjectURL(f));
   };
 
-  const submit = async () => {
+  const openPromoStep = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login required", variant: "destructive" }); return; }
     if (!title || !storeName || !originalValue || !sellingPrice) {
@@ -68,6 +88,12 @@ export default function CouponCreate() {
       toast({ title: "Price must be lower than the coupon value", variant: "destructive" }); return;
     }
     if (!confirmed) { toast({ title: "Please confirm the coupon value is accurate", variant: "destructive" }); return; }
+    setPromoOpen(true);
+  };
+
+  const submit = async (withPromo: boolean) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { toast({ title: "Login required", variant: "destructive" }); return; }
 
     const adOk = await watchAdToContinue("publish your coupon");
     if (!adOk) return;
@@ -81,7 +107,7 @@ export default function CouponCreate() {
         imageUrl = supabase.storage.from("coupon_images").getPublicUrl(name).data.publicUrl;
       }
 
-      const { error } = await (supabase as any).rpc("publish_coupon_listing", {
+      const { data: newId, error } = await (supabase as any).rpc("publish_coupon_listing", {
         _title: title,
         _description: description || null,
         _store_name: storeName,
@@ -97,6 +123,35 @@ export default function CouponCreate() {
       });
       if (error) throw error;
       window.dispatchEvent(new Event("ai-credits-updated"));
+      setPromoOpen(false);
+
+      if (withPromo && newId) {
+        const { data: promoData, error: promoError } = await (supabase as any).rpc("marketplace_launch_promo", {
+          _kind: "coupon",
+          _entity_id: newId,
+        });
+        if (promoError) {
+          if (String(promoError.message || "").includes("INSUFFICIENT_CREDITS")) {
+            toast({
+              title: "Published without the boost",
+              description: `You need ${MKT_LAUNCH_PROMO_CREDITS} credits for the launch boost. Top up and promote your coupon any time.`,
+            });
+            nav("/ai-credits");
+            return;
+          }
+          throw promoError;
+        }
+        const row = Array.isArray(promoData) ? promoData[0] : promoData;
+        if (row?.credits_remaining != null) setBalance(row.credits_remaining);
+        window.dispatchEvent(new Event("ai-credits-updated"));
+        toast({
+          title: "Published with launch boost",
+          description: `TOP placement for ${MKT_LAUNCH_PROMO_DAYS} days · ${MKT_LAUNCH_PROMO_CREDITS} credits used.`,
+        });
+        nav(`/coupon-marketplace?category=${category}`);
+        return;
+      }
+
       toast({ title: "Coupon published", description: "Thanks for watching the ad. Contact details are auto-hidden." });
       nav(`/coupon-marketplace?category=${category}`);
     } catch (e: any) {
@@ -192,13 +247,23 @@ export default function CouponCreate() {
               chat with you by watching one short ad and you settle the payment directly between yourselves.
             </p>
 
-            <Button className="w-full gap-2" onClick={submit} disabled={saving || adPlaying}>
+            <Button className="w-full gap-2" onClick={openPromoStep} disabled={saving || adPlaying}>
               {saving || adPlaying ? <Loader2 className="h-4 w-4 animate-spin" /> : <PlayCircle className="h-4 w-4" />}
               {adPlaying ? "Loading ad…" : saving ? "Publishing…" : "Watch ad & publish · free"}
             </Button>
           </CardContent>
         </Card>
       </main>
+
+      <MarketplaceLaunchPromoDialog
+        open={promoOpen}
+        onOpenChange={setPromoOpen}
+        itemLabel="coupon"
+        balance={balance}
+        busy={saving || adPlaying}
+        onPublishWithPromo={() => submit(true)}
+        onPublishWithoutPromo={() => submit(false)}
+      />
     </>
   );
 }

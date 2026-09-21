@@ -9,6 +9,11 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
+import {
+  MarketplaceLaunchPromoDialog,
+  MKT_LAUNCH_PROMO_CREDITS,
+  MKT_LAUNCH_PROMO_DAYS,
+} from "@/components/marketplace/MarketplaceLaunchPromoDialog";
 
 export interface BuilderQuizQuestion {
   question: string;
@@ -107,6 +112,8 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
   const [newTitle, setNewTitle] = useState("");
   const [newType, setNewType] = useState("video");
   const [saving, setSaving] = useState(false);
+  const [coursePromoOpen, setCoursePromoOpen] = useState(false);
+  const [coursePromoBalance, setCoursePromoBalance] = useState<number | null>(null);
   const [loading, setLoading] = useState(isEdit);
   const [expandedId, setExpandedId] = useState<number | null>(isEdit ? null : (initialModules[0]?.id ?? null));
   const [dragId, setDragId] = useState<number | null>(null);
@@ -512,7 +519,28 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
     }
   };
 
-  const saveCourse = async (publish: boolean) => {
+  const openCoursePromoStep = async () => {
+    if (!title.trim() || !description.trim()) {
+      toast({ title: "Fill in the name and description", variant: "destructive" });
+      return;
+    }
+    if (modules.length === 0) {
+      toast({ title: "Add at least one module", variant: "destructive" });
+      return;
+    }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data } = await supabase
+        .from("ai_credits")
+        .select("credits_remaining")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      setCoursePromoBalance(data?.credits_remaining ?? 0);
+    }
+    setCoursePromoOpen(true);
+  };
+
+  const saveCourse = async (publish: boolean, withPromo = false) => {
     if (!title.trim() || !description.trim()) {
       toast({ title: "Fill in the name and description", variant: "destructive" });
       return;
@@ -693,6 +721,34 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
         }
 
         if (data?.courseId) await persistQuizzes(data.courseId, modules);
+        setCoursePromoOpen(false);
+
+        if (withPromo && data?.courseId) {
+          const { data: promoData, error: promoError } = await (supabase as any).rpc("marketplace_launch_promo", {
+            _kind: "course",
+            _entity_id: data.courseId,
+          });
+          if (promoError) {
+            if (String(promoError.message || "").includes("INSUFFICIENT_CREDITS")) {
+              toast({
+                title: "Published without the boost",
+                description: `You need ${MKT_LAUNCH_PROMO_CREDITS} more credits for the launch boost. You can promote the course any time.`,
+              });
+              navigate("/ai-credits");
+              return;
+            }
+          } else {
+            const row = Array.isArray(promoData) ? promoData[0] : promoData;
+            if (row?.credits_remaining != null) setCoursePromoBalance(row.credits_remaining);
+            window.dispatchEvent(new Event("ai-credits-updated"));
+            toast({
+              title: "Published with launch boost",
+              description: `TOP placement for ${MKT_LAUNCH_PROMO_DAYS} days · ${MKT_LAUNCH_PROMO_CREDITS} credits used.`,
+            });
+            navigate(`/tutorial-course/${data.courseId}`);
+            return;
+          }
+        }
 
         toast({ title: "Course published 🎉", description: `15 credits used. Remaining: ${data?.credits_remaining ?? 0}` });
         navigate(`/tutorial-course/${data.courseId}`);
@@ -1152,7 +1208,7 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
                 {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
                 Save draft
               </Button>
-              <Button className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600" onClick={() => saveCourse(true)} disabled={saving}>
+              <Button className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600" onClick={openCoursePromoStep} disabled={saving}>
                 {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
                 Publish course
                 <span className="ml-2 inline-flex items-center rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold">15 CR</span>
@@ -1167,6 +1223,17 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
         </div>
       </div>
     </div>
+
+    <MarketplaceLaunchPromoDialog
+      open={coursePromoOpen}
+      onOpenChange={setCoursePromoOpen}
+      itemLabel="course"
+      balance={coursePromoBalance}
+      busy={saving}
+      publishNote="Publishing this course costs 15 credits. Before it goes live you can also activate a one-time launch boost so learners see it first."
+      onPublishWithPromo={() => saveCourse(true, true)}
+      onPublishWithoutPromo={() => saveCourse(true, false)}
+    />
     </>
   );
 }
