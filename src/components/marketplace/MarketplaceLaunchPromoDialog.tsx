@@ -28,6 +28,7 @@ export function MarketplaceLaunchPromoDialog({
   itemLabel = "listing",
   balance,
   busy,
+  publishNote,
   onPublishWithPromo,
   onPublishWithoutPromo,
 }: {
@@ -36,6 +37,7 @@ export function MarketplaceLaunchPromoDialog({
   itemLabel?: string;
   balance: number | null;
   busy: boolean;
+  publishNote?: string;
   onPublishWithPromo: () => void;
   onPublishWithoutPromo: () => void;
 }) {
