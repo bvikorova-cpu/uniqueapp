@@ -1219,18 +1219,29 @@ const KLP_BOOK_CHAPTERS: { minAge: number; label: string; blurb: string }[] = [
 /** Languages offered for poster and encyclopedia translation. */
 const KLP_LANGUAGES: { id: string; label: string; name: string }[] = [
   { id: "sk", label: "Slovak", name: "Slovak" },
-  { id: "cs", label: "Czech", name: "Czech" },
-  { id: "pl", label: "Polish", name: "Polish" },
   { id: "hu", label: "Hungarian", name: "Hungarian" },
   { id: "de", label: "German", name: "German" },
   { id: "es", label: "Spanish", name: "Spanish" },
   { id: "fr", label: "French", name: "French" },
-  { id: "it", label: "Italian", name: "Italian" },
-  { id: "pt", label: "Portuguese", name: "Portuguese" },
-  { id: "nl", label: "Dutch", name: "Dutch" },
-  { id: "zh", label: "Chinese", name: "Chinese" },
-
 ];
+
+/** Ready-made translated posters uploaded by the team (no AI needed). */
+const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
+  "shapes-colors": {
+    sk: klpReadyShapesSk.url,
+    hu: klpReadyShapesHu.url,
+    de: klpReadyShapesDe.url,
+    es: klpReadyShapesEs.url,
+    fr: klpReadyShapesFr.url,
+  },
+  "abc-phonics": {
+    sk: klpReadyAbcSk.url,
+    hu: klpReadyAbcHu.url,
+    de: klpReadyAbcDe.url,
+    es: klpReadyAbcEs.url,
+    fr: klpReadyAbcFr.url,
+  },
+};
 
 type KlpTranslationMap = Record<string, { title: string; description: string }>;
 
