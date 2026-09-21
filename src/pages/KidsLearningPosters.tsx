@@ -1231,26 +1231,61 @@ async function klpLoadImage(src: string): Promise<HTMLImageElement> {
   });
 }
 
+/** Loads the Unicode font used by translated PDFs (diacritics, Cyrillic). */
+async function klpRegisterUnicodeFont(pdf: {
+  addFileToVFS: (name: string, data: string) => void;
+  addFont: (file: string, name: string, style: string) => void;
+}) {
+  const [regular, bold] = await Promise.all([
+    import("@/assets/kids-posters/klp-unicode.ttf?url"),
+    import("@/assets/kids-posters/klp-unicode-bold.ttf?url"),
+  ]);
+  const toBase64 = async (url: string) => {
+    const buf = await (await fetch(url)).arrayBuffer();
+    const bytes = new Uint8Array(buf);
+    let binary = "";
+    for (let i = 0; i < bytes.length; i += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+    }
+    return btoa(binary);
+  };
+  pdf.addFileToVFS("klp-unicode.ttf", await toBase64(regular.default));
+  pdf.addFont("klp-unicode.ttf", "klpUnicode", "normal");
+  pdf.addFileToVFS("klp-unicode-bold.ttf", await toBase64(bold.default));
+  pdf.addFont("klp-unicode-bold.ttf", "klpUnicode", "bold");
+}
+
 /** Builds the whole poster library as one A4 PDF book, ordered by age. */
-async function klpBuildEncyclopedia(onProgress?: (done: number, total: number) => void) {
+async function klpBuildEncyclopedia(
+  onProgress?: (done: number, total: number) => void,
+  opts?: { languageLabel?: string; translations?: KlpTranslationMap },
+) {
   const { default: JsPDF } = await import("jspdf");
   const pdf = new JsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
   const pageW = 210;
   const pageH = 297;
 
+  const translated = !!opts?.translations;
+  const tr = opts?.translations ?? {};
+  if (translated) await klpRegisterUnicodeFont(pdf as never);
+  const family = translated ? "klpUnicode" : "helvetica";
+  const font = (style: "normal" | "bold") => pdf.setFont(family, style);
+  const tTitle = (id: string, fallback: string) => tr[id]?.title?.trim() || fallback;
+  const tDesc = (id: string, fallback: string) => tr[id]?.description?.trim() || fallback;
+
   // Cover
   pdf.setFillColor(124, 58, 237);
   pdf.rect(0, 0, pageW, pageH, "F");
   pdf.setTextColor(255, 255, 255);
-  pdf.setFont("helvetica", "bold");
-  pdf.setFontSize(40);
-  pdf.text("Learning", 20, 90);
-  pdf.text("Encyclopedia", 20, 108);
+  font("bold");
+  pdf.setFontSize(36);
+  pdf.text(tTitle("book:title", "Learning Encyclopedia"), 20, 96, { maxWidth: pageW - 40 });
   pdf.setFontSize(16);
-  pdf.setFont("helvetica", "normal");
-  pdf.text("The complete printable poster book", 20, 128);
+  font("normal");
+  pdf.text(tDesc("book:title", "The complete printable poster book"), 20, 128, { maxWidth: pageW - 40 });
   pdf.setFontSize(12);
-  pdf.text(`${KLP_POSTERS.length} posters · ages 3 to 18 · sorted by age`, 20, 140);
+  pdf.text(`${KLP_POSTERS.length} posters · ages 3 to 18 · sorted by age`, 20, 142);
+  if (opts?.languageLabel) pdf.text(opts.languageLabel, 20, 152);
   pdf.text("Unique · Kids Channel", 20, pageH - 24);
 
   const ordered = KLP_BOOK_CHAPTERS.map((chapter) => ({
@@ -1261,26 +1296,27 @@ async function klpBuildEncyclopedia(onProgress?: (done: number, total: number) =
   // Contents
   pdf.addPage();
   pdf.setTextColor(30, 30, 40);
-  pdf.setFont("helvetica", "bold");
+  font("bold");
   pdf.setFontSize(22);
-  pdf.text("Contents", 20, 30);
+  pdf.text(tTitle("book:contents", "Contents"), 20, 30);
   let y = 45;
   pdf.setFontSize(12);
   for (const group of ordered) {
-    pdf.setFont("helvetica", "bold");
+    font("bold");
     if (y > pageH - 30) {
       pdf.addPage();
       y = 30;
     }
-    pdf.text(`${group.chapter.label} (${group.items.length})`, 20, y);
+    const chapterLabel = tTitle(`chapter:${group.chapter.minAge}`, group.chapter.label);
+    pdf.text(`${chapterLabel} (${group.items.length})`, 20, y);
     y += 7;
-    pdf.setFont("helvetica", "normal");
+    font("normal");
     for (const item of group.items) {
       if (y > pageH - 20) {
         pdf.addPage();
         y = 30;
       }
-      pdf.text(`• ${item.title}`, 26, y);
+      pdf.text(`• ${tTitle(item.id, item.title)}`, 26, y);
       y += 6;
     }
     y += 4;
@@ -1294,12 +1330,12 @@ async function klpBuildEncyclopedia(onProgress?: (done: number, total: number) =
     pdf.setFillColor(236, 72, 153);
     pdf.rect(0, 0, pageW, pageH, "F");
     pdf.setTextColor(255, 255, 255);
-    pdf.setFont("helvetica", "bold");
+    font("bold");
     pdf.setFontSize(28);
-    pdf.text(group.chapter.label, 20, 130, { maxWidth: pageW - 40 });
-    pdf.setFont("helvetica", "normal");
+    pdf.text(tTitle(`chapter:${group.chapter.minAge}`, group.chapter.label), 20, 130, { maxWidth: pageW - 40 });
+    font("normal");
     pdf.setFontSize(13);
-    pdf.text(group.chapter.blurb, 20, 150, { maxWidth: pageW - 40 });
+    pdf.text(tDesc(`chapter:${group.chapter.minAge}`, group.chapter.blurb), 20, 150, { maxWidth: pageW - 40 });
 
     for (const poster of group.items) {
       const img = await klpLoadImage(poster.image);
@@ -1311,10 +1347,10 @@ async function klpBuildEncyclopedia(onProgress?: (done: number, total: number) =
       const h = img.naturalHeight * ratio;
       pdf.addImage(img, "JPEG", (pageW - w) / 2, 10, w, h, undefined, "FAST");
       pdf.setTextColor(60, 60, 70);
-      pdf.setFont("helvetica", "bold");
+      font("bold");
       pdf.setFontSize(12);
-      pdf.text(poster.title, 10, pageH - 14, { maxWidth: pageW - 20 });
-      pdf.setFont("helvetica", "normal");
+      pdf.text(tTitle(poster.id, poster.title), 10, pageH - 14, { maxWidth: pageW - 20 });
+      font("normal");
       pdf.setFontSize(9);
       pdf.text(poster.ages, 10, pageH - 8);
       done += 1;
@@ -1322,7 +1358,11 @@ async function klpBuildEncyclopedia(onProgress?: (done: number, total: number) =
     }
   }
 
-  pdf.save("unique-kids-learning-encyclopedia.pdf");
+  pdf.save(
+    translated
+      ? `unique-kids-learning-encyclopedia-${(opts?.languageLabel ?? "translated").toLowerCase().replace(/[^a-z]+/g, "-")}.pdf`
+      : "unique-kids-learning-encyclopedia.pdf",
+  );
 }
 
 /**
