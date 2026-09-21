@@ -1709,6 +1709,16 @@ export default function KidsLearningPosters() {
                   : "Preparing book…"
                 : `Download full encyclopedia PDF · ${KLP_BOOK_CREDITS} credits`}
             </Button>
+            <Button
+              size="lg"
+              variant="secondary"
+              className="klp-book-cta gap-2"
+              onClick={() => setBookLangOpen(true)}
+              disabled={bookBusy}
+            >
+              <Languages className="h-4 w-4" />
+              {`Translated encyclopedia · ${KLP_BOOK_TRANSLATE_CREDITS} credits`}
+            </Button>
             <Button size="lg" variant="outline" asChild>
               <a href="#klp-library">Browse the library</a>
             </Button>
