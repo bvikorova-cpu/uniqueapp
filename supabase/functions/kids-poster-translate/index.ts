@@ -157,7 +157,7 @@ serve(async (req) => {
       user_id: user.id,
       usage_type: "kids_poster_translate",
       credits_used: COST,
-      description: `Poster translated with Gemini to ${language}: ${title}`,
+      description: `${presetPath ? "Ready-made" : "Gemini"} poster translation to ${language}: ${title}`,
     });
 
     return new Response(
