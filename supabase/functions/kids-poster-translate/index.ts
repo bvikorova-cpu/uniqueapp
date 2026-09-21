@@ -3,7 +3,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
-import { tryVertexImage } from "../_shared/vertexDirect.ts";
+import { tryVertexImage, tryVertexChat } from "../_shared/vertexDirect.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -86,17 +86,89 @@ serve(async (req) => {
       );
     }
 
-    const prompt = [
-      "Perform a minimal text-only edit of the supplied educational poster.",
-      `Translate every visible word from English into ${language}, using correct spelling, grammar and diacritics.`,
-      `The poster topic is ${title}, for children aged ${ages}. Context: ${description}`,
-      "ABSOLUTE PRESERVATION RULE: keep the source image's exact composition, dimensions, crop, background, illustrations, characters, objects, poses, shapes, borders, colours, shadows, decorative elements, spacing and visual style.",
-      "Do not redesign, redraw, restyle, simplify, add, remove, move or resize anything except where text length makes a tiny text-size adjustment unavoidable.",
-      "Replace only the existing English lettering in the same locations, matching each original font style, colour, alignment and hierarchy as closely as possible.",
-      "Do not leave English text. Output only the edited poster image.",
-    ].join(" ");
+    // Step 1 — read every visible English string off the poster and translate it,
+    // so the image edit gets an explicit word-for-word mapping instead of having
+    // to translate on its own (which left most lettering in English).
+    let mapping = "";
+    try {
+      const ocr = await tryVertexChat({
+        model: "google/gemini-2.5-flash",
+        messages: [{
+          role: "user",
+          content: [
+            { type: "image_url", image_url: { url: sourceImage } },
+            {
+              type: "text",
+              text: [
+                "List every visible text string on this children's educational poster, in reading order.",
+                `For each one give its ${language} translation (correct spelling, grammar, diacritics; keep the same capitalisation style and keep it short so it fits the same space).`,
+                'Answer ONLY with JSON: {"items":[{"en":"...","tr":"..."}]}',
+              ].join(" "),
+            },
+          ],
+        }],
+        temperature: 0.2,
+      });
+      const raw = String(ocr?.choices?.[0]?.message?.content ?? "");
+      const json = raw.slice(raw.indexOf("{"), raw.lastIndexOf("}") + 1);
+      const items = JSON.parse(json)?.items;
+      if (Array.isArray(items)) {
+        mapping = items
+          .filter((i: any) => typeof i?.en === "string" && typeof i?.tr === "string")
+          .slice(0, 60)
+          .map((i: any) => `"${String(i.en).slice(0, 60)}" -> "${String(i.tr).slice(0, 80)}"`)
+          .join("; ");
+      }
+    } catch (e) {
+      console.warn("poster OCR/translate step failed:", e instanceof Error ? e.message : String(e));
+    }
 
-    const aiData = await tryVertexImage(prompt, "1024x1536", 1, [sourceImage]);
+    const buildPrompt = (strict: boolean) => [
+      `TASK: rewrite the lettering of this poster into ${language}. This is a localisation job: the artwork stays, the words change.`,
+      mapping
+        ? `Replace the text exactly like this: ${mapping}.`
+        : `Translate every visible English word into ${language} with correct spelling, grammar and diacritics.`,
+      "The finished image must contain ZERO English words — title, headings, labels, captions and tiny decorative text all included.",
+      `Poster topic: ${title} (children aged ${ages}). ${description}`,
+      "KEEP IDENTICAL: composition, dimensions, crop, background, illustrations, characters, poses, shapes, frames, borders, colours, shadows, decorations, spacing and art style. Do not redraw, restyle, simplify, add, remove, move or resize any graphic element.",
+      "Every translated word sits in the exact place of the English it replaces, in the same font style, weight, colour, alignment and size hierarchy; shrink the text slightly only when a longer word would not fit.",
+      strict
+        ? "A previous attempt left English text in the image. This time you MUST paint over every English string and letter it in the target language instead."
+        : "",
+      "Output only the edited poster image.",
+    ].filter(Boolean).join(" ");
+
+    const stillEnglish = async (b64: string) => {
+      try {
+        const check = await tryVertexChat({
+          model: "google/gemini-2.5-flash",
+          messages: [{
+            role: "user",
+            content: [
+              { type: "image_url", image_url: { url: `data:image/png;base64,${b64}` } },
+              {
+                type: "text",
+                text:
+                  `Is any visible text on this poster still written in English rather than ${language}? Answer with one word: YES or NO.`,
+              },
+            ],
+          }],
+          temperature: 0,
+        });
+        return /yes/i.test(String(check?.choices?.[0]?.message?.content ?? ""));
+      } catch {
+        return false;
+      }
+    };
+
+    let aiData = await tryVertexImage(buildPrompt(false), undefined, 1, [sourceImage]);
+    const candidate = aiData?.data?.[0]?.b64_json;
+    if (candidate && await stillEnglish(candidate)) {
+      const retry = await tryVertexImage(buildPrompt(true), undefined, 1, [sourceImage]);
+      if (retry?.data?.[0]?.b64_json) aiData = retry;
+    }
+
+
     const base64Image = aiData?.data?.[0]?.b64_json;
     if (!base64Image) {
       return new Response(JSON.stringify({ error: "Image editing is temporarily unavailable. Please try again." }), {
