@@ -163,7 +163,7 @@ serve(async (req) => {
       user_id: user.id,
       usage_type: "kids_poster_translate",
       credits_used: COST,
-      description: `${presetPath ? "Ready-made" : "Gemini"} poster translation to ${language}: ${title}`,
+      description: `${(validReadyImage || presetPath) ? "Ready-made" : "Gemini"} poster translation to ${language}: ${title}`,
     });
 
     return new Response(
@@ -173,7 +173,7 @@ serve(async (req) => {
         title,
         description,
         image: imagePayload,
-        preset: !!presetPath,
+        preset: validReadyImage || !!presetPath,
 
         creditsRemaining: balance - COST,
         cost: COST,
