@@ -1191,6 +1191,36 @@ const KLP_BOOK_CHAPTERS: { minAge: number; label: string; blurb: string }[] = [
   { minAge: 14, label: "Ages 14-18 · Real life skills", blurb: "Study strategies, emotions, goals, career and independence." },
 ];
 
+/** Languages offered for poster and encyclopedia translation. */
+const KLP_LANGUAGES: { id: string; label: string; name: string }[] = [
+  { id: "sk", label: "Slovak", name: "Slovak" },
+  { id: "cs", label: "Czech", name: "Czech" },
+  { id: "pl", label: "Polish", name: "Polish" },
+  { id: "hu", label: "Hungarian", name: "Hungarian" },
+  { id: "de", label: "German", name: "German" },
+  { id: "es", label: "Spanish", name: "Spanish" },
+  { id: "fr", label: "French", name: "French" },
+  { id: "it", label: "Italian", name: "Italian" },
+  { id: "pt", label: "Portuguese", name: "Portuguese" },
+  { id: "nl", label: "Dutch", name: "Dutch" },
+  { id: "ro", label: "Romanian", name: "Romanian" },
+  { id: "hr", label: "Croatian", name: "Croatian" },
+  { id: "tr", label: "Turkish", name: "Turkish" },
+  { id: "uk", label: "Ukrainian", name: "Ukrainian" },
+];
+
+type KlpTranslationMap = Record<string, { title: string; description: string }>;
+
+/** Texts sent to the translation function for the whole book. */
+function klpBookTranslationItems() {
+  return [
+    { id: "book:title", title: "Learning Encyclopedia", description: "The complete printable poster book" },
+    { id: "book:contents", title: "Contents", description: "List of all posters in this book" },
+    ...KLP_BOOK_CHAPTERS.map((c) => ({ id: `chapter:${c.minAge}`, title: c.label, description: c.blurb })),
+    ...KLP_POSTERS.map((p) => ({ id: p.id, title: p.title, description: p.description })),
+  ];
+}
+
 async function klpLoadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
