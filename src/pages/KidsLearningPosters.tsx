@@ -1436,6 +1436,118 @@ export default function KidsLearningPosters() {
     }
   };
 
+  const handleTranslatePoster = async () => {
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+    if (!transPoster || transBusy) return;
+    setTransBusy(true);
+    setTransResult(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("kids-poster-translate", {
+        body: {
+          title: transPoster.title,
+          description: transPoster.description,
+          ages: transPoster.ages,
+          language: transLang,
+        },
+      });
+      const payload = (data ?? {}) as {
+        error?: string;
+        imageUrl?: string;
+        creditsRemaining?: number;
+        success?: boolean;
+      };
+      if (error || payload.error || !payload.imageUrl) {
+        const message = payload.error ?? error?.message ?? "Could not translate this poster.";
+        if (/insufficient/i.test(message)) {
+          toast({
+            title: "Not enough credits",
+            description: `A translated poster costs ${KLP_POSTER_TRANSLATE_CREDITS} credits. Top up and try again.`,
+            variant: "destructive",
+          });
+          navigate("/ai-credits");
+          return;
+        }
+        toast({ title: "Translation failed", description: message, variant: "destructive" });
+        return;
+      }
+      if (typeof payload.creditsRemaining === "number") setBalance(payload.creditsRemaining);
+      setTransResult(payload.imageUrl);
+      toast({
+        title: `Poster ready in ${transLang}`,
+        description: `${KLP_POSTER_TRANSLATE_CREDITS} credits used.`,
+      });
+    } catch (e) {
+      toast({
+        title: "Translation failed",
+        description: e instanceof Error ? e.message : "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setTransBusy(false);
+    }
+  };
+
+  const handleTranslatedEncyclopedia = async () => {
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+    if (bookBusy) return;
+    setBookBusy(true);
+    setBookProgress(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("kids-encyclopedia-translate", {
+        body: { language: bookLang, items: klpBookTranslationItems() },
+      });
+      const payload = (data ?? {}) as {
+        error?: string;
+        translations?: KlpTranslationMap;
+        creditsRemaining?: number;
+        success?: boolean;
+      };
+      if (error || payload.error || !payload.translations) {
+        const message = payload.error ?? error?.message ?? "Could not translate the encyclopedia.";
+        if (/insufficient/i.test(message)) {
+          toast({
+            title: "Not enough credits",
+            description: `The translated encyclopedia costs ${KLP_BOOK_TRANSLATE_CREDITS} credits. Top up and try again.`,
+            variant: "destructive",
+          });
+          navigate("/ai-credits");
+          return;
+        }
+        toast({ title: "Translation failed", description: message, variant: "destructive" });
+        return;
+      }
+      if (typeof payload.creditsRemaining === "number") setBalance(payload.creditsRemaining);
+      setBookLangOpen(false);
+      toast({
+        title: `Building your ${bookLang} book`,
+        description: `${KLP_BOOK_TRANSLATE_CREDITS} credits used. Please keep this page open.`,
+      });
+      await klpBuildEncyclopedia((doneCount, total) => setBookProgress({ done: doneCount, total }), {
+        languageLabel: bookLang,
+        translations: payload.translations,
+      });
+      toast({
+        title: "Encyclopedia ready",
+        description: `${KLP_POSTERS.length} posters with ${bookLang} titles, sorted by age.`,
+      });
+    } catch (e) {
+      toast({
+        title: "Download failed",
+        description: e instanceof Error ? e.message : "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setBookBusy(false);
+      setBookProgress(null);
+    }
+  };
+
   const handleEncyclopedia = async () => {
     if (!user) {
       navigate("/auth");
