@@ -1228,10 +1228,8 @@ const KLP_LANGUAGES: { id: string; label: string; name: string }[] = [
   { id: "it", label: "Italian", name: "Italian" },
   { id: "pt", label: "Portuguese", name: "Portuguese" },
   { id: "nl", label: "Dutch", name: "Dutch" },
-  { id: "ro", label: "Romanian", name: "Romanian" },
-  { id: "hr", label: "Croatian", name: "Croatian" },
-  { id: "tr", label: "Turkish", name: "Turkish" },
-  { id: "uk", label: "Ukrainian", name: "Ukrainian" },
+  { id: "zh", label: "Chinese", name: "Chinese" },
+
 ];
 
 type KlpTranslationMap = Record<string, { title: string; description: string }>;
