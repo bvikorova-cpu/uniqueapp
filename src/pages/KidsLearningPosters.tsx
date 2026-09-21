@@ -13,6 +13,7 @@ import {
   Baby,
   ArrowLeft,
   Info,
+  Languages,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -1709,6 +1710,16 @@ export default function KidsLearningPosters() {
                   : "Preparing book…"
                 : `Download full encyclopedia PDF · ${KLP_BOOK_CREDITS} credits`}
             </Button>
+            <Button
+              size="lg"
+              variant="secondary"
+              className="klp-book-cta gap-2"
+              onClick={() => setBookLangOpen(true)}
+              disabled={bookBusy}
+            >
+              <Languages className="h-4 w-4" />
+              {`Translated encyclopedia · ${KLP_BOOK_TRANSLATE_CREDITS} credits`}
+            </Button>
             <Button size="lg" variant="outline" asChild>
               <a href="#klp-library">Browse the library</a>
             </Button>
@@ -1733,6 +1744,11 @@ export default function KidsLearningPosters() {
               <li>
                 Want your own topic? Press “Create my own”, describe it, and AI draws a fresh poster for{" "}
                 {KLP_AI_POSTER_CREDITS} credits (only charged when the poster is created).
+              </li>
+              <li>
+                Need another language? Press “Translate” on any poster to have it redrawn with every word in
+                your language for {KLP_POSTER_TRANSLATE_CREDITS} credits, or get the whole translated
+                encyclopedia PDF for {KLP_BOOK_TRANSLATE_CREDITS} credits.
               </li>
             </ol>
           </CardContent>
@@ -1816,6 +1832,16 @@ export default function KidsLearningPosters() {
                 <p className="text-sm text-muted-foreground">{poster.description}</p>
                 <Button className="w-full gap-2" onClick={() => handleDownload(poster)}>
                   <Download className="h-4 w-4" /> Download
+                </Button>
+                <Button
+                  variant="outline"
+                  className="klp-translate-btn w-full gap-2"
+                  onClick={() => {
+                    setTransPoster(poster);
+                    setTransResult(null);
+                  }}
+                >
+                  <Languages className="h-4 w-4" /> Translate · {KLP_POSTER_TRANSLATE_CREDITS} credits
                 </Button>
               </CardContent>
             </Card>
@@ -1932,6 +1958,122 @@ export default function KidsLearningPosters() {
             </Button>
             <p className="text-xs text-muted-foreground">
               Everything is kept child friendly. Credits are only charged when a poster is successfully created.
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={!!transPoster}
+        onOpenChange={(open) => {
+          if (!open && !transBusy) {
+            setTransPoster(null);
+            setTransResult(null);
+          }
+        }}
+      >
+        <DialogContent className="klp-trans-dialog max-h-[90vh] max-w-lg overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Languages className="h-5 w-5 text-primary" /> Translate this poster
+            </DialogTitle>
+            <DialogDescription>
+              {transPoster?.title} — redrawn with every word in your language for{" "}
+              {KLP_POSTER_TRANSLATE_CREDITS} credits. Your balance:{" "}
+              {balance === null ? "—" : `${balance} credits`}.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="flex flex-wrap gap-2">
+              {KLP_LANGUAGES.map((l) => (
+                <Button
+                  key={l.id}
+                  type="button"
+                  size="sm"
+                  variant={transLang === l.name ? "default" : "outline"}
+                  onClick={() => setTransLang(l.name)}
+                >
+                  {l.label}
+                </Button>
+              ))}
+            </div>
+
+            {transResult && (
+              <div className="klp-trans-result space-y-3 rounded-xl border p-3">
+                <img
+                  src={transResult}
+                  alt={`${transPoster?.title} poster in ${transLang}`}
+                  className="h-auto w-full rounded-lg"
+                  loading="lazy"
+                />
+                <Button
+                  variant="outline"
+                  className="w-full gap-2"
+                  onClick={() =>
+                    klpDownload(transResult, `unique-poster-${transPoster?.id ?? "translated"}-${transLang.toLowerCase()}.png`)
+                  }
+                >
+                  <Download className="h-4 w-4" /> Download translated poster
+                </Button>
+              </div>
+            )}
+
+            <Button className="w-full gap-2" disabled={transBusy} onClick={handleTranslatePoster}>
+              {transBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Languages className="h-4 w-4" />}
+              {transBusy
+                ? `Translating to ${transLang}…`
+                : `Translate to ${transLang} · ${KLP_POSTER_TRANSLATE_CREDITS} credits`}
+            </Button>
+            <p className="text-xs text-muted-foreground">
+              Credits are only charged when the translated poster is created.
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={bookLangOpen}
+        onOpenChange={(open) => {
+          if (!open && !bookBusy) setBookLangOpen(false);
+        }}
+      >
+        <DialogContent className="klp-booklang-dialog max-h-[90vh] max-w-lg overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Languages className="h-5 w-5 text-primary" /> Translated encyclopedia
+            </DialogTitle>
+            <DialogDescription>
+              All {KLP_POSTERS.length} posters in one A4 PDF book with cover, contents and age chapters
+              written in your language — {KLP_BOOK_TRANSLATE_CREDITS} credits. Your balance:{" "}
+              {balance === null ? "—" : `${balance} credits`}.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="flex flex-wrap gap-2">
+              {KLP_LANGUAGES.map((l) => (
+                <Button
+                  key={l.id}
+                  type="button"
+                  size="sm"
+                  variant={bookLang === l.name ? "default" : "outline"}
+                  onClick={() => setBookLang(l.name)}
+                >
+                  {l.label}
+                </Button>
+              ))}
+            </div>
+            <Button className="w-full gap-2" disabled={bookBusy} onClick={handleTranslatedEncyclopedia}>
+              {bookBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+              {bookBusy
+                ? bookProgress
+                  ? `Building · ${bookProgress.done}/${bookProgress.total}`
+                  : `Translating to ${bookLang}…`
+                : `Download in ${bookLang} · ${KLP_BOOK_TRANSLATE_CREDITS} credits`}
+            </Button>
+            <p className="text-xs text-muted-foreground">
+              The poster pictures stay in English; titles, descriptions, contents and chapters are translated.
             </p>
           </div>
         </DialogContent>
