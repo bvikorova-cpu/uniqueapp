@@ -474,3 +474,9 @@ verify_jwt = false
 
 [functions.kids-posters-encyclopedia]
 verify_jwt = false
+
+[functions.kids-poster-translate]
+verify_jwt = false
+
+[functions.kids-encyclopedia-translate]
+verify_jwt = false
