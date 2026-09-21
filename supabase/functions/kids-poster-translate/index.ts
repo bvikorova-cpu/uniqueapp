@@ -92,7 +92,7 @@ serve(async (req) => {
     let items: Array<{ en: string; tr: string; x: number; y: number; w: number; h: number }> = [];
     try {
       const ocr = await tryVertexChat({
-        model: "google/gemini-2.5-flash",
+        model: "openai/gpt-6-astra",
         messages: [{
           role: "user",
           content: [
@@ -144,7 +144,7 @@ serve(async (req) => {
     let headDescription = description;
     try {
       const head = await tryVertexChat({
-        model: "google/gemini-2.5-flash",
+        model: "openai/gpt-6-astra",
         messages: [{
           role: "user",
           content:

@@ -1849,8 +1849,8 @@ export default function KidsLearningPosters() {
                 {KLP_AI_POSTER_CREDITS} credits (only charged when the poster is created).
               </li>
               <li>
-                Need another language? Press “Translate” on any poster to get it with an exact translation panel in
-                your language for {KLP_POSTER_TRANSLATE_CREDITS} credits, or get the whole translated
+                Need another language? Press “Translate” on any poster to place the selected translation directly
+                below each English text for {KLP_POSTER_TRANSLATE_CREDITS} credits, or get the bilingual
                 encyclopedia PDF for {KLP_BOOK_TRANSLATE_CREDITS} credits.
               </li>
             </ol>
@@ -2164,7 +2164,7 @@ export default function KidsLearningPosters() {
         <DialogContent className="klp-booklang-dialog max-h-[90vh] max-w-lg overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Languages className="h-5 w-5 text-primary" /> Translated encyclopedia
+              <Languages className="h-5 w-5 text-primary" /> Bilingual encyclopedia
             </DialogTitle>
             <DialogDescription>
               All {KLP_POSTERS.length} posters in one A4 PDF book with cover, contents and age chapters
@@ -2193,10 +2193,10 @@ export default function KidsLearningPosters() {
                 ? bookProgress
                   ? `Building · ${bookProgress.done}/${bookProgress.total}`
                   : `Translating to ${bookLang}…`
-                : `Download in ${bookLang} · ${KLP_BOOK_TRANSLATE_CREDITS} credits`}
+                : `Download English + ${bookLang} · ${KLP_BOOK_TRANSLATE_CREDITS} credits`}
             </Button>
             <p className="text-xs text-muted-foreground">
-              The poster pictures stay in English; titles, descriptions, contents and chapters are translated.
+              English stays visible and the selected translation appears beneath it throughout the book.
             </p>
           </div>
         </DialogContent>
