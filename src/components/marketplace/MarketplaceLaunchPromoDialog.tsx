@@ -52,8 +52,8 @@ export function MarketplaceLaunchPromoDialog({
             <Rocket className="h-5 w-5 text-primary" /> One last step — boost your new {itemLabel}?
           </DialogTitle>
           <DialogDescription>
-            Publishing is free (you just watch one short sponsored ad). Before it goes live you can
-            activate a one-time launch boost so buyers see you first.
+            {publishNote ??
+              "Publishing is free (you just watch one short sponsored ad). Before it goes live you can activate a one-time launch boost so buyers see you first."}
           </DialogDescription>
         </DialogHeader>
 
