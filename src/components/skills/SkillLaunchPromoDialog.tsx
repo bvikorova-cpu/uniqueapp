@@ -14,6 +14,7 @@ import { Flame, Loader2, Rocket, Check } from "lucide-react";
 export const SKILL_LAUNCH_PROMO_CREDITS = 10;
 export const SKILL_LAUNCH_PROMO_REGULAR_CREDITS = 45;
 export const SKILL_LAUNCH_PROMO_DAYS = 30;
+export const SKILL_LAUNCH_PROMO_SAVING_PERCENT = 78;
 
 /**
  * Isolated launch-promo upsell shown right before a new Skills offering is
@@ -74,7 +75,9 @@ export function SkillLaunchPromoDialog({
                   <span className="text-xs text-muted-foreground line-through">
                     normally {SKILL_LAUNCH_PROMO_REGULAR_CREDITS} credits · €22.50
                   </span>
-                  <Badge variant="outline">one-time launch offer</Badge>
+                  <span className="skl-promo-saving inline-flex items-center rounded-full bg-primary px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-primary-foreground ring-2 ring-primary/30">
+                    You save {SKILL_LAUNCH_PROMO_SAVING_PERCENT}%
+                  </span>
                 </div>
               </div>
               {choice === "promo" && <Check className="h-5 w-5 shrink-0 text-primary" />}
