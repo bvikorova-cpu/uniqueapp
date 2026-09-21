@@ -73,6 +73,16 @@ import klpReadyAbcHu from "@/assets/kids-poster-translations/abc-phonics-hu.jpg.
 import klpReadyAbcDe from "@/assets/kids-poster-translations/abc-phonics-de.jpg.asset.json";
 import klpReadyAbcEs from "@/assets/kids-poster-translations/abc-phonics-es.jpg.asset.json";
 import klpReadyAbcFr from "@/assets/kids-poster-translations/abc-phonics-fr.jpg.asset.json";
+import klpReadyTimesSk from "@/assets/kids-poster-translations/times-tables-sk.jpg.asset.json";
+import klpReadyTimesHu from "@/assets/kids-poster-translations/times-tables-hu.jpg.asset.json";
+import klpReadyTimesDe from "@/assets/kids-poster-translations/times-tables-de.jpg.asset.json";
+import klpReadyTimesEs from "@/assets/kids-poster-translations/times-tables-es.jpg.asset.json";
+import klpReadyTimesFr from "@/assets/kids-poster-translations/times-tables-fr.jpg.asset.json";
+import klpReadyPosSk from "@/assets/kids-poster-translations/parts-of-speech-sk.jpg.asset.json";
+import klpReadyPosHu from "@/assets/kids-poster-translations/parts-of-speech-hu.jpg.asset.json";
+import klpReadyPosDe from "@/assets/kids-poster-translations/parts-of-speech-de.jpg.asset.json";
+import klpReadyPosEs from "@/assets/kids-poster-translations/parts-of-speech-es.jpg.asset.json";
+import klpReadyPosFr from "@/assets/kids-poster-translations/parts-of-speech-fr.jpg.asset.json";
 import posterVowelsConsonants from "@/assets/kids-posters/vowels-consonants.jpg";
 import posterPunctuationMarks from "@/assets/kids-posters/punctuation-marks.jpg";
 import posterNouns from "@/assets/kids-posters/nouns.jpg";
