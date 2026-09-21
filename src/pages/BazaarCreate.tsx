@@ -95,8 +95,37 @@ export default function BazaarCreate() {
       });
       if (error) throw error;
       window.dispatchEvent(new Event("ai-credits-updated"));
+      setPromoOpen(false);
+
+      if (withPromo && data) {
+        const { data: promoData, error: promoError } = await (supabase as any).rpc("marketplace_launch_promo", {
+          _kind: "bazaar",
+          _entity_id: data,
+        });
+        if (promoError) {
+          if (String(promoError.message || "").includes("INSUFFICIENT_CREDITS")) {
+            toast({
+              title: "Published without the boost",
+              description: `You need ${MKT_LAUNCH_PROMO_CREDITS} credits for the launch boost. Top up and promote your listing any time.`,
+            });
+            nav("/ai-credits");
+            return;
+          }
+          throw promoError;
+        }
+        const row = Array.isArray(promoData) ? promoData[0] : promoData;
+        if (row?.credits_remaining != null) setBalance(row.credits_remaining);
+        window.dispatchEvent(new Event("ai-credits-updated"));
+        toast({
+          title: "Published with launch boost",
+          description: `TOP placement for ${MKT_LAUNCH_PROMO_DAYS} days · ${MKT_LAUNCH_PROMO_CREDITS} credits used.`,
+        });
+        nav(`/bazaar?category=${category}`);
+        return;
+      }
+
       toast({ title: "Listing published", description: "Thanks for watching the ad. Contact details are auto-hidden." });
-      nav(`/bazaar?category=${category}${data ? "" : ""}`);
+      nav(`/bazaar?category=${category}`);
     } catch (e: any) {
       const msg = String(e?.message || "");
       toast({
