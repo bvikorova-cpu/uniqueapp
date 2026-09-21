@@ -3,7 +3,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
-import { tryVertexChat } from "../_shared/vertexDirect.ts";
+import { tryVertexChat, tryVertexImage } from "../_shared/vertexDirect.ts";
+import { tryGatewayImage } from "../_shared/imageFallback.ts";
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -86,36 +88,28 @@ serve(async (req) => {
       );
     }
 
-    // Read every visible English string and its position. The client draws each
-    // translation directly below the matching English text without regenerating
-    // or changing the original artwork.
-    let items: Array<{ en: string; tr: string; x: number; y: number; w: number; h: number }> = [];
+    // Step 1 — read the poster: describe its exact visual style and collect
+    // every visible English string with its translation.
+    let plan: {
+      style?: string;
+      layout?: string;
+      texts?: Array<{ en: string; tr: string }>;
+      title?: string;
+      description?: string;
+    } | null = null;
 
-    // Tolerant extraction: the model sometimes returns a truncated array, so we
-    // salvage every complete object instead of failing the whole response.
-    const klpExtractItems = (raw: string): any[] => {
+    const klpParseJson = (raw: string): any | null => {
       const json = raw.slice(raw.indexOf("{"), raw.lastIndexOf("}") + 1);
       try {
-        const parsed = JSON.parse(json)?.items;
-        if (Array.isArray(parsed) && parsed.length) return parsed;
+        return JSON.parse(json);
       } catch (_e) {
-        // fall through to per-object salvage
+        return null;
       }
-      const out: any[] = [];
-      const objects = raw.match(/\{[^{}]*"en"[^{}]*\}/g) ?? [];
-      for (const chunk of objects) {
-        try {
-          out.push(JSON.parse(chunk));
-        } catch (_e) {
-          // ignore malformed fragment
-        }
-      }
-      return out;
     };
 
-    for (let attempt = 0; attempt < 2 && !items.length; attempt++) {
+    for (let attempt = 0; attempt < 2 && !plan; attempt++) {
       try {
-        const ocr = await tryVertexChat({
+        const look = await tryVertexChat({
           model: "openai/gpt-6-astra",
           messages: [{
             role: "user",
@@ -124,13 +118,12 @@ serve(async (req) => {
               {
                 type: "text",
                 text: [
-                  "Find every visible English text string on this children's educational poster, in reading order, without duplicates.",
-                  `For each one give its ${language} translation with correct spelling, grammar and diacritics.`,
-                  "Also give its bounding box as x, y, w, h integers on a 0-1000 coordinate grid relative to the full image.",
-                  "Boxes must tightly cover the matching English text, not its illustration.",
-                  "Return at most 40 items. Keep the JSON compact on a single line with no extra commentary.",
-                  `Poster topic: ${title} (children aged ${ages}). ${description}`,
-                  'Answer ONLY with JSON: {"items":[{"en":"...","tr":"...","x":0,"y":0,"w":100,"h":40}]}',
+                  "You prepare a faithful re-creation of this children's educational poster in another language.",
+                  "style: one detailed paragraph describing the illustration style, palette, outlines, background, characters and typography so an image model can reproduce the same look.",
+                  "layout: one paragraph describing the exact arrangement of the title, sections, illustrations, grids, rows and footer.",
+                  `texts: every visible English string, in reading order, with its ${language} translation (correct spelling, grammar and diacritics). Max 40 items.`,
+                  `Also translate the poster title and description into ${language}. Poster: ${title} (children aged ${ages}). ${description}`,
+                  'Answer ONLY with compact JSON: {"style":"...","layout":"...","title":"...","description":"...","texts":[{"en":"...","tr":"..."}]}',
                 ].join(" "),
               },
             ],
@@ -138,64 +131,55 @@ serve(async (req) => {
           temperature: 0.2,
           response_format: { type: "json_object" },
         });
-        const raw = String(ocr?.choices?.[0]?.message?.content ?? "");
-        const parsed = klpExtractItems(raw);
-        if (Array.isArray(parsed)) {
-          const seen = new Set<string>();
-          items = parsed
-            .filter((i: any) => typeof i?.en === "string" && typeof i?.tr === "string")
-            .map((i: any) => ({
-              en: String(i.en).trim().slice(0, 120),
-              tr: String(i.tr).trim().slice(0, 160),
-              x: Math.max(0, Math.min(1000, Number(i.x) || 0)),
-              y: Math.max(0, Math.min(1000, Number(i.y) || 0)),
-              w: Math.max(20, Math.min(1000, Number(i.w) || 100)),
-              h: Math.max(12, Math.min(300, Number(i.h) || 40)),
-            }))
-            .filter((i) => {
-              const key = i.en.toLowerCase();
-              if (!i.en || !i.tr || seen.has(key)) return false;
-              seen.add(key);
-              return true;
-            })
-            .slice(0, 80);
-        }
+        const parsed = klpParseJson(String(look?.choices?.[0]?.message?.content ?? ""));
+        if (parsed && Array.isArray(parsed.texts) && parsed.texts.length) plan = parsed;
       } catch (e) {
-        console.warn("poster translation step failed:", e instanceof Error ? e.message : String(e));
+        console.warn("poster reading step failed:", e instanceof Error ? e.message : String(e));
       }
     }
 
-
-    // Translate the poster's own title and description too.
-    let headTitle = title;
-    let headDescription = description;
-    try {
-      const head = await tryVertexChat({
-        model: "openai/gpt-6-astra",
-        messages: [{
-          role: "user",
-          content:
-            `Translate into ${language}. Answer ONLY with JSON {"title":"...","description":"..."}. title: ${title}. description: ${description}`,
-        }],
-        temperature: 0.2,
-      });
-      const raw = String(head?.choices?.[0]?.message?.content ?? "");
-      const parsed = JSON.parse(raw.slice(raw.indexOf("{"), raw.lastIndexOf("}") + 1));
-      if (typeof parsed?.title === "string" && parsed.title.trim()) headTitle = parsed.title.trim().slice(0, 160);
-      if (typeof parsed?.description === "string" && parsed.description.trim()) {
-        headDescription = parsed.description.trim().slice(0, 400);
-      }
-    } catch (e) {
-      console.warn("poster head translation failed:", e instanceof Error ? e.message : String(e));
-    }
-
-    if (!items.length) {
+    if (!plan) {
       return new Response(JSON.stringify({ error: "Translation is temporarily unavailable. Please try again." }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,
       });
     }
 
+    const texts = (plan.texts ?? [])
+      .filter((t: any) => typeof t?.en === "string" && typeof t?.tr === "string" && t.tr.trim())
+      .slice(0, 40)
+      .map((t: any) => ({ en: String(t.en).trim().slice(0, 120), tr: String(t.tr).trim().slice(0, 160) }));
+
+    const headTitle = typeof plan.title === "string" && plan.title.trim()
+      ? plan.title.trim().slice(0, 160)
+      : title;
+    const headDescription = typeof plan.description === "string" && plan.description.trim()
+      ? plan.description.trim().slice(0, 400)
+      : description;
+
+    // Step 2 — generate a brand new poster in the same style, with every word
+    // written in the target language only.
+    const wordList = texts.map((t) => `"${t.tr}"`).join(", ");
+    const prompt = [
+      `Create a children's educational poster titled "${headTitle}" for children aged ${ages}.`,
+      `ALL text on the poster must be written in ${language} only — no English anywhere.`,
+      `Use exactly these ${language} words and phrases, spelled character for character with correct diacritics: ${wordList}.`,
+      `Visual style to reproduce: ${String(plan.style ?? "").slice(0, 1400)}`,
+      `Layout to reproduce: ${String(plan.layout ?? "").slice(0, 1400)}`,
+      "Same friendly printable look, clean flat vector illustration, crisp readable lettering, no watermark, no extra invented words, no misspellings.",
+    ].join("\n");
+
+    const generated = await tryVertexImage(prompt, "1024x1536", 1, sourceImage)
+      .catch(() => null);
+    let b64: string | null = generated?.data?.[0]?.b64_json ?? null;
+    if (!b64) b64 = await tryGatewayImage(prompt, "1024x1536", sourceImage);
+
+    if (!b64) {
+      return new Response(JSON.stringify({ error: "Translation is temporarily unavailable. Please try again." }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      });
+    }
 
     const { error: deductError } = await supabase.rpc("deduct_ai_credits", {
       p_user_id: user.id,
@@ -215,7 +199,7 @@ serve(async (req) => {
       user_id: user.id,
       usage_type: "kids_poster_translate",
       credits_used: COST,
-      description: `Poster translated to ${language}: ${title}`,
+      description: `Poster re-created in ${language}: ${title}`,
     });
 
     return new Response(
@@ -224,12 +208,13 @@ serve(async (req) => {
         language,
         title: headTitle,
         description: headDescription,
-        items,
+        image: `data:image/png;base64,${b64}`,
         creditsRemaining: balance - COST,
         cost: COST,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 },
     );
+
 
   } catch (error) {
     console.error("kids-poster-translate error:", error);

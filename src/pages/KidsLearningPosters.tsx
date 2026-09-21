@@ -137,8 +137,9 @@ import posterCareerDreams from "@/assets/kids-posters/career-dreams.jpg";
 
 export const KLP_AI_POSTER_CREDITS = 3;
 export const KLP_BOOK_CREDITS = 25;
-/** Credits for adding a bilingual translation directly into one poster. */
+/** Credits for re-creating one poster in another language, same style. */
 export const KLP_POSTER_TRANSLATE_CREDITS = 2;
+
 /** Credits for the whole encyclopedia translated into another language. */
 export const KLP_BOOK_TRANSLATE_CREDITS = 25;
 
@@ -1204,68 +1205,6 @@ async function klpImageToDataUrl(url: string): Promise<string> {
   });
 }
 
-/**
- * Keeps the source poster pixel-identical and places each selected-language
- * translation directly below its matching English text inside the image.
- */
-async function klpRenderTranslationLayer(
-  imageUrl: string,
-  items: { en: string; tr: string; x: number; y: number; w: number; h: number }[],
-): Promise<string> {
-  const img = await klpLoadImage(imageUrl);
-  const width = 1200;
-  const scale = width / img.naturalWidth;
-  const height = Math.round(img.naturalHeight * scale);
-
-  const canvas = document.createElement("canvas");
-  canvas.width = width;
-  canvas.height = height;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("Could not render the translation.");
-
-  ctx.fillStyle = "#ffffff";
-  ctx.fillRect(0, 0, width, height);
-  ctx.drawImage(img, 0, 0, width, height);
-
-  const roundedRect = (x: number, y: number, w: number, h: number, radius: number) => {
-    const r = Math.min(radius, w / 2, h / 2);
-    ctx.beginPath();
-    ctx.roundRect(x, y, w, h, r);
-  };
-
-  items.forEach((item) => {
-    const sourceX = (item.x / 1000) * width;
-    const sourceY = (item.y / 1000) * height;
-    const sourceW = Math.max(70, (item.w / 1000) * width);
-    const sourceH = Math.max(18, (item.h / 1000) * height);
-    const fontSize = Math.max(14, Math.min(28, sourceH * 0.55));
-    ctx.font = `700 ${fontSize}px system-ui, 'Segoe UI', Arial, sans-serif`;
-
-    const padX = 8;
-    const padY = 5;
-    const maxTextW = Math.min(width - 16, Math.max(sourceW, ctx.measureText(item.tr).width));
-    const pillW = Math.min(width - 16, maxTextW + padX * 2);
-    const pillH = fontSize + padY * 2;
-    const x = Math.max(8, Math.min(width - pillW - 8, sourceX + sourceW / 2 - pillW / 2));
-    let y = sourceY + sourceH + 3;
-    if (y + pillH > height - 8) y = Math.max(8, sourceY - pillH - 3);
-
-    roundedRect(x, y, pillW, pillH, 7);
-    ctx.fillStyle = "rgba(255,255,255,0.92)";
-    ctx.fill();
-    ctx.strokeStyle = "rgba(76,29,149,0.5)";
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-    ctx.fillStyle = "#4c1d95";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(item.tr, x + pillW / 2, y + pillH / 2, pillW - padX * 2);
-  });
-  ctx.textAlign = "start";
-  ctx.textBaseline = "alphabetic";
-
-  return canvas.toDataURL("image/png");
-}
 
 
 
@@ -1558,11 +1497,11 @@ export default function KidsLearningPosters() {
         error?: string;
         title?: string;
         description?: string;
-        items?: Array<{ en: string; tr: string; x: number; y: number; w: number; h: number }>;
+        image?: string;
         creditsRemaining?: number;
         success?: boolean;
       };
-      if (error || payload.error || !payload.items?.length) {
+      if (error || payload.error || !payload.image) {
         const message = payload.error ?? error?.message ?? "Could not translate this poster.";
         if (/insufficient/i.test(message)) {
           toast({
@@ -1577,15 +1516,12 @@ export default function KidsLearningPosters() {
         return;
       }
       if (typeof payload.creditsRemaining === "number") setBalance(payload.creditsRemaining);
-      const composed = await klpRenderTranslationLayer(
-        transPoster.image,
-        payload.items,
-      );
-      setTransResult(composed);
+      setTransResult(payload.image);
       toast({
         title: `Poster ready in ${transLang}`,
         description: `${KLP_POSTER_TRANSLATE_CREDITS} credits used.`,
       });
+
 
     } catch (e) {
       toast({
@@ -1849,10 +1785,11 @@ export default function KidsLearningPosters() {
                 {KLP_AI_POSTER_CREDITS} credits (only charged when the poster is created).
               </li>
               <li>
-                Need another language? Press “Translate” on any poster to place the selected translation directly
-                below each English text for {KLP_POSTER_TRANSLATE_CREDITS} credits, or get the bilingual
+                Need another language? Press “Translate” on any poster and AI redraws it in the same style with
+                every word in your language for {KLP_POSTER_TRANSLATE_CREDITS} credits, or get the bilingual
                 encyclopedia PDF for {KLP_BOOK_TRANSLATE_CREDITS} credits.
               </li>
+
             </ol>
           </CardContent>
         </Card>
@@ -2101,7 +2038,7 @@ export default function KidsLearningPosters() {
               <Languages className="h-5 w-5 text-primary" /> Translate this poster
             </DialogTitle>
             <DialogDescription>
-              {transPoster?.title} — the artwork and English text stay exactly the same. Each translation is placed directly below its English text, for{" "}
+              {transPoster?.title} — AI redraws this poster in the same style with every word in your language, for{" "}
               {KLP_POSTER_TRANSLATE_CREDITS} credits. Your balance:{" "}
               {balance === null ? "—" : `${balance} credits`}.
             </DialogDescription>
@@ -2126,7 +2063,7 @@ export default function KidsLearningPosters() {
               <div className="klp-trans-result space-y-3 rounded-xl border p-3">
                 <img
                   src={transResult}
-                  alt={`${transPoster?.title} bilingual English and ${transLang} poster`}
+                  alt={`${transPoster?.title} poster in ${transLang}`}
                   className="h-auto w-full rounded-lg"
                   loading="lazy"
                 />
@@ -2137,7 +2074,8 @@ export default function KidsLearningPosters() {
                     klpDownload(transResult, `unique-poster-${transPoster?.id ?? "translated"}-${transLang.toLowerCase()}.png`)
                   }
                 >
-                  <Download className="h-4 w-4" /> Download bilingual poster
+                  <Download className="h-4 w-4" /> Download {transLang} poster
+
                 </Button>
               </div>
             )}
