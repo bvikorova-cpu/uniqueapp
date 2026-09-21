@@ -186,12 +186,16 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-        imageUrl: `data:image/png;base64,${base64Image}`,
+        language,
+        title: headTitle,
+        description: headDescription,
+        items,
         creditsRemaining: balance - COST,
         cost: COST,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 },
     );
+
   } catch (error) {
     console.error("kids-poster-translate error:", error);
     return new Response(
