@@ -3,7 +3,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
-import { tryVertexChat } from "../_shared/vertexDirect.ts";
+import { tryVertexImage } from "../_shared/vertexDirect.ts";
 
 
 const corsHeaders = {
@@ -87,104 +87,26 @@ serve(async (req) => {
       );
     }
 
-    // Step 1 — collect and translate every visible English string. The source
-    // pixels remain the only visual specification for the edit.
-    let plan: {
-      regions?: Array<{
-        en: string;
-        tr: string;
-        x: number;
-        y: number;
-        w: number;
-        h: number;
-        background: string;
-        color: string;
-        align?: "left" | "center" | "right";
-        weight?: "normal" | "bold";
-      }>;
-      title?: string;
-      description?: string;
-    } | null = null;
+    const prompt = [
+      `Translate every visible word on this children's educational poster from English into ${language}.`,
+      `Return the complete finished poster in ${language}, with correct spelling and diacritics.`,
+      "Keep the same educational topic, objects, characters, colors, visual hierarchy, portrait format and cheerful illustrated style.",
+      "Do not leave any English text. Do not add a watermark or commentary outside the poster.",
+      `Context: ${title}; children aged ${ages}. ${description}`,
+    ].join("\n");
 
-    const klpParseJson = (raw: string): any | null => {
-      const json = raw.slice(raw.indexOf("{"), raw.lastIndexOf("}") + 1);
-      try {
-        return JSON.parse(json);
-      } catch (_e) {
+    const generated = await tryVertexImage(prompt, "1024x1536", 1, sourceImage, { temperature: 0.2 })
+      .catch((error) => {
+        console.warn("direct Gemini poster translation failed:", error instanceof Error ? error.message : String(error));
         return null;
-      }
-    };
-
-    for (let attempt = 0; attempt < 2 && !plan; attempt++) {
-      try {
-        const look = await tryVertexChat({
-          model: "openai/gpt-6-astra",
-          messages: [{
-            role: "user",
-            content: [
-              { type: "image_url", image_url: { url: sourceImage } },
-              {
-                type: "text",
-                text: [
-                  "Act as an OCR and translation engine for a Canva-style text replacement. Do not redesign the image.",
-                  `Find every visible English text region and translate it to ${language} with correct spelling, grammar and diacritics. Max 40 regions.`,
-                  "For each region return its tight rectangle on a 1000x1000 normalized image grid, its dominant background color and text color as #RRGGBB, alignment, and weight.",
-                  "Coordinates must cover the complete original lettering but as little surrounding artwork as possible. Split visually separate labels into separate regions.",
-                  `Also translate the poster title and description into ${language}. Poster: ${title} (children aged ${ages}). ${description}`,
-                  'Answer ONLY with compact JSON: {"title":"...","description":"...","regions":[{"en":"...","tr":"...","x":0,"y":0,"w":100,"h":40,"background":"#FFFFFF","color":"#111111","align":"center","weight":"bold"}]}',
-                ].join(" "),
-              },
-            ],
-          }],
-          temperature: 0.2,
-          response_format: { type: "json_object" },
-        });
-        const parsed = klpParseJson(String(look?.choices?.[0]?.message?.content ?? ""));
-        if (parsed && Array.isArray(parsed.regions) && parsed.regions.length) plan = parsed;
-      } catch (e) {
-        console.warn("poster reading step failed:", e instanceof Error ? e.message : String(e));
-      }
-    }
-
-    if (!plan) {
-      return new Response(JSON.stringify({ error: "Translation is temporarily unavailable. Please try again." }), {
+      });
+    const b64 = generated?.data?.[0]?.b64_json;
+    if (typeof b64 !== "string" || !b64) {
+      return new Response(JSON.stringify({ error: "Gemini could not create the translated poster. Please try again." }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,
       });
     }
-
-    const regions = (plan.regions ?? [])
-      .filter((region: any) =>
-        typeof region?.en === "string" && typeof region?.tr === "string" && region.tr.trim()
-        && [region.x, region.y, region.w, region.h].every((value) => Number.isFinite(Number(value)))
-      )
-      .slice(0, 40)
-      .map((region: any) => ({
-        en: String(region.en).trim().slice(0, 120),
-        tr: String(region.tr).trim().slice(0, 160),
-        x: Math.max(0, Math.min(1000, Number(region.x))),
-        y: Math.max(0, Math.min(1000, Number(region.y))),
-        w: Math.max(8, Math.min(1000, Number(region.w))),
-        h: Math.max(8, Math.min(1000, Number(region.h))),
-        background: /^#[0-9a-f]{6}$/i.test(String(region.background)) ? String(region.background) : "#FFFFFF",
-        color: /^#[0-9a-f]{6}$/i.test(String(region.color)) ? String(region.color) : "#111111",
-        align: ["left", "center", "right"].includes(region.align) ? region.align : "center",
-        weight: region.weight === "normal" ? "normal" : "bold",
-      }));
-
-    if (!regions.length) {
-      return new Response(JSON.stringify({ error: "No editable text was found on this poster." }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 422,
-      });
-    }
-
-    const headTitle = typeof plan.title === "string" && plan.title.trim()
-      ? plan.title.trim().slice(0, 160)
-      : title;
-    const headDescription = typeof plan.description === "string" && plan.description.trim()
-      ? plan.description.trim().slice(0, 400)
-      : description;
 
     const { error: deductError } = await supabase.rpc("deduct_ai_credits", {
       p_user_id: user.id,
@@ -204,16 +126,16 @@ serve(async (req) => {
       user_id: user.id,
       usage_type: "kids_poster_translate",
       credits_used: COST,
-      description: `Poster text translated to ${language}: ${title}`,
+      description: `Poster translated with Gemini to ${language}: ${title}`,
     });
 
     return new Response(
       JSON.stringify({
         success: true,
         language,
-        title: headTitle,
-        description: headDescription,
-        regions,
+        title,
+        description,
+        image: `data:image/png;base64,${b64}`,
         creditsRemaining: balance - COST,
         cost: COST,
       }),

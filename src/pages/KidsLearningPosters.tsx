@@ -1205,60 +1205,6 @@ async function klpImageToDataUrl(url: string): Promise<string> {
   });
 }
 
-type KlpTranslationRegion = {
-  en: string;
-  tr: string;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  background: string;
-  color: string;
-  align: "left" | "center" | "right";
-  weight: "normal" | "bold";
-};
-
-/** Keeps every original pixel outside text boxes and replaces lettering like a flat-image editor. */
-async function klpRenderEditedPoster(sourceUrl: string, regions: KlpTranslationRegion[]): Promise<string> {
-  const image = await klpLoadImage(sourceUrl);
-  const canvas = document.createElement("canvas");
-  canvas.width = image.naturalWidth || image.width;
-  canvas.height = image.naturalHeight || image.height;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("Could not prepare the poster editor.");
-  ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-
-  for (const region of regions) {
-    const x = Math.round((region.x / 1000) * canvas.width);
-    const y = Math.round((region.y / 1000) * canvas.height);
-    const width = Math.max(4, Math.round((region.w / 1000) * canvas.width));
-    const height = Math.max(4, Math.round((region.h / 1000) * canvas.height));
-    const inset = Math.max(1, Math.round(Math.min(width, height) * 0.04));
-
-    ctx.save();
-    ctx.fillStyle = region.background;
-    ctx.fillRect(x, y, width, height);
-    ctx.fillStyle = region.color;
-    ctx.textAlign = region.align;
-    ctx.textBaseline = "middle";
-
-    const maxTextWidth = Math.max(2, width - inset * 2);
-    let fontSize = Math.max(7, Math.floor(height * 0.7));
-    const fontFamily = '"Arial Rounded MT Bold", "Trebuchet MS", Arial, sans-serif';
-    do {
-      ctx.font = `${region.weight} ${fontSize}px ${fontFamily}`;
-      if (ctx.measureText(region.tr).width <= maxTextWidth) break;
-      fontSize -= 1;
-    } while (fontSize > 7);
-
-    const textX = region.align === "left" ? x + inset : region.align === "right" ? x + width - inset : x + width / 2;
-    ctx.fillText(region.tr, textX, y + height / 2, maxTextWidth);
-    ctx.restore();
-  }
-
-  return canvas.toDataURL("image/png");
-}
-
 
 
 
@@ -1551,11 +1497,11 @@ export default function KidsLearningPosters() {
         error?: string;
         title?: string;
         description?: string;
-        regions?: KlpTranslationRegion[];
+        image?: string;
         creditsRemaining?: number;
         success?: boolean;
       };
-      if (error || payload.error || !payload.regions?.length) {
+      if (error || payload.error || !payload.image) {
         const message = payload.error ?? error?.message ?? "Could not translate this poster.";
         if (/insufficient/i.test(message)) {
           toast({
@@ -1570,7 +1516,7 @@ export default function KidsLearningPosters() {
         return;
       }
       if (typeof payload.creditsRemaining === "number") setBalance(payload.creditsRemaining);
-      setTransResult(await klpRenderEditedPoster(transPoster.image, payload.regions));
+      setTransResult(payload.image);
       toast({
         title: `Poster ready in ${transLang}`,
         description: `${KLP_POSTER_TRANSLATE_CREDITS} credits used.`,
@@ -1839,8 +1785,8 @@ export default function KidsLearningPosters() {
                 {KLP_AI_POSTER_CREDITS} credits (only charged when the poster is created).
               </li>
               <li>
-                Need another language? Press “Translate” on any poster and its original artwork stays intact while
-                only the printed text is replaced for {KLP_POSTER_TRANSLATE_CREDITS} credits, or get the bilingual
+                Need another language? Press “Translate” on any poster and Gemini creates its translated version for
+                {KLP_POSTER_TRANSLATE_CREDITS} credits, or get the bilingual
                 encyclopedia PDF for {KLP_BOOK_TRANSLATE_CREDITS} credits.
               </li>
 
@@ -2092,7 +2038,7 @@ export default function KidsLearningPosters() {
               <Languages className="h-5 w-5 text-primary" /> Translate this poster
             </DialogTitle>
             <DialogDescription>
-              {transPoster?.title} — only the original text is replaced; artwork, colours and layout stay unchanged, for{" "}
+              {transPoster?.title} — Gemini creates a translated version from the original poster, for{" "}
               {KLP_POSTER_TRANSLATE_CREDITS} credits. Your balance:{" "}
               {balance === null ? "—" : `${balance} credits`}.
             </DialogDescription>
