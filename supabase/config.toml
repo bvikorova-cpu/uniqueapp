@@ -471,3 +471,6 @@ verify_jwt = false
 
 [functions.flyer-generate]
 verify_jwt = false
+
+[functions.kids-posters-encyclopedia]
+verify_jwt = false
