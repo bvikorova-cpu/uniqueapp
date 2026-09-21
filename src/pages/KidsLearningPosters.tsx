@@ -1867,7 +1867,7 @@ export default function KidsLearningPosters() {
                 {KLP_AI_POSTER_CREDITS} credits (only charged when the poster is created).
               </li>
               <li>
-                Need another language? Press “Translate” on any poster to have it redrawn with every word in
+                Need another language? Press “Translate” on any poster to get it with an exact translation panel in
                 your language for {KLP_POSTER_TRANSLATE_CREDITS} credits, or get the whole translated
                 encyclopedia PDF for {KLP_BOOK_TRANSLATE_CREDITS} credits.
               </li>
@@ -2119,7 +2119,7 @@ export default function KidsLearningPosters() {
               <Languages className="h-5 w-5 text-primary" /> Translate this poster
             </DialogTitle>
             <DialogDescription>
-              {transPoster?.title} — redrawn with every word in your language for{" "}
+              {transPoster?.title} — the artwork stays exactly the same and every word is listed with its exact translation, for{" "}
               {KLP_POSTER_TRANSLATE_CREDITS} credits. Your balance:{" "}
               {balance === null ? "—" : `${balance} credits`}.
             </DialogDescription>
