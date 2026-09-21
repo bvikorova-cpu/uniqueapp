@@ -15,7 +15,7 @@ const COST = 2;
 
 /**
  * Isolated edge function for the Kids Channel "Learning Posters" section.
- * Edits one existing poster by replacing only its wording in another language and
+ * Reads and translates one existing poster, including each text position, and
  * charges 2 credits from the unified `ai_credits` wallet.
  */
 serve(async (req) => {
@@ -86,14 +86,13 @@ serve(async (req) => {
       );
     }
 
-    // Read every visible English string off the poster and translate it exactly.
-    // The artwork itself is never touched — the client renders these pairs as a
-    // translation layer under the original poster, so the style is 100% preserved
-    // and no word is ever garbled by an image model.
-    let items: Array<{ en: string; tr: string }> = [];
+    // Read every visible English string and its position. The client draws each
+    // translation directly below the matching English text without regenerating
+    // or changing the original artwork.
+    let items: Array<{ en: string; tr: string; x: number; y: number; w: number; h: number }> = [];
     try {
       const ocr = await tryVertexChat({
-        model: "google/gemini-2.5-flash",
+        model: "openai/gpt-6-astra",
         messages: [{
           role: "user",
           content: [
@@ -101,10 +100,12 @@ serve(async (req) => {
             {
               type: "text",
               text: [
-                "List every visible text string on this children's educational poster, in reading order, without duplicates.",
+                "Find every visible English text string on this children's educational poster, in reading order, without duplicates.",
                 `For each one give its ${language} translation with correct spelling, grammar and diacritics.`,
+                "Also give its bounding box as x, y, w, h integers on a 0-1000 coordinate grid relative to the full image.",
+                "Boxes must tightly cover the matching English text, not its illustration.",
                 `Poster topic: ${title} (children aged ${ages}). ${description}`,
-                'Answer ONLY with JSON: {"items":[{"en":"...","tr":"..."}]}',
+                'Answer ONLY with JSON: {"items":[{"en":"...","tr":"...","x":0,"y":0,"w":100,"h":40}]}',
               ].join(" "),
             },
           ],
@@ -118,7 +119,14 @@ serve(async (req) => {
         const seen = new Set<string>();
         items = parsed
           .filter((i: any) => typeof i?.en === "string" && typeof i?.tr === "string")
-          .map((i: any) => ({ en: String(i.en).trim().slice(0, 120), tr: String(i.tr).trim().slice(0, 160) }))
+          .map((i: any) => ({
+            en: String(i.en).trim().slice(0, 120),
+            tr: String(i.tr).trim().slice(0, 160),
+            x: Math.max(0, Math.min(1000, Number(i.x) || 0)),
+            y: Math.max(0, Math.min(1000, Number(i.y) || 0)),
+            w: Math.max(20, Math.min(1000, Number(i.w) || 100)),
+            h: Math.max(12, Math.min(300, Number(i.h) || 40)),
+          }))
           .filter((i) => {
             const key = i.en.toLowerCase();
             if (!i.en || !i.tr || seen.has(key)) return false;
@@ -136,7 +144,7 @@ serve(async (req) => {
     let headDescription = description;
     try {
       const head = await tryVertexChat({
-        model: "google/gemini-2.5-flash",
+        model: "openai/gpt-6-astra",
         messages: [{
           role: "user",
           content:
