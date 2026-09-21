@@ -126,6 +126,7 @@ const Navbar = () => {
 
   const kidsAcademyServices = [
     { path: "/kids-channel", label: "Kids Channel", icon: Video },
+    { path: "/kids-channel/learning-posters", label: "Learning Posters (3-18y)", icon: BookOpen },
     { path: "/coloring-pages", label: "Coloring Pages", icon: Palette },
     { path: "/kids-puzzles", label: "Kids Puzzles", icon: Puzzle },
     { path: "/kids-homework", label: "Homework Helper (6-12y)", icon: BookOpen },
