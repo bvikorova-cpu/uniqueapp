@@ -123,20 +123,56 @@ serve(async (req) => {
       console.warn("poster OCR/translate step failed:", e instanceof Error ? e.message : String(e));
     }
 
-    const prompt = [
-      "Perform a minimal text-only edit of the supplied educational poster.",
-      `Replace EVERY piece of English lettering with its ${language} translation. No English word may remain anywhere, including the big title, all labels and small captions.`,
+    const buildPrompt = (strict: boolean) => [
+      `TASK: rewrite the lettering of this poster into ${language}. This is a localisation job: the artwork stays, the words change.`,
       mapping
-        ? `Use exactly these replacements: ${mapping}.`
-        : `Translate every visible word from English into ${language}, using correct spelling, grammar and diacritics.`,
-      `The poster topic is ${title}, for children aged ${ages}. Context: ${description}`,
-      "ABSOLUTE PRESERVATION RULE: keep the source image's exact composition, dimensions, crop, background, illustrations, characters, objects, poses, shapes, borders, colours, shadows, decorative elements, spacing and visual style.",
-      "Do not redesign, redraw, restyle, simplify, add, remove, move or resize anything except where text length makes a tiny text-size adjustment unavoidable.",
-      "Each replacement text sits in the same place as the English it replaces, matching its font style, colour, alignment and hierarchy. Spell every word correctly — no invented or mixed-language words.",
+        ? `Replace the text exactly like this: ${mapping}.`
+        : `Translate every visible English word into ${language} with correct spelling, grammar and diacritics.`,
+      "The finished image must contain ZERO English words — title, headings, labels, captions and tiny decorative text all included.",
+      `Poster topic: ${title} (children aged ${ages}). ${description}`,
+      "KEEP IDENTICAL: composition, dimensions, crop, background, illustrations, characters, poses, shapes, frames, borders, colours, shadows, decorations, spacing and art style. Do not redraw, restyle, simplify, add, remove, move or resize any graphic element.",
+      "Every translated word sits in the exact place of the English it replaces, in the same font style, weight, colour, alignment and size hierarchy; shrink the text slightly only when a longer word would not fit.",
+      strict
+        ? "A previous attempt left English text in the image. This time you MUST paint over every English string and letter it in the target language instead."
+        : "",
       "Output only the edited poster image.",
-    ].join(" ");
+    ].filter(Boolean).join(" ");
 
-    const aiData = await tryVertexImage(prompt, undefined, 1, [sourceImage]);
+    const stillEnglish = async (b64: string) => {
+      try {
+        const check = await tryVertexChat({
+          model: "google/gemini-2.5-flash",
+          messages: [{
+            role: "user",
+            content: [
+              { type: "image_url", image_url: { url: `data:image/png;base64,${b64}` } },
+              {
+                type: "text",
+                text:
+                  `Is any visible text on this poster still written in English rather than ${language}? Answer with one word: YES or NO.`,
+              },
+            ],
+          }],
+          temperature: 0,
+        });
+        return /yes/i.test(String(check?.choices?.[0]?.message?.content ?? ""));
+      } catch {
+        return false;
+      }
+    };
+
+    let aiData = await tryVertexImage(buildPrompt(false), undefined, 1, [sourceImage]);
+    let candidate = aiData?.data?.[0]?.b64_json;
+    if (candidate && await stillEnglish(candidate)) {
+      const retry = await tryVertexImage(buildPrompt(true), undefined, 1, [sourceImage]);
+      const retryImage = retry?.data?.[0]?.b64_json;
+      if (retryImage && !(await stillEnglish(retryImage))) {
+        aiData = retry;
+      } else if (retryImage) {
+        aiData = retry;
+      }
+    }
+
 
     const base64Image = aiData?.data?.[0]?.b64_json;
     if (!base64Image) {
