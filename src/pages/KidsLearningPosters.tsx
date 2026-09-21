@@ -1488,9 +1488,12 @@ export default function KidsLearningPosters() {
           description: transPoster.description,
           ages: transPoster.ages,
           language: transLang,
+          posterId: transPoster.id,
+          langId: KLP_LANGUAGES.find((l) => l.name === transLang)?.id ?? "",
           sourceImage,
         },
       });
+
       const payload = (data ?? {}) as {
         error?: string;
         title?: string;

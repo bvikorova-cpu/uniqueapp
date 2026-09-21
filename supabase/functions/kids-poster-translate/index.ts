@@ -56,15 +56,29 @@ serve(async (req) => {
     const ages = typeof body.ages === "string" ? body.ages.trim().slice(0, 40) : "6-10 years";
     const language = typeof body.language === "string" ? body.language.trim().slice(0, 40) : "";
     const sourceImage = typeof body.sourceImage === "string" ? body.sourceImage : "";
+    const posterId = typeof body.posterId === "string" ? body.posterId.replace(/[^a-z0-9-]/gi, "").slice(0, 80) : "";
+    const langId = typeof body.langId === "string" ? body.langId.replace(/[^a-z]/gi, "").slice(0, 8) : "";
 
     const validSourceImage = /^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(sourceImage)
       && sourceImage.length <= 8_000_000;
-    if (title.length < 2 || language.length < 2 || !validSourceImage) {
+
+    // Pre-rendered translation uploaded by the team: <bucket>/<posterId>/<langId>.<ext>
+    let presetPath: string | null = null;
+    if (posterId && langId) {
+      const { data: listed } = await supabase.storage
+        .from("kids-poster-translations")
+        .list(posterId, { limit: 100 });
+      const match = (listed ?? []).find((f) => f.name.toLowerCase().startsWith(`${langId.toLowerCase()}.`));
+      if (match) presetPath = `${posterId}/${match.name}`;
+    }
+
+    if (title.length < 2 || language.length < 2 || (!presetPath && !validSourceImage)) {
       return new Response(JSON.stringify({ error: "Missing or invalid poster image or language." }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
       });
     }
+
 
     const { data: credRow, error: creditsError } = await supabase
       .from("ai_credits")
@@ -87,26 +101,43 @@ serve(async (req) => {
       );
     }
 
-    const prompt = [
-      `Translate every visible word on this children's educational poster from English into ${language}.`,
-      `Return the complete finished poster in ${language}, with correct spelling and diacritics.`,
-      "Keep the same educational topic, objects, characters, colors, visual hierarchy, portrait format and cheerful illustrated style.",
-      "Do not leave any English text. Do not add a watermark or commentary outside the poster.",
-      `Context: ${title}; children aged ${ages}. ${description}`,
-    ].join("\n");
+    let imagePayload: string | null = null;
 
-    const generated = await tryVertexImage(prompt, "1024x1536", 1, sourceImage, { temperature: 0.2 })
-      .catch((error) => {
-        console.warn("direct Gemini poster translation failed:", error instanceof Error ? error.message : String(error));
-        return null;
-      });
-    const b64 = generated?.data?.[0]?.b64_json;
-    if (typeof b64 !== "string" || !b64) {
-      return new Response(JSON.stringify({ error: "Gemini could not create the translated poster. Please try again." }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
-      });
+    if (presetPath) {
+      const { data: signed, error: signError } = await supabase.storage
+        .from("kids-poster-translations")
+        .createSignedUrl(presetPath, 3600);
+      if (signError || !signed?.signedUrl) {
+        return new Response(JSON.stringify({ error: "Translated poster could not be loaded. Please try again." }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 500,
+        });
+      }
+      imagePayload = signed.signedUrl;
+    } else {
+      const prompt = [
+        `Translate every visible word on this children's educational poster from English into ${language}.`,
+        `Return the complete finished poster in ${language}, with correct spelling and diacritics.`,
+        "Keep the same educational topic, objects, characters, colors, visual hierarchy, portrait format and cheerful illustrated style.",
+        "Do not leave any English text. Do not add a watermark or commentary outside the poster.",
+        `Context: ${title}; children aged ${ages}. ${description}`,
+      ].join("\n");
+
+      const generated = await tryVertexImage(prompt, "1024x1536", 1, sourceImage, { temperature: 0.2 })
+        .catch((error) => {
+          console.warn("direct Gemini poster translation failed:", error instanceof Error ? error.message : String(error));
+          return null;
+        });
+      const b64 = generated?.data?.[0]?.b64_json;
+      if (typeof b64 !== "string" || !b64) {
+        return new Response(JSON.stringify({ error: "Gemini could not create the translated poster. Please try again." }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 500,
+        });
+      }
+      imagePayload = `data:image/png;base64,${b64}`;
     }
+
 
     const { error: deductError } = await supabase.rpc("deduct_ai_credits", {
       p_user_id: user.id,
@@ -126,7 +157,7 @@ serve(async (req) => {
       user_id: user.id,
       usage_type: "kids_poster_translate",
       credits_used: COST,
-      description: `Poster translated with Gemini to ${language}: ${title}`,
+      description: `${presetPath ? "Ready-made" : "Gemini"} poster translation to ${language}: ${title}`,
     });
 
     return new Response(
@@ -135,7 +166,9 @@ serve(async (req) => {
         language,
         title,
         description,
-        image: `data:image/png;base64,${b64}`,
+        image: imagePayload,
+        preset: !!presetPath,
+
         creditsRemaining: balance - COST,
         cost: COST,
       }),
