@@ -166,7 +166,9 @@ serve(async (req) => {
         language,
         title,
         description,
-        image: `data:image/png;base64,${b64}`,
+        image: imagePayload,
+        preset: !!presetPath,
+
         creditsRemaining: balance - COST,
         cost: COST,
       }),
