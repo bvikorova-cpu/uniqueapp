@@ -205,13 +205,23 @@ export default function AuctionCreate() {
               E-mails, phone numbers, links and messaging apps are removed automatically — bidders unlock your chat by watching one short ad.
             </p>
 
-            <Button onClick={submit} disabled={saving || adPlaying} className="w-full gap-2">
+            <Button onClick={openPromoStep} disabled={saving || adPlaying} className="w-full gap-2">
               {saving || adPlaying ? <Loader2 className="h-4 w-4 animate-spin" /> : <PlayCircle className="h-4 w-4" />}
               {adPlaying ? "Loading ad…" : saving ? "Publishing…" : "Watch ad & publish auction · free"}
             </Button>
           </CardContent>
         </Card>
       </main>
+
+      <MarketplaceLaunchPromoDialog
+        open={promoOpen}
+        onOpenChange={setPromoOpen}
+        itemLabel="auction"
+        balance={balance}
+        busy={saving || adPlaying}
+        onPublishWithPromo={() => submit(true)}
+        onPublishWithoutPromo={() => submit(false)}
+      />
     </>
   );
 }
