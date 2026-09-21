@@ -90,54 +90,81 @@ serve(async (req) => {
     // translation directly below the matching English text without regenerating
     // or changing the original artwork.
     let items: Array<{ en: string; tr: string; x: number; y: number; w: number; h: number }> = [];
-    try {
-      const ocr = await tryVertexChat({
-        model: "openai/gpt-6-astra",
-        messages: [{
-          role: "user",
-          content: [
-            { type: "image_url", image_url: { url: sourceImage } },
-            {
-              type: "text",
-              text: [
-                "Find every visible English text string on this children's educational poster, in reading order, without duplicates.",
-                `For each one give its ${language} translation with correct spelling, grammar and diacritics.`,
-                "Also give its bounding box as x, y, w, h integers on a 0-1000 coordinate grid relative to the full image.",
-                "Boxes must tightly cover the matching English text, not its illustration.",
-                `Poster topic: ${title} (children aged ${ages}). ${description}`,
-                'Answer ONLY with JSON: {"items":[{"en":"...","tr":"...","x":0,"y":0,"w":100,"h":40}]}',
-              ].join(" "),
-            },
-          ],
-        }],
-        temperature: 0.2,
-      });
-      const raw = String(ocr?.choices?.[0]?.message?.content ?? "");
+
+    // Tolerant extraction: the model sometimes returns a truncated array, so we
+    // salvage every complete object instead of failing the whole response.
+    const klpExtractItems = (raw: string): any[] => {
       const json = raw.slice(raw.indexOf("{"), raw.lastIndexOf("}") + 1);
-      const parsed = JSON.parse(json)?.items;
-      if (Array.isArray(parsed)) {
-        const seen = new Set<string>();
-        items = parsed
-          .filter((i: any) => typeof i?.en === "string" && typeof i?.tr === "string")
-          .map((i: any) => ({
-            en: String(i.en).trim().slice(0, 120),
-            tr: String(i.tr).trim().slice(0, 160),
-            x: Math.max(0, Math.min(1000, Number(i.x) || 0)),
-            y: Math.max(0, Math.min(1000, Number(i.y) || 0)),
-            w: Math.max(20, Math.min(1000, Number(i.w) || 100)),
-            h: Math.max(12, Math.min(300, Number(i.h) || 40)),
-          }))
-          .filter((i) => {
-            const key = i.en.toLowerCase();
-            if (!i.en || !i.tr || seen.has(key)) return false;
-            seen.add(key);
-            return true;
-          })
-          .slice(0, 80);
+      try {
+        const parsed = JSON.parse(json)?.items;
+        if (Array.isArray(parsed) && parsed.length) return parsed;
+      } catch (_e) {
+        // fall through to per-object salvage
       }
-    } catch (e) {
-      console.warn("poster translation step failed:", e instanceof Error ? e.message : String(e));
+      const out: any[] = [];
+      const objects = raw.match(/\{[^{}]*"en"[^{}]*\}/g) ?? [];
+      for (const chunk of objects) {
+        try {
+          out.push(JSON.parse(chunk));
+        } catch (_e) {
+          // ignore malformed fragment
+        }
+      }
+      return out;
+    };
+
+    for (let attempt = 0; attempt < 2 && !items.length; attempt++) {
+      try {
+        const ocr = await tryVertexChat({
+          model: "openai/gpt-6-astra",
+          messages: [{
+            role: "user",
+            content: [
+              { type: "image_url", image_url: { url: sourceImage } },
+              {
+                type: "text",
+                text: [
+                  "Find every visible English text string on this children's educational poster, in reading order, without duplicates.",
+                  `For each one give its ${language} translation with correct spelling, grammar and diacritics.`,
+                  "Also give its bounding box as x, y, w, h integers on a 0-1000 coordinate grid relative to the full image.",
+                  "Boxes must tightly cover the matching English text, not its illustration.",
+                  "Return at most 40 items. Keep the JSON compact on a single line with no extra commentary.",
+                  `Poster topic: ${title} (children aged ${ages}). ${description}`,
+                  'Answer ONLY with JSON: {"items":[{"en":"...","tr":"...","x":0,"y":0,"w":100,"h":40}]}',
+                ].join(" "),
+              },
+            ],
+          }],
+          temperature: 0.2,
+          response_format: { type: "json_object" },
+        });
+        const raw = String(ocr?.choices?.[0]?.message?.content ?? "");
+        const parsed = klpExtractItems(raw);
+        if (Array.isArray(parsed)) {
+          const seen = new Set<string>();
+          items = parsed
+            .filter((i: any) => typeof i?.en === "string" && typeof i?.tr === "string")
+            .map((i: any) => ({
+              en: String(i.en).trim().slice(0, 120),
+              tr: String(i.tr).trim().slice(0, 160),
+              x: Math.max(0, Math.min(1000, Number(i.x) || 0)),
+              y: Math.max(0, Math.min(1000, Number(i.y) || 0)),
+              w: Math.max(20, Math.min(1000, Number(i.w) || 100)),
+              h: Math.max(12, Math.min(300, Number(i.h) || 40)),
+            }))
+            .filter((i) => {
+              const key = i.en.toLowerCase();
+              if (!i.en || !i.tr || seen.has(key)) return false;
+              seen.add(key);
+              return true;
+            })
+            .slice(0, 80);
+        }
+      } catch (e) {
+        console.warn("poster translation step failed:", e instanceof Error ? e.message : String(e));
+      }
     }
+
 
     // Translate the poster's own title and description too.
     let headTitle = title;
