@@ -135,6 +135,10 @@ import posterCareerDreams from "@/assets/kids-posters/career-dreams.jpg";
 
 export const KLP_AI_POSTER_CREDITS = 3;
 export const KLP_BOOK_CREDITS = 10;
+/** Credits for redrawing one poster in another language. */
+export const KLP_POSTER_TRANSLATE_CREDITS = 2;
+/** Credits for the whole encyclopedia translated into another language. */
+export const KLP_BOOK_TRANSLATE_CREDITS = 25;
 
 type KlpCategory = "school" | "science" | "life" | "safety" | "money" | "teen";
 
@@ -1191,6 +1195,36 @@ const KLP_BOOK_CHAPTERS: { minAge: number; label: string; blurb: string }[] = [
   { minAge: 14, label: "Ages 14-18 · Real life skills", blurb: "Study strategies, emotions, goals, career and independence." },
 ];
 
+/** Languages offered for poster and encyclopedia translation. */
+const KLP_LANGUAGES: { id: string; label: string; name: string }[] = [
+  { id: "sk", label: "Slovak", name: "Slovak" },
+  { id: "cs", label: "Czech", name: "Czech" },
+  { id: "pl", label: "Polish", name: "Polish" },
+  { id: "hu", label: "Hungarian", name: "Hungarian" },
+  { id: "de", label: "German", name: "German" },
+  { id: "es", label: "Spanish", name: "Spanish" },
+  { id: "fr", label: "French", name: "French" },
+  { id: "it", label: "Italian", name: "Italian" },
+  { id: "pt", label: "Portuguese", name: "Portuguese" },
+  { id: "nl", label: "Dutch", name: "Dutch" },
+  { id: "ro", label: "Romanian", name: "Romanian" },
+  { id: "hr", label: "Croatian", name: "Croatian" },
+  { id: "tr", label: "Turkish", name: "Turkish" },
+  { id: "uk", label: "Ukrainian", name: "Ukrainian" },
+];
+
+type KlpTranslationMap = Record<string, { title: string; description: string }>;
+
+/** Texts sent to the translation function for the whole book. */
+function klpBookTranslationItems() {
+  return [
+    { id: "book:title", title: "Learning Encyclopedia", description: "The complete printable poster book" },
+    { id: "book:contents", title: "Contents", description: "List of all posters in this book" },
+    ...KLP_BOOK_CHAPTERS.map((c) => ({ id: `chapter:${c.minAge}`, title: c.label, description: c.blurb })),
+    ...KLP_POSTERS.map((p) => ({ id: p.id, title: p.title, description: p.description })),
+  ];
+}
+
 async function klpLoadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -1201,26 +1235,61 @@ async function klpLoadImage(src: string): Promise<HTMLImageElement> {
   });
 }
 
+/** Loads the Unicode font used by translated PDFs (diacritics, Cyrillic). */
+async function klpRegisterUnicodeFont(pdf: {
+  addFileToVFS: (name: string, data: string) => void;
+  addFont: (file: string, name: string, style: string) => void;
+}) {
+  const [regular, bold] = await Promise.all([
+    import("@/assets/kids-posters/klp-unicode.ttf?url"),
+    import("@/assets/kids-posters/klp-unicode-bold.ttf?url"),
+  ]);
+  const toBase64 = async (url: string) => {
+    const buf = await (await fetch(url)).arrayBuffer();
+    const bytes = new Uint8Array(buf);
+    let binary = "";
+    for (let i = 0; i < bytes.length; i += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+    }
+    return btoa(binary);
+  };
+  pdf.addFileToVFS("klp-unicode.ttf", await toBase64(regular.default));
+  pdf.addFont("klp-unicode.ttf", "klpUnicode", "normal");
+  pdf.addFileToVFS("klp-unicode-bold.ttf", await toBase64(bold.default));
+  pdf.addFont("klp-unicode-bold.ttf", "klpUnicode", "bold");
+}
+
 /** Builds the whole poster library as one A4 PDF book, ordered by age. */
-async function klpBuildEncyclopedia(onProgress?: (done: number, total: number) => void) {
+async function klpBuildEncyclopedia(
+  onProgress?: (done: number, total: number) => void,
+  opts?: { languageLabel?: string; translations?: KlpTranslationMap },
+) {
   const { default: JsPDF } = await import("jspdf");
   const pdf = new JsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
   const pageW = 210;
   const pageH = 297;
 
+  const translated = !!opts?.translations;
+  const tr = opts?.translations ?? {};
+  if (translated) await klpRegisterUnicodeFont(pdf as never);
+  const family = translated ? "klpUnicode" : "helvetica";
+  const font = (style: "normal" | "bold") => pdf.setFont(family, style);
+  const tTitle = (id: string, fallback: string) => tr[id]?.title?.trim() || fallback;
+  const tDesc = (id: string, fallback: string) => tr[id]?.description?.trim() || fallback;
+
   // Cover
   pdf.setFillColor(124, 58, 237);
   pdf.rect(0, 0, pageW, pageH, "F");
   pdf.setTextColor(255, 255, 255);
-  pdf.setFont("helvetica", "bold");
-  pdf.setFontSize(40);
-  pdf.text("Learning", 20, 90);
-  pdf.text("Encyclopedia", 20, 108);
+  font("bold");
+  pdf.setFontSize(36);
+  pdf.text(tTitle("book:title", "Learning Encyclopedia"), 20, 96, { maxWidth: pageW - 40 });
   pdf.setFontSize(16);
-  pdf.setFont("helvetica", "normal");
-  pdf.text("The complete printable poster book", 20, 128);
+  font("normal");
+  pdf.text(tDesc("book:title", "The complete printable poster book"), 20, 128, { maxWidth: pageW - 40 });
   pdf.setFontSize(12);
-  pdf.text(`${KLP_POSTERS.length} posters · ages 3 to 18 · sorted by age`, 20, 140);
+  pdf.text(`${KLP_POSTERS.length} posters · ages 3 to 18 · sorted by age`, 20, 142);
+  if (opts?.languageLabel) pdf.text(opts.languageLabel, 20, 152);
   pdf.text("Unique · Kids Channel", 20, pageH - 24);
 
   const ordered = KLP_BOOK_CHAPTERS.map((chapter) => ({
@@ -1231,26 +1300,27 @@ async function klpBuildEncyclopedia(onProgress?: (done: number, total: number) =
   // Contents
   pdf.addPage();
   pdf.setTextColor(30, 30, 40);
-  pdf.setFont("helvetica", "bold");
+  font("bold");
   pdf.setFontSize(22);
-  pdf.text("Contents", 20, 30);
+  pdf.text(tTitle("book:contents", "Contents"), 20, 30);
   let y = 45;
   pdf.setFontSize(12);
   for (const group of ordered) {
-    pdf.setFont("helvetica", "bold");
+    font("bold");
     if (y > pageH - 30) {
       pdf.addPage();
       y = 30;
     }
-    pdf.text(`${group.chapter.label} (${group.items.length})`, 20, y);
+    const chapterLabel = tTitle(`chapter:${group.chapter.minAge}`, group.chapter.label);
+    pdf.text(`${chapterLabel} (${group.items.length})`, 20, y);
     y += 7;
-    pdf.setFont("helvetica", "normal");
+    font("normal");
     for (const item of group.items) {
       if (y > pageH - 20) {
         pdf.addPage();
         y = 30;
       }
-      pdf.text(`• ${item.title}`, 26, y);
+      pdf.text(`• ${tTitle(item.id, item.title)}`, 26, y);
       y += 6;
     }
     y += 4;
@@ -1264,12 +1334,12 @@ async function klpBuildEncyclopedia(onProgress?: (done: number, total: number) =
     pdf.setFillColor(236, 72, 153);
     pdf.rect(0, 0, pageW, pageH, "F");
     pdf.setTextColor(255, 255, 255);
-    pdf.setFont("helvetica", "bold");
+    font("bold");
     pdf.setFontSize(28);
-    pdf.text(group.chapter.label, 20, 130, { maxWidth: pageW - 40 });
-    pdf.setFont("helvetica", "normal");
+    pdf.text(tTitle(`chapter:${group.chapter.minAge}`, group.chapter.label), 20, 130, { maxWidth: pageW - 40 });
+    font("normal");
     pdf.setFontSize(13);
-    pdf.text(group.chapter.blurb, 20, 150, { maxWidth: pageW - 40 });
+    pdf.text(tDesc(`chapter:${group.chapter.minAge}`, group.chapter.blurb), 20, 150, { maxWidth: pageW - 40 });
 
     for (const poster of group.items) {
       const img = await klpLoadImage(poster.image);
@@ -1281,10 +1351,10 @@ async function klpBuildEncyclopedia(onProgress?: (done: number, total: number) =
       const h = img.naturalHeight * ratio;
       pdf.addImage(img, "JPEG", (pageW - w) / 2, 10, w, h, undefined, "FAST");
       pdf.setTextColor(60, 60, 70);
-      pdf.setFont("helvetica", "bold");
+      font("bold");
       pdf.setFontSize(12);
-      pdf.text(poster.title, 10, pageH - 14, { maxWidth: pageW - 20 });
-      pdf.setFont("helvetica", "normal");
+      pdf.text(tTitle(poster.id, poster.title), 10, pageH - 14, { maxWidth: pageW - 20 });
+      font("normal");
       pdf.setFontSize(9);
       pdf.text(poster.ages, 10, pageH - 8);
       done += 1;
@@ -1292,7 +1362,11 @@ async function klpBuildEncyclopedia(onProgress?: (done: number, total: number) =
     }
   }
 
-  pdf.save("unique-kids-learning-encyclopedia.pdf");
+  pdf.save(
+    translated
+      ? `unique-kids-learning-encyclopedia-${(opts?.languageLabel ?? "translated").toLowerCase().replace(/[^a-z]+/g, "-")}.pdf`
+      : "unique-kids-learning-encyclopedia.pdf",
+  );
 }
 
 /**
@@ -1318,6 +1392,12 @@ export default function KidsLearningPosters() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [bookBusy, setBookBusy] = useState(false);
   const [bookProgress, setBookProgress] = useState<{ done: number; total: number } | null>(null);
+  const [transPoster, setTransPoster] = useState<KlpPoster | null>(null);
+  const [transLang, setTransLang] = useState<string>(KLP_LANGUAGES[0].name);
+  const [transBusy, setTransBusy] = useState(false);
+  const [transResult, setTransResult] = useState<string | null>(null);
+  const [bookLangOpen, setBookLangOpen] = useState(false);
+  const [bookLang, setBookLang] = useState<string>(KLP_LANGUAGES[0].name);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
@@ -1357,6 +1437,118 @@ export default function KidsLearningPosters() {
         description: "Please try again, or long-press the image to save it.",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleTranslatePoster = async () => {
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+    if (!transPoster || transBusy) return;
+    setTransBusy(true);
+    setTransResult(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("kids-poster-translate", {
+        body: {
+          title: transPoster.title,
+          description: transPoster.description,
+          ages: transPoster.ages,
+          language: transLang,
+        },
+      });
+      const payload = (data ?? {}) as {
+        error?: string;
+        imageUrl?: string;
+        creditsRemaining?: number;
+        success?: boolean;
+      };
+      if (error || payload.error || !payload.imageUrl) {
+        const message = payload.error ?? error?.message ?? "Could not translate this poster.";
+        if (/insufficient/i.test(message)) {
+          toast({
+            title: "Not enough credits",
+            description: `A translated poster costs ${KLP_POSTER_TRANSLATE_CREDITS} credits. Top up and try again.`,
+            variant: "destructive",
+          });
+          navigate("/ai-credits");
+          return;
+        }
+        toast({ title: "Translation failed", description: message, variant: "destructive" });
+        return;
+      }
+      if (typeof payload.creditsRemaining === "number") setBalance(payload.creditsRemaining);
+      setTransResult(payload.imageUrl);
+      toast({
+        title: `Poster ready in ${transLang}`,
+        description: `${KLP_POSTER_TRANSLATE_CREDITS} credits used.`,
+      });
+    } catch (e) {
+      toast({
+        title: "Translation failed",
+        description: e instanceof Error ? e.message : "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setTransBusy(false);
+    }
+  };
+
+  const handleTranslatedEncyclopedia = async () => {
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+    if (bookBusy) return;
+    setBookBusy(true);
+    setBookProgress(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("kids-encyclopedia-translate", {
+        body: { language: bookLang, items: klpBookTranslationItems() },
+      });
+      const payload = (data ?? {}) as {
+        error?: string;
+        translations?: KlpTranslationMap;
+        creditsRemaining?: number;
+        success?: boolean;
+      };
+      if (error || payload.error || !payload.translations) {
+        const message = payload.error ?? error?.message ?? "Could not translate the encyclopedia.";
+        if (/insufficient/i.test(message)) {
+          toast({
+            title: "Not enough credits",
+            description: `The translated encyclopedia costs ${KLP_BOOK_TRANSLATE_CREDITS} credits. Top up and try again.`,
+            variant: "destructive",
+          });
+          navigate("/ai-credits");
+          return;
+        }
+        toast({ title: "Translation failed", description: message, variant: "destructive" });
+        return;
+      }
+      if (typeof payload.creditsRemaining === "number") setBalance(payload.creditsRemaining);
+      setBookLangOpen(false);
+      toast({
+        title: `Building your ${bookLang} book`,
+        description: `${KLP_BOOK_TRANSLATE_CREDITS} credits used. Please keep this page open.`,
+      });
+      await klpBuildEncyclopedia((doneCount, total) => setBookProgress({ done: doneCount, total }), {
+        languageLabel: bookLang,
+        translations: payload.translations,
+      });
+      toast({
+        title: "Encyclopedia ready",
+        description: `${KLP_POSTERS.length} posters with ${bookLang} titles, sorted by age.`,
+      });
+    } catch (e) {
+      toast({
+        title: "Download failed",
+        description: e instanceof Error ? e.message : "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setBookBusy(false);
+      setBookProgress(null);
     }
   };
 
