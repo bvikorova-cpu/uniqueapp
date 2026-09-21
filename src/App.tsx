@@ -814,6 +814,7 @@ const App = () => {
                         <Route path="/admin/xp-audit/reconciliation" element={<ProtectedRoute requireAdmin={true}><AdminXPReconciliation /></ProtectedRoute>} />
                         <Route path="/admin/rewards-audit" element={<ProtectedRoute><AdminRewardsAudit /></ProtectedRoute>} />
                         <Route path="/admin/credits-ledger" element={<ProtectedRoute requireAdmin={true}><AdminCreditsLedger /></ProtectedRoute>} />
+                        <Route path="/admin/launch-boosts" element={<ProtectedRoute requireAdmin={true}><AdminLaunchBoosts /></ProtectedRoute>} />
                         <Route path="/generate-courses" element={<GenerateCourses />} />
                         <Route path="/premium-store" element={<PremiumStore />} />
                         <Route path="/premium" element={<Premium />} />
