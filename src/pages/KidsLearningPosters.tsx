@@ -1745,6 +1745,11 @@ export default function KidsLearningPosters() {
                 Want your own topic? Press “Create my own”, describe it, and AI draws a fresh poster for{" "}
                 {KLP_AI_POSTER_CREDITS} credits (only charged when the poster is created).
               </li>
+              <li>
+                Need another language? Press “Translate” on any poster to have it redrawn with every word in
+                your language for {KLP_POSTER_TRANSLATE_CREDITS} credits, or get the whole translated
+                encyclopedia PDF for {KLP_BOOK_TRANSLATE_CREDITS} credits.
+              </li>
             </ol>
           </CardContent>
         </Card>
