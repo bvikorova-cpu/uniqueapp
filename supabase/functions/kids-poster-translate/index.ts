@@ -107,7 +107,9 @@ serve(async (req) => {
 
     let imagePayload: string | null = null;
 
-    if (presetPath) {
+    if (validReadyImage) {
+      imagePayload = readyImage;
+    } else if (presetPath) {
       const { data: signed, error: signError } = await supabase.storage
         .from("kids-poster-translations")
         .createSignedUrl(presetPath, 3600);
