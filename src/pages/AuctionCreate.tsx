@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,11 @@ import { BazaarPhotoUploader, type PendingPhoto } from "@/components/bazaar/Baza
 import { SEO } from "@/components/SEO";
 import { ArrowLeft, Gavel, Loader2, PlayCircle } from "lucide-react";
 import { useMarketplaceAdGate } from "@/hooks/useMarketplaceAdGate";
+import {
+  MarketplaceLaunchPromoDialog,
+  MKT_LAUNCH_PROMO_CREDITS,
+  MKT_LAUNCH_PROMO_DAYS,
+} from "@/components/marketplace/MarketplaceLaunchPromoDialog";
 
 export const AUCTION_CATEGORIES = [
   { value: "electronics", label: "Electronics" },
@@ -49,11 +54,31 @@ export default function AuctionCreate() {
   const [photos, setPhotos] = useState<PendingPhoto[]>([]);
   const [saving, setSaving] = useState(false);
   const { watchAdToContinue, adPlaying } = useMarketplaceAdGate();
+  const [promoOpen, setPromoOpen] = useState(false);
+  const [balance, setBalance] = useState<number | null>(null);
 
-  const submit = async () => {
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      supabase
+        .from("ai_credits")
+        .select("credits_remaining")
+        .eq("user_id", user.id)
+        .maybeSingle()
+        .then(({ data }) => setBalance(data?.credits_remaining ?? 0));
+    });
+  }, []);
+
+  const openPromoStep = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login required", variant: "destructive" }); return; }
     if (!title || !startingPrice) { toast({ title: "Title and starting price are required", variant: "destructive" }); return; }
+    setPromoOpen(true);
+  };
+
+  const submit = async (withPromo: boolean) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { toast({ title: "Login required", variant: "destructive" }); return; }
     const adOk = await watchAdToContinue("publish your auction");
     if (!adOk) return;
     setSaving(true);
@@ -69,7 +94,7 @@ export default function AuctionCreate() {
         urls.push(publicUrl);
       }
 
-      const { error } = await (supabase as any).rpc("publish_auction_item", {
+      const { data: newId, error } = await (supabase as any).rpc("publish_auction_item", {
         _title: title,
         _description: description,
         _category: category,
@@ -82,6 +107,35 @@ export default function AuctionCreate() {
       });
       if (error) throw error;
       window.dispatchEvent(new Event("ai-credits-updated"));
+      setPromoOpen(false);
+
+      if (withPromo && newId) {
+        const { data: promoData, error: promoError } = await (supabase as any).rpc("marketplace_launch_promo", {
+          _kind: "auction",
+          _entity_id: newId,
+        });
+        if (promoError) {
+          if (String(promoError.message || "").includes("INSUFFICIENT_CREDITS")) {
+            toast({
+              title: "Published without the boost",
+              description: `You need ${MKT_LAUNCH_PROMO_CREDITS} credits for the launch boost. Top up and promote your auction any time.`,
+            });
+            nav("/ai-credits");
+            return;
+          }
+          throw promoError;
+        }
+        const row = Array.isArray(promoData) ? promoData[0] : promoData;
+        if (row?.credits_remaining != null) setBalance(row.credits_remaining);
+        window.dispatchEvent(new Event("ai-credits-updated"));
+        toast({
+          title: "Published with launch boost",
+          description: `TOP placement for ${MKT_LAUNCH_PROMO_DAYS} days · ${MKT_LAUNCH_PROMO_CREDITS} credits used.`,
+        });
+        nav(`/auction?category=${category}`);
+        return;
+      }
+
       toast({ title: "Auction published", description: "Thanks for watching the ad. Bidding is now open." });
       nav(`/auction?category=${category}`);
     } catch (e: any) {
