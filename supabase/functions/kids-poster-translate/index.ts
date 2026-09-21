@@ -86,17 +86,58 @@ serve(async (req) => {
       );
     }
 
+    // Step 1 — read every visible English string off the poster and translate it,
+    // so the image edit gets an explicit word-for-word mapping instead of having
+    // to translate on its own (which left most lettering in English).
+    let mapping = "";
+    try {
+      const ocr = await tryVertexChat({
+        model: "google/gemini-2.5-flash",
+        messages: [{
+          role: "user",
+          content: [
+            { type: "image_url", image_url: { url: sourceImage } },
+            {
+              type: "text",
+              text: [
+                "List every visible text string on this children's educational poster, in reading order.",
+                `For each one give its ${language} translation (correct spelling, grammar, diacritics; keep the same capitalisation style and keep it short so it fits the same space).`,
+                'Answer ONLY with JSON: {"items":[{"en":"...","tr":"..."}]}',
+              ].join(" "),
+            },
+          ],
+        }],
+        temperature: 0.2,
+      });
+      const raw = String(ocr?.choices?.[0]?.message?.content ?? "");
+      const json = raw.slice(raw.indexOf("{"), raw.lastIndexOf("}") + 1);
+      const items = JSON.parse(json)?.items;
+      if (Array.isArray(items)) {
+        mapping = items
+          .filter((i: any) => typeof i?.en === "string" && typeof i?.tr === "string")
+          .slice(0, 60)
+          .map((i: any) => `"${String(i.en).slice(0, 60)}" -> "${String(i.tr).slice(0, 80)}"`)
+          .join("; ");
+      }
+    } catch (e) {
+      console.warn("poster OCR/translate step failed:", e instanceof Error ? e.message : String(e));
+    }
+
     const prompt = [
       "Perform a minimal text-only edit of the supplied educational poster.",
-      `Translate every visible word from English into ${language}, using correct spelling, grammar and diacritics.`,
+      `Replace EVERY piece of English lettering with its ${language} translation. No English word may remain anywhere, including the big title, all labels and small captions.`,
+      mapping
+        ? `Use exactly these replacements: ${mapping}.`
+        : `Translate every visible word from English into ${language}, using correct spelling, grammar and diacritics.`,
       `The poster topic is ${title}, for children aged ${ages}. Context: ${description}`,
       "ABSOLUTE PRESERVATION RULE: keep the source image's exact composition, dimensions, crop, background, illustrations, characters, objects, poses, shapes, borders, colours, shadows, decorative elements, spacing and visual style.",
       "Do not redesign, redraw, restyle, simplify, add, remove, move or resize anything except where text length makes a tiny text-size adjustment unavoidable.",
-      "Replace only the existing English lettering in the same locations, matching each original font style, colour, alignment and hierarchy as closely as possible.",
-      "Do not leave English text. Output only the edited poster image.",
+      "Each replacement text sits in the same place as the English it replaces, matching its font style, colour, alignment and hierarchy. Spell every word correctly — no invented or mixed-language words.",
+      "Output only the edited poster image.",
     ].join(" ");
 
-    const aiData = await tryVertexImage(prompt, "1024x1536", 1, [sourceImage]);
+    const aiData = await tryVertexImage(prompt, undefined, 1, [sourceImage]);
+
     const base64Image = aiData?.data?.[0]?.b64_json;
     if (!base64Image) {
       return new Response(JSON.stringify({ error: "Image editing is temporarily unavailable. Please try again." }), {
