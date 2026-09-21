@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,11 @@ import { BazaarPhotoUploader, type PendingPhoto } from "@/components/bazaar/Baza
 import { SEO } from "@/components/SEO";
 import { ArrowLeft, Loader2, PlayCircle, Sparkles } from "lucide-react";
 import { useMarketplaceAdGate } from "@/hooks/useMarketplaceAdGate";
+import {
+  MarketplaceLaunchPromoDialog,
+  MKT_LAUNCH_PROMO_CREDITS,
+  MKT_LAUNCH_PROMO_DAYS,
+} from "@/components/marketplace/MarketplaceLaunchPromoDialog";
 
 const CATEGORIES = [
   { value: "electronics", label: "Electronics" },
@@ -38,11 +43,31 @@ export default function BazaarCreate() {
   const [photos, setPhotos] = useState<PendingPhoto[]>([]);
   const [saving, setSaving] = useState(false);
   const { watchAdToContinue, adPlaying } = useMarketplaceAdGate();
+  const [promoOpen, setPromoOpen] = useState(false);
+  const [balance, setBalance] = useState<number | null>(null);
 
-  const submit = async () => {
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      supabase
+        .from("ai_credits")
+        .select("credits_remaining")
+        .eq("user_id", user.id)
+        .maybeSingle()
+        .then(({ data }) => setBalance(data?.credits_remaining ?? 0));
+    });
+  }, []);
+
+  const openPromoStep = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login required", variant: "destructive" }); return; }
     if (!title || !price) { toast({ title: "Title and price are required", variant: "destructive" }); return; }
+    setPromoOpen(true);
+  };
+
+  const submit = async (withPromo: boolean) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { toast({ title: "Login required", variant: "destructive" }); return; }
     const adOk = await watchAdToContinue("publish your listing");
     if (!adOk) return;
     setSaving(true);
@@ -70,8 +95,37 @@ export default function BazaarCreate() {
       });
       if (error) throw error;
       window.dispatchEvent(new Event("ai-credits-updated"));
+      setPromoOpen(false);
+
+      if (withPromo && data) {
+        const { data: promoData, error: promoError } = await (supabase as any).rpc("marketplace_launch_promo", {
+          _kind: "bazaar",
+          _entity_id: data,
+        });
+        if (promoError) {
+          if (String(promoError.message || "").includes("INSUFFICIENT_CREDITS")) {
+            toast({
+              title: "Published without the boost",
+              description: `You need ${MKT_LAUNCH_PROMO_CREDITS} credits for the launch boost. Top up and promote your listing any time.`,
+            });
+            nav("/ai-credits");
+            return;
+          }
+          throw promoError;
+        }
+        const row = Array.isArray(promoData) ? promoData[0] : promoData;
+        if (row?.credits_remaining != null) setBalance(row.credits_remaining);
+        window.dispatchEvent(new Event("ai-credits-updated"));
+        toast({
+          title: "Published with launch boost",
+          description: `TOP placement for ${MKT_LAUNCH_PROMO_DAYS} days · ${MKT_LAUNCH_PROMO_CREDITS} credits used.`,
+        });
+        nav(`/bazaar?category=${category}`);
+        return;
+      }
+
       toast({ title: "Listing published", description: "Thanks for watching the ad. Contact details are auto-hidden." });
-      nav(`/bazaar?category=${category}${data ? "" : ""}`);
+      nav(`/bazaar?category=${category}`);
     } catch (e: any) {
       const msg = String(e?.message || "");
       toast({
@@ -132,12 +186,22 @@ export default function BazaarCreate() {
               E-mails, phone numbers, links and messaging apps are removed automatically — buyers unlock your chat by watching one short ad.
             </p>
 
-            <Button onClick={submit} disabled={saving || adPlaying} className="w-full gap-2">
+            <Button onClick={openPromoStep} disabled={saving || adPlaying} className="w-full gap-2">
               {saving || adPlaying ? <Loader2 className="h-4 w-4 animate-spin" /> : <PlayCircle className="h-4 w-4" />}
               {adPlaying ? "Loading ad…" : saving ? "Publishing…" : "Watch ad & publish · free"}
             </Button>
           </CardContent>
         </Card>
+
+        <MarketplaceLaunchPromoDialog
+          open={promoOpen}
+          onOpenChange={setPromoOpen}
+          itemLabel="listing"
+          balance={balance}
+          busy={saving || adPlaying}
+          onPublishWithPromo={() => submit(true)}
+          onPublishWithoutPromo={() => submit(false)}
+        />
       </main>
     </>
   );
