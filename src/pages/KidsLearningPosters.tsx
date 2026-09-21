@@ -62,6 +62,16 @@ import posterOrderOfOperations from "@/assets/kids-posters/order-of-operations.j
 import posterNegativeNumbers from "@/assets/kids-posters/negative-numbers.jpg";
 import posterCursiveAlphabet from "@/assets/kids-posters/cursive-alphabet.jpg";
 import posterSightWords from "@/assets/kids-posters/sight-words.jpg";
+import klpReadyShapesSk from "@/assets/kids-poster-translations/shapes-colors-sk.jpg.asset.json";
+import klpReadyShapesHu from "@/assets/kids-poster-translations/shapes-colors-hu.jpg.asset.json";
+import klpReadyShapesDe from "@/assets/kids-poster-translations/shapes-colors-de.jpg.asset.json";
+import klpReadyShapesEs from "@/assets/kids-poster-translations/shapes-colors-es.jpg.asset.json";
+import klpReadyShapesFr from "@/assets/kids-poster-translations/shapes-colors-fr.jpg.asset.json";
+import klpReadyAbcSk from "@/assets/kids-poster-translations/abc-phonics-sk.jpg.asset.json";
+import klpReadyAbcHu from "@/assets/kids-poster-translations/abc-phonics-hu.jpg.asset.json";
+import klpReadyAbcDe from "@/assets/kids-poster-translations/abc-phonics-de.jpg.asset.json";
+import klpReadyAbcEs from "@/assets/kids-poster-translations/abc-phonics-es.jpg.asset.json";
+import klpReadyAbcFr from "@/assets/kids-poster-translations/abc-phonics-fr.jpg.asset.json";
 import posterVowelsConsonants from "@/assets/kids-posters/vowels-consonants.jpg";
 import posterPunctuationMarks from "@/assets/kids-posters/punctuation-marks.jpg";
 import posterNouns from "@/assets/kids-posters/nouns.jpg";
@@ -1219,18 +1229,29 @@ const KLP_BOOK_CHAPTERS: { minAge: number; label: string; blurb: string }[] = [
 /** Languages offered for poster and encyclopedia translation. */
 const KLP_LANGUAGES: { id: string; label: string; name: string }[] = [
   { id: "sk", label: "Slovak", name: "Slovak" },
-  { id: "cs", label: "Czech", name: "Czech" },
-  { id: "pl", label: "Polish", name: "Polish" },
   { id: "hu", label: "Hungarian", name: "Hungarian" },
   { id: "de", label: "German", name: "German" },
   { id: "es", label: "Spanish", name: "Spanish" },
   { id: "fr", label: "French", name: "French" },
-  { id: "it", label: "Italian", name: "Italian" },
-  { id: "pt", label: "Portuguese", name: "Portuguese" },
-  { id: "nl", label: "Dutch", name: "Dutch" },
-  { id: "zh", label: "Chinese", name: "Chinese" },
-
 ];
+
+/** Ready-made translated posters uploaded by the team (no AI needed). */
+const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
+  "shapes-colors": {
+    sk: klpReadyShapesSk.url,
+    hu: klpReadyShapesHu.url,
+    de: klpReadyShapesDe.url,
+    es: klpReadyShapesEs.url,
+    fr: klpReadyShapesFr.url,
+  },
+  "abc-phonics": {
+    sk: klpReadyAbcSk.url,
+    hu: klpReadyAbcHu.url,
+    de: klpReadyAbcDe.url,
+    es: klpReadyAbcEs.url,
+    fr: klpReadyAbcFr.url,
+  },
+};
 
 type KlpTranslationMap = Record<string, { title: string; description: string }>;
 
@@ -1481,7 +1502,10 @@ export default function KidsLearningPosters() {
     setTransBusy(true);
     setTransResult(null);
     try {
-      const sourceImage = await klpImageToDataUrl(transPoster.image);
+      const langId = KLP_LANGUAGES.find((l) => l.name === transLang)?.id ?? "";
+      const readyUrl = KLP_READY_TRANSLATIONS[transPoster.id]?.[langId];
+      const readyImage = readyUrl ? await klpImageToDataUrl(readyUrl) : "";
+      const sourceImage = readyImage ? "" : await klpImageToDataUrl(transPoster.image);
       const { data, error } = await supabase.functions.invoke("kids-poster-translate", {
         body: {
           title: transPoster.title,
@@ -1489,8 +1513,9 @@ export default function KidsLearningPosters() {
           ages: transPoster.ages,
           language: transLang,
           posterId: transPoster.id,
-          langId: KLP_LANGUAGES.find((l) => l.name === transLang)?.id ?? "",
+          langId,
           sourceImage,
+          readyImage,
         },
       });
 

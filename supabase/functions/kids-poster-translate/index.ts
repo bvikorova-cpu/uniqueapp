@@ -59,8 +59,12 @@ serve(async (req) => {
     const posterId = typeof body.posterId === "string" ? body.posterId.replace(/[^a-z0-9-]/gi, "").slice(0, 80) : "";
     const langId = typeof body.langId === "string" ? body.langId.replace(/[^a-z]/gi, "").slice(0, 8) : "";
 
-    const validSourceImage = /^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(sourceImage)
-      && sourceImage.length <= 8_000_000;
+    const readyImage = typeof body.readyImage === "string" ? body.readyImage : "";
+    const isDataImage = (value: string) =>
+      /^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(value) && value.length <= 8_000_000;
+
+    const validSourceImage = isDataImage(sourceImage);
+    const validReadyImage = isDataImage(readyImage);
 
     // Pre-rendered translation uploaded by the team: <bucket>/<posterId>/<langId>.<ext>
     let presetPath: string | null = null;
@@ -72,7 +76,7 @@ serve(async (req) => {
       if (match) presetPath = `${posterId}/${match.name}`;
     }
 
-    if (title.length < 2 || language.length < 2 || (!presetPath && !validSourceImage)) {
+    if (title.length < 2 || language.length < 2 || (!presetPath && !validReadyImage && !validSourceImage)) {
       return new Response(JSON.stringify({ error: "Missing or invalid poster image or language." }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
@@ -103,7 +107,9 @@ serve(async (req) => {
 
     let imagePayload: string | null = null;
 
-    if (presetPath) {
+    if (validReadyImage) {
+      imagePayload = readyImage;
+    } else if (presetPath) {
       const { data: signed, error: signError } = await supabase.storage
         .from("kids-poster-translations")
         .createSignedUrl(presetPath, 3600);
@@ -157,7 +163,7 @@ serve(async (req) => {
       user_id: user.id,
       usage_type: "kids_poster_translate",
       credits_used: COST,
-      description: `${presetPath ? "Ready-made" : "Gemini"} poster translation to ${language}: ${title}`,
+      description: `${(validReadyImage || presetPath) ? "Ready-made" : "Gemini"} poster translation to ${language}: ${title}`,
     });
 
     return new Response(
@@ -167,7 +173,7 @@ serve(async (req) => {
         title,
         description,
         image: imagePayload,
-        preset: !!presetPath,
+        preset: validReadyImage || !!presetPath,
 
         creditsRemaining: balance - COST,
         cost: COST,
