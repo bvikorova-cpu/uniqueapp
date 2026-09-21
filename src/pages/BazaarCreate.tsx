@@ -43,11 +43,31 @@ export default function BazaarCreate() {
   const [photos, setPhotos] = useState<PendingPhoto[]>([]);
   const [saving, setSaving] = useState(false);
   const { watchAdToContinue, adPlaying } = useMarketplaceAdGate();
+  const [promoOpen, setPromoOpen] = useState(false);
+  const [balance, setBalance] = useState<number | null>(null);
 
-  const submit = async () => {
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      supabase
+        .from("ai_credits")
+        .select("credits_remaining")
+        .eq("user_id", user.id)
+        .maybeSingle()
+        .then(({ data }) => setBalance(data?.credits_remaining ?? 0));
+    });
+  }, []);
+
+  const openPromoStep = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login required", variant: "destructive" }); return; }
     if (!title || !price) { toast({ title: "Title and price are required", variant: "destructive" }); return; }
+    setPromoOpen(true);
+  };
+
+  const submit = async (withPromo: boolean) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { toast({ title: "Login required", variant: "destructive" }); return; }
     const adOk = await watchAdToContinue("publish your listing");
     if (!adOk) return;
     setSaving(true);
