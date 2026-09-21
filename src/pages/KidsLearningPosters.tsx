@@ -1839,8 +1839,8 @@ export default function KidsLearningPosters() {
                 {KLP_AI_POSTER_CREDITS} credits (only charged when the poster is created).
               </li>
               <li>
-                Need another language? Press “Translate” on any poster and AI redraws it in the same style with
-                every word in your language for {KLP_POSTER_TRANSLATE_CREDITS} credits, or get the bilingual
+                Need another language? Press “Translate” on any poster and its original artwork stays intact while
+                only the printed text is replaced for {KLP_POSTER_TRANSLATE_CREDITS} credits, or get the bilingual
                 encyclopedia PDF for {KLP_BOOK_TRANSLATE_CREDITS} credits.
               </li>
 
