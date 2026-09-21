@@ -528,6 +528,15 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
       toast({ title: "Add at least one module", variant: "destructive" });
       return;
     }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data } = await supabase
+        .from("ai_credits")
+        .select("credits_remaining")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      setCoursePromoBalance(data?.credits_remaining ?? 0);
+    }
     setCoursePromoOpen(true);
   };
 
