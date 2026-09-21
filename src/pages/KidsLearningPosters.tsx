@@ -1763,8 +1763,28 @@ export default function KidsLearningPosters() {
         </Card>
 
         <Card className="klp-book mt-6 border-primary/40 bg-primary/5">
-          <CardContent className="flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between">
-            <div>
+          <CardContent className="grid gap-5 p-5 md:grid-cols-[180px_minmax(0,1fr)_auto] md:items-center">
+            <figure className="klp-book-cover-preview mx-auto w-full max-w-[220px] md:max-w-none">
+              <div className="relative aspect-[210/297] overflow-hidden rounded-md border border-primary/30 shadow-lg">
+                <img
+                  src={encyclopediaCover}
+                  alt="Learning Encyclopedia cover preview with a child reading a magical book"
+                  className="h-full w-full object-cover"
+                />
+                <div className="absolute inset-x-3 top-5 text-center text-primary-foreground drop-shadow-md">
+                  <div className="text-lg font-extrabold leading-tight md:text-base">Learning Encyclopedia</div>
+                  <div className="mt-1 text-[10px] font-medium">The complete printable poster book</div>
+                  <div className="mt-1 text-[9px]">{KLP_POSTERS.length} posters · ages 3 to 18</div>
+                </div>
+                <div className="absolute inset-x-2 bottom-2 text-center text-[9px] font-semibold text-primary-foreground drop-shadow-md">
+                  Unique · Kids Channel
+                </div>
+              </div>
+              <figcaption className="mt-2 text-center text-xs font-medium text-muted-foreground">
+                Cover preview
+              </figcaption>
+            </figure>
+            <div className="min-w-0">
               <div className="flex items-center gap-2 font-semibold">
                 <Download className="h-4 w-4 text-primary" /> The complete Learning Encyclopedia (PDF book)
               </div>
@@ -1773,7 +1793,7 @@ export default function KidsLearningPosters() {
                 pages for 3-5, 6-9, 10-13 and 14-18 years. One-time price: {KLP_BOOK_CREDITS} credits.
               </p>
             </div>
-            <Button className="gap-2 md:shrink-0" onClick={handleEncyclopedia} disabled={bookBusy}>
+            <Button className="w-full gap-2 md:w-auto md:shrink-0" onClick={handleEncyclopedia} disabled={bookBusy}>
               {bookBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
               {bookBusy
                 ? bookProgress
