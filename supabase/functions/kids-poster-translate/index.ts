@@ -3,7 +3,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
-import { tryVertexImage, tryVertexChat } from "../_shared/vertexDirect.ts";
+import { tryVertexChat } from "../_shared/vertexDirect.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
