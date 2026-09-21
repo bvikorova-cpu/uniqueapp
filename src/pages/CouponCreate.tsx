@@ -12,6 +12,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { SEO } from "@/components/SEO";
 import { ArrowLeft, Loader2, PlayCircle, Sparkles, Upload, X } from "lucide-react";
 import { useMarketplaceAdGate } from "@/hooks/useMarketplaceAdGate";
+import {
+  MarketplaceLaunchPromoDialog,
+  MKT_LAUNCH_PROMO_CREDITS,
+  MKT_LAUNCH_PROMO_DAYS,
+} from "@/components/marketplace/MarketplaceLaunchPromoDialog";
+import { useEffect } from "react";
 
 const CATEGORIES = [
   { value: "food", label: "Food & Dining" },
