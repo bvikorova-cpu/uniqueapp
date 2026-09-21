@@ -3,6 +3,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
+import { tryVertexImage } from "../_shared/vertexDirect.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -14,7 +15,7 @@ const COST = 2;
 
 /**
  * Isolated edge function for the Kids Channel "Learning Posters" section.
- * Redraws one existing poster with all of its wording in another language and
+ * Edits one existing poster by replacing only its wording in another language and
  * charges 2 credits from the unified `ai_credits` wallet.
  */
 serve(async (req) => {
@@ -53,9 +54,12 @@ serve(async (req) => {
     const description = typeof body.description === "string" ? body.description.trim().slice(0, 300) : "";
     const ages = typeof body.ages === "string" ? body.ages.trim().slice(0, 40) : "6-10 years";
     const language = typeof body.language === "string" ? body.language.trim().slice(0, 40) : "";
+    const sourceImage = typeof body.sourceImage === "string" ? body.sourceImage : "";
 
-    if (title.length < 2 || language.length < 2) {
-      return new Response(JSON.stringify({ error: "Missing poster or language." }), {
+    const validSourceImage = /^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(sourceImage)
+      && sourceImage.length <= 8_000_000;
+    if (title.length < 2 || language.length < 2 || !validSourceImage) {
+      return new Response(JSON.stringify({ error: "Missing or invalid poster image or language." }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
       });
@@ -82,51 +86,20 @@ serve(async (req) => {
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      return new Response(JSON.stringify({ error: "AI service not configured." }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
-      });
-    }
-
     const prompt = [
-      `Educational printable poster for children aged ${ages}, A4 portrait layout.`,
-      `Topic: ${title}. ${description}`,
-      "Design: bright rainbow bubble headline, rounded white cards with pastel colour headers, smiling cartoon children and animals, thick clean outlines, flat vector storybook illustration, organised grid of labelled cards, print ready.",
-      `IMPORTANT: every single word on the poster, including the headline and all labels, must be written in ${language}. Use correct ${language} spelling, grammar and diacritics. Do not use any English words.`,
-      "Short labels only, crisp legible typography.",
-      "Strictly child friendly and wholesome: no violence, no scary content, no nudity, no brands or logos, no country flags.",
+      "Perform a minimal text-only edit of the supplied educational poster.",
+      `Translate every visible word from English into ${language}, using correct spelling, grammar and diacritics.`,
+      `The poster topic is ${title}, for children aged ${ages}. Context: ${description}`,
+      "ABSOLUTE PRESERVATION RULE: keep the source image's exact composition, dimensions, crop, background, illustrations, characters, objects, poses, shapes, borders, colours, shadows, decorative elements, spacing and visual style.",
+      "Do not redesign, redraw, restyle, simplify, add, remove, move or resize anything except where text length makes a tiny text-size adjustment unavoidable.",
+      "Replace only the existing English lettering in the same locations, matching each original font style, colour, alignment and hierarchy as closely as possible.",
+      "Do not leave English text. Output only the edited poster image.",
     ].join(" ");
 
-    const aiResponse = await fetch("https://api.openai.com/v1/images/generations", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ model: "gpt-image-1", prompt, size: "1024x1536", n: 1 }),
-    });
-
-    if (!aiResponse.ok) {
-      const errorText = await aiResponse.text();
-      console.error("Poster translate AI error:", aiResponse.status, errorText);
-      const status = aiResponse.status === 429 ? 429 : 500;
-      return new Response(
-        JSON.stringify({
-          error:
-            status === 429
-              ? "Too many requests right now. Please try again in a moment."
-              : "Could not translate this poster. Please try again.",
-        }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status },
-      );
-    }
-
-    const aiData = await aiResponse.json();
-    const base64Image = aiData.data?.[0]?.b64_json;
+    const aiData = await tryVertexImage(prompt, "1024x1536", 1, [sourceImage]);
+    const base64Image = aiData?.data?.[0]?.b64_json;
     if (!base64Image) {
-      return new Response(JSON.stringify({ error: "Failed to translate the poster. Please try again." }), {
+      return new Response(JSON.stringify({ error: "Image editing is temporarily unavailable. Please try again." }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,
       });

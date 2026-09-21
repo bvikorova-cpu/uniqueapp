@@ -1189,6 +1189,21 @@ async function klpDownload(url: string, filename: string) {
   URL.revokeObjectURL(objectUrl);
 }
 
+/** Converts the selected bundled poster into an inline reference for image editing. */
+async function klpImageToDataUrl(url: string): Promise<string> {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error("Could not load the original poster.");
+  const blob = await response.blob();
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => typeof reader.result === "string"
+      ? resolve(reader.result)
+      : reject(new Error("Could not prepare the original poster."));
+    reader.onerror = () => reject(new Error("Could not prepare the original poster."));
+    reader.readAsDataURL(blob);
+  });
+}
+
 /** Age chapters of the printable encyclopedia, youngest first. */
 const KLP_BOOK_CHAPTERS: { minAge: number; label: string; blurb: string }[] = [
   { minAge: 3, label: "Ages 3-5 · First discoveries", blurb: "Shapes, colours, letters, numbers and gentle everyday habits." },
@@ -1458,12 +1473,14 @@ export default function KidsLearningPosters() {
     setTransBusy(true);
     setTransResult(null);
     try {
+      const sourceImage = await klpImageToDataUrl(transPoster.image);
       const { data, error } = await supabase.functions.invoke("kids-poster-translate", {
         body: {
           title: transPoster.title,
           description: transPoster.description,
           ages: transPoster.ages,
           language: transLang,
+          sourceImage,
         },
       });
       const payload = (data ?? {}) as {
