@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,11 @@ import { BazaarPhotoUploader, type PendingPhoto } from "@/components/bazaar/Baza
 import { SEO } from "@/components/SEO";
 import { ArrowLeft, Loader2, PlayCircle, Sparkles } from "lucide-react";
 import { useMarketplaceAdGate } from "@/hooks/useMarketplaceAdGate";
+import {
+  MarketplaceLaunchPromoDialog,
+  MKT_LAUNCH_PROMO_CREDITS,
+  MKT_LAUNCH_PROMO_DAYS,
+} from "@/components/marketplace/MarketplaceLaunchPromoDialog";
 
 const CATEGORIES = [
   { value: "electronics", label: "Electronics" },
