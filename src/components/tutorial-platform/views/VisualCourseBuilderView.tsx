@@ -512,7 +512,19 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
     }
   };
 
-  const saveCourse = async (publish: boolean) => {
+  const openCoursePromoStep = () => {
+    if (!title.trim() || !description.trim()) {
+      toast({ title: "Fill in the name and description", variant: "destructive" });
+      return;
+    }
+    if (modules.length === 0) {
+      toast({ title: "Add at least one module", variant: "destructive" });
+      return;
+    }
+    setCoursePromoOpen(true);
+  };
+
+  const saveCourse = async (publish: boolean, withPromo = false) => {
     if (!title.trim() || !description.trim()) {
       toast({ title: "Fill in the name and description", variant: "destructive" });
       return;
