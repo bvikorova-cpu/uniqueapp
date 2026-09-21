@@ -1262,6 +1262,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyAbcEs.url,
     fr: klpReadyAbcFr.url,
   },
+  "times-tables": {
+    sk: klpReadyTimesSk.url,
+    hu: klpReadyTimesHu.url,
+    de: klpReadyTimesDe.url,
+    es: klpReadyTimesEs.url,
+    fr: klpReadyTimesFr.url,
+  },
+  "parts-of-speech": {
+    sk: klpReadyPosSk.url,
+    hu: klpReadyPosHu.url,
+    de: klpReadyPosDe.url,
+    es: klpReadyPosEs.url,
+    fr: klpReadyPosFr.url,
+  },
 };
 
 type KlpTranslationMap = Record<string, { title: string; description: string }>;
