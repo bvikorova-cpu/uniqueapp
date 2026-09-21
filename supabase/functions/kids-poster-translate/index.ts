@@ -165,12 +165,7 @@ serve(async (req) => {
     let candidate = aiData?.data?.[0]?.b64_json;
     if (candidate && await stillEnglish(candidate)) {
       const retry = await tryVertexImage(buildPrompt(true), undefined, 1, [sourceImage]);
-      const retryImage = retry?.data?.[0]?.b64_json;
-      if (retryImage && !(await stillEnglish(retryImage))) {
-        aiData = retry;
-      } else if (retryImage) {
-        aiData = retry;
-      }
+      if (retry?.data?.[0]?.b64_json) aiData = retry;
     }
 
 
