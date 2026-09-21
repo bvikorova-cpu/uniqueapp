@@ -137,7 +137,7 @@ import posterCareerDreams from "@/assets/kids-posters/career-dreams.jpg";
 
 export const KLP_AI_POSTER_CREDITS = 3;
 export const KLP_BOOK_CREDITS = 25;
-/** Credits for redrawing one poster in another language. */
+/** Credits for adding a bilingual translation directly into one poster. */
 export const KLP_POSTER_TRANSLATE_CREDITS = 2;
 /** Credits for the whole encyclopedia translated into another language. */
 export const KLP_BOOK_TRANSLATE_CREDITS = 25;
@@ -1205,29 +1205,17 @@ async function klpImageToDataUrl(url: string): Promise<string> {
 }
 
 /**
- * Renders the translation layer: the original poster stays pixel-identical and a
- * clean panel underneath lists every word of the poster with its exact
- * translation. Text is drawn with real fonts, so nothing is ever garbled.
+ * Keeps the source poster pixel-identical and places each selected-language
+ * translation directly below its matching English text inside the image.
  */
 async function klpRenderTranslationLayer(
   imageUrl: string,
-  language: string,
-  title: string,
-  description: string,
-  items: { en: string; tr: string }[],
+  items: { en: string; tr: string; x: number; y: number; w: number; h: number }[],
 ): Promise<string> {
   const img = await klpLoadImage(imageUrl);
   const width = 1200;
   const scale = width / img.naturalWidth;
-  const posterHeight = Math.round(img.naturalHeight * scale);
-
-  const pad = 48;
-  const rowH = 52;
-  const cols = items.length > 14 ? 2 : 1;
-  const rows = Math.ceil(items.length / cols);
-  const headerH = 150;
-  const panelH = headerH + rows * rowH + pad;
-  const height = posterHeight + panelH;
+  const height = Math.round(img.naturalHeight * scale);
 
   const canvas = document.createElement("canvas");
   canvas.width = width;
@@ -1237,53 +1225,44 @@ async function klpRenderTranslationLayer(
 
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, width, height);
-  ctx.drawImage(img, 0, 0, width, posterHeight);
+  ctx.drawImage(img, 0, 0, width, height);
 
-  // Panel background
-  const grad = ctx.createLinearGradient(0, posterHeight, width, height);
-  grad.addColorStop(0, "#f6f1ff");
-  grad.addColorStop(1, "#fff1f8");
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, posterHeight, width, panelH);
+  const roundedRect = (x: number, y: number, w: number, h: number, radius: number) => {
+    const r = Math.min(radius, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, r);
+  };
 
-  let y = posterHeight + 56;
-  ctx.fillStyle = "#4c1d95";
-  ctx.font = "bold 34px system-ui, 'Segoe UI', Arial, sans-serif";
-  ctx.fillText(`${title} — ${language}`, pad, y);
+  items.forEach((item) => {
+    const sourceX = (item.x / 1000) * width;
+    const sourceY = (item.y / 1000) * height;
+    const sourceW = Math.max(70, (item.w / 1000) * width);
+    const sourceH = Math.max(18, (item.h / 1000) * height);
+    const fontSize = Math.max(14, Math.min(28, sourceH * 0.55));
+    ctx.font = `700 ${fontSize}px system-ui, 'Segoe UI', Arial, sans-serif`;
 
-  y += 34;
-  ctx.fillStyle = "#6b21a8";
-  ctx.font = "20px system-ui, 'Segoe UI', Arial, sans-serif";
-  const desc = description.length > 120 ? `${description.slice(0, 117)}…` : description;
-  ctx.fillText(desc, pad, y);
+    const padX = 8;
+    const padY = 5;
+    const maxTextW = Math.min(width - 16, Math.max(sourceW, ctx.measureText(item.tr).width));
+    const pillW = Math.min(width - 16, maxTextW + padX * 2);
+    const pillH = fontSize + padY * 2;
+    const x = Math.max(8, Math.min(width - pillW - 8, sourceX + sourceW / 2 - pillW / 2));
+    let y = sourceY + sourceH + 3;
+    if (y + pillH > height - 8) y = Math.max(8, sourceY - pillH - 3);
 
-  y += 30;
-  ctx.strokeStyle = "#d8b4fe";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(pad, y);
-  ctx.lineTo(width - pad, y);
-  ctx.stroke();
-
-  const colW = (width - pad * 2) / cols;
-  items.forEach((item, index) => {
-    const col = Math.floor(index / rows);
-    const row = index % rows;
-    const x = pad + col * colW;
-    const lineY = posterHeight + headerH + row * rowH + 24;
-    ctx.fillStyle = "#7c3aed";
-    ctx.font = "bold 22px system-ui, 'Segoe UI', Arial, sans-serif";
-    const tr = item.tr.length > 34 ? `${item.tr.slice(0, 31)}…` : item.tr;
-    ctx.fillText(tr, x, lineY);
-    ctx.fillStyle = "#6b7280";
-    ctx.font = "17px system-ui, 'Segoe UI', Arial, sans-serif";
-    const en = item.en.length > 40 ? `${item.en.slice(0, 37)}…` : item.en;
-    ctx.fillText(en, x, lineY + 22);
+    roundedRect(x, y, pillW, pillH, 7);
+    ctx.fillStyle = "rgba(255,255,255,0.92)";
+    ctx.fill();
+    ctx.strokeStyle = "rgba(76,29,149,0.5)";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = "#4c1d95";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(item.tr, x + pillW / 2, y + pillH / 2, pillW - padX * 2);
   });
-
-  ctx.fillStyle = "#9333ea";
-  ctx.font = "16px system-ui, 'Segoe UI', Arial, sans-serif";
-  ctx.fillText("Unique · Kids Channel", pad, height - 16);
+  ctx.textAlign = "start";
+  ctx.textBaseline = "alphabetic";
 
   return canvas.toDataURL("image/png");
 }
@@ -1377,8 +1356,14 @@ async function klpBuildEncyclopedia(
   if (translated) await klpRegisterUnicodeFont(pdf as never);
   const family = translated ? "klpUnicode" : "helvetica";
   const font = (style: "normal" | "bold") => pdf.setFont(family, style);
-  const tTitle = (id: string, fallback: string) => tr[id]?.title?.trim() || fallback;
-  const tDesc = (id: string, fallback: string) => tr[id]?.description?.trim() || fallback;
+  const translatedTitle = (id: string, fallback: string) => tr[id]?.title?.trim() || fallback;
+  const translatedDesc = (id: string, fallback: string) => tr[id]?.description?.trim() || fallback;
+  const tTitle = (id: string, fallback: string) => translated
+    ? `${fallback}\n${translatedTitle(id, fallback)}`
+    : fallback;
+  const tDesc = (id: string, fallback: string) => translated
+    ? `${fallback}\n${translatedDesc(id, fallback)}`
+    : fallback;
 
   // Cover — full-page illustration with title on the calm top area
   const coverImg = await klpLoadImage(encyclopediaCover);
@@ -1573,7 +1558,7 @@ export default function KidsLearningPosters() {
         error?: string;
         title?: string;
         description?: string;
-        items?: Array<{ en: string; tr: string }>;
+        items?: Array<{ en: string; tr: string; x: number; y: number; w: number; h: number }>;
         creditsRemaining?: number;
         success?: boolean;
       };
@@ -1594,9 +1579,6 @@ export default function KidsLearningPosters() {
       if (typeof payload.creditsRemaining === "number") setBalance(payload.creditsRemaining);
       const composed = await klpRenderTranslationLayer(
         transPoster.image,
-        transLang,
-        payload.title ?? transPoster.title,
-        payload.description ?? transPoster.description,
         payload.items,
       );
       setTransResult(composed);
@@ -1660,7 +1642,7 @@ export default function KidsLearningPosters() {
       });
       toast({
         title: "Encyclopedia ready",
-        description: `${KLP_POSTERS.length} posters with ${bookLang} titles, sorted by age.`,
+        description: `${KLP_POSTERS.length} bilingual English + ${bookLang} posters, sorted by age.`,
       });
     } catch (e) {
       toast({
@@ -2119,7 +2101,7 @@ export default function KidsLearningPosters() {
               <Languages className="h-5 w-5 text-primary" /> Translate this poster
             </DialogTitle>
             <DialogDescription>
-              {transPoster?.title} — the artwork stays exactly the same and every word is listed with its exact translation, for{" "}
+              {transPoster?.title} — the artwork and English text stay exactly the same. Each translation is placed directly below its English text, for{" "}
               {KLP_POSTER_TRANSLATE_CREDITS} credits. Your balance:{" "}
               {balance === null ? "—" : `${balance} credits`}.
             </DialogDescription>
@@ -2144,7 +2126,7 @@ export default function KidsLearningPosters() {
               <div className="klp-trans-result space-y-3 rounded-xl border p-3">
                 <img
                   src={transResult}
-                  alt={`${transPoster?.title} poster in ${transLang}`}
+                  alt={`${transPoster?.title} bilingual English and ${transLang} poster`}
                   className="h-auto w-full rounded-lg"
                   loading="lazy"
                 />
@@ -2155,7 +2137,7 @@ export default function KidsLearningPosters() {
                     klpDownload(transResult, `unique-poster-${transPoster?.id ?? "translated"}-${transLang.toLowerCase()}.png`)
                   }
                 >
-                  <Download className="h-4 w-4" /> Download translated poster
+                  <Download className="h-4 w-4" /> Download bilingual poster
                 </Button>
               </div>
             )}
