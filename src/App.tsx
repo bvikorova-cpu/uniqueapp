@@ -459,6 +459,7 @@ const MyProgress = lazy(() => import("@/pages/MyProgress"));
 const YearWrappedPublic = lazy(() => import("@/pages/YearWrappedPublic"));
 const AdminCreditsLedger = lazy(() => import("@/pages/admin/AdminCreditsLedger"));
 const AdminLaunchBoosts = lazy(() => import("@/pages/admin/AdminLaunchBoosts"));
+const KidsLearningPosters = lazy(() => import("@/pages/KidsLearningPosters"));
 const MyCreditsLedger = lazy(() => import("@/pages/MyCreditsLedger"));
 const LuckyWheel = lazy(() => import("@/pages/LuckyWheel"));
 const SpinSolve = lazy(() => import("@/pages/SpinSolve"));
@@ -1005,6 +1006,7 @@ const App = () => {
                         <Route path="/photo-styler" element={<PhotoStyler />} />
                         <Route path="/kids-channel" element={<KidsChannel />} />
                         <Route path="/kids-channel/share/:token" element={<KidsShareView />} />
+                        <Route path="/kids-channel/learning-posters" element={<KidsLearningPosters />} />
                         <Route path="/choose-adventure" element={<ChooseAdventure />} />
                         <Route path="/kids-voice-chat" element={<KidsGoldPassGate moduleName="Character Chat" pricingPath="/kids-pricing" redirectPath="/kids-voice-chat"><KidsVoiceChat /></KidsGoldPassGate>} />
                         <Route path="/kids-voice-chat-pricing" element={<Navigate to="/ai-credits" replace />} />
