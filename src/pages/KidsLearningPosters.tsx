@@ -1452,6 +1452,7 @@ export default function KidsLearningPosters() {
   const [bookLangOpen, setBookLangOpen] = useState(false);
   const [bookLang, setBookLang] = useState<string>(KLP_LANGUAGES[0].name);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const { isAdmin: klpTranslateAdmin } = useIsAdmin();
 
   useEffect(() => {
     let cancelled = false;
@@ -1775,16 +1776,18 @@ export default function KidsLearningPosters() {
                   : "Preparing book…"
                 : `Download full encyclopedia PDF · ${KLP_BOOK_CREDITS} credits`}
             </Button>
-            <Button
-              size="lg"
-              variant="secondary"
-              className="klp-book-cta gap-2"
-              onClick={() => setBookLangOpen(true)}
-              disabled={bookBusy}
-            >
-              <Languages className="h-4 w-4" />
-              {`Bilingual encyclopedia · ${KLP_BOOK_TRANSLATE_CREDITS} credits`}
-            </Button>
+            {klpTranslateAdmin && (
+              <Button
+                size="lg"
+                variant="secondary"
+                className="klp-book-cta gap-2"
+                onClick={() => setBookLangOpen(true)}
+                disabled={bookBusy}
+              >
+                <Languages className="h-4 w-4" />
+                {`Bilingual encyclopedia · ${KLP_BOOK_TRANSLATE_CREDITS} credits`}
+              </Button>
+            )}
             <Button size="lg" variant="outline" asChild>
               <a href="#klp-library">Browse the library</a>
             </Button>
@@ -1810,11 +1813,14 @@ export default function KidsLearningPosters() {
                 Want your own topic? Press “Create my own”, describe it, and AI draws a fresh poster for{" "}
                 {KLP_AI_POSTER_CREDITS} credits (only charged when the poster is created).
               </li>
-              <li>
-                Need another language? Press “Translate” on any poster and Gemini creates its translated version for
-                {KLP_POSTER_TRANSLATE_CREDITS} credits, or get the bilingual
-                encyclopedia PDF for {KLP_BOOK_TRANSLATE_CREDITS} credits.
-              </li>
+              {klpTranslateAdmin && (
+                <li>
+                  Need another language? Press “Translate” on any poster and Gemini creates its translated version for
+                  {KLP_POSTER_TRANSLATE_CREDITS} credits, or get the bilingual
+                  encyclopedia PDF for {KLP_BOOK_TRANSLATE_CREDITS} credits.
+                </li>
+              )}
+
 
             </ol>
           </CardContent>
@@ -1919,16 +1925,18 @@ export default function KidsLearningPosters() {
                 <Button className="w-full gap-2" onClick={() => handleDownload(poster)}>
                   <Download className="h-4 w-4" /> Download
                 </Button>
-                <Button
-                  variant="outline"
-                  className="klp-translate-btn w-full gap-2"
-                  onClick={() => {
-                    setTransPoster(poster);
-                    setTransResult(null);
-                  }}
-                >
-                  <Languages className="h-4 w-4" /> Translate · {KLP_POSTER_TRANSLATE_CREDITS} credits
-                </Button>
+                {klpTranslateAdmin && (
+                  <Button
+                    variant="outline"
+                    className="klp-translate-btn w-full gap-2"
+                    onClick={() => {
+                      setTransPoster(poster);
+                      setTransResult(null);
+                    }}
+                  >
+                    <Languages className="h-4 w-4" /> Translate · {KLP_POSTER_TRANSLATE_CREDITS} credits
+                  </Button>
+                )}
               </CardContent>
             </Card>
           ))}
