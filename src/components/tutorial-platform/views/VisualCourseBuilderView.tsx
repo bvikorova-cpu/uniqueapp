@@ -1152,7 +1152,7 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
                 {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
                 Save draft
               </Button>
-              <Button className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600" onClick={() => saveCourse(true)} disabled={saving}>
+              <Button className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600" onClick={openCoursePromoStep} disabled={saving}>
                 {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
                 Publish course
                 <span className="ml-2 inline-flex items-center rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold">15 CR</span>
