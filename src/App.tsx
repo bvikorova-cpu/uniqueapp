@@ -458,6 +458,7 @@ const AdminRewardsAudit = lazy(() => import("@/pages/admin/AdminRewardsAudit"));
 const MyProgress = lazy(() => import("@/pages/MyProgress"));
 const YearWrappedPublic = lazy(() => import("@/pages/YearWrappedPublic"));
 const AdminCreditsLedger = lazy(() => import("@/pages/admin/AdminCreditsLedger"));
+const AdminLaunchBoosts = lazy(() => import("@/pages/admin/AdminLaunchBoosts"));
 const MyCreditsLedger = lazy(() => import("@/pages/MyCreditsLedger"));
 const LuckyWheel = lazy(() => import("@/pages/LuckyWheel"));
 const SpinSolve = lazy(() => import("@/pages/SpinSolve"));
