@@ -712,6 +712,34 @@ export function VisualCourseBuilderView({ onBack, courseId }: Props) {
         }
 
         if (data?.courseId) await persistQuizzes(data.courseId, modules);
+        setCoursePromoOpen(false);
+
+        if (withPromo && data?.courseId) {
+          const { data: promoData, error: promoError } = await (supabase as any).rpc("marketplace_launch_promo", {
+            _kind: "course",
+            _entity_id: data.courseId,
+          });
+          if (promoError) {
+            if (String(promoError.message || "").includes("INSUFFICIENT_CREDITS")) {
+              toast({
+                title: "Published without the boost",
+                description: `You need ${MKT_LAUNCH_PROMO_CREDITS} more credits for the launch boost. You can promote the course any time.`,
+              });
+              navigate("/ai-credits");
+              return;
+            }
+          } else {
+            const row = Array.isArray(promoData) ? promoData[0] : promoData;
+            if (row?.credits_remaining != null) setCoursePromoBalance(row.credits_remaining);
+            window.dispatchEvent(new Event("ai-credits-updated"));
+            toast({
+              title: "Published with launch boost",
+              description: `TOP placement for ${MKT_LAUNCH_PROMO_DAYS} days · ${MKT_LAUNCH_PROMO_CREDITS} credits used.`,
+            });
+            navigate(`/tutorial-course/${data.courseId}`);
+            return;
+          }
+        }
 
         toast({ title: "Course published 🎉", description: `15 credits used. Remaining: ${data?.credits_remaining ?? 0}` });
         navigate(`/tutorial-course/${data.courseId}`);
