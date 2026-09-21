@@ -134,6 +134,7 @@ import posterGratitude from "@/assets/kids-posters/gratitude.jpg";
 import posterCareerDreams from "@/assets/kids-posters/career-dreams.jpg";
 
 export const KLP_AI_POSTER_CREDITS = 3;
+export const KLP_BOOK_CREDITS = 10;
 
 type KlpCategory = "school" | "science" | "life" | "safety" | "money" | "teen";
 
@@ -1182,6 +1183,118 @@ async function klpDownload(url: string, filename: string) {
   URL.revokeObjectURL(objectUrl);
 }
 
+/** Age chapters of the printable encyclopedia, youngest first. */
+const KLP_BOOK_CHAPTERS: { minAge: number; label: string; blurb: string }[] = [
+  { minAge: 3, label: "Ages 3-5 · First discoveries", blurb: "Shapes, colours, letters, numbers and gentle everyday habits." },
+  { minAge: 6, label: "Ages 6-9 · School basics", blurb: "Reading, writing, maths, nature and staying safe." },
+  { minAge: 10, label: "Ages 10-13 · Going deeper", blurb: "Grammar, geometry, science, the world and money sense." },
+  { minAge: 14, label: "Ages 14-18 · Real life skills", blurb: "Study strategies, emotions, goals, career and independence." },
+];
+
+async function klpLoadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error(`Could not load ${src}`));
+    img.src = src;
+  });
+}
+
+/** Builds the whole poster library as one A4 PDF book, ordered by age. */
+async function klpBuildEncyclopedia(onProgress?: (done: number, total: number) => void) {
+  const { default: JsPDF } = await import("jspdf");
+  const pdf = new JsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
+  const pageW = 210;
+  const pageH = 297;
+
+  // Cover
+  pdf.setFillColor(124, 58, 237);
+  pdf.rect(0, 0, pageW, pageH, "F");
+  pdf.setTextColor(255, 255, 255);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(40);
+  pdf.text("Learning", 20, 90);
+  pdf.text("Encyclopedia", 20, 108);
+  pdf.setFontSize(16);
+  pdf.setFont("helvetica", "normal");
+  pdf.text("The complete printable poster book", 20, 128);
+  pdf.setFontSize(12);
+  pdf.text(`${KLP_POSTERS.length} posters · ages 3 to 18 · sorted by age`, 20, 140);
+  pdf.text("Unique · Kids Channel", 20, pageH - 24);
+
+  const ordered = KLP_BOOK_CHAPTERS.map((chapter) => ({
+    chapter,
+    items: KLP_POSTERS.filter((p) => p.minAge === chapter.minAge),
+  })).filter((group) => group.items.length > 0);
+
+  // Contents
+  pdf.addPage();
+  pdf.setTextColor(30, 30, 40);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(22);
+  pdf.text("Contents", 20, 30);
+  let y = 45;
+  pdf.setFontSize(12);
+  for (const group of ordered) {
+    pdf.setFont("helvetica", "bold");
+    if (y > pageH - 30) {
+      pdf.addPage();
+      y = 30;
+    }
+    pdf.text(`${group.chapter.label} (${group.items.length})`, 20, y);
+    y += 7;
+    pdf.setFont("helvetica", "normal");
+    for (const item of group.items) {
+      if (y > pageH - 20) {
+        pdf.addPage();
+        y = 30;
+      }
+      pdf.text(`• ${item.title}`, 26, y);
+      y += 6;
+    }
+    y += 4;
+  }
+
+  const total = KLP_POSTERS.length;
+  let done = 0;
+
+  for (const group of ordered) {
+    pdf.addPage();
+    pdf.setFillColor(236, 72, 153);
+    pdf.rect(0, 0, pageW, pageH, "F");
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(28);
+    pdf.text(group.chapter.label, 20, 130, { maxWidth: pageW - 40 });
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(13);
+    pdf.text(group.chapter.blurb, 20, 150, { maxWidth: pageW - 40 });
+
+    for (const poster of group.items) {
+      const img = await klpLoadImage(poster.image);
+      pdf.addPage();
+      const maxW = pageW - 20;
+      const maxH = pageH - 34;
+      const ratio = Math.min(maxW / img.naturalWidth, maxH / img.naturalHeight);
+      const w = img.naturalWidth * ratio;
+      const h = img.naturalHeight * ratio;
+      pdf.addImage(img, "JPEG", (pageW - w) / 2, 10, w, h, undefined, "FAST");
+      pdf.setTextColor(60, 60, 70);
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(12);
+      pdf.text(poster.title, 10, pageH - 14, { maxWidth: pageW - 20 });
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(9);
+      pdf.text(poster.ages, 10, pageH - 8);
+      done += 1;
+      onProgress?.(done, total);
+    }
+  }
+
+  pdf.save("unique-kids-learning-encyclopedia.pdf");
+}
+
 /**
  * Kids Channel → Learning Posters.
  * Fully isolated page: printable educational poster library plus an optional
@@ -1203,6 +1316,8 @@ export default function KidsLearningPosters() {
   const [generating, setGenerating] = useState(false);
   const [generated, setGenerated] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [bookBusy, setBookBusy] = useState(false);
+  const [bookProgress, setBookProgress] = useState<{ done: number; total: number } | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
@@ -1244,6 +1359,57 @@ export default function KidsLearningPosters() {
       });
     }
   };
+
+  const handleEncyclopedia = async () => {
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+    if (bookBusy) return;
+    setBookBusy(true);
+    setBookProgress(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("kids-posters-encyclopedia", {
+        body: {},
+      });
+      const payload = (data ?? {}) as { error?: string; creditsRemaining?: number; success?: boolean };
+      if (error || payload.error || !payload.success) {
+        const message = payload.error ?? error?.message ?? "Could not start the download.";
+        if (/insufficient/i.test(message)) {
+          toast({
+            title: "Not enough credits",
+            description: `The encyclopedia costs ${KLP_BOOK_CREDITS} credits. Top up and try again.`,
+            variant: "destructive",
+          });
+          navigate("/ai-credits");
+          return;
+        }
+        toast({ title: "Download failed", description: message, variant: "destructive" });
+        return;
+      }
+      if (typeof payload.creditsRemaining === "number") setBalance(payload.creditsRemaining);
+      toast({
+        title: "Building your book",
+        description: `${KLP_BOOK_CREDITS} credits used. The PDF is being assembled — please keep this page open.`,
+      });
+      await klpBuildEncyclopedia((doneCount, total) => setBookProgress({ done: doneCount, total }));
+      toast({
+        title: "Encyclopedia ready",
+        description: `${KLP_POSTERS.length} posters saved as one PDF book, sorted by age.`,
+      });
+    } catch (e) {
+      toast({
+        title: "Download failed",
+        description: e instanceof Error ? e.message : "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setBookBusy(false);
+      setBookProgress(null);
+    }
+  };
+
+
 
   const handleGenerate = async () => {
     if (!user) {
@@ -1337,6 +1503,20 @@ export default function KidsLearningPosters() {
             <Button size="lg" className="gap-2" onClick={() => setDialogOpen(true)}>
               <Sparkles className="h-4 w-4" /> Create my own · {KLP_AI_POSTER_CREDITS} credits
             </Button>
+            <Button
+              size="lg"
+              variant="secondary"
+              className="klp-book-cta gap-2"
+              onClick={handleEncyclopedia}
+              disabled={bookBusy}
+            >
+              {bookBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+              {bookBusy
+                ? bookProgress
+                  ? `Building book · ${bookProgress.done}/${bookProgress.total}`
+                  : "Preparing book…"
+                : `Download full encyclopedia PDF · ${KLP_BOOK_CREDITS} credits`}
+            </Button>
             <Button size="lg" variant="outline" asChild>
               <a href="#klp-library">Browse the library</a>
             </Button>
@@ -1354,12 +1534,40 @@ export default function KidsLearningPosters() {
               <li>Pick an age group and a category — every poster shows a full preview first.</li>
               <li>Press Download to save the poster as a picture and print it at home or at school.</li>
               <li>
+                Want the whole library as one children's book? Press “Download full encyclopedia PDF” for{" "}
+                {KLP_BOOK_CREDITS} credits — all {KLP_POSTERS.length} posters in one printable A4 PDF with a
+                cover, contents page and chapters ordered by age (3-5, 6-9, 10-13, 14-18).
+              </li>
+              <li>
                 Want your own topic? Press “Create my own”, describe it, and AI draws a fresh poster for{" "}
                 {KLP_AI_POSTER_CREDITS} credits (only charged when the poster is created).
               </li>
             </ol>
           </CardContent>
         </Card>
+
+        <Card className="klp-book mt-6 border-primary/40 bg-primary/5">
+          <CardContent className="flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between">
+            <div>
+              <div className="flex items-center gap-2 font-semibold">
+                <Download className="h-4 w-4 text-primary" /> The complete Learning Encyclopedia (PDF book)
+              </div>
+              <p className="mt-1 text-sm text-muted-foreground">
+                All {KLP_POSTERS.length} posters bound into one printable A4 book, sorted by age with chapter
+                pages for 3-5, 6-9, 10-13 and 14-18 years. One-time price: {KLP_BOOK_CREDITS} credits.
+              </p>
+            </div>
+            <Button className="gap-2 md:shrink-0" onClick={handleEncyclopedia} disabled={bookBusy}>
+              {bookBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+              {bookBusy
+                ? bookProgress
+                  ? `Building · ${bookProgress.done}/${bookProgress.total}`
+                  : "Preparing…"
+                : `Get the book · ${KLP_BOOK_CREDITS} credits`}
+            </Button>
+          </CardContent>
+        </Card>
+
 
         <div id="klp-library" className="klp-filters mt-10 space-y-4">
           <div className="flex flex-wrap gap-2">
