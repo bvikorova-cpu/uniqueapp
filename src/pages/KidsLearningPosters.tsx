@@ -33,6 +33,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 
 import heroVideo from "@/assets/kids-posters/posters-hero.mp4.asset.json";
+import encyclopediaCover from "@/assets/kids-posters/encyclopedia-cover.jpg";
 import posterPartsOfSpeech from "@/assets/kids-posters/parts-of-speech.jpg";
 import posterTimesTables from "@/assets/kids-posters/times-tables.jpg";
 import posterAbcPhonics from "@/assets/kids-posters/abc-phonics.jpg";
@@ -1278,20 +1279,27 @@ async function klpBuildEncyclopedia(
   const tTitle = (id: string, fallback: string) => tr[id]?.title?.trim() || fallback;
   const tDesc = (id: string, fallback: string) => tr[id]?.description?.trim() || fallback;
 
-  // Cover
-  pdf.setFillColor(124, 58, 237);
-  pdf.rect(0, 0, pageW, pageH, "F");
+  // Cover — full-page illustration with title on the calm top area
+  const coverImg = await klpLoadImage(encyclopediaCover);
+  pdf.addImage(coverImg, "JPEG", 0, 0, pageW, pageH, undefined, "FAST");
   pdf.setTextColor(255, 255, 255);
   font("bold");
-  pdf.setFontSize(36);
-  pdf.text(tTitle("book:title", "Learning Encyclopedia"), 20, 96, { maxWidth: pageW - 40 });
-  pdf.setFontSize(16);
+  pdf.setFontSize(34);
+  pdf.text(tTitle("book:title", "Learning Encyclopedia"), pageW / 2, 42, {
+    align: "center",
+    maxWidth: pageW - 40,
+  });
+  pdf.setFontSize(14);
   font("normal");
-  pdf.text(tDesc("book:title", "The complete printable poster book"), 20, 128, { maxWidth: pageW - 40 });
-  pdf.setFontSize(12);
-  pdf.text(`${KLP_POSTERS.length} posters · ages 3 to 18 · sorted by age`, 20, 142);
-  if (opts?.languageLabel) pdf.text(opts.languageLabel, 20, 152);
-  pdf.text("Unique · Kids Channel", 20, pageH - 24);
+  pdf.text(tDesc("book:title", "The complete printable poster book"), pageW / 2, 56, {
+    align: "center",
+    maxWidth: pageW - 40,
+  });
+  pdf.setFontSize(11);
+  pdf.text(`${KLP_POSTERS.length} posters · ages 3 to 18 · sorted by age`, pageW / 2, 66, { align: "center" });
+  if (opts?.languageLabel) pdf.text(opts.languageLabel, pageW / 2, 75, { align: "center" });
+  pdf.setFontSize(11);
+  pdf.text("Unique · Kids Channel", pageW / 2, pageH - 10, { align: "center" });
 
   const ordered = KLP_BOOK_CHAPTERS.map((chapter) => ({
     chapter,
