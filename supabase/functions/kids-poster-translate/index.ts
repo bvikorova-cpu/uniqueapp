@@ -88,11 +88,9 @@ serve(async (req) => {
       );
     }
 
-    // Step 1 — read the poster: describe its exact visual style and collect
-    // every visible English string with its translation.
+    // Step 1 — collect and translate every visible English string. The source
+    // pixels remain the only visual specification for the edit.
     let plan: {
-      style?: string;
-      layout?: string;
       texts?: Array<{ en: string; tr: string }>;
       title?: string;
       description?: string;
@@ -119,11 +117,9 @@ serve(async (req) => {
                 type: "text",
                 text: [
                   "You prepare a faithful re-creation of this children's educational poster in another language.",
-                  "style: one detailed paragraph describing the illustration style, palette, outlines, background, characters and typography so an image model can reproduce the same look.",
-                  "layout: one paragraph describing the exact arrangement of the title, sections, illustrations, grids, rows and footer.",
                   `texts: every visible English string, in reading order, with its ${language} translation (correct spelling, grammar and diacritics). Max 40 items.`,
                   `Also translate the poster title and description into ${language}. Poster: ${title} (children aged ${ages}). ${description}`,
-                  'Answer ONLY with compact JSON: {"style":"...","layout":"...","title":"...","description":"...","texts":[{"en":"...","tr":"..."}]}',
+                  'Answer ONLY with compact JSON: {"title":"...","description":"...","texts":[{"en":"...","tr":"..."}]}',
                 ].join(" "),
               },
             ],
@@ -157,19 +153,23 @@ serve(async (req) => {
       ? plan.description.trim().slice(0, 400)
       : description;
 
-    // Step 2 — generate a brand new poster in the same style, with every word
-    // written in the target language only.
-    const wordList = texts.map((t) => `"${t.tr}"`).join(", ");
+    // Step 2 — edit the supplied poster in place. The source image is the
+    // immutable visual master; only its lettering may change.
+    const replacements = texts.map((t) => `"${t.en}" -> "${t.tr}"`).join("\n");
     const prompt = [
-      `Create a children's educational poster titled "${headTitle}" for children aged ${ages}.`,
-      `ALL text on the poster must be written in ${language} only — no English anywhere.`,
-      `Use exactly these ${language} words and phrases, spelled character for character with correct diacritics: ${wordList}.`,
-      `Visual style to reproduce: ${String(plan.style ?? "").slice(0, 1400)}`,
-      `Layout to reproduce: ${String(plan.layout ?? "").slice(0, 1400)}`,
-      "Same friendly printable look, clean flat vector illustration, crisp readable lettering, no watermark, no extra invented words, no misspellings.",
+      "EDIT THE PROVIDED POSTER IMAGE IN PLACE. It is the immutable visual master, not merely a style reference.",
+      `Replace only its English lettering with the exact ${language} translations listed below.`,
+      "Pixel-preservation rule: do not redraw, reinterpret, restyle, move, resize, crop, recolor, simplify, add, or remove any illustration, character, icon, shape, border, background, texture, decoration, or empty space.",
+      "Preserve the exact canvas, composition, geometry, hierarchy, palette, line weight, typography style, font weight, letter sizing, alignment, spacing, and every object's position.",
+      "Each replacement must occupy the same text area as its English source. Fit longer translations by reducing only that replacement's font size; never move surrounding artwork.",
+      `The finished poster must contain ${language} only, with correct spelling and diacritics. Do not invent, omit, duplicate, or paraphrase text.`,
+      "Exact replacement map:",
+      replacements,
+      `Translated poster title: "${headTitle}". Audience: children aged ${ages}.`,
+      "Return one finished poster image with no watermark.",
     ].join("\n");
 
-    const generated = await tryVertexImage(prompt, "1024x1536", 1, sourceImage)
+    const generated = await tryVertexImage(prompt, "1024x1536", 1, sourceImage, { temperature: 0.1 })
       .catch(() => null);
     let b64: string | null = generated?.data?.[0]?.b64_json ?? null;
     if (!b64) b64 = await tryGatewayImage(prompt, "1024x1536", sourceImage);

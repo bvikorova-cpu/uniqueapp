@@ -190,6 +190,7 @@ export async function tryVertexImage(
   size?: unknown,
   _n?: unknown,
   refImages?: unknown,
+  options?: { temperature?: number },
 ): Promise<any | null> {
   const sa = getServiceAccount();
   if (!sa) return null;
@@ -237,7 +238,10 @@ export async function tryVertexImage(
               role: "user",
               parts: [...imageParts, { text: imagePromptWithAspect(prompt, size) }],
             }],
-            generationConfig: { responseModalities: ["IMAGE", "TEXT"], temperature: 0.9 },
+            generationConfig: {
+              responseModalities: ["IMAGE", "TEXT"],
+              temperature: typeof options?.temperature === "number" ? options.temperature : 0.9,
+            },
           }),
         });
         if (!res.ok) {
