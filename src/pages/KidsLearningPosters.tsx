@@ -1621,7 +1621,7 @@ export default function KidsLearningPosters() {
         if (/insufficient/i.test(message)) {
           toast({
             title: "Not enough credits",
-            description: `The translated encyclopedia costs ${KLP_BOOK_TRANSLATE_CREDITS} credits. Top up and try again.`,
+            description: `The bilingual encyclopedia costs ${KLP_BOOK_TRANSLATE_CREDITS} credits. Top up and try again.`,
             variant: "destructive",
           });
           navigate("/ai-credits");
@@ -1821,7 +1821,7 @@ export default function KidsLearningPosters() {
               disabled={bookBusy}
             >
               <Languages className="h-4 w-4" />
-              {`Translated encyclopedia · ${KLP_BOOK_TRANSLATE_CREDITS} credits`}
+              {`Bilingual encyclopedia · ${KLP_BOOK_TRANSLATE_CREDITS} credits`}
             </Button>
             <Button size="lg" variant="outline" asChild>
               <a href="#klp-library">Browse the library</a>
