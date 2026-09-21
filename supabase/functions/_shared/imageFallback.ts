@@ -77,6 +77,7 @@ export async function tryGatewayImage(
         model: "google/gemini-2.5-flash-image",
         messages: [{ role: "user", content }],
         modalities: ["image", "text"],
+        temperature: 0.1,
       }),
     });
     if (!res.ok) {
