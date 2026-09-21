@@ -59,8 +59,12 @@ serve(async (req) => {
     const posterId = typeof body.posterId === "string" ? body.posterId.replace(/[^a-z0-9-]/gi, "").slice(0, 80) : "";
     const langId = typeof body.langId === "string" ? body.langId.replace(/[^a-z]/gi, "").slice(0, 8) : "";
 
-    const validSourceImage = /^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(sourceImage)
-      && sourceImage.length <= 8_000_000;
+    const readyImage = typeof body.readyImage === "string" ? body.readyImage : "";
+    const isDataImage = (value: string) =>
+      /^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(value) && value.length <= 8_000_000;
+
+    const validSourceImage = isDataImage(sourceImage);
+    const validReadyImage = isDataImage(readyImage);
 
     // Pre-rendered translation uploaded by the team: <bucket>/<posterId>/<langId>.<ext>
     let presetPath: string | null = null;
