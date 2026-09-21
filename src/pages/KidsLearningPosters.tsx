@@ -1502,7 +1502,10 @@ export default function KidsLearningPosters() {
     setTransBusy(true);
     setTransResult(null);
     try {
-      const sourceImage = await klpImageToDataUrl(transPoster.image);
+      const langId = KLP_LANGUAGES.find((l) => l.name === transLang)?.id ?? "";
+      const readyUrl = KLP_READY_TRANSLATIONS[transPoster.id]?.[langId];
+      const readyImage = readyUrl ? await klpImageToDataUrl(readyUrl) : "";
+      const sourceImage = readyImage ? "" : await klpImageToDataUrl(transPoster.image);
       const { data, error } = await supabase.functions.invoke("kids-poster-translate", {
         body: {
           title: transPoster.title,
@@ -1510,8 +1513,9 @@ export default function KidsLearningPosters() {
           ages: transPoster.ages,
           language: transLang,
           posterId: transPoster.id,
-          langId: KLP_LANGUAGES.find((l) => l.name === transLang)?.id ?? "",
+          langId,
           sourceImage,
+          readyImage,
         },
       });
 
