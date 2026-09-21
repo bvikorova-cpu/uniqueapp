@@ -3,8 +3,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
-import { tryVertexChat, tryVertexImage } from "../_shared/vertexDirect.ts";
-import { tryGatewayImage } from "../_shared/imageFallback.ts";
+import { tryVertexChat } from "../_shared/vertexDirect.ts";
 
 
 const corsHeaders = {
@@ -91,7 +90,18 @@ serve(async (req) => {
     // Step 1 — collect and translate every visible English string. The source
     // pixels remain the only visual specification for the edit.
     let plan: {
-      texts?: Array<{ en: string; tr: string }>;
+      regions?: Array<{
+        en: string;
+        tr: string;
+        x: number;
+        y: number;
+        w: number;
+        h: number;
+        background: string;
+        color: string;
+        align?: "left" | "center" | "right";
+        weight?: "normal" | "bold";
+      }>;
       title?: string;
       description?: string;
     } | null = null;
@@ -116,10 +126,12 @@ serve(async (req) => {
               {
                 type: "text",
                 text: [
-                  "You prepare a faithful re-creation of this children's educational poster in another language.",
-                  `texts: every visible English string, in reading order, with its ${language} translation (correct spelling, grammar and diacritics). Max 40 items.`,
+                  "Act as an OCR and translation engine for a Canva-style text replacement. Do not redesign the image.",
+                  `Find every visible English text region and translate it to ${language} with correct spelling, grammar and diacritics. Max 40 regions.`,
+                  "For each region return its tight rectangle on a 1000x1000 normalized image grid, its dominant background color and text color as #RRGGBB, alignment, and weight.",
+                  "Coordinates must cover the complete original lettering but as little surrounding artwork as possible. Split visually separate labels into separate regions.",
                   `Also translate the poster title and description into ${language}. Poster: ${title} (children aged ${ages}). ${description}`,
-                  'Answer ONLY with compact JSON: {"title":"...","description":"...","texts":[{"en":"...","tr":"..."}]}',
+                  'Answer ONLY with compact JSON: {"title":"...","description":"...","regions":[{"en":"...","tr":"...","x":0,"y":0,"w":100,"h":40,"background":"#FFFFFF","color":"#111111","align":"center","weight":"bold"}]}',
                 ].join(" "),
               },
             ],
@@ -128,7 +140,7 @@ serve(async (req) => {
           response_format: { type: "json_object" },
         });
         const parsed = klpParseJson(String(look?.choices?.[0]?.message?.content ?? ""));
-        if (parsed && Array.isArray(parsed.texts) && parsed.texts.length) plan = parsed;
+        if (parsed && Array.isArray(parsed.regions) && parsed.regions.length) plan = parsed;
       } catch (e) {
         console.warn("poster reading step failed:", e instanceof Error ? e.message : String(e));
       }
@@ -141,10 +153,31 @@ serve(async (req) => {
       });
     }
 
-    const texts = (plan.texts ?? [])
-      .filter((t: any) => typeof t?.en === "string" && typeof t?.tr === "string" && t.tr.trim())
+    const regions = (plan.regions ?? [])
+      .filter((region: any) =>
+        typeof region?.en === "string" && typeof region?.tr === "string" && region.tr.trim()
+        && [region.x, region.y, region.w, region.h].every((value) => Number.isFinite(Number(value)))
+      )
       .slice(0, 40)
-      .map((t: any) => ({ en: String(t.en).trim().slice(0, 120), tr: String(t.tr).trim().slice(0, 160) }));
+      .map((region: any) => ({
+        en: String(region.en).trim().slice(0, 120),
+        tr: String(region.tr).trim().slice(0, 160),
+        x: Math.max(0, Math.min(1000, Number(region.x))),
+        y: Math.max(0, Math.min(1000, Number(region.y))),
+        w: Math.max(8, Math.min(1000, Number(region.w))),
+        h: Math.max(8, Math.min(1000, Number(region.h))),
+        background: /^#[0-9a-f]{6}$/i.test(String(region.background)) ? String(region.background) : "#FFFFFF",
+        color: /^#[0-9a-f]{6}$/i.test(String(region.color)) ? String(region.color) : "#111111",
+        align: ["left", "center", "right"].includes(region.align) ? region.align : "center",
+        weight: region.weight === "normal" ? "normal" : "bold",
+      }));
+
+    if (!regions.length) {
+      return new Response(JSON.stringify({ error: "No editable text was found on this poster." }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 422,
+      });
+    }
 
     const headTitle = typeof plan.title === "string" && plan.title.trim()
       ? plan.title.trim().slice(0, 160)
@@ -152,34 +185,6 @@ serve(async (req) => {
     const headDescription = typeof plan.description === "string" && plan.description.trim()
       ? plan.description.trim().slice(0, 400)
       : description;
-
-    // Step 2 — edit the supplied poster in place. The source image is the
-    // immutable visual master; only its lettering may change.
-    const replacements = texts.map((t) => `"${t.en}" -> "${t.tr}"`).join("\n");
-    const prompt = [
-      "EDIT THE PROVIDED POSTER IMAGE IN PLACE. It is the immutable visual master, not merely a style reference.",
-      `Replace only its English lettering with the exact ${language} translations listed below.`,
-      "Pixel-preservation rule: do not redraw, reinterpret, restyle, move, resize, crop, recolor, simplify, add, or remove any illustration, character, icon, shape, border, background, texture, decoration, or empty space.",
-      "Preserve the exact canvas, composition, geometry, hierarchy, palette, line weight, typography style, font weight, letter sizing, alignment, spacing, and every object's position.",
-      "Each replacement must occupy the same text area as its English source. Fit longer translations by reducing only that replacement's font size; never move surrounding artwork.",
-      `The finished poster must contain ${language} only, with correct spelling and diacritics. Do not invent, omit, duplicate, or paraphrase text.`,
-      "Exact replacement map:",
-      replacements,
-      `Translated poster title: "${headTitle}". Audience: children aged ${ages}.`,
-      "Return one finished poster image with no watermark.",
-    ].join("\n");
-
-    const generated = await tryVertexImage(prompt, "1024x1536", 1, sourceImage, { temperature: 0.1 })
-      .catch(() => null);
-    let b64: string | null = generated?.data?.[0]?.b64_json ?? null;
-    if (!b64) b64 = await tryGatewayImage(prompt, "1024x1536", sourceImage);
-
-    if (!b64) {
-      return new Response(JSON.stringify({ error: "Translation is temporarily unavailable. Please try again." }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
-      });
-    }
 
     const { error: deductError } = await supabase.rpc("deduct_ai_credits", {
       p_user_id: user.id,
@@ -199,7 +204,7 @@ serve(async (req) => {
       user_id: user.id,
       usage_type: "kids_poster_translate",
       credits_used: COST,
-      description: `Poster re-created in ${language}: ${title}`,
+      description: `Poster text translated to ${language}: ${title}`,
     });
 
     return new Response(
@@ -208,7 +213,7 @@ serve(async (req) => {
         language,
         title: headTitle,
         description: headDescription,
-        image: `data:image/png;base64,${b64}`,
+        regions,
         creditsRemaining: balance - COST,
         cost: COST,
       }),
