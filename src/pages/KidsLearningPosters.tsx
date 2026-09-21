@@ -1485,11 +1485,13 @@ export default function KidsLearningPosters() {
       });
       const payload = (data ?? {}) as {
         error?: string;
-        imageUrl?: string;
+        title?: string;
+        description?: string;
+        items?: Array<{ en: string; tr: string }>;
         creditsRemaining?: number;
         success?: boolean;
       };
-      if (error || payload.error || !payload.imageUrl) {
+      if (error || payload.error || !payload.items?.length) {
         const message = payload.error ?? error?.message ?? "Could not translate this poster.";
         if (/insufficient/i.test(message)) {
           toast({
@@ -1504,11 +1506,19 @@ export default function KidsLearningPosters() {
         return;
       }
       if (typeof payload.creditsRemaining === "number") setBalance(payload.creditsRemaining);
-      setTransResult(payload.imageUrl);
+      const composed = await klpRenderTranslationLayer(
+        transPoster.image,
+        transLang,
+        payload.title ?? transPoster.title,
+        payload.description ?? transPoster.description,
+        payload.items,
+      );
+      setTransResult(composed);
       toast({
         title: `Poster ready in ${transLang}`,
         description: `${KLP_POSTER_TRANSLATE_CREDITS} credits used.`,
       });
+
     } catch (e) {
       toast({
         title: "Translation failed",
