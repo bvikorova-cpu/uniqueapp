@@ -72617,6 +72617,13 @@ export type Database = {
       }
       lucky_wheel_spin_secure: { Args: never; Returns: Json }
       mark_iq_notifications_read: { Args: { _ids?: string[] }; Returns: number }
+      marketplace_launch_promo: {
+        Args: { _entity_id: string; _kind: string }
+        Returns: {
+          credits_remaining: number
+          promoted_until: string
+        }[]
+      }
       moderate_comment: {
         Args: { _comment_id: string; _hide: boolean; _reason?: string }
         Returns: undefined
