@@ -1310,6 +1310,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyWaterEs.url,
     fr: klpReadyWaterFr.url,
   },
+  feelings: {
+    sk: klpReadyFeelSk.url,
+    hu: klpReadyFeelHu.url,
+    de: klpReadyFeelDe.url,
+    es: klpReadyFeelEs.url,
+    fr: klpReadyFeelFr.url,
+  },
+  "daily-routine": {
+    sk: klpReadyRoutSk.url,
+    hu: klpReadyRoutHu.url,
+    de: klpReadyRoutDe.url,
+    es: klpReadyRoutEs.url,
+    fr: klpReadyRoutFr.url,
+  },
 };
 
 type KlpTranslationMap = Record<string, { title: string; description: string }>;
