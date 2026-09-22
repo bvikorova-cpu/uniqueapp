@@ -83,6 +83,16 @@ import klpReadyPosHu from "@/assets/kids-poster-translations/parts-of-speech-hu.
 import klpReadyPosDe from "@/assets/kids-poster-translations/parts-of-speech-de.jpg.asset.json";
 import klpReadyPosEs from "@/assets/kids-poster-translations/parts-of-speech-es.jpg.asset.json";
 import klpReadyPosFr from "@/assets/kids-poster-translations/parts-of-speech-fr.jpg.asset.json";
+import klpReadySolarSk from "@/assets/kids-poster-translations/solar-system-sk.jpg.asset.json";
+import klpReadySolarHu from "@/assets/kids-poster-translations/solar-system-hu.jpg.asset.json";
+import klpReadySolarDe from "@/assets/kids-poster-translations/solar-system-de.jpg.asset.json";
+import klpReadySolarEs from "@/assets/kids-poster-translations/solar-system-es.jpg.asset.json";
+import klpReadySolarFr from "@/assets/kids-poster-translations/solar-system-fr.jpg.asset.json";
+import klpReadyWaterSk from "@/assets/kids-poster-translations/water-cycle-sk.jpg.asset.json";
+import klpReadyWaterHu from "@/assets/kids-poster-translations/water-cycle-hu.jpg.asset.json";
+import klpReadyWaterDe from "@/assets/kids-poster-translations/water-cycle-de.jpg.asset.json";
+import klpReadyWaterEs from "@/assets/kids-poster-translations/water-cycle-es.jpg.asset.json";
+import klpReadyWaterFr from "@/assets/kids-poster-translations/water-cycle-fr.jpg.asset.json";
 import posterVowelsConsonants from "@/assets/kids-posters/vowels-consonants.jpg";
 import posterPunctuationMarks from "@/assets/kids-posters/punctuation-marks.jpg";
 import posterNouns from "@/assets/kids-posters/nouns.jpg";
@@ -1275,6 +1285,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyPosDe.url,
     es: klpReadyPosEs.url,
     fr: klpReadyPosFr.url,
+  },
+  "solar-system": {
+    sk: klpReadySolarSk.url,
+    hu: klpReadySolarHu.url,
+    de: klpReadySolarDe.url,
+    es: klpReadySolarEs.url,
+    fr: klpReadySolarFr.url,
+  },
+  "water-cycle": {
+    sk: klpReadyWaterSk.url,
+    hu: klpReadyWaterHu.url,
+    de: klpReadyWaterDe.url,
+    es: klpReadyWaterEs.url,
+    fr: klpReadyWaterFr.url,
   },
 };
 
