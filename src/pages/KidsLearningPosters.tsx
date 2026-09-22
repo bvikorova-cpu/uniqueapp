@@ -83,6 +83,16 @@ import klpReadyMultTricksHu from "@/assets/kids-poster-translations/multiplicati
 import klpReadyMultTricksDe from "@/assets/kids-poster-translations/multiplication-tricks-de.jpg.asset.json";
 import klpReadyMultTricksEs from "@/assets/kids-poster-translations/multiplication-tricks-es.jpg.asset.json";
 import klpReadyMultTricksFr from "@/assets/kids-poster-translations/multiplication-tricks-fr.jpg.asset.json";
+import klpReadyDivBasSk from "@/assets/kids-poster-translations/division-basics-sk.jpg.asset.json";
+import klpReadyDivBasHu from "@/assets/kids-poster-translations/division-basics-hu.jpg.asset.json";
+import klpReadyDivBasDe from "@/assets/kids-poster-translations/division-basics-de.jpg.asset.json";
+import klpReadyDivBasEs from "@/assets/kids-poster-translations/division-basics-es.jpg.asset.json";
+import klpReadyDivBasFr from "@/assets/kids-poster-translations/division-basics-fr.jpg.asset.json";
+import klpReadyFracSk from "@/assets/kids-poster-translations/fractions-sk.jpg.asset.json";
+import klpReadyFracHu from "@/assets/kids-poster-translations/fractions-hu.jpg.asset.json";
+import klpReadyFracDe from "@/assets/kids-poster-translations/fractions-de.jpg.asset.json";
+import klpReadyFracEs from "@/assets/kids-poster-translations/fractions-es.jpg.asset.json";
+import klpReadyFracFr from "@/assets/kids-poster-translations/fractions-fr.jpg.asset.json";
 import klpReadyTimesSk from "@/assets/kids-poster-translations/times-tables-sk.jpg.asset.json";
 import klpReadyTimesHu from "@/assets/kids-poster-translations/times-tables-hu.jpg.asset.json";
 import klpReadyTimesDe from "@/assets/kids-poster-translations/times-tables-de.jpg.asset.json";
@@ -1342,6 +1352,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyAddSubDe.url,
     es: klpReadyAddSubEs.url,
     fr: klpReadyAddSubFr.url,
+  },
+  "division-basics": {
+    sk: klpReadyDivBasSk.url,
+    hu: klpReadyDivBasHu.url,
+    de: klpReadyDivBasDe.url,
+    es: klpReadyDivBasEs.url,
+    fr: klpReadyDivBasFr.url,
+  },
+  fractions: {
+    sk: klpReadyFracSk.url,
+    hu: klpReadyFracHu.url,
+    de: klpReadyFracDe.url,
+    es: klpReadyFracEs.url,
+    fr: klpReadyFracFr.url,
   },
   "multiplication-tricks": {
     sk: klpReadyMultTricksSk.url,
