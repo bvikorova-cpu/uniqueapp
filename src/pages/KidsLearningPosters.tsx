@@ -73,6 +73,16 @@ import klpReadyAbcHu from "@/assets/kids-poster-translations/abc-phonics-hu.jpg.
 import klpReadyAbcDe from "@/assets/kids-poster-translations/abc-phonics-de.jpg.asset.json";
 import klpReadyAbcEs from "@/assets/kids-poster-translations/abc-phonics-es.jpg.asset.json";
 import klpReadyAbcFr from "@/assets/kids-poster-translations/abc-phonics-fr.jpg.asset.json";
+import klpReadyAddSubSk from "@/assets/kids-poster-translations/addition-subtraction-sk.jpg.asset.json";
+import klpReadyAddSubHu from "@/assets/kids-poster-translations/addition-subtraction-hu.jpg.asset.json";
+import klpReadyAddSubDe from "@/assets/kids-poster-translations/addition-subtraction-de.jpg.asset.json";
+import klpReadyAddSubEs from "@/assets/kids-poster-translations/addition-subtraction-es.jpg.asset.json";
+import klpReadyAddSubFr from "@/assets/kids-poster-translations/addition-subtraction-fr.jpg.asset.json";
+import klpReadyMultTricksSk from "@/assets/kids-poster-translations/multiplication-tricks-sk.jpg.asset.json";
+import klpReadyMultTricksHu from "@/assets/kids-poster-translations/multiplication-tricks-hu.jpg.asset.json";
+import klpReadyMultTricksDe from "@/assets/kids-poster-translations/multiplication-tricks-de.jpg.asset.json";
+import klpReadyMultTricksEs from "@/assets/kids-poster-translations/multiplication-tricks-es.jpg.asset.json";
+import klpReadyMultTricksFr from "@/assets/kids-poster-translations/multiplication-tricks-fr.jpg.asset.json";
 import klpReadyTimesSk from "@/assets/kids-poster-translations/times-tables-sk.jpg.asset.json";
 import klpReadyTimesHu from "@/assets/kids-poster-translations/times-tables-hu.jpg.asset.json";
 import klpReadyTimesDe from "@/assets/kids-poster-translations/times-tables-de.jpg.asset.json";
