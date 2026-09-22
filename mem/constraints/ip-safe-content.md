@@ -10,5 +10,7 @@ Disney/Pixar titles and characters, Marvel/DC heroes, Peppa Pig, Paw Patrol, Spo
 
 **How to apply:** use original neutral names (e.g. "Ice Queen", "Night Guardian", "Valor Shield", "Animated 3D" style label). Public-domain folklore/classic literature is OK using original names, not studio adaptations. Factual trivia questions naming real films are acceptable.
 
+**Exception (user decision 2026-09-22):** the single "Harry Potter" word occurrence in the `nouns` and `verbs-tenses` kids poster example text stays as-is — user explicitly accepted it ("je to len slovo"). Do not flag it again or regenerate those posters for this.
+
 Removed permanently (do not re-add): Kids Shows catalog (`src/assets/kids-shows`, branded covers in `src/assets/kids`, `ShowImages.tsx`, `KidsShowDetail`, `ImageTextRemover`, `AdminImageEditor`, route `/kids-channel/:showId`).
 Secret Santa gift categories `disney` were rebranded to `fantasy` + `heroes` with original characters.
