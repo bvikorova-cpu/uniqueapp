@@ -1286,6 +1286,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyPosEs.url,
     fr: klpReadyPosFr.url,
   },
+  "solar-system": {
+    sk: klpReadySolarSk.url,
+    hu: klpReadySolarHu.url,
+    de: klpReadySolarDe.url,
+    es: klpReadySolarEs.url,
+    fr: klpReadySolarFr.url,
+  },
+  "water-cycle": {
+    sk: klpReadyWaterSk.url,
+    hu: klpReadyWaterHu.url,
+    de: klpReadyWaterDe.url,
+    es: klpReadyWaterEs.url,
+    fr: klpReadyWaterFr.url,
+  },
 };
 
 type KlpTranslationMap = Record<string, { title: string; description: string }>;
