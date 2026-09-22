@@ -175,6 +175,16 @@ import posterChoresResponsibility from "@/assets/kids-posters/chores-responsibil
 import posterPatiencePractice from "@/assets/kids-posters/patience-practice.jpg";
 import posterGratitude from "@/assets/kids-posters/gratitude.jpg";
 import posterCareerDreams from "@/assets/kids-posters/career-dreams.jpg";
+import klpReadySafeSk from "@/assets/kids-poster-translations/online-safety-sk.jpg.asset.json";
+import klpReadySafeHu from "@/assets/kids-poster-translations/online-safety-hu.jpg.asset.json";
+import klpReadySafeDe from "@/assets/kids-poster-translations/online-safety-de.jpg.asset.json";
+import klpReadySafeEs from "@/assets/kids-poster-translations/online-safety-es.jpg.asset.json";
+import klpReadySafeFr from "@/assets/kids-poster-translations/online-safety-fr.jpg.asset.json";
+import klpReadyMoneySk from "@/assets/kids-poster-translations/money-basics-sk.jpg.asset.json";
+import klpReadyMoneyHu from "@/assets/kids-poster-translations/money-basics-hu.jpg.asset.json";
+import klpReadyMoneyDe from "@/assets/kids-poster-translations/money-basics-de.jpg.asset.json";
+import klpReadyMoneyEs from "@/assets/kids-poster-translations/money-basics-es.jpg.asset.json";
+import klpReadyMoneyFr from "@/assets/kids-poster-translations/money-basics-fr.jpg.asset.json";
 
 export const KLP_AI_POSTER_CREDITS = 3;
 export const KLP_BOOK_CREDITS = 25;
@@ -1323,6 +1333,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyRoutDe.url,
     es: klpReadyRoutEs.url,
     fr: klpReadyRoutFr.url,
+  },
+  "online-safety": {
+    sk: klpReadySafeSk.url,
+    hu: klpReadySafeHu.url,
+    de: klpReadySafeDe.url,
+    es: klpReadySafeEs.url,
+    fr: klpReadySafeFr.url,
+  },
+  "money-basics": {
+    sk: klpReadyMoneySk.url,
+    hu: klpReadyMoneyHu.url,
+    de: klpReadyMoneyDe.url,
+    es: klpReadyMoneyEs.url,
+    fr: klpReadyMoneyFr.url,
   },
 };
 
