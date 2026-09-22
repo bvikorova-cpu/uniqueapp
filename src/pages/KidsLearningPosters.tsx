@@ -195,6 +195,16 @@ import klpReadyTeenHu from "@/assets/kids-poster-translations/teen-life-skills-h
 import klpReadyTeenDe from "@/assets/kids-poster-translations/teen-life-skills-de.jpg.asset.json";
 import klpReadyTeenEs from "@/assets/kids-poster-translations/teen-life-skills-es.jpg.asset.json";
 import klpReadyTeenFr from "@/assets/kids-poster-translations/teen-life-skills-fr.jpg.asset.json";
+import klpReadyNum20Sk from "@/assets/kids-poster-translations/numbers-1-20-sk.jpg.asset.json";
+import klpReadyNum20Hu from "@/assets/kids-poster-translations/numbers-1-20-hu.jpg.asset.json";
+import klpReadyNum20De from "@/assets/kids-poster-translations/numbers-1-20-de.jpg.asset.json";
+import klpReadyNum20Es from "@/assets/kids-poster-translations/numbers-1-20-es.jpg.asset.json";
+import klpReadyNum20Fr from "@/assets/kids-poster-translations/numbers-1-20-fr.jpg.asset.json";
+import klpReadyCount100Sk from "@/assets/kids-poster-translations/counting-to-100-sk.jpg.asset.json";
+import klpReadyCount100Hu from "@/assets/kids-poster-translations/counting-to-100-hu.jpg.asset.json";
+import klpReadyCount100De from "@/assets/kids-poster-translations/counting-to-100-de.jpg.asset.json";
+import klpReadyCount100Es from "@/assets/kids-poster-translations/counting-to-100-es.jpg.asset.json";
+import klpReadyCount100Fr from "@/assets/kids-poster-translations/counting-to-100-fr.jpg.asset.json";
 
 export const KLP_AI_POSTER_CREDITS = 3;
 export const KLP_BOOK_CREDITS = 25;
@@ -1288,6 +1298,20 @@ const KLP_LANGUAGES: { id: string; label: string; name: string }[] = [
 
 /** Ready-made translated posters uploaded by the team (no AI needed). */
 const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
+  "numbers-1-20": {
+    sk: klpReadyNum20Sk.url,
+    hu: klpReadyNum20Hu.url,
+    de: klpReadyNum20De.url,
+    es: klpReadyNum20Es.url,
+    fr: klpReadyNum20Fr.url,
+  },
+  "counting-to-100": {
+    sk: klpReadyCount100Sk.url,
+    hu: klpReadyCount100Hu.url,
+    de: klpReadyCount100De.url,
+    es: klpReadyCount100Es.url,
+    fr: klpReadyCount100Fr.url,
+  },
   "shapes-colors": {
     sk: klpReadyShapesSk.url,
     hu: klpReadyShapesHu.url,
