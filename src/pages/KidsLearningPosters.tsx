@@ -128,6 +128,16 @@ import klpReadyIrrVerbHu from "@/assets/kids-poster-translations/irregular-verbs
 import klpReadyIrrVerbDe from "@/assets/kids-poster-translations/irregular-verbs-de.webp.asset.json";
 import klpReadyIrrVerbEs from "@/assets/kids-poster-translations/irregular-verbs-es.webp.asset.json";
 import klpReadyIrrVerbFr from "@/assets/kids-poster-translations/irregular-verbs-fr.webp.asset.json";
+import klpReadyLandmSk from "@/assets/kids-poster-translations/world-landmarks-sk.webp.asset.json";
+import klpReadyLandmHu from "@/assets/kids-poster-translations/world-landmarks-hu.webp.asset.json";
+import klpReadyLandmDe from "@/assets/kids-poster-translations/world-landmarks-de.webp.asset.json";
+import klpReadyLandmEs from "@/assets/kids-poster-translations/world-landmarks-es.webp.asset.json";
+import klpReadyLandmFr from "@/assets/kids-poster-translations/world-landmarks-fr.webp.asset.json";
+import klpReadyContOcSk from "@/assets/kids-poster-translations/continents-oceans-sk.webp.asset.json";
+import klpReadyContOcHu from "@/assets/kids-poster-translations/continents-oceans-hu.webp.asset.json";
+import klpReadyContOcDe from "@/assets/kids-poster-translations/continents-oceans-de.webp.asset.json";
+import klpReadyContOcEs from "@/assets/kids-poster-translations/continents-oceans-es.webp.asset.json";
+import klpReadyContOcFr from "@/assets/kids-poster-translations/continents-oceans-fr.webp.asset.json";
 import klpReadyMeasSk from "@/assets/kids-poster-translations/measurement-units-sk.webp.asset.json";
 import klpReadyMeasHu from "@/assets/kids-poster-translations/measurement-units-hu.webp.asset.json";
 import klpReadyMeasDe from "@/assets/kids-poster-translations/measurement-units-de.webp.asset.json";
