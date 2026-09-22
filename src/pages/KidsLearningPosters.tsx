@@ -1441,6 +1441,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyCursEs.url,
     fr: klpReadyCursFr.url,
   },
+  "vowels-consonants": {
+    sk: klpReadyVowConSk.url,
+    hu: klpReadyVowConHu.url,
+    de: klpReadyVowConDe.url,
+    es: klpReadyVowConEs.url,
+    fr: klpReadyVowConFr.url,
+  },
+  "punctuation-marks": {
+    sk: klpReadyPunctSk.url,
+    hu: klpReadyPunctHu.url,
+    de: klpReadyPunctDe.url,
+    es: klpReadyPunctEs.url,
+    fr: klpReadyPunctFr.url,
+  },
   "sight-words": {
     sk: klpReadySightSk.url,
     hu: klpReadySightHu.url,
