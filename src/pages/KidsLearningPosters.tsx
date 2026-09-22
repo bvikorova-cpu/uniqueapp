@@ -78,6 +78,16 @@ import klpReadyTimeHu from "@/assets/kids-poster-translations/telling-time-hu.we
 import klpReadyTimeDe from "@/assets/kids-poster-translations/telling-time-de.webp.asset.json";
 import klpReadyTimeEs from "@/assets/kids-poster-translations/telling-time-es.webp.asset.json";
 import klpReadyTimeFr from "@/assets/kids-poster-translations/telling-time-fr.webp.asset.json";
+import klpReadyMeasSk from "@/assets/kids-poster-translations/measurement-units-sk.webp.asset.json";
+import klpReadyMeasHu from "@/assets/kids-poster-translations/measurement-units-hu.webp.asset.json";
+import klpReadyMeasDe from "@/assets/kids-poster-translations/measurement-units-de.webp.asset.json";
+import klpReadyMeasEs from "@/assets/kids-poster-translations/measurement-units-es.webp.asset.json";
+import klpReadyMeasFr from "@/assets/kids-poster-translations/measurement-units-fr.webp.asset.json";
+import klpReadyMathVocSk from "@/assets/kids-poster-translations/math-vocabulary-sk.webp.asset.json";
+import klpReadyMathVocHu from "@/assets/kids-poster-translations/math-vocabulary-hu.webp.asset.json";
+import klpReadyMathVocDe from "@/assets/kids-poster-translations/math-vocabulary-de.webp.asset.json";
+import klpReadyMathVocEs from "@/assets/kids-poster-translations/math-vocabulary-es.webp.asset.json";
+import klpReadyMathVocFr from "@/assets/kids-poster-translations/math-vocabulary-fr.webp.asset.json";
 import klpReadyPctSk from "@/assets/kids-poster-translations/percentages-sk.webp.asset.json";
 import klpReadyPctHu from "@/assets/kids-poster-translations/percentages-hu.webp.asset.json";
 import klpReadyPctDe from "@/assets/kids-poster-translations/percentages-de.webp.asset.json";
@@ -1358,6 +1368,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyRomanDe.url,
     es: klpReadyRomanEs.url,
     fr: klpReadyRomanFr.url,
+  },
+  "measurement-units": {
+    sk: klpReadyMeasSk.url,
+    hu: klpReadyMeasHu.url,
+    de: klpReadyMeasDe.url,
+    es: klpReadyMeasEs.url,
+    fr: klpReadyMeasFr.url,
+  },
+  "math-vocabulary": {
+    sk: klpReadyMathVocSk.url,
+    hu: klpReadyMathVocHu.url,
+    de: klpReadyMathVocDe.url,
+    es: klpReadyMathVocEs.url,
+    fr: klpReadyMathVocFr.url,
   },
   "telling-time": {
     sk: klpReadyTimeSk.url,
