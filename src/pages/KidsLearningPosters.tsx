@@ -1353,6 +1353,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyAddSubEs.url,
     fr: klpReadyAddSubFr.url,
   },
+  "division-basics": {
+    sk: klpReadyDivBasSk.url,
+    hu: klpReadyDivBasHu.url,
+    de: klpReadyDivBasDe.url,
+    es: klpReadyDivBasEs.url,
+    fr: klpReadyDivBasFr.url,
+  },
+  fractions: {
+    sk: klpReadyFracSk.url,
+    hu: klpReadyFracHu.url,
+    de: klpReadyFracDe.url,
+    es: klpReadyFracEs.url,
+    fr: klpReadyFracFr.url,
+  },
   "multiplication-tricks": {
     sk: klpReadyMultTricksSk.url,
     hu: klpReadyMultTricksHu.url,
