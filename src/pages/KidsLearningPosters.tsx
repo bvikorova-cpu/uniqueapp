@@ -138,6 +138,16 @@ import klpReadyContOcHu from "@/assets/kids-poster-translations/continents-ocean
 import klpReadyContOcDe from "@/assets/kids-poster-translations/continents-oceans-de.webp.asset.json";
 import klpReadyContOcEs from "@/assets/kids-poster-translations/continents-oceans-es.webp.asset.json";
 import klpReadyContOcFr from "@/assets/kids-poster-translations/continents-oceans-fr.webp.asset.json";
+import klpReadyWmaSk from "@/assets/kids-poster-translations/world-map-animals-sk.webp.asset.json";
+import klpReadyWmaHu from "@/assets/kids-poster-translations/world-map-animals-hu.webp.asset.json";
+import klpReadyWmaDe from "@/assets/kids-poster-translations/world-map-animals-de.webp.asset.json";
+import klpReadyWmaEs from "@/assets/kids-poster-translations/world-map-animals-es.webp.asset.json";
+import klpReadyWmaFr from "@/assets/kids-poster-translations/world-map-animals-fr.webp.asset.json";
+import klpReadyFlagEuSk from "@/assets/kids-poster-translations/flags-of-europe-sk.png.asset.json";
+import klpReadyFlagEuHu from "@/assets/kids-poster-translations/flags-of-europe-hu.png.asset.json";
+import klpReadyFlagEuDe from "@/assets/kids-poster-translations/flags-of-europe-de.png.asset.json";
+import klpReadyFlagEuEs from "@/assets/kids-poster-translations/flags-of-europe-es.png.asset.json";
+import klpReadyFlagEuFr from "@/assets/kids-poster-translations/flags-of-europe-fr.png.asset.json";
 import klpReadyMeasSk from "@/assets/kids-poster-translations/measurement-units-sk.webp.asset.json";
 import klpReadyMeasHu from "@/assets/kids-poster-translations/measurement-units-hu.webp.asset.json";
 import klpReadyMeasDe from "@/assets/kids-poster-translations/measurement-units-de.webp.asset.json";
