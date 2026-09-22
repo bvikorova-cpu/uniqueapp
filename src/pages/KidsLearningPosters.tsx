@@ -1428,6 +1428,20 @@ const KLP_LANGUAGES: { id: string; label: string; name: string }[] = [
 
 /** Ready-made translated posters uploaded by the team (no AI needed). */
 const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
+  "world-map-animals": {
+    sk: klpReadyWmaSk.url,
+    hu: klpReadyWmaHu.url,
+    de: klpReadyWmaDe.url,
+    es: klpReadyWmaEs.url,
+    fr: klpReadyWmaFr.url,
+  },
+  "flags-of-europe": {
+    sk: klpReadyFlagEuSk.url,
+    hu: klpReadyFlagEuHu.url,
+    de: klpReadyFlagEuDe.url,
+    es: klpReadyFlagEuEs.url,
+    fr: klpReadyFlagEuFr.url,
+  },
   "order-of-operations": {
     sk: klpReadyOrdOpSk.url,
     hu: klpReadyOrdOpHu.url,
