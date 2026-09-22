@@ -78,6 +78,16 @@ import klpReadyTimeHu from "@/assets/kids-poster-translations/telling-time-hu.we
 import klpReadyTimeDe from "@/assets/kids-poster-translations/telling-time-de.webp.asset.json";
 import klpReadyTimeEs from "@/assets/kids-poster-translations/telling-time-es.webp.asset.json";
 import klpReadyTimeFr from "@/assets/kids-poster-translations/telling-time-fr.webp.asset.json";
+import klpReadyCursSk from "@/assets/kids-poster-translations/cursive-alphabet-sk.webp.asset.json";
+import klpReadyCursHu from "@/assets/kids-poster-translations/cursive-alphabet-hu.webp.asset.json";
+import klpReadyCursDe from "@/assets/kids-poster-translations/cursive-alphabet-de.webp.asset.json";
+import klpReadyCursEs from "@/assets/kids-poster-translations/cursive-alphabet-es.webp.asset.json";
+import klpReadyCursFr from "@/assets/kids-poster-translations/cursive-alphabet-fr.webp.asset.json";
+import klpReadySightSk from "@/assets/kids-poster-translations/sight-words-sk.webp.asset.json";
+import klpReadySightHu from "@/assets/kids-poster-translations/sight-words-hu.webp.asset.json";
+import klpReadySightDe from "@/assets/kids-poster-translations/sight-words-de.webp.asset.json";
+import klpReadySightEs from "@/assets/kids-poster-translations/sight-words-es.webp.asset.json";
+import klpReadySightFr from "@/assets/kids-poster-translations/sight-words-fr.webp.asset.json";
 import klpReadyMeasSk from "@/assets/kids-poster-translations/measurement-units-sk.webp.asset.json";
 import klpReadyMeasHu from "@/assets/kids-poster-translations/measurement-units-hu.webp.asset.json";
 import klpReadyMeasDe from "@/assets/kids-poster-translations/measurement-units-de.webp.asset.json";
