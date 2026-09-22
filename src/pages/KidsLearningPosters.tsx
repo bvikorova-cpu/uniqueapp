@@ -63,6 +63,16 @@ import posterOrderOfOperations from "@/assets/kids-posters/order-of-operations.j
 import posterNegativeNumbers from "@/assets/kids-posters/negative-numbers.jpg";
 import posterCursiveAlphabet from "@/assets/kids-posters/cursive-alphabet.jpg";
 import posterSightWords from "@/assets/kids-posters/sight-words.jpg";
+import klpReadyGeoSk from "@/assets/kids-poster-translations/geometry-shapes-sk.webp.asset.json";
+import klpReadyGeoHu from "@/assets/kids-poster-translations/geometry-shapes-hu.webp.asset.json";
+import klpReadyGeoDe from "@/assets/kids-poster-translations/geometry-shapes-de.webp.asset.json";
+import klpReadyGeoEs from "@/assets/kids-poster-translations/geometry-shapes-es.webp.asset.json";
+import klpReadyGeoFr from "@/assets/kids-poster-translations/geometry-shapes-fr.webp.asset.json";
+import klpReadyPctSk from "@/assets/kids-poster-translations/percentages-sk.webp.asset.json";
+import klpReadyPctHu from "@/assets/kids-poster-translations/percentages-hu.webp.asset.json";
+import klpReadyPctDe from "@/assets/kids-poster-translations/percentages-de.webp.asset.json";
+import klpReadyPctEs from "@/assets/kids-poster-translations/percentages-es.webp.asset.json";
+import klpReadyPctFr from "@/assets/kids-poster-translations/percentages-fr.webp.asset.json";
 import klpReadyShapesSk from "@/assets/kids-poster-translations/shapes-colors-sk.jpg.asset.json";
 import klpReadyShapesHu from "@/assets/kids-poster-translations/shapes-colors-hu.jpg.asset.json";
 import klpReadyShapesDe from "@/assets/kids-poster-translations/shapes-colors-de.jpg.asset.json";
@@ -1331,6 +1341,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyCount100De.url,
     es: klpReadyCount100Es.url,
     fr: klpReadyCount100Fr.url,
+  },
+  "geometry-shapes": {
+    sk: klpReadyGeoSk.url,
+    hu: klpReadyGeoHu.url,
+    de: klpReadyGeoDe.url,
+    es: klpReadyGeoEs.url,
+    fr: klpReadyGeoFr.url,
+  },
+  "percentages": {
+    sk: klpReadyPctSk.url,
+    hu: klpReadyPctHu.url,
+    de: klpReadyPctDe.url,
+    es: klpReadyPctEs.url,
+    fr: klpReadyPctFr.url,
   },
   "shapes-colors": {
     sk: klpReadyShapesSk.url,
