@@ -118,6 +118,16 @@ import klpReadyReadStrHu from "@/assets/kids-poster-translations/reading-strateg
 import klpReadyReadStrDe from "@/assets/kids-poster-translations/reading-strategies-de.webp.asset.json";
 import klpReadyReadStrEs from "@/assets/kids-poster-translations/reading-strategies-es.webp.asset.json";
 import klpReadyReadStrFr from "@/assets/kids-poster-translations/reading-strategies-fr.webp.asset.json";
+import klpReadyStorySk from "@/assets/kids-poster-translations/write-a-story-sk.webp.asset.json";
+import klpReadyStoryHu from "@/assets/kids-poster-translations/write-a-story-hu.webp.asset.json";
+import klpReadyStoryDe from "@/assets/kids-poster-translations/write-a-story-de.webp.asset.json";
+import klpReadyStoryEs from "@/assets/kids-poster-translations/write-a-story-es.webp.asset.json";
+import klpReadyStoryFr from "@/assets/kids-poster-translations/write-a-story-fr.webp.asset.json";
+import klpReadyIrrVerbSk from "@/assets/kids-poster-translations/irregular-verbs-sk.webp.asset.json";
+import klpReadyIrrVerbHu from "@/assets/kids-poster-translations/irregular-verbs-hu.webp.asset.json";
+import klpReadyIrrVerbDe from "@/assets/kids-poster-translations/irregular-verbs-de.webp.asset.json";
+import klpReadyIrrVerbEs from "@/assets/kids-poster-translations/irregular-verbs-es.webp.asset.json";
+import klpReadyIrrVerbFr from "@/assets/kids-poster-translations/irregular-verbs-fr.webp.asset.json";
 import klpReadyMeasSk from "@/assets/kids-poster-translations/measurement-units-sk.webp.asset.json";
 import klpReadyMeasHu from "@/assets/kids-poster-translations/measurement-units-hu.webp.asset.json";
 import klpReadyMeasDe from "@/assets/kids-poster-translations/measurement-units-de.webp.asset.json";
@@ -1481,6 +1491,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyAdjDe.url,
     es: klpReadyAdjEs.url,
     fr: klpReadyAdjFr.url,
+  },
+  "write-a-story": {
+    sk: klpReadyStorySk.url,
+    hu: klpReadyStoryHu.url,
+    de: klpReadyStoryDe.url,
+    es: klpReadyStoryEs.url,
+    fr: klpReadyStoryFr.url,
+  },
+  "irregular-verbs": {
+    sk: klpReadyIrrVerbSk.url,
+    hu: klpReadyIrrVerbHu.url,
+    de: klpReadyIrrVerbDe.url,
+    es: klpReadyIrrVerbEs.url,
+    fr: klpReadyIrrVerbFr.url,
   },
   "reading-strategies": {
     sk: klpReadyReadStrSk.url,
