@@ -1458,6 +1458,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyVowConEs.url,
     fr: klpReadyVowConFr.url,
   },
+  nouns: {
+    sk: klpReadyNounsSk.url,
+    hu: klpReadyNounsHu.url,
+    de: klpReadyNounsDe.url,
+    es: klpReadyNounsEs.url,
+    fr: klpReadyNounsFr.url,
+  },
+  "verbs-tenses": {
+    sk: klpReadyVerbTenSk.url,
+    hu: klpReadyVerbTenHu.url,
+    de: klpReadyVerbTenDe.url,
+    es: klpReadyVerbTenEs.url,
+    fr: klpReadyVerbTenFr.url,
+  },
   "punctuation-marks": {
     sk: klpReadyPunctSk.url,
     hu: klpReadyPunctHu.url,
