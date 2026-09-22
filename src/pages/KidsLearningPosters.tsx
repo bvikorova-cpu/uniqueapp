@@ -93,6 +93,16 @@ import klpReadyPctHu from "@/assets/kids-poster-translations/percentages-hu.webp
 import klpReadyPctDe from "@/assets/kids-poster-translations/percentages-de.webp.asset.json";
 import klpReadyPctEs from "@/assets/kids-poster-translations/percentages-es.webp.asset.json";
 import klpReadyPctFr from "@/assets/kids-poster-translations/percentages-fr.webp.asset.json";
+import klpReadyOrdOpSk from "@/assets/kids-poster-translations/order-of-operations-sk.webp.asset.json";
+import klpReadyOrdOpHu from "@/assets/kids-poster-translations/order-of-operations-hu.webp.asset.json";
+import klpReadyOrdOpDe from "@/assets/kids-poster-translations/order-of-operations-de.webp.asset.json";
+import klpReadyOrdOpEs from "@/assets/kids-poster-translations/order-of-operations-es.webp.asset.json";
+import klpReadyOrdOpFr from "@/assets/kids-poster-translations/order-of-operations-fr.webp.asset.json";
+import klpReadyNegNumSk from "@/assets/kids-poster-translations/negative-numbers-sk.webp.asset.json";
+import klpReadyNegNumHu from "@/assets/kids-poster-translations/negative-numbers-hu.webp.asset.json";
+import klpReadyNegNumDe from "@/assets/kids-poster-translations/negative-numbers-de.webp.asset.json";
+import klpReadyNegNumEs from "@/assets/kids-poster-translations/negative-numbers-es.png.asset.json";
+import klpReadyNegNumFr from "@/assets/kids-poster-translations/negative-numbers-fr.webp.asset.json";
 import klpReadyShapesSk from "@/assets/kids-poster-translations/shapes-colors-sk.jpg.asset.json";
 import klpReadyShapesHu from "@/assets/kids-poster-translations/shapes-colors-hu.jpg.asset.json";
 import klpReadyShapesDe from "@/assets/kids-poster-translations/shapes-colors-de.jpg.asset.json";
