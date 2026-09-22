@@ -68,6 +68,16 @@ import klpReadyGeoHu from "@/assets/kids-poster-translations/geometry-shapes-hu.
 import klpReadyGeoDe from "@/assets/kids-poster-translations/geometry-shapes-de.webp.asset.json";
 import klpReadyGeoEs from "@/assets/kids-poster-translations/geometry-shapes-es.webp.asset.json";
 import klpReadyGeoFr from "@/assets/kids-poster-translations/geometry-shapes-fr.webp.asset.json";
+import klpReadyRomanSk from "@/assets/kids-poster-translations/roman-numerals-sk.webp.asset.json";
+import klpReadyRomanHu from "@/assets/kids-poster-translations/roman-numerals-hu.webp.asset.json";
+import klpReadyRomanDe from "@/assets/kids-poster-translations/roman-numerals-de.webp.asset.json";
+import klpReadyRomanEs from "@/assets/kids-poster-translations/roman-numerals-es.webp.asset.json";
+import klpReadyRomanFr from "@/assets/kids-poster-translations/roman-numerals-fr.webp.asset.json";
+import klpReadyTimeSk from "@/assets/kids-poster-translations/telling-time-sk.webp.asset.json";
+import klpReadyTimeHu from "@/assets/kids-poster-translations/telling-time-hu.webp.asset.json";
+import klpReadyTimeDe from "@/assets/kids-poster-translations/telling-time-de.webp.asset.json";
+import klpReadyTimeEs from "@/assets/kids-poster-translations/telling-time-es.webp.asset.json";
+import klpReadyTimeFr from "@/assets/kids-poster-translations/telling-time-fr.webp.asset.json";
 import klpReadyPctSk from "@/assets/kids-poster-translations/percentages-sk.webp.asset.json";
 import klpReadyPctHu from "@/assets/kids-poster-translations/percentages-hu.webp.asset.json";
 import klpReadyPctDe from "@/assets/kids-poster-translations/percentages-de.webp.asset.json";
@@ -1341,6 +1351,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyCount100De.url,
     es: klpReadyCount100Es.url,
     fr: klpReadyCount100Fr.url,
+  },
+  "roman-numerals": {
+    sk: klpReadyRomanSk.url,
+    hu: klpReadyRomanHu.url,
+    de: klpReadyRomanDe.url,
+    es: klpReadyRomanEs.url,
+    fr: klpReadyRomanFr.url,
+  },
+  "telling-time": {
+    sk: klpReadyTimeSk.url,
+    hu: klpReadyTimeHu.url,
+    de: klpReadyTimeDe.url,
+    es: klpReadyTimeEs.url,
+    fr: klpReadyTimeFr.url,
   },
   "geometry-shapes": {
     sk: klpReadyGeoSk.url,
