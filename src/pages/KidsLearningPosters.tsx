@@ -1516,6 +1516,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyIrrVerbEs.url,
     fr: klpReadyIrrVerbFr.url,
   },
+  "world-landmarks": {
+    sk: klpReadyLandmSk.url,
+    hu: klpReadyLandmHu.url,
+    de: klpReadyLandmDe.url,
+    es: klpReadyLandmEs.url,
+    fr: klpReadyLandmFr.url,
+  },
+  "continents-oceans": {
+    sk: klpReadyContOcSk.url,
+    hu: klpReadyContOcHu.url,
+    de: klpReadyContOcDe.url,
+    es: klpReadyContOcEs.url,
+    fr: klpReadyContOcFr.url,
+  },
   "reading-strategies": {
     sk: klpReadyReadStrSk.url,
     hu: klpReadyReadStrHu.url,
