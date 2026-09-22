@@ -93,6 +93,16 @@ import klpReadyWaterHu from "@/assets/kids-poster-translations/water-cycle-hu.jp
 import klpReadyWaterDe from "@/assets/kids-poster-translations/water-cycle-de.jpg.asset.json";
 import klpReadyWaterEs from "@/assets/kids-poster-translations/water-cycle-es.jpg.asset.json";
 import klpReadyWaterFr from "@/assets/kids-poster-translations/water-cycle-fr.jpg.asset.json";
+import klpReadyFeelSk from "@/assets/kids-poster-translations/feelings-sk.jpg.asset.json";
+import klpReadyFeelHu from "@/assets/kids-poster-translations/feelings-hu.jpg.asset.json";
+import klpReadyFeelDe from "@/assets/kids-poster-translations/feelings-de.jpg.asset.json";
+import klpReadyFeelEs from "@/assets/kids-poster-translations/feelings-es.jpg.asset.json";
+import klpReadyFeelFr from "@/assets/kids-poster-translations/feelings-fr.jpg.asset.json";
+import klpReadyRoutSk from "@/assets/kids-poster-translations/daily-routine-sk.jpg.asset.json";
+import klpReadyRoutHu from "@/assets/kids-poster-translations/daily-routine-hu.jpg.asset.json";
+import klpReadyRoutDe from "@/assets/kids-poster-translations/daily-routine-de.jpg.asset.json";
+import klpReadyRoutEs from "@/assets/kids-poster-translations/daily-routine-es.jpg.asset.json";
+import klpReadyRoutFr from "@/assets/kids-poster-translations/daily-routine-fr.jpg.asset.json";
 import posterVowelsConsonants from "@/assets/kids-posters/vowels-consonants.jpg";
 import posterPunctuationMarks from "@/assets/kids-posters/punctuation-marks.jpg";
 import posterNouns from "@/assets/kids-posters/nouns.jpg";
@@ -1299,6 +1309,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyWaterDe.url,
     es: klpReadyWaterEs.url,
     fr: klpReadyWaterFr.url,
+  },
+  feelings: {
+    sk: klpReadyFeelSk.url,
+    hu: klpReadyFeelHu.url,
+    de: klpReadyFeelDe.url,
+    es: klpReadyFeelEs.url,
+    fr: klpReadyFeelFr.url,
+  },
+  "daily-routine": {
+    sk: klpReadyRoutSk.url,
+    hu: klpReadyRoutHu.url,
+    de: klpReadyRoutDe.url,
+    es: klpReadyRoutEs.url,
+    fr: klpReadyRoutFr.url,
   },
 };
 
