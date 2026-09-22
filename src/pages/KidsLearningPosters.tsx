@@ -1492,6 +1492,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyAdjEs.url,
     fr: klpReadyAdjFr.url,
   },
+  "write-a-story": {
+    sk: klpReadyStorySk.url,
+    hu: klpReadyStoryHu.url,
+    de: klpReadyStoryDe.url,
+    es: klpReadyStoryEs.url,
+    fr: klpReadyStoryFr.url,
+  },
+  "irregular-verbs": {
+    sk: klpReadyIrrVerbSk.url,
+    hu: klpReadyIrrVerbHu.url,
+    de: klpReadyIrrVerbDe.url,
+    es: klpReadyIrrVerbEs.url,
+    fr: klpReadyIrrVerbFr.url,
+  },
   "reading-strategies": {
     sk: klpReadyReadStrSk.url,
     hu: klpReadyReadStrHu.url,
