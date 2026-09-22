@@ -1475,6 +1475,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyNounsEs.url,
     fr: klpReadyNounsFr.url,
   },
+  adjectives: {
+    sk: klpReadyAdjSk.url,
+    hu: klpReadyAdjHu.url,
+    de: klpReadyAdjDe.url,
+    es: klpReadyAdjEs.url,
+    fr: klpReadyAdjFr.url,
+  },
+  "reading-strategies": {
+    sk: klpReadyReadStrSk.url,
+    hu: klpReadyReadStrHu.url,
+    de: klpReadyReadStrDe.url,
+    es: klpReadyReadStrEs.url,
+    fr: klpReadyReadStrFr.url,
+  },
   "verbs-tenses": {
     sk: klpReadyVerbTenSk.url,
     hu: klpReadyVerbTenHu.url,
