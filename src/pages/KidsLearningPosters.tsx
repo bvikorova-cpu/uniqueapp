@@ -1336,6 +1336,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyAbcEs.url,
     fr: klpReadyAbcFr.url,
   },
+  "addition-subtraction": {
+    sk: klpReadyAddSubSk.url,
+    hu: klpReadyAddSubHu.url,
+    de: klpReadyAddSubDe.url,
+    es: klpReadyAddSubEs.url,
+    fr: klpReadyAddSubFr.url,
+  },
+  "multiplication-tricks": {
+    sk: klpReadyMultTricksSk.url,
+    hu: klpReadyMultTricksHu.url,
+    de: klpReadyMultTricksDe.url,
+    es: klpReadyMultTricksEs.url,
+    fr: klpReadyMultTricksFr.url,
+  },
   "times-tables": {
     sk: klpReadyTimesSk.url,
     hu: klpReadyTimesHu.url,
