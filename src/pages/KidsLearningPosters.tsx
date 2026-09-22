@@ -1298,6 +1298,20 @@ const KLP_LANGUAGES: { id: string; label: string; name: string }[] = [
 
 /** Ready-made translated posters uploaded by the team (no AI needed). */
 const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
+  "numbers-1-20": {
+    sk: klpReadyNum20Sk.url,
+    hu: klpReadyNum20Hu.url,
+    de: klpReadyNum20De.url,
+    es: klpReadyNum20Es.url,
+    fr: klpReadyNum20Fr.url,
+  },
+  "counting-to-100": {
+    sk: klpReadyCount100Sk.url,
+    hu: klpReadyCount100Hu.url,
+    de: klpReadyCount100De.url,
+    es: klpReadyCount100Es.url,
+    fr: klpReadyCount100Fr.url,
+  },
   "shapes-colors": {
     sk: klpReadyShapesSk.url,
     hu: klpReadyShapesHu.url,
