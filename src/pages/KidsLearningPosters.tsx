@@ -1352,6 +1352,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyCount100Es.url,
     fr: klpReadyCount100Fr.url,
   },
+  "roman-numerals": {
+    sk: klpReadyRomanSk.url,
+    hu: klpReadyRomanHu.url,
+    de: klpReadyRomanDe.url,
+    es: klpReadyRomanEs.url,
+    fr: klpReadyRomanFr.url,
+  },
+  "telling-time": {
+    sk: klpReadyTimeSk.url,
+    hu: klpReadyTimeHu.url,
+    de: klpReadyTimeDe.url,
+    es: klpReadyTimeEs.url,
+    fr: klpReadyTimeFr.url,
+  },
   "geometry-shapes": {
     sk: klpReadyGeoSk.url,
     hu: klpReadyGeoHu.url,
