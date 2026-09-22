@@ -108,6 +108,16 @@ import klpReadyVerbTenHu from "@/assets/kids-poster-translations/verbs-tenses-hu
 import klpReadyVerbTenDe from "@/assets/kids-poster-translations/verbs-tenses-de.webp.asset.json";
 import klpReadyVerbTenEs from "@/assets/kids-poster-translations/verbs-tenses-es.webp.asset.json";
 import klpReadyVerbTenFr from "@/assets/kids-poster-translations/verbs-tenses-fr.png.asset.json";
+import klpReadyAdjSk from "@/assets/kids-poster-translations/adjectives-sk.webp.asset.json";
+import klpReadyAdjHu from "@/assets/kids-poster-translations/adjectives-hu.webp.asset.json";
+import klpReadyAdjDe from "@/assets/kids-poster-translations/adjectives-de.webp.asset.json";
+import klpReadyAdjEs from "@/assets/kids-poster-translations/adjectives-es.webp.asset.json";
+import klpReadyAdjFr from "@/assets/kids-poster-translations/adjectives-fr.webp.asset.json";
+import klpReadyReadStrSk from "@/assets/kids-poster-translations/reading-strategies-sk.webp.asset.json";
+import klpReadyReadStrHu from "@/assets/kids-poster-translations/reading-strategies-hu.webp.asset.json";
+import klpReadyReadStrDe from "@/assets/kids-poster-translations/reading-strategies-de.webp.asset.json";
+import klpReadyReadStrEs from "@/assets/kids-poster-translations/reading-strategies-es.webp.asset.json";
+import klpReadyReadStrFr from "@/assets/kids-poster-translations/reading-strategies-fr.webp.asset.json";
 import klpReadyMeasSk from "@/assets/kids-poster-translations/measurement-units-sk.webp.asset.json";
 import klpReadyMeasHu from "@/assets/kids-poster-translations/measurement-units-hu.webp.asset.json";
 import klpReadyMeasDe from "@/assets/kids-poster-translations/measurement-units-de.webp.asset.json";
