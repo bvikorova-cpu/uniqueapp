@@ -185,6 +185,16 @@ import klpReadyMoneyHu from "@/assets/kids-poster-translations/money-basics-hu.j
 import klpReadyMoneyDe from "@/assets/kids-poster-translations/money-basics-de.jpg.asset.json";
 import klpReadyMoneyEs from "@/assets/kids-poster-translations/money-basics-es.jpg.asset.json";
 import klpReadyMoneyFr from "@/assets/kids-poster-translations/money-basics-fr.jpg.asset.json";
+import klpReadyStudySk from "@/assets/kids-poster-translations/study-smart-sk.jpg.asset.json";
+import klpReadyStudyHu from "@/assets/kids-poster-translations/study-smart-hu.jpg.asset.json";
+import klpReadyStudyDe from "@/assets/kids-poster-translations/study-smart-de.jpg.asset.json";
+import klpReadyStudyEs from "@/assets/kids-poster-translations/study-smart-es.jpg.asset.json";
+import klpReadyStudyFr from "@/assets/kids-poster-translations/study-smart-fr.jpg.asset.json";
+import klpReadyTeenSk from "@/assets/kids-poster-translations/teen-life-skills-sk.jpg.asset.json";
+import klpReadyTeenHu from "@/assets/kids-poster-translations/teen-life-skills-hu.jpg.asset.json";
+import klpReadyTeenDe from "@/assets/kids-poster-translations/teen-life-skills-de.jpg.asset.json";
+import klpReadyTeenEs from "@/assets/kids-poster-translations/teen-life-skills-es.jpg.asset.json";
+import klpReadyTeenFr from "@/assets/kids-poster-translations/teen-life-skills-fr.jpg.asset.json";
 
 export const KLP_AI_POSTER_CREDITS = 3;
 export const KLP_BOOK_CREDITS = 25;
@@ -1347,6 +1357,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyMoneyDe.url,
     es: klpReadyMoneyEs.url,
     fr: klpReadyMoneyFr.url,
+  },
+  "study-smart": {
+    sk: klpReadyStudySk.url,
+    hu: klpReadyStudyHu.url,
+    de: klpReadyStudyDe.url,
+    es: klpReadyStudyEs.url,
+    fr: klpReadyStudyFr.url,
+  },
+  "teen-life-skills": {
+    sk: klpReadyTeenSk.url,
+    hu: klpReadyTeenHu.url,
+    de: klpReadyTeenDe.url,
+    es: klpReadyTeenEs.url,
+    fr: klpReadyTeenFr.url,
   },
 };
 
