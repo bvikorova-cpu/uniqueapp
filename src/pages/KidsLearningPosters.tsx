@@ -1334,6 +1334,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyRoutEs.url,
     fr: klpReadyRoutFr.url,
   },
+  "online-safety": {
+    sk: klpReadySafeSk.url,
+    hu: klpReadySafeHu.url,
+    de: klpReadySafeDe.url,
+    es: klpReadySafeEs.url,
+    fr: klpReadySafeFr.url,
+  },
+  "money-basics": {
+    sk: klpReadyMoneySk.url,
+    hu: klpReadyMoneyHu.url,
+    de: klpReadyMoneyDe.url,
+    es: klpReadyMoneyEs.url,
+    fr: klpReadyMoneyFr.url,
+  },
 };
 
 type KlpTranslationMap = Record<string, { title: string; description: string }>;
