@@ -98,6 +98,16 @@ import klpReadyPunctHu from "@/assets/kids-poster-translations/punctuation-marks
 import klpReadyPunctDe from "@/assets/kids-poster-translations/punctuation-marks-de.webp.asset.json";
 import klpReadyPunctEs from "@/assets/kids-poster-translations/punctuation-marks-es.webp.asset.json";
 import klpReadyPunctFr from "@/assets/kids-poster-translations/punctuation-marks-fr.webp.asset.json";
+import klpReadyNounsSk from "@/assets/kids-poster-translations/nouns-sk.webp.asset.json";
+import klpReadyNounsHu from "@/assets/kids-poster-translations/nouns-hu.webp.asset.json";
+import klpReadyNounsDe from "@/assets/kids-poster-translations/nouns-de.webp.asset.json";
+import klpReadyNounsEs from "@/assets/kids-poster-translations/nouns-es.webp.asset.json";
+import klpReadyNounsFr from "@/assets/kids-poster-translations/nouns-fr.webp.asset.json";
+import klpReadyVerbTenSk from "@/assets/kids-poster-translations/verbs-tenses-sk.webp.asset.json";
+import klpReadyVerbTenHu from "@/assets/kids-poster-translations/verbs-tenses-hu.webp.asset.json";
+import klpReadyVerbTenDe from "@/assets/kids-poster-translations/verbs-tenses-de.webp.asset.json";
+import klpReadyVerbTenEs from "@/assets/kids-poster-translations/verbs-tenses-es.webp.asset.json";
+import klpReadyVerbTenFr from "@/assets/kids-poster-translations/verbs-tenses-fr.png.asset.json";
 import klpReadyMeasSk from "@/assets/kids-poster-translations/measurement-units-sk.webp.asset.json";
 import klpReadyMeasHu from "@/assets/kids-poster-translations/measurement-units-hu.webp.asset.json";
 import klpReadyMeasDe from "@/assets/kids-poster-translations/measurement-units-de.webp.asset.json";
