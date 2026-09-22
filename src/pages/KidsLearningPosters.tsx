@@ -1358,6 +1358,20 @@ const KLP_LANGUAGES: { id: string; label: string; name: string }[] = [
 
 /** Ready-made translated posters uploaded by the team (no AI needed). */
 const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
+  "order-of-operations": {
+    sk: klpReadyOrdOpSk.url,
+    hu: klpReadyOrdOpHu.url,
+    de: klpReadyOrdOpDe.url,
+    es: klpReadyOrdOpEs.url,
+    fr: klpReadyOrdOpFr.url,
+  },
+  "negative-numbers": {
+    sk: klpReadyNegNumSk.url,
+    hu: klpReadyNegNumHu.url,
+    de: klpReadyNegNumDe.url,
+    es: klpReadyNegNumEs.url,
+    fr: klpReadyNegNumFr.url,
+  },
   "numbers-1-20": {
     sk: klpReadyNum20Sk.url,
     hu: klpReadyNum20Hu.url,
