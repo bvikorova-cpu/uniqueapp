@@ -1424,6 +1424,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyTimeEs.url,
     fr: klpReadyTimeFr.url,
   },
+  "cursive-alphabet": {
+    sk: klpReadyCursSk.url,
+    hu: klpReadyCursHu.url,
+    de: klpReadyCursDe.url,
+    es: klpReadyCursEs.url,
+    fr: klpReadyCursFr.url,
+  },
+  "sight-words": {
+    sk: klpReadySightSk.url,
+    hu: klpReadySightHu.url,
+    de: klpReadySightDe.url,
+    es: klpReadySightEs.url,
+    fr: klpReadySightFr.url,
+  },
   "geometry-shapes": {
     sk: klpReadyGeoSk.url,
     hu: klpReadyGeoHu.url,
