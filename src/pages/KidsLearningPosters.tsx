@@ -1369,6 +1369,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyRomanEs.url,
     fr: klpReadyRomanFr.url,
   },
+  "measurement-units": {
+    sk: klpReadyMeasSk.url,
+    hu: klpReadyMeasHu.url,
+    de: klpReadyMeasDe.url,
+    es: klpReadyMeasEs.url,
+    fr: klpReadyMeasFr.url,
+  },
+  "math-vocabulary": {
+    sk: klpReadyMathVocSk.url,
+    hu: klpReadyMathVocHu.url,
+    de: klpReadyMathVocDe.url,
+    es: klpReadyMathVocEs.url,
+    fr: klpReadyMathVocFr.url,
+  },
   "telling-time": {
     sk: klpReadyTimeSk.url,
     hu: klpReadyTimeHu.url,
