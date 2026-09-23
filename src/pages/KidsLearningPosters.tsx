@@ -210,6 +210,16 @@ import klpReadyOceanZonesHu from "@/assets/kids-poster-translations/ocean-zones-
 import klpReadyOceanZonesDe from "@/assets/kids-poster-translations/ocean-zones-de.webp.asset.json";
 import klpReadyOceanZonesEs from "@/assets/kids-poster-translations/ocean-zones-es.webp.asset.json";
 import klpReadyOceanZonesFr from "@/assets/kids-poster-translations/ocean-zones-fr.webp.asset.json";
+import klpReadyVolcanoesSk from "@/assets/kids-poster-translations/volcanoes-sk.webp.asset.json";
+import klpReadyVolcanoesHu from "@/assets/kids-poster-translations/volcanoes-hu.webp.asset.json";
+import klpReadyVolcanoesDe from "@/assets/kids-poster-translations/volcanoes-de.webp.asset.json";
+import klpReadyVolcanoesEs from "@/assets/kids-poster-translations/volcanoes-es.webp.asset.json";
+import klpReadyVolcanoesFr from "@/assets/kids-poster-translations/volcanoes-fr.webp.asset.json";
+import klpReadyElectricitySk from "@/assets/kids-poster-translations/electricity-basics-sk.webp.asset.json";
+import klpReadyElectricityHu from "@/assets/kids-poster-translations/electricity-basics-hu.webp.asset.json";
+import klpReadyElectricityDe from "@/assets/kids-poster-translations/electricity-basics-de.webp.asset.json";
+import klpReadyElectricityEs from "@/assets/kids-poster-translations/electricity-basics-es.webp.asset.json";
+import klpReadyElectricityFr from "@/assets/kids-poster-translations/electricity-basics-fr.webp.asset.json";
 import klpReadyButterflySk from "@/assets/kids-poster-translations/butterfly-life-cycle-sk.webp.asset.json";
 import klpReadyButterflyHu from "@/assets/kids-poster-translations/butterfly-life-cycle-hu.webp.asset.json";
 import klpReadyButterflyDe from "@/assets/kids-poster-translations/butterfly-life-cycle-de.webp.asset.json";
@@ -1379,6 +1389,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyFoodChainDe.url,
     es: klpReadyFoodChainEs.url,
     fr: klpReadyFoodChainFr.url,
+  },
+  volcanoes: {
+    sk: klpReadyVolcanoesSk.url,
+    hu: klpReadyVolcanoesHu.url,
+    de: klpReadyVolcanoesDe.url,
+    es: klpReadyVolcanoesEs.url,
+    fr: klpReadyVolcanoesFr.url,
+  },
+  "electricity-basics": {
+    sk: klpReadyElectricitySk.url,
+    hu: klpReadyElectricityHu.url,
+    de: klpReadyElectricityDe.url,
+    es: klpReadyElectricityEs.url,
+    fr: klpReadyElectricityFr.url,
   },
   "ocean-zones": {
     sk: klpReadyOceanZonesSk.url,
