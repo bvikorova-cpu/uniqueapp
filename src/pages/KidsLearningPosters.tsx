@@ -2107,7 +2107,7 @@ export default function KidsLearningPosters() {
               <ArrowLeft className="h-4 w-4" /> Kids Channel
             </Link>
           </Button>
-          <Badge className="mb-4 bg-primary text-primary-foreground">Printable • Ages 3-18</Badge>
+          <Badge className="mb-4 bg-primary text-primary-foreground">Printable • Ages 3-16</Badge>
           <h1 className="klp-title text-3xl font-extrabold tracking-tight md:text-5xl">
             Learning Posters for kids and teens
           </h1>
