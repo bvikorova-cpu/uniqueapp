@@ -183,6 +183,16 @@ import klpReadySkeletonHu from "@/assets/kids-poster-translations/human-skeleton
 import klpReadySkeletonDe from "@/assets/kids-poster-translations/human-skeleton-de.webp.asset.json";
 import klpReadySkeletonEs from "@/assets/kids-poster-translations/human-skeleton-es.webp.asset.json";
 import klpReadySkeletonFr from "@/assets/kids-poster-translations/human-skeleton-fr.webp.asset.json";
+import klpReadySensesSk from "@/assets/kids-poster-translations/five-senses-sk.webp.asset.json";
+import klpReadySensesHu from "@/assets/kids-poster-translations/five-senses-hu.webp.asset.json";
+import klpReadySensesDe from "@/assets/kids-poster-translations/five-senses-de.webp.asset.json";
+import klpReadySensesEs from "@/assets/kids-poster-translations/five-senses-es.webp.asset.json";
+import klpReadySensesFr from "@/assets/kids-poster-translations/five-senses-fr.webp.asset.json";
+import klpReadyDinoSk from "@/assets/kids-poster-translations/dinosaurs-sk.webp.asset.json";
+import klpReadyDinoHu from "@/assets/kids-poster-translations/dinosaurs-hu.webp.asset.json";
+import klpReadyDinoDe from "@/assets/kids-poster-translations/dinosaurs-de.webp.asset.json";
+import klpReadyDinoEs from "@/assets/kids-poster-translations/dinosaurs-es.webp.asset.json";
+import klpReadyDinoFr from "@/assets/kids-poster-translations/dinosaurs-fr.webp.asset.json";
 import klpReadyShapesSk from "@/assets/kids-poster-translations/shapes-colors-sk.jpg.asset.json";
 import klpReadyShapesHu from "@/assets/kids-poster-translations/shapes-colors-hu.jpg.asset.json";
 import klpReadyShapesDe from "@/assets/kids-poster-translations/shapes-colors-de.jpg.asset.json";
@@ -1472,6 +1482,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyOrgansDe.url,
     es: klpReadyOrgansEs.url,
     fr: klpReadyOrgansFr.url,
+  },
+  "five-senses": {
+    sk: klpReadySensesSk.url,
+    hu: klpReadySensesHu.url,
+    de: klpReadySensesDe.url,
+    es: klpReadySensesEs.url,
+    fr: klpReadySensesFr.url,
+  },
+  dinosaurs: {
+    sk: klpReadyDinoSk.url,
+    hu: klpReadyDinoHu.url,
+    de: klpReadyDinoDe.url,
+    es: klpReadyDinoEs.url,
+    fr: klpReadyDinoFr.url,
   },
   "human-skeleton": {
     sk: klpReadySkeletonSk.url,
