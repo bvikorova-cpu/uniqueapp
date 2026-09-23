@@ -1339,6 +1339,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyDinoEs.url,
     fr: klpReadyDinoFr.url,
   },
+  "weather-clouds": {
+    sk: klpReadyWeatherSk.url,
+    hu: klpReadyWeatherHu.url,
+    de: klpReadyWeatherDe.url,
+    es: klpReadyWeatherEs.url,
+    fr: klpReadyWeatherFr.url,
+  },
+  "states-of-matter": {
+    sk: klpReadyMatterSk.url,
+    hu: klpReadyMatterHu.url,
+    de: klpReadyMatterDe.url,
+    es: klpReadyMatterEs.url,
+    fr: klpReadyMatterFr.url,
+  },
   "butterfly-life-cycle": {
     sk: klpReadyButterflySk.url,
     hu: klpReadyButterflyHu.url,
