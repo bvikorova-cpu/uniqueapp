@@ -230,6 +230,16 @@ import klpReadyBeesPollinationHu from "@/assets/kids-poster-translations/bees-po
 import klpReadyBeesPollinationDe from "@/assets/kids-poster-translations/bees-pollination-de.webp.asset.json";
 import klpReadyBeesPollinationEs from "@/assets/kids-poster-translations/bees-pollination-es.webp.asset.json";
 import klpReadyBeesPollinationFr from "@/assets/kids-poster-translations/bees-pollination-fr.webp.asset.json";
+import klpReadyRainforestAnimalsSk from "@/assets/kids-poster-translations/rainforest-animals-sk.webp.asset.json";
+import klpReadyRainforestAnimalsHu from "@/assets/kids-poster-translations/rainforest-animals-hu.webp.asset.json";
+import klpReadyRainforestAnimalsDe from "@/assets/kids-poster-translations/rainforest-animals-de.webp.asset.json";
+import klpReadyRainforestAnimalsEs from "@/assets/kids-poster-translations/rainforest-animals-es.webp.asset.json";
+import klpReadyRainforestAnimalsFr from "@/assets/kids-poster-translations/rainforest-animals-fr.webp.asset.json";
+import klpReadyInsectsSk from "@/assets/kids-poster-translations/insects-sk.webp.asset.json";
+import klpReadyInsectsHu from "@/assets/kids-poster-translations/insects-hu.webp.asset.json";
+import klpReadyInsectsDe from "@/assets/kids-poster-translations/insects-de.webp.asset.json";
+import klpReadyInsectsEs from "@/assets/kids-poster-translations/insects-es.webp.asset.json";
+import klpReadyInsectsFr from "@/assets/kids-poster-translations/insects-fr.webp.asset.json";
 import klpReadyVolcanoesSk from "@/assets/kids-poster-translations/volcanoes-sk.webp.asset.json";
 import klpReadyVolcanoesHu from "@/assets/kids-poster-translations/volcanoes-hu.webp.asset.json";
 import klpReadyVolcanoesDe from "@/assets/kids-poster-translations/volcanoes-de.webp.asset.json";
@@ -1461,6 +1471,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyBeesPollinationDe.url,
     es: klpReadyBeesPollinationEs.url,
     fr: klpReadyBeesPollinationFr.url,
+  },
+  "rainforest-animals": {
+    sk: klpReadyRainforestAnimalsSk.url,
+    hu: klpReadyRainforestAnimalsHu.url,
+    de: klpReadyRainforestAnimalsDe.url,
+    es: klpReadyRainforestAnimalsEs.url,
+    fr: klpReadyRainforestAnimalsFr.url,
+  },
+  "insects": {
+    sk: klpReadyInsectsSk.url,
+    hu: klpReadyInsectsHu.url,
+    de: klpReadyInsectsDe.url,
+    es: klpReadyInsectsEs.url,
+    fr: klpReadyInsectsFr.url,
   },
   volcanoes: {
     sk: klpReadyVolcanoesSk.url,
