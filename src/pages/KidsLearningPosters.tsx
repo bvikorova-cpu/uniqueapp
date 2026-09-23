@@ -414,6 +414,16 @@ import klpReadyYogaHu from "@/assets/kids-poster-translations/yoga-kids-hu.webp.
 import klpReadyYogaDe from "@/assets/kids-poster-translations/yoga-kids-de.webp.asset.json";
 import klpReadyYogaEs from "@/assets/kids-poster-translations/yoga-kids-es.webp.asset.json";
 import klpReadyYogaFr from "@/assets/kids-poster-translations/yoga-kids-fr.webp.asset.json";
+import klpReadyKindSk from "@/assets/kids-poster-translations/kindness-sk.webp.asset.json";
+import klpReadyKindHu from "@/assets/kids-poster-translations/kindness-hu.webp.asset.json";
+import klpReadyKindDe from "@/assets/kids-poster-translations/kindness-de.webp.asset.json";
+import klpReadyKindEs from "@/assets/kids-poster-translations/kindness-es.webp.asset.json";
+import klpReadyKindFr from "@/assets/kids-poster-translations/kindness-fr.webp.asset.json";
+import klpReadyBullySk from "@/assets/kids-poster-translations/bullying-speak-up-sk.webp.asset.json";
+import klpReadyBullyHu from "@/assets/kids-poster-translations/bullying-speak-up-hu.webp.asset.json";
+import klpReadyBullyDe from "@/assets/kids-poster-translations/bullying-speak-up-de.webp.asset.json";
+import klpReadyBullyEs from "@/assets/kids-poster-translations/bullying-speak-up-es.webp.asset.json";
+import klpReadyBullyFr from "@/assets/kids-poster-translations/bullying-speak-up-fr.webp.asset.json";
 import klpReadySportSk from "@/assets/kids-poster-translations/sports-movement-sk.webp.asset.json";
 import klpReadySportHu from "@/assets/kids-poster-translations/sports-movement-hu.webp.asset.json";
 import klpReadySportDe from "@/assets/kids-poster-translations/sports-movement-de.webp.asset.json";
@@ -1864,6 +1874,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyAngerDe.url,
     es: klpReadyAngerEs.url,
     fr: klpReadyAngerFr.url,
+  },
+  "kindness": {
+    sk: klpReadyKindSk.url,
+    hu: klpReadyKindHu.url,
+    de: klpReadyKindDe.url,
+    es: klpReadyKindEs.url,
+    fr: klpReadyKindFr.url,
+  },
+  "bullying-speak-up": {
+    sk: klpReadyBullySk.url,
+    hu: klpReadyBullyHu.url,
+    de: klpReadyBullyDe.url,
+    es: klpReadyBullyEs.url,
+    fr: klpReadyBullyFr.url,
   },
   "yoga-kids": {
     sk: klpReadyYogaSk.url,
