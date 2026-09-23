@@ -296,7 +296,6 @@ import posterInsects from "@/assets/kids-posters/insects.jpg";
 import posterBrushingTeeth from "@/assets/kids-posters/brushing-teeth.jpg";
 import posterHandWashing from "@/assets/kids-posters/hand-washing.jpg";
 import posterHealthyFoodPlate from "@/assets/kids-posters/healthy-food-plate.jpg";
-import posterEmotionsTeens from "@/assets/kids-posters/emotions-teens.jpg";
 import posterFriendshipRules from "@/assets/kids-posters/friendship-rules.jpg";
 import posterTableManners from "@/assets/kids-posters/table-manners.jpg";
 import posterMorningRoutine from "@/assets/kids-posters/morning-routine.jpg";
@@ -313,14 +312,12 @@ import posterFireSafety from "@/assets/kids-posters/fire-safety.jpg";
 import posterWaterSafety from "@/assets/kids-posters/water-safety.jpg";
 import posterStrangerSafety from "@/assets/kids-posters/stranger-safety.jpg";
 import posterScreenTimeBalance from "@/assets/kids-posters/screen-time-balance.jpg";
-import posterPasswordsSafety from "@/assets/kids-posters/passwords-safety.jpg";
 import posterEmergencyNumbers from "@/assets/kids-posters/emergency-numbers.jpg";
 import posterSavingMoney from "@/assets/kids-posters/saving-money.jpg";
 import posterNeedsVsWants from "@/assets/kids-posters/needs-vs-wants.jpg";
 import posterGoodListener from "@/assets/kids-posters/good-listener.jpg";
 import posterAskingForHelp from "@/assets/kids-posters/asking-for-help.jpg";
 import posterHealthySleep from "@/assets/kids-posters/healthy-sleep.jpg";
-import posterRespectfulOnline from "@/assets/kids-posters/respectful-online.jpg";
 import posterChoresResponsibility from "@/assets/kids-posters/chores-responsibility.jpg";
 import posterPatiencePractice from "@/assets/kids-posters/patience-practice.jpg";
 import posterGratitude from "@/assets/kids-posters/gratitude.jpg";
@@ -353,7 +350,7 @@ export const KLP_POSTER_TRANSLATE_CREDITS = 2;
 /** Credits for the whole encyclopedia translated into another language. */
 export const KLP_BOOK_TRANSLATE_CREDITS = 25;
 
-type KlpCategory = "school" | "science" | "life" | "safety" | "money" | "teen";
+type KlpCategory = "school" | "science" | "life" | "safety" | "money";
 
 type KlpPoster = {
   id: string;
@@ -373,7 +370,6 @@ const KLP_CATEGORIES: { id: KlpCategory | "all"; label: string; icon: typeof Gra
   { id: "life", label: "Life & feelings", icon: HeartHandshake },
   { id: "safety", label: "Safety", icon: ShieldCheck },
   { id: "money", label: "Money skills", icon: Wallet },
-  { id: "teen", label: "Teen advice", icon: Baby },
 ];
 
 const KLP_AGE_BANDS = [
@@ -995,16 +991,6 @@ const KLP_POSTERS: KlpPoster[] = [
     file: "unique-healthy-food-plate-poster.jpg",
   },
   {
-    id: "emotions-teens",
-    title: "Understanding Emotions",
-    description: "Naming feelings, what they're telling you and healthy ways to respond.",
-    ages: "11-16 years",
-    minAge: 10,
-    category: "teen",
-    image: posterEmotionsTeens,
-    file: "unique-emotions-teens-poster.jpg",
-  },
-  {
     id: "friendship-rules",
     title: "Being a Good Friend",
     description: "Sharing, listening, honesty and saying sorry — friendship skills that last.",
@@ -1165,16 +1151,6 @@ const KLP_POSTERS: KlpPoster[] = [
     file: "unique-screen-time-balance-poster.jpg",
   },
   {
-    id: "passwords-safety",
-    title: "Strong Passwords",
-    description: "Do's and don'ts, passphrases and two-factor authentication.",
-    ages: "11-16 years",
-    minAge: 10,
-    category: "safety",
-    image: posterPasswordsSafety,
-    file: "unique-passwords-safety-poster.jpg",
-  },
-  {
     id: "emergency-numbers",
     title: "Emergency Numbers",
     description: "Call 112 — when to call and what to say, step by step.",
@@ -1233,16 +1209,6 @@ const KLP_POSTERS: KlpPoster[] = [
     category: "life",
     image: posterHealthySleep,
     file: "unique-healthy-sleep-poster.jpg",
-  },
-  {
-    id: "respectful-online",
-    title: "Be Respectful Online",
-    description: "Think before you type, no trolling, respect opinions, report and block.",
-    ages: "11-16 years",
-    minAge: 10,
-    category: "safety",
-    image: posterRespectfulOnline,
-    file: "unique-respectful-online-poster.jpg",
   },
   {
     id: "chores-responsibility",
