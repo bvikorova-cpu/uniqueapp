@@ -1400,6 +1400,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyFoodChainEs.url,
     fr: klpReadyFoodChainFr.url,
   },
+  "simple-machines": {
+    sk: klpReadySimpleMachinesSk.url,
+    hu: klpReadySimpleMachinesHu.url,
+    de: klpReadySimpleMachinesDe.url,
+    es: klpReadySimpleMachinesEs.url,
+    fr: klpReadySimpleMachinesFr.url,
+  },
+  "space-rockets": {
+    sk: klpReadySpaceRocketsSk.url,
+    hu: klpReadySpaceRocketsHu.url,
+    de: klpReadySpaceRocketsDe.url,
+    es: klpReadySpaceRocketsEs.url,
+    fr: klpReadySpaceRocketsFr.url,
+  },
   volcanoes: {
     sk: klpReadyVolcanoesSk.url,
     hu: klpReadyVolcanoesHu.url,
