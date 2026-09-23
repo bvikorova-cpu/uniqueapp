@@ -220,6 +220,16 @@ import klpReadySpaceRocketsHu from "@/assets/kids-poster-translations/space-rock
 import klpReadySpaceRocketsDe from "@/assets/kids-poster-translations/space-rockets-de.webp.asset.json";
 import klpReadySpaceRocketsEs from "@/assets/kids-poster-translations/space-rockets-es.webp.asset.json";
 import klpReadySpaceRocketsFr from "@/assets/kids-poster-translations/space-rockets-fr.webp.asset.json";
+import klpReadyRecyclingEarthSk from "@/assets/kids-poster-translations/recycling-earth-sk.webp.asset.json";
+import klpReadyRecyclingEarthHu from "@/assets/kids-poster-translations/recycling-earth-hu.webp.asset.json";
+import klpReadyRecyclingEarthDe from "@/assets/kids-poster-translations/recycling-earth-de.webp.asset.json";
+import klpReadyRecyclingEarthEs from "@/assets/kids-poster-translations/recycling-earth-es.webp.asset.json";
+import klpReadyRecyclingEarthFr from "@/assets/kids-poster-translations/recycling-earth-fr.webp.asset.json";
+import klpReadyBeesPollinationSk from "@/assets/kids-poster-translations/bees-pollination-sk.webp.asset.json";
+import klpReadyBeesPollinationHu from "@/assets/kids-poster-translations/bees-pollination-hu.webp.asset.json";
+import klpReadyBeesPollinationDe from "@/assets/kids-poster-translations/bees-pollination-de.webp.asset.json";
+import klpReadyBeesPollinationEs from "@/assets/kids-poster-translations/bees-pollination-es.webp.asset.json";
+import klpReadyBeesPollinationFr from "@/assets/kids-poster-translations/bees-pollination-fr.webp.asset.json";
 import klpReadyVolcanoesSk from "@/assets/kids-poster-translations/volcanoes-sk.webp.asset.json";
 import klpReadyVolcanoesHu from "@/assets/kids-poster-translations/volcanoes-hu.webp.asset.json";
 import klpReadyVolcanoesDe from "@/assets/kids-poster-translations/volcanoes-de.webp.asset.json";
@@ -1437,6 +1447,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadySpaceRocketsDe.url,
     es: klpReadySpaceRocketsEs.url,
     fr: klpReadySpaceRocketsFr.url,
+  },
+  "recycling-earth": {
+    sk: klpReadyRecyclingEarthSk.url,
+    hu: klpReadyRecyclingEarthHu.url,
+    de: klpReadyRecyclingEarthDe.url,
+    es: klpReadyRecyclingEarthEs.url,
+    fr: klpReadyRecyclingEarthFr.url,
+  },
+  "bees-pollination": {
+    sk: klpReadyBeesPollinationSk.url,
+    hu: klpReadyBeesPollinationHu.url,
+    de: klpReadyBeesPollinationDe.url,
+    es: klpReadyBeesPollinationEs.url,
+    fr: klpReadyBeesPollinationFr.url,
   },
   volcanoes: {
     sk: klpReadyVolcanoesSk.url,
