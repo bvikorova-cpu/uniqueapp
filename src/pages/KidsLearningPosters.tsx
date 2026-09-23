@@ -191,6 +191,16 @@ import klpReadyDinoHu from "@/assets/kids-poster-translations/dinosaurs-hu.webp.
 import klpReadyDinoDe from "@/assets/kids-poster-translations/dinosaurs-de.webp.asset.json";
 import klpReadyDinoEs from "@/assets/kids-poster-translations/dinosaurs-es.webp.asset.json";
 import klpReadyDinoFr from "@/assets/kids-poster-translations/dinosaurs-fr.webp.asset.json";
+import klpReadyButterflySk from "@/assets/kids-poster-translations/butterfly-life-cycle-sk.webp.asset.json";
+import klpReadyButterflyHu from "@/assets/kids-poster-translations/butterfly-life-cycle-hu.webp.asset.json";
+import klpReadyButterflyDe from "@/assets/kids-poster-translations/butterfly-life-cycle-de.webp.asset.json";
+import klpReadyButterflyEs from "@/assets/kids-poster-translations/butterfly-life-cycle-es.webp.asset.json";
+import klpReadyButterflyFr from "@/assets/kids-poster-translations/butterfly-life-cycle-fr.webp.asset.json";
+import klpReadyPhotoSk from "@/assets/kids-poster-translations/photosynthesis-sk.webp.asset.json";
+import klpReadyPhotoHu from "@/assets/kids-poster-translations/photosynthesis-hu.webp.asset.json";
+import klpReadyPhotoDe from "@/assets/kids-poster-translations/photosynthesis-de.webp.asset.json";
+import klpReadyPhotoEs from "@/assets/kids-poster-translations/photosynthesis-es.webp.asset.json";
+import klpReadyPhotoFr from "@/assets/kids-poster-translations/photosynthesis-fr.png.asset.json";
 import klpReadyShapesSk from "@/assets/kids-poster-translations/shapes-colors-sk.jpg.asset.json";
 import klpReadyShapesHu from "@/assets/kids-poster-translations/shapes-colors-hu.jpg.asset.json";
 import klpReadyShapesDe from "@/assets/kids-poster-translations/shapes-colors-de.jpg.asset.json";
@@ -1363,6 +1373,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyDinoDe.url,
     es: klpReadyDinoEs.url,
     fr: klpReadyDinoFr.url,
+  },
+  "butterfly-life-cycle": {
+    sk: klpReadyButterflySk.url,
+    hu: klpReadyButterflyHu.url,
+    de: klpReadyButterflyDe.url,
+    es: klpReadyButterflyEs.url,
+    fr: klpReadyButterflyFr.url,
+  },
+  photosynthesis: {
+    sk: klpReadyPhotoSk.url,
+    hu: klpReadyPhotoHu.url,
+    de: klpReadyPhotoDe.url,
+    es: klpReadyPhotoEs.url,
+    fr: klpReadyPhotoFr.url,
   },
   "human-skeleton": {
     sk: klpReadySkeletonSk.url,
