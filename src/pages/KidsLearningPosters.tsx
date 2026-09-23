@@ -230,6 +230,16 @@ import klpReadyElectricityHu from "@/assets/kids-poster-translations/electricity
 import klpReadyElectricityDe from "@/assets/kids-poster-translations/electricity-basics-de.webp.asset.json";
 import klpReadyElectricityEs from "@/assets/kids-poster-translations/electricity-basics-es.webp.asset.json";
 import klpReadyElectricityFr from "@/assets/kids-poster-translations/electricity-basics-fr.webp.asset.json";
+import klpReadyMoonSk from "@/assets/kids-poster-translations/moon-phases-sk.asset.json";
+import klpReadyMoonHu from "@/assets/kids-poster-translations/moon-phases-hu.asset.json";
+import klpReadyMoonDe from "@/assets/kids-poster-translations/moon-phases-de.asset.json";
+import klpReadyMoonEs from "@/assets/kids-poster-translations/moon-phases-es.asset.json";
+import klpReadyMoonFr from "@/assets/kids-poster-translations/moon-phases-fr.asset.json";
+import klpReadySeasonsSk from "@/assets/kids-poster-translations/four-seasons-sk.asset.json";
+import klpReadySeasonsHu from "@/assets/kids-poster-translations/four-seasons-hu.asset.json";
+import klpReadySeasonsDe from "@/assets/kids-poster-translations/four-seasons-de.asset.json";
+import klpReadySeasonsEs from "@/assets/kids-poster-translations/four-seasons-es.asset.json";
+import klpReadySeasonsFr from "@/assets/kids-poster-translations/four-seasons-fr.asset.json";
 import klpReadyButterflySk from "@/assets/kids-poster-translations/butterfly-life-cycle-sk.webp.asset.json";
 import klpReadyButterflyHu from "@/assets/kids-poster-translations/butterfly-life-cycle-hu.webp.asset.json";
 import klpReadyButterflyDe from "@/assets/kids-poster-translations/butterfly-life-cycle-de.webp.asset.json";
@@ -1330,6 +1340,20 @@ const KLP_LANGUAGES: { id: string; label: string; name: string }[] = [
 
 /** Ready-made translated posters uploaded by the team (no AI needed). */
 const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
+  "moon-phases": {
+    sk: klpReadyMoonSk.url,
+    hu: klpReadyMoonHu.url,
+    de: klpReadyMoonDe.url,
+    es: klpReadyMoonEs.url,
+    fr: klpReadyMoonFr.url,
+  },
+  "four-seasons": {
+    sk: klpReadySeasonsSk.url,
+    hu: klpReadySeasonsHu.url,
+    de: klpReadySeasonsDe.url,
+    es: klpReadySeasonsEs.url,
+    fr: klpReadySeasonsFr.url,
+  },
   "world-map-animals": {
     sk: klpReadyWmaSk.url,
     hu: klpReadyWmaHu.url,
