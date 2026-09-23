@@ -45,8 +45,6 @@ import posterFeelings from "@/assets/kids-posters/feelings.jpg";
 import posterDailyRoutine from "@/assets/kids-posters/daily-routine.jpg";
 import posterOnlineSafety from "@/assets/kids-posters/online-safety.jpg";
 import posterMoneyBasics from "@/assets/kids-posters/money-basics.jpg";
-import posterStudySmart from "@/assets/kids-posters/study-smart.jpg";
-import posterTeenLifeSkills from "@/assets/kids-posters/teen-life-skills.jpg";
 import posterNumbers120 from "@/assets/kids-posters/numbers-1-20.jpg";
 import posterCountingTo100 from "@/assets/kids-posters/counting-to-100.jpg";
 import posterAdditionSubtraction from "@/assets/kids-posters/addition-subtraction.jpg";
@@ -299,32 +297,23 @@ import posterDealingWithAnger from "@/assets/kids-posters/dealing-with-anger.jpg
 import posterKindness from "@/assets/kids-posters/kindness.jpg";
 import posterBullyingSpeakUp from "@/assets/kids-posters/bullying-speak-up.jpg";
 import posterGrowthMindset from "@/assets/kids-posters/growth-mindset.jpg";
-import posterGoalSetting from "@/assets/kids-posters/goal-setting.jpg";
-import posterTimeManagement from "@/assets/kids-posters/time-management.jpg";
 import posterFirstAidBasics from "@/assets/kids-posters/first-aid-basics.jpg";
 import posterRoadSafety from "@/assets/kids-posters/road-safety.jpg";
 import posterFireSafety from "@/assets/kids-posters/fire-safety.jpg";
 import posterWaterSafety from "@/assets/kids-posters/water-safety.jpg";
 import posterStrangerSafety from "@/assets/kids-posters/stranger-safety.jpg";
-import posterPrivacyOnline from "@/assets/kids-posters/privacy-online.jpg";
 import posterScreenTimeBalance from "@/assets/kids-posters/screen-time-balance.jpg";
 import posterPasswordsSafety from "@/assets/kids-posters/passwords-safety.jpg";
-import posterSpotFakeNews from "@/assets/kids-posters/spot-fake-news.jpg";
 import posterEmergencyNumbers from "@/assets/kids-posters/emergency-numbers.jpg";
 import posterSavingMoney from "@/assets/kids-posters/saving-money.jpg";
 import posterNeedsVsWants from "@/assets/kids-posters/needs-vs-wants.jpg";
-import posterFirstPaycheck from "@/assets/kids-posters/first-paycheck.jpg";
 import posterGoodListener from "@/assets/kids-posters/good-listener.jpg";
 import posterAskingForHelp from "@/assets/kids-posters/asking-for-help.jpg";
-import posterPublicSpeaking from "@/assets/kids-posters/public-speaking.jpg";
-import posterExamStress from "@/assets/kids-posters/exam-stress.jpg";
 import posterHealthySleep from "@/assets/kids-posters/healthy-sleep.jpg";
-import posterCriticalThinking from "@/assets/kids-posters/critical-thinking.jpg";
 import posterRespectfulOnline from "@/assets/kids-posters/respectful-online.jpg";
 import posterChoresResponsibility from "@/assets/kids-posters/chores-responsibility.jpg";
 import posterPatiencePractice from "@/assets/kids-posters/patience-practice.jpg";
 import posterGratitude from "@/assets/kids-posters/gratitude.jpg";
-import posterCareerDreams from "@/assets/kids-posters/career-dreams.jpg";
 import klpReadySafeSk from "@/assets/kids-poster-translations/online-safety-sk.jpg.asset.json";
 import klpReadySafeHu from "@/assets/kids-poster-translations/online-safety-hu.jpg.asset.json";
 import klpReadySafeDe from "@/assets/kids-poster-translations/online-safety-de.jpg.asset.json";
@@ -335,16 +324,6 @@ import klpReadyMoneyHu from "@/assets/kids-poster-translations/money-basics-hu.j
 import klpReadyMoneyDe from "@/assets/kids-poster-translations/money-basics-de.jpg.asset.json";
 import klpReadyMoneyEs from "@/assets/kids-poster-translations/money-basics-es.jpg.asset.json";
 import klpReadyMoneyFr from "@/assets/kids-poster-translations/money-basics-fr.jpg.asset.json";
-import klpReadyStudySk from "@/assets/kids-poster-translations/study-smart-sk.jpg.asset.json";
-import klpReadyStudyHu from "@/assets/kids-poster-translations/study-smart-hu.jpg.asset.json";
-import klpReadyStudyDe from "@/assets/kids-poster-translations/study-smart-de.jpg.asset.json";
-import klpReadyStudyEs from "@/assets/kids-poster-translations/study-smart-es.jpg.asset.json";
-import klpReadyStudyFr from "@/assets/kids-poster-translations/study-smart-fr.jpg.asset.json";
-import klpReadyTeenSk from "@/assets/kids-poster-translations/teen-life-skills-sk.jpg.asset.json";
-import klpReadyTeenHu from "@/assets/kids-poster-translations/teen-life-skills-hu.jpg.asset.json";
-import klpReadyTeenDe from "@/assets/kids-poster-translations/teen-life-skills-de.jpg.asset.json";
-import klpReadyTeenEs from "@/assets/kids-poster-translations/teen-life-skills-es.jpg.asset.json";
-import klpReadyTeenFr from "@/assets/kids-poster-translations/teen-life-skills-fr.jpg.asset.json";
 import klpReadyNum20Sk from "@/assets/kids-poster-translations/numbers-1-20-sk.jpg.asset.json";
 import klpReadyNum20Hu from "@/assets/kids-poster-translations/numbers-1-20-hu.jpg.asset.json";
 import klpReadyNum20De from "@/assets/kids-poster-translations/numbers-1-20-de.jpg.asset.json";
@@ -392,7 +371,6 @@ const KLP_AGE_BANDS = [
   { id: "3", label: "3-5 years" },
   { id: "6", label: "6-9 years" },
   { id: "10", label: "10-13 years" },
-  { id: "14", label: "14-18 years" },
 ] as const;
 
 const KLP_POSTERS: KlpPoster[] = [
@@ -495,26 +473,6 @@ const KLP_POSTERS: KlpPoster[] = [
     category: "money",
     image: posterMoneyBasics,
     file: "unique-money-basics-poster.jpg",
-  },
-  {
-    id: "study-smart",
-    title: "Study Smart",
-    description: "Six habits that really work: focus blocks, active recall, sleep and one task at a time.",
-    ages: "12-18 years",
-    minAge: 10,
-    category: "teen",
-    image: posterStudySmart,
-    file: "unique-study-smart-poster.jpg",
-  },
-  {
-    id: "teen-life-skills",
-    title: "Life Skills for Teens",
-    description: "Saying no, handling stress, asking for help and setting goals in small steps.",
-    ages: "14-18 years",
-    minAge: 14,
-    category: "teen",
-    image: posterTeenLifeSkills,
-    file: "unique-life-skills-for-teens-poster.jpg",
   },
   {
     id: "numbers-1-20",
@@ -1137,26 +1095,6 @@ const KLP_POSTERS: KlpPoster[] = [
     file: "unique-growth-mindset-poster.jpg",
   },
   {
-    id: "goal-setting",
-    title: "Goal Setting",
-    description: "SMART goals explained with real teen examples — sport, grades and hobbies.",
-    ages: "12-17 years",
-    minAge: 10,
-    category: "teen",
-    image: posterGoalSetting,
-    file: "unique-goal-setting-poster.jpg",
-  },
-  {
-    id: "time-management",
-    title: "Time Management",
-    description: "Planners, priorities and the pomodoro technique for busy teens.",
-    ages: "13-18 years",
-    minAge: 14,
-    category: "teen",
-    image: posterTimeManagement,
-    file: "unique-time-management-poster.jpg",
-  },
-  {
     id: "first-aid-basics",
     title: "First Aid Basics",
     description: "Small cuts, burns, nosebleeds and when to call an adult or 112.",
@@ -1207,16 +1145,6 @@ const KLP_POSTERS: KlpPoster[] = [
     file: "unique-stranger-safety-poster.jpg",
   },
   {
-    id: "privacy-online",
-    title: "Protect Your Privacy",
-    description: "Private accounts, no location sharing, think before posting.",
-    ages: "12-17 years",
-    minAge: 10,
-    category: "safety",
-    image: posterPrivacyOnline,
-    file: "unique-privacy-online-poster.jpg",
-  },
-  {
     id: "screen-time-balance",
     title: "Screen Time Balance",
     description: "The 1-hour rule, no screens before bed and choosing real life.",
@@ -1235,16 +1163,6 @@ const KLP_POSTERS: KlpPoster[] = [
     category: "safety",
     image: posterPasswordsSafety,
     file: "unique-passwords-safety-poster.jpg",
-  },
-  {
-    id: "spot-fake-news",
-    title: "Spot Fake News",
-    description: "Check the source, look for evidence, read beyond the headline.",
-    ages: "12-18 years",
-    minAge: 10,
-    category: "safety",
-    image: posterSpotFakeNews,
-    file: "unique-spot-fake-news-poster.jpg",
   },
   {
     id: "emergency-numbers",
@@ -1277,16 +1195,6 @@ const KLP_POSTERS: KlpPoster[] = [
     file: "unique-needs-vs-wants-poster.jpg",
   },
   {
-    id: "first-paycheck",
-    title: "Your First Paycheck",
-    description: "Reading a payslip, the 50-30-20 budget and first job ideas for teens.",
-    ages: "14-18 years",
-    minAge: 14,
-    category: "money",
-    image: posterFirstPaycheck,
-    file: "unique-first-paycheck-poster.jpg",
-  },
-  {
     id: "good-listener",
     title: "Be a Good Listener",
     description: "Look, don't interrupt, ask questions, respond — listening shows respect.",
@@ -1307,26 +1215,6 @@ const KLP_POSTERS: KlpPoster[] = [
     file: "unique-asking-for-help-poster.jpg",
   },
   {
-    id: "public-speaking",
-    title: "Public Speaking",
-    description: "Prepare, breathe, stand tall, speak slowly — real voices, bigger opportunities.",
-    ages: "12-17 years",
-    minAge: 10,
-    category: "teen",
-    image: posterPublicSpeaking,
-    file: "unique-public-speaking-poster.jpg",
-  },
-  {
-    id: "exam-stress",
-    title: "Beat Exam Stress",
-    description: "Start early, study in chunks, sleep well and breathe 4-7-8 on the day.",
-    ages: "12-18 years",
-    minAge: 10,
-    category: "teen",
-    image: posterExamStress,
-    file: "unique-exam-stress-poster.jpg",
-  },
-  {
     id: "healthy-sleep",
     title: "Healthy Sleep",
     description: "How much sleep kids and teens need and bedtime tips that work.",
@@ -1335,16 +1223,6 @@ const KLP_POSTERS: KlpPoster[] = [
     category: "life",
     image: posterHealthySleep,
     file: "unique-healthy-sleep-poster.jpg",
-  },
-  {
-    id: "critical-thinking",
-    title: "Think Critically",
-    description: "Who says this? What's the evidence? Opinion or fact?",
-    ages: "13-18 years",
-    minAge: 14,
-    category: "teen",
-    image: posterCriticalThinking,
-    file: "unique-critical-thinking-poster.jpg",
   },
   {
     id: "respectful-online",
@@ -1386,16 +1264,6 @@ const KLP_POSTERS: KlpPoster[] = [
     image: posterGratitude,
     file: "unique-gratitude-poster.jpg",
   },
-  {
-    id: "career-dreams",
-    title: "Dream Careers",
-    description: "Twelve inspiring careers and the first steps toward any of them.",
-    ages: "13-18 years",
-    minAge: 14,
-    category: "teen",
-    image: posterCareerDreams,
-    file: "unique-career-dreams-poster.jpg",
-  },
 ];
 
 async function klpDownload(url: string, filename: string) {
@@ -1434,7 +1302,6 @@ const KLP_BOOK_CHAPTERS: { minAge: number; label: string; blurb: string }[] = [
   { minAge: 3, label: "Ages 3-5 · First discoveries", blurb: "Shapes, colours, letters, numbers and gentle everyday habits." },
   { minAge: 6, label: "Ages 6-9 · School basics", blurb: "Reading, writing, maths, nature and staying safe." },
   { minAge: 10, label: "Ages 10-13 · Going deeper", blurb: "Grammar, geometry, science, the world and money sense." },
-  { minAge: 14, label: "Ages 14-18 · Real life skills", blurb: "Study strategies, emotions, goals, career and independence." },
 ];
 
 /** Languages offered for poster and encyclopedia translation. */
@@ -1742,20 +1609,6 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyMoneyEs.url,
     fr: klpReadyMoneyFr.url,
   },
-  "study-smart": {
-    sk: klpReadyStudySk.url,
-    hu: klpReadyStudyHu.url,
-    de: klpReadyStudyDe.url,
-    es: klpReadyStudyEs.url,
-    fr: klpReadyStudyFr.url,
-  },
-  "teen-life-skills": {
-    sk: klpReadyTeenSk.url,
-    hu: klpReadyTeenHu.url,
-    de: klpReadyTeenDe.url,
-    es: klpReadyTeenEs.url,
-    fr: klpReadyTeenFr.url,
-  },
 };
 
 type KlpTranslationMap = Record<string, { title: string; description: string }>;
@@ -1845,7 +1698,7 @@ async function klpBuildEncyclopedia(
     maxWidth: pageW - 40,
   });
   pdf.setFontSize(11);
-  pdf.text(`${KLP_POSTERS.length} posters · ages 3 to 18 · sorted by age`, pageW / 2, 66, { align: "center" });
+  pdf.text(`${KLP_POSTERS.length} posters · ages 3 to 16 · sorted by age`, pageW / 2, 66, { align: "center" });
   if (opts?.languageLabel) pdf.text(opts.languageLabel, pageW / 2, 75, { align: "center" });
   pdf.setFontSize(11);
   pdf.text("Unique · Kids Channel", pageW / 2, pageH - 10, { align: "center" });
@@ -2254,7 +2107,7 @@ export default function KidsLearningPosters() {
               <ArrowLeft className="h-4 w-4" /> Kids Channel
             </Link>
           </Button>
-          <Badge className="mb-4 bg-primary text-primary-foreground">Printable • Ages 3-18</Badge>
+          <Badge className="mb-4 bg-primary text-primary-foreground">Printable • Ages 3-16</Badge>
           <h1 className="klp-title text-3xl font-extrabold tracking-tight md:text-5xl">
             Learning Posters for kids and teens
           </h1>
@@ -2312,7 +2165,7 @@ export default function KidsLearningPosters() {
               <li>
                 Want the whole library as one children's book? Press “Download full encyclopedia PDF” for{" "}
                 {KLP_BOOK_CREDITS} credits — all {KLP_POSTERS.length} posters in one printable A4 PDF with a
-                cover, contents page and chapters ordered by age (3-5, 6-9, 10-13, 14-18).
+                cover, contents page and chapters ordered by age (3-5, 6-9, 10-13).
               </li>
               <li>
                 Want your own topic? Press “Create my own”, describe it, and AI draws a fresh poster for{" "}
@@ -2359,7 +2212,7 @@ export default function KidsLearningPosters() {
               </div>
               <p className="mt-1 text-sm text-muted-foreground">
                 All {KLP_POSTERS.length} posters bound into one printable A4 book, sorted by age with chapter
-                pages for 3-5, 6-9, 10-13 and 14-18 years. One-time price: {KLP_BOOK_CREDITS} credits.
+                pages for 3-5, 6-9 and 10-13 years. One-time price: {KLP_BOOK_CREDITS} credits.
               </p>
             </div>
             <Button className="w-full gap-2 md:w-auto md:shrink-0" onClick={handleEncyclopedia} disabled={bookBusy}>
