@@ -1390,6 +1390,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyFoodChainEs.url,
     fr: klpReadyFoodChainFr.url,
   },
+  volcanoes: {
+    sk: klpReadyVolcanoesSk.url,
+    hu: klpReadyVolcanoesHu.url,
+    de: klpReadyVolcanoesDe.url,
+    es: klpReadyVolcanoesEs.url,
+    fr: klpReadyVolcanoesFr.url,
+  },
+  "electricity-basics": {
+    sk: klpReadyElectricitySk.url,
+    hu: klpReadyElectricityHu.url,
+    de: klpReadyElectricityDe.url,
+    es: klpReadyElectricityEs.url,
+    fr: klpReadyElectricityFr.url,
+  },
   "ocean-zones": {
     sk: klpReadyOceanZonesSk.url,
     hu: klpReadyOceanZonesHu.url,
