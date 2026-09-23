@@ -250,6 +250,16 @@ import klpReadyHandWashingHu from "@/assets/kids-poster-translations/hand-washin
 import klpReadyHandWashingDe from "@/assets/kids-poster-translations/hand-washing-de.webp.asset.json";
 import klpReadyHandWashingEs from "@/assets/kids-poster-translations/hand-washing-es.webp.asset.json";
 import klpReadyHandWashingFr from "@/assets/kids-poster-translations/hand-washing-fr.webp.asset.json";
+import klpReadyHealthyFoodPlateSk from "@/assets/kids-poster-translations/healthy-food-plate-sk.webp.asset.json";
+import klpReadyHealthyFoodPlateHu from "@/assets/kids-poster-translations/healthy-food-plate-hu.webp.asset.json";
+import klpReadyHealthyFoodPlateDe from "@/assets/kids-poster-translations/healthy-food-plate-de.webp.asset.json";
+import klpReadyHealthyFoodPlateEs from "@/assets/kids-poster-translations/healthy-food-plate-es.webp.asset.json";
+import klpReadyHealthyFoodPlateFr from "@/assets/kids-poster-translations/healthy-food-plate-fr.webp.asset.json";
+import klpReadyFriendshipRulesSk from "@/assets/kids-poster-translations/friendship-rules-sk.webp.asset.json";
+import klpReadyFriendshipRulesHu from "@/assets/kids-poster-translations/friendship-rules-hu.webp.asset.json";
+import klpReadyFriendshipRulesDe from "@/assets/kids-poster-translations/friendship-rules-de.webp.asset.json";
+import klpReadyFriendshipRulesEs from "@/assets/kids-poster-translations/friendship-rules-es.webp.asset.json";
+import klpReadyFriendshipRulesFr from "@/assets/kids-poster-translations/friendship-rules-fr.webp.asset.json";
 import klpReadyVolcanoesSk from "@/assets/kids-poster-translations/volcanoes-sk.webp.asset.json";
 import klpReadyVolcanoesHu from "@/assets/kids-poster-translations/volcanoes-hu.webp.asset.json";
 import klpReadyVolcanoesDe from "@/assets/kids-poster-translations/volcanoes-de.webp.asset.json";
@@ -1509,6 +1519,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyHandWashingDe.url,
     es: klpReadyHandWashingEs.url,
     fr: klpReadyHandWashingFr.url,
+  },
+  "healthy-food-plate": {
+    sk: klpReadyHealthyFoodPlateSk.url,
+    hu: klpReadyHealthyFoodPlateHu.url,
+    de: klpReadyHealthyFoodPlateDe.url,
+    es: klpReadyHealthyFoodPlateEs.url,
+    fr: klpReadyHealthyFoodPlateFr.url,
+  },
+  "friendship-rules": {
+    sk: klpReadyFriendshipRulesSk.url,
+    hu: klpReadyFriendshipRulesHu.url,
+    de: klpReadyFriendshipRulesDe.url,
+    es: klpReadyFriendshipRulesEs.url,
+    fr: klpReadyFriendshipRulesFr.url,
   },
   volcanoes: {
     sk: klpReadyVolcanoesSk.url,
