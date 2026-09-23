@@ -240,6 +240,16 @@ import klpReadyInsectsHu from "@/assets/kids-poster-translations/insects-hu.webp
 import klpReadyInsectsDe from "@/assets/kids-poster-translations/insects-de.webp.asset.json";
 import klpReadyInsectsEs from "@/assets/kids-poster-translations/insects-es.webp.asset.json";
 import klpReadyInsectsFr from "@/assets/kids-poster-translations/insects-fr.webp.asset.json";
+import klpReadyBrushingTeethSk from "@/assets/kids-poster-translations/brushing-teeth-sk.webp.asset.json";
+import klpReadyBrushingTeethHu from "@/assets/kids-poster-translations/brushing-teeth-hu.webp.asset.json";
+import klpReadyBrushingTeethDe from "@/assets/kids-poster-translations/brushing-teeth-de.webp.asset.json";
+import klpReadyBrushingTeethEs from "@/assets/kids-poster-translations/brushing-teeth-es.webp.asset.json";
+import klpReadyBrushingTeethFr from "@/assets/kids-poster-translations/brushing-teeth-fr.webp.asset.json";
+import klpReadyHandWashingSk from "@/assets/kids-poster-translations/hand-washing-sk.webp.asset.json";
+import klpReadyHandWashingHu from "@/assets/kids-poster-translations/hand-washing-hu.webp.asset.json";
+import klpReadyHandWashingDe from "@/assets/kids-poster-translations/hand-washing-de.webp.asset.json";
+import klpReadyHandWashingEs from "@/assets/kids-poster-translations/hand-washing-es.webp.asset.json";
+import klpReadyHandWashingFr from "@/assets/kids-poster-translations/hand-washing-fr.webp.asset.json";
 import klpReadyVolcanoesSk from "@/assets/kids-poster-translations/volcanoes-sk.webp.asset.json";
 import klpReadyVolcanoesHu from "@/assets/kids-poster-translations/volcanoes-hu.webp.asset.json";
 import klpReadyVolcanoesDe from "@/assets/kids-poster-translations/volcanoes-de.webp.asset.json";
@@ -1485,6 +1495,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyInsectsDe.url,
     es: klpReadyInsectsEs.url,
     fr: klpReadyInsectsFr.url,
+  },
+  "brushing-teeth": {
+    sk: klpReadyBrushingTeethSk.url,
+    hu: klpReadyBrushingTeethHu.url,
+    de: klpReadyBrushingTeethDe.url,
+    es: klpReadyBrushingTeethEs.url,
+    fr: klpReadyBrushingTeethFr.url,
+  },
+  "hand-washing": {
+    sk: klpReadyHandWashingSk.url,
+    hu: klpReadyHandWashingHu.url,
+    de: klpReadyHandWashingDe.url,
+    es: klpReadyHandWashingEs.url,
+    fr: klpReadyHandWashingFr.url,
   },
   volcanoes: {
     sk: klpReadyVolcanoesSk.url,
