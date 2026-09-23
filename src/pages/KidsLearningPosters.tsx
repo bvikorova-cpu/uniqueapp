@@ -190,6 +190,16 @@ import klpReadyDinoHu from "@/assets/kids-poster-translations/dinosaurs-hu.webp.
 import klpReadyDinoDe from "@/assets/kids-poster-translations/dinosaurs-de.webp.asset.json";
 import klpReadyDinoEs from "@/assets/kids-poster-translations/dinosaurs-es.webp.asset.json";
 import klpReadyDinoFr from "@/assets/kids-poster-translations/dinosaurs-fr.webp.asset.json";
+import klpReadyWeatherSk from "@/assets/kids-poster-translations/weather-clouds-sk.webp.asset.json";
+import klpReadyWeatherHu from "@/assets/kids-poster-translations/weather-clouds-hu.webp.asset.json";
+import klpReadyWeatherDe from "@/assets/kids-poster-translations/weather-clouds-de.webp.asset.json";
+import klpReadyWeatherEs from "@/assets/kids-poster-translations/weather-clouds-es.webp.asset.json";
+import klpReadyWeatherFr from "@/assets/kids-poster-translations/weather-clouds-fr.webp.asset.json";
+import klpReadyMatterSk from "@/assets/kids-poster-translations/states-of-matter-sk.webp.asset.json";
+import klpReadyMatterHu from "@/assets/kids-poster-translations/states-of-matter-hu.webp.asset.json";
+import klpReadyMatterDe from "@/assets/kids-poster-translations/states-of-matter-de.webp.asset.json";
+import klpReadyMatterEs from "@/assets/kids-poster-translations/states-of-matter-es.webp.asset.json";
+import klpReadyMatterFr from "@/assets/kids-poster-translations/states-of-matter-fr.webp.asset.json";
 import klpReadyButterflySk from "@/assets/kids-poster-translations/butterfly-life-cycle-sk.webp.asset.json";
 import klpReadyButterflyHu from "@/assets/kids-poster-translations/butterfly-life-cycle-hu.webp.asset.json";
 import klpReadyButterflyDe from "@/assets/kids-poster-translations/butterfly-life-cycle-de.webp.asset.json";
