@@ -1483,6 +1483,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyOrgansEs.url,
     fr: klpReadyOrgansFr.url,
   },
+  "five-senses": {
+    sk: klpReadySensesSk.url,
+    hu: klpReadySensesHu.url,
+    de: klpReadySensesDe.url,
+    es: klpReadySensesEs.url,
+    fr: klpReadySensesFr.url,
+  },
+  dinosaurs: {
+    sk: klpReadyDinoSk.url,
+    hu: klpReadyDinoHu.url,
+    de: klpReadyDinoDe.url,
+    es: klpReadyDinoEs.url,
+    fr: klpReadyDinoFr.url,
+  },
   "human-skeleton": {
     sk: klpReadySkeletonSk.url,
     hu: klpReadySkeletonHu.url,
