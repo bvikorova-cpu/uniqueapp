@@ -1374,6 +1374,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyDinoEs.url,
     fr: klpReadyDinoFr.url,
   },
+  "butterfly-life-cycle": {
+    sk: klpReadyButterflySk.url,
+    hu: klpReadyButterflyHu.url,
+    de: klpReadyButterflyDe.url,
+    es: klpReadyButterflyEs.url,
+    fr: klpReadyButterflyFr.url,
+  },
+  photosynthesis: {
+    sk: klpReadyPhotoSk.url,
+    hu: klpReadyPhotoHu.url,
+    de: klpReadyPhotoDe.url,
+    es: klpReadyPhotoEs.url,
+    fr: klpReadyPhotoFr.url,
+  },
   "human-skeleton": {
     sk: klpReadySkeletonSk.url,
     hu: klpReadySkeletonHu.url,
