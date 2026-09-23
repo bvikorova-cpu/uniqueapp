@@ -389,6 +389,16 @@ import posterFriendshipRules from "@/assets/kids-posters/friendship-rules.jpg";
 import posterTableManners from "@/assets/kids-posters/table-manners.jpg";
 import posterMorningRoutine from "@/assets/kids-posters/morning-routine.jpg";
 import posterBedtimeRoutine from "@/assets/kids-posters/bedtime-routine.jpg";
+import klpReadyTableSk from "@/assets/kids-poster-translations/table-manners-sk.webp.asset.json";
+import klpReadyTableHu from "@/assets/kids-poster-translations/table-manners-hu.webp.asset.json";
+import klpReadyTableDe from "@/assets/kids-poster-translations/table-manners-de.webp.asset.json";
+import klpReadyTableEs from "@/assets/kids-poster-translations/table-manners-es.webp.asset.json";
+import klpReadyTableFr from "@/assets/kids-poster-translations/table-manners-fr.webp.asset.json";
+import klpReadyMornSk from "@/assets/kids-poster-translations/morning-routine-sk.webp.asset.json";
+import klpReadyMornHu from "@/assets/kids-poster-translations/morning-routine-hu.webp.asset.json";
+import klpReadyMornDe from "@/assets/kids-poster-translations/morning-routine-de.webp.asset.json";
+import klpReadyMornEs from "@/assets/kids-poster-translations/morning-routine-es.webp.asset.json";
+import klpReadyMornFr from "@/assets/kids-poster-translations/morning-routine-fr.webp.asset.json";
 import posterSportsMovement from "@/assets/kids-posters/sports-movement.jpg";
 import posterYogaKids from "@/assets/kids-posters/yoga-kids.jpg";
 import posterDealingWithAnger from "@/assets/kids-posters/dealing-with-anger.jpg";
@@ -1813,6 +1823,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyMoneyDe.url,
     es: klpReadyMoneyEs.url,
     fr: klpReadyMoneyFr.url,
+  },
+  "table-manners": {
+    sk: klpReadyTableSk.url,
+    hu: klpReadyTableHu.url,
+    de: klpReadyTableDe.url,
+    es: klpReadyTableEs.url,
+    fr: klpReadyTableFr.url,
+  },
+  "morning-routine": {
+    sk: klpReadyMornSk.url,
+    hu: klpReadyMornHu.url,
+    de: klpReadyMornDe.url,
+    es: klpReadyMornEs.url,
+    fr: klpReadyMornFr.url,
   },
 };
 
