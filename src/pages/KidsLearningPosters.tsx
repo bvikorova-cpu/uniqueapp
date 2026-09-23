@@ -399,6 +399,16 @@ import klpReadyMornHu from "@/assets/kids-poster-translations/morning-routine-hu
 import klpReadyMornDe from "@/assets/kids-poster-translations/morning-routine-de.webp.asset.json";
 import klpReadyMornEs from "@/assets/kids-poster-translations/morning-routine-es.webp.asset.json";
 import klpReadyMornFr from "@/assets/kids-poster-translations/morning-routine-fr.webp.asset.json";
+import klpReadyBedSk from "@/assets/kids-poster-translations/bedtime-routine-sk.webp.asset.json";
+import klpReadyBedHu from "@/assets/kids-poster-translations/bedtime-routine-hu.webp.asset.json";
+import klpReadyBedDe from "@/assets/kids-poster-translations/bedtime-routine-de.webp.asset.json";
+import klpReadyBedEs from "@/assets/kids-poster-translations/bedtime-routine-es.webp.asset.json";
+import klpReadyBedFr from "@/assets/kids-poster-translations/bedtime-routine-fr.webp.asset.json";
+import klpReadySportSk from "@/assets/kids-poster-translations/sports-movement-sk.webp.asset.json";
+import klpReadySportHu from "@/assets/kids-poster-translations/sports-movement-hu.webp.asset.json";
+import klpReadySportDe from "@/assets/kids-poster-translations/sports-movement-de.webp.asset.json";
+import klpReadySportEs from "@/assets/kids-poster-translations/sports-movement-es.webp.asset.json";
+import klpReadySportFr from "@/assets/kids-poster-translations/sports-movement-fr.webp.asset.json";
 import posterSportsMovement from "@/assets/kids-posters/sports-movement.jpg";
 import posterYogaKids from "@/assets/kids-posters/yoga-kids.jpg";
 import posterDealingWithAnger from "@/assets/kids-posters/dealing-with-anger.jpg";
@@ -1837,6 +1847,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyMornDe.url,
     es: klpReadyMornEs.url,
     fr: klpReadyMornFr.url,
+  },
+  "bedtime-routine": {
+    sk: klpReadyBedSk.url,
+    hu: klpReadyBedHu.url,
+    de: klpReadyBedDe.url,
+    es: klpReadyBedEs.url,
+    fr: klpReadyBedFr.url,
+  },
+  "sports-movement": {
+    sk: klpReadySportSk.url,
+    hu: klpReadySportHu.url,
+    de: klpReadySportDe.url,
+    es: klpReadySportEs.url,
+    fr: klpReadySportFr.url,
   },
 };
 
