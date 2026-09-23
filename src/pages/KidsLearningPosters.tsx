@@ -173,6 +173,16 @@ import klpReadyNegNumHu from "@/assets/kids-poster-translations/negative-numbers
 import klpReadyNegNumDe from "@/assets/kids-poster-translations/negative-numbers-de.webp.asset.json";
 import klpReadyNegNumEs from "@/assets/kids-poster-translations/negative-numbers-es.png.asset.json";
 import klpReadyNegNumFr from "@/assets/kids-poster-translations/negative-numbers-fr.webp.asset.json";
+import klpReadyOrgansSk from "@/assets/kids-poster-translations/human-body-organs-sk.webp.asset.json";
+import klpReadyOrgansHu from "@/assets/kids-poster-translations/human-body-organs-hu.webp.asset.json";
+import klpReadyOrgansDe from "@/assets/kids-poster-translations/human-body-organs-de.webp.asset.json";
+import klpReadyOrgansEs from "@/assets/kids-poster-translations/human-body-organs-es.webp.asset.json";
+import klpReadyOrgansFr from "@/assets/kids-poster-translations/human-body-organs-fr.webp.asset.json";
+import klpReadySkeletonSk from "@/assets/kids-poster-translations/human-skeleton-sk.webp.asset.json";
+import klpReadySkeletonHu from "@/assets/kids-poster-translations/human-skeleton-hu.webp.asset.json";
+import klpReadySkeletonDe from "@/assets/kids-poster-translations/human-skeleton-de.webp.asset.json";
+import klpReadySkeletonEs from "@/assets/kids-poster-translations/human-skeleton-es.webp.asset.json";
+import klpReadySkeletonFr from "@/assets/kids-poster-translations/human-skeleton-fr.webp.asset.json";
 import klpReadyShapesSk from "@/assets/kids-poster-translations/shapes-colors-sk.jpg.asset.json";
 import klpReadyShapesHu from "@/assets/kids-poster-translations/shapes-colors-hu.jpg.asset.json";
 import klpReadyShapesDe from "@/assets/kids-poster-translations/shapes-colors-de.jpg.asset.json";
