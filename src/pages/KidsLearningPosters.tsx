@@ -1373,6 +1373,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyMatterEs.url,
     fr: klpReadyMatterFr.url,
   },
+  "food-chain": {
+    sk: klpReadyFoodChainSk.url,
+    hu: klpReadyFoodChainHu.url,
+    de: klpReadyFoodChainDe.url,
+    es: klpReadyFoodChainEs.url,
+    fr: klpReadyFoodChainFr.url,
+  },
+  "ocean-zones": {
+    sk: klpReadyOceanZonesSk.url,
+    hu: klpReadyOceanZonesHu.url,
+    de: klpReadyOceanZonesDe.url,
+    es: klpReadyOceanZonesEs.url,
+    fr: klpReadyOceanZonesFr.url,
+  },
   "butterfly-life-cycle": {
     sk: klpReadyButterflySk.url,
     hu: klpReadyButterflyHu.url,
