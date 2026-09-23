@@ -11,7 +11,6 @@ import {
   ShieldCheck,
   Wallet,
   Brain,
-  Baby,
   ArrowLeft,
   Info,
   Languages,
@@ -2186,7 +2185,7 @@ export default function KidsLearningPosters() {
                 <div className="absolute inset-x-3 top-5 text-center text-primary-foreground drop-shadow-md">
                   <div className="text-lg font-extrabold leading-tight md:text-base">Learning Encyclopedia</div>
                   <div className="mt-1 text-[10px] font-medium">The complete printable poster book</div>
-                  <div className="mt-1 text-[9px]">{KLP_POSTERS.length} posters · ages 3 to 18</div>
+                  <div className="mt-1 text-[9px]">{KLP_POSTERS.length} posters · ages 3 to 16</div>
                 </div>
                 <div className="absolute inset-x-2 bottom-2 text-center text-[9px] font-semibold text-primary-foreground drop-shadow-md">
                   Unique · Kids Channel
