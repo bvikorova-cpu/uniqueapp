@@ -404,6 +404,16 @@ import klpReadyBedHu from "@/assets/kids-poster-translations/bedtime-routine-hu.
 import klpReadyBedDe from "@/assets/kids-poster-translations/bedtime-routine-de.webp.asset.json";
 import klpReadyBedEs from "@/assets/kids-poster-translations/bedtime-routine-es.webp.asset.json";
 import klpReadyBedFr from "@/assets/kids-poster-translations/bedtime-routine-fr.webp.asset.json";
+import klpReadyAngerSk from "@/assets/kids-poster-translations/dealing-with-anger-sk.webp.asset.json";
+import klpReadyAngerHu from "@/assets/kids-poster-translations/dealing-with-anger-hu.webp.asset.json";
+import klpReadyAngerDe from "@/assets/kids-poster-translations/dealing-with-anger-de.webp.asset.json";
+import klpReadyAngerEs from "@/assets/kids-poster-translations/dealing-with-anger-es.webp.asset.json";
+import klpReadyAngerFr from "@/assets/kids-poster-translations/dealing-with-anger-fr.webp.asset.json";
+import klpReadyYogaSk from "@/assets/kids-poster-translations/yoga-kids-sk.webp.asset.json";
+import klpReadyYogaHu from "@/assets/kids-poster-translations/yoga-kids-hu.webp.asset.json";
+import klpReadyYogaDe from "@/assets/kids-poster-translations/yoga-kids-de.webp.asset.json";
+import klpReadyYogaEs from "@/assets/kids-poster-translations/yoga-kids-es.webp.asset.json";
+import klpReadyYogaFr from "@/assets/kids-poster-translations/yoga-kids-fr.webp.asset.json";
 import klpReadySportSk from "@/assets/kids-poster-translations/sports-movement-sk.webp.asset.json";
 import klpReadySportHu from "@/assets/kids-poster-translations/sports-movement-hu.webp.asset.json";
 import klpReadySportDe from "@/assets/kids-poster-translations/sports-movement-de.webp.asset.json";
@@ -1847,6 +1857,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyMornDe.url,
     es: klpReadyMornEs.url,
     fr: klpReadyMornFr.url,
+  },
+  "dealing-with-anger": {
+    sk: klpReadyAngerSk.url,
+    hu: klpReadyAngerHu.url,
+    de: klpReadyAngerDe.url,
+    es: klpReadyAngerEs.url,
+    fr: klpReadyAngerFr.url,
+  },
+  "yoga-kids": {
+    sk: klpReadyYogaSk.url,
+    hu: klpReadyYogaHu.url,
+    de: klpReadyYogaDe.url,
+    es: klpReadyYogaEs.url,
+    fr: klpReadyYogaFr.url,
   },
   "bedtime-routine": {
     sk: klpReadyBedSk.url,
