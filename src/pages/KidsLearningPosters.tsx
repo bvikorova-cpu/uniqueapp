@@ -1466,6 +1466,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     es: klpReadyNegNumEs.url,
     fr: klpReadyNegNumFr.url,
   },
+  "human-body-organs": {
+    sk: klpReadyOrgansSk.url,
+    hu: klpReadyOrgansHu.url,
+    de: klpReadyOrgansDe.url,
+    es: klpReadyOrgansEs.url,
+    fr: klpReadyOrgansFr.url,
+  },
+  "human-skeleton": {
+    sk: klpReadySkeletonSk.url,
+    hu: klpReadySkeletonHu.url,
+    de: klpReadySkeletonDe.url,
+    es: klpReadySkeletonEs.url,
+    fr: klpReadySkeletonFr.url,
+  },
   "numbers-1-20": {
     sk: klpReadyNum20Sk.url,
     hu: klpReadyNum20Hu.url,
