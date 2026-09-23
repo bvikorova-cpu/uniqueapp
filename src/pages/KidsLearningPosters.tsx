@@ -210,6 +210,16 @@ import klpReadyOceanZonesHu from "@/assets/kids-poster-translations/ocean-zones-
 import klpReadyOceanZonesDe from "@/assets/kids-poster-translations/ocean-zones-de.webp.asset.json";
 import klpReadyOceanZonesEs from "@/assets/kids-poster-translations/ocean-zones-es.webp.asset.json";
 import klpReadyOceanZonesFr from "@/assets/kids-poster-translations/ocean-zones-fr.webp.asset.json";
+import klpReadySimpleMachinesSk from "@/assets/kids-poster-translations/simple-machines-sk.webp.asset.json";
+import klpReadySimpleMachinesHu from "@/assets/kids-poster-translations/simple-machines-hu.webp.asset.json";
+import klpReadySimpleMachinesDe from "@/assets/kids-poster-translations/simple-machines-de.webp.asset.json";
+import klpReadySimpleMachinesEs from "@/assets/kids-poster-translations/simple-machines-es.webp.asset.json";
+import klpReadySimpleMachinesFr from "@/assets/kids-poster-translations/simple-machines-fr.webp.asset.json";
+import klpReadySpaceRocketsSk from "@/assets/kids-poster-translations/space-rockets-sk.webp.asset.json";
+import klpReadySpaceRocketsHu from "@/assets/kids-poster-translations/space-rockets-hu.webp.asset.json";
+import klpReadySpaceRocketsDe from "@/assets/kids-poster-translations/space-rockets-de.webp.asset.json";
+import klpReadySpaceRocketsEs from "@/assets/kids-poster-translations/space-rockets-es.webp.asset.json";
+import klpReadySpaceRocketsFr from "@/assets/kids-poster-translations/space-rockets-fr.webp.asset.json";
 import klpReadyVolcanoesSk from "@/assets/kids-poster-translations/volcanoes-sk.webp.asset.json";
 import klpReadyVolcanoesHu from "@/assets/kids-poster-translations/volcanoes-hu.webp.asset.json";
 import klpReadyVolcanoesDe from "@/assets/kids-poster-translations/volcanoes-de.webp.asset.json";
