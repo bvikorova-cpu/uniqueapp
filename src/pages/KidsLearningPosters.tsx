@@ -200,6 +200,16 @@ import klpReadyMatterHu from "@/assets/kids-poster-translations/states-of-matter
 import klpReadyMatterDe from "@/assets/kids-poster-translations/states-of-matter-de.webp.asset.json";
 import klpReadyMatterEs from "@/assets/kids-poster-translations/states-of-matter-es.webp.asset.json";
 import klpReadyMatterFr from "@/assets/kids-poster-translations/states-of-matter-fr.webp.asset.json";
+import klpReadyFoodChainSk from "@/assets/kids-poster-translations/food-chain-sk.webp.asset.json";
+import klpReadyFoodChainHu from "@/assets/kids-poster-translations/food-chain-hu.webp.asset.json";
+import klpReadyFoodChainDe from "@/assets/kids-poster-translations/food-chain-de.webp.asset.json";
+import klpReadyFoodChainEs from "@/assets/kids-poster-translations/food-chain-es.webp.asset.json";
+import klpReadyFoodChainFr from "@/assets/kids-poster-translations/food-chain-fr.webp.asset.json";
+import klpReadyOceanZonesSk from "@/assets/kids-poster-translations/ocean-zones-sk.webp.asset.json";
+import klpReadyOceanZonesHu from "@/assets/kids-poster-translations/ocean-zones-hu.webp.asset.json";
+import klpReadyOceanZonesDe from "@/assets/kids-poster-translations/ocean-zones-de.webp.asset.json";
+import klpReadyOceanZonesEs from "@/assets/kids-poster-translations/ocean-zones-es.webp.asset.json";
+import klpReadyOceanZonesFr from "@/assets/kids-poster-translations/ocean-zones-fr.webp.asset.json";
 import klpReadyButterflySk from "@/assets/kids-poster-translations/butterfly-life-cycle-sk.webp.asset.json";
 import klpReadyButterflyHu from "@/assets/kids-poster-translations/butterfly-life-cycle-hu.webp.asset.json";
 import klpReadyButterflyDe from "@/assets/kids-poster-translations/butterfly-life-cycle-de.webp.asset.json";
