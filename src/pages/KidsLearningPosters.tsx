@@ -488,6 +488,16 @@ import posterStrangerSafety from "@/assets/kids-posters/stranger-safety.jpg";
 import posterScreenTimeBalance from "@/assets/kids-posters/screen-time-balance.jpg";
 import posterEmergencyNumbers from "@/assets/kids-posters/emergency-numbers.jpg";
 import posterPhoneNumbersWorld from "@/assets/kids-posters/phone-numbers-world.jpg";
+import klpReadySavingMoneySk from "@/assets/kids-poster-translations/saving-money-sk.webp.asset.json";
+import klpReadySavingMoneyHu from "@/assets/kids-poster-translations/saving-money-hu.webp.asset.json";
+import klpReadySavingMoneyDe from "@/assets/kids-poster-translations/saving-money-de.webp.asset.json";
+import klpReadySavingMoneyEs from "@/assets/kids-poster-translations/saving-money-es.webp.asset.json";
+import klpReadySavingMoneyFr from "@/assets/kids-poster-translations/saving-money-fr.webp.asset.json";
+import klpReadyNeedsVsWantsSk from "@/assets/kids-poster-translations/needs-vs-wants-sk.webp.asset.json";
+import klpReadyNeedsVsWantsHu from "@/assets/kids-poster-translations/needs-vs-wants-hu.webp.asset.json";
+import klpReadyNeedsVsWantsDe from "@/assets/kids-poster-translations/needs-vs-wants-de.webp.asset.json";
+import klpReadyNeedsVsWantsEs from "@/assets/kids-poster-translations/needs-vs-wants-es.webp.asset.json";
+import klpReadyNeedsVsWantsFr from "@/assets/kids-poster-translations/needs-vs-wants-fr.webp.asset.json";
 import posterSavingMoney from "@/assets/kids-posters/saving-money.jpg";
 import posterNeedsVsWants from "@/assets/kids-posters/needs-vs-wants.jpg";
 import posterGoodListener from "@/assets/kids-posters/good-listener.jpg";
@@ -1986,6 +1996,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyScreenTimeBalanceDe.url,
     es: klpReadyScreenTimeBalanceEs.url,
     fr: klpReadyScreenTimeBalanceFr.url,
+  },
+  "saving-money": {
+    sk: klpReadySavingMoneySk.url,
+    hu: klpReadySavingMoneyHu.url,
+    de: klpReadySavingMoneyDe.url,
+    es: klpReadySavingMoneyEs.url,
+    fr: klpReadySavingMoneyFr.url,
+  },
+  "needs-vs-wants": {
+    sk: klpReadyNeedsVsWantsSk.url,
+    hu: klpReadyNeedsVsWantsHu.url,
+    de: klpReadyNeedsVsWantsDe.url,
+    es: klpReadyNeedsVsWantsEs.url,
+    fr: klpReadyNeedsVsWantsFr.url,
   },
   "emergency-numbers": {
     sk: klpReadyEmergencyNumbersSk.url,
