@@ -464,6 +464,11 @@ import klpReadyEmergencyNumbersHu from "@/assets/kids-poster-translations/emerge
 import klpReadyEmergencyNumbersDe from "@/assets/kids-poster-translations/emergency-numbers-de.webp.asset.json";
 import klpReadyEmergencyNumbersEs from "@/assets/kids-poster-translations/emergency-numbers-es.webp.asset.json";
 import klpReadyEmergencyNumbersFr from "@/assets/kids-poster-translations/emergency-numbers-fr.webp.asset.json";
+import klpReadyPhoneWorldSk from "@/assets/kids-poster-translations/phone-numbers-world-sk.webp.asset.json";
+import klpReadyPhoneWorldHu from "@/assets/kids-poster-translations/phone-numbers-world-hu.webp.asset.json";
+import klpReadyPhoneWorldDe from "@/assets/kids-poster-translations/phone-numbers-world-de.webp.asset.json";
+import klpReadyPhoneWorldEs from "@/assets/kids-poster-translations/phone-numbers-world-es.webp.asset.json";
+import klpReadyPhoneWorldFr from "@/assets/kids-poster-translations/phone-numbers-world-fr.webp.asset.json";
 import klpReadySportSk from "@/assets/kids-poster-translations/sports-movement-sk.webp.asset.json";
 import klpReadySportHu from "@/assets/kids-poster-translations/sports-movement-hu.webp.asset.json";
 import klpReadySportDe from "@/assets/kids-poster-translations/sports-movement-de.webp.asset.json";
@@ -482,6 +487,7 @@ import posterWaterSafety from "@/assets/kids-posters/water-safety.jpg";
 import posterStrangerSafety from "@/assets/kids-posters/stranger-safety.jpg";
 import posterScreenTimeBalance from "@/assets/kids-posters/screen-time-balance.jpg";
 import posterEmergencyNumbers from "@/assets/kids-posters/emergency-numbers.jpg";
+import posterPhoneNumbersWorld from "@/assets/kids-posters/phone-numbers-world.jpg";
 import posterSavingMoney from "@/assets/kids-posters/saving-money.jpg";
 import posterNeedsVsWants from "@/assets/kids-posters/needs-vs-wants.jpg";
 import posterGoodListener from "@/assets/kids-posters/good-listener.jpg";
@@ -1330,6 +1336,16 @@ const KLP_POSTERS: KlpPoster[] = [
     file: "unique-emergency-numbers-poster.jpg",
   },
   {
+    id: "phone-numbers-world",
+    title: "Important Phone Numbers Around the World",
+    description: "Emergency numbers by country — police, fire and ambulance everywhere you go.",
+    ages: "6-12 years",
+    minAge: 6,
+    category: "safety",
+    image: posterPhoneNumbersWorld,
+    file: "unique-phone-numbers-world-poster.jpg",
+  },
+  {
     id: "saving-money",
     title: "Saving Money",
     description: "Save, spend, share — three jars, a goal chart and small steps that add up.",
@@ -1977,6 +1993,13 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyEmergencyNumbersDe.url,
     es: klpReadyEmergencyNumbersEs.url,
     fr: klpReadyEmergencyNumbersFr.url,
+  },
+  "phone-numbers-world": {
+    sk: klpReadyPhoneWorldSk.url,
+    hu: klpReadyPhoneWorldHu.url,
+    de: klpReadyPhoneWorldDe.url,
+    es: klpReadyPhoneWorldEs.url,
+    fr: klpReadyPhoneWorldFr.url,
   },
   "first-aid-basics": {
     sk: klpReadyFirstAidSk.url,
