@@ -536,6 +536,16 @@ import klpReadyAskHelpHu from "@/assets/kids-poster-translations/asking-for-help
 import klpReadyAskHelpDe from "@/assets/kids-poster-translations/asking-for-help-de.webp.asset.json";
 import klpReadyAskHelpEs from "@/assets/kids-poster-translations/asking-for-help-es.webp.asset.json";
 import klpReadyAskHelpFr from "@/assets/kids-poster-translations/asking-for-help-fr.webp.asset.json";
+import klpReadyHealthySleepSk from "@/assets/kids-poster-translations/healthy-sleep-sk.webp.asset.json";
+import klpReadyHealthySleepHu from "@/assets/kids-poster-translations/healthy-sleep-hu.webp.asset.json";
+import klpReadyHealthySleepDe from "@/assets/kids-poster-translations/healthy-sleep-de.webp.asset.json";
+import klpReadyHealthySleepEs from "@/assets/kids-poster-translations/healthy-sleep-es.webp.asset.json";
+import klpReadyHealthySleepFr from "@/assets/kids-poster-translations/healthy-sleep-fr.webp.asset.json";
+import klpReadyChoresRespSk from "@/assets/kids-poster-translations/chores-responsibility-sk.webp.asset.json";
+import klpReadyChoresRespHu from "@/assets/kids-poster-translations/chores-responsibility-hu.webp.asset.json";
+import klpReadyChoresRespDe from "@/assets/kids-poster-translations/chores-responsibility-de.webp.asset.json";
+import klpReadyChoresRespEs from "@/assets/kids-poster-translations/chores-responsibility-es.webp.asset.json";
+import klpReadyChoresRespFr from "@/assets/kids-poster-translations/chores-responsibility-fr.webp.asset.json";
 
 export const KLP_AI_POSTER_CREDITS = 3;
 export const KLP_BOOK_CREDITS = 25;
@@ -2076,6 +2086,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyAskHelpDe.url,
     es: klpReadyAskHelpEs.url,
     fr: klpReadyAskHelpFr.url,
+  },
+  "healthy-sleep": {
+    sk: klpReadyHealthySleepSk.url,
+    hu: klpReadyHealthySleepHu.url,
+    de: klpReadyHealthySleepDe.url,
+    es: klpReadyHealthySleepEs.url,
+    fr: klpReadyHealthySleepFr.url,
+  },
+  "chores-responsibility": {
+    sk: klpReadyChoresRespSk.url,
+    hu: klpReadyChoresRespHu.url,
+    de: klpReadyChoresRespDe.url,
+    es: klpReadyChoresRespEs.url,
+    fr: klpReadyChoresRespFr.url,
   },
 };
 
