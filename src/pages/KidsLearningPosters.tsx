@@ -434,6 +434,16 @@ import klpReadyFirstAidHu from "@/assets/kids-poster-translations/first-aid-basi
 import klpReadyFirstAidDe from "@/assets/kids-poster-translations/first-aid-basics-de.webp.asset.json";
 import klpReadyFirstAidEs from "@/assets/kids-poster-translations/first-aid-basics-es.webp.asset.json";
 import klpReadyFirstAidFr from "@/assets/kids-poster-translations/first-aid-basics-fr.webp.asset.json";
+import klpReadyRoadSafetySk from "@/assets/kids-poster-translations/road-safety-sk.webp.asset.json";
+import klpReadyRoadSafetyHu from "@/assets/kids-poster-translations/road-safety-hu.webp.asset.json";
+import klpReadyRoadSafetyDe from "@/assets/kids-poster-translations/road-safety-de.webp.asset.json";
+import klpReadyRoadSafetyEs from "@/assets/kids-poster-translations/road-safety-es.webp.asset.json";
+import klpReadyRoadSafetyFr from "@/assets/kids-poster-translations/road-safety-fr.webp.asset.json";
+import klpReadyFireSafetySk from "@/assets/kids-poster-translations/fire-safety-sk.webp.asset.json";
+import klpReadyFireSafetyHu from "@/assets/kids-poster-translations/fire-safety-hu.webp.asset.json";
+import klpReadyFireSafetyDe from "@/assets/kids-poster-translations/fire-safety-de.webp.asset.json";
+import klpReadyFireSafetyEs from "@/assets/kids-poster-translations/fire-safety-es.webp.asset.json";
+import klpReadyFireSafetyFr from "@/assets/kids-poster-translations/fire-safety-fr.webp.asset.json";
 import klpReadySportSk from "@/assets/kids-poster-translations/sports-movement-sk.webp.asset.json";
 import klpReadySportHu from "@/assets/kids-poster-translations/sports-movement-hu.webp.asset.json";
 import klpReadySportDe from "@/assets/kids-poster-translations/sports-movement-de.webp.asset.json";
@@ -1905,6 +1915,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyGrowthDe.url,
     es: klpReadyGrowthEs.url,
     fr: klpReadyGrowthFr.url,
+  },
+  "road-safety": {
+    sk: klpReadyRoadSafetySk.url,
+    hu: klpReadyRoadSafetyHu.url,
+    de: klpReadyRoadSafetyDe.url,
+    es: klpReadyRoadSafetyEs.url,
+    fr: klpReadyRoadSafetyFr.url,
+  },
+  "fire-safety": {
+    sk: klpReadyFireSafetySk.url,
+    hu: klpReadyFireSafetyHu.url,
+    de: klpReadyFireSafetyDe.url,
+    es: klpReadyFireSafetyEs.url,
+    fr: klpReadyFireSafetyFr.url,
   },
   "first-aid-basics": {
     sk: klpReadyFirstAidSk.url,
