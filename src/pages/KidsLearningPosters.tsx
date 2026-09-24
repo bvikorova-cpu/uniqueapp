@@ -1336,6 +1336,16 @@ const KLP_POSTERS: KlpPoster[] = [
     file: "unique-emergency-numbers-poster.jpg",
   },
   {
+    id: "phone-numbers-world",
+    title: "Important Phone Numbers Around the World",
+    description: "Emergency numbers by country — police, fire and ambulance everywhere you go.",
+    ages: "6-12 years",
+    minAge: 6,
+    category: "safety",
+    image: posterPhoneNumbersWorld,
+    file: "unique-phone-numbers-world-poster.jpg",
+  },
+  {
     id: "saving-money",
     title: "Saving Money",
     description: "Save, spend, share — three jars, a goal chart and small steps that add up.",
@@ -1983,6 +1993,13 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyEmergencyNumbersDe.url,
     es: klpReadyEmergencyNumbersEs.url,
     fr: klpReadyEmergencyNumbersFr.url,
+  },
+  "phone-numbers-world": {
+    sk: klpReadyPhoneWorldSk.url,
+    hu: klpReadyPhoneWorldHu.url,
+    de: klpReadyPhoneWorldDe.url,
+    es: klpReadyPhoneWorldEs.url,
+    fr: klpReadyPhoneWorldFr.url,
   },
   "first-aid-basics": {
     sk: klpReadyFirstAidSk.url,
