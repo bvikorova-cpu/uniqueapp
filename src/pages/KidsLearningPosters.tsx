@@ -444,6 +444,16 @@ import klpReadyFireSafetyHu from "@/assets/kids-poster-translations/fire-safety-
 import klpReadyFireSafetyDe from "@/assets/kids-poster-translations/fire-safety-de.webp.asset.json";
 import klpReadyFireSafetyEs from "@/assets/kids-poster-translations/fire-safety-es.webp.asset.json";
 import klpReadyFireSafetyFr from "@/assets/kids-poster-translations/fire-safety-fr.webp.asset.json";
+import klpReadyWaterSafetySk from "@/assets/kids-poster-translations/water-safety-sk.webp.asset.json";
+import klpReadyWaterSafetyHu from "@/assets/kids-poster-translations/water-safety-hu.webp.asset.json";
+import klpReadyWaterSafetyDe from "@/assets/kids-poster-translations/water-safety-de.webp.asset.json";
+import klpReadyWaterSafetyEs from "@/assets/kids-poster-translations/water-safety-es.webp.asset.json";
+import klpReadyWaterSafetyFr from "@/assets/kids-poster-translations/water-safety-fr.webp.asset.json";
+import klpReadyStrangerSafetySk from "@/assets/kids-poster-translations/stranger-safety-sk.webp.asset.json";
+import klpReadyStrangerSafetyHu from "@/assets/kids-poster-translations/stranger-safety-hu.webp.asset.json";
+import klpReadyStrangerSafetyDe from "@/assets/kids-poster-translations/stranger-safety-de.webp.asset.json";
+import klpReadyStrangerSafetyEs from "@/assets/kids-poster-translations/stranger-safety-es.webp.asset.json";
+import klpReadyStrangerSafetyFr from "@/assets/kids-poster-translations/stranger-safety-fr.webp.asset.json";
 import klpReadySportSk from "@/assets/kids-poster-translations/sports-movement-sk.webp.asset.json";
 import klpReadySportHu from "@/assets/kids-poster-translations/sports-movement-hu.webp.asset.json";
 import klpReadySportDe from "@/assets/kids-poster-translations/sports-movement-de.webp.asset.json";
@@ -1929,6 +1939,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyFireSafetyDe.url,
     es: klpReadyFireSafetyEs.url,
     fr: klpReadyFireSafetyFr.url,
+  },
+  "water-safety": {
+    sk: klpReadyWaterSafetySk.url,
+    hu: klpReadyWaterSafetyHu.url,
+    de: klpReadyWaterSafetyDe.url,
+    es: klpReadyWaterSafetyEs.url,
+    fr: klpReadyWaterSafetyFr.url,
+  },
+  "stranger-safety": {
+    sk: klpReadyStrangerSafetySk.url,
+    hu: klpReadyStrangerSafetyHu.url,
+    de: klpReadyStrangerSafetyDe.url,
+    es: klpReadyStrangerSafetyEs.url,
+    fr: klpReadyStrangerSafetyFr.url,
   },
   "first-aid-basics": {
     sk: klpReadyFirstAidSk.url,
