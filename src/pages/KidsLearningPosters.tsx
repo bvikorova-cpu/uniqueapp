@@ -424,6 +424,16 @@ import klpReadyBullyHu from "@/assets/kids-poster-translations/bullying-speak-up
 import klpReadyBullyDe from "@/assets/kids-poster-translations/bullying-speak-up-de.webp.asset.json";
 import klpReadyBullyEs from "@/assets/kids-poster-translations/bullying-speak-up-es.webp.asset.json";
 import klpReadyBullyFr from "@/assets/kids-poster-translations/bullying-speak-up-fr.webp.asset.json";
+import klpReadyGrowthSk from "@/assets/kids-poster-translations/growth-mindset-sk.webp.asset.json";
+import klpReadyGrowthHu from "@/assets/kids-poster-translations/growth-mindset-hu.webp.asset.json";
+import klpReadyGrowthDe from "@/assets/kids-poster-translations/growth-mindset-de.webp.asset.json";
+import klpReadyGrowthEs from "@/assets/kids-poster-translations/growth-mindset-es.webp.asset.json";
+import klpReadyGrowthFr from "@/assets/kids-poster-translations/growth-mindset-fr.webp.asset.json";
+import klpReadyFirstAidSk from "@/assets/kids-poster-translations/first-aid-basics-sk.webp.asset.json";
+import klpReadyFirstAidHu from "@/assets/kids-poster-translations/first-aid-basics-hu.webp.asset.json";
+import klpReadyFirstAidDe from "@/assets/kids-poster-translations/first-aid-basics-de.webp.asset.json";
+import klpReadyFirstAidEs from "@/assets/kids-poster-translations/first-aid-basics-es.webp.asset.json";
+import klpReadyFirstAidFr from "@/assets/kids-poster-translations/first-aid-basics-fr.webp.asset.json";
 import klpReadySportSk from "@/assets/kids-poster-translations/sports-movement-sk.webp.asset.json";
 import klpReadySportHu from "@/assets/kids-poster-translations/sports-movement-hu.webp.asset.json";
 import klpReadySportDe from "@/assets/kids-poster-translations/sports-movement-de.webp.asset.json";
@@ -1888,6 +1898,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyBullyDe.url,
     es: klpReadyBullyEs.url,
     fr: klpReadyBullyFr.url,
+  },
+  "growth-mindset": {
+    sk: klpReadyGrowthSk.url,
+    hu: klpReadyGrowthHu.url,
+    de: klpReadyGrowthDe.url,
+    es: klpReadyGrowthEs.url,
+    fr: klpReadyGrowthFr.url,
+  },
+  "first-aid-basics": {
+    sk: klpReadyFirstAidSk.url,
+    hu: klpReadyFirstAidHu.url,
+    de: klpReadyFirstAidDe.url,
+    es: klpReadyFirstAidEs.url,
+    fr: klpReadyFirstAidFr.url,
   },
   "yoga-kids": {
     sk: klpReadyYogaSk.url,
