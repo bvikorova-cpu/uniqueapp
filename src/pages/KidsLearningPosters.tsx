@@ -526,6 +526,16 @@ import klpReadyCount100Hu from "@/assets/kids-poster-translations/counting-to-10
 import klpReadyCount100De from "@/assets/kids-poster-translations/counting-to-100-de.jpg.asset.json";
 import klpReadyCount100Es from "@/assets/kids-poster-translations/counting-to-100-es.jpg.asset.json";
 import klpReadyCount100Fr from "@/assets/kids-poster-translations/counting-to-100-fr.jpg.asset.json";
+import klpReadyGoodListenerSk from "@/assets/kids-poster-translations/good-listener-sk.webp.asset.json";
+import klpReadyGoodListenerHu from "@/assets/kids-poster-translations/good-listener-hu.webp.asset.json";
+import klpReadyGoodListenerDe from "@/assets/kids-poster-translations/good-listener-de.webp.asset.json";
+import klpReadyGoodListenerEs from "@/assets/kids-poster-translations/good-listener-es.webp.asset.json";
+import klpReadyGoodListenerFr from "@/assets/kids-poster-translations/good-listener-fr.webp.asset.json";
+import klpReadyAskHelpSk from "@/assets/kids-poster-translations/asking-for-help-sk.webp.asset.json";
+import klpReadyAskHelpHu from "@/assets/kids-poster-translations/asking-for-help-hu.webp.asset.json";
+import klpReadyAskHelpDe from "@/assets/kids-poster-translations/asking-for-help-de.webp.asset.json";
+import klpReadyAskHelpEs from "@/assets/kids-poster-translations/asking-for-help-es.webp.asset.json";
+import klpReadyAskHelpFr from "@/assets/kids-poster-translations/asking-for-help-fr.webp.asset.json";
 
 export const KLP_AI_POSTER_CREDITS = 3;
 export const KLP_BOOK_CREDITS = 25;
@@ -2052,6 +2062,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadySportDe.url,
     es: klpReadySportEs.url,
     fr: klpReadySportFr.url,
+  },
+  "good-listener": {
+    sk: klpReadyGoodListenerSk.url,
+    hu: klpReadyGoodListenerHu.url,
+    de: klpReadyGoodListenerDe.url,
+    es: klpReadyGoodListenerEs.url,
+    fr: klpReadyGoodListenerFr.url,
+  },
+  "asking-for-help": {
+    sk: klpReadyAskHelpSk.url,
+    hu: klpReadyAskHelpHu.url,
+    de: klpReadyAskHelpDe.url,
+    es: klpReadyAskHelpEs.url,
+    fr: klpReadyAskHelpFr.url,
   },
 };
 
