@@ -454,6 +454,16 @@ import klpReadyStrangerSafetyHu from "@/assets/kids-poster-translations/stranger
 import klpReadyStrangerSafetyDe from "@/assets/kids-poster-translations/stranger-safety-de.webp.asset.json";
 import klpReadyStrangerSafetyEs from "@/assets/kids-poster-translations/stranger-safety-es.webp.asset.json";
 import klpReadyStrangerSafetyFr from "@/assets/kids-poster-translations/stranger-safety-fr.webp.asset.json";
+import klpReadyScreenTimeBalanceSk from "@/assets/kids-poster-translations/screen-time-balance-sk.webp.asset.json";
+import klpReadyScreenTimeBalanceHu from "@/assets/kids-poster-translations/screen-time-balance-hu.webp.asset.json";
+import klpReadyScreenTimeBalanceDe from "@/assets/kids-poster-translations/screen-time-balance-de.webp.asset.json";
+import klpReadyScreenTimeBalanceEs from "@/assets/kids-poster-translations/screen-time-balance-es.webp.asset.json";
+import klpReadyScreenTimeBalanceFr from "@/assets/kids-poster-translations/screen-time-balance-fr.webp.asset.json";
+import klpReadyEmergencyNumbersSk from "@/assets/kids-poster-translations/emergency-numbers-sk.webp.asset.json";
+import klpReadyEmergencyNumbersHu from "@/assets/kids-poster-translations/emergency-numbers-hu.webp.asset.json";
+import klpReadyEmergencyNumbersDe from "@/assets/kids-poster-translations/emergency-numbers-de.webp.asset.json";
+import klpReadyEmergencyNumbersEs from "@/assets/kids-poster-translations/emergency-numbers-es.webp.asset.json";
+import klpReadyEmergencyNumbersFr from "@/assets/kids-poster-translations/emergency-numbers-fr.webp.asset.json";
 import klpReadySportSk from "@/assets/kids-poster-translations/sports-movement-sk.webp.asset.json";
 import klpReadySportHu from "@/assets/kids-poster-translations/sports-movement-hu.webp.asset.json";
 import klpReadySportDe from "@/assets/kids-poster-translations/sports-movement-de.webp.asset.json";
@@ -1953,6 +1963,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyStrangerSafetyDe.url,
     es: klpReadyStrangerSafetyEs.url,
     fr: klpReadyStrangerSafetyFr.url,
+  },
+  "screen-time-balance": {
+    sk: klpReadyScreenTimeBalanceSk.url,
+    hu: klpReadyScreenTimeBalanceHu.url,
+    de: klpReadyScreenTimeBalanceDe.url,
+    es: klpReadyScreenTimeBalanceEs.url,
+    fr: klpReadyScreenTimeBalanceFr.url,
+  },
+  "emergency-numbers": {
+    sk: klpReadyEmergencyNumbersSk.url,
+    hu: klpReadyEmergencyNumbersHu.url,
+    de: klpReadyEmergencyNumbersDe.url,
+    es: klpReadyEmergencyNumbersEs.url,
+    fr: klpReadyEmergencyNumbersFr.url,
   },
   "first-aid-basics": {
     sk: klpReadyFirstAidSk.url,
