@@ -44,7 +44,8 @@ import chapter10to13En from "@/assets/kids-book-chapters/chapter-10-13-en.jpg.as
 import chapter10to13Sk from "@/assets/kids-book-chapters/chapter-10-13-sk.jpg.asset.json";
 import chapter10to13Hu from "@/assets/kids-book-chapters/chapter-10-13-hu.jpg.asset.json";
 import chapter10to13De from "@/assets/kids-book-chapters/chapter-10-13-de.jpg.asset.json";
-import chapter10to13Fr from "@/assets/kids-book-chapters/chapter-10-13-fr.jpg.asset.json";
+import chapter10to13Fr from "@/assets/kids-book-chapters/chapter-10-13-fr-v2.png.asset.json";
+import chapter10to13Es from "@/assets/kids-book-chapters/chapter-10-13-es.png.asset.json";
 import encyclopediaBackSk from "@/assets/kids-book-backs/encyclopedia-back-sk.jpg.asset.json";
 import encyclopediaBackHu from "@/assets/kids-book-backs/encyclopedia-back-hu.jpg.asset.json";
 import encyclopediaBackDe from "@/assets/kids-book-backs/encyclopedia-back-de.jpg.asset.json";
@@ -1570,6 +1571,7 @@ const KLP_CHAPTER_10_13: Record<string, string> = {
   Hungarian: chapter10to13Hu.url,
   German: chapter10to13De.url,
   French: chapter10to13Fr.url,
+  Spanish: chapter10to13Es.url,
 };
 
 /** Ready-made translated posters uploaded by the team (no AI needed). */
@@ -2282,7 +2284,7 @@ async function klpBuildEncyclopedia(
       : undefined;
     if (chapterArt) {
       const chapterImg = await klpLoadImage(chapterArt);
-      pdf.addImage(chapterImg, "JPEG", 0, 0, pageW, pageH, undefined, "FAST");
+      pdf.addImage(chapterImg, chapterArt.toLowerCase().includes(".png") ? "PNG" : "JPEG", 0, 0, pageW, pageH, undefined, "FAST");
     } else {
       pdf.setFillColor(236, 72, 153);
       pdf.rect(0, 0, pageW, pageH, "F");
