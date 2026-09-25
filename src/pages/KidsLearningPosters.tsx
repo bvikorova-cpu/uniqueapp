@@ -2743,14 +2743,14 @@ export default function KidsLearningPosters() {
               <ArrowLeft className="h-4 w-4" /> Kids Channel
             </Link>
           </Button>
-          <Badge className="mb-4 bg-primary text-primary-foreground">Printable • Ages 3-16</Badge>
+          <Badge className="mb-4 bg-primary text-primary-foreground">Exclusive • Ages 3-16</Badge>
           <h1 className="klp-title text-3xl font-extrabold tracking-tight md:text-5xl">
-            Learning Posters for kids and teens
+            Learning Encyclopedia &amp; Posters for Kids
           </h1>
           <p className="mt-4 max-w-2xl text-base text-muted-foreground md:text-lg">
-            Beautiful, ready-to-print posters — school basics, science, feelings, safety, money and real-life
-            advice for teenagers. See exactly how each one looks, then download it for {KLP_POSTER_DOWNLOAD_CREDITS} credit (€0.50). Need something
-            specific? Create your own with AI for {KLP_AI_POSTER_CREDITS} credits (€1.50).
+            Explore the illustrated encyclopedia as an online e-book or PDF, plus beautiful ready-to-print posters
+            covering school basics, science, feelings, safety, money and real-life advice. Download a poster for {KLP_POSTER_DOWNLOAD_CREDITS} credit
+            (€0.50), or create your own with AI for {KLP_AI_POSTER_CREDITS} credits (€1.50).
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Button size="lg" className="gap-2" onClick={() => setDialogOpen(true)}>
