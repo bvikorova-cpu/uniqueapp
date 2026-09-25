@@ -398,7 +398,7 @@ export default function Auction() {
               </Button>
               <Button className="w-full gap-2 sm:w-auto" onClick={() => (user ? navigate("/auction/create") : navigate("/auth"))}>
                 <Plus className="h-4 w-4" />
-                <span className="sm:hidden">Auction · 2 cr</span>
+                <span className="sm:hidden">Auction · free</span>
                 <span className="hidden sm:inline">Start an auction · free</span>
               </Button>
             </div>
