@@ -46,6 +46,12 @@ import chapter10to13Hu from "@/assets/kids-book-chapters/chapter-10-13-hu.jpg.as
 import chapter10to13De from "@/assets/kids-book-chapters/chapter-10-13-de.jpg.asset.json";
 import chapter10to13Fr from "@/assets/kids-book-chapters/chapter-10-13-fr-v2.png.asset.json";
 import chapter10to13Es from "@/assets/kids-book-chapters/chapter-10-13-es.png.asset.json";
+import chapter6to9En from "@/assets/kids-book-chapters/chapter-6-9-en.png.asset.json";
+import chapter6to9Sk from "@/assets/kids-book-chapters/chapter-6-9-sk.png.asset.json";
+import chapter6to9Hu from "@/assets/kids-book-chapters/chapter-6-9-hu.png.asset.json";
+import chapter6to9De from "@/assets/kids-book-chapters/chapter-6-9-de.png.asset.json";
+import chapter6to9Fr from "@/assets/kids-book-chapters/chapter-6-9-fr.png.asset.json";
+import chapter6to9Es from "@/assets/kids-book-chapters/chapter-6-9-es.png.asset.json";
 import encyclopediaBackSk from "@/assets/kids-book-backs/encyclopedia-back-sk.jpg.asset.json";
 import encyclopediaBackHu from "@/assets/kids-book-backs/encyclopedia-back-hu.jpg.asset.json";
 import encyclopediaBackDe from "@/assets/kids-book-backs/encyclopedia-back-de.jpg.asset.json";
@@ -1572,6 +1578,15 @@ const KLP_CHAPTER_10_13: Record<string, string> = {
   German: chapter10to13De.url,
   French: chapter10to13Fr.url,
   Spanish: chapter10to13Es.url,
+};
+
+const KLP_CHAPTER_6_9: Record<string, string> = {
+  English: chapter6to9En.url,
+  Slovak: chapter6to9Sk.url,
+  Hungarian: chapter6to9Hu.url,
+  German: chapter6to9De.url,
+  French: chapter6to9Fr.url,
+  Spanish: chapter6to9Es.url,
 };
 
 /** Ready-made translated posters uploaded by the team (no AI needed). */
