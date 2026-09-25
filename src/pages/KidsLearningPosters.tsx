@@ -2845,9 +2845,9 @@ export default function KidsLearningPosters() {
         <KlpBookPreorder />
 
         <Dialog open={ebookOpen} onOpenChange={setEbookOpen}>
-          <DialogContent className="max-h-[100dvh] w-[100vw] max-w-[100vw] overflow-y-auto p-4 sm:rounded-none">
-            <DialogHeader>
-              <DialogTitle>Learning Encyclopedia · e-book</DialogTitle>
+          <DialogContent className="max-h-[100dvh] overflow-x-hidden overflow-y-auto p-4 max-sm:!left-2 max-sm:!right-2 max-sm:!w-auto max-sm:!max-w-none max-sm:!translate-x-0 sm:w-[calc(100vw-2rem)] sm:max-w-6xl">
+            <DialogHeader className="min-w-0 pr-7">
+              <DialogTitle className="leading-snug">Learning Encyclopedia · e-book</DialogTitle>
               <DialogDescription>
                 {ebookOwned
                   ? "Swipe or drag to turn pages. Pinch with two fingers to zoom."
@@ -2855,7 +2855,7 @@ export default function KidsLearningPosters() {
               </DialogDescription>
             </DialogHeader>
             {ebookOwned ? (
-              <div className="space-y-3">
+              <div className="min-w-0 max-w-full space-y-3 overflow-hidden">
                 <div className="flex flex-wrap justify-center gap-2">
                   {KLP_EBOOK_LANGS.map((l) => (
                     <Button
