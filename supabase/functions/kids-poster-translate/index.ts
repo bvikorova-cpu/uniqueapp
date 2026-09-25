@@ -12,12 +12,12 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const COST = 2;
+const COST = 1;
 
 /**
  * Isolated edge function for the Kids Channel "Learning Posters" section.
  * Reads and translates one existing poster, including each text position, and
- * charges 2 credits from the unified `ai_credits` wallet.
+ * charges 1 credit from the unified `ai_credits` wallet.
  */
 serve(async (req) => {
   if (req.method === "OPTIONS") {

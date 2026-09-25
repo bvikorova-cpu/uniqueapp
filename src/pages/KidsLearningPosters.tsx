@@ -595,12 +595,11 @@ import klpReadyGratitudeEs from "@/assets/kids-poster-translations/gratitude-es.
 import klpReadyGratitudeFr from "@/assets/kids-poster-translations/gratitude-fr.webp.asset.json";
 
 export const KLP_AI_POSTER_CREDITS = 3;
-export const KLP_BOOK_CREDITS = 25;
+export const KLP_BOOK_CREDITS = 40;
+export const KLP_ALL_LANGUAGES_CREDITS = 60;
+export const KLP_POSTER_DOWNLOAD_CREDITS = 1;
 /** Credits for re-creating one poster in another language, same style. */
-export const KLP_POSTER_TRANSLATE_CREDITS = 2;
-
-/** Credits for the whole encyclopedia translated into another language. */
-export const KLP_BOOK_TRANSLATE_CREDITS = 25;
+export const KLP_POSTER_TRANSLATE_CREDITS = 1;
 
 type KlpCategory = "school" | "science" | "life" | "safety" | "money";
 
@@ -2421,6 +2420,8 @@ export default function KidsLearningPosters() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [ebookOpen, setEbookOpen] = useState(false);
   const [ebookOwned, setEbookOwned] = useState(false);
+  const [ebookAllLanguages, setEbookAllLanguages] = useState(false);
+  const [ebookOwnedLanguages, setEbookOwnedLanguages] = useState<string[]>([]);
   const [ebookBusy, setEbookBusy] = useState(false);
   const [ebookLang, setEbookLang] = useState<string>("English");
   const ebookPages = useMemo(() => klpEbookPages(ebookLang), [ebookLang]);
@@ -2454,9 +2455,25 @@ export default function KidsLearningPosters() {
   );
 
   const handleDownload = async (poster: KlpPoster) => {
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
     try {
+      const { data, error } = await supabase.functions.invoke("kids-poster-download", { body: { posterId: poster.id } });
+      const payload = (data ?? {}) as { success?: boolean; error?: string; creditsRemaining?: number };
+      if (error || payload.error || !payload.success) {
+        const message = payload.error ?? error?.message ?? "Could not start the download.";
+        if (/insufficient/i.test(message)) {
+          toast({ title: "Not enough credits", description: `A poster download costs ${KLP_POSTER_DOWNLOAD_CREDITS} credit.`, variant: "destructive" });
+          navigate("/ai-credits");
+          return;
+        }
+        throw new Error(message);
+      }
+      if (typeof payload.creditsRemaining === "number") setBalance(payload.creditsRemaining);
       await klpDownload(poster.image, poster.file);
-      toast({ title: "Download started", description: `${poster.title} is being saved to your device.` });
+      toast({ title: "Download started", description: `${KLP_POSTER_DOWNLOAD_CREDITS} credit used.` });
     } catch {
       toast({
         title: "Download failed",
@@ -2591,11 +2608,18 @@ export default function KidsLearningPosters() {
     }
   };
 
-  const callEbookAccess = async (unlock: boolean) => {
-    const { data, error } = await supabase.functions.invoke("kids-ebook-access", { body: { unlock } });
-    const payload = (data ?? {}) as { owned?: boolean; error?: string; creditsRemaining?: number };
+  const callEbookAccess = async (action: "check" | "purchase_single" | "purchase_all", language = ebookLang) => {
+    const { data, error } = await supabase.functions.invoke("kids-ebook-access", { body: { action, language } });
+    const payload = (data ?? {}) as { allLanguages?: boolean; ownedLanguages?: string[]; error?: string; creditsRemaining?: number };
     if (error && !payload.error) throw new Error(error.message);
     return payload;
+  };
+
+  const applyBookAccess = (payload: { allLanguages?: boolean; ownedLanguages?: string[] }) => {
+    const languages = payload.ownedLanguages ?? [];
+    setEbookAllLanguages(!!payload.allLanguages);
+    setEbookOwnedLanguages(languages);
+    setEbookOwned(!!payload.allLanguages || languages.includes(ebookLang));
   };
 
   const handleOpenEbook = async () => {
@@ -2605,9 +2629,9 @@ export default function KidsLearningPosters() {
     }
     setEbookBusy(true);
     try {
-      const res = await callEbookAccess(false);
+      const res = await callEbookAccess("check");
       if (res.error) throw new Error(res.error);
-      setEbookOwned(!!res.owned);
+      applyBookAccess(res);
       setEbookOpen(true);
     } catch (e) {
       toast({ title: "Could not open e-book", description: e instanceof Error ? e.message : "Try again.", variant: "destructive" });
@@ -2616,20 +2640,20 @@ export default function KidsLearningPosters() {
     }
   };
 
-  const handleUnlockEbook = async () => {
+  const handleUnlockEbook = async (allLanguages = false) => {
     setEbookBusy(true);
     try {
-      const res = await callEbookAccess(true);
+      const res = await callEbookAccess(allLanguages ? "purchase_all" : "purchase_single");
       if (res.error) {
         if (/insufficient/i.test(res.error)) {
-          toast({ title: "Not enough credits", description: `The e-book costs ${KLP_BOOK_CREDITS} credits.`, variant: "destructive" });
+          toast({ title: "Not enough credits", description: `This package costs ${allLanguages ? KLP_ALL_LANGUAGES_CREDITS : KLP_BOOK_CREDITS} credits.`, variant: "destructive" });
           navigate("/ai-credits");
           return;
         }
         throw new Error(res.error);
       }
       if (typeof res.creditsRemaining === "number") setBalance(res.creditsRemaining);
-      setEbookOwned(!!res.owned);
+      applyBookAccess(res);
     } catch (e) {
       toast({ title: "Unlock failed", description: e instanceof Error ? e.message : "Try again.", variant: "destructive" });
     } finally {
@@ -2642,20 +2666,24 @@ export default function KidsLearningPosters() {
       navigate("/auth");
       return;
     }
+    setBookLangOpen(true);
+  };
+
+  const handleBookPackage = async (allLanguages: boolean) => {
     if (bookBusy) return;
     setBookBusy(true);
     setBookProgress(null);
     try {
-      const { data, error } = await supabase.functions.invoke("kids-posters-encyclopedia", {
-        body: {},
-      });
-      const payload = (data ?? {}) as { error?: string; creditsRemaining?: number; success?: boolean };
-      if (error || payload.error || !payload.success) {
-        const message = payload.error ?? error?.message ?? "Could not start the download.";
+      const current = await callEbookAccess("check", bookLang);
+      if (current.error) throw new Error(current.error);
+      const alreadyOwned = !!current.allLanguages || (current.ownedLanguages ?? []).includes(bookLang);
+      const payload = alreadyOwned ? current : await callEbookAccess(allLanguages ? "purchase_all" : "purchase_single", bookLang);
+      if (payload.error) {
+        const message = payload.error;
         if (/insufficient/i.test(message)) {
           toast({
             title: "Not enough credits",
-            description: `The encyclopedia costs ${KLP_BOOK_CREDITS} credits. Top up and try again.`,
+            description: `This package costs ${allLanguages ? KLP_ALL_LANGUAGES_CREDITS : KLP_BOOK_CREDITS} credits. Top up and try again.`,
             variant: "destructive",
           });
           navigate("/ai-credits");
@@ -2665,11 +2693,17 @@ export default function KidsLearningPosters() {
         return;
       }
       if (typeof payload.creditsRemaining === "number") setBalance(payload.creditsRemaining);
+      applyBookAccess(payload);
       toast({
         title: "Building your book",
-        description: `${KLP_BOOK_CREDITS} credits used. The PDF is being assembled — please keep this page open.`,
+        description: alreadyOwned ? "Your PDF is being assembled." : `${allLanguages ? KLP_ALL_LANGUAGES_CREDITS : KLP_BOOK_CREDITS} credits used. Your PDF is being assembled.`,
       });
-      await klpBuildEncyclopedia((doneCount, total) => setBookProgress({ done: doneCount, total }));
+      const langId = KLP_LANGUAGES.find((language) => language.name === bookLang)?.id;
+      const translations = langId
+        ? Object.fromEntries(KLP_POSTERS.map((poster) => [poster.id, { title: poster.title, description: poster.description }]))
+        : undefined;
+      await klpBuildEncyclopedia((doneCount, total) => setBookProgress({ done: doneCount, total }), langId ? { languageLabel: bookLang, translations } : undefined);
+      setBookLangOpen(false);
       toast({
         title: "Encyclopedia ready",
         description: `${KLP_POSTERS.length} posters saved as one PDF book, sorted by age.`,
