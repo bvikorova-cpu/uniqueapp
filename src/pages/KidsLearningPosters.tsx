@@ -3182,15 +3182,15 @@ export default function KidsLearningPosters() {
 
           <div className="space-y-4">
             <div className="flex flex-wrap gap-2">
-              {KLP_LANGUAGES.map((l) => (
+               {KLP_EBOOK_LANGS.map((language) => (
                 <Button
-                  key={l.id}
+                   key={language}
                   type="button"
                   size="sm"
-                  variant={bookLang === l.name ? "default" : "outline"}
-                  onClick={() => setBookLang(l.name)}
+                   variant={bookLang === language ? "default" : "outline"}
+                   onClick={() => setBookLang(language)}
                 >
-                  {l.label}
+                   {language}
                 </Button>
               ))}
             </div>
