@@ -2588,7 +2588,7 @@ export default function KidsLearningPosters() {
       const res = await callEbookAccess(allLanguages ? "purchase_all" : "purchase_single");
       if (res.error) {
         if (/insufficient/i.test(res.error)) {
-          toast({ title: "Not enough credits", description: `This package costs ${allLanguages ? KLP_ALL_LANGUAGES_CREDITS : KLP_BOOK_CREDITS} credits.`, variant: "destructive" });
+          toast({ title: "Not enough credits", description: `This package costs ${allLanguages ? KLP_ALL_LANGUAGES_CREDITS : KLP_BOOK_CREDITS} credits (${allLanguages ? "€30" : "€20"}).`, variant: "destructive" });
           navigate("/ai-credits");
           return;
         }
@@ -2625,7 +2625,7 @@ export default function KidsLearningPosters() {
         if (/insufficient/i.test(message)) {
           toast({
             title: "Not enough credits",
-            description: `This package costs ${allLanguages ? KLP_ALL_LANGUAGES_CREDITS : KLP_BOOK_CREDITS} credits. Top up and try again.`,
+            description: `This package costs ${allLanguages ? KLP_ALL_LANGUAGES_CREDITS : KLP_BOOK_CREDITS} credits (${allLanguages ? "€30" : "€20"}). Top up and try again.`,
             variant: "destructive",
           });
           navigate("/ai-credits");
@@ -2638,7 +2638,7 @@ export default function KidsLearningPosters() {
       applyBookAccess(payload);
       toast({
         title: "Building your book",
-        description: alreadyOwned ? "Your PDF is being assembled." : `${allLanguages ? KLP_ALL_LANGUAGES_CREDITS : KLP_BOOK_CREDITS} credits used. Your PDF is being assembled.`,
+        description: alreadyOwned ? "Your PDF is being assembled." : `${allLanguages ? KLP_ALL_LANGUAGES_CREDITS : KLP_BOOK_CREDITS} credits (${allLanguages ? "€30" : "€20"}) used. Your PDF is being assembled.`,
       });
       const langId = KLP_LANGUAGES.find((language) => language.name === bookLang)?.id;
       const translations = langId
