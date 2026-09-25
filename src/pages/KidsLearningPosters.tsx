@@ -33,7 +33,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 
 import heroVideo from "@/assets/kids-posters/posters-hero.mp4.asset.json";
-import encyclopediaCover from "@/assets/kids-posters/encyclopedia-cover.jpg";
+import encyclopediaCoverEn from "@/assets/kids-book-covers/encyclopedia-cover-en.jpg.asset.json";
+import encyclopediaCoverSk from "@/assets/kids-book-covers/encyclopedia-cover-sk.jpg.asset.json";
+import encyclopediaCoverHu from "@/assets/kids-book-covers/encyclopedia-cover-hu.jpg.asset.json";
+import encyclopediaCoverDe from "@/assets/kids-book-covers/encyclopedia-cover-de.jpg.asset.json";
+import encyclopediaCoverEs from "@/assets/kids-book-covers/encyclopedia-cover-es.jpg.asset.json";
+import encyclopediaCoverFr from "@/assets/kids-book-covers/encyclopedia-cover-fr.jpg.asset.json";
 import posterPartsOfSpeech from "@/assets/kids-posters/parts-of-speech.jpg";
 import posterTimesTables from "@/assets/kids-posters/times-tables.jpg";
 import posterAbcPhonics from "@/assets/kids-posters/abc-phonics.jpg";
@@ -1514,6 +1519,15 @@ const KLP_LANGUAGES: { id: string; label: string; name: string }[] = [
   { id: "fr", label: "French", name: "French" },
 ];
 
+const KLP_BOOK_COVERS: Record<string, string> = {
+  English: encyclopediaCoverEn.url,
+  Slovak: encyclopediaCoverSk.url,
+  Hungarian: encyclopediaCoverHu.url,
+  German: encyclopediaCoverDe.url,
+  Spanish: encyclopediaCoverEs.url,
+  French: encyclopediaCoverFr.url,
+};
+
 /** Ready-made translated posters uploaded by the team (no AI needed). */
 const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
   "moon-phases": {
@@ -2197,27 +2211,10 @@ async function klpBuildEncyclopedia(
     ? `${fallback}\n${translatedDesc(id, fallback)}`
     : fallback;
 
-  // Cover — full-page illustration with title on the calm top area
-  const coverImg = await klpLoadImage(encyclopediaCover);
+  // Cover — the supplied, finished full-page artwork for the selected language.
+  const coverSrc = KLP_BOOK_COVERS[opts?.languageLabel ?? "English"] ?? KLP_BOOK_COVERS.English;
+  const coverImg = await klpLoadImage(coverSrc);
   pdf.addImage(coverImg, "JPEG", 0, 0, pageW, pageH, undefined, "FAST");
-  pdf.setTextColor(255, 255, 255);
-  font("bold");
-  pdf.setFontSize(34);
-  pdf.text(tTitle("book:title", "Learning Encyclopedia"), pageW / 2, 42, {
-    align: "center",
-    maxWidth: pageW - 40,
-  });
-  pdf.setFontSize(14);
-  font("normal");
-  pdf.text(tDesc("book:title", "The complete printable poster book"), pageW / 2, 56, {
-    align: "center",
-    maxWidth: pageW - 40,
-  });
-  pdf.setFontSize(11);
-  pdf.text(`${KLP_POSTERS.length} posters · ages 3 to 16 · sorted by age`, pageW / 2, 66, { align: "center" });
-  if (opts?.languageLabel) pdf.text(opts.languageLabel, pageW / 2, 75, { align: "center" });
-  pdf.setFontSize(11);
-  pdf.text("Unique · Kids Channel", pageW / 2, pageH - 10, { align: "center" });
 
   const ordered = KLP_BOOK_CHAPTERS.map((chapter) => ({
     chapter,
@@ -2705,18 +2702,10 @@ export default function KidsLearningPosters() {
             <figure className="klp-book-cover-preview mx-auto w-full max-w-[220px] md:max-w-none">
               <div className="relative aspect-[210/297] overflow-hidden rounded-md border border-primary/30 shadow-lg">
                 <img
-                  src={encyclopediaCover}
+                  src={encyclopediaCoverEn.url}
                   alt="Learning Encyclopedia cover preview with a child reading a magical book"
                   className="h-full w-full object-cover"
                 />
-                <div className="absolute inset-x-3 top-5 text-center text-primary-foreground drop-shadow-md">
-                  <div className="text-lg font-extrabold leading-tight md:text-base">Learning Encyclopedia</div>
-                  <div className="mt-1 text-[10px] font-medium">The complete printable poster book</div>
-                  <div className="mt-1 text-[9px]">{KLP_POSTERS.length} posters · ages 3 to 16</div>
-                </div>
-                <div className="absolute inset-x-2 bottom-2 text-center text-[9px] font-semibold text-primary-foreground drop-shadow-md">
-                  Unique · Kids Channel
-                </div>
               </div>
               <figcaption className="mt-2 text-center text-xs font-medium text-muted-foreground">
                 Cover preview
