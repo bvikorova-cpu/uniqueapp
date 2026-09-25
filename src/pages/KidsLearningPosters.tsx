@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Download,
@@ -2427,7 +2426,6 @@ export default function KidsLearningPosters() {
   const [ebookBusy, setEbookBusy] = useState(false);
   const [ebookLang, setEbookLang] = useState<string>("English");
   const ebookPages = useMemo(() => klpEbookPages(ebookLang), [ebookLang]);
-  const { isAdmin: klpTranslateAdmin } = useIsAdmin();
 
   useEffect(() => {
     let cancelled = false;
@@ -2796,11 +2794,7 @@ export default function KidsLearningPosters() {
                 Want your own topic? Press “Create my own”, describe it, and AI draws a fresh poster for{" "}
                 {KLP_AI_POSTER_CREDITS} credits (only charged when the poster is created).
               </li>
-              {klpTranslateAdmin && (
-                <li>
-                  Need another language? Translate one poster for {KLP_POSTER_TRANSLATE_CREDITS} credit.
-                </li>
-              )}
+              <li>Need another language? Translate one poster for {KLP_POSTER_TRANSLATE_CREDITS} credit.</li>
 
 
             </ol>
@@ -2961,18 +2955,16 @@ export default function KidsLearningPosters() {
                 <Button className="w-full gap-2" onClick={() => handleDownload(poster)}>
                   <Download className="h-4 w-4" /> Download · {KLP_POSTER_DOWNLOAD_CREDITS} credit
                 </Button>
-                {klpTranslateAdmin && (
-                  <Button
-                    variant="outline"
-                    className="klp-translate-btn w-full gap-2"
-                    onClick={() => {
-                      setTransPoster(poster);
-                      setTransResult(null);
-                    }}
-                  >
-                    <Languages className="h-4 w-4" /> Translate · {KLP_POSTER_TRANSLATE_CREDITS} credits
-                  </Button>
-                )}
+                <Button
+                  variant="outline"
+                  className="klp-translate-btn w-full gap-2"
+                  onClick={() => {
+                    setTransPoster(poster);
+                    setTransResult(null);
+                  }}
+                >
+                  <Languages className="h-4 w-4" /> Translate · {KLP_POSTER_TRANSLATE_CREDITS} credit
+                </Button>
               </CardContent>
             </Card>
           ))}
