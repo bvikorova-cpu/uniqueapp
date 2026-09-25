@@ -2284,7 +2284,7 @@ async function klpBuildEncyclopedia(
       : undefined;
     if (chapterArt) {
       const chapterImg = await klpLoadImage(chapterArt);
-      pdf.addImage(chapterImg, "JPEG", 0, 0, pageW, pageH, undefined, "FAST");
+      pdf.addImage(chapterImg, chapterArt.toLowerCase().includes(".png") ? "PNG" : "JPEG", 0, 0, pageW, pageH, undefined, "FAST");
     } else {
       pdf.setFillColor(236, 72, 153);
       pdf.rect(0, 0, pageW, pageH, "F");
