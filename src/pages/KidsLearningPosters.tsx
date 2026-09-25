@@ -2281,7 +2281,9 @@ async function klpBuildEncyclopedia(
     // Finished artwork exists for this chapter divider in the selected language.
     const chapterArt = group.chapter.minAge === 10
       ? KLP_CHAPTER_10_13[opts?.languageLabel ?? "English"]
-      : undefined;
+      : group.chapter.minAge === 6
+        ? KLP_CHAPTER_6_9[opts?.languageLabel ?? "English"]
+        : undefined;
     if (chapterArt) {
       const chapterImg = await klpLoadImage(chapterArt);
       pdf.addImage(chapterImg, chapterArt.toLowerCase().includes(".png") ? "PNG" : "JPEG", 0, 0, pageW, pageH, undefined, "FAST");
