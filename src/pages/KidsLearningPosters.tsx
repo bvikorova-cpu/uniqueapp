@@ -546,6 +546,16 @@ import klpReadyChoresRespHu from "@/assets/kids-poster-translations/chores-respo
 import klpReadyChoresRespDe from "@/assets/kids-poster-translations/chores-responsibility-de.webp.asset.json";
 import klpReadyChoresRespEs from "@/assets/kids-poster-translations/chores-responsibility-es.webp.asset.json";
 import klpReadyChoresRespFr from "@/assets/kids-poster-translations/chores-responsibility-fr.webp.asset.json";
+import klpReadyPatienceSk from "@/assets/kids-poster-translations/patience-practice-sk.webp.asset.json";
+import klpReadyPatienceHu from "@/assets/kids-poster-translations/patience-practice-hu.webp.asset.json";
+import klpReadyPatienceDe from "@/assets/kids-poster-translations/patience-practice-de.webp.asset.json";
+import klpReadyPatienceEs from "@/assets/kids-poster-translations/patience-practice-es.webp.asset.json";
+import klpReadyPatienceFr from "@/assets/kids-poster-translations/patience-practice-fr.webp.asset.json";
+import klpReadyGratitudeSk from "@/assets/kids-poster-translations/gratitude-sk.webp.asset.json";
+import klpReadyGratitudeHu from "@/assets/kids-poster-translations/gratitude-hu.webp.asset.json";
+import klpReadyGratitudeDe from "@/assets/kids-poster-translations/gratitude-de.webp.asset.json";
+import klpReadyGratitudeEs from "@/assets/kids-poster-translations/gratitude-es.webp.asset.json";
+import klpReadyGratitudeFr from "@/assets/kids-poster-translations/gratitude-fr.webp.asset.json";
 
 export const KLP_AI_POSTER_CREDITS = 3;
 export const KLP_BOOK_CREDITS = 25;
@@ -2100,6 +2110,20 @@ const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
     de: klpReadyChoresRespDe.url,
     es: klpReadyChoresRespEs.url,
     fr: klpReadyChoresRespFr.url,
+  },
+  "patience-practice": {
+    sk: klpReadyPatienceSk.url,
+    hu: klpReadyPatienceHu.url,
+    de: klpReadyPatienceDe.url,
+    es: klpReadyPatienceEs.url,
+    fr: klpReadyPatienceFr.url,
+  },
+  "gratitude": {
+    sk: klpReadyGratitudeSk.url,
+    hu: klpReadyGratitudeHu.url,
+    de: klpReadyGratitudeDe.url,
+    es: klpReadyGratitudeEs.url,
+    fr: klpReadyGratitudeFr.url,
   },
 };
 
