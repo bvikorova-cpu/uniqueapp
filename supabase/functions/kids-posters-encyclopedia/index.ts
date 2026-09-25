@@ -8,11 +8,11 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const COST = 25;
+const COST = 40;
 
 /**
  * Isolated edge function for the Kids Channel "Learning Posters" section.
- * Charges 10 credits for the full printable encyclopedia (PDF book) download.
+ * Legacy endpoint: charges 40 credits for the full printable encyclopedia.
  * The PDF itself is assembled in the browser from bundled poster images.
  */
 serve(async (req) => {

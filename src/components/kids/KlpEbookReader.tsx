@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useRef, useState } from "react";
 import HTMLFlipBook from "react-pageflip";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Page = forwardRef<HTMLDivElement, { src: string; index: number }>(({ src, index }, ref) => (
@@ -24,6 +24,16 @@ export function KlpEbookReader({ pages }: { pages: string[] }) {
   const bookRef = useRef<any>(null);
   const [page, setPage] = useState(0);
   const [size, setSize] = useState({ w: 400, h: 566 });
+  const [zoom, setZoom] = useState(1);
+  const pinchStart = useRef<{ distance: number; zoom: number } | null>(null);
+
+  const clampZoom = (value: number) => Math.min(3, Math.max(1, value));
+  const touchDistance = (touches: { item(index: number): { clientX: number; clientY: number } | null }) => {
+    const first = touches.item(0);
+    const second = touches.item(1);
+    if (!first || !second) return 0;
+    return Math.hypot(second.clientX - first.clientX, second.clientY - first.clientY);
+  };
 
   useEffect(() => {
     const calc = () => {
@@ -42,7 +52,21 @@ export function KlpEbookReader({ pages }: { pages: string[] }) {
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <div className="flex w-full justify-center">
+      <div
+        className="flex w-full justify-center overflow-auto overscroll-contain touch-pan-x touch-pan-y"
+        onTouchStart={(event) => {
+          if (event.touches.length === 2) pinchStart.current = { distance: touchDistance(event.touches), zoom };
+        }}
+        onTouchMove={(event) => {
+          if (event.touches.length !== 2 || !pinchStart.current) return;
+          const distance = touchDistance(event.touches);
+          if (!distance || !pinchStart.current.distance) return;
+          event.preventDefault();
+          setZoom(clampZoom(pinchStart.current.zoom * (distance / pinchStart.current.distance)));
+        }}
+        onTouchEnd={() => { pinchStart.current = null; }}
+      >
+        <div style={{ transform: `scale(${zoom})`, transformOrigin: "top center", marginBottom: `${(zoom - 1) * size.h}px` }}>
         {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
         {/* @ts-ignore library typings require every prop */}
         <HTMLFlipBook
@@ -64,6 +88,7 @@ export function KlpEbookReader({ pages }: { pages: string[] }) {
             <Page key={`${src}-${i}`} src={src} index={i} />
           ))}
         </HTMLFlipBook>
+        </div>
       </div>
       <div className="flex items-center gap-3">
         <Button variant="outline" size="icon" aria-label="Previous page" onClick={() => bookRef.current?.pageFlip()?.flipPrev()}>
@@ -74,6 +99,13 @@ export function KlpEbookReader({ pages }: { pages: string[] }) {
         </span>
         <Button variant="outline" size="icon" aria-label="Next page" onClick={() => bookRef.current?.pageFlip()?.flipNext()}>
           <ChevronRight className="h-4 w-4" />
+        </Button>
+        <Button variant="outline" size="icon" aria-label="Zoom out" disabled={zoom <= 1} onClick={() => setZoom((value) => clampZoom(value - 0.25))}>
+          <Minus className="h-4 w-4" />
+        </Button>
+        <span className="min-w-[48px] text-center text-xs text-muted-foreground">{Math.round(zoom * 100)}%</span>
+        <Button variant="outline" size="icon" aria-label="Zoom in" disabled={zoom >= 3} onClick={() => setZoom((value) => clampZoom(value + 0.25))}>
+          <Plus className="h-4 w-4" />
         </Button>
       </div>
     </div>

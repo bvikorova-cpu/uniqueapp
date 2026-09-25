@@ -480,3 +480,9 @@ verify_jwt = false
 
 [functions.kids-encyclopedia-translate]
 verify_jwt = false
+
+[functions.kids-ebook-access]
+verify_jwt = false
+
+[functions.kids-poster-download]
+verify_jwt = false
