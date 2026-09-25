@@ -2842,6 +2842,8 @@ export default function KidsLearningPosters() {
           </CardContent>
         </Card>
 
+        <KlpBookPreorder />
+
         <Dialog open={ebookOpen} onOpenChange={setEbookOpen}>
           <DialogContent className="max-h-[100dvh] w-[100vw] max-w-[100vw] overflow-y-auto p-4 sm:rounded-none">
             <DialogHeader>
