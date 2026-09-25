@@ -40,6 +40,11 @@ import encyclopediaCoverDe from "@/assets/kids-book-covers/encyclopedia-cover-de
 import encyclopediaCoverEs from "@/assets/kids-book-covers/encyclopedia-cover-es.jpg.asset.json";
 import encyclopediaCoverFr from "@/assets/kids-book-covers/encyclopedia-cover-fr.jpg.asset.json";
 import encyclopediaBackEn from "@/assets/kids-book-backs/encyclopedia-back-en.jpg.asset.json";
+import chapter10to13En from "@/assets/kids-book-chapters/chapter-10-13-en.jpg.asset.json";
+import chapter10to13Sk from "@/assets/kids-book-chapters/chapter-10-13-sk.jpg.asset.json";
+import chapter10to13Hu from "@/assets/kids-book-chapters/chapter-10-13-hu.jpg.asset.json";
+import chapter10to13De from "@/assets/kids-book-chapters/chapter-10-13-de.jpg.asset.json";
+import chapter10to13Fr from "@/assets/kids-book-chapters/chapter-10-13-fr.jpg.asset.json";
 import encyclopediaBackSk from "@/assets/kids-book-backs/encyclopedia-back-sk.jpg.asset.json";
 import encyclopediaBackHu from "@/assets/kids-book-backs/encyclopedia-back-hu.jpg.asset.json";
 import encyclopediaBackDe from "@/assets/kids-book-backs/encyclopedia-back-de.jpg.asset.json";
@@ -1556,6 +1561,16 @@ const KLP_BOOK_CONTENTS: Record<string, string> = {
   German: encyclopediaContentsDe.url,
   Spanish: encyclopediaContentsEs.url,
   French: encyclopediaContentsFr.url,
+};
+
+/** Finished chapter-divider artwork for "Ages 10-13 · Going deeper" per language. */
+const KLP_CHAPTER_10_13: Record<string, string> = {
+  English: chapter10to13En.url,
+  Slovak: chapter10to13Sk.url,
+  Hungarian: chapter10to13Hu.url,
+  German: chapter10to13De.url,
+  Spanish: chapter10to13De.url,
+  French: chapter10to13Fr.url,
 };
 
 /** Ready-made translated posters uploaded by the team (no AI needed). */
