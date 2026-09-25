@@ -459,6 +459,7 @@ const MyProgress = lazy(() => import("@/pages/MyProgress"));
 const YearWrappedPublic = lazy(() => import("@/pages/YearWrappedPublic"));
 const AdminCreditsLedger = lazy(() => import("@/pages/admin/AdminCreditsLedger"));
 const AdminLaunchBoosts = lazy(() => import("@/pages/admin/AdminLaunchBoosts"));
+const AdminBookPreorders = lazy(() => import("@/pages/admin/AdminBookPreorders"));
 const KidsLearningPosters = lazy(() => import("@/pages/KidsLearningPosters"));
 const MyCreditsLedger = lazy(() => import("@/pages/MyCreditsLedger"));
 const LuckyWheel = lazy(() => import("@/pages/LuckyWheel"));
@@ -816,6 +817,7 @@ const App = () => {
                         <Route path="/admin/rewards-audit" element={<ProtectedRoute><AdminRewardsAudit /></ProtectedRoute>} />
                         <Route path="/admin/credits-ledger" element={<ProtectedRoute requireAdmin={true}><AdminCreditsLedger /></ProtectedRoute>} />
                         <Route path="/admin/launch-boosts" element={<ProtectedRoute requireAdmin={true}><AdminLaunchBoosts /></ProtectedRoute>} />
+                        <Route path="/admin/book-preorders" element={<ProtectedRoute requireAdmin={true}><AdminBookPreorders /></ProtectedRoute>} />
                         <Route path="/generate-courses" element={<GenerateCourses />} />
                         <Route path="/premium-store" element={<PremiumStore />} />
                         <Route path="/premium" element={<Premium />} />

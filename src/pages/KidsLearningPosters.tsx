@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { BookOpen } from "lucide-react";
 import { KlpEbookReader } from "@/components/kids/KlpEbookReader";
+import { KlpBookPreorder } from "@/components/kids/KlpBookPreorder";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";

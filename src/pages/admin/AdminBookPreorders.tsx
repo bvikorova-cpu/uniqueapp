@@ -47,7 +47,7 @@ export default function AdminBookPreorders() {
 
   return (
     <AdminPageShell>
-      <AdminPageHeader title="Book Preorders" description="Printed Learning Encyclopedia preorders and mega bundles" icon={Package} />
+      <AdminPageHeader title="Book Preorders" subtitle="Printed Learning Encyclopedia preorders and mega bundles" icon={Package} />
       <AdminGlassCard>
         <div className="mb-4 flex flex-wrap items-center gap-2">
           <Badge variant="secondary">Total: {rows.length}</Badge>
