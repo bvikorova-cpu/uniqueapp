@@ -2333,19 +2333,14 @@ async function klpBuildEncyclopedia(
     for (const poster of group.items) {
       const img = await klpLoadImage(poster.image);
       pdf.addPage();
-      const maxW = pageW - 20;
-      const maxH = pageH - 34;
+      // Full-page poster with a thin white margin; no caption underneath.
+      const margin = 5;
+      const maxW = pageW - margin * 2;
+      const maxH = pageH - margin * 2;
       const ratio = Math.min(maxW / img.naturalWidth, maxH / img.naturalHeight);
       const w = img.naturalWidth * ratio;
       const h = img.naturalHeight * ratio;
-      pdf.addImage(img, "JPEG", (pageW - w) / 2, 10, w, h, undefined, "FAST");
-      pdf.setTextColor(60, 60, 70);
-      font("bold");
-      pdf.setFontSize(12);
-      pdf.text(tTitle(poster.id, poster.title), 10, pageH - 14, { maxWidth: pageW - 20 });
-      font("normal");
-      pdf.setFontSize(9);
-      pdf.text(poster.ages, 10, pageH - 8);
+      pdf.addImage(img, "JPEG", (pageW - w) / 2, (pageH - h) / 2, w, h, undefined, "FAST");
       done += 1;
       onProgress?.(done, total);
     }
