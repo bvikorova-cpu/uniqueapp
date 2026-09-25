@@ -2465,7 +2465,7 @@ export default function KidsLearningPosters() {
       if (error || payload.error || !payload.success) {
         const message = payload.error ?? error?.message ?? "Could not start the download.";
         if (/insufficient/i.test(message)) {
-          toast({ title: "Not enough credits", description: `A poster download costs ${KLP_POSTER_DOWNLOAD_CREDITS} credit.`, variant: "destructive" });
+          toast({ title: "Not enough credits", description: `A poster download costs ${KLP_POSTER_DOWNLOAD_CREDITS} credit (€0.50).`, variant: "destructive" });
           navigate("/ai-credits");
           return;
         }
@@ -2473,7 +2473,7 @@ export default function KidsLearningPosters() {
       }
       if (typeof payload.creditsRemaining === "number") setBalance(payload.creditsRemaining);
       await klpDownload(poster.image, poster.file);
-      toast({ title: "Download started", description: `${KLP_POSTER_DOWNLOAD_CREDITS} credit used.` });
+      toast({ title: "Download started", description: `${KLP_POSTER_DOWNLOAD_CREDITS} credit (€0.50) used.` });
     } catch {
       toast({
         title: "Download failed",
@@ -2522,7 +2522,7 @@ export default function KidsLearningPosters() {
         if (/insufficient/i.test(message)) {
           toast({
             title: "Not enough credits",
-            description: `A translated poster costs ${KLP_POSTER_TRANSLATE_CREDITS} credits. Top up and try again.`,
+            description: `A translated poster costs ${KLP_POSTER_TRANSLATE_CREDITS} credits (€0.50). Top up and try again.`,
             variant: "destructive",
           });
           navigate("/ai-credits");
@@ -2535,7 +2535,7 @@ export default function KidsLearningPosters() {
       setTransResult(payload.image);
       toast({
         title: `Poster ready in ${transLang}`,
-        description: `${KLP_POSTER_TRANSLATE_CREDITS} credits used.`,
+        description: `${KLP_POSTER_TRANSLATE_CREDITS} credits (€0.50) used.`,
       });
 
 
@@ -2588,7 +2588,7 @@ export default function KidsLearningPosters() {
       const res = await callEbookAccess(allLanguages ? "purchase_all" : "purchase_single");
       if (res.error) {
         if (/insufficient/i.test(res.error)) {
-          toast({ title: "Not enough credits", description: `This package costs ${allLanguages ? KLP_ALL_LANGUAGES_CREDITS : KLP_BOOK_CREDITS} credits.`, variant: "destructive" });
+          toast({ title: "Not enough credits", description: `This package costs ${allLanguages ? KLP_ALL_LANGUAGES_CREDITS : KLP_BOOK_CREDITS} credits (${allLanguages ? "€30" : "€20"}).`, variant: "destructive" });
           navigate("/ai-credits");
           return;
         }
@@ -2625,7 +2625,7 @@ export default function KidsLearningPosters() {
         if (/insufficient/i.test(message)) {
           toast({
             title: "Not enough credits",
-            description: `This package costs ${allLanguages ? KLP_ALL_LANGUAGES_CREDITS : KLP_BOOK_CREDITS} credits. Top up and try again.`,
+            description: `This package costs ${allLanguages ? KLP_ALL_LANGUAGES_CREDITS : KLP_BOOK_CREDITS} credits (${allLanguages ? "€30" : "€20"}). Top up and try again.`,
             variant: "destructive",
           });
           navigate("/ai-credits");
@@ -2638,7 +2638,7 @@ export default function KidsLearningPosters() {
       applyBookAccess(payload);
       toast({
         title: "Building your book",
-        description: alreadyOwned ? "Your PDF is being assembled." : `${allLanguages ? KLP_ALL_LANGUAGES_CREDITS : KLP_BOOK_CREDITS} credits used. Your PDF is being assembled.`,
+        description: alreadyOwned ? "Your PDF is being assembled." : `${allLanguages ? KLP_ALL_LANGUAGES_CREDITS : KLP_BOOK_CREDITS} credits (${allLanguages ? "€30" : "€20"}) used. Your PDF is being assembled.`,
       });
       const langId = KLP_LANGUAGES.find((language) => language.name === bookLang)?.id;
       const translations = langId
@@ -2689,7 +2689,7 @@ export default function KidsLearningPosters() {
         if (/insufficient/i.test(message)) {
           toast({
             title: "Not enough credits",
-            description: `This poster costs ${KLP_AI_POSTER_CREDITS} credits. Top up and try again.`,
+            description: `This poster costs ${KLP_AI_POSTER_CREDITS} credits (€1.50). Top up and try again.`,
             variant: "destructive",
           });
           navigate("/ai-credits");
@@ -2702,7 +2702,7 @@ export default function KidsLearningPosters() {
       if (typeof payload.creditsRemaining === "number") setBalance(payload.creditsRemaining);
       toast({
         title: "Your poster is ready",
-        description: `${KLP_AI_POSTER_CREDITS} credits used. You can download it now.`,
+        description: `${KLP_AI_POSTER_CREDITS} credits (€1.50) used. You can download it now.`,
       });
     } catch (e) {
       toast({
@@ -2749,12 +2749,12 @@ export default function KidsLearningPosters() {
           </h1>
           <p className="mt-4 max-w-2xl text-base text-muted-foreground md:text-lg">
             Beautiful, ready-to-print posters — school basics, science, feelings, safety, money and real-life
-            advice for teenagers. See exactly how each one looks, then download it for {KLP_POSTER_DOWNLOAD_CREDITS} credit. Need something
-            specific? Create your own with AI for {KLP_AI_POSTER_CREDITS} credits.
+            advice for teenagers. See exactly how each one looks, then download it for {KLP_POSTER_DOWNLOAD_CREDITS} credit (€0.50). Need something
+            specific? Create your own with AI for {KLP_AI_POSTER_CREDITS} credits (€1.50).
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Button size="lg" className="gap-2" onClick={() => setDialogOpen(true)}>
-              <Sparkles className="h-4 w-4" /> Create my own · {KLP_AI_POSTER_CREDITS} credits
+              <Sparkles className="h-4 w-4" /> Create my own · {KLP_AI_POSTER_CREDITS} credits (€1.50)
             </Button>
             <Button
               size="lg"
@@ -2768,7 +2768,7 @@ export default function KidsLearningPosters() {
                 ? bookProgress
                   ? `Building book · ${bookProgress.done}/${bookProgress.total}`
                   : "Preparing book…"
-                : `PDF + e-book · ${KLP_BOOK_CREDITS} credits`}
+                : `PDF + e-book · ${KLP_BOOK_CREDITS} credits (€20)`}
             </Button>
             <Button size="lg" variant="outline" asChild>
               <a href="#klp-library">Browse the library</a>
@@ -2785,16 +2785,16 @@ export default function KidsLearningPosters() {
             </div>
             <ol className="list-decimal space-y-1 pl-5 text-sm text-muted-foreground">
               <li>Pick an age group and a category — every poster shows a full preview first.</li>
-              <li>Press Download to save and print one poster for {KLP_POSTER_DOWNLOAD_CREDITS} credit.</li>
+              <li>Press Download to save and print one poster for {KLP_POSTER_DOWNLOAD_CREDITS} credit (€0.50).</li>
               <li>
                 Choose one language for the PDF + e-book package at {KLP_BOOK_CREDITS} credits (€20), or unlock
                 all 6 languages for {KLP_ALL_LANGUAGES_CREDITS} credits (€30).
               </li>
               <li>
                 Want your own topic? Press “Create my own”, describe it, and AI draws a fresh poster for{" "}
-                {KLP_AI_POSTER_CREDITS} credits (only charged when the poster is created).
+                {KLP_AI_POSTER_CREDITS} credits (€1.50) (only charged when the poster is created).
               </li>
-              <li>Need another language? Translate one poster for {KLP_POSTER_TRANSLATE_CREDITS} credit.</li>
+              <li>Need another language? Translate one poster for {KLP_POSTER_TRANSLATE_CREDITS} credit (€0.50).</li>
 
 
             </ol>
@@ -2831,7 +2831,7 @@ export default function KidsLearningPosters() {
                 ? bookProgress
                   ? `Building · ${bookProgress.done}/${bookProgress.total}`
                   : "Preparing…"
-                 : `Choose package · from ${KLP_BOOK_CREDITS} credits`}
+                 : `Choose package · from ${KLP_BOOK_CREDITS} credits (€20)`}
             </Button>
             <Button variant="outline" className="w-full gap-2 md:w-auto" onClick={handleOpenEbook} disabled={ebookBusy}>
               {ebookBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <BookOpen className="h-4 w-4" />}
@@ -2872,7 +2872,7 @@ export default function KidsLearningPosters() {
                 <KlpEbookReader pages={ebookPages} />
                 {!ebookAllLanguages && (
                   <Button variant="secondary" className="mx-auto flex gap-2" onClick={() => handleUnlockEbook(true)} disabled={ebookBusy}>
-                    <Languages className="h-4 w-4" /> Unlock all 6 languages · {KLP_ALL_LANGUAGES_CREDITS} credits
+                    <Languages className="h-4 w-4" /> Unlock all 6 languages · {KLP_ALL_LANGUAGES_CREDITS} credits (€30)
                   </Button>
                 )}
               </div>
@@ -2888,10 +2888,10 @@ export default function KidsLearningPosters() {
                 </div>
                 <Button className="gap-2" onClick={() => handleUnlockEbook(false)} disabled={ebookBusy}>
                   {ebookBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <BookOpen className="h-4 w-4" />}
-                  Unlock {ebookLang} PDF + e-book · {KLP_BOOK_CREDITS} credits
+                  Unlock {ebookLang} PDF + e-book · {KLP_BOOK_CREDITS} credits (€20)
                 </Button>
                 <Button variant="secondary" className="gap-2" onClick={() => handleUnlockEbook(true)} disabled={ebookBusy}>
-                  <Languages className="h-4 w-4" /> All 6 languages · {KLP_ALL_LANGUAGES_CREDITS} credits
+                  <Languages className="h-4 w-4" /> All 6 languages · {KLP_ALL_LANGUAGES_CREDITS} credits (€30)
                 </Button>
               </div>
             )}
@@ -2953,7 +2953,7 @@ export default function KidsLearningPosters() {
                 </div>
                 <p className="text-sm text-muted-foreground">{poster.description}</p>
                 <Button className="w-full gap-2" onClick={() => handleDownload(poster)}>
-                  <Download className="h-4 w-4" /> Download · {KLP_POSTER_DOWNLOAD_CREDITS} credit
+                  <Download className="h-4 w-4" /> Download · {KLP_POSTER_DOWNLOAD_CREDITS} credit (€0.50)
                 </Button>
                 <Button
                   variant="outline"
@@ -2963,7 +2963,7 @@ export default function KidsLearningPosters() {
                     setTransResult(null);
                   }}
                 >
-                  <Languages className="h-4 w-4" /> Translate · {KLP_POSTER_TRANSLATE_CREDITS} credit
+                  <Languages className="h-4 w-4" /> Translate · {KLP_POSTER_TRANSLATE_CREDITS} credit (€0.50)
                 </Button>
               </CardContent>
             </Card>
@@ -2982,7 +2982,7 @@ export default function KidsLearningPosters() {
               <h2 className="text-xl font-bold">Need a poster we do not have yet?</h2>
               <p className="mt-1 text-sm text-muted-foreground">
                 Describe any topic — fractions, the alphabet in another language, exam planning, kindness rules —
-                and AI draws it in the same friendly style for {KLP_AI_POSTER_CREDITS} credits.
+                and AI draws it in the same friendly style for {KLP_AI_POSTER_CREDITS} credits (€1.50).
               </p>
             </div>
             <Button size="lg" className="gap-2" onClick={() => setDialogOpen(true)}>
@@ -3002,7 +3002,7 @@ export default function KidsLearningPosters() {
               <Sparkles className="h-5 w-5 text-primary" /> Create your own learning poster
             </DialogTitle>
             <DialogDescription>
-              One poster costs {KLP_AI_POSTER_CREDITS} credits. Your balance:{" "}
+              One poster costs {KLP_AI_POSTER_CREDITS} credits (€1.50). Your balance:{" "}
               {balance === null ? "—" : `${balance} credits`}.
             </DialogDescription>
           </DialogHeader>
@@ -3076,7 +3076,7 @@ export default function KidsLearningPosters() {
               {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
               {generating
                 ? "Drawing your poster…"
-                : `Generate poster · ${KLP_AI_POSTER_CREDITS} credits`}
+                : `Generate poster · ${KLP_AI_POSTER_CREDITS} credits (€1.50)`}
             </Button>
             <p className="text-xs text-muted-foreground">
               Everything is kept child friendly. Credits are only charged when a poster is successfully created.
@@ -3101,7 +3101,7 @@ export default function KidsLearningPosters() {
             </DialogTitle>
             <DialogDescription>
                {transPoster?.title} — choose a ready translated version for{" "}
-              {KLP_POSTER_TRANSLATE_CREDITS} credits. Your balance:{" "}
+              {KLP_POSTER_TRANSLATE_CREDITS} credits (€0.50). Your balance:{" "}
               {balance === null ? "—" : `${balance} credits`}.
             </DialogDescription>
           </DialogHeader>
@@ -3146,7 +3146,7 @@ export default function KidsLearningPosters() {
               {transBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Languages className="h-4 w-4" />}
               {transBusy
                 ? `Translating to ${transLang}…`
-                : `Translate to ${transLang} · ${KLP_POSTER_TRANSLATE_CREDITS} credits`}
+                : `Translate to ${transLang} · ${KLP_POSTER_TRANSLATE_CREDITS} credits (€0.50)`}
             </Button>
             <p className="text-xs text-muted-foreground">
               Credits are only charged when the translated poster is created.
