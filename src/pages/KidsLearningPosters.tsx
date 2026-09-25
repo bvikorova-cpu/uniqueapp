@@ -16,6 +16,8 @@ import {
   Languages,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BookOpen } from "lucide-react";
+import { KlpEbookReader } from "@/components/kids/KlpEbookReader";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -2360,6 +2362,34 @@ async function klpBuildEncyclopedia(
 }
 
 /**
+ * Page image list for the online e-book, same order as the PDF.
+ */
+const KLP_EBOOK_LANGS = ["English", ...KLP_LANGUAGES.map((l) => l.name)];
+function klpEbookPages(languageLabel: string): string[] {
+  const langId = KLP_LANGUAGES.find((l) => l.name === languageLabel)?.id;
+  const chapterArt: Record<number, Record<string, string>> = {
+    3: KLP_CHAPTER_3_5,
+    6: KLP_CHAPTER_6_9,
+    10: KLP_CHAPTER_10_13,
+  };
+  const pages = [
+    KLP_BOOK_COVERS[languageLabel] ?? KLP_BOOK_COVERS.English,
+    KLP_BOOK_CONTENTS[languageLabel] ?? KLP_BOOK_CONTENTS.English,
+  ];
+  for (const chapter of KLP_BOOK_CHAPTERS) {
+    const items = KLP_POSTERS.filter((p) => p.minAge === chapter.minAge);
+    if (!items.length) continue;
+    const art = chapterArt[chapter.minAge];
+    if (art) pages.push(art[languageLabel] ?? art.English);
+    for (const p of items) {
+      pages.push((langId && KLP_READY_TRANSLATIONS[p.id]?.[langId]) || p.image);
+    }
+  }
+  pages.push(KLP_BOOK_BACKS[languageLabel] ?? KLP_BOOK_BACKS.English);
+  return pages;
+}
+
+/**
  * Kids Channel → Learning Posters.
  * Fully isolated page: printable educational poster library plus an optional
  * AI generator that costs 3 credits from the shared `ai_credits` wallet.
@@ -2389,6 +2419,11 @@ export default function KidsLearningPosters() {
   const [bookLangOpen, setBookLangOpen] = useState(false);
   const [bookLang, setBookLang] = useState<string>(KLP_LANGUAGES[0].name);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [ebookOpen, setEbookOpen] = useState(false);
+  const [ebookOwned, setEbookOwned] = useState(false);
+  const [ebookBusy, setEbookBusy] = useState(false);
+  const [ebookLang, setEbookLang] = useState<string>("English");
+  const ebookPages = useMemo(() => klpEbookPages(ebookLang), [ebookLang]);
   const { isAdmin: klpTranslateAdmin } = useIsAdmin();
 
   useEffect(() => {
@@ -2553,6 +2588,52 @@ export default function KidsLearningPosters() {
     } finally {
       setBookBusy(false);
       setBookProgress(null);
+    }
+  };
+
+  const callEbookAccess = async (unlock: boolean) => {
+    const { data, error } = await supabase.functions.invoke("kids-ebook-access", { body: { unlock } });
+    const payload = (data ?? {}) as { owned?: boolean; error?: string; creditsRemaining?: number };
+    if (error && !payload.error) throw new Error(error.message);
+    return payload;
+  };
+
+  const handleOpenEbook = async () => {
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+    setEbookBusy(true);
+    try {
+      const res = await callEbookAccess(false);
+      if (res.error) throw new Error(res.error);
+      setEbookOwned(!!res.owned);
+      setEbookOpen(true);
+    } catch (e) {
+      toast({ title: "Could not open e-book", description: e instanceof Error ? e.message : "Try again.", variant: "destructive" });
+    } finally {
+      setEbookBusy(false);
+    }
+  };
+
+  const handleUnlockEbook = async () => {
+    setEbookBusy(true);
+    try {
+      const res = await callEbookAccess(true);
+      if (res.error) {
+        if (/insufficient/i.test(res.error)) {
+          toast({ title: "Not enough credits", description: `The e-book costs ${KLP_BOOK_CREDITS} credits.`, variant: "destructive" });
+          navigate("/ai-credits");
+          return;
+        }
+        throw new Error(res.error);
+      }
+      if (typeof res.creditsRemaining === "number") setBalance(res.creditsRemaining);
+      setEbookOwned(!!res.owned);
+    } catch (e) {
+      toast({ title: "Unlock failed", description: e instanceof Error ? e.message : "Try again.", variant: "destructive" });
+    } finally {
+      setEbookBusy(false);
     }
   };
 
@@ -2786,6 +2867,7 @@ export default function KidsLearningPosters() {
                 pages for 3-5, 6-9 and 10-13 years. One-time price: {KLP_BOOK_CREDITS} credits.
               </p>
             </div>
+            <div className="flex flex-col gap-2 md:shrink-0">
             <Button className="w-full gap-2 md:w-auto md:shrink-0" onClick={handleEncyclopedia} disabled={bookBusy}>
               {bookBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
               {bookBusy
@@ -2794,8 +2876,51 @@ export default function KidsLearningPosters() {
                   : "Preparing…"
                 : `Get the book · ${KLP_BOOK_CREDITS} credits`}
             </Button>
+            <Button variant="outline" className="w-full gap-2 md:w-auto" onClick={handleOpenEbook} disabled={ebookBusy}>
+              {ebookBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <BookOpen className="h-4 w-4" />}
+              Read online (e-book)
+            </Button>
+            </div>
           </CardContent>
         </Card>
+
+        <Dialog open={ebookOpen} onOpenChange={setEbookOpen}>
+          <DialogContent className="max-h-[100dvh] w-[100vw] max-w-[100vw] overflow-y-auto p-4 sm:rounded-none">
+            <DialogHeader>
+              <DialogTitle>Learning Encyclopedia · e-book</DialogTitle>
+              <DialogDescription>
+                {ebookOwned
+                  ? "Swipe, drag a corner or use the arrows to turn pages."
+                  : `Unlock online reading in all 6 languages for ${KLP_BOOK_CREDITS} credits. Already bought the PDF? It is included.`}
+              </DialogDescription>
+            </DialogHeader>
+            {ebookOwned ? (
+              <div className="space-y-3">
+                <div className="flex flex-wrap justify-center gap-2">
+                  {KLP_EBOOK_LANGS.map((l) => (
+                    <Button
+                      key={l}
+                      size="sm"
+                      variant={ebookLang === l ? "default" : "outline"}
+                      onClick={() => setEbookLang(l)}
+                    >
+                      {l}
+                    </Button>
+                  ))}
+                </div>
+                <KlpEbookReader pages={ebookPages} />
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-4 py-4">
+                <img src={encyclopediaCoverEn.url} alt="Encyclopedia cover" className="w-48 rounded-md shadow-lg" />
+                <Button className="gap-2" onClick={handleUnlockEbook} disabled={ebookBusy}>
+                  {ebookBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <BookOpen className="h-4 w-4" />}
+                  Unlock e-book · {KLP_BOOK_CREDITS} credits
+                </Button>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
 
 
         <div id="klp-library" className="klp-filters mt-10 space-y-4">
