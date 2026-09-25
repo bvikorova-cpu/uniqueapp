@@ -396,7 +396,7 @@ const EarnMoneyGuide = () => {
         ]}
       />
 
-      <div className="emg-page min-h-screen bg-background">
+      <div className="emg-page min-h-screen w-full min-w-0 overflow-x-clip bg-background">
         <header className="emg-hero relative min-h-[430px] overflow-hidden border-b border-border">
           <img
             src={sectionPosters.marketplace}
@@ -438,7 +438,7 @@ const EarnMoneyGuide = () => {
           </div>
         </nav>
 
-        <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <main className="mx-auto w-full min-w-0 max-w-7xl overflow-x-clip px-4 py-10 sm:px-6 lg:px-8">
           <div className="mb-10 grid gap-5 border-b border-border pb-10 md:grid-cols-3">
             {[
               { icon: Lightbulb, title: "Start with your advantage", text: "Choose the path closest to your real skill, audience, content or assets." },
@@ -461,8 +461,8 @@ const EarnMoneyGuide = () => {
             {earnGuides.map((guide, index) => {
               const Icon = guide.icon;
               return (
-                <section id={guide.id} key={guide.id} className="emg-section scroll-mt-36 border-b border-border pb-16 last:border-b-0">
-                  <div className={`grid items-start gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] ${index % 2 ? "lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]" : ""}`}>
+                <section id={guide.id} key={guide.id} className="emg-section min-w-0 max-w-full scroll-mt-36 border-b border-border pb-16 last:border-b-0">
+                  <div className={`grid min-w-0 max-w-full items-start gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] ${index % 2 ? "lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]" : ""}`}>
                     <div className={`relative aspect-[16/10] overflow-hidden rounded-lg border border-border ${index % 2 ? "lg:order-2" : ""}`}>
                       <img src={guide.image} alt={`${guide.title} earning opportunity`} className="h-full w-full object-cover" loading="lazy" />
                       <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
@@ -472,20 +472,20 @@ const EarnMoneyGuide = () => {
                       </div>
                     </div>
 
-                    <div className={index % 2 ? "lg:order-1" : ""}>
+                    <div className={`min-w-0 max-w-full ${index % 2 ? "lg:order-1" : ""}`}>
                       <p className="text-sm font-bold uppercase text-primary">{guide.kicker}</p>
                       <h2 className="mt-2 text-3xl font-black text-foreground sm:text-4xl">{guide.title}</h2>
-                      <p className="mt-4 text-base leading-7 text-muted-foreground">{guide.hook}</p>
-                      <p className="mt-4 border-l-2 border-accent pl-4 text-sm leading-6 text-foreground"><strong>Best for:</strong> {guide.audience}</p>
+                       <p className="mt-4 break-words text-base leading-7 text-muted-foreground [overflow-wrap:anywhere]">{guide.hook}</p>
+                       <p className="mt-4 break-words border-l-2 border-accent pl-4 text-sm leading-6 text-foreground [overflow-wrap:anywhere]"><strong>Best for:</strong> {guide.audience}</p>
 
                        <div className="mt-6 grid gap-3">
-                         <div className="rounded-lg border border-primary/25 bg-primary/5 p-4">
+                          <div className="min-w-0 max-w-full rounded-lg border border-primary/25 bg-primary/5 p-4">
                            <h3 className="flex items-center gap-2 text-sm font-bold text-foreground"><Store className="h-4 w-4 text-primary" /> Exactly where you earn</h3>
-                           <p className="mt-2 text-sm leading-6 text-muted-foreground">{guide.whereToEarn}</p>
+                            <p className="mt-2 break-words text-sm leading-6 text-muted-foreground [overflow-wrap:anywhere]">{guide.whereToEarn}</p>
                          </div>
-                         <div className="rounded-lg border border-accent/25 bg-accent/5 p-4">
+                          <div className="min-w-0 max-w-full rounded-lg border border-accent/25 bg-accent/5 p-4">
                            <h3 className="flex items-center gap-2 text-sm font-bold text-foreground"><BadgeEuro className="h-4 w-4 text-accent" /> Amount, share and payout</h3>
-                           <p className="mt-2 text-sm leading-6 text-muted-foreground">{guide.payout}</p>
+                            <p className="mt-2 break-words text-sm leading-6 text-muted-foreground [overflow-wrap:anywhere]">{guide.payout}</p>
                          </div>
                        </div>
 
