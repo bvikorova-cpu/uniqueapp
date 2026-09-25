@@ -52,6 +52,12 @@ import chapter6to9Hu from "@/assets/kids-book-chapters/chapter-6-9-hu.png.asset.
 import chapter6to9De from "@/assets/kids-book-chapters/chapter-6-9-de.png.asset.json";
 import chapter6to9Fr from "@/assets/kids-book-chapters/chapter-6-9-fr.png.asset.json";
 import chapter6to9Es from "@/assets/kids-book-chapters/chapter-6-9-es.png.asset.json";
+import chapter3to5En from "@/assets/kids-book-chapters/chapter-3-5-en.png.asset.json";
+import chapter3to5Sk from "@/assets/kids-book-chapters/chapter-3-5-sk.webp.asset.json";
+import chapter3to5Hu from "@/assets/kids-book-chapters/chapter-3-5-hu.webp.asset.json";
+import chapter3to5De from "@/assets/kids-book-chapters/chapter-3-5-de.webp.asset.json";
+import chapter3to5Fr from "@/assets/kids-book-chapters/chapter-3-5-fr.png.asset.json";
+import chapter3to5Es from "@/assets/kids-book-chapters/chapter-3-5-es.webp.asset.json";
 import encyclopediaBackSk from "@/assets/kids-book-backs/encyclopedia-back-sk.jpg.asset.json";
 import encyclopediaBackHu from "@/assets/kids-book-backs/encyclopedia-back-hu.jpg.asset.json";
 import encyclopediaBackDe from "@/assets/kids-book-backs/encyclopedia-back-de.jpg.asset.json";
@@ -1580,6 +1586,14 @@ const KLP_CHAPTER_10_13: Record<string, string> = {
   Spanish: chapter10to13Es.url,
 };
 
+const KLP_CHAPTER_3_5: Record<string, string> = {
+  English: chapter3to5En.url,
+  Slovak: chapter3to5Sk.url,
+  Hungarian: chapter3to5Hu.url,
+  German: chapter3to5De.url,
+  French: chapter3to5Fr.url,
+  Spanish: chapter3to5Es.url,
+};
 const KLP_CHAPTER_6_9: Record<string, string> = {
   English: chapter6to9En.url,
   Slovak: chapter6to9Sk.url,
@@ -2298,7 +2312,9 @@ async function klpBuildEncyclopedia(
       ? KLP_CHAPTER_10_13[opts?.languageLabel ?? "English"]
       : group.chapter.minAge === 6
         ? KLP_CHAPTER_6_9[opts?.languageLabel ?? "English"]
-        : undefined;
+        : group.chapter.minAge === 3
+          ? KLP_CHAPTER_3_5[opts?.languageLabel ?? "English"]
+          : undefined;
     if (chapterArt) {
       const chapterImg = await klpLoadImage(chapterArt);
       pdf.addImage(chapterImg, chapterArt.toLowerCase().includes(".png") ? "PNG" : "JPEG", 0, 0, pageW, pageH, undefined, "FAST");
