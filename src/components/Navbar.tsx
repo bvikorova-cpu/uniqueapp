@@ -953,6 +953,11 @@ const Navbar = () => {
                     >
                       <Icon className="h-4 w-4" />
                       {item.label}
+                      {item.badge && (
+                        <span className="ml-2 rounded-full bg-gradient-to-r from-primary to-accent px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-primary-foreground">
+                          {item.badge}
+                        </span>
+                      )}
                     </Button>
                   </Link>
                 );
