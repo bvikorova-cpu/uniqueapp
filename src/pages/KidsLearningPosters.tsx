@@ -39,6 +39,12 @@ import encyclopediaCoverHu from "@/assets/kids-book-covers/encyclopedia-cover-hu
 import encyclopediaCoverDe from "@/assets/kids-book-covers/encyclopedia-cover-de.jpg.asset.json";
 import encyclopediaCoverEs from "@/assets/kids-book-covers/encyclopedia-cover-es.jpg.asset.json";
 import encyclopediaCoverFr from "@/assets/kids-book-covers/encyclopedia-cover-fr.jpg.asset.json";
+import encyclopediaBackEn from "@/assets/kids-book-backs/encyclopedia-back-en.jpg.asset.json";
+import encyclopediaBackSk from "@/assets/kids-book-backs/encyclopedia-back-sk.jpg.asset.json";
+import encyclopediaBackHu from "@/assets/kids-book-backs/encyclopedia-back-hu.jpg.asset.json";
+import encyclopediaBackDe from "@/assets/kids-book-backs/encyclopedia-back-de.jpg.asset.json";
+import encyclopediaBackEs from "@/assets/kids-book-backs/encyclopedia-back-es.jpg.asset.json";
+import encyclopediaBackFr from "@/assets/kids-book-backs/encyclopedia-back-fr.jpg.asset.json";
 import posterPartsOfSpeech from "@/assets/kids-posters/parts-of-speech.jpg";
 import posterTimesTables from "@/assets/kids-posters/times-tables.jpg";
 import posterAbcPhonics from "@/assets/kids-posters/abc-phonics.jpg";
@@ -1528,6 +1534,15 @@ const KLP_BOOK_COVERS: Record<string, string> = {
   French: encyclopediaCoverFr.url,
 };
 
+const KLP_BOOK_BACKS: Record<string, string> = {
+  English: encyclopediaBackEn.url,
+  Slovak: encyclopediaBackSk.url,
+  Hungarian: encyclopediaBackHu.url,
+  German: encyclopediaBackDe.url,
+  Spanish: encyclopediaBackEs.url,
+  French: encyclopediaBackFr.url,
+};
+
 /** Ready-made translated posters uploaded by the team (no AI needed). */
 const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
   "moon-phases": {
@@ -2285,6 +2300,12 @@ async function klpBuildEncyclopedia(
       onProgress?.(done, total);
     }
   }
+
+  // Back cover — supplied finished artwork matching the book language.
+  const backSrc = KLP_BOOK_BACKS[opts?.languageLabel ?? "English"] ?? KLP_BOOK_BACKS.English;
+  const backImg = await klpLoadImage(backSrc);
+  pdf.addPage();
+  pdf.addImage(backImg, "JPEG", 0, 0, pageW, pageH, undefined, "FAST");
 
   pdf.save(
     translated
