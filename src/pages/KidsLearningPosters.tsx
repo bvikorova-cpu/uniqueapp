@@ -333,7 +333,7 @@ import klpReadyShapesDe from "@/assets/kids-poster-translations/shapes-colors-de
 import klpReadyShapesEs from "@/assets/kids-poster-translations/shapes-colors-es.jpg.asset.json";
 import klpReadyShapesFr from "@/assets/kids-poster-translations/shapes-colors-fr.jpg.asset.json";
 import klpReadyAbcSk from "@/assets/kids-poster-translations/abc-phonics-sk.jpg.asset.json";
-import klpReadyAbcHu from "@/assets/kids-poster-translations/abc-phonics-hu.jpg.asset.json";
+import klpReadyAbcHu from "@/assets/kids-poster-translations/abc-phonics-hu-v2.png.asset.json";
 import klpReadyAbcDe from "@/assets/kids-poster-translations/abc-phonics-de.jpg.asset.json";
 import klpReadyAbcEs from "@/assets/kids-poster-translations/abc-phonics-es.jpg.asset.json";
 import klpReadyAbcFr from "@/assets/kids-poster-translations/abc-phonics-fr.jpg.asset.json";
@@ -368,7 +368,7 @@ import klpReadyPosDe from "@/assets/kids-poster-translations/parts-of-speech-de.
 import klpReadyPosEs from "@/assets/kids-poster-translations/parts-of-speech-es.jpg.asset.json";
 import klpReadyPosFr from "@/assets/kids-poster-translations/parts-of-speech-fr.jpg.asset.json";
 import klpReadySolarSk from "@/assets/kids-poster-translations/solar-system-sk.jpg.asset.json";
-import klpReadySolarHu from "@/assets/kids-poster-translations/solar-system-hu.jpg.asset.json";
+import klpReadySolarHu from "@/assets/kids-poster-translations/solar-system-hu-v2.png.asset.json";
 import klpReadySolarDe from "@/assets/kids-poster-translations/solar-system-de.jpg.asset.json";
 import klpReadySolarEs from "@/assets/kids-poster-translations/solar-system-es.jpg.asset.json";
 import klpReadySolarFr from "@/assets/kids-poster-translations/solar-system-fr.jpg.asset.json";
