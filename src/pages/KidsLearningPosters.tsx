@@ -45,6 +45,12 @@ import encyclopediaBackHu from "@/assets/kids-book-backs/encyclopedia-back-hu.jp
 import encyclopediaBackDe from "@/assets/kids-book-backs/encyclopedia-back-de.jpg.asset.json";
 import encyclopediaBackEs from "@/assets/kids-book-backs/encyclopedia-back-es.jpg.asset.json";
 import encyclopediaBackFr from "@/assets/kids-book-backs/encyclopedia-back-fr.jpg.asset.json";
+import encyclopediaContentsEn from "@/assets/kids-book-contents/encyclopedia-contents-en.png.asset.json";
+import encyclopediaContentsSk from "@/assets/kids-book-contents/encyclopedia-contents-sk.png.asset.json";
+import encyclopediaContentsHu from "@/assets/kids-book-contents/encyclopedia-contents-hu.png.asset.json";
+import encyclopediaContentsDe from "@/assets/kids-book-contents/encyclopedia-contents-de.png.asset.json";
+import encyclopediaContentsEs from "@/assets/kids-book-contents/encyclopedia-contents-es.png.asset.json";
+import encyclopediaContentsFr from "@/assets/kids-book-contents/encyclopedia-contents-fr.png.asset.json";
 import posterPartsOfSpeech from "@/assets/kids-posters/parts-of-speech.jpg";
 import posterTimesTables from "@/assets/kids-posters/times-tables.jpg";
 import posterAbcPhonics from "@/assets/kids-posters/abc-phonics.jpg";
@@ -1543,6 +1549,15 @@ const KLP_BOOK_BACKS: Record<string, string> = {
   French: encyclopediaBackFr.url,
 };
 
+const KLP_BOOK_CONTENTS: Record<string, string> = {
+  English: encyclopediaContentsEn.url,
+  Slovak: encyclopediaContentsSk.url,
+  Hungarian: encyclopediaContentsHu.url,
+  German: encyclopediaContentsDe.url,
+  Spanish: encyclopediaContentsEs.url,
+  French: encyclopediaContentsFr.url,
+};
+
 /** Ready-made translated posters uploaded by the team (no AI needed). */
 const KLP_READY_TRANSLATIONS: Record<string, Record<string, string>> = {
   "moon-phases": {
@@ -2236,34 +2251,11 @@ async function klpBuildEncyclopedia(
     items: KLP_POSTERS.filter((p) => p.minAge === chapter.minAge),
   })).filter((group) => group.items.length > 0);
 
-  // Contents
+  // Contents — supplied finished full-page artwork for the selected language.
   pdf.addPage();
-  pdf.setTextColor(30, 30, 40);
-  font("bold");
-  pdf.setFontSize(22);
-  pdf.text(tTitle("book:contents", "Contents"), 20, 30);
-  let y = 45;
-  pdf.setFontSize(12);
-  for (const group of ordered) {
-    font("bold");
-    if (y > pageH - 30) {
-      pdf.addPage();
-      y = 30;
-    }
-    const chapterLabel = tTitle(`chapter:${group.chapter.minAge}`, group.chapter.label);
-    pdf.text(`${chapterLabel} (${group.items.length})`, 20, y);
-    y += 7;
-    font("normal");
-    for (const item of group.items) {
-      if (y > pageH - 20) {
-        pdf.addPage();
-        y = 30;
-      }
-      pdf.text(`• ${tTitle(item.id, item.title)}`, 26, y);
-      y += 6;
-    }
-    y += 4;
-  }
+  const contentsSrc = KLP_BOOK_CONTENTS[opts?.languageLabel ?? "English"] ?? KLP_BOOK_CONTENTS.English;
+  const contentsImg = await klpLoadImage(contentsSrc);
+  pdf.addImage(contentsImg, "PNG", 0, 0, pageW, pageH, undefined, "FAST");
 
   const total = KLP_POSTERS.length;
   let done = 0;
