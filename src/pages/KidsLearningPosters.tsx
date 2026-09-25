@@ -1569,7 +1569,6 @@ const KLP_CHAPTER_10_13: Record<string, string> = {
   Slovak: chapter10to13Sk.url,
   Hungarian: chapter10to13Hu.url,
   German: chapter10to13De.url,
-  Spanish: chapter10to13De.url,
   French: chapter10to13Fr.url,
 };
 
@@ -2277,15 +2276,24 @@ async function klpBuildEncyclopedia(
 
   for (const group of ordered) {
     pdf.addPage();
-    pdf.setFillColor(236, 72, 153);
-    pdf.rect(0, 0, pageW, pageH, "F");
-    pdf.setTextColor(255, 255, 255);
-    font("bold");
-    pdf.setFontSize(28);
-    pdf.text(tTitle(`chapter:${group.chapter.minAge}`, group.chapter.label), 20, 130, { maxWidth: pageW - 40 });
-    font("normal");
-    pdf.setFontSize(13);
-    pdf.text(tDesc(`chapter:${group.chapter.minAge}`, group.chapter.blurb), 20, 150, { maxWidth: pageW - 40 });
+    // Finished artwork exists for this chapter divider in the selected language.
+    const chapterArt = group.chapter.minAge === 10
+      ? KLP_CHAPTER_10_13[opts?.languageLabel ?? "English"]
+      : undefined;
+    if (chapterArt) {
+      const chapterImg = await klpLoadImage(chapterArt);
+      pdf.addImage(chapterImg, "JPEG", 0, 0, pageW, pageH, undefined, "FAST");
+    } else {
+      pdf.setFillColor(236, 72, 153);
+      pdf.rect(0, 0, pageW, pageH, "F");
+      pdf.setTextColor(255, 255, 255);
+      font("bold");
+      pdf.setFontSize(28);
+      pdf.text(tTitle(`chapter:${group.chapter.minAge}`, group.chapter.label), 20, 130, { maxWidth: pageW - 40 });
+      font("normal");
+      pdf.setFontSize(13);
+      pdf.text(tDesc(`chapter:${group.chapter.minAge}`, group.chapter.blurb), 20, 150, { maxWidth: pageW - 40 });
+    }
 
     for (const poster of group.items) {
       const img = await klpLoadImage(poster.image);
