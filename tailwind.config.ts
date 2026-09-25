@@ -4,6 +4,8 @@ import typography from "@tailwindcss/typography";
 
 export default {
   darkMode: ["class"],
+  // Prevent "sticky hover" on touch devices (previous answer looked selected on next question)
+  future: { hoverOnlyWhenSupported: true },
   content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
   prefix: "",
   theme: { container: {
