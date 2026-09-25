@@ -44,7 +44,8 @@ import chapter10to13En from "@/assets/kids-book-chapters/chapter-10-13-en.jpg.as
 import chapter10to13Sk from "@/assets/kids-book-chapters/chapter-10-13-sk.jpg.asset.json";
 import chapter10to13Hu from "@/assets/kids-book-chapters/chapter-10-13-hu.jpg.asset.json";
 import chapter10to13De from "@/assets/kids-book-chapters/chapter-10-13-de.jpg.asset.json";
-import chapter10to13Fr from "@/assets/kids-book-chapters/chapter-10-13-fr.jpg.asset.json";
+import chapter10to13Fr from "@/assets/kids-book-chapters/chapter-10-13-fr-v2.png.asset.json";
+import chapter10to13Es from "@/assets/kids-book-chapters/chapter-10-13-es.png.asset.json";
 import encyclopediaBackSk from "@/assets/kids-book-backs/encyclopedia-back-sk.jpg.asset.json";
 import encyclopediaBackHu from "@/assets/kids-book-backs/encyclopedia-back-hu.jpg.asset.json";
 import encyclopediaBackDe from "@/assets/kids-book-backs/encyclopedia-back-de.jpg.asset.json";
