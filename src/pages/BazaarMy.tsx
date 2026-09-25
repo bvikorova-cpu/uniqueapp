@@ -140,7 +140,7 @@ export default function BazaarMy() {
             <h1 className="text-3xl font-black tracking-tight">My listings</h1>
             <p className="text-sm text-muted-foreground">Edit details, mark as sold, pause, promote or delete your listings.</p>
           </div>
-          <Button className="gap-2" onClick={() => nav("/bazaar/create")}><Plus className="h-4 w-4" /> New listing · 2 credits</Button>
+          <Button className="gap-2" onClick={() => nav("/bazaar/create")}><Plus className="h-4 w-4" /> New listing · free</Button>
         </div>
 
         {loading ? (
