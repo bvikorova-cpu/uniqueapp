@@ -22,6 +22,7 @@ Page.displayName = "KlpEbookPage";
 export function KlpEbookReader({ pages }: { pages: string[] }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const bookRef = useRef<any>(null);
+  const readerRef = useRef<HTMLDivElement>(null);
   const [page, setPage] = useState(0);
   const [size, setSize] = useState({ w: 400, h: 566 });
   const [zoom, setZoom] = useState(1);
@@ -37,23 +38,29 @@ export function KlpEbookReader({ pages }: { pages: string[] }) {
 
   useEffect(() => {
     const calc = () => {
-      const vw = window.innerWidth;
+      const containerWidth = readerRef.current?.clientWidth ?? window.innerWidth - 32;
+      const vw = Math.min(window.innerWidth, containerWidth);
       const vh = window.innerHeight;
       const single = vw < 768;
-      const maxW = single ? vw - 48 : (vw - 120) / 2;
+      const maxW = single ? vw - 8 : (vw - 48) / 2;
       const maxH = vh - 190;
-      const w = Math.max(200, Math.min(maxW, maxH * (210 / 297), 520));
+      const w = Math.max(160, Math.min(maxW, maxH * (210 / 297), 520));
       setSize({ w: Math.round(w), h: Math.round(w * (297 / 210)) });
     };
     calc();
+    const observer = new ResizeObserver(calc);
+    if (readerRef.current) observer.observe(readerRef.current);
     window.addEventListener("resize", calc);
-    return () => window.removeEventListener("resize", calc);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", calc);
+    };
   }, []);
 
   return (
-    <div className="flex flex-col items-center gap-3">
+    <div ref={readerRef} className="flex min-w-0 max-w-full flex-col items-center gap-3 overflow-hidden">
       <div
-        className="flex w-full justify-center overflow-auto overscroll-contain touch-pan-x touch-pan-y"
+        className="flex w-full min-w-0 justify-center overflow-auto overscroll-contain touch-pan-x touch-pan-y"
         onTouchStart={(event) => {
           if (event.touches.length === 2) pinchStart.current = { distance: touchDistance(event.touches), zoom };
         }}
@@ -90,23 +97,27 @@ export function KlpEbookReader({ pages }: { pages: string[] }) {
         </HTMLFlipBook>
         </div>
       </div>
-      <div className="flex items-center gap-3">
-        <Button variant="outline" size="icon" aria-label="Previous page" onClick={() => bookRef.current?.pageFlip()?.flipPrev()}>
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        <span className="min-w-[90px] text-center text-sm text-muted-foreground">
-          {page + 1} / {pages.length}
-        </span>
-        <Button variant="outline" size="icon" aria-label="Next page" onClick={() => bookRef.current?.pageFlip()?.flipNext()}>
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-        <Button variant="outline" size="icon" aria-label="Zoom out" disabled={zoom <= 1} onClick={() => setZoom((value) => clampZoom(value - 0.25))}>
-          <Minus className="h-4 w-4" />
-        </Button>
-        <span className="min-w-[48px] text-center text-xs text-muted-foreground">{Math.round(zoom * 100)}%</span>
-        <Button variant="outline" size="icon" aria-label="Zoom in" disabled={zoom >= 3} onClick={() => setZoom((value) => clampZoom(value + 0.25))}>
-          <Plus className="h-4 w-4" />
-        </Button>
+      <div className="flex w-full flex-wrap items-center justify-center gap-2">
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="icon" aria-label="Previous page" onClick={() => bookRef.current?.pageFlip()?.flipPrev()}>
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <span className="min-w-[72px] text-center text-sm text-muted-foreground">
+            {page + 1} / {pages.length}
+          </span>
+          <Button variant="outline" size="icon" aria-label="Next page" onClick={() => bookRef.current?.pageFlip()?.flipNext()}>
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="icon" aria-label="Zoom out" disabled={zoom <= 1} onClick={() => setZoom((value) => clampZoom(value - 0.25))}>
+            <Minus className="h-4 w-4" />
+          </Button>
+          <span className="min-w-[44px] text-center text-xs text-muted-foreground">{Math.round(zoom * 100)}%</span>
+          <Button variant="outline" size="icon" aria-label="Zoom in" disabled={zoom >= 3} onClick={() => setZoom((value) => clampZoom(value + 0.25))}>
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );
