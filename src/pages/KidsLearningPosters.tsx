@@ -2876,10 +2876,22 @@ export default function KidsLearningPosters() {
                   ))}
                 </div>
                 <KlpEbookReader pages={ebookPages} />
+                {!ebookAllLanguages && (
+                  <Button variant="secondary" className="mx-auto flex gap-2" onClick={() => handleUnlockEbook(true)} disabled={ebookBusy}>
+                    <Languages className="h-4 w-4" /> Unlock all 6 languages · {KLP_ALL_LANGUAGES_CREDITS} credits
+                  </Button>
+                )}
               </div>
             ) : (
               <div className="flex flex-col items-center gap-4 py-4">
                 <img src={encyclopediaCoverEn.url} alt="Encyclopedia cover" className="w-48 rounded-md shadow-lg" />
+                <div className="flex flex-wrap justify-center gap-2">
+                  {KLP_EBOOK_LANGS.map((language) => (
+                    <Button key={language} size="sm" variant={ebookLang === language ? "default" : "outline"} onClick={() => setEbookLang(language)}>
+                      {language}
+                    </Button>
+                  ))}
+                </div>
                 <Button className="gap-2" onClick={() => handleUnlockEbook(false)} disabled={ebookBusy}>
                   {ebookBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <BookOpen className="h-4 w-4" />}
                   Unlock {ebookLang} PDF + e-book · {KLP_BOOK_CREDITS} credits

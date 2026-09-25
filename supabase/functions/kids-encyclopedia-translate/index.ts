@@ -9,7 +9,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const COST = 25;
+const COST = 40;
 const CHUNK = 20;
 
 type TranslateItem = { id: string; title: string; description: string };
@@ -18,7 +18,7 @@ type TranslateItem = { id: string; title: string; description: string };
  * Isolated edge function for the Kids Channel "Learning Posters" section.
  * Translates every poster title/description plus the book chapter texts into a
  * target language so the browser can build the translated encyclopedia PDF.
- * Charges 25 credits from the unified `ai_credits` wallet.
+ * Legacy endpoint: charges 40 credits from the unified `ai_credits` wallet.
  */
 serve(async (req) => {
   if (req.method === "OPTIONS") {
