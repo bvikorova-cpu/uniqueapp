@@ -1571,6 +1571,7 @@ const KLP_CHAPTER_10_13: Record<string, string> = {
   Hungarian: chapter10to13Hu.url,
   German: chapter10to13De.url,
   French: chapter10to13Fr.url,
+  Spanish: chapter10to13Es.url,
 };
 
 /** Ready-made translated posters uploaded by the team (no AI needed). */
