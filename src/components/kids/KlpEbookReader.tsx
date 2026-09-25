@@ -28,7 +28,7 @@ export function KlpEbookReader({ pages }: { pages: string[] }) {
   const pinchStart = useRef<{ distance: number; zoom: number } | null>(null);
 
   const clampZoom = (value: number) => Math.min(3, Math.max(1, value));
-  const touchDistance = (touches: React.TouchList) => {
+  const touchDistance = (touches: TouchList) => {
     const first = touches.item(0);
     const second = touches.item(1);
     if (!first || !second) return 0;

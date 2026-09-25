@@ -2273,7 +2273,7 @@ async function klpBuildEncyclopedia(
   const pageW = 210;
   const pageH = 297;
 
-  const translated = !!opts?.translations;
+  const translated = !!opts?.languageLabel && opts.languageLabel !== "English";
   const tr = opts?.translations ?? {};
   if (translated) await klpRegisterUnicodeFont(pdf as never);
   const family = translated ? "klpUnicode" : "helvetica";
@@ -2332,7 +2332,9 @@ async function klpBuildEncyclopedia(
     }
 
     for (const poster of group.items) {
-      const img = await klpLoadImage(poster.image);
+      const languageId = KLP_LANGUAGES.find((language) => language.name === opts?.languageLabel)?.id;
+      const posterSrc = (languageId && KLP_READY_TRANSLATIONS[poster.id]?.[languageId]) || poster.image;
+      const img = await klpLoadImage(posterSrc);
       pdf.addPage();
       // Full-page poster with a thin white margin; no caption underneath.
       const margin = 5;
@@ -2550,64 +2552,6 @@ export default function KidsLearningPosters() {
     }
   };
 
-  const handleTranslatedEncyclopedia = async () => {
-    if (!user) {
-      navigate("/auth");
-      return;
-    }
-    if (bookBusy) return;
-    setBookBusy(true);
-    setBookProgress(null);
-    try {
-      const { data, error } = await supabase.functions.invoke("kids-encyclopedia-translate", {
-        body: { language: bookLang, items: klpBookTranslationItems() },
-      });
-      const payload = (data ?? {}) as {
-        error?: string;
-        translations?: KlpTranslationMap;
-        creditsRemaining?: number;
-        success?: boolean;
-      };
-      if (error || payload.error || !payload.translations) {
-        const message = payload.error ?? error?.message ?? "Could not translate the encyclopedia.";
-        if (/insufficient/i.test(message)) {
-          toast({
-            title: "Not enough credits",
-            description: `The bilingual encyclopedia costs ${KLP_BOOK_TRANSLATE_CREDITS} credits. Top up and try again.`,
-            variant: "destructive",
-          });
-          navigate("/ai-credits");
-          return;
-        }
-        toast({ title: "Translation failed", description: message, variant: "destructive" });
-        return;
-      }
-      if (typeof payload.creditsRemaining === "number") setBalance(payload.creditsRemaining);
-      setBookLangOpen(false);
-      toast({
-        title: `Building your ${bookLang} book`,
-        description: `${KLP_BOOK_TRANSLATE_CREDITS} credits used. Please keep this page open.`,
-      });
-      await klpBuildEncyclopedia((doneCount, total) => setBookProgress({ done: doneCount, total }), {
-        languageLabel: bookLang,
-        translations: payload.translations,
-      });
-      toast({
-        title: "Encyclopedia ready",
-        description: `${KLP_POSTERS.length} bilingual English + ${bookLang} posters, sorted by age.`,
-      });
-    } catch (e) {
-      toast({
-        title: "Download failed",
-        description: e instanceof Error ? e.message : "Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setBookBusy(false);
-      setBookProgress(null);
-    }
-  };
-
   const callEbookAccess = async (action: "check" | "purchase_single" | "purchase_all", language = ebookLang) => {
     const { data, error } = await supabase.functions.invoke("kids-ebook-access", { body: { action, language } });
     const payload = (data ?? {}) as { allLanguages?: boolean; ownedLanguages?: string[]; error?: string; creditsRemaining?: number };
@@ -2807,7 +2751,7 @@ export default function KidsLearningPosters() {
           </h1>
           <p className="mt-4 max-w-2xl text-base text-muted-foreground md:text-lg">
             Beautiful, ready-to-print posters — school basics, science, feelings, safety, money and real-life
-            advice for teenagers. See exactly how each one looks, then download it for free. Need something
+            advice for teenagers. See exactly how each one looks, then download it for {KLP_POSTER_DOWNLOAD_CREDITS} credit. Need something
             specific? Create your own with AI for {KLP_AI_POSTER_CREDITS} credits.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
@@ -2826,20 +2770,8 @@ export default function KidsLearningPosters() {
                 ? bookProgress
                   ? `Building book · ${bookProgress.done}/${bookProgress.total}`
                   : "Preparing book…"
-                : `Download full encyclopedia PDF · ${KLP_BOOK_CREDITS} credits`}
+                : `PDF + e-book · ${KLP_BOOK_CREDITS} credits`}
             </Button>
-            {klpTranslateAdmin && (
-              <Button
-                size="lg"
-                variant="secondary"
-                className="klp-book-cta gap-2"
-                onClick={() => setBookLangOpen(true)}
-                disabled={bookBusy}
-              >
-                <Languages className="h-4 w-4" />
-                {`Bilingual encyclopedia · ${KLP_BOOK_TRANSLATE_CREDITS} credits`}
-              </Button>
-            )}
             <Button size="lg" variant="outline" asChild>
               <a href="#klp-library">Browse the library</a>
             </Button>
@@ -2855,11 +2787,10 @@ export default function KidsLearningPosters() {
             </div>
             <ol className="list-decimal space-y-1 pl-5 text-sm text-muted-foreground">
               <li>Pick an age group and a category — every poster shows a full preview first.</li>
-              <li>Press Download to save the poster as a picture and print it at home or at school.</li>
+              <li>Press Download to save and print one poster for {KLP_POSTER_DOWNLOAD_CREDITS} credit.</li>
               <li>
-                Want the whole library as one children's book? Press “Download full encyclopedia PDF” for{" "}
-                {KLP_BOOK_CREDITS} credits — all {KLP_POSTERS.length} posters in one printable A4 PDF with a
-                cover, contents page and chapters ordered by age (3-5, 6-9, 10-13).
+                Choose one language for the PDF + e-book package at {KLP_BOOK_CREDITS} credits (€20), or unlock
+                all 6 languages for {KLP_ALL_LANGUAGES_CREDITS} credits (€30).
               </li>
               <li>
                 Want your own topic? Press “Create my own”, describe it, and AI draws a fresh poster for{" "}
@@ -2867,9 +2798,7 @@ export default function KidsLearningPosters() {
               </li>
               {klpTranslateAdmin && (
                 <li>
-                  Need another language? Press “Translate” on any poster and Gemini creates its translated version for
-                  {KLP_POSTER_TRANSLATE_CREDITS} credits, or get the bilingual
-                  encyclopedia PDF for {KLP_BOOK_TRANSLATE_CREDITS} credits.
+                  Need another language? Translate one poster for {KLP_POSTER_TRANSLATE_CREDITS} credit.
                 </li>
               )}
 
@@ -2898,7 +2827,7 @@ export default function KidsLearningPosters() {
               </div>
               <p className="mt-1 text-sm text-muted-foreground">
                 All {KLP_POSTERS.length} posters bound into one printable A4 book, sorted by age with chapter
-                pages for 3-5, 6-9 and 10-13 years. One-time price: {KLP_BOOK_CREDITS} credits.
+                 pages for 3-5, 6-9 and 10-13 years. One language: {KLP_BOOK_CREDITS} credits (€20). All 6 languages: {KLP_ALL_LANGUAGES_CREDITS} credits (€30).
               </p>
             </div>
             <div className="flex flex-col gap-2 md:shrink-0">
@@ -2908,7 +2837,7 @@ export default function KidsLearningPosters() {
                 ? bookProgress
                   ? `Building · ${bookProgress.done}/${bookProgress.total}`
                   : "Preparing…"
-                : `Get the book · ${KLP_BOOK_CREDITS} credits`}
+                 : `Choose package · from ${KLP_BOOK_CREDITS} credits`}
             </Button>
             <Button variant="outline" className="w-full gap-2 md:w-auto" onClick={handleOpenEbook} disabled={ebookBusy}>
               {ebookBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <BookOpen className="h-4 w-4" />}
@@ -2924,8 +2853,8 @@ export default function KidsLearningPosters() {
               <DialogTitle>Learning Encyclopedia · e-book</DialogTitle>
               <DialogDescription>
                 {ebookOwned
-                  ? "Swipe, drag a corner or use the arrows to turn pages."
-                  : `Unlock online reading in all 6 languages for ${KLP_BOOK_CREDITS} credits. Already bought the PDF? It is included.`}
+                  ? "Swipe or drag to turn pages. Pinch with two fingers to zoom."
+                  : `Unlock PDF + e-book in one language for ${KLP_BOOK_CREDITS} credits (€20), or all 6 languages for ${KLP_ALL_LANGUAGES_CREDITS} credits (€30).`}
               </DialogDescription>
             </DialogHeader>
             {ebookOwned ? (
@@ -2936,7 +2865,11 @@ export default function KidsLearningPosters() {
                       key={l}
                       size="sm"
                       variant={ebookLang === l ? "default" : "outline"}
-                      onClick={() => setEbookLang(l)}
+                      disabled={!ebookAllLanguages && !ebookOwnedLanguages.includes(l)}
+                      onClick={() => {
+                        setEbookLang(l);
+                        setEbookOwned(ebookAllLanguages || ebookOwnedLanguages.includes(l));
+                      }}
                     >
                       {l}
                     </Button>
@@ -2947,9 +2880,12 @@ export default function KidsLearningPosters() {
             ) : (
               <div className="flex flex-col items-center gap-4 py-4">
                 <img src={encyclopediaCoverEn.url} alt="Encyclopedia cover" className="w-48 rounded-md shadow-lg" />
-                <Button className="gap-2" onClick={handleUnlockEbook} disabled={ebookBusy}>
+                <Button className="gap-2" onClick={() => handleUnlockEbook(false)} disabled={ebookBusy}>
                   {ebookBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <BookOpen className="h-4 w-4" />}
-                  Unlock e-book · {KLP_BOOK_CREDITS} credits
+                  Unlock {ebookLang} PDF + e-book · {KLP_BOOK_CREDITS} credits
+                </Button>
+                <Button variant="secondary" className="gap-2" onClick={() => handleUnlockEbook(true)} disabled={ebookBusy}>
+                  <Languages className="h-4 w-4" /> All 6 languages · {KLP_ALL_LANGUAGES_CREDITS} credits
                 </Button>
               </div>
             )}
@@ -3011,7 +2947,7 @@ export default function KidsLearningPosters() {
                 </div>
                 <p className="text-sm text-muted-foreground">{poster.description}</p>
                 <Button className="w-full gap-2" onClick={() => handleDownload(poster)}>
-                  <Download className="h-4 w-4" /> Download
+                  <Download className="h-4 w-4" /> Download · {KLP_POSTER_DOWNLOAD_CREDITS} credit
                 </Button>
                 {klpTranslateAdmin && (
                   <Button
@@ -3160,7 +3096,7 @@ export default function KidsLearningPosters() {
               <Languages className="h-5 w-5 text-primary" /> Translate this poster
             </DialogTitle>
             <DialogDescription>
-              {transPoster?.title} — Gemini creates a translated version from the original poster, for{" "}
+               {transPoster?.title} — choose a ready translated version for{" "}
               {KLP_POSTER_TRANSLATE_CREDITS} credits. Your balance:{" "}
               {balance === null ? "—" : `${balance} credits`}.
             </DialogDescription>
@@ -3223,12 +3159,11 @@ export default function KidsLearningPosters() {
       >
         <DialogContent className="klp-booklang-dialog max-h-[90vh] max-w-lg overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Languages className="h-5 w-5 text-primary" /> Bilingual encyclopedia
+             <DialogTitle className="flex items-center gap-2">
+               <Languages className="h-5 w-5 text-primary" /> Choose your encyclopedia package
             </DialogTitle>
             <DialogDescription>
-              All {KLP_POSTERS.length} posters in one A4 PDF book with cover, contents and age chapters
-              written in your language — {KLP_BOOK_TRANSLATE_CREDITS} credits. Your balance:{" "}
+               PDF download and online e-book access are included together. Your balance:{" "}
               {balance === null ? "—" : `${balance} credits`}.
             </DialogDescription>
           </DialogHeader>
@@ -3247,16 +3182,19 @@ export default function KidsLearningPosters() {
                 </Button>
               ))}
             </div>
-            <Button className="w-full gap-2" disabled={bookBusy} onClick={handleTranslatedEncyclopedia}>
+             <Button className="w-full gap-2" disabled={bookBusy} onClick={() => handleBookPackage(false)}>
               {bookBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
               {bookBusy
                 ? bookProgress
                   ? `Building · ${bookProgress.done}/${bookProgress.total}`
-                  : `Translating to ${bookLang}…`
-                : `Download English + ${bookLang} · ${KLP_BOOK_TRANSLATE_CREDITS} credits`}
+                   : `Building ${bookLang}…`
+                 : `${bookLang} PDF + e-book · ${KLP_BOOK_CREDITS} credits (€20)`}
             </Button>
+             <Button variant="secondary" className="w-full gap-2" disabled={bookBusy} onClick={() => handleBookPackage(true)}>
+               <Languages className="h-4 w-4" /> All 6 languages · {KLP_ALL_LANGUAGES_CREDITS} credits (€30)
+             </Button>
             <p className="text-xs text-muted-foreground">
-              English stays visible and the selected translation appears beneath it throughout the book.
+               The all-language package unlocks every e-book language and lets you download each language as PDF.
             </p>
           </div>
         </DialogContent>
