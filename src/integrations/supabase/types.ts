@@ -34403,6 +34403,66 @@ export type Database = {
         }
         Relationships: []
       }
+      kids_book_preorders: {
+        Row: {
+          address_line: string
+          city: string
+          country: string
+          created_at: string
+          credits_paid: number
+          email: string | null
+          full_name: string
+          id: string
+          language: string
+          note: string | null
+          package: string
+          phone: string | null
+          postal_code: string
+          shipped_at: string | null
+          status: string
+          tracking_number: string | null
+          user_id: string
+        }
+        Insert: {
+          address_line: string
+          city: string
+          country: string
+          created_at?: string
+          credits_paid: number
+          email?: string | null
+          full_name: string
+          id?: string
+          language: string
+          note?: string | null
+          package: string
+          phone?: string | null
+          postal_code: string
+          shipped_at?: string | null
+          status?: string
+          tracking_number?: string | null
+          user_id: string
+        }
+        Update: {
+          address_line?: string
+          city?: string
+          country?: string
+          created_at?: string
+          credits_paid?: number
+          email?: string | null
+          full_name?: string
+          id?: string
+          language?: string
+          note?: string | null
+          package?: string
+          phone?: string | null
+          postal_code?: string
+          shipped_at?: string | null
+          status?: string
+          tracking_number?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       kids_child_profiles: {
         Row: {
           age: number
@@ -70055,6 +70115,10 @@ export type Database = {
           user_points_total: number
         }[]
       }
+      admin_kids_book_preorder_set_status: {
+        Args: { _id: string; _status: string; _tracking: string }
+        Returns: undefined
+      }
       admin_launch_boosts_overview: {
         Args: never
         Returns: {
@@ -72581,6 +72645,21 @@ export type Database = {
         Returns: Json
       }
       join_guild: { Args: { _guild_id: string }; Returns: Json }
+      kids_book_preorder_create: {
+        Args: {
+          _address_line: string
+          _city: string
+          _country: string
+          _email: string
+          _full_name: string
+          _language: string
+          _note: string
+          _package: string
+          _phone: string
+          _postal_code: string
+        }
+        Returns: string
+      }
       leave_battle_queue: { Args: { _module: string }; Returns: Json }
       leave_guild: { Args: never; Returns: Json }
       list_pet_pvp_opponents: {

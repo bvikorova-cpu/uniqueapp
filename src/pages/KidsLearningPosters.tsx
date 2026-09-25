@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { BookOpen } from "lucide-react";
 import { KlpEbookReader } from "@/components/kids/KlpEbookReader";
+import { KlpBookPreorder } from "@/components/kids/KlpBookPreorder";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -2840,6 +2841,8 @@ export default function KidsLearningPosters() {
             </div>
           </CardContent>
         </Card>
+
+        <KlpBookPreorder />
 
         <Dialog open={ebookOpen} onOpenChange={setEbookOpen}>
           <DialogContent className="max-h-[100dvh] w-[100vw] max-w-[100vw] overflow-y-auto p-4 sm:rounded-none">
