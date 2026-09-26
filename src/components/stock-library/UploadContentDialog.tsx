@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Upload, Loader2 } from "lucide-react";
+import { useMarketplaceAdGate } from "@/hooks/useMarketplaceAdGate";
 
 interface UploadContentDialogProps {
   open: boolean;
@@ -17,6 +18,7 @@ interface UploadContentDialogProps {
 
 export const UploadContentDialog = ({ open, onOpenChange, onSuccess }: UploadContentDialogProps) => {
   const { toast } = useToast();
+  const { watchAdToContinue } = useMarketplaceAdGate();
   const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({ title: "",
     description: "",
@@ -42,6 +44,8 @@ export const UploadContentDialog = ({ open, onOpenChange, onSuccess }: UploadCon
 
     setUploading(true);
     try {
+      const adOk = await watchAdToContinue("publish your content");
+      if (!adOk) return;
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
